@@ -2,11 +2,14 @@ import Foundation
 import Apollo
 import SwiftKeychainWrapper
 
+public typealias JSONObject = Apollo.JSONObject
+public typealias JSONValue = Apollo.JSONValue
+
 public let neevaAppHost = "alpha.neeva.co"
 public let loginKeychainKey = "neevaHttpdLogin-\(neevaAppHost)"
 
-class GraphQLAPI {
-    static let shared = GraphQLAPI()
+public class GraphQLAPI {
+    public static let shared = GraphQLAPI()
 
     private(set) lazy var apollo: ApolloClient = {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
@@ -18,12 +21,17 @@ class GraphQLAPI {
         return ApolloClient(networkTransport: transport, store: store)
     }()
 
-    static func fetch<Query: GraphQLQuery>(
+    @discardableResult public static func fetch<Query: GraphQLQuery>(
         query: Query,
         queue: DispatchQueue = DispatchQueue.main,
         resultHandler: GraphQLResultHandler<Query.Data>? = nil
     ) -> Cancellable {
-        shared.apollo.fetch(query: query, queue: queue, resultHandler: resultHandler)
+        shared.apollo.fetch(
+            query: query,
+            cachePolicy: .fetchIgnoringCacheCompletely,
+            queue: queue,
+            resultHandler: resultHandler
+        )
     }
 }
 

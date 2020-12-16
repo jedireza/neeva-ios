@@ -4,11 +4,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "neeva-ios-support",
+    name: "NeevaSupport",
     products: [
         .library(
-            name: "neeva-ios-support",
-            targets: ["neeva-ios-support"]),
+            name: "NeevaSupport",
+            targets: ["NeevaSupport"]),
     ],
     dependencies: [
         .package(name: "Apollo",
@@ -20,7 +20,7 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "neeva-ios-support",
+            name: "NeevaSupport",
             dependencies: ["Apollo", "SwiftKeychainWrapper"],
             exclude: ["operationIDs.json", "schema.json", "queries.graphql"]
         ),
