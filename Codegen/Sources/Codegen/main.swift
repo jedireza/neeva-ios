@@ -3,24 +3,22 @@ import ApolloCodegenLib
 
 let parentFolderOfScriptFile = FileFinder.findParentFolder()
 let sourceRootURL = parentFolderOfScriptFile
-    .apollo.parentFolderURL() // Result: Sources folder
-    .apollo.parentFolderURL() // Result: Codegen folder
-    .apollo.parentFolderURL() // Result: neeva-ios-support source root folder
+    .deletingLastPathComponent() // Result: Sources folder
+    .deletingLastPathComponent() // Result: Codegen folder
+    .deletingLastPathComponent() // Result: neeva-ios-support source root folder
 
-let cliFolderURL = sourceRootURL
-    .apollo.childFolderURL(folderName: "Codegen")
-    .apollo.childFolderURL(folderName: "ApolloCLI")
-
-let targetURL = sourceRootURL
-    .apollo.childFolderURL(folderName: "Sources")
-    .apollo.childFolderURL(folderName: "neeva-ios-support")
-
-var codegenOptions = ApolloCodegenOptions(targetRootURL: targetURL)
+func / (dir: URL, folderName: String) -> URL {
+    dir.apollo.childFolderURL(folderName: folderName)
+}
 
 do {
-    try ApolloCodegen.run(from: targetURL,
-                          with: cliFolderURL,
-                          options: codegenOptions)
+    try ApolloCodegen.run(
+        from: sourceRootURL / "Codegen" / "Sources" / "Codegen ",
+        with: sourceRootURL / "Codegen" / "ApolloCLI",
+        options: ApolloCodegenOptions(
+            targetRootURL: sourceRootURL / "Sources" / "NeevaSupport"
+        )
+    )
 } catch {
     print(error)
     exit(1)

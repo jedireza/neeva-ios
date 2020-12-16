@@ -1,0 +1,36 @@
+query UserInfo {
+  user {
+    profile {
+      displayName
+      email
+      pictureURL
+    }
+  }
+}
+
+query Suggestions($query: String!) {
+  suggest(q: $query) {
+    querySuggestion {
+      suggestedQuery
+      type
+      boldSpan {
+        startInclusive
+        endExclusive
+      }
+      source
+    }
+    urlSuggestion {
+      icon {
+        labels
+      }
+      suggestedURL
+      author
+      timestamp
+      title
+      boldSpan {
+        startInclusive
+        endExclusive
+      }
+    }
+  }
+}

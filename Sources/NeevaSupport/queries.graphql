@@ -1,9 +1,0 @@
-query UserInfo {
-  user {
-    profile {
-      displayName
-      email
-      pictureURL
-    }
-  }
-}
