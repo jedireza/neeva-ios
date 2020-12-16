@@ -2,10 +2,13 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:Demo App/Neeva iOS Support.xcodeproj">
+      location = "group:README.md">
    </FileRef>
    <FileRef
       location = "group:Demo App/..">
+   </FileRef>
+   <FileRef
+      location = "container:/Users/jed/Documents/Neeva/neeva-ios-support/Demo App/Demo App.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Codegen">

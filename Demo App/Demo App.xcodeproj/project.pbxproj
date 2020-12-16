@@ -125,7 +125,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 856DDBE1258A996C001485A8 /* Build configuration list for PBXProject "Neeva iOS Support" */;
+			buildConfigurationList = 856DDBE1258A996C001485A8 /* Build configuration list for PBXProject "Demo App" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -348,7 +348,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		856DDBE1258A996C001485A8 /* Build configuration list for PBXProject "Neeva iOS Support" */ = {
+		856DDBE1258A996C001485A8 /* Build configuration list for PBXProject "Demo App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				856DDBF8258A996E001485A8 /* Debug */,
