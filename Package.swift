@@ -13,14 +13,18 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(name: "Apollo",
+                 url: "https://github.com/apollographql/apollo-ios.git",
+                 .upToNextMinor(from: "0.38.3"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "neeva-ios-support",
-            dependencies: []),
+            dependencies: ["Apollo"],
+            exclude: ["operationIDs.json", "schema.json", "queries.graphql"]
+        ),
         .testTarget(
             name: "neeva-ios-supportTests",
             dependencies: ["neeva-ios-support"]),
