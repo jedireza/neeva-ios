@@ -8,24 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBE9258A996C001485A8 /* AppDelegate.swift */; };
-		856DDBEC258A996C001485A8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBEB258A996C001485A8 /* SceneDelegate.swift */; };
 		856DDBEE258A996C001485A8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBED258A996C001485A8 /* ViewController.swift */; };
 		856DDBF1258A996C001485A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856DDBEF258A996C001485A8 /* Main.storyboard */; };
 		856DDBF3258A996E001485A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 856DDBF2258A996E001485A8 /* Assets.xcassets */; };
 		856DDBF6258A996E001485A8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856DDBF4258A996E001485A8 /* LaunchScreen.storyboard */; };
 		85A534EA258AA06700531C95 /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 85A534E9258AA06700531C95 /* NeevaSupport */; };
+		85A534F3258AA98900531C95 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A534F2258AA98900531C95 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		856DDBE6258A996C001485A8 /* Neeva iOS Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Neeva iOS Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		856DDBE9258A996C001485A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		856DDBEB258A996C001485A8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		856DDBE9258A996C001485A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "Neeva iOS Support/AppDelegate.swift"; sourceTree = "<group>"; };
 		856DDBED258A996C001485A8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		856DDBF0258A996C001485A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		856DDBF2258A996E001485A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		856DDBF5258A996E001485A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		856DDBF7258A996E001485A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		856DDBF7258A996E001485A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Neeva iOS Support/Info.plist"; sourceTree = "<group>"; };
 		856DDC1A258A9E72001485A8 /* neeva-ios-support */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "neeva-ios-support"; path = ..; sourceTree = "<group>"; };
+		85A534F2258AA98900531C95 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "Neeva iOS Support/SceneDelegate.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				856DDBE9258A996C001485A8 /* AppDelegate.swift */,
-				856DDBEB258A996C001485A8 /* SceneDelegate.swift */,
+				85A534F2258AA98900531C95 /* SceneDelegate.swift */,
 				856DDBF2258A996E001485A8 /* Assets.xcassets */,
 				856DDBF4258A996E001485A8 /* LaunchScreen.storyboard */,
 				856DDBF7258A996E001485A8 /* Info.plist */,
@@ -165,7 +165,7 @@
 			files = (
 				856DDBEE258A996C001485A8 /* ViewController.swift in Sources */,
 				856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */,
-				856DDBEC258A996C001485A8 /* SceneDelegate.swift in Sources */,
+				85A534F3258AA98900531C95 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

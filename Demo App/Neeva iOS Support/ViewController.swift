@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var tokenInput: UITextField!
     @IBOutlet weak var dataOutput: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tokenInput.text = KeychainWrapper.standard.string(forKey: loginKeychainKey)
