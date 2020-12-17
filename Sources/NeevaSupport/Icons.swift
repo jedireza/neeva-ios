@@ -21,6 +21,29 @@ extension Image {
     }
 }
 
+struct SpaceIconView: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 4)
+                .fill(Color(red: 173/255, green: 225/255, blue: 234/255))
+                .frame(width: 20, height: 20)
+            Text("S")
+                .font(.system(size: 12))
+                .foregroundColor(Color.white)
+                .fontWeight(.semibold)
+        }
+    }
+}
+
+struct IconView_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            SpaceIconView()
+        }.previewLayout(.sizeThatFits   )
+    }
+}
+
+
 // extracted from `icon-library.ts`
 let iconMapping = [
     "gsuite-app": "google",

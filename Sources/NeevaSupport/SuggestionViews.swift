@@ -41,19 +41,21 @@ struct QuerySuggestionView: View {
         }
     }
 
-    var icon: String {
+    @ViewBuilder var icon: some View {
         switch suggestion.type {
         case .searchHistory:
-            return "clock"
+            Image(systemName: "clock").foregroundColor(.secondary)
+        case .space:
+            SpaceIconView()
         default:
-            return "magnifyingglass"
+            Image(systemName: "magnifyingglass").foregroundColor(.secondary)
         }
     }
 
     var body: some View {
         Button(action: onTap) {
             HStack {
-                Image(systemName: icon).foregroundColor(.secondary)
+                icon
                 BoldSpanView(
                     suggestion.suggestedQuery,
                     bolding: suggestion.boldSpan.map {
@@ -63,9 +65,11 @@ struct QuerySuggestionView: View {
                     .lineLimit(1)
                     .foregroundColor(textColor)
                 Spacer()
-                Button(action: { setInput(suggestion.suggestedQuery) }) {
-                    Image(systemName: "arrow.up.left")
-                }.buttonStyle(BorderlessButtonStyle())
+                if suggestion.type != .space {
+                    Button(action: { setInput(suggestion.suggestedQuery) }) {
+                        Image(systemName: "arrow.up.left")
+                    }.buttonStyle(BorderlessButtonStyle())
+                }
             }
         }
     }
@@ -113,13 +117,21 @@ struct SuggestionView_Previews: PreviewProvider {
             boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
             source: .bing
         )
-    static let query2 =
+    static let historyQuery =
         SuggestionsQuery.Data.Suggest.QuerySuggestion(
             suggestedQuery: "swift set sysroot",
             type: .searchHistory,
             boldSpan: [.init(startInclusive: 6, endExclusive: 9), .init(startInclusive: 12, endExclusive: 15)],
             source: .elastic
         )
+    static let spaceQuery =
+        SuggestionsQuery.Data.Suggest.QuerySuggestion(
+            suggestedQuery: "SavedForLater",
+            type: .space,
+            boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
+            source: .elastic
+        )
+
     static let url =
         SuggestionsQuery.Data.Suggest.UrlSuggestion(
             icon: .init(labels: ["google-email", "email"]),
@@ -131,10 +143,11 @@ struct SuggestionView_Previews: PreviewProvider {
         )
 
     static var previews: some View {
-        List {
-            QuerySuggestionView(suggestion: query, setInput: { _ in }, onTap: {})
-            QuerySuggestionView(suggestion: query2, setInput: { _ in }, onTap: {})
-            URLSuggestionView(suggestion: url, onTap: {})
-        }
+            List {
+                QuerySuggestionView(suggestion: query, setInput: { _ in }, onTap: {})
+                QuerySuggestionView(suggestion: historyQuery, setInput: { _ in }, onTap: {})
+                QuerySuggestionView(suggestion: spaceQuery, setInput: { _ in }, onTap: {})
+                URLSuggestionView(suggestion: url, onTap: {})
+            }
     }
 }
