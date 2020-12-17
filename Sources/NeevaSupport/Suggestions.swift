@@ -18,6 +18,13 @@ extension Suggestion: Identifiable {
     }
 }
 
+class GQLError: Error {
+    public let errors: [GraphQLError]
+    init(_ errors: [GraphQLError]) {
+        self.errors = errors
+    }
+}
+
 public class SuggestionsController: ObservableObject {
     @Published public var suggestions: [Suggestion] = []
     @Published public var running = false
@@ -45,16 +52,20 @@ public class SuggestionsController: ObservableObject {
         }
     }
 
-    public static func getSuggestions(
+    @discardableResult public static func getSuggestions(
         for query: String,
         completion: @escaping (Result<[Suggestion], Error>) -> ()
     ) -> Apollo.Cancellable {
         GraphQLAPI.fetch(query: SuggestionsQuery(query: query)) { result in
             switch result {
             case .success(let result):
-                let querySuggestions = result.data?.suggest?.querySuggestion ?? []
-                let urlSuggestions = result.data?.suggest?.urlSuggestion ?? []
-                completion(.success(querySuggestions.map(Suggestion.query) + urlSuggestions.map(Suggestion.url)))
+                if let errors = result.errors {
+                    completion(.failure(GQLError(errors)))
+                } else {
+                    let querySuggestions = result.data?.suggest?.querySuggestion ?? []
+                    let urlSuggestions = result.data?.suggest?.urlSuggestion ?? []
+                    completion(.success(querySuggestions.map(Suggestion.query) + urlSuggestions.map(Suggestion.url)))
+                }
             case .failure(let error):
                 completion(.failure(error))
             }
