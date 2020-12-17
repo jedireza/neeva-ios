@@ -10,11 +10,11 @@ class UserInfoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tokenInput.text = KeychainWrapper.standard.string(forKey: loginKeychainKey)
+        tokenInput.text = KeychainWrapper.standard.string(forKey: NeevaConstants.loginKeychainKey)
     }
 
     @IBAction func runUserQuery(_ sender: Any) {
-        KeychainWrapper.standard.set(tokenInput.text!, forKey: loginKeychainKey)
+        KeychainWrapper.standard.set(tokenInput.text!, forKey: NeevaConstants.loginKeychainKey)
         activityIndicator.startAnimating()
         UIView.animate(withDuration: 0.4) {
             self.activityIndicator.alpha = 1

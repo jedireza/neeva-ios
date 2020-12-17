@@ -5,9 +5,6 @@ import SwiftKeychainWrapper
 public typealias JSONObject = Apollo.JSONObject
 public typealias JSONValue = Apollo.JSONValue
 
-public let neevaAppHost = "alpha.neeva.co"
-public let loginKeychainKey = "neevaHttpdLogin-\(neevaAppHost)"
-
 public class GraphQLAPI {
     public static let shared = GraphQLAPI()
 
@@ -41,7 +38,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         contextIdentifier: UUID? = nil
     ) -> HTTPRequest<Operation> where Operation : GraphQLOperation {
         let req = super.constructRequest(for: operation, cachePolicy: cachePolicy, contextIdentifier: contextIdentifier)
-        if let cookie = KeychainWrapper.standard.string(forKey: loginKeychainKey) {
+        if let cookie = KeychainWrapper.standard.string(forKey: NeevaConstants.loginKeychainKey) {
             req.addHeader(name: "Cookie", value: "httpd~login=\(cookie)")
         }
         return req
