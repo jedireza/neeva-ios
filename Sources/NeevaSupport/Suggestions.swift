@@ -18,7 +18,7 @@ extension Suggestion: Identifiable {
     }
 }
 
-class GQLError: Error {
+public class GQLError: Error {
     public let errors: [GraphQLError]
     init(_ errors: [GraphQLError]) {
         self.errors = errors
