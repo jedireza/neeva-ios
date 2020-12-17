@@ -29,7 +29,6 @@ public struct BoldSpanView: View {
                 let nextStart = i == boldSpan.endIndex - 1
                     ? text.endIndex
                     : String.Index(utf16Offset: boldSpan[i + 1].start, in: text)
-                print(start, end)
                 return $0
                     + Text(text[start..<end]).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     + Text(text[end..<nextStart])
