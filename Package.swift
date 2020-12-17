@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "NeevaSupport",
+    platforms: [.iOS(.v13)],
     products: [
         .library(
             name: "NeevaSupport",
@@ -22,7 +23,7 @@ let package = Package(
         .target(
             name: "NeevaSupport",
             dependencies: ["Apollo", "SwiftKeychainWrapper"],
-            exclude: ["operationIDs.json", "schema.json", "queries.graphql"]
+            exclude: ["operationIDs.json", "schema.json"]
         ),
     ]
 )

@@ -13,8 +13,8 @@ let package = Package(
     targets: [
         .target(
             name: "Codegen",
-            dependencies: [
-                .product(name: "ApolloCodegenLib", package: "Apollo"),
-            ])
+            dependencies: [.product(name: "ApolloCodegenLib", package: "Apollo")],
+            exclude: ["queries.graphql"]
+        )
     ]
 )
