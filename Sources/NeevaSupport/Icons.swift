@@ -25,7 +25,7 @@ struct SpaceIconView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 4)
-                .fill(Color(red: 173/255, green: 225/255, blue: 234/255))
+                .fill(Color.spaceIconBackground)
                 .frame(width: 20, height: 20)
             Text("S")
                 .font(.system(size: 12))
