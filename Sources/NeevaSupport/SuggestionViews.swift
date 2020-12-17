@@ -22,7 +22,7 @@ public struct SuggestionView: View {
         case .query(let suggestion):
             QuerySuggestionView(suggestion: suggestion, setInput: setInput, onTap: onTap)
         case .url(let suggestion):
-            URLSuggestionView(suggestion: suggestion, setInput: setInput, onTap: onTap)
+            URLSuggestionView(suggestion: suggestion, onTap: onTap)
         }
     }
 }
@@ -32,17 +32,36 @@ struct QuerySuggestionView: View {
     let setInput: (String) -> ()
     let onTap: () -> ()
 
+    var textColor: Color {
+        switch suggestion.type {
+        case .searchHistory:
+            return .searchHistoryEntry
+        default:
+            return .primary
+        }
+    }
+
+    var icon: String {
+        switch suggestion.type {
+        case .searchHistory:
+            return "clock"
+        default:
+            return "magnifyingglass"
+        }
+    }
+
     var body: some View {
         Button(action: onTap) {
             HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.secondary)
+                Image(systemName: icon).foregroundColor(.secondary)
                 BoldSpanView(
                     suggestion.suggestedQuery,
                     bolding: suggestion.boldSpan.map {
                         BoldSpan(start: $0.startInclusive, end: $0.endExclusive)
                     }
-                ).lineLimit(1)
+                )
+                    .lineLimit(1)
+                    .foregroundColor(textColor)
                 Spacer()
                 Button(action: { setInput(suggestion.suggestedQuery) }) {
                     Image(systemName: "arrow.up.left")
@@ -54,7 +73,6 @@ struct QuerySuggestionView: View {
 
 struct URLSuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion
-    let setInput: (String) -> ()
     let onTap: () -> ()
 
     var body: some View {
@@ -95,6 +113,13 @@ struct SuggestionView_Previews: PreviewProvider {
             boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
             source: .bing
         )
+    static let query2 =
+        SuggestionsQuery.Data.Suggest.QuerySuggestion(
+            suggestedQuery: "swift set sysroot",
+            type: .searchHistory,
+            boldSpan: [.init(startInclusive: 6, endExclusive: 9), .init(startInclusive: 12, endExclusive: 15)],
+            source: .elastic
+        )
     static let url =
         SuggestionsQuery.Data.Suggest.UrlSuggestion(
             icon: .init(labels: ["google-email", "email"]),
@@ -108,7 +133,8 @@ struct SuggestionView_Previews: PreviewProvider {
     static var previews: some View {
         List {
             QuerySuggestionView(suggestion: query, setInput: { _ in }, onTap: {})
-            URLSuggestionView(suggestion: url, setInput: { _ in }, onTap: {})
+            QuerySuggestionView(suggestion: query2, setInput: { _ in }, onTap: {})
+            URLSuggestionView(suggestion: url, onTap: {})
         }
     }
 }
