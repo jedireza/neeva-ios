@@ -8,7 +8,7 @@
       location = "group:Demo App/..">
    </FileRef>
    <FileRef
-      location = "container:/Users/jed/Documents/Neeva/neeva-ios-support/Demo App/Demo App.xcodeproj">
+      location = "container:Demo App/Demo App.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Codegen">
