@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8565BCE1258BB43500E168C2 /* SuggestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */; };
 		856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBE9258A996C001485A8 /* AppDelegate.swift */; };
-		856DDBEE258A996C001485A8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBED258A996C001485A8 /* ViewController.swift */; };
+		856DDBEE258A996C001485A8 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBED258A996C001485A8 /* UserInfoViewController.swift */; };
 		856DDBF1258A996C001485A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856DDBEF258A996C001485A8 /* Main.storyboard */; };
 		856DDBF3258A996E001485A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 856DDBF2258A996E001485A8 /* Assets.xcassets */; };
 		856DDBF6258A996E001485A8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856DDBF4258A996E001485A8 /* LaunchScreen.storyboard */; };
@@ -17,9 +18,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewController.swift; sourceTree = "<group>"; };
 		856DDBE6258A996C001485A8 /* Neeva iOS Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Neeva iOS Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		856DDBE9258A996C001485A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "Neeva iOS Support/AppDelegate.swift"; sourceTree = "<group>"; };
-		856DDBED258A996C001485A8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		856DDBED258A996C001485A8 /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		856DDBF0258A996C001485A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		856DDBF2258A996E001485A8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		856DDBF5258A996E001485A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -60,8 +62,9 @@
 		856DDBE8258A996C001485A8 /* Neeva iOS Support */ = {
 			isa = PBXGroup;
 			children = (
-				856DDBED258A996C001485A8 /* ViewController.swift */,
+				856DDBED258A996C001485A8 /* UserInfoViewController.swift */,
 				856DDBEF258A996C001485A8 /* Main.storyboard */,
+				8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */,
 				85A534EE258AA86800531C95 /* Supporting Files */,
 			);
 			path = "Neeva iOS Support";
@@ -163,7 +166,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				856DDBEE258A996C001485A8 /* ViewController.swift in Sources */,
+				8565BCE1258BB43500E168C2 /* SuggestionsViewController.swift in Sources */,
+				856DDBEE258A996C001485A8 /* UserInfoViewController.swift in Sources */,
 				856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */,
 				85A534F3258AA98900531C95 /* SceneDelegate.swift in Sources */,
 			);

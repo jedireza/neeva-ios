@@ -13,10 +13,10 @@ extension TimeInterval {
     static func hours(_ n: Double) -> Self { .minutes(n * 60) }
     static func days(_ n: Double) -> Self { .hours(n * 24) }
 
-    var seconds: Double { rounded(.towardZero) }
-    var minutes: Double { (seconds / 60).rounded(.towardZero) }
-    var hours: Double { (minutes / 60).rounded(.towardZero) }
-    var days: Double { (hours / 24).rounded(.towardZero) }
+    var seconds: Int { Int(self) }
+    var minutes: Int { seconds / 60 }
+    var hours: Int { minutes / 60 }
+    var days: Int { hours / 24 }
 }
 
 func formatter(for format: String) -> (Date) -> String {

@@ -2,7 +2,7 @@ import UIKit
 import NeevaSupport
 import SwiftKeychainWrapper
 
-class ViewController: UIViewController {
+class UserInfoViewController: UIViewController {
 
     @IBOutlet weak var tokenInput: UITextField!
     @IBOutlet weak var dataOutput: UILabel!
