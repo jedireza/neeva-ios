@@ -14,6 +14,7 @@ class UserInfoViewController: UIViewController {
     }
 
     @IBAction func runUserQuery(_ sender: Any) {
+        tokenInput.resignFirstResponder()
         KeychainWrapper.standard.set(tokenInput.text!, forKey: NeevaConstants.loginKeychainKey)
         activityIndicator.startAnimating()
         UIView.animate(withDuration: 0.4) {
