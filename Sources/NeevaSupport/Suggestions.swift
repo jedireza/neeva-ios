@@ -45,7 +45,10 @@ public class SuggestionsController: ObservableObject {
         }
     }
 
-    public static func getSuggestions(for query: String, completion: @escaping (Result<[Suggestion], Error>) -> ()) {
+    public static func getSuggestions(
+        for query: String,
+        completion: @escaping (Result<[Suggestion], Error>) -> ()
+    ) -> Apollo.Cancellable {
         GraphQLAPI.fetch(query: SuggestionsQuery(query: query)) { result in
             switch result {
             case .success(let result):
