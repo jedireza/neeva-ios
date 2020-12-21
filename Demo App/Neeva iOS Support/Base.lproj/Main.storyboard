@@ -10,6 +10,24 @@
     </dependencies>
     <scenes>
         <!--User Info-->
+        <scene sceneID="e7q-Qh-dkb">
+            <objects>
+                <navigationController id="cib-jc-CbF" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="User Info" image="person.fill" catalog="system" id="90c-Sp-FrN"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="Gh2-mD-Zuq">
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="BVt-CW-DR3"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MB5-Fl-CMD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1142" y="-1305"/>
+        </scene>
+        <!--User Info-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="UserInfoViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
@@ -18,10 +36,37 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jj2-IK-DNY">
-                                <rect key="frame" x="20" y="64" width="374" height="749"/>
+                                <rect key="frame" x="20" y="160" width="374" height="653"/>
                                 <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qbv-dd-jQc">
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="20.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Enter Neeva " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tox-hU-war">
+                                                <rect key="frame" x="0.0" y="0.0" width="100.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="httpd~login" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jbw-f3-LiA">
+                                                <rect key="frame" x="100.5" y="0.0" width="113" height="20.5"/>
+                                                <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text=" token" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLC-6f-349">
+                                                <rect key="frame" x="213.5" y="0.0" width="49" height="20.5"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KmF-Sq-3Kq">
+                                                <rect key="frame" x="262.5" y="0.0" width="111.5" height="20.5"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Neeva Token" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="vRg-ya-ljr">
-                                        <rect key="frame" x="0.0" y="0.0" width="374" height="34"/>
+                                        <rect key="frame" x="0.0" y="37.5" width="374" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done" secureTextEntry="YES"/>
                                         <connections>
@@ -29,7 +74,7 @@
                                         </connections>
                                     </textField>
                                     <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hnB-Dg-4sI">
-                                        <rect key="frame" x="0.0" y="51" width="374" height="50"/>
+                                        <rect key="frame" x="0.0" y="88.5" width="374" height="50"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4ph-dD-vSK">
                                                 <rect key="frame" x="0.0" y="0.0" width="324" height="50"/>
@@ -50,13 +95,13 @@
                                         </subviews>
                                     </stackView>
                                     <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k4G-CZ-BLZ">
-                                        <rect key="frame" x="0.0" y="118" width="374" height="0.0"/>
+                                        <rect key="frame" x="0.0" y="155.5" width="374" height="0.0"/>
                                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="mzz-B2-Dsg">
-                                        <rect key="frame" x="0.0" y="135" width="374" height="614"/>
+                                        <rect key="frame" x="0.0" y="172.5" width="374" height="480.5"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </view>
                                 </subviews>
@@ -74,7 +119,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Jj2-IK-DNY" secondAttribute="bottom" id="pIR-kA-1hc"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="User Info" image="pencil.and.ellipsis.rectangle" catalog="system" id="90c-Sp-FrN"/>
+                    <navigationItem key="navigationItem" title="User Info" largeTitleDisplayMode="always" id="jY5-CN-dzp"/>
                     <connections>
                         <outlet property="activityIndicator" destination="0jc-vM-r2d" id="UIA-tP-Fhw"/>
                         <outlet property="dataOutput" destination="k4G-CZ-BLZ" id="tQh-bL-XyE"/>
@@ -83,7 +128,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1114" y="-538"/>
+            <point key="canvasLocation" x="-1141" y="-538"/>
         </scene>
         <!--Suggestions-->
         <scene sceneID="vJx-xF-oc6">
@@ -95,7 +140,7 @@
                         <viewLayoutGuide key="safeArea" id="7hd-GL-wV0"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Suggestions" image="doc.text.magnifyingglass" catalog="system" springLoaded="YES" id="zwc-Tu-DNe"/>
+                    <tabBarItem key="tabBarItem" title="Suggestions" image="magnifyingglass.circle.fill" catalog="system" springLoaded="YES" id="zwc-Tu-DNe"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e8h-7j-28F" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -111,18 +156,54 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="Zm8-21-tD6"/>
+                        <segue destination="cib-jc-CbF" kind="relationship" relationship="viewControllers" id="Lv8-w9-JqI"/>
                         <segue destination="Lmh-6S-344" kind="relationship" relationship="viewControllers" id="ykx-eN-DP7"/>
+                        <segue destination="iQG-2h-8IJ" kind="relationship" relationship="viewControllers" id="bhA-ZA-2ts"/>
+                        <segue destination="UH9-et-Ktp" kind="relationship" relationship="viewControllers" id="J9r-C7-uMb"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cqb-Cv-ozK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-468" y="-1274"/>
+            <point key="canvasLocation" x="39" y="-1267"/>
+        </scene>
+        <!--Spaces-->
+        <scene sceneID="fno-LV-VaG">
+            <objects>
+                <viewController id="iQG-2h-8IJ" customClass="SpacesViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7sG-Fp-j2z">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="4CX-fm-I4C"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Spaces" image="bookmark.fill" catalog="system" springLoaded="YES" id="8qE-s7-KOY"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g8Q-ea-cAx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="487" y="-538"/>
+        </scene>
+        <!--Add to Space-->
+        <scene sceneID="AVR-zO-GeI">
+            <objects>
+                <viewController id="UH9-et-Ktp" customClass="AddToSpaceDemoViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qU5-wp-tNj">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="Ffn-RT-L0n"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Add to Space" image="plus.circle.fill" catalog="system" id="8CH-Ds-15O"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HBP-Dg-ET5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1314" y="-538"/>
         </scene>
     </scenes>
     <resources>
-        <image name="doc.text.magnifyingglass" catalog="system" width="113" height="128"/>
-        <image name="pencil.and.ellipsis.rectangle" catalog="system" width="128" height="81"/>
+        <image name="bookmark.fill" catalog="system" width="112" height="128"/>
+        <image name="magnifyingglass.circle.fill" catalog="system" width="128" height="121"/>
+        <image name="person.fill" catalog="system" width="128" height="120"/>
+        <image name="plus.circle.fill" catalog="system" width="128" height="121"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

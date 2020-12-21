@@ -13,7 +13,7 @@ func / (dir: URL, folderName: String) -> URL {
 
 do {
     try ApolloCodegen.run(
-        from: sourceRootURL / "Codegen" / "Sources" / "Codegen ",
+        from: sourceRootURL / "Codegen" / "Sources" / "Codegen",
         with: sourceRootURL / "Codegen" / "ApolloCLI",
         options: ApolloCodegenOptions(
             targetRootURL: sourceRootURL / "Sources" / "NeevaSupport"

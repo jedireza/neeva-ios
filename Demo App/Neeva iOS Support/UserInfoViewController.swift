@@ -20,24 +20,26 @@ class UserInfoViewController: UIViewController {
         UIView.animate(withDuration: 0.4) {
             self.activityIndicator.alpha = 1
         }
-        GraphQLAPI.fetch(query: UserInfoQuery()) { result in
+        GraphQLAPI.fetch(UserInfoQuery()) { result in
             self.activityIndicator.stopAnimating()
             UIView.animate(withDuration: 0.4) {
                 self.activityIndicator.alpha = 0
             }
             switch result {
-            case .success(let result):
-                if let errors = result.errors, !errors.isEmpty {
-                    let messages = errors.filter({ $0.message != nil }).map({ $0.message! })
-                    self.dataOutput.text = "ERROR:\n\(messages.joined(separator: "\n"))"
-                } else if let user = result.data?.user {
+            case .success(let data):
+                if let user = data.user {
                     self.dataOutput.text = "Hello, \(user.profile.displayName)!\n" + String(
                         data: try! JSONSerialization.data(withJSONObject: user.jsonObject, options: [.prettyPrinted, .sortedKeys]),
                         encoding: .utf8
                     )!
                 } 
             case .failure(let error):
-                print(error)
+                if let errors = (error as? GraphQLAPI.Error)?.errors {
+                    let messages = errors.filter({ $0.message != nil }).map({ $0.message! })
+                    self.dataOutput.text = "ERROR:\n\(messages.joined(separator: "\n"))"
+                } else {
+                    print(error)
+                }
             }
         }
     }

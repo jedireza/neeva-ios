@@ -34,3 +34,25 @@ query Suggestions($query: String!) {
     }
   }
 }
+
+query Spaces {
+  listSpaces(input: { kind: All }) {
+    space {
+      pageMetadata {
+        pageID
+      }
+      space {
+        name
+        description
+        resultCount
+        isDefaultSpace
+        lastModifiedTs
+        thumbnail
+      }
+    }
+  }
+}
+
+mutation AddToSpace($input: AddSpaceResultByURLInput!) {
+  resultId: addSpaceResultByURL(input: $input)
+}

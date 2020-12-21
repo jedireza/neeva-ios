@@ -124,6 +124,237 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
   }
 }
 
+public struct AddSpaceResultByURLInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - spaceId
+  ///   - url
+  ///   - title
+  ///   - comment
+  ///   - data: Raw data for page being added. Could be HTML from DOM or byte stream if PDF etc
+  ///   - mediaType: Type of content, eg text/html
+  ///   - contentType: Type of the content obtained from the http response
+  ///   - isBase64: Defaults to false
+  ///   - snapshot: Details of captured snapshot
+  ///   - snapshotExpected: True if we expect a snapshot to be attached to this result soon.
+  ///   - snapshotClientError: Error from the client (e.g. extension, iOS app) creating the snapshot.
+  public init(spaceId: String, url: String, title: String, comment: Swift.Optional<String?> = nil, data: Swift.Optional<String?> = nil, mediaType: Swift.Optional<String?> = nil, contentType: Swift.Optional<String?> = nil, isBase64: Swift.Optional<Bool?> = nil, snapshot: Swift.Optional<Snapshot?> = nil, snapshotExpected: Swift.Optional<Bool?> = nil, snapshotClientError: Swift.Optional<String?> = nil) {
+    graphQLMap = ["spaceID": spaceId, "url": url, "title": title, "comment": comment, "data": data, "mediaType": mediaType, "contentType": contentType, "isBase64": isBase64, "snapshot": snapshot, "snapshotExpected": snapshotExpected, "snapshotClientError": snapshotClientError]
+  }
+
+  public var spaceId: String {
+    get {
+      return graphQLMap["spaceID"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "spaceID")
+    }
+  }
+
+  public var url: String {
+    get {
+      return graphQLMap["url"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "url")
+    }
+  }
+
+  public var title: String {
+    get {
+      return graphQLMap["title"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "title")
+    }
+  }
+
+  public var comment: Swift.Optional<String?> {
+    get {
+      return graphQLMap["comment"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "comment")
+    }
+  }
+
+  /// Raw data for page being added. Could be HTML from DOM or byte stream if PDF etc
+  public var data: Swift.Optional<String?> {
+    get {
+      return graphQLMap["data"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "data")
+    }
+  }
+
+  /// Type of content, eg text/html
+  public var mediaType: Swift.Optional<String?> {
+    get {
+      return graphQLMap["mediaType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "mediaType")
+    }
+  }
+
+  /// Type of the content obtained from the http response
+  public var contentType: Swift.Optional<String?> {
+    get {
+      return graphQLMap["contentType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "contentType")
+    }
+  }
+
+  /// Defaults to false
+  public var isBase64: Swift.Optional<Bool?> {
+    get {
+      return graphQLMap["isBase64"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "isBase64")
+    }
+  }
+
+  /// Details of captured snapshot
+  public var snapshot: Swift.Optional<Snapshot?> {
+    get {
+      return graphQLMap["snapshot"] as? Swift.Optional<Snapshot?> ?? Swift.Optional<Snapshot?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "snapshot")
+    }
+  }
+
+  /// True if we expect a snapshot to be attached to this result soon.
+  public var snapshotExpected: Swift.Optional<Bool?> {
+    get {
+      return graphQLMap["snapshotExpected"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "snapshotExpected")
+    }
+  }
+
+  /// Error from the client (e.g. extension, iOS app) creating the snapshot.
+  public var snapshotClientError: Swift.Optional<String?> {
+    get {
+      return graphQLMap["snapshotClientError"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "snapshotClientError")
+    }
+  }
+}
+
+public struct Snapshot: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - snapshotBase64: snapshot bytes sent as base64 string
+  ///   - snapshotContentType
+  ///   - htmlSnapshot
+  ///   - snapshotBrowser
+  ///   - snapshotKind
+  public init(snapshotBase64: Swift.Optional<String?> = nil, snapshotContentType: Swift.Optional<String?> = nil, htmlSnapshot: Swift.Optional<String?> = nil, snapshotBrowser: Swift.Optional<String?> = nil, snapshotKind: Swift.Optional<SnapshotKind?> = nil) {
+    graphQLMap = ["snapshotBase64": snapshotBase64, "snapshotContentType": snapshotContentType, "htmlSnapshot": htmlSnapshot, "snapshotBrowser": snapshotBrowser, "snapshotKind": snapshotKind]
+  }
+
+  /// snapshot bytes sent as base64 string
+  public var snapshotBase64: Swift.Optional<String?> {
+    get {
+      return graphQLMap["snapshotBase64"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "snapshotBase64")
+    }
+  }
+
+  public var snapshotContentType: Swift.Optional<String?> {
+    get {
+      return graphQLMap["snapshotContentType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "snapshotContentType")
+    }
+  }
+
+  public var htmlSnapshot: Swift.Optional<String?> {
+    get {
+      return graphQLMap["htmlSnapshot"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "htmlSnapshot")
+    }
+  }
+
+  public var snapshotBrowser: Swift.Optional<String?> {
+    get {
+      return graphQLMap["snapshotBrowser"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "snapshotBrowser")
+    }
+  }
+
+  public var snapshotKind: Swift.Optional<SnapshotKind?> {
+    get {
+      return graphQLMap["snapshotKind"] as? Swift.Optional<SnapshotKind?> ?? Swift.Optional<SnapshotKind?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "snapshotKind")
+    }
+  }
+}
+
+public enum SnapshotKind: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case unspecified
+  case html2Canvas
+  case tabCapture
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "Unspecified": self = .unspecified
+      case "Html2Canvas": self = .html2Canvas
+      case "TabCapture": self = .tabCapture
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .unspecified: return "Unspecified"
+      case .html2Canvas: return "Html2Canvas"
+      case .tabCapture: return "TabCapture"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: SnapshotKind, rhs: SnapshotKind) -> Bool {
+    switch (lhs, rhs) {
+      case (.unspecified, .unspecified): return true
+      case (.html2Canvas, .html2Canvas): return true
+      case (.tabCapture, .tabCapture): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [SnapshotKind] {
+    return [
+      .unspecified,
+      .html2Canvas,
+      .tabCapture,
+    ]
+  }
+}
+
 public final class UserInfoQuery: GraphQLQuery {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
@@ -706,6 +937,343 @@ public final class SuggestionsQuery: GraphQLQuery {
             }
           }
         }
+      }
+    }
+  }
+}
+
+public final class SpacesQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query Spaces {
+      listSpaces(input: {kind: All}) {
+        __typename
+        space {
+          __typename
+          pageMetadata {
+            __typename
+            pageID
+          }
+          space {
+            __typename
+            name
+            description
+            resultCount
+            isDefaultSpace
+            lastModifiedTs
+            thumbnail
+          }
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "Spaces"
+
+  public let operationIdentifier: String? = "e0775f772a8408a440692a94ff5e28ddd37440810ebc8fc15739e5bff19ff16b"
+
+  public init() {
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("listSpaces", arguments: ["input": ["kind": "All"]], type: .object(ListSpace.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(listSpaces: ListSpace? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "listSpaces": listSpaces.flatMap { (value: ListSpace) -> ResultMap in value.resultMap }])
+    }
+
+    /// List spaces accessible to the user of the given kind.
+    /// Entites and comments are elided from the returned space list.
+    public var listSpaces: ListSpace? {
+      get {
+        return (resultMap["listSpaces"] as? ResultMap).flatMap { ListSpace(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "listSpaces")
+      }
+    }
+
+    public struct ListSpace: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["SpaceList"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("space", type: .nonNull(.list(.nonNull(.object(Space.selections))))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(space: [Space]) {
+        self.init(unsafeResultMap: ["__typename": "SpaceList", "space": space.map { (value: Space) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var space: [Space] {
+        get {
+          return (resultMap["space"] as! [ResultMap]).map { (value: ResultMap) -> Space in Space(unsafeResultMap: value) }
+        }
+        set {
+          resultMap.updateValue(newValue.map { (value: Space) -> ResultMap in value.resultMap }, forKey: "space")
+        }
+      }
+
+      public struct Space: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["Space"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("pageMetadata", type: .object(PageMetadatum.selections)),
+            GraphQLField("space", type: .object(Space.selections)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(pageMetadata: PageMetadatum? = nil, space: Space? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Space", "pageMetadata": pageMetadata.flatMap { (value: PageMetadatum) -> ResultMap in value.resultMap }, "space": space.flatMap { (value: Space) -> ResultMap in value.resultMap }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var pageMetadata: PageMetadatum? {
+          get {
+            return (resultMap["pageMetadata"] as? ResultMap).flatMap { PageMetadatum(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "pageMetadata")
+          }
+        }
+
+        public var space: Space? {
+          get {
+            return (resultMap["space"] as? ResultMap).flatMap { Space(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "space")
+          }
+        }
+
+        public struct PageMetadatum: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PageMetadata"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("pageID", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(pageId: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PageMetadata", "pageID": pageId])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// An optional identifier for the page.
+          public var pageId: String? {
+            get {
+              return resultMap["pageID"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "pageID")
+            }
+          }
+        }
+
+        public struct Space: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["SpaceData"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("name", type: .scalar(String.self)),
+              GraphQLField("description", type: .scalar(String.self)),
+              GraphQLField("resultCount", type: .scalar(Int.self)),
+              GraphQLField("isDefaultSpace", type: .scalar(Bool.self)),
+              GraphQLField("lastModifiedTs", type: .scalar(String.self)),
+              GraphQLField("thumbnail", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(name: String? = nil, description: String? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil, lastModifiedTs: String? = nil, thumbnail: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "description": description, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace, "lastModifiedTs": lastModifiedTs, "thumbnail": thumbnail])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var name: String? {
+            get {
+              return resultMap["name"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "name")
+            }
+          }
+
+          public var description: String? {
+            get {
+              return resultMap["description"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "description")
+            }
+          }
+
+          public var resultCount: Int? {
+            get {
+              return resultMap["resultCount"] as? Int
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "resultCount")
+            }
+          }
+
+          public var isDefaultSpace: Bool? {
+            get {
+              return resultMap["isDefaultSpace"] as? Bool
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "isDefaultSpace")
+            }
+          }
+
+          public var lastModifiedTs: String? {
+            get {
+              return resultMap["lastModifiedTs"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "lastModifiedTs")
+            }
+          }
+
+          public var thumbnail: String? {
+            get {
+              return resultMap["thumbnail"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "thumbnail")
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class AddToSpaceMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation AddToSpace($input: AddSpaceResultByURLInput!) {
+      resultId: addSpaceResultByURL(input: $input)
+    }
+    """
+
+  public let operationName: String = "AddToSpace"
+
+  public let operationIdentifier: String? = "a8573bf35a374564a0edd2b0154366db42986329eb8dd16d098e3ba0f8be800b"
+
+  public var input: AddSpaceResultByURLInput
+
+  public init(input: AddSpaceResultByURLInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("addSpaceResultByURL", alias: "resultId", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(String.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(resultId: String) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "resultId": resultId])
+    }
+
+    /// Add a URL to a space, and return the ID of the space result.
+    public var resultId: String {
+      get {
+        return resultMap["resultId"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "resultId")
       }
     }
   }

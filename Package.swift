@@ -23,7 +23,8 @@ let package = Package(
         .target(
             name: "NeevaSupport",
             dependencies: ["Apollo", "SwiftKeychainWrapper"],
-            exclude: ["operationIDs.json", "schema.json"]
+            exclude: ["operationIDs.json", "schema.json"],
+            resources: [.copy("dev-token.txt")]
         ),
     ]
 )

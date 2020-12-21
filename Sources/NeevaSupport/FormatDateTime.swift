@@ -1,5 +1,7 @@
 import Foundation
 
+let dateParser = ISO8601DateFormatter()
+
 public enum DateTimeVisualSpec {
     case compact
     case news
@@ -38,7 +40,7 @@ struct DateFormatters {
     // pretty similar to require('date-fns').formatDistance but not exactly the same
     static let relative: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .short
+        formatter.unitsStyle = .full
         return formatter
     }()
 }
@@ -51,6 +53,15 @@ extension Date {
 func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
     calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date1)
         == calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date2)
+}
+
+public func format(_ string: String?, as visualSpec: DateTimeVisualSpec = .default, from now: Date = Date()) -> String? {
+    if let string = string,
+       let date = dateParser.date(from: string) {
+        return format(date, as: visualSpec, from: now)
+    } else {
+        return nil
+    }
 }
 
 // Keep in sync with formatDateTime from the main codebase

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8515A20A2590EB4700C31344 /* AddToSpaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8515A2092590EB4700C31344 /* AddToSpaceViewController.swift */; };
 		8565BCE1258BB43500E168C2 /* SuggestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */; };
 		856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBE9258A996C001485A8 /* AppDelegate.swift */; };
 		856DDBEE258A996C001485A8 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBED258A996C001485A8 /* UserInfoViewController.swift */; };
@@ -15,9 +16,11 @@
 		856DDBF6258A996E001485A8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856DDBF4258A996E001485A8 /* LaunchScreen.storyboard */; };
 		85A534EA258AA06700531C95 /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 85A534E9258AA06700531C95 /* NeevaSupport */; };
 		85A534F3258AA98900531C95 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85A534F2258AA98900531C95 /* SceneDelegate.swift */; };
+		85C10220258D209000E92A94 /* SpacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C1021F258D209000E92A94 /* SpacesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8515A2092590EB4700C31344 /* AddToSpaceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToSpaceViewController.swift; sourceTree = "<group>"; };
 		8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewController.swift; sourceTree = "<group>"; };
 		856DDBE6258A996C001485A8 /* Neeva iOS Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Neeva iOS Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		856DDBE9258A996C001485A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "Neeva iOS Support/AppDelegate.swift"; sourceTree = "<group>"; };
@@ -28,6 +31,7 @@
 		856DDBF7258A996E001485A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Neeva iOS Support/Info.plist"; sourceTree = "<group>"; };
 		856DDC1A258A9E72001485A8 /* neeva-ios-support */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "neeva-ios-support"; path = ..; sourceTree = "<group>"; };
 		85A534F2258AA98900531C95 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = "Neeva iOS Support/SceneDelegate.swift"; sourceTree = "<group>"; };
+		85C1021F258D209000E92A94 /* SpacesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpacesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +69,8 @@
 				856DDBED258A996C001485A8 /* UserInfoViewController.swift */,
 				856DDBEF258A996C001485A8 /* Main.storyboard */,
 				8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */,
+				85C1021F258D209000E92A94 /* SpacesViewController.swift */,
+				8515A2092590EB4700C31344 /* AddToSpaceViewController.swift */,
 				85A534EE258AA86800531C95 /* Supporting Files */,
 			);
 			path = "Neeva iOS Support";
@@ -166,9 +172,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85C10220258D209000E92A94 /* SpacesViewController.swift in Sources */,
 				8565BCE1258BB43500E168C2 /* SuggestionsViewController.swift in Sources */,
 				856DDBEE258A996C001485A8 /* UserInfoViewController.swift in Sources */,
 				856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */,
+				8515A20A2590EB4700C31344 /* AddToSpaceViewController.swift in Sources */,
 				85A534F3258AA98900531C95 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -14,6 +14,9 @@ Open `neeva-ios-support.xcworkspace` to see both projects at once.
 1. Tap “Get user info” to check your username and save the token to the keychain so you don’t have to re-enter it.
 1. Switch to the relevant tab to test your feature.
 
+## SwiftUI Previews
+To perform authenticated requests in SwiftUI previews, create a `dev-token.txt` file in `Sources/NeevaSupport` and copy over your `httpd~login` token from the app or website. This file is ignored by Git, but will be copied over when creating the preview.
+
 ## Updating the schema and `API.swift`
 
 Copy the latest `schema.json` file to `Sources/NeevaSupport/schema.json`

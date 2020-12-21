@@ -1,7 +1,5 @@
 import SwiftUI
 
-let dateParser = ISO8601DateFormatter()
-
 public struct SuggestionView: View {
     let suggestion: Suggestion
     let setInput: (String) -> ()
@@ -35,7 +33,7 @@ struct QuerySuggestionView: View {
     var textColor: Color {
         switch suggestion.type {
         case .searchHistory:
-            return .searchHistoryEntry
+            return .purpleVariant
         default:
             return .primary
         }
@@ -100,9 +98,8 @@ struct URLSuggestionView: View {
                     Text(suggestion.suggestedUrl).lineLimit(1)
                 }
                 Spacer()
-                if let ts = suggestion.timestamp,
-                   let date = dateParser.date(from: ts) {
-                    Text(format(date, as: .full)).foregroundColor(.secondary)
+                if let formatted = format(suggestion.timestamp, as: .full) {
+                    Text(formatted).foregroundColor(.secondary)
                 }
             }
         }
