@@ -26,7 +26,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, [Suggestio
     public override init() {
         super.init()
         subscription = $query
-            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .throttle(for: .milliseconds(500), scheduler: RunLoop.main, latest: true)
             .sink(receiveValue: { self.perform(query: SuggestionsQuery(query: $0)) })
     }
 

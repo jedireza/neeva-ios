@@ -1,0 +1,29 @@
+mutation AddSpacePublicACL($space: String!) {
+  addSpacePublicACL(input: { id: $space })
+}
+
+mutation DeleteSpacePublicACL($space: String!) {
+  deleteSpacePublicACL(input: { id: $space })
+}
+
+mutation UpdateUserSpaceACL($space: String!, $user: String!, $level: SpaceACLLevel!) {
+    updateUserSpaceACL(input: { id: $space, userID: $user, acl: $level })
+}
+
+mutation DeleteUserSpaceACL($space: String!, $user: String!) {
+    deleteUserSpaceACL(input: { id: $space, userID: $user })
+}
+
+mutation AddSpaceSoloACLs($space: String!, $shareWith: [SpaceEmailACL!]!, $note: String!) {
+    addSpaceSoloACLs(input: { id: $space, shareWith: $shareWith, note: $note }) {
+        nonNeevanEmails
+        changedACLCount
+    }
+}
+
+mutation ShareSpacePublicLink($space: String!, $emails: [String!]!, $note: String!) {
+    shareSpacePublicLink(input: { id: $space, emails: $emails, note: $note }) {
+        failures
+        numShared
+    }
+}

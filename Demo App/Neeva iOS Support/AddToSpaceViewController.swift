@@ -49,8 +49,8 @@ struct AddToSpaceDemoView: View {
             .navigationBarTitle(Text("Add to Space"))
         }.navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $addingToSpace) {
-            AddToSpaceView(title: title, description: description, url: URL(string: url)!, onDismiss: { id in
-                selectedSpace = id
+            AddToSpaceView(title: title, description: description, url: URL(string: url)!, onDismiss: { ids in
+                selectedSpace = ids?.space
                 addingToSpace = false
             })
         }

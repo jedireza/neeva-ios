@@ -20,7 +20,7 @@ class UserInfoViewController: UIViewController {
         UIView.animate(withDuration: 0.4) {
             self.activityIndicator.alpha = 1
         }
-        GraphQLAPI.fetch(UserInfoQuery()) { result in
+        UserInfoQuery().fetch { result in
             self.activityIndicator.stopAnimating()
             UIView.animate(withDuration: 0.4) {
                 self.activityIndicator.alpha = 0

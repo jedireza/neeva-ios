@@ -1,0 +1,40 @@
+query Suggestions($query: String!) {
+  suggest(q: $query) {
+    querySuggestion {
+      suggestedQuery
+      type
+      boldSpan {
+        startInclusive
+        endExclusive
+      }
+      source
+    }
+    urlSuggestion {
+      icon {
+        labels
+      }
+      suggestedURL
+      author
+      timestamp
+      title
+      boldSpan {
+        startInclusive
+        endExclusive
+      }
+    }
+  }
+}
+
+query ContactSuggestions($query: String!) {
+  suggestContacts(q: $query) {
+    query
+    requestID
+    contactSuggestions {
+      profile {
+        displayName
+        email
+        pictureURL
+      }
+    }
+  }
+}

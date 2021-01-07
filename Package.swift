@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "NeevaSupport",
-    platforms: [.iOS(.v13)],
+    platforms: [.iOS(.v14)],
     products: [
         .library(
             name: "NeevaSupport",
@@ -16,13 +16,14 @@ let package = Package(
                  url: "https://github.com/apollographql/apollo-ios.git",
                  .upToNextMinor(from: "0.38.3")),
         .package(url: "https://github.com/jrendel/SwiftKeychainWrapper", .upToNextMajor(from: "4.0.1")),
+        .package(url: "https://github.com/crelies/RemoteImage", .upToNextMajor(from: "4.0.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "NeevaSupport",
-            dependencies: ["Apollo", "SwiftKeychainWrapper"],
+            dependencies: ["Apollo", "SwiftKeychainWrapper", "RemoteImage"],
             exclude: ["operationIDs.json", "schema.json"],
             resources: [.copy("dev-token.txt")]
         ),

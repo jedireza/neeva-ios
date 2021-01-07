@@ -9,7 +9,7 @@ class SuggestionsViewController: UIHostingController<SuggestionsView> {
 }
 
 struct SuggestionsView: View {
-    @ObservedObject var controller = SuggestionsController()
+    @StateObject var controller = SuggestionsController()
     @State var selectedSuggestion: Suggestion?
     var body: some View {
         NavigationView {

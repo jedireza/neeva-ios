@@ -2,18 +2,22 @@ import SwiftUI
 import Apollo
 
 public struct AddToSpaceView: View {
-    let space = TestSpaces.empty
     @State var isWaiting = false
     @State var cancellable: Apollo.Cancellable? = nil
 
-    @ObservedObject var spaceList = SpaceListController()
+    @StateObject var spaceList = SpaceListController()
+
+    public struct IDs {
+        public let space: String
+        public let entity: String
+    }
 
     let title: String
     let description: String? // meta description
     let url: URL
-    let onDismiss: (String?) -> ()
+    let onDismiss: (IDs?) -> ()
 
-    public init(title: String, description: String?, url: URL, onDismiss: @escaping (String?) -> ()) {
+    public init(title: String, description: String?, url: URL, onDismiss: @escaping (IDs?) -> ()) {
         self.title = title
         self.description = description
         self.url = url
@@ -29,7 +33,7 @@ public struct AddToSpaceView: View {
                     List {
                         ForEach(spaces) { space in
                             Button {
-                                self.cancellable = GraphQLAPI.perform(AddToSpaceMutation(
+                                self.cancellable = AddToSpaceMutation(
                                     input: AddSpaceResultByURLInput(
                                         spaceId: space.id,
                                         url: url.absoluteString,
@@ -39,17 +43,17 @@ public struct AddToSpaceView: View {
                                         isBase64: false,
                                         snapshotExpected: false
                                     )
-                                )) { result in
+                                ).perform { result in
                                     cancellable = nil
                                     switch result {
                                     case .failure(let err):
                                         print(err)
-                                    case .success(let result):
-                                        onDismiss(result.resultId)
+                                    case .success(let data):
+                                        onDismiss(IDs(space: space.id, entity: data.entityId))
                                     }
                                 }
                             } label: {
-                                SpaceView(space)
+                                SpaceListItem(space).foregroundColor(.primary)
                             }
                         }
                     }

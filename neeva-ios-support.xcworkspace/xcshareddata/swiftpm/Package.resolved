@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "RemoteImage",
+        "repositoryURL": "https://github.com/crelies/RemoteImage",
+        "state": {
+          "branch": null,
+          "revision": "7de20453a8b9733eb8e28ae762801c60a5a5f59d",
+          "version": "4.0.0"
+        }
+      },
+      {
         "package": "Spectre",
         "repositoryURL": "https://github.com/kylef/Spectre.git",
         "state": {

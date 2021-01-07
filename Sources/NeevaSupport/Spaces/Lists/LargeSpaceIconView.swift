@@ -8,7 +8,7 @@ extension String {
         if range(of: "base64,")?.upperBound == payloadStart {
             return Data(base64Encoded: payload)
         } else {
-            // TODO: implement if needed
+            // TODO: implement support for none-base64 data URIs if needed
             return nil
         }
     }
@@ -22,7 +22,7 @@ fileprivate struct Metrics {
 }
 
 struct LargeSpaceIconView: View {
-    let space: SpacesQuery.Data.ListSpace.Space
+    let space: SpaceListController.Space
 
     struct EmptyIcon<Content: View>: View {
         let background: Color
@@ -57,8 +57,7 @@ struct LargeSpaceIconView: View {
         } else {
             EmptyIcon(background: .spaceIconBackground) {
                 if let name = space.space!.name {
-                    let firstTwo = name[..<name.index(name.startIndex, offsetBy: 2)]
-                    Text(firstTwo.uppercased())
+                    Text(firstCharacters(2, from: name))
                         .foregroundColor(.white)
                         .font(.system(size: Metrics.textSize, weight: .medium, design: .default))
                 }
@@ -70,10 +69,10 @@ struct LargeSpaceIconView: View {
 struct LargeSpaceIconView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LargeSpaceIconView(space: TestSpaces.empty)
-            LargeSpaceIconView(space: TestSpaces.stackOverflow)
-            LargeSpaceIconView(space: TestSpaces.savedForLater)
-            LargeSpaceIconView(space: TestSpaces.savedForLaterEmpty)
+            LargeSpaceIconView(space: .empty)
+            LargeSpaceIconView(space: .stackOverflow)
+            LargeSpaceIconView(space: .savedForLater)
+            LargeSpaceIconView(space: .savedForLaterEmpty)
         }.padding().previewLayout(.sizeThatFits)
     }
 }

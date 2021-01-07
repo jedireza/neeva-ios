@@ -1,6 +1,8 @@
 import Apollo
 import Combine
 
+public typealias Updater<T> = (((inout T) -> ())?) -> ()
+
 /**
  * The `perform` methods are intended to be used only by subclasses, to help implement their custom query methods.
  */
@@ -14,9 +16,9 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
     @discardableResult public func perform(query: Query) -> Apollo.Cancellable {
         running = true
         error = nil
-        data = nil
         return Self.perform(query: query) {
             self.running = false
+            self.data = nil
             switch $0 {
             case .failure(let error): self.error = error
             case .success(let data): self.data = data
@@ -28,14 +30,18 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
         fatalError("\(self).\(#function) not implemented")
     }
 
+    public class func processData(_ data: Query.Data, for query: Query) -> Data {
+        processData(data)
+    }
+
     @discardableResult public class func perform(
         query: Query,
         completion: @escaping (Result<Data, Error>) -> ()
     ) -> Apollo.Cancellable {
-        GraphQLAPI.fetch(query) { result in
+        query.fetch { result in
             switch result {
             case .success(let data):
-                completion(.success(processData(data)))
+                completion(.success(processData(data, for: query)))
             case .failure(let error):
                 completion(.failure(error))
             }

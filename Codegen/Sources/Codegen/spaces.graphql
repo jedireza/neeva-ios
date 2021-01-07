@@ -1,0 +1,76 @@
+mutation AddToSpace($input: AddSpaceResultByURLInput!) {
+  entityId: addSpaceResultByURL(input: $input)
+}
+
+query ListSpaces($input: ListSpacesInput = { kind: All }) {
+  listSpaces(input: $input) {
+    requestID
+    space {
+      pageMetadata {
+        pageID
+      }
+      space {
+        ...spaceMetadata
+      }
+    }
+  }
+}
+
+query FetchSpace($id: String!) {
+  getSpace(input: { id: $id }) {
+    requestID
+    space {
+      space {
+        ...spaceMetadata
+        ...spaceComments
+        ...spaceContent
+      }
+    }
+  }
+}
+
+query FetchSpaceMembershipForURL($url: String!) {
+  spaceForURL(url: $url) {
+    requestID
+    space {
+      space {
+        ...spaceMetadata
+      }
+    }
+  }
+}
+
+query FetchSpaceResultThumbnails($input: GetSpaceEntityImagesInput) {
+  getSpaceEntityImages(input: $input) {
+    images {
+      imageURL
+      thumbnail
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation CreateSpace($name: String!) {
+  createSpace(input: { name: $name })
+}
+
+mutation DeleteSpace($input: DeleteSpaceInput!) {
+  deleteSpace(input: $input)
+}
+
+mutation UpdateSpace($input: UpdateSpaceInput!) {
+  updateSpace(input: $input)
+}
+
+mutation BatchDeleteSpaceResult($space: String!, $results: [String!]!) {
+  batchDeleteSpaceResult(input: { spaceID: $space, resultIDs: $results })
+}
+
+mutation UpdateSpaceResult($input: UpdateSpaceEntityDisplayDataInput!) {
+  updateSpaceEntityDisplayData(input: $input)
+}
+
+mutation AddSpaceComment($space: String!, $comment: String!) {
+  addSpaceComment(input: { spaceID: $space, comment: $comment })
+}

@@ -39,34 +39,6 @@ public class GraphQLAPI {
             return .failure(error)
         }
     }
-
-    @discardableResult public static func fetch<Query: GraphQLQuery>(
-        _ query: Query,
-        queue: DispatchQueue = DispatchQueue.main,
-        resultHandler: ((Result<Query.Data, Swift.Error>) -> ())? = nil
-    ) -> Cancellable {
-        shared.apollo.fetch(
-            query: query,
-            cachePolicy: .fetchIgnoringCacheCompletely,
-            queue: queue
-        ) { result in
-            resultHandler?(unwrap(result: result))
-        }
-    }
-
-    @discardableResult public static func perform<Mutation: GraphQLMutation>(
-        _ mutation: Mutation,
-        queue: DispatchQueue = .main,
-        resultHandler: ((Result<Mutation.Data, Swift.Error>) -> ())? = nil
-    ) -> Cancellable {
-        shared.apollo.perform(
-            mutation: mutation,
-            publishResultToStore: false,
-            queue: queue
-        ) { result in
-            resultHandler?(unwrap(result: result))
-        }
-    }
 }
 
 class NeevaNetworkTransport: RequestChainNetworkTransport {
@@ -75,6 +47,11 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         contextIdentifier: UUID? = nil
     ) -> HTTPRequest<Operation> where Operation : GraphQLOperation {
         let req = super.constructRequest(for: operation, cachePolicy: cachePolicy, contextIdentifier: contextIdentifier)
+
+        req.addHeader(name: NeevaConstants.Header.deviceType.name, value: NeevaConstants.Header.deviceType.value)
+        req.addHeader(name: "X-Neeva-Client-ID", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)
+        req.addHeader(name: "X-Neeva-Client-Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
+
         if let cookie = KeychainWrapper.standard.string(forKey: NeevaConstants.loginKeychainKey) {
             req.addHeader(name: "Cookie", value: "httpd~login=\(cookie)")
         } else if
@@ -87,5 +64,37 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
             }
         }
         return req
+    }
+}
+
+extension GraphQLQuery {
+    @discardableResult
+    public func fetch(
+        on queue: DispatchQueue = DispatchQueue.main,
+        resultHandler: ((Result<Data, Swift.Error>) -> ())? = nil
+    ) -> Cancellable {
+        GraphQLAPI.shared.apollo.fetch(
+            query: self,
+            cachePolicy: .fetchIgnoringCacheCompletely,
+            queue: queue
+        ) { result in
+            resultHandler?(GraphQLAPI.unwrap(result: result))
+        }
+    }
+}
+
+extension GraphQLMutation {
+    @discardableResult
+    public func perform(
+        on queue: DispatchQueue = .main,
+        resultHandler: ((Result<Data, Swift.Error>) -> ())? = nil
+    ) -> Cancellable {
+        GraphQLAPI.shared.apollo.perform(
+            mutation: self,
+            publishResultToStore: false,
+            queue: queue
+        ) { result in
+            resultHandler?(GraphQLAPI.unwrap(result: result))
+        }
     }
 }
