@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8515A20A2590EB4700C31344 /* AddToSpaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8515A2092590EB4700C31344 /* AddToSpaceViewController.swift */; };
+		85526C0725A7B3E800324F73 /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85526C0625A7B3E800324F73 /* FeedbackViewController.swift */; };
 		8565BCE1258BB43500E168C2 /* SuggestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */; };
 		856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBE9258A996C001485A8 /* AppDelegate.swift */; };
 		856DDBEE258A996C001485A8 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856DDBED258A996C001485A8 /* UserInfoViewController.swift */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		8515A2092590EB4700C31344 /* AddToSpaceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToSpaceViewController.swift; sourceTree = "<group>"; };
+		85526C0625A7B3E800324F73 /* FeedbackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
 		8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewController.swift; sourceTree = "<group>"; };
 		856DDBE6258A996C001485A8 /* Neeva iOS Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Neeva iOS Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		856DDBE9258A996C001485A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "Neeva iOS Support/AppDelegate.swift"; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */,
 				85C1021F258D209000E92A94 /* SpacesViewController.swift */,
 				8515A2092590EB4700C31344 /* AddToSpaceViewController.swift */,
+				85526C0625A7B3E800324F73 /* FeedbackViewController.swift */,
 				85A534EE258AA86800531C95 /* Supporting Files */,
 			);
 			path = "Neeva iOS Support";
@@ -175,6 +178,7 @@
 				85C10220258D209000E92A94 /* SpacesViewController.swift in Sources */,
 				8565BCE1258BB43500E168C2 /* SuggestionsViewController.swift in Sources */,
 				856DDBEE258A996C001485A8 /* UserInfoViewController.swift in Sources */,
+				85526C0725A7B3E800324F73 /* FeedbackViewController.swift in Sources */,
 				856DDBEA258A996C001485A8 /* AppDelegate.swift in Sources */,
 				8515A20A2590EB4700C31344 /* AddToSpaceViewController.swift in Sources */,
 				85A534F3258AA98900531C95 /* SceneDelegate.swift in Sources */,

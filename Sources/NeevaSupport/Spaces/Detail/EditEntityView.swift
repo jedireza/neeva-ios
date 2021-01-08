@@ -54,7 +54,6 @@ struct EditEntityView: View {
                 if let entity = entity {
                     Section(header: Text("Description")) {
                         MultilineTextField("Please type a description for your Space item", text: $snippet)
-                            .padding(.horizontal, -10)
                     }
                     Section(header: Text("Thumbnail")) {
                         EditThumbnailView(spaceId: spaceId, entityId: entity.id, selectedThumbnail: $thumbnail)

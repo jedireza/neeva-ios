@@ -47,7 +47,6 @@ struct EditSpaceView: View {
                 }
                 Section(header: Text("Description")) {
                     MultilineTextField("Please type a description for your Space", text: $description)
-                        .padding(.horizontal, -10)
                 }
             }
             .navigationBarTitle(Text("Edit Space"), displayMode: .inline)

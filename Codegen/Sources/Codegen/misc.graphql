@@ -8,3 +8,7 @@ query UserInfo {
     }
   }
 }
+
+mutation SendFeedback($input: SendFeedbackV2Input!) {
+  sendFeedbackV2(input: $input)
+}

@@ -164,6 +164,7 @@
                         <segue destination="Lmh-6S-344" kind="relationship" relationship="viewControllers" id="ykx-eN-DP7"/>
                         <segue destination="iQG-2h-8IJ" kind="relationship" relationship="viewControllers" id="bhA-ZA-2ts"/>
                         <segue destination="UH9-et-Ktp" kind="relationship" relationship="viewControllers" id="J9r-C7-uMb"/>
+                        <segue destination="rRd-6i-6LS" kind="relationship" relationship="viewControllers" id="SJS-jY-9Ec"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cqb-Cv-ozK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -202,9 +203,26 @@
             </objects>
             <point key="canvasLocation" x="1314" y="-538"/>
         </scene>
+        <!--Feedback-->
+        <scene sceneID="hLu-ay-ixi">
+            <objects>
+                <viewController id="rRd-6i-6LS" customClass="FeedbackViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Iqi-hg-tlW">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="O1o-7V-qQg"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Feedback" image="bubble.left.fill" catalog="system" id="sdK-5Y-fMg"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g0h-23-mZN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1048" y="-1268"/>
+        </scene>
     </scenes>
     <resources>
         <image name="bookmark.fill" catalog="system" width="112" height="128"/>
+        <image name="bubble.left.fill" catalog="system" width="128" height="110"/>
         <image name="magnifyingglass.circle.fill" catalog="system" width="128" height="121"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="plus.circle.fill" catalog="system" width="128" height="121"/>

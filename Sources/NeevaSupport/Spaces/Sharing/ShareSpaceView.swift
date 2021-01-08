@@ -157,7 +157,6 @@ struct ShareSpaceView: View {
                                 )
                             } else {
                                 MultilineTextField("Optional message…", text: $invite.note)
-                                    .padding(.horizontal, -10)
                             }
                         } else {
                             Section(header: Text("Suggestions")) {
