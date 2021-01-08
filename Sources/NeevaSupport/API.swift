@@ -420,25 +420,6 @@ public enum SnapshotKind: RawRepresentable, Equatable, Hashable, CaseIterable, A
   }
 }
 
-public struct ListSpacesInput: GraphQLMapConvertible {
-  public var graphQLMap: GraphQLMap
-
-  /// - Parameters:
-  ///   - kind
-  public init(kind: Swift.Optional<ListSpacesKind?> = nil) {
-    graphQLMap = ["kind": kind]
-  }
-
-  public var kind: Swift.Optional<ListSpacesKind?> {
-    get {
-      return graphQLMap["kind"] as? Swift.Optional<ListSpacesKind?> ?? Swift.Optional<ListSpacesKind?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "kind")
-    }
-  }
-}
-
 public enum ListSpacesKind: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case all
@@ -1512,8 +1493,8 @@ public final class ListSpacesQuery: GraphQLQuery {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    query ListSpaces($input: ListSpacesInput = {kind: All}) {
-      listSpaces(input: $input) {
+    query ListSpaces($kind: ListSpacesKind = All) {
+      listSpaces(input: {kind: $kind}) {
         __typename
         requestID
         space {
@@ -1533,18 +1514,18 @@ public final class ListSpacesQuery: GraphQLQuery {
 
   public let operationName: String = "ListSpaces"
 
-  public let operationIdentifier: String? = "c68c56884aea28d359f077e1e4d4d7004eed8fffc299115547848f7907d03439"
+  public let operationIdentifier: String? = "c582b58c174be101bbc88749de01eda491397a237992404aee81af479716631d"
 
   public var queryDocument: String { return operationDefinition.appending("\n" + SpaceMetadata.fragmentDefinition) }
 
-  public var input: ListSpacesInput?
+  public var kind: ListSpacesKind?
 
-  public init(input: ListSpacesInput? = nil) {
-    self.input = input
+  public init(kind: ListSpacesKind? = nil) {
+    self.kind = kind
   }
 
   public var variables: GraphQLMap? {
-    return ["input": input]
+    return ["kind": kind]
   }
 
   public struct Data: GraphQLSelectionSet {
@@ -1552,7 +1533,7 @@ public final class ListSpacesQuery: GraphQLQuery {
 
     public static var selections: [GraphQLSelection] {
       return [
-        GraphQLField("listSpaces", arguments: ["input": GraphQLVariable("input")], type: .object(ListSpace.selections)),
+        GraphQLField("listSpaces", arguments: ["input": ["kind": GraphQLVariable("kind")]], type: .object(ListSpace.selections)),
       ]
     }
 
@@ -3187,603 +3168,6 @@ public final class FetchSpaceQuery: GraphQLQuery {
   }
 }
 
-public final class FetchSpaceMembershipForUrlQuery: GraphQLQuery {
-  /// The raw GraphQL definition of this operation.
-  public let operationDefinition: String =
-    """
-    query FetchSpaceMembershipForURL($url: String!) {
-      spaceForURL(url: $url) {
-        __typename
-        requestID
-        space {
-          __typename
-          space {
-            __typename
-            ...spaceMetadata
-          }
-        }
-      }
-    }
-    """
-
-  public let operationName: String = "FetchSpaceMembershipForURL"
-
-  public let operationIdentifier: String? = "a699fe673d13087e077f62348bc2f950d52a5ac99e3a16501ae22bb8817f47a8"
-
-  public var queryDocument: String { return operationDefinition.appending("\n" + SpaceMetadata.fragmentDefinition) }
-
-  public var url: String
-
-  public init(url: String) {
-    self.url = url
-  }
-
-  public var variables: GraphQLMap? {
-    return ["url": url]
-  }
-
-  public struct Data: GraphQLSelectionSet {
-    public static let possibleTypes: [String] = ["Query"]
-
-    public static var selections: [GraphQLSelection] {
-      return [
-        GraphQLField("spaceForURL", arguments: ["url": GraphQLVariable("url")], type: .nonNull(.object(SpaceForUrl.selections))),
-      ]
-    }
-
-    public private(set) var resultMap: ResultMap
-
-    public init(unsafeResultMap: ResultMap) {
-      self.resultMap = unsafeResultMap
-    }
-
-    public init(spaceForUrl: SpaceForUrl) {
-      self.init(unsafeResultMap: ["__typename": "Query", "spaceForURL": spaceForUrl.resultMap])
-    }
-
-    /// Get space membership for a given URL, for the current user.
-    /// WARNING: Many fields in the returned SpaceList are left unfilled, including acls, entities and comments.
-    /// TODO(toddw): Return a more restricted type to make this more clear.
-    public var spaceForUrl: SpaceForUrl {
-      get {
-        return SpaceForUrl(unsafeResultMap: resultMap["spaceForURL"]! as! ResultMap)
-      }
-      set {
-        resultMap.updateValue(newValue.resultMap, forKey: "spaceForURL")
-      }
-    }
-
-    public struct SpaceForUrl: GraphQLSelectionSet {
-      public static let possibleTypes: [String] = ["SpaceList"]
-
-      public static var selections: [GraphQLSelection] {
-        return [
-          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-          GraphQLField("requestID", type: .nonNull(.scalar(String.self))),
-          GraphQLField("space", type: .nonNull(.list(.nonNull(.object(Space.selections))))),
-        ]
-      }
-
-      public private(set) var resultMap: ResultMap
-
-      public init(unsafeResultMap: ResultMap) {
-        self.resultMap = unsafeResultMap
-      }
-
-      public init(requestId: String, space: [Space]) {
-        self.init(unsafeResultMap: ["__typename": "SpaceList", "requestID": requestId, "space": space.map { (value: Space) -> ResultMap in value.resultMap }])
-      }
-
-      public var __typename: String {
-        get {
-          return resultMap["__typename"]! as! String
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "__typename")
-        }
-      }
-
-      public var requestId: String {
-        get {
-          return resultMap["requestID"]! as! String
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "requestID")
-        }
-      }
-
-      public var space: [Space] {
-        get {
-          return (resultMap["space"] as! [ResultMap]).map { (value: ResultMap) -> Space in Space(unsafeResultMap: value) }
-        }
-        set {
-          resultMap.updateValue(newValue.map { (value: Space) -> ResultMap in value.resultMap }, forKey: "space")
-        }
-      }
-
-      public struct Space: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["Space"]
-
-        public static var selections: [GraphQLSelection] {
-          return [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("space", type: .object(Space.selections)),
-          ]
-        }
-
-        public private(set) var resultMap: ResultMap
-
-        public init(unsafeResultMap: ResultMap) {
-          self.resultMap = unsafeResultMap
-        }
-
-        public init(space: Space? = nil) {
-          self.init(unsafeResultMap: ["__typename": "Space", "space": space.flatMap { (value: Space) -> ResultMap in value.resultMap }])
-        }
-
-        public var __typename: String {
-          get {
-            return resultMap["__typename"]! as! String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "__typename")
-          }
-        }
-
-        public var space: Space? {
-          get {
-            return (resultMap["space"] as? ResultMap).flatMap { Space(unsafeResultMap: $0) }
-          }
-          set {
-            resultMap.updateValue(newValue?.resultMap, forKey: "space")
-          }
-        }
-
-        public struct Space: GraphQLSelectionSet {
-          public static let possibleTypes: [String] = ["SpaceData"]
-
-          public static var selections: [GraphQLSelection] {
-            return [
-              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-              GraphQLField("name", type: .scalar(String.self)),
-              GraphQLField("description", type: .scalar(String.self)),
-              GraphQLField("createdTs", type: .scalar(String.self)),
-              GraphQLField("lastModifiedTs", type: .scalar(String.self)),
-              GraphQLField("acl", type: .list(.nonNull(.object(Acl.selections)))),
-              GraphQLField("userACL", type: .object(UserAcl.selections)),
-              GraphQLField("hasPublicACL", type: .scalar(Bool.self)),
-              GraphQLField("comments", type: .list(.nonNull(.object(Comment.selections)))),
-              GraphQLField("thumbnail", type: .scalar(String.self)),
-              GraphQLField("thumbnailSize", type: .object(ThumbnailSize.selections)),
-              GraphQLField("resultCount", type: .scalar(Int.self)),
-              GraphQLField("isDefaultSpace", type: .scalar(Bool.self)),
-              GraphQLField("defaultSpaceType", type: .scalar(DefaultSpaceType.self)),
-            ]
-          }
-
-          public private(set) var resultMap: ResultMap
-
-          public init(unsafeResultMap: ResultMap) {
-            self.resultMap = unsafeResultMap
-          }
-
-          public init(name: String? = nil, description: String? = nil, createdTs: String? = nil, lastModifiedTs: String? = nil, acl: [Acl]? = nil, userAcl: UserAcl? = nil, hasPublicAcl: Bool? = nil, comments: [Comment]? = nil, thumbnail: String? = nil, thumbnailSize: ThumbnailSize? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil, defaultSpaceType: DefaultSpaceType? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "description": description, "createdTs": createdTs, "lastModifiedTs": lastModifiedTs, "acl": acl.flatMap { (value: [Acl]) -> [ResultMap] in value.map { (value: Acl) -> ResultMap in value.resultMap } }, "userACL": userAcl.flatMap { (value: UserAcl) -> ResultMap in value.resultMap }, "hasPublicACL": hasPublicAcl, "comments": comments.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, "thumbnail": thumbnail, "thumbnailSize": thumbnailSize.flatMap { (value: ThumbnailSize) -> ResultMap in value.resultMap }, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace, "defaultSpaceType": defaultSpaceType])
-          }
-
-          public var __typename: String {
-            get {
-              return resultMap["__typename"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "__typename")
-            }
-          }
-
-          public var name: String? {
-            get {
-              return resultMap["name"] as? String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "name")
-            }
-          }
-
-          public var description: String? {
-            get {
-              return resultMap["description"] as? String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "description")
-            }
-          }
-
-          public var createdTs: String? {
-            get {
-              return resultMap["createdTs"] as? String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "createdTs")
-            }
-          }
-
-          public var lastModifiedTs: String? {
-            get {
-              return resultMap["lastModifiedTs"] as? String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "lastModifiedTs")
-            }
-          }
-
-          public var acl: [Acl]? {
-            get {
-              return (resultMap["acl"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Acl] in value.map { (value: ResultMap) -> Acl in Acl(unsafeResultMap: value) } }
-            }
-            set {
-              resultMap.updateValue(newValue.flatMap { (value: [Acl]) -> [ResultMap] in value.map { (value: Acl) -> ResultMap in value.resultMap } }, forKey: "acl")
-            }
-          }
-
-          public var userAcl: UserAcl? {
-            get {
-              return (resultMap["userACL"] as? ResultMap).flatMap { UserAcl(unsafeResultMap: $0) }
-            }
-            set {
-              resultMap.updateValue(newValue?.resultMap, forKey: "userACL")
-            }
-          }
-
-          public var hasPublicAcl: Bool? {
-            get {
-              return resultMap["hasPublicACL"] as? Bool
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "hasPublicACL")
-            }
-          }
-
-          public var comments: [Comment]? {
-            get {
-              return (resultMap["comments"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Comment] in value.map { (value: ResultMap) -> Comment in Comment(unsafeResultMap: value) } }
-            }
-            set {
-              resultMap.updateValue(newValue.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, forKey: "comments")
-            }
-          }
-
-          public var thumbnail: String? {
-            get {
-              return resultMap["thumbnail"] as? String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "thumbnail")
-            }
-          }
-
-          public var thumbnailSize: ThumbnailSize? {
-            get {
-              return (resultMap["thumbnailSize"] as? ResultMap).flatMap { ThumbnailSize(unsafeResultMap: $0) }
-            }
-            set {
-              resultMap.updateValue(newValue?.resultMap, forKey: "thumbnailSize")
-            }
-          }
-
-          public var resultCount: Int? {
-            get {
-              return resultMap["resultCount"] as? Int
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "resultCount")
-            }
-          }
-
-          public var isDefaultSpace: Bool? {
-            get {
-              return resultMap["isDefaultSpace"] as? Bool
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "isDefaultSpace")
-            }
-          }
-
-          public var defaultSpaceType: DefaultSpaceType? {
-            get {
-              return resultMap["defaultSpaceType"] as? DefaultSpaceType
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "defaultSpaceType")
-            }
-          }
-
-          public var fragments: Fragments {
-            get {
-              return Fragments(unsafeResultMap: resultMap)
-            }
-            set {
-              resultMap += newValue.resultMap
-            }
-          }
-
-          public struct Fragments {
-            public private(set) var resultMap: ResultMap
-
-            public init(unsafeResultMap: ResultMap) {
-              self.resultMap = unsafeResultMap
-            }
-
-            public var spaceMetadata: SpaceMetadata {
-              get {
-                return SpaceMetadata(unsafeResultMap: resultMap)
-              }
-              set {
-                resultMap += newValue.resultMap
-              }
-            }
-          }
-
-          public struct Acl: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["SpaceACL"]
-
-            public static var selections: [GraphQLSelection] {
-              return [
-                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                GraphQLField("userID", type: .nonNull(.scalar(String.self))),
-                GraphQLField("profile", type: .nonNull(.object(Profile.selections))),
-                GraphQLField("acl", type: .nonNull(.scalar(SpaceACLLevel.self))),
-              ]
-            }
-
-            public private(set) var resultMap: ResultMap
-
-            public init(unsafeResultMap: ResultMap) {
-              self.resultMap = unsafeResultMap
-            }
-
-            public init(userId: String, profile: Profile, acl: SpaceACLLevel) {
-              self.init(unsafeResultMap: ["__typename": "SpaceACL", "userID": userId, "profile": profile.resultMap, "acl": acl])
-            }
-
-            public var __typename: String {
-              get {
-                return resultMap["__typename"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "__typename")
-              }
-            }
-
-            public var userId: String {
-              get {
-                return resultMap["userID"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "userID")
-              }
-            }
-
-            public var profile: Profile {
-              get {
-                return Profile(unsafeResultMap: resultMap["profile"]! as! ResultMap)
-              }
-              set {
-                resultMap.updateValue(newValue.resultMap, forKey: "profile")
-              }
-            }
-
-            public var acl: SpaceACLLevel {
-              get {
-                return resultMap["acl"]! as! SpaceACLLevel
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "acl")
-              }
-            }
-
-            public struct Profile: GraphQLSelectionSet {
-              public static let possibleTypes: [String] = ["Profile"]
-
-              public static var selections: [GraphQLSelection] {
-                return [
-                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("displayName", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("email", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("pictureURL", type: .nonNull(.scalar(String.self))),
-                ]
-              }
-
-              public private(set) var resultMap: ResultMap
-
-              public init(unsafeResultMap: ResultMap) {
-                self.resultMap = unsafeResultMap
-              }
-
-              public init(displayName: String, email: String, pictureUrl: String) {
-                self.init(unsafeResultMap: ["__typename": "Profile", "displayName": displayName, "email": email, "pictureURL": pictureUrl])
-              }
-
-              public var __typename: String {
-                get {
-                  return resultMap["__typename"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "__typename")
-                }
-              }
-
-              public var displayName: String {
-                get {
-                  return resultMap["displayName"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "displayName")
-                }
-              }
-
-              public var email: String {
-                get {
-                  return resultMap["email"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "email")
-                }
-              }
-
-              public var pictureUrl: String {
-                get {
-                  return resultMap["pictureURL"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "pictureURL")
-                }
-              }
-            }
-          }
-
-          public struct UserAcl: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["SpaceACL"]
-
-            public static var selections: [GraphQLSelection] {
-              return [
-                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                GraphQLField("acl", type: .nonNull(.scalar(SpaceACLLevel.self))),
-                GraphQLField("userID", type: .nonNull(.scalar(String.self))),
-              ]
-            }
-
-            public private(set) var resultMap: ResultMap
-
-            public init(unsafeResultMap: ResultMap) {
-              self.resultMap = unsafeResultMap
-            }
-
-            public init(acl: SpaceACLLevel, userId: String) {
-              self.init(unsafeResultMap: ["__typename": "SpaceACL", "acl": acl, "userID": userId])
-            }
-
-            public var __typename: String {
-              get {
-                return resultMap["__typename"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "__typename")
-              }
-            }
-
-            public var acl: SpaceACLLevel {
-              get {
-                return resultMap["acl"]! as! SpaceACLLevel
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "acl")
-              }
-            }
-
-            public var userId: String {
-              get {
-                return resultMap["userID"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "userID")
-              }
-            }
-          }
-
-          public struct Comment: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["SpaceCommentData"]
-
-            public static var selections: [GraphQLSelection] {
-              return [
-                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                GraphQLField("id", type: .scalar(String.self)),
-              ]
-            }
-
-            public private(set) var resultMap: ResultMap
-
-            public init(unsafeResultMap: ResultMap) {
-              self.resultMap = unsafeResultMap
-            }
-
-            public init(id: String? = nil) {
-              self.init(unsafeResultMap: ["__typename": "SpaceCommentData", "id": id])
-            }
-
-            public var __typename: String {
-              get {
-                return resultMap["__typename"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "__typename")
-              }
-            }
-
-            public var id: String? {
-              get {
-                return resultMap["id"] as? String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "id")
-              }
-            }
-          }
-
-          public struct ThumbnailSize: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["ThumbnailSize"]
-
-            public static var selections: [GraphQLSelection] {
-              return [
-                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                GraphQLField("height", type: .nonNull(.scalar(Int.self))),
-                GraphQLField("width", type: .nonNull(.scalar(Int.self))),
-              ]
-            }
-
-            public private(set) var resultMap: ResultMap
-
-            public init(unsafeResultMap: ResultMap) {
-              self.resultMap = unsafeResultMap
-            }
-
-            public init(height: Int, width: Int) {
-              self.init(unsafeResultMap: ["__typename": "ThumbnailSize", "height": height, "width": width])
-            }
-
-            public var __typename: String {
-              get {
-                return resultMap["__typename"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "__typename")
-              }
-            }
-
-            public var height: Int {
-              get {
-                return resultMap["height"]! as! Int
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "height")
-              }
-            }
-
-            public var width: Int {
-              get {
-                return resultMap["width"]! as! Int
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "width")
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
 public final class FetchSpaceResultThumbnailsQuery: GraphQLQuery {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
@@ -4211,25 +3595,25 @@ public final class AddSpaceCommentMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    mutation AddSpaceComment($space: String!, $comment: String!) {
-      addSpaceComment(input: {spaceID: $space, comment: $comment})
+    mutation AddSpaceComment($space: String!, $commentText: String!) {
+      addSpaceComment(input: {spaceID: $space, comment: $commentText})
     }
     """
 
   public let operationName: String = "AddSpaceComment"
 
-  public let operationIdentifier: String? = "acd7a720815e6de404a2d5a1aa45cee53582a4587b5178d7287402ef7899040a"
+  public let operationIdentifier: String? = "ba492b387fdf46832826fe39e8f7d6db4c797a545322a839f1ec7351a2cc10e8"
 
   public var space: String
-  public var comment: String
+  public var commentText: String
 
-  public init(space: String, comment: String) {
+  public init(space: String, commentText: String) {
     self.space = space
-    self.comment = comment
+    self.commentText = commentText
   }
 
   public var variables: GraphQLMap? {
-    return ["space": space, "comment": comment]
+    return ["space": space, "commentText": commentText]
   }
 
   public struct Data: GraphQLSelectionSet {
@@ -4237,7 +3621,7 @@ public final class AddSpaceCommentMutation: GraphQLMutation {
 
     public static var selections: [GraphQLSelection] {
       return [
-        GraphQLField("addSpaceComment", arguments: ["input": ["spaceID": GraphQLVariable("space"), "comment": GraphQLVariable("comment")]], type: .scalar(String.self)),
+        GraphQLField("addSpaceComment", arguments: ["input": ["spaceID": GraphQLVariable("space"), "comment": GraphQLVariable("commentText")]], type: .scalar(String.self)),
       ]
     }
 
@@ -4258,6 +3642,122 @@ public final class AddSpaceCommentMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "addSpaceComment")
+      }
+    }
+  }
+}
+
+public final class UpdateSpaceCommentMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation UpdateSpaceComment($space: String!, $comment: String!, $commentText: String!) {
+      updateSpaceComment(
+        input: {spaceID: $space, commentID: $comment, comment: $commentText}
+      )
+    }
+    """
+
+  public let operationName: String = "UpdateSpaceComment"
+
+  public let operationIdentifier: String? = "5d57c9fa69ffc2ca603d804e53c586c185369e21ae2af4628beb4a77b844276b"
+
+  public var space: String
+  public var comment: String
+  public var commentText: String
+
+  public init(space: String, comment: String, commentText: String) {
+    self.space = space
+    self.comment = comment
+    self.commentText = commentText
+  }
+
+  public var variables: GraphQLMap? {
+    return ["space": space, "comment": comment, "commentText": commentText]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("updateSpaceComment", arguments: ["input": ["spaceID": GraphQLVariable("space"), "commentID": GraphQLVariable("comment"), "comment": GraphQLVariable("commentText")]], type: .scalar(Bool.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(updateSpaceComment: Bool? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "updateSpaceComment": updateSpaceComment])
+    }
+
+    /// API to update a comment on a space.
+    public var updateSpaceComment: Bool? {
+      get {
+        return resultMap["updateSpaceComment"] as? Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "updateSpaceComment")
+      }
+    }
+  }
+}
+
+public final class DeleteSpaceCommentMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation DeleteSpaceComment($space: String!, $comment: String!) {
+      deleteSpaceComment(input: {spaceID: $space, commentID: $comment})
+    }
+    """
+
+  public let operationName: String = "DeleteSpaceComment"
+
+  public let operationIdentifier: String? = "184754a4354cbcfb7d051ecef954c7c3ce96816981c9cbc92e12997c0322abc8"
+
+  public var space: String
+  public var comment: String
+
+  public init(space: String, comment: String) {
+    self.space = space
+    self.comment = comment
+  }
+
+  public var variables: GraphQLMap? {
+    return ["space": space, "comment": comment]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("deleteSpaceComment", arguments: ["input": ["spaceID": GraphQLVariable("space"), "commentID": GraphQLVariable("comment")]], type: .scalar(Bool.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(deleteSpaceComment: Bool? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "deleteSpaceComment": deleteSpaceComment])
+    }
+
+    /// API to delete a comment on a space.
+    public var deleteSpaceComment: Bool? {
+      get {
+        return resultMap["deleteSpaceComment"] as? Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "deleteSpaceComment")
       }
     }
   }

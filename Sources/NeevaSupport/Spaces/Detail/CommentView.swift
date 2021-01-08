@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct CommentView: View {
+    let spaceId: String
     let comment: SpaceController.Space.Comment
     let userAcl: SpaceACLLevel?
+    let onUpdate: Updater<SpaceController.Space>
+
+    @State var isSaving = false
+    @State var promptingDelete = false
+    @StateObject var profile = UserProfileController.shared
 
     var body: some View {
         HStack(alignment: .top) {
@@ -27,27 +33,88 @@ struct CommentView: View {
             if let date = format(comment.createdTs, as: .compact) {
                 Text(date)
             }
-            let canEdit = userAcl >= .comment && UserProfileController.shared.userId == comment.userid
+            let canEdit = userAcl >= .comment && profile.userId == comment.userid
             let canRemove = userAcl == .owner || canEdit
-            if canRemove {
+            if isSaving {
+                ActivityIndicator()
+            } else if canRemove {
                 Menu {
                     if canEdit {
-                        Button(action: {}) {
+                        Button(action: onEdit) {
                             Label("Edit", systemImage: "pencil")
-                        }.disabled(true)
+                        }
                     }
-                    Button(action: {}) {
+                    Button(action: {
+                        promptingDelete = true
+                    }) {
                         Label("Delete", systemImage: "trash")
-                    }.disabled(true)
+                    }
                 } label: {
                     Image(systemName: "ellipsis")
                         .imageScale(.large)
                         .padding(.vertical, 5)
                         .padding(.horizontal, 5)
                         .contentShape(Rectangle())
+                }.actionSheet(isPresented: $promptingDelete) {
+                    ActionSheet(
+                        title: Text("Delete comment ”\(comment.comment ?? "")” by \(comment.profile?.displayName ?? "")?"),
+                        buttons: [
+                            .destructive(Text("Delete")) {
+                                isSaving = true
+                                DeleteSpaceCommentMutation(space: spaceId, comment: comment.id!).perform { result in
+                                    isSaving = false
+                                    guard
+                                        case .success(let data) = result,
+                                        data.deleteSpaceComment ?? false
+                                    else {
+                                        onUpdate(nil)
+                                        return
+                                    }
+                                    onUpdate { newSpace in
+                                        newSpace.comments?.removeAll(where: { $0.id == comment.id })
+                                    }
+                                }
+                            },
+                            .cancel()
+                        ]
+                    )
+                }.padding(.trailing, -2)
+            }
+        }
+        .padding(.top, 2)
+        .disabled(isSaving)
+        .opacity(isSaving ? 0.5 : 1)
+    }
+
+    func onEdit() {
+        openTextInputAlert(
+            title: "Edit comment",
+            confirmationButtonTitle: "Save",
+            inputRequired: true,
+            initialText: comment.comment!,
+            configureTextField: { tf in
+                tf.autocapitalizationType = .sentences
+                tf.returnKeyType = .emergencyCall
+                tf.autocorrectionType = .default
+            }
+        ) { commentText in
+            isSaving = true
+            UpdateSpaceCommentMutation(space: spaceId, comment: comment.id!, commentText: commentText).perform { result in
+                isSaving = false
+                guard
+                    case .success(let data) = result,
+                    data.updateSpaceComment ?? false
+                else {
+                    onUpdate(nil)
+                    return
+                }
+                onUpdate { newSpace in
+                    if let idx = newSpace.comments?.firstIndex(where: { $0.id == comment.id }) {
+                        newSpace.comments![idx].comment = commentText
+                    }
                 }
             }
-        }.padding(.top, 2)
+        }
     }
 }
 
@@ -69,7 +136,7 @@ struct ComposeCommentView: View {
                 TextField(placeholder, text: $comment)
                 Button("Save") {
                     saving = true
-                    AddSpaceCommentMutation(space: spaceId, comment: comment).perform { result in
+                    AddSpaceCommentMutation(space: spaceId, commentText: comment).perform { result in
                         saving = false
                         guard case .success(let data) = result,
                               let commentId = data.addSpaceComment
@@ -98,9 +165,9 @@ struct CommentView_Previews: PreviewProvider {
     static var previews: some View {
         List {
             Section(header: Text("Sample Comments")) {
-                CommentView(comment: .init(id: "hello", userid: "sapoigj", profile: profile, createdTs: "2020-12-18T15:42:19Z", lastModifiedTs: "2020-12-18T15:42:19Z", comment: "A comment"), userAcl: .comment)
-                CommentView(comment: .init(id: "hello", userid: "sapoigj", profile: nil, createdTs: "2020-12-18T15:42:19Z", lastModifiedTs: "2020-12-18T15:42:19Z", comment: "A comment"), userAcl: .owner)
-                CommentView(comment: .init(id: "hello", userid: "sapoigj", profile: profile, createdTs: "2021-01-06T18:46:16Z", lastModifiedTs: "2021-01-06T18:56:24Z", comment: "A very very very very very very very very very very very very long comment"), userAcl: nil)
+                CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: profile, createdTs: "2020-12-18T15:42:19Z", lastModifiedTs: "2020-12-18T15:42:19Z", comment: "A comment"), userAcl: .comment, onUpdate: { _ in })
+                CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: nil, createdTs: "2020-12-18T15:42:19Z", lastModifiedTs: "2020-12-18T15:42:19Z", comment: "A comment"), userAcl: .owner, onUpdate: { _ in })
+                CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: profile, createdTs: "2021-01-06T18:46:16Z", lastModifiedTs: "2021-01-06T18:56:24Z", comment: "A very very very very very very very very very very very very long comment"), userAcl: nil, onUpdate: { _ in })
             }
             ComposeCommentView(spaceId: "asdf", onUpdate: { _ in })
             ComposeCommentView(spaceId: "asdf", onUpdate: { _ in }, comment: "Comment text")

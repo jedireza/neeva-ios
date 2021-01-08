@@ -37,50 +37,41 @@ public struct SpaceListView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        let alert = UIAlertController(title: "What would you like to name your space?", message: nil, preferredStyle: .alert)
-
-                        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
-                        let confirmAction = UIAlertAction(title: "Add", style: .default) { _ in
-                            guard let name = alert.textFields?.first?.text else { return }
+                    Button {
+                        openTextInputAlert(
+                            title: "What would you like to name your space?",
+                            confirmationButtonTitle: "Add",
+                            placeholder: "Name your space",
+                            configureTextField: { tf in
+                                tf.autocapitalizationType = .words
+                                tf.returnKeyType = .done
+                                tf.autocorrectionType = .default
+                                tf.clearButtonMode = .always
+                            }
+                        ) { name in
                             CreateSpaceMutation(name: name).perform { result in
                                 if case .success(let data) = result,
                                    let oldSpaces = controller.data {
-                                    controller.reload(optimisticResult: [
-                                        .init(
-                                            pageMetadata: .init(pageId: data.createSpace),
-                                            space: .init(
-                                                name: name,
-                                                createdTs: dateParser.string(from: Date()),
-                                                lastModifiedTs: dateParser.string(from: Date())
+                                    withAnimation {
+                                        controller.reload(optimisticResult: [
+                                            .init(
+                                                pageMetadata: .init(pageId: data.createSpace),
+                                                space: .init(
+                                                    name: name,
+                                                    createdTs: dateParser.string(from: Date()),
+                                                    lastModifiedTs: dateParser.string(from: Date())
+                                                )
                                             )
-                                        )
-                                    ] + oldSpaces)
+                                        ] + oldSpaces)
+                                    }
                                 } else {
                                     controller.reload()
-                                    return
                                 }
                             }
                         }
-                        confirmAction.isEnabled = false
-                        alert.addAction(confirmAction)
-
-                        alert.addTextField { tf in
-                            tf.placeholder = "Name your space"
-                            tf.autocapitalizationType = .words
-                            tf.enablesReturnKeyAutomatically = true
-                            tf.returnKeyType = .done
-                            tf.autocorrectionType = .default
-                            tf.clearButtonMode = .always
-                            tf.addAction(UIAction { _ in
-                                confirmAction.isEnabled = tf.hasText
-                            }, for: .editingChanged)
-                        }
-
-                        UIApplication.shared.frontViewController.present(alert, animated: true, completion: nil)
-                    }, label: {
+                    } label: {
                         Image(systemName: "plus")
-                    })
+                    }
                 }
             }
         }.navigationViewStyle(StackNavigationViewStyle())
@@ -104,7 +95,9 @@ struct SpaceLoaderView: View {
             SpaceDetailView(space: space, with: id, onOpenURL: onOpenURL, onUpdate: { handler in
                 if let handler = handler, var newSpace = controller.data {
                     handler(&newSpace)
-                    controller.reload(optimisticResult: newSpace)
+                    withAnimation {
+                        controller.reload(optimisticResult: newSpace)
+                    }
                 } else {
                     controller.reload(optimisticResult: nil)
                 }

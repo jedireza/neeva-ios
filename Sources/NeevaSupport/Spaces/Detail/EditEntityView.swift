@@ -78,7 +78,7 @@ struct EditEntityView: View {
                         isPresented = false
                     }
                 }
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .confirmationAction) {
                     if isSaving {
                         ActivityIndicator()
                     } else {

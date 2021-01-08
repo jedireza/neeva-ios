@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Introspect
 
 public struct Wrapper<Content: View>: UIViewControllerRepresentable {
     var content: () -> Content
@@ -58,6 +59,7 @@ public struct SpaceDetailView: View {
     @Environment(\.presentationMode) var presentationMode
 
     public var body: some View {
+        let name = space.name ?? ""
         Group {
             if let entities = space.entities,
                !entities.isEmpty {
@@ -101,7 +103,7 @@ public struct SpaceDetailView: View {
                     Section(header: BigHeader("Discussion")) {
                         if let comments = space.comments, !comments.isEmpty {
                             ForEach(comments) { comment in
-                                CommentView(comment: comment, userAcl: space.userAcl?.acl)
+                                CommentView(spaceId: spaceId, comment: comment, userAcl: space.userAcl?.acl, onUpdate: onUpdate)
                             }
                         }
                     }
@@ -117,75 +119,119 @@ public struct SpaceDetailView: View {
                 }
                 .listStyle(GroupedListStyle())
             } else {
-                VStack {
-                    Spacer()
-                    HStack { Spacer() }
-                    Text("No items")
-                        .font(.title).fontWeight(.semibold)
-                        .foregroundColor(.secondary)
-                    Text("Add to your space by clicking the bookmark icon on a search result")
-                        .multilineTextAlignment(.center)
-                        .font(.title3)
-                        .padding(20)
-                        .padding(.horizontal, 20)
-                    Button("[TODO] Search for “\(space.name ?? "")”") /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/.disabled(true)
-                    Spacer()
-                }.background(Color.groupedBackground.edgesIgnoringSafeArea(.all))
+                ZStack {
+                    Color.groupedBackground.edgesIgnoringSafeArea(.all)
+                    ScrollView {}
+                    GeometryReader { geom in
+                        BlankSlateView(name: name, onOpenURL: onOpenURL)
+                            .padding(.top, geom.size.width > geom.size.height ? 44 : 92)
+                            .edgesIgnoringSafeArea(.top)
+                    }
+                }
             }
         }
-        .navigationBarTitle(Text(space.name!), displayMode: .large)
-        .navigationBarItems(trailing: navBarItems)
+        .navigationTitle(name)
+        .navigationBarTitleDisplayMode(.large)
+        .navigationBarItems(trailing: navMenu)
+        .sheet(isPresented: $isAdding) {
+            EditEntityView(for: nil, inSpace: spaceId, isPresented: $isAdding, onUpdate: onUpdate)
+        }
+        .additionalSheet(isPresented: $isEditing) {
+            EditSpaceView(for: space, with: spaceId, isPresented: $isEditing, onUpdate: onUpdate)
+        }
+        .additionalSheet(isPresented: $isSharing) {
+            ShareSpaceView(space: space, id: spaceId, onUpdate: onUpdate)
+        }
+        .actionSheet(isPresented: $isDeleting) {
+            ActionSheet(
+                title: Text("Delete “\(name)” permanently?"),
+                buttons: [
+                    .destructive(Text("Delete “\(name)”")) {
+                        DeleteSpaceMutation(input: .init(id: spaceId)).perform { _ in
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    },
+                    .cancel()
+                ])
+        }
     }
 
-    var navBarItems: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 25) {
-            Button(action: { isSharing = true }, label: {
-                Image(systemName: space.userAcl?.acl == .owner ? "person.crop.circle.badge.plus" : "person.2.fill")
-            }).sheet(isPresented: $isSharing) {
-                ShareSpaceView(space: space, id: spaceId, onUpdate: onUpdate)
-            }
+    var navMenu: some View {
+        Menu {
+            // TODO: implement
+            // Button("Open All Links") /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/
             if space.userAcl?.acl >= .edit {
-                Button(action: { isAdding = true }, label: {
-                    Image(systemName: "plus")
-                }).sheet(isPresented: $isAdding) {
-                    EditEntityView(for: nil, inSpace: spaceId, isPresented: $isAdding, onUpdate: onUpdate)
+                Button(action: { isAdding = true }) {
+                    Label("Add Item", systemImage: "plus")
+                }
+
+                // TODO: implement
+                // Button("Reorder items") /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/
+                Button(action: { isEditing = true }) {
+                    Label("Edit", systemImage: "pencil")
                 }
             }
+            if space.userAcl?.acl == .owner {
+                Button(action: { isSharing = true }) {
+                    Label("Share", systemImage: "person.crop.circle.badge.plus")
+                }
+                Button(action: { isDeleting = true }) {
+                    Label("Delete", systemImage: "trash")
+                }
+            } else {
+                Button(action: { isSharing = true }) {
+                    Label("Shared with", systemImage: "person.2.fill")
+                }
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.system(size: 17))
+                .imageScale(.large)
+        }
 
-            Menu {
-                // TODO: implement
-                Button("Open All Links") /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/.hidden()
-                if space.userAcl?.acl >= .edit {
-                    // TODO: implement
-                    Button("Reorder items") /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/.hidden()
-                    Button(action: { isEditing = true }) {
-                        Image(systemName: "pencil")
-                        Text("Edit")
-                    }
+    }
+}
+
+struct BlankSlateView: View {
+    let name: String?
+    let onOpenURL: (URL) -> ()
+    var body: some View {
+        VStack {
+            Spacer()
+            HStack { Spacer() }
+            Text("No items")
+                .font(.title).fontWeight(.semibold)
+                .foregroundColor(.secondary)
+            Text("Add to your space by clicking the bookmark icon on a search result.")
+                .multilineTextAlignment(.center)
+                .font(.title3)
+                .padding(20)
+                .padding(.horizontal, 20)
+            if let name = name, !name.isEmpty,
+               let encoded = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                Button("Search for “\(name)”") {
+                    onOpenURL(URL(string: "https://\(NeevaConstants.appHost)/search?q=\(encoded)&c=All&src=InternalSearchLink")!)
                 }
-                if space.userAcl?.acl == .owner {
-                    Button(action: { isDeleting = true }) {
-                        Image(systemName: "trash")
-                        Text("Delete")
-                    }
-                }
-            } label: {
-                Image(systemName: "ellipsis.circle")
-            }.actionSheet(isPresented: $isDeleting, content: {
-                ActionSheet(
-                    title: Text("Delete “\(space.name!)” permanently?"),
-                    buttons: [
-                        .destructive(Text("Delete")) {
-                            DeleteSpaceMutation(input: .init(id: spaceId)).perform { _ in
-                                presentationMode.wrappedValue.dismiss()
-                            }
-                        },
-                        .cancel()
-                    ])
-            }).sheet(isPresented: $isEditing, content: {
-                EditSpaceView(for: space, with: spaceId, isPresented: $isEditing, onUpdate: onUpdate)
-            })
-        }.imageScale(.large).font(.body)
+                .font(.title3)
+                .buttonStyle(BigBlueButtonStyle())
+            }
+            Spacer()
+        }
+    }
+}
+
+struct BigBlueButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(.white)
+            .padding(.vertical, 7)
+            .padding(.horizontal, 20)
+            .background(
+                Capsule()
+                    .fill(Color.accentColor)
+                    .opacity(configuration.isPressed ? 0.5 : 1)
+                    .frame(minWidth: 230)
+            )
     }
 }
 

@@ -6,7 +6,7 @@ public class SpaceListController: QueryController<ListSpacesQuery, [SpaceListCon
     public typealias Space = ListSpacesQuery.Data.ListSpace.Space
 
     public override func reload() {
-        self.perform(query: ListSpacesQuery(input: .init(kind: .all)))
+        self.perform(query: ListSpacesQuery(kind: .all))
     }
 
     public override class func processData(_ data: ListSpacesQuery.Data) -> [Space] {
@@ -16,7 +16,7 @@ public class SpaceListController: QueryController<ListSpacesQuery, [SpaceListCon
     @discardableResult public static func getSpaces(
         completion: @escaping (Result<[Space], Error>) -> ()
     ) -> Apollo.Cancellable {
-        Self.perform(query: ListSpacesQuery(input: .init(kind: .all)), completion: completion)
+        Self.perform(query: ListSpacesQuery(kind: .all), completion: completion)
     }
 }
 

@@ -20,6 +20,8 @@ fileprivate struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
 
     @State var storage: Set<AnyCancellable> = []
     var body: some View {
+        // NB: this should be fairly easy to convert to work with scroll views as well, we just need
+        //     to specify at the call site which type of view we're looking for.
         content.introspectTableView { tableView in
             if tableView.refreshControl == nil {
                 tableView.refreshControl = UIRefreshControl()

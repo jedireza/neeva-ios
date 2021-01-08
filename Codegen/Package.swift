@@ -14,7 +14,7 @@ let package = Package(
         .target(
             name: "Codegen",
             dependencies: [.product(name: "ApolloCodegenLib", package: "Apollo")],
-            exclude: ["acl.graphql", "misc.graphql", "fragments.graphql", "spaces.graphql", "suggestions.graphql"]
+            exclude: ["acl.graphql", "misc.graphql", "fragments.graphql", "spaces.graphql", "suggestions.graphql", "user-info.graphql"]
         )
     ]
 )

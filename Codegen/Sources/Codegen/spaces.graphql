@@ -2,8 +2,8 @@ mutation AddToSpace($input: AddSpaceResultByURLInput!) {
   entityId: addSpaceResultByURL(input: $input)
 }
 
-query ListSpaces($input: ListSpacesInput = { kind: All }) {
-  listSpaces(input: $input) {
+query ListSpaces($kind: ListSpacesKind = All) {
+  listSpaces(input: { kind: $kind }) {
     requestID
     space {
       pageMetadata {
@@ -24,17 +24,6 @@ query FetchSpace($id: String!) {
         ...spaceMetadata
         ...spaceComments
         ...spaceContent
-      }
-    }
-  }
-}
-
-query FetchSpaceMembershipForURL($url: String!) {
-  spaceForURL(url: $url) {
-    requestID
-    space {
-      space {
-        ...spaceMetadata
       }
     }
   }
@@ -71,6 +60,14 @@ mutation UpdateSpaceResult($input: UpdateSpaceEntityDisplayDataInput!) {
   updateSpaceEntityDisplayData(input: $input)
 }
 
-mutation AddSpaceComment($space: String!, $comment: String!) {
-  addSpaceComment(input: { spaceID: $space, comment: $comment })
+mutation AddSpaceComment($space: String!, $commentText: String!) {
+  addSpaceComment(input: { spaceID: $space, comment: $commentText })
+}
+
+mutation UpdateSpaceComment($space: String!, $comment: String!, $commentText: String!) {
+  updateSpaceComment(input: { spaceID: $space, commentID: $comment, comment: $commentText })
+}
+
+mutation DeleteSpaceComment($space: String!, $comment: String!) {
+  deleteSpaceComment(input: { spaceID: $space, commentID: $comment })
 }
