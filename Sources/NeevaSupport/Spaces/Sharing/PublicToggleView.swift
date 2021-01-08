@@ -33,7 +33,7 @@ struct PublicToggleView: View {
             .padding(.vertical, 5)
             if isPublic {
                 HStack {
-                    let url = "https://alpha.neeva.co/spaces/\(spaceId)"
+                    let url = "https://\(NeevaConstants.appHost)/spaces/\(spaceId)"
                     Button(action: {
                         UIPasteboard.general.url = URL(string: url)
                         withAnimation {

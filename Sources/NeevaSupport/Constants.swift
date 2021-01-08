@@ -1,8 +1,15 @@
 import Foundation
+import Defaults
+
+// will return default value if an invalid value is set
+let neevaHostKey = Defaults.Key<String>("neevaHost", default: "alpha.neeva.co")
 
 public struct NeevaConstants {
-    public static let appHost = "alpha.neeva.co"
-    public static let loginKeychainKey = "neevaHttpdLogin-\(appHost)"
+    public static var appHost: String {
+        get { Defaults[neevaHostKey] }
+        set { Defaults[neevaHostKey] = newValue }
+    }
+    public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
 
     public struct Header {
         public let name: String
