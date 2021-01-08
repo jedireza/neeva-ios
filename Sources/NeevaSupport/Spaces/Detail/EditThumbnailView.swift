@@ -15,17 +15,19 @@ struct EditThumbnailView: View {
         _selectedThumbnail = selectedThumbnail
     }
     var body: some View {
-        if let images = controller.data {
-            if images.isEmpty {
-                HStack {
-                    Spacer()
-                    Text("No thumbnails found.")
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-            } else {
-                ScrollView(.horizontal) {
-                    HStack(spacing: 12) {
+        if controller.data?.isEmpty ?? false {
+            HStack {
+                Spacer()
+                Text("No thumbnails found.")
+                    .foregroundColor(.secondary)
+                Spacer()
+            }
+        } else if let error = controller.error {
+            Text(error.localizedDescription)
+        } else {
+            ScrollView(.horizontal) {
+                HStack(spacing: 12) {
+                    if let images = controller.data {
                         ForEach(images) { image in
                             if let thumbnail = image.thumbnail,
                                let dataURIBody = thumbnail.dataURIBody,
@@ -33,29 +35,55 @@ struct EditThumbnailView: View {
                                 Button {
                                     selectedThumbnail = thumbnail
                                 } label: {
-                                    ThumbnailImage(image: uiImage, isSelected: thumbnail == selectedThumbnail)
+                                    ThumbnailImage(
+                                        image: Image(uiImage: uiImage).resizable(),
+                                        isSelected: thumbnail == selectedThumbnail
+                                    )
                                 }
                             }
                         }
-                    }.padding()
-                }.padding(.horizontal, -20)
-            }
-        } else if let error = controller.error {
-            Text(error.localizedDescription)
-        } else {
-            LoadingView("Loading thumbnails…", mini: true)
-                .frame(height: 85)
-                .padding()
+                    } else {
+                        ForEach(0..<4) { _ in
+                            ThumbnailImage(
+                                image: ThumbnailPlaceholder(),
+                                isSelected: false
+                            )
+                        }
+                    }
+                }.padding()
+            }.padding(.horizontal, -20).disabled(controller.running)
         }
     }
 }
 
-struct ThumbnailImage: View {
-    let image: UIImage
+struct ThumbnailPlaceholder: View {
+    @State var offset: CGFloat = -1
+    @Namespace private var namespace
+    var body: some View {
+        GeometryReader { geom in
+            HStack(spacing: 0) {
+                let gradient = LinearGradient(gradient: .skeleton, startPoint: .leading, endPoint: .trailing)
+                    .frame(width: geom.size.width)
+                gradient
+                gradient.scaleEffect(x: -1, y: 1, anchor: .center)
+                gradient
+            }
+            .offset(x: offset * geom.size.width)
+            .frame(width: geom.size.width)
+            .onAppear {
+                withAnimation(Animation.linear(duration: 2).repeatForever(autoreverses: false)) {
+                    offset = 1
+                }
+            }
+        }
+    }
+}
+
+struct ThumbnailImage<Content: View>: View {
+    let image: Content
     let isSelected: Bool
     var body: some View {
-        let thumbnailImage = Image(uiImage: image)
-            .resizable()
+        let thumbnailImage = image
             .aspectRatio(contentMode: .fill)
             .frame(width: 95, height: 85)
             .cornerRadius(6)
@@ -80,6 +108,10 @@ struct ThumbnailImage: View {
                 )
         } else {
             thumbnailImage
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.primary.opacity(0.1), lineWidth: 0.5)
+                )
         }
     }
 }
@@ -95,10 +127,18 @@ struct EditThumbnailView_Previews: PreviewProvider {
     }
     static var previews: some View {
         HStack {
-            let image = UIImage(data: testSpace.thumbnail!.dataURIBody!)!
+            let image = Image(uiImage: UIImage(data: SpaceThumbnails.githubThumbnail.dataURIBody!)!).resizable()
             ThumbnailImage(image: image, isSelected: false)
             ThumbnailImage(image: image, isSelected: true)
+            ThumbnailImage(
+                image: ThumbnailPlaceholder(),
+                isSelected: false
+            )
         }
+        ThumbnailPlaceholder()
+            .border(Color.red)
+            .frame(width: 95, height: 85)
+            .previewLayout(.sizeThatFits)
         TestView()
     }
 }

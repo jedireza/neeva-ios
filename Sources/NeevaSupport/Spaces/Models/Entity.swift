@@ -1,4 +1,5 @@
 import Apollo
+import SwiftUI
 
 public class EntityThumbnailController: QueryController<FetchSpaceResultThumbnailsQuery, [EntityThumbnailController.Image]> {
     public typealias Image = FetchSpaceResultThumbnailsQuery.Data.GetSpaceEntityImage.Image
@@ -6,10 +7,10 @@ public class EntityThumbnailController: QueryController<FetchSpaceResultThumbnai
     public let spaceId: String
     public let entityId: String
 
-    public init(spaceId: String, entityId: String) {
+    public init(spaceId: String, entityId: String, animation: Animation? = .default) {
         self.spaceId = spaceId
         self.entityId = entityId
-        super.init()
+        super.init(animation: animation)
     }
 
     public override func reload() {

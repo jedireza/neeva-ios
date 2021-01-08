@@ -3,6 +3,8 @@ import SwiftUI
 public struct LoadingView: View {
     let label: Text
     let mini: Bool
+    @State var opacity = 0.0
+    
     public init(_ label: String, mini: Bool = false) {
         self.label = Text(label)
         self.mini = mini
@@ -28,7 +30,17 @@ public struct LoadingView: View {
                     .font(Font.title2.bold())
                     .padding(.top)
                     .multilineTextAlignment(.center)
-            }.padding(40)
+            }
+            .padding(40)
+            .opacity(opacity)
+            .onAppear {
+                DispatchQueue.main.async {
+                    withAnimation(
+                        Animation.easeIn
+                            .delay(0.3)
+                    ) { opacity = 1 }
+                }
+            }
         }
     }
 }

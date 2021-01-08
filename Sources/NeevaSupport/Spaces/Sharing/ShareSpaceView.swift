@@ -66,10 +66,7 @@ struct ShareSpaceView: View {
                     }.font(.body)
                 )
                 .navigationBarTitleDisplayMode(.inline)
-                .background(
-                    Color(UIColor.systemGroupedBackground)
-                        .edgesIgnoringSafeArea(.all)
-                )
+                .background(Color.groupedBackground.edgesIgnoringSafeArea(.all))
             } else if let sentInvites = sentInvites {
                 VStack {
                     Spacer()
@@ -139,10 +136,7 @@ struct ShareSpaceView: View {
                     }
                 )
                 .navigationBarTitleDisplayMode(.inline)
-                .background(
-                    Color(UIColor.systemGroupedBackground)
-                        .edgesIgnoringSafeArea(.all)
-                )
+                .background(Color.groupedBackground.edgesIgnoringSafeArea(.all))
             } else {
                 Form {
                     if canEditSettings {

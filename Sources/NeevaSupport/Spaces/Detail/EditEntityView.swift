@@ -132,7 +132,8 @@ struct EditEntityView: View {
                 }
             }
             .disabled(isSaving)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
         .actionSheet(isPresented: $isCancellingEdit, content: {
             ActionSheet(
                 title: Text("Discard changes?"),

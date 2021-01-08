@@ -130,11 +130,7 @@ public struct SpaceDetailView: View {
                         .padding(.horizontal, 20)
                     Button("[TODO] Search for “\(space.name ?? "")”") /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/.disabled(true)
                     Spacer()
-                }.background(
-                    Color(UIColor.systemGroupedBackground)
-                        .edgesIgnoringSafeArea(.all)
-                )
-
+                }.background(Color.groupedBackground.edgesIgnoringSafeArea(.all))
             }
         }
         .navigationBarTitle(Text(space.name!), displayMode: .large)

@@ -32,9 +32,9 @@ public class SpaceController: QueryController<FetchSpaceQuery, SpaceController.S
 
     public let id: String
 
-    public init(id: String) {
+    public init(id: String, animation: Animation? = .default) {
         self.id = id
-        super.init()
+        super.init(animation: animation)
     }
 
     public override func reload() {

@@ -1,9 +1,26 @@
 import SwiftUI
 
 extension Color {
-    static let spaceIconBackground = Color("SpaceIconBackground", bundle: .module)
-    static let savedForLaterIcon = Color("SavedForLaterIcon", bundle: .module)
-    static let letterAvatarBackground = Color("LetterAvatarBackground", bundle: .module)
+    // source https://stackoverflow.com/a/56894458/5244995
+    init(hex: UInt, opacity: Double = 1) {
+        self.init(
+            .sRGB,
+            red: Double((hex >> 16) & 0xff) / 255,
+            green: Double((hex >> 08) & 0xff) / 255,
+            blue: Double((hex >> 00) & 0xff) / 255,
+            opacity: opacity
+        )
+    }
+
+    static func hex(_ hex: UInt, opacity: Double = 1) -> Color {
+        Color(hex: hex, opacity: opacity)
+    }
+}
+
+extension Color {
+    static let spaceIconBackground = Color(hex: 0xACE0EA)
+    static let savedForLaterIcon = Color(hex: 0xFF8852)
+    static let letterAvatarBackground = Color(hex: 0x415AFF)
 }
 
 extension Color {
@@ -11,6 +28,14 @@ extension Color {
     static let gray96 = Color("gray-96", bundle: .module)
     static let gray80 = Color("gray-80", bundle: .module)
     static let overlayBlue = Color("overlay-blue", bundle: .module)
+}
+
+extension Color {
+    static let groupedBackground = Color(UIColor.systemGroupedBackground)
+}
+
+extension Gradient {
+    static let skeleton = Gradient(colors: [.hex(0xf1f3ef), .hex(0xfbfbf9)])
 }
 
 func firstCharacters(_ count: Int, from str: String) -> String {

@@ -3,7 +3,6 @@ import SwiftUI
 import Combine
 
 public typealias Updater<T> = (((inout T) -> ())?) -> ()
-
 /**
  * The `perform` methods are intended to be used only by subclasses, to help implement their custom query methods.
  */
@@ -12,19 +11,34 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
     @Published public private(set) var error: Error?
     @Published public private(set) var data: Data?
 
-    public init() {
+    var animation: Animation?
+
+    public init(animation: Animation? = nil) {
+        self.animation = animation
         self.reload()
     }
 
+    func withOptionalAnimation<Result>(_ body: () throws -> Result) rethrows -> Result {
+        if let animation = animation {
+            return try withAnimation(animation, body)
+        } else {
+            return try body()
+        }
+    }
+
     @discardableResult public func perform(query: Query) -> Apollo.Cancellable {
-        running = true
-        error = nil
-        return Self.perform(query: query) {
-            self.running = false
-            self.data = nil
-            switch $0 {
-            case .failure(let error): self.error = error
-            case .success(let data): self.data = data
+        withOptionalAnimation {
+            running = true
+            error = nil
+        }
+        return Self.perform(query: query) { result in
+            self.withOptionalAnimation {
+                self.running = false
+                self.data = nil
+                switch result {
+                case .failure(let error): self.error = error
+                case .success(let data): self.data = data
+                }
             }
         }
     }
@@ -35,7 +49,9 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
     /// optimisticResult is an optional expected result of the query
     public func reload(optimisticResult: Data?) {
         if let optimisticResult = optimisticResult {
-            data = optimisticResult
+            withOptionalAnimation {
+                data = optimisticResult
+            }
         }
         self.reload()
     }

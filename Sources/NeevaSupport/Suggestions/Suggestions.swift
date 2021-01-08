@@ -23,8 +23,8 @@ public class SuggestionsController: QueryController<SuggestionsQuery, [Suggestio
 
     var subscription: AnyCancellable?
 
-    public override init() {
-        super.init()
+    public override init(animation: Animation? = .default) {
+        super.init(animation: animation)
         subscription = $query
             .throttle(for: .milliseconds(500), scheduler: RunLoop.main, latest: true)
             .sink { _ in self.reload() }

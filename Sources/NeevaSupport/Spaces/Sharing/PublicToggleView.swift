@@ -29,7 +29,7 @@ struct PublicToggleView: View {
                         ActivityIndicator()
                     }
                 }
-            }
+            }.disabled(isUpdating)
             .padding(.vertical, 5)
             if isPublic {
                 HStack {

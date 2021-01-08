@@ -33,7 +33,7 @@ public struct AddToSpaceView: View {
                     List {
                         ForEach(spaces) { space in
                             Button {
-                                self.cancellable = AddToSpaceMutation(
+                                let cancellable = AddToSpaceMutation(
                                     input: AddSpaceResultByURLInput(
                                         spaceId: space.id,
                                         url: url.absoluteString,
@@ -44,13 +44,16 @@ public struct AddToSpaceView: View {
                                         snapshotExpected: false
                                     )
                                 ).perform { result in
-                                    cancellable = nil
+                                    self.cancellable = nil
                                     switch result {
                                     case .failure(let err):
                                         print(err)
                                     case .success(let data):
                                         onDismiss(IDs(space: space.id, entity: data.entityId))
                                     }
+                                }
+                                withAnimation {
+                                    self.cancellable = cancellable
                                 }
                             } label: {
                                 SpaceListItem(space).foregroundColor(.primary)

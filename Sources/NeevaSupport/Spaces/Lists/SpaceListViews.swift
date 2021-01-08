@@ -21,14 +21,14 @@ public struct SpaceListView: View {
         NavigationView {
             List(controller.data ?? []) { space in
                 NavigationLink(
-                    destination: SpaceLoaderView(id: space.id, onOpenURL: onOpenURL)
+                    destination: SpaceLoaderView(id: space.id, initialTitle: space.space?.name ?? "", onOpenURL: onOpenURL)
                         .onDisappear(perform: controller.reload)
                 ) {
                     SpaceListItem(space)
                 }
             }
             .refreshControl(refreshing: controller)
-            .navigationTitle("Space")
+            .navigationTitle("Spaces")
             .navigationBarTitleDisplayMode(onDismiss == nil ? .automatic : .inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -90,12 +90,14 @@ public struct SpaceListView: View {
 struct SpaceLoaderView: View {
     @StateObject var controller: SpaceController
     let id: String
+    let initialTitle: String
     let onOpenURL: (URL) -> ()
 
-    init(id: String, onOpenURL: @escaping (URL) -> ()) {
-        self._controller = .init(wrappedValue: SpaceController(id: id))
+    init(id: String, initialTitle: String, onOpenURL: @escaping (URL) -> ()) {
+        self._controller = .init(wrappedValue: SpaceController(id: id, animation: .default))
         self.id = id
         self.onOpenURL = onOpenURL
+        self.initialTitle = initialTitle
     }
     var body: some View {
         if let space = controller.data {
@@ -108,7 +110,20 @@ struct SpaceLoaderView: View {
                 }
             }).refreshControl(refreshing: controller)
         } else {
-            LoadingView("Loading space…")
+            GeometryReader { _ in
+                HStack {
+                    Spacer()
+                    VStack {
+                        Spacer()
+                        LoadingView("Loading space…")
+                        Spacer()
+                    }
+                    Spacer()
+                }
+            }
+                .background(Color.groupedBackground.edgesIgnoringSafeArea(.all))
+                .navigationTitle(initialTitle)
+                .navigationBarTitleDisplayMode(.large)
         }
     }
 
@@ -118,5 +133,6 @@ struct SpacesListView_Previews: PreviewProvider {
     static var previews: some View {
         SpaceListView(onOpenURL: { _ in })
         SpaceListView(onDismiss: { }, onOpenURL: { _ in })
+        SpaceLoaderView(id: "", initialTitle: "Title", onOpenURL: { _ in })
     }
 }
