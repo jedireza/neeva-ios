@@ -86,4 +86,6 @@ public func >= (_ lhs: SpaceACLLevel?, _ rhs: SpaceACLLevel) -> Bool {
         return false
     }
 }
-
+public func < (_ lhs: SpaceACLLevel?, _ rhs: SpaceACLLevel) -> Bool {
+    !(lhs >= rhs)
+}

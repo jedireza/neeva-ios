@@ -94,7 +94,7 @@ struct CommentView: View {
             initialText: comment.comment!,
             configureTextField: { tf in
                 tf.autocapitalizationType = .sentences
-                tf.returnKeyType = .emergencyCall
+                tf.returnKeyType = .done
                 tf.autocorrectionType = .default
             }
         ) { commentText in

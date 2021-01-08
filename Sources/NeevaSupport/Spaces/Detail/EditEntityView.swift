@@ -117,12 +117,10 @@ struct EditEntityView: View {
                                     isSaving = false
                                     guard case .success(let data) = result else { return }
                                     onUpdate { newSpace in
-                                        newSpace.entities?.append(
-                                            .init(
-                                                metadata: .init(docId: data.entityId),
-                                                spaceEntity: .init(url: url, title: title)
-                                            )
-                                        )
+                                        newSpace.entities?.insert(.init(
+                                            metadata: .init(docId: data.entityId),
+                                            spaceEntity: .init(url: url, title: title)
+                                        ), at: 0)
                                     }
                                     isPresented = false
                                 }

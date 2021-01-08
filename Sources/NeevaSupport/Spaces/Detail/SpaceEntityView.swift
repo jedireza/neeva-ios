@@ -46,30 +46,31 @@ struct SpaceEntityView: View {
                         .font(.title3)
                         .fontWeight(spaceEntity.url?.isEmpty ?? true ? .semibold : .regular) 
                     Spacer()
-                    Menu {
-                        if spaceAcl >= .edit {
-                            Button(action: { modal = .edit }) {
-                                Text("Edit")
-                                Image(systemName: "pencil")
+                    if !(spaceAcl < .edit && (spaceEntity.url?.isEmpty ?? true)) {
+                        Menu {
+                            if spaceAcl >= .edit {
+                                Button(action: { modal = .edit }) {
+                                    Label("Edit", systemImage: "pencil")
+                                }
                             }
-                        }
-                        Button(action: { modal = .addToSpace }) {
-                            Text("Add to another Space")
-                            Image(systemName: "plus")
-                        }
-                        if spaceAcl >= .edit {
-                            Button(action: { isDeleting = true }) {
-                                Text("Remove")
-                                Image(systemName: "trash")
+                            if !(spaceEntity.url?.isEmpty ?? true) {
+                                Button(action: { modal = .addToSpace }) {
+                                    Label("Add to another Space", systemImage: "plus")
+                                }
+                           }
+                            if spaceAcl >= .edit {
+                                Button(action: { isDeleting = true }) {
+                                    Label("Remove", systemImage: "trash")
+                                }
                             }
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .imageScale(.large)
-                            .padding(.vertical, 9)
-                            .padding(.horizontal, 5)
-                            .contentShape(Rectangle())
-                    }.accentColor(.blue)
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .imageScale(.large)
+                                .padding(.vertical, 9)
+                                .padding(.horizontal, 5)
+                                .contentShape(Rectangle())
+                        }.accentColor(.blue)
+                    }
                 }
                 if let url = spaceEntity.url, !url.isEmpty {
                     Text(spaceEntity.url!)
