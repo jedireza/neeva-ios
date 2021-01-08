@@ -14,12 +14,7 @@ class UserProfileController: QueryController<UserInfoQuery, UserProfileControlle
 
     public var userId: String? { data?.id }
 
-    override init() {
-        super.init()
-        self.reload()
-    }
-
-    public func reload() {
+    public override func reload() {
         self.perform(query: UserInfoQuery())
     }
 

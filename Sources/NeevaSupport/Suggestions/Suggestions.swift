@@ -27,7 +27,11 @@ public class SuggestionsController: QueryController<SuggestionsQuery, [Suggestio
         super.init()
         subscription = $query
             .throttle(for: .milliseconds(500), scheduler: RunLoop.main, latest: true)
-            .sink(receiveValue: { self.perform(query: SuggestionsQuery(query: $0)) })
+            .sink { _ in self.reload() }
+    }
+
+    public override func reload() {
+        self.perform(query: SuggestionsQuery(query: query))
     }
 
     public override class func processData(_ data: SuggestionsQuery.Data) -> [Suggestion] {

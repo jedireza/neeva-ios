@@ -1,4 +1,5 @@
 import Apollo
+import SwiftUI
 import Combine
 
 public typealias Updater<T> = (((inout T) -> ())?) -> ()
@@ -7,11 +8,13 @@ public typealias Updater<T> = (((inout T) -> ())?) -> ()
  * The `perform` methods are intended to be used only by subclasses, to help implement their custom query methods.
  */
 public class QueryController<Query, Data>: ObservableObject where Query: GraphQLQuery {
-    @Published public var running = false
-    @Published public var error: Error?
-    @Published public var data: Data?
+    @Published public private(set) var running = false
+    @Published public private(set) var error: Error?
+    @Published public private(set) var data: Data?
 
-    public init() {}
+    public init() {
+        self.reload()
+    }
 
     @discardableResult public func perform(query: Query) -> Apollo.Cancellable {
         running = true
@@ -24,6 +27,17 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
             case .success(let data): self.data = data
             }
         }
+    }
+
+    public func reload() {
+        fatalError("\(self).\(#function) not implemented")
+    }
+    /// optimisticResult is an optional expected result of the query
+    public func reload(optimisticResult: Data?) {
+        if let optimisticResult = optimisticResult {
+            data = optimisticResult
+        }
+        self.reload()
     }
 
     public class func processData(_ data: Query.Data) -> Data {

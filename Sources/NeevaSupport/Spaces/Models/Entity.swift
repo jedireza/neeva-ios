@@ -10,10 +10,9 @@ public class EntityThumbnailController: QueryController<FetchSpaceResultThumbnai
         self.spaceId = spaceId
         self.entityId = entityId
         super.init()
-        self.reload()
     }
 
-    public func reload() {
+    public override func reload() {
         self.perform(query: FetchSpaceResultThumbnailsQuery(input: .init(spaceId: spaceId, resultId: entityId)))
     }
 

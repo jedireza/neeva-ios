@@ -5,12 +5,7 @@ import Combine
 public class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController.Space]> {
     public typealias Space = ListSpacesQuery.Data.ListSpace.Space
 
-    public override init() {
-        super.init()
-        self.reload()
-    }
-
-    public func reload() {
+    public override func reload() {
         self.perform(query: ListSpacesQuery(input: .init(kind: .all)))
     }
 
@@ -40,14 +35,9 @@ public class SpaceController: QueryController<FetchSpaceQuery, SpaceController.S
     public init(id: String) {
         self.id = id
         super.init()
-        self.reload()
     }
 
-    /// optimisticResult is an optional expected result of the query
-    public func reload(optimisticResult: Space? = nil) {
-        if let optimisticResult = optimisticResult {
-            data = optimisticResult
-        }
+    public override func reload() {
         self.perform(query: FetchSpaceQuery(id: id))
     }
 

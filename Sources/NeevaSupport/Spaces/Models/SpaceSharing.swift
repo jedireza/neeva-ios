@@ -12,11 +12,13 @@ public class ContactSuggestionController: QueryController<ContactSuggestionsQuer
         super.init()
         subscription = $query
             .throttle(for: .milliseconds(200), scheduler: RunLoop.main, latest: true)
-            .sink(receiveValue: { query in
-                self.perform(
-                    query: ContactSuggestionsQuery(query: query.replacingOccurrences(of: "@", with: " "))
-                )
-            })
+            .sink { _ in self.reload() }
+    }
+
+    public override func reload() {
+        self.perform(
+            query: ContactSuggestionsQuery(query: query.replacingOccurrences(of: "@", with: " "))
+        )
     }
 
     public override class func processData(_ data: ContactSuggestionsQuery.Data, for query: ContactSuggestionsQuery) -> [Suggestion] {

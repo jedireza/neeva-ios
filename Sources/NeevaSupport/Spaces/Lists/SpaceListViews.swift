@@ -27,6 +27,7 @@ public struct SpaceListView: View {
                     SpaceListItem(space)
                 }
             }
+            .refreshControl(refreshing: controller)
             .navigationTitle("Space")
             .navigationBarTitleDisplayMode(onDismiss == nil ? .automatic : .inline)
             .toolbar {
@@ -43,18 +44,22 @@ public struct SpaceListView: View {
                         let confirmAction = UIAlertAction(title: "Add", style: .default) { _ in
                             guard let name = alert.textFields?.first?.text else { return }
                             CreateSpaceMutation(name: name).perform { result in
-                                controller.reload()
-                                guard case .success(let data) = result else { return }
-                                controller.data?.insert(
-                                    .init(
-                                        pageMetadata: .init(pageId: data.createSpace),
-                                        space: .init(
-                                            name: name,
-                                            createdTs: dateParser.string(from: Date()),
-                                            lastModifiedTs: dateParser.string(from: Date())
+                                if case .success(let data) = result,
+                                   let oldSpaces = controller.data {
+                                    controller.reload(optimisticResult: [
+                                        .init(
+                                            pageMetadata: .init(pageId: data.createSpace),
+                                            space: .init(
+                                                name: name,
+                                                createdTs: dateParser.string(from: Date()),
+                                                lastModifiedTs: dateParser.string(from: Date())
+                                            )
                                         )
-                                    ), at: 0
-                                )
+                                    ] + oldSpaces)
+                                } else {
+                                    controller.reload()
+                                    return
+                                }
                             }
                         }
                         confirmAction.isEnabled = false
@@ -101,7 +106,7 @@ struct SpaceLoaderView: View {
                 } else {
                     controller.reload(optimisticResult: nil)
                 }
-            })
+            }).refreshControl(refreshing: controller)
         } else {
             LoadingView("Loading space…")
         }
