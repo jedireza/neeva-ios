@@ -120,44 +120,25 @@ struct CommentView: View {
 
 fileprivate let placeholders = ["Add a comment...", "What's on your mind?", "Write it down so you won't forget!"]
 
-struct ComposeCommentView: View {
-    let spaceId: String
-    let onUpdate: Updater<SpaceController.Space>
-
-    @State var placeholder = placeholders.randomElement()!
-    @State var comment = ""
-    @State var saving = false
-    var body: some View {
-        HStack {
-            if saving {
-                Text("One moment…").foregroundColor(.secondary)
-            } else {
-                // TODO: submit on return, make return key say “Save” or similar
-                TextField(placeholder, text: $comment)
-                Button("Save") {
-                    saving = true
-                    AddSpaceCommentMutation(space: spaceId, commentText: comment).perform { result in
-                        saving = false
-                        guard case .success(let data) = result,
-                              let commentId = data.addSpaceComment
-                        else { return }
-                        let commentText = comment
-                        comment = ""
-                        onUpdate { newSpace in
-                            let ts = dateParser.string(from: Date())
-                            newSpace.comments?.append(
-                                .init(id: commentId, userid: nil, profile: nil, createdTs: ts, lastModifiedTs: ts, comment: commentText)
-                            )
-                        }
-                    }
+func composeComment(in spaceId: String, onUpdate: @escaping Updater<SpaceController.Space>) {
+    openTextInputAlert(title: "Add a Comment", confirmationButtonTitle: "Save") { tf in
+        tf.placeholder = placeholders.randomElement()!
+        tf.autocapitalizationType = .sentences
+        tf.autocorrectionType = .default
+        tf.returnKeyType = .done
+    } onConfirm: { commentText in
+        AddSpaceCommentMutation(space: spaceId, commentText: commentText).perform { result in
+            if case .success(let data) = result,
+               let commentId = data.addSpaceComment {
+                onUpdate { newSpace in
+                    let ts = dateParser.string(from: Date())
+                    newSpace.comments?.append(
+                        .init(id: commentId, userid: nil, profile: nil, createdTs: ts, lastModifiedTs: ts, comment: commentText)
+                    )
                 }
-                .opacity(comment.isEmpty ? 0 : 1)
-                .transition(.opacity)
-                .animation(.default)
-                .font(Font.body.bold())
-                .buttonStyle(BorderlessButtonStyle())
             }
         }
+
     }
 }
 
@@ -169,10 +150,9 @@ struct CommentView_Previews: PreviewProvider {
                 CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: nil, createdTs: "2020-12-18T15:42:19Z", lastModifiedTs: "2020-12-18T15:42:19Z", comment: "A comment"), userAcl: .owner, onUpdate: { _ in })
                 CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: profile, createdTs: "2021-01-06T18:46:16Z", lastModifiedTs: "2021-01-06T18:56:24Z", comment: "A very very very very very very very very very very very very long comment"), userAcl: nil, onUpdate: { _ in })
             }
-            ComposeCommentView(spaceId: "asdf", onUpdate: { _ in })
-            ComposeCommentView(spaceId: "asdf", onUpdate: { _ in }, comment: "Comment text")
-            ComposeCommentView(spaceId: "asdf", onUpdate: { _ in }, comment: "Comment text", saving: true)
-            ComposeCommentView(spaceId: "asdf", onUpdate: { _ in }, saving: true)
+            Button("Add Comment") {
+                composeComment(in: "", onUpdate: { _ in })
+            }
         }.listStyle(GroupedListStyle())
     }
 }

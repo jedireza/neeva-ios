@@ -21,10 +21,12 @@ public struct Wrapper<Content: View>: UIViewControllerRepresentable {
     }
 }
 
-struct BigHeader: View {
+struct BigHeader<Accessory: View>: View {
     let title: String
-    init(_ title: String) {
+    let accessory: () -> Accessory
+    init(_ title: String, @ViewBuilder accessory: @escaping () -> Accessory) {
         self.title = title
+        self.accessory = accessory
     }
 
     var body: some View {
@@ -32,8 +34,16 @@ struct BigHeader: View {
             HStack {
                 Text(title).font(.title3).bold()
                 Spacer(minLength: 0)
+                accessory()
             }
         }
+    }
+}
+
+extension BigHeader where Accessory == EmptyView {
+    init(_ title: String) {
+        self.title = title
+        self.accessory = EmptyView.init
     }
 }
 
@@ -100,7 +110,15 @@ public struct SpaceDetailView: View {
                             Text(desc)
                         }
                     }
-                    Section(header: BigHeader("Discussion")) {
+                    Section(header: BigHeader("Discussion") {
+                        if space.userAcl?.acl >= .comment {
+                            Button {
+                                composeComment(in: spaceId, onUpdate: onUpdate)
+                            } label: {
+                                Label("New Comment", systemImage: "plus.bubble.fill")
+                            }
+                        }
+                    }) {
                         if let comments = space.comments, !comments.isEmpty {
                             ForEach(comments) { comment in
                                 CommentView(spaceId: spaceId, comment: comment, userAcl: space.userAcl?.acl, onUpdate: onUpdate)
@@ -112,9 +130,6 @@ public struct SpaceDetailView: View {
                             Text("No comments have been added to this space.")
                                 .foregroundColor(.secondary)
                         }) {}
-                    }
-                    if space.userAcl?.acl >= .comment {
-                        ComposeCommentView(spaceId: spaceId, onUpdate: onUpdate)
                     }
                 }
                 .listStyle(GroupedListStyle())
