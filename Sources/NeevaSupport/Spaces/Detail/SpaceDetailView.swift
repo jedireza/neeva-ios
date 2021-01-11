@@ -167,20 +167,24 @@ public struct SpaceDetailView: View {
 
                 // TODO: implement
                 // Button("Reorder items") /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/
-                Button(action: { isEditing = true }) {
-                    Label("Edit", systemImage: "pencil")
+                if !space.isDefault {
+                    Button(action: { isEditing = true }) {
+                        Label("Edit", systemImage: "pencil")
+                    }
                 }
             }
-            if space.userAcl?.acl == .owner {
-                Button(action: { isSharing = true }) {
-                    Label("Share", systemImage: "person.crop.circle.badge.plus")
-                }
-                Button(action: { isDeleting = true }) {
-                    Label("Delete", systemImage: "trash")
-                }
-            } else {
-                Button(action: { isSharing = true }) {
-                    Label("Shared with", systemImage: "person.2.fill")
+            if !space.isDefault {
+                if space.userAcl?.acl == .owner {
+                    Button(action: { isSharing = true }) {
+                        Label("Share", systemImage: "person.crop.circle.badge.plus")
+                    }
+                    Button(action: { isDeleting = true }) {
+                        Label("Delete", systemImage: "trash")
+                    }
+                } else {
+                    Button(action: { isSharing = true }) {
+                        Label("Shared with", systemImage: "person.2.fill")
+                    }
                 }
             }
         } label: {

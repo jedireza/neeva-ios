@@ -62,6 +62,10 @@ extension SpaceController.Space.Acl: Identifiable {
 }
 extension SpaceController.Space.Comment: Identifiable {}
 
+extension SpaceController.Space {
+    public var isDefault: Bool { isDefaultSpace ?? false }
+}
+
 extension SpaceACLLevel: Comparable {
     public static func < (_ lhs: SpaceACLLevel, _ rhs: SpaceACLLevel) -> Bool {
         switch lhs {

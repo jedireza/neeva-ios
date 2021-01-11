@@ -3,11 +3,20 @@
     "pins": [
       {
         "package": "Apollo",
-        "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
+        "repositoryURL": "https://github.com/apollographql/apollo-ios",
         "state": {
           "branch": null,
           "revision": "6c71dc77ddc3b0d55dd2bd485de01d4032256199",
           "version": "0.38.3"
+        }
+      },
+      {
+        "package": "Defaults",
+        "repositoryURL": "https://github.com/sindresorhus/Defaults",
+        "state": {
+          "branch": null,
+          "revision": "d98119fee49c893fae553103a8659ffe003b6cfe",
+          "version": "4.1.0"
         }
       },
       {
@@ -26,6 +35,15 @@
           "branch": null,
           "revision": "73f8e9dca9b7a3078cb79128217dc8f2e585a511",
           "version": "1.0.0"
+        }
+      },
+      {
+        "package": "RemoteImage",
+        "repositoryURL": "https://github.com/crelies/RemoteImage",
+        "state": {
+          "branch": null,
+          "revision": "7de20453a8b9733eb8e28ae762801c60a5a5f59d",
+          "version": "4.0.0"
         }
       },
       {
@@ -80,6 +98,15 @@
           "branch": null,
           "revision": "185a3165346a03767101c4f62e9a545a0fe0530f",
           "version": "4.0.1"
+        }
+      },
+      {
+        "package": "Introspect",
+        "repositoryURL": "https://github.com/siteline/SwiftUI-Introspect",
+        "state": {
+          "branch": null,
+          "revision": "36ecf80429d00a4cd1e81fbfe4655b1d99ebd651",
+          "version": "0.1.2"
         }
       }
     ]
