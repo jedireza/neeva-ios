@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+// TODO: fix accessibility
 struct EditThumbnailView: View {
     @Binding var selectedThumbnail: String
     @StateObject var controller: EntityThumbnailController
@@ -43,7 +45,7 @@ struct EditThumbnailView: View {
                             }
                         }
                     } else {
-                        ForEach(0..<4) { _ in
+                        ForEach(0..<10) { _ in
                             ThumbnailImage(
                                 image: ThumbnailPlaceholder(),
                                 isSelected: false
@@ -51,7 +53,9 @@ struct EditThumbnailView: View {
                         }
                     }
                 }.padding()
-            }.padding(.horizontal, -20).disabled(controller.running)
+            }
+            .padding(.horizontal, -20)
+            .disabled(controller.running)
         }
     }
 }
@@ -71,8 +75,16 @@ struct ThumbnailPlaceholder: View {
             .offset(x: offset * geom.size.width)
             .frame(width: geom.size.width)
             .onAppear {
-                withAnimation(Animation.linear(duration: 2).repeatForever(autoreverses: false)) {
+                withAnimation(.linear(duration: 2)) {
                     offset = 1
+                }
+            }.onChange(of: offset) { _offset in
+                withAnimation(.linear(duration: 2)) {
+                    if offset > 0 {
+                        offset = -1
+                    } else {
+                        offset = 1
+                    }
                 }
             }
         }
@@ -105,7 +117,7 @@ struct ThumbnailImage<Content: View>: View {
                             Circle()
                                 .fill(Color.accentColor)
                         )
-                )
+                ).accessibilityAddTraits(.isSelected)
         } else {
             thumbnailImage
                 .overlay(

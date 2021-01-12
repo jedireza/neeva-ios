@@ -13,11 +13,14 @@ struct ACLPicker: View {
         Picker(selection: $acl, label: HStack {
             Text("Can \(acl.rawValue.lowercased())")
             Image(systemName: "chevron.down")
+                .accessibilityHidden(true)
         }, content: {
             Text("Can edit").tag(SpaceACLLevel.edit)
             Text("Can comment").tag(SpaceACLLevel.comment)
             Text("Can view").tag(SpaceACLLevel.view)
-        }).pickerStyle(MenuPickerStyle())
+        })
+        .pickerStyle(MenuPickerStyle())
+        .accessibilityHint("Double-tap to change access level")
     }
 }
 
@@ -39,7 +42,10 @@ struct ACLView: View {
             } else if canEdit {
                 ACLPicker(acl: $controller.level)
             } // otherwise, display nothing
-        }.padding(.vertical, 5)
+        }
+        .padding(.vertical, 5)
+        .accessibilityElement(children: .combine)
+        .accessibilityActivationPoint(UnitPoint(x: 0.9, y: 0.5))
     }
 }
 

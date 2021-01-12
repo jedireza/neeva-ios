@@ -34,6 +34,7 @@ public struct SpaceListView: View {
                 ToolbarItem(placement: .primaryAction) {
                     if let onDismiss = onDismiss {
                         Button("Done", action: onDismiss)
+                            .font(Font.body.bold())
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -71,6 +72,7 @@ public struct SpaceListView: View {
                         }
                     } label: {
                         Image(systemName: "plus")
+                            .accessibilityLabel("New Space")
                     }
                 }
             }

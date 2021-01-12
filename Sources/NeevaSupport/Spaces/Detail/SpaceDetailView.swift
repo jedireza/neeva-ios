@@ -32,9 +32,12 @@ struct BigHeader<Accessory: View>: View {
     var body: some View {
         Wrapper {
             HStack {
-                Text(title).font(.title3).bold()
+                Text(title)
+                    .font(.title3).bold()
+                    .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 0)
                 accessory()
+                    .accessibilityRemoveTraits(.isHeader)
             }
         }
     }
@@ -44,6 +47,42 @@ extension BigHeader where Accessory == EmptyView {
     init(_ title: String) {
         self.title = title
         self.accessory = EmptyView.init
+    }
+}
+
+extension Array: Identifiable where Element == SpaceController.Entity {
+    public var id: String {
+        map(\.id).joined(separator: "\n")
+    }
+}
+
+struct DiscussionSection: View {
+    let space: SpaceController.Space
+    let spaceId: String
+    let onUpdate: Updater<SpaceController.Space>
+
+    var body: some View {
+        Section(header: BigHeader("Discussion") {
+            if space.userAcl?.acl >= .comment {
+                Button {
+                    composeComment(in: spaceId, onUpdate: onUpdate)
+                } label: {
+                    Label("New Comment", systemImage: "plus.bubble.fill")
+                }
+            }
+        }) {
+            if let comments = space.comments, !comments.isEmpty {
+                ForEach(comments) { comment in
+                    CommentView(spaceId: spaceId, comment: comment, userAcl: space.userAcl?.acl, onUpdate: onUpdate)
+                }
+            }
+        }
+        if space.comments?.isEmpty ?? true {
+            Section(header: Wrapper {
+                Text("No comments have been added to this space.")
+                    .foregroundColor(.secondary)
+            }) {}
+        }
     }
 }
 
@@ -61,6 +100,7 @@ public struct SpaceDetailView: View {
     }
 
     @State var isDeleting = false
+    @State var deletingEntities: [SpaceController.Entity]? = nil
     @State var isCancellingEdit = false
     @State var isEditing = false
     @State var isSharing = false
@@ -77,9 +117,9 @@ public struct SpaceDetailView: View {
                     let entityViews = ForEach(entities) { entity in
                         if let urlString = entity.spaceEntity?.url,
                            let url = URL(string: urlString) {
-                            Section {
+                            Section(header: EmptyView().accessibilityHidden(true)) {
                                 Button(action: { onOpenURL(url) }) {
-                                    SpaceEntityView(entity: entity, spaceId: spaceId, spaceAcl: space.userAcl?.acl, onUpdate: onUpdate)
+                                    SpaceEntityView(entity: entity, spaceId: spaceId, spaceAcl: space.userAcl?.acl, onUpdate: onUpdate, onDelete: { deletingEntities = [entity] })
                                         .padding(.vertical)
                                         .buttonStyle(BorderlessButtonStyle())
                                         .accentColor(.primary)
@@ -87,20 +127,13 @@ public struct SpaceDetailView: View {
                             }
                         } else {
                             Section(header: Wrapper {
-                                SpaceEntityView(entity: entity, spaceId: spaceId, spaceAcl: space.userAcl?.acl, onUpdate: onUpdate)
+                                SpaceEntityView(entity: entity, spaceId: spaceId, spaceAcl: space.userAcl?.acl, onUpdate: onUpdate, onDelete: { deletingEntities = [entity] })
                             }) {}
                         }
                     }
                     if space.userAcl?.acl >= .edit {
                         entityViews.onDelete { indexSet in
-                            BatchDeleteSpaceResultMutation(space: spaceId, results: indexSet.map { entities[$0].id }).perform { result in
-                                guard case .success(let data) = result, data.batchDeleteSpaceResult else { return }
-                                onUpdate { newSpace in
-                                    // this could potentially remove incorrect entities if the user performs several deletes in a row
-                                    // however, this is client-only and will be remedied once the query comes back
-                                    newSpace.entities?.remove(atOffsets: indexSet)
-                                }
-                            }
+                            deletingEntities = indexSet.map { entities[$0] }
                         }
                     } else {
                         entityViews
@@ -110,27 +143,7 @@ public struct SpaceDetailView: View {
                             Text(desc)
                         }
                     }
-                    Section(header: BigHeader("Discussion") {
-                        if space.userAcl?.acl >= .comment {
-                            Button {
-                                composeComment(in: spaceId, onUpdate: onUpdate)
-                            } label: {
-                                Label("New Comment", systemImage: "plus.bubble.fill")
-                            }
-                        }
-                    }) {
-                        if let comments = space.comments, !comments.isEmpty {
-                            ForEach(comments) { comment in
-                                CommentView(spaceId: spaceId, comment: comment, userAcl: space.userAcl?.acl, onUpdate: onUpdate)
-                            }
-                        }
-                    }
-                    if space.comments?.isEmpty ?? true {
-                        Section(header: Wrapper {
-                            Text("No comments have been added to this space.")
-                                .foregroundColor(.secondary)
-                        }) {}
-                    }
+                    DiscussionSection(space: space, spaceId: spaceId, onUpdate: onUpdate)
                 }
                 .listStyle(GroupedListStyle())
             } else {
@@ -157,18 +170,45 @@ public struct SpaceDetailView: View {
         .additionalSheet(isPresented: $isSharing) {
             ShareSpaceView(space: space, id: spaceId, onUpdate: onUpdate)
         }
-        .actionSheet(isPresented: $isDeleting) {
-            ActionSheet(
-                title: Text("Delete “\(name)” permanently?"),
-                buttons: [
-                    .destructive(Text("Delete “\(name)”")) {
-                        DeleteSpaceMutation(input: .init(id: spaceId)).perform { _ in
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    },
-                    .cancel()
-                ])
+        .actionSheet(item: $deletingEntities, content: deleteEntitiesActionSheet)
+        .additionalActionSheet(isPresented: $isDeleting, content: deleteActionSheet)
+    }
+
+    func deleteEntitiesActionSheet(_ entities: [SpaceController.Entity]) -> ActionSheet {
+        let title: String
+        if entities.count == 1 {
+            title = "Are you sure that you want to remove “\(entities[0].spaceEntity?.title ?? "")” from your space?"
+        } else {
+            title = "Are you sure that you want to remove \(entities.count) items from your space?"
         }
+        return ActionSheet(title: Text(title), buttons: [
+            .cancel(),
+            .destructive(Text(entities.count == 1 ? "Delete" : "Delete \(entities.count) Items")) {
+                BatchDeleteSpaceResultMutation(space: spaceId, results: entities.map(\.id)).perform { result in
+                    guard case .success(let data) = result, data.batchDeleteSpaceResult else { return }
+                    onUpdate { newSpace in
+                        for entity in entities {
+                            newSpace.entities?.removeAll { $0.id == entity.id }
+                        }
+                    }
+                }
+            }
+        ])
+    }
+
+    func deleteActionSheet() -> ActionSheet {
+        let name = space.name ?? ""
+        return ActionSheet(
+            title: Text("Delete “\(name)” permanently?"),
+            buttons: [
+                .destructive(Text("Delete “\(name)”")) {
+                    DeleteSpaceMutation(input: .init(id: spaceId)).perform { _ in
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                },
+                .cancel()
+            ]
+        )
     }
 
     var navMenu: some View {
@@ -203,9 +243,10 @@ public struct SpaceDetailView: View {
                 }
             }
         } label: {
-            Image(systemName: "ellipsis.circle")
+            Label("Actions", systemImage: "ellipsis.circle")
                 .font(.system(size: 17))
                 .imageScale(.large)
+                .labelStyle(IconOnlyLabelStyle())
         }
 
     }

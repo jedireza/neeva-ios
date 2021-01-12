@@ -31,6 +31,11 @@ struct SpaceInviteView: View {
                     .background(Color.overlayBlue)
                     .cornerRadius(6)
             }
+            .accessibilityLabel(user.displayName.isEmpty ? user.email.replacingOccurrences(of: ".", with: " dot ") : user.displayName)
+            .accessibilityHint("will be invited")
+            .accessibilityRemoveTraits(.isButton)
+            .accessibilityAction(named: "Remove", onRemove)
+            .accessibilityAction(named: "Copy Email") { UIPasteboard.general.string = user.email }
         }
     }
 
@@ -54,6 +59,7 @@ struct SpaceInviteView: View {
                     HStack {
                         EmailSearchField(text: $suggestions.query, onReturn: selectFirst)
                         ACLPicker(acl: $invite.shareType)
+                            .accessibilitySortPriority(1)
                     }
                 } else {
                     VStack {
@@ -92,6 +98,7 @@ struct EmailSearchField: UIViewRepresentable {
         tf.clearButtonMode = .whileEditing
         tf.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         tf.delegate = context.coordinator
+        tf.accessibilityTraits = [tf.accessibilityTraits, .searchField]
         return tf
     }
 

@@ -17,6 +17,10 @@ struct InviteState {
 struct InvitationSentState {
     let invitationsSent: Int
     let nonNeevanEmails: [String]
+
+    func notify() {
+        UIAccessibility.post(notification: .screenChanged, argument: "Sent \(invitationsSent) invitation\(invitationsSent == 1 ? "" : "s")." + (nonNeevanEmails.isEmpty ? "" : " Could not send \(nonNeevanEmails.count) invitation\(nonNeevanEmails.count == 1 ? "" : "s")."))
+    }
 }
 
 struct ShareSpaceView: View {
@@ -71,21 +75,24 @@ struct ShareSpaceView: View {
                 VStack {
                     Spacer()
                     HStack { Spacer() }
-                    if sentInvites.nonNeevanEmails.isEmpty {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.largeTitle)
-                            .imageScale(.large)
-                            .foregroundColor(.green)
-                            .padding(.bottom)
-                    } else {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.largeTitle)
-                            .imageScale(.large)
-                            .foregroundColor(.yellow)
-                            .padding(.bottom)
+                    Group {
+                        if sentInvites.nonNeevanEmails.isEmpty {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                        } else {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundColor(.yellow)
+                        }
                     }
+                    .font(.largeTitle)
+                    .imageScale(.large)
+                    .padding(.bottom)
+                    .accessibilityHidden(true)
+
                     Text("Sent \(sentInvites.invitationsSent) invitation\(sentInvites.invitationsSent == 1 ? "" : "s").")
                         .font(.title).bold()
+                        .accessibilitySortPriority(1)
+                        .accessibilityAddTraits(.isHeader)
                     if !sentInvites.nonNeevanEmails.isEmpty {
                         let count = sentInvites.nonNeevanEmails.count
                         VStack(spacing: 30) {
@@ -103,7 +110,9 @@ struct ShareSpaceView: View {
                                            let result = data.shareSpacePublicLink,
                                            let numShared = result.numShared,
                                            let failures = result.failures {
-                                            self.sentInvites = .init(invitationsSent: numShared, nonNeevanEmails: failures)
+                                            let sent = InvitationSentState(invitationsSent: numShared, nonNeevanEmails: failures)
+                                            self.sentInvites = sent
+                                            sent.notify()
                                         }
                                     }
                                 }) {
@@ -150,7 +159,9 @@ struct ShareSpaceView: View {
                                     spaceId: spaceId
                                 )
                             } else {
-                                MultilineTextField("Optional message…", text: $invite.note)
+                                DecorativeSection {
+                                    MultilineTextField("Optional message…", text: $invite.note)
+                                }
                             }
                         } else {
                             Section(header: Text("Suggestions")) {
@@ -161,7 +172,7 @@ struct ShareSpaceView: View {
                                             suggestionsController.query = ""
                                         } label: {
                                             UserDetailView(user).accentColor(.primary)
-                                        }
+                                        }.accessibilityHint("Double-tap to add to pending invitation list")
                                     }
                                 } else {
                                     let synthetic = ContactSuggestionController.Suggestion(displayName: "", email: suggestionsController.query, pictureUrl: "")
@@ -210,6 +221,7 @@ struct ShareSpaceView: View {
                                         invitationsSent: result.changedAclCount ?? 0,
                                         nonNeevanEmails: result.nonNeevanEmails!
                                     )
+                                    sentInvites!.notify()
                                     onUpdate(nil)
                                 }
                             }

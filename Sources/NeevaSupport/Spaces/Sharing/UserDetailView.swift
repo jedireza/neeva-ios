@@ -43,6 +43,7 @@ public struct ProfileFallbackView: View {
                 .font(.system(size: size.titleSize))
                 .fontWeight(.semibold)
                 .foregroundColor(.white)
+                .accessibilityHidden(true)
         }
     }
 }
@@ -80,7 +81,9 @@ public struct UserDetailView: View {
 
     public var body: some View {
         HStack {
-            UserAvatarView(profile).frame(width: 28, height: 28)
+            UserAvatarView(profile)
+                .frame(width: 28, height: 28)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
                 if !profile.displayName.isEmpty {

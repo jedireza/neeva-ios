@@ -30,11 +30,11 @@ public struct SendFeedbackView: View {
     public var body: some View {
         NavigationView {
             Form {
-                Section {
+                DecorativeSection {
                     MultilineTextField("Please type your feedback here", text: $feedbackText)
                 }
                 if canShareResults {
-                    Section {
+                    DecorativeSection {
                         Toggle("Share my query to help improve Neeva.", isOn: $shareResults)
                     }
                 }

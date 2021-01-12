@@ -59,7 +59,9 @@ public struct AddToSpaceView: View {
                                 SpaceListItem(space).foregroundColor(.primary)
                             }
                         }
-                    }.refreshControl(refreshing: spaceList)
+                    }
+                    .refreshControl(refreshing: spaceList)
+                    .listStyle(DefaultListStyle())
                 } else if let error = spaceList.error {
                     if let error = error as? GraphQLAPI.Error {
                         Text(error.errors.description)

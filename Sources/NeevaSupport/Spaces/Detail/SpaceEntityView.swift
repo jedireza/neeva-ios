@@ -25,12 +25,20 @@ struct SpaceEntityView: View {
     let spaceId: String
     let spaceAcl: SpaceACLLevel?
     let onUpdate: Updater<SpaceController.Space>
+    let onDelete: () -> ()
 
     @State fileprivate var modal: Modal? = nil
     @State var isDeleting = false
 
     var body: some View {
         let spaceEntity = entity.spaceEntity!
+
+        let actions = [
+            .edit(condition: spaceAcl >= .edit) { modal = .edit },
+            Action("Add to another Space", icon: "plus", condition: !(spaceEntity.url?.isEmpty ?? true)) { modal = .addToSpace },
+            .delete(condition: spaceAcl >= .edit, handler: onDelete)
+        ]
+
         HStack(alignment: .top) {
             if let data = spaceEntity.thumbnail?.dataURIBody,
                let thumbnail = UIImage(data: data) {
@@ -46,31 +54,7 @@ struct SpaceEntityView: View {
                         .font(.title3)
                         .fontWeight(spaceEntity.url?.isEmpty ?? true ? .semibold : .regular) 
                     Spacer()
-                    if !(spaceAcl < .edit && (spaceEntity.url?.isEmpty ?? true)) {
-                        Menu {
-                            if spaceAcl >= .edit {
-                                Button(action: { modal = .edit }) {
-                                    Label("Edit", systemImage: "pencil")
-                                }
-                            }
-                            if !(spaceEntity.url?.isEmpty ?? true) {
-                                Button(action: { modal = .addToSpace }) {
-                                    Label("Add to another Space", systemImage: "plus")
-                                }
-                           }
-                            if spaceAcl >= .edit {
-                                Button(action: { isDeleting = true }) {
-                                    Label("Remove", systemImage: "trash")
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .imageScale(.large)
-                                .padding(.vertical, 9)
-                                .padding(.horizontal, 5)
-                                .contentShape(Rectangle())
-                        }.accentColor(.blue)
-                    }
+                    actions.menu
                 }
                 if let url = spaceEntity.url, !url.isEmpty {
                     Text(spaceEntity.url!)
@@ -112,30 +96,18 @@ struct SpaceEntityView: View {
                     }
                 ).buttonStyle(DefaultButtonStyle())
             }
-        }).actionSheet(isPresented: $isDeleting, content: {
-            ActionSheet(
-                title: Text("Are you sure that you want to remove this item from your space?"),
-                buttons: [
-                    .destructive(Text("Remove")) {
-                        BatchDeleteSpaceResultMutation(space: spaceId, results: [entity.id]).perform { result in
-                            guard case .success(let data) = result, data.batchDeleteSpaceResult else { return }
-                            onUpdate { newSpace in
-                                newSpace.entities!.removeAll(where: { $0.id == entity.id })
-                            }
-                        }
-                    },
-                    .cancel()
-                ])
         })
+        .accessibilityElement(children: .combine)
+        .accessibilityActions(actions.filter { $0?.name != "Remove" })
     }
 }
 
 struct SpaceEntityView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            SpaceEntityView(entity: testSpace.entities![1], spaceId: "", spaceAcl: .owner, onUpdate: { _ in })
-            SpaceEntityView(entity: testSpace.entities![2], spaceId: "", spaceAcl: .edit, onUpdate: { _ in })
-            SpaceEntityView(entity: testSpace.entities![3], spaceId: "", spaceAcl: nil, onUpdate: { _ in })
+            SpaceEntityView(entity: testSpace.entities![1], spaceId: "", spaceAcl: .owner, onUpdate: { _ in }, onDelete: {})
+            SpaceEntityView(entity: testSpace.entities![2], spaceId: "", spaceAcl: .edit, onUpdate: { _ in }, onDelete: {})
+            SpaceEntityView(entity: testSpace.entities![3], spaceId: "", spaceAcl: nil, onUpdate: { _ in }, onDelete: {})
         }
         .padding()
         .previewLayout(.sizeThatFits)

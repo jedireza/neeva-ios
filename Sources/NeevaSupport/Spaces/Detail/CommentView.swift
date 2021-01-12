@@ -17,7 +17,16 @@ struct CommentView: View {
     @State var promptingDelete = false
     @StateObject var profile = UserProfileController.shared
 
+
     var body: some View {
+        let canEdit = userAcl >= .comment && profile.userId == comment.userid
+        let canRemove = userAcl == .owner || canEdit
+
+        let actions: [Action?] = [
+            .edit(condition: canEdit, handler: onEdit),
+            .delete(condition: canRemove) { promptingDelete = true }
+        ]
+
         HStack(alignment: .top) {
             Group {
                 if let profile = comment.profile {
@@ -33,57 +42,44 @@ struct CommentView: View {
             if let date = format(comment.createdTs, as: .compact) {
                 Text(date)
             }
-            let canEdit = userAcl >= .comment && profile.userId == comment.userid
-            let canRemove = userAcl == .owner || canEdit
             if isSaving {
                 ActivityIndicator()
             } else if canRemove {
-                Menu {
-                    if canEdit {
-                        Button(action: onEdit) {
-                            Label("Edit", systemImage: "pencil")
-                        }
-                    }
-                    Button(action: {
-                        promptingDelete = true
-                    }) {
-                        Label("Delete", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .imageScale(.large)
-                        .padding(.vertical, 5)
-                        .padding(.horizontal, 5)
-                        .contentShape(Rectangle())
-                }.actionSheet(isPresented: $promptingDelete) {
-                    ActionSheet(
-                        title: Text("Delete comment ”\(comment.comment ?? "")” by \(comment.profile?.displayName ?? "")?"),
-                        buttons: [
-                            .destructive(Text("Delete")) {
-                                isSaving = true
-                                DeleteSpaceCommentMutation(space: spaceId, comment: comment.id!).perform { result in
-                                    isSaving = false
-                                    guard
-                                        case .success(let data) = result,
-                                        data.deleteSpaceComment ?? false
-                                    else {
-                                        onUpdate(nil)
-                                        return
+                actions.menu
+                    .padding(.trailing, -2)
+                    .padding(.top, -3)
+                    .actionSheet(isPresented: $promptingDelete) {
+                        ActionSheet(
+                            title: Text("Delete comment ”\(comment.comment ?? "")” by \(comment.profile?.displayName ?? "")?"),
+                            buttons: [
+                                .destructive(Text("Delete")) {
+                                    isSaving = true
+                                    DeleteSpaceCommentMutation(space: spaceId, comment: comment.id!).perform { result in
+                                        isSaving = false
+                                        guard
+                                            case .success(let data) = result,
+                                            data.deleteSpaceComment ?? false
+                                        else {
+                                            onUpdate(nil)
+                                            return
+                                        }
+                                        onUpdate { newSpace in
+                                            newSpace.comments?.removeAll(where: { $0.id == comment.id })
+                                        }
                                     }
-                                    onUpdate { newSpace in
-                                        newSpace.comments?.removeAll(where: { $0.id == comment.id })
-                                    }
-                                }
-                            },
-                            .cancel()
-                        ]
-                    )
-                }.padding(.trailing, -2)
+                                },
+                                .cancel()
+                            ]
+                        )
+                    }
             }
         }
         .padding(.top, 2)
         .disabled(isSaving)
         .opacity(isSaving ? 0.5 : 1)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(comment.comment ?? "") by \(comment.profile?.displayName ?? "") \(format(comment.createdTs, as: .full) ?? "")")
+        .accessibilityActions(actions)
     }
 
     func onEdit() {

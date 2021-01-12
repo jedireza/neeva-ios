@@ -15,7 +15,7 @@ struct PublicToggleView: View {
     @State private var showingSuccessMessage = false
 
     var body: some View {
-        Section {
+        DecorativeSection {
             Toggle(isOn: $isPublic) {
                 HStack {
                     VStack(alignment: .leading) {
@@ -39,24 +39,33 @@ struct PublicToggleView: View {
                         withAnimation {
                             showingSuccessMessage = true
                         }
+                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now().advanced(by: .milliseconds(100))) {
+                            UIAccessibility.post(notification: .announcement, argument: "Copied link")
+                        }
                         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now().advanced(by: .seconds(3))) {
                             withAnimation {
                                 showingSuccessMessage = false
                             }
                         }
                     }) {
-                        Image(systemName: "square.on.square")
+                        Label("Copy public space link", systemImage: "square.on.square")
+                            .labelStyle(IconOnlyLabelStyle())
                     }
                     Text(showingSuccessMessage ? "Copied!" : url)
                         .font(.caption)
                         .foregroundColor(showingSuccessMessage ? .primary : .secondary)
                         .lineLimit(1)
+                        .accessibilitySortPriority(-1)
+                        .accessibilityLabel("Space link")
+                        .accessibilityValue(url)
+
                     Spacer(minLength: 0)
                     Button(action: {
                         let share = UIActivityViewController(activityItems: [URL(string: url)!], applicationActivities: [])
                         UIApplication.shared.frontViewController.present(share, animated: true, completion: nil)
                     }) {
-                        Image(systemName: "square.and.arrow.up")
+                        Label("Share public space link", systemImage: "square.and.arrow.up")
+                            .labelStyle(IconOnlyLabelStyle())
                     }
                 }.buttonStyle(BorderlessButtonStyle())
             }

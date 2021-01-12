@@ -113,6 +113,7 @@ struct MultilineTextField: View {
             .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
             .background(placeholderView, alignment: .topLeading)
             .padding(.horizontal, -10)
+            .accessibilityHint(placeholder)
     }
 
     var placeholderView: some View {
@@ -122,6 +123,7 @@ struct MultilineTextField: View {
                     .foregroundColor(Color(UIColor.placeholderText))
                     .padding(.leading, 4)
                     .padding(.top, 8)
+                    .accessibilityHidden(true)
             }
         }
     }

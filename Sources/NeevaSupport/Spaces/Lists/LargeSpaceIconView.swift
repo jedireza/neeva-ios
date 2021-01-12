@@ -60,6 +60,7 @@ struct LargeSpaceIconView: View {
                     Text(firstCharacters(2, from: name))
                         .foregroundColor(.white)
                         .font(.system(size: Metrics.textSize, weight: .medium, design: .default))
+                        .accessibilityHidden(true)
                 }
             }
         }

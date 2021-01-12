@@ -28,7 +28,7 @@ struct SharedWithView: View {
     let onUpdate: Updater<SpaceController.Space>
 
     var body: some View {
-        Section {
+        DecorativeSection {
             let (owners, others) = separate(users)
             ForEach(owners) { acl in
                 ACLView(acl: acl, canEdit: canEdit, spaceId: spaceId)
