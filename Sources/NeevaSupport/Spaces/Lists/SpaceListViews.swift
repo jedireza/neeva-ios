@@ -44,45 +44,49 @@ public struct SpaceListView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        openTextInputAlert(
-                            title: "What would you like to name your space?",
-                            confirmationButtonTitle: "Add",
-                            placeholder: "Name your space",
-                            configureTextField: { tf in
-                                tf.autocapitalizationType = .words
-                                tf.returnKeyType = .done
-                                tf.autocorrectionType = .default
-                                tf.clearButtonMode = .always
+                    Self.newSpaceButton { name, result in
+                        if case .success(let data) = result,
+                           let oldSpaces = controller.data {
+                            withAnimation {
+                                controller.reload(optimisticResult: [
+                                    .init(
+                                        pageMetadata: .init(pageId: data.createSpace),
+                                        space: .init(
+                                            name: name,
+                                            createdTs: dateParser.string(from: Date()),
+                                            lastModifiedTs: dateParser.string(from: Date())
+                                        )
+                                    )
+                                ] + oldSpaces)
                             }
-                        ) { name in
-                            CreateSpaceMutation(name: name).perform { result in
-                                if case .success(let data) = result,
-                                   let oldSpaces = controller.data {
-                                    withAnimation {
-                                        controller.reload(optimisticResult: [
-                                            .init(
-                                                pageMetadata: .init(pageId: data.createSpace),
-                                                space: .init(
-                                                    name: name,
-                                                    createdTs: dateParser.string(from: Date()),
-                                                    lastModifiedTs: dateParser.string(from: Date())
-                                                )
-                                            )
-                                        ] + oldSpaces)
-                                    }
-                                } else {
-                                    controller.reload()
-                                }
-                            }
+                        } else {
+                            controller.reload()
                         }
-                    } label: {
-                        Image(systemName: "plus")
-                            .accessibilityLabel("New Space")
                     }.disabled(controller.data == nil)
                 }
             }
         }.navigationViewStyle(StackNavigationViewStyle())
+    }
+
+    static func newSpaceButton(resultHandler: @escaping (String, Result<CreateSpaceMutation.Data, Error>) -> ()) -> some View {
+        Button {
+            openTextInputAlert(
+                title: "What would you like to name your new space?",
+                confirmationButtonTitle: "Add",
+                placeholder: "Name your space",
+                configureTextField: { tf in
+                    tf.autocapitalizationType = .words
+                    tf.returnKeyType = .done
+                    tf.autocorrectionType = .default
+                    tf.clearButtonMode = .always
+                }
+            ) { name in
+                CreateSpaceMutation(name: name).perform { resultHandler(name, $0) }
+            }
+        } label: {
+            Image(systemName: "plus")
+                .accessibilityLabel("New Space")
+        }
     }
 }
 

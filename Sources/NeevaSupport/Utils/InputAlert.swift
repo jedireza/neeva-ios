@@ -22,6 +22,7 @@ func openTextInputAlert(
         confirmAction.isEnabled = false
     }
     alert.addAction(confirmAction)
+    alert.preferredAction = confirmAction
 
     alert.addTextField { tf in
         tf.text = initialText
