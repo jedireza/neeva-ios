@@ -1,6 +1,5 @@
 import SwiftUI
 import Apollo
-import SwiftKeychainWrapper
 
 public typealias JSONObject = Apollo.JSONObject
 public typealias JSONValue = Apollo.JSONValue
@@ -53,7 +52,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         req.addHeader(name: "X-Neeva-Client-ID", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)
         req.addHeader(name: "X-Neeva-Client-Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
 
-        if let cookie = KeychainWrapper.standard.string(forKey: NeevaConstants.loginKeychainKey) {
+        if let cookie = NeevaConstants.keychain.string(forKey: NeevaConstants.loginKeychainKey) {
             req.addHeader(name: "Cookie", value: "httpd~login=\(cookie)")
         } else if
             ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1",

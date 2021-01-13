@@ -13,7 +13,7 @@ class UserInfoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tokenInput.text = KeychainWrapper.standard.string(forKey: NeevaConstants.loginKeychainKey)
+        tokenInput.text = NeevaConstants.keychain.string(forKey: NeevaConstants.loginKeychainKey)
         if let idx = servers.firstIndex(of: NeevaConstants.appHost) {
             serverPicker.selectedSegmentIndex = idx
         }
@@ -26,7 +26,7 @@ class UserInfoViewController: UIViewController {
     }
     @IBAction func runUserQuery() {
         tokenInput.resignFirstResponder()
-        KeychainWrapper.standard.set(tokenInput.text!, forKey: NeevaConstants.loginKeychainKey)
+        NeevaConstants.keychain.set(tokenInput.text!, forKey: NeevaConstants.loginKeychainKey)
         activityIndicator.startAnimating()
         UIView.animate(withDuration: 0.4) {
             self.activityIndicator.alpha = 1
