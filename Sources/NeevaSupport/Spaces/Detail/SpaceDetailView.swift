@@ -89,13 +89,11 @@ struct DiscussionSection: View {
 public struct SpaceDetailView: View {
     let space: SpaceController.Space
     let spaceId: String
-    let onOpenURL: (URL) -> ()
     let onUpdate: Updater<SpaceController.Space>
 
-    public init(space: SpaceController.Space, with id: String, onOpenURL: @escaping (URL) -> (), onUpdate: @escaping Updater<SpaceController.Space>) {
+    public init(space: SpaceController.Space, with id: String, onUpdate: @escaping Updater<SpaceController.Space>) {
         self.space = space
         self.spaceId = id
-        self.onOpenURL = onOpenURL
         self.onUpdate = onUpdate
     }
 
@@ -107,6 +105,7 @@ public struct SpaceDetailView: View {
     @State var isAdding = false
 
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.onOpenURL) var onOpenURL
 
     public var body: some View {
         let name = space.name ?? ""
@@ -151,7 +150,7 @@ public struct SpaceDetailView: View {
                     Color.groupedBackground.edgesIgnoringSafeArea(.all)
                     ScrollView {}
                     GeometryReader { geom in
-                        BlankSlateView(name: name, onOpenURL: onOpenURL)
+                        BlankSlateView(name: name)
                             .padding(.top, geom.size.width > geom.size.height ? 44 : 92)
                             .edgesIgnoringSafeArea(.top)
                     }
@@ -254,7 +253,8 @@ public struct SpaceDetailView: View {
 
 struct BlankSlateView: View {
     let name: String?
-    let onOpenURL: (URL) -> ()
+    
+    @Environment(\.onOpenURL) var onOpenURL
     var body: some View {
         VStack {
             Spacer()
@@ -270,7 +270,7 @@ struct BlankSlateView: View {
             if let name = name, !name.isEmpty,
                let encoded = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
                 Button("Search for “\(name)”") {
-                    onOpenURL(URL(string: "https://\(NeevaConstants.appHost)/search?q=\(encoded)&c=All&src=InternalSearchLink")!)
+                    onOpenURL(URL(string: "/search?q=\(encoded)&c=All&src=InternalSearchLink", relativeTo: NeevaConstants.appURL)!)
                 }
                 .font(.title3)
                 .buttonStyle(BigBlueButtonStyle())
@@ -308,7 +308,7 @@ struct SpaceDetailView_Previews: PreviewProvider {
 //    }
     static var previews: some View {
         NavigationView {
-            SpaceDetailView(space: testSpace, with: "", onOpenURL: { _ in }, onUpdate: { _ in })
+            SpaceDetailView(space: testSpace, with: "", onUpdate: { _ in })
         }.navigationViewStyle(StackNavigationViewStyle())
         NavigationView {
             SpaceDetailView(
@@ -342,7 +342,6 @@ struct SpaceDetailView_Previews: PreviewProvider {
                     entities: []
                 ),
                 with: "",
-                onOpenURL: { _ in },
                 onUpdate: { _ in }
             )
         }.navigationViewStyle(StackNavigationViewStyle())

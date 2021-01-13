@@ -4,6 +4,6 @@ import NeevaSupport
 
 class SpacesViewController: UIHostingController<SpaceListView> {
     required init?(coder: NSCoder) {
-        super.init(coder: coder, rootView: SpaceListView(onOpenURL: { url in  UIApplication.shared.open(url, options: [:])}))
+        super.init(coder: coder, rootView: SpaceListView())
     }
 }

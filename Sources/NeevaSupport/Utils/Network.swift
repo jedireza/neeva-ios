@@ -13,7 +13,7 @@ public class GraphQLAPI {
         let provider = LegacyInterceptorProvider(store: store)
         let transport = NeevaNetworkTransport(
             interceptorProvider: provider,
-            endpointURL: URL(string: "https://\(NeevaConstants.appHost)/graphql")!
+            endpointURL: NeevaConstants.appURL / "graphql"
         )
         return ApolloClient(networkTransport: transport, store: store)
     }()
@@ -47,7 +47,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         contextIdentifier: UUID? = nil
     ) -> HTTPRequest<Operation> where Operation : GraphQLOperation {
         let req = super.constructRequest(for: operation, cachePolicy: cachePolicy, contextIdentifier: contextIdentifier)
-        req.graphQLEndpoint = URL(string: "https://\(NeevaConstants.appHost)/graphql")!
+        req.graphQLEndpoint = NeevaConstants.appURL / "graphql"
 
         req.addHeader(name: NeevaConstants.Header.deviceType.name, value: NeevaConstants.Header.deviceType.value)
         req.addHeader(name: "X-Neeva-Client-ID", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)

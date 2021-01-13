@@ -9,6 +9,7 @@ public struct NeevaConstants {
         get { Defaults[neevaHostKey] }
         set { Defaults[neevaHostKey] = newValue }
     }
+    public static var appURL: URL { URL(string: "https://\(appHost)/")! }
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
 
     public struct Header {
@@ -22,4 +23,8 @@ public struct NeevaConstants {
         // all Neeva requests
         public static let deviceType = Header("X-Neeva-Device-Type", "ios-browser")
     }
+}
+
+public func / (_ lhs: URL, rhs: String) -> URL {
+    lhs.appendingPathComponent(rhs)
 }

@@ -165,22 +165,17 @@ struct ShareSpaceView: View {
                             }
                         } else {
                             Section(header: Text("Suggestions")) {
-                                if let users = suggestionsController.data, !users.isEmpty {
-                                    ForEach(users) { user in
+                                if let error = suggestionsController.error {
+                                    ErrorView(error, in: self, tryAgain: { suggestionsController.reload() })
+                                        .buttonStyle(BorderlessButtonStyle())
+                                } else if let users = suggestionsController.data {
+                                    ForEach(users.isEmpty ? [.init(displayName: "", email: suggestionsController.query, pictureUrl: "")] : users) { user in
                                         Button {
                                             invite.selected.append(user)
                                             suggestionsController.query = ""
                                         } label: {
                                             UserDetailView(user).accentColor(.primary)
                                         }.accessibilityHint("Double-tap to add to pending invitation list")
-                                    }
-                                } else {
-                                    let synthetic = ContactSuggestionController.Suggestion(displayName: "", email: suggestionsController.query, pictureUrl: "")
-                                    Button {
-                                        invite.selected.append(synthetic)
-                                        suggestionsController.query = ""
-                                    } label: {
-                                        UserDetailView(synthetic).accentColor(.primary)
                                     }
                                 }
                             }

@@ -11,14 +11,16 @@ public struct SendFeedbackView: View {
     let canShareResults: Bool
     let requestId: String?
     let geoLocationStatus: String?
-
+    let initialText: String
     let onDismiss: (() -> ())?
 
-    public init(onDismiss: (() -> ())? = nil, canShareResults: Bool = false, requestId: String? = nil, geoLocationStatus: String? = nil) {
+    public init(onDismiss: (() -> ())? = nil, canShareResults: Bool = false, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
         self.canShareResults = canShareResults
         self.requestId = requestId
         self.geoLocationStatus = geoLocationStatus
         self.onDismiss = onDismiss
+        self._feedbackText = .init(initialValue: initialText)
+        self.initialText = initialText
     }
 
     @Environment(\.presentationMode) var presentationMode
@@ -43,13 +45,13 @@ public struct SendFeedbackView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
+                    SwiftUI.Button("Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if isSending {
                         ActivityIndicator()
                     } else {
-                        Button("Send") {
+                        SwiftUI.Button("Send") {
                             isSending = true
                             SendFeedbackMutation(
                                 input: .init(
@@ -77,23 +79,36 @@ public struct SendFeedbackView: View {
                     }
                 }
             }
-        }.presentation(isModal: !feedbackText.isEmpty)
+        }.presentation(isModal: feedbackText != initialText)
+    }
+}
+
+extension SendFeedbackView {
+    public struct Button: View {
+        @Environment(\.font) private var font
+        @State private var presenting = false
+
+        private let sheet: SendFeedbackView
+        public init(onDismiss: (() -> ())? = nil, canShareResults: Bool = false, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
+            sheet = SendFeedbackView(onDismiss: onDismiss, canShareResults: canShareResults, requestId: requestId, geoLocationStatus: geoLocationStatus, initialText: initialText)
+        }
+
+        public var body: some View {
+            SwiftUI.Button(action: { presenting = true }) {
+                Label("Send Feedback", systemImage: "bubble.left.fill")
+                    .font(font?.bold())
+            }.sheet(isPresented: $presenting) {
+                sheet.font(.body)
+            }
+        }
     }
 }
 
 struct AddToSpaceDemoView_Previews: PreviewProvider {
-    struct TestView: View {
-        @State var open = true
-        var body: some View {
-            Button("Press \(Image(systemName: "arrowtriangle.right.circle")) above to interact with this preview") { open = true }
-                .sheet(isPresented: $open) {
-                    SendFeedbackView()
-                }
-        }
-    }
     static var previews: some View {
         SendFeedbackView()
         SendFeedbackView(canShareResults: true)
-        TestView()
+        SendFeedbackView.Button()
+        SendFeedbackView.Button().font(.largeTitle)
     }
 }

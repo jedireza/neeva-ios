@@ -29,6 +29,8 @@ public struct AddToSpaceView: View {
             Group {
                 if cancellable != nil {
                     LoadingView("Adding to space…")
+                } else if let error = spaceList.error {
+                    ErrorView(error, in: self, tryAgain: { spaceList.reload() })
                 } else if let spaces = spaceList.data {
                     List {
                         ForEach(spaces) { space in
@@ -62,12 +64,6 @@ public struct AddToSpaceView: View {
                     }
                     .refreshControl(refreshing: spaceList)
                     .listStyle(DefaultListStyle())
-                } else if let error = spaceList.error {
-                    if let error = error as? GraphQLAPI.Error {
-                        Text(error.errors.description)
-                    } else {
-                        Text(error.localizedDescription)
-                    }
                 } else {
                     LoadingView("Loading spaces…")
                 }

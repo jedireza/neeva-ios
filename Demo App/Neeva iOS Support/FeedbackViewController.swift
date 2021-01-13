@@ -4,13 +4,11 @@ import NeevaSupport
 struct FeedbackView: View {
     @State var presenting = false
     @State var allowShareQuery = false
+
     var body: some View {
         NavigationView {
             VStack(spacing: 50) {
-                Button(action: { presenting = true }) {
-                    Label("Send Feedback", systemImage: "bubble.left.fill")
-                        .font(Font.title.bold())
-                }
+                SendFeedbackView.Button(canShareResults: allowShareQuery)
                 Toggle("Enable “share query” toggle", isOn: $allowShareQuery)
                 VStack {
                     Text("Note").bold()
@@ -19,9 +17,6 @@ struct FeedbackView: View {
             }
             .font(.title3)
             .padding(.horizontal, 60)
-            .sheet(isPresented: $presenting, content: {
-                SendFeedbackView(canShareResults: allowShareQuery)
-            })
             .navigationTitle("Send Feedback")
         }
     }

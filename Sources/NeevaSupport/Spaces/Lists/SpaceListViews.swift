@@ -10,28 +10,34 @@ import SwiftUI
 public struct SpaceListView: View {
     @StateObject var controller = SpaceListController()
     let onDismiss: (() -> ())?
-    let onOpenURL: (URL) -> ()
 
-    public init(onDismiss: (() -> ())? = nil, onOpenURL: @escaping (URL) -> ()) {
+    public init(onDismiss: (() -> ())? = nil) {
         self.onDismiss = onDismiss
-        self.onOpenURL = onOpenURL
     }
 
     public var body: some View {
         NavigationView {
-            List(controller.data ?? []) { space in
-                NavigationLink(
-                    destination: SpaceLoaderView(id: space.id, initialTitle: space.space?.name ?? "", onOpenURL: onOpenURL)
-                        .onDisappear(perform: controller.reload)
-                ) {
-                    SpaceListItem(space)
+            Group {
+                if let error = controller.error {
+                    ErrorView(error, in: self, tryAgain: { controller.reload() })
+                } else if let data = controller.data {
+                    List(data) { space in
+                        NavigationLink(
+                            destination: SpaceLoaderView(id: space.id, initialTitle: space.space?.name ?? "")
+                                .onDisappear(perform: controller.reload)
+                        ) {
+                            SpaceListItem(space)
+                        }
+                    }
+                    .refreshControl(refreshing: controller)
+                } else {
+                    LoadingView("Loading Spaces")
                 }
             }
-            .refreshControl(refreshing: controller)
             .navigationTitle("Spaces")
             .navigationBarTitleDisplayMode(onDismiss == nil ? .automatic : .inline)
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItem(placement: .confirmationAction) {
                     if let onDismiss = onDismiss {
                         Button("Done", action: onDismiss)
                             .font(Font.body.bold())
@@ -73,7 +79,7 @@ public struct SpaceListView: View {
                     } label: {
                         Image(systemName: "plus")
                             .accessibilityLabel("New Space")
-                    }
+                    }.disabled(controller.data == nil)
                 }
             }
         }.navigationViewStyle(StackNavigationViewStyle())
@@ -84,17 +90,17 @@ struct SpaceLoaderView: View {
     @StateObject var controller: SpaceController
     let id: String
     let initialTitle: String
-    let onOpenURL: (URL) -> ()
 
-    init(id: String, initialTitle: String, onOpenURL: @escaping (URL) -> ()) {
+    init(id: String, initialTitle: String) {
         self._controller = .init(wrappedValue: SpaceController(id: id, animation: .default))
         self.id = id
-        self.onOpenURL = onOpenURL
         self.initialTitle = initialTitle
     }
     var body: some View {
-        if let space = controller.data {
-            SpaceDetailView(space: space, with: id, onOpenURL: onOpenURL, onUpdate: { handler in
+        if let error = controller.error {
+            ErrorView(error, in: self, tryAgain: { controller.reload() })
+        } else if let space = controller.data {
+            SpaceDetailView(space: space, with: id, onUpdate: { handler in
                 if let handler = handler, var newSpace = controller.data {
                     handler(&newSpace)
                     withAnimation {
@@ -126,8 +132,8 @@ struct SpaceLoaderView: View {
 
 struct SpacesListView_Previews: PreviewProvider {
     static var previews: some View {
-        SpaceListView(onOpenURL: { _ in })
-        SpaceListView(onDismiss: { }, onOpenURL: { _ in })
-        SpaceLoaderView(id: "", initialTitle: "Title", onOpenURL: { _ in })
+        SpaceListView()
+        SpaceListView(onDismiss: { })
+        SpaceLoaderView(id: "", initialTitle: "Title")
     }
 }

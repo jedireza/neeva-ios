@@ -36,3 +36,13 @@ extension View {
         )
     }
 }
+
+extension EnvironmentValues {
+    private struct OnOpenURLKey: EnvironmentKey {
+        static var defaultValue: ((URL) -> ())? = nil
+    }
+    public var onOpenURL: (URL) -> () {
+        get { self[OnOpenURLKey] ?? { openURL($0) } }
+        set { self[OnOpenURLKey] = newValue }
+    }
+}

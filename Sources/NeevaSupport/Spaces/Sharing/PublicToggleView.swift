@@ -33,9 +33,9 @@ struct PublicToggleView: View {
             .padding(.vertical, 5)
             if isPublic {
                 HStack {
-                    let url = "https://\(NeevaConstants.appHost)/spaces/\(spaceId)"
+                    let url = NeevaConstants.appURL / "spaces" / spaceId
                     Button(action: {
-                        UIPasteboard.general.url = URL(string: url)
+                        UIPasteboard.general.url = url
                         withAnimation {
                             showingSuccessMessage = true
                         }
@@ -51,17 +51,17 @@ struct PublicToggleView: View {
                         Label("Copy public space link", systemImage: "square.on.square")
                             .labelStyle(IconOnlyLabelStyle())
                     }
-                    Text(showingSuccessMessage ? "Copied!" : url)
+                    Text(showingSuccessMessage ? "Copied!" : url.absoluteString)
                         .font(.caption)
                         .foregroundColor(showingSuccessMessage ? .primary : .secondary)
                         .lineLimit(1)
                         .accessibilitySortPriority(-1)
                         .accessibilityLabel("Space link")
-                        .accessibilityValue(url)
+                        .accessibilityValue(url.absoluteString)
 
                     Spacer(minLength: 0)
                     Button(action: {
-                        let share = UIActivityViewController(activityItems: [URL(string: url)!], applicationActivities: [])
+                        let share = UIActivityViewController(activityItems: [url], applicationActivities: [])
                         UIApplication.shared.frontViewController.present(share, animated: true, completion: nil)
                     }) {
                         Label("Share public space link", systemImage: "square.and.arrow.up")

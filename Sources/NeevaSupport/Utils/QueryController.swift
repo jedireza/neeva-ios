@@ -27,17 +27,24 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
     }
 
     @discardableResult public func perform(query: Query) -> Apollo.Cancellable {
+        var stillRunning = true
         withOptionalAnimation {
             running = true
-            error = nil
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
+            if stillRunning { self.error = nil }
         }
         return Self.perform(query: query) { result in
+            stillRunning = false
             self.withOptionalAnimation {
                 self.running = false
-                self.data = nil
                 switch result {
-                case .failure(let error): self.error = error
-                case .success(let data): self.data = data
+                case .failure(let error):
+                    self.data = nil
+                    self.error = error
+                case .success(let data):
+                    self.data = data
+                    self.error = nil
                 }
             }
         }

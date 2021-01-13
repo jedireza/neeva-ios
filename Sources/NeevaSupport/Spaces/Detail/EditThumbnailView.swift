@@ -17,15 +17,16 @@ struct EditThumbnailView: View {
         _selectedThumbnail = selectedThumbnail
     }
     var body: some View {
-        if controller.data?.isEmpty ?? false {
+        if let error = controller.error {
+            ErrorView(error, in: self, tryAgain: { controller.reload() })
+                .buttonStyle(BorderlessButtonStyle())
+        } else if controller.data?.isEmpty ?? false {
             HStack {
                 Spacer()
                 Text("No thumbnails found.")
                     .foregroundColor(.secondary)
                 Spacer()
             }
-        } else if let error = controller.error {
-            Text(error.localizedDescription)
         } else {
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {

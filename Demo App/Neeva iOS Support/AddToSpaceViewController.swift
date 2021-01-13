@@ -22,6 +22,7 @@ struct AddToSpaceDemoView: View {
 
     @State var selectedSpace: String? = nil
     @State var addingToSpace = false
+
     var body: some View {
         NavigationView {
             Form {
