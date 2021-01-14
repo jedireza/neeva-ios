@@ -165,10 +165,11 @@ struct ShareSpaceView: View {
                             }
                         } else {
                             Section(header: Text("Suggestions")) {
-                                if let error = suggestionsController.error {
+                                switch suggestionsController.state {
+                                case .failure(let error):
                                     ErrorView(error, in: self, tryAgain: { suggestionsController.reload() })
                                         .buttonStyle(BorderlessButtonStyle())
-                                } else if let users = suggestionsController.data {
+                                case .success(let users):
                                     ForEach(users.isEmpty ? [.init(displayName: "", email: suggestionsController.query, pictureUrl: "")] : users) { user in
                                         Button {
                                             invite.selected.append(user)
@@ -177,6 +178,8 @@ struct ShareSpaceView: View {
                                             UserDetailView(user).accentColor(.primary)
                                         }.accessibilityHint("Double-tap to add to pending invitation list")
                                     }
+                                case .running:
+                                    EmptyView()
                                 }
                             }
                         }

@@ -11,16 +11,30 @@ struct CommentView: View {
     let spaceId: String
     let comment: SpaceController.Space.Comment
     let userAcl: SpaceACLLevel?
-    let onUpdate: Updater<SpaceController.Space>
 
-    @State var isSaving = false
     @State var promptingDelete = false
-    @StateObject var profile = UserProfileController.shared
+    @ObservedObject var profile = UserProfileController.shared
 
+    @StateObject var deleter: SpaceCommentDeleter
+    @StateObject var updater: SpaceCommentUpdater
+
+    init(
+        spaceId: String,
+        comment: SpaceController.Space.Comment,
+        userAcl: SpaceACLLevel?,
+        onUpdate: @escaping Updater<SpaceController.Space>
+    ) {
+        self.spaceId = spaceId
+        self.comment = comment
+        self.userAcl = userAcl
+        self._deleter = .init(wrappedValue: .init(spaceId: spaceId, commentId: comment.id!, onUpdate: onUpdate))
+        self._updater = .init(wrappedValue: .init(spaceId: spaceId, commentId: comment.id!, onUpdate: onUpdate))
+    }
 
     var body: some View {
         let canEdit = userAcl >= .comment && profile.userId == comment.userid
         let canRemove = userAcl == .owner || canEdit
+        let isSaving = deleter.isRunning
 
         let actions: [Action?] = [
             .edit(condition: canEdit, handler: onEdit),
@@ -52,22 +66,7 @@ struct CommentView: View {
                         ActionSheet(
                             title: Text("Delete comment ”\(comment.comment ?? "")” by \(comment.profile?.displayName ?? "")?"),
                             buttons: [
-                                .destructive(Text("Delete")) {
-                                    isSaving = true
-                                    DeleteSpaceCommentMutation(space: spaceId, comment: comment.id!).perform { result in
-                                        isSaving = false
-                                        guard
-                                            case .success(let data) = result,
-                                            data.deleteSpaceComment ?? false
-                                        else {
-                                            onUpdate(nil)
-                                            return
-                                        }
-                                        onUpdate { newSpace in
-                                            newSpace.comments?.removeAll(where: { $0.id == comment.id })
-                                        }
-                                    }
-                                },
+                                .destructive(Text("Delete")) { deleter.execute() },
                                 .cancel()
                             ]
                         )
@@ -76,7 +75,7 @@ struct CommentView: View {
         }
         .padding(.top, 2)
         .disabled(isSaving)
-        .opacity(isSaving ? 0.5 : 1)
+        .opacity(isSaving  ? 0.5 : 1)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(comment.comment ?? "") by \(comment.profile?.displayName ?? "") \(format(comment.createdTs, as: .full) ?? "")")
         .accessibilityActions(actions)
@@ -92,51 +91,12 @@ struct CommentView: View {
                 tf.autocapitalizationType = .sentences
                 tf.returnKeyType = .done
                 tf.autocorrectionType = .default
-            }
-        ) { commentText in
-            isSaving = true
-            UpdateSpaceCommentMutation(space: spaceId, comment: comment.id!, commentText: commentText).perform { result in
-                isSaving = false
-                guard
-                    case .success(let data) = result,
-                    data.updateSpaceComment ?? false
-                else {
-                    onUpdate(nil)
-                    return
-                }
-                onUpdate { newSpace in
-                    if let idx = newSpace.comments?.firstIndex(where: { $0.id == comment.id }) {
-                        newSpace.comments![idx].comment = commentText
-                    }
-                }
-            }
-        }
+            },
+            onConfirm: updater.execute
+        )
     }
 }
 
-fileprivate let placeholders = ["Add a comment...", "What's on your mind?", "Write it down so you won't forget!"]
-
-func composeComment(in spaceId: String, onUpdate: @escaping Updater<SpaceController.Space>) {
-    openTextInputAlert(title: "Add a Comment", confirmationButtonTitle: "Save") { tf in
-        tf.placeholder = placeholders.randomElement()!
-        tf.autocapitalizationType = .sentences
-        tf.autocorrectionType = .default
-        tf.returnKeyType = .done
-    } onConfirm: { commentText in
-        AddSpaceCommentMutation(space: spaceId, commentText: commentText).perform { result in
-            if case .success(let data) = result,
-               let commentId = data.addSpaceComment {
-                onUpdate { newSpace in
-                    let ts = dateParser.string(from: Date())
-                    newSpace.comments?.append(
-                        .init(id: commentId, userid: nil, profile: nil, createdTs: ts, lastModifiedTs: ts, comment: commentText)
-                    )
-                }
-            }
-        }
-
-    }
-}
 
 struct CommentView_Previews: PreviewProvider {
     static var previews: some View {
@@ -145,9 +105,6 @@ struct CommentView_Previews: PreviewProvider {
                 CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: profile, createdTs: "2020-12-18T15:42:19Z", lastModifiedTs: "2020-12-18T15:42:19Z", comment: "A comment"), userAcl: .comment, onUpdate: { _ in })
                 CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: nil, createdTs: "2020-12-18T15:42:19Z", lastModifiedTs: "2020-12-18T15:42:19Z", comment: "A comment"), userAcl: .owner, onUpdate: { _ in })
                 CommentView(spaceId: "", comment: .init(id: "hello", userid: "sapoigj", profile: profile, createdTs: "2021-01-06T18:46:16Z", lastModifiedTs: "2021-01-06T18:56:24Z", comment: "A very very very very very very very very very very very very long comment"), userAcl: nil, onUpdate: { _ in })
-            }
-            Button("Add Comment") {
-                composeComment(in: "", onUpdate: { _ in })
             }
         }.listStyle(GroupedListStyle())
     }

@@ -19,7 +19,7 @@ struct SuggestionsView: View {
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .padding()
-                List(controller.data ?? []) { suggestion in
+                List(controller.state.data ?? []) { suggestion in
                     SuggestionView(
                         suggestion,
                         setInput: { controller.query = $0 },

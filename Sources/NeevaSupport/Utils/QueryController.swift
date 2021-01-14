@@ -3,13 +3,31 @@ import SwiftUI
 import Combine
 
 public typealias Updater<T> = (((inout T) -> ())?) -> ()
+
 /**
  * The `perform` methods are intended to be used only by subclasses, to help implement their custom query methods.
  */
 public class QueryController<Query, Data>: ObservableObject where Query: GraphQLQuery {
-    @Published public private(set) var running = false
-    @Published public private(set) var error: Error?
-    @Published public private(set) var data: Data?
+    public enum State {
+        case running
+        case success(Data)
+        case failure(Error)
+
+        public var isRunning: Bool {
+            switch self {
+            case .running: return true
+            default: return false
+            }
+        }
+
+        public var data: Data? {
+            switch self {
+            case .success(let data): return data
+            default: return nil
+            }
+        }
+    }
+    @Published public private(set) var state = State.running
 
     var animation: Animation?
 
@@ -28,23 +46,19 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
 
     @discardableResult public func perform(query: Query) -> Apollo.Cancellable {
         var stillRunning = true
-        withOptionalAnimation {
-            running = true
-        }
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
-            if stillRunning { self.error = nil }
+            if stillRunning, case .failure = self.state {
+                self.state = .running
+            }
         }
         return Self.perform(query: query) { result in
             stillRunning = false
             self.withOptionalAnimation {
-                self.running = false
                 switch result {
                 case .failure(let error):
-                    self.data = nil
-                    self.error = error
+                    self.state = .failure(error)
                 case .success(let data):
-                    self.data = data
-                    self.error = nil
+                    self.state = .success(data)
                 }
             }
         }
@@ -57,7 +71,7 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
     public func reload(optimisticResult: Data?) {
         if let optimisticResult = optimisticResult {
             withOptionalAnimation {
-                data = optimisticResult
+                state = .success(optimisticResult)
             }
         }
         self.reload()

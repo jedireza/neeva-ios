@@ -30,13 +30,13 @@ fileprivate struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
                     controller.reload()
                 }, for: .valueChanged)
 
-                controller.$running
+                controller.$state
                     .receive(on: RunLoop.main)
-                    .sink { shouldBeRefreshing in
-                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now().advanced(by: .milliseconds(200))) {
+                    .sink { state in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
                             if let rc = tableView.refreshControl,
-                               rc.isRefreshing != shouldBeRefreshing {
-                                if shouldBeRefreshing {
+                               rc.isRefreshing != state.isRunning {
+                                if state.isRunning {
                                     rc.beginRefreshing()
                                 } else {
                                     rc.endRefreshing()

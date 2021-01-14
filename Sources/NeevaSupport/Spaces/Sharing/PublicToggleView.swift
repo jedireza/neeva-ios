@@ -39,10 +39,10 @@ struct PublicToggleView: View {
                         withAnimation {
                             showingSuccessMessage = true
                         }
-                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now().advanced(by: .milliseconds(100))) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
                             UIAccessibility.post(notification: .announcement, argument: "Copied link")
                         }
-                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now().advanced(by: .seconds(3))) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
                             withAnimation {
                                 showingSuccessMessage = false
                             }

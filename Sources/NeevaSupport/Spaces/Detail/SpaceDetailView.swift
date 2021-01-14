@@ -61,11 +61,32 @@ struct DiscussionSection: View {
     let spaceId: String
     let onUpdate: Updater<SpaceController.Space>
 
+    @StateObject var creator: SpaceCommentCreator
+
+    init(space: SpaceController.Space, spaceId: String, onUpdate: @escaping Updater<SpaceController.Space>) {
+        self.space = space
+        self.spaceId = spaceId
+        self.onUpdate = onUpdate
+        self._creator = .init(wrappedValue: .init(spaceId: spaceId, onUpdate: onUpdate))
+    }
+
+    private static let placeholders = ["Add a comment...", "What's on your mind?", "Write it down so you won't forget!"]
+
     var body: some View {
         Section(header: BigHeader("Discussion") {
             if space.userAcl?.acl >= .comment {
                 Button {
-                    composeComment(in: spaceId, onUpdate: onUpdate)
+                    openTextInputAlert(
+                        title: "Add a Comment",
+                        confirmationButtonTitle: "Save",
+                        configureTextField: { tf in
+                            tf.placeholder = Self.placeholders.randomElement()!
+                            tf.autocapitalizationType = .sentences
+                            tf.autocorrectionType = .default
+                            tf.returnKeyType = .done
+                        },
+                        onConfirm: creator.execute
+                    )
                 } label: {
                     Label("New Comment", systemImage: "plus.bubble.fill")
                 }
@@ -95,6 +116,8 @@ public struct SpaceDetailView: View {
         self.space = space
         self.spaceId = id
         self.onUpdate = onUpdate
+
+        self._entityDeleter = .init(wrappedValue: .init(spaceId: id, onUpdate: onUpdate))
     }
 
     @State var isDeleting = false
@@ -106,6 +129,8 @@ public struct SpaceDetailView: View {
 
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.onOpenURL) var onOpenURL
+
+    @StateObject var entityDeleter: SpaceResultDeleter
 
     public var body: some View {
         let name = space.name ?? ""
@@ -161,10 +186,10 @@ public struct SpaceDetailView: View {
         .navigationBarTitleDisplayMode(.large)
         .navigationBarItems(trailing: navMenu)
         .sheet(isPresented: $isAdding) {
-            EditEntityView(for: nil, inSpace: spaceId, isPresented: $isAdding, onUpdate: onUpdate)
+            CreateEntityView(inSpace: spaceId, onDismiss: { isAdding = false }, onUpdate: onUpdate)
         }
         .additionalSheet(isPresented: $isEditing) {
-            EditSpaceView(for: space, with: spaceId, isPresented: $isEditing, onUpdate: onUpdate)
+            EditSpaceView(for: space, with: spaceId, onDismiss: { isEditing = false }, onUpdate: onUpdate)
         }
         .additionalSheet(isPresented: $isSharing) {
             ShareSpaceView(space: space, id: spaceId, onUpdate: onUpdate)
@@ -183,14 +208,7 @@ public struct SpaceDetailView: View {
         return ActionSheet(title: Text(title), buttons: [
             .cancel(),
             .destructive(Text(entities.count == 1 ? "Delete" : "Delete \(entities.count) Items")) {
-                BatchDeleteSpaceResultMutation(space: spaceId, results: entities.map(\.id)).perform { result in
-                    guard case .success(let data) = result, data.batchDeleteSpaceResult else { return }
-                    onUpdate { newSpace in
-                        for entity in entities {
-                            newSpace.entities?.removeAll { $0.id == entity.id }
-                        }
-                    }
-                }
+                entityDeleter.execute(deleting: entities)
             }
         ])
     }

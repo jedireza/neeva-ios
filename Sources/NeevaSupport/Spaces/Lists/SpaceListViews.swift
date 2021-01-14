@@ -18,9 +18,10 @@ public struct SpaceListView: View {
     public var body: some View {
         NavigationView {
             Group {
-                if let error = controller.error {
+                switch controller.state {
+                case .failure(let error):
                     ErrorView(error, in: self, tryAgain: { controller.reload() })
-                } else if let data = controller.data {
+                case .success(let data):
                     List(data) { space in
                         NavigationLink(
                             destination: SpaceLoaderView(id: space.id, initialTitle: space.space?.name ?? "")
@@ -30,7 +31,7 @@ public struct SpaceListView: View {
                         }
                     }
                     .refreshControl(refreshing: controller)
-                } else {
+                case .running:
                     LoadingView("Loading Spaces")
                 }
             }
@@ -46,7 +47,7 @@ public struct SpaceListView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Self.newSpaceButton { name, result in
                         if case .success(let data) = result,
-                           let oldSpaces = controller.data {
+                           let oldSpaces = controller.state.data {
                             withAnimation {
                                 controller.reload(optimisticResult: [
                                     .init(
@@ -62,7 +63,7 @@ public struct SpaceListView: View {
                         } else {
                             controller.reload()
                         }
-                    }.disabled(controller.data == nil)
+                    }.disabled(controller.state.data == nil)
                 }
             }
         }.navigationViewStyle(StackNavigationViewStyle())
@@ -101,11 +102,12 @@ struct SpaceLoaderView: View {
         self.initialTitle = initialTitle
     }
     var body: some View {
-        if let error = controller.error {
+        switch controller.state {
+        case .failure(let error):
             ErrorView(error, in: self, tryAgain: { controller.reload() })
-        } else if let space = controller.data {
+        case .success(let space):
             SpaceDetailView(space: space, with: id, onUpdate: { handler in
-                if let handler = handler, var newSpace = controller.data {
+                if let handler = handler, case .success(var newSpace) = controller.state {
                     handler(&newSpace)
                     withAnimation {
                         controller.reload(optimisticResult: newSpace)
@@ -114,7 +116,7 @@ struct SpaceLoaderView: View {
                     controller.reload(optimisticResult: nil)
                 }
             }).refreshControl(refreshing: controller)
-        } else {
+        case .running:
             GeometryReader { _ in
                 HStack {
                     Spacer()
@@ -126,9 +128,15 @@ struct SpaceLoaderView: View {
                     Spacer()
                 }
             }
-                .background(Color.groupedBackground.edgesIgnoringSafeArea(.all))
-                .navigationTitle(initialTitle)
-                .navigationBarTitleDisplayMode(.large)
+            .background(Color.groupedBackground.edgesIgnoringSafeArea(.all))
+            .navigationTitle(initialTitle)
+            .navigationBarTitleDisplayMode(.large)
+            .navigationBarItems(trailing: Button(action: {}) {
+                Label("Actions", systemImage: "ellipsis.circle")
+                    .font(.system(size: 17))
+                    .imageScale(.large)
+                    .labelStyle(IconOnlyLabelStyle())
+            }.disabled(true))
         }
     }
 

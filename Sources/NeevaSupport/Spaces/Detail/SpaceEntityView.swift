@@ -74,7 +74,7 @@ struct SpaceEntityView: View {
                 EditEntityView(
                     for: entity,
                     inSpace: spaceId,
-                    isPresented: .init(get: { self.modal == .edit }, set: { self.modal = $0 ? .edit : nil }),
+                    onDismiss: { self.modal = nil },
                     onUpdate: onUpdate
                 )
             case .addToSpace:

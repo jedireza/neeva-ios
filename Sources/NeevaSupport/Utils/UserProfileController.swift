@@ -12,7 +12,10 @@ class UserProfileController: QueryController<UserInfoQuery, UserProfileControlle
 
     public static let shared = UserProfileController()
 
-    public var userId: String? { data?.id }
+    public var userId: String? {
+        guard case .success(let data) = state else { return nil }
+        return data.id
+    }
 
     public override func reload() {
         self.perform(query: UserInfoQuery())

@@ -17,47 +17,55 @@ struct EditThumbnailView: View {
         _selectedThumbnail = selectedThumbnail
     }
     var body: some View {
-        if let error = controller.error {
+        switch controller.state {
+        case .failure(let error):
             ErrorView(error, in: self, tryAgain: { controller.reload() })
                 .buttonStyle(BorderlessButtonStyle())
-        } else if controller.data?.isEmpty ?? false {
-            HStack {
-                Spacer()
-                Text("No thumbnails found.")
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
-        } else {
-            ScrollView(.horizontal) {
-                HStack(spacing: 12) {
-                    if let images = controller.data {
-                        ForEach(images) { image in
-                            if let thumbnail = image.thumbnail,
-                               let dataURIBody = thumbnail.dataURIBody,
-                               let uiImage = UIImage(data: dataURIBody) {
-                                Button {
-                                    selectedThumbnail = thumbnail
-                                } label: {
-                                    ThumbnailImage(
-                                        image: Image(uiImage: uiImage).resizable(),
-                                        isSelected: thumbnail == selectedThumbnail
-                                    )
-                                }
+        case .success(let images):
+            if images.isEmpty {
+                HStack {
+                    Spacer()
+                    Text("No thumbnails found.")
+                        .foregroundColor(.secondary)
+                    Spacer()
+                }
+            } else {
+                ThumbnailList {
+                    ForEach(images) { image in
+                        if let thumbnail = image.thumbnail,
+                           let dataURIBody = thumbnail.dataURIBody,
+                           let uiImage = UIImage(data: dataURIBody) {
+                            Button {
+                                selectedThumbnail = thumbnail
+                            } label: {
+                                ThumbnailImage(
+                                    image: Image(uiImage: uiImage).resizable(),
+                                    isSelected: thumbnail == selectedThumbnail
+                                )
                             }
                         }
-                    } else {
-                        ForEach(0..<10) { _ in
-                            ThumbnailImage(
-                                image: ThumbnailPlaceholder(),
-                                isSelected: false
-                            )
-                        }
                     }
-                }.padding()
+                }
             }
-            .padding(.horizontal, -20)
-            .disabled(controller.running)
+        case .running:
+            ThumbnailList {
+                ForEach(0..<10) { _ in
+                    ThumbnailImage(
+                        image: ThumbnailPlaceholder(),
+                        isSelected: false
+                    )
+                }
+            }.disabled(true)
         }
+    }
+}
+
+struct ThumbnailList<Content: View>: View {
+    let content: () -> Content
+    var body: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 12, content: content).padding()
+        }.padding(.horizontal, -20)
     }
 }
 
@@ -76,16 +84,8 @@ struct ThumbnailPlaceholder: View {
             .offset(x: offset * geom.size.width)
             .frame(width: geom.size.width)
             .onAppear {
-                withAnimation(.linear(duration: 2)) {
+                withAnimation(Animation.linear(duration: 2).repeatForever(autoreverses: false)) {
                     offset = 1
-                }
-            }.onChange(of: offset) { _offset in
-                withAnimation(.linear(duration: 2)) {
-                    if offset > 0 {
-                        offset = -1
-                    } else {
-                        offset = 1
-                    }
                 }
             }
         }

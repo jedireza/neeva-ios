@@ -93,3 +93,27 @@ public func >= (_ lhs: SpaceACLLevel?, _ rhs: SpaceACLLevel) -> Bool {
 public func < (_ lhs: SpaceACLLevel?, _ rhs: SpaceACLLevel) -> Bool {
     !(lhs >= rhs)
 }
+
+class SpaceUpdater: MutationController<UpdateSpaceMutation, SpaceController.Space> {
+    let spaceId: String
+
+    public init(spaceId: String, animation: Animation? = nil, onUpdate: @escaping Updater<SpaceController.Space>, onSuccess: @escaping () -> ()) {
+        self.spaceId = spaceId
+        super.init(animation: animation, onUpdate: onUpdate, onSuccess: onSuccess)
+    }
+
+    func execute(title: String, description: String) {
+        super.execute(mutation: .init(input: .init(id: spaceId, name: title, description: description)))
+    }
+
+    override func update(_ newSpace: inout SpaceController.Space, from result: UpdateSpaceMutation.Data, after mutation: UpdateSpaceMutation) {
+        if result.updateSpace {
+            if let name = mutation.input.name ?? nil {
+                newSpace.name = name
+            }
+            if let description = mutation.input.description ?? nil {
+                newSpace.description = description
+            }
+        }
+    }
+}

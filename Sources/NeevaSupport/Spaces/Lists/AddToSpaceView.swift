@@ -17,7 +17,8 @@ public struct AddToSpaceView: View {
     public var body: some View {
         NavigationView {
             AddToSpaceList(title: title, description: description, url: url, onDismiss: onDismiss)
-                .navigationBarTitle(Text("Add to Space"), displayMode: .inline)
+                .navigationTitle("Add to Space")
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { onDismiss(nil) }
@@ -51,59 +52,80 @@ public struct AddToSpaceList: View {
         self.onDismiss = onDismiss
     }
 
-    var filteredSpaces: [SpaceListController.Space]? {
-        guard let spaces = spaceList.data else { return nil }
+    func filter(_ spaces: [SpaceListController.Space]) -> [SpaceListController.Space] {
+        let filtered = spaces.filter { $0.space?.userAcl?.acl >= .edit }
         if let searchTerm = searchTerm, !searchTerm.isEmpty {
-            return spaces.filter { $0.space?.name?.localizedCaseInsensitiveContains(searchTerm) ?? false }
+            return filtered.filter { $0.space?.name?.localizedCaseInsensitiveContains(searchTerm) ?? false }
         } else {
-            return spaces
+            return filtered
         }
+    }
+
+    var dummyAddButton: some View {
+        Button(action: {}) {
+            Image(systemName: "plus")
+                .accessibilityLabel("New Space")
+        }.disabled(true)
     }
 
     public var body: some View {
         Group {
             if cancellable != nil {
                 LoadingView("Adding to space…")
-            } else if let error = spaceList.error {
-                ErrorView(error, in: self, tryAgain: { spaceList.reload() })
-            } else if let filteredSpaces = filteredSpaces {
-                ZStack {
-                    List {
-                        ForEach(filteredSpaces) { space in
-                            Button {
-                                addToSpace(id: space.id)
-                            } label: {
-                                SpaceListItem(space).foregroundColor(.primary)
+            } else {
+                switch spaceList.state {
+                case .failure(let error):
+                    ErrorView(error, in: self, tryAgain: { spaceList.reload() })
+                        .toolbar {
+                            ToolbarItem(placement: .primaryAction) {
+                                dummyAddButton
                             }
                         }
-                    }
-                    .refreshControl(refreshing: spaceList)
-                    .searchBar("Search for space", text: $searchTerm)
-                    .listStyle(DefaultListStyle())
+                case .success(let spaces):
+                    let filteredSpaces = filter(spaces)
+                    ZStack {
+                        List {
+                            ForEach(filteredSpaces) { space in
+                                Button {
+                                    addToSpace(id: space.id)
+                                } label: {
+                                    SpaceListItem(space).foregroundColor(.primary)
+                                }
+                            }
+                        }
+                        .refreshControl(refreshing: spaceList)
+                        .searchBar("Search for space", text: $searchTerm)
+                        .listStyle(DefaultListStyle())
 
-                    if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
-                        VStack {
-                            Spacer()
-                            Text("No Results Found")
-                                .font(.title)
-                                .foregroundColor(.secondary)
-                            Spacer()
+                        if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
+                            VStack {
+                                Spacer()
+                                Text("No Results Found")
+                                    .font(.title)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                            }
                         }
                     }
-                }
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        SpaceListView.newSpaceButton { name, result in
-                            if case .success(let data) = result {
-                                addToSpace(id: data.createSpace)
-                            } else {
-                                spaceList.reload()
+                    .toolbar {
+                        ToolbarItem(placement: .primaryAction) {
+                            SpaceListView.newSpaceButton { name, result in
+                                if case .success(let data) = result {
+                                    addToSpace(id: data.createSpace)
+                                } else {
+                                    spaceList.reload()
+                                }
                             }
-                        }.disabled(spaceList.data == nil)
+                        }
                     }
+                case .running:
+                    LoadingView("Loading spaces…")
+                        .toolbar {
+                            ToolbarItem(placement: .primaryAction) {
+                                dummyAddButton
+                            }
+                        }
                 }
-           } else {
-                LoadingView("Loading spaces…")
             }
         }
         .onDisappear {
@@ -111,9 +133,6 @@ public struct AddToSpaceList: View {
                 cancellable.cancel()
             }
         }
-        .navigationBarItems(
-            leading: Button("Cancel", action: { onDismiss(nil) })
-        )
     }
 
     func addToSpace(id: String) {

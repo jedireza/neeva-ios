@@ -40,9 +40,10 @@ struct SpaceInviteView: View {
     }
 
     func selectFirst() -> Bool {
-        if let suggestion = suggestions.data?.first {
+        if case .success(let suggestions) = suggestions.state,
+           let suggestion = suggestions.first {
             invite.selected.append(suggestion)
-            suggestions.query = ""
+            self.suggestions.query = ""
             return false
         } else if !suggestions.query.isEmpty {
             invite.selected.append(.init(displayName: "", email: suggestions.query, pictureUrl: ""))
