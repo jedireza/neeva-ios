@@ -2,18 +2,19 @@ import Apollo
 import SwiftUI
 import Combine
 
-public class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController.Space]> {
-    public typealias Space = ListSpacesQuery.Data.ListSpace.Space
+/// Retrieves all spaces the user can view.
+class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController.Space]> {
+    typealias Space = ListSpacesQuery.Data.ListSpace.Space
 
-    public override func reload() {
+    override func reload() {
         self.perform(query: ListSpacesQuery(kind: .all))
     }
 
-    public override class func processData(_ data: ListSpacesQuery.Data) -> [Space] {
+    override class func processData(_ data: ListSpacesQuery.Data) -> [Space] {
         data.listSpaces?.space ?? []
     }
 
-    @discardableResult public static func getSpaces(
+    @discardableResult static func getSpaces(
         completion: @escaping (Result<[Space], Error>) -> ()
     ) -> Apollo.Cancellable {
         Self.perform(query: ListSpacesQuery(kind: .all), completion: completion)
@@ -26,27 +27,31 @@ extension SpaceListController.Space: Identifiable {
     }
 }
 
-public class SpaceController: QueryController<FetchSpaceQuery, SpaceController.Space> {
-    public typealias Space = FetchSpaceQuery.Data.GetSpace.Space.Space
-    public typealias Entity = Space.Entity
+/// Retrieves  full information for a single space.
+class SpaceController: QueryController<FetchSpaceQuery, SpaceController.Space> {
+    typealias Space = FetchSpaceQuery.Data.GetSpace.Space.Space
+    typealias Entity = Space.Entity
 
-    public let id: String
+    let id: String
 
-    public init(id: String, animation: Animation? = .default) {
+    /// - Parameters:
+    ///   - id: The ID of the space to fetch
+    ///   - animation: The animation to perform when the space is fetched or updated.
+    init(id: String, animation: Animation? = .default) {
         self.id = id
         super.init(animation: animation)
     }
 
-    public override func reload() {
+    override func reload() {
         self.perform(query: FetchSpaceQuery(id: id))
     }
 
-    public override class func processData(_ data: FetchSpaceQuery.Data) -> Space {
+    override class func processData(_ data: FetchSpaceQuery.Data) -> Space {
         // safe to ! here because invalid space IDs will return an error
         data.getSpace!.space.first!.space!
     }
 
-    @discardableResult public static func getSpace(
+    @discardableResult static func getSpace(
         id: String,
         completion: @escaping (Result<Space, Error>) -> ()
     ) -> Apollo.Cancellable {
@@ -83,6 +88,7 @@ extension SpaceACLLevel: Comparable {
     }
 }
 
+// convenience functions that assume `nil` == “no access”
 public func >= (_ lhs: SpaceACLLevel?, _ rhs: SpaceACLLevel) -> Bool {
     if let lhs = lhs {
         return lhs >= rhs
@@ -94,14 +100,21 @@ public func < (_ lhs: SpaceACLLevel?, _ rhs: SpaceACLLevel) -> Bool {
     !(lhs >= rhs)
 }
 
+/// Updates a space’s metadata
 class SpaceUpdater: MutationController<UpdateSpaceMutation, SpaceController.Space> {
     let spaceId: String
 
-    public init(spaceId: String, animation: Animation? = nil, onUpdate: @escaping Updater<SpaceController.Space>, onSuccess: @escaping () -> ()) {
+    /// - Parameters:
+    ///   - spaceId: the ID of the space to update
+    ///   - animation: the animation to apply when the entity is added. If `nil`, there will be no animation.
+    ///   - onUpdate: see `SpaceLoaderView`
+    init(spaceId: String, animation: Animation? = nil, onUpdate: @escaping Updater<SpaceController.Space>, onSuccess: @escaping () -> ()) {
         self.spaceId = spaceId
         super.init(animation: animation, onUpdate: onUpdate, onSuccess: onSuccess)
     }
 
+    /// - Parameter title: the new title of the space
+    /// - Parameter description: the new description of the space
     func execute(title: String, description: String) {
         super.execute(mutation: .init(input: .init(id: spaceId, name: title, description: description)))
     }

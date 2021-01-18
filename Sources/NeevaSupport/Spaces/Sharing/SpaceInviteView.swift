@@ -7,11 +7,15 @@
 
 import SwiftUI
 
+/// Allows the user to select other users to invite to the current space
 struct SpaceInviteView: View {
+    /// The invitation object
     @Binding var invite: InviteState
 
+    /// the shared contact suggestion controller
     @ObservedObject var suggestions: ContactSuggestionController
 
+    /// Displays an email/user who is going to be invited, and provides the ability to cancel their invitation or copy their email.s
     struct UserToken: View {
         let user: ContactSuggestionController.Suggestion
         let onRemove: () -> ()
@@ -39,7 +43,8 @@ struct SpaceInviteView: View {
         }
     }
 
-    func selectFirst() -> Bool {
+    /// When pressing return in the search field, accept the first suggestion
+    private func selectFirst() -> Bool {
         if case .success(let suggestions) = suggestions.state,
            let suggestion = suggestions.first {
             invite.selected.append(suggestion)
@@ -84,6 +89,7 @@ struct SpaceInviteView: View {
     }
 }
 
+/// A customized text field that is optimized for searching for/entering emails
 struct EmailSearchField: UIViewRepresentable {
     @Binding var text: String
     let onReturn: () -> Bool

@@ -1,9 +1,13 @@
 import SwiftUI
 
+/// An activity indicator (spinner/throbber) view
 struct ActivityIndicator: UIViewRepresentable {
     let style: UIActivityIndicatorView.Style
     let isAnimating: Bool
 
+    /// - Parameters:
+    ///   - style: the size of spinner to display
+    ///   - isAnimating: if `false`, the spinner will appear frozen
     init(style: UIActivityIndicatorView.Style = .medium, isAnimating: Bool = true) {
         self.style = style
         self.isAnimating = isAnimating

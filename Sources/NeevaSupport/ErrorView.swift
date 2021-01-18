@@ -7,18 +7,27 @@
 
 import SwiftUI
 
-public struct ErrorView: View {
+/// A view that displays an `Error`
+struct ErrorView: View {
     let error: Error
     let tryAgain: (() -> ())?
     let viewName: String
 
-    public init<T: View>(_ error: Error, in _: T, tryAgain: (() -> ())? = nil) {
+    /// - Parameters:
+    ///   - error: The error to display.
+    ///   - in: Pass `self` to provide the name of your view in any feedback the user sends from this screen.
+    ///   - tryAgain: If provided, a “Reload” button will be displayed. Tapping the button will call this closure.
+    init<T: View>(_ error: Error, in _: T, tryAgain: (() -> ())? = nil) {
         self.error = error
         self.tryAgain = tryAgain
         self.viewName = "\(T.self)"
     }
 
-    public init(_ error: Error, viewName: String, tryAgain: (() -> ())? = nil) {
+    /// - Parameters:
+    ///   - error: The error to display.
+    ///   - viewName: The name of the view to include in any feedback the user sends from this screen.
+    ///   - tryAgain: If provided, a “Reload” button will be displayed. Tapping the button will call this closure.
+    init(_ error: Error, viewName: String, tryAgain: (() -> ())? = nil) {
         self.error = error
         self.tryAgain = tryAgain
         self.viewName = viewName
@@ -36,7 +45,7 @@ public struct ErrorView: View {
         return first == "login required to access this field"
     }
 
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 20) {
             Text("")
             if isLoginError {
@@ -61,7 +70,8 @@ public struct ErrorView: View {
     }
 }
 
-struct GenericErrorView: View {
+/// Displays a generic “Error” screen. Used as a fallback if we don’t have special display for the error message.
+fileprivate struct GenericErrorView: View {
     let viewName: String
     let error: Error
     let gqlErrors: [String]?
@@ -96,7 +106,8 @@ struct GenericErrorView: View {
     }
 }
 
-struct LoginView: View {
+/// Prompts the user to log into Neeva
+fileprivate struct LoginView: View {
     @Environment(\.onOpenURL) var onOpenURL
 
     var body: some View {
@@ -114,7 +125,8 @@ struct LoginView: View {
     }
 }
 
-struct OfflineView: View {
+/// Displayed when the device is offline
+fileprivate struct OfflineView: View {
     var body: some View {
         VStack(spacing: 20) {
             Label("You’re offline", systemImage: "bolt.slash.fill")

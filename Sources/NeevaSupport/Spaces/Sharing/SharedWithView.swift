@@ -8,7 +8,9 @@
 import SwiftUI
 
 typealias Acl = SpaceController.Space.Acl
-func separate(_ users: [Acl]) -> (owners: [Acl], others: [Acl]) {
+
+// for placing the owner(s) first in the list, and preventing them from being removed
+fileprivate func separate(_ users: [Acl]) -> (owners: [Acl], others: [Acl]) {
     var owners = [Acl]()
     var others = [Acl]()
     for user in users {
@@ -21,10 +23,15 @@ func separate(_ users: [Acl]) -> (owners: [Acl], others: [Acl]) {
     return (owners, others)
 }
 
+/// Displays the list of users the space is shared with
 struct SharedWithView: View {
+    /// The list of users the space is shared with
     let users: [SpaceController.Space.Acl]
+    /// Can the currently logged in user edit the sharing details of this space?
     let canEdit: Bool
+    /// The ID of this space
     let spaceId: String
+    /// See `SpaceLoaderView`
     let onUpdate: Updater<SpaceController.Space>
 
     var body: some View {
@@ -41,7 +48,7 @@ struct SharedWithView: View {
         }
     }
 
-    func remove(users: [Acl]) {
+    private func remove(users: [Acl]) {
         guard canEdit else { return }
 
         var totalReturned = 0, totalSuccess = 0

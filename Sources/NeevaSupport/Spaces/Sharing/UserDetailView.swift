@@ -8,11 +8,12 @@
 import SwiftUI
 import RemoteImage
 
-public struct ProfileFallbackView: View {
-    public enum Size {
+/// Displays the first couple of characters of the user’s name atop a colored background
+struct ProfileFallbackView: View {
+    enum Size {
         case small
         case large
-        public static let `default` = Size.large
+        static let `default` = Size.large
 
         fileprivate var color: Color {
             switch self {
@@ -36,7 +37,7 @@ public struct ProfileFallbackView: View {
 
     let name: String
     let size: Size
-    public var body: some View {
+    var body: some View {
         ZStack {
             size.color
             Text(firstCharacters(size.titleLength, from: name))
@@ -48,15 +49,18 @@ public struct ProfileFallbackView: View {
     }
 }
 
-public struct UserAvatarView: View {
+/// Displays a user’s avatar, or a fallback view if there is no avatar.
+struct UserAvatarView: View {
     let profile: UserProfile
     let size: ProfileFallbackView.Size
-    public init(_ profile: UserProfile, size: ProfileFallbackView.Size = .default) {
+    /// - Parameter profile: the user to display
+    /// - Parameter size: the size of the avatar to show
+    init(_ profile: UserProfile, size: ProfileFallbackView.Size = .default) {
         self.profile = profile
         self.size = size
     }
 
-    public var body: some View {
+    var body: some View {
         let fallbackText = profile.displayName.isEmpty ? profile.email : profile.displayName
         RemoteImage(
             type: .url(URL(string: profile.pictureUrl) ?? URL(string: "about:blank")!)
@@ -73,25 +77,30 @@ public struct UserAvatarView: View {
     }
 }
 
-public struct UserDetailView: View {
+
+/// Displays a user’s name, email, and avatar
+struct UserDetailView: View {
     let profile: UserProfile
-    public init(_ profile: UserProfile) {
+    /// - Parameter profile: The user profile to render
+    init(_ profile: UserProfile) {
         self.profile = profile
     }
 
-    public var body: some View {
+    var body: some View {
         HStack {
             UserAvatarView(profile)
                 .frame(width: 28, height: 28)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
-                if !profile.displayName.isEmpty {
+                if profile.displayName.isEmpty {
+                    Text(profile.email)
+                } else {
                     Text(profile.displayName)
+                    Text(profile.email)
+                        .foregroundColor(.secondary)
+                        .font(.footnote)
                 }
-                Text(profile.email)
-                    .foregroundColor(.secondary)
-                    .font(.footnote)
             }.padding(.leading, 5)
         }
     }

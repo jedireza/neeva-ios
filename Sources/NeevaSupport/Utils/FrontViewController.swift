@@ -8,6 +8,8 @@
 import UIKit
 
 extension UIViewController {
+    /// The frontmost view controller. Used to present share sheets and other
+    /// UIKit-only view controllers
     @objc var frontViewController: UIViewController {
         presentedViewController?.frontViewController ?? self
     }

@@ -8,9 +8,9 @@
 import SwiftUI
 import Apollo
 
+/// Prompt the user for a title/URL to create a new space entity/result
 struct CreateEntityView: View {
     let spaceId: String
-    let onUpdate: Updater<SpaceController.Space>
     let onDismiss: () -> ()
 
     @State var title = ""
@@ -22,13 +22,14 @@ struct CreateEntityView: View {
 
     @StateObject var updater: SpaceResultCreator
 
-    init(inSpace id: String, onDismiss: @escaping () -> (), onUpdate: @escaping Updater<SpaceController.Space>) {
-        spaceId = id
-
-        self.onUpdate = onUpdate
+    /// - Parameters:
+    ///   - spaceId: The ID of the space that will contain this entity/result
+    ///   - onDismiss: Called when the user cancels entity creation
+    ///   - onUpdate: See description in `SpaceLoaderView`
+    init(inSpace spaceId: String, onDismiss: @escaping () -> (), onUpdate: @escaping Updater<SpaceController.Space>) {
+        self.spaceId = spaceId
         self.onDismiss = onDismiss
-
-        self._updater = .init(wrappedValue: .init(spaceId: id, onUpdate: onUpdate, onSuccess: onDismiss))
+        self._updater = .init(wrappedValue: .init(spaceId: spaceId, onUpdate: onUpdate, onSuccess: onDismiss))
     }
 
     var isDirty: Bool {

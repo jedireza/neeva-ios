@@ -1,19 +1,5 @@
 import SwiftUI
 
-extension String {
-    var dataURIBody: Data? {
-        guard starts(with: "data:") else { return nil }
-        guard let payloadStart = range(of: ",")?.upperBound else { return nil }
-        let payload = String(self[payloadStart..<self.endIndex])
-        if range(of: "base64,")?.upperBound == payloadStart {
-            return Data(base64Encoded: payload)
-        } else {
-            // TODO: implement support for none-base64 data URIs if needed
-            return nil
-        }
-    }
-}
-
 fileprivate struct Metrics {
     static let size: CGFloat = 70
     static let cornerRadius: CGFloat = 8
@@ -21,6 +7,7 @@ fileprivate struct Metrics {
     static let textSize: CGFloat = 26.25
 }
 
+/// Displayed in space lists
 struct LargeSpaceIconView: View {
     let space: SpaceListController.Space
 

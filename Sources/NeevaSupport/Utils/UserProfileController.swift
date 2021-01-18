@@ -7,17 +7,26 @@
 
 import Foundation
 
+/// Singleton controllre class that provides information about the current user.
 class UserProfileController: QueryController<UserInfoQuery, UserProfileController.User> {
     typealias User = UserInfoQuery.Data.User
 
-    public static let shared = UserProfileController()
+    /// Access the shared `UserProfileController` in a view using this syntax:
+    /// ```
+    /// @ObservedObject var userProfile = UserProfileController.shared
+    /// ```
+    static let shared = UserProfileController()
 
-    public var userId: String? {
+    private init() {
+        super.init()
+    }
+
+    var userId: String? {
         guard case .success(let data) = state else { return nil }
         return data.id
     }
 
-    public override func reload() {
+    override func reload() {
         self.perform(query: UserInfoQuery())
     }
 

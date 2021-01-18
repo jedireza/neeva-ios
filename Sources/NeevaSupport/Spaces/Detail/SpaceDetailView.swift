@@ -8,22 +8,12 @@
 import SwiftUI
 import Introspect
 
-public struct Wrapper<Content: View>: UIViewControllerRepresentable {
-    var content: () -> Content
-    public func makeUIViewController(context: Context) -> UIHostingController<Content> {
-        let vc = UIHostingController(rootView: content())
-        vc.view.backgroundColor = .clear
-        vc.view.isOpaque = false
-        return vc
-    }
-    public func updateUIViewController(_ vc: UIHostingController<Content>, context: Context) {
-        vc.rootView = content()
-    }
-}
-
-struct BigHeader<Accessory: View>: View {
+fileprivate struct BigHeader<Accessory: View>: View {
     let title: String
     let accessory: () -> Accessory
+
+    /// - Parameter title: The title to display in a large, bold font.
+    /// - Parameter accessory: A button or other view to display at the right edge of the header
     init(_ title: String, @ViewBuilder accessory: @escaping () -> Accessory) {
         self.title = title
         self.accessory = accessory
@@ -44,25 +34,31 @@ struct BigHeader<Accessory: View>: View {
 }
 
 extension BigHeader where Accessory == EmptyView {
+    /// - Parameter title: The title to display in a large, bold font.
     init(_ title: String) {
         self.title = title
         self.accessory = EmptyView.init
     }
 }
 
-extension Array: Identifiable where Element == SpaceController.Entity {
+extension Array: Identifiable where Element == FetchSpaceQuery.Data.GetSpace.Space.Space.Entity {
     public var id: String {
         map(\.id).joined(separator: "\n")
     }
 }
 
-struct DiscussionSection: View {
+/// The comment section of a space
+fileprivate struct DiscussionSection: View {
     let space: SpaceController.Space
     let spaceId: String
     let onUpdate: Updater<SpaceController.Space>
 
     @StateObject var creator: SpaceCommentCreator
 
+    /// - Parameters:
+    ///   - space: the space whose comments should be shown
+    ///   - spaceId: the ID of the space
+    ///   - onUpdate: see `SpaceLoaderView`
     init(space: SpaceController.Space, spaceId: String, onUpdate: @escaping Updater<SpaceController.Space>) {
         self.space = space
         self.spaceId = spaceId
@@ -107,17 +103,22 @@ struct DiscussionSection: View {
     }
 }
 
-public struct SpaceDetailView: View {
+/// Displays the content of a space
+struct SpaceDetailView: View {
     let space: SpaceController.Space
     let spaceId: String
     let onUpdate: Updater<SpaceController.Space>
 
-    public init(space: SpaceController.Space, with id: String, onUpdate: @escaping Updater<SpaceController.Space>) {
+    /// - Parameters:
+    ///   - space: the space to display
+    ///   - spaceId: the ID of the space
+    ///   - onUpdate: see `SpaceLoaderView`
+    init(space: SpaceController.Space, with spaceId: String, onUpdate: @escaping Updater<SpaceController.Space>) {
         self.space = space
-        self.spaceId = id
+        self.spaceId = spaceId
         self.onUpdate = onUpdate
 
-        self._entityDeleter = .init(wrappedValue: .init(spaceId: id, onUpdate: onUpdate))
+        self._entityDeleter = .init(wrappedValue: .init(spaceId: spaceId, onUpdate: onUpdate))
     }
 
     @State var isDeleting = false
@@ -132,7 +133,7 @@ public struct SpaceDetailView: View {
 
     @StateObject var entityDeleter: SpaceResultDeleter
 
-    public var body: some View {
+    var body: some View {
         let name = space.name ?? ""
         Group {
             if let entities = space.entities,
@@ -198,6 +199,7 @@ public struct SpaceDetailView: View {
         .additionalActionSheet(isPresented: $isDeleting, content: deleteActionSheet)
     }
 
+    /// Displayed after the user requests deletion of a space entity
     func deleteEntitiesActionSheet(_ entities: [SpaceController.Entity]) -> ActionSheet {
         let title: String
         if entities.count == 1 {
@@ -213,6 +215,7 @@ public struct SpaceDetailView: View {
         ])
     }
 
+    /// Displayed after the user requests deletion of the entire space
     func deleteActionSheet() -> ActionSheet {
         let name = space.name ?? ""
         return ActionSheet(

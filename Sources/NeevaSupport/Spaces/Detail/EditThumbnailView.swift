@@ -7,11 +7,16 @@
 
 import SwiftUI
 
-
 // TODO: fix accessibility
+/// Displays a scrollable list of suggested thumbnails for the given entity.
 struct EditThumbnailView: View {
     @Binding var selectedThumbnail: String
     @StateObject var controller: EntityThumbnailController
+
+    /// - Parameters:
+    ///   - spaceId: The ID of the space the entity is inside
+    ///   - entityId: The ID of the entity we’re editing
+    ///   - selectedThumbnail: a binding to the `data:` URL of the thumbnail
     init(spaceId: String, entityId: String, selectedThumbnail: Binding<String>) {
         _controller = .init(wrappedValue: EntityThumbnailController(spaceId: spaceId, entityId: entityId))
         _selectedThumbnail = selectedThumbnail
@@ -60,7 +65,7 @@ struct EditThumbnailView: View {
     }
 }
 
-struct ThumbnailList<Content: View>: View {
+fileprivate struct ThumbnailList<Content: View>: View {
     let content: () -> Content
     var body: some View {
         ScrollView(.horizontal) {
@@ -69,8 +74,9 @@ struct ThumbnailList<Content: View>: View {
     }
 }
 
-struct ThumbnailPlaceholder: View {
-    @State var offset: CGFloat = -1
+/// A looping animated gradient displayed while thumbnails are loading
+fileprivate struct ThumbnailPlaceholder: View {
+    @State private var offset: CGFloat = -1
     @Namespace private var namespace
     var body: some View {
         GeometryReader { geom in
@@ -92,6 +98,7 @@ struct ThumbnailPlaceholder: View {
     }
 }
 
+/// Clips the provided `image` to a rounded rectangle and overlays a selection indicator if `isSelected` is true
 struct ThumbnailImage<Content: View>: View {
     let image: Content
     let isSelected: Bool
@@ -134,6 +141,16 @@ struct EditThumbnailView_Previews: PreviewProvider {
         @State var selectedThumbnail = ""
         var body: some View {
             Form {
+                Section {
+                    ThumbnailList {
+                        ForEach(0..<10) { _ in
+                            ThumbnailImage(
+                                image: ThumbnailPlaceholder(),
+                                isSelected: false
+                            )
+                        }
+                    }
+                }
                 EditThumbnailView(spaceId: "SkksIM_iAclak16nHYfcqAY8IwxsasTD1pU1XqUe", entityId: "0x1d170643a0684be5", selectedThumbnail: .constant(testSpace.thumbnail!))
             }
         }

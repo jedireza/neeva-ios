@@ -4,10 +4,8 @@ import Combine
 
 public typealias Updater<T> = (((inout T) -> ())?) -> ()
 
-/**
- * The `perform` methods are intended to be used only by subclasses, to help implement their custom query methods.
- */
-public class QueryController<Query, Data>: ObservableObject where Query: GraphQLQuery {
+/// An abstract class that provides useful tools for executing queries inside of a view.
+public class QueryController<Query, Data>: AbstractController where Query: GraphQLQuery {
     public enum State {
         case running
         case success(Data)
@@ -27,23 +25,17 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
             }
         }
     }
+    /// The current state of the query
     @Published public private(set) var state = State.running
 
-    var animation: Animation?
-
-    public init(animation: Animation? = nil) {
-        self.animation = animation
+    /// - Parameter animation: the animation to apply when updating the `state` property
+    public override init(animation: Animation? = nil) {
+        super.init(animation: animation)
         self.reload()
     }
 
-    func withOptionalAnimation<Result>(_ body: () throws -> Result) rethrows -> Result {
-        if let animation = animation {
-            return try withAnimation(animation, body)
-        } else {
-            return try body()
-        }
-    }
-
+    /// Called by subclasses to perform their query, updating the `state` property to reflect its progress
+    /// - Parameter query: the query to perform
     @discardableResult public func perform(query: Query) -> Apollo.Cancellable {
         var stillRunning = true
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
@@ -64,10 +56,21 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
         }
     }
 
+    /// Implemented by subclasses. Call `perform(query:)` with a query to execute.
     public func reload() {
         fatalError("\(self).\(#function) not implemented")
     }
-    /// optimisticResult is an optional expected result of the query
+
+    /// If `optimisticResult` is provided, set the current state to `.success(optimisticResult)`
+    /// then run `reload()`.
+    ///
+    /// # Background on optimisticResult
+    ///
+    /// If `nil` is passed in, a regular reload takes place.
+    /// However, it is often possible to know in advance what the result of the query will look like after the reload occurs (likely because you just performed a successful mutation).
+    /// The provided result will be rendered by your views while you wait for the results to be validated by a fetch.
+    ///
+    /// This results in a better user experience, since their changes appear to take effect quicker, while still ensuring correctness by replacing the `optimisticResult` with the actual response from the server as soon as possible.
     public func reload(optimisticResult: Data?) {
         if let optimisticResult = optimisticResult {
             withOptionalAnimation {
@@ -77,14 +80,24 @@ public class QueryController<Query, Data>: ObservableObject where Query: GraphQL
         self.reload()
     }
 
+    /// Implement this function to convert the raw result of the query into a value that’s useful to your views.
+    /// If you just want the query data, the extension at the bottom of the file should handle that for you if
+    /// your code is structured like this:
+    /// ```
+    /// class MyController: QueryController<MyQuery, MyQuery.Data> { ... }
+    /// ```
+    /// - Parameter data: the result of the query, which you will process to generate a relevant output.
     public class func processData(_ data: Query.Data) -> Data {
         fatalError("\(self).\(#function) not implemented")
     }
 
+    /// If you want to access the original query in addition to the response, implement this instead of `processData(_:)`.
     public class func processData(_ data: Query.Data, for query: Query) -> Data {
         processData(data)
     }
 
+    /// This is called by the instance `perform` method, and you can use it to implement one-off helper methods
+    /// on your controller class to run queries outside of the SwiftUI data flow.
     @discardableResult public class func perform(
         query: Query,
         completion: @escaping (Result<Data, Error>) -> ()

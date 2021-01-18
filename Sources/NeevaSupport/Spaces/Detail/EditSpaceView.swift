@@ -8,8 +8,8 @@
 import SwiftUI
 import Apollo
 
+/// Edit the title/description of a space
 struct EditSpaceView: View {
-    let spaceId: String
     let space: SpaceController.Space
     let onUpdate: Updater<SpaceController.Space>
     let onDismiss: () -> ()
@@ -20,17 +20,19 @@ struct EditSpaceView: View {
 
     @StateObject var updater: SpaceUpdater
 
-    @Environment(\.presentationMode) var presentationMode
-
-    init(for space: SpaceController.Space, with id: String, onDismiss: @escaping () -> (), onUpdate: @escaping Updater<SpaceController.Space>) {
+    /// - Parameters:
+    ///   - space: The space to edit
+    ///   - spaceId: The ID of this space
+    ///   - onDismiss: Called when the user cancels the edit
+    ///   - onUpdate: See description in `SpaceLoaderView`
+    init(for space: SpaceController.Space, with spaceId: String, onDismiss: @escaping () -> (), onUpdate: @escaping Updater<SpaceController.Space>) {
         self.space = space
-        spaceId = id
         self.onUpdate = onUpdate
         self.onDismiss = onDismiss
 
         self._title = State(initialValue: space.name ?? "")
         self._description = State(initialValue: space.description ?? "")
-        self._updater = .init(wrappedValue: .init(spaceId: id, onUpdate: onUpdate, onSuccess: onDismiss))
+        self._updater = .init(wrappedValue: .init(spaceId: spaceId, onUpdate: onUpdate, onSuccess: onDismiss))
     }
 
     var isDirty: Bool {

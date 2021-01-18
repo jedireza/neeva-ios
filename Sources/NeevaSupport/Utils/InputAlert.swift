@@ -7,10 +7,19 @@
 
 import SwiftUI
 
+/// Open an alert box with a text input field.
+/// - Parameters:
+///   - title: the title to display in the alert
+///   - confirmationButtonTitle: the label of the button that will cause `onConfirm` to be called
+///   - inputRequired: whether to prevent the alert from being confirmed with empty text
+///   - initialText: the text to display in the text field when the alert first opens
+///   - placeholder: placeholder text to display when the text field is empty
+///   - configureTextField: a function to update the style of the text field (ie return key type, clear button, etc)
+///   - onConfirm: called with the content of the text field when the return key is pressed or the confirmation button is tapped
 func openTextInputAlert(
     title: String, confirmationButtonTitle: String,
     inputRequired: Bool = true, initialText: String = "", placeholder: String? = nil,
-    configureTextField: ((UITextField) -> ())?,
+    configureTextField: ((UITextField) -> ())? = nil,
     onConfirm: @escaping (String) -> ()
 ) {
     let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)

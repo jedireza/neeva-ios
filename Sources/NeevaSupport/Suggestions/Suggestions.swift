@@ -2,6 +2,7 @@ import Apollo
 import SwiftUI
 import Combine
 
+/// A type that wraps both query and URL suggestions
 public enum Suggestion {
     case query(SuggestionsQuery.Data.Suggest.QuerySuggestion)
     case url(SuggestionsQuery.Data.Suggest.UrlSuggestion)
@@ -18,7 +19,9 @@ extension Suggestion: Identifiable {
     }
 }
 
+/// Fetches query and URL suggestions for a given query
 public class SuggestionsController: QueryController<SuggestionsQuery, [Suggestion]> {
+    /// Bind this to  a `TextField` or another input view to produce suggestions based on the user’s input
     @Published public var query = ""
 
     var subscription: AnyCancellable?

@@ -9,6 +9,56 @@
 import SwiftUI
 import UIKit
 
+/// A multi-line text field.
+struct MultilineTextField: View {
+    private var placeholder: String
+    private var onCommit: (() -> Void)?
+
+    @Binding private var text: String
+    private var internalText: Binding<String> {
+        Binding<String>(get: { self.text } ) {
+            self.text = $0
+            self.showingPlaceholder = $0.isEmpty
+        }
+    }
+
+    @State private var dynamicHeight: CGFloat = 100
+    @State private var showingPlaceholder = false
+    @Environment(\.isEnabled) private var isEnabled
+
+    /// - Parameters:
+    ///   - placeholder: the placeholder to display when no text has been entered
+    ///   - text: a binding to the content of the text field
+    ///   - onCommit: if non-nil, the user will not be able to manually enter multiple lines (although text can still wrap)
+    ///     and pressing the return key will cause `onCommit` to be called.
+    init (_ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil) {
+        self.placeholder = placeholder
+        self.onCommit = onCommit
+        self._text = text
+        self._showingPlaceholder = State<Bool>(initialValue: self.text.isEmpty)
+    }
+
+    var body: some View {
+        UITextViewWrapper(text: self.internalText, calculatedHeight: $dynamicHeight, isEnabled: isEnabled, onDone: onCommit)
+            .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
+            .background(placeholderView, alignment: .topLeading)
+            .padding(.horizontal, -10)
+            .accessibilityHint(placeholder)
+    }
+
+    var placeholderView: some View {
+        Group {
+            if showingPlaceholder {
+                Text(placeholder)
+                    .foregroundColor(Color(UIColor.placeholderText))
+                    .padding(.leading, 4)
+                    .padding(.top, 8)
+                    .accessibilityHidden(true)
+            }
+        }
+    }
+}
+
 fileprivate struct UITextViewWrapper: UIViewRepresentable {
     typealias UIViewType = UITextView
 
@@ -83,49 +133,3 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
     }
 
 }
-
-struct MultilineTextField: View {
-
-    private var placeholder: String
-    private var onCommit: (() -> Void)?
-
-    @Binding private var text: String
-    private var internalText: Binding<String> {
-        Binding<String>(get: { self.text } ) {
-            self.text = $0
-            self.showingPlaceholder = $0.isEmpty
-        }
-    }
-
-    @State private var dynamicHeight: CGFloat = 100
-    @State private var showingPlaceholder = false
-    @Environment(\.isEnabled) private var isEnabled
-
-    init (_ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil) {
-        self.placeholder = placeholder
-        self.onCommit = onCommit
-        self._text = text
-        self._showingPlaceholder = State<Bool>(initialValue: self.text.isEmpty)
-    }
-
-    var body: some View {
-        UITextViewWrapper(text: self.internalText, calculatedHeight: $dynamicHeight, isEnabled: isEnabled, onDone: onCommit)
-            .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
-            .background(placeholderView, alignment: .topLeading)
-            .padding(.horizontal, -10)
-            .accessibilityHint(placeholder)
-    }
-
-    var placeholderView: some View {
-        Group {
-            if showingPlaceholder {
-                Text(placeholder)
-                    .foregroundColor(Color(UIColor.placeholderText))
-                    .padding(.leading, 4)
-                    .padding(.top, 8)
-                    .accessibilityHidden(true)
-            }
-        }
-    }
-}
-

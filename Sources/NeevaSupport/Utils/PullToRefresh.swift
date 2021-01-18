@@ -12,6 +12,14 @@ import Introspect
 import Apollo
 import Combine
 
+extension View {
+    /// Add a refresh control to the nearest `List`.
+    /// - Parameter controller: the `QueryController` to refresh when the refresh control is activated
+    func refreshControl<Query, Data>(refreshing controller: QueryController<Query, Data>) -> some View {
+        StorageView(content: self, controller: controller)
+    }
+}
+
 fileprivate let refreshActionID = UIAction.Identifier("co.neeva.refreshControl.action")
 
 fileprivate struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
@@ -49,8 +57,3 @@ fileprivate struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
     }
 }
 
-extension View {
-    func refreshControl<Query, Data>(refreshing controller: QueryController<Query, Data>) -> some View {
-        StorageView(content: self, controller: controller)
-    }
-}

@@ -2,9 +2,12 @@ import Foundation
 import SwiftUI
 
 extension Image {
+    /// Create an image with the provided icon name (as returned from the `suggest` GraphQL endpoint)
     init(neevaIcon: NeevaIcon) {
         self.init(neevaIcon: neevaIcon.rawValue)!
     }
+
+    /// Create an image with the provided icon name (as returned from the `suggest` GraphQL endpoint)
     init?(neevaIcon name: String) {
         if let imageName = iconMapping[name] {
             self.init(imageName, bundle: .module)
@@ -12,6 +15,10 @@ extension Image {
             return nil
         }
     }
+
+    /// Create an image with the provided icon set (as returned from the `suggest` GraphQL endpoint)
+    /// - Parameters:
+    ///   - icons: a list of icon names. The first valid icon name will be used.
     init?(icons: [String]) {
         if let name = icons.first(where: { iconMapping[$0] != nil }) {
             self.init(neevaIcon: name)!
@@ -21,6 +28,7 @@ extension Image {
     }
 }
 
+/// The icon used for space suggestions
 struct SpaceIconView: View {
     var body: some View {
         ZStack {
@@ -35,7 +43,7 @@ struct SpaceIconView: View {
     }
 }
 
-struct IconView_Previews: PreviewProvider {
+struct SpaceIconView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             SpaceIconView()
@@ -233,7 +241,7 @@ let iconMapping = [
     "retweeted": "twitter-retweeted",
 ]
 
-public enum NeevaIcon: String {
+enum NeevaIcon: String {
     case gsuiteApp = "gsuite-app"
     case slackApp = "slack-app"
     case twitterApp = "twitter-app"

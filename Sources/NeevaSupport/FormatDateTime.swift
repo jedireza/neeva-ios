@@ -10,7 +10,10 @@ public enum DateTimeVisualSpec {
     public static let `default` = Self.full
 }
 
-extension TimeInterval {
+// Note: These convenience APIs are handy but make incorrect assumptions.
+//       They’re good enough for formatting dates to display to the user, but
+//       do not take into account things like leap seconds or DST.
+fileprivate extension TimeInterval {
     static func minutes(_ n: Double) -> Self { n * 60 }
     static func hours(_ n: Double) -> Self { .minutes(n * 60) }
     static func days(_ n: Double) -> Self { .hours(n * 24) }
@@ -21,13 +24,13 @@ extension TimeInterval {
     var days: Int { hours / 24 }
 }
 
-func formatter(for format: String) -> (Date) -> String {
+fileprivate func formatter(for format: String) -> (Date) -> String {
     let df = DateFormatter()
     df.dateFormat = format
     return df.string(from:)
 }
 
-struct DateFormatters {
+fileprivate struct DateFormatters {
     static let compactSameYear = formatter(for: "MMM d")
     static let compactDifferentYear = formatter(for: "d MMM y")
 
@@ -45,16 +48,21 @@ struct DateFormatters {
     }()
 }
 
-let calendar = Calendar(identifier: .gregorian)
-extension Date {
+fileprivate let calendar = Calendar(identifier: .gregorian)
+fileprivate extension Date {
     var gregorianYear: Int { calendar.component(.year, from: self) }
     var dayOfGregorianYear: Int { calendar.ordinality(of: .day, in: .year, for: self)! }
 }
-func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
+fileprivate func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
     calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date1)
         == calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date2)
 }
 
+/// Format an ISO8601-formatted date string for display to the user
+/// - Parameters:
+///   - string: The ISO8601-formatted string to parse
+///   - visualSpec: The type of output to display
+///   - now: The time to compare relative dates to
 public func format(_ string: String?, as visualSpec: DateTimeVisualSpec = .default, from now: Date = Date()) -> String? {
     if let string = string,
        let date = dateParser.date(from: string) {
@@ -65,6 +73,11 @@ public func format(_ string: String?, as visualSpec: DateTimeVisualSpec = .defau
 }
 
 // Keep in sync with formatDateTime from the main codebase
+/// Format an ISO8601-formatted date string for display to the user
+/// - Parameters:
+///   - time: The `Date` object to format
+///   - visualSpec: The type of output to display
+///   - now: The time to compare relative dates to
 public func format(_ time: Date, as visualSpec: DateTimeVisualSpec = .default, from now: Date = Date()) -> String {
     switch visualSpec {
     case .compact:

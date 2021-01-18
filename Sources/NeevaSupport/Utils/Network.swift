@@ -1,13 +1,15 @@
 import SwiftUI
 import Apollo
 
-public typealias JSONObject = Apollo.JSONObject
-public typealias JSONValue = Apollo.JSONValue
-
+/// This singleton class manages access to the Neeva GraphQL API
 public class GraphQLAPI {
+    /// Access the API through this instance
     public static let shared = GraphQLAPI()
 
-    private(set) lazy var apollo: ApolloClient = {
+    private init() {}
+
+    /// The `ApolloClient` des the actual work of peforming GraphQL requests.
+    public private(set) lazy var apollo: ApolloClient = {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
         let provider = LegacyInterceptorProvider(store: store)
         let transport = NeevaNetworkTransport(
@@ -17,17 +19,26 @@ public class GraphQLAPI {
         return ApolloClient(networkTransport: transport, store: store)
     }()
 
-    public class Error: Swift.Error {
+    /// A `GraphQLAPI.Error` is returned when the HTTP request was successful
+    /// but there are one or more error messages in the `errors` array.
+    public class Error: Swift.Error, CustomStringConvertible {
+        /// the underlying errors
         public let errors: [GraphQLError]
         init(_ errors: [GraphQLError]) {
             self.errors = errors
         }
+
+        public var description: String { localizedDescription }
+        public var localizedDescription: String {
+            "GraphQLAPI.Error(\(errors.map(\.message)))"
+        }
     }
 
+    /// Make the raw result of a GraphQL API call more useful
     static func unwrap<Data>(result: Result<GraphQLResult<Data>, Swift.Error>) -> Result<Data, Swift.Error> {
         switch result {
         case .success(let result):
-            if let errors = result.errors {
+            if let errors = result.errors, !errors.isEmpty {
                 return .failure(Error(errors))
             } else if let data = result.data {
                 return .success(data)
@@ -40,6 +51,7 @@ public class GraphQLAPI {
     }
 }
 
+/// Provide relevant headers and cookies, and update the URL based on the latest preferences
 class NeevaNetworkTransport: RequestChainNetworkTransport {
     override func constructRequest<Operation>(
         for operation: Operation, cachePolicy: CachePolicy,
@@ -57,6 +69,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         } else if
             ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1",
             let devTokenPath = Bundle.module.path(forResource: "dev-token", ofType: "txt") {
+            // if in an Xcode preview, use the cookie from `dev-token.txt`. See `README.md` for more details.
             // only works on the second try for some reason
             _ = try? String(contentsOf: URL(fileURLWithPath: devTokenPath))
             if let cookie = try? String(contentsOf: URL(fileURLWithPath: devTokenPath)) {
@@ -68,6 +81,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
 }
 
 extension GraphQLQuery {
+    /// Call this method on a GraphQL query to perform an authenticated fetch
     @discardableResult
     public func fetch(
         on queue: DispatchQueue = DispatchQueue.main,
@@ -84,6 +98,7 @@ extension GraphQLQuery {
 }
 
 extension GraphQLMutation {
+    /// Call this method on a GraphQL mutation to execute it with authentication.
     @discardableResult
     public func perform(
         on queue: DispatchQueue = .main,

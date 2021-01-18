@@ -7,9 +7,13 @@
 
 import SwiftUI
 
+/// Allows the user to toggle whether the space is public
 struct PublicToggleView: View {
+    /// Binding to the space’s public status
     @Binding var isPublic: Bool
+    /// Whether the public status is currently being updated
     let isUpdating: Bool
+    /// The ID of the space, which will be interpolated into the public space link
     let spaceId: String
 
     @State private var showingSuccessMessage = false

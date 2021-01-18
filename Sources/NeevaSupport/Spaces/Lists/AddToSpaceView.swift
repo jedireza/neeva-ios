@@ -1,12 +1,19 @@
 import SwiftUI
 import Apollo
 
+
+/// Prompts the user to add a given URL to a space
 public struct AddToSpaceView: View {
     let title: String
     let description: String? // meta description
     let url: URL
     let onDismiss: (AddToSpaceList.IDs?) -> ()
 
+    /// - Parameters:
+    ///   - title: The title of the newly created entity
+    ///   - description: The description/snippet of the newly created entity
+    ///   - url: The URL of the newly created entity
+    ///   - onDismiss: Called to close the sheet. `nil` is passed if the user cancels; otherwise, the ID of the selected space and newly created entity are passed.
     public init(title: String, description: String?, url: URL, onDismiss: @escaping (AddToSpaceList.IDs?) -> ()) {
         self.title = title
         self.description = description

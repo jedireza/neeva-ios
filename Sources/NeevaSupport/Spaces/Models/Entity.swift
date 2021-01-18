@@ -1,27 +1,32 @@
 import Apollo
 import SwiftUI
 
-public class EntityThumbnailController: QueryController<FetchSpaceResultThumbnailsQuery, [EntityThumbnailController.Image]> {
-    public typealias Image = FetchSpaceResultThumbnailsQuery.Data.GetSpaceEntityImage.Image
+/// Retrieves the thumbnails attached to a given entity
+class EntityThumbnailController: QueryController<FetchSpaceResultThumbnailsQuery, [EntityThumbnailController.Image]> {
+    typealias Image = FetchSpaceResultThumbnailsQuery.Data.GetSpaceEntityImage.Image
 
-    public let spaceId: String
-    public let entityId: String
+    let spaceId: String
+    let entityId: String
 
-    public init(spaceId: String, entityId: String, animation: Animation? = .default) {
+    /// - Parameters:
+    ///   - spaceId: the ID of the space that contains the entity
+    ///   - entityId: the ID of the entity to retrieve thumbnails for
+    ///   - animation: the animation to apply when the thumbnails are updated. If `nil`, there will be no animation.
+    init(spaceId: String, entityId: String, animation: Animation? = nil) {
         self.spaceId = spaceId
         self.entityId = entityId
         super.init(animation: animation)
     }
 
-    public override func reload() {
+    override func reload() {
         self.perform(query: FetchSpaceResultThumbnailsQuery(input: .init(spaceId: spaceId, resultId: entityId)))
     }
 
-    public override class func processData(_ data: FetchSpaceResultThumbnailsQuery.Data) -> [Image] {
+    override class func processData(_ data: FetchSpaceResultThumbnailsQuery.Data) -> [Image] {
         data.getSpaceEntityImages!.images!
     }
 
-    @discardableResult public static func getThumbnails(
+    @discardableResult static func getThumbnails(
         spaceId: String,
         entityId: String,
         completion: @escaping (Result<[Image], Error>) -> ()
@@ -33,14 +38,22 @@ extension EntityThumbnailController.Image: Identifiable {
     public var id: String { imageUrl! }
 }
 
+/// Adds a space result/entity to the given space
 class SpaceResultCreator: MutationController<AddToSpaceMutation, SpaceController.Space> {
     let spaceId: String
 
+    /// - Parameters:
+    ///   - spaceId: the ID of the space to add entities to
+    ///   - animation: the animation to apply when the entity is added. If `nil`, there will be no animation.
+    ///   - onUpdate: see `SpaceLoaderView`
     init(spaceId: String, animation: Animation? = nil, onUpdate: @escaping Updater<SpaceController.Space>, onSuccess: @escaping () -> ()) {
         self.spaceId = spaceId
         super.init(animation: animation, onUpdate: onUpdate, onSuccess: onSuccess)
     }
 
+    /// - Parameters:
+    ///   - title: the title of the entity to add
+    ///   - url: the URL of the entity to add
     func execute(title: String, url: String) {
         super.execute(mutation: .init(input: .init(spaceId: spaceId, url: url, title: title)))
     }
@@ -53,16 +66,26 @@ class SpaceResultCreator: MutationController<AddToSpaceMutation, SpaceController
     }
 }
 
+/// Updates a space result/entity
 class SpaceResultUpdater: MutationController<UpdateSpaceResultMutation, SpaceController.Space> {
     let spaceId: String
     let resultId: String
 
+    /// - Parameters:
+    ///   - spaceId: the ID of the space that contains the entity
+    ///   - entityId: the ID of the entity to edit
+    ///   - animation: the animation to apply when the entity is updated. If `nil`, there will be no animation.
+    ///   - onUpdate: see `SpaceLoaderView`
     init(spaceId: String, resultId: String, animation: Animation? = nil, onUpdate: @escaping Updater<SpaceController.Space>, onSuccess: @escaping () -> ()) {
         self.spaceId = spaceId
         self.resultId = resultId
         super.init(animation: animation, onUpdate: onUpdate, onSuccess: onSuccess)
     }
 
+    /// - Parameters:
+    ///   - title: the updated title of the entity
+    ///   - snippet: the updated snippet/description of the entity
+    ///   - thumbnail: the updated thumbnail URI of the entity
     func execute(title: String, snippet: String, thumbnail: String) {
         super.execute(mutation: .init(input: .init(spaceId: spaceId, resultId: resultId, title: title, snippet: snippet, thumbnail: thumbnail)))
     }
@@ -86,14 +109,20 @@ class SpaceResultUpdater: MutationController<UpdateSpaceResultMutation, SpaceCon
     }
 }
 
+/// Deletes a space result/entity
 class SpaceResultDeleter: MutationController<BatchDeleteSpaceResultMutation, SpaceController.Space> {
     let spaceId: String
 
-    public init(spaceId: String, animation: Animation? = nil, onUpdate: @escaping Updater<SpaceController.Space>) {
+    /// - Parameters:
+    ///   - spaceId: the ID of the space that contains the entities to delete
+    ///   - animation: the animation to apply when the entity is deleted. If `nil`, there will be no animation.
+    ///   - onUpdate: see `SpaceLoaderView`
+    init(spaceId: String, animation: Animation? = nil, onUpdate: @escaping Updater<SpaceController.Space>) {
         self.spaceId = spaceId
         super.init(animation: animation, onUpdate: onUpdate)
     }
 
+    /// - Parameter entities: The entities to delete.
     func execute(deleting entities: [SpaceController.Entity]) {
         execute(mutation: .init(space: spaceId, results: entities.map(\.id)))
     }

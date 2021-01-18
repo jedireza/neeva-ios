@@ -8,6 +8,7 @@
 import SwiftUI
 import Apollo
 
+/// Edit the title/snippet/thumbnail of a space entity/result
 struct EditEntityView: View {
     let spaceId: String
     let entity: SpaceController.Entity
@@ -23,8 +24,13 @@ struct EditEntityView: View {
 
     @StateObject var updater: SpaceResultUpdater
 
-    init(for entity: SpaceController.Entity, inSpace id: String, onDismiss: @escaping () -> (), onUpdate: @escaping Updater<SpaceController.Space>) {
-        spaceId = id
+    /// - Parameters:
+    ///   - entity: The entity to edit
+    ///   - spaceId: The ID of the space that contains this entity/result
+    ///   - onDismiss: Called when the user cancels the edit
+    ///   - onUpdate: See description in `SpaceLoaderView`
+    init(for entity: SpaceController.Entity, inSpace spaceId: String, onDismiss: @escaping () -> (), onUpdate: @escaping Updater<SpaceController.Space>) {
+        self.spaceId = spaceId
         self.entity = entity
         self._title = .init(initialValue: entity.spaceEntity?.title ?? "")
         self._snippet = .init(initialValue: entity.spaceEntity?.snippet ?? "")
@@ -32,7 +38,7 @@ struct EditEntityView: View {
 
         self.onDismiss = onDismiss
 
-        self._updater = .init(wrappedValue: .init(spaceId: id, resultId: entity.id, onUpdate: onUpdate, onSuccess: onDismiss))
+        self._updater = .init(wrappedValue: .init(spaceId: spaceId, resultId: entity.id, onUpdate: onUpdate, onSuccess: onDismiss))
     }
 
     var isDirty: Bool {

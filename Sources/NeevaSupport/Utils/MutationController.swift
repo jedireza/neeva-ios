@@ -2,32 +2,29 @@ import Apollo
 import SwiftUI
 import Combine
 
-/**
- * The `execute` method is intended to be used only by subclasses, to help implement their custom mutation methods.
- */
-public class MutationController<Mutation, Container>: ObservableObject where Mutation: GraphQLMutation {
+/// An abstract class that provides useful tools for executing mutations inside of a view.
+public class MutationController<Mutation, Container>: AbstractController where Mutation: GraphQLMutation {
+    /// This contains the currently running mutation.
     @Published public private(set) var cancellable: Apollo.Cancellable?
 
-    var isRunning: Bool { cancellable != nil }
+    /// `true` if a mutation is running, `false` otherwse
+    public var isRunning: Bool { cancellable != nil }
 
-    var animation: Animation?
-    var onUpdate: Updater<Container>
-    var onSuccess: () -> ()
+    private var onUpdate: Updater<Container>
+    private var onSuccess: () -> ()
 
+    /// - Parameters:
+    ///   - animation: the animation to wrap around the `onUpdate` and `onSuccess` calls.
+    ///   - onUpdate: see `SpaceLoaderView`
+    ///   - onSuccess: called when the mutation is successful.
     public init(animation: Animation? = nil, onUpdate: @escaping Updater<Container>, onSuccess: @escaping () -> () = {}) {
-        self.animation = animation
         self.onUpdate = onUpdate
         self.onSuccess = onSuccess
+        super.init(animation: animation)
     }
 
-    func withOptionalAnimation<Result>(_ body: () throws -> Result) rethrows -> Result {
-        if let animation = animation {
-            return try withAnimation(animation, body)
-        } else {
-            return try body()
-        }
-    }
-
+    /// Called by subclasses to perform their mutation while updating relevant state
+    /// - Parameter mutation: the mutation to perform
     public func execute(mutation: Mutation) {
         cancellable = mutation.perform { result in
             self.withOptionalAnimation {
@@ -45,6 +42,11 @@ public class MutationController<Mutation, Container>: ObservableObject where Mut
         }
     }
 
+    /// Implemented by subclasses to compute an optimistic result after a successful mutation
+    /// - Parameters:
+    ///   - optimisticResult: the data object to update
+    ///   - result: the output of the mutation
+    ///   - mutation: the mutation request object
     public func update(_ optimisticResult: inout Container, from result: Mutation.Data, after mutation: Mutation) {
         fatalError("\(self).\(#function) not implemented")
     }

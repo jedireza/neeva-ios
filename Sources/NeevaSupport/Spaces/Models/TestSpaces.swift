@@ -1,3 +1,5 @@
+/// Constant spaces and thumbnail images for use in previews.
+
 extension SpaceListController.Space {
     static let empty = SpaceListController.Space(
         pageMetadata: .init(pageId: "page-id"),

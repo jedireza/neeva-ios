@@ -7,10 +7,12 @@
 
 import SwiftUI
 
+/// Displays a list of all the spaces the user can see
 public struct SpaceListView: View {
     @StateObject var controller = SpaceListController()
     let onDismiss: (() -> ())?
 
+    /// - Parameter onDismiss: called when the “Done” button is tapped. If `nil`, there will be no “Done” button visible.
     public init(onDismiss: (() -> ())? = nil) {
         self.onDismiss = onDismiss
     }
@@ -91,16 +93,26 @@ public struct SpaceListView: View {
     }
 }
 
+/// When rendered, waits for the space’s data to be loaded before rendering a `SpaceDetailView`.
+///
+/// # Description of onUpdate
+/// This API allows views to trigger a refetch of the space’s data.
+/// If `nil` is passed in, a regular reload takes place.
+/// However, by passing a closure to `onUpdate`, you can provide an `optimisticResult` to the `SpaceController` (see discussion in `QueryController.reload(optimisticResult:)`.
+/// The value passed into your closure is mutable, and any changes you make to it will be reflected in the value passed to `reload(optimisticResult:)`.
 struct SpaceLoaderView: View {
     @StateObject var controller: SpaceController
     let id: String
     let initialTitle: String
 
+    /// - Parameter id: The ID of the space to load in.
+    /// - Parameter initialTitle: the title to display in the navigation bar while the space is loading. Provide the most recent title you have for this space.
     init(id: String, initialTitle: String) {
         self._controller = .init(wrappedValue: SpaceController(id: id, animation: .default))
         self.id = id
         self.initialTitle = initialTitle
     }
+
     var body: some View {
         switch controller.state {
         case .failure(let error):

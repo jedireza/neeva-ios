@@ -9,7 +9,12 @@
 import SwiftUI
 
 extension View {
-    public func searchBar(_ placeholder: String, text: Binding<String?>) -> some View {
+    /// Add a search bar to the current screen. Only works for views of a `NavigationView` or `NavigationLink`.
+    /// - Parameters:
+    ///   - placeholder: the text to display when the search field is empty
+    ///   - text: a binding to the text in the search field. When `nil`, the search function is not active.
+    ///     When non-`nil`, the user is performing a search with that text.
+    func searchBar(_ placeholder: String, text: Binding<String?>) -> some View {
         background(SearchBar(placeholder: placeholder, text: text))
     }
 }

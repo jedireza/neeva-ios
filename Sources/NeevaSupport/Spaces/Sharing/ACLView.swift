@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A selector for available access levels.
 struct ACLPicker: View {
     @Binding var acl: SpaceACLLevel
     var body: some View {
@@ -24,20 +25,27 @@ struct ACLPicker: View {
     }
 }
 
+/// Displays user information along with informative text, if applicable
 struct ACLView: View {
-    let acl: SpaceController.Space.Acl
+    let profile: UserProfile
     let canEdit: Bool
     @StateObject var controller: UserACLController
+
+    /// - Parameters:
+    ///   - acl: An `Acl` object, which contains the user’s info and their current access level
+    ///   - canEdit: Whether the logged-in user can edit this ACL. If `false`, only the owner’s access level will be visible.
+    ///   - spaceId: the space that this ACL is attached to
     init(acl: SpaceController.Space.Acl, canEdit: Bool, spaceId: String) {
-        self.acl = acl
+        self.profile = acl.profile
         self.canEdit = canEdit
         self._controller = .init(wrappedValue: UserACLController(spaceId: spaceId, userId: acl.userId, level: acl.acl))
     }
+
     var body: some View {
         HStack {
-            UserDetailView(acl.profile)
+            UserDetailView(profile)
             Spacer()
-            if acl.acl == .owner {
+            if controller.level == .owner {
                 Text("Owner")
             } else if canEdit {
                 ACLPicker(acl: $controller.level)

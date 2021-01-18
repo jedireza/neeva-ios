@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Displayes a single comment.
 struct CommentView: View {
     let spaceId: String
     let comment: SpaceController.Space.Comment
@@ -18,6 +19,11 @@ struct CommentView: View {
     @StateObject var deleter: SpaceCommentDeleter
     @StateObject var updater: SpaceCommentUpdater
 
+    /// - Parameters:
+    ///   - spaceId: The ID of the space that contains this comment
+    ///   - comment: The comment to display
+    ///   - userAcl: The access level the current user has. Controls access to the “Edit” and “Remove” options.
+    ///   - onUpdate: See description in `SpaceLoaderView`
     init(
         spaceId: String,
         comment: SpaceController.Space.Comment,

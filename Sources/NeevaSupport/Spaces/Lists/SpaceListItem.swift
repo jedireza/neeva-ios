@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-public struct SpaceListItem: View {
+/// An entry in a space list
+struct SpaceListItem: View {
     let space: SpaceListController.Space
-    public init(_ space: SpaceListController.Space) {
+    /// - Parameter space: the space to render
+    init(_ space: SpaceListController.Space) {
         self.space = space
     }
-    public var body: some View {
+    var body: some View {
         return HStack(spacing: 15) {
             LargeSpaceIconView(space: space)
             VStack(alignment: .leading, spacing: 10) {

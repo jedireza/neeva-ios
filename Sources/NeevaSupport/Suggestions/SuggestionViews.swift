@@ -1,10 +1,15 @@
 import SwiftUI
 
+/// Renders a provided suggestion
 public struct SuggestionView: View {
     let suggestion: Suggestion
     let setInput: (String) -> ()
     let onTap: () -> ()
 
+    /// - Parameters:
+    ///   - suggestion: The suggestion to display
+    ///   - setInput: Set the user’s input to the provided string (called when tapping the 􀄮 (`arrow.up.left`) icon)
+    ///   - onTap: Called when the user taps the suggestion
     public init(
         _ suggestion: Suggestion,
         setInput: @escaping (String) -> (),
@@ -25,7 +30,8 @@ public struct SuggestionView: View {
     }
 }
 
-struct QuerySuggestionView: View {
+/// Renders a query suggestion
+fileprivate struct QuerySuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.QuerySuggestion
     let setInput: (String) -> ()
     let onTap: () -> ()
@@ -54,12 +60,7 @@ struct QuerySuggestionView: View {
         Button(action: onTap) {
             HStack {
                 icon
-                BoldSpanView(
-                    suggestion.suggestedQuery,
-                    bolding: suggestion.boldSpan.map {
-                        BoldSpan(start: $0.startInclusive, end: $0.endExclusive)
-                    }
-                )
+                BoldSpanView(suggestion.suggestedQuery, bolding: suggestion.boldSpan)
                     .lineLimit(1)
                     .foregroundColor(textColor)
                 Spacer()
@@ -73,7 +74,8 @@ struct QuerySuggestionView: View {
     }
 }
 
-struct URLSuggestionView: View {
+/// Renders a URL suggestion (and its associated icon)
+fileprivate struct URLSuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion
     let onTap: () -> ()
 
@@ -88,12 +90,7 @@ struct URLSuggestionView: View {
                         .foregroundColor(.red)
                 }
                 if let title = suggestion.title {
-                    BoldSpanView(
-                        title,
-                        bolding: suggestion.boldSpan.map {
-                            BoldSpan(start: $0.startInclusive, end: $0.endExclusive)
-                        }
-                    ).lineLimit(1)
+                    BoldSpanView(title, bolding: suggestion.boldSpan).lineLimit(1)
                 } else {
                     Text(suggestion.suggestedUrl).lineLimit(1)
                 }

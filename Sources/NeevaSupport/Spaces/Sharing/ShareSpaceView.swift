@@ -8,21 +8,31 @@
 import SwiftUI
 import Apollo
 
+/// Represents an invitation the user is composing
 struct InviteState {
+    /// The access level invited users will be given
     var shareType = SpaceACLLevel.comment
+    /// The users to invite
     var selected = [ContactSuggestionController.Suggestion]()
+    /// A message to send along with the invitation
     var note = ""
 }
 
+/// Represents the results of sending an invitation
 struct InvitationSentState {
+    /// The number of invitations successfully sent
     let invitationsSent: Int
+    /// A list of emails of people who are not Neeva users.
+    /// To share with these emails, the user can enable public sharing and email them the link.
     let nonNeevanEmails: [String]
 
+    /// For VoiceOver users, speak an announcement that describes what happened.
     func notify() {
         UIAccessibility.post(notification: .screenChanged, argument: "Sent \(invitationsSent) invitation\(invitationsSent == 1 ? "" : "s")." + (nonNeevanEmails.isEmpty ? "" : " Could not send \(nonNeevanEmails.count) invitation\(nonNeevanEmails.count == 1 ? "" : "s")."))
     }
 }
 
+/// A view that provides read and (if permitted) write access to space sharing details.
 struct ShareSpaceView: View {
     @StateObject var publicityController: SpacePublicACLController
     @StateObject var suggestionsController = ContactSuggestionController()
@@ -30,19 +40,36 @@ struct ShareSpaceView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @State var invite = InviteState()
-    @State var sendingInvites: Apollo.Cancellable?
-    @State var sentInvites: InvitationSentState?
+    @State var sendingInvites: Apollo.Cancellable? = nil
+    @State var sentInvites: InvitationSentState? = nil
 
     let space: SpaceController.Space
     let spaceId: String
     let onUpdate: Updater<SpaceController.Space>
 
+    /// - Parameters:
+    ///   - space: the space whose details will be updated
+    ///   - id: the ID of the space
+    ///   - onUpdate: see `SpaceLoaderView`
     init(
         space: SpaceController.Space,
         id: String,
+        onUpdate: @escaping Updater<SpaceController.Space>
+    ) {
+        self.space = space
+        self.spaceId = id
+        self.onUpdate = onUpdate
+
+        self._publicityController = .init(wrappedValue: SpacePublicACLController(id: id, hasPublicACL: space.hasPublicAcl ?? false))
+    }
+
+    /// special initializer for previews
+    fileprivate init(
+        space: SpaceController.Space,
+        id: String,
         onUpdate: @escaping Updater<SpaceController.Space>,
-        sendingInvites: Apollo.Cancellable? = nil,
-        sentInvites: InvitationSentState? = nil
+        sendingInvites: Apollo.Cancellable?,
+        sentInvites: InvitationSentState?
     ) {
         self.space = space
         self.spaceId = id
@@ -238,8 +265,8 @@ struct ShareSpaceView_Previews: PreviewProvider {
     static var previews: some View {
         ShareSpaceView(space: testSpace, id: String(repeating: "space123", count: 10), onUpdate: { _ in })
         ShareSpaceView(space: testSpace, id: String(repeating: "space123", count: 10), onUpdate: { _ in }, sendingInvites: Apollo.EmptyCancellable(), sentInvites: .init(invitationsSent: 0, nonNeevanEmails: ["jed@neeva.co"]))
-        ShareSpaceView(space: testSpace2, id: String(repeating: "space123", count: 10), onUpdate: { _ in }, sentInvites: .init(invitationsSent: 1, nonNeevanEmails: ["jed@neeva.co"]))
-        ShareSpaceView(space: testSpace, id: String(repeating: "space123", count: 10), onUpdate: { _ in }, sentInvites: .init(invitationsSent: 0, nonNeevanEmails: ["jed@neeva.co"]))
-        ShareSpaceView(space: testSpace, id: String(repeating: "space123", count: 10), onUpdate: { _ in }, sentInvites: .init(invitationsSent: 4, nonNeevanEmails: []))
+        ShareSpaceView(space: testSpace2, id: String(repeating: "space123", count: 10), onUpdate: { _ in }, sendingInvites: nil, sentInvites: .init(invitationsSent: 1, nonNeevanEmails: ["jed@neeva.co"]))
+        ShareSpaceView(space: testSpace, id: String(repeating: "space123", count: 10), onUpdate: { _ in }, sendingInvites: nil, sentInvites: .init(invitationsSent: 0, nonNeevanEmails: ["jed@neeva.co"]))
+        ShareSpaceView(space: testSpace, id: String(repeating: "space123", count: 10), onUpdate: { _ in }, sendingInvites: nil, sentInvites: .init(invitationsSent: 4, nonNeevanEmails: []))
     }
 }
