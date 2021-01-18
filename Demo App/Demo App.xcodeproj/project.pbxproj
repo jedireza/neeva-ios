@@ -22,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		8515A2092590EB4700C31344 /* AddToSpaceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToSpaceViewController.swift; sourceTree = "<group>"; };
+		85322DB325B6486100210285 /* Neeva iOS Support.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Neeva iOS Support.entitlements"; sourceTree = "<group>"; };
 		85526C0625A7B3E800324F73 /* FeedbackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
 		8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewController.swift; sourceTree = "<group>"; };
 		856DDBE6258A996C001485A8 /* Neeva iOS Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Neeva iOS Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +69,7 @@
 		856DDBE8258A996C001485A8 /* Neeva iOS Support */ = {
 			isa = PBXGroup;
 			children = (
+				85322DB325B6486100210285 /* Neeva iOS Support.entitlements */,
 				856DDBED258A996C001485A8 /* UserInfoViewController.swift */,
 				856DDBEF258A996C001485A8 /* Main.storyboard */,
 				8565BCE0258BB43500E168C2 /* SuggestionsViewController.swift */,
@@ -328,6 +330,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Neeva iOS Support/Neeva iOS Support.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = "Neeva iOS Support/Info.plist";
@@ -348,6 +351,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Neeva iOS Support/Neeva iOS Support.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = "Neeva iOS Support/Info.plist";

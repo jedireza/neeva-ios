@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Contains functionality used by both `QueryController` and `MutationController`
-public class AbstractController: ObservableObject {
+public class AbstractController {
     var animation: Animation?
     
     public init(animation: Animation? = nil) {

@@ -16,6 +16,7 @@ public class GraphQLAPI {
             interceptorProvider: provider,
             endpointURL: NeevaConstants.appURL / "graphql"
         )
+
         return ApolloClient(networkTransport: transport, store: store)
     }()
 
@@ -61,11 +62,11 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         req.graphQLEndpoint = NeevaConstants.appURL / "graphql"
 
         req.addHeader(name: NeevaConstants.Header.deviceType.name, value: NeevaConstants.Header.deviceType.value)
-        req.addHeader(name: "X-Neeva-Client-ID", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)
+        req.addHeader(name: "X-Neeva-Client-ID", value: "co.neeva.app.ios.browser")
         req.addHeader(name: "X-Neeva-Client-Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
 
         if let cookie = NeevaConstants.keychain.string(forKey: NeevaConstants.loginKeychainKey) {
-            req.addHeader(name: "Cookie", value: "httpd~login=\(cookie)")
+            assignCookie(cookie)
         } else if
             ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1",
             let devTokenPath = Bundle.module.path(forResource: "dev-token", ofType: "txt") {
@@ -73,10 +74,27 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
             // only works on the second try for some reason
             _ = try? String(contentsOf: URL(fileURLWithPath: devTokenPath))
             if let cookie = try? String(contentsOf: URL(fileURLWithPath: devTokenPath)) {
-                req.addHeader(name: "Cookie", value: "httpd~login=\(cookie.trimmingCharacters(in: .whitespacesAndNewlines))")
+                assignCookie(cookie.trimmingCharacters(in: .whitespacesAndNewlines))
             }
         }
         return req
+    }
+
+    private func assignCookie(_ value: String) {
+        // only used for URLRequest, not the webview
+        if let cookie = HTTPCookie(properties: [
+            .name: "httpd~login",
+            .value: value,
+            .domain: NeevaConstants.appHost,
+            .path: "/",
+            .expires: Date.distantFuture,
+            .secure: true,
+            .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
+            // ! potentially undocumented API
+            .init("HttpOnly"): true
+        ]) {
+            HTTPCookieStorage.shared.setCookie(cookie)
+        }
     }
 }
 

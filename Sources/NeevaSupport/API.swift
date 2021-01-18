@@ -1435,6 +1435,60 @@ public final class SendFeedbackMutation: GraphQLMutation {
   }
 }
 
+public final class StartIncognitoMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation StartIncognito($redirect: String!) {
+      startIncognito(input: {redirect: $redirect})
+    }
+    """
+
+  public let operationName: String = "StartIncognito"
+
+  public let operationIdentifier: String? = "c56f3d8704d94836640f41e28c4cde4140c3ac7c32e9994e0fcc2c12ec4e98dd"
+
+  public var redirect: String
+
+  public init(redirect: String) {
+    self.redirect = redirect
+  }
+
+  public var variables: GraphQLMap? {
+    return ["redirect": redirect]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("startIncognito", arguments: ["input": ["redirect": GraphQLVariable("redirect")]], type: .nonNull(.scalar(String.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(startIncognito: String) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "startIncognito": startIncognito])
+    }
+
+    /// Initialize an incognito access token for this user.
+    public var startIncognito: String {
+      get {
+        return resultMap["startIncognito"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "startIncognito")
+      }
+    }
+  }
+}
+
 public final class AddToSpaceMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =

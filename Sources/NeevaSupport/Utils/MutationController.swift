@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 
 /// An abstract class that provides useful tools for executing mutations inside of a view.
-public class MutationController<Mutation, Container>: AbstractController where Mutation: GraphQLMutation {
+public class MutationController<Mutation, Container>: AbstractController, ObservableObject where Mutation: GraphQLMutation {
     /// This contains the currently running mutation.
     @Published public private(set) var cancellable: Apollo.Cancellable?
 

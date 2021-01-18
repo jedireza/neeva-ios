@@ -5,7 +5,7 @@ import Combine
 public typealias Updater<T> = (((inout T) -> ())?) -> ()
 
 /// An abstract class that provides useful tools for executing queries inside of a view.
-public class QueryController<Query, Data>: AbstractController where Query: GraphQLQuery {
+public class QueryController<Query, Data>: AbstractController, ObservableObject where Query: GraphQLQuery {
     public enum State {
         case running
         case success(Data)
