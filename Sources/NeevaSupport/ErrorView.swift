@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// A view that displays an `Error`
-struct ErrorView: View {
+public struct ErrorView: View {
     let error: Error
     let tryAgain: (() -> ())?
     let viewName: String
@@ -17,7 +17,7 @@ struct ErrorView: View {
     ///   - error: The error to display.
     ///   - in: Pass `self` to provide the name of your view in any feedback the user sends from this screen.
     ///   - tryAgain: If provided, a “Reload” button will be displayed. Tapping the button will call this closure.
-    init<T: View>(_ error: Error, in _: T, tryAgain: (() -> ())? = nil) {
+    public init<T: View>(_ error: Error, in _: T, tryAgain: (() -> ())? = nil) {
         self.error = error
         self.tryAgain = tryAgain
         self.viewName = "\(T.self)"
@@ -27,7 +27,7 @@ struct ErrorView: View {
     ///   - error: The error to display.
     ///   - viewName: The name of the view to include in any feedback the user sends from this screen.
     ///   - tryAgain: If provided, a “Reload” button will be displayed. Tapping the button will call this closure.
-    init(_ error: Error, viewName: String, tryAgain: (() -> ())? = nil) {
+    public init(_ error: Error, viewName: String, tryAgain: (() -> ())? = nil) {
         self.error = error
         self.tryAgain = tryAgain
         self.viewName = viewName
