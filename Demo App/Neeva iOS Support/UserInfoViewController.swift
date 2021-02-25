@@ -1,6 +1,6 @@
 import UIKit
 import NeevaSupport
-import SwiftKeychainWrapper
+import KeychainAccess
 
 fileprivate let servers = ["m1.neeva.co", "alpha.neeva.co", "example.com"]
 
@@ -13,7 +13,7 @@ class UserInfoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tokenInput.text = NeevaConstants.keychain.string(forKey: NeevaConstants.loginKeychainKey)
+        tokenInput.text = try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
         if let idx = servers.firstIndex(of: NeevaConstants.appHost) {
             serverPicker.selectedSegmentIndex = idx
         }
@@ -21,12 +21,12 @@ class UserInfoViewController: UIViewController {
 
     @IBAction func serverDidChange() {
         NeevaConstants.appHost = servers[serverPicker.selectedSegmentIndex]
-        tokenInput.text = KeychainWrapper.standard.string(forKey: NeevaConstants.loginKeychainKey)
+        tokenInput.text = try? NeevaConstants.keychain.getString( NeevaConstants.loginKeychainKey)
         runUserQuery()
     }
     @IBAction func runUserQuery() {
         tokenInput.resignFirstResponder()
-        NeevaConstants.keychain.set(tokenInput.text!, forKey: NeevaConstants.loginKeychainKey)
+        try? NeevaConstants.keychain.set(tokenInput.text!, key: NeevaConstants.loginKeychainKey)
         activityIndicator.startAnimating()
         UIView.animate(withDuration: 0.4) {
             self.activityIndicator.alpha = 1

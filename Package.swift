@@ -14,7 +14,6 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios", .upToNextMinor(from: "0.38.3")),
-        //.package(url: "https://github.com/jrendel/SwiftKeychainWrapper", .upToNextMajor(from: "4.0.1")),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", .upToNextMajor(from: "4.2.1")),
         .package(url: "https://github.com/crelies/RemoteImage", .upToNextMajor(from: "4.0.0")),
         .package(url: "https://github.com/sindresorhus/Defaults", .upToNextMajor(from: "4.1.0")),
