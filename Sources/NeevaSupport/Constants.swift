@@ -1,6 +1,6 @@
 import Foundation
 import Defaults
-import SwiftKeychainWrapper
+import KeychainAccess
 
 let neevaHostKey = Defaults.Key<String>("neevaHost", default: "alpha.neeva.co", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
@@ -20,7 +20,7 @@ public struct NeevaConstants {
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
 
     /// The shared keychain accessible to the Neeva app and its extensions
-    public static let keychain = KeychainWrapper(serviceName: Bundle.module.bundleIdentifier ?? "Neeva", accessGroup: appGroup)
+    public static let keychain = Keychain(service: Bundle.module.bundleIdentifier ?? "Neeva", accessGroup: appGroup)
 
     public struct Header {
         public let name: String

@@ -14,7 +14,8 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios", .upToNextMinor(from: "0.38.3")),
-        .package(url: "https://github.com/jrendel/SwiftKeychainWrapper", .upToNextMajor(from: "4.0.1")),
+        //.package(url: "https://github.com/jrendel/SwiftKeychainWrapper", .upToNextMajor(from: "4.0.1")),
+        .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", .upToNextMajor(from: "4.2.1")),
         .package(url: "https://github.com/crelies/RemoteImage", .upToNextMajor(from: "4.0.0")),
         .package(url: "https://github.com/sindresorhus/Defaults", .upToNextMajor(from: "4.1.0")),
         .package(name: "Introspect", url: "https://github.com/siteline/SwiftUI-Introspect", .upToNextMinor(from: "0.1.2")),
@@ -25,7 +26,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "NeevaSupport",
-            dependencies: ["Apollo", "SwiftKeychainWrapper", "RemoteImage", "Defaults", "Introspect", "Reachability"],
+            dependencies: ["Apollo", "KeychainAccess", "RemoteImage", "Defaults", "Introspect", "Reachability"],
             exclude: ["operationIDs.json", "schema.json"],
             resources: [.copy("dev-token.txt")]
         ),
