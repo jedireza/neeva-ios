@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "Apollo",
-        "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "6c71dc77ddc3b0d55dd2bd485de01d4032256199",
-          "version": "0.38.3"
-        }
-      },
-      {
         "package": "Defaults",
         "repositoryURL": "https://github.com/sindresorhus/Defaults",
         "state": {
@@ -26,6 +17,15 @@
           "branch": null,
           "revision": "b1d0099abe36facd198113633f502889842906af",
           "version": "0.0.2"
+        }
+      },
+      {
+        "package": "KeychainAccess",
+        "repositoryURL": "https://github.com/kishikawakatsumi/KeychainAccess",
+        "state": {
+          "branch": null,
+          "revision": "654d52d30f3dd4592e944c3e0bccb53178c992f6",
+          "version": "4.2.1"
         }
       },
       {
