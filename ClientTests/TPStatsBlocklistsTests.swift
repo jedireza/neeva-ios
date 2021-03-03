@@ -36,7 +36,7 @@ class TPStatsBlocklistsTests: XCTestCase {
         
         self.measureMetrics([.wallClockTime], automaticallyStartMeasuring: true) {
             for _ in 0..<100 {
-                _ = blocklists.urlIsInList(URL(string: "https://www.firefox.com")!, mainDocumentURL: URL(string: "http://foo.com")!, safelistedDomains: safelistedRegexs)
+                _ = blocklists.urlIsInList(URL(string: "https://www.neeva.com")!, mainDocumentURL: URL(string: "http://foo.com")!, safelistedDomains: safelistedRegexs)
             }
             self.stopMeasuring()
         }
@@ -53,7 +53,7 @@ class TPStatsBlocklistsTests: XCTestCase {
             return blocklists.urlIsInList(URL(string: urlString)!, mainDocumentURL: mainDoc, safelistedDomains: safelistedRegexs)
         }
         XCTAssertEqual(blocklist("https://www.facebook.com", "https://atlassolutions.com"), nil)
-        XCTAssertEqual(blocklist("https://www.firefox.com"), nil)
+        XCTAssertEqual(blocklist("https://www.neeva.com"), nil)
         XCTAssertEqual(blocklist("https://2leep.com/track"), .advertising)
         XCTAssertEqual(blocklist("https://sub.2leep.com/ad"), .advertising)
         XCTAssertEqual(blocklist("https://admeld.com"), .advertising)

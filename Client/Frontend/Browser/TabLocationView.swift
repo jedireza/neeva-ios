@@ -15,13 +15,12 @@ protocol TabLocationViewDelegate {
     func tabLocationViewDidTapReaderMode(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTapPageOptions(_ tabLocationView: TabLocationView, from button: UIButton)
-    func tabLocationViewDidLongPressPageOptions(_ tabLocationVIew: TabLocationView)
+    func tabLocationViewPageOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton) -> UIMenu?
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView)
 
     /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
     @discardableResult func tabLocationViewDidLongPressReaderMode(_ tabLocationView: TabLocationView) -> Bool
-    func tabLocationViewDidLongPressReload(_ tabLocationView: TabLocationView)
+    func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu?
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]?
 }
 
@@ -61,6 +60,9 @@ class TabLocationView: UIView {
         didSet {
             updateTextWithURL()
             pageOptionsButton.isHidden = (url == nil)
+            let showSearchIcon = neevaSearchEngine.queryForSearchURL(url) == nil
+            searchImageViews.0.isHidden = showSearchIcon
+            searchImageViews.1.isHidden = showSearchIcon
 
             trackingProtectionButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
             setNeedsUpdateConstraints()
@@ -126,6 +128,17 @@ class TabLocationView: UIView {
         lockImageView.accessibilityLabel = .TabLocationLockIconAccessibilityLabel
         return lockImageView
     }()
+    
+    fileprivate lazy var searchImageViews: (UIView, UIImageView) = {
+          let searchImageView = UIImageView(image: UIImage.templateImageNamed("search"))
+          searchImageView.isAccessibilityElement = false
+          searchImageView.contentMode = .scaleAspectFit
+          let space10px = UIView()
+          space10px.snp.makeConstraints { make in
+              make.width.equalTo(10)
+          }
+          return (space10px, searchImageView)
+    }()
 
     class TrackingProtectionButton: UIButton {
         // Disable showing the button if the feature is off in the prefs
@@ -133,7 +146,7 @@ class TabLocationView: UIView {
             didSet {
                 separatorLine?.isHidden = isHidden
                 guard !isHidden, let appDelegate = UIApplication.shared.delegate as? AppDelegate, let profile = appDelegate.profile else { return }
-                if !FirefoxTabContentBlocker.isTrackingProtectionEnabled(prefs: profile.prefs) {
+                if !NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: profile.prefs) {
                     isHidden = true
                 }
             }
@@ -169,7 +182,7 @@ class TabLocationView: UIView {
     lazy var reloadButton: StatefulButton = {
         let reloadButton = StatefulButton(frame: .zero, state: .disabled)
         reloadButton.addTarget(self, action: #selector(tapReloadButton), for: .touchUpInside)
-        reloadButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressReloadButton)))
+        reloadButton.setDynamicMenu { self.delegate?.tabLocationViewReloadMenu(self) }
         reloadButton.tintColor = UIColor.Photon.Grey50
         reloadButton.imageView?.contentMode = .scaleAspectFit
         reloadButton.contentHorizontalAlignment = .left
@@ -182,14 +195,13 @@ class TabLocationView: UIView {
     lazy var pageOptionsButton: ToolbarButton = {
         let pageOptionsButton = ToolbarButton(frame: .zero)
         pageOptionsButton.setImage(UIImage.templateImageNamed("menu-More-Options"), for: .normal)
-        pageOptionsButton.addTarget(self, action: #selector(didPressPageOptionsButton), for: .touchUpInside)
         pageOptionsButton.isAccessibilityElement = true
         pageOptionsButton.isHidden = true
         pageOptionsButton.imageView?.contentMode = .left
         pageOptionsButton.accessibilityLabel = .TabLocationPageOptionsAccessibilityLabel
         pageOptionsButton.accessibilityIdentifier = "TabLocationView.pageOptionsButton"
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressPageOptionsButton))
-        pageOptionsButton.addGestureRecognizer(longPressGesture)
+        pageOptionsButton.setDynamicMenu({ self.delegate?.tabLocationViewPageOptionsMenu(self, from: pageOptionsButton) })
+        pageOptionsButton.showsMenuAsPrimaryAction = true
         return pageOptionsButton
     }()
 
@@ -229,6 +241,7 @@ class TabLocationView: UIView {
         pageOptionsButton.separatorLine = separatorLineForPageOptions
 
         let subviews = [trackingProtectionButton, separatorLineForTP, space10px, lockImageView, urlTextField, readerModeButton, reloadButton, separatorLineForPageOptions, pageOptionsButton]
+        
         contentView = UIStackView(arrangedSubviews: subviews)
         contentView.distribution = .fill
         contentView.alignment = .center
@@ -313,20 +326,6 @@ class TabLocationView: UIView {
         }
     }
 
-    @objc func longPressReloadButton(_ recognizer: UILongPressGestureRecognizer) {
-        if recognizer.state == .began {
-            delegate?.tabLocationViewDidLongPressReload(self)
-        }
-    }
-
-    @objc func didPressPageOptionsButton(_ button: UIButton) {
-        delegate?.tabLocationViewDidTapPageOptions(self, from: button)
-    }
-
-    @objc func didLongPressPageOptionsButton(_ recognizer: UILongPressGestureRecognizer) {
-        delegate?.tabLocationViewDidLongPressPageOptions(self)
-    }
-
     @objc func longPressLocation(_ recognizer: UITapGestureRecognizer) {
         if recognizer.state == .began {
             delegate?.tabLocationViewDidLongPressLocation(self)
@@ -346,14 +345,15 @@ class TabLocationView: UIView {
     }
 
     fileprivate func updateTextWithURL() {
-        if let host = url?.host, AppConstants.MOZ_PUNYCODE {
-            urlTextField.text = url?.absoluteString.replacingOccurrences(of: host, with: host.asciiHostToUTF8())
+        if let scheme = url?.scheme, let range = url?.absoluteString.range(of: "\(scheme)://") {
+            // remove https:// (the scheme) from the url when displaying
+                        urlTextField.text = url?.absoluteString.replacingCharacters(in: range, with: "")
         } else {
             urlTextField.text = url?.absoluteString
         }
-        // remove https:// (the scheme) from the url when displaying
-        if let scheme = url?.scheme, let range = url?.absoluteString.range(of: "\(scheme)://") {
-            urlTextField.text = url?.absoluteString.replacingCharacters(in: range, with: "")
+        // NOTE: Punycode support was removed
+        if let query = neevaSearchEngine.queryForSearchURL(url) {
+            urlTextField.text = query
         }
     }
 }
@@ -403,7 +403,8 @@ extension TabLocationView: Themeable {
         backgroundColor = UIColor.theme.textField.background
         urlTextField.textColor = UIColor.theme.textField.textAndTint
         readerModeButton.selectedTintColor = UIColor.theme.urlbar.readerModeButtonSelected
-        readerModeButton.unselectedTintColor = UIColor.theme.urlbar.readerModeButtonUnselected
+        readerModeButton.unselectedTintColor = UIColor.theme.urlbar.pageOptionsUnselected
+                reloadButton.tintColor = UIColor.theme.urlbar.pageOptionsUnselected
         
         pageOptionsButton.selectedTintColor = UIColor.theme.urlbar.pageOptionsSelected
         pageOptionsButton.unselectedTintColor = UIColor.theme.urlbar.pageOptionsUnselected
@@ -412,7 +413,7 @@ extension TabLocationView: Themeable {
         separatorLineForTP.backgroundColor = separatorLineForPageOptions.backgroundColor
 
         lockImageView.tintColor = pageOptionsButton.tintColor
-
+        searchImageViews.1.tintColor = pageOptionsButton.tintColor
         let color = ThemeManager.instance.currentName == .dark ? UIColor(white: 0.3, alpha: 0.6): UIColor.theme.textField.background
         menuBadge.badge.tintBackground(color: color)
     }
@@ -479,11 +480,15 @@ class StatefulButton: UIButton {
         }
         set (newReloadButtonState) {
             _reloadButtonState = newReloadButtonState
+            
+            let configuration = UIImage.SymbolConfiguration(weight: .semibold)
             switch _reloadButtonState {
             case .reload:
-                setImage(UIImage.templateImageNamed("nav-refresh"), for: .normal)
+                self.isHidden = false
+                setImage(UIImage(systemName: "arrow.clockwise", withConfiguration: configuration), for: .normal)
             case .stop:
-                setImage(UIImage.templateImageNamed("nav-stop"), for: .normal)
+                self.isHidden = false
+                setImage(UIImage(systemName: "xmark", withConfiguration: configuration), for: .normal)
             case .disabled:
                 self.isHidden = true
             }

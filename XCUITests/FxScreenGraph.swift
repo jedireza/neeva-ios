@@ -158,10 +158,10 @@ class Action {
     static let ToggleHistoryInNewTab = "ToggleHistoryInNewTab"
 
     static let SelectNewTabAsBlankPage = "SelectNewTabAsBlankPage"
-    static let SelectNewTabAsFirefoxHomePage = "SelectNewTabAsFirefoxHomePage"
+    static let SelectNewTabAsNeevaHomePage = "SelectNewTabAsNeevaHomePage"
     static let SelectNewTabAsCustomURL = "SelectNewTabAsCustomURL"
 
-    static let SelectHomeAsFirefoxHomePage = "SelectHomeAsFirefoxHomePage"
+    static let SelectHomeAsNeevaHomePage = "SelectHomeAsNeevaHomePage"
     static let SelectHomeAsCustomURL = "SelectHomeAsCustomURL"
     static let SelectTopSitesRows = "SelectTopSitesRows"
 
@@ -737,7 +737,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.gesture(forAction: Action.SelectNewTabAsBlankPage) { UserState in
             table.cells["NewTabAsBlankPage"].tap()
         }
-        screenState.gesture(forAction: Action.SelectNewTabAsFirefoxHomePage) { UserState in
+        screenState.gesture(forAction: Action.SelectNewTabAsNeevaHomePage) { UserState in
             table.cells["NewTabAsFirefoxHome"].tap()
         }
         screenState.gesture(forAction: Action.SelectNewTabAsCustomURL) { UserState in
@@ -748,7 +748,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     }
 
     map.addScreenState(HomeSettings) { screenState in
-        screenState.gesture(forAction: Action.SelectHomeAsFirefoxHomePage) { UserState in
+        screenState.gesture(forAction: Action.SelectHomeAsNeevaHomePage) { UserState in
             app.cells["HomeAsFirefoxHome"].tap()
         }
 

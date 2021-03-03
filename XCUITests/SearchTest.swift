@@ -131,7 +131,7 @@ class SearchTests: BaseTestCase {
     func testCopyPasteComplete() {
         // Copy, Paste and Go to url
         navigator.goto(URLBarOpen)
-        typeOnSearchBar(text: "www.mozilla.org")
+        typeOnSearchBar(text: "www.neeva.co")
         app.textFields["address"].press(forDuration: 5)
         app.menuItems["Select All"].tap()
         waitForExistence(app.menuItems["Copy"], timeout: 3)
@@ -155,7 +155,7 @@ class SearchTests: BaseTestCase {
         waitUntilPageLoad()
 
         // Check that the website is loaded
-        waitForValueContains(app.textFields["url"], value: "www.mozilla.org")
+        waitForValueContains(app.textFields["url"], value: "www.neeva.co")
         waitUntilPageLoad()
 
         // Go back, write part of moz, check the autocompletion
@@ -167,49 +167,19 @@ class SearchTests: BaseTestCase {
         navigator.nowAt(HomePanelsScreen)
         waitForTabsButton()
         typeOnSearchBar(text: "moz")
-        waitForValueContains(app.textFields["address"], value: "mozilla.org")
+        waitForValueContains(app.textFields["address"], value: "neeva.co")
         let value = app.textFields["address"].value
-        XCTAssertEqual(value as? String, "mozilla.org")
+        XCTAssertEqual(value as? String, "neeva.co")
     }
 
-    private func changeSearchEngine(searchEngine: String) {
-        navigator.goto(SearchSettings)
-        // Open the list of default search engines and select the desired
-        app.tables.cells.element(boundBy: 0).tap()
-        let tablesQuery2 = app.tables
-        tablesQuery2.staticTexts[searchEngine].tap()
-
-        navigator.openURL("foo")
-        // Workaroud needed after xcode 11.3 update Issue 5937
-        // waitForExistence(app.webViews.firstMatch, timeout: 3)
-        waitForValueContains(app.textFields["url"], value: searchEngine.lowercased())
-        }
-
-    // Smoketest
-    func testSearchEngine() {
-        // Change to the each search engine and verify the search uses it
-        changeSearchEngine(searchEngine: "Bing")
-        changeSearchEngine(searchEngine: "DuckDuckGo")
-        changeSearchEngine(searchEngine: "Google")
-        changeSearchEngine(searchEngine: "Twitter")
-        changeSearchEngine(searchEngine: "Wikipedia")
-        // Last check failing intermittently, temporary disabled
-        // changeSearchEngine(searchEngine: "Amazon.com")
-    }
-
-    func testDefaultSearchEngine() {
-        navigator.goto(SearchSettings)
-        XCTAssert(app.tables.staticTexts["Google"].exists)
-    }
-
-    func testSearchWithFirefoxOption() {
+    func testSearchWithNeevaOption() {
         navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         waitForExistence(app.webViews.staticTexts["cloud"], timeout: 10)
         // Select some text and long press to find the option
         app.webViews.staticTexts["cloud"].press(forDuration: 1)
-        waitForExistence(app.menuItems["Search with Firefox"])
-        app.menuItems["Search with Firefox"].tap()
+        waitForExistence(app.menuItems["Search with Neeva"])
+        app.menuItems["Search with Neeva"].tap()
         waitUntilPageLoad()
         waitForValueContains(app.textFields["url"], value: "google")
         // Now there should be two tabs open

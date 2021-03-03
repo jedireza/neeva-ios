@@ -4,13 +4,13 @@
 
 import XCTest
 
-let websiteUrl = "www.mozilla.org"
+let websiteUrl = "www.neeva.co"
 class NewTabSettingsTest: BaseTestCase {
     // Smoketest
     func testCheckNewTabSettingsByDefault() {
         navigator.goto(NewTabSettings)
         waitForExistence(app.navigationBars["New Tab"])
-        XCTAssertTrue(app.tables.cells["Firefox Home"].exists)
+        XCTAssertTrue(app.tables.cells["Neeva Home"].exists)
         XCTAssertTrue(app.tables.cells["Blank Page"].exists)
         XCTAssertTrue(app.tables.cells["NewTabAsCustomURL"].exists)
     }
@@ -28,7 +28,7 @@ class NewTabSettingsTest: BaseTestCase {
         waitForNoExistence(app.staticTexts["Highlights"])
     }
     
-    func testChangeNewTabSettingsShowFirefoxHome() {
+    func testChangeNewTabSettingsShowNeevaHome() {
         // Set to history page first since FF Home is default
         navigator.goto(NewTabSettings)
         navigator.performAction(Action.SelectNewTabAsBlankPage)
@@ -40,7 +40,7 @@ class NewTabSettingsTest: BaseTestCase {
         app.buttons["urlBar-cancel"].tap()
         navigator.goto(SettingsScreen)
         navigator.goto(NewTabSettings)
-        navigator.performAction(Action.SelectNewTabAsFirefoxHomePage)
+        navigator.performAction(Action.SelectNewTabAsNeevaHomePage)
         navigator.performAction(Action.OpenNewTabFromTabTray)
         waitForExistence(app.collectionViews.cells["TopSitesCell"])
     }
@@ -83,9 +83,9 @@ class NewTabSettingsTest: BaseTestCase {
         navigator.goto(SettingsScreen)
         XCTAssertEqual(app.tables.cells["NewTab"].label, "New Tab, Blank Page")
         //Switch to FXHome and check label
-        navigator.performAction(Action.SelectNewTabAsFirefoxHomePage)
+        navigator.performAction(Action.SelectNewTabAsNeevaHomePage)
         navigator.nowAt(NewTabSettings)
         navigator.goto(SettingsScreen)
-        XCTAssertEqual(app.tables.cells["NewTab"].label, "New Tab, Firefox Home")
+        XCTAssertEqual(app.tables.cells["NewTab"].label, "New Tab, Neeva Home")
     }
 }

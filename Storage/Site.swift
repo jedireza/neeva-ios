@@ -43,21 +43,10 @@ open class Site: Identifiable {
      // Sites may have multiple favicons. We'll return the largest.
     open var icon: Favicon?
     open var latestVisit: Visit?
-    open fileprivate(set) var bookmarked: Bool?
 
-    public convenience init(url: String, title: String) {
-        self.init(url: url, title: title, bookmarked: false, guid: nil)
-    }
-
-    public init(url: String, title: String, bookmarked: Bool?, guid: String? = nil) {
+    public init(url: String, title: String, guid: String? = nil) {
         self.url = url
         self.title = title
-        self.bookmarked = bookmarked
         self.guid = guid
     }
-
-    open func setBookmarked(_ bookmarked: Bool) {
-        self.bookmarked = bookmarked
-    }
-
 }

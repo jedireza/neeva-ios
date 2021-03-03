@@ -5,7 +5,7 @@
 "NSCameraUsageDescription" = "This lets you take and upload photos.";
 
 /* Privacy - Face ID Usage Description */
-"NSFaceIDUsageDescription" = "Firefox requires Face ID to access your saved logins.";
+"NSFaceIDUsageDescription" = "Neeva requires Face ID to access your saved logins.";
 
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this

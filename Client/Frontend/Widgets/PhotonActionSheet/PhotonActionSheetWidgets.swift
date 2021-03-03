@@ -48,6 +48,7 @@ public enum PhotonActionSheetIconType {
     case URL
     case TabsButton
     case None
+    case SystemImage
 }
 
 public struct PhotonActionSheetItem {

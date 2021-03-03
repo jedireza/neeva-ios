@@ -1,12 +1,12 @@
-/* Button string to open settings that allows user to switch their default browser to Firefox. */
+/* Button string to open settings that allows user to switch their default browser to Neeva. */
 "DefaultBrowserCard.Button" = "Ir a Ajustes";
 
-/* Description for small card shown that allows user to switch their default browser to Firefox. */
-"DefaultBrowserCard.Description" = "Configura enlaces de sitios web, correos electrónicos y mensajes para que se abran automáticamente en Firefox.";
+/* Description for small card shown that allows user to switch their default browser to Neeva. */
+"DefaultBrowserCard.Description" = "Configura enlaces de sitios web, correos electrónicos y mensajes para que se abran automáticamente en Neeva.";
 
-/* Title for small card shown that allows user to switch their default browser to Firefox. */
+/* Title for small card shown that allows user to switch their default browser to Neeva. */
 "DefaultBrowserCard.Title" = "Cambia tu navegador predeterminado";
 
-/* Menu option for setting Firefox as default browser. */
+/* Menu option for setting Neeva as default browser. */
 "Settings.DefaultBrowserMenuItem" = "Establecer como navegador predeterminado";
 

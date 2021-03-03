@@ -9,56 +9,30 @@ import Fuzi
 private let TypeSearch = "text/html"
 private let TypeSuggest = "application/x-suggestions+json"
 
-class OpenSearchEngine: NSObject, NSCoding {
+class OpenSearchEngine {
     static let PreferredIconSize = 30
 
     let shortName: String
     let engineID: String?
     let image: UIImage
     let isCustomEngine: Bool
-    let searchTemplate: String
-    fileprivate let suggestTemplate: String?
 
     fileprivate let SearchTermComponent = "{searchTerms}"
     fileprivate let LocaleTermComponent = "{moz:locale}"
 
     fileprivate lazy var searchQueryComponentKey: String? = self.getQueryArgFromTemplate()
+    
+    //TODO: connect to neeva constants app host
+    var searchTemplate: String { "https://alpha.neeva.co/search/?src=ios&q={searchTerms}" }
+    
+    //TODO: connect to neeva constants app host
+    fileprivate var suggestTemplate: String { "https://alpha.neeva.co/suggest?q={searchTerms}&src=opensearch" }
 
-    init(engineID: String?, shortName: String, image: UIImage, searchTemplate: String, suggestTemplate: String?, isCustomEngine: Bool) {
+    init(engineID: String?, shortName: String, image: UIImage, isCustomEngine: Bool) {
         self.shortName = shortName
         self.image = image
-        self.searchTemplate = searchTemplate
-        self.suggestTemplate = suggestTemplate
         self.isCustomEngine = isCustomEngine
         self.engineID = engineID
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        // this catches the cases where bool encoded in Swift 2 needs to be decoded with decodeObject, but a Bool encoded in swift 3 needs
-        // to be decoded using decodeBool. This catches the upgrade case to ensure that we are always able to fetch a keyed valye for isCustomEngine
-        // http://stackoverflow.com/a/40034694
-        let isCustomEngine = aDecoder.decodeAsBool(forKey: "isCustomEngine")
-        guard let searchTemplate = aDecoder.decodeObject(forKey: "searchTemplate") as? String,
-            let shortName = aDecoder.decodeObject(forKey: "shortName") as? String,
-            let image = aDecoder.decodeObject(forKey: "image") as? UIImage else {
-                assertionFailure()
-                return nil
-        }
-
-        self.searchTemplate = searchTemplate
-        self.shortName = shortName
-        self.isCustomEngine = isCustomEngine
-        self.image = image
-        self.engineID = aDecoder.decodeObject(forKey: "engineID") as? String
-        self.suggestTemplate = nil
-    }
-
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(searchTemplate, forKey: "searchTemplate")
-        aCoder.encode(shortName, forKey: "shortName")
-        aCoder.encode(isCustomEngine, forKey: "isCustomEngine")
-        aCoder.encode(image, forKey: "image")
-        aCoder.encode(engineID, forKey: "engineID")
     }
 
     /**
@@ -129,10 +103,7 @@ class OpenSearchEngine: NSObject, NSCoding {
      * Returns the search suggestion URL for the given query.
      */
     func suggestURLForQuery(_ query: String) -> URL? {
-        if let suggestTemplate = suggestTemplate {
-            return getURLFromTemplate(suggestTemplate, query: query)
-        }
-        return nil
+        getURLFromTemplate(suggestTemplate, query: query)
     }
 
     fileprivate func getURLFromTemplate(_ searchTemplate: String, query: String) -> URL? {
@@ -154,143 +125,5 @@ class OpenSearchEngine: NSObject, NSCoding {
         }
 
         return nil
-    }
-}
-
-/**
- * OpenSearch XML parser.
- *
- * This parser accepts standards-compliant OpenSearch 1.1 XML documents in addition to
- * the Firefox-specific search plugin format.
- *
- * OpenSearch spec: http://www.opensearch.org/Specifications/OpenSearch/1.1
- */
-class OpenSearchParser {
-    fileprivate let pluginMode: Bool
-
-    init(pluginMode: Bool) {
-        self.pluginMode = pluginMode
-    }
-
-    func parse(_ file: String, engineID: String) -> OpenSearchEngine? {
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: file)) else {
-            print("Invalid search file")
-            return nil
-        }
-
-        guard let indexer = try? XMLDocument(data: data),
-            let docIndexer = indexer.root else {
-                print("Invalid XML document")
-                return nil
-        }
-
-        let shortNameIndexer = docIndexer.children(tag: "ShortName")
-        if shortNameIndexer.count != 1 {
-            print("ShortName must appear exactly once")
-            return nil
-        }
-
-        let shortName = shortNameIndexer[0].stringValue
-        if shortName == "" {
-            print("ShortName must contain text")
-            return nil
-        }
-
-        let urlIndexers = docIndexer.children(tag: "Url")
-        if urlIndexers.isEmpty {
-            print("Url must appear at least once")
-            return nil
-        }
-
-        var searchTemplate: String!
-        var suggestTemplate: String?
-        for urlIndexer in urlIndexers {
-            let type = urlIndexer.attributes["type"]
-            if type == nil {
-                print("Url element requires a type attribute", terminator: "\n")
-                return nil
-            }
-
-            if type != TypeSearch && type != TypeSuggest {
-                // Not a supported search type.
-                continue
-            }
-
-            var template = urlIndexer.attributes["template"]
-            if template == nil {
-                print("Url element requires a template attribute", terminator: "\n")
-                return nil
-            }
-
-            if pluginMode {
-                let paramIndexers = urlIndexer.children(tag: "Param")
-
-                if !paramIndexers.isEmpty {
-                    template! += "?"
-                    var firstAdded = false
-                    for paramIndexer in paramIndexers {
-                        if firstAdded {
-                            template! += "&"
-                        } else {
-                            firstAdded = true
-                        }
-
-                        let name = paramIndexer.attributes["name"]
-                        let value = paramIndexer.attributes["value"]
-                        if name == nil || value == nil {
-                            print("Param element must have name and value attributes", terminator: "\n")
-                            return nil
-                        }
-                        template! += name! + "=" + value!
-                    }
-                }
-            }
-
-            if type == TypeSearch {
-                searchTemplate = template
-            } else {
-                suggestTemplate = template
-            }
-        }
-
-        if searchTemplate == nil {
-            print("Search engine must have a text/html type")
-            return nil
-        }
-
-        let imageIndexers = docIndexer.children(tag: "Image")
-        var largestImage = 0
-        var largestImageElement: XMLElement?
-
-        // TODO: For now, just use the largest icon.
-        for imageIndexer in imageIndexers {
-            let imageWidth = Int(imageIndexer.attributes["width"] ?? "")
-            let imageHeight = Int(imageIndexer.attributes["height"] ?? "")
-
-            // Only accept square images.
-            if imageWidth != imageHeight {
-                continue
-            }
-
-            if let imageWidth = imageWidth {
-                if imageWidth > largestImage {
-                    largestImage = imageWidth
-                    largestImageElement = imageIndexer
-                }
-            }
-        }
-
-        let uiImage: UIImage
-        if let imageElement = largestImageElement,
-            let imageURL = URL(string: imageElement.stringValue),
-            let imageData = try? Data(contentsOf: imageURL),
-            let image = UIImage.imageFromDataThreadSafe(imageData) {
-            uiImage = image
-        } else {
-            print("Error: Invalid search image data")
-            return nil
-        }
-
-        return OpenSearchEngine(engineID: engineID, shortName: shortName, image: uiImage, searchTemplate: searchTemplate, suggestTemplate: suggestTemplate, isCustomEngine: false)
     }
 }

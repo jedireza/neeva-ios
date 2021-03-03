@@ -73,7 +73,7 @@ public class PushClient {
     let endpointURL: NSURL
     let experimentalMode: Bool
 
-    lazy fileprivate var urlSession = makeURLSession(userAgent: UserAgent.fxaUserAgent, configuration: URLSessionConfiguration.ephemeral)
+    lazy fileprivate var urlSession = makeURLSession(userAgent: UserAgent.getUserAgent(), configuration: URLSessionConfiguration.ephemeral)
 
     public init(endpointURL: NSURL, experimentalMode: Bool = false) {
         self.endpointURL = endpointURL

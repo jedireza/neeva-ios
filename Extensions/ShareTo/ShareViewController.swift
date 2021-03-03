@@ -6,7 +6,37 @@ import UIKit
 import SnapKit
 import Shared
 import Storage
-import Account
+import NeevaSupport
+import SwiftUI
+import SwiftKeychainWrapper
+
+class AddToSpaceListViewController: UIHostingController<AnyView> {
+    struct Content: View {
+        let title: String
+        let description: String?
+        let url: URL
+        let onDismiss: (AddToSpaceList.IDs?) -> ()
+
+        var body: some View {
+            AddToSpaceList(title: title, description: description, url: url, onDismiss: onDismiss)
+                .environment(\.onOpenURL, { url in
+                    // TODO: handle this case
+                })
+        }
+    }
+    init(title: String, description: String?, url: URL, onDismiss: @escaping (AddToSpaceList.IDs?) -> ()) {
+        super.init(rootView: AnyView(EmptyView()))
+        self.rootView = AnyView(
+            Content(title: title, description: description, url: url, onDismiss: onDismiss)
+        )
+        self.navigationItem.title = "Add to Space"
+    }
+
+    @objc required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 
 extension UIStackView {
     func addBackground(color: UIColor) {
@@ -69,7 +99,6 @@ class ShareViewController: UIViewController {
     private var viewsShownDuringDoneAnimation = [UIView]()
     private var stackView: UIStackView!
     private var actionDoneRow: (row: UIStackView, label: UILabel)!
-    private var sendToDevice: SendToDevice?
     private var pageInfoHeight: Constraint?
     private var actionRowHeights = [Constraint]()
     private var pageInfoRowTitleLabel: UILabel?
@@ -105,9 +134,6 @@ class ShareViewController: UIViewController {
         case .rawText(let text):
             self.pageInfoRowTitleLabel?.text = text.quoted
         }
-
-        let profile = BrowserProfile(localName: "profile")
-        RustFirefoxAccounts.startup(prefs: profile.prefs).uponQueue(.main) { _ in }
     }
 
     private func setupRows() {
@@ -117,15 +143,12 @@ class ShareViewController: UIViewController {
         makeSeparator(addTo: stackView)
 
         if shareItem?.isUrlType() ?? true {
-            makeActionRow(addTo: stackView, label: Strings.ShareOpenInFirefox, imageName: "open-in-firefox", action: #selector(actionOpenInFirefoxNow), hasNavigation: false)
+            makeActionRow(addTo: stackView, label: Strings.ShareOpenInNeeva, imageName: "open-in-neeva", action: #selector(actionOpenInNeevaNow), hasNavigation: false)
+            makeActionRow(addTo: stackView, label: "Save to Space", imageName: "bookmark", isSystem: true, action: #selector(actionShowSpacePicker), hasNavigation: true)
             makeActionRow(addTo: stackView, label: Strings.ShareLoadInBackground, imageName: "menu-Show-Tabs", action: #selector(actionLoadInBackground), hasNavigation: false)
-            makeActionRow(addTo: stackView, label: Strings.ShareBookmarkThisPage, imageName: "AddToBookmarks", action: #selector(actionBookmarkThisPage), hasNavigation: false)
-            makeActionRow(addTo: stackView, label: Strings.ShareAddToReadingList, imageName: "AddToReadingList", action: #selector(actionAddToReadingList), hasNavigation: false)
-            makeSeparator(addTo: stackView)
-            makeActionRow(addTo: stackView, label: Strings.ShareSendToDevice, imageName: "menu-Send-to-Device", action: #selector(actionSendToDevice), hasNavigation: true)
         } else {
             pageInfoRowUrlLabel?.removeFromSuperview()
-            makeActionRow(addTo: stackView, label: Strings.ShareSearchInFirefox, imageName: "quickSearch", action: #selector(actionSearchInFirefox), hasNavigation: false)
+            makeActionRow(addTo: stackView, label: Strings.ShareSearchInNeeva, imageName: "quickSearch", action: #selector(actionSearchInNeeva), hasNavigation: false)
         }
 
         let footerSpaceRow = UIView()
@@ -197,7 +220,7 @@ class ShareViewController: UIViewController {
         return (row, pageTitleLabel, urlLabel)
     }
 
-    private func makeActionRow(addTo parent: UIStackView, label: String, imageName: String, action: Selector, hasNavigation: Bool) {
+    private func makeActionRow(addTo parent: UIStackView, label: String, imageName: String, isSystem: Bool = false, action: Selector, hasNavigation: Bool) {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = UX.actionRowSpacingBetweenIconAndTitle
@@ -208,7 +231,8 @@ class ShareViewController: UIViewController {
             actionRowHeights.append(c)
         }
 
-        let icon = UIImageView(image: UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate))
+        let image = isSystem ? UIImage(systemName: imageName) : UIImage(named: imageName)
+        let icon = UIImageView(image: image?.withRenderingMode(.alwaysTemplate))
         icon.contentMode = .scaleAspectFit
         icon.tintColor = Theme.actionRowTextAndIcon.color
 
@@ -329,20 +353,26 @@ extension ShareViewController {
         finish()
     }
 
-    @objc func actionBookmarkThisPage(gesture: UIGestureRecognizer) {
-        gesture.isEnabled = false
-        animateToActionDoneView(withTitle: Strings.ShareBookmarkThisPageDone)
-
+    @objc func actionShowSpacePicker(gesture: UIGestureRecognizer) {
         if let shareItem = shareItem, case .shareItem(let item) = shareItem {
-            let profile = BrowserProfile(localName: "profile")
-            profile._reopen()
-            _ = profile.places.createBookmark(parentGUID: BookmarkRoots.MobileFolderGUID, url: item.url, title: item.title).value // Intentionally block thread with database call.
-            profile._shutdown()
-
-            addAppExtensionTelemetryEvent(forMethod: "bookmark-this-page")
+            navigationController?.pushViewController(
+                AddToSpaceListViewController(
+                    title: item.title ?? item.url,
+                    description: nil,
+                    url: URL(string: item.url)!,
+                    onDismiss: { result in
+                        if result == nil {
+                            self.navigationController?.popViewController(animated: true)
+                        } else {
+                            self.finish(afterDelay: 0)
+                        }
+                    }
+                ),
+                animated: true
+            )
+        } else {
+            finish()
         }
-
-        finish()
     }
 
     @objc func actionAddToReadingList(gesture: UIGestureRecognizer) {
@@ -361,38 +391,20 @@ extension ShareViewController {
         finish()
     }
 
-    @objc func actionSendToDevice(gesture: UIGestureRecognizer) {
-        guard let shareItem = shareItem, case .shareItem(let item) = shareItem else {
-            return
-        }
-
-        gesture.isEnabled = false
-        view.isUserInteractionEnabled = false
-        RustFirefoxAccounts.shared.accountManager.uponQueue(.main) { _ in
-            self.view.isUserInteractionEnabled = true
-            self.sendToDevice = SendToDevice()
-            guard let sendToDevice = self.sendToDevice else { return }
-            sendToDevice.sharedItem = item
-            sendToDevice.delegate = self.delegate
-            let vc = sendToDevice.initialViewController()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
-    }
-
-    func openFirefox(withUrl url: String, isSearch: Bool) {
+    func openNeeva(withUrl url: String, isSearch: Bool) {
         // Telemetry is handled in the app delegate that receives this event.
         let profile = BrowserProfile(localName: "profile")
         profile.prefs.setBool(true, forKey: PrefsKeys.AppExtensionTelemetryOpenUrl)
 
-       func firefoxUrl(_ url: String) -> String {
+       func neevaUrl(_ url: String) -> String {
             let encoded = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.alphanumerics) ?? ""
             if isSearch {
-                return "firefox://open-text?text=\(encoded)"
+                return "neeva://open-text?text=\(encoded)"
             }
-            return "firefox://open-url?url=\(encoded)"
+            return "neeva://open-url?url=\(encoded)"
         }
 
-        guard let url = URL(string: firefoxUrl(url)) else { return }
+        guard let url = URL(string: neevaUrl(url)) else { return }
         var responder = self as UIResponder?
         let selectorOpenURL = sel_registerName("openURL:")
         while let current = responder {
@@ -405,21 +417,21 @@ extension ShareViewController {
         }
     }
 
-    @objc func actionSearchInFirefox(gesture: UIGestureRecognizer) {
+    @objc func actionSearchInNeeva(gesture: UIGestureRecognizer) {
         gesture.isEnabled = false
 
         if let shareItem = shareItem, case .rawText(let text) = shareItem {
-            openFirefox(withUrl: text, isSearch: true)
+            openNeeva(withUrl: text, isSearch: true)
         }
 
         finish(afterDelay: 0)
     }
 
-    @objc func actionOpenInFirefoxNow(gesture: UIGestureRecognizer) {
+    @objc func actionOpenInNeevaNow(gesture: UIGestureRecognizer) {
         gesture.isEnabled = false
 
         if let shareItem = shareItem, case .shareItem(let item) = shareItem {
-            openFirefox(withUrl: item.url, isSearch: false)
+            openNeeva(withUrl: item.url, isSearch: false)
         }
 
         finish(afterDelay: 0)

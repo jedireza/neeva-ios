@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-# xcrun simctl get_app_container booted org.mozilla.ios.Fennec
+# xcrun simctl get_app_container booted neeva
 # - returns Client.app path
 
 SIM_NAME="iPhone-8Plus-tabsArchive" 
@@ -9,9 +9,9 @@ SIM_DEVICE_TYPE="com.apple.CoreSimulator.SimDeviceType.iPhone-8"
 URLS="../Client/Assets/topdomains.txt"
 DELAY="3s"
 PATH_TEST_FIXTURES="."
-CMD="xcrun simctl openurl Booted firefox://open-url?url"
+CMD="xcrun simctl openurl Booted neeva://open-url?url"
 BUILD_DIR="${PATH_TEST_FIXTURES}/tmp"
-BUILD_PATH="${BUILD_DIR}/Build/Products/Fennec-iphonesimulator/Client.app"
+BUILD_PATH="${BUILD_DIR}/Build/Products/Neeva-iphonesimulator/Client.app"
 
 function create_sim() {
     echo "CREATING DEVICE"
@@ -82,7 +82,7 @@ function open_tabs() {
     line_count=`wc -l < ${URLS}`
     while read url; do
 	echo "OPEN TAB #${count}: ${url}"
-	eval $(xcrun simctl openurl Booted firefox://open-url?url=https://${url})
+	eval $(xcrun simctl openurl Booted neeva://open-url?url=https://${url})
 	n=$((n+1))
         sleep ${DELAY} 
         # if we need to start from the beginning of file, then reset n

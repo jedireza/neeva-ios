@@ -56,7 +56,7 @@ struct SearchQuickLinksWidget: Widget {
         }
         .supportedFamilies([.systemMedium])
         .configurationDisplayName(String.QuickActionsGalleryTitlev2)
-        .description(String.FirefoxShortcutGalleryDescription)
+        .description(String.NeevaShortcutGalleryDescription)
     }
 }
 

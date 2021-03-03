@@ -10,7 +10,7 @@ import Foundation
     @objc optional func menuHelperReveal()
     @objc optional func menuHelperSecure()
     @objc optional func menuHelperFindInPage()
-    @objc optional func menuHelperSearchWithFirefox()
+    @objc optional func menuHelperSearchWithNeeva()
     @objc optional func menuHelperPasteAndGo()
 }
 
@@ -20,7 +20,7 @@ open class MenuHelper: NSObject {
     public static let SelectorOpenAndFill: Selector = #selector(MenuHelperInterface.menuHelperOpenAndFill)
     public static let SelectorReveal: Selector = #selector(MenuHelperInterface.menuHelperReveal)
     public static let SelectorFindInPage: Selector = #selector(MenuHelperInterface.menuHelperFindInPage)
-    public static let SelectorSearchWithFirefox: Selector = #selector(MenuHelperInterface.menuHelperSearchWithFirefox)
+    public static let SelectorSearchWithNeeva: Selector = #selector(MenuHelperInterface.menuHelperSearchWithNeeva)
     public static let SelectorPasteAndGo: Selector = #selector(MenuHelperInterface.menuHelperPasteAndGo)
 
     open class var defaultHelper: MenuHelper {
@@ -37,7 +37,7 @@ open class MenuHelper: NSObject {
         let copyItem = UIMenuItem(title: .MenuHelperCopy, action: MenuHelper.SelectorCopy)
         let openAndFillItem = UIMenuItem(title: .MenuHelperOpenAndFill, action: MenuHelper.SelectorOpenAndFill)
         let findInPageItem = UIMenuItem(title: .MenuHelperFindInPage, action: MenuHelper.SelectorFindInPage)
-        let searchItem = UIMenuItem(title: .MenuHelperSearchWithFirefox, action: MenuHelper.SelectorSearchWithFirefox)
+        let searchItem = UIMenuItem(title: .MenuHelperSearchWithNeeva, action: MenuHelper.SelectorSearchWithNeeva)
       
         UIMenuController.shared.menuItems = [pasteAndGoItem, copyItem, revealPasswordItem, hidePasswordItem, openAndFillItem, findInPageItem, searchItem]
     }

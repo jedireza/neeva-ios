@@ -90,11 +90,6 @@ fileprivate class DarkHomePanelColor: HomePanelColor {
     override var buttonContainerBorder: UIColor { return separator }
 
     override var welcomeScreenText: UIColor { return UIColor.Photon.Grey30 }
-    override var bookmarkIconBorder: UIColor { return UIColor.Photon.Grey30 }
-    override var bookmarkFolderBackground: UIColor { return UIColor.Photon.Grey80 }
-    override var bookmarkFolderText: UIColor { return UIColor.Photon.White100 }
-    override var bookmarkCurrentFolderText: UIColor { return UIColor.Photon.White100 }
-    override var bookmarkBackNavCellBackground: UIColor { return UIColor.Photon.Grey70 }
     
     override var activityStreamHeaderText: UIColor { return UIColor.Photon.Grey30 }
     override var activityStreamCellTitle: UIColor { return UIColor.Photon.Grey20 }

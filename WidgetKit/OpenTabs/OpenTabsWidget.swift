@@ -54,10 +54,10 @@ struct OpenTabsView: View {
         }
     }
     
-    var openFirefoxButton: some View {
+    var openNeevaButton: some View {
         HStack(alignment: .center, spacing: 15) {
-            Image("openFirefox").foregroundColor(Color.white)
-            Text("Open Firefox").foregroundColor(Color.white).lineLimit(1).font(.system(size: 13, weight: .semibold, design: .default))
+            Image("openNeeva").foregroundColor(Color.white)
+            Text("Open Neeva").foregroundColor(Color.white).lineLimit(1).font(.system(size: 13, weight: .semibold, design: .default))
             Spacer()
         }.padding([.horizontal])
     }
@@ -77,8 +77,8 @@ struct OpenTabsView: View {
                     Text(String.NoOpenTabsLabel)
                     HStack {
                         Spacer()
-                        Image("openFirefox")
-                        Text(String.OpenFirefoxLabel).foregroundColor(Color.white).lineLimit(1).font(.system(size: 13, weight: .semibold, design: .default))
+                        Image("openNeeva")
+                        Text(String.OpenNeevaLabel).foregroundColor(Color.white).lineLimit(1).font(.system(size: 13, weight: .semibold, design: .default))
                         Spacer()
                     }.padding(10)
                 }.foregroundColor(Color.white)
@@ -90,13 +90,13 @@ struct OpenTabsView: View {
                     
                     if (entry.tabs.count > numberOfTabsToDisplay) {
                         HStack(alignment: .center, spacing: 15) {
-                            Image("openFirefox").foregroundColor(Color.white).frame(width: 16, height: 16)
+                            Image("openNeeva").foregroundColor(Color.white).frame(width: 16, height: 16)
                             Text(String.localizedStringWithFormat(String.MoreTabsLabel, (entry.tabs.count - numberOfTabsToDisplay)))
                                 .foregroundColor(Color.white).lineLimit(1).font(.system(size: 13, weight: .semibold, design: .default))
                             Spacer()
                         }.padding([.horizontal])
                     } else {
-                        openFirefoxButton
+                        openNeevaButton
                     }
                     
                     Spacer()

@@ -9,9 +9,9 @@ import CoreSpotlight
 import MobileCoreServices
 import WebKit
 
-private let browsingActivityType: String = "org.mozilla.ios.firefox.browsing"
+private let browsingActivityType: String = "co.neeva.app.ios.browser.browsing"
 
-private let searchableIndex = CSSearchableIndex(name: "firefox")
+private let searchableIndex = CSSearchableIndex(name: "neeva")
 
 class UserActivityHandler {
     init() {

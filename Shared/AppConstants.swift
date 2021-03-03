@@ -5,8 +5,8 @@
 import UIKit
 
 public enum AppName: String, CustomStringConvertible {
-    case shortName = "Firefox"
-    case longName = "Firefox Daylight"
+    case shortName = "Neeva"
+    case longName = "Neeva Daylight"
 
     public var description: String {
         return self.rawValue
@@ -47,7 +47,7 @@ public struct AppConstants {
             return AppBuildChannel.release
         #elseif MOZ_CHANNEL_BETA
             return AppBuildChannel.beta
-        #elseif MOZ_CHANNEL_FENNEC
+        #elseif MOZ_CHANNEL_NEEVA
             return AppBuildChannel.developer
         #endif
     }()
@@ -57,11 +57,11 @@ public struct AppConstants {
             return "unknown"
         }
 
-        let scheme = identifier.replacingOccurrences(of: "org.mozilla.ios.", with: "")
-        if scheme == "FirefoxNightly.enterprise" {
-            return "FirefoxNightly"
+        let name = identifier.replacingOccurrences(of: "co.neeva.app.ios.browser", with: "")
+        if name == "" {
+            return "neeva"
         }
-        return scheme
+        return "neeva-" + name.replacingOccurrences(of: ".", with: "")
     }()
 
     public static let PrefSendUsageData = "settings.sendUsageData"
@@ -73,7 +73,7 @@ public struct AppConstants {
             return false
         #elseif MOZ_CHANNEL_BETA
             return false
-        #elseif MOZ_CHANNEL_FENNEC
+        #elseif MOZ_CHANNEL_NEEVA
             return true
         #else
             return true
@@ -86,20 +86,20 @@ public struct AppConstants {
             return true
         #elseif MOZ_CHANNEL_BETA
             return true
-        #elseif MOZ_CHANNEL_FENNEC
+        #elseif MOZ_CHANNEL_NEEVA
             return true
         #else
             return false
         #endif
     }()
 
-    /// The maximum length of a URL stored by Firefox. Shared with Places on desktop.
+    /// The maximum length of a URL stored by Neeva. Shared with Places on desktop.
     public static let DB_URL_LENGTH_MAX = 65536
 
-    /// The maximum length of a page title stored by Firefox. Shared with Places on desktop.
+    /// The maximum length of a page title stored by Neeva. Shared with Places on desktop.
     public static let DB_TITLE_LENGTH_MAX = 4096
 
-    /// The maximum length of a bookmark description stored by Firefox. Shared with Places on desktop.
+    /// The maximum length of a bookmark description stored by Neeva. Shared with Places on desktop.
     public static let DB_DESCRIPTION_LENGTH_MAX = 1024
 
     ///  Toggle FxA Leanplum A/B test for prompting push permissions
@@ -108,7 +108,7 @@ public struct AppConstants {
             return true
         #elseif MOZ_CHANNEL_BETA
             return true
-        #elseif MOZ_CHANNEL_FENNEC
+        #elseif MOZ_CHANNEL_NEEVA
             return true
         #else
             return false
@@ -121,7 +121,7 @@ public struct AppConstants {
         return false
         #elseif MOZ_CHANNEL_BETA
         return true
-        #elseif MOZ_CHANNEL_FENNEC
+        #elseif MOZ_CHANNEL_NEEVA
         return true
         #else
         return true
@@ -133,7 +133,7 @@ public struct AppConstants {
         return false
         #elseif MOZ_CHANNEL_BETA
         return false
-        #elseif MOZ_CHANNEL_FENNEC
+        #elseif MOZ_CHANNEL_NEEVA
         return true
         #else
         return false

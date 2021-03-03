@@ -60,7 +60,7 @@ struct ImageButtonWithLabel: View {
     }
 
     var body: some View {
-        Link(destination: isSmall ? link.smallWidgetUrl : link.mediumWidgetUrl) {
+        Link(destination: link.url) {
             ZStack(alignment: .leading) {
                 if !isSmall {
                     ContainerRelativeShape()
@@ -82,6 +82,8 @@ struct ImageButtonWithLabel: View {
                                 .frame(height: 24.0)
                         } else {
                             Image(link.imageName)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                                 .scaledToFit()
                                 .frame(height: 24.0)
                         }
@@ -90,6 +92,8 @@ struct ImageButtonWithLabel: View {
                         HStack(alignment: .bottom){
                             Spacer()
                             Image("faviconFox")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                                 .scaledToFit()
                                 .frame(height: 24.0)
                         }

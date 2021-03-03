@@ -14,7 +14,7 @@ class IntroScreenWelcomeView: UIView, CardTheme {
         return theme == .dark ? .white : .black
     }
     private var fxBackgroundThemeColour: UIColor {
-        return theme == .dark ? UIColor.Firefox.DarkGrey10 : .white
+        return theme == .dark ? UIColor.Neeva.DarkGrey10 : .white
     }
     // Orientation independent screen size
     private let screenSize = DeviceInfo.screenSizeOrientationIndependent()
@@ -65,6 +65,7 @@ class IntroScreenWelcomeView: UIView, CardTheme {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.textAlignment = .center
+        button.isHidden = true
         return button
     }()
     private lazy var signInButton: UIButton = {
@@ -79,11 +80,12 @@ class IntroScreenWelcomeView: UIView, CardTheme {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.setTitleColor(UIColor.Photon.Blue50, for: .normal)
         button.titleLabel?.textAlignment = .center
+        button.isHidden = true
         return button
     }()
     private lazy var nextButton: UIButton = {
         let button = UIButton()
-        button.setTitle(Strings.IntroNextButtonTitle, for: .normal)
+        button.setTitle(Strings.StartBrowsingButtonTitle, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.setTitleColor(UIColor.Photon.Blue50, for: .normal)
         button.titleLabel?.textAlignment = .center
@@ -164,7 +166,7 @@ class IntroScreenWelcomeView: UIView, CardTheme {
             make.bottom.equalTo(nextButton.snp.top).offset(-buttonSpacing)
             make.height.equalTo(buttonHeight)
         }
-        nextButton.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(startBrowsing), for: .touchUpInside)
         nextButton.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(buttonEdgeInset)
             // On large iPhone screens, bump this up from the bottom

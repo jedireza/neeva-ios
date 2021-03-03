@@ -5,18 +5,8 @@
 import Shared
 import Storage
 
-enum ButtonToastAction {
-    case share
-    case addToReadingList
-    case bookmarkPage
-    case removeBookmark
-    case copyUrl
-    case pinPage
-    case removePinPage
-}
-
-extension PhotonActionSheetProtocol {
-    fileprivate func share(fileURL: URL, buttonView: UIView, presentableVC: PresentableVC) {
+extension BrowserViewController {
+    func share(fileURL: URL, buttonView: UIView, presentableVC: PresentableVC) {
         let helper = ShareExtensionHelper(url: fileURL, tab: tabManager.selectedTab)
         let controller = helper.createActivityViewController { completed, activityType in
             print("Shared downloaded file: \(completed)")
@@ -31,16 +21,33 @@ extension PhotonActionSheetProtocol {
         presentableVC.present(controller, animated: true, completion: nil)
     }
 
+    func share(tab: Tab, from sourceView: UIView, presentableVC: PresentableVC) {
+        guard let url = tab.canonicalURL?.displayURL else { return }
+
+        if let temporaryDocument = tab.temporaryDocument {
+            temporaryDocument.getURL().uponQueue(.main, block: { tempDocURL in
+                // If we successfully got a temp file URL, share it like a downloaded file,
+                // otherwise present the ordinary share menu for the web URL.
+                if tempDocURL.isFileURL {
+                    self.share(fileURL: tempDocURL, buttonView: sourceView, presentableVC: presentableVC)
+                } else {
+                    self.presentActivityViewController(url, tab: tab, sourceView: sourceView, sourceRect: sourceView.bounds, arrowDirection: .up)
+
+                }
+            })
+        } else {
+            self.presentActivityViewController(url, tab: tab, sourceView: view, sourceRect: sourceView.bounds, arrowDirection: .up)
+        }
+    }
+
     func getTabActions(tab: Tab, buttonView: UIView,
-                       presentShareMenu: @escaping (URL, Tab, UIView, UIPopoverArrowDirection) -> Void,
-                       findInPage: @escaping () -> Void,
+                       findInPage:  @escaping () -> Void,
                        presentableVC: PresentableVC,
-                       isBookmarked: Bool,
-                       isPinned: Bool,
-                       shouldShowNewTabButton: Bool,
-                       success: @escaping (String, ButtonToastAction) -> Void) -> Array<[PhotonActionSheetItem]> {
+                       deferredPinnedTopSiteStatus: Deferred<Maybe<Bool>>,
+                       shouldShowReloadButton: Bool,
+                       success: @escaping (String) -> Void) -> [[UIMenuElement]] {
         if tab.url?.isFileURL ?? false {
-            let shareFile = PhotonActionSheetItem(title: Strings.AppMenuSharePageTitleString, iconString: "action_share") { _, _ in
+            let shareFile = UIAction(title: Strings.AppMenuSharePageTitleString, image: UIImage(systemName: "square.and.arrow.up")) { _ in
                 guard let url = tab.url else { return }
 
                 self.share(fileURL: url, buttonView: buttonView, presentableVC: presentableVC)
@@ -49,51 +56,31 @@ extension PhotonActionSheetProtocol {
             return [[shareFile]]
         }
 
-        let defaultUAisDesktop = UserAgent.isDesktop(ua: UserAgent.getUserAgent())
-        let toggleActionTitle: String
-        if defaultUAisDesktop {
-            toggleActionTitle = tab.changedUserAgent ? Strings.AppMenuViewDesktopSiteTitleString : Strings.AppMenuViewMobileSiteTitleString
-        } else {
-            toggleActionTitle = tab.changedUserAgent ? Strings.AppMenuViewMobileSiteTitleString : Strings.AppMenuViewDesktopSiteTitleString
-        }
-        let toggleDesktopSite = PhotonActionSheetItem(title: toggleActionTitle, iconString: "menu-RequestDesktopSite", isEnabled: tab.changedUserAgent, badgeIconNamed: "menuBadge") { _, _ in
-            if let url = tab.url {
-                tab.toggleChangeUserAgent()
-                Tab.ChangeUserAgent.updateDomainList(forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate)
-            }
-        }
+        let toggleDesktopSite = toggleDesktopSiteAction(for: tab)
 
-        let addReadingList = PhotonActionSheetItem(title: Strings.AppMenuAddToReadingListTitleString, iconString: "addToReadingList") { _, _ in
-            guard let url = tab.url?.displayURL else { return }
-
-            self.profile.readingList.createRecordWithURL(url.absoluteString, title: tab.title ?? "", addedBy: UIDevice.current.name)
-            TelemetryWrapper.recordEvent(category: .action, method: .add, object: .readingListItem, value: .pageActionMenu)
-            success(Strings.AppMenuAddToReadingListConfirmMessage, .addToReadingList)
-        }
-
-        let bookmarkPage = PhotonActionSheetItem(title: Strings.AppMenuAddBookmarkTitleString, iconString: "menu-Bookmark") { _, _ in
+        let savePageToSpace = UIAction(title: "Save to Space", image: UIImage(systemName: "bookmark")) { _ in
             guard let url = tab.canonicalURL?.displayURL,
-                let bvc = presentableVC as? BrowserViewController else {
-                    return
+                  let bvc = presentableVC as? BrowserViewController else {
+                return
             }
-            bvc.addBookmark(url: url.absoluteString, title: tab.title, favicon: tab.displayFavicon)
-            TelemetryWrapper.recordEvent(category: .action, method: .add, object: .bookmark, value: .pageActionMenu)
-            success(Strings.AppMenuAddBookmarkConfirmMessage, .bookmarkPage)
+            tab.webView!.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
+                bvc.present(AddToSpaceViewController(
+                    title: tab.title ?? url.absoluteString,
+                    description: result as? String,
+                    url: url,
+                    onDismiss: { _ in
+                        bvc.dismissVC()
+                        success("Added to Space")
+                    },
+                    onOpenURL: {
+                        bvc.dismissVC()
+                        bvc.openURLInNewTab($0)
+                    }
+                ), animated: true)
+            }
         }
 
-        let removeBookmark = PhotonActionSheetItem(title: Strings.AppMenuRemoveBookmarkTitleString, iconString: "menu-Bookmark-Remove") { _, _ in
-            guard let url = tab.url?.displayURL else { return }
-
-            self.profile.places.deleteBookmarksWithURL(url: url.absoluteString).uponQueue(.main) { result in
-                if result.isSuccess {
-                    success(Strings.AppMenuRemoveBookmarkConfirmMessage, .removeBookmark)
-                }
-            }
-
-            TelemetryWrapper.recordEvent(category: .action, method: .delete, object: .bookmark, value: .pageActionMenu)
-        }
-
-        let pinToTopSites = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin") { _, _ in
+        let pinToTopSites = UIAction(title: Strings.PinTopsiteActionTitle, image: UIImage(systemName: "pin")) { _ in
             guard let url = tab.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
 
             sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
@@ -103,12 +90,12 @@ extension PhotonActionSheetProtocol {
                 return self.profile.history.addPinnedTopSite(site)
             }.uponQueue(.main) { result in
                 if result.isSuccess {
-                    success(Strings.AppMenuAddPinToTopSitesConfirmMessage, .pinPage)
+                    success(Strings.AppMenuAddPinToTopSitesConfirmMessage)
                 }
             }
         }
 
-        let removeTopSitesPin = PhotonActionSheetItem(title: Strings.RemovePinTopsiteActionTitle, iconString: "action_unpin") { _, _ in
+        let removeTopSitesPin = UIAction(title: Strings.RemovePinTopsiteActionTitle, image: UIImage(systemName: "pin.slash")) { _ in
             guard let url = tab.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
 
             sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
@@ -119,61 +106,23 @@ extension PhotonActionSheetProtocol {
                 return self.profile.history.removeFromPinnedTopSites(site)
             }.uponQueue(.main) { result in
                 if result.isSuccess {
-                    success(Strings.AppMenuRemovePinFromTopSitesConfirmMessage, .removePinPage)
+                    success(Strings.AppMenuRemovePinFromTopSitesConfirmMessage)
                 }
             }
         }
 
-        let sendToDevice = PhotonActionSheetItem(title: Strings.SendToDeviceTitle, iconString: "menu-Send-to-Device") { _, _ in
-            guard let bvc = presentableVC as? PresentableVC & InstructionsViewControllerDelegate & DevicePickerViewControllerDelegate else { return }
-            if !self.profile.hasAccount() {
-                let instructionsViewController = InstructionsViewController()
-                instructionsViewController.delegate = bvc
-                let navigationController = UINavigationController(rootViewController: instructionsViewController)
-                navigationController.modalPresentationStyle = .formSheet
-                bvc.present(navigationController, animated: true, completion: nil)
-                return
-            }
-
-            let devicePickerViewController = DevicePickerViewController()
-            devicePickerViewController.pickerDelegate = bvc
-            devicePickerViewController.profile = self.profile
-            devicePickerViewController.profileNeedsShutdown = false
-            let navigationController = UINavigationController(rootViewController: devicePickerViewController)
-            navigationController.modalPresentationStyle = .formSheet
-            bvc.present(navigationController, animated: true, completion: nil)
-        }
-
-        let sharePage = PhotonActionSheetItem(title: Strings.AppMenuSharePageTitleString, iconString: "action_share") { _, _ in
-            guard let url = tab.canonicalURL?.displayURL else { return }
-
-            if let temporaryDocument = tab.temporaryDocument {
-                temporaryDocument.getURL().uponQueue(.main, block: { tempDocURL in
-                    // If we successfully got a temp file URL, share it like a downloaded file,
-                    // otherwise present the ordinary share menu for the web URL.
-                    if tempDocURL.isFileURL {
-                        self.share(fileURL: tempDocURL, buttonView: buttonView, presentableVC: presentableVC)
-                    } else {
-                        presentShareMenu(url, tab, buttonView, .up)
-                    }
-                })
-            } else {
-                presentShareMenu(url, tab, buttonView, .up)
-            }
-        }
-
-        let copyURL = PhotonActionSheetItem(title: Strings.AppMenuCopyURLTitleString, iconString: "menu-Copy-Link") { _, _ in
+        let copyURL = UIAction(title: Strings.AppMenuCopyURLTitleString, image: UIImage(systemName: "link")) { _ in
             if let url = tab.canonicalURL?.displayURL {
                 UIPasteboard.general.url = url
-                success(Strings.AppMenuCopyURLConfirmMessage, .copyUrl)
+                success(Strings.AppMenuCopyURLConfirmMessage)
             }
         }
         
-        let refreshPage = PhotonActionSheetItem(title: Strings.ReloadPageTitle, iconString: "nav-refresh") { _, _ in
+        let refreshPage = UIAction(title: Strings.ReloadPageTitle, image: UIImage(systemName: "arrow.clockwise")) { _ in
             self.tabManager.selectedTab?.reload()
         }
         
-        let stopRefreshPage = PhotonActionSheetItem(title: Strings.StopReloadPageTitle, iconString: "nav-stop") { _, _ in
+        let stopRefreshPage = UIAction(title: Strings.StopReloadPageTitle, image: UIImage(systemName: "xmark")) { _ in
             self.tabManager.selectedTab?.stop()
         }
         
@@ -184,8 +133,8 @@ extension PhotonActionSheetProtocol {
             let isSafelisted = helper.status == .safelisted
             
             let title = !isSafelisted ? Strings.TrackingProtectionReloadWithout : Strings.TrackingProtectionReloadWith
-            let imageName = helper.isEnabled ? "menu-TrackingProtection-Off" : "menu-TrackingProtection"
-            let toggleTP = PhotonActionSheetItem(title: title, iconString: imageName) { _, _ in
+            let imageName = helper.isEnabled ? "shield.lefthalf.fill.slash" : "shield.lefthalf.fill"
+            let toggleTP = UIAction(title: title, image: UIImage(systemName: imageName)) { _ in
                 ContentBlocker.shared.safelist(enable: !isSafelisted, url: url) {
                     tab.reload()
                 }
@@ -193,31 +142,31 @@ extension PhotonActionSheetProtocol {
             refreshActions.append(toggleTP)
         }
         
-        var mainActions = [sharePage]
+        var mainActions: [UIAction] = []
 
-        // Disable bookmarking and reading list if the URL is too long.
-        if !tab.urlIsTooLong {
-            mainActions.append(isBookmarked ? removeBookmark : bookmarkPage)
-
-            if tab.readerModeAvailableOrActive {
-                mainActions.append(addReadingList)
-            }
+        if !tab.isPrivate {
+            mainActions.append(savePageToSpace)
         }
 
-        mainActions.append(contentsOf: [sendToDevice, copyURL])
+        mainActions.append(contentsOf: [copyURL])
 
-        let pinAction = (isPinned ? removeTopSitesPin : pinToTopSites)
+        let pinAction = UIDeferredMenuElement { provideElements in
+            deferredPinnedTopSiteStatus.uponQueue(.main) {
+                let isPinned = $0.successValue ?? false
+                provideElements([isPinned ? removeTopSitesPin : pinToTopSites])
+            }
+        }
         var commonActions = [toggleDesktopSite, pinAction]
 
         // Disable find in page if document is pdf.
         if tab.mimeType != MIMEType.PDF {
-            let findInPageAction = PhotonActionSheetItem(title: Strings.AppMenuFindInPageTitleString, iconString: "menu-FindInPage") { _, _ in
+            let findInPageAction = UIAction(title: Strings.AppMenuFindInPageTitleString, image: UIImage(systemName: "magnifyingglass")) { _ in
                 findInPage()
             }
             commonActions.insert(findInPageAction, at: 0)
         }
 
-        if shouldShowNewTabButton && tab.readerModeAvailableOrActive {
+        if shouldShowReloadButton && tab.readerModeAvailableOrActive {
             return [refreshActions, mainActions, commonActions]
         } else {
             return [mainActions, commonActions]

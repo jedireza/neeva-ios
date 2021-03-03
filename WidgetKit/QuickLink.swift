@@ -27,7 +27,7 @@ enum QuickLink: Int {
     public var label: String {
         switch self {
         case .search:
-            return String.SearchInFirefoxV2
+            return String.SearchInNeevaV2
         case .privateSearch:
             return String.SearchInPrivateTabLabelV2
         case .copiedLink:
@@ -37,29 +37,16 @@ enum QuickLink: Int {
         }
     }
     
-    public var smallWidgetUrl: URL {
+    public var url: URL {
         switch self {
         case .search:
-            return linkToContainingApp("?private=false", query: "widget-small-quicklink-open-url")
+            return linkToContainingApp("?private=false", query: "open-url")
         case .privateSearch:
-            return linkToContainingApp("?private=true", query: "widget-small-quicklink-open-url")
+            return linkToContainingApp("?private=true", query: "open-url")
         case .copiedLink:
-            return linkToContainingApp(query: "widget-small-quicklink-open-copied")
+            return linkToContainingApp(query: "open-copied")
         case .closePrivateTabs:
-            return linkToContainingApp(query: "widget-small-quicklink-close-private-tabs")
-        }
-    }
-    
-    public var mediumWidgetUrl: URL {
-        switch self {
-        case .search:
-            return linkToContainingApp("?private=false", query: "widget-medium-quicklink-open-url")
-        case .privateSearch:
-            return linkToContainingApp("?private=true", query: "widget-medium-quicklink-open-url")
-        case .copiedLink:
-            return linkToContainingApp(query: "widget-medium-quicklink-open-copied")
-        case .closePrivateTabs:
-            return linkToContainingApp(query: "widget-medium-quicklink-close-private-tabs")
+            return linkToContainingApp(query: "close-private-tabs")
         }
     }
 

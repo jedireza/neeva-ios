@@ -54,12 +54,6 @@ class LibraryTestsIphone: IphoneOnlyTestCase {
         waitForExistence(app.tables["DownloadsTable"])
         navigator.goto(HomePanelsScreen)
 
-         // Check if clicking on Synced Tabs option shows synced tabs
-        app.buttons["menu sync"].tap()
-        navigator.nowAt(LibraryPanel_SyncedTabs)
-        waitForExistence(app.tables["Synced Tabs"])
-        navigator.goto(HomePanelsScreen)
-
         // Check if clicking on the See All option shows history
         app.buttons["libraryMoreButton"].tap()
         navigator.nowAt(LibraryPanel_History)

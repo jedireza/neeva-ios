@@ -70,7 +70,7 @@ class LibraryViewController: UIViewController {
         updateButtons()
         applyTheme()
         if selectedPanel == nil {
-            selectedPanel = .bookmarks
+            selectedPanel = .history
         }
     }
 
@@ -153,9 +153,7 @@ class LibraryViewController: UIViewController {
             }
 
             selectedPanel = newSelectedPanel
-            if selectedPanel == .bookmarks {
-                TelemetryWrapper.recordEvent(category: .action, method: .view, object: .bookmarksPanel, value: .homePanelTabButton)
-            } else if selectedPanel == .downloads {
+            if selectedPanel == .downloads {
                 TelemetryWrapper.recordEvent(category: .action, method: .view, object: .downloadsPanel, value: .homePanelTabButton)
             }
             break

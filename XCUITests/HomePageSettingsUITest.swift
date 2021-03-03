@@ -4,8 +4,8 @@
 
 import XCTest
 
-let websiteUrl1 = "www.mozilla.org"
-let websiteUrl2 = "developer.mozilla.org"
+let websiteUrl1 = "www.alpha.neeva.co"
+let websiteUrl2 = "alpha.neeva.co"
 let invalidUrl = "1-2-3"
 let exampleUrl = "test-example.html"
 
@@ -31,7 +31,7 @@ class HomePageSettingsUITests: BaseTestCase {
     }
     func testCheckHomeSettingsByDefault() {
         navigator.goto(HomeSettings)
-        XCTAssertTrue(app.tables.cells["Firefox Home"].exists)
+        XCTAssertTrue(app.tables.cells["Neeva Home"].exists)
         XCTAssertTrue(app.tables.cells["HomeAsCustomURL"].exists)
         waitForExistence(app.tables.cells["TopSitesRows"])
         XCTAssertEqual(app.tables.cells["TopSitesRows"].label as String, "Top Sites, Rows: 2")
@@ -120,7 +120,7 @@ class HomePageSettingsUITests: BaseTestCase {
         XCTAssertEqual("Enter a webpage", value as! String)
     }*/
 
-    func testSetFirefoxHomeAsHome() {
+    func testSetNeevaHomeAsHome() {
         // Start by setting to History since FF Home is default
         navigator.goto(HomeSettings)
         enterWebPageAsHomepage(text: websiteUrl1)
@@ -130,7 +130,7 @@ class HomePageSettingsUITests: BaseTestCase {
         // Now after setting History, make sure FF home is set
         navigator.goto(SettingsScreen)
         navigator.goto(NewTabSettings)
-        navigator.performAction(Action.SelectHomeAsFirefoxHomePage)
+        navigator.performAction(Action.SelectHomeAsNeevaHomePage)
         navigator.performAction(Action.GoToHomePage)
         waitForExistence(app.collectionViews.cells["TopSitesCell"])
     }
@@ -195,10 +195,10 @@ class HomePageSettingsUITests: BaseTestCase {
         navigator.goto(SettingsScreen)
         XCTAssertEqual(app.tables.cells["Home"].label, "Home, Homepage")
         //Switch to FXHome and check label
-        navigator.performAction(Action.SelectHomeAsFirefoxHomePage)
+        navigator.performAction(Action.SelectHomeAsNeevaHomePage)
         navigator.nowAt(HomeSettings)
         navigator.goto(SettingsScreen)
-        XCTAssertEqual(app.tables.cells["Home"].label, "Home, Firefox Home")
+        XCTAssertEqual(app.tables.cells["Home"].label, "Home, Neeva Home")
     }
     //Function to check the number of top sites shown given a selected number of rows
     private func checkNumberOfExpectedTopSites(numberOfExpectedTopSites: Int) {

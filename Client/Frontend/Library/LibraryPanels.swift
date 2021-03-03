@@ -15,19 +15,14 @@ struct LibraryPanelUX {
 }
 
 protocol LibraryPanelDelegate: AnyObject {
-    func libraryPanelDidRequestToSignIn()
-    func libraryPanelDidRequestToCreateAccount()
     func libraryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
     func libraryPanel(didSelectURL url: URL, visitType: VisitType)
     func libraryPanel(didSelectURLString url: String, visitType: VisitType)
 }
 
 enum LibraryPanelType: Int {
-    case bookmarks = 0
-    case history = 1
-    case readingList = 2
-    case downloads = 3
-    case syncedTabs = 4
+    case history = 0
+    case downloads = 1
 }
 
 /**
@@ -70,14 +65,6 @@ class LibraryPanels {
     }
 
     lazy var enabledPanels = [
-        LibraryPanelDescriptor(
-            makeViewController: { profile in
-                return BookmarksPanel(profile: profile)
-            },
-            profile: profile,
-            imageName: "Bookmarks",
-            accessibilityLabel: .LibraryPanelBookmarksAccessibilityLabel,
-            accessibilityIdentifier: "LibraryPanels.Bookmarks"),
 
         LibraryPanelDescriptor(
             makeViewController: { profile in
@@ -90,15 +77,6 @@ class LibraryPanels {
 
         LibraryPanelDescriptor(
             makeViewController: { profile in
-                return ReadingListPanel(profile: profile)
-            },
-            profile: profile,
-            imageName: "ReadingList",
-            accessibilityLabel: .LibraryPanelReadingListAccessibilityLabel,
-            accessibilityIdentifier: "LibraryPanels.ReadingList"),
-
-        LibraryPanelDescriptor(
-            makeViewController: { profile in
                 return DownloadsPanel(profile: profile)
             },
             profile: profile,
@@ -106,13 +84,5 @@ class LibraryPanels {
             accessibilityLabel: .LibraryPanelDownloadsAccessibilityLabel,
             accessibilityIdentifier: "LibraryPanels.Downloads"),
 
-        LibraryPanelDescriptor(
-            makeViewController: { profile in
-                return RemoteTabsPanel(profile: profile)
-            },
-            profile: profile,
-            imageName: "SyncedTabs",
-            accessibilityLabel: .LibraryPanelSyncedTabsAccessibilityLabel,
-            accessibilityIdentifier: "LibraryPanels.SyncedTabs"),
     ]
 }

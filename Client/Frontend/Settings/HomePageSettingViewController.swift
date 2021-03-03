@@ -32,9 +32,14 @@ class HomePageSettingViewController: SettingsTableViewController {
             self.tableView.reloadData()
         }
 
-        let showTopSites = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabTopSites), subtitle: nil, accessibilityIdentifier: "HomeAsFirefoxHome", isChecked: {return self.currentChoice == NewTabPage.topSites}, onChecked: {
+        let showTopSites = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabTopSites), subtitle: nil, accessibilityIdentifier: "HomeAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.topSites}, onChecked: {
             self.currentChoice = NewTabPage.topSites
             onFinished()
+        })
+        let showNeevaHome = CheckmarkSetting(title: NSAttributedString(string: "Neeva Feed"), subtitle: nil, accessibilityIdentifier: "HomeAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.neevaHome}, onChecked: {
+            self.currentChoice = NewTabPage.homePage
+            self.prefs.setString(self.currentChoice.rawValue, forKey: NewTabAccessors.HomePrefKey)
+            self.tableView.reloadData()
         })
         let showWebPage = WebPageSetting(prefs: prefs, prefKey: PrefsKeys.HomeButtonHomePageURL, defaultValue: nil, placeholder: Strings.CustomNewPageURL, accessibilityIdentifier: "HomeAsCustomURL", isChecked: {return !showTopSites.isChecked()}, settingDidChange: { (string) in
             self.currentChoice = NewTabPage.homePage
@@ -43,7 +48,7 @@ class HomePageSettingViewController: SettingsTableViewController {
         })
         showWebPage.textField.textAlignment = .natural
 
-        let section = SettingSection(title: NSAttributedString(string: Strings.NewTabSectionName), footerTitle: NSAttributedString(string: Strings.NewTabSectionNameFooter), children: [showTopSites, showWebPage])
+        let section = SettingSection(title: NSAttributedString(string: "Neeva Home"), footerTitle: NSAttributedString(string: Strings.NewTabSectionNameFooter), children: [showTopSites, showNeevaHome, showWebPage])
 
         let topsitesSection = SettingSection(title: NSAttributedString(string: Strings.SettingsTopSitesCustomizeTitle), footerTitle: NSAttributedString(string: Strings.SettingsTopSitesCustomizeFooter), children: [TopSitesSettings(settings: self)])
 

@@ -6,7 +6,6 @@ import Foundation
 import AdSupport
 import Shared
 import Leanplum
-import Account
 
 private let abTestMessageNames = ["Live_DefBrowser_CAB_ALL_Push_EN_121720", "Live_DefBrowser_AutAB_ALL_Push_EN_121820"] // list of the names of all a/b tests that send messages
 private let LPAppIdKey = "LeanplumAppId"
@@ -29,8 +28,8 @@ private struct LPMessage {
     static let ArgCancelButtonTextColor = "Cancel button.Text color"
 
     // These defaults are not localized and will be overridden through Leanplum
-    static let DefaultAskToAskTitle = "Firefox Sync Requires Push"
-    static let DefaultAskToAskMessage = "Firefox will stay in sync faster with Push Notifications enabled."
+    static let DefaultAskToAskTitle = "Neeva Sync Requires Push"
+    static let DefaultAskToAskMessage = "Neeva will stay in sync faster with Push Notifications enabled."
     static let DefaultOkButtonText = "Enable Push"
     static let DefaultLaterButtonText = "Don’t Enable"
 }
@@ -95,8 +94,8 @@ struct LPAttributeKey {
 }
 
 struct MozillaAppSchemes {
-    static let focus = "firefox-focus"
-    static let focusDE = "firefox-klar"
+    static let focus = "neeva-focus"
+    static let focusDE = "neeva-klar"
     static let pocket = "pocket"
 }
 
@@ -136,7 +135,7 @@ class LeanPlumClient {
     // Setup
     private weak var profile: Profile?
     private var prefs: Prefs? { return profile?.prefs }
-    private var enabled: Bool = true
+    private var enabled: Bool = false
     private var setupType: LPSetupType = .none
     // Closure delegate for when leanplum has finished starting-up
     var finishedStartingLeanplum: (() -> Void)?
@@ -166,7 +165,7 @@ class LeanPlumClient {
     }
 
     static func shouldEnable(profile: Profile) -> Bool {
-        return AppConstants.MOZ_ENABLE_LEANPLUM && (profile.prefs.boolForKey(AppConstants.PrefSendUsageData) ?? true)
+        return AppConstants.MOZ_ENABLE_LEANPLUM && (profile.prefs.boolForKey(AppConstants.PrefSendUsageData) ?? false)
     }
 
     func setup(profile: Profile) {
@@ -217,8 +216,6 @@ class LeanPlumClient {
             LPAttributeKey.focusInstalled: focusInstalled(),
             LPAttributeKey.klarInstalled: klarInstalled(),
             LPAttributeKey.pocketInstalled: pocketInstalled(),
-            LPAttributeKey.signedInSync: profile?.hasAccount() ?? false,
-            LPAttributeKey.fxaAccountVerified: profile?.hasSyncableAccount() ?? false,
             LPAttributeKey.isReleaseBuild: AppConstants.BuildChannel == .release
         ]
 
@@ -252,11 +249,6 @@ class LeanPlumClient {
             self.recordPushTests()
         })
 
-        NotificationCenter.default.addObserver(forName: .FirefoxAccountChanged, object: nil, queue: .main) { _ in
-            if !RustFirefoxAccounts.shared.hasAccount() {
-                LeanPlumClient.shared.set(attributes: [LPAttributeKey.signedInSync: false])
-            }
-        }
     }
     
     // Send data to telemetry for a/b tests that send messages
@@ -330,7 +322,7 @@ class LeanPlumClient {
     }
     
     /*
-     This is used to determine if an app was installed after firefox was installed
+     This is used to determine if an app was installed after neeva was installed
      */
     private func checkIfAppWasInstalled(key: String, isAppInstalled: Bool, lpEvent: LPEvent) {
         // if no key is present. create one and set it.

@@ -1,7 +1,7 @@
-Firefox for iOS [![codebeat badge](https://codebeat.co/badges/67e58b6d-bc89-4f22-ba8f-7668a9c15c5a)](https://codebeat.co/projects/github-com-mozilla-firefox-ios) [![BuddyBuild](https://dashboard.buddybuild.com/api/statusImage?appID=57bf25c0f096bc01001e21e0&branch=main&build=latest)](https://dashboard.buddybuild.com/apps/57bf25c0f096bc01001e21e0/build/latest) [![codecov](https://codecov.io/gh/mozilla-mobile/firefox-ios/branch/main/graph/badge.svg)](https://codecov.io/gh/mozilla-mobile/firefox-ios/branch/main)
+Neeva for iOS [![codebeat badge](https://codebeat.co/badges/67e58b6d-bc89-4f22-ba8f-7668a9c15c5a)](https://codebeat.co/projects/github-com-mozilla-neeva-ios)  [![codecov](https://codecov.io/gh/mozilla-mobile/neeva-ios/branch/main/graph/badge.svg)](https://codecov.io/gh/mozilla-mobile/neeva-ios/branch/main)
 ===============
 
-Download on the [App Store](https://itunes.apple.com/app/firefox-web-browser/id989804926).
+Download on the [App Store](https://alpha.neeva.co).
 
 This branch (main)
 -----------
@@ -15,7 +15,7 @@ For bug fixes and features for a specific release use the version branch.
 Getting involved
 ----------------
 
-Want to contribute but don't know where to start? Here is a list of [issues that are contributor friendly](https://github.com/mozilla-mobile/firefox-ios/labels/Contributor%20OK)
+Want to contribute but don't know where to start? Here is a list of [issues that are contributor friendly](https://github.com/neevaco/neeva-ios-phoenix/labels/Contributor%20OK)
 
 Building the code
 -----------------

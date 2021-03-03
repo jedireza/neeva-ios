@@ -4,7 +4,7 @@
 
 import XCTest
 
-let website_1 = ["url": "www.mozilla.org", "label": "Internet for people, not profit — Mozilla", "value": "mozilla.org"]
+let website_1 = ["url": "www.neeva.co", "label": "Ad free, private search — Neeva", "value": "neeva.org"]
 let website_2 = ["url": "www.example.com", "label": "Example", "value": "example", "link": "More information...", "moreLinkLongPressUrl": "http://www.iana.org/domains/example", "moreLinkLongPressInfo": "iana"]
 let urlAddons = "addons.mozilla.org"
 let urlGoogle = "www.google.com"
@@ -76,7 +76,7 @@ class NavigationTest: BaseTestCase {
         // Open FxAccount from tour option in settings menu and go throughout all the screens there
         navigator.goto(Intro_FxASignin)
         navigator.performAction(Action.OpenEmailToSignIn)
-        checkFirefoxSyncScreenShown()
+        checkNeevaSyncScreenShown()
 
         // Disabled due to issue 5937, not possible to tap on Close button
         // Go back to NewTabScreen
@@ -86,10 +86,10 @@ class NavigationTest: BaseTestCase {
     
     func testTapSigninShowsFxAFromSettings() {
         navigator.goto(SettingsScreen)
-        // Open FxAccount from settings menu and check the Sign in to Firefox scren
-        let signInToFirefoxStaticText = app.tables["AppSettingsTableViewController.tableView"].staticTexts["Sign in to Sync"]
-        signInToFirefoxStaticText.tap()
-        checkFirefoxSyncScreenShownViaSettings()
+        // Open FxAccount from settings menu and check the Sign in to Neeva scren
+        let signInToNeevaStaticText = app.tables["AppSettingsTableViewController.tableView"].staticTexts["Sign in to Sync"]
+        signInToNeevaStaticText.tap()
+        checkNeevaSyncScreenShownViaSettings()
 
         // After that it is possible to go back to Settings
         let closeButton = app.navigationBars["Client.FxAWebView"].buttons.element(boundBy: 0)
@@ -99,8 +99,8 @@ class NavigationTest: BaseTestCase {
         closeButtonFxView.tap()
     }
     
-    // Beacuse the Settings menu does not stretch tot the top we need a different function to check if the Firefox Sync screen is shown
-    private func checkFirefoxSyncScreenShownViaSettings() {
+    // Beacuse the Settings menu does not stretch tot the top we need a different function to check if the Neeva Sync screen is shown
+    private func checkNeevaSyncScreenShownViaSettings() {
         waitForExistence(app.navigationBars["Turn on Sync"], timeout: 20)
         app.buttons["EmailSignIn.button"].tap()
         waitForExistence(app.webViews.textFields.element(boundBy: 0), timeout:20)
@@ -113,16 +113,16 @@ class NavigationTest: BaseTestCase {
     }
 
     func testTapSignInShowsFxAFromRemoteTabPanel() {
-        // Open FxAccount from remote tab panel and check the Sign in to Firefox scren
+        // Open FxAccount from remote tab panel and check the Sign in to Neeva scren
         navigator.goto(LibraryPanel_SyncedTabs)
 
         app.tables.buttons["Sign in to Sync"].tap()
         waitForExistence(app.buttons["EmailSignIn.button"], timeout: 10)
         app.buttons["EmailSignIn.button"].tap()
-        checkFirefoxSyncScreenShown()
+        checkNeevaSyncScreenShown()
     }
 
-    private func checkFirefoxSyncScreenShown() {
+    private func checkNeevaSyncScreenShown() {
         // Disable check, page load issues on iOS13.3 sims, issue #5937
         waitForExistence(app.webViews.firstMatch, timeout: 20)
         // Workaround BB iOS13

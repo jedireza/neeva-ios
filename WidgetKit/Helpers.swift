@@ -8,7 +8,7 @@ import UIKit
 
 var scheme: String {
     guard let string = Bundle.main.object(forInfoDictionaryKey: "MozInternalURLScheme") as? String else {
-        return "firefox"
+        return "neeva"
     }
     return string
 }

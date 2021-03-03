@@ -5,8 +5,6 @@
 import MozillaAppServices
 import Shared
 import Telemetry
-import Account
-import Sync
 
 class TelemetryWrapper {
     let legacyTelemetry = Telemetry.default
@@ -50,11 +48,12 @@ class TelemetryWrapper {
         NotificationCenter.default.addObserver(self, selector: #selector(uploadError), name: Telemetry.notificationReportError, object: nil)
 
         let telemetryConfig = legacyTelemetry.configuration
-        telemetryConfig.appName = "Fennec"
+        telemetryConfig.appName = "Neeva"
         telemetryConfig.userDefaultsSuiteName = AppInfo.sharedContainerIdentifier
         telemetryConfig.dataDirectory = .cachesDirectory
         telemetryConfig.updateChannel = AppConstants.BuildChannel.rawValue
-        let sendUsageData = profile.prefs.boolForKey(AppConstants.PrefSendUsageData) ?? true
+        
+        let sendUsageData = false
         telemetryConfig.isCollectionEnabled = sendUsageData
         telemetryConfig.isUploadEnabled = sendUsageData
 
@@ -112,9 +111,6 @@ class TelemetryWrapper {
 
             var settings: [String: String?] = inputDict["settings"] as? [String: String?] ?? [:]
 
-            let searchEngines = SearchEngines(prefs: profile.prefs, files: profile.files)
-            settings["defaultSearchEngine"] = searchEngines.defaultEngine.engineID ?? "custom"
-
             if let windowBounds = UIApplication.shared.keyWindow?.bounds {
                 settings["windowWidth"] = String(describing: windowBounds.width)
                 settings["windowHeight"] = String(describing: windowBounds.height)
@@ -156,8 +152,6 @@ class TelemetryWrapper {
 
         // Save the profile so we can record settings from it when the notification below fires.
         self.profile = profile
-
-        setSyncDeviceId()
         
         // Register an observer to record settings and other metrics that are more appropriate to
         // record on going to background rather than during initialization.
@@ -168,28 +162,11 @@ class TelemetryWrapper {
             object: nil
         )
     }
-    
-    // Sets hashed fxa sync device id for glean deletion ping
-    func setSyncDeviceId() {
-        guard let prefs = profile?.prefs else { return }
-        // Grab our token so we can use the hashed_fxa_uid and clientGUID from our scratchpad for deletion-request ping
-        RustFirefoxAccounts.shared.syncAuthState.token(Date.now(), canBeExpired: true) >>== { (token, kSync) in
-            let scratchpadPrefs = prefs.branch("sync.scratchpad")
-            guard let scratchpad = Scratchpad.restoreFromPrefs(scratchpadPrefs, syncKeyBundle: KeyBundle.fromKSync(kSync)) else { return }
-
-            let deviceId = (scratchpad.clientGUID + token.hashedFxAUID).sha256.hexEncodedString
-            GleanMetrics.Deletion.syncDeviceId.set(deviceId)
-        }
-    }
 
     // Function for recording metrics that are better recorded when going to background due
     // to the particular measurement, or availability of the information.
     @objc func recordPreferenceMetrics(notification: NSNotification) {
         guard let profile = self.profile else { assert(false); return; }
-
-        // Record default search engine setting
-        let searchEngines = SearchEngines(prefs: profile.prefs, files: profile.files)
-        GleanMetrics.Search.defaultEngine.set(searchEngines.defaultEngine.engineID ?? "custom")
 
         // Record the open tab count
         let delegate = UIApplication.shared.delegate as? AppDelegate
@@ -290,7 +267,7 @@ extension TelemetryWrapper {
         case appExtensionAction = "app-extension-action"
         case prompt = "prompt"
         case enrollment = "enrollment"
-        case firefoxAccount = "firefox_account"
+        case firefoxAccount = "neeva_account"
     }
 
     public enum EventMethod: String {

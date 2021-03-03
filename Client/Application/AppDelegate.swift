@@ -9,13 +9,9 @@ import XCGLogger
 import MessageUI
 import SDWebImage
 import SwiftKeychainWrapper
-import SyncTelemetry
 import LocalAuthentication
-import SyncTelemetry
-import Sync
 import CoreSpotlight
 import UserNotifications
-import Account
 
 #if canImport(BackgroundTasks)
  import BackgroundTasks
@@ -70,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         self.launchOptions = launchOptions
 
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.backgroundColor = UIColor.theme.browser.background
+        
 
         // If the 'Save logs to Files app on next launch' toggle
         // is turned on in the Settings app, copy over old logs.
@@ -86,10 +82,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         // Need to get "settings.sendUsageData" this way so that Sentry can be initialized
         // before getting the Profile.
-        let sendUsageData = NSUserDefaultsPrefs(prefix: "profile").boolForKey(AppConstants.PrefSendUsageData) ?? true
+        let sendUsageData = false
         Sentry.shared.setup(sendUsageData: sendUsageData)
 
-        // Set the Firefox UA for browsing.
+        // Set the Neeva UA for browsing.
         setUserAgent()
 
         // Start the keyboard helper to monitor and cache keyboard state.
@@ -127,19 +123,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         setupRootViewController()
 
-        NotificationCenter.default.addObserver(forName: .FSReadingListAddReadingListItem, object: nil, queue: nil) { (notification) -> Void in
-            if let userInfo = notification.userInfo, let url = userInfo["URL"] as? URL {
-                let title = (userInfo["Title"] as? String) ?? ""
-                profile.readingList.createRecordWithURL(url.absoluteString, title: title, addedBy: UIDevice.current.name)
-            }
-        }
-
         self.updateAuthenticationInfo()
         SystemUtils.onFirstRun()
 
-        RustFirefoxAccounts.startup(prefs: profile.prefs).uponQueue(.main) { _ in
-            print("RustFirefoxAccounts started")
-        }
         log.info("startApplication end")
         return true
     }
@@ -186,7 +172,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         if let profile = self.profile {
             return profile
         }
-        let p = BrowserProfile(localName: "profile", syncDelegate: application.syncDelegate)
+        let p = BrowserProfile(localName: "profile")
         self.profile = p
         return p
     }
@@ -228,43 +214,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         if let profile = self.profile, LeanPlumClient.shouldEnable(profile: profile) {
             LeanPlumClient.shared.setup(profile: profile)
-            LeanPlumClient.shared.set(enabled: true)
+            LeanPlumClient.shared.set(enabled: false)
         }
-
-        if #available(iOS 13.0, *) {
-            BGTaskScheduler.shared.register(forTaskWithIdentifier: "org.mozilla.ios.sync.part1", using: DispatchQueue.global()) { task in
-                guard self.profile?.hasSyncableAccount() ?? false else {
-                    self.shutdownProfileWhenNotActive(application)
-                    return
-                }
-
-                NSLog("background sync part 1") // NSLog to see in device console
-                let collection = ["bookmarks", "history"]
-                self.profile?.syncManager.syncNamedCollections(why: .backgrounded, names: collection).uponQueue(.main) { _ in
-                    task.setTaskCompleted(success: true)
-                    let request = BGProcessingTaskRequest(identifier: "org.mozilla.ios.sync.part2")
-                    request.earliestBeginDate = Date(timeIntervalSinceNow: 1)
-                    request.requiresNetworkConnectivity = true
-                    do {
-                        try BGTaskScheduler.shared.submit(request)
-                    } catch {
-                        NSLog(error.localizedDescription)
-                    }
-                }
-            }
-
-            // Split up the sync tasks so each can get maximal time for a bg task.
-            // This task runs after the bookmarks+history sync.
-            BGTaskScheduler.shared.register(forTaskWithIdentifier: "org.mozilla.ios.sync.part2", using: DispatchQueue.global()) { task in
-                NSLog("background sync part 2") // NSLog to see in device console
-                let collection = ["tabs", "logins", "clients"]
-                self.profile?.syncManager.syncNamedCollections(why: .backgrounded, names: collection).uponQueue(.main) { _ in
-                    self.shutdownProfileWhenNotActive(application)
-                    task.setTaskCompleted(success: true)
-                }
-            }
-        }
-        updateSessionCount()
 
         return shouldPerformAdditionalDelegateHandling
     }
@@ -313,20 +264,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         let defaults = UserDefaults()
         defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
-
-        if let profile = self.profile {
-            profile._reopen()
-
-            if profile.prefs.boolForKey(PendingAccountDisconnectedKey) ?? false {
-                profile.removeAccount()
-            }
-
-            profile.syncManager.applicationDidBecomeActive()
-
-            setUpWebServer(profile)
-        }
         
-        BrowserViewController.foregroundBVC().firefoxHomeViewController?.reloadAll()
+        BrowserViewController.foregroundBVC().neevaHomeViewController?.reloadAll()
         
         // Resume file downloads.
         // TODO: iOS 13 needs to iterate all the BVCs.
@@ -394,12 +333,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         singleShotTimer.resume()
         shutdownWebServer = singleShotTimer
 
-        if #available(iOS 13.0, *) {
-            scheduleBGSync(application: application)
-        } else {
-            syncOnDidEnterBackground(application: application)
-        }
-        
         tabManager.preserveTabs()
     }
     
@@ -417,8 +350,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             return
         }
 
-        profile.syncManager.applicationDidEnterBackground()
-
         // Create an expiring background task. This allows plenty of time for db locks to be released
         // async. Otherwise we are getting crashes due to db locks not released yet.
         var taskId = UIBackgroundTaskIdentifier(rawValue: 0)
@@ -428,15 +359,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             application.endBackgroundTask(taskId)
         })
 
-        if profile.hasSyncableAccount() {
-            profile.syncManager.syncEverything(why: .backgrounded).uponQueue(.main) { _ in
-                self.shutdownProfileWhenNotActive(application)
-                application.endBackgroundTask(taskId)
-            }
-        } else {
-            profile._shutdown()
-            application.endBackgroundTask(taskId)
-        }
+        profile._shutdown()
+        application.endBackgroundTask(taskId)
     }
 
     fileprivate func shutdownProfileWhenNotActive(_ application: UIApplication) {
@@ -495,18 +419,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 
     fileprivate func setUserAgent() {
-        let firefoxUA = UserAgent.getUserAgent()
+        let neevaUA = UserAgent.getUserAgent()
 
         // Set the UA for WKWebView (via defaults), the favicon fetcher, and the image loader.
         // This only needs to be done once per runtime. Note that we use defaults here that are
         // readable from extensions, so they can just use the cached identifier.
 
-        SDWebImageDownloader.shared.setValue(firefoxUA, forHTTPHeaderField: "User-Agent")
+        SDWebImageDownloader.shared.setValue(neevaUA, forHTTPHeaderField: "User-Agent")
         //SDWebImage is setting accept headers that report we support webp. We don't
         SDWebImageDownloader.shared.setValue("image/*;q=0.8", forHTTPHeaderField: "Accept")
 
         // Record the user agent for use by search suggestion clients.
-        SearchViewController.userAgent = firefoxUA
+        SearchViewController.userAgent = neevaUA
 
         // Some sites will only serve HTML that points to .ico files.
         // The FaviconFetcher is explicitly for getting high-res icons, so use the desktop user agent.
@@ -565,34 +489,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         completionHandler(handledShortCutItem)
     }
 
-    @available(iOS 13.0, *)
-    private func scheduleBGSync(application: UIApplication) {
-        if profile?.syncManager.isSyncing ?? false {
-            // If syncing, create a bg task because _shutdown() is blocking and might take a few seconds to complete
-            var taskId = UIBackgroundTaskIdentifier(rawValue: 0)
-            taskId = application.beginBackgroundTask(expirationHandler: {
-                self.shutdownProfileWhenNotActive(application)
-                application.endBackgroundTask(taskId)
-            })
-
-            DispatchQueue.main.async {
-                self.shutdownProfileWhenNotActive(application)
-                application.endBackgroundTask(taskId)
-            }
-        } else {
-            // Blocking call, however without sync running it should be instantaneous
-            profile?._shutdown()
-
-            let request = BGProcessingTaskRequest(identifier: "org.mozilla.ios.sync.part1")
-            request.earliestBeginDate = Date(timeIntervalSinceNow: 1)
-            request.requiresNetworkConnectivity = true
-            do {
-                try BGTaskScheduler.shared.submit(request)
-            } catch {
-                NSLog(error.localizedDescription)
-            }
-        }
-    }
 }
 
 // MARK: - Root View Controller Animations

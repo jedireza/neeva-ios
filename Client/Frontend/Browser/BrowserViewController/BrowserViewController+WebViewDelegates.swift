@@ -6,6 +6,7 @@ import Foundation
 import WebKit
 import Shared
 import UIKit
+import NeevaSupport
 
 private let log = Logger.browserLogger
 
@@ -101,11 +102,12 @@ extension BrowserViewController: WKUIDelegate {
 
     @available(iOS 13.0, *)
     func webView(_ webView: WKWebView, contextMenuConfigurationForElement elementInfo: WKContextMenuElementInfo, completionHandler: @escaping (UIContextMenuConfiguration?) -> Void) {
+       
+        let clonedWebView = WKWebView(frame: webView.frame, configuration: webView.configuration)
         completionHandler(UIContextMenuConfiguration(identifier: nil, previewProvider: {
             guard let url = elementInfo.linkURL, self.profile.prefs.boolForKey(PrefsKeys.ContextMenuShowLinkPreviews) ?? true else { return nil }
             let previewViewController = UIViewController()
             previewViewController.view.isUserInteractionEnabled = false
-            let clonedWebView = WKWebView(frame: webView.frame, configuration: webView.configuration)
 
             previewViewController.view.addSubview(clonedWebView)
             clonedWebView.snp.makeConstraints { make in
@@ -143,7 +145,7 @@ extension BrowserViewController: WKUIDelegate {
             }
 
             let getImageData = { (_ url: URL, success: @escaping (Data) -> Void) in
-                makeURLSession(userAgent: UserAgent.fxaUserAgent, configuration: URLSessionConfiguration.default).dataTask(with: url) { (data, response, error) in
+                makeURLSession(userAgent: UserAgent.getUserAgent(), configuration: URLSessionConfiguration.default).dataTask(with: url) { (data, response, error) in
                     if let _ = validatedHTTPResponse(response, statusCode: 200..<300), let data = data {
                         success(data)
                     }
@@ -162,11 +164,24 @@ extension BrowserViewController: WKUIDelegate {
                 addTab(url, true)
             })
 
-            actions.append(UIAction(title: Strings.ContextMenuBookmarkLink, image: UIImage.templateImageNamed("menu-Bookmark"), identifier: UIAction.Identifier("linkContextMenu.bookmarkLink")) { _ in
-                self.addBookmark(url: url.absoluteString, title: elements.title)
-                SimpleToast().showAlertWithText(Strings.AppMenuAddBookmarkConfirmMessage, bottomContainer: self.webViewContainer)
-                TelemetryWrapper.recordEvent(category: .action, method: .add, object: .bookmark, value: .contextMenu)
-            })
+            actions.append(UIAction(title: "Add to Space", image: UIImage(systemName: "bookmark"), identifier: UIAction.Identifier("linkContextMenu.addToSpace")) { _ in
+                
+                clonedWebView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
+                    
+                    self.present(AddToSpaceViewController(
+                                    title: elements.title ?? url.absoluteString,
+                                    description: result as? String,
+                                    url: url,
+                                    onDismiss: { _ in self.dismissVC() },
+                                    onOpenURL: {
+                                        self.dismissVC()
+                                        self.openURLInNewTab($0)
+                                    }
+                    ), animated: true)
+                }
+                            })
+                                    
+                                    
 
             actions.append(UIAction(title: Strings.ContextMenuDownloadLink, image: UIImage.templateImageNamed("menu-panel-Downloads"), identifier: UIAction.Identifier("linkContextMenu.download")) {_ in
                 // This checks if download is a blob, if yes, begin blob download process
@@ -209,7 +224,7 @@ extension BrowserViewController: WKUIDelegate {
                         application.endBackgroundTask(taskId)
                     })
 
-                    makeURLSession(userAgent: UserAgent.fxaUserAgent, configuration: URLSessionConfiguration.default).dataTask(with: url) { (data, response, error) in
+                    makeURLSession(userAgent: UserAgent.getUserAgent(), configuration: URLSessionConfiguration.default).dataTask(with: url) { (data, response, error) in
                         guard let _ = validatedHTTPResponse(response, statusCode: 200..<300) else {
                             application.endBackgroundTask(taskId)
                             return
@@ -242,7 +257,7 @@ extension BrowserViewController: WKUIDelegate {
     @objc func saveError(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         guard error != nil else { return }
         DispatchQueue.main.async {
-            let accessDenied = UIAlertController(title: Strings.PhotoLibraryFirefoxWouldLikeAccessTitle, message: Strings.PhotoLibraryFirefoxWouldLikeAccessMessage, preferredStyle: .alert)
+            let accessDenied = UIAlertController(title: Strings.PhotoLibraryNeevaWouldLikeAccessTitle, message: Strings.PhotoLibraryNeevaWouldLikeAccessMessage, preferredStyle: .alert)
             let dismissAction = UIAlertAction(title: Strings.CancelString, style: .default, handler: nil)
             accessDenied.addAction(dismissAction)
             let settingsAction = UIAlertAction(title: Strings.OpenSettingsString, style: .default ) { _ in
@@ -472,7 +487,7 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        if !(url.scheme?.contains("firefox") ?? true) {
+        if !(url.scheme?.contains("neeva") ?? true) {
             showSnackbar(forExternalUrl: url, tab: tab) { isOk in
                 guard isOk else { return }
                 UIApplication.shared.open(url, options: [:]) { openedURL in
@@ -695,6 +710,20 @@ extension BrowserViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        webView.scrollView.refreshControl?.endRefreshing()
+        // every time a user visits a Neeva page, we extract the user cookie
+        // and save it to a keychain.
+        if !(tabManager.selectedTab?.isPrivate ?? false),
+           let url = webView.url,
+           url.host == NeevaConstants.appHost,
+           url.scheme == "https" {
+            webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
+                if let authCookie = cookies.first(where: { $0.domain == NeevaConstants.appHost && $0.name == "httpd~login" && $0.isSecure }) {
+                    try? NeevaConstants.keychain.set(authCookie.value, key: NeevaConstants.loginKeychainKey)
+                }
+            }
+        }
+        
         if let tab = tabManager[webView] {
             navigateInTab(tab: tab, to: navigation, webViewStatus: .finishedNavigation)
 

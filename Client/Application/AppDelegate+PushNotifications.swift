@@ -4,10 +4,8 @@
 
 import Shared
 import Storage
-import Sync
 import XCGLogger
 import UserNotifications
-import Account
 import SwiftKeychainWrapper
 
 private let log = Logger.browserLogger
@@ -92,22 +90,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
     // Called when the user receives a tab (or any other notification) while in foreground.
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-
-        if profile?.prefs.boolForKey(PendingAccountDisconnectedKey) ?? false {
-            profile?.removeAccount()
-            
-            // show the notification
-            completionHandler([.alert, .sound])
-        } else {
-            openURLsInNewTabs(notification)
-        }
+        openURLsInNewTabs(notification)
     }
 }
 
 extension AppDelegate {
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        RustFirefoxAccounts.shared.pushNotifications.didRegister(withDeviceToken: deviceToken)
-    }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("failed to register. \(error)")

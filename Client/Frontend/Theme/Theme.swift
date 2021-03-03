@@ -157,11 +157,6 @@ class HomePanelColor {
     var buttonContainerBorder: UIColor { return separator }
     
     var welcomeScreenText: UIColor { return UIColor.Photon.Grey50 }
-    var bookmarkIconBorder: UIColor { return UIColor.Photon.Grey30 }
-    var bookmarkFolderBackground: UIColor { return UIColor.Photon.Grey10.withAlphaComponent(0.3) } 
-    var bookmarkFolderText: UIColor { return UIColor.Photon.Grey80 } 
-    var bookmarkCurrentFolderText: UIColor { return UIColor.Photon.Blue40 }
-    var bookmarkBackNavCellBackground: UIColor { return UIColor.clear }
     
     var siteTableHeaderBorder: UIColor { return UIColor.Photon.Grey30.withAlphaComponent(0.8) }
 
@@ -226,6 +221,7 @@ protocol Theme {
     var actionMenu: ActionMenuColor { get }
     var switchToggleTheme: GeneralColor { get }
     var defaultBrowserCard: DefaultBrowserCardColor { get }
+    var userInterfaceStyle: UIUserInterfaceStyle { get }
 }
 
 class NormalTheme: Theme {
@@ -244,4 +240,5 @@ class NormalTheme: Theme {
     var actionMenu: ActionMenuColor { return ActionMenuColor() }
     var switchToggleTheme: GeneralColor { return GeneralColor() }
     var defaultBrowserCard: DefaultBrowserCardColor { return DefaultBrowserCardColor() }
+    var userInterfaceStyle: UIUserInterfaceStyle { .light }
 }

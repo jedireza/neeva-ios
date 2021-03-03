@@ -118,14 +118,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Add a refresh control if the user is logged in and the control was not added before. If the user is not
-        // logged in, remove any existing control.
-        if profile.hasSyncableAccount() && refreshControl == nil {
-            addRefreshControl()
-        } else if !profile.hasSyncableAccount() && refreshControl != nil {
-            removeRefreshControl()
-        }
+        removeRefreshControl()
     }
 
     // MARK: - Refreshing TableView
@@ -146,10 +139,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         // Always end refreshing, even if we failed!
         refreshControl?.endRefreshing()
 
-        // Remove the refresh control if the user has logged out in the meantime
-        if !profile.hasSyncableAccount() {
-            removeRefreshControl()
-        }
     }
 
     // MARK: - Loading data
@@ -196,16 +185,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
             }
 
             return deferMaybe(result)
-        }
-    }
-
-    func resyncHistory() {
-        profile.syncManager.syncHistory().uponQueue(.main) { syncResult in
-            self.endRefreshing()
-
-            if syncResult.isSuccess {
-                self.reloadData()
-            }
         }
     }
 
@@ -361,9 +340,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         case .FirefoxAccountChanged, .PrivateDataClearedHistory:
             reloadData()
 
-            if profile.hasSyncableAccount() {
-                resyncHistory()
-            }
             break
         case .DynamicFontChanged:
             reloadData()
@@ -372,7 +348,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
                 emptyStateOverlayView.removeFromSuperview()
             }
             emptyStateOverlayView = createEmptyStateOverlayView()
-            resyncHistory()
             break
         case .DatabaseWasReopened:
             if let dbName = notification.object as? String, dbName == "browser.db" {
@@ -397,7 +372,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
     func onRefreshPulled() {
         refreshControl?.beginRefreshing()
-        resyncHistory()
     }
 
     // MARK: - UITableViewDataSource

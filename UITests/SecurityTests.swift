@@ -112,8 +112,8 @@ class SecurityTests: KIFTestCase {
         XCTAssertEqual(bvc.urlBar.locationView.urlTextField.text, "blob:") // only display "blob:"
     }
 
-    // Web pages can't have firefox: urls, these should be used external to the app only (see bug 1447853)
-    func testFirefoxSchemeBlockedOnWebpages() {
+    // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)
+    func testNeevaSchemeBlockedOnWebpages() {
         let url = "\(webRoot!)/firefoxScheme.html"
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
         tester().tapWebViewElementWithAccessibilityLabel("go")

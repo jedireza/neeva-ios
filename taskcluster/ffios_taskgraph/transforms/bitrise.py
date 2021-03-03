@@ -23,7 +23,7 @@ def set_run_config(config, tasks):
         run["secrets"] = {
             "by-level": {
                 "3": [{
-                    "name": "project/mobile/firefox-ios/bitrise",
+                    "name": "project/mobile/neeva-ios/bitrise",
                     "key": "api_key",
                     "path": ".bitrise_token",
                 }],

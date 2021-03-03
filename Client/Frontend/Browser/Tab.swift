@@ -32,7 +32,7 @@ protocol TabDelegate {
     func tab(_ tab: Tab, didAddSnackbar bar: SnackBar)
     func tab(_ tab: Tab, didRemoveSnackbar bar: SnackBar)
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String)
-    func tab(_ tab: Tab, didSelectSearchWithFirefoxForSelection selection: String)
+    func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String)
     @objc optional func tab(_ tab: Tab, didCreateWebView webView: WKWebView)
     @objc optional func tab(_ tab: Tab, willDeleteWebView webView: WKWebView)
 }
@@ -179,7 +179,7 @@ class Tab: NSObject {
         }
     }
 
-    var contentBlocker: FirefoxTabContentBlocker?
+    var contentBlocker: NeevaTabContentBlocker?
 
     /// The last title shown by this tab. Used by the tab tray to show titles for zombie tabs.
     var lastTitle: String?
@@ -275,6 +275,12 @@ class Tab: NSObject {
             webView.accessibilityLabel = .WebViewAccessibilityLabel
             webView.allowsBackForwardNavigationGestures = true
 
+            let rc = UIRefreshControl(frame: .zero, primaryAction: UIAction { _ in
+                webView.reload()
+            })
+            webView.scrollView.refreshControl = rc
+            webView.scrollView.bringSubviewToFront(rc)
+            
             if #available(iOS 13, *) {
                 webView.allowsLinkPreview = true
             } else {
@@ -635,8 +641,8 @@ extension Tab: TabWebViewDelegate {
     fileprivate func tabWebView(_ tabWebView: TabWebView, didSelectFindInPageForSelection selection: String) {
         tabDelegate?.tab(self, didSelectFindInPageForSelection: selection)
     }
-    fileprivate func tabWebViewSearchWithFirefox(_ tabWebViewSearchWithFirefox: TabWebView, didSelectSearchWithFirefoxForSelection selection: String) {
-        tabDelegate?.tab(self, didSelectSearchWithFirefoxForSelection: selection)
+    fileprivate func tabWebViewSearchWithNeeva(_ tabWebViewSearchWithNeeva: TabWebView, didSelectSearchWithNeevaForSelection selection: String) {
+        tabDelegate?.tab(self, didSelectSearchWithNeevaForSelection: selection)
     }
 }
 
@@ -696,7 +702,7 @@ private class TabContentScriptManager: NSObject, WKScriptMessageHandler {
 
 private protocol TabWebViewDelegate: AnyObject {
     func tabWebView(_ tabWebView: TabWebView, didSelectFindInPageForSelection selection: String)
-    func tabWebViewSearchWithFirefox(_ tabWebViewSearchWithFirefox: TabWebView, didSelectSearchWithFirefoxForSelection selection: String)
+    func tabWebViewSearchWithNeeva(_ tabWebViewSearchWithNeeva: TabWebView, didSelectSearchWithNeevaForSelection selection: String)
 }
 
 class TabWebView: WKWebView, MenuHelperInterface {
@@ -709,7 +715,6 @@ class TabWebView: WKWebView, MenuHelperInterface {
             let backgroundColor = ThemeManager.instance.current.browser.background.hexString
             evaluateJavascriptInDefaultContentWorld("document.documentElement.style.backgroundColor = '\(backgroundColor)';")
         }
-        window?.backgroundColor = UIColor.theme.browser.background
     }
 
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
@@ -723,10 +728,10 @@ class TabWebView: WKWebView, MenuHelperInterface {
         }
     }
 
-    @objc func menuHelperSearchWithFirefox() {
+    @objc func menuHelperSearchWithNeeva() {
         evaluateJavascriptInDefaultContentWorld("getSelection().toString()") { result, _ in
             let selection = result as? String ?? ""
-            self.delegate?.tabWebViewSearchWithFirefox(self, didSelectSearchWithFirefoxForSelection: selection)
+            self.delegate?.tabWebViewSearchWithNeeva(self, didSelectSearchWithNeevaForSelection: selection)
         }
     }
 

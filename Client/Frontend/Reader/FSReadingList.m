@@ -45,9 +45,9 @@ NSString* const FSReadingListAddReadingListItemNotification = @"FSReadingListAdd
 
 // This class extension on SSReadingList implements an initialize method that will be called when the class
 // is instantiated. It swizzles defaultReadingList to our own implementation which returns a shared instance
-// of the FSReadingList. ("FirefoxServices" Reading List)
+// of the FSReadingList. ("NeevaServices" Reading List)
 
-@implementation SSReadingList (Firefox)
+@implementation SSReadingList (Neeva)
 + (void) initialize {
     if ([SSReadingList class] == self) {
         SwizzleClassMethods([SSReadingList class], @selector(defaultReadingList), @selector(defaultFSReadingList));

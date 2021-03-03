@@ -64,7 +64,7 @@ extension PhotonActionSheetProtocol {
     @available(iOS 11.0, *)
     private func menuActionsForTrackingProtectionDisabled(for tab: Tab) -> [[PhotonActionSheetItem]] {
         let enableTP = PhotonActionSheetItem(title: Strings.EnableTPBlockingGlobally, iconString: "menu-TrackingProtection") { _, _ in
-            FirefoxTabContentBlocker.toggleTrackingProtectionEnabled(prefs: self.profile.prefs)
+            NeevaTabContentBlocker.toggleTrackingProtectionEnabled(prefs: self.profile.prefs)
             tab.reload()
         }
 
@@ -79,7 +79,7 @@ extension PhotonActionSheetProtocol {
         return [[moreInfo], [enableTP]]
     }
 
-    private func showDomainTable(title: String, description: String, blocker: FirefoxTabContentBlocker, categories: [BlocklistCategory]) {
+    private func showDomainTable(title: String, description: String, blocker: NeevaTabContentBlocker, categories: [BlocklistCategory]) {
         guard let urlbar = (self as? BrowserViewController)?.urlBar else { return }
         guard let bvc = self as? PresentableVC else { return }
         let stats = blocker.stats

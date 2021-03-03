@@ -16,13 +16,8 @@ class IntroViewController: UIViewController {
         welcomeCardView.clipsToBounds = true
         return welcomeCardView
     }()
-    private lazy var syncCard: IntroScreenSyncView = {
-        let syncCardView = IntroScreenSyncView()
-        syncCardView.clipsToBounds = true
-        return syncCardView
-    }()
     // Closure delegate
-    var didFinishClosure: ((IntroViewController, FxAPageType?) -> Void)?
+    var didFinishClosure: ((IntroViewController) -> Void)?
     
     // MARK: Initializer
     init() {
@@ -59,40 +54,16 @@ class IntroViewController: UIViewController {
         }
         // Close button action
         welcomeCard.closeClosure = {
-            self.didFinishClosure?(self, nil)
-        }
-        // Sign in button closure
-        welcomeCard.signInClosure = {
-            self.didFinishClosure?(self, .emailLoginFlow)
-        }
-        // Sign up button closure
-        welcomeCard.signUpClosure = {
-            self.didFinishClosure?(self, .emailLoginFlow)
+            self.didFinishClosure?(self)
         }
     }
     
     //onboarding intro view
     private func setupIntroView() {
         // Initialize
-        view.addSubview(syncCard)
         view.addSubview(welcomeCard)
         // Constraints
         setupWelcomeCard()
-        setupSyncCard()
-    }
-    
-    private func setupSyncCard() {
-        syncCard.snp.makeConstraints() { make in
-            make.edges.equalToSuperview()
-        }
-        // Start browsing button action
-        syncCard.startBrowsing = {
-            self.didFinishClosure?(self, nil)
-        }
-        // Sign-up browsing button action
-        syncCard.signUp = {
-            self.didFinishClosure?(self, .emailLoginFlow)
-        }
     }
 }
 

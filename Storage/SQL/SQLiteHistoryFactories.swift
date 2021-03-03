@@ -15,11 +15,7 @@ extension SQLiteHistory {
         let title = row["title"] as! String
         let guid = row["guid"] as! String
 
-        // Extract a boolean from the row if it's present.
-        let iB = row["is_bookmarked"] as? Int
-        let isBookmarked: Bool? = (iB == nil) ? nil : (iB! != 0)
-
-        let site = Site(url: url, title: title, bookmarked: isBookmarked)
+        let site = Site(url: url, title: title)
         site.guid = guid
         site.id = id
 

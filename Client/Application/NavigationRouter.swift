@@ -6,30 +6,22 @@ import Foundation
 import Shared
 import MozillaAppServices
 
-struct FxALaunchParams {
-    var query: [String: String]
-}
-
 // An enum to route to HomePanels
 enum HomePanelPath: String {
-    case bookmarks = "bookmarks"
+    
     case topSites = "top-sites"
-    case readingList = "reading-list"
     case history = "history"
     case downloads = "downloads"
     case newPrivateTab = "new-private-tab"
 }
 
 // An enum to route to a settings page.
-// This could be extended to provide default values to pass to fxa
 enum SettingsPage: String {
     case general = "general"
     case newtab = "newtab"
     case homepage = "homepage"
     case mailto = "mailto"
-    case search = "search"
     case clearPrivateData = "clear-private-data"
-    case fxa = "fxa"
     case theme = "theme"
 }
 
@@ -71,7 +63,6 @@ extension URLComponents {
 enum NavigationPath {
     case url(webURL: URL?, isPrivate: Bool)
     case widgetUrl(webURL: URL?, uuid: String)
-    case fxa(params: FxALaunchParams)
     case deepLink(DeepLink)
     case text(String)
     case glean(url: URL)
@@ -95,8 +86,6 @@ enum NavigationPath {
 
         if urlString.starts(with: "\(scheme)://deep-link"), let deepURL = components.valueForQuery("url"), let link = DeepLink(urlString: deepURL.lowercased()) {
             self = .deepLink(link)
-        } else if urlString.starts(with: "\(scheme)://fxa-signin"), components.valueForQuery("signin") != nil {
-            self = .fxa(params: FxALaunchParams(query: url.getQuery()))
         } else if urlString.starts(with: "\(scheme)://open-url") {
             self = .openUrlFromComponents(components: components)
         } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(urlString: urlString, scheme: scheme, components: components) {
@@ -119,7 +108,6 @@ enum NavigationPath {
 
     static func handle(nav: NavigationPath, with bvc: BrowserViewController, tray: TabTrayControllerV1) {
         switch nav {
-        case .fxa(let params): NavigationPath.handleFxA(params: params, with: bvc)
         case .deepLink(let link): NavigationPath.handleDeepLink(link, with: bvc)
         case .url(let url, let isPrivate): NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
         case .text(let text): NavigationPath.handleText(text: text, with: bvc)
@@ -208,10 +196,6 @@ enum NavigationPath {
         let tab = tabs[uuid]
         return .widgetUrl(webURL: tab?.url, uuid: uuid)
     }
-    
-    private static func handleFxA(params: FxALaunchParams, with bvc: BrowserViewController) {
-        bvc.presentSignInViewController(params)
-    }
 
     private static func handleClosePrivateTabs(with bvc: BrowserViewController, tray: TabTrayControllerV1) {
         bvc.tabManager.removeTabs(bvc.tabManager.privateTabs)
@@ -228,9 +212,8 @@ enum NavigationPath {
 
     private static func handleHomePanel(panel: HomePanelPath, with bvc: BrowserViewController) {
         switch panel {
-        case .bookmarks: bvc.showLibrary(panel: .bookmarks)
+        
         case .history: bvc.showLibrary(panel: .history)
-        case .readingList: bvc.showLibrary(panel: .readingList)
         case .downloads: bvc.showLibrary(panel: .downloads)
         case .topSites: bvc.openURLInNewTab(HomePanelType.topSites.internalUrl)
         case .newPrivateTab: bvc.openBlankNewTab(focusLocationField: false, isPrivate: true)
@@ -285,18 +268,10 @@ enum NavigationPath {
         case .mailto:
             let viewController = OpenWithSettingsViewController(prefs: profile.prefs)
             controller.pushViewController(viewController, animated: true)
-        case .search:
-            let viewController = SearchSettingsTableViewController()
-            viewController.model = profile.searchEngines
-            viewController.profile = profile
-            controller.pushViewController(viewController, animated: true)
         case .clearPrivateData:
             let viewController = ClearPrivateDataTableViewController()
             viewController.profile = profile
             viewController.tabManager = tabManager
-            controller.pushViewController(viewController, animated: true)
-        case .fxa:
-            let viewController = bvc.getSignInOrFxASettingsVC(flowType: .emailLoginFlow, referringPage: .settings)
             controller.pushViewController(viewController, animated: true)
         case .theme:
             controller.pushViewController(ThemeSettingsController(), animated: true)
@@ -317,8 +292,6 @@ func == (lhs: NavigationPath, rhs: NavigationPath) -> Bool {
     switch (lhs, rhs) {
     case let (.url(lhsURL, lhsPrivate), .url(rhsURL, rhsPrivate)):
         return lhsURL == rhsURL && lhsPrivate == rhsPrivate
-    case let (.fxa(lhs), .fxa(rhs)):
-        return lhs.query == rhs.query
     case let (.deepLink(lhs), .deepLink(rhs)):
         return lhs == rhs
     default:

@@ -7,7 +7,7 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct FirefoxWidgets: WidgetBundle {
+struct NeevaWidgets: WidgetBundle {
     @WidgetBundleBuilder
     var body: some Widget {
         SmallQuickLinkWidget()

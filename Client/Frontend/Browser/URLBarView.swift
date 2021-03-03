@@ -29,14 +29,14 @@ protocol URLBarDelegate: AnyObject {
     func urlBarDidPressReaderMode(_ urlBar: URLBarView)
     /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
     func urlBarDidLongPressReaderMode(_ urlBar: URLBarView) -> Bool
-    func urlBarDidLongPressReload(_ urlBar: URLBarView, from button: UIButton)
+    func urlBarReloadMenu(_ urlBar: URLBarView, from button: UIButton) -> UIMenu?
     func urlBarDidPressStop(_ urlBar: URLBarView)
     func urlBarDidPressReload(_ urlBar: URLBarView)
     func urlBarDidEnterOverlayMode(_ urlBar: URLBarView)
     func urlBarDidLeaveOverlayMode(_ urlBar: URLBarView)
     func urlBarDidLongPressLocation(_ urlBar: URLBarView)
     func urlBarDidPressQRButton(_ urlBar: URLBarView)
-    func urlBarDidPressPageOptions(_ urlBar: URLBarView, from button: UIButton)
+    func urlBarPageOptionsMenu(_ urlBar: URLBarView, from button: UIButton) -> UIMenu?
     func urlBarDidTapShield(_ urlBar: URLBarView)
     func urlBarLocationAccessibilityActions(_ urlBar: URLBarView) -> [UIAccessibilityCustomAction]?
     func urlBarDidPressScrollToTop(_ urlBar: URLBarView)
@@ -45,7 +45,6 @@ protocol URLBarDelegate: AnyObject {
     func urlBar(_ urlBar: URLBarView, didSubmitText text: String)
     // Returns either (search query, true) or (url, false).
     func urlBarDisplayTextForURL(_ url: URL?) -> (String?, Bool)
-    func urlBarDidLongPressPageOptions(_ urlBar: URLBarView, from button: UIButton)
     func urlBarDidBeginDragInteraction(_ urlBar: URLBarView)
 }
 
@@ -157,7 +156,7 @@ class URLBarView: UIView {
     var addNewTabButton = ToolbarButton()
 
     var forwardButton = ToolbarButton()
-    var multiStateButton = ToolbarButton()
+    var shareButton = ToolbarButton()
 
     var backButton: ToolbarButton = {
         let backButton = ToolbarButton()
@@ -165,7 +164,7 @@ class URLBarView: UIView {
         return backButton
     }()
 
-    lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.libraryButton, self.appMenuButton, self.addNewTabButton,  self.forwardButton, self.backButton, self.multiStateButton]
+    lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.libraryButton, self.appMenuButton, self.addNewTabButton,  self.forwardButton, self.backButton, self.shareButton]
 
     var currentURL: URL? {
         get {
@@ -203,7 +202,7 @@ class URLBarView: UIView {
         locationContainer.addSubview(locationView)
 
         [scrollToTopButton, line, tabsButton, progressBar, cancelButton, showQRScannerButton,
-         libraryButton, appMenuButton, addNewTabButton, forwardButton, backButton, multiStateButton, locationContainer].forEach {
+         libraryButton, appMenuButton, addNewTabButton, forwardButton, backButton, shareButton, locationContainer].forEach {
             addSubview($0)
         }
 
@@ -258,7 +257,7 @@ class URLBarView: UIView {
             make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
 
-        multiStateButton.snp.makeConstraints { make in
+        shareButton.snp.makeConstraints { make in
             make.leading.equalTo(self.forwardButton.snp.trailing)
             make.centerY.equalTo(self)
             make.size.equalTo(URLBarViewUX.ButtonHeight)
@@ -321,7 +320,7 @@ class URLBarView: UIView {
             self.locationContainer.snp.remakeConstraints { make in
                 if self.toolbarIsShowing {
                     // If we are showing a toolbar, show the text field next to the forward button
-                    make.leading.equalTo(self.multiStateButton.snp.trailing).offset(URLBarViewUX.Padding)
+                    make.leading.equalTo(self.shareButton.snp.trailing).offset(URLBarViewUX.Padding)
                     if self.topTabsIsShowing {
                         make.trailing.equalTo(self.libraryButton.snp.leading).offset(-URLBarViewUX.Padding)
                     } else {
@@ -400,7 +399,6 @@ class URLBarView: UIView {
         if !toolbarIsShowing {
             updateConstraintsIfNeeded()
         }
-        locationView.reloadButton.isHidden = toolbarIsShowing
         updateViewsForOverlayModeAndToolbarChanges()
     }
 
@@ -410,7 +408,7 @@ class URLBarView: UIView {
     }
 
     func updateProgressBar(_ progress: Float) {
-        let shouldShowNewTabButton = false
+        let shouldShowNewTabButton = true
         if shouldShowNewTabButton {
             locationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
         } else {
@@ -432,10 +430,8 @@ class URLBarView: UIView {
         switch state {
         case .active:
             locationView.reloadButton.isHidden = true
-        case .available:
-            locationView.reloadButton.isHidden = true
-        case .unavailable:
-            if (!toolbarIsShowing) { locationView.reloadButton.isHidden = false }
+        case .available, .unavailable:
+            locationView.reloadButton.isHidden = false
         }
     }
 
@@ -510,7 +506,7 @@ class URLBarView: UIView {
         forwardButton.isHidden = !toolbarIsShowing
         backButton.isHidden = !toolbarIsShowing
         tabsButton.isHidden = !toolbarIsShowing || topTabsIsShowing
-        multiStateButton.isHidden = !toolbarIsShowing
+        shareButton.isHidden = !toolbarIsShowing
     }
 
     func transitionToOverlay(_ didCancel: Bool = false) {
@@ -524,7 +520,7 @@ class URLBarView: UIView {
         addNewTabButton.alpha = inOverlayMode ? 0 : 1
         forwardButton.alpha = inOverlayMode ? 0 : 1
         backButton.alpha = inOverlayMode ? 0 : 1
-        multiStateButton.alpha = inOverlayMode ? 0 : 1
+        shareButton.alpha = inOverlayMode ? 0 : 1
 
         let borderColor = inOverlayMode ? locationActiveBorderColor : locationBorderColor
         locationContainer.layer.borderColor = borderColor.cgColor
@@ -556,7 +552,7 @@ class URLBarView: UIView {
         forwardButton.isHidden = !toolbarIsShowing || inOverlayMode
         backButton.isHidden = !toolbarIsShowing || inOverlayMode
         tabsButton.isHidden = !toolbarIsShowing || inOverlayMode || topTabsIsShowing
-        multiStateButton.isHidden = !toolbarIsShowing || inOverlayMode
+        shareButton.isHidden = !toolbarIsShowing || inOverlayMode
 
         // badge isHidden is tied to private mode on/off, use alpha to hide in this case
         [privateModeBadge, appMenuBadge, warningMenuBadge].forEach {
@@ -632,18 +628,8 @@ extension URLBarView: TabToolbarProtocol {
         tabsButton.updateTabCount(count, animated: animated)
     }
 
-    func updateMiddleButtonState(_ state: MiddleButtonState) {
-        helper?.setMiddleButtonState(state)
-        switch state {
-        case .stop:
-            multiStateButton.setImage(helper?.ImageStop, for: .normal)
-        default:
-            multiStateButton.setImage(helper?.ImageReload, for: .normal)
-        }
-    }
-
     func updatePageStatus(_ isWebPage: Bool) {
-        multiStateButton.isEnabled = isWebPage
+        shareButton.isEnabled = isWebPage
     }
 
     var access: [Any]? {
@@ -653,7 +639,7 @@ extension URLBarView: TabToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, multiStateButton, locationView, tabsButton, libraryButton, appMenuButton, addNewTabButton, progressBar]
+                    return [backButton, forwardButton, shareButton, locationView, tabsButton, libraryButton, appMenuButton, addNewTabButton, progressBar]
                 } else {
                     return [locationView, progressBar]
                 }
@@ -670,8 +656,8 @@ extension URLBarView: TabLocationViewDelegate {
         return delegate?.urlBarDidLongPressReaderMode(self) ?? false
     }
 
-    func tabLocationViewDidLongPressReload(_ tabLocationView: TabLocationView) {
-        delegate?.urlBarDidLongPressReload(self, from: tabLocationView.reloadButton)
+    func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu? {
+        delegate?.urlBarReloadMenu(self, from: tabLocationView.reloadButton)
     }
 
     func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView) {
@@ -710,12 +696,8 @@ extension URLBarView: TabLocationViewDelegate {
         delegate?.urlBarDidPressReaderMode(self)
     }
 
-    func tabLocationViewDidTapPageOptions(_ tabLocationView: TabLocationView, from button: UIButton) {
-        delegate?.urlBarDidPressPageOptions(self, from: tabLocationView.pageOptionsButton)
-    }
-
-    func tabLocationViewDidLongPressPageOptions(_ tabLocationView: TabLocationView) {
-        delegate?.urlBarDidLongPressPageOptions(self, from: tabLocationView.pageOptionsButton)
+    func tabLocationViewPageOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton) -> UIMenu? {
+        delegate?.urlBarPageOptionsMenu(self, from: tabLocationView.pageOptionsButton)
     }
 
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]? {

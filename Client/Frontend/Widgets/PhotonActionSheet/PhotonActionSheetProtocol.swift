@@ -25,11 +25,6 @@ extension PhotonActionSheetProtocol {
         sheet.modalPresentationStyle = style
         sheet.photonTransitionDelegate = PhotonActionSheetAnimator()
 
-        if profile.hasSyncableAccount() {
-            // the sync manager is only needed when we have a logged in user with sync in a good state
-            sheet.syncManager = profile.syncManager // the syncmanager is used to display the sync button in the browser menu
-        }
-
         if let popoverVC = sheet.popoverPresentationController, sheet.modalPresentationStyle == .popover {
             popoverVC.delegate = viewController
             popoverVC.sourceView = view
@@ -40,10 +35,6 @@ extension PhotonActionSheetProtocol {
     }
 
     typealias PageOptionsVC = QRCodeViewControllerDelegate & SettingsDelegate & PresentingModalViewControllerDelegate & UIViewController
-
-    func fetchBookmarkStatus(for url: String) -> Deferred<Maybe<Bool>> {
-        return profile.places.isBookmarked(url: url)
-    }
 
     func fetchPinnedTopSiteStatus(for url: String) -> Deferred<Maybe<Bool>> {
         return self.profile.history.isPinnedTopSite(url)
@@ -73,39 +64,49 @@ extension PhotonActionSheetProtocol {
         }
     }
 
-    func getRefreshLongPressMenu(for tab: Tab) -> [PhotonActionSheetItem] {
-        guard tab.webView?.url != nil && (tab.getContentScript(name: ReaderMode.name()) as? ReaderMode)?.state != .active else {
-            return []
-        }
+    func toggleDesktopSiteAction(for tab: Tab) -> UIAction {
 
         let defaultUAisDesktop = UserAgent.isDesktop(ua: UserAgent.getUserAgent())
+        let hasHomeButton = UIApplication.shared.keyWindow?.safeAreaInsets.bottom == 0
+                let mobileIcon = hasHomeButton ? "iphone.homebutton" : "iphone"
         let toggleActionTitle: String
+        let iconName: String
         if defaultUAisDesktop {
             toggleActionTitle = tab.changedUserAgent ? Strings.AppMenuViewDesktopSiteTitleString : Strings.AppMenuViewMobileSiteTitleString
+            iconName = tab.changedUserAgent ? "laptopcomputer" : mobileIcon
         } else {
             toggleActionTitle = tab.changedUserAgent ? Strings.AppMenuViewMobileSiteTitleString : Strings.AppMenuViewDesktopSiteTitleString
+            iconName = tab.changedUserAgent ? mobileIcon : "laptopcomputer"
         }
-        let toggleDesktopSite = PhotonActionSheetItem(title: toggleActionTitle, iconString: "menu-RequestDesktopSite") { _, _ in
+        return UIAction(title: toggleActionTitle, image: UIImage(systemName: iconName)) { _ in
 
             if let url = tab.url {
                 tab.toggleChangeUserAgent()
                 Tab.ChangeUserAgent.updateDomainList(forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate)
             }
         }
+    }
+
+        func getRefreshLongPressMenu(for tab: Tab) -> UIMenu? {
+            guard tab.webView?.url != nil && (tab.getContentScript(name: ReaderMode.name()) as? ReaderMode)?.state != .active else {
+                return nil
+            }
+
+            let toggleDesktopSite = toggleDesktopSiteAction(for: tab)
 
         if let url = tab.webView?.url, let helper = tab.contentBlocker, helper.isEnabled, helper.blockingStrengthPref == .strict {
             let isSafelisted = helper.status == .safelisted
 
             let title = !isSafelisted ? Strings.TrackingProtectionReloadWithout : Strings.TrackingProtectionReloadWith
-            let imageName = helper.isEnabled ? "menu-TrackingProtection-Off" : "menu-TrackingProtection"
-            let toggleTP = PhotonActionSheetItem(title: title, iconString: imageName) { _, _ in
+            let imageName = !isSafelisted ? "shield.lefthalf.fill.slash" : "shield.lefthalf.fill"
+            let toggleTP = UIAction(title: title, image: UIImage(systemName: imageName)) { _ in
                 ContentBlocker.shared.safelist(enable: !isSafelisted, url: url) {
                     tab.reload()
                 }
             }
-            return [toggleDesktopSite, toggleTP]
+            return UIMenu(children: [toggleDesktopSite, toggleTP])
         } else {
-            return [toggleDesktopSite]
+            return UIMenu(children: [toggleDesktopSite])
         }
     }
 

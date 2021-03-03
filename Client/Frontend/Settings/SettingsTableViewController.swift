@@ -2,7 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Account
 import Shared
 import UIKit
 
@@ -544,20 +543,13 @@ class AccountSetting: Setting {
 
     override func onConfigureCell(_ cell: UITableViewCell) {
         super.onConfigureCell(cell)
-        if settings.profile.rustFxA.userProfile != nil {
-            cell.selectionStyle = .none
-        }
     }
 
     override var accessoryType: UITableViewCell.AccessoryType { return .none }
 }
 
-class WithAccountSetting: AccountSetting {
-    override var hidden: Bool { return !profile.hasAccount() }
-}
-
 class WithoutAccountSetting: AccountSetting {
-    override var hidden: Bool { return profile.hasAccount() }
+    override var hidden: Bool { return false }
 }
 
 @objc
@@ -605,7 +597,6 @@ class SettingsTableViewController: ThemedTableViewController {
         settings = generateSettings()
         NotificationCenter.default.addObserver(self, selector: #selector(syncDidChangeState), name: .ProfileDidStartSyncing, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(syncDidChangeState), name: .ProfileDidFinishSyncing, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(firefoxAccountDidChange), name: .FirefoxAccountChanged, object: nil)
 
         applyTheme()
     }
@@ -643,10 +634,6 @@ class SettingsTableViewController: ThemedTableViewController {
         // Through-out, be aware that modifying the control while a refresh is in progress is /not/ supported and will likely crash the app.
         ////self.profile.rustAccount.refreshProfile()
         // TODO [rustfxa] listen to notification and refresh profile
-    }
-
-    @objc func firefoxAccountDidChange() {
-        self.tableView.reloadData()
     }
 
     @objc func didLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {

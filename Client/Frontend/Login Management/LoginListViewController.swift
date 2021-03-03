@@ -51,7 +51,7 @@ class LoginListViewController: SensitiveViewController {
 
     static func shouldShowAppMenuShortcut(forPrefs prefs: Prefs) -> Bool {
         // default to on
-        return prefs.boolForKey(PrefsKeys.LoginsShowShortcutMenuItem) ?? true
+        return prefs.boolForKey(PrefsKeys.LoginsShowShortcutMenuItem) ?? false
     }
 
     static func create(authenticateInNavigationController navigationController: UINavigationController, profile: Profile, settingsDelegate: SettingsDelegate, webpageNavigationHandler: ((_ url: URL?) -> Void)?) -> Deferred<LoginListViewController?> {

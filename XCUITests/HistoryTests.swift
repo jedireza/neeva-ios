@@ -37,7 +37,7 @@ class HistoryTests: BaseTestCase {
 
     func testOpenSyncDevices() {
         navigator.goto(LibraryPanel_SyncedTabs)
-        waitForExistence(app.tables.cells.staticTexts["Firefox Sync"])
+        waitForExistence(app.tables.cells.staticTexts["Neeva Sync"])
         XCTAssertTrue(app.tables.buttons["Sign in to Sync"].exists, "Sing in button does not appear")
     }
 

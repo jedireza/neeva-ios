@@ -6,7 +6,6 @@ import Foundation
 import Shared
 import UIKit
 import Storage
-import SyncTelemetry
 import WidgetKit
 
 struct TopSitesHandler {
@@ -83,7 +82,7 @@ open class PinnedSite: Site {
     let isPinnedSite = true
 
     init(site: Site) {
-        super.init(url: site.url, title: site.title, bookmarked: site.bookmarked)
+        super.init(url: site.url, title: site.title)
         self.icon = site.icon
         self.metadata = site.metadata
     }

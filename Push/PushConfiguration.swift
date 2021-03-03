@@ -5,19 +5,15 @@
 import Foundation
 
 public enum PushConfigurationLabel: String {
-    case fennec = "Fennec"
-    case fennecEnterprise = "FennecEnterprise"
-    case firefoxBeta = "FirefoxBeta"
-    case firefoxNightlyEnterprise = "FirefoxNightly"
-    case firefox = "Firefox"
+    case neevaDev = "Neeva Dev"
+    case neevaNightlyEnterprise = "NeevaNightly"
+    case neeva = "Neeva"
 
     public func toConfiguration() -> PushConfiguration {
         switch self {
-        case .fennec: return FennecPushConfiguration()
-        case .fennecEnterprise: return FennecEnterprisePushConfiguration()
-        case .firefoxBeta: return FirefoxBetaPushConfiguration()
-        case .firefoxNightlyEnterprise: return FirefoxNightlyEnterprisePushConfiguration()
-        case .firefox: return FirefoxPushConfiguration()
+        case .neevaDev: return NeevaDevPushConfiguration()
+        case .neevaNightlyEnterprise: return NeevaNightlyEnterprisePushConfiguration()
+        case .neeva: return NeevaPushConfiguration()
         }
     }
 }
@@ -29,54 +25,25 @@ public protocol PushConfiguration {
     /// http://autopush.readthedocs.io/en/latest/http.html#push-service-http-api
     /// /v1/{type}/{app_id}
     /// type == apns
-    /// app_id == the “platform” or “channel” of development (e.g. “firefox”, “beta”, “gecko”, etc.)
+    /// app_id == the “platform” or “channel” of development (e.g. “neeva”, “beta”, “gecko”, etc.)
     var endpointURL: NSURL { get }
 }
 
-public struct FennecPushConfiguration: PushConfiguration {
+public struct NeevaDevPushConfiguration: PushConfiguration {
     public init() {}
-    public let label = PushConfigurationLabel.fennec
+    public let label = PushConfigurationLabel.neevaDev
     public let endpointURL = NSURL(string: "https://updates.push.services.mozilla.com/v1/apns/fennec")!
 }
 
-public struct FennecStagingPushConfiguration: PushConfiguration {
+public struct NeevaNightlyEnterprisePushConfiguration: PushConfiguration {
     public init() {}
-    public let label = PushConfigurationLabel.fennec
-    public let endpointURL = NSURL(string: "https://updates-autopush.stage.mozaws.net/v1/apns/fennec")!
+    public let label = PushConfigurationLabel.neevaNightlyEnterprise
+    public let endpointURL = NSURL(string: "https://updates.push.services.mozilla.com/v1/apns/neevanightlyenterprise")!
 }
 
-public struct FennecEnterprisePushConfiguration: PushConfiguration {
+public struct NeevaPushConfiguration: PushConfiguration {
     public init() {}
-    public let label = PushConfigurationLabel.fennecEnterprise
-    public let endpointURL = NSURL(string: "https://updates.push.services.mozilla.com/v1/apns/fennecenterprise")!
+    public let label = PushConfigurationLabel.neeva
+    public let endpointURL = NSURL(string: "https://updates.push.services.mozilla.com/v1/apns/neeva")!
 }
 
-public struct FirefoxBetaPushConfiguration: PushConfiguration {
-    public init() {}
-    public let label = PushConfigurationLabel.firefoxBeta
-    public let endpointURL = NSURL(string: "https://updates.push.services.mozilla.com/v1/apns/firefoxbeta")!
-}
-
-public struct FirefoxBetaStagingPushConfiguration: PushConfiguration {
-    public init() {}
-    public let label = PushConfigurationLabel.firefoxBeta
-    public let endpointURL = NSURL(string: "https://updates-autopush.stage.mozaws.net/v1/apns/firefoxbeta")!
-}
-
-public struct FirefoxNightlyEnterprisePushConfiguration: PushConfiguration {
-    public init() {}
-    public let label = PushConfigurationLabel.firefoxNightlyEnterprise
-    public let endpointURL = NSURL(string: "https://updates.push.services.mozilla.com/v1/apns/firefoxnightlyenterprise")!
-}
-
-public struct FirefoxPushConfiguration: PushConfiguration {
-    public init() {}
-    public let label = PushConfigurationLabel.firefox
-    public let endpointURL = NSURL(string: "https://updates.push.services.mozilla.com/v1/apns/firefox")!
-}
-
-public struct FirefoxStagingPushConfiguration: PushConfiguration {
-    public init() {}
-    public let label = PushConfigurationLabel.firefox
-    public let endpointURL = NSURL(string: "https://updates-autopush.stage.mozaws.net/v1/apns/firefox")!
-}

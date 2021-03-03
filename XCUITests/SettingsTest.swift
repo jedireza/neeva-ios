@@ -18,7 +18,7 @@ class SettingsTest: BaseTestCase {
 
         waitUntilPageLoad()
         waitForValueContains(app.textFields["url"], value: "support.mozilla.org")
-        waitForExistence(app.webViews.staticTexts["Firefox for iOS Support"])
+        waitForExistence(app.webViews.staticTexts["Neeva for iOS Support"])
         
         let numTabs = app.buttons["Show Tabs"].value
         XCTAssertEqual("2", numTabs as? String, "Sume should be open in a different tab")
@@ -32,7 +32,7 @@ class SettingsTest: BaseTestCase {
     func testDefaultBrowser() {
         // A default browser card should be available on the home screen
         if #available(iOS 14, *) {
-            waitForExistence(app.staticTexts["Set links from websites, emails, and Messages to open automatically in Firefox."], timeout: 5)
+            waitForExistence(app.staticTexts["Set links from websites, emails, and Messages to open automatically in Neeva."], timeout: 5)
             waitForExistence(app.buttons["Go to Settings"], timeout: 5)
             app.buttons["Go to Settings"].tap()
 

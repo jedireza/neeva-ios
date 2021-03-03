@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Install all the required dependencies for building and deploying Firefox for iOS
+# Install all the required dependencies for building and deploying Neeva for iOS
 # Assumes you already have git otherwise you wouldn't have this setup script
 #
 # run ./setup.sh from the command line to run

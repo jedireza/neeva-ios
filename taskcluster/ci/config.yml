@@ -9,8 +9,8 @@ taskgraph:
     register: ffios_taskgraph:register
     repositories:
         mobile:
-            name: "Firefox for iOS"
-    cached-task-prefix: mobile.v2.firefox-ios
+            name: "Neeva for iOS"
+    cached-task-prefix: mobile.v2.neeva-ios
 
 workers:
     aliases:
@@ -31,4 +31,4 @@ workers:
             worker-type: 'b-linux'
 
 scriptworker:
-    scope-prefix: mobile:firefox-ios:releng
+    scope-prefix: mobile:neeva-ios:releng

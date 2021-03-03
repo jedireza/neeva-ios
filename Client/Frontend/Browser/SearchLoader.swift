@@ -41,17 +41,6 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
     // this is defensive against any changes to queue (or cancellation) behaviour in future.
     private weak var currentDeferredHistoryQuery: CancellableDeferred<Maybe<Cursor<Site>>>?
 
-    fileprivate func getBookmarksAsSites(matchingSearchQuery query: String, limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
-        return profile.places.searchBookmarks(query: query, limit: 5).bind { result in
-            guard let bookmarkItems = result.successValue else {
-                return deferMaybe(ArrayCursor(data: []))
-            }
-
-            let sites = bookmarkItems.map({ Site(url: $0.url, title: $0.title, bookmarked: true, guid: $0.guid) })
-            return deferMaybe(ArrayCursor(data: sites))
-        }
-    }
-
     var query: String = "" {
         didSet {
             guard let profile = self.profile as? BrowserProfile else {
@@ -73,9 +62,7 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
 
             currentDeferredHistoryQuery = deferredHistory
 
-            let deferredBookmarks = getBookmarksAsSites(matchingSearchQuery: query, limit: 5)
-
-            all([deferredHistory, deferredBookmarks]).uponQueue(.main) { results in
+            deferredHistory.uponQueue(.main) { result in
                 defer {
                     self.currentDeferredHistoryQuery = nil
                 }
@@ -84,12 +71,10 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
                     return
                 }
 
-                let deferredHistorySites = results[0].successValue?.asArray() ?? []
-                let deferredBookmarksSites = results[1].successValue?.asArray() ?? []
-                let combinedSites = deferredBookmarksSites + deferredHistorySites
+                let deferredHistorySites = result.successValue?.asArray() ?? []
 
                 // Load the data in the table view.
-                self.load(ArrayCursor(data: combinedSites))
+                self.load(ArrayCursor(data: deferredHistorySites))
 
                 // If the new search string is not longer than the previous
                 // we don't need to find an autocomplete suggestion.
@@ -105,7 +90,7 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
                 }
 
                 // First, see if the query matches any URLs from the user's search history.
-                for site in combinedSites {
+                for site in deferredHistorySites {
                     if let completion = self.completionForURL(site.url) {
                         self.urlBar.setAutocompleteSuggestion(completion)
                         return

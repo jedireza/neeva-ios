@@ -4,7 +4,6 @@
 
 import UIKit
 import Shared
-import Account
 
 /// App Settings Screen (triggered by tapping the 'Gear' in the Tab Tray Controller)
 class AppSettingsTableViewController: SettingsTableViewController {
@@ -41,7 +40,8 @@ class AppSettingsTableViewController: SettingsTableViewController {
 
         let prefs = profile.prefs
         var generalSettings: [Setting] = [
-            SearchSetting(settings: self),
+            BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyShowSearchSuggestions, defaultValue: true,
+                                    titleText: NSLocalizedString("Show Search Suggestions", comment: "Label for show search suggestions setting.")),
             NewTabPageSetting(settings: self),
             HomeSetting(settings: self),
             OpenWithSetting(settings: self),
@@ -54,15 +54,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
             generalSettings.insert(SiriPageSetting(settings: self), at: 5)
         }
 
-        let accountChinaSyncSetting: [Setting]
-        if !AppInfo.isChinaEdition {
-            accountChinaSyncSetting = []
-        } else {
-            accountChinaSyncSetting = [
-                // Show China sync service setting:
-                ChinaSyncServiceSetting(settings: self)
-            ]
-        }
         // There is nothing to show in the Customize section if we don't include the compact tab layout
         // setting on iPad. When more options are added that work on both device types, this logic can
         // be changed.
@@ -82,25 +73,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
             ]
         }
         
-        let accountSectionTitle = NSAttributedString(string: Strings.FxAFirefoxAccount)
-
-        let footerText = !profile.hasAccount() ? NSAttributedString(string: Strings.FxASyncUsageDetails) : nil
-        settings += [
-            SettingSection(title: accountSectionTitle, footerTitle: footerText, children: [
-                // Without a Firefox Account:
-                ConnectSetting(settings: self),
-                AdvancedAccountSetting(settings: self),
-                // With a Firefox Account:
-                AccountStatusSetting(settings: self),
-                SyncNowSetting(settings: self)
-            ] + accountChinaSyncSetting )]
-
         settings += [ SettingSection(title: NSAttributedString(string: Strings.SettingsGeneralSectionTitle), children: generalSettings)]
 
         var privacySettings = [Setting]()
-        privacySettings.append(LoginsSetting(settings: self, delegate: settingsDelegate))
-        privacySettings.append(TouchIDPasscodeSetting(settings: self))
-
         privacySettings.append(ClearPrivateDataSetting(settings: self))
 
         privacySettings += [
@@ -122,7 +97,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
             SettingSection(title: NSAttributedString(string: .AppSettingsSupport), children: [
                 ShowIntroductionSetting(settings: self),
                 SendFeedbackSetting(),
-                SendAnonymousUsageDataSetting(prefs: prefs, delegate: settingsDelegate),
                 OpenSupportPageSetting(delegate: settingsDelegate),
             ]),
             SettingSection(title: NSAttributedString(string: .AppSettingsAbout), children: [
@@ -132,9 +106,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 ExportBrowserDataSetting(settings: self),
                 ExportLogDataSetting(settings: self),
                 DeleteExportedDataSetting(settings: self),
+                NeevaHostSetting(settings: self),
                 ForceCrashSetting(settings: self),
                 SlowTheDatabase(settings: self),
-                ForgetSyncAuthStateDebugSetting(settings: self),
                 SentryIDSetting(settings: self),
                 ChangeToChinaSetting(settings: self),
                 ShowEtpCoverSheet(settings: self),

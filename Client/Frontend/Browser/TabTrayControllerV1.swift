@@ -26,7 +26,6 @@ struct TabTrayControllerUX {
 protocol TabTrayDelegate: AnyObject {
     func tabTrayDidDismiss(_ tabTray: TabTrayControllerV1)
     func tabTrayDidAddTab(_ tabTray: TabTrayControllerV1, tab: Tab)
-    func tabTrayDidAddBookmark(_ tab: Tab)
     func tabTrayDidAddToReadingList(_ tab: Tab) -> ReadingListItem?
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController)
 }
@@ -628,9 +627,6 @@ extension TabTrayControllerV1: TabCellDelegate {
 
 extension TabTrayControllerV1: TabPeekDelegate {
 
-    func tabPeekDidAddBookmark(_ tab: Tab) {
-        delegate?.tabTrayDidAddBookmark(tab)
-    }
 
     func tabPeekDidAddToReadingList(_ tab: Tab) -> ReadingListItem? {
         return delegate?.tabTrayDidAddToReadingList(tab)
@@ -662,9 +658,7 @@ extension TabTrayControllerV1: UIViewControllerPreviewingDelegate {
             return nil
         }
         let tabVC = TabPeekViewController(tab: tab, delegate: self)
-        if let browserProfile = profile as? BrowserProfile {
-            tabVC.setState(withProfile: browserProfile, clientPickerDelegate: self)
-        }
+    
         previewingContext.sourceRect = self.view.convert(cell.frame, from: collectionView)
 
         return tabVC
@@ -843,19 +837,6 @@ fileprivate class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayou
 
     @objc func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         tabSelectionDelegate?.didSelectTabAtIndex(indexPath.row)
-    }
-}
-
-extension TabTrayControllerV1: DevicePickerViewControllerDelegate {
-    func devicePickerViewController(_ devicePickerViewController: DevicePickerViewController, didPickDevices devices: [RemoteDevice]) {
-        if let item = devicePickerViewController.shareItem {
-            _ = self.profile.sendItem(item, toDevices: devices)
-        }
-        devicePickerViewController.dismiss(animated: true, completion: nil)
-    }
-
-    func devicePickerViewControllerDidCancel(_ devicePickerViewController: DevicePickerViewController) {
-        devicePickerViewController.dismiss(animated: true, completion: nil)
     }
 }
 

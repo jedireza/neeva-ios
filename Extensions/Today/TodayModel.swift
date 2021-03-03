@@ -11,7 +11,7 @@ struct TodayModel {
     var scheme: String {
         guard let string = Bundle.main.object(forInfoDictionaryKey: "MozInternalURLScheme") as? String else {
             // Something went wrong/weird, but we should fallback to the public one.
-            return "firefox"
+            return "neeva"
         }
         return string
     }

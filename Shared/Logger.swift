@@ -80,7 +80,7 @@ public extension Logger {
             let fileDestination = FileDestination(
                 owner: log,
                 writeToFile: logFileURL.absoluteString,
-                identifier: "com.mozilla.firefox.filelogger.\(name)"
+                identifier: "co.neeva.app.ios.browser.filelogger.\(name)"
             )
             log.add(destination: fileDestination)
         }

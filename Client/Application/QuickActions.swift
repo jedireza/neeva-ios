@@ -11,7 +11,6 @@ import XCGLogger
 enum ShortcutType: String {
     case newTab = "NewTab"
     case newPrivateTab = "NewPrivateTab"
-    case openLastBookmark = "OpenLastBookmark"
     case qrCode = "QRCode"
 
     init?(fullType: String) {
@@ -56,24 +55,9 @@ class QuickActions: NSObject {
         // add the quick actions version so that it is always in the user info
         var userData: [String: String] = userData
         userData[QuickActions.QuickActionsVersionKey] = QuickActions.QuickActionsVersion
-        var dynamicShortcutItems = application.shortcutItems ?? [UIApplicationShortcutItem]()
-        switch type {
-        case .openLastBookmark:
-            let openLastBookmarkShortcut = UIMutableApplicationShortcutItem(type: ShortcutType.openLastBookmark.type,
-                localizedTitle: .QuickActionsLastBookmarkTitle,
-                localizedSubtitle: userData[QuickActions.TabTitleKey],
-                icon: UIApplicationShortcutIcon(templateImageName: "quick_action_last_bookmark"),
-                userInfo: userData as [String : NSSecureCoding]
-            )
-            if let index = (dynamicShortcutItems.firstIndex { $0.type == ShortcutType.openLastBookmark.type }) {
-                dynamicShortcutItems[index] = openLastBookmarkShortcut
-            } else {
-                dynamicShortcutItems.append(openLastBookmarkShortcut)
-            }
-        default:
-            log.warning("Cannot add static shortcut item of type \(type)")
-            return false
-        }
+        let dynamicShortcutItems = application.shortcutItems ?? [UIApplicationShortcutItem]()
+        log.warning("Cannot add static shortcut item of type \(type)")
+        return false
         application.shortcutItems = dynamicShortcutItems
         return true
     }
@@ -105,29 +89,14 @@ class QuickActions: NSObject {
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: false)
         case .newPrivateTab:
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: true)
-        // even though we're removing OpenLastTab, it's possible that someone will use an existing last tab quick action to open the app
-        // the first time after upgrading, so we should still handle it
-        case .openLastBookmark:
-            if let urlToOpen = (userData?[QuickActions.TabURLKey] as? String)?.asURL {
-                handleOpenURL(withBrowserViewController: browserViewController, urlToOpen: urlToOpen)
-            }
+        
         case .qrCode:
             handleQRCode(with: browserViewController)
         }
     }
-
+    
     fileprivate func handleOpenNewTab(withBrowserViewController bvc: BrowserViewController, isPrivate: Bool) {
         bvc.openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
-    }
-
-    fileprivate func handleOpenURL(withBrowserViewController bvc: BrowserViewController, urlToOpen: URL) {
-        // open bookmark in a non-private browsing tab
-        bvc.switchToPrivacyMode(isPrivate: false)
-
-        // find out if bookmarked URL is currently open
-        // if so, open to that tab,
-        // otherwise, create a new tab with the bookmarked URL
-        bvc.switchToTabForURLOrOpen(urlToOpen)
     }
 
     fileprivate func handleQRCode(with vc: QRCodeViewControllerDelegate & UIViewController) {

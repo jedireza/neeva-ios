@@ -1,0 +1,18 @@
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>Neeva</ShortName>
+<InputEncoding>UTF-8</InputEncoding>
+<Image width="16" height="16">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAIXSURBVHgB7VVLdhJBFL2vxBaDA5bQWYG4AhsniTOcaRyAsoCYFQArEDcAnYGZkpEeJqZ3YO8guAKZaAhJ18urDmk4Cd1dyTk5TPoOoLo+7966r6oeUGDDIDwArRFXUblwEUXVuGNWDv13NMUDULKdaEjVi8t9ZvaI5x5YOpWKx3R5ti1/0/pH/ksagVY4Dr7ToU3cXAcMMW3N+gTVTJsz2HlG3nt2SeF0pXvChG6eEJU12B5fNlVlfppFLiThouneGnKJ4b/Z46HX4CruK+Dz+KLDiHyxOnWxAWkKF5G8deOSqRZt4bdxyFqAIZfMdmEBzVFssez2dcY0k57ROifuCGj/OG/YksvuJv7b50G8O1rvwApqqoJOpoDWzzOXn+ArrEHd+FcOm81sZnwRsV6qAKVK5rC5sIpG/nDHOVzsvglLiNhOqgCxvgUbbrFenz09iD9mmLJGXXZnde9NqlYPZPIOtMfnDQk8yltvyFnruuR+cnvM2+OaBDyRZvbNAXq/jq7TlzigoRvII2cO+L/zah25QXBEoQj8lhdHa9Ru2qWlKvUybYE8NlPS3BvulvvIg4M+5thHhgtyJROu5Rmgu4ePwROR2+N/zvbAhlwQ+HFRyitM7k1jWYw0HV+zRn+05DmOlWJ1LljWk91tSgQMdp1P2AASAfUPfJI1kRVCqWwHeCwBeU+p1PlHgcKGUQgoBBQCChS4AktNvnsTuPBlAAAAAElFTkSuQmCC</Image>
+<Url type="application/x-suggestions+json" method="GET" template="https://alpha.neeva.co/search/">
+  <Param name="q" value="{searchTerms}"/>
+  <Param name="src" value="ios"/>
+</Url>
+<!-- this is effectively x-moz-phonesearch, but search service expects a text/html entry -->
+<Url type="text/html" method="GET" template="https://alpha.neeva.co/search/">
+  <Param name="q" value="{searchTerms}"/>
+  <Param name="src" value="ios"/>
+</Url>
+<Url type="application/x-moz-tabletsearch" method="GET" template="https://alpha.neeva.co/search/">
+  <Param name="q" value="{searchTerms}"/>
+</Url>
+<SearchForm>https://alpha.neeva.co/search</SearchForm>
+</SearchPlugin>
