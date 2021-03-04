@@ -412,7 +412,7 @@ class OpenSupportPageSetting: Setting {
 
     override func onClick(_ navigationController: UINavigationController?) {
         navigationController?.dismiss(animated: true) {
-            if let url = URL(string: "https://support.mozilla.org/products/ios") {
+            if let url = URL(string: "https://neeva.co/contact") {
                 self.delegate?.settingsOpenURLInNewTab(url)
             }
         }
