@@ -59,7 +59,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         contextIdentifier: UUID? = nil
     ) -> HTTPRequest<Operation> where Operation : GraphQLOperation {
         let req = super.constructRequest(for: operation, cachePolicy: cachePolicy, contextIdentifier: contextIdentifier)
-        req.graphQLEndpoint = NeevaConstants.appURL / "graphql"
+        req.graphQLEndpoint = NeevaConstants.appURL / "graphql" / operation.operationName
 
         req.addHeader(name: NeevaConstants.Header.deviceType.name, value: NeevaConstants.Header.deviceType.value)
         req.addHeader(name: "X-Neeva-Client-ID", value: "co.neeva.app.ios.browser")
