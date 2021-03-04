@@ -72,22 +72,6 @@ extension PhotonActionSheetProtocol {
     func getOtherPanelActions(vcDelegate: PageOptionsVC) -> [UIMenuElement] {
         var items: [UIMenuElement] = []
 
-        let nightModeEnabled = NightModeHelper.isActivated(profile.prefs)
-        let nightMode = UIAction(title: "\(nightModeEnabled ? "Disable" : "Enable") Night Mode", image: UIImage(systemName: nightModeEnabled ? "sunrise" : "moon")) { _ in
-            NightModeHelper.toggle(self.profile.prefs, tabManager: self.tabManager)
-            // If we've enabled night mode and the theme is normal, enable dark theme
-            if NightModeHelper.isActivated(self.profile.prefs), ThemeManager.instance.currentName == .normal {
-                ThemeManager.instance.current = DarkTheme()
-                NightModeHelper.setEnabledDarkTheme(self.profile.prefs, darkTheme: true)
-            }
-            // If we've disabled night mode and dark theme was activated by it then disable dark theme
-            if !NightModeHelper.isActivated(self.profile.prefs), NightModeHelper.hasEnabledDarkTheme(self.profile.prefs), ThemeManager.instance.currentName == .dark {
-                ThemeManager.instance.current = NormalTheme()
-                NightModeHelper.setEnabledDarkTheme(self.profile.prefs, darkTheme: false)
-            }
-        }
-        items.append(nightMode)
-
         let sendFeedback = UIAction(title: "Send Feedback", image: UIImage(systemName: "bubble.left")) { _ in
             vcDelegate.present(SendFeedbackPanel(), animated: true)
         }
