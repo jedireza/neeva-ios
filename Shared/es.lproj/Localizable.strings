@@ -1263,7 +1263,10 @@
 "Settings.NewTab.Option.CustomizeTitle" = "Personalizar Inicio de Neeva";
 
 /* Option in settings to show Neeva Home when you open a new tab */
-"Settings.NewTab.Option.FirefoxHome" = "Inicio de Neeva";
+"Settings.NewTab.Option.Neeva" = "Inicio de Neeva";
+
+/* Option in settings to show Top Sites when you open a new tab */
+"Settings.NewTab.Option.Topsites" = "Sitios más visitados";
 
 /* Option in the settings to turn off recent bookmarks in the Highlights section */
 "Settings.NewTab.Option.HighlightsBookmarks" = "Marcadores recientes";

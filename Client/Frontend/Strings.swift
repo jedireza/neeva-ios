@@ -297,7 +297,8 @@ extension Strings {
     public static let SettingsNewTabTitle = MZLocalizedString("Settings.NewTab.Title", value: "New Tab", comment: "Title displayed in header of the setting panel.")
     public static let NewTabSectionNameFooter =
         MZLocalizedString("Settings.NewTab.TopSectionNameFooter", value: "Choose what to load when opening a new tab", comment: "Footer at the bottom of the New Tab screen after entering New Tab in settings")
-    public static let SettingsNewTabTopSites = MZLocalizedString("Settings.NewTab.Option.FirefoxHome", value: "Neeva Home", comment: "Option in settings to show Neeva Home when you open a new tab")
+    public static let SettingsNewTabTopSites = MZLocalizedString("Settings.NewTab.Option.Topsites", value: "Top Sites", comment: "Option in settings to show Top Sites when you open a new tab")
+    public static let SettingsNewTabNeevaHome = MZLocalizedString("Settings.NewTab.Option.Neeva", value: "Neeva Home", comment: "Option in settings to show Neeva Home when you open a new tab")
     public static let SettingsNewTabBookmarks = MZLocalizedString("Settings.NewTab.Option.Bookmarks", value: "Bookmarks", comment: "Option in settings to show bookmarks when you open a new tab")
     public static let SettingsNewTabHistory = MZLocalizedString("Settings.NewTab.Option.History", value: "History", comment: "Option in settings to show history when you open a new tab")
     public static let SettingsNewTabReadingList = MZLocalizedString("Settings.NewTab.Option.ReadingList", value: "Show your Reading List", comment: "Option in settings to show reading list when you open a new tab")

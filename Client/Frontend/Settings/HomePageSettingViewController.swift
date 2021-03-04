@@ -32,14 +32,13 @@ class HomePageSettingViewController: SettingsTableViewController {
             self.tableView.reloadData()
         }
 
-        let showTopSites = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabTopSites), subtitle: nil, accessibilityIdentifier: "HomeAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.topSites}, onChecked: {
-            self.currentChoice = NewTabPage.topSites
+        let showTopSites = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabNeevaHome), subtitle: nil, accessibilityIdentifier: "HomeAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.homePage}, onChecked: {
+            self.currentChoice = NewTabPage.homePage
             onFinished()
         })
-        let showNeevaHome = CheckmarkSetting(title: NSAttributedString(string: "Neeva Feed"), subtitle: nil, accessibilityIdentifier: "HomeAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.neevaHome}, onChecked: {
-            self.currentChoice = NewTabPage.homePage
-            self.prefs.setString(self.currentChoice.rawValue, forKey: NewTabAccessors.HomePrefKey)
-            self.tableView.reloadData()
+        let showNeevaHome = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabTopSites), subtitle: nil, accessibilityIdentifier: "HomeAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.topSites}, onChecked: {
+            self.currentChoice = NewTabPage.topSites
+            onFinished()
         })
         let showWebPage = WebPageSetting(prefs: prefs, prefKey: PrefsKeys.HomeButtonHomePageURL, defaultValue: nil, placeholder: Strings.CustomNewPageURL, accessibilityIdentifier: "HomeAsCustomURL", isChecked: {return !showTopSites.isChecked()}, settingDidChange: { (string) in
             self.currentChoice = NewTabPage.homePage
