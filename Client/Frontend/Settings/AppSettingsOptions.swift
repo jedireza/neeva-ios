@@ -399,7 +399,7 @@ class SendFeedbackSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        setUpAndPushSettingsContentViewController(navigationController, self.url)
+        navigationController?.pushViewController(SendFeedbackPanel(), animated: true)
     }
 }
 
