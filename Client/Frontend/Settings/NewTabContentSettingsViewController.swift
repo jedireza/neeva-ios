@@ -32,21 +32,25 @@ class NewTabContentSettingsViewController: SettingsTableViewController {
         }
 
         let showTopSites = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabTopSites), subtitle: nil, accessibilityIdentifier: "NewTabAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.topSites}, onChecked: {
-            self.currentChoice = NewTabPage.topSites
-            onFinished()
+                self.currentChoice = NewTabPage.topSites
+                onFinished()
+        })
+        let showNeevaHome = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabHomePage), subtitle: nil, accessibilityIdentifier: "NewTabAsNeevaHome", isChecked: {return self.currentChoice == NewTabPage.homePage}, onChecked: {
+                self.currentChoice = NewTabPage.homePage
+                onFinished()
         })
         let showBlankPage = CheckmarkSetting(title: NSAttributedString(string: Strings.SettingsNewTabBlankPage), subtitle: nil, accessibilityIdentifier: "NewTabAsBlankPage", isChecked: {return self.currentChoice == NewTabPage.blankPage}, onChecked: {
-            self.currentChoice = NewTabPage.blankPage
-            onFinished()
+                self.currentChoice = NewTabPage.blankPage
+                onFinished()
         })
-        let showWebPage = WebPageSetting(prefs: prefs, prefKey: HomePageConstants.NewTabCustomUrlPrefKey, defaultValue: nil, placeholder: Strings.CustomNewPageURL, accessibilityIdentifier: "NewTabAsCustomURL", isChecked: {return !showTopSites.isChecked() && !showBlankPage.isChecked()}, settingDidChange: { (string) in
-            self.currentChoice = NewTabPage.homePage
-            self.prefs.setString(self.currentChoice.rawValue, forKey: NewTabAccessors.NewTabPrefKey)
-            self.tableView.reloadData()
+        let showWebPage = WebPageSetting(prefs: prefs, prefKey: HomePageConstants.NewTabCustomUrlPrefKey, defaultValue: nil, placeholder: Strings.CustomNewPageURL, accessibilityIdentifier: "NewTabAsCustomURL", isChecked: {return !showTopSites.isChecked() && !showNeevaHome.isChecked() && !showBlankPage.isChecked()}, settingDidChange: { (string) in
+                self.currentChoice = NewTabPage.customURL
+                self.prefs.setString(self.currentChoice.rawValue, forKey: NewTabAccessors.NewTabPrefKey)
+                self.tableView.reloadData()
         })
         showWebPage.textField.textAlignment = .natural
 
-        let section = SettingSection(title: NSAttributedString(string: Strings.NewTabSectionName), footerTitle: NSAttributedString(string: Strings.NewTabSectionNameFooter), children: [showTopSites, showBlankPage, showWebPage])
+        let section = SettingSection(title: NSAttributedString(string: Strings.NewTabSectionName), footerTitle: NSAttributedString(string: Strings.NewTabSectionNameFooter), children: [showNeevaHome, showTopSites, showBlankPage, showWebPage])
 
         return [section]
     }

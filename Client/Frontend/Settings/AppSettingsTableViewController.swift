@@ -43,7 +43,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
             BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyShowSearchSuggestions, defaultValue: true,
                                     titleText: NSLocalizedString("Show Search Suggestions", comment: "Label for show search suggestions setting.")),
             NewTabPageSetting(settings: self),
-            HomeSetting(settings: self),
             OpenWithSetting(settings: self),
             ThemeSetting(settings: self),
             BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyBlockPopups, defaultValue: true,

@@ -10,18 +10,14 @@ import XCGLogger
 struct NewTabAccessors {
     static let NewTabPrefKey = PrefsKeys.KeyNewTab
     static let HomePrefKey = PrefsKeys.HomePageTab
-    static let Default = NewTabPage.homePage
+    static let Default = NewTabPage.neevaHome
 
     static func getNewTabPage(_ prefs: Prefs) -> NewTabPage {
         guard let raw = prefs.stringForKey(NewTabPrefKey) else {
             return .topSites
         }
         let option = NewTabPage(rawValue: raw) ?? Default
-        // Check if the user has chosen to open a homepage, but no homepage is set,
-        // then use the default.
-        if option == .homePage && NewTabHomePageAccessors.getHomePage(prefs) == nil {
-            return .topSites
-        }
+
         return option
     }
 
@@ -46,6 +42,7 @@ enum NewTabPage: String {
     case homePage = "HomePage"
     case neevaHome = "NeevaHome"
     case topSites = "TopSites"
+    case customURL = "CustomURL"
 
     var settingTitle: String {
         switch self {
@@ -57,6 +54,8 @@ enum NewTabPage: String {
             return "Neeva Feed"
         case .topSites:
             return Strings.SettingsNewTabTopSites
+        case .customURL:
+            return Strings.SettingsNewTabCustomURL
         }
     }
 
@@ -87,5 +86,5 @@ enum NewTabPage: String {
         }
     }
 
-    static let allValues = [blankPage, topSites, homePage, neevaHome]
+    static let allValues = [blankPage, topSites, homePage, neevaHome, customURL]
 }

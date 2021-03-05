@@ -1265,6 +1265,9 @@
 /* Option in settings to show Neeva Home when you open a new tab */
 "Settings.NewTab.Option.Neeva" = "Inicio de Neeva";
 
+/* Option in settings to show Neeva Home when you open a new tab */
+"Settings.NewTab.Option.CustomURL" = "URL Personalizado";
+
 /* Option in settings to show Top Sites when you open a new tab */
 "Settings.NewTab.Option.Topsites" = "Sitios más visitados";
 
@@ -1278,7 +1281,7 @@
 "Settings.NewTab.Option.History" = "Historial";
 
 /* Option in settings to show your homepage when you open a new tab */
-"Settings.NewTab.Option.HomePage" = "Página de inicio";
+"Settings.NewTab.Option.HomePage" = "Página de inicio de Neeva";
 
 /* Option in settings to turn on off pocket recommendations */
 "Settings.NewTab.Option.Pocket" = "De actualidad en Pocket";

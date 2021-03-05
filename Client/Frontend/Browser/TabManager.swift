@@ -7,6 +7,7 @@ import WebKit
 import Storage
 import Shared
 import XCGLogger
+import NeevaSupport
 
 private let log = Logger.browserLogger
 
@@ -356,25 +357,29 @@ class TabManager: NSObject {
             let newTabChoice = NewTabAccessors.getNewTabPage(profile.prefs)
             tab.newTabPageType = newTabChoice
             switch newTabChoice {
-            case .homePage:
-                // We definitely have a homepage if we've got here
-                // (so we can safely dereference it).
-                let url = NewTabHomePageAccessors.getHomePage(profile.prefs)!
-                tab.loadRequest(URLRequest(url: url))
-            case .blankPage:
-                // If we're showing "about:blank" in a webview, set
-                // the <html> `background-color` to match the theme.
-                if let webView = tab.webView as? TabWebView {
-                    webView.applyTheme()
-                }
-                break
-            default:
-                // The common case, where the NewTabPage enum defines
-                // one of the about:home pages.
-                if let url = newTabChoice.url {
-                    tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)
-                    tab.url = url
-                }
+                case .homePage:
+                    // Neeva only has a single homepage location by default
+                    let url = NeevaConstants.appURL
+                    tab.loadRequest(URLRequest(url: url))
+                case .blankPage:
+                    // If we're showing "about:blank" in a webview, set
+                    // the <html> `background-color` to match the theme.
+                    if let webView = tab.webView as? TabWebView {
+                        webView.applyTheme()
+                    }
+                    break
+                case .customURL:
+                    //custom url saves its location in the home preferences
+                    let url = NewTabHomePageAccessors.getHomePage(profile.prefs)!
+                    tab.loadRequest(URLRequest(url: url))
+                    break;
+                default:
+                    // The common case, where the NewTabPage enum defines
+                    // one of the about:home pages.
+                    if let url = newTabChoice.url {
+                        tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)
+                        tab.url = url
+                    }
             }
         }
 
