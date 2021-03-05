@@ -73,7 +73,7 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     }()
     private lazy var topImageView: UIImageView = {
         let imgView = UIImageView(image: viewModel.model?.titleImage)
-        imgView.contentMode = .scaleAspectFit
+        imgView.contentMode = .scaleAspectFill
         imgView.clipsToBounds = true
         return imgView
     }()
