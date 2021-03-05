@@ -482,7 +482,28 @@ extension BrowserViewController: WKNavigationDelegate {
             } else {
                 webView.customUserAgent = UserAgent.getUserAgent(domain: url.baseDomain ?? "")
             }
-            
+
+            var request = navigationAction.request
+            if url.host == NeevaConstants.appHost, request.httpMethod == "GET", tab.isPrivate, !url.path.starts(with: "/incognito") {
+                let cookies = webView.configuration.websiteDataStore.httpCookieStore
+                cookies.getAllCookies { (cookies) in
+                    if !cookies.contains(where: { $0.domain == NeevaConstants.appHost && $0.name == "httpd~incognito" && $0.isSecure }) {
+                         StartIncognitoMutation(url: url).perform { result in
+                             decisionHandler(.cancel)
+                             switch result {
+                             case .failure(let error):
+                                 print((error as? GraphQLAPI.Error)?.errors.map(\.message) ?? error.localizedDescription)
+                             case .success(let data):
+                                 request.url = URL(string: data.startIncognito)
+                                 webView.load(request)
+                             }
+                         }
+                    }
+                    decisionHandler(.allow)
+                }
+                return
+            }
+
             decisionHandler(.allow)
             return
         }

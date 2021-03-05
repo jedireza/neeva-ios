@@ -7,6 +7,7 @@ import WebKit
 import Storage
 import Shared
 import XCGLogger
+import NeevaSupport
 
 private let log = Logger.browserLogger
 
@@ -218,6 +219,26 @@ class TabManager: NSObject {
             TabEvent.post(.didGainFocus, for: tab)
             tab.applyTheme()
         }
+
+        if let tab = tab, tab.isPrivate, let url = tab.url, url.host == NeevaConstants.appHost, !url.path.starts(with: "/incognito") {
+            tab.webView?.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
+                if cookies.first(where: { $0.domain == NeevaConstants.appHost && $0.name == "httpd~incognito" && $0.isSecure }) != nil {
+                    return
+                }
+
+                StartIncognitoMutation(url: url).perform { result in
+                    guard
+                        case .success(let data) = result,
+                        let url = URL(string: data.startIncognito)
+                    else { return }
+                    let configuration = URLSessionConfiguration.ephemeral
+                    makeURLSession(userAgent: UserAgent.getUserAgent(), configuration: .ephemeral).dataTask(with: url) { (data, response, error) in
+                        print(configuration.httpCookieStorage?.cookies ?? [])
+                    }
+                }
+            }
+        }
+
         TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .tab)
     }
     
