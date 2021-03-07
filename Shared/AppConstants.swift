@@ -134,7 +134,7 @@ public struct AppConstants {
         #elseif MOZ_CHANNEL_BETA
         return false
         #elseif MOZ_CHANNEL_NEEVA
-        return true
+        return false
         #else
         return false
         #endif
