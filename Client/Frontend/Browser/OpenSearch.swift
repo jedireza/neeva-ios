@@ -5,6 +5,7 @@
 import UIKit
 import Shared
 import Fuzi
+import NeevaSupport
 
 private let TypeSearch = "text/html"
 private let TypeSuggest = "application/x-suggestions+json"
@@ -22,11 +23,9 @@ class OpenSearchEngine {
 
     fileprivate lazy var searchQueryComponentKey: String? = self.getQueryArgFromTemplate()
     
-    //TODO: connect to neeva constants app host
-    var searchTemplate: String { "https://alpha.neeva.co/search/?src=ios&q={searchTerms}" }
+    var searchTemplate: String { "https://\(NeevaConstants.appHost)/search/?q={searchTerms}&src=nvobar" }
     
-    //TODO: connect to neeva constants app host
-    fileprivate var suggestTemplate: String { "https://alpha.neeva.co/suggest?q={searchTerms}&src=opensearch" }
+    fileprivate var suggestTemplate: String { "https://\(NeevaConstants.appHost)/suggest?q={searchTerms}&src=nvobar" }
 
     init(engineID: String?, shortName: String, image: UIImage, isCustomEngine: Bool) {
         self.shortName = shortName
