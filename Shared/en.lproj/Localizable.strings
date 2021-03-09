@@ -1221,7 +1221,13 @@
 "Settings.NewTab.Option.CustomizeTitle" = "Customize Neeva Home";
 
 /* Option in settings to show Neeva Home when you open a new tab */
-"Settings.NewTab.Option.FirefoxHome" = "Neeva Home";
+"Settings.NewTab.Option.Neeva" = "Neeva Home";
+
+/* Option in settings to show Neeva Home when you open a new tab */
+"Settings.NewTab.Option.CustomURL" = "Custom URL";
+
+/* Option in settings to show Top Sites when you open a new tab */
+"Settings.NewTab.Option.Topsites" = "Top Sites";
 
 /* Option in the settings to turn off recent bookmarks in the Highlights section */
 "Settings.NewTab.Option.HighlightsBookmarks" = "Recent Bookmarks";
@@ -1233,7 +1239,7 @@
 "Settings.NewTab.Option.History" = "History";
 
 /* Option in settings to show your homepage when you open a new tab */
-"Settings.NewTab.Option.HomePage" = "Homepage";
+"Settings.NewTab.Option.HomePage" = "Neeva Home";
 
 /* Option in settings to turn on off pocket recommendations */
 "Settings.NewTab.Option.Pocket" = "Trending on Pocket";

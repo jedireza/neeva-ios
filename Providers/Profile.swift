@@ -221,9 +221,9 @@ open class BrowserProfile: Profile {
                 prefs.setString(PrefsDefaults.ChineseNewTabDefault, forKey: PrefsKeys.HomePageTab)
             }
         } else {
-            // Remove the default homepage. This does not change the user's preference,
-            // just the behaviour when there is no homepage.
-            prefs.removeObjectForKey(PrefsKeys.KeyDefaultHomePageURL)
+            // Set the default homepage to Neeva. This does not change the user's preference,
+            // just the behaviour when there is no homepage
+            prefs.setString(PrefsDefaults.DefaultHomePageURL, forKey: PrefsKeys.KeyDefaultHomePageURL)
         }
 
         // Hide the "__leanplum.sqlite" file in the documents directory.

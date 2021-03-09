@@ -297,12 +297,14 @@ extension Strings {
     public static let SettingsNewTabTitle = MZLocalizedString("Settings.NewTab.Title", value: "New Tab", comment: "Title displayed in header of the setting panel.")
     public static let NewTabSectionNameFooter =
         MZLocalizedString("Settings.NewTab.TopSectionNameFooter", value: "Choose what to load when opening a new tab", comment: "Footer at the bottom of the New Tab screen after entering New Tab in settings")
-    public static let SettingsNewTabTopSites = MZLocalizedString("Settings.NewTab.Option.FirefoxHome", value: "Neeva Home", comment: "Option in settings to show Neeva Home when you open a new tab")
+    public static let SettingsNewTabTopSites = MZLocalizedString("Settings.NewTab.Option.Topsites", value: "Top Sites", comment: "Option in settings to show Top Sites when you open a new tab")
+    public static let SettingsNewTabNeevaHome = MZLocalizedString("Settings.NewTab.Option.Neeva", value: "Neeva Home", comment: "Option in settings to show Neeva Home when you open a new tab")
+    public static let SettingsNewTabCustomURL = MZLocalizedString("Settings.NewTab.Option.CustomURL", value: "Custom URL", comment: "Option in settings to allow a custom URL when you open a new tab")
     public static let SettingsNewTabBookmarks = MZLocalizedString("Settings.NewTab.Option.Bookmarks", value: "Bookmarks", comment: "Option in settings to show bookmarks when you open a new tab")
     public static let SettingsNewTabHistory = MZLocalizedString("Settings.NewTab.Option.History", value: "History", comment: "Option in settings to show history when you open a new tab")
     public static let SettingsNewTabReadingList = MZLocalizedString("Settings.NewTab.Option.ReadingList", value: "Show your Reading List", comment: "Option in settings to show reading list when you open a new tab")
     public static let SettingsNewTabBlankPage = MZLocalizedString("Settings.NewTab.Option.BlankPage", value: "Blank Page", comment: "Option in settings to show a blank page when you open a new tab")
-    public static let SettingsNewTabHomePage = MZLocalizedString("Settings.NewTab.Option.HomePage", value: "Homepage", comment: "Option in settings to show your homepage when you open a new tab")
+    public static let SettingsNewTabHomePage = MZLocalizedString("Settings.NewTab.Option.HomePage", value: "Neeva Home", comment: "Option in settings to show your homepage when you open a new tab")
     public static let SettingsNewTabDescription = MZLocalizedString("Settings.NewTab.Description", value: "When you open a New Tab:", comment: "A description in settings of what the new tab choice means")
     // AS Panel settings
     public static let SettingsNewTabASTitle = MZLocalizedString("Settings.NewTab.Option.ASTitle", value: "Customize Top Sites", comment: "The title of the section in newtab that lets you modify the topsites panel")
