@@ -18,7 +18,7 @@ class AddToSpaceListViewController: UIHostingController<AnyView> {
         let onDismiss: (AddToSpaceList.IDs?) -> ()
 
         var body: some View {
-            AddToSpaceList(title: title, description: description, url: url, onDismiss: onDismiss)
+            AddToSpaceList(title: title, description: description, url: url, showNewSpaceButton: false, onDismiss: onDismiss)
                 .environment(\.onOpenURL, { url in
                     // TODO: handle this case
                 })
