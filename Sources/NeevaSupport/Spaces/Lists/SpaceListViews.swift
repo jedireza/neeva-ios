@@ -47,7 +47,7 @@ public struct SpaceListView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Self.newSpaceButton { name, result in
+                    Self.newSpaceButton{ name, result in
                         if case .success(let data) = result,
                            let oldSpaces = controller.state.data {
                             withAnimation {
@@ -71,24 +71,28 @@ public struct SpaceListView: View {
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 
-    static func newSpaceButton(resultHandler: @escaping (String, Result<CreateSpaceMutation.Data, Error>) -> ()) -> some View {
-        Button {
-            openTextInputAlert(
-                title: "What would you like to name your new space?",
-                confirmationButtonTitle: "Add",
-                placeholder: "Name your space",
-                configureTextField: { tf in
-                    tf.autocapitalizationType = .words
-                    tf.returnKeyType = .done
-                    tf.autocorrectionType = .default
-                    tf.clearButtonMode = .always
+    static func newSpaceButton(showNewSpaceButton: Bool = true, resultHandler: @escaping (String, Result<CreateSpaceMutation.Data, Error>) -> ()) -> some View {
+        Group {
+            if (showNewSpaceButton){
+                Button {
+                    openTextInputAlert(
+                        title: "What would you like to name your new space?",
+                        confirmationButtonTitle: "Add",
+                        placeholder: "Name your space",
+                        configureTextField: { tf in
+                            tf.autocapitalizationType = .words
+                            tf.returnKeyType = .done
+                            tf.autocorrectionType = .default
+                            tf.clearButtonMode = .always
+                        }
+                    ) { name in
+                        CreateSpaceMutation(name: name).perform { resultHandler(name, $0) }
+                    }
+                } label: {
+                    Image(systemName: "plus")
+                        .accessibilityLabel("New Space")
                 }
-            ) { name in
-                CreateSpaceMutation(name: name).perform { resultHandler(name, $0) }
             }
-        } label: {
-            Image(systemName: "plus")
-                .accessibilityLabel("New Space")
         }
     }
 }

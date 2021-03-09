@@ -7,23 +7,26 @@ public struct AddToSpaceView: View {
     let title: String
     let description: String? // meta description
     let url: URL
+    let showNewSpaceButton: Bool
     let onDismiss: (AddToSpaceList.IDs?) -> ()
 
     /// - Parameters:
     ///   - title: The title of the newly created entity
     ///   - description: The description/snippet of the newly created entity
     ///   - url: The URL of the newly created entity
+    ///   - showNewSpaceButton: Flag to decide if we show the add new space button
     ///   - onDismiss: Called to close the sheet. `nil` is passed if the user cancels; otherwise, the ID of the selected space and newly created entity are passed.
-    public init(title: String, description: String?, url: URL, onDismiss: @escaping (AddToSpaceList.IDs?) -> ()) {
+    public init(title: String, description: String?, url: URL, showNewSpaceButton: Bool = true, onDismiss: @escaping (AddToSpaceList.IDs?) -> ()) {
         self.title = title
         self.description = description
         self.url = url
+        self.showNewSpaceButton = showNewSpaceButton
         self.onDismiss = onDismiss
     }
 
     public var body: some View {
         NavigationView {
-            AddToSpaceList(title: title, description: description, url: url, onDismiss: onDismiss)
+            AddToSpaceList(title: title, description: description, url: url, showNewSpaceButton: showNewSpaceButton, onDismiss: onDismiss)
                 .navigationTitle("Add to Space")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -50,12 +53,14 @@ public struct AddToSpaceList: View {
     let title: String
     let description: String? // meta description
     let url: URL
+    let showNewSpaceButton: Bool
     let onDismiss: (AddToSpaceList.IDs?) -> ()
 
-    public init(title: String, description: String?, url: URL, onDismiss: @escaping (IDs?) -> ()) {
+    public init(title: String, description: String?, url: URL, showNewSpaceButton: Bool = true, onDismiss: @escaping (IDs?) -> ()) {
         self.title = title
         self.description = description
         self.url = url
+        self.showNewSpaceButton = showNewSpaceButton
         self.onDismiss = onDismiss
     }
 
@@ -69,10 +74,14 @@ public struct AddToSpaceList: View {
     }
 
     var dummyAddButton: some View {
-        Button(action: {}) {
-            Image(systemName: "plus")
-                .accessibilityLabel("New Space")
-        }.disabled(true)
+        Group {
+            if (showNewSpaceButton){
+                Button(action: {}) {
+                    Image(systemName: "plus")
+                        .accessibilityLabel("New Space")
+                }.disabled(true)
+            }
+        }
     }
 
     public var body: some View {
@@ -116,7 +125,7 @@ public struct AddToSpaceList: View {
                     }
                     .toolbar {
                         ToolbarItem(placement: .primaryAction) {
-                            SpaceListView.newSpaceButton { name, result in
+                            SpaceListView.newSpaceButton(showNewSpaceButton: showNewSpaceButton)  { name, result in
                                 if case .success(let data) = result {
                                     addToSpace(id: data.createSpace)
                                 } else {
