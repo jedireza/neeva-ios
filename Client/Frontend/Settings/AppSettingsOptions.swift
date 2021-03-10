@@ -6,7 +6,6 @@ import Foundation
 import Shared
 import SwiftKeychainWrapper
 import LocalAuthentication
-import MozillaAppServices
 import NeevaSupport
 
 // This file contains all of the settings available in the main settings screen of the app.
@@ -568,7 +567,6 @@ class DefaultBrowserSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        TelemetryWrapper.gleanRecordEvent(category: .action, method: .open, object: .settingsMenuSetAsDefaultBrowser)
         LeanPlumClient.shared.track(event: .settingsSetAsDefaultBrowser)
         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
     }

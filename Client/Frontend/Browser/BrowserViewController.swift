@@ -13,7 +13,6 @@ import XCGLogger
 import MobileCoreServices
 import SDWebImage
 import SwiftyJSON
-import MozillaAppServices
 import Sentry
 
 private let KVOs: [KVOConstants] = [

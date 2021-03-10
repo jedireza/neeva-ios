@@ -4,7 +4,6 @@
 
 import Foundation
 import Shared
-import MozillaAppServices
 
 // An enum to route to HomePanels
 enum HomePanelPath: String {
@@ -65,7 +64,6 @@ enum NavigationPath {
     case widgetUrl(webURL: URL?, uuid: String)
     case deepLink(DeepLink)
     case text(String)
-    case glean(url: URL)
     case closePrivateTabs
 
     init?(url: URL) {
@@ -93,10 +91,7 @@ enum NavigationPath {
         } else if urlString.starts(with: "\(scheme)://open-text") {
             let text = components.valueForQuery("text")
             self = .text(text ?? "")
-        } else if urlString.starts(with: "\(scheme)://glean") {
-            self = .glean(url: url)
         } else if urlString.starts(with: "http:") ||  urlString.starts(with: "https:") {
-            TelemetryWrapper.gleanRecordEvent(category: .action, method: .open, object: .asDefaultBrowser)
             LeanPlumClient.shared.track(event: .appOpenedAsDefaultBrowser)
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
@@ -111,7 +106,6 @@ enum NavigationPath {
         case .deepLink(let link): NavigationPath.handleDeepLink(link, with: bvc)
         case .url(let url, let isPrivate): NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
         case .text(let text): NavigationPath.handleText(text: text, with: bvc)
-        case .glean(let url): NavigationPath.handleGlean(url: url)
         case .closePrivateTabs: NavigationPath.handleClosePrivateTabs(with: bvc, tray: tray)
         case .widgetUrl(webURL: let webURL, uuid: let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
@@ -204,10 +198,6 @@ enum NavigationPath {
              return
          }
          bvc.tabManager.selectTab(tab)
-    }
-
-    private static func handleGlean(url: URL) {
-        Glean.shared.handleCustomUrl(url: url)
     }
 
     private static func handleHomePanel(panel: HomePanelPath, with bvc: BrowserViewController) {

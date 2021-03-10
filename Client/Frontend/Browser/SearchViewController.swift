@@ -5,7 +5,6 @@
 import UIKit
 import Shared
 import Storage
-import MozillaAppServices
 import Telemetry
 import NeevaSupport
 import SwiftUI

@@ -47,7 +47,6 @@ class ProfileFileAccessor: FileAccessor {
  * A Profile manages access to the user's data.
  */
 protocol Profile: AnyObject {
-    var places: RustPlaces { get }
     var prefs: Prefs { get }
     var queue: TabQueue { get }
     var files: FileAccessor { get }
@@ -168,34 +167,6 @@ open class BrowserProfile: Profile {
         //     log.debug("SQLite compile_options:\n\(compileOptions.joined(separator: "\n"))")
         // }
 
-        // Set up logging from Rust.
-        if !RustLog.shared.tryEnable({ (level, tag, message) -> Bool in
-            let logString = "[RUST][\(tag ?? "no-tag")] \(message)"
-
-            switch level {
-            case .trace:
-                if Logger.logPII {
-                    log.verbose(logString)
-                }
-            case .debug:
-                log.debug(logString)
-            case .info:
-                log.info(logString)
-            case .warn:
-                log.warning(logString)
-            case .error:
-                Sentry.shared.sendWithStacktrace(message: logString, tag: .rustLog, severity: .error)
-                log.error(logString)
-            }
-
-            return true
-        }) {
-            log.error("ERROR: Unable to enable logging from Rust")
-        }
-
-        // By default, filter logging from Rust below `.info` level.
-        try? RustLog.shared.setLevelFilter(filter: .info)
-
         let notificationCenter = NotificationCenter.default
 
         notificationCenter.addObserver(self, selector: #selector(onLocationChange), name: .OnLocationChange, object: nil)
@@ -248,7 +219,6 @@ open class BrowserProfile: Profile {
 
         db.reopenIfClosed()
         _ = logins.reopenIfClosed()
-        _ = places.reopenIfClosed()
     }
 
     func _shutdown() {
@@ -257,7 +227,6 @@ open class BrowserProfile: Profile {
 
         db.forceClose()
         _ = logins.forceClose()
-        _ = places.forceClose()
     }
 
     @objc
@@ -341,10 +310,6 @@ open class BrowserProfile: Profile {
         return self.legacyPlaces
     }
 
-    lazy var placesDbPath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("places.db").path
-
-    lazy var places = RustPlaces(databasePath: placesDbPath)
-    
     func makePrefs() -> Prefs {
         return NSUserDefaultsPrefs(prefix: self.localName())
     }

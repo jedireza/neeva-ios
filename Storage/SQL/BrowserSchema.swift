@@ -6,6 +6,35 @@ import Foundation
 import Shared
 import XCGLogger
 
+// Copied from mozilla/application-services
+enum BookmarkRoots {
+    public static let RootGUID = "root________"
+    public static let MobileFolderGUID = "mobile______"
+    public static let MenuFolderGUID = "menu________"
+    public static let ToolbarFolderGUID = "toolbar_____"
+    public static let UnfiledFolderGUID = "unfiled_____"
+
+    public static let All = Set<String>([
+        BookmarkRoots.RootGUID,
+        BookmarkRoots.MobileFolderGUID,
+        BookmarkRoots.MenuFolderGUID,
+        BookmarkRoots.ToolbarFolderGUID,
+        BookmarkRoots.UnfiledFolderGUID,
+    ])
+}
+
+// Copied from mozilla/application-services
+enum BookmarkNodeType: Int32 {
+    // Note: these values need to match the Rust BookmarkType
+    // enum in types.rs
+    case bookmark = 1
+    case folder = 2
+    case separator = 3
+    // The other node types are either queries (which we handle as
+    // normal bookmarks), or have been removed from desktop, and
+    // are not supported
+}
+
 let _TableBookmarks = "bookmarks"                                      // Removed in v12. Kept for migration.
 let TableBookmarksMirror = "bookmarksMirror"                           // Added in v9.
 let TableBookmarksMirrorStructure = "bookmarksMirrorStructure"         // Added in v10.
