@@ -728,6 +728,9 @@ extension NeevaHomeViewController {
                 }
         )
         host.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
+        NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak host] _ in
+            host?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
+        }
         present(host, animated: true)
     }
 

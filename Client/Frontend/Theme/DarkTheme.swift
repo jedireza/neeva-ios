@@ -143,4 +143,5 @@ class DarkTheme: NormalTheme {
     override var general: GeneralColor { return DarkGeneralColor() }
     override var actionMenu: ActionMenuColor { return DarkActionMenuColor() }
     override var defaultBrowserCard: DefaultBrowserCardColor { return DarkDefaultBrowserCardColor() }
+    override var userInterfaceStyle: UIUserInterfaceStyle { .dark }
 }
