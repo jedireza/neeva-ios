@@ -39,7 +39,6 @@ public struct AddToSpaceView: View {
 }
 
 public struct AddToSpaceList: View {
-    @State var isWaiting = false
     @State var cancellable: Apollo.Cancellable? = nil
     @State var searchTerm: String? = nil
 
@@ -88,6 +87,12 @@ public struct AddToSpaceList: View {
         Group {
             if cancellable != nil {
                 LoadingView("Adding to space…")
+                    .onDisappear {
+                        // Take care to cancel the request if it's still pending.
+                        if let cancellable = self.cancellable {
+                            cancellable.cancel()
+                        }
+                    }
             } else {
                 switch spaceList.state {
                 case .failure(let error):
@@ -142,11 +147,6 @@ public struct AddToSpaceList: View {
                             }
                         }
                 }
-            }
-        }
-        .onDisappear {
-            if let cancellable = self.cancellable {
-                cancellable.cancel()
             }
         }
     }
