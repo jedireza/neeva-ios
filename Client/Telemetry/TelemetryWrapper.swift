@@ -3,11 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
-import Telemetry
 
 class TelemetryWrapper {
-    let legacyTelemetry = Telemetry.default
-
     // Boolean flag to temporarily remember if we crashed during the
     // last run of the app. We cannot simply use `Sentry.crashedLastLaunch`
     // because we want to clear this flag after we've already reported it
@@ -38,102 +35,6 @@ class TelemetryWrapper {
 
     init(profile: Profile) {
         crashedLastLaunch = Sentry.crashedLastLaunch
-
-        migratePathComponentInDocumentsDirectory("MozTelemetry-Default-core", to: .cachesDirectory)
-        migratePathComponentInDocumentsDirectory("MozTelemetry-Default-mobile-event", to: .cachesDirectory)
-        migratePathComponentInDocumentsDirectory("eventArray-MozTelemetry-Default-mobile-event.json", to: .cachesDirectory)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(uploadError), name: Telemetry.notificationReportError, object: nil)
-
-        let telemetryConfig = legacyTelemetry.configuration
-        telemetryConfig.appName = "Neeva"
-        telemetryConfig.userDefaultsSuiteName = AppInfo.sharedContainerIdentifier
-        telemetryConfig.dataDirectory = .cachesDirectory
-        telemetryConfig.updateChannel = AppConstants.BuildChannel.rawValue
-        
-        let sendUsageData = false
-        telemetryConfig.isCollectionEnabled = sendUsageData
-        telemetryConfig.isUploadEnabled = sendUsageData
-
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.blockPopups", withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.saveLogins", withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.showClipboardBar", withDefaultValue: false)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.settings.closePrivateTabs", withDefaultValue: false)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.ASPocketStoriesVisible", withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.ASBookmarkHighlightsVisible", withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.ASRecentHighlightsVisible", withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.prefkey.trackingprotection.normalbrowsing", withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.prefkey.trackingprotection.privatebrowsing", withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: "profile.prefkey.trackingprotection.strength", withDefaultValue: "basic")
-        telemetryConfig.measureUserDefaultsSetting(forKey: ThemeManagerPrefs.systemThemeIsOn.rawValue, withDefaultValue: true)
-        telemetryConfig.measureUserDefaultsSetting(forKey: ThemeManagerPrefs.automaticSwitchIsOn.rawValue, withDefaultValue: false)
-        telemetryConfig.measureUserDefaultsSetting(forKey: ThemeManagerPrefs.automaticSliderValue.rawValue, withDefaultValue: 0)
-        telemetryConfig.measureUserDefaultsSetting(forKey: ThemeManagerPrefs.themeName.rawValue, withDefaultValue: "normal")
-
-        let prefs = profile.prefs
-        legacyTelemetry.beforeSerializePing(pingType: CorePingBuilder.PingType) { (inputDict) -> [String: Any?] in
-            var outputDict = inputDict // make a mutable copy
-
-            var settings: [String: Any?] = inputDict["settings"] as? [String: Any?] ?? [:]
-
-            if let newTabChoice = prefs.stringForKey(NewTabAccessors.HomePrefKey) {
-                outputDict["defaultNewTabExperience"] = newTabChoice as AnyObject?
-            }
-            if let chosenEmailClient = prefs.stringForKey(PrefsKeys.KeyMailToOption) {
-                outputDict["defaultMailClient"] = chosenEmailClient as AnyObject?
-            }
-
-            // Report this flag as a `1` or `0` integer to allow it
-            // to be counted easily when reporting. Then, clear the
-            // flag to avoid it getting reported multiple times.
-            settings["crashedLastLaunch"] = self.crashedLastLaunch ? 1 : 0
-            self.crashedLastLaunch = false
-
-            outputDict["settings"] = settings
-            
-            let delegate = UIApplication.shared.delegate as? AppDelegate
-
-            outputDict["openTabCount"] = delegate?.tabManager.count ?? 0
-
-            var userInterfaceStyle = "unknown" // unknown implies that device is on pre-iOS 13
-            if #available(iOS 13.0, *) {
-                userInterfaceStyle = UITraitCollection.current.userInterfaceStyle == .dark ? "dark" : "light"
-            }
-            outputDict["systemTheme"] = userInterfaceStyle
-
-            return outputDict
-        }
-
-        legacyTelemetry.beforeSerializePing(pingType: MobileEventPingBuilder.PingType) { (inputDict) -> [String: Any?] in
-            var outputDict = inputDict
-
-            var settings: [String: String?] = inputDict["settings"] as? [String: String?] ?? [:]
-
-            if let windowBounds = UIApplication.shared.keyWindow?.bounds {
-                settings["windowWidth"] = String(describing: windowBounds.width)
-                settings["windowHeight"] = String(describing: windowBounds.height)
-            }
-
-            outputDict["settings"] = settings
-
-            // App Extension telemetry requires reading events stored in prefs, then clearing them from prefs.
-            if let extensionEvents = profile.prefs.arrayForKey(PrefsKeys.AppExtensionTelemetryEventArray) as? [[String: String]],
-                var pingEvents = outputDict["events"] as? [[Any?]] {
-                profile.prefs.removeObjectForKey(PrefsKeys.AppExtensionTelemetryEventArray)
-
-                extensionEvents.forEach { extensionEvent in
-                    let category = TelemetryWrapper.EventCategory.appExtensionAction.rawValue
-                    let newEvent = TelemetryEvent(category: category, method: extensionEvent["method"] ?? "", object: extensionEvent["object"] ?? "")
-                    pingEvents.append(newEvent.toArray())
-                }
-                outputDict["events"] = pingEvents
-            }
-
-            return outputDict
-        }
-
-        legacyTelemetry.add(pingBuilderType: CorePingBuilder.self)
-        legacyTelemetry.add(pingBuilderType: MobileEventPingBuilder.self)
     }
 
     @objc func uploadError(notification: NSNotification) {
@@ -269,6 +170,6 @@ extension TelemetryWrapper {
     }
 
     public static func recordEvent(category: EventCategory, method: EventMethod, object: EventObject, value: EventValue? = nil, extras: [String: Any]? = nil) {
-        Telemetry.default.recordEvent(category: category.rawValue, method: method.rawValue, object: object.rawValue, value: value?.rawValue ?? "", extras: extras)
+        // TODO: Decide to either implement this or switch to a different form of logging.
     }
 }
