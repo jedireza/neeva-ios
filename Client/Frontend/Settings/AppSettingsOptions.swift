@@ -118,7 +118,7 @@ class FeatureSwitchSetting: BoolSetting {
 
 class NeevaHostSetting: HiddenSetting {
     override var title: NSAttributedString? {
-        NSAttributedString(string: "Debug: Neeva server (currently \(NeevaConstants.appHost))", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
+        NSAttributedString(string: "Debug: Neeva appHost (\(NeevaConstants.appHost))", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
     }
     override func onClick(_ navigationController: UINavigationController?) {
         let alert = UIAlertController(title: "Enter custom Neeva server", message: "Default is alpha.neeva.co", preferredStyle: .alert)
@@ -145,7 +145,20 @@ class NeevaHostSetting: HiddenSetting {
         }
         navigationController!.present(alert, animated: true, completion: nil)
     }
-} 
+}
+
+class NeevaAdminLinkSetting: HiddenSetting {
+    override var title: NSAttributedString? {
+        NSAttributedString(string: "Debug: Neeva Admin", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
+    }
+    override func onClick(_ navigationController: UINavigationController?) {
+        navigationController?.dismiss(animated: true) {
+            if let url = URL(string: "\(NeevaConstants.appURL)admin") {
+                self.settings.settingsDelegate?.settingsOpenURLInNewTab(url)
+            }
+        }
+    }
+}
 
 class ForceCrashSetting: HiddenSetting {
     override var title: NSAttributedString? {
