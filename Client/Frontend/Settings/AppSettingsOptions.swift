@@ -245,28 +245,6 @@ class ShowEtpCoverSheet: HiddenSetting {
     }
 }
 
-class LeanplumStatus: HiddenSetting {
-    let lplumSetupType = LeanPlumClient.shared.lpSetupType()
-    override var title: NSAttributedString? {
-        return NSAttributedString(string: "LP Setup: \(lplumSetupType) | Started: \(LeanPlumClient.shared.isRunning()) | Device ID: \(LeanPlumClient.shared.leanplumDeviceId ?? "")", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
-    }
-    
-    override func onClick(_ navigationController: UINavigationController?) {
-        copyLeanplumDeviceIDAndPresentAlert(by: navigationController)
-    }
-    
-    func copyLeanplumDeviceIDAndPresentAlert(by navigationController: UINavigationController?) {
-        let alertTitle = Strings.SettingsCopyAppVersionAlertTitle
-        let alert = AlertController(title: alertTitle, message: nil, preferredStyle: .alert)
-        UIPasteboard.general.string = "\(LeanPlumClient.shared.leanplumDeviceId ?? "")"
-        navigationController?.topViewController?.present(alert, animated: true) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                alert.dismiss(animated: true)
-            }
-        }
-    }
-}
-
 ///Note: We have disabed it until we find best way to test newTabToolbarButton
 //class ToggleNewTabToolbarButton: HiddenSetting {
 //    override var title: NSAttributedString? {
@@ -580,7 +558,6 @@ class DefaultBrowserSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        LeanPlumClient.shared.track(event: .settingsSetAsDefaultBrowser)
         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
     }
 }

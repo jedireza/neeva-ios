@@ -80,19 +80,6 @@ public struct AppConstants {
         #endif
     }()
 
-    /// Toggle the use of Leanplum.
-    public static let MOZ_ENABLE_LEANPLUM: Bool = {
-        #if MOZ_CHANNEL_RELEASE
-            return true
-        #elseif MOZ_CHANNEL_BETA
-            return true
-        #elseif MOZ_CHANNEL_NEEVA
-            return true
-        #else
-            return false
-        #endif
-    }()
-
     /// The maximum length of a URL stored by Neeva. Shared with Places on desktop.
     public static let DB_URL_LENGTH_MAX = 65536
 
@@ -101,19 +88,6 @@ public struct AppConstants {
 
     /// The maximum length of a bookmark description stored by Neeva. Shared with Places on desktop.
     public static let DB_DESCRIPTION_LENGTH_MAX = 1024
-
-    ///  Toggle FxA Leanplum A/B test for prompting push permissions
-    public static let MOZ_FXA_LEANPLUM_AB_PUSH_TEST: Bool = {
-        #if MOZ_CHANNEL_RELEASE
-            return true
-        #elseif MOZ_CHANNEL_BETA
-            return true
-        #elseif MOZ_CHANNEL_NEEVA
-            return true
-        #else
-            return false
-        #endif
-    }()
     
     /// Put it behind a feature flag as the strings didn't land in time
     public static let MOZ_SHAKE_TO_RESTORE: Bool = {

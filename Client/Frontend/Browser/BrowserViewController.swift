@@ -61,8 +61,6 @@ class BrowserViewController: UIViewController {
     fileprivate var searchLoader: SearchLoader?
     let alertStackView = UIStackView() // All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
     var findInPageBar: FindInPageBar?
-    private var newTabUserResearch: NewTabUserResearch?
-    private var chronTabsUserResearch: ChronTabsUserResearch?
     lazy var mailtoLinkHandler = MailtoLinkHandler()
     var urlFromAnotherApp: UrlToOpenModel?
     var isCrashAlertShowing: Bool = false
@@ -470,14 +468,6 @@ class BrowserViewController: UIViewController {
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.appMenuBadgeUpdate), name: .FirefoxAccountStateChange, object: nil)
-        
-        // Setup New Tab user research for A/B testing
-        newTabUserResearch = NewTabUserResearch()
-        newTabUserResearch?.lpVariableObserver()
-        urlBar.newTabUserResearch = newTabUserResearch
-        // Setup chron tabs A/B test
-        chronTabsUserResearch = ChronTabsUserResearch()
-        chronTabsUserResearch?.lpVariableObserver()
     }
 
     fileprivate func setupConstraints() {
@@ -1101,7 +1091,6 @@ class BrowserViewController: UIViewController {
         }
 
         present(controller, animated: true, completion: nil)
-        LeanPlumClient.shared.track(event: .userSharedWebpage)
     }
 
     @objc fileprivate func openSettings() {
@@ -1275,7 +1264,6 @@ extension BrowserViewController: URLBarDelegate {
         
         var shouldShowChronTabs = false // default don't show
         let chronDebugValue = profile.prefs.boolForKey(PrefsKeys.ChronTabsPrefKey)
-        let chronLPValue = chronTabsUserResearch?.chronTabsState ?? false
         // Only allow chron tabs on iPhone
         if UIDevice.current.userInterfaceIdiom == .phone {
             // Respect debug mode chron tab value on
@@ -1285,9 +1273,6 @@ extension BrowserViewController: URLBarDelegate {
             } else if chronDebugValue == nil {
                 if AppConstants.CHRONOLOGICAL_TABS {
                     shouldShowChronTabs = true
-                } else {
-                    // Respect LP value
-                    shouldShowChronTabs = chronLPValue
                 }
             }
         }
@@ -1356,7 +1341,6 @@ extension BrowserViewController: URLBarDelegate {
         if let tab = self.tabManager.selectedTab {
             let trackingProtectionMenu = self.getTrackingSubMenu(for: tab)
             let title = String.localizedStringWithFormat(Strings.TPPageMenuTitle, tab.url?.host ?? "")
-            LeanPlumClient.shared.track(event: .trackingProtectionMenu)
             TelemetryWrapper.recordEvent(category: .action, method: .press, object: .trackingProtectionMenu)
             self.presentSheetWith(title: title, actions: trackingProtectionMenu, on: self, from: urlBar)
         }
@@ -1380,7 +1364,6 @@ extension BrowserViewController: URLBarDelegate {
         case .available:
             enableReaderMode()
             TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .readerModeOpenButton)
-            LeanPlumClient.shared.track(event: .useReaderView)
         case .active:
             disableReaderMode()
             TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .readerModeCloseButton)
@@ -1527,8 +1510,6 @@ extension BrowserViewController: URLBarDelegate {
 
             showNeevaHome(inline: false)
         }
-
-        LeanPlumClient.shared.track(event: .interactWithURLBar)
     }
 
     func urlBarDidLeaveOverlayMode(_ urlBar: URLBarView) {
@@ -2098,7 +2079,6 @@ extension BrowserViewController: ContextMenuHelperDelegate {
 
             let addTab = { (rURL: URL, isPrivate: Bool) in
                     let tab = self.tabManager.addTab(URLRequest(url: rURL as URL), afterTab: currentTab, isPrivate: isPrivate)
-                    LeanPlumClient.shared.track(event: .openedNewTab, withParameters: ["Source": "Long Press Context Menu"])
                     guard !self.topTabsVisible else {
                         return
                     }
@@ -2259,9 +2239,6 @@ extension BrowserViewController: ContextMenuHelperDelegate {
 
 extension BrowserViewController {
     @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
-        if error == nil {
-            LeanPlumClient.shared.track(event: .saveImage)
-        }
     }
 }
 

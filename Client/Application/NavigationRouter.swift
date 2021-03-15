@@ -92,7 +92,6 @@ enum NavigationPath {
             let text = components.valueForQuery("text")
             self = .text(text ?? "")
         } else if urlString.starts(with: "http:") ||  urlString.starts(with: "https:") {
-            LeanPlumClient.shared.track(event: .appOpenedAsDefaultBrowser)
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .url(webURL: url, isPrivate: isPrivate)
@@ -216,7 +215,6 @@ enum NavigationPath {
         } else {
             bvc.openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
         }
-        LeanPlumClient.shared.track(event: .openedNewTab, withParameters: ["Source": "External App or Extension"])
     }
     
     private static func handleWidgetURL(url: URL?, uuid: String, with bvc: BrowserViewController) {
@@ -225,7 +223,6 @@ enum NavigationPath {
         } else {
             bvc.openBlankNewTab(focusLocationField: true, isPrivate: false)
         }
-        LeanPlumClient.shared.track(event: .openedNewTab, withParameters: ["Source": "External App or Extension"])
     }
 
     private static func handleText(text: String, with bvc: BrowserViewController) {

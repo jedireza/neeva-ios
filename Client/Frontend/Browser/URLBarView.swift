@@ -80,7 +80,6 @@ class URLBarView: UIView {
 
     var toolbarIsShowing = false
     var topTabsIsShowing = false
-    var newTabUserResearch: NewTabUserResearch?
 
     fileprivate var locationTextField: ToolbarTextField?
 

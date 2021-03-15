@@ -128,12 +128,10 @@ class DefaultBrowserCard: UIView {
     @objc private func dismissCard() {
         self.dismissClosure?()
         UserDefaults.standard.set(true, forKey: "DidDismissDefaultBrowserCard")
-        LeanPlumClient.shared.track(event: .dismissDefaultBrowserCard)
     }
     
     @objc private func showOnboarding() {
         BrowserViewController.foregroundBVC().presentDBOnboardingViewController(true)
-        LeanPlumClient.shared.track(event: .goToSettingsDefaultBrowserCard)
         
         // Set default browser onboarding did show to true so it will not show again after user clicks this button
         UserDefaults.standard.set(true, forKey: PrefsKeys.KeyDidShowDefaultBrowserOnboarding)
