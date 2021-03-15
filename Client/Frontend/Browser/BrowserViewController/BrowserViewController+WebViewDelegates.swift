@@ -483,17 +483,8 @@ extension BrowserViewController: WKNavigationDelegate {
                 webView.customUserAgent = UserAgent.getUserAgent(domain: url.baseDomain ?? "")
             }
 
-            // WKWebView ignores changes to the provided request, so we must cancel it and
-            // make a new one with our desired header
+            // Neeva incognito logic
             var request = navigationAction.request
-            let deviceTypeHeader = NeevaConstants.Header.deviceType
-            if url.host == NeevaConstants.appHost, request.httpMethod == "GET", request.value(forHTTPHeaderField: deviceTypeHeader.name) != deviceTypeHeader.value {
-                decisionHandler(.cancel)
-                request.setValue(deviceTypeHeader.value, forHTTPHeaderField: deviceTypeHeader.name)
-                webView.load(request)
-                return
-            }
-
             if url.host == NeevaConstants.appHost, request.httpMethod == "GET", tab.isPrivate, !url.path.starts(with: "/incognito") {
                 let cookies = webView.configuration.websiteDataStore.httpCookieStore
                 cookies.getAllCookies { (cookies) in

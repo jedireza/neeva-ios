@@ -83,6 +83,10 @@ class TabManager: NSObject {
             configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         }
         configuration.setURLSchemeHandler(InternalSchemeHandler(), forURLScheme: InternalURL.scheme)
+
+        // Ensure that Neeva cookies are set; consumed by the Neeva web-app
+        Tab.ensureNeevaCookies(cookieStore: configuration.websiteDataStore.httpCookieStore)
+
         return configuration
     }
 
