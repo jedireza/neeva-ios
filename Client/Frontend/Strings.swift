@@ -22,6 +22,14 @@ extension Strings {
     public static let OpenSettingsString = MZLocalizedString("Open Settings", comment: "See http://mzl.la/1G7uHo7")
 }
 
+// Activities on Share Sheet.
+extension Strings {
+    public static let PinToTopSitesTitleActivity = MZLocalizedString("Pin to Top Sites", comment: "Pin to Top Sites no Share activity title")
+    public static let UnpinFromTopSitesTitleActivity = MZLocalizedString("Unpin from Top Sites", comment: "Unpin from Top Sites Share activity title")
+    public static let ShowReadingModeTitleActivity = MZLocalizedString("Show Reading Mode", comment: "Show Reading Mode on Share activity title")
+    public static let HideReadingModeTitleActivity = MZLocalizedString("Hide Reading Mode", comment: "Hide Reading Mode on Share activity title")
+}
+
 // Table date section titles.
 extension Strings {
     public static let TableDateSectionTitleToday = MZLocalizedString("Today", comment: "History tableview section header")
@@ -537,7 +545,7 @@ extension Strings {
     public static let AppMenuNewPrivateTabTitleString = MZLocalizedString("Menu.NewPrivateTabAction.Title", tableName: "Menu", value: "Open New Private Tab", comment: "Label for the button, displayed in the menu, used to open a new private tab.")
     public static let AppMenuAddBookmarkTitleString = MZLocalizedString("Menu.AddBookmarkAction.Title", tableName: "Menu", value: "Bookmark This Page", comment: "Label for the button, displayed in the menu, used to create a bookmark for the current website.")
     public static let AppMenuRemoveBookmarkTitleString = MZLocalizedString("Menu.RemoveBookmarkAction.Title", tableName: "Menu", value: "Remove Bookmark", comment: "Label for the button, displayed in the menu, used to delete an existing bookmark for the current website.")
-    public static let AppMenuFindInPageTitleString = MZLocalizedString("Menu.FindInPageAction.Title", tableName: "Menu", value: "Find in Page", comment: "Label for the button, displayed in the menu, used to open the toolbar to search for text within the current page.")
+    public static let AppMenuFindInPageTitleString = MZLocalizedString("Menu.FindInPageAction.Title", tableName: "Menu", value: "Find on Page", comment: "Label for the button, displayed in the menu, used to open the toolbar to search for text within the current page.")
     public static let AppMenuViewDesktopSiteTitleString = MZLocalizedString("Menu.ViewDekstopSiteAction.Title", tableName: "Menu", value: "Request Desktop Site", comment: "Label for the button, displayed in the menu, used to request the desktop version of the current website.")
     public static let AppMenuViewMobileSiteTitleString = MZLocalizedString("Menu.ViewMobileSiteAction.Title", tableName: "Menu", value: "Request Mobile Site", comment: "Label for the button, displayed in the menu, used to request the mobile version of the current website.")
     public static let AppMenuTranslatePageTitleString = MZLocalizedString("Menu.TranslatePageAction.Title", tableName: "Menu", value: "Translate Page", comment: "Label for the button, displayed in the menu, used to translate the current page.")

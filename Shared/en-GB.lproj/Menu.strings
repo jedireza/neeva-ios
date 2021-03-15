@@ -11,7 +11,7 @@
 "Menu.CopyAddress.Title" = "Copy Address";
 
 /* Label for the button, displayed in the menu, used to open the toolbar to search for text within the current page. */
-"Menu.FindInPageAction.Title" = "Find in Page";
+"Menu.FindInPageAction.Title" = "Find on Page";
 
 /* Label for the button, displayed in the menu, used to Reload the webpage */
 "Menu.Library.Reload" = "Reload";

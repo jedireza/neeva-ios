@@ -1072,7 +1072,76 @@ class BrowserViewController: UIViewController {
     func presentActivityViewController(_ url: URL, tab: Tab? = nil, sourceView: UIView?, sourceRect: CGRect, arrowDirection: UIPopoverArrowDirection) {
         let helper = ShareExtensionHelper(url: url, tab: tab)
 
-        let controller = helper.createActivityViewController({ [unowned self] completed, _ in
+        var appActivities = [UIActivity]()
+
+        let findInPageActivity = FindOnPageActivity() { [unowned self] in
+            self.updateFindInPageVisibility(visible: true)
+        }
+        appActivities.append(findInPageActivity)
+
+        let deferredSites = self.profile.history.isPinnedTopSite(tab?.url?.absoluteString ?? "")
+
+        let isPinned = deferredSites.value.successValue ?? false
+
+        var topSitesActivity:PinToTopSitesActivity
+        if isPinned == false {
+            topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
+                guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
+
+                sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
+                    guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
+                        return succeed()
+                    }
+                    return self.profile.history.addPinnedTopSite(site)
+                }.uponQueue(.main) { result in
+                    if result.isSuccess {
+                        SimpleToast().showAlertWithText(Strings.AppMenuAddPinToTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
+                    }
+                }
+            }
+        } else {
+            topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
+                guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
+
+                sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
+                    guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
+                        return succeed()
+                    }
+
+                    return self.profile.history.removeFromPinnedTopSites(site)
+                }.uponQueue(.main) { result in
+                    if result.isSuccess {
+                        SimpleToast().showAlertWithText(Strings.AppMenuRemovePinFromTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
+                    }
+                }
+            }
+        }
+        appActivities.append(topSitesActivity)
+
+        if let tab = tabManager.selectedTab, let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode, readerMode.state != .unavailable {
+            let readingModeActivity = ReadingModeActivity(readerModeState: readerMode.state) { [unowned self] in
+                switch readerMode.state {
+                case .available:
+                    enableReaderMode()
+                case .active:
+                    disableReaderMode()
+                case .unavailable:
+                    break
+                }
+            }
+            appActivities.append(readingModeActivity)
+        }
+
+
+        let requestDesktopSiteActivity = RequestDesktopSiteActivity(tab: tab) { [weak tab] in
+            tab?.toggleChangeUserAgent()
+            Tab.ChangeUserAgent.updateDomainList(forUrl: url, isChangedUA: tab?.changedUserAgent ?? false, isPrivate: tab?.isPrivate ?? false)
+        }
+        appActivities.append(requestDesktopSiteActivity)
+
+        
+
+        let controller = helper.createActivityViewController(appActivities: appActivities) { [unowned self] completed, _ in
             // After dismissing, check to see if there were any prompts we queued up
             self.showQueuedAlertIfAvailable()
 
@@ -1081,7 +1150,7 @@ class BrowserViewController: UIViewController {
             // invoked on iOS 10. See Bug 1297768 for additional details.
             self.displayedPopoverController = nil
             self.updateDisplayedPopoverProperties = nil
-        })
+        }
 
         if let popoverPresentationController = controller.popoverPresentationController {
             popoverPresentationController.sourceView = sourceView

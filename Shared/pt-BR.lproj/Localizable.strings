@@ -1716,3 +1716,14 @@
 /* Tile title for YouTube */
 "YouTube" = "YouTube";
 
+/* Pin to Top Sites no Share activity title */
+"Pin to Top Sites" = "Fixar nos Sites preferidos";
+
+/* Unpin from Top Sites Share activity title */
+"Unpin from Top Sites" = "Remover dos Sites preferidos";
+
+/* Show Reading Mode on Share activity title */
+"Show Reading Mode" = "Mostrar modo de leitura";
+
+/* Hide Reading Mode on Share activity title */
+"Hide Reading Mode" = "Ocultar modo de leitura";
