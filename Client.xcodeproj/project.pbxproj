@@ -6004,8 +6004,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/neevaco/neeva-ios-support";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = revision;
+				revision = aebfd0ba9c6b875c2a3c95a9993f2f04e39a3cb3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
