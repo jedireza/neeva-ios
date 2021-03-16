@@ -473,7 +473,9 @@ extension BrowserViewController: WKNavigationDelegate {
 
             pendingRequests[url.absoluteString] = navigationAction.request
 
-            if tab.changedUserAgent {
+            if url.host == NeevaConstants.appHost {
+               webView.customUserAgent = UserAgent.neevaAppUserAgent()
+            } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(domain: url.baseDomain ?? "")
                 webView.customUserAgent = platformSpecificUserAgent
             } else {

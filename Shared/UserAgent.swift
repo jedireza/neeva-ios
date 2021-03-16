@@ -48,16 +48,16 @@ open class UserAgent {
         }
     }
 
+    public static func neevaAppUserAgent() -> String {
+        return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) NeevaBrowserIOS/\(AppInfo.appVersion) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15"
+    }
+
     public static func getUserAgent(domain: String, platform: UserAgentPlatform) -> String {
         switch platform {
         case .Desktop:
             return desktopUserAgent()
         case .Mobile:
-            if let customUA = CustomUserAgentConstant.mobileUserAgent[domain] {
-                return customUA
-            } else {
-                return mobileUserAgent()
-            }
+            return mobileUserAgent()
         }
     }
 
@@ -75,15 +75,6 @@ open class UserAgent {
 public enum UserAgentPlatform {
     case Desktop
     case Mobile
-}
-
-public struct CustomUserAgentConstant {
-    private static let defaultMobileUA = UserAgentBuilder.defaultMobileUserAgent().userAgent()
-    private static let customDesktopUA = UserAgentBuilder.defaultDesktopUserAgent().clone(extensions: "Version/\(AppInfo.appVersion) \(UserAgent.uaBitSafari)")
-    public static let mobileUserAgent = [
-        "paypal.com": defaultMobileUA,
-        "yahoo.com": defaultMobileUA ]
-
 }
 
 public struct UserAgentBuilder {
@@ -119,6 +110,10 @@ public struct UserAgentBuilder {
 
     public static func defaultMobileUserAgent() -> UserAgentBuilder {
         return UserAgentBuilder(product: UserAgent.product, systemInfo: "(\(UIDevice.current.model); CPU OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)", platform: UserAgent.platform, platformDetails: UserAgent.platformDetails, extensions: "FxiOS/\(AppInfo.appVersion)  \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
+    }
+
+    public static func neevaMobileUserAgent() -> UserAgentBuilder {
+        return UserAgentBuilder(product: UserAgent.product, systemInfo: "(\(UIDevice.current.model); CPU OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)", platform: UserAgent.platform, platformDetails: UserAgent.platformDetails, extensions: "NeevaBrowserIOS/\(AppInfo.appVersion)  \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
     }
 
     public static func defaultDesktopUserAgent() -> UserAgentBuilder {

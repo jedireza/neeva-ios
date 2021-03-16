@@ -467,11 +467,6 @@ class Tab: NSObject {
                 return webView.loadFileURL(url, allowingReadAccessTo: url)
             }
 
-            // If this request is targeting the Neeva web-app, ensure our cookies are set
-            if let url = request.url, url.host == NeevaConstants.appHost {
-                Tab.ensureNeevaCookies(cookieStore: webView.configuration.websiteDataStore.httpCookieStore)
-            }
-
             return webView.load(request)
         }
         return nil
@@ -628,20 +623,6 @@ class Tab: NSObject {
         }
         
         FaviconFetcher.downloadFaviconAndCache(imageURL: currentFaviconUrl, imageKey: baseDomain)
-    }
-
-    // Set cookie to identify device type to Neeva web application
-    static func ensureNeevaCookies(cookieStore: WKHTTPCookieStore) {
-        guard let deviceTypeCookie = HTTPCookie(properties: [
-            .domain: NeevaConstants.appHost,
-            .path: "/",
-            .name: "DeviceType", // TODO(seth) reference value from NeevaConstants once #23 lands
-            .value: "ios-browser", // TODO(seth) reference value from NeevaConstants once #23 lands
-            .secure: "TRUE",
-        ]) else {
-            return
-        }
-        cookieStore.setCookie(deviceTypeCookie)
     }
 }
 
