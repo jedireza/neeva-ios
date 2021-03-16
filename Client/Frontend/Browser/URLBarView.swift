@@ -37,6 +37,7 @@ protocol URLBarDelegate: AnyObject {
     func urlBarDidLongPressLocation(_ urlBar: URLBarView)
     func urlBarDidPressQRButton(_ urlBar: URLBarView)
     func urlBarPageOptionsMenu(_ urlBar: URLBarView, from button: UIButton) -> UIMenu?
+    func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton)
     func urlBarDidTapShield(_ urlBar: URLBarView)
     func urlBarLocationAccessibilityActions(_ urlBar: URLBarView) -> [UIAccessibilityCustomAction]?
     func urlBarDidPressScrollToTop(_ urlBar: URLBarView)
@@ -150,7 +151,7 @@ class URLBarView: UIView {
         return button
     }()
 
-    var appMenuButton = ToolbarButton()
+    var spacesMenuButton = ToolbarButton()
     var libraryButton = ToolbarButton()
     var addNewTabButton = ToolbarButton()
 
@@ -163,7 +164,7 @@ class URLBarView: UIView {
         return backButton
     }()
 
-    lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.libraryButton, self.appMenuButton, self.addNewTabButton,  self.forwardButton, self.backButton, self.shareButton]
+    lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.libraryButton, self.spacesMenuButton, self.addNewTabButton,  self.forwardButton, self.backButton, self.shareButton]
 
     var currentURL: URL? {
         get {
@@ -201,7 +202,7 @@ class URLBarView: UIView {
         locationContainer.addSubview(locationView)
 
         [scrollToTopButton, line, tabsButton, progressBar, cancelButton, showQRScannerButton,
-         libraryButton, appMenuButton, addNewTabButton, forwardButton, backButton, shareButton, locationContainer].forEach {
+         libraryButton, spacesMenuButton, addNewTabButton, forwardButton, backButton, shareButton, locationContainer].forEach {
             addSubview($0)
         }
 
@@ -263,13 +264,13 @@ class URLBarView: UIView {
         }
 
         libraryButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.appMenuButton.snp.leading)
+            make.trailing.equalTo(self.spacesMenuButton.snp.leading)
             make.centerY.equalTo(self)
             make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
 
-        appMenuButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.Padding)
+        spacesMenuButton.snp.makeConstraints { make in
+            make.trailing.equalTo(self.spacesMenuButton.snp.leading)
             make.centerY.equalTo(self)
             make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
@@ -281,7 +282,7 @@ class URLBarView: UIView {
         }
 
         tabsButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.appMenuButton.snp.leading)
+            make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.Padding)
             make.centerY.equalTo(self)
             make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
@@ -293,8 +294,8 @@ class URLBarView: UIView {
         }
         
         privateModeBadge.layout(onButton: tabsButton)
-        appMenuBadge.layout(onButton: appMenuButton)
-        warningMenuBadge.layout(onButton: appMenuButton)
+        appMenuBadge.layout(onButton: spacesMenuButton)
+        warningMenuBadge.layout(onButton: spacesMenuButton)
     }
 
     override func updateConstraints() {
@@ -500,7 +501,7 @@ class URLBarView: UIView {
         showQRScannerButton.isHidden = false
         progressBar.isHidden = false
         addNewTabButton.isHidden = !toolbarIsShowing || !topTabsIsShowing
-        appMenuButton.isHidden = !toolbarIsShowing
+        spacesMenuButton.isHidden = !toolbarIsShowing
         libraryButton.isHidden = !toolbarIsShowing || !topTabsIsShowing
         forwardButton.isHidden = !toolbarIsShowing
         backButton.isHidden = !toolbarIsShowing
@@ -514,7 +515,7 @@ class URLBarView: UIView {
         showQRScannerButton.alpha = inOverlayMode ? 1 : 0
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
         tabsButton.alpha = inOverlayMode ? 0 : 1
-        appMenuButton.alpha = inOverlayMode ? 0 : 1
+        spacesMenuButton.alpha = inOverlayMode ? 0 : 1
         libraryButton.alpha = inOverlayMode ? 0 : 1
         addNewTabButton.alpha = inOverlayMode ? 0 : 1
         forwardButton.alpha = inOverlayMode ? 0 : 1
@@ -546,7 +547,7 @@ class URLBarView: UIView {
         showQRScannerButton.isHidden = !inOverlayMode
         progressBar.isHidden = inOverlayMode
         addNewTabButton.isHidden = !toolbarIsShowing || inOverlayMode
-        appMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
+        spacesMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
         libraryButton.isHidden = !toolbarIsShowing || inOverlayMode || !topTabsIsShowing
         forwardButton.isHidden = !toolbarIsShowing || inOverlayMode
         backButton.isHidden = !toolbarIsShowing || inOverlayMode
@@ -638,7 +639,7 @@ extension URLBarView: TabToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, shareButton, locationView, tabsButton, libraryButton, appMenuButton, addNewTabButton, progressBar]
+                    return [backButton, forwardButton, shareButton, locationView, tabsButton, libraryButton, spacesMenuButton, addNewTabButton, progressBar]
                 } else {
                     return [locationView, progressBar]
                 }
@@ -651,6 +652,7 @@ extension URLBarView: TabToolbarProtocol {
 }
 
 extension URLBarView: TabLocationViewDelegate {
+
     func tabLocationViewDidLongPressReaderMode(_ tabLocationView: TabLocationView) -> Bool {
         return delegate?.urlBarDidLongPressReaderMode(self) ?? false
     }
@@ -694,11 +696,11 @@ extension URLBarView: TabLocationViewDelegate {
     func tabLocationViewDidTapReaderMode(_ tabLocationView: TabLocationView) {
         delegate?.urlBarDidPressReaderMode(self)
     }
-
-    func tabLocationViewPageOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton) -> UIMenu? {
-        delegate?.urlBarPageOptionsMenu(self, from: tabLocationView.pageOptionsButton)
+    
+    func tabLocationViewNeevaOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton){
+            delegate?.urlBarNeevaMenu(self, from: tabLocationView.neevaMenuButton)
     }
-
+    
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]? {
         return delegate?.urlBarLocationAccessibilityActions(self)
     }

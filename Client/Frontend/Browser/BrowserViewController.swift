@@ -14,6 +14,8 @@ import MobileCoreServices
 import SDWebImage
 import SwiftyJSON
 import Sentry
+import SwiftUI
+import NeevaSupport
 
 private let KVOs: [KVOConstants] = [
     .estimatedProgress,
@@ -1405,7 +1407,50 @@ extension BrowserViewController: URLBarDelegate {
                             )
                         )
     }
+    
+    func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton){
+        
+        let host = PopOverNeevaMenuViewController(
+            delegate: self,
+            source: button,
+            rootView: NeevaMenuView())
+          
+        //Fix autolayout sizing
+        host.view.backgroundColor = UIColor(Color.menuSecondary)
+        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 850, height: 850))
+        present(
+            host,
+            animated: true,
+            completion: nil)
+        
+    }
 
+    func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions){
+        if let tab = self.tabManager.selectedTab {
+            switch(page){
+            case .home:
+                let page = NewTabAccessors.getHomePage(self.profile.prefs)
+                if page == .neevaHome {
+                    tab.loadRequest(URLRequest(url: NeevaConstants.appURL))
+                } else if page == .homePage, let homePageURL = HomeButtonHomePageAccessors.getHomePage(self.profile.prefs) {
+                    tab.loadRequest(PrivilegedRequest(url: homePageURL) as URLRequest)
+                } else if let homePanelURL = page.url {
+                    tab.loadRequest(PrivilegedRequest(url: homePanelURL) as URLRequest)
+                }
+                break
+            case .privacyPolicy:
+                tab.loadRequest(PrivilegedRequest(url: URL(string:NeevaConstants.appPrivacyURL)!) as URLRequest)
+                break
+            case .helpCenter:
+                tab.loadRequest(PrivilegedRequest(url: URL(string:NeevaConstants.appHelpCenterURL)!) as URLRequest)
+                break
+            default:
+                return
+            }
+            
+        }
+    }
+    
     func urlBarDidTapShield(_ urlBar: URLBarView) {
         if let tab = self.tabManager.selectedTab {
             let trackingProtectionMenu = self.getTrackingSubMenu(for: tab)

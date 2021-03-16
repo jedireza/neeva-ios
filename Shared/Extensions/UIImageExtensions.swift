@@ -50,6 +50,10 @@ extension UIImage {
     public static func templateImageNamed(_ name: String) -> UIImage? {
         return UIImage(named: name)?.withRenderingMode(.alwaysTemplate)
     }
+    
+    public static func originalImageNamed(_ name: String) -> UIImage? {
+        return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
+    }
 
     // Uses compositor blending to apply color to an image.
     public func tinted(withColor: UIColor) -> UIImage {

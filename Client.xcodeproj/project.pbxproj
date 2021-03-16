@@ -676,11 +676,19 @@
 		EBE7635920ADCB7600E27F2D /* SendTo.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EBE7634F20ADCB7500E27F2D /* SendTo.xcassets */; };
 		EBF47E701F7979DF00899189 /* TelemetryWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF47E6F1F7979DF00899189 /* TelemetryWrapper.swift */; };
 		EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */; };
-		F016ABE425ED5C400007270F /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F016ABE325ED5C400007270F /* NeevaSupport */; };
-		F016AC4B25ED62460007270F /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F016AC4A25ED62460007270F /* NeevaSupport */; };
+		F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */; };
+		F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */; };
+		F0405D1025FFCA5200A0A3B2 /* NeevaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */; };
+		F0405D2225FFCA5A00A0A3B2 /* NeevaUIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D1F25FFCA5A00A0A3B2 /* NeevaUIConstants.swift */; };
+		F0405D2325FFCA5A00A0A3B2 /* neeva.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F0405D2025FFCA5A00A0A3B2 /* neeva.xcassets */; };
+		F0405D2425FFCA5A00A0A3B2 /* NeevaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D2125FFCA5A00A0A3B2 /* NeevaExtensions.swift */; };
+		F0405D3425FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D3325FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift */; };
 		F056681725E9509E0082BB61 /* AddToSpaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056681625E9509E0082BB61 /* AddToSpaceViewController.swift */; };
 		F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */; };
 		F072DD3825E935B4006C2665 /* NeevaSearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */; };
+		F08B27CD25FCFBAE0037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B27CC25FCFBAE0037D49B /* NeevaSupport */; };
+		F08B27EE25FD097F0037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B27ED25FD097F0037D49B /* NeevaSupport */; };
+		F08B294E25FDDFC40037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B294D25FDDFC40037D49B /* NeevaSupport */; };
 		F0ACC2AC25E8C7FB0024991B /* NeevaDev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */; };
 		F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
@@ -1683,6 +1691,13 @@
 		EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+FindInPage.swift"; sourceTree = "<group>"; };
 		EC724CF0B0021AE49EDC95DC /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		EF0444EEBEA6A45A3E0F654C /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
+		F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuButtonView.swift; sourceTree = "<group>"; };
+		F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuRowButtonView.swift; sourceTree = "<group>"; };
+		F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuView.swift; sourceTree = "<group>"; };
+		F0405D1F25FFCA5A00A0A3B2 /* NeevaUIConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NeevaUIConstants.swift; path = NeevaBase/NeevaUI/NeevaUIConstants.swift; sourceTree = SOURCE_ROOT; };
+		F0405D2025FFCA5A00A0A3B2 /* neeva.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = neeva.xcassets; path = NeevaBase/NeevaUI/neeva.xcassets; sourceTree = SOURCE_ROOT; };
+		F0405D2125FFCA5A00A0A3B2 /* NeevaExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NeevaExtensions.swift; path = NeevaBase/NeevaUI/NeevaExtensions.swift; sourceTree = SOURCE_ROOT; };
+		F0405D3325FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopOverNeevaMenuViewController.swift; sourceTree = "<group>"; };
 		F056404C95CB2126721F3CC5 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/ErrorPages.strings"; sourceTree = "<group>"; };
 		F056681625E9509E0082BB61 /* AddToSpaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToSpaceViewController.swift; sourceTree = "<group>"; };
 		F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuHelpers.swift; sourceTree = "<group>"; };
@@ -1748,8 +1763,8 @@
 				0B8E0FF41A932BD500161DC3 /* ImageIO.framework in Frameworks */,
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
-				F016ABE425ED5C400007270F /* NeevaSupport in Frameworks */,
 				7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */,
+				F08B294E25FDDFC40037D49B /* NeevaSupport in Frameworks */,
 				7B604F9B1C4950F2006EEEC3 /* SDWebImage.framework in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
 				3B4988CE1E42B01800A12FDA /* SwiftyJSON.framework in Frameworks */,
@@ -1856,8 +1871,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F08B27EE25FD097F0037D49B /* NeevaSupport in Frameworks */,
 				F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */,
-				F016AC4B25ED62460007270F /* NeevaSupport in Frameworks */,
 				C877039625222FDC006E38EB /* Shared.framework in Frameworks */,
 				3BA9A0321D2C2C0500BD418C /* Fuzi.framework in Frameworks */,
 				0B75AEA91AC20FB20015E5DC /* ImageIO.framework in Frameworks */,
@@ -3057,6 +3072,60 @@
 			path = InternalSchemeHandler;
 			sourceTree = "<group>";
 		};
+		F0405D0525FFC9D400A0A3B2 /* NeevaBase */ = {
+			isa = PBXGroup;
+			children = (
+				F0405D0625FFC9E900A0A3B2 /* NeevaControllers */,
+				F0405D0725FFC9F100A0A3B2 /* NeevaUI */,
+			);
+			path = NeevaBase;
+			sourceTree = "<group>";
+		};
+		F0405D0625FFC9E900A0A3B2 /* NeevaControllers */ = {
+			isa = PBXGroup;
+			children = (
+				F0405D0825FFCA1200A0A3B2 /* Menu */,
+			);
+			path = NeevaControllers;
+			sourceTree = "<group>";
+		};
+		F0405D0725FFC9F100A0A3B2 /* NeevaUI */ = {
+			isa = PBXGroup;
+			children = (
+				F0405D0925FFCA1800A0A3B2 /* Menu */,
+			);
+			path = NeevaUI;
+			sourceTree = "<group>";
+		};
+		F0405D0825FFCA1200A0A3B2 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				F0405D3325FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		F0405D0925FFCA1800A0A3B2 /* Menu */ = {
+			isa = PBXGroup;
+			children = (
+				F0405D2025FFCA5A00A0A3B2 /* neeva.xcassets */,
+				F0405D2125FFCA5A00A0A3B2 /* NeevaExtensions.swift */,
+				F0405D1F25FFCA5A00A0A3B2 /* NeevaUIConstants.swift */,
+				F0405D0A25FFCA3900A0A3B2 /* Views */,
+			);
+			path = Menu;
+			sourceTree = "<group>";
+		};
+		F0405D0A25FFCA3900A0A3B2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */,
+				F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */,
+				F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		F84B21B51A090F8100AAB793 = {
 			isa = PBXGroup;
 			children = (
@@ -3064,6 +3133,7 @@
 				E6C191D51E38F7B7000A213B /* Cartfile.resolved */,
 				F84B21C01A090F8100AAB793 /* Client */,
 				F84B21D61A090F8100AAB793 /* ClientTests */,
+				F0405D0525FFC9D400A0A3B2 /* NeevaBase */,
 				EBB894E9219398E500EB91A0 /* content-blocker-lib-ios */,
 				F8708D1E1A0970990051AB07 /* Extensions */,
 				047F9B2A24E1FE1C00CD7DF7 /* WidgetKit */,
@@ -3598,7 +3668,8 @@
 			);
 			name = Client;
 			packageProductDependencies = (
-				F016ABE325ED5C400007270F /* NeevaSupport */,
+				F08B27CC25FCFBAE0037D49B /* NeevaSupport */,
+				F08B294D25FDDFC40037D49B /* NeevaSupport */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -3641,7 +3712,7 @@
 			);
 			name = ShareTo;
 			packageProductDependencies = (
-				F016AC4A25ED62460007270F /* NeevaSupport */,
+				F08B27ED25FD097F0037D49B /* NeevaSupport */,
 			);
 			productName = ShareToFirefox;
 			productReference = F84B22491A0920C600AAB793 /* ShareTo.appex */;
@@ -3863,7 +3934,7 @@
 			);
 			mainGroup = F84B21B51A090F8100AAB793;
 			packageReferences = (
-				F016ABE225ED5C400007270F /* XCRemoteSwiftPackageReference "neeva-ios-support" */,
+				F08B294C25FDDFC40037D49B /* XCRemoteSwiftPackageReference "neeva-ios-support" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -4053,6 +4124,7 @@
 				E4B7B7861A793CF20022C5E0 /* FiraSans-UltraLight.ttf in Resources */,
 				2F44FB2C1A9D5D8500FD20CC /* Library.xcassets in Resources */,
 				E4B7B77D1A793CF20022C5E0 /* FiraSans-Regular.ttf in Resources */,
+				F0405D2325FFCA5A00A0A3B2 /* neeva.xcassets in Resources */,
 				E4B7B7791A793CF20022C5E0 /* FiraSans-Light.ttf in Resources */,
 				D0FCF8081FE4772D004A7995 /* MainFrameAtDocumentStart.js in Resources */,
 				EBC9D38722D4D56F0011D881 /* disconnect-block-cookies-content.json in Resources */,
@@ -4544,6 +4616,7 @@
 				D0FCF7F51FE45842004A7995 /* UserScriptManager.swift in Sources */,
 				CA8226F324C11DB7008A6F38 /* LoginListTableViewCell.swift in Sources */,
 				436715892488216A006D1D4E /* TabTableViewCell.swift in Sources */,
+				F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */,
 				E4A960061ABB9C450069AD6F /* ReaderModeUtils.swift in Sources */,
 				048B4C8324A53F26001B56E8 /* ButtonWithSublabel.swift in Sources */,
 				435D660323D793DF0046EFA2 /* UpdateModel.swift in Sources */,
@@ -4564,6 +4637,7 @@
 				EBA3B2CD2268F27500728BDB /* PhotonActionSheetWidgets.swift in Sources */,
 				122DE39025FA4FF100599A0D /* ReadingModeActivity.swift in Sources */,
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
+				F0405D3425FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift in Sources */,
 				E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */,
 				048B4C8924A53F81001B56E8 /* UIButtonExtensions.swift in Sources */,
 				122DE32325F96FE100599A0D /* FindOnPageActivity.swift in Sources */,
@@ -4622,6 +4696,7 @@
 				D31CF65C1CC1959A001D0BD0 /* PrivilegedRequest.swift in Sources */,
 				D8D33A7D1FBD080300A20A28 /* SnapKitExtensions.swift in Sources */,
 				E650755C1E37F747006961AC /* Swizzling.m in Sources */,
+				F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */,
 				74821FC51DB56A2500EEEA72 /* OpenWithSettingsViewController.swift in Sources */,
 				D3B6923D1B9F9444004B87A4 /* FindInPageBar.swift in Sources */,
 				2F44FC721A9E840300FD20CC /* SettingsNavigationController.swift in Sources */,
@@ -4707,7 +4782,9 @@
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
 				2F44FCC51A9E85E900FD20CC /* SettingsTableViewController.swift in Sources */,
 				A9072B801D07B34100459960 /* NoImageModeHelper.swift in Sources */,
+				F0405D1025FFCA5200A0A3B2 /* NeevaMenuView.swift in Sources */,
 				D8AA923421A602DC002605C0 /* HomePageSettingViewController.swift in Sources */,
+				F0405D2225FFCA5A00A0A3B2 /* NeevaUIConstants.swift in Sources */,
 				EBC4869D2195F58300CDA48D /* ErrorPageHelper.swift in Sources */,
 				E660BDD91BB06521009AC090 /* TabsButton.swift in Sources */,
 				D5AF961B25D1FCAF006ACA6A /* WidgetIntents.intentdefinition in Sources */,
@@ -4723,6 +4800,7 @@
 				D3FEC38D1AC4B42F00494F45 /* AutocompleteTextField.swift in Sources */,
 				EBE26B57220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift in Sources */,
 				E68AEDB01B18F81A00133D99 /* SwipeAnimator.swift in Sources */,
+				F0405D2425FFCA5A00A0A3B2 /* NeevaExtensions.swift in Sources */,
 				3BF56D271CDBBE1F00AC4D75 /* SimpleToast.swift in Sources */,
 				EBB89504219398E500EB91A0 /* TrackingProtectionPageStats.swift in Sources */,
 				D31F95E91AC226CB005C9F3B /* ScreenshotHelper.swift in Sources */,
@@ -5911,22 +5989,33 @@
 				kind = branch;
 			};
 		};
+		F08B294C25FDDFC40037D49B /* XCRemoteSwiftPackageReference "neeva-ios-support" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/neevaco/neeva-ios-support";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F016ABE325ED5C400007270F /* NeevaSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F016ABE225ED5C400007270F /* XCRemoteSwiftPackageReference "neeva-ios-support" */;
-			productName = NeevaSupport;
-		};
 		F016AC1025ED5F9D0007270F /* NeevaSupport */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F016ABE225ED5C400007270F /* XCRemoteSwiftPackageReference "neeva-ios-support" */;
 			productName = NeevaSupport;
 		};
-		F016AC4A25ED62460007270F /* NeevaSupport */ = {
+		F08B27CC25FCFBAE0037D49B /* NeevaSupport */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F016ABE225ED5C400007270F /* XCRemoteSwiftPackageReference "neeva-ios-support" */;
+			productName = NeevaSupport;
+		};
+		F08B27ED25FD097F0037D49B /* NeevaSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NeevaSupport;
+		};
+		F08B294D25FDDFC40037D49B /* NeevaSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F08B294C25FDDFC40037D49B /* XCRemoteSwiftPackageReference "neeva-ios-support" */;
 			productName = NeevaSupport;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -10,7 +10,7 @@ protocol TabToolbarProtocol: AnyObject {
     var tabToolbarDelegate: TabToolbarDelegate? { get set }
     var addNewTabButton: ToolbarButton { get }
     var tabsButton: TabsButton { get }
-    var appMenuButton: ToolbarButton { get }
+    var spacesMenuButton: ToolbarButton { get }
     var libraryButton: ToolbarButton { get }
     var forwardButton: ToolbarButton { get }
     var backButton: ToolbarButton { get }
@@ -34,7 +34,7 @@ protocol TabToolbarDelegate: AnyObject {
     func tabToolbarDidPressReload(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarReloadMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu?
     func tabToolbarDidPressStop(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarAppMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu
+    func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarDidPressLibrary(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarTabsMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu?
@@ -101,22 +101,25 @@ open class TabToolbarHelper: NSObject {
         toolbar.addNewTabButton.addTarget(self, action: #selector(didClickAddNewTab), for: .touchUpInside)
         toolbar.addNewTabButton.accessibilityIdentifier = "TabToolbar.addNewTabButton"
         
-        toolbar.appMenuButton.contentMode = .center
-        toolbar.appMenuButton.setImage(UIImage.templateImageNamed("nav-menu"), for: .normal)
-        toolbar.appMenuButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
-        toolbar.appMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
+        toolbar.spacesMenuButton.contentMode = .center
+        toolbar.spacesMenuButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
+        toolbar.spacesMenuButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
+        toolbar.spacesMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
+        toolbar.spacesMenuButton.showsMenuAsPrimaryAction = true
+        toolbar.spacesMenuButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
 
         toolbar.libraryButton.contentMode = .center
         toolbar.libraryButton.setImage(UIImage.templateImageNamed("menu-library"), for: .normal)
         toolbar.libraryButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
         toolbar.libraryButton.accessibilityIdentifier = "TabToolbar.libraryButton"
-        toolbar.appMenuButton.showsMenuAsPrimaryAction = true
-                toolbar.appMenuButton.setDynamicMenu {
-                    toolbar.tabToolbarDelegate?.tabToolbarAppMenu(toolbar, button: toolbar.appMenuButton)
-                }
+        
         setTheme(forButtons: toolbar.actionButtons)
     }
 
+    func didClickSpaces() {
+        toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu(toolbar, button: toolbar.spacesMenuButton)
+    }
+    
     func didClickBack() {
         toolbar.tabToolbarDelegate?.tabToolbarDidPressBack(toolbar, button: toolbar.backButton)
     }
@@ -142,7 +145,7 @@ open class TabToolbarHelper: NSObject {
     }
 
     func didClickLibrary() {
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressLibrary(toolbar, button: toolbar.appMenuButton)
+        toolbar.tabToolbarDelegate?.tabToolbarDidPressLibrary(toolbar, button: toolbar.spacesMenuButton)
     }
     
     func didClickAddNewTab() {
@@ -211,7 +214,7 @@ class TabToolbar: UIView {
 
     let tabsButton = TabsButton()
     let addNewTabButton = ToolbarButton()
-    let appMenuButton = ToolbarButton()
+    let spacesMenuButton = ToolbarButton()
     let libraryButton = ToolbarButton()
     let forwardButton = ToolbarButton()
     let backButton = ToolbarButton()
@@ -226,7 +229,7 @@ class TabToolbar: UIView {
     private let contentView = UIStackView()
 
     fileprivate override init(frame: CGRect) {
-        actionButtons = [backButton, forwardButton, shareButton, addNewTabButton, tabsButton, appMenuButton]
+        actionButtons = [backButton, forwardButton, shareButton, addNewTabButton, spacesMenuButton, tabsButton]
         super.init(frame: frame)
         setupAccessibility()
 
@@ -244,8 +247,8 @@ class TabToolbar: UIView {
 
     override func updateConstraints() {
         privateModeBadge.layout(onButton: tabsButton)
-        appMenuBadge.layout(onButton: appMenuButton)
-        warningMenuBadge.layout(onButton: appMenuButton)
+        appMenuBadge.layout(onButton: spacesMenuButton)
+        warningMenuBadge.layout(onButton: spacesMenuButton)
 
         contentView.snp.makeConstraints { make in
             make.leading.trailing.top.equalTo(self)
@@ -260,7 +263,7 @@ class TabToolbar: UIView {
         shareButton.accessibilityIdentifier = "TabToolbar.shareButton"
         tabsButton.accessibilityIdentifier = "TabToolbar.tabsButton"
         addNewTabButton.accessibilityIdentifier = "TabToolbar.addNewTabButton"
-        appMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
+        spacesMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
         accessibilityNavigationStyle = .combined
         accessibilityLabel = .TabToolbarNavigationToolbarAccessibilityLabel
     }

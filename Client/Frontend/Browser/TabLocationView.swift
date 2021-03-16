@@ -15,7 +15,7 @@ protocol TabLocationViewDelegate {
     func tabLocationViewDidTapReaderMode(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView)
-    func tabLocationViewPageOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton) -> UIMenu?
+    func tabLocationViewNeevaOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton)
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView)
 
     /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
@@ -40,6 +40,7 @@ class TabLocationView: UIView {
     var longPressRecognizer: UILongPressGestureRecognizer!
     var tapRecognizer: UITapGestureRecognizer!
     var contentView: UIStackView!
+    var urlContentView: UIStackView!
 
     fileprivate let menuBadge = BadgeWithBackdrop(imageName: "menuBadge", backdropCircleSize: 32)
 
@@ -59,7 +60,6 @@ class TabLocationView: UIView {
     var url: URL? {
         didSet {
             updateTextWithURL()
-            pageOptionsButton.isHidden = (url == nil)
             let showSearchIcon = neevaSearchEngine.queryForSearchURL(url) == nil
             searchImageViews.0.isHidden = showSearchIcon
             searchImageViews.1.isHidden = showSearchIcon
@@ -111,6 +111,7 @@ class TabLocationView: UIView {
         urlTextField.accessibilityLabel = "Address Bar"
         urlTextField.font = UIFont.preferredFont(forTextStyle: .body)
         urlTextField.adjustsFontForContentSizeCategory = true
+        urlTextField.textAlignment = .center
 
         // Remove the default drop interaction from the URL text field so that our
         // custom drop interaction on the BVC can accept dropped URLs.
@@ -191,20 +192,25 @@ class TabLocationView: UIView {
         reloadButton.isAccessibilityElement = true
         return reloadButton
     }()
-    
-    lazy var pageOptionsButton: ToolbarButton = {
-        let pageOptionsButton = ToolbarButton(frame: .zero)
-        pageOptionsButton.setImage(UIImage.templateImageNamed("menu-More-Options"), for: .normal)
-        pageOptionsButton.isAccessibilityElement = true
-        pageOptionsButton.isHidden = true
-        pageOptionsButton.imageView?.contentMode = .left
-        pageOptionsButton.accessibilityLabel = .TabLocationPageOptionsAccessibilityLabel
-        pageOptionsButton.accessibilityIdentifier = "TabLocationView.pageOptionsButton"
-        pageOptionsButton.setDynamicMenu({ self.delegate?.tabLocationViewPageOptionsMenu(self, from: pageOptionsButton) })
-        pageOptionsButton.showsMenuAsPrimaryAction = true
-        return pageOptionsButton
-    }()
 
+    lazy var neevaMenuButton: ToolbarButton = {
+        let neevaMenuButton = ToolbarButton(frame: .zero)
+        neevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
+        neevaMenuButton.isAccessibilityElement = true
+        neevaMenuButton.isHidden = false
+        neevaMenuButton.imageView?.contentMode = .left
+        neevaMenuButton.accessibilityLabel = .TabLocationPageOptionsAccessibilityLabel
+        neevaMenuButton.accessibilityIdentifier = "TabLocationView.pageOptionsButton"
+        //neevaMenuButton.setDynamicMenu({ self.delegate?.tabLocationViewNeevaOptionsMenu(self, from: neevaMenuButton) })
+        neevaMenuButton.addTarget(self, action: #selector(didClickNeevaMenu), for: UIControl.Event.touchUpInside)
+        neevaMenuButton.showsMenuAsPrimaryAction = true
+        return neevaMenuButton
+    }()
+    
+    @objc func didClickNeevaMenu() {
+        self.delegate?.tabLocationViewNeevaOptionsMenu(self, from: neevaMenuButton)
+    }
+    
     private func makeSeparator() -> UIView {
         let line = UIView()
         line.layer.cornerRadius = 2
@@ -237,10 +243,8 @@ class TabLocationView: UIView {
 
         // Link these so they hide/show in-sync.
         trackingProtectionButton.separatorLine = separatorLineForTP
-
-        pageOptionsButton.separatorLine = separatorLineForPageOptions
-
-        let subviews = [trackingProtectionButton, separatorLineForTP, space10px, lockImageView, urlTextField, readerModeButton, reloadButton, separatorLineForPageOptions, pageOptionsButton]
+        
+        let subviews = [ neevaMenuButton, space10px, lockImageView, urlTextField, readerModeButton, reloadButton, trackingProtectionButton]
         
         contentView = UIStackView(arrangedSubviews: subviews)
         contentView.distribution = .fill
@@ -251,25 +255,13 @@ class TabLocationView: UIView {
             make.edges.equalTo(self)
         }
 
-        lockImageView.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.StatusIconSize)
-            make.height.equalTo(TabLocationViewUX.ButtonSize)
+        neevaMenuButton.snp.makeConstraints { make in
+            make.size.equalTo(TabLocationViewUX.ButtonSize)
         }
+        
         trackingProtectionButton.snp.makeConstraints { make in
             make.width.equalTo(TabLocationViewUX.TPIconSize)
             make.height.equalTo(TabLocationViewUX.ButtonSize)
-        }
-        separatorLineForTP.snp.makeConstraints { make in
-            make.width.equalTo(1)
-            make.height.equalTo(26)
-        }
-
-        pageOptionsButton.snp.makeConstraints { make in
-            make.size.equalTo(TabLocationViewUX.ButtonSize)
-        }
-        separatorLineForPageOptions.snp.makeConstraints { make in
-            make.width.equalTo(1)
-            make.height.equalTo(26)
         }
         readerModeButton.snp.makeConstraints { make in
             make.width.equalTo(TabLocationViewUX.ReaderModeButtonWidth)
@@ -287,7 +279,7 @@ class TabLocationView: UIView {
         self.addInteraction(dragInteraction)
 
         menuBadge.add(toParent: contentView)
-        menuBadge.layout(onButton: pageOptionsButton)
+        menuBadge.layout(onButton: neevaMenuButton)
         menuBadge.show(false)
     }
 
@@ -295,7 +287,7 @@ class TabLocationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var _accessibilityElements = [urlTextField, readerModeButton, reloadButton, pageOptionsButton, trackingProtectionButton]
+    private lazy var _accessibilityElements = [neevaMenuButton, urlTextField, readerModeButton, reloadButton, trackingProtectionButton]
 
     override var accessibilityElements: [Any]? {
         get {
@@ -406,14 +398,9 @@ extension TabLocationView: Themeable {
         readerModeButton.unselectedTintColor = UIColor.theme.urlbar.pageOptionsUnselected
                 reloadButton.tintColor = UIColor.theme.urlbar.pageOptionsUnselected
         
-        pageOptionsButton.selectedTintColor = UIColor.theme.urlbar.pageOptionsSelected
-        pageOptionsButton.unselectedTintColor = UIColor.theme.urlbar.pageOptionsUnselected
-        pageOptionsButton.tintColor = pageOptionsButton.unselectedTintColor
         separatorLineForPageOptions.backgroundColor = UIColor.Photon.Grey40
         separatorLineForTP.backgroundColor = separatorLineForPageOptions.backgroundColor
 
-        lockImageView.tintColor = pageOptionsButton.tintColor
-        searchImageViews.1.tintColor = pageOptionsButton.tintColor
         let color = ThemeManager.instance.currentName == .dark ? UIColor(white: 0.3, alpha: 0.6): UIColor.theme.textField.background
         menuBadge.badge.tintBackground(color: color)
     }

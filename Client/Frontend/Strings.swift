@@ -575,6 +575,7 @@ extension Strings {
     public static let PageActionMenuTitle = MZLocalizedString("Menu.PageActions.Title", value: "Page Actions", comment: "Label for title in page action menu.")
     public static let WhatsNewString = MZLocalizedString("Menu.WhatsNew.Title", value: "What's New", comment: "The title for the option to view the What's new page.")
     public static let AppMenuShowPageSourceString = MZLocalizedString("Menu.PageSourceAction.Title", tableName: "Menu", value: "View Page Source", comment: "Label for the button, displayed in the menu, used to show the html page source")
+    public static let AppMenuHomeButton = MZLocalizedString("Menu.HomeButton.Title", value: "Home", comment: "Label for the Home button, displayed in the menu")
 }
 
 // Snackbar shown when tapping app store link
@@ -1227,7 +1228,6 @@ extension String {
     public static let AppSettingsHelp = MZLocalizedString("Help", comment: "Show the SUMO support page from the Support section in the settings. see http://mzl.la/1dmM8tZ")
     public static let AppSettingsSearch = MZLocalizedString("Search", comment: "Open search section of settings")
     public static let AppSettingsPrivacyPolicy = MZLocalizedString("Privacy Policy", comment: "Show Neeva Browser Privacy Policy page from the Privacy section in the settings. See https://neeva.co/privacy")
-    
     public static let AppSettingsTitle = MZLocalizedString("Settings", comment: "Title in the settings view controller title bar")
     public static let AppSettingsDone = MZLocalizedString("Done", comment: "Done button on left side of the Settings view controller title bar")
     public static let AppSettingsPrivacyTitle = MZLocalizedString("Privacy", comment: "Privacy section title")

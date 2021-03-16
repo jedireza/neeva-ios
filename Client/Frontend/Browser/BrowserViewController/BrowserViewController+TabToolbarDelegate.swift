@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
+import NeevaSupport
+import SwiftUI
 
 extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
     func tabToolbarDidPressBack(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
@@ -54,16 +56,16 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         focusLocationTextField(forTab: tabManager.selectedTab)
     }
     
-    func tabToolbarAppMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu {
-        // ensure that any keyboards or spinners are dismissed before presenting the menu
-        
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        libraryDrawerViewController?.close(immediately: true)
-        var actions: [[UIMenuElement]] = []
-        
-        actions.append(getLibraryActions(vcDelegate: self))
-        actions.append(getOtherPanelActions(vcDelegate: self))
-        return UIMenu(sections: actions)
+    func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton){
+        let host = UIHostingController(
+            rootView: SpaceListView(onDismiss: self.dismissVC)
+                .environment(\.onOpenURL) { url in
+                    self.settingsOpenURLInNewTab(url)
+                    self.dismissVC()
+                }
+        )
+        host.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
+        self.present(host, animated: true, completion: nil)
     }
     
     func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
