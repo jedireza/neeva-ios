@@ -56,16 +56,25 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         focusLocationTextField(forTab: tabManager.selectedTab)
     }
     
-    func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton){
-        let host = UIHostingController(
-            rootView: SpaceListView(onDismiss: self.dismissVC)
-                .environment(\.onOpenURL) { url in
-                    self.settingsOpenURLInNewTab(url)
+    func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+        guard let tab = tabManager.selectedTab else { return }
+        guard let url = tab.canonicalURL?.displayURL else { return }
+
+        tab.webView!.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
+            self.present(AddToSpaceViewController(
+                title: tab.title ?? url.absoluteString,
+                description: result as? String,
+                url: url,
+                onDismiss: { _ in
                     self.dismissVC()
+                    SimpleToast().showAlertWithText("Added to Space", bottomContainer: self.webViewContainer)
+                },
+                onOpenURL: {
+                    self.dismissVC()
+                    self.settingsOpenURLInNewTab($0)
                 }
-        )
-        host.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        self.present(host, animated: true, completion: nil)
+            ), animated: true, completion: nil)
+        }
     }
     
     func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton) {

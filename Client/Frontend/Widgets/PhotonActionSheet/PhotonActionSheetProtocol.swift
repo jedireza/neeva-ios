@@ -36,10 +36,6 @@ extension PhotonActionSheetProtocol {
 
     typealias PageOptionsVC = QRCodeViewControllerDelegate & SettingsDelegate & PresentingModalViewControllerDelegate & UIViewController
 
-    func fetchPinnedTopSiteStatus(for url: String) -> Deferred<Maybe<Bool>> {
-        return self.profile.history.isPinnedTopSite(url)
-    }
-
     func getLongPressLocationBarActions(with urlBar: URLBarView, webViewContainer: UIView) -> [PhotonActionSheetItem] {
         let pasteGoAction = PhotonActionSheetItem(title: Strings.PasteAndGoTitle, iconString: "menu-PasteAndGo") { _, _ in
             if let pasteboardContents = UIPasteboard.general.string {

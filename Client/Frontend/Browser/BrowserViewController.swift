@@ -1386,27 +1386,6 @@ extension BrowserViewController: URLBarDelegate {
         let controller = QRCodeNavigationController(rootViewController: qrCodeViewController)
         self.present(controller, animated: true, completion: nil)
     }
-
-    func urlBarPageOptionsMenu(_ urlBar: URLBarView, from button: UIButton) -> UIMenu? {
-        guard let tab = tabManager.selectedTab, let urlString = tab.url?.absoluteString, !urlBar.inOverlayMode else { return nil }
-
-        let findInPageAction = {
-            self.updateFindInPageVisibility(visible: true)
-        }
-
-        let successCallback: (String) -> Void = { successMessage in
-            SimpleToast().showAlertWithText(successMessage, bottomContainer: self.webViewContainer)
-        }
-
-        return UIMenu(
-            sections: self.getTabActions(
-                tab: tab, buttonView: button,
-                findInPage: findInPageAction, presentableVC: self,
-                                deferredPinnedTopSiteStatus: fetchPinnedTopSiteStatus(for: urlString),
-                                shouldShowReloadButton: false, success: successCallback
-                            )
-                        )
-    }
     
     func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton){
         

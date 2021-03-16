@@ -36,7 +36,6 @@ protocol URLBarDelegate: AnyObject {
     func urlBarDidLeaveOverlayMode(_ urlBar: URLBarView)
     func urlBarDidLongPressLocation(_ urlBar: URLBarView)
     func urlBarDidPressQRButton(_ urlBar: URLBarView)
-    func urlBarPageOptionsMenu(_ urlBar: URLBarView, from button: UIButton) -> UIMenu?
     func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton)
     func urlBarDidTapShield(_ urlBar: URLBarView)
     func urlBarLocationAccessibilityActions(_ urlBar: URLBarView) -> [UIAccessibilityCustomAction]?
