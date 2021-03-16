@@ -344,7 +344,7 @@ class ReadingListPanel: UITableViewController, LibraryPanel {
             self?.deleteItem(atIndex: index)
         }
 
-        let toggleText: String = record.unread ? .ReaderPanelMarkAsRead : .ReaderModeBarMarkAsUnread
+        let toggleText: String = "Mark as read"
         let unreadToggle = UITableViewRowAction(style: .normal, title: toggleText.stringSplitWithNewline()) { [weak self] (action, index) in
             self?.toggleItem(atIndex: index)
         }

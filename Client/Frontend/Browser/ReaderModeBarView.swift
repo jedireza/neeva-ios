@@ -10,25 +10,17 @@ import XCGLogger
 private let log = Logger.browserLogger
 
 enum ReaderModeBarButtonType {
-    case markAsRead, markAsUnread, settings, addToReadingList, removeFromReadingList
+    case settings
 
     fileprivate var localizedDescription: String {
         switch self {
-        case .markAsRead: return .ReaderModeBarMarkAsRead
-        case .markAsUnread: return .ReaderModeBarMarkAsUnread
         case .settings: return .ReaderModeBarSettings
-        case .addToReadingList: return .ReaderModeBarAddToReadingList
-        case .removeFromReadingList: return .ReaderModeBarRemoveFromReadingList
         }
     }
 
     fileprivate var imageName: String {
         switch self {
-        case .markAsRead: return "MarkAsRead"
-        case .markAsUnread: return "MarkAsUnread"
         case .settings: return "SettingsSerif"
-        case .addToReadingList: return "addToReadingList"
-        case .removeFromReadingList: return "removeFromReadingList"
         }
     }
 
@@ -46,41 +38,21 @@ protocol ReaderModeBarViewDelegate {
 class ReaderModeBarView: UIView {
     var delegate: ReaderModeBarViewDelegate?
 
-    var readStatusButton: UIButton!
     var settingsButton: UIButton!
-    var listStatusButton: UIButton!
 
     @objc dynamic var buttonTintColor = UIColor.clear {
         didSet {
-            readStatusButton.tintColor = self.buttonTintColor
             settingsButton.tintColor = self.buttonTintColor
-            listStatusButton.tintColor = self.buttonTintColor
         }
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        readStatusButton = createButton(.markAsRead, action: #selector(tappedReadStatusButton))
-        readStatusButton.accessibilityIdentifier = "ReaderModeBarView.readStatusButton"
-        readStatusButton.snp.makeConstraints { (make) -> Void in
-            make.left.equalTo(self.safeArea.left)
-            make.height.centerY.equalTo(self)
-            make.width.equalTo(80)
-        }
-
         settingsButton = createButton(.settings, action: #selector(tappedSettingsButton))
         settingsButton.accessibilityIdentifier = "ReaderModeBarView.settingsButton"
         settingsButton.snp.makeConstraints { (make) -> Void in
             make.height.centerX.centerY.equalTo(self)
-            make.width.equalTo(80)
-        }
-
-        listStatusButton = createButton(.addToReadingList, action: #selector(tappedListStatusButton))
-        listStatusButton.accessibilityIdentifier = "ReaderModeBarView.listStatusButton"
-        listStatusButton.snp.makeConstraints { (make) -> Void in
-            make.right.equalTo(self.safeArea.right)
-            make.height.centerY.equalTo(self)
             make.width.equalTo(80)
         }
     }
@@ -113,34 +85,8 @@ class ReaderModeBarView: UIView {
         self.alpha = alpha
     }
 
-    @objc func tappedReadStatusButton(_ sender: UIButton!) {
-        TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .readingListItem, value: unread ? .markAsRead : .markAsUnread, extras: [ "from": "reader-mode-toolbar" ])
-        delegate?.readerModeBar(self, didSelectButton: unread ? .markAsRead : .markAsUnread)
-    }
-
     @objc func tappedSettingsButton(_ sender: UIButton!) {
         delegate?.readerModeBar(self, didSelectButton: .settings)
-    }
-
-    @objc func tappedListStatusButton(_ sender: UIButton!) {
-        TelemetryWrapper.recordEvent(category: .action, method: added ? .delete : .add, object: .readingListItem, value: .readerModeToolbar)
-        delegate?.readerModeBar(self, didSelectButton: added ? .removeFromReadingList : .addToReadingList)
-    }
-
-    var unread: Bool = true {
-        didSet {
-            let buttonType: ReaderModeBarButtonType = unread && added ? .markAsRead : .markAsUnread
-            readStatusButton.setImage(buttonType.image, for: [])
-            readStatusButton.isEnabled = added
-            readStatusButton.alpha = added ? 1.0 : 0.6
-        }
-    }
-
-    var added: Bool = false {
-        didSet {
-            let buttonType: ReaderModeBarButtonType = added ? .removeFromReadingList : .addToReadingList
-            listStatusButton.setImage(buttonType.image, for: [])
-        }
     }
 }
 

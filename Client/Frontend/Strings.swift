@@ -1043,11 +1043,7 @@ extension String {
 
 // Reader Mode Bar
 extension String {
-    public static let ReaderModeBarMarkAsRead = MZLocalizedString("Mark as Read", comment: "Name for Mark as read button in reader mode")
-    public static let ReaderModeBarMarkAsUnread = MZLocalizedString("Mark as Unread", comment: "Name for Mark as unread button in reader mode")
     public static let ReaderModeBarSettings = MZLocalizedString("Display Settings", comment: "Name for display settings button in reader mode. Display in the meaning of presentation, not monitor.")
-    public static let ReaderModeBarAddToReadingList = MZLocalizedString("Add to Reading List", comment: "Name for button adding current article to reading list in reader mode")
-    public static let ReaderModeBarRemoveFromReadingList = MZLocalizedString("Remove from Reading List", comment: "Name for button removing current article from reading list in reader mode")
 }
 
 // SearchViewController
