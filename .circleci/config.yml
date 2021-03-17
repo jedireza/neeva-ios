@@ -6,7 +6,6 @@ jobs:
       xcode: "12.4.0"
     steps:
       - checkout
-      - run: brew install carthage
       - run: sh ./bootstrap.sh
 
 workflows:
