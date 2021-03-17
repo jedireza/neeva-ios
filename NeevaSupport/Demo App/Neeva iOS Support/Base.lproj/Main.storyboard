@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dvK-gc-PEk">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--User Info-->
+        <scene sceneID="e7q-Qh-dkb">
+            <objects>
+                <navigationController id="cib-jc-CbF" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="User Info" image="person.fill" catalog="system" id="90c-Sp-FrN"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="Gh2-mD-Zuq">
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="BVt-CW-DR3"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MB5-Fl-CMD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1142" y="-1305"/>
+        </scene>
+        <!--User Info-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="UserInfoViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jj2-IK-DNY">
+                                <rect key="frame" x="20" y="160" width="374" height="653"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qbv-dd-jQc">
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="31"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Enter Neeva " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tox-hU-war">
+                                                <rect key="frame" x="0.0" y="0.0" width="100.5" height="31"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="httpd~login" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jbw-f3-LiA">
+                                                <rect key="frame" x="100.5" y="0.0" width="113" height="31"/>
+                                                <fontDescription key="fontDescription" name="Menlo-Bold" family="Menlo" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text=" token" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLC-6f-349">
+                                                <rect key="frame" x="213.5" y="0.0" width="49" height="31"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KmF-Sq-3Kq">
+                                                <rect key="frame" x="262.5" y="0.0" width="1.5" height="31"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="wJB-w7-t4t">
+                                                <rect key="frame" x="264" y="0.0" width="110" height="32"/>
+                                                <segments>
+                                                    <segment title="M1"/>
+                                                    <segment title="α"/>
+                                                    <segment title="�"/>
+                                                </segments>
+                                                <connections>
+                                                    <action selector="serverDidChange" destination="BYZ-38-t0r" eventType="valueChanged" id="Umz-CA-aeo"/>
+                                                </connections>
+                                            </segmentedControl>
+                                        </subviews>
+                                    </stackView>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Neeva Token" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="vRg-ya-ljr">
+                                        <rect key="frame" x="0.0" y="48" width="374" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done" secureTextEntry="YES"/>
+                                        <connections>
+                                            <action selector="runUserQuery" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="gSu-Qs-rDT"/>
+                                        </connections>
+                                    </textField>
+                                    <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hnB-Dg-4sI">
+                                        <rect key="frame" x="0.0" y="99" width="374" height="50"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4ph-dD-vSK">
+                                                <rect key="frame" x="0.0" y="0.0" width="324" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="XMl-YD-v5D"/>
+                                                </constraints>
+                                                <state key="normal" title="Get user info"/>
+                                                <connections>
+                                                    <action selector="runUserQuery" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="rlS-3b-7G8"/>
+                                                </connections>
+                                            </button>
+                                            <activityIndicatorView opaque="NO" alpha="0.0" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="0jc-vM-r2d">
+                                                <rect key="frame" x="324" y="0.0" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="0jc-vM-r2d" secondAttribute="height" multiplier="1:1" id="HlJ-go-xgg"/>
+                                                </constraints>
+                                            </activityIndicatorView>
+                                        </subviews>
+                                    </stackView>
+                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k4G-CZ-BLZ">
+                                        <rect key="frame" x="0.0" y="166" width="374" height="0.0"/>
+                                        <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="mzz-B2-Dsg">
+                                        <rect key="frame" x="0.0" y="183" width="374" height="470"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="k4G-CZ-BLZ" firstAttribute="width" secondItem="Jj2-IK-DNY" secondAttribute="width" id="8m3-Iv-dmk"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Jj2-IK-DNY" secondAttribute="trailing" constant="20" id="YE4-lN-eqA"/>
+                            <constraint firstItem="Jj2-IK-DNY" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="epu-Ph-stR"/>
+                            <constraint firstItem="Jj2-IK-DNY" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="20" id="jBJ-qr-5U1"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Jj2-IK-DNY" secondAttribute="bottom" id="pIR-kA-1hc"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="User Info" largeTitleDisplayMode="always" id="jY5-CN-dzp"/>
+                    <connections>
+                        <outlet property="activityIndicator" destination="0jc-vM-r2d" id="UIA-tP-Fhw"/>
+                        <outlet property="dataOutput" destination="k4G-CZ-BLZ" id="tQh-bL-XyE"/>
+                        <outlet property="serverPicker" destination="wJB-w7-t4t" id="Wkg-9H-HBj"/>
+                        <outlet property="tokenInput" destination="vRg-ya-ljr" id="rkC-F4-v8f"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1141" y="-538"/>
+        </scene>
+        <!--Suggestions-->
+        <scene sceneID="vJx-xF-oc6">
+            <objects>
+                <viewController id="Lmh-6S-344" customClass="SuggestionsViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="W2c-tT-YK5">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="7hd-GL-wV0"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Suggestions" image="magnifyingglass.circle.fill" catalog="system" springLoaded="YES" id="zwc-Tu-DNe"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="e8h-7j-28F" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-314" y="-538"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="Lrv-xi-D8L">
+            <objects>
+                <tabBarController id="dvK-gc-PEk" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="in7-qd-Hsd">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="selectedIndex">
+                            <integer key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <segue destination="cib-jc-CbF" kind="relationship" relationship="viewControllers" id="Lv8-w9-JqI"/>
+                        <segue destination="Lmh-6S-344" kind="relationship" relationship="viewControllers" id="ykx-eN-DP7"/>
+                        <segue destination="iQG-2h-8IJ" kind="relationship" relationship="viewControllers" id="bhA-ZA-2ts"/>
+                        <segue destination="UH9-et-Ktp" kind="relationship" relationship="viewControllers" id="J9r-C7-uMb"/>
+                        <segue destination="rRd-6i-6LS" kind="relationship" relationship="viewControllers" id="SJS-jY-9Ec"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cqb-Cv-ozK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="39" y="-1267"/>
+        </scene>
+        <!--Spaces-->
+        <scene sceneID="fno-LV-VaG">
+            <objects>
+                <viewController id="iQG-2h-8IJ" customClass="SpacesViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7sG-Fp-j2z">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="4CX-fm-I4C"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Spaces" image="bookmark.fill" catalog="system" springLoaded="YES" id="8qE-s7-KOY"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g8Q-ea-cAx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="487" y="-538"/>
+        </scene>
+        <!--Add to Space-->
+        <scene sceneID="AVR-zO-GeI">
+            <objects>
+                <viewController id="UH9-et-Ktp" customClass="AddToSpaceDemoViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qU5-wp-tNj">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="Ffn-RT-L0n"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Add to Space" image="plus.circle.fill" catalog="system" id="8CH-Ds-15O"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HBP-Dg-ET5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1314" y="-538"/>
+        </scene>
+        <!--Feedback-->
+        <scene sceneID="hLu-ay-ixi">
+            <objects>
+                <viewController id="rRd-6i-6LS" customClass="FeedbackViewController" customModule="Neeva_iOS_Support" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Iqi-hg-tlW">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="O1o-7V-qQg"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Feedback" image="bubble.left.fill" catalog="system" id="sdK-5Y-fMg"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g0h-23-mZN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1048" y="-1268"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="bookmark.fill" catalog="system" width="112" height="128"/>
+        <image name="bubble.left.fill" catalog="system" width="128" height="110"/>
+        <image name="magnifyingglass.circle.fill" catalog="system" width="128" height="121"/>
+        <image name="person.fill" catalog="system" width="128" height="120"/>
+        <image name="plus.circle.fill" catalog="system" width="128" height="121"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

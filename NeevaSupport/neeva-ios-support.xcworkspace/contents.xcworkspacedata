@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:README.md">
+   </FileRef>
+   <FileRef
+      location = "group:Demo App/..">
+   </FileRef>
+   <FileRef
+      location = "container:Demo App/Demo App.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Codegen">
+   </FileRef>
+</Workspace>

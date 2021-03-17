@@ -1,0 +1,18 @@
+query UserInfo {
+  user {
+    id
+    profile {
+      displayName
+      email
+      pictureURL
+    }
+  }
+}
+
+mutation SendFeedback($input: SendFeedbackV2Input!) {
+  sendFeedbackV2(input: $input)
+}
+
+mutation StartIncognito($redirect: String!) {
+  startIncognito(input: {redirect: $redirect})
+}
