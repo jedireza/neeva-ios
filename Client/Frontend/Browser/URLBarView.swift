@@ -425,7 +425,6 @@ class URLBarView: UIView {
     }
 
     func updateReaderModeState(_ state: ReaderModeState) {
-        locationView.readerModeState = state
         switch state {
         case .active:
             locationView.reloadButton.isHidden = true

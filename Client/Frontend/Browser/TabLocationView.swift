@@ -12,14 +12,11 @@ private let log = Logger.browserLogger
 protocol TabLocationViewDelegate {
     func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView)
     func tabLocationViewDidLongPressLocation(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTapReaderMode(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView)
     func tabLocationViewNeevaOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton)
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView)
 
-    /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
-    @discardableResult func tabLocationViewDidLongPressReaderMode(_ tabLocationView: TabLocationView) -> Bool
     func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu?
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]?
 }
@@ -30,7 +27,7 @@ private struct TabLocationViewUX {
     static let Spacing: CGFloat = 8
     static let StatusIconSize: CGFloat = 18
     static let TPIconSize: CGFloat = 44
-    static let ReaderModeButtonWidth: CGFloat = 34
+    static let ReloadButtonWidth: CGFloat = 44
     static let ButtonSize: CGFloat = 44
     static let URLBarPadding = 4
 }
@@ -66,31 +63,6 @@ class TabLocationView: UIView {
 
             trackingProtectionButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
             setNeedsUpdateConstraints()
-        }
-    }
-
-    var readerModeState: ReaderModeState {
-        get {
-            return readerModeButton.readerModeState
-        }
-        set (newReaderModeState) {
-            if newReaderModeState != self.readerModeButton.readerModeState {
-                let wasHidden = readerModeButton.isHidden
-                self.readerModeButton.readerModeState = newReaderModeState
-                readerModeButton.isHidden = (newReaderModeState == ReaderModeState.unavailable)
-                if wasHidden != readerModeButton.isHidden {
-                    UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
-                    if !readerModeButton.isHidden {
-                        // Delay the Reader Mode accessibility announcement briefly to prevent interruptions.
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                            UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: Strings.ReaderModeAvailableVoiceOverAnnouncement)
-                        }
-                    }
-                }
-                UIView.animate(withDuration: 0.1, animations: { () -> Void in
-                    self.readerModeButton.alpha = newReaderModeState == .unavailable ? 0 : 1
-                })
-            }
         }
     }
 
@@ -166,27 +138,12 @@ class TabLocationView: UIView {
         return trackingProtectionButton
     }()
 
-    fileprivate lazy var readerModeButton: ReaderModeButton = {
-        let readerModeButton = ReaderModeButton(frame: .zero)
-        readerModeButton.addTarget(self, action: #selector(tapReaderModeButton), for: .touchUpInside)
-        readerModeButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressReaderModeButton)))
-        readerModeButton.isAccessibilityElement = true
-        readerModeButton.isHidden = true
-        readerModeButton.imageView?.contentMode = .scaleAspectFit
-        readerModeButton.contentHorizontalAlignment = .left
-        readerModeButton.accessibilityLabel = .TabLocationReaderModeAccessibilityLabel
-        readerModeButton.accessibilityIdentifier = "TabLocationView.readerModeButton"
-        readerModeButton.accessibilityCustomActions = [UIAccessibilityCustomAction(name: .TabLocationReaderModeAddToReadingListAccessibilityLabel, target: self, selector: #selector(readerModeCustomAction))]
-        return readerModeButton
-    }()
-
     lazy var reloadButton: StatefulButton = {
         let reloadButton = StatefulButton(frame: .zero, state: .disabled)
         reloadButton.addTarget(self, action: #selector(tapReloadButton), for: .touchUpInside)
         reloadButton.setDynamicMenu { self.delegate?.tabLocationViewReloadMenu(self) }
         reloadButton.tintColor = UIColor.Photon.Grey50
         reloadButton.imageView?.contentMode = .scaleAspectFit
-        reloadButton.contentHorizontalAlignment = .left
         reloadButton.accessibilityLabel = .TabLocationReloadAccessibilityLabel
         reloadButton.accessibilityIdentifier = "TabLocationView.reloadButton"
         reloadButton.isAccessibilityElement = true
@@ -243,8 +200,8 @@ class TabLocationView: UIView {
 
         // Link these so they hide/show in-sync.
         trackingProtectionButton.separatorLine = separatorLineForTP
-        
-        let subviews = [ neevaMenuButton, space10px, lockImageView, urlTextField, readerModeButton, reloadButton, trackingProtectionButton]
+
+        let subviews = [ neevaMenuButton, space10px, lockImageView, urlTextField, reloadButton, trackingProtectionButton]
         
         contentView = UIStackView(arrangedSubviews: subviews)
         contentView.distribution = .fill
@@ -258,17 +215,16 @@ class TabLocationView: UIView {
         neevaMenuButton.snp.makeConstraints { make in
             make.size.equalTo(TabLocationViewUX.ButtonSize)
         }
-        
+
+        lockImageView.snp.makeConstraints { make in
+            make.width.equalTo(28)
+        }
         trackingProtectionButton.snp.makeConstraints { make in
             make.width.equalTo(TabLocationViewUX.TPIconSize)
             make.height.equalTo(TabLocationViewUX.ButtonSize)
         }
-        readerModeButton.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.ReaderModeButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonSize)
-        }
         reloadButton.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.ReaderModeButtonWidth)
+            make.width.equalTo(TabLocationViewUX.ReloadButtonWidth)
             make.height.equalTo(TabLocationViewUX.ButtonSize)
         }
 
@@ -287,7 +243,7 @@ class TabLocationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var _accessibilityElements = [neevaMenuButton, urlTextField, readerModeButton, reloadButton, trackingProtectionButton]
+    private lazy var _accessibilityElements = [neevaMenuButton, urlTextField, reloadButton, trackingProtectionButton]
 
     override var accessibilityElements: [Any]? {
         get {
@@ -304,18 +260,8 @@ class TabLocationView: UIView {
         }
     }
 
-    @objc func tapReaderModeButton() {
-        delegate?.tabLocationViewDidTapReaderMode(self)
-    }
-
     @objc func tapReloadButton() {
         delegate?.tabLocationViewDidTapReload(self)
-    }
-
-    @objc func longPressReaderModeButton(_ recognizer: UILongPressGestureRecognizer) {
-        if recognizer.state == .began {
-            delegate?.tabLocationViewDidLongPressReaderMode(self)
-        }
     }
 
     @objc func longPressLocation(_ recognizer: UITapGestureRecognizer) {
@@ -330,10 +276,6 @@ class TabLocationView: UIView {
 
     @objc func didPressTPShieldButton(_ button: UIButton) {
         delegate?.tabLocationViewDidTapShield(self)
-    }
-
-    @objc func readerModeCustomAction() -> Bool {
-        return delegate?.tabLocationViewDidLongPressReaderMode(self) ?? false
     }
 
     fileprivate func updateTextWithURL() {
@@ -394,10 +336,7 @@ extension TabLocationView: Themeable {
     func applyTheme() {
         backgroundColor = UIColor.theme.textField.background
         urlTextField.textColor = UIColor.theme.textField.textAndTint
-        readerModeButton.selectedTintColor = UIColor.theme.urlbar.readerModeButtonSelected
-        readerModeButton.unselectedTintColor = UIColor.theme.urlbar.pageOptionsUnselected
-                reloadButton.tintColor = UIColor.theme.urlbar.pageOptionsUnselected
-        
+
         separatorLineForPageOptions.backgroundColor = UIColor.Photon.Grey40
         separatorLineForTP.backgroundColor = separatorLineForPageOptions.backgroundColor
 
