@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build_client:
     macos:
-      xcode: 12.4
+      xcode: "12.4.0"
     steps:
       - checkout
       - run: brew install carthage
