@@ -16,6 +16,15 @@ public struct NeevaConstants {
         get { Defaults[neevaHostKey] }
         set { Defaults[neevaHostKey] = newValue }
     }
+
+    /// Check if the given |host| matches |appHost| or is an equivalent value.
+    /// This is to support migration via HTTP redirect to future hostnames.
+    public static func isAppHostOrEquivalent(_ host: String?) -> Bool {
+        return host == appHost ||
+            (host == "neeva.com" && appHost == "alpha.neeva.co") ||
+            (host == "m1.neeva.com" && appHost == "m1.neeva.co")
+    }
+
     /// The URL form of `appHost`
     public static var appURL: URL { URL(string: "https://\(appHost)/")! }
 
