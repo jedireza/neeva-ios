@@ -6005,7 +6005,7 @@
 			repositoryURL = "https://github.com/neevaco/neeva-ios-support";
 			requirement = {
 				kind = revision;
-				revision = aebfd0ba9c6b875c2a3c95a9993f2f04e39a3cb3;
+				revision = 8ffbe64cfdabccebf1ce2be11c5898c15c627907;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

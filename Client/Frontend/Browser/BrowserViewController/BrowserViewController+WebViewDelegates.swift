@@ -473,7 +473,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
             pendingRequests[url.absoluteString] = navigationAction.request
 
-            if url.host == NeevaConstants.appHost {
+            if NeevaConstants.isAppHostOrEquivalent(url.host) {
                webView.customUserAgent = UserAgent.neevaAppUserAgent()
             } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(domain: url.baseDomain ?? "")
@@ -484,10 +484,10 @@ extension BrowserViewController: WKNavigationDelegate {
 
             // Neeva incognito logic
             var request = navigationAction.request
-            if url.host == NeevaConstants.appHost, request.httpMethod == "GET", tab.isPrivate, !url.path.starts(with: "/incognito") {
+            if NeevaConstants.isAppHostOrEquivalent(url.host), request.httpMethod == "GET", tab.isPrivate, !url.path.starts(with: "/incognito") {
                 let cookies = webView.configuration.websiteDataStore.httpCookieStore
                 cookies.getAllCookies { (cookies) in
-                    if !cookies.contains(where: { $0.domain == NeevaConstants.appHost && $0.name == "httpd~incognito" && $0.isSecure }) {
+                    if !cookies.contains(where: { NeevaConstants.isAppHostOrEquivalent($0.domain) && $0.name == "httpd~incognito" && $0.isSecure }) {
                          StartIncognitoMutation(url: url).perform { result in
                              decisionHandler(.cancel)
                              switch result {
@@ -710,10 +710,10 @@ extension BrowserViewController: WKNavigationDelegate {
         // and save it to a keychain.
         if !(tabManager.selectedTab?.isPrivate ?? false),
            let url = webView.url,
-           url.host == NeevaConstants.appHost,
+           NeevaConstants.isAppHostOrEquivalent(url.host),
            url.scheme == "https" {
             webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
-                if let authCookie = cookies.first(where: { $0.domain == NeevaConstants.appHost && $0.name == "httpd~login" && $0.isSecure }) {
+                if let authCookie = cookies.first(where: { NeevaConstants.isAppHostOrEquivalent($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
                     try? NeevaConstants.keychain.set(authCookie.value, key: NeevaConstants.loginKeychainKey)
                 }
             }
