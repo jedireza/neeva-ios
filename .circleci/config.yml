@@ -1,0 +1,16 @@
+version: 2.1
+
+jobs:
+  build_client:
+    macos:
+      xcode: 12.4
+    steps:
+      - checkout
+      - run: brew install carthage
+      - run: sh ./bootstrap.sh
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_client
