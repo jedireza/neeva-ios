@@ -3,7 +3,7 @@
     "pins": [
       {
         "package": "Apollo",
-        "repositoryURL": "https://github.com/apollographql/apollo-ios",
+        "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
           "branch": null,
           "revision": "6c71dc77ddc3b0d55dd2bd485de01d4032256199",
@@ -35,15 +35,6 @@
           "branch": null,
           "revision": "84e546727d66f1adc5439debad16270d0fdd04e7",
           "version": "4.2.2"
-        }
-      },
-      {
-        "package": "NeevaSupport",
-        "repositoryURL": "https://github.com/neevaco/neeva-ios-support",
-        "state": {
-          "branch": null,
-          "revision": "8ffbe64cfdabccebf1ce2be11c5898c15c627907",
-          "version": null
         }
       },
       {

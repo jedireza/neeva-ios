@@ -4,4 +4,10 @@
    <FileRef
       location = "group:Client.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:NeevaSupport/Demo App/Demo App.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:NeevaSupport/Codegen">
+   </FileRef>
 </Workspace>

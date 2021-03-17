@@ -688,7 +688,6 @@
 		F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */; };
 		F072DD3825E935B4006C2665 /* NeevaSearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */; };
 		F08B27EE25FD097F0037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B27ED25FD097F0037D49B /* NeevaSupport */; };
-		F08B294E25FDDFC40037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B294D25FDDFC40037D49B /* NeevaSupport */; };
 		F0ACC2AC25E8C7FB0024991B /* NeevaDev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */; };
 		F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
@@ -1309,6 +1308,7 @@
 		C8399D8F22DE5E5200EFA5CA /* disconnect-block-advertising.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "disconnect-block-advertising.json"; sourceTree = "<group>"; };
 		C8399D9222DE5E5B00EFA5CA /* disconnect-block-analytics.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "disconnect-block-analytics.json"; sourceTree = "<group>"; };
 		C8399D9422DE5E6200EFA5CA /* disconnect-block-social.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "disconnect-block-social.json"; sourceTree = "<group>"; };
+		C847A1D2260245DD008AA18A /* NeevaSupport */ = {isa = PBXFileReference; lastKnownFileType = folder; path = NeevaSupport; sourceTree = "<group>"; };
 		C8611CA11F71AEB900C3DE7D /* NoImageModeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoImageModeTests.swift; sourceTree = "<group>"; };
 		C88847109E62D581C497BB8E /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/AuthenticationManager.strings"; sourceTree = "<group>"; };
 		C892DA0C22D39A980080F1F7 /* TrackingProtectionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingProtectionMenu.swift; sourceTree = "<group>"; };
@@ -1765,7 +1765,6 @@
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */,
-				F08B294E25FDDFC40037D49B /* NeevaSupport in Frameworks */,
 				7B604F9B1C4950F2006EEEC3 /* SDWebImage.framework in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
 				3B4988CE1E42B01800A12FDA /* SwiftyJSON.framework in Frameworks */,
@@ -3130,6 +3129,7 @@
 		F84B21B51A090F8100AAB793 = {
 			isa = PBXGroup;
 			children = (
+				C847A1D2260245DD008AA18A /* NeevaSupport */,
 				E6C191D41E38F7B7000A213B /* Cartfile */,
 				E6C191D51E38F7B7000A213B /* Cartfile.resolved */,
 				F84B21C01A090F8100AAB793 /* Client */,
@@ -3670,7 +3670,6 @@
 			name = Client;
 			packageProductDependencies = (
 				F08B27CC25FCFBAE0037D49B /* NeevaSupport */,
-				F08B294D25FDDFC40037D49B /* NeevaSupport */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -3935,7 +3934,6 @@
 			);
 			mainGroup = F84B21B51A090F8100AAB793;
 			packageReferences = (
-				F08B294C25FDDFC40037D49B /* XCRemoteSwiftPackageReference "neeva-ios-support" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -6000,14 +5998,6 @@
 				kind = branch;
 			};
 		};
-		F08B294C25FDDFC40037D49B /* XCRemoteSwiftPackageReference "neeva-ios-support" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/neevaco/neeva-ios-support";
-			requirement = {
-				kind = revision;
-				revision = 8ffbe64cfdabccebf1ce2be11c5898c15c627907;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -6022,11 +6012,6 @@
 		};
 		F08B27ED25FD097F0037D49B /* NeevaSupport */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = NeevaSupport;
-		};
-		F08B294D25FDDFC40037D49B /* NeevaSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F08B294C25FDDFC40037D49B /* XCRemoteSwiftPackageReference "neeva-ios-support" */;
 			productName = NeevaSupport;
 		};
 /* End XCSwiftPackageProductDependency section */
