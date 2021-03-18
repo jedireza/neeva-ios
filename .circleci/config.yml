@@ -17,15 +17,38 @@ commands:
           key: carthage-dir-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "Cartfile.resolved" }}
           paths:
             - Carthage
+  unset-clone-via-ssh:
+    steps:
+      - run:
+          name: Unset cloning via SSH instead of HTTPS
+          command: git config --global --unset url."ssh://git@github.com".insteadOf
+  generate-user-scripts:
+    steps:
+      - run:
+          name: Generate user scripts
+          command: npm install && npm run build
+  generate-content-blocker:
+    steps:
+      - run:
+          name: Generate content blocker
+          command: (cd content-blocker-lib-ios/ContentBlockerGen && swift run)
   build-client:
     steps:
-      - run: xcodebuild build -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
+      - generate-user-scripts
+      - generate-content-blocker
+      - run:
+          name: Build Client
+          command: xcodebuild build -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
   build-demo-app:
     steps:
-      - run: xcodebuild build -scheme 'Neeva iOS Support' -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
+      - run:
+          name: Build Demo App
+          command: xcodebuild build -scheme 'Neeva iOS Support' -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
   build-codegen:
     steps:
-      - run: xcodebuild build -scheme Codegen -workspace Neeva.xcworkspace -destination 'platform=macOS'
+      - run:
+          name: Build Codegen
+          command: xcodebuild build -scheme Codegen -workspace Neeva.xcworkspace -destination 'platform=macOS'
 
 jobs:
   build_all:
@@ -34,6 +57,10 @@ jobs:
     steps:
       - checkout
       - carthage-bootstrap
+      - unset-clone-via-ssh
+      - build-codegen
+      - build-demo-app
+      - build-client
 
 workflows:
   version: 2
