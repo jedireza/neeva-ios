@@ -35,6 +35,10 @@ class AppSettingsTableViewController: SettingsTableViewController {
         }
     }
 
+    func neevaSettings() -> [SettingSection] {
+        return [SettingSection]()
+    }
+
     override func generateSettings() -> [SettingSection] {
         var settings = [SettingSection]()
 
@@ -71,6 +75,11 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 SettingSection(footerTitle: NSAttributedString(string: String.DefaultBrowserCardDescription), children: [DefaultBrowserSetting()])
             ]
         }
+
+        let neevaSettings: [Setting] = [
+            NeevaSearchSetting(delegate: settingsDelegate)
+        ]
+        settings += [ SettingSection(title: NSAttributedString(string: Strings.SettingsNeevaSectionTitle), children: neevaSettings)]
         
         settings += [ SettingSection(title: NSAttributedString(string: Strings.SettingsGeneralSectionTitle), children: generalSettings)]
 

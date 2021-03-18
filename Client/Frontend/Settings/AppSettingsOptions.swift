@@ -116,6 +116,21 @@ class FeatureSwitchSetting: BoolSetting {
 
 }
 
+class NeevaSearchSetting: Setting {
+    init(delegate: SettingsDelegate?) {
+        super.init(title: NSAttributedString(string: .AppNeevaSettingsSearch, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]),
+            delegate: delegate)
+    }
+
+    override func onClick(_ navigationController: UINavigationController?) {
+        navigationController?.dismiss(animated: true) {
+            if let url = URL(string: NeevaConstants.appSettingsURL) {
+                self.delegate?.settingsOpenURLInNewTab(url)
+            }
+        }
+    }
+}
+
 class NeevaHostSetting: HiddenSetting {
     override var title: NSAttributedString? {
         NSAttributedString(string: "Debug: Neeva appHost (\(NeevaConstants.appHost))", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])

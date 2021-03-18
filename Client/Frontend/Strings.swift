@@ -96,6 +96,7 @@ extension Strings {
 
 // Settings.
 extension Strings {
+    public static let SettingsNeevaSectionTitle = MZLocalizedString("Settings.Neeva.SectionName", value: "Neeva", comment: "Neeva settings section title")
     public static let SettingsGeneralSectionTitle = MZLocalizedString("Settings.General.SectionName", value: "General", comment: "General settings section title")
     public static let SettingsClearPrivateDataClearButton = MZLocalizedString("Settings.ClearPrivateData.Clear.Button", value: "Clear Private Data", comment: "Button in settings that clears private data for the selected items.")
     public static let SettingsClearAllWebsiteDataButton = MZLocalizedString("Settings.ClearAllWebsiteData.Clear.Button", value: "Clear All Website Data", comment: "Button in Data Management that clears private data for the selected items.")
@@ -1157,6 +1158,7 @@ extension String {
 
 // App Settings
 extension String {
+    public static let AppNeevaSettingsSearch = MZLocalizedString("Search Settings", comment: "Show the Search Settings page from the Neeva section in the settings.")
     public static let AppSettingsLicenses = MZLocalizedString("Licenses", comment: "Settings item that opens a tab containing the licenses. See http://mzl.la/1NSAWCG")
     public static let AppSettingsYourRights = MZLocalizedString("Terms", comment: "Terms settings section title")
     public static let AppSettingsShowTour = MZLocalizedString("Show Tour", comment: "Show the on-boarding screen again from the settings")

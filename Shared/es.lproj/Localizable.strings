@@ -1712,3 +1712,6 @@
 
 /* Hide Reading Mode on Share activity title */
 "Hide Reading Mode" = "Ocultar modo de lectura";
+
+/* Show the Search Settings page from the Neeva section in the settings. */
+"Search Settings" = "Configuración de búsqueda";

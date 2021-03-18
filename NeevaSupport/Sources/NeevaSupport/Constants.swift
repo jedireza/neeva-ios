@@ -7,9 +7,10 @@ let neevaHostKey = Defaults.Key<String>("neevaHost", default: "alpha.neeva.co", 
 public struct NeevaConstants {
     /// The App Group, used for the keychain and UserDefaults
     public static let appGroup = "group.co.neeva.app.ios.browser"
-    
+
     public static let appPrivacyURL = "https://neeva.co/privacy"
     public static let appHelpCenterURL = "https://neeva.co/contact"
+    public static let appSettingsURL = "https://\(appHost)/settings"
 
     /// The host for the Neeva API/website, such as `alpha.neeva.co`
     public static var appHost: String {
