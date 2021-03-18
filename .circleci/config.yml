@@ -1,15 +1,42 @@
 version: 2.1
 
+commands:
+  carthage-bootstrap:
+    steps:
+      - run:
+          name: Determine XCode version
+          command: echo "$(xcodebuild -version)" >| xcode_version
+      - restore_cache:
+          name: Restore Carthage/ cache
+          key: carthage-dir-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "Cartfile.resolved" }}
+      - run:
+          name: Bootstrap Carthage dependencies
+          command: ./carthage_command.sh
+      - save_cache:
+          name: Save Carthage/ cache
+          key: carthage-dir-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "Cartfile.resolved" }}
+          paths:
+            - Carthage
+  build-client:
+    steps:
+      - run: xcodebuild build -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
+  build-demo-app:
+    steps:
+      - run: xcodebuild build -scheme 'Neeva iOS Support' -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
+  build-codegen:
+    steps:
+      - run: xcodebuild build -scheme Codegen -workspace Neeva.xcworkspace -destination 'platform=macOS'
+
 jobs:
-  build_client:
+  build_all:
     macos:
       xcode: "12.4.0"
     steps:
       - checkout
-      - run: sh ./bootstrap.sh
+      - carthage-bootstrap
 
 workflows:
   version: 2
   build:
     jobs:
-      - build_client
+      - build_all
