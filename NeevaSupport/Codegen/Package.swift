@@ -7,7 +7,7 @@ let package = Package(
     name: "Codegen",
     dependencies: [
         .package(name: "Apollo",
-                 url: "https://github.com/apollographql/apollo-ios.git",
+                 url: "https://github.com/apollographql/apollo-ios",
                  .upToNextMinor(from: "0.38.3"))
     ],
     targets: [
