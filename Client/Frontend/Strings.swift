@@ -50,12 +50,10 @@ extension Strings {
     public static let ASPocketTitle = MZLocalizedString("ActivityStream.Pocket.SectionTitle", value: "Trending on Pocket", comment: "Section title label for Recommended by Pocket section")
     public static let ASTopSitesTitle =  MZLocalizedString("ActivityStream.TopSites.SectionTitle", value: "Top Sites", comment: "Section title label for Top Sites")
     public static let HighlightVistedText = MZLocalizedString("ActivityStream.Highlights.Visited", value: "Visited", comment: "The description of a highlight if it is a site the user has visited")
-    public static let HighlightBookmarkText = MZLocalizedString("ActivityStream.Highlights.Bookmark", value: "Bookmarked", comment: "The description of a highlight if it is a site the user has bookmarked")
     public static let PocketTrendingText = MZLocalizedString("ActivityStream.Pocket.Trending", value: "Trending", comment: "The description of a Pocket Story")
     public static let PocketMoreStoriesText = MZLocalizedString("ActivityStream.Pocket.MoreLink", value: "More", comment: "The link that shows more Pocket trending stories")
     public static let TopSitesRowSettingFooter = MZLocalizedString("ActivityStream.TopSites.RowSettingFooter", value: "Set Rows", comment: "The title for the setting page which lets you select the number of top site rows")
     public static let TopSitesRowCount = MZLocalizedString("ActivityStream.TopSites.RowCount", value: "Rows: %d", comment: "label showing how many rows of topsites are shown. %d represents a number")
-    public static let RecentlyBookmarkedTitle = MZLocalizedString("ActivityStream.NewRecentBookmarks.Title", value: "Recent Bookmarks", comment: "Section title label for recently bookmarked websites")
     public static let RecentlyVisitedTitle = MZLocalizedString("ActivityStream.RecentHistory.Title", value: "Recently Visited", comment: "Section title label for recently visited websites")
 }
 
@@ -64,7 +62,6 @@ extension Strings {
     public static let OpenInNewTabContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.OpenInNewTab", value: "Open in New Tab", comment: "The title for the Open in New Tab context menu action for sites in Home Panels")
     public static let OpenInNewPrivateTabContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.OpenInNewPrivateTab", value: "Open in New Private Tab", comment: "The title for the Open in New Private Tab context menu action for sites in Home Panels")
     public static let BookmarkContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.Bookmark", value: "Bookmark", comment: "The title for the Bookmark context menu action for sites in Home Panels")
-    public static let RemoveBookmarkContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.RemoveBookmark", value: "Remove Bookmark", comment: "The title for the Remove Bookmark context menu action for sites in Home Panels")
     public static let DeleteFromHistoryContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.DeleteFromHistory", value: "Delete from History", comment: "The title for the Delete from History context menu action for sites in Home Panels")
     public static let ShareContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.Share", value: "Share", comment: "The title for the Share context menu action for sites in Home Panels")
     public static let RemoveContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.Remove", value: "Remove", comment: "The title for the Remove context menu action for sites in Home Panels")
@@ -195,15 +192,12 @@ extension Strings {
     public static let FirefoxSyncTroubleshootTitle = MZLocalizedString("Settings.TroubleShootSync.Title", value: "Troubleshoot", comment: "Title of link to help page to find out how to solve Sync issues")
     public static let FirefoxSyncCreateAccount = MZLocalizedString("Sync.NoAccount.Description", value: "No account? Create one to sync Neeva between devices.", comment: "String displayed on Sign In to Sync page that allows the user to create a new account.")
 
-    public static let FirefoxSyncBookmarksEngine = MZLocalizedString("Bookmarks", comment: "Toggle bookmarks syncing setting")
     public static let FirefoxSyncHistoryEngine = MZLocalizedString("History", comment: "Toggle history syncing setting")
     public static let FirefoxSyncTabsEngine = MZLocalizedString("Open Tabs", comment: "Toggle tabs syncing setting")
     public static let FirefoxSyncLoginsEngine = MZLocalizedString("Logins", comment: "Toggle logins syncing setting")
 
     public static func localizedStringForSyncComponent(_ componentName: String) -> String? {
         switch componentName {
-        case "bookmarks":
-            return MZLocalizedString("SyncState.Bookmark.Title", value: "Bookmarks", comment: "The Bookmark sync component, used in SyncState.Partial.Title")
         case "clients":
             return MZLocalizedString("SyncState.Clients.Title", value: "Remote Clients", comment: "The Remote Clients sync component, used in SyncState.Partial.Title")
         case "tabs":
@@ -256,7 +250,6 @@ extension Strings {
     public static let FxAFirefoxAccount = MZLocalizedString("FxA.FirefoxAccount", value: "Neeva Account", comment: "Settings section title for Neeva Account")
     public static let FxASignInToSync = MZLocalizedString("FxA.SignIntoSync", value: "Sign in to Sync", comment: "Button label to sign into Sync")
     public static let FxATakeYourWebWithYou = MZLocalizedString("FxA.TakeYourWebWithYou", value: "Take Your Web With You", comment: "Call to action for sign into sync button")
-    public static let FxASyncUsageDetails = MZLocalizedString("FxA.SyncExplain", value: "Get your tabs, bookmarks, and passwords from your other devices.", comment: "Label explaining what sync does")
     public static let FxAAccountVerificationRequired = MZLocalizedString("FxA.AccountVerificationRequired", value: "Account Verification Required", comment: "Label stating your account is not verified")
     public static let FxAAccountVerificationDetails = MZLocalizedString("FxA.AccountVerificationDetails", value: "Wrong email? Disconnect below to start over.", comment: "Label stating how to disconnect account")
     public static let FxAManageAccount = MZLocalizedString("FxA.ManageAccount", value: "Manage Account & Devices", comment: "Button label to go to Neeva Account settings")
@@ -308,7 +301,6 @@ extension Strings {
     public static let SettingsNewTabTopSites = MZLocalizedString("Settings.NewTab.Option.Topsites", value: "Top Sites", comment: "Option in settings to show Top Sites when you open a new tab")
     public static let SettingsNewTabNeevaHome = MZLocalizedString("Settings.NewTab.Option.Neeva", value: "Neeva Home", comment: "Option in settings to show Neeva Home when you open a new tab")
     public static let SettingsNewTabCustomURL = MZLocalizedString("Settings.NewTab.Option.CustomURL", value: "Custom URL", comment: "Option in settings to allow a custom URL when you open a new tab")
-    public static let SettingsNewTabBookmarks = MZLocalizedString("Settings.NewTab.Option.Bookmarks", value: "Bookmarks", comment: "Option in settings to show bookmarks when you open a new tab")
     public static let SettingsNewTabHistory = MZLocalizedString("Settings.NewTab.Option.History", value: "History", comment: "Option in settings to show history when you open a new tab")
     public static let SettingsNewTabReadingList = MZLocalizedString("Settings.NewTab.Option.ReadingList", value: "Show your Reading List", comment: "Option in settings to show reading list when you open a new tab")
     public static let SettingsNewTabBlankPage = MZLocalizedString("Settings.NewTab.Option.BlankPage", value: "Blank Page", comment: "Option in settings to show a blank page when you open a new tab")
@@ -319,7 +311,6 @@ extension Strings {
     public static let SettingsNewTabPocket = MZLocalizedString("Settings.NewTab.Option.Pocket", value: "Trending on Pocket", comment: "Option in settings to turn on off pocket recommendations")
     public static let SettingsNewTabPocketFooter = MZLocalizedString("Settings.NewTab.Option.PocketFooter", value: "Great content from around the web.", comment: "Footer caption for pocket settings")
     public static let SettingsNewTabHiglightsHistory = MZLocalizedString("Settings.NewTab.Option.HighlightsHistory", value: "Visited", comment: "Option in settings to turn off history in the highlights section")
-    public static let SettingsNewTabHighlightsBookmarks = MZLocalizedString("Settings.NewTab.Option.HighlightsBookmarks", value: "Recent Bookmarks", comment: "Option in the settings to turn off recent bookmarks in the Highlights section")
     public static let SettingsTopSitesCustomizeTitle = MZLocalizedString("Settings.NewTab.Option.CustomizeTitle", value: "Customize Neeva Home", comment: "The title for the section to customize top sites in the new tab settings page.")
     public static let SettingsTopSitesCustomizeFooter = MZLocalizedString("Settings.NewTab.Option.CustomizeFooter", value: "The sites you visit most", comment: "The footer for the section to customize top sites in the new tab settings page.")
 
@@ -353,39 +344,6 @@ extension Strings {
     public static let CustomEngineFormErrorMessage = MZLocalizedString("Search.ThirdPartyEngines.FormErrorMessage", value: "Please fill all fields correctly.", comment: "A message explaining fault in custom search engine form.")
     public static let CustomEngineDuplicateErrorTitle = MZLocalizedString("Search.ThirdPartyEngines.DuplicateErrorTitle", value: "Failed", comment: "A title stating that we failed to add custom search engine.")
     public static let CustomEngineDuplicateErrorMessage = MZLocalizedString("Search.ThirdPartyEngines.DuplicateErrorMessage", value: "A search engine with this title or URL has already been added.", comment: "A message explaining fault in custom search engine form.")
-}
-
-// Root Bookmarks folders
-extension Strings {
-    public static let BookmarksFolderTitleMobile = MZLocalizedString("Mobile Bookmarks", tableName: "Storage", comment: "The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android.")
-    public static let BookmarksFolderTitleMenu = MZLocalizedString("Bookmarks Menu", tableName: "Storage", comment: "The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android.")
-    public static let BookmarksFolderTitleToolbar = MZLocalizedString("Bookmarks Toolbar", tableName: "Storage", comment: "The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android.")
-    public static let BookmarksFolderTitleUnsorted = MZLocalizedString("Unsorted Bookmarks", tableName: "Storage", comment: "The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android.")
-}
-
-// Bookmark Management
-extension Strings {
-    public static let BookmarksTitle = MZLocalizedString("Bookmarks.Title.Label", value: "Title", comment: "The label for the title of a bookmark")
-    public static let BookmarksURL = MZLocalizedString("Bookmarks.URL.Label", value: "URL", comment: "The label for the URL of a bookmark")
-    public static let BookmarksFolder = MZLocalizedString("Bookmarks.Folder.Label", value: "Folder", comment: "The label to show the location of the folder where the bookmark is located")
-    public static let BookmarksNewBookmark = MZLocalizedString("Bookmarks.NewBookmark.Label", value: "New Bookmark", comment: "The button to create a new bookmark")
-    public static let BookmarksNewFolder = MZLocalizedString("Bookmarks.NewFolder.Label", value: "New Folder", comment: "The button to create a new folder")
-    public static let BookmarksNewSeparator = MZLocalizedString("Bookmarks.NewSeparator.Label", value: "New Separator", comment: "The button to create a new separator")
-    public static let BookmarksEditBookmark = MZLocalizedString("Bookmarks.EditBookmark.Label", value: "Edit Bookmark", comment: "The button to edit a bookmark")
-    public static let BookmarksEdit = MZLocalizedString("Bookmarks.Edit.Button", value: "Edit", comment: "The button on the snackbar to edit a bookmark after adding it.")
-    public static let BookmarksEditFolder = MZLocalizedString("Bookmarks.EditFolder.Label", value: "Edit Folder", comment: "The button to edit a folder")
-    public static let BookmarksFolderName = MZLocalizedString("Bookmarks.FolderName.Label", value: "Folder Name", comment: "The label for the title of the new folder")
-    public static let BookmarksFolderLocation = MZLocalizedString("Bookmarks.FolderLocation.Label", value: "Location", comment: "The label for the location of the new folder")
-    public static let BookmarksDeleteFolderWarningTitle = MZLocalizedString("Bookmarks.DeleteFolderWarning.Title", tableName: "BookmarkPanelDeleteConfirm", value: "This folder isn’t empty.", comment: "Title of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.")
-    public static let BookmarksDeleteFolderWarningDescription = MZLocalizedString("Bookmarks.DeleteFolderWarning.Description", tableName: "BookmarkPanelDeleteConfirm", value: "Are you sure you want to delete it and its contents?", comment: "Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.")
-    public static let BookmarksDeleteFolderCancelButtonLabel = MZLocalizedString("Bookmarks.DeleteFolderWarning.CancelButton.Label", tableName: "BookmarkPanelDeleteConfirm", value: "Cancel", comment: "Button label to cancel deletion when the user tried to delete a non-empty folder.")
-    public static let BookmarksDeleteFolderDeleteButtonLabel = MZLocalizedString("Bookmarks.DeleteFolderWarning.DeleteButton.Label", tableName: "BookmarkPanelDeleteConfirm", value: "Delete", comment: "Button label for the button that deletes a folder and all of its children.")
-    public static let BookmarksPanelEmptyStateTitle = MZLocalizedString("BookmarksPanel.EmptyState.Title", value: "Bookmarks you save will show up here.", comment: "Status label for the empty Bookmarks state.")
-    public static let BookmarksPanelDeleteTableAction = MZLocalizedString("Delete", tableName: "BookmarkPanel", comment: "Action button for deleting bookmarks in the bookmarks panel.")
-    public static let BookmarkDetailFieldTitle = MZLocalizedString("Bookmark.DetailFieldTitle.Label", value: "Title", comment: "The label for the Title field when editing a bookmark")
-    public static let BookmarkDetailFieldURL = MZLocalizedString("Bookmark.DetailFieldURL.Label", value: "URL", comment: "The label for the URL field when editing a bookmark")
-    public static let BookmarkDetailFieldsHeaderBookmarkTitle = MZLocalizedString("Bookmark.BookmarkDetail.FieldsHeader.Bookmark.Title", value: "Bookmark", comment: "The header title for the fields when editing a Bookmark")
-    public static let BookmarkDetailFieldsHeaderFolderTitle = MZLocalizedString("Bookmark.BookmarkDetail.FieldsHeader.Folder.Title", value: "Folder", comment: "The header title for the fields when editing a Folder")
 }
 
 // Tabs Delete All Undo Toast
@@ -470,7 +428,6 @@ extension Strings {
 extension Strings {
     public static let ContextMenuOpenInNewTab = MZLocalizedString("ContextMenu.OpenInNewTabButtonTitle", value: "Open in New Tab", comment: "Context menu item for opening a link in a new tab")
     public static let ContextMenuOpenInNewPrivateTab = MZLocalizedString("ContextMenu.OpenInNewPrivateTabButtonTitle", tableName: "PrivateBrowsing", value: "Open in New Private Tab", comment: "Context menu option for opening a link in a new private tab")
-    public static let ContextMenuBookmarkLink = MZLocalizedString("ContextMenu.BookmarkLinkButtonTitle", value: "Bookmark Link", comment: "Context menu item for bookmarking a link URL")
     public static let ContextMenuDownloadLink = MZLocalizedString("ContextMenu.DownloadLinkButtonTitle", value: "Download Link", comment: "Context menu item for downloading a link URL")
     public static let ContextMenuCopyLink = MZLocalizedString("ContextMenu.CopyLinkButtonTitle", value: "Copy Link", comment: "Context menu item for copying a link URL to the clipboard")
     public static let ContextMenuShareLink = MZLocalizedString("ContextMenu.ShareLinkButtonTitle", value: "Share Link", comment: "Context menu item for sharing a link URL")
@@ -500,7 +457,6 @@ extension Strings {
 
     // Notification Actions
     public static let SentTabViewActionTitle = MZLocalizedString("SentTab.ViewAction.title", value: "View", comment: "Label for an action used to view one or more tabs from a notification.")
-    public static let SentTabBookmarkActionTitle = MZLocalizedString("SentTab.BookmarkAction.title", value: "Bookmark", comment: "Label for an action used to bookmark one or more tabs from a notification.")
     public static let SentTabAddToReadingListActionTitle = MZLocalizedString("SentTab.AddToReadingListAction.Title", value: "Add to Reading List", comment: "Label for an action used to add one or more tabs recieved from a notification to the reading list.")
 }
 
@@ -543,8 +499,6 @@ extension Strings {
     public static let AppMenuCopyURLTitleString = MZLocalizedString("Menu.CopyAddress.Title", tableName: "Menu", value: "Copy Address", comment: "Label for the button, displayed in the menu, used to copy the page url to the clipboard.")
     public static let AppMenuNewTabTitleString = MZLocalizedString("Menu.NewTabAction.Title", tableName: "Menu", value: "Open New Tab", comment: "Label for the button, displayed in the menu, used to open a new tab")
     public static let AppMenuNewPrivateTabTitleString = MZLocalizedString("Menu.NewPrivateTabAction.Title", tableName: "Menu", value: "Open New Private Tab", comment: "Label for the button, displayed in the menu, used to open a new private tab.")
-    public static let AppMenuAddBookmarkTitleString = MZLocalizedString("Menu.AddBookmarkAction.Title", tableName: "Menu", value: "Bookmark This Page", comment: "Label for the button, displayed in the menu, used to create a bookmark for the current website.")
-    public static let AppMenuRemoveBookmarkTitleString = MZLocalizedString("Menu.RemoveBookmarkAction.Title", tableName: "Menu", value: "Remove Bookmark", comment: "Label for the button, displayed in the menu, used to delete an existing bookmark for the current website.")
     public static let AppMenuFindInPageTitleString = MZLocalizedString("Menu.FindInPageAction.Title", tableName: "Menu", value: "Find on Page", comment: "Label for the button, displayed in the menu, used to open the toolbar to search for text within the current page.")
     public static let AppMenuViewDesktopSiteTitleString = MZLocalizedString("Menu.ViewDekstopSiteAction.Title", tableName: "Menu", value: "Request Desktop Site", comment: "Label for the button, displayed in the menu, used to request the desktop version of the current website.")
     public static let AppMenuViewMobileSiteTitleString = MZLocalizedString("Menu.ViewMobileSiteAction.Title", tableName: "Menu", value: "Request Mobile Site", comment: "Label for the button, displayed in the menu, used to request the mobile version of the current website.")
@@ -554,7 +508,6 @@ extension Strings {
     public static let AppMenuCloseAllTabsTitleString = MZLocalizedString("Menu.CloseAllTabsAction.Title", tableName: "Menu", value: "Close All Tabs", comment: "Label for the button, displayed in the menu, used to close all tabs currently open.")
     public static let AppMenuOpenHomePageTitleString = MZLocalizedString("Menu.OpenHomePageAction.Title", tableName: "Menu", value: "Home", comment: "Label for the button, displayed in the menu, used to navigate to the home page.")
     public static let AppMenuTopSitesTitleString = MZLocalizedString("Menu.OpenTopSitesAction.AccessibilityLabel", tableName: "Menu", value: "Top Sites", comment: "Accessibility label for the button, displayed in the menu, used to open the Top Sites home panel.")
-    public static let AppMenuBookmarksTitleString = MZLocalizedString("Menu.OpenBookmarksAction.AccessibilityLabel.v2", tableName: "Menu", value: "Bookmarks", comment: "Accessibility label for the button, displayed in the menu, used to open the Bookmarks home panel. Please keep as short as possible, <15 chars of space available.")
     public static let AppMenuReadingListTitleString = MZLocalizedString("Menu.OpenReadingListAction.AccessibilityLabel.v2", tableName: "Menu", value: "Reading List", comment: "Accessibility label for the button, displayed in the menu, used to open the Reading list home panel. Please keep as short as possible, <15 chars of space available.")
     public static let AppMenuHistoryTitleString = MZLocalizedString("Menu.OpenHistoryAction.AccessibilityLabel.v2", tableName: "Menu", value: "History", comment: "Accessibility label for the button, displayed in the menu, used to open the History home panel. Please keep as short as possible, <15 chars of space available.")
     public static let AppMenuDownloadsTitleString = MZLocalizedString("Menu.OpenDownloadsAction.AccessibilityLabel.v2", tableName: "Menu", value: "Downloads", comment: "Accessibility label for the button, displayed in the menu, used to open the Downloads home panel. Please keep as short as possible, <15 chars of space available.")
@@ -565,9 +518,7 @@ extension Strings {
     public static let AppMenuNightMode = MZLocalizedString("Menu.NightModeTurnOn.Label", value: "Enable Night Mode", comment: "Label for the button, displayed in the menu, turns on night mode.")
     public static let AppMenuNoImageMode = MZLocalizedString("Menu.NoImageModeBlockImages.Label", value: "Block Images", comment: "Label for the button, displayed in the menu, hides images on the webpage when pressed.")
     public static let AppMenuCopyURLConfirmMessage = MZLocalizedString("Menu.CopyURL.Confirm", value: "URL Copied To Clipboard", comment: "Toast displayed to user after copy url pressed.")
-    public static let AppMenuAddBookmarkConfirmMessage = MZLocalizedString("Menu.AddBookmark.Confirm", value: "Bookmark Added", comment: "Toast displayed to the user after a bookmark has been added.")
     public static let AppMenuTabSentConfirmMessage = MZLocalizedString("Menu.TabSent.Confirm", value: "Tab Sent", comment: "Toast displayed to the user after a tab has been sent successfully.")
-    public static let AppMenuRemoveBookmarkConfirmMessage = MZLocalizedString("Menu.RemoveBookmark.Confirm", value: "Bookmark Removed", comment: "Toast displayed to the user after a bookmark has been removed.")
     public static let AppMenuAddPinToTopSitesConfirmMessage = MZLocalizedString("Menu.AddPin.Confirm", value: "Pinned To Top Sites", comment: "Toast displayed to the user after adding the item to the Top Sites.")
     public static let AppMenuRemovePinFromTopSitesConfirmMessage = MZLocalizedString("Menu.RemovePin.Confirm", value: "Removed From Top Sites", comment: "Toast displayed to the user after removing the item from the Top Sites.")
     public static let AppMenuAddToReadingListConfirmMessage = MZLocalizedString("Menu.AddToReadingList.Confirm", value: "Added To Reading List", comment: "Toast displayed to the user after adding the item to their reading list.")
@@ -701,15 +652,10 @@ extension Strings {
     public static let CardTitleSafeSync = MZLocalizedString("Intro.Slides.Safe.Sync.Title", tableName: "Intro", value: "Safe Sync", comment: "Title for the third item in the table related to safe syncing with a Neeva account")
     public static let CardDescriptionSafeSync = MZLocalizedString("Intro.Slides.Safe.Sync.Description", tableName: "Intro", value: "Protect your logins and data everywhere you use Neeva.", comment: "Description for the third item in the table related to safe syncing with a Neeva account")
     
-    // Second Card
-    public static let CardTitleFxASyncDevices = MZLocalizedString("Intro.Slides.Firefox.Account.Sync.Title", tableName: "Intro", value: "Sync Neeva Between Devices", comment: "Title for the first item in the table related to syncing data (bookmarks, history) via Neeva account between devices")
-    public static let CardDescriptionFxASyncDevices = MZLocalizedString("Intro.Slides.Firefox.Account.Sync.Description", tableName: "Intro", value: "Bring bookmarks, history, and passwords to Neeva on this device.", comment: "Description for the first item in the table related to syncing data (bookmarks, history) via Neeva account between devices")
-    
     //----Other----//
     public static let CardTitleSearch = MZLocalizedString("Intro.Slides.Search.Title", tableName: "Intro", value: "Your search, your way", comment: "Title for the second  panel 'Search' in the First Run tour.")
     public static let CardTitlePrivate = MZLocalizedString("Intro.Slides.Private.Title", tableName: "Intro", value: "Browse like no one’s watching", comment: "Title for the third panel 'Private Browsing' in the First Run tour.")
     public static let CardTitleMail = MZLocalizedString("Intro.Slides.Mail.Title", tableName: "Intro", value: "You’ve got mail… options", comment: "Title for the fourth panel 'Mail' in the First Run tour.")
-    public static let CardTitleSync = MZLocalizedString("Intro.Slides.TrailheadSync.Title.v2", tableName: "Intro", value: "Sync your bookmarks, history, and passwords to your phone.", comment: "Title for the second panel 'Sync' in the First Run tour.")
 
     public static let CardTextWelcome = MZLocalizedString("Intro.Slides.Welcome.Description.v2", tableName: "Intro", value: "Fast, private, and on your side.", comment: "Description for the 'Welcome' panel in the First Run tour.")
     public static let CardTextSearch = MZLocalizedString("Intro.Slides.Search.Description", tableName: "Intro", value: "Searching for something different? Choose another default search engine (or add your own) in Settings.", comment: "Description for the 'Favorite Search Engine' panel in the First Run tour.")
@@ -755,8 +701,6 @@ extension Strings {
 
     public static let ShareAddToReadingList = MZLocalizedString("ShareExtension.AddToReadingListAction.Title", value: "Add to Reading List", comment: "Action label on share extension to add page to the Neeva reading list.")
     public static let ShareAddToReadingListDone = MZLocalizedString("ShareExtension.AddToReadingListActionDone.Title", value: "Added to Reading List", comment: "Share extension label shown after user has performed 'Add to Reading List' action.")
-    public static let ShareBookmarkThisPage = MZLocalizedString("ShareExtension.BookmarkThisPageAction.Title", value: "Bookmark This Page", comment: "Action label on share extension to bookmark the page in Neeva.")
-    public static let ShareBookmarkThisPageDone = MZLocalizedString("ShareExtension.BookmarkThisPageActionDone.Title", value: "Bookmarked", comment: "Share extension label shown after user has performed 'Bookmark this Page' action.")
 
     public static let ShareOpenInNeeva = MZLocalizedString("ShareExtension.OpenInNeevaAction.Title", value: "Open in Neeva", comment: "Action label on share extension to immediately open page in Neeva.")
     public static let ShareSearchInNeeva = MZLocalizedString("ShareExtension.SeachInNeevaAction.Title", value: "Search in Neeva", comment: "Action label on share extension to search for the selected text in Neeva.")
@@ -1066,7 +1010,6 @@ extension String {
 
 // TabPeekViewController
 extension String {
-    public static let TabPeekAddToBookmarks = MZLocalizedString("Add to Bookmarks", tableName: "3DTouchActions", comment: "Label for preview action on Tab Tray Tab to add current tab to Bookmarks")
     public static let TabPeekCopyUrl = MZLocalizedString("Copy URL", tableName: "3DTouchActions", comment: "Label for preview action on Tab Tray Tab to copy the URL of the current tab to clipboard")
     public static let TabPeekCloseTab = MZLocalizedString("Close Tab", tableName: "3DTouchActions", comment: "Label for preview action on Tab Tray Tab to close the current tab")
     public static let TabPeekPreviewAccessibilityLabel = MZLocalizedString("Preview of %@", tableName: "3DTouchActions", comment: "Accessibility label, associated to the 3D Touch action on the current tab in the tab tray, used to display a larger preview of the tab.")
@@ -1117,7 +1060,6 @@ extension String {
 
 // LibraryPanel
 extension String {
-    public static let LibraryPanelBookmarksAccessibilityLabel = MZLocalizedString("Bookmarks", comment: "Panel accessibility label")
     public static let LibraryPanelHistoryAccessibilityLabel = MZLocalizedString("History", comment: "Panel accessibility label")
     public static let LibraryPanelReadingListAccessibilityLabel = MZLocalizedString("Reading list", comment: "Panel accessibility label")
     public static let LibraryPanelDownloadsAccessibilityLabel = MZLocalizedString("Downloads", comment: "Panel accessibility label")
@@ -1144,9 +1086,7 @@ extension String {
 // Remote Tabs Panel
 extension String {
     // Backup and active strings added in Bug 1205294.
-    public static let RemoteTabEmptyStateInstructionsSyncTabsPasswordsBookmarksString = MZLocalizedString("Sync your tabs, bookmarks, passwords and more.", comment: "Text displayed when the Sync home panel is empty, describing the features provided by Sync to invite the user to log in.")
     public static let RemoteTabEmptyStateInstructionsSyncTabsPasswordsString = MZLocalizedString("Sync your tabs, passwords and more.", comment: "Text displayed when the Sync home panel is empty, describing the features provided by Sync to invite the user to log in.")
-    public static let RemoteTabEmptyStateInstructionsGetTabsBookmarksPasswordsString = MZLocalizedString("Get your open tabs, bookmarks, and passwords from your other devices.", comment: "A re-worded offer about Sync, displayed when the Sync home panel is empty, that emphasizes one-way data transfer, not syncing.")
 
     public static let RemoteTabErrorNoTabs = MZLocalizedString("You don’t have any tabs open in Neeva on your other devices.", comment: "Error message in the remote tabs panel")
     public static let RemoteTabErrorFailedToSync = MZLocalizedString("There was a problem accessing tabs from your other devices. Try again in a few moments.", comment: "Error message in the remote tabs panel")

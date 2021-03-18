@@ -16,6 +16,7 @@ class TabMoreMenuViewController: UIViewController, Themeable {
     let profile: Profile
     let tabIndex: IndexPath
 
+    // TODO: should not reference bookmarks!
     let titles: [Int: [String]] = [ 1: [Strings.BookmarkContextMenuTitle,
                                         Strings.PinTopsiteActionTitle],
                                     2: [Strings.CloseTabTitle],
