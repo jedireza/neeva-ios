@@ -129,6 +129,13 @@ class DarkDefaultBrowserCardColor: DefaultBrowserCardColor {
     override var closeButton: UIColor { return UIColor.Photon.Grey20 }
 }
 
+class DarkPopupMenu: PopupMenu {
+    override var background: UIColor { return UIColor.Photon.Grey60 }
+    override var foreground: UIColor { return UIColor.Photon.Grey80 }
+    override var textColor: UIColor { return UIColor.white }
+    override var buttonColor: UIColor { return UIColor.white }
+}
+
 class DarkTheme: NormalTheme {
     override var name: String { return BuiltinThemeName.dark.rawValue }
     override var tableView: TableViewColor { return DarkTableViewColor() }
@@ -144,4 +151,5 @@ class DarkTheme: NormalTheme {
     override var actionMenu: ActionMenuColor { return DarkActionMenuColor() }
     override var defaultBrowserCard: DefaultBrowserCardColor { return DarkDefaultBrowserCardColor() }
     override var userInterfaceStyle: UIUserInterfaceStyle { .dark }
+    override var popupMenu: PopupMenu { return DarkPopupMenu() }
 }

@@ -9,10 +9,6 @@
 import SwiftUI
 
 extension Color {
-    /// Color set for Menu UI
-    static var menuText:Color { Color("menu-text") }
-    static var menuPrimary:Color { Color("menu-primary") }
-    static var menuSecondary:Color { Color("menu-secondary") }
     /// Constant set for General UI
     static var transparent:Color { Color.gray.opacity(0) }
 }

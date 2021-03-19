@@ -25,14 +25,16 @@ public struct NeevaMenuButtonView: View {
         Group{
             VStack{
                 Image(buttonImage)
+                    .renderingMode(.template)
+                    .foregroundColor(Color(UIColor.theme.popupMenu.buttonColor))
                 Text(buttonName)
-                    .foregroundColor(Color.menuText)
+                    .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
                     .font(.system(size: NeevaUIConstants.menuButtonFontSize))
             }
         }
         .padding(NeevaUIConstants.menuInnerPadding)
         .frame(minWidth: 0, maxWidth: 75)
-        .background(Color.menuPrimary)
+        .background(Color(UIColor.theme.popupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }
 }

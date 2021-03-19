@@ -24,15 +24,17 @@ public struct NeevaMenuRowButtonView: View {
         Group{
             HStack{
                 Text(buttonName)
-                    .foregroundColor(Color.menuText)
+                    .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
                     .font(.system(size: NeevaUIConstants.menuFontSize))
                 Spacer()
                 Image(buttonImage)
+                    .renderingMode(.template)
+                    .foregroundColor(Color(UIColor.theme.popupMenu.buttonColor))
             }
         }
         .padding(NeevaUIConstants.menuRowPadding)
         .frame(minWidth: 0, maxWidth: 310)
-        .background(Color.menuPrimary)
+        .background(Color(UIColor.theme.popupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }
 }

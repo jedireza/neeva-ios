@@ -102,7 +102,7 @@ open class TabToolbarHelper: NSObject {
         toolbar.addNewTabButton.accessibilityIdentifier = "TabToolbar.addNewTabButton"
         
         toolbar.spacesMenuButton.contentMode = .center
-        toolbar.spacesMenuButton.setImage(UIImage(systemName: "bookmark"), for: .normal)
+        toolbar.spacesMenuButton.setImage(UIImage(named: "menu-spaces"), for: .normal)
         toolbar.spacesMenuButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
         toolbar.spacesMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
         toolbar.spacesMenuButton.showsMenuAsPrimaryAction = true

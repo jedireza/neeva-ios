@@ -1395,7 +1395,7 @@ extension BrowserViewController: URLBarDelegate {
             rootView: NeevaMenuView())
           
         //Fix autolayout sizing
-        host.view.backgroundColor = UIColor(Color.menuSecondary)
+        host.view.backgroundColor = UIColor.theme.popupMenu.background
         host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 850, height: 850))
         present(
             host,

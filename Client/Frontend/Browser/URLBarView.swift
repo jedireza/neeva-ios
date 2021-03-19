@@ -89,6 +89,19 @@ class URLBarView: UIView {
     /// a panel, the first responder will be resigned, yet the overlay mode UI is still active.
     var inOverlayMode = false
 
+    lazy var neevaMenuButton: ToolbarButton = {
+        let neevaMenuButton = ToolbarButton(frame: .zero)
+        neevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
+        neevaMenuButton.isAccessibilityElement = true
+        neevaMenuButton.isHidden = false
+        neevaMenuButton.imageView?.contentMode = .left
+        neevaMenuButton.accessibilityLabel = .TabLocationPageOptionsAccessibilityLabel
+        neevaMenuButton.accessibilityIdentifier = "TabLocationView.pageOptionsButton"
+        neevaMenuButton.addTarget(self, action: #selector(didClickNeevaMenu), for: UIControl.Event.touchUpInside)
+        neevaMenuButton.showsMenuAsPrimaryAction = true
+        return neevaMenuButton
+    }()
+    
     lazy var locationView: TabLocationView = {
         let locationView = TabLocationView()
         locationView.layer.cornerRadius = URLBarViewUX.TextFieldCornerRadius
@@ -198,6 +211,7 @@ class URLBarView: UIView {
     }
 
     fileprivate func commonInit() {
+        locationContainer.addSubview(neevaMenuButton)
         locationContainer.addSubview(locationView)
 
         [scrollToTopButton, line, tabsButton, progressBar, cancelButton, showQRScannerButton,
@@ -215,7 +229,7 @@ class URLBarView: UIView {
         // Make sure we hide any views that shouldn't be showing in non-overlay mode.
         updateViewsForOverlayModeAndToolbarChanges()
     }
-
+    
     fileprivate func setupConstraints() {
 
         line.snp.makeConstraints { make in
@@ -234,10 +248,17 @@ class URLBarView: UIView {
             make.left.right.equalTo(self)
         }
 
-        locationView.snp.makeConstraints { make in
-            make.edges.equalTo(self.locationContainer)
+        neevaMenuButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self)
+            make.leading.equalTo(self.locationContainer.snp.leading)
+            make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
-
+        
+        locationView.snp.makeConstraints { make in
+            make.top.bottom.trailing.equalTo(self.locationContainer)
+            make.trailing.equalTo(self.locationContainer)
+        }
+        
         cancelButton.snp.makeConstraints { make in
             make.leading.equalTo(self.safeArea.leading)
             make.centerY.equalTo(self.locationContainer)
@@ -263,13 +284,13 @@ class URLBarView: UIView {
         }
 
         libraryButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.spacesMenuButton.snp.leading)
+            make.trailing.equalTo(self.addNewTabButton.snp.leading)
             make.centerY.equalTo(self)
             make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
 
         spacesMenuButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.spacesMenuButton.snp.leading)
+            make.leading.equalTo(self.shareButton.snp.trailing)
             make.centerY.equalTo(self)
             make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
@@ -319,7 +340,7 @@ class URLBarView: UIView {
             self.locationContainer.snp.remakeConstraints { make in
                 if self.toolbarIsShowing {
                     // If we are showing a toolbar, show the text field next to the forward button
-                    make.leading.equalTo(self.shareButton.snp.trailing).offset(URLBarViewUX.Padding)
+                    make.leading.equalTo(self.spacesMenuButton.snp.trailing).offset(URLBarViewUX.Padding)
                     if self.topTabsIsShowing {
                         make.trailing.equalTo(self.libraryButton.snp.leading).offset(-URLBarViewUX.Padding)
                     } else {
@@ -333,8 +354,14 @@ class URLBarView: UIView {
                 make.centerY.equalTo(self)
             }
             self.locationContainer.layer.borderWidth = URLBarViewUX.TextFieldBorderWidth
+            self.neevaMenuButton.snp.remakeConstraints { make in
+                make.centerY.equalTo(self)
+                make.leading.equalTo(self.locationContainer.snp.leading).inset(UIEdgeInsets(equalInset: URLBarViewUX.TextFieldBorderWidthSelected))
+                make.size.equalTo(URLBarViewUX.ButtonHeight)
+            }
             self.locationView.snp.remakeConstraints { make in
-                make.edges.equalTo(self.locationContainer).inset(UIEdgeInsets(equalInset: URLBarViewUX.TextFieldBorderWidth))
+                make.top.bottom.trailing.equalTo(self.locationContainer).inset(UIEdgeInsets(equalInset: URLBarViewUX.TextFieldBorderWidth))
+                make.leading.equalTo(self.neevaMenuButton.snp.trailing)
             }
         }
 
@@ -344,6 +371,10 @@ class URLBarView: UIView {
         self.delegate?.urlBarDidPressQRButton(self)
     }
 
+    @objc func didClickNeevaMenu() {
+        self.delegate?.urlBarNeevaMenu(self, from: neevaMenuButton)
+    }
+    
     func createLocationTextField() {
         guard locationTextField == nil else { return }
 
@@ -637,9 +668,9 @@ extension URLBarView: TabToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, shareButton, locationView, tabsButton, libraryButton, spacesMenuButton, addNewTabButton, progressBar]
+                    return [backButton, forwardButton, shareButton, spacesMenuButton, locationContainer, tabsButton, libraryButton, addNewTabButton, progressBar]
                 } else {
-                    return [locationView, progressBar]
+                    return [locationContainer, progressBar]
                 }
             }
         }
@@ -774,7 +805,8 @@ extension URLBarView: Themeable {
 
         locationBorderColor = UIColor.theme.urlbar.border
         locationView.backgroundColor = inOverlayMode ? UIColor.theme.textField.backgroundInOverlay : UIColor.theme.textField.background
-        locationContainer.backgroundColor = UIColor.theme.textField.background
+        locationView.layer.cornerRadius = 20
+        locationContainer.backgroundColor = UIColor.clear
 
         privateModeBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
@@ -801,7 +833,7 @@ extension URLBarView: PrivateModeUI {
 class TabLocationContainerView: UIView {
 
     private struct LocationContainerUX {
-        static let CornerRadius: CGFloat = 8
+        static let CornerRadius: CGFloat = 25
     }
 
     override init(frame: CGRect) {

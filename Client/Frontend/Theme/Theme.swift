@@ -205,6 +205,13 @@ class DefaultBrowserCardColor {
     var closeButton: UIColor { return UIColor.Photon.Grey80 }
 }
 
+class PopupMenu {
+    var background: UIColor { return UIColor.Photon.Grey30 }
+    var foreground: UIColor { return UIColor.white }
+    var textColor: UIColor { return UIColor.black }
+    var buttonColor: UIColor { return UIColor.black }
+}
+
 protocol Theme {
     var name: String { get }
     var tableView: TableViewColor { get }
@@ -222,6 +229,7 @@ protocol Theme {
     var switchToggleTheme: GeneralColor { get }
     var defaultBrowserCard: DefaultBrowserCardColor { get }
     var userInterfaceStyle: UIUserInterfaceStyle { get }
+    var popupMenu: PopupMenu { get }
 }
 
 class NormalTheme: Theme {
@@ -241,4 +249,5 @@ class NormalTheme: Theme {
     var switchToggleTheme: GeneralColor { return GeneralColor() }
     var defaultBrowserCard: DefaultBrowserCardColor { return DefaultBrowserCardColor() }
     var userInterfaceStyle: UIUserInterfaceStyle { .light }
+    var popupMenu: PopupMenu { return PopupMenu() }
 }

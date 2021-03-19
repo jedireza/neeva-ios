@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "neeva-logo.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "neeva-logo@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "neeva-logo@3x.png",
+      "filename" : "neeva-logo-two-colors.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }

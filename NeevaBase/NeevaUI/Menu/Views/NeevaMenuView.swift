@@ -53,13 +53,13 @@ public struct NeevaMenuView: View {
                         .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.signOut)})
                 }
                 .padding(NeevaUIConstants.menuInnerPadding)
-                .background(Color.menuPrimary)
+                .background(Color(UIColor.theme.popupMenu.foreground))
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)
             }
             .frame(minHeight: 0, maxHeight: 310)
         }
         .padding(NeevaUIConstants.menuOuterPadding)
-        .background(Color.menuSecondary)
+        .background(Color(UIColor.theme.popupMenu.background))
     }
 }
 

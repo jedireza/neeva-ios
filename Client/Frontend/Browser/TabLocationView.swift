@@ -37,7 +37,6 @@ class TabLocationView: UIView {
     var longPressRecognizer: UILongPressGestureRecognizer!
     var tapRecognizer: UITapGestureRecognizer!
     var contentView: UIStackView!
-    var urlContentView: UIStackView!
 
     fileprivate let menuBadge = BadgeWithBackdrop(imageName: "menuBadge", backdropCircleSize: 32)
 
@@ -201,7 +200,7 @@ class TabLocationView: UIView {
         // Link these so they hide/show in-sync.
         trackingProtectionButton.separatorLine = separatorLineForTP
 
-        let subviews = [ neevaMenuButton, space10px, lockImageView, urlTextField, reloadButton, trackingProtectionButton]
+        let subviews = [ space10px, lockImageView, urlTextField, reloadButton, trackingProtectionButton]
         
         contentView = UIStackView(arrangedSubviews: subviews)
         contentView.distribution = .fill
@@ -210,10 +209,6 @@ class TabLocationView: UIView {
 
         contentView.snp.makeConstraints { make in
             make.edges.equalTo(self)
-        }
-
-        neevaMenuButton.snp.makeConstraints { make in
-            make.size.equalTo(TabLocationViewUX.ButtonSize)
         }
 
         lockImageView.snp.makeConstraints { make in
@@ -235,7 +230,6 @@ class TabLocationView: UIView {
         self.addInteraction(dragInteraction)
 
         menuBadge.add(toParent: contentView)
-        menuBadge.layout(onButton: neevaMenuButton)
         menuBadge.show(false)
     }
 
@@ -243,7 +237,7 @@ class TabLocationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var _accessibilityElements = [neevaMenuButton, urlTextField, reloadButton, trackingProtectionButton]
+    private lazy var _accessibilityElements = [urlTextField, reloadButton, trackingProtectionButton]
 
     override var accessibilityElements: [Any]? {
         get {
