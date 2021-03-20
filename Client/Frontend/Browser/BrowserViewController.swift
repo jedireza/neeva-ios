@@ -1396,14 +1396,14 @@ extension BrowserViewController: URLBarDelegate {
           
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background
-        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 850, height: 850))
+        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 315))
         present(
             host,
             animated: true,
             completion: nil)
         
     }
-
+    
     func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions){
         if let tab = self.tabManager.selectedTab {
             switch(page){
@@ -1430,13 +1430,19 @@ extension BrowserViewController: URLBarDelegate {
         }
     }
     
-    func urlBarDidTapShield(_ urlBar: URLBarView) {
-        if let tab = self.tabManager.selectedTab {
-            let trackingProtectionMenu = self.getTrackingSubMenu(for: tab)
-            let title = String.localizedStringWithFormat(Strings.TPPageMenuTitle, tab.url?.host ?? "")
-            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .trackingProtectionMenu)
-            self.presentSheetWith(title: title, actions: trackingProtectionMenu, on: self, from: urlBar)
-        }
+    func urlBarDidTapShield(_ urlBar: URLBarView, from button: UIButton) {
+        let host = PopOverTrackingMenuViewController(
+            delegate: self,
+            source: button,
+            rootView: TrackingMenuView())
+          
+        //Fix autolayout sizing
+        host.view.backgroundColor = UIColor.theme.popupMenu.background
+        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 275))
+        present(
+            host,
+            animated: true,
+            completion: nil)
     }
 
     func urlBarDidPressStop(_ urlBar: URLBarView) {

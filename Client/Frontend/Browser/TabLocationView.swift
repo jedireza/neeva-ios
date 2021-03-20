@@ -14,7 +14,6 @@ protocol TabLocationViewDelegate {
     func tabLocationViewDidLongPressLocation(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView)
-    func tabLocationViewNeevaOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton)
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView)
 
     func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu?
@@ -148,24 +147,6 @@ class TabLocationView: UIView {
         reloadButton.isAccessibilityElement = true
         return reloadButton
     }()
-
-    lazy var neevaMenuButton: ToolbarButton = {
-        let neevaMenuButton = ToolbarButton(frame: .zero)
-        neevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
-        neevaMenuButton.isAccessibilityElement = true
-        neevaMenuButton.isHidden = false
-        neevaMenuButton.imageView?.contentMode = .left
-        neevaMenuButton.accessibilityLabel = .TabLocationPageOptionsAccessibilityLabel
-        neevaMenuButton.accessibilityIdentifier = "TabLocationView.pageOptionsButton"
-        //neevaMenuButton.setDynamicMenu({ self.delegate?.tabLocationViewNeevaOptionsMenu(self, from: neevaMenuButton) })
-        neevaMenuButton.addTarget(self, action: #selector(didClickNeevaMenu), for: UIControl.Event.touchUpInside)
-        neevaMenuButton.showsMenuAsPrimaryAction = true
-        return neevaMenuButton
-    }()
-    
-    @objc func didClickNeevaMenu() {
-        self.delegate?.tabLocationViewNeevaOptionsMenu(self, from: neevaMenuButton)
-    }
     
     private func makeSeparator() -> UIView {
         let line = UIView()

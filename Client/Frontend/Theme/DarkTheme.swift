@@ -133,6 +133,7 @@ class DarkPopupMenu: PopupMenu {
     override var background: UIColor { return UIColor.Photon.Grey60 }
     override var foreground: UIColor { return UIColor.Photon.Grey80 }
     override var textColor: UIColor { return UIColor.white }
+    override var secondaryTextColor: UIColor { return UIColor.Photon.Grey20 }
     override var buttonColor: UIColor { return UIColor.white }
 }
 

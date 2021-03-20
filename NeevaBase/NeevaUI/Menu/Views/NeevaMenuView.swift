@@ -36,7 +36,7 @@ public struct NeevaMenuView: View {
                     .cornerRadius(NeevaUIConstants.menuCornerDefault)
                 }
                 Group{
-                    NeevaMenuRowButtonView(name:"Downloads", image:"download")
+                    NeevaMenuRowButtonView(name:"Downloads", image:"menu-downloads")
                         .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.downloads)})
                     VStack{
                         NeevaMenuRowButtonView(name:"Send Feedback", image:"menu-feedback")

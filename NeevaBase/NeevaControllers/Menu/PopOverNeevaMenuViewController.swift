@@ -93,10 +93,5 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
         popoverMenuViewController?.permittedArrowDirections = .up
         popoverMenuViewController?.delegate = delegate
         popoverMenuViewController?.sourceView = source
-        popoverMenuViewController?.sourceRect = CGRect(
-            x: source.frame.origin.x + (source.frame.width / 2),
-            y: source.frame.origin.y + (source.frame.height * 0.75),
-            width: 1,
-            height: 1)
     }
 }

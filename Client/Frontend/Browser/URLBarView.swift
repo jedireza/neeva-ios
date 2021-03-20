@@ -37,7 +37,7 @@ protocol URLBarDelegate: AnyObject {
     func urlBarDidLongPressLocation(_ urlBar: URLBarView)
     func urlBarDidPressQRButton(_ urlBar: URLBarView)
     func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton)
-    func urlBarDidTapShield(_ urlBar: URLBarView)
+    func urlBarDidTapShield(_ urlBar: URLBarView, from button: UIButton)
     func urlBarLocationAccessibilityActions(_ urlBar: URLBarView) -> [UIAccessibilityCustomAction]?
     func urlBarDidPressScrollToTop(_ urlBar: URLBarView)
     func urlBar(_ urlBar: URLBarView, didRestoreText text: String)
@@ -364,7 +364,6 @@ class URLBarView: UIView {
                 make.leading.equalTo(self.neevaMenuButton.snp.trailing)
             }
         }
-
     }
 
     @objc func showQRScanner() {
@@ -726,10 +725,6 @@ extension URLBarView: TabLocationViewDelegate {
         delegate?.urlBarDidPressReaderMode(self)
     }
     
-    func tabLocationViewNeevaOptionsMenu(_ tabLocationView: TabLocationView, from button: UIButton){
-            delegate?.urlBarNeevaMenu(self, from: tabLocationView.neevaMenuButton)
-    }
-    
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]? {
         return delegate?.urlBarLocationAccessibilityActions(self)
     }
@@ -739,7 +734,7 @@ extension URLBarView: TabLocationViewDelegate {
     }
 
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView) {
-        delegate?.urlBarDidTapShield(self)
+        delegate?.urlBarDidTapShield(self, from: tabLocationView.trackingProtectionButton)
     }
 }
 

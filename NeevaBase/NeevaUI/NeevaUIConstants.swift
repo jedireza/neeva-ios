@@ -17,6 +17,9 @@ struct NeevaUIConstants{
     
     static let menuButtonFontSize:CGFloat = 13
     static let menuFontSize:CGFloat = 16
+    static let trackingMenuBlockedFontSize:CGFloat = 18
+    static let trackingMenuFontSize:CGFloat = 10
+    static let trackingMenuSubtextFontSize:CGFloat = 8
 }
 
 public enum NeevaMenuButtonActions{
@@ -29,4 +32,9 @@ public enum NeevaMenuButtonActions{
     case privacyPolicy
     case helpCenter
     case signOut
+}
+
+public enum TrackingMenuButtonActions{
+    case incognito
+    case settings
 }

@@ -677,6 +677,11 @@
 		EBE7635920ADCB7600E27F2D /* SendTo.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EBE7634F20ADCB7500E27F2D /* SendTo.xcassets */; };
 		EBF47E701F7979DF00899189 /* TelemetryWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF47E6F1F7979DF00899189 /* TelemetryWrapper.swift */; };
 		EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */; };
+		F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */; };
+		F0102C5526052C2300B5F884 /* TrackingBlockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C5426052C2300B5F884 /* TrackingBlockedView.swift */; };
+		F0102C6326052F7100B5F884 /* PopOverTrackingMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */; };
+		F0102C7126053C2A00B5F884 /* TrackingBlameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */; };
+		F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */; };
 		F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */; };
 		F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */; };
 		F0405D1025FFCA5200A0A3B2 /* NeevaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */; };
@@ -1668,6 +1673,11 @@
 		EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+FindInPage.swift"; sourceTree = "<group>"; };
 		EC724CF0B0021AE49EDC95DC /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		EF0444EEBEA6A45A3E0F654C /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
+		F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuView.swift; sourceTree = "<group>"; };
+		F0102C5426052C2300B5F884 /* TrackingBlockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingBlockedView.swift; sourceTree = "<group>"; };
+		F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverTrackingMenuViewController.swift; sourceTree = "<group>"; };
+		F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingBlameView.swift; sourceTree = "<group>"; };
+		F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuProtectionRowButton.swift; sourceTree = "<group>"; };
 		F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuButtonView.swift; sourceTree = "<group>"; };
 		F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuRowButtonView.swift; sourceTree = "<group>"; };
 		F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuView.swift; sourceTree = "<group>"; };
@@ -3064,6 +3074,7 @@
 			isa = PBXGroup;
 			children = (
 				F0405D3325FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift */,
+				F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
@@ -3085,6 +3096,10 @@
 				F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */,
 				F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */,
 				F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */,
+				F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */,
+				F0102C5426052C2300B5F884 /* TrackingBlockedView.swift */,
+				F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */,
+				F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -4601,6 +4616,7 @@
 				EBB8950C21939E4100EB91A0 /* NeevaTabContentBlocker.swift in Sources */,
 				43E69EC3254D081D00B591C2 /* SimpleTab.swift in Sources */,
 				742A56391D80B54A00BDB803 /* PhotonActionSheet.swift in Sources */,
+				F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */,
 				C4EFEECF1CEBB6F2009762A4 /* BackForwardTableViewCell.swift in Sources */,
 				2C49854E206173C800893DAE /* photon-colors.swift in Sources */,
 				EBA3B2C32268F16300728BDB /* PhotonActionSheetCell.swift in Sources */,
@@ -4631,6 +4647,7 @@
 				43DDB97624099F200058A068 /* ETPViewModel.swift in Sources */,
 				C4F3B29A1CFCF93A00966259 /* ButtonToast.swift in Sources */,
 				435D7CC5246209AA0043ACB9 /* IntroViewController.swift in Sources */,
+				F0102C5526052C2300B5F884 /* TrackingBlockedView.swift in Sources */,
 				CA4ACE4924C8C91600F55894 /* BreachAlertsDetailView.swift in Sources */,
 				A83E5AB71C1D993D0026D912 /* UIPasteboardExtensions.swift in Sources */,
 				D8EFFA0C1FF5B1FA001D3A09 /* NavigationRouter.swift in Sources */,
@@ -4653,6 +4670,7 @@
 				F84B22241A09122500AAB793 /* LibraryViewController.swift in Sources */,
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
 				E47616C71AB74CA600E7DD25 /* ReaderModeBarView.swift in Sources */,
+				F0102C7126053C2A00B5F884 /* TrackingBlameView.swift in Sources */,
 				D821E90E2141B71C00452C55 /* SiriSettingsViewController.swift in Sources */,
 				EBB89507219398E500EB91A0 /* ContentBlocker.swift in Sources */,
 				23ED80FF25C89C9800D0E9D5 /* DefaultBrowserOnboardingViewController.swift in Sources */,
@@ -4663,12 +4681,14 @@
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
 				2F44FCC51A9E85E900FD20CC /* SettingsTableViewController.swift in Sources */,
+				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */,
 				A9072B801D07B34100459960 /* NoImageModeHelper.swift in Sources */,
 				F0405D1025FFCA5200A0A3B2 /* NeevaMenuView.swift in Sources */,
 				D8AA923421A602DC002605C0 /* HomePageSettingViewController.swift in Sources */,
 				F0405D2225FFCA5A00A0A3B2 /* NeevaUIConstants.swift in Sources */,
 				EBC4869D2195F58300CDA48D /* ErrorPageHelper.swift in Sources */,
 				E660BDD91BB06521009AC090 /* TabsButton.swift in Sources */,
+				F0102C6326052F7100B5F884 /* PopOverTrackingMenuViewController.swift in Sources */,
 				D5AF961B25D1FCAF006ACA6A /* WidgetIntents.intentdefinition in Sources */,
 				63306D3921103EAE00F25400 /* SavedTab.swift in Sources */,
 				E68E7ACB1CAC1D4500FDCA76 /* PagingPasscodeViewController.swift in Sources */,

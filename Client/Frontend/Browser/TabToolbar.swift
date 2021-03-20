@@ -101,11 +101,10 @@ open class TabToolbarHelper: NSObject {
         toolbar.addNewTabButton.addTarget(self, action: #selector(didClickAddNewTab), for: .touchUpInside)
         toolbar.addNewTabButton.accessibilityIdentifier = "TabToolbar.addNewTabButton"
         
+        toolbar.spacesMenuButton.setImage(UIImage.templateImageNamed("menu-spaces"), for: .normal)
         toolbar.spacesMenuButton.contentMode = .center
-        toolbar.spacesMenuButton.setImage(UIImage(named: "menu-spaces"), for: .normal)
         toolbar.spacesMenuButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
         toolbar.spacesMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
-        toolbar.spacesMenuButton.showsMenuAsPrimaryAction = true
         toolbar.spacesMenuButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
 
         toolbar.libraryButton.contentMode = .center
