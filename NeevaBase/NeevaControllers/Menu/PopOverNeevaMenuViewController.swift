@@ -35,7 +35,7 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
             case .spaces:
                 self.dismiss( animated: true, completion: nil )
                 let host = UIHostingController(
-                    rootView: SpaceListView(onDismiss: self.dismissVC)
+                    rootView: SpaceListView(onDismiss: delegate.dismissVC)
                         .environment(\.onOpenURL) { url in
                             delegate.settingsOpenURLInNewTab(url)
                             delegate.dismissVC()
