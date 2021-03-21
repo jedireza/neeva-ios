@@ -25,7 +25,7 @@ public struct TrackingBlockedView: View {
     public var body: some View {
         Group{
             VStack(spacing:10){
-                TrackingBlockedTextView(displayText: "BLOCKED ON \(self.siteName.uppercased())")
+                TrackingMenuBlockedTextView(displayText: "BLOCKED ON \(self.siteName.uppercased())")
                 HStack(spacing: NeevaUIConstants.menuHorizontalSpacing) {
                     Text("\(self.trackerCount)")
                         .foregroundColor(Color.red)
@@ -39,7 +39,7 @@ public struct TrackingBlockedView: View {
                     Spacer()
                 }
                 .font(.system(size: NeevaUIConstants.trackingMenuBlockedFontSize))
-                TrackingBlockedTextView(displayText: "HALL OF SHAME")
+                TrackingMenuBlockedTextView(displayText: "HALL OF SHAME")
                 HStack(spacing: NeevaUIConstants.menuHorizontalSpacing) {
                     TrackingBlameView(shameCount: 20, image:"menu-home-alt")
                     TrackingBlameView(shameCount:5, image:"menu-home-alt")
