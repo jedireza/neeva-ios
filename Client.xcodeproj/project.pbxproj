@@ -693,6 +693,7 @@
 		F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */; };
 		F072DD3825E935B4006C2665 /* NeevaSearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */; };
 		F08B27EE25FD097F0037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B27ED25FD097F0037D49B /* NeevaSupport */; };
+		F090C9CA260683B200D340A3 /* TrackingMenuBlockedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F090C9C9260683B200D340A3 /* TrackingMenuBlockedTextView.swift */; };
 		F0ACC2AC25E8C7FB0024991B /* NeevaDev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */; };
 		F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
@@ -1690,6 +1691,7 @@
 		F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuHelpers.swift; sourceTree = "<group>"; };
 		F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaSearchProvider.swift; sourceTree = "<group>"; };
 		F07B4C81B1F0CC2C47A9857E /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/LoginManager.strings"; sourceTree = "<group>"; };
+		F090C9C9260683B200D340A3 /* TrackingMenuBlockedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuBlockedTextView.swift; sourceTree = "<group>"; };
 		F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NeevaDev.entitlements; sourceTree = "<group>"; };
 		F0ACC19E25E8C2380024991B /* Neeva.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Neeva.entitlements; sourceTree = "<group>"; };
 		F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = NeevaDev.xcconfig; path = Configuration/NeevaDev.xcconfig; sourceTree = "<group>"; };
@@ -3100,6 +3102,7 @@
 				F0102C5426052C2300B5F884 /* TrackingBlockedView.swift */,
 				F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */,
 				F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */,
+				F090C9C9260683B200D340A3 /* TrackingMenuBlockedTextView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -4707,6 +4710,7 @@
 				EBB89504219398E500EB91A0 /* TrackingProtectionPageStats.swift in Sources */,
 				D31F95E91AC226CB005C9F3B /* ScreenshotHelper.swift in Sources */,
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
+				F090C9CA260683B200D340A3 /* TrackingMenuBlockedTextView.swift in Sources */,
 				4334145724C6378B001541F3 /* IntroScreenWelcomeView.swift in Sources */,
 				23B5B499254C955E009AE055 /* TabMoreMenuViewController.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,

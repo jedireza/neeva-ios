@@ -1391,8 +1391,7 @@ extension BrowserViewController: URLBarDelegate {
         
         let host = PopOverNeevaMenuViewController(
             delegate: self,
-            source: button,
-            rootView: NeevaMenuView())
+            source: button)
           
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background
@@ -1401,7 +1400,6 @@ extension BrowserViewController: URLBarDelegate {
             host,
             animated: true,
             completion: nil)
-        
     }
     
     func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions){
@@ -1426,15 +1424,13 @@ extension BrowserViewController: URLBarDelegate {
             default:
                 return
             }
-            
         }
     }
     
     func urlBarDidTapShield(_ urlBar: URLBarView, from button: UIButton) {
         let host = PopOverTrackingMenuViewController(
             delegate: self,
-            source: button,
-            rootView: TrackingMenuView())
+            source: button)
           
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background

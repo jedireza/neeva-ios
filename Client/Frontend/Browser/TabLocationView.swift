@@ -112,17 +112,6 @@ class TabLocationView: UIView {
     }()
 
     class TrackingProtectionButton: UIButton {
-        // Disable showing the button if the feature is off in the prefs
-        override var isHidden: Bool {
-            didSet {
-                separatorLine?.isHidden = isHidden
-                guard !isHidden, let appDelegate = UIApplication.shared.delegate as? AppDelegate, let profile = appDelegate.profile else { return }
-                if !NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: profile.prefs) {
-                    isHidden = true
-                }
-            }
-        }
-
         var separatorLine: UIView?
     }
 
@@ -339,7 +328,7 @@ extension TabLocationView: TabEventHandler {
         case .safelisted:
             trackingProtectionButton.setImage(UIImage.templateImageNamed("tracking-protection-off"), for: .normal)
         case .disabled:
-            trackingProtectionButton.isHidden = true
+            break
         }
     }
 

@@ -12,13 +12,12 @@ import NeevaSupport
 class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
     
     @objc required dynamic init?(coder aDecoder: NSCoder){
-        super.init(coder: aDecoder, rootView: NeevaMenuView())
+        fatalError("init(coder:) has not been implemented")
     }
     
     public init(delegate:BrowserViewController,
-                         source:UIView,
-                         rootView: NeevaMenuView) {
-        super.init(rootView: rootView)
+                         source:UIView) {
+        super.init(rootView: NeevaMenuView())
         
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle

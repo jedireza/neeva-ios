@@ -9,11 +9,14 @@ import SwiftUI
 
 public struct TrackingMenuView: View {
     var menuAction: ((TrackingMenuButtonActions) -> ())?
-    
+    var isTrackingProtectionEnabled: Bool
+
     /// - Parameters:
-    ///   - menuAction: menu button callback to trigger button action in UIKit
-    public init(menuAction: ((TrackingMenuButtonActions) -> ())? = nil) {
+    ///     - menuAction: menu button callback to trigger button action in UIKit
+    ///     - isTrackingProtectionEnabled: Passed through preference value for tracking protection settings for the app
+    public init(menuAction: ((TrackingMenuButtonActions) -> ())? = nil, isTrackingProtectionEnabled: Bool) {
         self.menuAction = menuAction
+        self.isTrackingProtectionEnabled = isTrackingProtectionEnabled
     }
     
     public var body: some View {
@@ -24,24 +27,30 @@ public struct TrackingMenuView: View {
                     TrackingBlockedView(trackerCount: 127, domainCount: 34, siteName: "Neeva.co")
                 }
                 Group{
-                    TrackingMenuProtectionRowButton(name:"Tracking Protection")
+                    TrackingMenuProtectionRowButton(name:"Tracking Protection",
+                                                    toggleAction: toggleTrackingProtection,
+                                                    isTrackingProtectionOn: isTrackingProtectionEnabled)
                     NeevaMenuRowButtonView(name:"Turn on Incognito", image:"menu-incognito")
                         .onTapGesture(perform: {self.menuAction!(TrackingMenuButtonActions.incognito)})
-                    .frame(minWidth: 0, maxWidth: 310)
+                    .frame(minWidth: 0, maxWidth:NeevaUIConstants.menuMaxWidth)
                 }
                 .padding(NeevaUIConstants.menuInnerPadding)
                 .background(Color(UIColor.theme.popupMenu.foreground))
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)
             }
-            .frame(minHeight: 0, maxHeight: 310)
+            .frame(minHeight: 0, maxHeight: NeevaUIConstants.menuMaxHeight)
         }
         .padding(NeevaUIConstants.menuOuterPadding)
         .background(Color(UIColor.theme.popupMenu.background))
+    }
+
+    func toggleTrackingProtection(){
+        self.menuAction!(TrackingMenuButtonActions.tracking)
     }
 }
 
 struct TrackingMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuView()
+        TrackingMenuView(isTrackingProtectionEnabled: true)
     }
 }

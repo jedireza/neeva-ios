@@ -9,16 +9,17 @@ import SwiftUI
 import NeevaSupport
 
 class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
-    
+
+    var delegate: BrowserViewController?
+
     @objc required dynamic init?(coder aDecoder: NSCoder){
-        super.init(coder: aDecoder, rootView: TrackingMenuView())
+        fatalError("init(coder:) has not been implemented")
     }
     
     public init(delegate:BrowserViewController,
-                         source:UIView,
-                         rootView: TrackingMenuView) {
-        super.init(rootView: rootView)
-        
+                         source:UIView) {
+        super.init(rootView: TrackingMenuView(isTrackingProtectionEnabled: NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: delegate.profile.prefs)))
+        self.delegate = delegate
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
@@ -27,12 +28,14 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
         
         //Build callbacks for each button action
         self.rootView.menuAction = { result in
-            self.dismiss( animated: true, completion: nil )
             switch result {
-            case .settings:
+            case .tracking:
+                NeevaTabContentBlocker.toggleTrackingProtectionEnabled(prefs: delegate.profile.prefs)
+                delegate.tabManager.selectedTab?.reload()
                 break
             case .incognito:
-                delegate.switchToPrivacyMode(isPrivate: true)
+                delegate.openURLInNewTab(nil, isPrivate: true)
+                self.dismiss( animated: true, completion: nil )
                 break
             }
         }

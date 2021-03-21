@@ -25,11 +25,8 @@ public struct TrackingBlockedView: View {
     public var body: some View {
         Group{
             VStack(spacing:10){
-                Text("BLOCKED ON \(self.siteName.uppercased())")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(Color(UIColor.theme.popupMenu.secondaryTextColor))
-                    .font(.system(size: NeevaUIConstants.trackingMenuFontSize))
-                HStack(spacing: 8) {
+                TrackingBlockedTextView(displayText: "BLOCKED ON \(self.siteName.uppercased())")
+                HStack(spacing: NeevaUIConstants.menuHorizontalSpacing) {
                     Text("\(self.trackerCount)")
                         .foregroundColor(Color.red)
                     Text("Trackers")
@@ -42,11 +39,8 @@ public struct TrackingBlockedView: View {
                     Spacer()
                 }
                 .font(.system(size: NeevaUIConstants.trackingMenuBlockedFontSize))
-                Text("HALL OF SHAME")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(Color(UIColor.theme.popupMenu.secondaryTextColor))
-                    .font(.system(size: NeevaUIConstants.trackingMenuFontSize))
-                HStack(spacing: 8) {
+                TrackingBlockedTextView(displayText: "HALL OF SHAME")
+                HStack(spacing: NeevaUIConstants.menuHorizontalSpacing) {
                     TrackingBlameView(shameCount: 20, image:"menu-home-alt")
                     TrackingBlameView(shameCount:5, image:"menu-home-alt")
                     TrackingBlameView(shameCount:10, image:"menu-home-alt")
@@ -56,7 +50,7 @@ public struct TrackingBlockedView: View {
             .padding(NeevaUIConstants.menuInnerPadding)
         }
         .padding(NeevaUIConstants.menuInnerPadding)
-        .frame(minWidth: 0, maxWidth: 310)
+        .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)
         .background(Color(UIColor.theme.popupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }
