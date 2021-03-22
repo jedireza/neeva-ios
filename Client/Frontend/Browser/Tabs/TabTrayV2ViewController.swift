@@ -330,7 +330,8 @@ extension TabTrayV2ViewController: UITableViewDelegate {
             guard let tab = self.viewModel.getTab(forIndex: indexPath), let url = tab.url else { return }
             self.presentActivityViewController(url, tab: tab)
         })
-        let more = UIContextualAction(style: .normal, title: Strings.PocketMoreStoriesText, handler: { (action, view, completionHandler) in
+        // TODO: consider deleting pocket "more, related content" feature integration.
+        let more = UIContextualAction(style: .normal, title: "More", handler: { (action, view, completionHandler) in
             // Bottom toolbar
             self.navigationController?.isToolbarHidden = true
 

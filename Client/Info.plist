@@ -51,7 +51,6 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>pocket</string>
 		<string>neeva-focus</string>
 		<string>neeva-klar</string>
 		<string>ymail</string>
@@ -88,12 +87,6 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>QuickActionIntent</string>
-	</array>
-	<key>PocketEnvironmentAPIKey</key>
-	<array>
-		<string>$(POCKET_API_KEY)</string>
-		<string>QuickLinkSelectionIntent</string>
-		<string>co.neeva.app.ios.browser.browsing</string>
 	</array>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>

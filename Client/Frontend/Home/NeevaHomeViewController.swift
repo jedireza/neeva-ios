@@ -125,7 +125,6 @@ extension HomePanelContextMenu {
 class NeevaHomeViewController: UICollectionViewController, HomePanel {
     weak var homePanelDelegate: HomePanelDelegate?
     fileprivate let profile: Profile
-    fileprivate let pocketAPI = Pocket()
     fileprivate let flowLayout = UICollectionViewFlowLayout()
 
     fileprivate lazy var topSitesManager: ASHorizontalScrollCellManager = {
@@ -149,8 +148,6 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
         card.backgroundColor = UIColor.theme.homePanel.topSitesBackground
         return card
     }()
-
-    var pocketStories: [PocketStory] = []
 
     init(profile: Profile) {
         self.profile = profile
@@ -264,14 +261,12 @@ extension NeevaHomeViewController {
     enum Section: Int {
         case topSites
         case libraryShortcuts
-        case pocket
 
-        static let count = 3
-        static let allValues = [topSites, libraryShortcuts, pocket]
+        static let allValues = [topSites, libraryShortcuts]
+        static let count = allValues.count
 
         var title: String? {
             switch self {
-            case .pocket: return Strings.ASPocketTitle
             case .topSites: return Strings.ASTopSitesTitle
             case .libraryShortcuts: return Strings.AppMenuLibraryTitleString
             }
@@ -283,22 +278,17 @@ extension NeevaHomeViewController {
 
         var headerImage: UIImage? {
             switch self {
-            case .pocket: return UIImage.templateImageNamed("menu-pocket")
             case .topSites: return UIImage.templateImageNamed("menu-panel-TopSites")
             case .libraryShortcuts: return UIImage.templateImageNamed("menu-library")
             }
         }
 
         var footerHeight: CGSize {
-            switch self {
-            case .pocket: return .zero
-            case .topSites, .libraryShortcuts: return CGSize(width: 50, height: 5)
-            }
+            return CGSize(width: 50, height: 5)
         }
 
         func cellHeight(_ traits: UITraitCollection, width: CGFloat) -> CGFloat {
             switch self {
-            case .pocket: return NeevaHomeUX.highlightCellHeight
             case .topSites: return 0 //calculated dynamically
             case .libraryShortcuts: return NeevaHomeUX.LibraryShortcutsHeight
             }
@@ -317,7 +307,7 @@ extension NeevaHomeViewController {
             var insets = NeevaHomeUX.sectionInsetsForSizeClass[currentTraits.horizontalSizeClass]
 
             switch self {
-            case .pocket, .libraryShortcuts:
+            case .libraryShortcuts:
                 let window = UIApplication.shared.keyWindow
                 let safeAreaInsets = window?.safeAreaInsets.left ?? 0
                 insets += NeevaHomeUX.MinimumInsets + safeAreaInsets
@@ -328,33 +318,10 @@ extension NeevaHomeViewController {
             }
         }
 
-        func numberOfItemsForRow(_ traits: UITraitCollection) -> CGFloat {
-            switch self {
-            case .pocket:
-                var numItems: CGFloat = NeevaHomeUX.numberOfItemsPerRowForSizeClassIpad[traits.horizontalSizeClass]
-                if UIApplication.shared.statusBarOrientation.isPortrait {
-                    numItems = numItems - 1
-                }
-                if traits.horizontalSizeClass == .compact && UIApplication.shared.statusBarOrientation.isLandscape {
-                    numItems = numItems - 1
-                }
-                return numItems
-            case .topSites, .libraryShortcuts:
-                return 1
-            }
-        }
-
         func cellSize(for traits: UITraitCollection, frameWidth: CGFloat) -> CGSize {
             let height = cellHeight(traits, width: frameWidth)
             let inset = sectionInsets(traits, frameWidth: frameWidth) * 2
-
-            switch self {
-            case .pocket:
-                let numItems = numberOfItemsForRow(traits)
-                return CGSize(width: floor(((frameWidth - inset) - (NeevaHomeUX.MinimumInsets * (numItems - 1))) / numItems), height: height)
-            case .topSites, .libraryShortcuts:
-                return CGSize(width: frameWidth - inset, height: height)
-            }
+            return CGSize(width: frameWidth - inset, height: height)
         }
 
         var headerView: UIView? {
@@ -366,7 +333,6 @@ extension NeevaHomeViewController {
         var cellIdentifier: String {
             switch self {
             case .topSites: return "TopSiteCell"
-            case .pocket: return "PocketCell"
             case .libraryShortcuts: return  "LibraryShortcutsCell"
             }
         }
@@ -374,7 +340,6 @@ extension NeevaHomeViewController {
         var cellType: UICollectionViewCell.Type {
             switch self {
             case .topSites: return ASHorizontalScrollCell.self
-            case .pocket: return NeevaHomeHighlightCell.self
             case .libraryShortcuts: return ASLibraryCell.self
             }
         }
@@ -400,16 +365,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
                 view.iconView.image = Section(indexPath.section).headerImage
                 let title = Section(indexPath.section).title
                 switch Section(indexPath.section) {
-                case .pocket:
-                    view.title = title
-                    view.moreButton.isHidden = false
-                    view.moreButton.setTitle(Strings.PocketMoreStoriesText, for: .normal)
-                    view.moreButton.addTarget(self, action: #selector(showMorePocketStories), for: .touchUpInside)
-                    view.titleLabel.textColor = UIColor.Pocket.red
-                    view.titleLabel.accessibilityIdentifier = "pocketTitle"
-                    view.moreButton.setTitleColor(UIColor.Pocket.red, for: .normal)
-                    view.iconView.tintColor = UIColor.Pocket.red
-                    return view
                 case .topSites:
                     view.title = title
                     view.titleLabel.accessibilityIdentifier = "topSitesTitle"
@@ -427,7 +382,7 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
         case UICollectionView.elementKindSectionFooter:
                 let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath) as! ASFooterView
                 switch Section(indexPath.section) {
-                case .topSites, .pocket:
+                case .topSites:
                     return view
                 case .libraryShortcuts:
                     view.separatorLineView?.isHidden = true
@@ -440,7 +395,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.longPressRecognizer.isEnabled = false
-        selectItemAtIndex(indexPath.item, inSection: Section(indexPath.section))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -452,8 +406,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
             let layout = topSiteCell.collectionView.collectionViewLayout as! HorizontalFlowLayout
             let estimatedLayout = layout.calculateLayout(for: CGSize(width: cellSize.width, height: 0))
             return CGSize(width: cellSize.width, height: estimatedLayout.size.height)
-        case .pocket:
-            return cellSize
         case .libraryShortcuts:
             let numberofshortcuts: CGFloat = (homePanelDelegate?.homePanelIsPrivate ?? false) ? 2 : 3
             let titleSpacing: CGFloat = 10
@@ -464,8 +416,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         switch Section(section) {
-        case .pocket:
-            return pocketStories.isEmpty ? .zero : Section(section).headerHeight
         case .topSites:
             return Section(section).headerHeight
         case .libraryShortcuts:
@@ -475,8 +425,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         switch Section(section) {
-        case .pocket:
-            return .zero
         case .topSites:
             return Section(section).footerHeight
         case .libraryShortcuts:
@@ -507,7 +455,7 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
 extension NeevaHomeViewController {
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return Section.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -521,9 +469,6 @@ extension NeevaHomeViewController {
         switch Section(section) {
         case .topSites:
             return topSitesManager.content.isEmpty ? 0 : 1
-        case .pocket:
-            // There should always be a full row of pocket stories (numItems) otherwise don't show them
-            return pocketStories.count
         case .libraryShortcuts:
             // disable the libary shortcuts on the ipad
             return UIDevice.current.userInterfaceIdiom == .pad ? 0 : 1
@@ -537,8 +482,6 @@ extension NeevaHomeViewController {
         switch Section(indexPath.section) {
         case .topSites:
             return configureTopSitesCell(cell, forIndexPath: indexPath)
-        case .pocket:
-            return configurePocketItemCell(cell, forIndexPath: indexPath)
         case .libraryShortcuts:
             return configureLibraryShortcutsCell(cell, forIndexPath: indexPath)
         }
@@ -563,14 +506,6 @@ extension NeevaHomeViewController {
         topSiteCell.collectionView.reloadData()
         return cell
     }
-
-    func configurePocketItemCell(_ cell: UICollectionViewCell, forIndexPath indexPath: IndexPath) -> UICollectionViewCell {
-        let pocketStory = pocketStories[indexPath.row]
-        let pocketItemCell = cell as! NeevaHomeHighlightCell
-        pocketItemCell.configureWithPocketStory(pocketStory)
-        return pocketItemCell
-    }
-
 }
 
 // MARK: - Data Management
@@ -579,9 +514,6 @@ extension NeevaHomeViewController: DataObserverDelegate {
     // Reloads both highlights and top sites data from their respective caches. Does not invalidate the cache.
     // See ActivityStreamDataObserver for invalidation logic.
     func reloadAll() {
-        // If the pocket stories are not availible for the Locale the PocketAPI will return nil
-        // So it is okay if the default here is true
-
         TopSitesHandler.getTopSites(profile: profile).uponQueue(.main) { result in
             // If there is no pending cache update and highlights are empty. Show the onboarding screen
             self.collectionView?.reloadData()
@@ -599,31 +531,9 @@ extension NeevaHomeViewController: DataObserverDelegate {
                 self.showSiteWithURLHandler(url as URL)
             }
 
-            self.getPocketSites().uponQueue(.main) { _ in
-                if !self.pocketStories.isEmpty {
-                    self.collectionView?.reloadData()
-                }
-            }
             // Refresh the AS data in the background so we'll have fresh data next time we show.
             self.profile.panelDataObservers.activityStream.refreshIfNeeded(forceTopSites: false)
         }
-    }
-
-    func getPocketSites() -> Success {
-        let showPocket = (profile.prefs.boolForKey(PrefsKeys.ASPocketStoriesVisible) ?? Pocket.IslocaleSupported(Locale.current.identifier))
-        guard showPocket else {
-            self.pocketStories = []
-            return succeed()
-        }
-
-        return pocketAPI.globalFeed(items: 10).bindQueue(.main) { pStory in
-            self.pocketStories = pStory
-            return succeed()
-        }
-    }
-
-    @objc func showMorePocketStories() {
-        showSiteWithURLHandler(Pocket.MoreStoriesURL)
     }
 
     // Invoked by the ActivityStreamDataObserver when highlights/top sites invalidation is complete.
@@ -684,8 +594,6 @@ extension NeevaHomeViewController: DataObserverDelegate {
         guard let indexPath = self.collectionView?.indexPathForItem(at: point) else { return }
 
         switch Section(indexPath.section) {
-        case .pocket:
-            presentContextMenu(for: indexPath)
         case .topSites:
             let topSiteCell = self.collectionView?.cellForItem(at: indexPath) as! ASHorizontalScrollCell
             let pointInTopSite = longPressGestureRecognizer.location(in: topSiteCell.collectionView)
@@ -693,21 +601,6 @@ extension NeevaHomeViewController: DataObserverDelegate {
             presentContextMenu(for: topSiteIndexPath)
         case .libraryShortcuts:
             return
-        }
-    }
-
-    func selectItemAtIndex(_ index: Int, inSection section: Section) {
-        let site: Site?
-        switch section {
-        case .pocket:
-            site = Site(url: pocketStories[index].url.absoluteString, title: pocketStories[index].title)
-        case .topSites:
-            return
-        case .libraryShortcuts:
-            return
-        }
-        if let site = site {
-            showSiteWithURLHandler(URL(string: site.url)!)
         }
     }
 }
@@ -745,8 +638,6 @@ extension NeevaHomeViewController: HomePanelContextMenu {
 
     func getSiteDetails(for indexPath: IndexPath) -> Site? {
         switch Section(indexPath.section) {
-        case .pocket:
-            return Site(url: pocketStories[indexPath.row].url.absoluteString, title: pocketStories[indexPath.row].title)
         case .topSites:
             return topSitesManager.content[indexPath.item]
         case .libraryShortcuts:
@@ -762,8 +653,6 @@ extension NeevaHomeViewController: HomePanelContextMenu {
             if let topSiteCell = self.collectionView?.cellForItem(at: IndexPath(row: 0, section: 0)) as? ASHorizontalScrollCell {
                 sourceView = topSiteCell.collectionView.cellForItem(at: indexPath)
             }
-        case .pocket:
-            sourceView = self.collectionView?.cellForItem(at: indexPath)
         case .libraryShortcuts:
             return nil
         }
@@ -813,7 +702,6 @@ extension NeevaHomeViewController: HomePanelContextMenu {
         var actions = [openInNewTabAction, openInNewPrivateTabAction, shareAction]
 
         switch Section(indexPath.section) {
-            case .pocket: break
             case .topSites: actions.append(contentsOf: topSiteActions)
             case .libraryShortcuts: break
         }
