@@ -22,7 +22,7 @@ public struct NeevaMenuView: View {
             //Scrollview added to handle smaller screens in landscape mode
             ScrollView{
                 Group{
-                    HStack(spacing: 8){
+                    HStack(spacing: NeevaUIConstants.menuHorizontalSpacing){
                         NeevaMenuButtonView(name:"Home", image:"menu-home-alt")
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.home)})
                         NeevaMenuButtonView(name:"Spaces", image:"menu-spaces")
@@ -48,7 +48,7 @@ public struct NeevaMenuView: View {
                         NeevaMenuRowButtonView(name:"Help Center", image:"menu-help")
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.helpCenter)})
                     }
-                    .frame(minWidth: 0, maxWidth: 310)
+                    .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)
                     NeevaMenuRowButtonView(name:"Sign out", image:"menu-signout")
                         .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.signOut)})
                 }
@@ -56,7 +56,7 @@ public struct NeevaMenuView: View {
                 .background(Color(UIColor.theme.popupMenu.foreground))
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)
             }
-            .frame(minHeight: 0, maxHeight: 310)
+            .frame(minHeight: 0, maxHeight: NeevaUIConstants.menuMaxHeight)
         }
         .padding(NeevaUIConstants.menuOuterPadding)
         .background(Color(UIColor.theme.popupMenu.background))
@@ -68,3 +68,4 @@ struct NeevaMenuView_Previews: PreviewProvider {
         NeevaMenuView()
      }
 }
+

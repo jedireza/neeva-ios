@@ -33,7 +33,7 @@ public struct NeevaMenuRowButtonView: View {
             }
         }
         .padding(NeevaUIConstants.menuRowPadding)
-        .frame(minWidth: 0, maxWidth: 310)
+        .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)
         .background(Color(UIColor.theme.popupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }

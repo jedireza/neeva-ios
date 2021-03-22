@@ -8,22 +8,20 @@
 import SwiftUI
 
 public struct TrackingMenuProtectionRowButton: View {
-    
-    let buttonName: String
-    
-    @State private var trackingProtectionOn = true
-    
+
     /// - Parameters:
     ///   - name: The display name of the button
-    public init(name: String){
-        self.buttonName = name
-    }
-    
+    ///   - toggleAction: function to call when toggling tracking protection
+    ///   - isTrackingProtection: Original value and state change value for the tracking protection switch
+    let name: String
+    var toggleAction: () -> ()
+    @State var isTrackingProtectionOn :Bool
+
     public var body: some View {
         Group{
             ZStack{
                 VStack{
-                    Text(buttonName)
+                    Text(name)
                         .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
                         .font(.system(size: NeevaUIConstants.menuFontSize))
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -33,12 +31,15 @@ public struct TrackingMenuProtectionRowButton: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Toggle("", isOn: $trackingProtectionOn)
+                Toggle("", isOn: $isTrackingProtectionOn)
                     .toggleStyle(SwitchToggleStyle(tint: Color.blue))
+                    .onChange(of: isTrackingProtectionOn){ value in
+                        self.toggleAction()
+                    }
             }
         }
         .padding(NeevaUIConstants.menuRowPadding)
-        .frame(minWidth: 0, maxWidth: 310)
+        .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)
         .background(Color(UIColor.theme.popupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }
@@ -46,6 +47,6 @@ public struct TrackingMenuProtectionRowButton: View {
 
 struct TrackingMenuProtectionRowButton_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuProtectionRowButton(name: "Test")
+        TrackingMenuProtectionRowButton(name: "Test", toggleAction: {return}, isTrackingProtectionOn: true)
     }
 }
