@@ -20,6 +20,7 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
                          source:UIView) {
         super.init(rootView: TrackingMenuView(isTrackingProtectionEnabled: NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: delegate.profile.prefs)))
         self.delegate = delegate
+        self.setAlphaOfBackgroundViews(alpha: 0.5)
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
@@ -45,6 +46,19 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
         popoverMenuViewController?.permittedArrowDirections = .up
         popoverMenuViewController?.delegate = delegate
         popoverMenuViewController?.sourceView = source
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        self.setAlphaOfBackgroundViews(alpha: 1.0)
+    }
+
+    func setAlphaOfBackgroundViews(alpha: CGFloat) {
+        let statusBar = UIView(frame: (UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame)!)
+        UIView.animate(withDuration: 0.2) {
+            statusBar.alpha = alpha;
+            self.delegate!.view.alpha = alpha;
+            self.delegate!.navigationController?.navigationBar.alpha = alpha;
+        }
     }
 }
 

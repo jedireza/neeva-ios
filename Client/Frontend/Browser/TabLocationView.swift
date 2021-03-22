@@ -97,6 +97,7 @@ class TabLocationView: UIView {
         lockImageView.isAccessibilityElement = true
         lockImageView.contentMode = .center
         lockImageView.accessibilityLabel = .TabLocationLockIconAccessibilityLabel
+        lockImageView.tintColor = .black
         return lockImageView
     }()
     

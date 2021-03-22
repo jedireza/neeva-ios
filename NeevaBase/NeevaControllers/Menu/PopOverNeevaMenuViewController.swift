@@ -10,7 +10,9 @@ import SwiftUI
 import NeevaSupport
 
 class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
-    
+
+    var delegate: BrowserViewController?
+
     @objc required dynamic init?(coder aDecoder: NSCoder){
         fatalError("init(coder:) has not been implemented")
     }
@@ -18,7 +20,8 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
     public init(delegate:BrowserViewController,
                          source:UIView) {
         super.init(rootView: NeevaMenuView())
-        
+        self.delegate = delegate
+        self.setAlphaOfBackgroundViews(alpha: 0.5)
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
@@ -92,5 +95,18 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
         popoverMenuViewController?.permittedArrowDirections = .up
         popoverMenuViewController?.delegate = delegate
         popoverMenuViewController?.sourceView = source
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        self.setAlphaOfBackgroundViews(alpha: 1.0)
+    }
+
+    func setAlphaOfBackgroundViews(alpha: CGFloat) {
+        let statusBar = UIView(frame: (UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame)!)
+        UIView.animate(withDuration: 0.2) {
+            statusBar.alpha = alpha;
+            self.delegate!.view.alpha = alpha;
+            self.delegate!.navigationController?.navigationBar.alpha = alpha;
+        }
     }
 }

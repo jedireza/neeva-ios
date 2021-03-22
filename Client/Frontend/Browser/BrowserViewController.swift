@@ -1434,7 +1434,7 @@ extension BrowserViewController: URLBarDelegate {
           
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background
-        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 275))
+        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 120))
         present(
             host,
             animated: true,

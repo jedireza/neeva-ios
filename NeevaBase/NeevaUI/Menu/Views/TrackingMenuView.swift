@@ -23,9 +23,11 @@ public struct TrackingMenuView: View {
         VStack(alignment: .leading){
             //Scrollview added to handle smaller screens in landscape mode
             ScrollView{
-                Group{
+                //Removing tracking until data is available to display
+                //Tracking and Incognito for Shield Menu https://github.com/neevaco/neeva-ios-phoenix/issues/106
+                /*Group{
                     TrackingBlockedView(trackerCount: 127, domainCount: 34, siteName: "Neeva.co")
-                }
+                }*/
                 Group{
                     TrackingMenuProtectionRowButton(name:"Tracking Protection",
                                                     toggleAction: toggleTrackingProtection,

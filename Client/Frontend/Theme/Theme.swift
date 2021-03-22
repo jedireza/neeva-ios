@@ -206,7 +206,7 @@ class DefaultBrowserCardColor {
 }
 
 class PopupMenu {
-    var background: UIColor { return UIColor.Photon.Grey30 }
+    var background: UIColor { return UIColor.Photon.Grey10 }
     var foreground: UIColor { return UIColor.white }
     var textColor: UIColor { return UIColor.black }
     var secondaryTextColor: UIColor { return UIColor.Photon.Grey60 }
