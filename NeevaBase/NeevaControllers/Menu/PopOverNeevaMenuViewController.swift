@@ -85,7 +85,9 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
                 delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.helpCenter)
                 break
             case .signOut:
-                //TODO: once sign out experience defined
+                // TODO: This does not work properly when invoked on an incognito tab. We should
+                // figure out how we want to handle that case.
+                delegate.settingsOpenURLInNewTab(NeevaConstants.appURL / "logout")
                 break
             }
         }
