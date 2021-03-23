@@ -5239,13 +5239,14 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neeva.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser;
 				PRODUCT_MODULE_NAME = Client;
 				PRODUCT_NAME = Client;
@@ -5263,10 +5264,11 @@
 				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Neeva.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = Extensions/ShareTo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				MARKETING_VERSION = 0.0.3;
 				OTHER_SWIFT_FLAGS = "-DMOZ_CHANNEL_NEEVA -DMOZ_TARGET_SHARETO";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(MOZ_BUNDLE_ID).$(PRODUCT_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5280,10 +5282,11 @@
 				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Neeva.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				MARKETING_VERSION = 0.0.3;
 				OTHER_SWIFT_FLAGS = "-DMOZ_CHANNEL_NEEVA -DMOZ_TARGET_TODAY";
 				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser.Today;
 				PRODUCT_NAME = Today;
@@ -5298,11 +5301,11 @@
 				CODE_SIGN_ENTITLEMENTS = Extensions/Entitlements/Neeva.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = WidgetKit/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(MOZ_BUNDLE_ID).WidgetKit";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
@@ -5493,13 +5496,14 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaDev.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser;
 				PRODUCT_MODULE_NAME = Client;
 				PRODUCT_NAME = Client;
@@ -5517,10 +5521,11 @@
 				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/NeevaDev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = Extensions/ShareTo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				MARKETING_VERSION = 0.0.3;
 				OTHER_SWIFT_FLAGS = "-DMOZ_CHANNEL_NEEVA -DMOZ_TARGET_SHARETO";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(MOZ_BUNDLE_ID).$(PRODUCT_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5534,10 +5539,11 @@
 				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/NeevaDev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = Extensions/Today/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				MARKETING_VERSION = 0.0.3;
 				OTHER_SWIFT_FLAGS = "-DMOZ_CHANNEL_NEEVA -DMOZ_TARGET_TODAY";
 				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser.Today;
 				PRODUCT_NAME = Today;
@@ -5552,11 +5558,11 @@
 				CODE_SIGN_ENTITLEMENTS = Extensions/Entitlements/NeevaDev.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = WidgetKit/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(MOZ_BUNDLE_ID).WidgetKit";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
