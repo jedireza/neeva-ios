@@ -8,10 +8,8 @@ import Shared
 
 protocol TabToolbarProtocol: AnyObject {
     var tabToolbarDelegate: TabToolbarDelegate? { get set }
-    var addNewTabButton: ToolbarButton { get }
     var tabsButton: TabsButton { get }
     var spacesMenuButton: ToolbarButton { get }
-    var libraryButton: ToolbarButton { get }
     var forwardButton: ToolbarButton { get }
     var backButton: ToolbarButton { get }
     var shareButton: ToolbarButton { get }
@@ -78,28 +76,21 @@ open class TabToolbarHelper: NSObject {
         toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the tab toolbar Share button")
         toolbar.shareButton.addAction(UIAction { _ in
             guard
-                            let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
-                            let tab = bvc.tabManager.selectedTab,
-                            let url = tab.url
-                        else { return }
-                        if url.isFileURL {
-                            bvc.share(fileURL: url, buttonView: toolbar.shareButton, presentableVC: bvc)
-                        } else {
-                            bvc.share(tab: tab, from: toolbar.shareButton, presentableVC: bvc)
-                        }
-                    }, for: .primaryActionTriggered)
+                let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
+                let tab = bvc.tabManager.selectedTab,
+                let url = tab.url
+            else { return }
+            if url.isFileURL {
+                bvc.share(fileURL: url, buttonView: toolbar.shareButton, presentableVC: bvc)
+            } else {
+                bvc.share(tab: tab, from: toolbar.shareButton, presentableVC: bvc)
+            }
+        }, for: .primaryActionTriggered)
 
         toolbar.tabsButton.addTarget(self, action: #selector(didClickTabs), for: .touchUpInside)
         toolbar.tabsButton.setDynamicMenu {
             toolbar.tabToolbarDelegate?.tabToolbarTabsMenu(toolbar, button: toolbar.tabsButton)
-                    }
-        
-        
-
-        toolbar.addNewTabButton.setImage(UIImage.templateImageNamed("menu-NewTab"), for: .normal)
-        toolbar.addNewTabButton.accessibilityLabel = Strings.AddTabAccessibilityLabel
-        toolbar.addNewTabButton.addTarget(self, action: #selector(didClickAddNewTab), for: .touchUpInside)
-        toolbar.addNewTabButton.accessibilityIdentifier = "TabToolbar.addNewTabButton"
+        }
         
         toolbar.spacesMenuButton.setImage(UIImage.templateImageNamed("menu-spaces"), for: .normal)
         toolbar.spacesMenuButton.contentMode = .center
@@ -107,18 +98,13 @@ open class TabToolbarHelper: NSObject {
         toolbar.spacesMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
         toolbar.spacesMenuButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
 
-        toolbar.libraryButton.contentMode = .center
-        toolbar.libraryButton.setImage(UIImage.templateImageNamed("menu-library"), for: .normal)
-        toolbar.libraryButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
-        toolbar.libraryButton.accessibilityIdentifier = "TabToolbar.libraryButton"
-        
         setTheme(forButtons: toolbar.actionButtons)
     }
 
     func didClickSpaces() {
         toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu(toolbar, button: toolbar.spacesMenuButton)
     }
-    
+
     func didClickBack() {
         toolbar.tabToolbarDelegate?.tabToolbarDidPressBack(toolbar, button: toolbar.backButton)
     }
@@ -145,11 +131,6 @@ open class TabToolbarHelper: NSObject {
 
     func didClickLibrary() {
         toolbar.tabToolbarDelegate?.tabToolbarDidPressLibrary(toolbar, button: toolbar.spacesMenuButton)
-    }
-    
-    func didClickAddNewTab() {
-        TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .addNewTabButton)
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressAddNewTab(toolbar, button: toolbar.addNewTabButton)
     }
 }
 

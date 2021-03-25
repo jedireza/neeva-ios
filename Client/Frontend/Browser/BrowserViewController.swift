@@ -241,6 +241,7 @@ class BrowserViewController: UIViewController {
         
         urlBar.topTabsIsShowing = showTopTabs
         urlBar.setShowToolbar(!showToolbar)
+
         toolbar?.addNewTabButton.isHidden = showToolbar
         toolbar?.removeFromSuperview()
         toolbar?.tabToolbarDelegate = nil
@@ -480,7 +481,11 @@ class BrowserViewController: UIViewController {
 
         urlBar.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalTo(urlBarTopTabsContainer)
-            make.height.equalTo(UIConstants.TopToolbarHeightMax)
+            if urlBar.toolbarIsShowing {
+                make.height.equalTo(UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
+            } else {
+                make.height.equalTo(UIConstants.TopToolbarHeight)
+            }
             make.top.equalTo(topTabsContainer.snp.bottom)
         }
 

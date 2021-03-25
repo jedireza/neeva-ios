@@ -25,10 +25,9 @@ private struct TabLocationViewUX {
     static let BaseURLFontColor = UIColor.Photon.Grey50
     static let Spacing: CGFloat = 8
     static let StatusIconSize: CGFloat = 18
-    static let TPIconSize: CGFloat = 44
+    static let TPIconWidth: CGFloat = 44
     static let ReloadButtonWidth: CGFloat = 44
-    static let ButtonSize: CGFloat = 44
-    static let URLBarPadding = 4
+    static let ButtonHeight: CGFloat = 36
 }
 
 class TabLocationView: UIView {
@@ -186,12 +185,12 @@ class TabLocationView: UIView {
             make.width.equalTo(28)
         }
         trackingProtectionButton.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.TPIconSize)
-            make.height.equalTo(TabLocationViewUX.ButtonSize)
+            make.width.equalTo(TabLocationViewUX.TPIconWidth)
+            make.height.equalTo(TabLocationViewUX.ButtonHeight)
         }
         reloadButton.snp.makeConstraints { make in
             make.width.equalTo(TabLocationViewUX.ReloadButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonSize)
+            make.height.equalTo(TabLocationViewUX.ButtonHeight)
         }
 
         // Setup UIDragInteraction to handle dragging the location
