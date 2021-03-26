@@ -244,6 +244,9 @@ extension Strings {
 
 // Neeva Account
 extension Strings {
+    public static let NeevaAccount = MZLocalizedString("Neeva.Account", value: "Neeva Account", comment: "Settings section title for Neeva Account")
+    public static let NeevaSignInToNeeva = MZLocalizedString("Neeva.SignInToNeeva", value: "Sign in to Neeva", comment: "Button label to sign in to Neeva")
+
     // Settings strings
     public static let FxAFirefoxAccount = MZLocalizedString("FxA.FirefoxAccount", value: "Neeva Account", comment: "Settings section title for Neeva Account")
     public static let FxASignInToSync = MZLocalizedString("FxA.SignIntoSync", value: "Sign in to Sync", comment: "Button label to sign into Sync")

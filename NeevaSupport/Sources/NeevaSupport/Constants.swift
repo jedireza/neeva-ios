@@ -11,6 +11,7 @@ public struct NeevaConstants {
     public static let appPrivacyURL = "https://neeva.co/privacy"
     public static let appHelpCenterURL = "https://neeva.co/contact"
     public static let appSettingsURL = "https://\(appHost)/settings"
+    public static let appLoginURL = "https://\(appHost)/login"
 
     /// The host for the Neeva API/website, such as `alpha.neeva.co`
     public static var appHost: String {

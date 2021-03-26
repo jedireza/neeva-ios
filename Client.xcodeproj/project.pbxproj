@@ -49,6 +49,7 @@
 		0BF1B7E31AC60DEA00A7B407 /* InsetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */; };
 		0BF42D4F1A7CD09600889E28 /* TestFavicons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF42D4E1A7CD09600889E28 /* TestFavicons.swift */; };
 		0BF8F8DA1AEFF1C900E90BC2 /* noTitle.html in Resources */ = {isa = PBXBuildFile; fileRef = 0BF8F8D91AEFF1C900E90BC2 /* noTitle.html */; };
+		12224FB026081FCF007E8705 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
 		122DE32325F96FE100599A0D /* FindOnPageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE32225F96FE100599A0D /* FindOnPageActivity.swift */; };
 		122DE34125F975D900599A0D /* RequestDesktopSiteActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE34025F975D900599A0D /* RequestDesktopSiteActivity.swift */; };
 		122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */; };
@@ -960,6 +961,7 @@
 		0BF8F8D91AEFF1C900E90BC2 /* noTitle.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = noTitle.html; sourceTree = "<group>"; };
 		103245ACA6170E5314CCAC06 /* en-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-CA"; path = "en-CA.lproj/ErrorPages.strings"; sourceTree = "<group>"; };
 		10774949942F0881685E1D94 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/3DTouchActions.strings"; sourceTree = "<group>"; };
+		12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaUserInfo.swift; sourceTree = "<group>"; };
 		122DE32225F96FE100599A0D /* FindOnPageActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindOnPageActivity.swift; sourceTree = "<group>"; };
 		122DE34025F975D900599A0D /* RequestDesktopSiteActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDesktopSiteActivity.swift; sourceTree = "<group>"; };
 		122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinToTopSitesActivity.swift; sourceTree = "<group>"; };
@@ -3049,6 +3051,7 @@
 			children = (
 				F0405D0625FFC9E900A0A3B2 /* NeevaControllers */,
 				F0405D0725FFC9F100A0A3B2 /* NeevaUI */,
+				12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */,
 			);
 			path = NeevaBase;
 			sourceTree = "<group>";
@@ -4631,6 +4634,7 @@
 				D88FDAAF1F4E2BA000FD9709 /* PhotonActionSheetAnimator.swift in Sources */,
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,
 				D34510881ACF415700EC27F0 /* SearchLoader.swift in Sources */,
+				12224FB026081FCF007E8705 /* NeevaUserInfo.swift in Sources */,
 				DA9FD88924E213E500168D1E /* QuickLinkSelection.intentdefinition in Sources */,
 				CA7FC7D324A6A9B70012F347 /* LoginListDataSourceHelper.swift in Sources */,
 				CA520E7A24913C1B00CCAB48 /* LoginListViewModel.swift in Sources */,

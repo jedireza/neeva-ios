@@ -25,6 +25,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
         // display name, etc.
         ////profile.rustAccount.refreshProfile()
 
+        // Asking for a fresh UserInfo before showing Browser Settings and showing Profile data. 
+        NeevaUserInfo.shared.fetch()
+
         if showContentBlockerSetting {
             let viewController = ContentBlockerSettingViewController(prefs: profile.prefs)
             viewController.profile = profile
@@ -33,10 +36,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
             // Add a done button from this view
             viewController.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
         }
-    }
-
-    func neevaSettings() -> [SettingSection] {
-        return [SettingSection]()
     }
 
     override func generateSettings() -> [SettingSection] {
@@ -77,10 +76,11 @@ class AppSettingsTableViewController: SettingsTableViewController {
         }
 
         let neevaSettings: [Setting] = [
+            NeevaProfileSetting(settings: self, delegate: settingsDelegate),
             NeevaSearchSetting(delegate: settingsDelegate)
         ]
         settings += [ SettingSection(title: NSAttributedString(string: Strings.SettingsNeevaSectionTitle), children: neevaSettings)]
-        
+
         settings += [ SettingSection(title: NSAttributedString(string: Strings.SettingsGeneralSectionTitle), children: generalSettings)]
 
         var privacySettings = [Setting]()

@@ -76,7 +76,7 @@ class Setting: NSObject {
         cell.accessoryView = accessoryView
         cell.selectionStyle = enabled ? .default : .none
         cell.accessibilityIdentifier = accessibilityIdentifier
-        cell.imageView?.image = _image
+        cell.imageView?.image = image
         if let title = title?.string {
             if let detailText = cell.detailTextLabel?.text {
                 cell.accessibilityLabel = "\(title), \(detailText)"

@@ -116,6 +116,69 @@ class FeatureSwitchSetting: BoolSetting {
 
 }
 
+class NeevaProfileSetting: Setting {
+    unowned var settings: SettingsTableViewController
+
+    private let profilePictureSize = CGSize(width: 30, height: 30)
+    private let profileStringAttrs = [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]
+
+    override var title: NSAttributedString? {
+        guard let displayName = NeevaUserInfo.shared.displayName else {
+            return NSAttributedString(string: Strings.NeevaSignInToNeeva, attributes: profileStringAttrs)
+        }
+
+        return NSAttributedString(string: "\(displayName)", attributes: profileStringAttrs)
+    }
+
+    override var status: NSAttributedString? {
+        guard let email = NeevaUserInfo.shared.email else {
+            return nil
+        }
+
+        return NSAttributedString(string: "\(email)", attributes: profileStringAttrs)
+    }
+
+    override var image: UIImage? {
+        guard let userPictureData = NeevaUserInfo.shared.picture else {
+            return UIImage(named: "placeholder-avatar")!.createScaled(profilePictureSize)
+        }
+
+        return UIImage(data: userPictureData)?.createScaled(profilePictureSize)
+    }
+
+    init(settings: SettingsTableViewController, delegate: SettingsDelegate?) {
+        self.settings = settings
+        super.init(title: NSAttributedString(string: Strings.NeevaSignInToNeeva, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]), delegate: delegate)
+    }
+
+    override func onConfigureCell(_ cell: UITableViewCell) {
+        super.onConfigureCell(cell)
+
+        if NeevaUserInfo.shared.isUserLoggedIn {
+            cell.selectionStyle = .none
+        } else {
+            cell.selectionStyle = .default
+        }
+
+        if let imageView = cell.imageView {
+            imageView.subviews.forEach({ $0.removeFromSuperview() })
+            imageView.frame = CGRect(size: profilePictureSize)
+            imageView.layer.cornerRadius = (imageView.frame.height) / 2
+            imageView.layer.masksToBounds = true
+        }
+    }
+
+    override func onClick(_ navigationController: UINavigationController?) {
+        if !NeevaUserInfo.shared.isUserLoggedIn {
+            navigationController?.dismiss(animated: true) {
+                if let url = URL(string: NeevaConstants.appLoginURL) {
+                    self.delegate?.settingsOpenURLInNewTab(url)
+                }
+            }
+        }
+    }
+}
+
 class NeevaSearchSetting: Setting {
     init(delegate: SettingsDelegate?) {
         super.init(title: NSAttributedString(string: .AppNeevaSettingsSearch, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]),
