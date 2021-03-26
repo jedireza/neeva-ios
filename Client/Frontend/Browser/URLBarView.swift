@@ -14,13 +14,9 @@ private struct URLBarViewUX {
     static let LocationOverlayRightPadding: CGFloat = 2
     static let Padding: CGFloat = 5.5
     static let LocationHeight: CGFloat = UIConstants.TextFieldHeight
-    static let ButtonHeight: CGFloat = 40
+    static let ButtonSize: CGFloat = 40  // width and height
     static let TextFieldCornerRadius: CGFloat = UIConstants.TextFieldHeight / 2
     static let ProgressBarHeight: CGFloat = 3
-
-    static let TabsButtonRotationOffset: CGFloat = 1.5
-    static let TabsButtonHeight: CGFloat = 18.0
-    static let ToolbarButtonInsets = UIEdgeInsets(equalInset: Padding)
 }
 
 protocol URLBarDelegate: AnyObject {
@@ -225,37 +221,37 @@ class URLBarView: UIView {
         cancelButton.snp.makeConstraints { make in
             make.leading.equalTo(self.safeArea.leading)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonHeight)
+            make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
         backButton.snp.makeConstraints { make in
             make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.Padding)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonHeight)
+            make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
         forwardButton.snp.makeConstraints { make in
             make.leading.equalTo(self.backButton.snp.trailing)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonHeight)
+            make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
         shareButton.snp.makeConstraints { make in
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonHeight)
+            make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
         spacesMenuButton.snp.makeConstraints { make in
             make.leading.equalTo(self.shareButton.snp.trailing)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonHeight)
+            make.size.equalTo(URLBarViewUX.ButtonSize)
         }
         
         tabsButton.snp.makeConstraints { make in
             make.leading.equalTo(self.spacesMenuButton.snp.trailing)
             make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.Padding)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonHeight)
+            make.size.equalTo(URLBarViewUX.ButtonSize)
         }
         
         privateModeBadge.layout(onButton: tabsButton)
@@ -281,7 +277,7 @@ class URLBarView: UIView {
             if self.toolbarIsShowing {
                 make.centerY.equalTo(self)
             } else {
-                make.top.equalTo(self)
+                make.top.equalTo(self).offset(UIConstants.TopToolbarPaddingTop)
             }
         }
 
@@ -299,7 +295,7 @@ class URLBarView: UIView {
                     make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.Padding)
                 }
                 make.centerY.equalTo(self.locationContainer)
-                make.size.equalTo(URLBarViewUX.ButtonHeight)
+                make.size.equalTo(URLBarViewUX.ButtonSize)
             }
         }
     }

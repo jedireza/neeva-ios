@@ -21,8 +21,16 @@ public struct UIConstants {
     static let DefaultPadding: CGFloat = 10
     static let SnackbarButtonHeight: CGFloat = 57
     static let TextFieldHeight: CGFloat = 36
-    static let TopToolbarHeight: CGFloat = TextFieldHeight + 12
+
+    // Portrait mode on a phone:
+    static let TopToolbarPaddingTop: CGFloat = 4
+    static let TopToolbarPaddingBottom: CGFloat = 12
+    static let TopToolbarHeight: CGFloat = TextFieldHeight + TopToolbarPaddingTop + TopToolbarPaddingBottom
+
+    // Landscape and tablet mode:
     static let TopToolbarHeightWithToolbarButtonsShowing: CGFloat = TextFieldHeight + (9 * 2)
+
+    // Bottom bar when in portrait mode on a phone:
     static var ToolbarHeight: CGFloat = 46
     static var BottomToolbarHeight: CGFloat {
         get {
