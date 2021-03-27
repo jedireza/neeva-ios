@@ -9,7 +9,7 @@ private struct URLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40
     static let TextFieldActiveBorderColor = UIColor.Photon.Blue40
 
-    static let LocationRightPadding: CGFloat = 16
+    static let LocationEdgePadding: CGFloat = 16
     static let LocationOverlayLeftPadding: CGFloat = 14
     static let LocationOverlayRightPadding: CGFloat = 2
     static let Padding: CGFloat = 5.5
@@ -129,7 +129,8 @@ class URLBarView: UIView {
 
     fileprivate lazy var cancelButton: UIButton = {
         let cancelButton = InsetButton()
-        cancelButton.setImage(UIImage.templateImageNamed("goBack"), for: .normal)
+        cancelButton.setTitle(Strings.CancelString, for: .normal)
+        cancelButton.setTitleColor(.systemBlue, for: .normal)
         cancelButton.accessibilityIdentifier = "urlBar-cancel"
         cancelButton.accessibilityLabel = Strings.BackTitle
         cancelButton.addTarget(self, action: #selector(didClickCancel), for: .touchUpInside)
@@ -219,9 +220,10 @@ class URLBarView: UIView {
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.safeArea.leading)
+            make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.LocationEdgePadding)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonSize)
+            make.height.equalTo(URLBarViewUX.ButtonSize)
+            make.width.equalTo(cancelButton.intrinsicContentSize.width)
         }
 
         backButton.snp.makeConstraints { make in
@@ -264,14 +266,15 @@ class URLBarView: UIView {
 
         self.locationContainer.snp.remakeConstraints { make in
             if inOverlayMode {
-                make.leading.equalTo(self.cancelButton.snp.trailing)
+                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.LocationEdgePadding)
+                make.trailing.equalTo(self.cancelButton.snp.leading).offset(-2 * URLBarViewUX.Padding)
             } else {
                 make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(URLBarViewUX.Padding)
-            }
-            if self.toolbarIsShowing && !inOverlayMode {
-                make.trailing.equalTo(self.shareButton.snp.leading).offset(-URLBarViewUX.Padding)
-            } else {
-                make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.LocationRightPadding)
+                if self.toolbarIsShowing {
+                    make.trailing.equalTo(self.shareButton.snp.leading).offset(-URLBarViewUX.Padding)
+                } else {
+                    make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.LocationEdgePadding)
+                }
             }
             make.height.equalTo(URLBarViewUX.LocationHeight)
             if self.toolbarIsShowing {
