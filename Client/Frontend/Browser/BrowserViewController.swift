@@ -1266,29 +1266,6 @@ extension BrowserViewController: ClipboardBarDisplayHandlerDelegate {
     }
 }
 
-extension BrowserViewController: QRCodeViewControllerDelegate {
-    func didScanQRCodeWithURL(_ url: URL) {
-        guard let tab = tabManager.selectedTab else { return }
-        finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
-        TelemetryWrapper.recordEvent(category: .action, method: .scan, object: .qrCodeURL)
-    }
-
-    func didScanQRCodeWithText(_ text: String) {
-        TelemetryWrapper.recordEvent(category: .action, method: .scan, object: .qrCodeText)
-        let content = TextContentDetector.detectTextContent(text)
-        switch content {
-        case .some(.link(let url)):
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        case .some(.phoneNumber(let phoneNumber)):
-            let url = URL(string: "tel:\(phoneNumber)")!
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        default:
-            guard let tab = tabManager.selectedTab else { return }
-            submitSearchText(text, forTab: tab)
-        }
-    }
-}
-
 extension BrowserViewController: SettingsDelegate {
     func settingsOpenURLInNewTab(_ url: URL) {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
@@ -1385,13 +1362,6 @@ extension BrowserViewController: URLBarDelegate {
         tabManager.selectedTab?.reload()
     }
 
-    func urlBarDidPressQRButton(_ urlBar: URLBarView) {
-        let qrCodeViewController = QRCodeViewController()
-        qrCodeViewController.qrCodeDelegate = self
-        let controller = QRCodeNavigationController(rootViewController: qrCodeViewController)
-        self.present(controller, animated: true, completion: nil)
-    }
-    
     func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton){
         
         let host = PopOverNeevaMenuViewController(

@@ -88,8 +88,6 @@ extension TelemetryWrapper {
         case downloadsPanel = "downloads-panel"
         case keyCommand = "key-command"
         case locationBar = "location-bar"
-        case qrCodeText = "qr-code-text"
-        case qrCodeURL = "qr-code-url"
         case readerModeCloseButton = "reader-mode-close-button"
         case readerModeOpenButton = "reader-mode-open-button"
         case readingListItem = "reading-list-item"

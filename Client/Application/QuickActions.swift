@@ -11,7 +11,6 @@ import XCGLogger
 enum ShortcutType: String {
     case newTab = "NewTab"
     case newPrivateTab = "NewPrivateTab"
-    case qrCode = "QRCode"
 
     init?(fullType: String) {
         guard let last = fullType.components(separatedBy: ".").last else { return nil }
@@ -89,20 +88,10 @@ class QuickActions: NSObject {
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: false)
         case .newPrivateTab:
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: true)
-        
-        case .qrCode:
-            handleQRCode(with: browserViewController)
         }
     }
     
     fileprivate func handleOpenNewTab(withBrowserViewController bvc: BrowserViewController, isPrivate: Bool) {
         bvc.openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
-    }
-
-    fileprivate func handleQRCode(with vc: QRCodeViewControllerDelegate & UIViewController) {
-        let qrCodeViewController = QRCodeViewController()
-        qrCodeViewController.qrCodeDelegate = vc
-        let controller = UINavigationController(rootViewController: qrCodeViewController)
-        vc.present(controller, animated: true, completion: nil)
     }
 }

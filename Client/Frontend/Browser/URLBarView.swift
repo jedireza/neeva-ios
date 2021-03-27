@@ -30,7 +30,6 @@ protocol URLBarDelegate: AnyObject {
     func urlBarDidEnterOverlayMode(_ urlBar: URLBarView)
     func urlBarDidLeaveOverlayMode(_ urlBar: URLBarView)
     func urlBarDidLongPressLocation(_ urlBar: URLBarView)
-    func urlBarDidPressQRButton(_ urlBar: URLBarView)
     func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton)
     func urlBarDidTapShield(_ urlBar: URLBarView, from button: UIButton)
     func urlBarLocationAccessibilityActions(_ urlBar: URLBarView) -> [UIAccessibilityCustomAction]?
@@ -301,10 +300,6 @@ class URLBarView: UIView {
                 make.size.equalTo(URLBarViewUX.ButtonSize)
             }
         }
-    }
-
-    @objc func showQRScanner() {
-        self.delegate?.urlBarDidPressQRButton(self)
     }
 
     @objc func didClickNeevaMenu() {
