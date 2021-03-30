@@ -1,9 +1,9 @@
 import SwiftUI
 
 fileprivate struct Metrics {
-    static let size: CGFloat = 70
-    static let cornerRadius: CGFloat = 8
-    static let starSize: CGFloat = 35
+    static let size: CGFloat = 36
+    static let cornerRadius: CGFloat = 4
+    static let starSize: CGFloat = 34
     static let textSize: CGFloat = 26.25
 }
 

@@ -11,8 +11,10 @@ struct ButtonToastUX {
     static let ToastButtonPadding: CGFloat = 10.0
     static let ToastDelay = DispatchTimeInterval.milliseconds(900)
     static let ToastButtonBorderRadius: CGFloat = 5
-    static let ToastButtonBorderWidth: CGFloat = 1
-    static let ToastLabelFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
+    static let ToastButtonBorderWidth: CGFloat = 0
+    static let ToastLabelFont = UIFont.systemFont(ofSize: 14, weight: .light)
+    static let ToastButtonFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
+    static let ToastButtonDefaultColor = UIColor.Photon.Blue50
     static let ToastDescriptionFont = UIFont.systemFont(ofSize: 13)
     
     struct ToastButtonPaddedView {
@@ -41,9 +43,13 @@ class ButtonToast: Toast {
         self.addSubview(createdToastView)
 
         self.toastView.backgroundColor = backgroundColor
+        self.toastView.layer.cornerRadius = SimpleToastUX.ToastCornerRadius
 
         self.toastView.snp.makeConstraints { make in
-            make.left.right.height.equalTo(self)
+            make.left.equalTo(self).offset(8)
+            make.right.equalTo(self).offset(-8)
+            make.height.equalTo(self)
+            make.bottom.equalTo(self).offset(-8)
             self.animationConstraint = make.top.greaterThanOrEqualTo(self).offset(ButtonToastUX.ToastHeight).constraint
         }
 
@@ -137,12 +143,10 @@ class ButtonToast: Toast {
         
         let roundedButton = HighlightableButton()
         roundedButton.translatesAutoresizingMaskIntoConstraints = false
-        roundedButton.layer.cornerRadius = ButtonToastUX.ToastButtonBorderRadius
-        roundedButton.layer.borderWidth = ButtonToastUX.ToastButtonBorderWidth
-        roundedButton.layer.borderColor = UIColor.Photon.White100.cgColor
         roundedButton.setTitle(buttonText, for: [])
+        roundedButton.setTitleColor(ButtonToastUX.ToastButtonDefaultColor, for: .normal)
         roundedButton.setTitleColor(toastView.backgroundColor, for: .highlighted)
-        roundedButton.titleLabel?.font = SimpleToastUX.ToastFont
+        roundedButton.titleLabel?.font = ButtonToastUX.ToastButtonFont
         roundedButton.titleLabel?.numberOfLines = 1
         roundedButton.titleLabel?.lineBreakMode = .byClipping
         roundedButton.titleLabel?.adjustsFontSizeToFitWidth = true

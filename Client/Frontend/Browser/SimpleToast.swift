@@ -8,24 +8,26 @@ import Shared
 struct SimpleToastUX {
     static let ToastHeight = BottomToolbarHeight
     static let ToastAnimationDuration = 0.5
-    static let ToastDefaultColor = UIColor.Photon.Blue40
-    static let ToastFont = UIFont.systemFont(ofSize: 15)
+    static let ToastDefaultColor = UIColor.Photon.Grey60
+    static let ToastFont = UIFont.systemFont(ofSize: 14, weight: .light)
     static let ToastDismissAfter = DispatchTimeInterval.milliseconds(4500) // 4.5 seconds.
     static let ToastDelayBefore = DispatchTimeInterval.milliseconds(0) // 0 seconds
     static let ToastPrivateModeDelayBefore = DispatchTimeInterval.milliseconds(750)
     static let BottomToolbarHeight = CGFloat(45)
+    static let ToastCornerRadius: CGFloat = 15.0
 }
 
 struct SimpleToast {
     func showAlertWithText(_ text: String, bottomContainer: UIView) {
         let toast = self.createView()
         toast.text = text
+        toast.layer.cornerRadius = SimpleToastUX.ToastCornerRadius
         bottomContainer.addSubview(toast)
         toast.snp.makeConstraints { (make) in
-            make.width.equalTo(bottomContainer)
-            make.left.equalTo(bottomContainer)
+            make.width.equalTo(bottomContainer).offset(-16)
+            make.left.equalTo(bottomContainer).offset(8)
             make.height.equalTo(SimpleToastUX.ToastHeight)
-            make.bottom.equalTo(bottomContainer)
+            make.bottom.equalTo(bottomContainer).offset(-8)
         }
         animate(toast)
     }

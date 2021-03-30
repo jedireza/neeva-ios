@@ -25,16 +25,7 @@ public struct AddToSpaceView: View {
     }
 
     public var body: some View {
-        NavigationView {
-            AddToSpaceList(title: title, description: description, url: url, showNewSpaceButton: showNewSpaceButton, onDismiss: onDismiss)
-                .navigationTitle("Add to Space")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { onDismiss(nil) }
-                    }
-                }
-        }.navigationViewStyle(StackNavigationViewStyle())
+        AddToSpaceList(title: title, description: description, url: url, showNewSpaceButton: showNewSpaceButton, onDismiss: onDismiss)
     }
 }
 
@@ -72,17 +63,6 @@ public struct AddToSpaceList: View {
         }
     }
 
-    var dummyAddButton: some View {
-        Group {
-            if (showNewSpaceButton){
-                Button(action: {}) {
-                    Image(systemName: "plus")
-                        .accessibilityLabel("New Space")
-                }.disabled(true)
-            }
-        }
-    }
-
     public var body: some View {
         Group {
             if cancellable != nil {
@@ -97,27 +77,38 @@ public struct AddToSpaceList: View {
                 switch spaceList.state {
                 case .failure(let error):
                     ErrorView(error, in: self, tryAgain: { spaceList.reload() })
-                        .toolbar {
-                            ToolbarItem(placement: .primaryAction) {
-                                dummyAddButton
-                            }
-                        }
                 case .success(let spaces):
                     let filteredSpaces = filter(spaces)
                     ZStack {
-                        List {
-                            ForEach(filteredSpaces) { space in
-                                Button {
-                                    addToSpace(id: space.id)
-                                } label: {
-                                    SpaceListItem(space).foregroundColor(.primary)
+                        VStack{
+                            HStack(alignment: .top){
+                                Text("Save to Spaces")
+                                    .font(.system(size: 16))
+                                Spacer()
+                                Button(action: { onDismiss(nil) }) {
+                                    Image(systemName: "xmark")
+                                        .frame(width: 24, height: 24)
+                                        .accessibilityLabel("Close Add to Space")
+                                        .foregroundColor(Color.gray)
+                                }
+                            }.padding(EdgeInsets(top: 28, leading: 17.5, bottom: 6, trailing: 17.5))
+                            SpacesSearchHeaderView(filterAction:filterListByString, onCreateSpace: { result, name in
+                                addToSpace(id: result.createSpace, name: name)
+                            }).padding(.horizontal, 4)
+                            ScrollView {
+                                LazyVStack(spacing: 20) {
+                                    ForEach(filteredSpaces) { space in
+                                        Button {
+                                            addToSpace(id: space.id, name: space.space?.name ?? "Unknown")
+                                        } label: {
+                                            SpaceListItem(space).foregroundColor(.primary)
+                                        }
+                                    }
                                 }
                             }
+                            .refreshControl(refreshing: spaceList)
+                            .listStyle(DefaultListStyle())
                         }
-                        .refreshControl(refreshing: spaceList)
-                        .searchBar("Search for space", text: $searchTerm)
-                        .listStyle(DefaultListStyle())
-
                         if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
                             VStack {
                                 Spacer()
@@ -128,30 +119,19 @@ public struct AddToSpaceList: View {
                             }
                         }
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .primaryAction) {
-                            SpaceListView.newSpaceButton(showNewSpaceButton: showNewSpaceButton)  { name, result in
-                                if case .success(let data) = result {
-                                    addToSpace(id: data.createSpace)
-                                } else {
-                                    spaceList.reload()
-                                }
-                            }
-                        }
-                    }
+                    .padding(4)
                 case .running:
                     LoadingView("Loading spaces…")
-                        .toolbar {
-                            ToolbarItem(placement: .primaryAction) {
-                                dummyAddButton
-                            }
-                        }
                 }
             }
         }
     }
 
-    func addToSpace(id: String) {
+    func filterListByString( searchValue: String ){
+        self.searchTerm = searchValue
+    }
+
+    func addToSpace(id: String, name: String) {
         let cancellable = AddToSpaceMutation(
             input: AddSpaceResultByURLInput(
                 spaceId: id,
@@ -166,9 +146,11 @@ public struct AddToSpaceList: View {
             self.cancellable = nil
             switch result {
             case .failure(let err):
+                onDismiss(IDs(space: name, entity: ""))
                 print(err)
+                break
             case .success(let data):
-                onDismiss(IDs(space: id, entity: data.entityId))
+                onDismiss(IDs(space: name, entity: data.entityId))
             }
         }
         withAnimation {
