@@ -248,20 +248,6 @@ class ForceCrashSetting: HiddenSetting {
     }
 }
 
-class ChangeToChinaSetting: HiddenSetting {
-    override var title: NSAttributedString? {
-        return NSAttributedString(string: "Debug: toggle China version (needs restart)", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
-    }
-
-    override func onClick(_ navigationController: UINavigationController?) {
-        if UserDefaults.standard.bool(forKey: debugPrefIsChinaEdition) {
-            UserDefaults.standard.removeObject(forKey: debugPrefIsChinaEdition)
-        } else {
-            UserDefaults.standard.set(true, forKey: debugPrefIsChinaEdition)
-        }
-    }
-}
-
 class SlowTheDatabase: HiddenSetting {
     override var title: NSAttributedString? {
         return NSAttributedString(string: "Debug: simulate slow database operations", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
@@ -269,57 +255,6 @@ class SlowTheDatabase: HiddenSetting {
 
     override func onClick(_ navigationController: UINavigationController?) {
         debugSimulateSlowDBOperations = !debugSimulateSlowDBOperations
-    }
-}
-
-class SentryIDSetting: HiddenSetting {
-    let deviceAppHash = UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)?.string(forKey: "SentryDeviceAppHash") ?? "0000000000000000000000000000000000000000"
-    override var title: NSAttributedString? {
-        return NSAttributedString(string: "Sentry ID: \(deviceAppHash)", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10)])
-    }
-
-    override func onClick(_ navigationController: UINavigationController?) {
-        copyAppDeviceIDAndPresentAlert(by: navigationController)
-    }
-
-    func copyAppDeviceIDAndPresentAlert(by navigationController: UINavigationController?) {
-        let alertTitle = Strings.SettingsCopyAppVersionAlertTitle
-        let alert = AlertController(title: alertTitle, message: nil, preferredStyle: .alert)
-        getSelectedCell(by: navigationController)?.setSelected(false, animated: true)
-        UIPasteboard.general.string = deviceAppHash
-        navigationController?.topViewController?.present(alert, animated: true) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                alert.dismiss(animated: true)
-            }
-        }
-    }
-
-    func getSelectedCell(by navigationController: UINavigationController?) -> UITableViewCell? {
-        let controller = navigationController?.topViewController
-        let tableView = (controller as? AppSettingsTableViewController)?.tableView
-        guard let indexPath = tableView?.indexPathForSelectedRow else { return nil }
-        return tableView?.cellForRow(at: indexPath)
-    }
-}
-
-class ShowEtpCoverSheet: HiddenSetting {
-    let profile: Profile
-    
-    override var title: NSAttributedString? {
-        return NSAttributedString(string: "Debug: ETP Cover Sheet On", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
-    }
-    
-    override init(settings: SettingsTableViewController) {
-        self.profile = settings.profile
-        super.init(settings: settings)
-    }
-    
-    override func onClick(_ navigationController: UINavigationController?) {
-        BrowserViewController.foregroundBVC().hasTriedToPresentETPAlready = false
-        // ETP is shown when user opens app for 3rd time on clean install.
-        // Hence setting session to 2 (0,1,2) for 3rd install as it starts from 0 being 1st session
-        self.profile.prefs.setInt(2, forKey: PrefsKeys.KeyInstallSession)
-        self.profile.prefs.setString(ETPCoverSheetShowType.CleanInstall.rawValue, forKey: PrefsKeys.KeyETPCoverSheetShowType)
     }
 }
 

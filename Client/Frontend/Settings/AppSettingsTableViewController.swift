@@ -118,9 +118,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 DeleteExportedDataSetting(settings: self),
                 ForceCrashSetting(settings: self),
                 SlowTheDatabase(settings: self),
-                SentryIDSetting(settings: self),
-                ChangeToChinaSetting(settings: self),
-                ShowEtpCoverSheet(settings: self),
                 ToggleChronTabs(settings: self)
             ])]
 
