@@ -124,21 +124,3 @@ enum DragState {
         }
     }
 }
-
-func fraction_progress(lowerLimit: Double = 0, upperLimit:Double, current:Double, inverted:Bool = false) -> Double{
-    var val:Double = 0
-    if current >= upperLimit {
-        val = 1
-    } else if current <= lowerLimit {
-        val = 0
-    } else {
-        val = (current - lowerLimit)/(upperLimit - lowerLimit)
-    }
-
-    if inverted {
-        return (1 - val)
-
-    } else {
-        return val
-    }
-}
