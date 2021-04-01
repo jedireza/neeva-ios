@@ -14,7 +14,7 @@ class IntroScreenWelcomeView: UIView, CardTheme {
         return theme == .dark ? .white : .black
     }
     private var fxBackgroundThemeColour: UIColor {
-        return theme == .dark ? UIColor.Neeva.DarkGrey10 : .white
+        return theme == .dark ? UIColor.Neeva.Gray10 : .white
     }
     // Orientation independent screen size
     private let screenSize = DeviceInfo.screenSizeOrientationIndependent()

@@ -82,11 +82,7 @@ class TabTrayControllerV1: UIViewController {
         return cancelButton
     }()
 
-    fileprivate lazy var emptyPrivateTabsView: EmptyPrivateTabsView = {
-        let emptyView = EmptyPrivateTabsView()
-        emptyView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore), for: .touchUpInside)
-        return emptyView
-    }()
+    fileprivate lazy var emptyPrivateTabsView = UIView()
 
     fileprivate lazy var tabLayoutDelegate: TabLayoutDelegate = {
         let delegate = TabLayoutDelegate(profile: self.profile, traitCollection: self.traitCollection, scrollView: self.collectionView)
@@ -187,6 +183,7 @@ class TabTrayControllerV1: UIViewController {
             make.top.left.right.equalTo(self.collectionView)
             make.bottom.equalTo(self.toolbar.snp.top)
         }
+        addSubSwiftUIView(IncognitoDescriptionView(), to: emptyPrivateTabsView)
 
         if let tab = tabManager.selectedTab, tab.isPrivate {
             tabDisplayManager.togglePrivateMode(isOn: true, createTabOnEmptyPrivateMode: false)
@@ -852,16 +849,18 @@ class TrayToolbar: UIView, Themeable, PrivateModeUI {
     fileprivate let toolbarButtonSize = CGSize(width: 44, height: 44)
 
     lazy var addTabButton: UIButton = {
+        let symbol = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
         let button = UIButton()
-        button.setImage(UIImage.templateImageNamed("nav-add"), for: .normal)
+        button.setImage(symbol, for: .normal)
         button.accessibilityLabel = .TabTrayAddTabAccessibilityLabel
         button.accessibilityIdentifier = "TabTrayController.addTabButton"
         return button
     }()
 
     lazy var deleteButton: UIButton = {
+        let symbol = UIImage(systemName: "trash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
         let button = UIButton()
-        button.setImage(UIImage.templateImageNamed("action_delete"), for: .normal)
+        button.setImage(symbol, for: .normal)
         button.accessibilityLabel = Strings.TabTrayDeleteMenuButtonAccessibilityLabel
         button.accessibilityIdentifier = "TabTrayController.removeTabsButton"
         return button

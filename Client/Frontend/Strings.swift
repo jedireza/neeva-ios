@@ -1016,11 +1016,17 @@ extension String {
     public static let TabTrayClosingTabAccessibilityMessage =  MZLocalizedString("Closing tab", comment: "Accessibility label (used by assistive technology) notifying the user that the tab is being closed.")
     public static let TabTrayCloseAllTabsPromptCancel = MZLocalizedString("Cancel", comment: "Label for Cancel button")
     public static let TabTrayPrivateLearnMore = MZLocalizedString("Learn More", tableName: "PrivateBrowsing", comment: "Text button displayed when there are no tabs open while in private mode")
-    public static let TabTrayPrivateBrowsingTitle = MZLocalizedString("Private Browsing", tableName: "PrivateBrowsing", comment: "Title displayed for when there are no open tabs while in private mode")
-    public static let TabTrayPrivateBrowsingDescription =  MZLocalizedString("Neeva won’t remember any of your history or cookies, but new bookmarks will be saved.", tableName: "PrivateBrowsing", comment: "Description text displayed when there are no open tabs while in private mode")
     public static let TabTrayAddTabAccessibilityLabel = MZLocalizedString("Add Tab", comment: "Accessibility label for the Add Tab button in the Tab Tray.")
     public static let TabTrayCloseAccessibilityCustomAction = MZLocalizedString("Close", comment: "Accessibility label for action denoting closing a tab in tab list (tray)")
     public static let TabTraySwipeToCloseAccessibilityHint = MZLocalizedString("Swipe right or left with three fingers to close the tab.", comment: "Accessibility hint for tab tray's displayed tab.")
+}
+
+// Incognito
+extension String {
+    public static let IncognitoOnTitle = MZLocalizedString("Incognito On", tableName: "Incognito", comment: "Title displayed for when there are no open tabs while in incognito mode")
+    public static let IncognitoDescriptionParagraph1 =  MZLocalizedString("Neeva won't collect or store any of your personal activity like searches or clicks.", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
+    public static let IncognitoDescriptionParagraph2 =  MZLocalizedString("Search privately and with peace of mind, knowing that others can’t see your activity.", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
+    public static let IncognitoDescriptionParagraph3 =  MZLocalizedString("Your activity might still be visible to your internet service provider, your school or employer.", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
 }
 
 // URL Bar
@@ -1122,8 +1128,6 @@ extension String {
 // Empty Private tab view
 extension String {
     public static let PrivateBrowsingLearnMore = MZLocalizedString("Learn More", tableName: "PrivateBrowsing", comment: "Text button displayed when there are no tabs open while in private mode")
-    public static let PrivateBrowsingTitle = MZLocalizedString("Private Browsing", tableName: "PrivateBrowsing", comment: "Title displayed for when there are no open tabs while in private mode")
-    public static let PrivateBrowsingDescription = MZLocalizedString("Neeva won’t remember any of your history or cookies, but new bookmarks will be saved.", tableName: "PrivateBrowsing", comment: "Description text displayed when there are no open tabs while in private mode")
 }
 
 // Advanced Account Setting

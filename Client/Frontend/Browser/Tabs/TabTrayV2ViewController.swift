@@ -38,10 +38,10 @@ class TabTrayV2ViewController: UIViewController, Themeable {
         tableView.allowsMultipleSelectionDuringEditing = true
         return tableView
     }()
-    lazy var emptyPrivateTabsView: EmptyPrivateTabsView = {
-        let emptyView = EmptyPrivateTabsView()
-        emptyView.learnMoreButton.addTarget(self, action: #selector(didTapLearnMore), for: .touchUpInside)
-        return emptyView
+    lazy var emptyPrivateTabsView: UIView = {
+        // TODO: Hook this up to IncognitoDescriptionView if we want to
+        // enable chrono tabs in the future.
+        return UIView()
     }()
     lazy var countLabel: UILabel = {
         let label = UILabel(frame: CGRect(width: 24, height: 24))
@@ -52,7 +52,7 @@ class TabTrayV2ViewController: UIViewController, Themeable {
         return label
     }()
     lazy var navigationMenu: UISegmentedControl = {
-        let navigationMenu = UISegmentedControl(items: [UIImage(named: "nav-tabcounter")!.overlayWith(image: countLabel), UIImage(named: "smallPrivateMask")!])
+        let navigationMenu = UISegmentedControl(items: [UIImage(named: "nav-tabcounter")!.overlayWith(image: countLabel), UIImage(named: "incognito")!])
         navigationMenu.accessibilityIdentifier = "navBarTabTray"
         navigationMenu.selectedSegmentIndex = viewModel.isInPrivateMode ? 1 : 0
         navigationMenu.addTarget(self, action: #selector(panelChanged), for: .valueChanged)
@@ -173,8 +173,6 @@ class TabTrayV2ViewController: UIViewController, Themeable {
             navigationController?.navigationBar.tintColor = UIColor.label
             navigationController?.toolbar.tintColor = UIColor.label
             navigationItem.rightBarButtonItem?.tintColor = UIColor.label
-            emptyPrivateTabsView.titleLabel.textColor = UIColor.label
-            emptyPrivateTabsView.descriptionLabel.textColor = UIColor.secondaryLabel
         } else {
             tableView.backgroundColor = UIColor.theme.tableView.headerBackground
             view.backgroundColor = UIColor.theme.tableView.headerBackground
@@ -185,8 +183,6 @@ class TabTrayV2ViewController: UIViewController, Themeable {
             navigationController?.toolbar.tintColor = UIColor.theme.tabTray.toolbarButtonTint
             navigationToolbar.barTintColor = UIColor.theme.tabTray.toolbar
             navigationToolbar.tintColor = UIColor.theme.tabTray.toolbarButtonTint
-            emptyPrivateTabsView.titleLabel.textColor = UIColor.theme.tableView.rowText
-            emptyPrivateTabsView.descriptionLabel.textColor = UIColor.theme.tableView.rowDetailText
         }
         setNeedsStatusBarAppearanceUpdate()
         bottomSheetVC?.applyTheme()

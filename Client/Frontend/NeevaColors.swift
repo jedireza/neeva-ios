@@ -6,6 +6,8 @@ import UIKit
 
 extension UIColor {
     struct Neeva {
-        static let DarkGrey10 = UIColor(rgb: 0x242327)
+        static let Gray10 = UIColor(rgb: 0x242327)
+        static let Gray30 = UIColor(rgb: 0x44464D)
+        static let Gray96 = UIColor(rgb: 0xF2F4F0)
     }
 }
