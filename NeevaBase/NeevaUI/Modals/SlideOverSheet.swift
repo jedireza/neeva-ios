@@ -56,7 +56,7 @@ struct SlideOverSheet<Content: View> : View {
                 Spacer()
                     .edgesIgnoringSafeArea(.all)
                     .frame(width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.height)
-                    .background(Color.black.opacity(0.50))
+                    .background(Color.clear)
                     .animation(.interpolatingSpring(stiffness: 300.0, damping: 30.0, initialVelocity: 10.0))
                     .gesture(
                         TapGesture()

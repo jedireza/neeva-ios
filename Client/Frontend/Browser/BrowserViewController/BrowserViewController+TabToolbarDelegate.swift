@@ -87,7 +87,6 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
                                     self.settingsOpenURLInNewTab($0)
                                 })
             spacesView.view.backgroundColor = UIColor(.transparent)
-
             self.present(spacesView, animated: true, completion: nil)
         }
     }
