@@ -15,32 +15,32 @@ struct SlideOverSheet<Content: View> : View {
 
     private func onDragEnded(drag: DragGesture.Value) {
         let verticalDirection = drag.predictedEndLocation.y - drag.location.y
-            let cardTopEdgeLocation = self.position.rawValue + drag.translation.height
-            let positionAbove: CardPosition
-            let positionBelow: CardPosition
-            let closestPosition: CardPosition
+        let cardTopEdgeLocation = self.position.rawValue + drag.translation.height
+        let positionAbove: CardPosition
+        let positionBelow: CardPosition
+        let closestPosition: CardPosition
 
-            if cardTopEdgeLocation <= CardPosition.middle.rawValue {
-                positionAbove = .top
-                positionBelow = .middle
-            } else {
-                positionAbove = .middle
-                positionBelow = .bottom
-            }
+        if cardTopEdgeLocation <= CardPosition.middle.rawValue {
+            positionAbove = .top
+            positionBelow = .middle
+        } else {
+            positionAbove = .middle
+            positionBelow = .bottom
+        }
 
-            if (cardTopEdgeLocation - positionAbove.rawValue) < (positionBelow.rawValue - cardTopEdgeLocation) {
-                closestPosition = positionAbove
-            } else {
-                closestPosition = positionBelow
-            }
+        if (cardTopEdgeLocation - positionAbove.rawValue) < (positionBelow.rawValue - cardTopEdgeLocation) {
+            closestPosition = positionAbove
+        } else {
+            closestPosition = positionBelow
+        }
 
-            if verticalDirection > 0 {
-                self.position = positionBelow
-            } else if verticalDirection < 0 {
-                self.position = positionAbove
-            } else {
-                self.position = closestPosition
-            }
+        if verticalDirection > 0 {
+            self.position = positionBelow
+        } else if verticalDirection < 0 {
+            self.position = positionAbove
+        } else {
+            self.position = closestPosition
+        }
     }
 
     var content: () -> Content
