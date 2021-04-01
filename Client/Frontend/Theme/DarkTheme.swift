@@ -135,6 +135,7 @@ class DarkPopupMenu: PopupMenu {
     override var textColor: UIColor { return UIColor.white }
     override var secondaryTextColor: UIColor { return UIColor.Photon.Grey20 }
     override var buttonColor: UIColor { return UIColor.white }
+    override var disabledButtonColor: UIColor { return UIColor.Custom.disabledButtonDarkGray}
 }
 
 class DarkTheme: NormalTheme {

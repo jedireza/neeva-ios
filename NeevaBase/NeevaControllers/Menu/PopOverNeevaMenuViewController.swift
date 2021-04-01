@@ -18,8 +18,8 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
     }
     
     public init(delegate:BrowserViewController,
-                         source:UIView) {
-        super.init(rootView: NeevaMenuView())
+                source:UIView, isPrivate: Bool) {
+        super.init(rootView: NeevaMenuView(isPrivate: isPrivate))
         self.delegate = delegate
         self.setAlphaOfBackgroundViews(alpha: 0.5)
         self.modalPresentationStyle = .popover
@@ -77,17 +77,6 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
                 break
             case .feedback:
                 delegate.present(SendFeedbackPanel(), animated: true)
-                break
-            case .privacyPolicy:
-                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.privacyPolicy)
-                break
-            case .helpCenter:
-                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.helpCenter)
-                break
-            case .signOut:
-                // TODO: This does not work properly when invoked on an incognito tab. We should
-                // figure out how we want to handle that case.
-                delegate.settingsOpenURLInNewTab(NeevaConstants.appURL / "logout")
                 break
             }
         }

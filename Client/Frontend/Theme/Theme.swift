@@ -211,6 +211,7 @@ class PopupMenu {
     var textColor: UIColor { return UIColor.black }
     var secondaryTextColor: UIColor { return UIColor.Photon.Grey60 }
     var buttonColor: UIColor { return UIColor.black }
+    var disabledButtonColor: UIColor { return UIColor.Custom.disabledButtonLightGray}
 }
 
 protocol Theme {

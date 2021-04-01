@@ -78,6 +78,10 @@ public class NeevaUserInfo {
         }
     }
 
+    func clearCache(){
+        self.clearUserInfoCache()
+    }
+
     private func fetchUserPicture() {
         guard let url = URL(string: userPictureUrl ?? "") else {
             return

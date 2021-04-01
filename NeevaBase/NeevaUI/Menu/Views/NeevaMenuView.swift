@@ -10,11 +10,13 @@ import SwiftUI
 
 public struct NeevaMenuView: View {
     var menuAction: ((NeevaMenuButtonActions) -> ())?
-    
+    var isPrivate: Bool
     /// - Parameters:
     ///   - menuAction: menu button callback to trigger button action in UIKit
-    public init(menuAction: ((NeevaMenuButtonActions) -> ())? = nil) {
+    ///   - isPrivate: true if current tab is in private mode, false otherwise
+    public init(menuAction: ((NeevaMenuButtonActions) -> ())? = nil, isPrivate: Bool) {
         self.menuAction = menuAction
+        self.isPrivate = isPrivate
     }
     
     public var body: some View {
@@ -23,34 +25,36 @@ public struct NeevaMenuView: View {
             ScrollView{
                 Group{
                     HStack(spacing: NeevaUIConstants.menuHorizontalSpacing){
-                        NeevaMenuButtonView(name:"Home", image:"menu-home-alt")
+                        NeevaMenuButtonView(name:"Home", image:"menu-home-alt", isDisabled: self.isPrivate)
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.home)})
-                        NeevaMenuButtonView(name:"Spaces", image:"menu-spaces")
+                            .disabled(self.isPrivate)
+                        NeevaMenuButtonView(name:"Spaces", image:"menu-spaces", isDisabled: self.isPrivate)
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.spaces)})
-                        NeevaMenuButtonView(name:"Settings", image:"menu-settings")
-                            .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.settings)})
-                        NeevaMenuButtonView(name:"History", image:"menu-history")
-                            .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.history)})
+                            .disabled(self.isPrivate)
+
                     }
                     .background(Color.transparent)
                     .cornerRadius(NeevaUIConstants.menuCornerDefault)
                 }
+                Group {
+                    HStack(spacing: NeevaUIConstants.menuHorizontalSpacing){
+                        NeevaMenuButtonView(name:"Downloads", image:"menu-downloads")
+                            .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.downloads)})
+                        NeevaMenuButtonView(name:"History", image:"menu-history")
+                            .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.history)})
+                    }
+                }
+                .background(Color.transparent)
+                .cornerRadius(NeevaUIConstants.menuCornerDefault)
                 Group{
-                    NeevaMenuRowButtonView(name:"Downloads", image:"menu-downloads")
-                        .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.downloads)})
                     VStack{
+                        NeevaMenuRowButtonView(name:"Settings", image:"menu-settings")
+                            .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.settings)})
+                        Divider()
                         NeevaMenuRowButtonView(name:"Send Feedback", image:"menu-feedback")
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.feedback)})
-                        Divider()
-                        NeevaMenuRowButtonView(name:"Privacy Policy", image:"menu-privacy")
-                            .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.privacyPolicy)})
-                        Divider()
-                        NeevaMenuRowButtonView(name:"Help Center", image:"menu-help")
-                            .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.helpCenter)})
                     }
                     .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)
-                    NeevaMenuRowButtonView(name:"Sign out", image:"menu-signout")
-                        .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.signOut)})
                 }
                 .padding(NeevaUIConstants.menuInnerPadding)
                 .background(Color(UIColor.theme.popupMenu.foreground))
@@ -65,7 +69,7 @@ public struct NeevaMenuView: View {
 
 struct NeevaMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuView()
+        NeevaMenuView(isPrivate: false)
      }
 }
 

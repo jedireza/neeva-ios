@@ -1363,10 +1363,10 @@ extension BrowserViewController: URLBarDelegate {
     }
 
     func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton){
-        
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let host = PopOverNeevaMenuViewController(
             delegate: self,
-            source: button)
+            source: button, isPrivate: isPrivate)
           
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background
@@ -1389,12 +1389,6 @@ extension BrowserViewController: URLBarDelegate {
                 } else if let homePanelURL = page.url {
                     tab.loadRequest(PrivilegedRequest(url: homePanelURL) as URLRequest)
                 }
-                break
-            case .privacyPolicy:
-                tab.loadRequest(PrivilegedRequest(url: URL(string:NeevaConstants.appPrivacyURL)!) as URLRequest)
-                break
-            case .helpCenter:
-                tab.loadRequest(PrivilegedRequest(url: URL(string:NeevaConstants.appHelpCenterURL)!) as URLRequest)
                 break
             default:
                 return

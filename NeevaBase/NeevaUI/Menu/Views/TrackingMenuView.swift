@@ -29,18 +29,15 @@ public struct TrackingMenuView: View {
                     TrackingBlockedView(trackerCount: 127, domainCount: 34, siteName: "Neeva.co")
                 }*/
                 Group{
-                    TrackingMenuProtectionRowButton(name:"Tracking Protection",
+                    TrackingMenuProtectionRowButton(name:"Block Tracking",
                                                     toggleAction: toggleTrackingProtection,
                                                     isTrackingProtectionOn: isTrackingProtectionEnabled)
-                    NeevaMenuRowButtonView(name:"Turn on Incognito", image:"menu-incognito")
-                        .onTapGesture(perform: {self.menuAction!(TrackingMenuButtonActions.incognito)})
-                    .frame(minWidth: 0, maxWidth:NeevaUIConstants.menuMaxWidth)
                 }
                 .padding(NeevaUIConstants.menuInnerPadding)
                 .background(Color(UIColor.theme.popupMenu.foreground))
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)
             }
-            .frame(minHeight: 0, maxHeight: NeevaUIConstants.menuMaxHeight)
+            .frame(minHeight: 0, maxHeight: NeevaUIConstants.trackingMenuMaxHeight)
         }
         .padding(NeevaUIConstants.menuOuterPadding)
         .background(Color(UIColor.theme.popupMenu.background))

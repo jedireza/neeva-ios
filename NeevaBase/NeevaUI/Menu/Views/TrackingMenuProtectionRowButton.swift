@@ -25,7 +25,7 @@ public struct TrackingMenuProtectionRowButton: View {
                         .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
                         .font(.system(size: NeevaUIConstants.menuFontSize))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("If this site appears broken, try disabling")
+                    Text("If this site appears broken, try disabling.")
                         .foregroundColor(Color(UIColor.theme.popupMenu.secondaryTextColor))
                         .font(.system(size: NeevaUIConstants.trackingMenuSubtextFontSize))
                         .frame(maxWidth: .infinity, alignment: .leading)

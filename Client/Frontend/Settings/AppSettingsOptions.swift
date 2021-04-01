@@ -636,3 +636,29 @@ class ThemeSetting: Setting {
     }
 }
 
+// Sign out from Neeva account
+class SignOutSetting: Setting{
+    init(delegate: SettingsDelegate?) {
+        super.init(title: NSAttributedString(string: .AppNeevaSettingsSearch, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]),
+            delegate: delegate)
+    }
+
+    override var title: NSAttributedString? {
+        return NSAttributedString(string: "Sign out", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
+    }
+
+    override func onClick(_ navigationController: UINavigationController?) {
+        if NeevaUserInfo.shared.isUserLoggedIn {
+            navigationController?.dismiss(animated: true) {
+                if let url = URL(string: "\(NeevaConstants.appURL)logout") {
+                    // TODO: This does not work properly when invoked on an incognito tab. We should
+                    // figure out how we want to handle that case.
+                    self.delegate?.settingsOpenURLInNewTab(url)
+                    NeevaUserInfo.shared.clearCache()
+                }
+            }
+        }
+    }
+
+}
+

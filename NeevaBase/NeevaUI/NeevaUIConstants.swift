@@ -12,15 +12,16 @@ struct NeevaUIConstants{
     /// Constant set for Menu UI
     static let menuCornerDefault:CGFloat = 10
     static let menuOuterPadding:CGFloat = 12
-    static let menuInnerPadding:CGFloat = 8
-    static let menuRowPadding:CGFloat = 2
+    static let menuInnerPadding:CGFloat = 12
+    static let menuRowPadding:CGFloat = 4
     static let menuMaxWidth:CGFloat = 310
-    static let menuMaxHeight:CGFloat = 310
-    static let menuButtonMaxWidth:CGFloat = 75
+    static let menuMaxHeight:CGFloat = 250
+    static let menuButtonMaxWidth:CGFloat = 160
     static let menuHorizontalSpacing:CGFloat = 8
     
     static let menuButtonFontSize:CGFloat = 13
     static let menuFontSize:CGFloat = 16
+    static let trackingMenuMaxHeight:CGFloat = 65
     static let trackingMenuBlockedFontSize:CGFloat = 18
     static let trackingMenuFontSize:CGFloat = 10
     static let trackingMenuSubtextFontSize:CGFloat = 8
@@ -33,9 +34,6 @@ public enum NeevaMenuButtonActions{
     case history
     case downloads
     case feedback
-    case privacyPolicy
-    case helpCenter
-    case signOut
 }
 
 public enum TrackingMenuButtonActions{

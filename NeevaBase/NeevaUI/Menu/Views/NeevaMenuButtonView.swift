@@ -12,13 +12,16 @@ public struct NeevaMenuButtonView: View {
     
     let buttonName: String
     let buttonImage: String
+    let isDisabled: Bool
     
     /// - Parameters:
     ///   - name: The display name of the button
     ///   - image: The string id of the button image
-    public init(name: String, image: String){
+    ///   - isDisabled: Whether to apply gray out disabled style
+    public init(name: String, image: String, isDisabled: Bool = false){
         self.buttonName = name
         self.buttonImage = image
+        self.isDisabled = isDisabled
     }
     
     public var body: some View {
@@ -26,9 +29,9 @@ public struct NeevaMenuButtonView: View {
             VStack{
                 Image(buttonImage)
                     .renderingMode(.template)
-                    .foregroundColor(Color(UIColor.theme.popupMenu.buttonColor))
+                    .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.buttonColor))
                 Text(buttonName)
-                    .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
+                    .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.textColor))
                     .font(.system(size: NeevaUIConstants.menuButtonFontSize))
             }
         }
@@ -36,6 +39,7 @@ public struct NeevaMenuButtonView: View {
         .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuButtonMaxWidth)
         .background(Color(UIColor.theme.popupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
+        .disabled(self.isDisabled)
     }
 }
 
