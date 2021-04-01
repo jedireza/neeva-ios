@@ -16,6 +16,7 @@ class AddToSpaceViewController: UIHostingController<AnyView> {
         let url: URL
         let onDismiss: (AddToSpaceList.IDs?) -> ()
         let onOpenURL: (URL) -> ()
+
         var body: some View {
             SlideOverSheet(onDismiss: onDismiss) {
                 AddToSpaceView(title: title, description: description, url: url, onDismiss: onDismiss)
@@ -23,6 +24,7 @@ class AddToSpaceViewController: UIHostingController<AnyView> {
             }
         }
     }
+
     init(title: String, description: String?, url: URL, onDismiss: @escaping (AddToSpaceList.IDs?) -> (), onOpenURL: @escaping (URL) -> ()) {
         super.init(rootView: AnyView(EmptyView()))
         self.rootView = AnyView(
