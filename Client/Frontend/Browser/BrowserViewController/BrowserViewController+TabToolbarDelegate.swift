@@ -86,7 +86,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
                                     self.dismissVC()
                                     self.settingsOpenURLInNewTab($0)
                                 })
-            spacesView.modalPresentationStyle = .automatic
+            spacesView.view.backgroundColor = UIColor(.transparent)
 
             self.present(spacesView, animated: true, completion: nil)
         }

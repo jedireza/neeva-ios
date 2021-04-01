@@ -682,6 +682,8 @@
 		F0102C6326052F7100B5F884 /* PopOverTrackingMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */; };
 		F0102C7126053C2A00B5F884 /* TrackingBlameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */; };
 		F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */; };
+		F03C15412616778F00163ED4 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03C15402616778F00163ED4 /* File.swift */; };
+		F03C155C2616783900163ED4 /* SlideOverSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03C155B2616783900163ED4 /* SlideOverSheet.swift */; };
 		F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */; };
 		F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */; };
 		F0405D1025FFCA5200A0A3B2 /* NeevaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */; };
@@ -1677,6 +1679,8 @@
 		F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverTrackingMenuViewController.swift; sourceTree = "<group>"; };
 		F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingBlameView.swift; sourceTree = "<group>"; };
 		F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuProtectionRowButton.swift; sourceTree = "<group>"; };
+		F03C15402616778F00163ED4 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		F03C155B2616783900163ED4 /* SlideOverSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideOverSheet.swift; sourceTree = "<group>"; };
 		F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuButtonView.swift; sourceTree = "<group>"; };
 		F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuRowButtonView.swift; sourceTree = "<group>"; };
 		F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuView.swift; sourceTree = "<group>"; };
@@ -3040,6 +3044,14 @@
 			path = InternalSchemeHandler;
 			sourceTree = "<group>";
 		};
+		F03C155A2616782600163ED4 /* Modals */ = {
+			isa = PBXGroup;
+			children = (
+				F03C155B2616783900163ED4 /* SlideOverSheet.swift */,
+			);
+			path = Modals;
+			sourceTree = "<group>";
+		};
 		F0405D0525FFC9D400A0A3B2 /* NeevaBase */ = {
 			isa = PBXGroup;
 			children = (
@@ -3061,7 +3073,9 @@
 		F0405D0725FFC9F100A0A3B2 /* NeevaUI */ = {
 			isa = PBXGroup;
 			children = (
+				F03C155A2616782600163ED4 /* Modals */,
 				F0405D0925FFCA1800A0A3B2 /* Menu */,
+				F03C15402616778F00163ED4 /* File.swift */,
 			);
 			path = NeevaUI;
 			sourceTree = "<group>";
@@ -4567,6 +4581,7 @@
 				E4CD9E911A6897FB00318571 /* ReaderMode.swift in Sources */,
 				E68E7ADE1CAC208A00FDCA76 /* RemovePasscodeViewController.swift in Sources */,
 				74C027451B2A348C001B1E88 /* SessionData.swift in Sources */,
+				F03C15412616778F00163ED4 /* File.swift in Sources */,
 				274A36CC239EB99400A21587 /* LibraryPanelContextMenu.swift in Sources */,
 				D314E7F71A37B98700426A76 /* TabToolbar.swift in Sources */,
 				048B4C7924A53E7B001B56E8 /* TodayModel.swift in Sources */,
@@ -4630,6 +4645,7 @@
 				DA9FD88924E213E500168D1E /* QuickLinkSelection.intentdefinition in Sources */,
 				CA7FC7D324A6A9B70012F347 /* LoginListDataSourceHelper.swift in Sources */,
 				CA520E7A24913C1B00CCAB48 /* LoginListViewModel.swift in Sources */,
+				F03C155C2616783900163ED4 /* SlideOverSheet.swift in Sources */,
 				E65075521E37F6D1006961AC /* UIViewExtensions.swift in Sources */,
 				C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */,
 				E6927EC01C7B6FB800D03F75 /* ErrorToast.swift in Sources */,
