@@ -106,5 +106,7 @@ extension UIColor {
         static let selectedHighlightLight = UIColor(rgb: 0xd1d1d6)
         static let disabledButtonLightGray = UIColor(rgba: 0x3C3C432E)
         static let disabledButtonDarkGray = UIColor(rgb: 0x3C3C43)
+        static let disabledShieldLightGray = UIColor(rgb: 0x8E8E93)
+        static let disabledShieldDarkGray = UIColor(rgba: 0xEBEBF599)
     }
 }

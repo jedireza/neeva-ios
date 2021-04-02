@@ -318,15 +318,16 @@ extension TabLocationView: TabEventHandler {
         guard let blocker = tab.contentBlocker else { return }
         trackingProtectionButton.alpha = 1.0
         switch blocker.status {
-        case .blocking:
-            let blockImageName = ThemeManager.instance.currentName == .dark ? "tracking-protection-active-block-dark" : "tracking-protection-active-block"
-            trackingProtectionButton.setImage(UIImage(imageLiteralResourceName: blockImageName), for: .normal)
-        case .noBlockedURLs:
-            trackingProtectionButton.setImage(UIImage.templateImageNamed("tracking-protection"), for: .normal)
-            trackingProtectionButton.alpha = 0.5
-        case .safelisted:
-            trackingProtectionButton.setImage(UIImage.templateImageNamed("tracking-protection-off"), for: .normal)
+        case .blocking, .noBlockedURLs, .safelisted:
+            let imageName = ThemeManager.instance.currentName == .dark ? "tracking-protection-dark": "tracking-protection"
+            let imageColor = ThemeManager.instance.currentName == .dark ? UIColor.white : UIColor.black
+            trackingProtectionButton.setImage(UIImage.templateImageNamed(imageName), for: .normal)
+            trackingProtectionButton.tintColor = imageColor
         case .disabled:
+            let disabledImageName = ThemeManager.instance.currentName == .dark ? "tracking-protection-disabled-dark": "tracking-protection-disabled"
+            let disabledColor = ThemeManager.instance.currentName == .dark ? UIColor.Custom.disabledShieldDarkGray : UIColor.Custom.disabledShieldLightGray
+            trackingProtectionButton.setImage(UIImage.templateImageNamed(disabledImageName), for: .normal)
+            trackingProtectionButton.tintColor = disabledColor
             break
         }
     }
