@@ -11,24 +11,32 @@ import SwiftUI
 public struct NeevaMenuButtonView: View {
     
     let buttonName: String
-    let buttonImage: String
+    let image: String
     let isDisabled: Bool
+    let isSymbol: Bool
     
     /// - Parameters:
     ///   - name: The display name of the button
-    ///   - image: The string id of the button image
+    ///   - image: Can be string id of the button image or symbol name
     ///   - isDisabled: Whether to apply gray out disabled style
-    public init(name: String, image: String, isDisabled: Bool = false){
+    ///   - isSymbol: Wether image is a symbol name
+    public init(name: String, image: String, isDisabled: Bool = false, isSymbol: Bool = true){
         self.buttonName = name
-        self.buttonImage = image
+        self.image = image
         self.isDisabled = isDisabled
+        self.isSymbol = isSymbol
     }
     
     public var body: some View {
+        let buttonImage = self.isSymbol ?
+            Image(systemName: self.image) : Image(self.image)
+
         Group{
             VStack{
-                Image(buttonImage)
+                buttonImage
                     .renderingMode(.template)
+                    .font(.system(size:20, weight:.regular))
+                    .padding(.bottom,1)
                     .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.buttonColor))
                 Text(buttonName)
                     .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.textColor))

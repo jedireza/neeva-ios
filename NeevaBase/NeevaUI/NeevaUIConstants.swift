@@ -15,7 +15,7 @@ struct NeevaUIConstants{
     static let menuInnerPadding:CGFloat = 12
     static let menuRowPadding:CGFloat = 4
     static let menuMaxWidth:CGFloat = 310
-    static let menuMaxHeight:CGFloat = 250
+    static let menuMaxHeight:CGFloat = 260
     static let menuButtonMaxWidth:CGFloat = 160
     static let menuHorizontalSpacing:CGFloat = 8
     
