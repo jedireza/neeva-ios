@@ -363,17 +363,11 @@ class URLBarView: UIView {
 
     func updateAlphaForSubviews(_ alpha: CGFloat) {
         locationContainer.alpha = alpha
-        self.alpha = alpha
+        neevaMenuButton.alpha = alpha
     }
 
     func updateProgressBar(_ progress: Float) {
-        let shouldShowNewTabButton = true
-        if shouldShowNewTabButton {
-            locationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
-        } else {
-            locationView.reloadButton.reloadButtonState = .disabled
-        }
-        
+        locationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
         progressBar.alpha = 1
         progressBar.isHidden = false
         progressBar.setProgress(progress, animated: !isTransitioning)
