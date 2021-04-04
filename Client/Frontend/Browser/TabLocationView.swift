@@ -21,26 +21,20 @@ protocol TabLocationViewDelegate {
 }
 
 private struct TabLocationViewUX {
-    static let HostFontColor = UIColor.black
-    static let BaseURLFontColor = UIColor.Photon.Grey50
-    static let Spacing: CGFloat = 8
-    static let StatusIconSize: CGFloat = 18
-    static let TPIconWidth: CGFloat = 44
+    static let LockIconWidth: CGFloat = 16
+    static let ShieldButtonWidth: CGFloat = 44
     static let ReloadButtonWidth: CGFloat = 44
     static let ButtonHeight: CGFloat = 36
+    static let Spacer0Width: CGFloat = (ReloadButtonWidth - 14) / 2
 }
 
 class TabLocationView: UIView {
     var delegate: TabLocationViewDelegate?
     var longPressRecognizer: UILongPressGestureRecognizer!
     var tapRecognizer: UITapGestureRecognizer!
-    var contentView: UIStackView!
+    var contentView: UIView!
 
     fileprivate let menuBadge = BadgeWithBackdrop(imageName: "menuBadge", backdropCircleSize: 32)
-
-    @objc dynamic var baseURLFontColor: UIColor = TabLocationViewUX.BaseURLFontColor {
-        didSet { updateTextWithURL() }
-    }
 
     func showLockIcon(forSecureContent isSecure: Bool) {
         if url?.absoluteString == "about:blank" {
@@ -58,7 +52,7 @@ class TabLocationView: UIView {
             searchImageViews.0.isHidden = showSearchIcon
             searchImageViews.1.isHidden = showSearchIcon
 
-            trackingProtectionButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
+            shieldButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
             setNeedsUpdateConstraints()
         }
     }
@@ -72,7 +66,6 @@ class TabLocationView: UIView {
 
         // Prevent the field from compressing the toolbar buttons on the 4S in landscape.
         urlTextField.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-        urlTextField.attributedPlaceholder = self.placeholder
         urlTextField.accessibilityIdentifier = "url"
         urlTextField.accessibilityActionsSource = self
         urlTextField.font = UIConstants.DefaultChromeFont
@@ -90,6 +83,10 @@ class TabLocationView: UIView {
 
         return urlTextField
     }()
+
+    fileprivate lazy var spacer0 = UIView()
+    fileprivate lazy var spacer1 = UIView()
+    fileprivate lazy var spacer2 = UIView()
 
     fileprivate lazy var lockImageView: UIImageView = {
         let lockImageView = UIImageView(image: UIImage.templateImageNamed("lock_verified"))
@@ -111,25 +108,21 @@ class TabLocationView: UIView {
           return (space10px, searchImageView)
     }()
 
-    class TrackingProtectionButton: UIButton {
-        var separatorLine: UIView?
-    }
-
-    lazy var trackingProtectionButton: TrackingProtectionButton = {
-        let trackingProtectionButton = TrackingProtectionButton()
-        trackingProtectionButton.setImage(UIImage.templateImageNamed("tracking-protection"), for: .normal)
-        trackingProtectionButton.addTarget(self, action: #selector(didPressTPShieldButton(_:)), for: .touchUpInside)
-        trackingProtectionButton.tintColor = UIColor.Photon.Grey50
-        trackingProtectionButton.imageView?.contentMode = .scaleAspectFill
-        trackingProtectionButton.accessibilityIdentifier = "TabLocationView.trackingProtectionButton"
-        return trackingProtectionButton
+    lazy var shieldButton: UIButton = {
+        let shieldButton = UIButton()
+        shieldButton.setImage(UIImage.templateImageNamed("tracking-protection"), for: .normal)
+        shieldButton.addTarget(self, action: #selector(didPressTPShieldButton(_:)), for: .touchUpInside)
+        shieldButton.tintColor = UIColor.Photon.Grey50
+        shieldButton.imageView?.contentMode = .scaleAspectFill
+        shieldButton.accessibilityIdentifier = "TabLocationView.shieldButton"
+        return shieldButton
     }()
 
-    lazy var reloadButton: StatefulButton = {
-        let reloadButton = StatefulButton(frame: .zero, state: .disabled)
+    lazy var reloadButton: ReloadButton = {
+        let reloadButton = ReloadButton(frame: .zero, state: .disabled)
         reloadButton.addTarget(self, action: #selector(tapReloadButton), for: .touchUpInside)
         reloadButton.setDynamicMenu { self.delegate?.tabLocationViewReloadMenu(self) }
-        reloadButton.tintColor = UIColor.Photon.Grey50
+        reloadButton.tintColor = .black
         reloadButton.imageView?.contentMode = .scaleAspectFit
         reloadButton.accessibilityLabel = .TabLocationReloadAccessibilityLabel
         reloadButton.accessibilityIdentifier = "TabLocationView.reloadButton"
@@ -137,17 +130,6 @@ class TabLocationView: UIView {
         return reloadButton
     }()
     
-    private func makeSeparator() -> UIView {
-        let line = UIView()
-        line.layer.cornerRadius = 2
-        return line
-    }
-
-    // A vertical separator next to the page options button.
-    lazy var separatorLineForPageOptions: UIView = makeSeparator()
-
-    lazy var separatorLineForTP: UIView = makeSeparator()
-
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -162,35 +144,55 @@ class TabLocationView: UIView {
         addGestureRecognizer(longPressRecognizer)
         addGestureRecognizer(tapRecognizer)
 
-        let space10px = UIView()
-        space10px.snp.makeConstraints { make in
-            make.width.equalTo(10)
+        let subviews = [ spacer0, spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton]
+
+        contentView = UIView()
+        for view in subviews {
+            contentView.addSubview(view)
         }
 
-        // Link these so they hide/show in-sync.
-        trackingProtectionButton.separatorLine = separatorLineForTP
-
-        let subviews = [ space10px, lockImageView, urlTextField, reloadButton, trackingProtectionButton]
-        
-        contentView = UIStackView(arrangedSubviews: subviews)
-        contentView.distribution = .fill
-        contentView.alignment = .center
         addSubview(contentView)
 
         contentView.snp.makeConstraints { make in
             make.edges.equalTo(self)
         }
-
-        lockImageView.snp.makeConstraints { make in
-            make.width.equalTo(28)
+        spacer0.snp.makeConstraints { make in
+            make.leading.equalTo(self)
+            make.trailing.equalTo(spacer1.snp.leading)
+            make.width.equalTo(TabLocationViewUX.Spacer0Width)
+            make.height.equalTo(10)
         }
-        trackingProtectionButton.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.TPIconWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+        spacer1.snp.makeConstraints { make in
+            make.width.equalTo(spacer2)
+            make.height.equalTo(10)
+            make.leading.equalTo(spacer0.snp.trailing)
+            make.trailing.equalTo(lockImageView.snp.leading)
+        }
+        lockImageView.snp.makeConstraints { make in
+            make.width.equalTo(TabLocationViewUX.LockIconWidth)
+            make.trailing.equalTo(urlTextField.snp.leading)
+            make.centerY.equalTo(self)
+        }
+        urlTextField.snp.makeConstraints { make in
+            make.width.equalTo(urlTextField.intrinsicContentSize.width)
+            make.height.equalTo(urlTextField.intrinsicContentSize.height)
+            make.centerY.equalTo(self)
+        }
+        spacer2.snp.makeConstraints { make in
+            make.width.equalTo(spacer1)
+            make.height.equalTo(10)
+            make.leading.equalTo(urlTextField.snp.trailing)
         }
         reloadButton.snp.makeConstraints { make in
             make.width.equalTo(TabLocationViewUX.ReloadButtonWidth)
             make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.leading.equalTo(spacer2.snp.trailing)
+        }
+        shieldButton.snp.makeConstraints { make in
+            make.width.equalTo(TabLocationViewUX.ShieldButtonWidth)
+            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.leading.equalTo(reloadButton.snp.trailing)
+            make.trailing.equalTo(self)
         }
 
         // Setup UIDragInteraction to handle dragging the location
@@ -207,7 +209,32 @@ class TabLocationView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var _accessibilityElements = [urlTextField, reloadButton, trackingProtectionButton]
+    override func updateConstraints() {
+        // This spacer exists to balance out the padding of the reload button
+        // (or the shield if somehow only it is visible).
+        spacer0.snp.updateConstraints { make in
+            make.width.equalTo(
+                reloadButton.isHidden && shieldButton.isHidden ? 0 : TabLocationViewUX.Spacer0Width)
+        }
+        lockImageView.snp.updateConstraints { make in
+            make.width.equalTo(
+                lockImageView.isHidden ? 0 : TabLocationViewUX.LockIconWidth)
+        }
+        urlTextField.snp.updateConstraints { make in
+            make.width.equalTo(urlTextField.intrinsicContentSize.width)
+        }
+        reloadButton.snp.updateConstraints { make in
+            make.width.equalTo(
+                reloadButton.isHidden ? 0 : TabLocationViewUX.ReloadButtonWidth)
+        }
+        shieldButton.snp.updateConstraints { make in
+            make.width.equalTo(
+                shieldButton.isHidden ? 0 : TabLocationViewUX.ShieldButtonWidth)
+        }
+        super.updateConstraints()
+    }
+
+    private lazy var _accessibilityElements = [urlTextField, reloadButton, shieldButton]
 
     override var accessibilityElements: [Any]? {
         get {
@@ -252,6 +279,12 @@ class TabLocationView: UIView {
         if let query = neevaSearchEngine.queryForSearchURL(url) {
             urlTextField.text = query
         }
+        if let text = urlTextField.text, !text.isEmpty {
+            urlTextField.attributedPlaceholder = nil
+        } else {
+            urlTextField.attributedPlaceholder = self.placeholder
+        }
+        setNeedsUpdateConstraints()
     }
 }
 
@@ -300,8 +333,9 @@ extension TabLocationView: Themeable {
         backgroundColor = UIColor.theme.textField.background
         urlTextField.textColor = UIColor.theme.textField.textAndTint
 
-        separatorLineForPageOptions.backgroundColor = UIColor.Photon.Grey40
-        separatorLineForTP.backgroundColor = separatorLineForPageOptions.backgroundColor
+        lockImageView.tintColor = UIColor.theme.textField.textAndTint
+        reloadButton.tintColor = UIColor.theme.textField.textAndTint
+        shieldButton.tintColor = UIColor.theme.textField.textAndTint
 
         let color = ThemeManager.instance.currentName == .dark ? UIColor(white: 0.3, alpha: 0.6): UIColor.theme.textField.background
         menuBadge.badge.tintBackground(color: color)
@@ -316,18 +350,18 @@ extension TabLocationView: TabEventHandler {
     private func updateBlockerStatus(forTab tab: Tab) {
         assertIsMainThread("UI changes must be on the main thread")
         guard let blocker = tab.contentBlocker else { return }
-        trackingProtectionButton.alpha = 1.0
+        shieldButton.alpha = 1.0
         switch blocker.status {
         case .blocking, .noBlockedURLs, .safelisted:
             let imageName = ThemeManager.instance.currentName == .dark ? "tracking-protection-dark": "tracking-protection"
             let imageColor = ThemeManager.instance.currentName == .dark ? UIColor.white : UIColor.black
-            trackingProtectionButton.setImage(UIImage.templateImageNamed(imageName), for: .normal)
-            trackingProtectionButton.tintColor = imageColor
+            shieldButton.setImage(UIImage.templateImageNamed(imageName), for: .normal)
+            shieldButton.tintColor = imageColor
         case .disabled:
             let disabledImageName = ThemeManager.instance.currentName == .dark ? "tracking-protection-disabled-dark": "tracking-protection-disabled"
             let disabledColor = ThemeManager.instance.currentName == .dark ? UIColor.Custom.disabledShieldDarkGray : UIColor.Custom.disabledShieldLightGray
-            trackingProtectionButton.setImage(UIImage.templateImageNamed(disabledImageName), for: .normal)
-            trackingProtectionButton.tintColor = disabledColor
+            shieldButton.setImage(UIImage.templateImageNamed(disabledImageName), for: .normal)
+            shieldButton.tintColor = disabledColor
             break
         }
     }
@@ -348,7 +382,7 @@ enum ReloadButtonState: String {
     case disabled = "Disabled"
 }
 
-class StatefulButton: UIButton {
+class ReloadButton: UIButton {
     convenience init(frame: CGRect, state: ReloadButtonState) {
         self.init(frame: frame)
         reloadButtonState = state
@@ -362,7 +396,7 @@ class StatefulButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var _reloadButtonState = ReloadButtonState.disabled
+    private var _reloadButtonState = ReloadButtonState.disabled
     
     var reloadButtonState: ReloadButtonState {
         get {
@@ -371,7 +405,7 @@ class StatefulButton: UIButton {
         set (newReloadButtonState) {
             _reloadButtonState = newReloadButtonState
             
-            let configuration = UIImage.SymbolConfiguration(weight: .semibold)
+            let configuration = UIImage.SymbolConfiguration(weight: .medium)
             switch _reloadButtonState {
             case .reload:
                 self.isHidden = false
@@ -381,60 +415,6 @@ class StatefulButton: UIButton {
                 setImage(UIImage(systemName: "xmark", withConfiguration: configuration), for: .normal)
             case .disabled:
                 self.isHidden = true
-            }
-        }
-    }
-}
-
-class ReaderModeButton: UIButton {
-    var selectedTintColor: UIColor?
-    var unselectedTintColor: UIColor?
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        adjustsImageWhenHighlighted = false
-        setImage(UIImage.templateImageNamed("reader"), for: .normal)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override var isSelected: Bool {
-        didSet {
-            self.tintColor = (isHighlighted || isSelected) ? selectedTintColor : unselectedTintColor
-        }
-    }
-
-    override open var isHighlighted: Bool {
-        didSet {
-            self.tintColor = (isHighlighted || isSelected) ? selectedTintColor : unselectedTintColor
-        }
-    }
-
-    override var tintColor: UIColor! {
-        didSet {
-            self.imageView?.tintColor = self.tintColor
-        }
-    }
-
-    var _readerModeState = ReaderModeState.unavailable
-
-    var readerModeState: ReaderModeState {
-        get {
-            return _readerModeState
-        }
-        set (newReaderModeState) {
-            _readerModeState = newReaderModeState
-            switch _readerModeState {
-            case .available:
-                self.isEnabled = true
-                self.isSelected = false
-            case .unavailable:
-                self.isEnabled = false
-                self.isSelected = false
-            case .active:
-                self.isEnabled = true
-                self.isSelected = true
             }
         }
     }
@@ -454,9 +434,5 @@ private class DisplayTextField: UITextField {
 
     fileprivate override var canBecomeFirstResponder: Bool {
         return false
-    }
-
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: TabLocationViewUX.Spacing, dy: 0)
     }
 }

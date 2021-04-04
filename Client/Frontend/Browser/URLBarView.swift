@@ -636,7 +636,7 @@ extension URLBarView: TabLocationViewDelegate {
     }
 
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView) {
-        delegate?.urlBarDidTapShield(self, from: tabLocationView.trackingProtectionButton)
+        delegate?.urlBarDidTapShield(self, from: tabLocationView.shieldButton)
     }
 }
 
