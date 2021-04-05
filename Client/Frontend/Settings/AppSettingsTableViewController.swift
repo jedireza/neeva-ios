@@ -68,17 +68,18 @@ class AppSettingsTableViewController: SettingsTableViewController {
                         titleText: Strings.SettingsShowLinkPreviewsTitle,
                         statusText: Strings.SettingsShowLinkPreviewsStatus)
         ]
-        
-        if #available(iOS 14.0, *) {
-            settings += [
-                SettingSection(footerTitle: NSAttributedString(string: String.DefaultBrowserCardDescription), children: [DefaultBrowserSetting()])
-            ]
-        }
 
-        let neevaSettings: [Setting] = [
+        var neevaSettings: [Setting] = [
             NeevaProfileSetting(settings: self, delegate: settingsDelegate),
             NeevaSearchSetting(delegate: settingsDelegate)
         ]
+
+        if #available(iOS 14.0, *) {
+            neevaSettings += [
+                DefaultBrowserSetting(settings: self)
+            ]
+        }
+
         settings += [ SettingSection(title: NSAttributedString(string: Strings.SettingsNeevaSectionTitle), children: neevaSettings)]
 
         settings += [ SettingSection(title: NSAttributedString(string: Strings.SettingsGeneralSectionTitle), children: generalSettings)]

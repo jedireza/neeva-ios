@@ -60,6 +60,8 @@ class Setting: NSObject {
 
     var enabled: Bool = true
 
+    var isLinkStyle: Bool = false
+
     func accessoryButtonTapped() { onAccessoryButtonTapped?() }
     var onAccessoryButtonTapped: (() -> Void)?
 
@@ -100,6 +102,10 @@ class Setting: NSObject {
         if let cell = cell as? ThemedTableViewCell {
             cell.applyTheme()
         }
+
+        if self.isLinkStyle {
+            cell.textLabel?.textColor = UIColor.systemBlue
+        }
     }
 
     // Called when the pref is tapped.
@@ -118,21 +124,24 @@ class Setting: NSObject {
         }
     }
 
-    init(title: NSAttributedString? = nil, footerTitle: NSAttributedString? = nil, cellHeight: CGFloat? = nil, delegate: SettingsDelegate? = nil, enabled: Bool? = nil) {
+    init(title: NSAttributedString? = nil, footerTitle: NSAttributedString? = nil, cellHeight: CGFloat? = nil, delegate: SettingsDelegate? = nil, enabled: Bool? = nil, isLinkStyle: Bool? = nil) {
         self._title = title
         self._footerTitle = footerTitle
         self._cellHeight = cellHeight
         self.delegate = delegate
         self.enabled = enabled ?? true
+        self.isLinkStyle = isLinkStyle ?? false
     }
 }
 
 // A setting in the sections panel. Contains a sublist of Settings
 class SettingSection: Setting {
     fileprivate let children: [Setting]
+    let paragraphTitle: Bool
 
-    init(title: NSAttributedString? = nil, footerTitle: NSAttributedString? = nil, cellHeight: CGFloat? = nil, children: [Setting]) {
+    init(title: NSAttributedString? = nil, footerTitle: NSAttributedString? = nil, cellHeight: CGFloat? = nil, children: [Setting], paragraphTitle: Bool? = nil) {
         self.children = children
+        self.paragraphTitle = paragraphTitle ?? false
         super.init(title: title, footerTitle: footerTitle, cellHeight: cellHeight)
     }
 
@@ -674,8 +683,17 @@ class SettingsTableViewController: ThemedTableViewController {
         }
 
         let sectionSetting = settings[section]
-        if let sectionTitle = sectionSetting.title?.string {
-            headerView.titleLabel.text = sectionTitle.uppercased()
+        let sectionTitle = sectionSetting.title?.string
+
+        if sectionTitle?.isEmpty == false {
+            if sectionSetting.paragraphTitle {
+                var title = sectionTitle ?? "";
+                title += "\n"
+                headerView.titleLabel.text = title
+                headerView.titleLabel.font = UIFont.systemFont(ofSize: 17)
+            } else {
+                headerView.titleLabel.text = sectionTitle?.uppercased()
+            }
         }
 
         headerView.applyTheme()
