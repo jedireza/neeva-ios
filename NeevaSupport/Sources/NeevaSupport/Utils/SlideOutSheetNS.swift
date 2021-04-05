@@ -8,7 +8,7 @@
 import SwiftUI
 import NeevaSupport
 
-struct SlideOverSheet<Content: View> : View {
+struct SlideOverSheetNS<Content: View> : View {
     @GestureState private var dragState = DragState.inactive
     @State var position = CardPosition.bottom
     let onDismiss: (AddToSpaceList.IDs?) -> ()
