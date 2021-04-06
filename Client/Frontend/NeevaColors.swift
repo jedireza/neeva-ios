@@ -9,5 +9,6 @@ extension UIColor {
         static let Gray10 = UIColor(rgb: 0x242327)
         static let Gray30 = UIColor(rgb: 0x44464D)
         static let Gray96 = UIColor(rgb: 0xF2F4F0)
+        static let Offwhite = UIColor(rgb: 0xFFFDF5)
     }
 }

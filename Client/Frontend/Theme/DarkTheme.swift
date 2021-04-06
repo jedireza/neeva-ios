@@ -35,6 +35,9 @@ fileprivate class DarkURLBarColor: URLBarColor {
         let color = isPrivate ? UIColor.Defaults.MobilePrivatePurple : UIColor(rgb: 0x3d89cc)
         return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
     }
+    override func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
+        return isPrivate ? UIColor.Neeva.Offwhite : nil
+    }
 }
 
 fileprivate class DarkBrowserColor: BrowserColor {

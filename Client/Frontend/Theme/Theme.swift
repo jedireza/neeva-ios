@@ -80,6 +80,10 @@ class URLBarColor {
     var readerModeButtonUnselected: UIColor { return UIColor.Photon.Grey50 }
     var pageOptionsSelected: UIColor { return readerModeButtonSelected }
     var pageOptionsUnselected: UIColor { return UIColor.theme.browser.tint }
+
+    func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
+        return isPrivate ? UIColor.black : nil
+    }
 }
 
 class BrowserColor {
