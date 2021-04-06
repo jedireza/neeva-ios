@@ -2,7 +2,7 @@
 "DefaultBrowserCard.Button" = "Go to Settings";
 
 /* Description for small card shown that allows user to switch their default browser to Neeva. */
-"DefaultBrowserCard.Description" = "Set links from websites, emails, and Messages to open automatically in Neeva.";
+"DefaultBrowserCard.Description" = "Open links in Neeva automatically by making it your Default Browser App.";
 
 /* Title for small card shown that allows user to switch their default browser to Neeva. */
 "DefaultBrowserCard.Title" = "Switch Your Default Browser";

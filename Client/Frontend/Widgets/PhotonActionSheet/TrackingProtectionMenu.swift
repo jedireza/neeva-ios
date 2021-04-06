@@ -116,7 +116,7 @@ extension PhotonActionSheetProtocol {
 
         let back = PhotonActionSheetItem(title: Strings.BackTitle, iconString: "goBack") { _, _ in
             guard let urlbar = (self as? BrowserViewController)?.urlBar else { return }
-            (self as? BrowserViewController)?.urlBarDidTapShield(urlbar, from: urlbar.locationView.trackingProtectionButton)
+            (self as? BrowserViewController)?.urlBarDidTapShield(urlbar, from: urlbar.locationView.shieldButton)
         }
 
         var info = PhotonActionSheetItem(title: description, accessory: .None)

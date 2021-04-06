@@ -564,14 +564,22 @@ class SiriPageSetting: Setting {
 
 @available(iOS 14.0, *)
 class DefaultBrowserSetting: Setting {
+    let profile: Profile
+
+    override var accessoryView: UIImageView? { return disclosureIndicator }
+
     override var accessibilityIdentifier: String? { return "DefaultBrowserSettings" }
 
-    init() {
-        super.init(title: NSAttributedString(string: String.DefaultBrowserMenuItem, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowActionAccessory]))
+    init(settings: SettingsTableViewController) {
+        self.profile = settings.profile
+        
+        super.init(title: NSAttributedString(string: "Default Browser", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowActionAccessory]))
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
+        let viewController = DefaultBrowserSettingViewController(prefs: profile.prefs)
+        viewController.profile = profile
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

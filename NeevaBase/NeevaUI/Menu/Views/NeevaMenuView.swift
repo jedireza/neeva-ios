@@ -25,10 +25,10 @@ public struct NeevaMenuView: View {
             ScrollView{
                 Group{
                     HStack(spacing: NeevaUIConstants.menuHorizontalSpacing){
-                        NeevaMenuButtonView(name:"Home", image:"menu-home-alt", isDisabled: self.isPrivate)
+                        NeevaMenuButtonView(name:"Home", image: "menu-home-alt", isDisabled: self.isPrivate, isSymbol: false)
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.home)})
                             .disabled(self.isPrivate)
-                        NeevaMenuButtonView(name:"Spaces", image:"menu-spaces", isDisabled: self.isPrivate)
+                        NeevaMenuButtonView(name:"Spaces", image: "bookmark", isDisabled: self.isPrivate)
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.spaces)})
                             .disabled(self.isPrivate)
 
@@ -38,9 +38,9 @@ public struct NeevaMenuView: View {
                 }
                 Group {
                     HStack(spacing: NeevaUIConstants.menuHorizontalSpacing){
-                        NeevaMenuButtonView(name:"Downloads", image:"menu-downloads")
+                        NeevaMenuButtonView(name:"Downloads", image: "square.and.arrow.down")
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.downloads)})
-                        NeevaMenuButtonView(name:"History", image:"menu-history")
+                        NeevaMenuButtonView(name:"History", image:"clock")
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.history)})
                     }
                 }
@@ -48,10 +48,10 @@ public struct NeevaMenuView: View {
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)
                 Group{
                     VStack{
-                        NeevaMenuRowButtonView(name:"Settings", image:"menu-settings")
+                        NeevaMenuRowButtonView(name:"Settings", image:"gear")
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.settings)})
                         Divider()
-                        NeevaMenuRowButtonView(name:"Send Feedback", image:"menu-feedback")
+                        NeevaMenuRowButtonView(name:"Send Feedback", image:"bubble.left")
                             .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.feedback)})
                     }
                     .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)

@@ -32,7 +32,7 @@ class SettingsTest: BaseTestCase {
     func testDefaultBrowser() {
         // A default browser card should be available on the home screen
         if #available(iOS 14, *) {
-            waitForExistence(app.staticTexts["Set links from websites, emails, and Messages to open automatically in Neeva."], timeout: 5)
+            waitForExistence(app.staticTexts["Open links in Neeva automatically by making it your Default Browser App."], timeout: 5)
             waitForExistence(app.buttons["Go to Settings"], timeout: 5)
             app.buttons["Go to Settings"].tap()
 

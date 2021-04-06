@@ -83,9 +83,11 @@ class URLBarView: UIView {
     /// a panel, the first responder will be resigned, yet the overlay mode UI is still active.
     var inOverlayMode = false
 
-    lazy var neevaMenuButton: ToolbarButton = {
-        let neevaMenuButton = ToolbarButton(frame: .zero)
-        neevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
+    lazy var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
+    lazy var neevaMenuButton: UIButton = {
+        let neevaMenuButton = UIButton(frame: .zero)
+        neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
+        neevaMenuButton.adjustsImageWhenHighlighted = false
         neevaMenuButton.isAccessibilityElement = true
         neevaMenuButton.isHidden = false
         neevaMenuButton.imageView?.contentMode = .left
@@ -363,17 +365,11 @@ class URLBarView: UIView {
 
     func updateAlphaForSubviews(_ alpha: CGFloat) {
         locationContainer.alpha = alpha
-        self.alpha = alpha
+        neevaMenuButton.alpha = alpha
     }
 
     func updateProgressBar(_ progress: Float) {
-        let shouldShowNewTabButton = true
-        if shouldShowNewTabButton {
-            locationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
-        } else {
-            locationView.reloadButton.reloadButtonState = .disabled
-        }
-        
+        locationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
         progressBar.alpha = 1
         progressBar.isHidden = false
         progressBar.setProgress(progress, animated: !isTransitioning)
@@ -642,7 +638,7 @@ extension URLBarView: TabLocationViewDelegate {
     }
 
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView) {
-        delegate?.urlBarDidTapShield(self, from: tabLocationView.trackingProtectionButton)
+        delegate?.urlBarDidTapShield(self, from: tabLocationView.shieldButton)
     }
 }
 
@@ -714,6 +710,13 @@ extension URLBarView: PrivateModeUI {
         
         progressBar.setGradientColors(startColor: UIColor.theme.loadingBar.start(isPrivate), endColor: UIColor.theme.loadingBar.end(isPrivate))
         ToolbarTextField.applyUIMode(isPrivate: isPrivate)
+
+        if isPrivate {
+            neevaMenuButton.setImage(neevaMenuIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
+        } else {
+            neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
+        }
+        neevaMenuButton.tintColor = UIColor.theme.urlbar.neevaMenuTint(isPrivate)
 
         applyTheme()
     }
