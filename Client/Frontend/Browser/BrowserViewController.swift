@@ -46,6 +46,8 @@ enum ReferringPage {
 }
 
 class BrowserViewController: UIViewController {
+    var neevaHomeView: NeevaHomeView?
+
     var neevaHomeViewController: NeevaHomeViewController?
     var libraryViewController: LibraryViewController?
     var libraryDrawerViewController: DrawerViewController?
@@ -729,31 +731,39 @@ class BrowserViewController: UIViewController {
     }
 
     fileprivate func showNeevaHome(inline: Bool) {
-        homePanelIsInline = inline
-        if self.neevaHomeViewController == nil {
-            let neevaHomeViewController = NeevaHomeViewController(profile: profile)
-            neevaHomeViewController.homePanelDelegate = self
-            self.neevaHomeViewController = neevaHomeViewController
-            addChild(neevaHomeViewController)
-            view.addSubview(neevaHomeViewController.view)
-            neevaHomeViewController.didMove(toParent: self)
+        if self.neevaHomeView == nil {
+            let neevaHomeViewModel: NeevaHomeViewModel =  NeevaHomeViewModel(profile: profile)
+
+            self.neevaHomeView = NeevaHomeView(viewModel: neevaHomeViewModel);
+            addSubSwiftUIView(neevaHomeView, to: view)
+
         }
 
-        neevaHomeViewController?.applyTheme()
-
-        // We have to run this animation, even if the view is already showing
-        // because there may be a hide animation running and we want to be sure
-        // to override its results.
-        UIView.animate(withDuration: 0.2, animations: { () -> Void in
-            self.neevaHomeViewController?.view.alpha = 1
-        }, completion: { finished in
-            if finished {
-                self.webViewContainer.accessibilityElementsHidden = true
-                UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: nil)
-            }
-        })
-        view.setNeedsUpdateConstraints()
-        urlBar.locationView.reloadButton.reloadButtonState = .disabled
+//        homePanelIsInline = inline
+//        if self.neevaHomeViewController == nil {
+//            let neevaHomeViewController = NeevaHomeViewController(profile: profile)
+//           neevaHomeViewController.homePanelDelegate = self
+//            self.neevaHomeViewController = neevaHomeViewController
+//            addChild(neevaHomeViewController)
+//            view.addSubview(neevaHomeViewController.view)
+//            neevaHomeViewController.didMove(toParent: self)
+//        }
+//
+//        neevaHomeViewController?.applyTheme()
+//
+//        // We have to run this animation, even if the view is already showing
+//        // because there may be a hide animation running and we want to be sure
+//        // to override its results.
+//        UIView.animate(withDuration: 0.2, animations: { () -> Void in
+//            self.neevaHomeViewController?.view.alpha = 1
+//        }, completion: { finished in
+//            if finished {
+//                self.webViewContainer.accessibilityElementsHidden = true
+//                UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: nil)
+//            }
+//        })
+//        view.setNeedsUpdateConstraints()
+//        urlBar.locationView.reloadButton.reloadButtonState = .disabled
     }
 
     fileprivate func hideNeevaHome() {

@@ -155,7 +155,6 @@ struct SpaceLoaderView: View {
             }.disabled(true))
         }
     }
-
 }
 
 struct SpacesListView_Previews: PreviewProvider {

@@ -54,6 +54,12 @@
 		122DE34125F975D900599A0D /* RequestDesktopSiteActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE34025F975D900599A0D /* RequestDesktopSiteActivity.swift */; };
 		122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */; };
 		122DE39025FA4FF100599A0D /* ReadingModeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE38F25FA4FF100599A0D /* ReadingModeActivity.swift */; };
+		1242E9AD26169B4C0027E0DA /* CollapsibleSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1242E9AC26169B4C0027E0DA /* CollapsibleSection.swift */; };
+		1242E9C726169F390027E0DA /* HomeTopSitesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1242E9C626169F390027E0DA /* HomeTopSitesView.swift */; };
+		1242E9D5261A25990027E0DA /* HomeSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1242E9D4261A25990027E0DA /* HomeSearchesView.swift */; };
+		1242E9E3261A396D0027E0DA /* HomeSpacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1242E9E2261A396D0027E0DA /* HomeSpacesView.swift */; };
+		1242E9F1261B6F280027E0DA /* NeevaHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1242E9F0261B6F280027E0DA /* NeevaHomeView.swift */; };
+		12A7852A261BBA670032A958 /* NewNeevaHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A78529261BBA670032A958 /* NewNeevaHomeViewController.swift */; };
 		1D06AE6624FEE4D5000B092B /* TopSitesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D06AE6524FEE4D5000B092B /* TopSitesProvider.swift */; };
 		1D06AE6A24FEE8D6000B092B /* TabProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D06AE6924FEE8D6000B092B /* TabProvider.swift */; };
 		1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */; };
@@ -964,7 +970,13 @@
 		122DE34025F975D900599A0D /* RequestDesktopSiteActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDesktopSiteActivity.swift; sourceTree = "<group>"; };
 		122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinToTopSitesActivity.swift; sourceTree = "<group>"; };
 		122DE38F25FA4FF100599A0D /* ReadingModeActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingModeActivity.swift; sourceTree = "<group>"; };
+		1242E9AC26169B4C0027E0DA /* CollapsibleSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSection.swift; sourceTree = "<group>"; };
+		1242E9C626169F390027E0DA /* HomeTopSitesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTopSitesView.swift; sourceTree = "<group>"; };
+		1242E9D4261A25990027E0DA /* HomeSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSearchesView.swift; sourceTree = "<group>"; };
+		1242E9E2261A396D0027E0DA /* HomeSpacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSpacesView.swift; sourceTree = "<group>"; };
+		1242E9F0261B6F280027E0DA /* NeevaHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaHomeView.swift; sourceTree = "<group>"; };
 		1289876425E86690000C2465 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		12A78529261BBA670032A958 /* NewNeevaHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNeevaHomeViewController.swift; sourceTree = "<group>"; };
 		141F44CB8F177464DB560D2C /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AuthenticationManager.strings; sourceTree = "<group>"; };
 		149C4A2A90EB137DCD917726 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Search.strings; sourceTree = "<group>"; };
 		15B7471483FF81285A2322B4 /* en-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-CA"; path = "en-CA.lproj/HistoryPanel.strings"; sourceTree = "<group>"; };
@@ -1889,6 +1901,26 @@
 			);
 			name = UIImageViewAligned;
 			path = ThirdParty/UIImageViewAligned;
+			sourceTree = "<group>";
+		};
+		1242E9AB26169B1A0027E0DA /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				1242E9F0261B6F280027E0DA /* NeevaHomeView.swift */,
+				1242E9AC26169B4C0027E0DA /* CollapsibleSection.swift */,
+				1242E9C626169F390027E0DA /* HomeTopSitesView.swift */,
+				1242E9D4261A25990027E0DA /* HomeSearchesView.swift */,
+				1242E9E2261A396D0027E0DA /* HomeSpacesView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		12A78528261BBA480032A958 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				12A78529261BBA670032A958 /* NewNeevaHomeViewController.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 		1DA3CE5B24EEE71B00422BB2 /* OpenTabs */ = {
@@ -3053,6 +3085,7 @@
 		F0405D0625FFC9E900A0A3B2 /* NeevaControllers */ = {
 			isa = PBXGroup;
 			children = (
+				12A78528261BBA480032A958 /* Home */,
 				F0405D0825FFCA1200A0A3B2 /* Menu */,
 			);
 			path = NeevaControllers;
@@ -3061,6 +3094,7 @@
 		F0405D0725FFC9F100A0A3B2 /* NeevaUI */ = {
 			isa = PBXGroup;
 			children = (
+				1242E9AB26169B1A0027E0DA /* Home */,
 				F0405D0925FFCA1800A0A3B2 /* Menu */,
 			);
 			path = NeevaUI;
@@ -4538,6 +4572,7 @@
 				D0B9483D22A18B78002F4AA1 /* TextFieldTableViewCell.swift in Sources */,
 				C45F44691D087DB600CB7EF0 /* TopTabsViewController.swift in Sources */,
 				1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */,
+				1242E9AD26169B4C0027E0DA /* CollapsibleSection.swift in Sources */,
 				0BF0DB941A8545800039F300 /* URLBarView.swift in Sources */,
 				C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */,
 				D01017F5219CB6BD009CBB5A /* DownloadContentScript.swift in Sources */,
@@ -4550,6 +4585,7 @@
 				43446CEA2412066500F5C643 /* UIViewControllerExtension.swift in Sources */,
 				D301AAEE1A3A55B70078DD1D /* TabTrayControllerV1.swift in Sources */,
 				F056681725E9509E0082BB61 /* AddToSpaceViewController.swift in Sources */,
+				1242E9F1261B6F280027E0DA /* NeevaHomeView.swift in Sources */,
 				EB9A179B20E69A7F00B12184 /* ThemeManager.swift in Sources */,
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
 				EBB89509219398E500EB91A0 /* TabContentBlocker+ContentScript.swift in Sources */,
@@ -4629,6 +4665,7 @@
 				D34510881ACF415700EC27F0 /* SearchLoader.swift in Sources */,
 				12224FB026081FCF007E8705 /* NeevaUserInfo.swift in Sources */,
 				DA9FD88924E213E500168D1E /* QuickLinkSelection.intentdefinition in Sources */,
+				1242E9C726169F390027E0DA /* HomeTopSitesView.swift in Sources */,
 				CA7FC7D324A6A9B70012F347 /* LoginListDataSourceHelper.swift in Sources */,
 				CA520E7A24913C1B00CCAB48 /* LoginListViewModel.swift in Sources */,
 				E65075521E37F6D1006961AC /* UIViewExtensions.swift in Sources */,
@@ -4648,6 +4685,7 @@
 				A83E5AB71C1D993D0026D912 /* UIPasteboardExtensions.swift in Sources */,
 				D8EFFA0C1FF5B1FA001D3A09 /* NavigationRouter.swift in Sources */,
 				D0E55C4F1FB4FD23006DC274 /* FormPostHelper.swift in Sources */,
+				1242E9D5261A25990027E0DA /* HomeSearchesView.swift in Sources */,
 				E650754E1E37F6AE006961AC /* GeometryExtensions.swift in Sources */,
 				D3972BF41C22412B00035B87 /* TitleActivityItemProvider.swift in Sources */,
 				D38A1BEE1A9FA2CA00F6A386 /* SiteTableViewController.swift in Sources */,
@@ -4658,6 +4696,7 @@
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				DDA24A431FD84D630098F159 /* DefaultSearchPrefs.swift in Sources */,
 				23BD0E4E25533AE50038586B /* TabMoreMenuViewModel.swift in Sources */,
+				12A7852A261BBA670032A958 /* NewNeevaHomeViewController.swift in Sources */,
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				E63ED7D81BFCD9990097D08E /* LoginDetailTableViewCell.swift in Sources */,
 				66CE54A820FCF6CF00CC310B /* WebsiteDataManagementViewController.swift in Sources */,
@@ -4671,6 +4710,7 @@
 				EBB89507219398E500EB91A0 /* ContentBlocker.swift in Sources */,
 				23ED80FF25C89C9800D0E9D5 /* DefaultBrowserOnboardingViewController.swift in Sources */,
 				D88FDA9F1F4E2B9200FD9709 /* PhotonActionSheetProtocol.swift in Sources */,
+				1242E9E3261A396D0027E0DA /* HomeSpacesView.swift in Sources */,
 				E65075511E37F6D1006961AC /* NSURLExtensionsMailTo.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				D83822001FC7961D00303C12 /* DispatchQueueExtensions.swift in Sources */,
