@@ -49,7 +49,8 @@ open class UserAgent {
     }
 
     public static func neevaAppUserAgent() -> String {
-        return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) NeevaBrowserIOS/\(AppInfo.appVersion) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15"
+        // TODO: Consider selecting a desktop UA string on iPad
+        return UserAgentBuilder.neevaMobileUserAgent().userAgent()
     }
 
     public static func getUserAgent(domain: String, platform: UserAgentPlatform) -> String {
