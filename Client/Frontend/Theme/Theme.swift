@@ -143,9 +143,9 @@ class TopTabsColor {
 }
 
 class TextFieldColor {
-    var background: UIColor { return UIColor.Photon.Grey25 }
-    var backgroundInOverlay: UIColor { return UIColor.Photon.Grey25 }
-    var textAndTint: UIColor { return defaultTextAndTint }
+    func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.Photon.Grey25 }
+    func textAndTint(isPrivate: Bool) -> UIColor { return isPrivate ? .white : defaultTextAndTint }
+    func disabledTextAndTint(isPrivate: Bool) -> UIColor { isPrivate ? UIColor.Custom.disabledShieldDarkGray : UIColor.Custom.disabledShieldLightGray }
     var separator: UIColor { return .white }
 }
 

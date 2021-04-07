@@ -83,6 +83,8 @@ class URLBarView: UIView {
     /// a panel, the first responder will be resigned, yet the overlay mode UI is still active.
     var inOverlayMode = false
 
+    private var isPrivateMode = false
+
     lazy var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
     lazy var neevaMenuButton: UIButton = {
         let neevaMenuButton = UIButton(frame: .zero)
@@ -316,6 +318,7 @@ class URLBarView: UIView {
         guard let locationTextField = locationTextField else { return }
 
         locationTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        locationTextField.backgroundColor = .clear
         locationTextField.adjustsFontForContentSizeCategory = true
         locationTextField.clipsToBounds = true
         locationTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -336,8 +339,8 @@ class URLBarView: UIView {
             locationTextField.textDragInteraction?.isEnabled = false
         }
 
+        locationTextField.applyUIMode(isPrivate: isPrivateMode)
         locationTextField.applyTheme()
-        locationTextField.backgroundColor = UIColor.theme.textField.backgroundInOverlay
     }
 
     override func becomeFirstResponder() -> Bool {
@@ -688,13 +691,13 @@ extension URLBarView: Themeable {
 
         actionButtons.forEach { $0.applyTheme() }
         tabsButton.applyTheme()
+        neevaMenuButton.tintColor = UIColor.theme.urlbar.neevaMenuTint(isPrivateMode)
 
         cancelTintColor = UIColor.theme.browser.tint
         backgroundColor = UIColor.theme.browser.background
         line.backgroundColor = UIColor.theme.browser.urlBarDivider
 
-        locationView.backgroundColor = inOverlayMode ? UIColor.theme.textField.backgroundInOverlay : UIColor.theme.textField.background
-        locationContainer.backgroundColor = UIColor.clear
+        progressBar.setGradientColors(startColor: UIColor.theme.loadingBar.start(isPrivateMode), endColor: UIColor.theme.loadingBar.end(isPrivateMode))
 
         privateModeBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
@@ -704,19 +707,19 @@ extension URLBarView: Themeable {
 
 extension URLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
+        isPrivateMode = isPrivate
+
         if UIDevice.current.userInterfaceIdiom != .pad {
             privateModeBadge.show(isPrivate)
         }
-        
-        progressBar.setGradientColors(startColor: UIColor.theme.loadingBar.start(isPrivate), endColor: UIColor.theme.loadingBar.end(isPrivate))
-        ToolbarTextField.applyUIMode(isPrivate: isPrivate)
+
+        locationView.applyUIMode(isPrivate: isPrivate)
 
         if isPrivate {
             neevaMenuButton.setImage(neevaMenuIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
         } else {
             neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
         }
-        neevaMenuButton.tintColor = UIColor.theme.urlbar.neevaMenuTint(isPrivate)
 
         applyTheme()
     }
@@ -740,6 +743,7 @@ class TabLocationContainerView: UIView {
 }
 
 class ToolbarTextField: AutocompleteTextField {
+    private var isPrivateMode = false
 
     @objc dynamic var clearButtonTintColor: UIColor? {
         didSet {
@@ -790,14 +794,16 @@ class ToolbarTextField: AutocompleteTextField {
 
 extension ToolbarTextField: Themeable {
     func applyTheme() {
-        backgroundColor = UIColor.theme.textField.backgroundInOverlay
-        textColor = UIColor.theme.textField.textAndTint
+        backgroundColor = .clear
+        textColor = UIColor.theme.textField.textAndTint(isPrivate: isPrivateMode)
         clearButtonTintColor = textColor
-        tintColor = AutocompleteTextField.textSelectionColor.textFieldMode
+        textSelectionColor = UIColor.theme.urlbar.textSelectionHighlight(isPrivateMode)
+        tintColor = textSelectionColor.textFieldMode
     }
+}
 
-    // ToolbarTextField is created on-demand, so the textSelectionColor is a static prop for use when created
-    static func applyUIMode(isPrivate: Bool) {
-       textSelectionColor = UIColor.theme.urlbar.textSelectionHighlight(isPrivate)
+extension ToolbarTextField: PrivateModeUI {
+    func applyUIMode(isPrivate: Bool) {
+        isPrivateMode = isPrivate
     }
 }

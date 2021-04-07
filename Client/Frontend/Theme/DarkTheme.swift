@@ -75,10 +75,10 @@ fileprivate class DarkTopTabsColor: TopTabsColor {
 }
 
 fileprivate class DarkTextFieldColor: TextFieldColor {
-    override var background: UIColor { return UIColor.Photon.Grey60 }
-    override var backgroundInOverlay: UIColor { return self.background }
+    override func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.Photon.Grey60 }
 
-    override var textAndTint: UIColor { return defaultTextAndTint }
+    override func textAndTint(isPrivate: Bool) -> UIColor { return defaultTextAndTint }
+    override func disabledTextAndTint(isPrivate: Bool) -> UIColor { return UIColor.Custom.disabledShieldDarkGray }
     override var separator: UIColor { return super.separator.withAlphaComponent(0.3) }
 }
 

@@ -33,6 +33,7 @@ class TabLocationView: UIView {
     var longPressRecognizer: UILongPressGestureRecognizer!
     var tapRecognizer: UITapGestureRecognizer!
     var contentView: UIView!
+    private var isPrivateMode: Bool = false
 
     fileprivate let menuBadge = BadgeWithBackdrop(imageName: "menuBadge", backdropCircleSize: 32)
 
@@ -330,15 +331,26 @@ extension TabLocationView: AccessibilityActionsSource {
 
 extension TabLocationView: Themeable {
     func applyTheme() {
-        backgroundColor = UIColor.theme.textField.background
-        urlTextField.textColor = UIColor.theme.textField.textAndTint
+        let background = UIColor.theme.textField.background(isPrivate: isPrivateMode)
+        let textAndTint = UIColor.theme.textField.textAndTint(isPrivate: isPrivateMode)
 
-        lockImageView.tintColor = UIColor.theme.textField.textAndTint
-        reloadButton.tintColor = UIColor.theme.textField.textAndTint
-        shieldButton.tintColor = UIColor.theme.textField.textAndTint
+        backgroundColor = background
+        urlTextField.textColor = textAndTint
+        lockImageView.tintColor = textAndTint
+        reloadButton.tintColor = textAndTint
+        shieldButton.tintColor = textAndTint
 
-        let color = ThemeManager.instance.currentName == .dark ? UIColor(white: 0.3, alpha: 0.6): UIColor.theme.textField.background
+        let color = ThemeManager.instance.currentName == .dark ?
+            UIColor(white: 0.3, alpha: 0.6) :
+            UIColor.theme.textField.background(isPrivate: isPrivateMode)
         menuBadge.badge.tintBackground(color: color)
+    }
+}
+
+extension TabLocationView: PrivateModeUI {
+    func applyUIMode(isPrivate: Bool) {
+        self.isPrivateMode = isPrivate
+        applyTheme()
     }
 }
 
@@ -353,15 +365,10 @@ extension TabLocationView: TabEventHandler {
         shieldButton.alpha = 1.0
         switch blocker.status {
         case .blocking, .noBlockedURLs, .safelisted:
-            let imageName = ThemeManager.instance.currentName == .dark ? "tracking-protection-dark": "tracking-protection"
-            let imageColor = ThemeManager.instance.currentName == .dark ? UIColor.white : UIColor.black
-            shieldButton.setImage(UIImage.templateImageNamed(imageName), for: .normal)
-            shieldButton.tintColor = imageColor
+            shieldButton.tintColor = UIColor.theme.textField.textAndTint(isPrivate: isPrivateMode)
+            break
         case .disabled:
-            let disabledImageName = ThemeManager.instance.currentName == .dark ? "tracking-protection-disabled-dark": "tracking-protection-disabled"
-            let disabledColor = ThemeManager.instance.currentName == .dark ? UIColor.Custom.disabledShieldDarkGray : UIColor.Custom.disabledShieldLightGray
-            shieldButton.setImage(UIImage.templateImageNamed(disabledImageName), for: .normal)
-            shieldButton.tintColor = disabledColor
+            shieldButton.tintColor = UIColor.theme.textField.disabledTextAndTint(isPrivate: isPrivateMode)
             break
         }
     }

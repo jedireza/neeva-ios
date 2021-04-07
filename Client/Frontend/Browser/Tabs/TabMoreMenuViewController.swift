@@ -171,7 +171,7 @@ extension TabMoreMenuViewController: UITableViewDataSource {
         cell.backgroundColor = ThemeManager.instance.currentName == .normal ? lightColor : darkColor
         cell.textLabel?.text = titles[indexPath.section]?[indexPath.row]
         cell.accessoryView = imageViews[indexPath.section]?[indexPath.row]
-        cell.accessoryView?.tintColor = UIColor.theme.textField.textAndTint
+        cell.accessoryView?.tintColor = UIColor.theme.textField.textAndTint(isPrivate: false)
         
         return cell
     }
