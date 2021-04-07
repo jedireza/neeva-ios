@@ -342,7 +342,7 @@ extension TabLocationView: Themeable {
 
         let color = ThemeManager.instance.currentName == .dark ?
             UIColor(white: 0.3, alpha: 0.6) :
-            UIColor.theme.textField.background(isPrivate: isPrivateMode)
+            background
         menuBadge.badge.tintBackground(color: color)
     }
 }
