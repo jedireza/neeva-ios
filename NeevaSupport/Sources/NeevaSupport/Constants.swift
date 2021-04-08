@@ -30,6 +30,9 @@ public struct NeevaConstants {
     /// The URL form of `appHost`
     public static var appURL: URL { URL(string: "https://\(appHost)/")! }
 
+    public static var appHomeURL: URL { appURL }
+    public static var appSpacesURL: URL { appURL / "spaces" }
+
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
 

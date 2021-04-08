@@ -1377,22 +1377,16 @@ extension BrowserViewController: URLBarDelegate {
             completion: nil)
     }
     
-    func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions){
-        if let tab = self.tabManager.selectedTab {
-            switch(page){
-            case .home:
-                let page = NewTabAccessors.getHomePage(self.profile.prefs)
-                if page == .neevaHome {
-                    tab.loadRequest(URLRequest(url: NeevaConstants.appURL))
-                } else if page == .homePage, let homePageURL = HomeButtonHomePageAccessors.getHomePage(self.profile.prefs) {
-                    tab.loadRequest(PrivilegedRequest(url: homePageURL) as URLRequest)
-                } else if let homePanelURL = page.url {
-                    tab.loadRequest(PrivilegedRequest(url: homePanelURL) as URLRequest)
-                }
-                break
-            default:
-                return
-            }
+    func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions) {
+        switch(page){
+        case .home:
+            openURLInNewTab(NeevaConstants.appHomeURL)
+            break
+        case .spaces:
+            openURLInNewTab(NeevaConstants.appSpacesURL)
+            break
+        default:
+            break
         }
     }
     

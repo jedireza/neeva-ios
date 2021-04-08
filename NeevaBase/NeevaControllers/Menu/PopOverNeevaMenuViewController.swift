@@ -36,16 +36,7 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
                 delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.home)
                 break
             case .spaces:
-                self.dismiss( animated: true, completion: nil )
-                let host = UIHostingController(
-                    rootView: SpaceListView(onDismiss: delegate.dismissVC)
-                        .environment(\.onOpenURL) { url in
-                            delegate.settingsOpenURLInNewTab(url)
-                            delegate.dismissVC()
-                        }
-                )
-                host.overrideUserInterfaceStyle = self.overrideUserInterfaceStyle
-                delegate.present(host, animated: true, completion: nil)
+                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.spaces)
                 break
             case .settings:
                 self.dismiss( animated: true, completion: nil )
