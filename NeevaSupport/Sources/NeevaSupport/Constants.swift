@@ -2,29 +2,25 @@ import Foundation
 import Defaults
 import KeychainAccess
 
-let neevaHostKey = Defaults.Key<String>("neevaHost", default: "alpha.neeva.co", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+let neevaHostKey = Defaults.Key<String>("neevaHost", default: "neeva.com", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
 public struct NeevaConstants {
     /// The App Group, used for the keychain and UserDefaults
     public static let appGroup = "group.co.neeva.app.ios.browser"
 
-    public static let appPrivacyURL = "https://neeva.co/privacy"
-    public static let appHelpCenterURL = "https://neeva.co/contact"
+    public static let appPrivacyURL = "https://neeva.com/privacy"
+    public static let appHelpCenterURL = "https://neeva.com/contact"
     public static let appSettingsURL = "https://\(appHost)/settings"
     public static let appLoginURL = "https://\(appHost)/login"
 
-    /// The host for the Neeva API/website, such as `alpha.neeva.co`
+    /// The host for the Neeva API/website, such as `neeva.com`
     public static var appHost: String {
         get { Defaults[neevaHostKey] }
         set { Defaults[neevaHostKey] = newValue }
     }
 
-    /// Check if the given |host| matches |appHost| or is an equivalent value.
-    /// This is to support migration via HTTP redirect to future hostnames.
-    public static func isAppHostOrEquivalent(_ host: String?) -> Bool {
-        return host == appHost ||
-            (host == "neeva.com" && appHost == "alpha.neeva.co") ||
-            (host == "m1.neeva.com" && appHost == "m1.neeva.co")
+    public static func isAppHost(_ host: String?) -> Bool {
+        return host == appHost
     }
 
     /// The URL form of `appHost`

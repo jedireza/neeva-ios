@@ -221,9 +221,9 @@ class TabManager: NSObject {
             tab.applyTheme()
         }
 
-        if let tab = tab, tab.isPrivate, let url = tab.url, NeevaConstants.isAppHostOrEquivalent(url.host), !url.path.starts(with: "/incognito") {
+        if let tab = tab, tab.isPrivate, let url = tab.url, NeevaConstants.isAppHost(url.host), !url.path.starts(with: "/incognito") {
             tab.webView?.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
-                if cookies.first(where: { NeevaConstants.isAppHostOrEquivalent($0.domain) && $0.name == "httpd~incognito" && $0.isSecure }) != nil {
+                if cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~incognito" && $0.isSecure }) != nil {
                     return
                 }
 
