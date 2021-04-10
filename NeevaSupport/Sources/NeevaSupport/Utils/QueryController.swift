@@ -37,14 +37,7 @@ public class QueryController<Query, Data>: AbstractController, ObservableObject 
     /// Called by subclasses to perform their query, updating the `state` property to reflect its progress
     /// - Parameter query: the query to perform
     @discardableResult public func perform(query: Query) -> Apollo.Cancellable {
-        var stillRunning = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
-            if stillRunning, case .failure = self.state {
-                self.state = .running
-            }
-        }
         return Self.perform(query: query) { result in
-            stillRunning = false
             self.withOptionalAnimation {
                 switch result {
                 case .failure(let error):
