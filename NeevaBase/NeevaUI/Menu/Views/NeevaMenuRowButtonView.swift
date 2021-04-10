@@ -6,48 +6,56 @@
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 import SwiftUI
+import Shared
 
 public struct NeevaMenuRowButtonView: View {
-    
-    let buttonName: String
-    let buttonImage: String
-    let isSymbol: Bool
-    
+    let label: String
+    let nicon: Nicon?
+    let symbol: SFSymbol?
+
     /// - Parameters:
-    ///   - name: The display name of the button
-    ///   - image: The string id of the button image or SF symbol
-    ///   - isSymbol: Whether imageName is a SF symbol
-    public init(name: String, image: String, isSymbol: Bool = true){
-        self.buttonName = name
-        self.buttonImage = image
-        self.isSymbol = isSymbol
+    ///   - label: The text displayed on the button
+    ///   - nicon: The Nicon to use
+    public init(label: String, nicon: Nicon){
+        self.label = label
+        self.nicon = nicon
+        self.symbol = nil
     }
-    
+
+    /// - Parameters:
+    ///   - label: The text displayed on the button
+    ///   - symbol: The SFSymbol to use
+    public init(label: String, symbol: SFSymbol){
+        self.label = label
+        self.nicon = nil
+        self.symbol = symbol
+    }
+
     public var body: some View {
-        let buttonImage = self.isSymbol ?
-            Image(systemName: self.buttonImage) : Image(self.buttonImage)
-        
         Group{
-            HStack{
-                Text(buttonName)
+            HStack(spacing: 0) {
+                Text(label)
                     .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
-                    .font(.system(size: NeevaUIConstants.menuFontSize))
+                    .font(.system(size: 17))
+
                 Spacer()
-                buttonImage
-                    .renderingMode(.template)
-                    .font(.system(size:18, weight:.regular))
-                    .foregroundColor(Color(UIColor.theme.popupMenu.buttonColor))
+
+                Group {
+                    if let nicon = self.nicon {
+                        NiconView(nicon, size: 18)
+                    } else if let symbol = self.symbol {
+                        SFSymbolView(symbol, size: 18)
+                    }
+                }
+                .foregroundColor(Color(UIColor.theme.popupMenu.buttonColor))
             }
         }
-        .padding(NeevaUIConstants.menuRowPadding)
-        .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)
         .background(Color(UIColor.theme.popupMenu.foreground))
-        .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }
 }
 
 struct NeevaMenuRowButtonView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuRowButtonView(name: "Test", image: "iphone")
+        NeevaMenuRowButtonView(label: "Test", nicon: .gear)
     }
 }

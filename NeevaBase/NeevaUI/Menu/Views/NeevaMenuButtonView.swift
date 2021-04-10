@@ -7,44 +7,61 @@
 //
 
 import SwiftUI
+import Shared
 
 public struct NeevaMenuButtonView: View {
-    
-    let buttonName: String
-    let image: String
+    let label: String
+    let nicon: Nicon?
+    let symbol: SFSymbol?
     let isDisabled: Bool
-    let isSymbol: Bool
     
     /// - Parameters:
-    ///   - name: The display name of the button
-    ///   - image: Can be string id of the button image or symbol name
+    ///   - label: The text displayed on the button
+    ///   - nicon: The Nicon to use
     ///   - isDisabled: Whether to apply gray out disabled style
-    ///   - isSymbol: Wether image is a symbol name
-    public init(name: String, image: String, isDisabled: Bool = false, isSymbol: Bool = true){
-        self.buttonName = name
-        self.image = image
+    public init(label: String, nicon: Nicon, isDisabled: Bool = false) {
+        self.label = label
+        self.nicon = nicon
+        self.symbol = nil
         self.isDisabled = isDisabled
-        self.isSymbol = isSymbol
+    }
+
+    /// - Parameters:
+    ///   - label: The text displayed on the button
+    ///   - symbol: The SFSymbol to use
+    ///   - isDisabled: Whether to apply gray out disabled style
+    public init(label: String, symbol: SFSymbol, isDisabled: Bool = false) {
+        self.label = label
+        self.nicon = nil
+        self.symbol = symbol
+        self.isDisabled = isDisabled
     }
     
     public var body: some View {
-        let buttonImage = self.isSymbol ?
-            Image(systemName: self.image) : Image(self.image)
+        HStack(spacing: 0) {
+            Spacer()
 
-        Group{
-            VStack{
-                buttonImage
-                    .renderingMode(.template)
-                    .font(.system(size:20, weight:.regular))
-                    .padding(.bottom,1)
-                    .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.buttonColor))
-                Text(buttonName)
+            VStack(spacing: 0) {
+                Group {
+                    if let nicon = self.nicon {
+                        NiconView(nicon, size: 20)
+                    } else if let symbol = self.symbol {
+                        SFSymbolView(symbol, size: 20)
+                    }
+                }
+                .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.buttonColor))
+
+                Spacer()
+
+                Text(label)
                     .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.textColor))
-                    .font(.system(size: NeevaUIConstants.menuButtonFontSize))
+                    .font(.system(size: 16))
             }
+            .frame(height: 46)
+            .padding([.top, .bottom], NeevaUIConstants.buttonInnerPadding)
+
+            Spacer()
         }
-        .padding(NeevaUIConstants.menuInnerPadding)
-        .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuButtonMaxWidth)
         .background(Color(UIColor.theme.popupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
         .disabled(self.isDisabled)
@@ -53,6 +70,6 @@ public struct NeevaMenuButtonView: View {
 
 struct NeevaMenuButtonView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuButtonView(name: "Test", image: "iphone")
+        NeevaMenuButtonView(label: "Test", nicon: .house)
     }
 }

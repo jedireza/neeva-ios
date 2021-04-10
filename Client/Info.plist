@@ -105,6 +105,9 @@
 		<string>FiraSans-Regular.ttf</string>
 		<string>FiraSans-SemiBold.ttf</string>
 		<string>FiraSans-UltraLight.ttf</string>
+		<string>nicons-400.ttf</string>
+		<string>nicons-500.ttf</string>
+		<string>nicons-600.ttf</string>
 	</array>
 	<key>UIApplicationShortcutItems</key>
 	<array>

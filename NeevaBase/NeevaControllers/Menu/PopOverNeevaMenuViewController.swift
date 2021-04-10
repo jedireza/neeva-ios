@@ -9,7 +9,10 @@
 import SwiftUI
 import NeevaSupport
 
-class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
+typealias NeevaMenuContainerView = VerticalScrollViewIfNeeded<NeevaMenuView>
+let neevaMenuIntrinsicHeight: CGFloat = 312  // TODO: Compute this value instead.
+
+class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView>{
 
     var delegate: BrowserViewController?
 
@@ -19,7 +22,8 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
     
     public init(delegate:BrowserViewController,
                 source:UIView, isPrivate: Bool) {
-        super.init(rootView: NeevaMenuView(isPrivate: isPrivate))
+        super.init(rootView: NeevaMenuContainerView(embeddedView: NeevaMenuView(isPrivate: isPrivate),
+                   thresholdHeight: neevaMenuIntrinsicHeight))
         self.delegate = delegate
         self.setAlphaOfBackgroundViews(alpha: 0.5)
         self.modalPresentationStyle = .popover
@@ -29,7 +33,7 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuView>{
         }
         
         //Build callbacks for each button action
-        self.rootView.menuAction = { result in
+        self.rootView.embeddedView.menuAction = { result in
             self.dismiss( animated: true, completion: nil )
             switch result {
             case .home:
