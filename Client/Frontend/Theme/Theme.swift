@@ -25,7 +25,7 @@ enum BuiltinThemeName: String {
 // Convenience reference to these normal mode colors which are used in a few color classes.
 fileprivate let defaultBackground = UIColor.Photon.Grey10
 fileprivate let defaultSeparator = UIColor.Photon.Grey30
-fileprivate let defaultTextAndTint = UIColor.Photon.Grey80 
+fileprivate let defaultTextAndTint = UIColor.Photon.Grey80
 
 class TableViewColor {
     var rowBackground: UIColor { return UIColor.Photon.White100 }
@@ -164,10 +164,9 @@ class HomePanelColor {
     
     var siteTableHeaderBorder: UIColor { return UIColor.Photon.Grey30.withAlphaComponent(0.8) }
 
-    var topSiteDomain: UIColor { return UIColor.black }
-    var topSitesGradientStart: UIColor { return UIColor.white }
-    var topSitesGradientEnd: UIColor { return UIColor(rgb: 0xf8f8f8) }
     var topSitesBackground: UIColor { return UIColor.white }
+    var topSitesFavBg: UIColor { return UIColor.Neeva.Gray97 }
+    var topSitesLabel: UIColor { return UIColor.Neeva.Gray60 }
 
     var activityStreamHeaderText: UIColor { return UIColor.Photon.Grey50 }
     var activityStreamCellTitle: UIColor { return UIColor.black }
@@ -203,10 +202,12 @@ class GeneralColor {
 }
 
 class DefaultBrowserCardColor {
-    var backgroundColor: UIColor { return UIColor.Photon.Grey30 }
-    var textColor: UIColor { return UIColor.black }
+    var backgroundColor: UIColor { return UIColor.green }
+    var textColor: UIColor { return UIColor(rgb: 0x131415) }
     var closeButtonBackground: UIColor { return UIColor.Photon.Grey20 }
     var closeButton: UIColor { return UIColor.Photon.Grey80 }
+    var brandPistachio: UIColor { return UIColor(rgb: 0xE4F3DB) }
+    var brandPolar: UIColor{ return UIColor(rgb: 0xD4F0F5) }
 }
 
 class PopupMenu {

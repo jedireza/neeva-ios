@@ -43,7 +43,7 @@ struct IncognitoDescriptionView: View {
                 .padding([.leading, .trailing], gutterWidth)
 
                 Spacer()
-            }
+            }.padding([.top, .bottom], 20)
             Spacer()
         }
         .background(Color(UIColor.Neeva.Gray30))

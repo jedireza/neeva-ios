@@ -97,10 +97,9 @@ fileprivate class DarkHomePanelColor: HomePanelColor {
     override var activityStreamCellTitle: UIColor { return UIColor.Photon.Grey20 }
     override var activityStreamCellDescription: UIColor { return UIColor.Photon.Grey30 }
 
-    override var topSiteDomain: UIColor { return defaultTextAndTint }
-    override var topSitesGradientStart: UIColor { return UIColor(rgb: 0x29282d) }
-    override var topSitesGradientEnd: UIColor { return UIColor(rgb: 0x212104) }
     override var topSitesBackground: UIColor { return UIColor(rgb: 0x29282d) }
+    override var topSitesFavBg: UIColor { return UIColor(rgb: 0x505054) }
+    override var topSitesLabel: UIColor { return UIColor.Neeva.White}
 
     override var downloadedFileIcon: UIColor { return UIColor.Photon.Grey30 }
 
@@ -126,9 +125,11 @@ fileprivate class DarkGeneralColor: GeneralColor {
 
 class DarkDefaultBrowserCardColor: DefaultBrowserCardColor {
     override var backgroundColor: UIColor { return UIColor.Photon.Grey60 }
-    override var textColor: UIColor { return UIColor.white }
+    override var textColor: UIColor { return UIColor(rgb: 0x131415) }
     override var closeButtonBackground: UIColor { return UIColor.Photon.Grey80 }
     override var closeButton: UIColor { return UIColor.Photon.Grey20 }
+    override var brandPistachio: UIColor { return UIColor(rgb: 0xD0ECBF) }
+    override var brandPolar: UIColor { return UIColor(rgb: 0xADE1EA) }
 }
 
 class DarkPopupMenu: PopupMenu {

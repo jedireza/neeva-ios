@@ -52,7 +52,6 @@ class TopSiteItemCell: UICollectionViewCell, Themeable {
         let view = UIView()
         view.layer.cornerRadius = TopSiteCellUX.CellCornerRadius
         view.layer.masksToBounds = true
-        view.layer.borderWidth = TopSiteCellUX.BorderWidth
         return view
     }()
 
@@ -86,7 +85,7 @@ class TopSiteItemCell: UICollectionViewCell, Themeable {
             make.left.equalTo(contentView).offset(TopSiteCellUX.TitleOffset)
             make.right.equalTo(contentView).offset(-TopSiteCellUX.TitleOffset)
             make.height.equalTo(TopSiteCellUX.TitleHeight)
-            make.bottom.equalTo(contentView)
+            make.bottom.equalTo(contentView).offset(-15)
         }
 
         imageView.snp.makeConstraints { make in
@@ -128,9 +127,9 @@ class TopSiteItemCell: UICollectionViewCell, Themeable {
         url = site.tileURL
 
         if let provider = site.metadata?.providerName {
-            titleLabel.text = provider.lowercased()
+            titleLabel.text = provider.capitalized
         } else {
-            titleLabel.text = site.tileURL.shortDisplayString
+            titleLabel.text = site.tileURL.shortDisplayString.capitalized
         }
 
         // If its a pinned site add a bullet point to the front
@@ -152,18 +151,22 @@ class TopSiteItemCell: UICollectionViewCell, Themeable {
 
         accessibilityLabel = titleLabel.text
         faviconBG.backgroundColor = .clear
+
+        faviconBG.snp.remakeConstraints { make in
+            make.size.equalTo(50)
+        }
+
         self.imageView.setFaviconOrDefaultIcon(forSite: site) { [weak self] in
             self?.imageView.snp.remakeConstraints { make in
-                guard let faviconBG = self?.faviconBG , let frame = self?.frame else { return }
+                guard let faviconBG = self?.faviconBG, let titleLabel = self?.titleLabel, let frame = self?.frame else { return }
                 if self?.imageView.backgroundColor == nil {
-                    make.size.equalTo(frame.width)
+                    make.size.equalTo(frame.width * 0.5)
                 } else {
-                    make.size.equalTo(floor(frame.width * TopSiteCellUX.IconSizePercent))
+                    make.size.equalTo(floor(frame.width * TopSiteCellUX.IconSizePercent) * 0.5)
                 }
                 make.center.equalTo(faviconBG)
+                make.centerX.equalTo(titleLabel)
             }
-
-            self?.faviconBG.backgroundColor = self?.imageView.backgroundColor
         }
 
         applyTheme()
@@ -171,11 +174,12 @@ class TopSiteItemCell: UICollectionViewCell, Themeable {
 
     func applyTheme() {
         imageView.tintColor = TopSiteCellUX.PinColor
-        faviconBG.layer.borderColor = TopSiteCellUX.BorderColor.cgColor
         selectedOverlay.backgroundColor = TopSiteCellUX.OverlayColor
         titleBorder.backgroundColor = TopSiteCellUX.BorderColor.cgColor
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = UIColor.theme.homePanel.topSiteDomain
+        titleLabel.textColor = UIColor.theme.homePanel.topSitesLabel
+        titleLabel.font = UIFont.systemFont(ofSize: 14)
+        faviconBG.backgroundColor = UIColor.theme.homePanel.topSitesFavBg
     }
 }
 
@@ -198,7 +202,7 @@ private struct ASHorizontalScrollCellUX {
     static let TopSiteCellIdentifier = "TopSiteItemCell"
     static let TopSiteEmptyCellIdentifier = "TopSiteItemEmptyCell"
 
-    static let TopSiteItemSize = CGSize(width: 75, height: 75)
+    static let TopSiteItemSize = CGSize(width: 75, height: 90)
     static let BackgroundColor = UIColor.Photon.White100
     static let MinimumInsets: CGFloat = 14
 }
@@ -209,7 +213,8 @@ private struct ASHorizontalScrollCellUX {
 class ASHorizontalScrollCell: UICollectionViewCell {
 
     lazy var collectionView: UICollectionView = {
-        let layout  = HorizontalFlowLayout()
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
         layout.itemSize = ASHorizontalScrollCellUX.TopSiteItemSize
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(TopSiteItemCell.self, forCellWithReuseIdentifier: ASHorizontalScrollCellUX.TopSiteCellIdentifier)
@@ -235,6 +240,7 @@ class ASHorizontalScrollCell: UICollectionViewCell {
 
         collectionView.snp.makeConstraints { make in
             make.edges.equalTo(contentView.safeArea.edges)
+            make.left.equalTo(NeevaHomeUX.rowSpacing).offset(15)
         }
     }
 

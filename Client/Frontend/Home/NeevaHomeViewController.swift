@@ -127,6 +127,8 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
     fileprivate let profile: Profile
     fileprivate let flowLayout = UICollectionViewFlowLayout()
 
+    fileprivate lazy var emptyIncognitoDescriptionView = UIView()
+
     fileprivate lazy var topSitesManager: ASHorizontalScrollCellManager = {
         let manager = ASHorizontalScrollCellManager()
         return manager
@@ -144,8 +146,7 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
     }()
 
     lazy var defaultBrowserCard: DefaultBrowserCard = {
-        let card = DefaultBrowserCard()
-        card.backgroundColor = UIColor.theme.homePanel.topSitesBackground
+        let card = DefaultBrowserCard(frame:.zero, isUserLoggedIn: NeevaUserInfo.shared.isUserLoggedIn)
         return card
     }()
 
@@ -173,12 +174,33 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
         self.collectionView?.register(ASFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
         collectionView?.keyboardDismissMode = .onDrag
 
-        if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {
+        let isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+
+        if(isPrivate){
+            self.view.addSubview(emptyIncognitoDescriptionView)
+            emptyIncognitoDescriptionView.layer.cornerRadius = 12
+            emptyIncognitoDescriptionView.layer.masksToBounds = true
+
+            emptyIncognitoDescriptionView.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(20)
+                make.bottom.equalTo(collectionView.snp.top).offset(-28)
+                make.width.equalToSuperview().offset(-30)
+                make.centerX.equalTo(self.view)
+            }
+
+            collectionView.snp.makeConstraints { make in
+                make.top.equalTo(emptyIncognitoDescriptionView.snp.bottom)
+                make.bottom.left.right.equalToSuperview()
+            }
+
+            addSubSwiftUIView(IncognitoDescriptionView(), to: emptyIncognitoDescriptionView)
+
+        } else if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") || !NeevaUserInfo.shared.isUserLoggedIn {
             self.view.addSubview(defaultBrowserCard)
             defaultBrowserCard.snp.makeConstraints { make in
                 make.top.equalToSuperview()
                 make.bottom.equalTo(collectionView.snp.top)
-                make.width.lessThanOrEqualTo(508)
+                make.width.equalToSuperview()
                 make.centerX.equalTo(self.view)
             }
             collectionView.snp.makeConstraints { make in
@@ -192,7 +214,11 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
                     make.bottom.left.right.equalToSuperview()
                 }
             }
+            defaultBrowserCard.signinHandler = {
+                self.showSiteWithURLHandler(NeevaConstants.appLoginURL.asURL!)
+            }
         }
+
         self.view.backgroundColor = UIColor.theme.homePanel.topSitesBackground
         self.profile.panelDataObservers.activityStream.delegate = self
 
@@ -260,27 +286,18 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
 extension NeevaHomeViewController {
     enum Section: Int {
         case topSites
-        case libraryShortcuts
 
-        static let allValues = [topSites, libraryShortcuts]
+        static let allValues = [topSites]
         static let count = allValues.count
 
         var title: String? {
             switch self {
-            case .topSites: return Strings.ASTopSitesTitle
-            case .libraryShortcuts: return Strings.AppMenuLibraryTitleString
+            case .topSites: return "TOP SITES"
             }
         }
 
         var headerHeight: CGSize {
             return CGSize(width: 50, height: 40)
-        }
-
-        var headerImage: UIImage? {
-            switch self {
-            case .topSites: return UIImage.templateImageNamed("menu-panel-TopSites")
-            case .libraryShortcuts: return UIImage.templateImageNamed("menu-library")
-            }
         }
 
         var footerHeight: CGSize {
@@ -290,7 +307,6 @@ extension NeevaHomeViewController {
         func cellHeight(_ traits: UITraitCollection, width: CGFloat) -> CGFloat {
             switch self {
             case .topSites: return 0 //calculated dynamically
-            case .libraryShortcuts: return NeevaHomeUX.LibraryShortcutsHeight
             }
         }
 
@@ -307,11 +323,6 @@ extension NeevaHomeViewController {
             var insets = NeevaHomeUX.sectionInsetsForSizeClass[currentTraits.horizontalSizeClass]
 
             switch self {
-            case .libraryShortcuts:
-                let window = UIApplication.shared.keyWindow
-                let safeAreaInsets = window?.safeAreaInsets.left ?? 0
-                insets += NeevaHomeUX.MinimumInsets + safeAreaInsets
-                return insets
             case .topSites:
                 insets += NeevaHomeUX.TopSitesInsets
                 return insets
@@ -333,14 +344,12 @@ extension NeevaHomeViewController {
         var cellIdentifier: String {
             switch self {
             case .topSites: return "TopSiteCell"
-            case .libraryShortcuts: return  "LibraryShortcutsCell"
             }
         }
 
         var cellType: UICollectionViewCell.Type {
             switch self {
             case .topSites: return ASHorizontalScrollCell.self
-            case .libraryShortcuts: return ASLibraryCell.self
             }
         }
 
@@ -361,8 +370,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
                 let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header", for: indexPath) as! ASHeaderView
-                view.iconView.isHidden = false
-                view.iconView.image = Section(indexPath.section).headerImage
                 let title = Section(indexPath.section).title
                 switch Section(indexPath.section) {
                 case .topSites:
@@ -370,22 +377,11 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
                     view.titleLabel.accessibilityIdentifier = "topSitesTitle"
                     view.moreButton.isHidden = true
                     return view
-                case .libraryShortcuts:
-                    view.title = title
-                    view.moreButton.isHidden = false
-                    view.moreButton.setTitle(Strings.AppMenuLibrarySeeAllTitleString, for: .normal)
-                    view.moreButton.addTarget(self, action: #selector(openHistory), for: .touchUpInside)
-                    view.moreButton.accessibilityIdentifier = "libraryMoreButton"
-                    view.titleLabel.accessibilityIdentifier = "libraryTitle"
-                    return view
             }
         case UICollectionView.elementKindSectionFooter:
                 let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath) as! ASFooterView
                 switch Section(indexPath.section) {
                 case .topSites:
-                    return view
-                case .libraryShortcuts:
-                    view.separatorLineView?.isHidden = true
                     return view
             }
             default:
@@ -402,15 +398,7 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
 
         switch Section(indexPath.section) {
         case .topSites:
-            // Create a temporary cell so we can calculate the height.
-            let layout = topSiteCell.collectionView.collectionViewLayout as! HorizontalFlowLayout
-            let estimatedLayout = layout.calculateLayout(for: CGSize(width: cellSize.width, height: 0))
-            return CGSize(width: cellSize.width, height: estimatedLayout.size.height)
-        case .libraryShortcuts:
-            let numberofshortcuts: CGFloat = (homePanelDelegate?.homePanelIsPrivate ?? false) ? 2 : 3
-            let titleSpacing: CGFloat = 10
-            let width = min(NeevaHomeUX.LibraryShortcutsMaxWidth, cellSize.width)
-            return CGSize(width: width, height: (width / numberofshortcuts) + titleSpacing)
+            return CGSize(width: cellSize.width, height: 120)
         }
     }
 
@@ -418,8 +406,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
         switch Section(section) {
         case .topSites:
             return Section(section).headerHeight
-        case .libraryShortcuts:
-            return UIDevice.current.userInterfaceIdiom == .pad ? CGSize.zero : Section(section).headerHeight
         }
     }
 
@@ -427,8 +413,6 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
         switch Section(section) {
         case .topSites:
             return Section(section).footerHeight
-        case .libraryShortcuts:
-            return UIDevice.current.userInterfaceIdiom == .pad ? CGSize.zero : Section(section).footerHeight
         }
     }
 
@@ -469,9 +453,6 @@ extension NeevaHomeViewController {
         switch Section(section) {
         case .topSites:
             return topSitesManager.content.isEmpty ? 0 : 1
-        case .libraryShortcuts:
-            // disable the libary shortcuts on the ipad
-            return UIDevice.current.userInterfaceIdiom == .pad ? 0 : 1
         }
     }
 
@@ -482,20 +463,7 @@ extension NeevaHomeViewController {
         switch Section(indexPath.section) {
         case .topSites:
             return configureTopSitesCell(cell, forIndexPath: indexPath)
-        case .libraryShortcuts:
-            return configureLibraryShortcutsCell(cell, forIndexPath: indexPath)
         }
-    }
-
-    func configureLibraryShortcutsCell(_ cell: UICollectionViewCell, forIndexPath indexPath: IndexPath) -> UICollectionViewCell {
-        let libraryCell = cell as! ASLibraryCell
-        let targets = [#selector(openSpaces), #selector(openDownloads)]
-        libraryCell.libraryButtons.map({ $0.button }).zip(targets).forEach { (button, selector) in
-            button.removeTarget(nil, action: nil, for: .allEvents)
-            button.addTarget(self, action: selector, for: .touchUpInside)
-        }
-        libraryCell.libraryButtons.first?.isHidden = homePanelDelegate?.homePanelIsPrivate ?? false
-        return cell
     }
 
     //should all be collectionview
@@ -599,8 +567,6 @@ extension NeevaHomeViewController: DataObserverDelegate {
             let pointInTopSite = longPressGestureRecognizer.location(in: topSiteCell.collectionView)
             guard let topSiteIndexPath = topSiteCell.collectionView.indexPathForItem(at: pointInTopSite) else { return }
             presentContextMenu(for: topSiteIndexPath)
-        case .libraryShortcuts:
-            return
         }
     }
 }
@@ -640,8 +606,6 @@ extension NeevaHomeViewController: HomePanelContextMenu {
         switch Section(indexPath.section) {
         case .topSites:
             return topSitesManager.content[indexPath.item]
-        case .libraryShortcuts:
-            return nil
         }
     }
 
@@ -653,8 +617,6 @@ extension NeevaHomeViewController: HomePanelContextMenu {
             if let topSiteCell = self.collectionView?.cellForItem(at: IndexPath(row: 0, section: 0)) as? ASHorizontalScrollCell {
                 sourceView = topSiteCell.collectionView.cellForItem(at: indexPath)
             }
-        case .libraryShortcuts:
-            return nil
         }
 
         let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "quick_action_new_tab") { _, _ in
@@ -703,7 +665,6 @@ extension NeevaHomeViewController: HomePanelContextMenu {
 
         switch Section(indexPath.section) {
             case .topSites: actions.append(contentsOf: topSiteActions)
-            case .libraryShortcuts: break
         }
         return actions
     }
@@ -721,7 +682,7 @@ extension NeevaHomeViewController: UIPopoverPresentationControllerDelegate {
 // MARK: - Section Header View
 private struct NeevaHomeHeaderViewUX {
     static var SeparatorColor: UIColor { return UIColor.theme.homePanel.separator }
-    static let TextFont = DynamicFontHelper.defaultHelper.SmallSizeHeavyWeightAS
+    // static let TextFont = DynamicFontHelper.defaultHelper.SmallSizeHeavyWeightAS
     static let ButtonFont = DynamicFontHelper.defaultHelper.MediumSizeBoldFontAS
     static let SeparatorHeight = 0.5
     static let Insets: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? NeevaHomeUX.SectionInsetsForIpad + NeevaHomeUX.MinimumInsets : NeevaHomeUX.MinimumInsets
@@ -771,7 +732,7 @@ class ASFooterView: UICollectionReusableView {
 
 extension ASFooterView: Themeable {
     func applyTheme() {
-        separatorLineView?.backgroundColor = NeevaHomeHeaderViewUX.SeparatorColor
+        separatorLineView?.backgroundColor = UIColor.clear
     }
 }
 
@@ -781,8 +742,8 @@ class ASHeaderView: UICollectionReusableView {
     lazy fileprivate var titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = self.title
-        titleLabel.textColor = UIColor.theme.homePanel.activityStreamHeaderText
-        titleLabel.font = NeevaHomeHeaderViewUX.TextFont
+        titleLabel.textColor = UIColor.Neeva.Gray60
+        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.bold)
         titleLabel.minimumScaleFactor = 0.6
         titleLabel.numberOfLines = 1
         titleLabel.adjustsFontSizeToFitWidth = true
@@ -797,13 +758,6 @@ class ASHeaderView: UICollectionReusableView {
         button.setTitleColor(UIConstants.SystemBlueColor, for: .normal)
         button.setTitleColor(UIColor.Photon.Grey50, for: .highlighted)
         return button
-    }()
-
-    lazy fileprivate var iconView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.tintColor = UIColor.Photon.Grey50
-        imageView.isHidden = true
-        return imageView
     }()
 
     var title: String? {
@@ -828,9 +782,7 @@ class ASHeaderView: UICollectionReusableView {
         moreButton.accessibilityIdentifier = nil;
         titleLabel.text = nil
         moreButton.removeTarget(nil, action: nil, for: .allEvents)
-        iconView.isHidden = true
-        iconView.tintColor =  UIColor.theme.homePanel.activityStreamHeaderText
-        titleLabel.textColor = UIColor.theme.homePanel.activityStreamHeaderText
+        titleLabel.textColor = UIColor.Neeva.Gray60
         moreButton.setTitleColor(UIConstants.SystemBlueColor, for: .normal)
     }
 
@@ -838,7 +790,6 @@ class ASHeaderView: UICollectionReusableView {
         super.init(frame: frame)
         addSubview(titleLabel)
         addSubview(moreButton)
-        addSubview(iconView)
         moreButton.snp.makeConstraints { make in
             make.top.equalTo(self.snp.top).offset(ASHeaderView.verticalInsets)
             make.bottom.equalToSuperview().offset(-ASHeaderView.verticalInsets)
@@ -846,15 +797,10 @@ class ASHeaderView: UICollectionReusableView {
         }
         moreButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(iconView.snp.trailing).offset(5)
+            make.leading.equalTo(NeevaHomeUX.rowSpacing)
             make.trailing.equalTo(moreButton.snp.leading).inset(-NeevaHomeHeaderViewUX.TitleTopInset)
             make.top.equalTo(self.snp.top).offset(ASHeaderView.verticalInsets)
             make.bottom.equalToSuperview().offset(-ASHeaderView.verticalInsets)
-        }
-        iconView.snp.makeConstraints { make in
-            self.leftConstraint = make.leading.equalTo(self.safeArea.leading).inset(titleInsets).constraint
-            make.centerY.equalTo(self.snp.centerY)
-            make.size.equalTo(16)
         }
     }
 
@@ -866,103 +812,5 @@ class ASHeaderView: UICollectionReusableView {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class LibraryShortcutView: UIView {
-    static let spacing: CGFloat = 15
-
-    var button = UIButton()
-    var title = UILabel()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        addSubview(button)
-        addSubview(title)
-        button.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.width.equalTo(self).offset(-LibraryShortcutView.spacing)
-            make.height.equalTo(self.snp.width).offset(-LibraryShortcutView.spacing)
-        }
-        title.adjustsFontSizeToFitWidth = true
-        title.minimumScaleFactor = 0.7
-        title.lineBreakMode = .byTruncatingTail
-        title.font = DynamicFontHelper.defaultHelper.SmallSizeRegularWeightAS
-        title.textAlignment = .center
-        title.snp.makeConstraints { make in
-            make.top.equalTo(button.snp.bottom).offset(5)
-            make.leading.trailing.equalToSuperview()
-        }
-        button.imageView?.contentMode = .scaleToFill
-        button.contentVerticalAlignment = .fill
-        button.contentHorizontalAlignment = .fill
-        button.imageEdgeInsets = UIEdgeInsets(equalInset: LibraryShortcutView.spacing)
-        button.tintColor = .white
-    }
-
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layoutSubviews() {
-        button.layer.cornerRadius = (self.frame.width - LibraryShortcutView.spacing) / 2
-        super.layoutSubviews()
-    }
-}
-
-class ASLibraryCell: UICollectionViewCell, Themeable {
-
-    var mainView = UIStackView()
-
-    struct LibraryPanel {
-        let title: String
-        let image: UIImage?
-        let color: UIColor
-    }
-
-    var libraryButtons: [LibraryShortcutView] = []
-
-    let spaces = LibraryPanel(title: "Spaces", image: UIImage(systemName: "bookmark"), color: UIColor.Photon.Blue50)
-    let history = LibraryPanel(title: Strings.AppMenuHistoryTitleString, image: UIImage.templateImageNamed("menu-panel-History"), color: UIColor.Photon.Orange50)
-    let readingList = LibraryPanel(title: Strings.AppMenuReadingListTitleString, image: UIImage.templateImageNamed("menu-panel-ReadingList"), color: UIColor.Photon.Teal60)
-    let downloads = LibraryPanel(title: Strings.AppMenuDownloadsTitleString, image: UIImage.templateImageNamed("menu-panel-Downloads"), color: UIColor.Photon.Magenta60)
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        mainView.distribution = .fillEqually
-        mainView.spacing = 10
-        addSubview(mainView)
-        mainView.snp.makeConstraints { make in
-            make.edges.equalTo(self)
-        }
-
-        [spaces, downloads].forEach { item in
-            let view = LibraryShortcutView()
-            view.button.setImage(item.image, for: .normal)
-            view.title.text = item.title
-            let words = view.title.text?.components(separatedBy: NSCharacterSet.whitespacesAndNewlines).count
-            view.title.numberOfLines = words == 1 ? 1 : 2
-            view.button.backgroundColor = item.color
-            view.button.setTitleColor(UIColor.theme.homePanel.topSiteDomain, for: .normal)
-            view.accessibilityLabel = item.title
-            mainView.addArrangedSubview(view)
-            libraryButtons.append(view)
-        }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func applyTheme() {
-        libraryButtons.forEach { button in
-            button.title.textColor = UIColor.theme.homePanel.activityStreamCellTitle
-        }
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        applyTheme()
     }
 }

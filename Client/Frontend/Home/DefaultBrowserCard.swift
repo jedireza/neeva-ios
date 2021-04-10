@@ -5,75 +5,86 @@
 import SnapKit
 import Storage
 import Shared
+import NeevaSupport
 
 class DefaultBrowserCard: UIView {
     public var dismissClosure: (() -> Void)?
+    public var signinHandler: (() -> Void)?
+    var isUserLoggedIn: Bool
+
     lazy var title: UILabel = {
         let title = UILabel()
-        title.text = String.DefaultBrowserCardTitle
-        title.numberOfLines = 0
+        title.text = "Browse in peace,"
+        title.numberOfLines = 2
         title.lineBreakMode = .byWordWrapping
-        title.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        title.font = UIFont.systemFont(ofSize: 24, weight: .regular)
         title.textColor = UIColor.theme.defaultBrowserCard.textColor
         return title
     }()
-    lazy var descriptionText: UILabel = {
-        let descriptionText = UILabel()
-        descriptionText.text = String.DefaultBrowserCardDescription
-        descriptionText.numberOfLines = 0
-        descriptionText.lineBreakMode = .byWordWrapping
-        descriptionText.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        descriptionText.textColor = UIColor.theme.defaultBrowserCard.textColor
-        return descriptionText
+    lazy var title2: UILabel = {
+        let title = UILabel()
+        title.text = "always."
+        title.numberOfLines = 2
+        title.lineBreakMode = .byWordWrapping
+        title.font = UIFont.systemFont(ofSize: 24, weight: .regular)
+        title.textColor = UIColor.theme.defaultBrowserCard.textColor
+        return title
     }()
-    lazy var learnHowButton: UIButton = {
+
+    lazy var actionButton: UIButton = {
         let button = UIButton()
-        button.setTitle(String.PrivateBrowsingLearnMore, for: .normal) // TODO update string
-        button.backgroundColor = UIColor.Photon.Blue50
+        let neevaIcon = UIImage.templateImageNamed("neevaMenuIcon")
+        button.setImage(neevaIcon, for: .normal)
+        button.tintColor = UIColor.Neeva.White
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 80)
+        button.setTitle("Sign in with Neeva", for: .normal)
+        button.backgroundColor = UIColor.Neeva.BrandBlue
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         button.titleLabel?.textAlignment = .center
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 24
         button.layer.masksToBounds = true
         return button
     }()
-    lazy var image: UIImageView = {
-        let imgView = UIImageView(image: #imageLiteral(resourceName: "splash"))
-        imgView.contentMode = .scaleAspectFit
-        return imgView
-    }()
+
     lazy var closeButton: UIButton = {
         let closeButton = UIButton()
         closeButton.setImage(UIImage(named: "nav-stop")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        closeButton.imageView?.tintColor = UIColor.theme.defaultBrowserCard.textColor
+        closeButton.imageView?.tintColor = UIColor.Neeva.Gray70
         return closeButton
     }()
     lazy var background: UIView = {
         let background = UIView()
-        background.backgroundColor = UIColor.theme.defaultBrowserCard.backgroundColor
+        background.backgroundColor = UIColor.theme.defaultBrowserCard.brandPistachio
         background.layer.cornerRadius = 12
         background.layer.masksToBounds = true
         return background
     }()
-    
     private var topView = UIView()
     private var labelView = UIStackView()
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, isUserLoggedIn: Bool) {
+        self.isUserLoggedIn = isUserLoggedIn
         super.init(frame: frame)
-        
         topView.addSubview(labelView)
-        topView.addSubview(image)
-        
-        background.addSubview(learnHowButton)
+        background.addSubview(actionButton)
+
+        if(!self.isUserLoggedIn) {
+            background.backgroundColor = UIColor.theme.defaultBrowserCard.brandPolar
+            title.text = "Get safer, richer, and"
+            title2.text = "better search"
+            closeButton.isHidden = true
+        } else {
+            actionButton.setImage(nil, for: .normal)
+            actionButton.setTitle("Set Neeva as Default Browser", for: .normal)
+        }
+
         background.addSubview(topView)
         background.addSubview(closeButton)
-        
         labelView.axis = .vertical
         labelView.addArrangedSubview(title)
-        labelView.addArrangedSubview(descriptionText)
-        
+        labelView.addArrangedSubview(title2)
+
         addSubview(background)
-        
         setupConstraints()
         setupButtons()
     }
@@ -86,43 +97,42 @@ class DefaultBrowserCard: UIView {
         background.snp.makeConstraints { make in
             make.top.left.equalToSuperview().offset(20)
             make.right.bottom.equalToSuperview().offset(-20)
-            make.height.greaterThanOrEqualTo(210)
+            make.height.greaterThanOrEqualTo(178)
         }
         topView.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.bottom.equalTo(learnHowButton.snp.top)
-            make.height.greaterThanOrEqualTo(114)
-        }
-        image.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(18)
-            make.right.equalTo(labelView.snp.left).offset(-18)
-            make.height.width.equalTo(64)
-            make.top.equalToSuperview().offset(45)
+            make.bottom.equalTo(actionButton.snp.top)
+            make.height.greaterThanOrEqualTo(64)
         }
         labelView.snp.makeConstraints { make in
             make.right.equalToSuperview()
-            make.left.equalTo(image.snp.right)
-            make.width.lessThanOrEqualTo(223)
-            make.bottom.equalTo(learnHowButton.snp.top).offset(-16)
+            make.left.equalTo(25)
+            make.width.lessThanOrEqualTo(292)
+            make.bottom.equalTo(actionButton.snp.top).offset(-16)
             make.top.equalToSuperview().offset(30)
         }
-        learnHowButton.snp.makeConstraints { make in
+        actionButton.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(16)
-            make.bottom.right.equalToSuperview().offset(-16)
-            make.left.equalToSuperview().offset(16)
-            make.width.equalTo(303)
-            make.height.equalTo(44)
+            make.bottom.equalToSuperview().offset(-20)
+            make.right.equalToSuperview().offset(-25)
+            make.left.equalToSuperview().offset(25)
+            make.height.equalTo(48)
         }
         closeButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(15)
-            make.right.equalToSuperview().offset(-15)
+            make.top.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
             make.height.width.equalTo(15)
         }
     }
     
     private func setupButtons() {
         closeButton.addTarget(self, action: #selector(dismissCard), for: .touchUpInside)
-        learnHowButton.addTarget(self, action: #selector(showOnboarding), for: .touchUpInside)
+
+        if(!self.isUserLoggedIn) {
+            actionButton.addTarget(self, action: #selector(openLoginPage), for: .touchUpInside)
+        } else {
+            actionButton.addTarget(self, action: #selector(showOnboarding), for: .touchUpInside)
+        }
     }
     
     @objc private func dismissCard() {
@@ -136,12 +146,13 @@ class DefaultBrowserCard: UIView {
         // Set default browser onboarding did show to true so it will not show again after user clicks this button
         UserDefaults.standard.set(true, forKey: PrefsKeys.KeyDidShowDefaultBrowserOnboarding)
     }
+
+    @objc private func openLoginPage(){
+        self.signinHandler?()
+    }
     
     func applyTheme() {
-        background.backgroundColor = UIColor.theme.defaultBrowserCard.backgroundColor
         title.textColor = UIColor.theme.defaultBrowserCard.textColor
-        descriptionText.textColor = UIColor.theme.defaultBrowserCard.textColor
-        closeButton.imageView?.tintColor = UIColor.theme.defaultBrowserCard.textColor
         backgroundColor = UIColor.theme.homePanel.topSitesBackground
     }
 }
