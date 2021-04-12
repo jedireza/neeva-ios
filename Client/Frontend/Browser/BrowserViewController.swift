@@ -80,7 +80,6 @@ class BrowserViewController: UIViewController {
     fileprivate var copyAddressAction: AccessibleAction!
 
     fileprivate weak var tabTrayController: TabTrayControllerV1?
-    fileprivate weak var tabTrayControllerV2: TabTrayV2ViewController?
     let profile: Profile
     let tabManager: TabManager
 
@@ -1326,28 +1325,10 @@ extension BrowserViewController: URLBarDelegate {
                 }
             }
         }
-        if shouldShowChronTabs {
-            let tabTrayViewController = TabTrayV2ViewController(tabTrayDelegate: self, profile: profile)
-            let controller: UINavigationController
-            if #available(iOS 13.0, *) {
-                controller = UINavigationController(rootViewController: tabTrayViewController)
-                controller.presentationController?.delegate = tabTrayViewController
-                // If we're not using the system theme, override the view's style to match
-                if !ThemeManager.instance.systemThemeIsOn {
-                    controller.overrideUserInterfaceStyle = ThemeManager.instance.userInterfaceStyle
-                }
-            } else {
-                let themedController = ThemedNavigationController(rootViewController: tabTrayViewController)
-                themedController.presentingModalViewControllerDelegate = self
-                controller = themedController
-            }
-            self.present(controller, animated: true, completion: nil)
-            self.tabTrayControllerV2 = tabTrayViewController
-        } else {
-            let tabTrayController = TabTrayControllerV1(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
-            navigationController?.pushViewController(tabTrayController, animated: true)
-            self.tabTrayController = tabTrayController
-        }
+
+        let tabTrayController = TabTrayControllerV1(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
+        navigationController?.pushViewController(tabTrayController, animated: true)
+        self.tabTrayController = tabTrayController
 
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
@@ -1946,9 +1927,8 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func tabManagerDidRemoveAllTabs(_ tabManager: TabManager, toast: ButtonToast?) {
-        let tabTrayV2PrivateMode = tabTrayControllerV2?.viewModel.isInPrivateMode
         let tabTrayV1PrivateMode = tabTrayController?.tabDisplayManager.isPrivate
-        guard let toast = toast, !(tabTrayV1PrivateMode ?? (tabTrayV2PrivateMode ?? false)) else {
+        guard let toast = toast, !(tabTrayV1PrivateMode ?? false) else {
             return
         }
         show(toast: toast, afterWaiting: ButtonToastUX.ToastDelay)
@@ -2369,7 +2349,7 @@ extension BrowserViewController: TabTrayDelegate {
 extension BrowserViewController: Themeable {
     func applyTheme() {
         guard self.isViewLoaded else { return }
-        let ui: [Themeable?] = [urlBar, toolbar, readerModeBar, topTabsViewController, neevaHomeViewController, searchController, libraryViewController, libraryDrawerViewController, tabTrayControllerV2]
+        let ui: [Themeable?] = [urlBar, toolbar, readerModeBar, topTabsViewController, neevaHomeViewController, searchController, libraryViewController, libraryDrawerViewController]
         ui.forEach { $0?.applyTheme() }
         statusBarOverlay.backgroundColor = shouldShowTopTabsForTraitCollection(traitCollection) ? UIColor.Photon.Grey80 : urlBar.backgroundColor
         setNeedsStatusBarAppearanceUpdate()

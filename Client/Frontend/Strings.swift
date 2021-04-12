@@ -352,17 +352,6 @@ extension Strings {
     public static let TabSearchPlaceholderText = MZLocalizedString("Tabs.Search.PlaceholderText", value: "Search Tabs", comment: "The placeholder text for the tab search bar")
 }
 
-// Tab tray (chronological tabs)
-extension Strings {
-    public static let TabTrayV2Title = MZLocalizedString("TabTray.Title", value: "Open Tabs", comment: "The title for the tab tray")
-    public static let TabTrayV2TodayHeader = MZLocalizedString("TabTray.Today.Header", value: "Today", comment: "The section header for tabs opened today")
-    public static let TabTrayV2YesterdayHeader = MZLocalizedString("TabTray.Yesterday.Header", value: "Yesterday", comment: "The section header for tabs opened yesterday")
-    public static let TabTrayV2LastWeekHeader = MZLocalizedString("TabTray.LastWeek.Header", value: "Last Week", comment: "The section header for tabs opened last week")
-    public static let TabTrayV2OlderHeader = MZLocalizedString("TabTray.Older.Header", value: "Older", comment: "The section header for tabs opened before last week")
-    public static let TabTraySwipeMenuMore = MZLocalizedString("TabTray.SwipeMenu.More", value: "More", comment: "The button title to see more options to perform on the tab.")
-    public static let TabTrayMoreMenuCopy = MZLocalizedString("TabTray.MoreMenu.Copy", value: "Copy", comment: "The title on the button to copy the tab address.")
-}
-
 //Clipboard Toast
 extension Strings {
     public static let GoToCopiedLink = MZLocalizedString("ClipboardToast.GoToCopiedLink.Title", value: "Go to copied link?", comment: "Message displayed when the user has a copied link on the clipboard")
