@@ -108,6 +108,12 @@
 		<string>nicons-400.ttf</string>
 		<string>nicons-500.ttf</string>
 		<string>nicons-600.ttf</string>
+		<string>Roobert-Heavy.otf</string>
+		<string>Roobert-Bold.otf</string>
+		<string>Roobert-SemiBold.otf</string>
+		<string>Roobert-Regular.otf</string>
+		<string>Roobert-Light.otf</string>
+		<string>Roobert-Medium.otf</string>
 	</array>
 	<key>UIApplicationShortcutItems</key>
 	<array>

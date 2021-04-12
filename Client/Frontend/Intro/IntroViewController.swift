@@ -8,15 +8,12 @@ import SnapKit
 import Shared
 
 class IntroViewController: UIViewController {
-    // private var
-    // Private views
-    private lazy var welcomeCard: IntroScreenWelcomeView = {
-        let welcomeCardView = IntroScreenWelcomeView()
-        welcomeCardView.clipsToBounds = true
-        return welcomeCardView
-    }()
+    private lazy var welcomeCard = UIView()
+    
     // Closure delegate
     var didFinishClosure: ((IntroViewController) -> Void)?
+    var visitHomePage: (()->Void)?
+    var visitSigninPage: (()->Void)?
     
     // MARK: Initializer
     init() {
@@ -42,17 +39,17 @@ class IntroViewController: UIViewController {
         welcomeCard.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        // Buton action closures
-        // Next button action
-        welcomeCard.nextClosure = {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.welcomeCard.alpha = 0
-            }) { _ in
-                self.welcomeCard.isHidden = true
-            }
-        }
-        // Close button action
-        welcomeCard.closeClosure = {
+    }
+
+    private func buttonAction(_ option: FirstRunButtonActions){
+        switch option {
+        case FirstRunButtonActions.signin:
+            self.didFinishClosure?(self)
+            self.visitSigninPage?()
+        case FirstRunButtonActions.signup:
+            self.didFinishClosure?(self)
+            self.visitHomePage?()
+        case FirstRunButtonActions.skipToBrowser:
             self.didFinishClosure?(self)
         }
     }
@@ -61,7 +58,10 @@ class IntroViewController: UIViewController {
     private func setupIntroView() {
         // Initialize
         view.addSubview(welcomeCard)
-        // Constraints
+        welcomeCard.snp.makeConstraints { make in
+            make.top.left.right.bottom.equalTo(self.view)
+        }
+        addSubSwiftUIView(IntroFirstRunView(buttonAction: buttonAction), to: welcomeCard)
         setupWelcomeCard()
     }
 }

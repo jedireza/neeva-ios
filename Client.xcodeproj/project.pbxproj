@@ -208,7 +208,6 @@
 		43118D07251A9CD100F24376 /* SavedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D3821103EAE00F25400 /* SavedTab.swift */; };
 		431C0CA925C890E500395CE4 /* DefaultBrowserOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C0CA825C890E500395CE4 /* DefaultBrowserOnboardingViewModel.swift */; };
 		431C0D1E25C9DC4D00395CE4 /* DefaultBrowserOnboardingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C0D1D25C9DC4D00395CE4 /* DefaultBrowserOnboardingTests.swift */; };
-		4334145724C6378B001541F3 /* IntroScreenWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334145624C6378B001541F3 /* IntroScreenWelcomeView.swift */; };
 		43446CE7240D9F3000F5C643 /* ETP.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43446CE5240D9F3000F5C643 /* ETP.xcassets */; };
 		43446CEA2412066500F5C643 /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43446CE92412066500F5C643 /* UIViewControllerExtension.swift */; };
 		43446CF02412DDBE00F5C643 /* UpdateCoverSheetViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43446CEF2412DDBE00F5C643 /* UpdateCoverSheetViewModelTests.swift */; };
@@ -299,6 +298,13 @@
 		A83E5B1E1C1DAAAA0026D912 /* UIPasteboardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */; };
 		A9072B801D07B34100459960 /* NoImageModeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9072B7F1D07B34100459960 /* NoImageModeHelper.swift */; };
 		A93067E81D0FE18E00C49C6E /* NightModeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93067E71D0FE18E00C49C6E /* NightModeHelper.swift */; };
+		BC6D33C826228EA00050DEC4 /* IntroFirstRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */; };
+		BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */; };
+		BC6D34852622D4DE0050DEC4 /* Roobert-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D347F2622D4DE0050DEC4 /* Roobert-Heavy.otf */; };
+		BC6D34862622D4DE0050DEC4 /* Roobert-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34802622D4DE0050DEC4 /* Roobert-Light.otf */; };
+		BC6D34872622D4DE0050DEC4 /* Roobert-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34812622D4DE0050DEC4 /* Roobert-Regular.otf */; };
+		BC6D34882622D4DE0050DEC4 /* Roobert-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34822622D4DE0050DEC4 /* Roobert-SemiBold.otf */; };
+		BC6D34892622D4DE0050DEC4 /* Roobert-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */; };
 		BC7261CD2617D2BC00CE6A35 /* DefaultBrowserSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7261CC2617D2BC00CE6A35 /* DefaultBrowserSettingViewController.swift */; };
 		C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */; };
 		C40046FA1CF8E0B200B08303 /* BackForwardListAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40046F91CF8E0B200B08303 /* BackForwardListAnimator.swift */; };
@@ -523,7 +529,6 @@
 		E487B24E1AC1C66400F3E86F /* FiraSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4B7B7571A793CF20022C5E0 /* FiraSans-SemiBold.ttf */; };
 		E487B24F1AC1CC9200F3E86F /* FiraSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4ECCDAD1AB131770005E717 /* FiraSans-Medium.ttf */; };
 		E487B2501AC1CC9800F3E86F /* FiraSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4B7B7521A793CF20022C5E0 /* FiraSans-Light.ttf */; };
-		E49943F71AE69EDD00BF9DE4 /* Intro.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E49943F61AE69EDD00BF9DE4 /* Intro.xcassets */; };
 		E4A960061ABB9C450069AD6F /* ReaderModeUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A960051ABB9C450069AD6F /* ReaderModeUtils.swift */; };
 		E4A961181AC041C40069AD6F /* ReadabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A961171AC041C40069AD6F /* ReadabilityService.swift */; };
 		E4A961381AC06FA50069AD6F /* ReaderViewLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = E4A961371AC06FA50069AD6F /* ReaderViewLoading.html */; };
@@ -1155,7 +1160,6 @@
 		41724E7C8D70194D5585EE64 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Storage.strings; sourceTree = "<group>"; };
 		431C0CA825C890E500395CE4 /* DefaultBrowserOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserOnboardingViewModel.swift; sourceTree = "<group>"; };
 		431C0D1D25C9DC4D00395CE4 /* DefaultBrowserOnboardingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserOnboardingTests.swift; sourceTree = "<group>"; };
-		4334145624C6378B001541F3 /* IntroScreenWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroScreenWelcomeView.swift; sourceTree = "<group>"; };
 		43446CE5240D9F3000F5C643 /* ETP.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ETP.xcassets; sourceTree = "<group>"; };
 		43446CE92412066500F5C643 /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIViewControllerExtension.swift; path = Extensions/UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		43446CEF2412DDBE00F5C643 /* UpdateCoverSheetViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCoverSheetViewModelTests.swift; sourceTree = "<group>"; };
@@ -1284,6 +1288,13 @@
 		B79E4706B9CF55EF83B43FC4 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Search.strings"; sourceTree = "<group>"; };
 		B8EA4C8BA13E8AAB55C85CBB /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/ClearHistoryConfirm.strings"; sourceTree = "<group>"; };
 		BA05405089CFDC6097258640 /* en-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-CA"; path = "en-CA.lproj/3DTouchActions.strings"; sourceTree = "<group>"; };
+		BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroFirstRunView.swift; sourceTree = "<group>"; };
+		BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Bold.otf"; sourceTree = "<group>"; };
+		BC6D347F2622D4DE0050DEC4 /* Roobert-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Heavy.otf"; sourceTree = "<group>"; };
+		BC6D34802622D4DE0050DEC4 /* Roobert-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Light.otf"; sourceTree = "<group>"; };
+		BC6D34812622D4DE0050DEC4 /* Roobert-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Regular.otf"; sourceTree = "<group>"; };
+		BC6D34822622D4DE0050DEC4 /* Roobert-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-SemiBold.otf"; sourceTree = "<group>"; };
+		BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Medium.otf"; sourceTree = "<group>"; };
 		BC7261CC2617D2BC00CE6A35 /* DefaultBrowserSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserSettingViewController.swift; sourceTree = "<group>"; };
 		BF9A4FC7AC7A1EA206074C30 /* en-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-CA"; path = "en-CA.lproj/Search.strings"; sourceTree = "<group>"; };
 		C1114054A20B1072F603BD52 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ClearHistoryConfirm.strings; sourceTree = "<group>"; };
@@ -1509,7 +1520,6 @@
 		E4424B3B1AC71FB400F44C38 /* FiraSans-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FiraSans-Book.ttf"; sourceTree = "<group>"; };
 		E46175F21EBB73A10021AE8A /* Sentry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sentry.framework; path = Carthage/Build/iOS/Sentry.framework; sourceTree = "<group>"; };
 		E47616C61AB74CA600E7DD25 /* ReaderModeBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModeBarView.swift; sourceTree = "<group>"; };
-		E49943F61AE69EDD00BF9DE4 /* Intro.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Intro.xcassets; sourceTree = "<group>"; };
 		E4A960051ABB9C450069AD6F /* ReaderModeUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModeUtils.swift; sourceTree = "<group>"; };
 		E4A961171AC041C40069AD6F /* ReadabilityService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadabilityService.swift; sourceTree = "<group>"; };
 		E4A961371AC06FA50069AD6F /* ReaderViewLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ReaderViewLoading.html; sourceTree = "<group>"; };
@@ -2747,9 +2757,8 @@
 		E49943F31AE6879C00BF9DE4 /* Intro */ = {
 			isa = PBXGroup;
 			children = (
-				E49943F61AE69EDD00BF9DE4 /* Intro.xcassets */,
 				435D7CC4246209AA0043ACB9 /* IntroViewController.swift */,
-				4334145624C6378B001541F3 /* IntroScreenWelcomeView.swift */,
+				BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */,
 			);
 			path = Intro;
 			sourceTree = "<group>";
@@ -3367,6 +3376,12 @@
 			children = (
 				23BEA766251A99E300A014BF /* NewYorkMedium-Bold.otf */,
 				23BEA765251A99E200A014BF /* NewYorkMedium-BoldItalic.otf */,
+				BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */,
+				BC6D347F2622D4DE0050DEC4 /* Roobert-Heavy.otf */,
+				BC6D34802622D4DE0050DEC4 /* Roobert-Light.otf */,
+				BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */,
+				BC6D34812622D4DE0050DEC4 /* Roobert-Regular.otf */,
+				BC6D34822622D4DE0050DEC4 /* Roobert-SemiBold.otf */,
 				23BEA763251A99E200A014BF /* NewYorkMedium-Regular.otf */,
 				23BEA764251A99E200A014BF /* NewYorkMedium-RegularItalic.otf */,
 				E4B7B7411A793CF20022C5E0 /* FiraSans-Bold.ttf */,
@@ -4051,13 +4066,15 @@
 				F84B220B1A0910F600AAB793 /* Images.xcassets in Resources */,
 				F35B8D2B1D6380EA008E3D61 /* SessionRestore.html in Resources */,
 				7B42406E1CA04CAC009B5C28 /* Menu.xcassets in Resources */,
-				E49943F71AE69EDD00BF9DE4 /* Intro.xcassets in Resources */,
 				23BEA767251A99ED00A014BF /* NewYorkMedium-Bold.otf in Resources */,
 				2328616825C9BD3D0015EA47 /* DefaultBrowserOnboarding.xcassets in Resources */,
 				3BC659591E5BA505006D560F /* top_sites.json in Resources */,
 				43446CE7240D9F3000F5C643 /* ETP.xcassets in Resources */,
+				BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */,
 				C8399D9522DE5E6200EFA5CA /* disconnect-block-social.json in Resources */,
+				BC6D34852622D4DE0050DEC4 /* Roobert-Heavy.otf in Resources */,
 				C8FBBD55261F81DF004490A9 /* nicons-400.ttf in Resources */,
+				BC6D34872622D4DE0050DEC4 /* Roobert-Regular.otf in Resources */,
 				E4CD9F541A71506400318571 /* Reader.html in Resources */,
 				F0ACC2AC25E8C7FB0024991B /* NeevaDev.xcconfig in Resources */,
 				23BEA76A251A99ED00A014BF /* NewYorkMedium-RegularItalic.otf in Resources */,
@@ -4083,7 +4100,9 @@
 				C8399D9122DE5E5200EFA5CA /* disconnect-block-advertising.json in Resources */,
 				43A5643923CD1E1C00B6857D /* Update.xcassets in Resources */,
 				C8399D9322DE5E5B00EFA5CA /* disconnect-block-analytics.json in Resources */,
+				BC6D34882622D4DE0050DEC4 /* Roobert-SemiBold.otf in Resources */,
 				EB84945722D4FA8A0004C2E2 /* disconnect-block-fingerprinting.json in Resources */,
+				BC6D34862622D4DE0050DEC4 /* Roobert-Light.otf in Resources */,
 				E4B7B7681A793CF20022C5E0 /* FiraSans-Bold.ttf in Resources */,
 				E4B7B7781A793CF20022C5E0 /* FiraSans-Italic.ttf in Resources */,
 				0BA1E00E1B03FB0B007675AF /* NetError.html in Resources */,
@@ -4097,6 +4116,7 @@
 				39A35AED1C0662A3006B9E87 /* SpotlightHelper.js in Resources */,
 				D0FCF8071FE4772D004A7995 /* MainFrameAtDocumentEnd.js in Resources */,
 				EB84945822D4FA8A0004C2E2 /* disconnect-block-cryptomining.json in Resources */,
+				BC6D34892622D4DE0050DEC4 /* Roobert-Medium.otf in Resources */,
 				E4D6BEB91A0930EC00F538BD /* LaunchScreen.xib in Resources */,
 				2F44FB2D1A9D5D8500FD20CC /* FiraSans-BoldItalic.ttf in Resources */,
 				23BEA769251A99ED00A014BF /* NewYorkMedium-Regular.otf in Resources */,
@@ -4595,6 +4615,7 @@
 				FA6B2AC21D41F02D00429414 /* Punycode.swift in Sources */,
 				048B4C7D24A53EA8001B56E8 /* TodayViewModel.swift in Sources */,
 				43446CEA2412066500F5C643 /* UIViewControllerExtension.swift in Sources */,
+				BC6D33C826228EA00050DEC4 /* IntroFirstRunView.swift in Sources */,
 				D301AAEE1A3A55B70078DD1D /* TabTrayControllerV1.swift in Sources */,
 				F056681725E9509E0082BB61 /* AddToSpaceViewController.swift in Sources */,
 				EB9A179B20E69A7F00B12184 /* ThemeManager.swift in Sources */,
@@ -4750,7 +4771,6 @@
 				C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */,
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
 				F090C9CA260683B200D340A3 /* TrackingMenuBlockedTextView.swift in Sources */,
-				4334145724C6378B001541F3 /* IntroScreenWelcomeView.swift in Sources */,
 				23B5B499254C955E009AE055 /* TabMoreMenuViewController.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,
 				122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */,

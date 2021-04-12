@@ -11,6 +11,20 @@ public enum NiconFont: String {
 }
 
 public enum Nicon: Character {
+    case arrowDown = "\u{100129}"
+    case arrowDownLeft = "\u{100130}"
+    case arrowDownRight = "\u{100131}"
+    case arrowDownRightAndArrowTopLeft = "\u{10014B}"
+    case arrowLeft = "\u{10012A}"
+    case arrowRight = "\u{10012B}"
+    case arrowRightArrowLeft = "\u{10012D}"
+    case arrowTopRightOnSquare = "\u{101000}"
+    case arrowUp = "\u{100128}"
+    case arrowUpArrowDown = "\u{10012C}"
+    case arrowUpLeft = "\u{10012E}"
+    case arrowUpLeftAndArrowDownRight = "\u{10014A}"
+    case arrowUpRight = "\u{10012F}"
+    case arrowUpRightDiamondFill = "\u{10065F}"
     case bookmark = "\u{10025E}"
     case bubbleLeft = "\u{10032A}"
     case gear = "\u{10035F}"

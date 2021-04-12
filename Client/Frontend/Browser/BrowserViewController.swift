@@ -2095,7 +2095,23 @@ extension BrowserViewController {
                 }
             }
         }
+
+        introViewController.visitHomePage = visitHomePage
+        introViewController.visitSigninPage = visitSigninPage
+
         self.introVCPresentHelper(introViewController: introViewController)
+    }
+
+    private func visitHomePage() {
+        if let homePageURL = NewTabHomePageAccessors.getHomePage(self.profile.prefs), let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
+            tab.loadRequest(URLRequest(url: homePageURL))
+        }
+    }
+
+    private func visitSigninPage() {
+        if let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
+            tab.loadRequest(URLRequest(url: NeevaConstants.appSigninURL.asURL!))
+        }
     }
     
     private func introVCPresentHelper(introViewController: UIViewController) {
@@ -2106,12 +2122,7 @@ extension BrowserViewController {
         } else {
             introViewController.modalPresentationStyle = .fullScreen
         }
-        present(introViewController, animated: true) {
-            // On first run (and forced) open up the homepage in the background.
-            if let homePageURL = NewTabHomePageAccessors.getHomePage(self.profile.prefs), let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
-                tab.loadRequest(URLRequest(url: homePageURL))
-            }
-        }
+        present(introViewController, animated: true)
     }
 
 

@@ -43,3 +43,9 @@ public enum TrackingMenuButtonActions{
     case incognito
     case tracking
 }
+
+public enum FirstRunButtonActions {
+    case signin
+    case signup
+    case skipToBrowser
+}
