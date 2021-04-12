@@ -9,7 +9,7 @@ import Shared
 protocol TabToolbarProtocol: AnyObject {
     var tabToolbarDelegate: TabToolbarDelegate? { get set }
     var tabsButton: TabsButton { get }
-    var spacesMenuButton: ToolbarButton { get }
+    var addToSpacesButton: ToolbarButton { get }
     var forwardButton: ToolbarButton { get }
     var backButton: ToolbarButton { get }
     var shareButton: ToolbarButton { get }
@@ -58,20 +58,20 @@ open class TabToolbarHelper: NSObject {
         self.toolbar = toolbar
         super.init()
 
-        toolbar.backButton.setImage(UIImage.templateImageNamed("nav-back"), for: .normal)
+        var configuration = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+
+        toolbar.backButton.setImage(UIImage(systemName: "arrow.left", withConfiguration: configuration), for: .normal)
         toolbar.backButton.accessibilityLabel = .TabToolbarBackAccessibilityLabel
         let longPressGestureBackButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressBack))
         toolbar.backButton.addGestureRecognizer(longPressGestureBackButton)
         toolbar.backButton.addTarget(self, action: #selector(didClickBack), for: .touchUpInside)
 
-        toolbar.forwardButton.setImage(UIImage.templateImageNamed("nav-forward"), for: .normal)
+        toolbar.forwardButton.setImage(UIImage(systemName: "arrow.right", withConfiguration: configuration), for: .normal)
         toolbar.forwardButton.accessibilityLabel = .TabToolbarForwardAccessibilityLabel
         let longPressGestureForwardButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressForward))
         toolbar.forwardButton.addGestureRecognizer(longPressGestureForwardButton)
         toolbar.forwardButton.addTarget(self, action: #selector(didClickForward), for: .touchUpInside)
 
-        var configuration = UIImage.SymbolConfiguration(scale: .large)
-        configuration.applying(UIImage.SymbolConfiguration(weight: .medium))
         toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
         toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the tab toolbar Share button")
         toolbar.shareButton.addAction(UIAction { _ in
@@ -92,17 +92,18 @@ open class TabToolbarHelper: NSObject {
             toolbar.tabToolbarDelegate?.tabToolbarTabsMenu(toolbar, button: toolbar.tabsButton)
         }
         
-        toolbar.spacesMenuButton.setImage(UIImage.templateImageNamed("menu-spaces"), for: .normal)
-        toolbar.spacesMenuButton.contentMode = .center
-        toolbar.spacesMenuButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
-        toolbar.spacesMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
-        toolbar.spacesMenuButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
+        toolbar.addToSpacesButton.titleLabel?.font = UIFont(name: NiconFont.medium.rawValue, size: 19.17);
+        toolbar.addToSpacesButton.setTitle(String(Nicon.bookmark.rawValue), for: .normal)
+        toolbar.addToSpacesButton.contentMode = .center
+        toolbar.addToSpacesButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
+        toolbar.addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
+        toolbar.addToSpacesButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
 
         setTheme(forButtons: toolbar.actionButtons)
     }
 
     func didClickSpaces() {
-        toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu(toolbar, button: toolbar.spacesMenuButton)
+        toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu(toolbar, button: toolbar.addToSpacesButton)
     }
 
     func didClickBack() {
@@ -130,7 +131,7 @@ open class TabToolbarHelper: NSObject {
     }
 
     func didClickLibrary() {
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressLibrary(toolbar, button: toolbar.spacesMenuButton)
+        toolbar.tabToolbarDelegate?.tabToolbarDidPressLibrary(toolbar, button: toolbar.addToSpacesButton)
     }
 }
 
@@ -186,6 +187,9 @@ extension ToolbarButton: Themeable {
         unselectedTintColor = UIColor.theme.browser.tint
         tintColor = isEnabled ? unselectedTintColor : disabledTintColor
         imageView?.tintColor = tintColor
+        setTitleColor(unselectedTintColor, for: .normal)
+        setTitleColor(disabledTintColor, for: .disabled)
+        setTitleColor(selectedTintColor, for: .highlighted)
     }
 }
 
@@ -193,9 +197,7 @@ class TabToolbar: UIView {
     weak var tabToolbarDelegate: TabToolbarDelegate?
 
     let tabsButton = TabsButton()
-    let addNewTabButton = ToolbarButton()
-    let spacesMenuButton = ToolbarButton()
-    let libraryButton = ToolbarButton()
+    let addToSpacesButton = ToolbarButton()
     let forwardButton = ToolbarButton()
     let backButton = ToolbarButton()
     let shareButton = ToolbarButton()
@@ -209,7 +211,7 @@ class TabToolbar: UIView {
     private let contentView = UIStackView()
 
     fileprivate override init(frame: CGRect) {
-        actionButtons = [backButton, forwardButton, shareButton, addNewTabButton, spacesMenuButton, tabsButton]
+        actionButtons = [backButton, forwardButton, shareButton, addToSpacesButton, tabsButton]
         super.init(frame: frame)
         setupAccessibility()
 
@@ -227,8 +229,8 @@ class TabToolbar: UIView {
 
     override func updateConstraints() {
         privateModeBadge.layout(onButton: tabsButton)
-        appMenuBadge.layout(onButton: spacesMenuButton)
-        warningMenuBadge.layout(onButton: spacesMenuButton)
+        appMenuBadge.layout(onButton: addToSpacesButton)
+        warningMenuBadge.layout(onButton: addToSpacesButton)
 
         contentView.snp.makeConstraints { make in
             make.leading.trailing.top.equalTo(self)
@@ -242,8 +244,7 @@ class TabToolbar: UIView {
         forwardButton.accessibilityIdentifier = "TabToolbar.forwardButton"
         shareButton.accessibilityIdentifier = "TabToolbar.shareButton"
         tabsButton.accessibilityIdentifier = "TabToolbar.tabsButton"
-        addNewTabButton.accessibilityIdentifier = "TabToolbar.addNewTabButton"
-        spacesMenuButton.accessibilityIdentifier = "TabToolbar.menuButton"
+        addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
         accessibilityNavigationStyle = .combined
         accessibilityLabel = .TabToolbarNavigationToolbarAccessibilityLabel
     }

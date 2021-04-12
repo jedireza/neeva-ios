@@ -141,7 +141,7 @@ class URLBarView: UIView {
         return cancelButton
     }()
 
-    var spacesMenuButton = ToolbarButton()
+    var addToSpacesButton = ToolbarButton()
 
     var forwardButton = ToolbarButton()
     var shareButton = ToolbarButton()
@@ -152,7 +152,7 @@ class URLBarView: UIView {
         return backButton
     }()
 
-    lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.spacesMenuButton, self.forwardButton, self.backButton, self.shareButton]
+    lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton]
 
     var currentURL: URL? {
         get {
@@ -189,7 +189,7 @@ class URLBarView: UIView {
     fileprivate func commonInit() {
         locationContainer.addSubview(locationView)
 
-        [line, tabsButton, neevaMenuButton, progressBar, cancelButton, spacesMenuButton,
+        [line, tabsButton, neevaMenuButton, progressBar, cancelButton, addToSpacesButton,
          forwardButton, backButton, shareButton, locationContainer].forEach {
             addSubview($0)
         }
@@ -246,22 +246,22 @@ class URLBarView: UIView {
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
-        spacesMenuButton.snp.makeConstraints { make in
+        addToSpacesButton.snp.makeConstraints { make in
             make.leading.equalTo(self.shareButton.snp.trailing)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
         
         tabsButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.spacesMenuButton.snp.trailing)
+            make.leading.equalTo(self.addToSpacesButton.snp.trailing)
             make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.Padding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
         
         privateModeBadge.layout(onButton: tabsButton)
-        appMenuBadge.layout(onButton: spacesMenuButton)
-        warningMenuBadge.layout(onButton: spacesMenuButton)
+        appMenuBadge.layout(onButton: addToSpacesButton)
+        warningMenuBadge.layout(onButton: addToSpacesButton)
     }
 
     override func updateConstraints() {
@@ -457,7 +457,7 @@ class URLBarView: UIView {
         cancelButton.isHidden = false
         neevaMenuButton.isHidden = false
         progressBar.isHidden = false
-        spacesMenuButton.isHidden = !toolbarIsShowing
+        addToSpacesButton.isHidden = !toolbarIsShowing
         forwardButton.isHidden = !toolbarIsShowing
         backButton.isHidden = !toolbarIsShowing
         tabsButton.isHidden = !toolbarIsShowing || topTabsIsShowing
@@ -470,7 +470,7 @@ class URLBarView: UIView {
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
         tabsButton.alpha = inOverlayMode ? 0 : 1
-        spacesMenuButton.alpha = inOverlayMode ? 0 : 1
+        addToSpacesButton.alpha = inOverlayMode ? 0 : 1
         forwardButton.alpha = inOverlayMode ? 0 : 1
         backButton.alpha = inOverlayMode ? 0 : 1
         shareButton.alpha = inOverlayMode ? 0 : 1
@@ -483,7 +483,7 @@ class URLBarView: UIView {
         cancelButton.isHidden = !inOverlayMode
         neevaMenuButton.isHidden = inOverlayMode
         progressBar.isHidden = inOverlayMode
-        spacesMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
+        addToSpacesButton.isHidden = !toolbarIsShowing || inOverlayMode
         forwardButton.isHidden = !toolbarIsShowing || inOverlayMode
         backButton.isHidden = !toolbarIsShowing || inOverlayMode
         tabsButton.isHidden = !toolbarIsShowing || inOverlayMode || topTabsIsShowing
@@ -574,7 +574,7 @@ extension URLBarView: TabToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, spacesMenuButton, tabsButton, progressBar]
+                    return [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar]
                 } else {
                     return [neevaMenuButton, locationContainer, progressBar]
                 }

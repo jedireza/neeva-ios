@@ -9,7 +9,7 @@ import Shared
 struct TabsButtonUX {
     static let CornerRadius: CGFloat = 2
     static let TitleFont: UIFont = UIConstants.DefaultChromeSmallFontBold
-    static let BorderStrokeWidth: CGFloat = 1.5
+    static let BorderStrokeWidth: CGFloat = 2
 }
 
 class TabsButton: UIButton {
@@ -107,7 +107,7 @@ class TabsButton: UIButton {
             make.edges.equalTo(insideButton)
         }
         insideButton.snp.remakeConstraints { (make) -> Void in
-            make.size.equalTo(24)
+            make.size.equalTo(20)
             make.center.equalTo(self)
         }
     }
