@@ -3,7 +3,7 @@
 //  Client
 //
 //  Created by BairesDev on 20/03/21.
-//  Copyright © 2021 Mozilla. All rights reserved.
+//  Copyright © 2021 Neeva. All rights reserved.
 //
 
 import Foundation

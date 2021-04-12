@@ -3711,7 +3711,7 @@
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1020;
-				ORGANIZATIONNAME = Mozilla;
+				ORGANIZATIONNAME = Neeva;
 				TargetAttributes = {
 					047F9B2624E1FE1C00CD7DF7 = {
 						CreatedOnToolsVersion = 12.0;
