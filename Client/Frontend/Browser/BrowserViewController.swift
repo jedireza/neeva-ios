@@ -2080,8 +2080,8 @@ extension BrowserViewController {
     }
 
     private func visitHomePage() {
-        if let homePageURL = NewTabHomePageAccessors.getHomePage(self.profile.prefs), let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
-            tab.loadRequest(URLRequest(url: homePageURL))
+        if let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
+            tab.loadRequest(URLRequest(url: NeevaConstants.appSignupURL.asURL!))
         }
     }
 

@@ -215,7 +215,7 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
                 }
             }
             defaultBrowserCard.signinHandler = {
-                self.showSiteWithURLHandler(NeevaConstants.appLoginURL.asURL!)
+                self.showSiteWithURLHandler(NeevaConstants.appSigninURL.asURL!)
             }
         }
 

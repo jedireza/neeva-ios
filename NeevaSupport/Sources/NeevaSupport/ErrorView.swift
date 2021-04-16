@@ -119,7 +119,7 @@ fileprivate struct LoginView: View {
                     .font(.title2)
                 Text("This content can only be viewed if you sign in")
             }
-            Button("Sign in to Neeva") { onOpenURL(NeevaConstants.appURL) }
+            Button("Sign in to Neeva") { onOpenURL(URL(string: NeevaConstants.appSigninURL)!) }
                 .buttonStyle(BigBlueButtonStyle())
         }.multilineTextAlignment(.center).padding()
     }

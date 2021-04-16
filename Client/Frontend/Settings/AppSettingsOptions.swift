@@ -171,7 +171,7 @@ class NeevaProfileSetting: Setting {
     override func onClick(_ navigationController: UINavigationController?) {
         if !NeevaUserInfo.shared.isUserLoggedIn {
             navigationController?.dismiss(animated: true) {
-                if let url = URL(string: NeevaConstants.appLoginURL) {
+                if let url = URL(string: NeevaConstants.appSigninURL) {
                     self.delegate?.settingsOpenURLInNewTab(url)
                 }
             }
