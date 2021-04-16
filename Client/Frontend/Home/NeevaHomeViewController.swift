@@ -195,7 +195,7 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
 
             addSubSwiftUIView(IncognitoDescriptionView(), to: emptyIncognitoDescriptionView)
 
-        } else if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") || !NeevaUserInfo.shared.isUserLoggedIn {
+        } else if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {
             self.view.addSubview(defaultBrowserCard)
             defaultBrowserCard.snp.makeConstraints { make in
                 make.top.equalToSuperview()
