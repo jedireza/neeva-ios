@@ -321,6 +321,8 @@
 		C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87AA4A12614C1FC00F1318F /* IncognitoDescriptionView.swift */; };
 		C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C885659D2620366400B2C228 /* SwiftUIHelpers.swift */; };
 		C892DA0D22D39A980080F1F7 /* TrackingProtectionMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C892DA0C22D39A980080F1F7 /* TrackingProtectionMenu.swift */; };
+		C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */; };
+		C8A4D2F72628C34000192B4D /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D2F62628C34000192B4D /* ViewExtensions.swift */; };
 		C8CC4F8725253E79003FDE1F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD46F3324A1606C001B3967 /* WidgetKit.framework */; };
 		C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */; };
 		C8D4F35B2600750B00F32A77 /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B27CC25FCFBAE0037D49B /* NeevaSupport */; };
@@ -1308,6 +1310,8 @@
 		C885659D2620366400B2C228 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUIHelpers.swift; path = Helpers/SwiftUIHelpers.swift; sourceTree = "<group>"; };
 		C88847109E62D581C497BB8E /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/AuthenticationManager.strings"; sourceTree = "<group>"; };
 		C892DA0C22D39A980080F1F7 /* TrackingProtectionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingProtectionMenu.swift; sourceTree = "<group>"; };
+		C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlaySheetView.swift; sourceTree = "<group>"; };
+		C8A4D2F62628C34000192B4D /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewExtensions.swift; path = Extensions/ViewExtensions.swift; sourceTree = "<group>"; };
 		C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = effective_tld_names.swift; sourceTree = "<group>"; };
 		C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		C8E18F1D222EDE4400E30E52 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -1998,6 +2002,7 @@
 				E65075501E37F6D1006961AC /* UIViewExtensions.swift */,
 				C817B34C1FC609500086018E /* UIScrollViewSwizzled.swift */,
 				43446CE92412066500F5C643 /* UIViewControllerExtension.swift */,
+				C8A4D2F62628C34000192B4D /* ViewExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -2556,6 +2561,7 @@
 				E660BE051BB0666D009AC090 /* InnerStrokedView.swift */,
 				0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */,
 				D0152244229855A8009DE753 /* OneLineCell.swift */,
+				C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */,
 				E65607601C08B4E200534B02 /* SearchInputView.swift */,
 				D38A1BEC1A9FA2CA00F6A386 /* SiteTableViewController.swift */,
 				0BB5B2861AC0A2B90052877D /* SnackBar.swift */,
@@ -4588,6 +4594,7 @@
 				C892DA0D22D39A980080F1F7 /* TrackingProtectionMenu.swift in Sources */,
 				C817B34D1FC609500086018E /* UIScrollViewSwizzled.swift in Sources */,
 				39F819C61FD70F5D009E31E4 /* TabEventHandlers.swift in Sources */,
+				C8A4D2F72628C34000192B4D /* ViewExtensions.swift in Sources */,
 				E65607611C08B4E200534B02 /* SearchInputView.swift in Sources */,
 				FA6B2AC21D41F02D00429414 /* Punycode.swift in Sources */,
 				048B4C7D24A53EA8001B56E8 /* TodayViewModel.swift in Sources */,
@@ -4626,6 +4633,7 @@
 				EBC4869F2195F58300CDA48D /* SessionRestoreHandler.swift in Sources */,
 				F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */,
 				7BEFC6801BFF68C30059C952 /* QuickActions.swift in Sources */,
+				C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */,
 				D0C95E36200FDC5500E4E51C /* MetadataParserHelper.swift in Sources */,
 				0BF1B7E31AC60DEA00A7B407 /* InsetButton.swift in Sources */,
 				D87F84AC20B891160091F2DA /* TabDisplayManager.swift in Sources */,

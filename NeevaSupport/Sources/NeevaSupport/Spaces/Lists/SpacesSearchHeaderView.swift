@@ -20,21 +20,21 @@ struct SpacesSearchHeaderView: View {
 
     var body: some View {
         HStack {
-            HStack{
+            HStack {
                 TextField("Search Spaces", text: $searchText)
                     .onChange(of: searchText) {
                         self.filterAction($0)
                     }
                 if (self.isEditing) {
                     Image(systemName: "xmark.circle.fill")
-                                    .imageScale(.medium)
-                                    .foregroundColor(Color(.systemGray3))
-                                    .padding(3)
-                                    .onTapGesture {
-                                        withAnimation {
-                                            self.searchText = ""
-                                          }
-                                    }
+                        .imageScale(.medium)
+                        .foregroundColor(Color(.systemGray3))
+                        .padding(3)
+                        .onTapGesture {
+                            withAnimation {
+                                self.searchText = ""
+                            }
+                        }
                 }
             }
             .font(.system(size: 14))
@@ -46,7 +46,7 @@ struct SpacesSearchHeaderView: View {
             .onTapGesture {
                 self.isEditing = true
             }
-            Button("+ Create"){
+            Button("+ Create") {
                 self.isModal = true
             }.sheet(isPresented: $isModal , content: {
                 CreateSpaceView(onDismiss: { result, name in
@@ -55,8 +55,8 @@ struct SpacesSearchHeaderView: View {
                         self.onCreateSpace(result!, name)
 
                     }
-                    })
                 })
+            })
             .padding(.trailing, 10)
         }
     }

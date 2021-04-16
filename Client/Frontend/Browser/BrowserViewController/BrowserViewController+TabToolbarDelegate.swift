@@ -61,34 +61,32 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         guard let url = tab.canonicalURL?.displayURL else { return }
 
         tab.webView!.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
-            let spacesView = AddToSpaceViewController(
-                                title: tab.title ?? url.absoluteString,
-                                description: result as? String,
-                                url: url,
-                                onDismiss: { result in
-                                    self.dismissVC()
-                                    if (result != nil){
-                                        if (result!.entity == ""){
-                                            SimpleToast().showAlertWithText("Failed to save to \(result!.space).", bottomContainer:self.webViewContainer)
-                                        } else {
-                                            /*TODO: Activiate Open Spaces onClick
-                                             let toast = ButtonToast(labelText: "Saved to \(result!.space)", buttonText: "Open Spaces", completion: { buttonPressed in
-                                                if buttonPressed {
-                                                   print("open spaces")
-                                                }
-                                            })
-                                            self.show(toast: toast)*/
-                                            SimpleToast().showAlertWithText("Saved to \(result!.space)", bottomContainer:self.webViewContainer)
-                                        }
-                                    }
-                                },
-                                onOpenURL: {
-                                    self.dismissVC()
-                                    self.settingsOpenURLInNewTab($0)
-                                })
-            spacesView.modalPresentationStyle = .automatic
-
-            self.present(spacesView, animated: true, completion: nil)
+            self.showOverlaySheetViewController(
+                AddToSpaceViewController(
+                    title: tab.title ?? url.absoluteString,
+                    description: result as? String,
+                    url: url,
+                    onDismiss: { result in
+                        self.hideOverlaySheetViewController()
+                        if (result != nil) {
+                            if (result!.entity == "") {
+                                SimpleToast().showAlertWithText("Failed to save to \(result!.space).", bottomContainer: self.webViewContainer)
+                            } else {
+                                // TODO: Activiate Open Spaces onClick
+                                //  let toast = ButtonToast(labelText: "Saved to \(result!.space)", buttonText: "Open  Spaces", completion: { buttonPressed in
+                                //     if buttonPressed {
+                                //        print("open spaces")
+                                //     }
+                                // })
+                                // self.show(toast: toast)
+                                SimpleToast().showAlertWithText("Saved to \(result!.space)", bottomContainer:self.webViewContainer)
+                            }
+                        }
+                    },
+                    onOpenURL: { url in
+                        self.hideOverlaySheetViewController()
+                        self.settingsOpenURLInNewTab(url)
+                    }))
         }
     }
     

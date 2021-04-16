@@ -49,6 +49,7 @@ class BrowserViewController: UIViewController {
     var neevaHomeViewController: NeevaHomeViewController?
     var libraryViewController: LibraryViewController?
     var libraryDrawerViewController: DrawerViewController?
+    var overlaySheetViewController: UIViewController?
     var webViewContainer: UIView!
     var urlBar: URLBarView!
     var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
@@ -811,6 +812,28 @@ class BrowserViewController: UIViewController {
         addChild(libraryDrawerViewController)
         view.addSubview(libraryDrawerViewController.view)
         libraryDrawerViewController.view.snp.remakeConstraints(constraintsForLibraryDrawerView)
+    }
+
+    func showOverlaySheetViewController(_ overlaySheetViewController: UIViewController) {
+        hideOverlaySheetViewController()
+
+        addChild(overlaySheetViewController)
+        view.addSubview(overlaySheetViewController.view)
+        overlaySheetViewController.view.snp.makeConstraints { make in
+            make.edges.equalTo(self.view)
+        }
+        overlaySheetViewController.didMove(toParent: self)
+
+        self.overlaySheetViewController = overlaySheetViewController
+    }
+
+    func hideOverlaySheetViewController() {
+        if let overlaySheetViewController = self.overlaySheetViewController {
+            overlaySheetViewController.willMove(toParent: nil)
+            overlaySheetViewController.view.removeFromSuperview()
+            overlaySheetViewController.removeFromParent()
+            self.overlaySheetViewController = nil
+        }
     }
 
     fileprivate func createSearchControllerIfNeeded() {

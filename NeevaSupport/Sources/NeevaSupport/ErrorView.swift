@@ -46,26 +46,30 @@ public struct ErrorView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 20) {
-            Text("")
-            if isLoginError {
-                LoginView()
-            } else if let isOnline = reachability.isOnline, !isOnline {
-                OfflineView()
-            } else {
-                GenericErrorView(viewName: viewName, error: error, gqlErrors: gqlErrors)
-            }
-            if let tryAgain = tryAgain {
-                Button(action: tryAgain) {
-                    Label("Reload", systemImage: "arrow.clockwise")
+        HStack {
+            Spacer()
+            VStack(spacing: 20) {
+                Text("")
+                if isLoginError {
+                    LoginView()
+                } else if let isOnline = reachability.isOnline, !isOnline {
+                    OfflineView()
+                } else {
+                    GenericErrorView(viewName: viewName, error: error, gqlErrors: gqlErrors)
                 }
-                .font(Font.footnote.bold())
-                .padding(.vertical)
+                if let tryAgain = tryAgain {
+                    Button(action: tryAgain) {
+                        Label("Reload", systemImage: "arrow.clockwise")
+                    }
+                    .font(Font.footnote.bold())
+                    .padding(.vertical)
+                }
+            }.onChange(of: reachability.isOnline) { nowOnline in
+                if nowOnline == true {
+                    tryAgain?()
+                }
             }
-        }.onChange(of: reachability.isOnline) { nowOnline in
-            if nowOnline == true {
-                tryAgain?()
-            }
+            Spacer()
         }
     }
 }

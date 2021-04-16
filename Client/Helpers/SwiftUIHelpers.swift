@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import SwiftUI
 
 // Optionally wraps an embedded view with a ScrollView based on a specified
@@ -19,5 +20,26 @@ public struct VerticalScrollViewIfNeeded<EmbeddedView>: View where EmbeddedView:
                 self.embeddedView
             }
         }
+    }
+}
+
+// Detect if the keyboard is visible or not and publish that state.
+// It can then be read via .onReceive on a View.
+// From https://stackoverflow.com/questions/65784294/how-to-detect-if-keyboard-is-present-in-swiftui
+protocol KeyboardReadable {
+    var keyboardPublisher: AnyPublisher<Bool, Never> { get }
+}
+extension KeyboardReadable {
+    var keyboardPublisher: AnyPublisher<Bool, Never> {
+        Publishers.Merge(
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillShowNotification)
+                .map { _ in true },
+
+            NotificationCenter.default
+                .publisher(for: UIResponder.keyboardWillHideNotification)
+                .map { _ in false }
+        )
+        .eraseToAnyPublisher()
     }
 }

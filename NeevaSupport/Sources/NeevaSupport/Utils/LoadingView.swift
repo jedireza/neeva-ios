@@ -34,22 +34,26 @@ struct LoadingView: View {
                     .foregroundColor(.secondary)
             }
         } else {
-            VStack {
-                ActivityIndicator(style: .large)
-                label
-                    .font(Font.title2.bold())
-                    .padding(.top)
-                    .multilineTextAlignment(.center)
-            }
-            .padding(40)
-            .opacity(opacity)
-            .onAppear {
-                DispatchQueue.main.async {
-                    withAnimation(
-                        Animation.easeIn
-                            .delay(0.3)
-                    ) { opacity = 1 }
+            HStack {
+                Spacer()
+                VStack {
+                    ActivityIndicator(style: .large)
+                    label
+                        .font(Font.title2.bold())
+                        .padding(.top)
+                        .multilineTextAlignment(.center)
                 }
+                .padding(40)
+                .opacity(opacity)
+                .onAppear {
+                    DispatchQueue.main.async {
+                        withAnimation(
+                            Animation.easeIn
+                                .delay(0.3)
+                        ) { opacity = 1 }
+                    }
+                }
+                Spacer()
             }
         }
     }

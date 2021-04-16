@@ -7,6 +7,7 @@ import SwiftUI
 public enum SFSymbol: String {
     case squareAndArrowDown = "square.and.arrow.down"
     case clock = "clock"
+    case xmark = "xmark"
     // TODO: Add more here
 }
 

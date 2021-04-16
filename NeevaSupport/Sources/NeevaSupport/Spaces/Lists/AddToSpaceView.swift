@@ -74,28 +74,24 @@ public struct AddToSpaceList: View {
                         }
                     }
             } else {
-                switch spaceList.state {
-                case .failure(let error):
-                    ErrorView(error, in: self, tryAgain: { spaceList.reload() })
-                case .success(let spaces):
-                    let filteredSpaces = filter(spaces)
-                    ZStack {
-                        VStack{
-                            HStack(alignment: .top){
-                                Text("Save to Spaces")
-                                    .font(.system(size: 16))
-                                Spacer()
-                                Button(action: { onDismiss(nil) }) {
-                                    Image(systemName: "xmark")
-                                        .frame(width: 24, height: 24)
-                                        .accessibilityLabel("Close Add to Space")
-                                        .foregroundColor(Color.gray)
-                                }
-                            }.padding(EdgeInsets(top: 28, leading: 17.5, bottom: 6, trailing: 17.5))
-                            SpacesSearchHeaderView(filterAction:filterListByString, onCreateSpace: { result, name in
+                ScrollView {
+                    VStack {
+                        switch spaceList.state {
+                        case .running:
+                            LoadingView("Loading spaces…")
+                        case .failure(let error):
+                            ErrorView(error, in: self, tryAgain: { spaceList.reload() })
+                        case .success(let spaces):
+                            let filteredSpaces = filter(spaces)
+                            SpacesSearchHeaderView(filterAction: filterListByString, onCreateSpace: { result, name in
                                 addToSpace(id: result.createSpace, name: name)
                             }).padding(.horizontal, 4)
-                            ScrollView {
+                            if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
+                                Text("No Results Found")
+                                    .font(.title)
+                                    .foregroundColor(.secondary)
+                                    .padding(.top, 16)
+                            } else {
                                 LazyVStack(spacing: 20) {
                                     ForEach(filteredSpaces) { space in
                                         Button {
@@ -106,23 +102,11 @@ public struct AddToSpaceList: View {
                                     }
                                 }
                             }
-                            .refreshControl(refreshing: spaceList)
-                            .listStyle(DefaultListStyle())
-                        }
-                        if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
-                            VStack {
-                                Spacer()
-                                Text("No Results Found")
-                                    .font(.title)
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                            }
                         }
                     }
-                    .padding(4)
-                case .running:
-                    LoadingView("Loading spaces…")
                 }
+                .listStyle(DefaultListStyle())
+                .padding(.bottom, 16)
             }
         }
     }
