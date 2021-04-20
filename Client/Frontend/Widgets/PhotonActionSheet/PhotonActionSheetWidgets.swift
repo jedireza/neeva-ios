@@ -19,6 +19,7 @@ struct PhotonActionSheetUX {
     static let CornerRadius: CGFloat = 10
     static let SiteImageViewSize = 52
     static let IconSize = CGSize(width: 24, height: 24)
+    static let FaviconSize = CGSize(width: 20, height: 20) // favicon when search bar in focus
     static let SiteHeaderName  = "PhotonActionSheetSiteHeaderView"
     static let TitleHeaderName = "PhotonActionSheetTitleHeaderView"
     static let CellName = "PhotonActionSheetCell"

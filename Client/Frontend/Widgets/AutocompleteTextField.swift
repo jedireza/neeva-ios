@@ -18,11 +18,12 @@ protocol AutocompleteTextFieldDelegate: AnyObject {
 }
 
 class AutocompleteTextField: UITextField, UITextFieldDelegate {
+    let padding = UIEdgeInsets(top: 0, left:30, bottom: 0, right: 35)
     var autocompleteDelegate: AutocompleteTextFieldDelegate?
     // AutocompleteTextLabel repersents the actual autocomplete text.
     // The textfields "text" property only contains the entered text, while this label holds the autocomplete text
     // This makes sure that the autocomplete doesnt mess with keyboard suggestions provided by third party keyboards.
-    private var autocompleteTextLabel: UILabel?
+    private var autocompleteTextLabel: UILabelExtendedView?
     private var hideCursor: Bool = false
 
     private let copyShortcutKey = "c"
@@ -150,7 +151,6 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     /// Commits the completion by setting the text and removing the highlight.
     fileprivate func applyCompletion() {
-
         // Clear the current completion, then set the text without the attributed style.
         let text = (self.text ?? "") + (self.autocompleteTextLabel?.text ?? "")
         let didRemoveCompletion = removeCompletion()
@@ -226,8 +226,8 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         return hideCursor ? CGRect.zero : super.caretRect(for: position)
     }
 
-    private func createAutocompleteLabelWith(_ autocompleteText: NSAttributedString) -> UILabel {
-        let label = UILabel()
+    private func createAutocompleteLabelWith(_ autocompleteText: NSAttributedString) -> UILabelExtendedView {
+        let label = UILabelExtendedView()
         var frame = self.bounds
         label.attributedText = autocompleteText
         label.font = self.font
@@ -275,7 +275,6 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
    @objc func textDidChange(_ textField: UITextField) {
         hideCursor = autocompleteTextLabel != nil
         removeCompletion()
-
         let isAtEnd = selectedTextRange?.start == endOfDocument
         let isKeyboardReplacingText = lastReplacement != nil
         if isKeyboardReplacingText, isAtEnd, markedTextRange == nil {
@@ -308,6 +307,18 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         applyCompletion()
         super.touchesBegan(touches, with: event)
     }
+
+    override open func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
 }
 
 extension AutocompleteTextField: MenuHelperInterface {
@@ -321,5 +332,13 @@ extension AutocompleteTextField: MenuHelperInterface {
 
     @objc func menuHelperPasteAndGo() {
         autocompleteDelegate?.autocompletePasteAndGo(self)
+    }
+}
+
+class UILabelExtendedView: UILabel {
+    var padding = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 0)
+
+    public override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: padding))
     }
 }

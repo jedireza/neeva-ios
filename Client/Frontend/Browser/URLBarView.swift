@@ -4,6 +4,8 @@
 
 import Shared
 import SnapKit
+import Storage
+import NeevaSupport
 
 private struct URLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40
@@ -309,6 +311,51 @@ class URLBarView: UIView {
     @objc func didClickNeevaMenu() {
         self.delegate?.urlBarNeevaMenu(self, from: neevaMenuButton)
     }
+
+    func createLeftViewFavicon(_ suggestion: String = "") {
+        locationTextField.self?.leftViewMode = UITextField.ViewMode.always
+        let iconView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20 , height: 20))
+        iconView.layer.cornerRadius = 2
+        iconView.clipsToBounds = true
+        iconView.contentMode = .scaleAspectFill
+
+        let favicons = BrowserViewController.foregroundBVC().tabManager.selectedTab?.favicons
+
+        if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (currentURL?.host == NeevaConstants.appHost && suggestion == "") {
+            iconView.image = UIImage(named: "neevaMenuIcon")
+        } else if (suggestion != "") {
+            iconView.image = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))?.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor.Neeva.GlobeFavGray)
+
+            let gURL = URL(string: "https://\(suggestion)")!
+
+            let site = Site(url: gURL.absoluteString, title: "")
+
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate, let profile = appDelegate.profile {
+                profile.favicons.getFaviconImage(forSite: site).uponQueue(.main) { result in
+                    guard let image = result.successValue else {
+                        return
+                    }
+                    iconView.image = image.createScaled(PhotonActionSheetUX.FaviconSize)
+                }
+            }
+        } else {
+            iconView.image = UIImage(named: "neevaMenuIcon")
+            let currentURL = BrowserViewController.foregroundBVC().tabManager.selectedTab?.url
+            if currentURL != nil {
+                for fav in favicons! {
+                    if (fav.url != "") {
+                        let site = Site(url: fav.url, title: "")
+                        iconView.setFavicon(forSite: site) {
+                            iconView.image = iconView.image?.createScaled(PhotonActionSheetUX.FaviconSize)
+                        }
+                        break
+                    }
+                }
+            }
+        }
+        locationTextField.self?.leftView = iconView
+    }
+
     
     func createLocationTextField() {
         guard locationTextField == nil else { return }
@@ -332,6 +379,9 @@ class URLBarView: UIView {
         locationTextField.accessibilityIdentifier = "address"
         locationTextField.accessibilityLabel = .URLBarLocationAccessibilityLabel
         locationTextField.attributedPlaceholder = self.locationView.placeholder
+
+        createLeftViewFavicon()
+
         locationContainer.addSubview(locationTextField)
 
         // Disable dragging urls on iPhones because it conflicts with editing the text
@@ -394,6 +444,7 @@ class URLBarView: UIView {
 
     func setAutocompleteSuggestion(_ suggestion: String?) {
         locationTextField?.setAutocompleteSuggestion(suggestion)
+        createLeftViewFavicon(suggestion ?? "")
     }
 
     func setLocation(_ location: String?, search: Bool) {
@@ -412,7 +463,6 @@ class URLBarView: UIView {
 
     func enterOverlayMode(_ locationText: String?, pasted: Bool, search: Bool) {
         createLocationTextField()
-
         // Show the overlay mode UI, which includes hiding the locationView and replacing it
         // with the editable locationTextField.
         animateToOverlayState(overlayMode: true)
@@ -658,6 +708,7 @@ extension URLBarView: AutocompleteTextFieldDelegate {
 
     func autocompleteTextField(_ autocompleteTextField: AutocompleteTextField, didEnterText text: String) {
         delegate?.urlBar(self, didEnterText: text)
+        createLeftViewFavicon()
     }
 
     func autocompleteTextFieldShouldClear(_ autocompleteTextField: AutocompleteTextField) -> Bool {

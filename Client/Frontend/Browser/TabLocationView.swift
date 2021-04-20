@@ -145,7 +145,7 @@ class TabLocationView: UIView {
         addGestureRecognizer(longPressRecognizer)
         addGestureRecognizer(tapRecognizer)
 
-        let subviews = [ spacer0, spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton]
+        let subviews = [spacer0, spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton]
 
         contentView = UIView()
         for view in subviews {

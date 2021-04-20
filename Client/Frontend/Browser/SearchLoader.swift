@@ -91,7 +91,7 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
 
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
-                    if let completion = self.completionForURL(site.url) {
+                    if let completion = self.completionForURL(site.url, favicon: site.icon) {
                         self.urlBar.setAutocompleteSuggestion(completion)
                         return
                     }
@@ -113,7 +113,7 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
         self.query = query
     }
 
-    fileprivate func completionForURL(_ url: String) -> String? {
+    fileprivate func completionForURL(_ url: String, favicon: Favicon?) -> String? {
         // Extract the pre-path substring from the URL. This should be more efficient than parsing via
         // NSURL since we need to only look at the beginning of the string.
         // Note that we won't match non-HTTP(S) URLs.
