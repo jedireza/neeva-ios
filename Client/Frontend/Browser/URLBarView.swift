@@ -326,7 +326,7 @@ class URLBarView: UIView {
         } else if (suggestion != "") {
             iconView.image = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))?.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor.Neeva.GlobeFavGray)
 
-            let gURL = URL(string: "https://\(suggestion)")!
+            let gURL = suggestion.hasPrefix("http") ? URL(string: suggestion)! : URL(string: "https://\(suggestion)")!
 
             let site = Site(url: gURL.absoluteString, title: "")
 
@@ -341,7 +341,9 @@ class URLBarView: UIView {
         } else {
             iconView.image = UIImage(named: "neevaMenuIcon")
             let currentURL = BrowserViewController.foregroundBVC().tabManager.selectedTab?.url
-            if currentURL != nil {
+            let currentText = locationTextField?.text
+
+            if currentURL != nil && currentText == "" {
                 for fav in favicons! {
                     if (fav.url != "") {
                         let site = Site(url: fav.url, title: "")
