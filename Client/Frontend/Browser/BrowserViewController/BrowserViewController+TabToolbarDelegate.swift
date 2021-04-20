@@ -59,35 +59,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
     func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
         guard let tab = tabManager.selectedTab else { return }
         guard let url = tab.canonicalURL?.displayURL else { return }
-
-        tab.webView!.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
-            self.showOverlaySheetViewController(
-                AddToSpaceViewController(
-                    title: tab.title ?? url.absoluteString,
-                    description: result as? String,
-                    url: url,
-                    onDismiss: { result in
-                        self.hideOverlaySheetViewController()
-                        if (result != nil) {
-                            if (result!.entity == "") {
-                                SimpleToast().showAlertWithText("Failed to save to \(result!.space).", bottomContainer: self.webViewContainer)
-                            } else {
-                                // TODO: Activiate Open Spaces onClick
-                                //  let toast = ButtonToast(labelText: "Saved to \(result!.space)", buttonText: "Open  Spaces", completion: { buttonPressed in
-                                //     if buttonPressed {
-                                //        print("open spaces")
-                                //     }
-                                // })
-                                // self.show(toast: toast)
-                                SimpleToast().showAlertWithText("Saved to \(result!.space)", bottomContainer:self.webViewContainer)
-                            }
-                        }
-                    },
-                    onOpenURL: { url in
-                        self.hideOverlaySheetViewController()
-                        self.settingsOpenURLInNewTab(url)
-                    }))
-        }
+        showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
     }
     
     func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton) {

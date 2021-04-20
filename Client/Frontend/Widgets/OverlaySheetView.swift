@@ -37,9 +37,10 @@ class OverlaySheetModel: ObservableObject {
 // Intended to present content that is flexible in height (e.g., a ScrollView).
 struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @StateObject var model: OverlaySheetModel
-    @State private var isKeyboardVisible = false
 
-    var title: String
+    @State private var isKeyboardVisible = false
+    @State private var title: String = ""
+
     let onDismiss: () -> ()
     var content: () -> Content
 
@@ -128,6 +129,9 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                         .gesture(topDrag)
 
                         self.content()
+                            .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) {
+                                self.title = $0
+                            }
                             .background(Color(UIColor.systemBackground))
                     }
                 }
@@ -176,6 +180,37 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             self.model.position = newPosition
             self.model.deltaHeight = 0
         }
+    }
+}
+
+// This PreferenceKey may be used by a child View of the OverlaySheetView
+// to specify a title for the sheet.
+//
+// E.g.:
+//
+//    OverlaySheetView(..) {
+//        SomeContent()
+//            .overlaySheetTitle(title: "Some Title")
+//    }
+//
+struct OverlaySheetTitlePreferenceKey: PreferenceKey {
+    typealias Value = String
+    static var defaultValue: String = ""
+    static func reduce(value: inout String, nextValue: () -> String) {
+        value = nextValue()
+    }
+}
+struct OverlaySheetTitleViewModifier: ViewModifier {
+    let title: String
+    func body(content: Content) -> some View {
+        content.preference(
+            key: OverlaySheetTitlePreferenceKey.self,
+            value: title)
+    }
+}
+extension View {
+    func overlaySheetTitle(title: String) -> some View {
+        self.modifier(OverlaySheetTitleViewModifier(title: title))
     }
 }
 

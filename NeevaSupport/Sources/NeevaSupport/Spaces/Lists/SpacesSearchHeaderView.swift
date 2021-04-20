@@ -9,27 +9,31 @@ import SwiftUI
 struct SpacesSearchHeaderView: View {
     @State private var isEditing = false
     @State private var searchText = ""
-    @State private var isModal = false
-    var filterAction: (String) -> ()
-    let onCreateSpace: ((CreateSpaceMutation.Data, String) -> ())
 
-    public init(filterAction: @escaping (String) -> (), onCreateSpace: @escaping ((CreateSpaceMutation.Data, String) -> ())) {
-        self.onCreateSpace = onCreateSpace
+    let filterAction: (String) -> ()
+    let createAction: () -> ()
+
+    public init(filterAction: @escaping (String) -> (), createAction: @escaping () -> ()) {
         self.filterAction = filterAction
+        self.createAction = createAction
     }
 
     var body: some View {
         HStack {
             HStack {
+                Image(systemName: "magnifyingglass")
+                    .imageScale(.medium)
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 16))
                 TextField("Search Spaces", text: $searchText)
                     .onChange(of: searchText) {
                         self.filterAction($0)
                     }
-                if (self.isEditing) {
+                if (self.isEditing && !self.searchText.isEmpty) {
                     Image(systemName: "xmark.circle.fill")
                         .imageScale(.medium)
-                        .foregroundColor(Color(.systemGray3))
-                        .padding(3)
+                        .foregroundColor(.secondary)
+                        .padding([.leading, .trailing], 2)
                         .onTapGesture {
                             withAnimation {
                                 self.searchText = ""
@@ -39,7 +43,7 @@ struct SpacesSearchHeaderView: View {
             }
             .font(.system(size: 14))
             .padding(10)
-            .padding(.leading, 16)
+            .padding(.leading, 6)
             .background(Color(.systemGray6))
             .cornerRadius(20)
             .padding(.horizontal, 10)
@@ -47,16 +51,8 @@ struct SpacesSearchHeaderView: View {
                 self.isEditing = true
             }
             Button("+ Create") {
-                self.isModal = true
-            }.sheet(isPresented: $isModal , content: {
-                CreateSpaceView(onDismiss: { result, name in
-                    self.isModal = false
-                    if (result != nil) {
-                        self.onCreateSpace(result!, name)
-
-                    }
-                })
-            })
+                self.createAction()
+            }
             .padding(.trailing, 10)
         }
     }
@@ -64,7 +60,7 @@ struct SpacesSearchHeaderView: View {
 
 struct SpacesSearchHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        SpacesSearchHeaderView(filterAction: {_ in }, onCreateSpace: {_,_  in } )
+        SpacesSearchHeaderView(filterAction: {_ in }, createAction: { } )
     }
 }
 

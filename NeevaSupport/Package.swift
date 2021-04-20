@@ -17,7 +17,7 @@ let package = Package(
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", .upToNextMajor(from: "4.2.1")),
         .package(url: "https://github.com/crelies/RemoteImage", .upToNextMajor(from: "4.0.0")),
         .package(url: "https://github.com/sindresorhus/Defaults", .upToNextMajor(from: "4.2.1")),
-        .package(name: "Introspect", url: "https://github.com/siteline/SwiftUI-Introspect", .upToNextMinor(from: "0.1.2")),
+        .package(name: "Introspect", url: "https://github.com/siteline/SwiftUI-Introspect", .upToNextMinor(from: "0.1.3")),
         .package(name: "Reachability", url: "https://github.com/ashleymills/Reachability.swift", .upToNextMajor(from: "5.1.0"))
     ],
     targets: [

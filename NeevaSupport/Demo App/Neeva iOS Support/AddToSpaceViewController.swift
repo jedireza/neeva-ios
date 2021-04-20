@@ -15,6 +15,24 @@ class AddToSpaceDemoViewController: UIHostingController<AddToSpaceDemoView> {
     }.padding(.vertical, 5)
 }
 
+struct AddToSpaceSheetView: View {
+    @StateObject var request: AddToSpaceRequest
+    let onDismiss: () -> ()
+
+    var body: some View {
+        switch request.state {
+        case .initial:
+            AddToSpaceView(request: request)
+        case .creatingSpace, .savingToSpace:
+            LoadingView("Saving...")
+        case .savedToSpace:
+            Color.clear.onAppear { self.onDismiss() }
+        case .failed:
+            ErrorView(request.error!, in: self)
+        }
+    }
+}
+
 struct AddToSpaceDemoView: View {
     @State var title = "Example website"
     @State var description = "Hello, world!"
@@ -49,11 +67,14 @@ struct AddToSpaceDemoView: View {
             }
             .navigationBarTitle(Text("Add to Space"))
         }.navigationViewStyle(StackNavigationViewStyle())
+        .onTapGesture {
+            // Hide virtual keyboard if the user taps outside an editable field.
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
         .sheet(isPresented: $addingToSpace) {
-            AddToSpaceView(title: title, description: description, url: URL(string: url)!, onDismiss: { ids in
-                selectedSpace = ids?.space
+            AddToSpaceSheetView(request: AddToSpaceRequest(title: title, description: description, url: URL(string: url)!)) {
                 addingToSpace = false
-            })
+            }
         }
     }
 }

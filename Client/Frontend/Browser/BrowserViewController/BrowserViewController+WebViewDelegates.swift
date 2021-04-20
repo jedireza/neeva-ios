@@ -164,23 +164,8 @@ extension BrowserViewController: WKUIDelegate {
             })
 
             actions.append(UIAction(title: "Add to Space", image: UIImage(systemName: "bookmark"), identifier: UIAction.Identifier("linkContextMenu.addToSpace")) { _ in
-                
-                clonedWebView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
-                    
-                    self.present(AddToSpaceViewController(
-                                    title: elements.title ?? url.absoluteString,
-                                    description: result as? String,
-                                    url: url,
-                                    onDismiss: { _ in self.dismissVC() },
-                                    onOpenURL: {
-                                        self.dismissVC()
-                                        self.openURLInNewTab($0)
-                                    }
-                    ), animated: true)
-                }
-                            })
-                                    
-                                    
+                    self.showAddToSpacesSheet(url: url, title: elements.title, webView: clonedWebView)
+                })
 
             actions.append(UIAction(title: Strings.ContextMenuDownloadLink, image: UIImage.templateImageNamed("menu-panel-Downloads"), identifier: UIAction.Identifier("linkContextMenu.download")) {_ in
                 // This checks if download is a blob, if yes, begin blob download process

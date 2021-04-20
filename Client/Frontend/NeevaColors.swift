@@ -19,5 +19,7 @@ extension UIColor {
         static let BrandPolar = UIColor(rgb:0xD4F0F5)
         static let White = UIColor(rgb: 0xFFFFFF)
         static let Offwhite = UIColor(rgb: 0xFFFDF5)
+        static let DarkElevated = UIColor(rgb: 0x3A3A3C)
+        static let DefaultAqua = UIColor(rgb: 0x62B9F9)
     }
 }

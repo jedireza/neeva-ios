@@ -1,47 +1,31 @@
-//
-//  File.swift
-//  
-//
-//  Created by Eduardo Olivos Yaya on 26/03/21.
-//
+// Copyright Neeva. All rights reserved.
 
+import Introspect
 import SwiftUI
 
 struct CreateSpaceView: View {
     @State private var isEditing = false
     @State private var spaceName = ""
-    let onDismiss: ((CreateSpaceMutation.Data?, String) -> ())
+    let onDismiss: (String) -> ()
 
-    public init(onDismiss: @escaping ((CreateSpaceMutation.Data?, String) -> ())) {
+    public init(onDismiss: @escaping (String) -> ()) {
         self.onDismiss = onDismiss
     }
 
     var body: some View{
         VStack {
-            HStack(alignment: .top){
-                Text("Create Space")
-                    .font(.system(size: 16))
-                    .fontWeight(.regular)
-                Spacer()
-                Button(action: { onDismiss(nil, "") }) {
-                    Image(systemName: "xmark")
-                        .accessibilityLabel("Close Add to Space")
-                        .foregroundColor(Color.gray)
-                }
-            }.padding(EdgeInsets(top: 28, leading: 17.5, bottom: 6, trailing: 17.5))
-            
             HStack{
                 TextField("Space name", text: $spaceName)
-                if (self.isEditing) {
+                if (self.isEditing && !self.spaceName.isEmpty) {
                     Image(systemName: "xmark.circle.fill")
-                                    .imageScale(.medium)
-                                    .foregroundColor(Color(.systemGray3))
-                                    .padding(3)
-                                    .onTapGesture {
-                                        withAnimation {
-                                            self.spaceName = ""
-                                          }
-                                    }
+                        .imageScale(.medium)
+                        .foregroundColor(Color(.systemGray3))
+                        .padding([.leading, .trailing], 2)
+                        .onTapGesture {
+                            withAnimation {
+                                self.spaceName = ""
+                            }
+                        }
                 }
             }
             .font(.system(size: 14))
@@ -54,16 +38,7 @@ struct CreateSpaceView: View {
                 self.isEditing = true
             }
             Button(action: {
-                if (spaceName.count > 0){
-                    CreateSpaceMutation(name: spaceName).perform { result in
-                        if case .success(let data) = result {
-                            self.onDismiss(data, spaceName)
-                        } else {
-                            print("Error")
-                            //TODO: display a toast of the failure
-                        }
-                    }
-                }
+                self.onDismiss(self.spaceName)
             }) {
                 Text("Save")
                     .fontWeight(.semibold)
@@ -77,11 +52,18 @@ struct CreateSpaceView: View {
             .padding(.horizontal, 16)
             Spacer()
         }
+        // Focus the text field automatically when loading this view. Unfortunately,
+        // SwiftUI provides no way to do this, so we have to resort to using Introspect.
+        // See https://github.com/siteline/SwiftUI-Introspect/issues/99 for why this is
+        // here instead of right below the TextField() instantiation above.
+        .introspectTextField { textField in
+            textField.becomeFirstResponder()
+        }
     }
 }
 struct CreateSpaceView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateSpaceView(onDismiss: {_,_  in })
+        CreateSpaceView(onDismiss: { _ in })
     }
 }
 

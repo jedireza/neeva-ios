@@ -10,33 +10,46 @@ import NeevaSupport
 import SwiftUI
 import SwiftKeychainWrapper
 
-class AddToSpaceListViewController: UIHostingController<AnyView> {
+class AddToSpaceViewController: UIHostingController<AnyView> {
     struct Content: View {
-        let title: String
-        let description: String?
-        let url: URL
-        let onDismiss: (AddToSpaceList.IDs?) -> ()
+        @StateObject var request: AddToSpaceRequest
+        let onDismiss: () -> ()
+
+        private var navigationTitle: String {
+            switch request.mode {
+            case .saveToNewSpace:
+                return "Create Space"
+            case .saveToExistingSpace:
+                return "Save to Spaces"
+            }
+        }
 
         var body: some View {
-            AddToSpaceList(title: title, description: description, url: url, showNewSpaceButton: false, onDismiss: onDismiss)
-                .environment(\.onOpenURL, { url in
-                    // TODO: handle this case
-                })
+            Group {
+                switch request.state {
+                case .initial:
+                    AddToSpaceView(request: request)
+                case .creatingSpace, .savingToSpace:
+                    LoadingView("Saving...")
+                case .savedToSpace:
+                    Color.clear.onAppear { onDismiss() }
+                case .failed:
+                    ErrorView(request.error!, in: self)
+                }
+            }
+            .navigationTitle(self.navigationTitle)
         }
     }
-    init(title: String, description: String?, url: URL, onDismiss: @escaping (AddToSpaceList.IDs?) -> ()) {
-        super.init(rootView: AnyView(EmptyView()))
-        self.rootView = AnyView(
-            Content(title: title, description: description, url: url, onDismiss: onDismiss)
-        )
-        self.navigationItem.title = "Add to Space"
+    init(title: String, description: String?, url: URL, onDismiss: @escaping () -> ()) {
+        super.init(rootView: AnyView(
+            Content(request: AddToSpaceRequest(title: title, description: description, url: url), onDismiss: onDismiss)
+        ))
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
 
 extension UIStackView {
     func addBackground(color: UIColor) {
@@ -356,16 +369,12 @@ extension ShareViewController {
     @objc func actionShowSpacePicker(gesture: UIGestureRecognizer) {
         if let shareItem = shareItem, case .shareItem(let item) = shareItem {
             navigationController?.pushViewController(
-                AddToSpaceListViewController(
+                AddToSpaceViewController(
                     title: item.title ?? item.url,
                     description: nil,
                     url: URL(string: item.url)!,
-                    onDismiss: { result in
-                        if result == nil {
-                            self.navigationController?.popViewController(animated: true)
-                        } else {
-                            self.finish(afterDelay: 0)
-                        }
+                    onDismiss: {
+                        self.finish(afterDelay: 0)
                     }
                 ),
                 animated: true

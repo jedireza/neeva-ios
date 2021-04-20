@@ -79,20 +79,13 @@ struct SpaceEntityView: View {
                 )
             case .addToSpace:
                 AddToSpaceView(
-                    title: entity.spaceEntity!.title!,
-                    description: entity.spaceEntity!.snippet,
-                    url: URL(string: entity.spaceEntity!.url!)!,
-                    onDismiss: { ids in
+                    request: AddToSpaceRequest(
+                        title: entity.spaceEntity!.title!,
+                        description: entity.spaceEntity!.snippet,
+                        url: URL(string: entity.spaceEntity!.url!)!),
+                    onDismiss: {
                         self.modal = nil
-                        if let ids = ids, ids.space == self.spaceId {
-                            onUpdate(nil)
-                            // TODO: make this work properly — the new entity is not actually added to the end of the list
-                            // onUpdate { newSpace in
-                            //     var newEntity = self.entity
-                            //     newEntity.metadata?.docId = ids.entity
-                            //     newSpace.entities?.append(newEntity)
-                            // }
-                        }
+                        // TODO: Hook this up properly and show progress for the request.
                     }
                 ).buttonStyle(DefaultButtonStyle())
             }
