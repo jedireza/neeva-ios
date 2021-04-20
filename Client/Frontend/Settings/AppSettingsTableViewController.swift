@@ -122,7 +122,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 ToggleChronTabs(settings: self)
             ])]
 
-        if NeevaUserInfo.shared.isUserLoggedIn {
+        if NeevaUserInfo.shared.hasLoginCookie() {
             settings += [SettingSection(children: [SignOutSetting(delegate: settingsDelegate)])]
         }
 

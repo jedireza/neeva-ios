@@ -82,6 +82,28 @@ public class NeevaUserInfo {
         self.clearUserInfoCache()
     }
 
+    func hasLoginCookie() -> Bool{
+        let token =  try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
+        let expirationDate = try? NeevaConstants.keychain.getString(NeevaConstants.loginExpirationKeychainKey)
+
+        if (token != nil && expirationDate != nil) {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            guard let expire = formatter.date(from: expirationDate!) else { return false }
+            let currentDate =  Date()
+
+            if (expire > currentDate) {
+                return true
+            }
+        }
+        return false
+    }
+
+    func deleteLoginCookie() {
+        try? NeevaConstants.keychain.remove(NeevaConstants.loginKeychainKey)
+        try? NeevaConstants.keychain.remove(NeevaConstants.loginExpirationKeychainKey)
+    }
+
     private func fetchUserPicture() {
         guard let url = URL(string: userPictureUrl ?? "") else {
             return

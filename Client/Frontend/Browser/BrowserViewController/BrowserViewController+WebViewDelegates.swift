@@ -699,7 +699,11 @@ extension BrowserViewController: WKNavigationDelegate {
            url.scheme == "https" {
             webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
                 if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateStyle = .short
+                    let expirationDate = dateFormatter.string(from: authCookie.expiresDate!)
                     try? NeevaConstants.keychain.set(authCookie.value, key: NeevaConstants.loginKeychainKey)
+                    try? NeevaConstants.keychain.set(expirationDate, key: NeevaConstants.loginExpirationKeychainKey)
                 }
             }
         }

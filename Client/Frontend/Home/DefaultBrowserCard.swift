@@ -68,21 +68,15 @@ class DefaultBrowserCard: UIView {
         topView.addSubview(labelView)
         background.addSubview(actionButton)
 
-
-        /*
-         // TODO: Detect user login status from cookie and revert this change
-         Github issue: https://github.com/neevaco/neeva-ios-phoenix/issues/186
-
-         // The following code is to show Sign in promo when user hasn't signin
-         if(!self.isUserLoggedIn) {
-             background.backgroundColor = UIColor.theme.defaultBrowserCard.brandPolar
-             title.text = "Get safer, richer, and"
-             title2.text = "better search"
-             closeButton.isHidden = true
-         }
-         */
-        actionButton.setImage(nil, for: .normal)
-        actionButton.setTitle("Set Neeva as Default Browser", for: .normal)
+        if (!NeevaUserInfo.shared.hasLoginCookie()) {
+            background.backgroundColor = UIColor.theme.defaultBrowserCard.brandPolar
+            title.text = "Get safer, richer, and"
+            title2.text = "better search"
+            closeButton.isHidden = true
+        } else {
+            actionButton.setImage(nil, for: .normal)
+            actionButton.setTitle("Set Neeva as Default Browser", for: .normal)
+        }
 
         background.addSubview(topView)
         background.addSubview(closeButton)
@@ -134,14 +128,11 @@ class DefaultBrowserCard: UIView {
     private func setupButtons() {
         closeButton.addTarget(self, action: #selector(dismissCard), for: .touchUpInside)
 
-        /*
-         // TODO: Revert this change when we detect user login status from cookie
-         if(!self.isUserLoggedIn) {
-             actionButton.addTarget(self, action: #selector(openLoginPage), for: .touchUpInside)
-         }
-         */
-        actionButton.addTarget(self, action: #selector(showOnboarding), for: .touchUpInside)
-
+        if(!NeevaUserInfo.shared.hasLoginCookie()) {
+            actionButton.addTarget(self, action: #selector(openLoginPage), for: .touchUpInside)
+        } else {
+            actionButton.addTarget(self, action: #selector(showOnboarding), for: .touchUpInside)
+        }
     }
     
     @objc private func dismissCard() {

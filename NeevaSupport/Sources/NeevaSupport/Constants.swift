@@ -33,6 +33,8 @@ public struct NeevaConstants {
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
 
+    public static var loginExpirationKeychainKey: String { "neevaHttpdLoginExpiration-\(appHost)" }
+
     /// The shared keychain accessible to the Neeva app and its extensions
     public static let keychain = Keychain(service: Bundle.module.bundleIdentifier ?? "Neeva", accessGroup: appGroup)
 
