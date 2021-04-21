@@ -79,6 +79,9 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
             if let cookie = try? String(contentsOf: URL(fileURLWithPath: devTokenPath)) {
                 assignCookie(cookie.trimmingCharacters(in: .whitespacesAndNewlines))
             }
+        } else {
+            // Else, let this request fail with an authentication error.
+            clearCookie()
         }
         return req
     }
@@ -99,6 +102,14 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
             HTTPCookieStorage.shared.setCookie(cookie)
         }
     }
+
+    private func clearCookie() {
+        if let cookies = HTTPCookieStorage.shared.cookies(for: NeevaConstants.appURL) {
+            if let loginCookie = cookies.first(where: { $0.name == "httpd~login" }) {
+                HTTPCookieStorage.shared.deleteCookie(loginCookie)
+            }
+        }
+   }
 }
 
 extension GraphQLQuery {
