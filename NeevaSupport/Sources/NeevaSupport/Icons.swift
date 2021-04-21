@@ -1,3 +1,5 @@
+// Copyright Neeva. All rights reserved.
+
 import Foundation
 import SwiftUI
 

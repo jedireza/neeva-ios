@@ -1,9 +1,4 @@
-//
-//  Space.swift
-//  
-//
-//  Created by Jed Fox on 12/18/20.
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
 

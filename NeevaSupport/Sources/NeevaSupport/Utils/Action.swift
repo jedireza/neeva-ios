@@ -54,23 +54,6 @@ public struct Action: Identifiable {
     }
 }
 
-extension View {
-    /// Call `accessibilityActions(actions)` to allow VoiceOver users to swipe vertically
-    /// to access the provided actions. Used as an alternative to the “…” menu which is unavailable
-    /// to VoiceOver users.
-    @ViewBuilder func accessibilityActions(_ actions: [Action?]) -> some View {
-        // AnyView is unfortunately necessary here; otherwise this error will occur:
-        // Function opaque return type was inferred as '_ConditionalContent<_ConditionalContent<Self, some View>, some View>', which defines the opaque type in terms of itself
-        if actions.isEmpty {
-            self
-        } else if let last = actions.last, let last_ = last {
-            AnyView(last_.addTo(self.accessibilityActions(actions.dropLast())))
-        } else {
-            AnyView(self.accessibilityActions(actions.dropLast()))
-        }
-    }
-}
-
 /// Use an array of `Action?` as a view, or access its `menu` property to create a pop-up menu
 extension Array: View where Element == Action? {
     public var body: some View {

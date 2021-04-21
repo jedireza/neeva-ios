@@ -1,3 +1,5 @@
+// Copyright Neeva. All rights reserved.
+
 /// Constant spaces and thumbnail images for use in previews.
 
 extension SpaceListController.Space {

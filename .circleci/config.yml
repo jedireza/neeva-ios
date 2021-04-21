@@ -39,11 +39,6 @@ commands:
       - run:
           name: Build Client
           command: xcodebuild build -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
-  build-demo-app:
-    steps:
-      - run:
-          name: Build Demo App
-          command: xcodebuild build -scheme 'Neeva iOS Support' -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
   build-codegen:
     steps:
       - run:
@@ -59,7 +54,6 @@ jobs:
       - carthage-bootstrap
       - unset-clone-via-ssh
       - build-codegen
-      - build-demo-app
       - build-client
 
 workflows:

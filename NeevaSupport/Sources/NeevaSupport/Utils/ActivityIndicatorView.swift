@@ -1,3 +1,5 @@
+// Copyright Neeva. All rights reserved.
+
 import SwiftUI
 
 /// An activity indicator (spinner/throbber) view

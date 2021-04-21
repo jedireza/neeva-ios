@@ -1,9 +1,4 @@
-//
-//  DataURIBody.swift
-//  
-//
-//  Created by Jed Fox on 1/18/21.
-//
+// Copyright Neeva. All rights reserved.
 
 import Foundation
 

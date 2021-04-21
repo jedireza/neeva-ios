@@ -1,18 +1,8 @@
-# neeva-ios-support
+# NeevaSupport
 
-Private repo for features of the Neeva app we don’t want to make open-source.
+Separate framework for code that is specific to talking to Neeva, including Spaces and Suggest.
 
-Open `neeva-ios-support.xcworkspace` to see both projects at once.
-
-## Using the demo app
-
-1. In the main Neeva app on your device, go to the settings screen and tap the version number several times.
-1. Scroll further down and tap the “Neeva token” entry to copy it
-1. Select the “Neeva iOS Support” app scheme in Xcode
-1. Build and run the support app on your target device
-1. Paste the token into the token input in the support app
-1. Tap “Get user info” to check your username and save the token to the keychain so you don’t have to re-enter it.
-1. Switch to the relevant tab to test your feature.
+Contains all infrastructure for talking to the Neeva GraphQL endpoint.
 
 ## SwiftUI Previews
 To perform authenticated requests in SwiftUI previews, create a `dev-token.txt` file in `Sources/NeevaSupport` and copy over your `httpd~login` token from the app or website. This file is ignored by Git, but will be copied over when creating the preview.

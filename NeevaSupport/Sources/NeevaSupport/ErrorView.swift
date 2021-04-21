@@ -1,11 +1,21 @@
-//
-//  ErrorView.swift
-//  
-//
-//  Created by Jed Fox on 1/12/21.
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
+
+struct BigBlueButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(.white)
+            .padding(.vertical, 7)
+            .padding(.horizontal, 20)
+            .background(
+                Capsule()
+                    .fill(Color.accentColor)
+                    .opacity(configuration.isPressed ? 0.5 : 1)
+                    .frame(minWidth: 230)
+            )
+    }
+}
 
 /// A view that displays an `Error`
 public struct ErrorView: View {

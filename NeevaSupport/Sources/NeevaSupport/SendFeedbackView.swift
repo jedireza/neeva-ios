@@ -1,9 +1,4 @@
-//
-//  SendFeedbackView.swift
-//  
-//
-//  Created by Jed Fox on 1/7/21.
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
 

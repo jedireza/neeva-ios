@@ -1,3 +1,5 @@
+// Copyright Neeva. All rights reserved.
+
 import SwiftUI
 
 /// A view that displays a loading indicator with an associated label.

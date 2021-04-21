@@ -1,8 +1,5 @@
+// Copyright Neeva. All rights reserved.
 //
-//  PullToRefresh.swift
-//  
-//
-//  Created by Jed Fox on 1/7/21.
 //  Inspired by SwiftUIRefresh:
 //  https://github.com/siteline/SwiftUIRefresh/blob/fa8fac7b5eb5c729983a8bef65f094b5e0d12014/Sources/PullToRefresh.swift
 //

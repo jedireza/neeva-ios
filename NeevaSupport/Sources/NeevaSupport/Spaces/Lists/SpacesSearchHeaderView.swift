@@ -1,9 +1,4 @@
-//
-//  SpacesSearchHeaderView.swift
-//
-//
-//  Created by Stuart Allen on 21/03/21.
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
 struct SpacesSearchHeaderView: View {

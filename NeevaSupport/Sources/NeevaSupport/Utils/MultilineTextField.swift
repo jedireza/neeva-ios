@@ -1,6 +1,4 @@
-//
-//  MultilineTextField.swift
-//  
+// Copyright Neeva. All rights reserved.
 //
 //  Source: https://stackoverflow.com/a/58639072/5244995
 //  Modified to remove auto-first-responder behavior and to set a minimum height

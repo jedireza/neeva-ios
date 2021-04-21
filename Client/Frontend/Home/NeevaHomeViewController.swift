@@ -571,31 +571,6 @@ extension NeevaHomeViewController: DataObserverDelegate {
     }
 }
 
-extension NeevaHomeViewController {
-    @objc func openHistory() {
-        homePanelDelegate?.homePanelDidRequestToOpenLibrary(panel: .history)
-    }
-
-    @objc func openSpaces() {
-        let host = UIHostingController(
-            rootView: SpaceListView(onDismiss: self.dismissVC)
-                .environment(\.onOpenURL) { url in
-                    self.homePanelDelegate?.homePanel(didSelectURL: url, visitType: .bookmark)
-                    self.dismissVC()
-                }
-        )
-        host.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak host] _ in
-            host?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        }
-        present(host, animated: true)
-    }
-
-    @objc func openDownloads() {
-        homePanelDelegate?.homePanelDidRequestToOpenLibrary(panel: .downloads)
-    }
-}
-
 extension NeevaHomeViewController: HomePanelContextMenu {
     func presentContextMenu(for site: Site, with indexPath: IndexPath, completionHandler: @escaping () -> PhotonActionSheet?) {
         guard let contextMenu = completionHandler() else { return }

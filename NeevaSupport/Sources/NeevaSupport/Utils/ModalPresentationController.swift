@@ -1,6 +1,4 @@
-//
-//  ModalPresentationController.swift
-//  
+// Copyright Neeva. All rights reserved.
 //
 //  Source: https://stackoverflow.com/a/61239704/5244995
 //  + https://stackoverflow.com/q/56615408#comment111486363_61239704

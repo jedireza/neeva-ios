@@ -1,9 +1,4 @@
-//
-//  Reachability.swift
-//  
-//
-//  Created by Jed Fox on 1/12/21.
-//
+// Copyright Neeva. All rights reserved.
 
 import Foundation
 import Reachability
