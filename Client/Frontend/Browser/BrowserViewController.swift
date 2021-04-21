@@ -2478,14 +2478,20 @@ extension BrowserViewController {
         webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
             let request = AddToSpaceRequest(title: title ?? url.absoluteString, description: result as? String, url: url)
             self.showOverlaySheetViewController(
-                AddToSpaceViewController(request: request) {
-                    self.hideOverlaySheetViewController()
-                    if request.state != .initial {
-                        self.show(toast: AddToSpaceToast(request: request, onOpenSpace: { spaceID in
-                            self.openURLInNewTab(NeevaConstants.appSpacesURL / spaceID)
-                        }))
-                    }
-                })
+                AddToSpaceViewController(
+                    request: request,
+                    onDismiss: {
+                        self.hideOverlaySheetViewController()
+                        if request.state != .initial {
+                            self.show(toast: AddToSpaceToast(request: request, onOpenSpace: { spaceID in
+                                self.openURLInNewTab(NeevaConstants.appSpacesURL / spaceID)
+                            }))
+                        }
+                    },
+                    onOpenURL: { url in
+                        self.hideOverlaySheetViewController()
+                        self.openURLInNewTab(url)
+                    }))
         }
     }
 }

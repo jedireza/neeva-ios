@@ -49,7 +49,6 @@ public struct ErrorView: View {
         HStack {
             Spacer()
             VStack(spacing: 20) {
-                Text("")
                 if isLoginError {
                     LoginView()
                 } else if let isOnline = reachability.isOnline, !isOnline {
@@ -57,13 +56,14 @@ public struct ErrorView: View {
                 } else {
                     GenericErrorView(viewName: viewName, error: error, gqlErrors: gqlErrors)
                 }
-                if let tryAgain = tryAgain {
+                if let tryAgain = tryAgain, !isLoginError {
                     Button(action: tryAgain) {
                         Label("Reload", systemImage: "arrow.clockwise")
                     }
                     .font(Font.footnote.bold())
                     .padding(.vertical)
                 }
+                Spacer()
             }.onChange(of: reachability.isOnline) { nowOnline in
                 if nowOnline == true {
                     tryAgain?()
@@ -116,12 +116,12 @@ fileprivate struct LoginView: View {
 
     var body: some View {
         VStack(spacing: 50) {
-            Text("")
             Image.neevaLogo
             VStack(spacing: 20) {
                 Text("Please sign in to continue")
                     .font(.title2)
                 Text("This content can only be viewed if you sign in")
+                    .font(.system(size: 15))
             }
             Button("Sign in to Neeva") { onOpenURL(URL(string: NeevaConstants.appSigninURL)!) }
                 .buttonStyle(BigBlueButtonStyle())

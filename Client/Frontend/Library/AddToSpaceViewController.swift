@@ -14,6 +14,7 @@ struct AddToSpaceRootView: View {
 
     @StateObject var request: AddToSpaceRequest
     var onDismiss: () -> ()
+    var onOpenURL: (URL) -> ()
 
     private var overlaySheetTitle: String {
         switch request.mode {
@@ -32,6 +33,7 @@ struct AddToSpaceRootView: View {
                     // sheet. When that completes, we'll run the provided onDismiss callback.
                     self.overlaySheetModel.hide()
                 })
+                .environment(\.onOpenURL, { self.onOpenURL($0) })
                 .overlaySheetTitle(title: self.overlaySheetTitle)
         }
         .onAppear() {
@@ -46,8 +48,8 @@ struct AddToSpaceRootView: View {
 }
 
 class AddToSpaceViewController: UIHostingController<AddToSpaceRootView> {
-    init(request: AddToSpaceRequest, onDismiss: @escaping () -> ()) {
-        super.init(rootView: AddToSpaceRootView(request: request, onDismiss: onDismiss))
+    init(request: AddToSpaceRequest, onDismiss: @escaping () -> (), onOpenURL: @escaping (URL) -> ()) {
+        super.init(rootView: AddToSpaceRootView(request: request, onDismiss: onDismiss, onOpenURL: onOpenURL))
 
         // Make sure the theme is propagated properly, even if it changes while the sheet
         // is visible. This is needed for UI that does not just take its colors from the
