@@ -9,6 +9,7 @@
 import Foundation
 import NeevaSupport
 import Reachability
+import WebKit
 
 public class NeevaUserInfo {
 
@@ -84,24 +85,20 @@ public class NeevaUserInfo {
 
     func hasLoginCookie() -> Bool{
         let token =  try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
-        let expirationDate = try? NeevaConstants.keychain.getString(NeevaConstants.loginExpirationKeychainKey)
-
-        if (token != nil && expirationDate != nil) {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .short
-            guard let expire = formatter.date(from: expirationDate!) else { return false }
-            let currentDate =  Date()
-
-            if (expire > currentDate) {
-                return true
-            }
+        if (token != nil) {
+           return true
         }
         return false
     }
 
     func deleteLoginCookie() {
+        let cookieStore = WKWebsiteDataStore.default().httpCookieStore
+        cookieStore.getAllCookies { cookies in
+            if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
+                cookieStore.delete(authCookie)
+            }
+        }
         try? NeevaConstants.keychain.remove(NeevaConstants.loginKeychainKey)
-        try? NeevaConstants.keychain.remove(NeevaConstants.loginExpirationKeychainKey)
     }
 
     private func fetchUserPicture() {
