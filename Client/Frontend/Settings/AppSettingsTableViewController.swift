@@ -25,8 +25,10 @@ class AppSettingsTableViewController: SettingsTableViewController {
         // display name, etc.
         ////profile.rustAccount.refreshProfile()
 
-        // Asking for a fresh UserInfo before showing Browser Settings and showing Profile data. 
-        NeevaUserInfo.shared.fetch()
+        // Asking for UserInfo before showing Browser Settings and showing Profile data if user is login.
+        if (NeevaUserInfo.shared.hasLoginCookie()) {
+            NeevaUserInfo.shared.loadUserInfoFromDefaults()
+        }
 
         if showContentBlockerSetting {
             let viewController = ContentBlockerSettingViewController(prefs: profile.prefs)

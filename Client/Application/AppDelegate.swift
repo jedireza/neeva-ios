@@ -102,7 +102,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         Logger.browserLogger.newLogWithDate(logDate)
 
         let profile = getProfile(application)
-        NeevaUserInfo.shared.fetch()
 
         telemetry = TelemetryWrapper(profile: profile)
 

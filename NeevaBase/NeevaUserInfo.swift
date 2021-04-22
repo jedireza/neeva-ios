@@ -83,6 +83,27 @@ public class NeevaUserInfo {
         self.clearUserInfoCache()
     }
 
+    func updateKeychainTokenAndFetchUserInfo() {
+        let cookieStore = WKWebsiteDataStore.default().httpCookieStore
+        cookieStore.getAllCookies { cookies in
+            if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
+
+                // check if token has changed, when different, save new token
+                // and fetch user info
+                let currentToken = try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
+                if currentToken != nil, currentToken == authCookie.value {
+                    self.isUserLoggedIn = true
+                    self.loadUserInfoFromDefaults()
+                    self.fetchUserPicture()
+                    self.reachability.stopNotifier()
+                } else {
+                    try? NeevaConstants.keychain.set(authCookie.value, key: NeevaConstants.loginKeychainKey)
+                    self.fetch()
+                }
+            }
+        }
+    }
+
     func hasLoginCookie() -> Bool{
         let token =  try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
         if (token != nil) {
@@ -99,6 +120,14 @@ public class NeevaUserInfo {
             }
         }
         try? NeevaConstants.keychain.remove(NeevaConstants.loginKeychainKey)
+    }
+
+    func loadUserInfoFromDefaults() -> Void {
+        let userInfoDict = defaults.object(forKey: UserInfoKey) as? [String:String] ?? [String:String]()
+
+        userDisplayName = userInfoDict["userDisplayName"]
+        userEmail = userInfoDict["userEmail"]
+        userPictureUrl = userInfoDict["userPictureUrl"]
     }
 
     private func fetchUserPicture() {
@@ -147,16 +176,7 @@ public class NeevaUserInfo {
         userPictureUrl = userInfo.profile.pictureUrl
     }
 
-    private func loadUserInfoFromDefaults() -> Void {
-        let userInfoDict = defaults.object(forKey: UserInfoKey) as? [String:String] ?? [String:String]()
-
-        userDisplayName = userInfoDict["userDisplayName"]
-        userEmail = userInfoDict["userEmail"]
-        userPictureUrl = userInfoDict["userPictureUrl"]
-    }
-
     private func clearUserInfoCache() -> Void {
-        defaults.removeObject(forKey: UserInfoKey)
         userDisplayName = nil
         userEmail = nil
         userPictureUrl = nil

@@ -697,11 +697,7 @@ extension BrowserViewController: WKNavigationDelegate {
            let url = webView.url,
            NeevaConstants.isAppHost(url.host),
            url.scheme == "https" {
-            webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
-                if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
-                    try? NeevaConstants.keychain.set(authCookie.value, key: NeevaConstants.loginKeychainKey)
-                }
-            }
+            NeevaUserInfo.shared.updateKeychainTokenAndFetchUserInfo()
         }
         
         if let tab = tabManager[webView] {
