@@ -59,7 +59,7 @@ struct SearchSuggestionView: View {
     let suggestions: [Suggestion]
     let history: Cursor<Site>?
     let error: Error?
-    let paddingBottom: CGFloat
+    let getKeyboardHeight: () -> CGFloat
     let onAcceptSuggestion: (String) -> ()
     let onReload: () -> ()
     let onOpenURL: (URL) -> ()
@@ -77,59 +77,67 @@ struct SearchSuggestionView: View {
         }
     }
 
+    // This is a hack to cause SwiftUI to call this function again when
+    // outerGeometry changes due to device rotation. By reading that
+    // value, SwiftUI thinks our computation depends on it.
+    func getSpacerHeight(_ outerGeometry: GeometryProxy) -> CGFloat {
+        return self.getKeyboardHeight() + outerGeometry.size.height - outerGeometry.size.height
+    }
+
     var body: some View {
         let bgColor = Color(UIColor.theme.homePanel.panelBackground)
-        if let error = error {
+        GeometryReader { outerGeometry in
             VStack(spacing: 0) {
-                HStack { Spacer() }
-                Spacer()
-                ErrorView(error, in: self, tryAgain: onReload)
-                Spacer()
-            }
-            .padding(.bottom, paddingBottom)
-            .background(bgColor)
-            .edgesIgnoringSafeArea(.bottom)
-            .environment(\.onOpenURL, onOpenURL)
-        } else {
-            List {
-                ForEach(suggestions) { suggestion in
-                    SuggestionView(suggestion, setInput: onAcceptSuggestion, onTap: {
-                        switch suggestion {
-                        case .query(let query):
-                            onOpenURL(neevaSearchEngine.searchURLForQuery(query.suggestedQuery)!)
-                        case .url(let url):
-                            onOpenURL(URL(string: url.suggestedUrl)!)
+                if let error = error {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ErrorView(error, in: self, tryAgain: onReload)
+                            Spacer()
                         }
-                    })
-                }
-                if let history = history, history.count > 0 {
-                    SwiftUI.Section(header: suggestions.isEmpty ? nil : Text("History")) {
-                        ForEach(history.asArray()) { site in
-                            if let url = URL(string: site.url) {
-                                Button(action: { onOpenURL(url) }) {
-                                    HStack {
-                                        FaviconView(site: site)
-                                            .frame(
-                                                width: SearchViewControllerUX.ImageSize,
-                                                height: SearchViewControllerUX.ImageSize
-                                            )
-                                        VStack(alignment: .leading) {
-                                            if !site.title.isEmpty {
-                                                Text(site.title)
+                    }
+                } else {
+                    List {
+                        ForEach(suggestions) { suggestion in
+                            SuggestionView(suggestion, setInput: onAcceptSuggestion, onTap: {
+                                switch suggestion {
+                                case .query(let query):
+                                    onOpenURL(neevaSearchEngine.searchURLForQuery(query.suggestedQuery)!)
+                                case .url(let url):
+                                    onOpenURL(URL(string: url.suggestedUrl)!)
+                                }
+                            })
+                        }
+                        if let history = history, history.count > 0 {
+                            SwiftUI.Section(header: suggestions.isEmpty ? nil : Text("History")) {
+                                ForEach(history.asArray()) { site in
+                                    if let url = URL(string: site.url) {
+                                        Button(action: { onOpenURL(url) }) {
+                                            HStack {
+                                                FaviconView(site: site)
+                                                    .frame(
+                                                        width: SearchViewControllerUX.ImageSize,
+                                                        height: SearchViewControllerUX.ImageSize
+                                                    )
+                                                VStack(alignment: .leading) {
+                                                    if !site.title.isEmpty {
+                                                        Text(site.title)
+                                                    }
+                                                    Text(site.url).foregroundColor(.secondary)
+                                                }.font(.caption).lineLimit(1)
                                             }
-                                            Text(site.url).foregroundColor(.secondary)
-                                        }.font(.caption).lineLimit(1)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    .listRowBackground(bgColor)
+                    .background(bgColor)
                 }
+                Spacer()
+                    .frame(height: getSpacerHeight(outerGeometry))
             }
-            .listRowBackground(bgColor)
-            .background(bgColor)
-            .padding(.bottom, paddingBottom)
-            .edgesIgnoringSafeArea(.bottom)
+            .ignoresSafeArea(edges: [.bottom])
             .environment(\.onOpenURL, onOpenURL)
         }
     }
@@ -163,7 +171,8 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
             suggestions: suggestions,
             history: historyData,
             error: error,
-            paddingBottom: KeyboardHelper.defaultHelper.currentState?.intersectionHeightForView(view) ?? 0,
+            getKeyboardHeight: { KeyboardHelper.defaultHelper.currentState?.intersectionHeightForView(self.view) ?? 0
+            },
             onAcceptSuggestion: { self.searchDelegate?.searchViewController(self, didAcceptSuggestion: $0) },
             onReload: reloadData,
             onOpenURL: { self.searchDelegate?.searchViewController(self, didSelectURL: $0) }
