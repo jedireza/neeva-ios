@@ -336,7 +336,7 @@ extension AutocompleteTextField: MenuHelperInterface {
 }
 
 class UILabelExtendedView: UILabel {
-    var padding = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 0)
+    var padding = UIEdgeInsets(top: 0, left: 30, bottom: -1, right: 0)
 
     public override func drawText(in rect: CGRect) {
         super.drawText(in: rect.inset(by: padding))
