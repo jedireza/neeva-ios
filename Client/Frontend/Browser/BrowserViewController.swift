@@ -2476,7 +2476,8 @@ extension BrowserViewController {
 extension BrowserViewController {
     func showAddToSpacesSheet(url: URL, title: String?, webView: WKWebView) {
         webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { (result, error) in
-            let request = AddToSpaceRequest(title: title ?? url.absoluteString, description: result as? String, url: url)
+            let title = (title ?? "").isEmpty ? url.absoluteString : title!
+            let request = AddToSpaceRequest(title: title, description: result as? String, url: url)
             self.showOverlaySheetViewController(
                 AddToSpaceViewController(
                     request: request,
