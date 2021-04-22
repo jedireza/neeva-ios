@@ -152,7 +152,9 @@ public struct AddToSpaceView: View {
                             SpacesSearchHeaderView(
                                 filterAction: { searchTerm = $0 },
                                 createAction: { request.mode = .saveToNewSpace }
-                            ).padding(.horizontal, 4)
+                            )
+                            .padding(.horizontal, 4)
+                            .padding(.top, 16)
                             if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
                                 Text("No Results Found")
                                     .font(.title)
@@ -169,12 +171,11 @@ public struct AddToSpaceView: View {
                                         }
                                     }
                                 }
+                                .padding(.bottom, 16)
                             }
                         }
                     }
                 }
-                .listStyle(DefaultListStyle())
-                .padding(.bottom, 16)
             }
         }
     }

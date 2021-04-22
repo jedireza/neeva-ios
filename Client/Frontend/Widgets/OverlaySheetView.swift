@@ -7,6 +7,21 @@ import SwiftUI
 // half-height (or middle) position. The user can drag it to a fullscreen (or
 // top) position or can drag down to dismiss.
 
+struct OverlaySheetUX {
+    // Number of points you have to drag the top bar to tigger an animation
+    // of the overlay sheet to a new position.
+    static let slideThreshold: CGFloat = 100
+
+    // Duration of slide animations.
+    static let animationDuration: Double = 0.2
+
+    // Opacity of the backdrop when the overlay sheet is done animating open.
+    static let backdropMaxOpacity: Double = 0.4
+
+    // Width of the sheet when in landscape mode.
+    static let landscapeModeWidth: CGFloat = 500
+}
+
 enum OverlaySheetPosition {
     case top
     case middle
@@ -19,14 +34,14 @@ class OverlaySheetModel: ObservableObject {
     @Published var backdropOpacity: Double = 0.0
 
     func show() {
-        withAnimation(.easeOut) {
+        withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
             self.position = .middle
-            self.backdropOpacity = 0.4
+            self.backdropOpacity = OverlaySheetUX.backdropMaxOpacity
         }
     }
 
     func hide() {
-        withAnimation(.easeOut) {
+        withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
             self.deltaHeight = 0
             self.position = .dismissed
             self.backdropOpacity = 0.0
@@ -38,7 +53,7 @@ class OverlaySheetModel: ObservableObject {
 struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @StateObject var model: OverlaySheetModel
 
-    @State private var isKeyboardVisible = false
+    @State private var keyboardHeight: CGFloat = 0
     @State private var title: String = ""
 
     let onDismiss: () -> ()
@@ -54,7 +69,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         case .middle:
             defaultSize = outerGeometry.size.height / 2
         case .dismissed:
-            defaultSize = outerGeometry.size.height  // Something really big
+            defaultSize = outerGeometry.size.height
         }
         var size = defaultSize + self.model.deltaHeight
         if size < 0 {
@@ -74,82 +89,84 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             }
     }
 
+    var topBar: some View {
+        VStack(spacing: 0) {
+            RoundedRectangle(cornerRadius: 50)
+                .frame(width: 32, height: 4)
+                .foregroundColor(Color(UIColor.Neeva.Gray60))
+                .padding(.top, 8)
+            HStack(spacing: 0) {
+                Text(title)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .padding(.leading, 16)
+                Spacer()
+                Button {
+                    self.model.hide()
+                } label: {
+                    SFSymbolView(.xmark, size: 16, weight: .semibold)
+                        .foregroundColor(Color(UIColor.Neeva.Gray60))
+                        .frame(width: 44, height: 44)
+                }
+            }
+            .padding(.top, 8)
+        }
+        .background(Color(UIColor.systemBackground))
+        .cornerRadius(16, corners: [.topLeft, .topRight])
+        .gesture(topDrag)
+    }
+
     var body: some View {
         GeometryReader { outerGeometry in
+            ZStack {
+                // The semi-transparent backdrop used to shade the content that lies below
+                // the sheet.
+                Color.black
+                    .opacity(self.model.backdropOpacity)
+                    .ignoresSafeArea()
+                    .modifier(DismissalObserverModifier(backdropOpacity: self.model.backdropOpacity, position: self.model.position, onDismiss: self.onDismiss))
+                    .onTapGesture {
+                        self.model.hide()
+                    }
 
-            // The semi-transparent backdrop used to shade the content that lies below
-            // the sheet.
-            Color.black
-                .opacity(self.model.backdropOpacity)
-                .ignoresSafeArea(.all)
-                .frame(width: outerGeometry.size.width, height: outerGeometry.size.height)
-                .modifier(DismissalObserverModifier(backdropOpacity: self.model.backdropOpacity, position: self.model.position, onDismiss: self.onDismiss))
-                .onTapGesture {
-                    self.model.hide()
-                }
-
-            // Used to center the sheet within the container view.
-            HStack(spacing: 0) {
-                Spacer()
-                    .frame(minWidth: 0)
-
-                VStack(spacing: 0) {
-                    // The height of this spacer is what controls the apparent height of
-                    // the sheet. By sizing this spacer instead of the sheet directly
-                    // we avoid encroaching on the safe area. That's because the spacer
-                    // cannot be made to have negative height.
+                // Used to center the sheet within the container view.
+                HStack(spacing: 0) {
                     Spacer()
-                        .frame(height: getSpacerHeight(outerGeometry))
+                        .frame(minWidth: 0)
 
                     VStack(spacing: 0) {
+                        // The height of this spacer is what controls the apparent height of
+                        // the sheet. By sizing this spacer instead of the sheet directly
+                        // we avoid encroaching on the safe area. That's because the spacer
+                        // cannot be made to have negative height.
+                        Spacer()
+                            .frame(height: getSpacerHeight(outerGeometry))
+
                         VStack(spacing: 0) {
-                            RoundedRectangle(cornerRadius: 50)
-                                .frame(width: 32, height: 4)
-                                .foregroundColor(Color(UIColor.Neeva.Gray60))
-                                .padding(.top, 8)
-                            HStack(spacing: 0) {
-                                Text(title)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.secondary)
-                                    .padding(.leading, 16)
-                                Spacer()
-                                Button {
-                                    onDismiss()
-                                } label: {
-                                    SFSymbolView(.xmark, size: 16, weight: .semibold)
-                                        .foregroundColor(Color(UIColor.Neeva.Gray60))
-                                        .frame(width: 44, height: 44)
-                                }
-                            }
-                            .padding(.top, 8)
+                            self.topBar
+                            self.content()
+                                .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) { self.title = $0 }
+                                .background(Color(UIColor.systemBackground))
                         }
-                        .padding(.bottom, 16)
-                        .background(Color(UIColor.systemBackground))
-                        .cornerRadius(16, corners: [.topLeft, .topRight])
-                        .gesture(topDrag)
 
-                        self.content()
-                            .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) {
-                                self.title = $0
-                            }
-                            .background(Color(UIColor.systemBackground))
+                        // Position the card above the keyboard.
+                        Color(UIColor.systemBackground)
+                            .frame(height: keyboardHeight)
                     }
-                }
-                // Constrain to full width in portrait mode.
-                .frame(minWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : 500,
-                       maxWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : 500)
-                // When the keyboard is not visible, we want to ignore the bottom edge, so that
-                // it appears as though the content of the sheet is coming up from below the
-                // edge of the phone. However, when the keyboard is visible, we need to disable
-                // this so the keyboard does not overlap with the content we are trying to show.
-                .ignoresSafeArea(edges: self.isKeyboardVisible ? [] : [.bottom])
+                    // Constrain to full width in portrait mode.
+                    .frame(minWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth,
+                           maxWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth)
 
-                Spacer()
-                    .frame(minWidth: 0)
+                    Spacer()
+                        .frame(minWidth: 0)
+                }
+                .ignoresSafeArea(edges: [.bottom])
             }
         }
         .navigationBarHidden(true)
-        .onReceive(keyboardPublisher) { self.isKeyboardVisible = $0 }
+        .onReceive(keyboardPublisher) { height in
+            keyboardHeight = height
+        }
     }
 
     private func isPortraitMode(_ outerGeometry: GeometryProxy) -> Bool {
@@ -166,17 +183,17 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     private func onDragEnded(_ value: DragGesture.Value) {
         self.model.deltaHeight += value.translation.height
         var newPosition = self.model.position;
-        if self.model.deltaHeight > 100 {
+        if self.model.deltaHeight > OverlaySheetUX.slideThreshold {
             if self.model.position == .top {
                 newPosition = .middle
             } else {
                 self.model.hide()
                 return
             }
-        } else if self.model.deltaHeight < -100 {
+        } else if self.model.deltaHeight < -OverlaySheetUX.slideThreshold {
             newPosition = .top
         }
-        withAnimation(.easeOut) {
+        withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
             self.model.position = newPosition
             self.model.deltaHeight = 0
         }

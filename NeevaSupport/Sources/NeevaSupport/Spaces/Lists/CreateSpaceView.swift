@@ -50,6 +50,7 @@ struct CreateSpaceView: View {
             .background(Color(hex: 0x4078FB))
             .cornerRadius(40)
             .padding(.horizontal, 16)
+
             Spacer()
         }
         // Focus the text field automatically when loading this view. Unfortunately,

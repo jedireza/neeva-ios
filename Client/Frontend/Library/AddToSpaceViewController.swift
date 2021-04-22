@@ -37,12 +37,11 @@ struct AddToSpaceRootView: View {
                 .overlaySheetTitle(title: self.overlaySheetTitle)
         }
         .onAppear() {
-            self.overlaySheetModel.show()
-        }
-        .onTapGesture {
-            // Added to enable dismissing the virtual keyboard by tapping on whitespace.
-            // (The AddToSpaceView supports typing in a filter string.)
-            self.hideKeyboard()
+            // It seems to be necessary to delay starting the animation until this point to
+            // avoid a visual artifact.
+            DispatchQueue.main.async {
+                self.overlaySheetModel.show()
+            }
         }
     }
 }
