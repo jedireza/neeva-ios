@@ -20,7 +20,33 @@ struct BoldSpanView: View {
     ///   - spans: the spans to render in boldface
     init(_ text: String, bolding spans: [BoldSpan]) {
         self.text = text
-        self.boldSpan = spans
+        self.boldSpan = BoldSpanView.getValidSpans(spans, in: text)
+    }
+
+    private static func isValidSpan(_ span: BoldSpan, in text: String) -> Bool {
+        if span.startInclusive >= span.endExclusive {
+            return false
+        }
+        if String.Index(utf16Offset: span.startInclusive, in: text) >= text.endIndex {
+            return false
+        }
+        if String.Index(utf16Offset: span.endExclusive, in: text) > text.endIndex {
+            return false
+        }
+        return true
+    }
+
+    private static func getValidSpans(_ spans: [BoldSpan], in text: String) -> [BoldSpan] {
+        var validSpans: [BoldSpan] = []
+        for span in spans {
+            if isValidSpan(span, in: text) {
+                validSpans.append(span)
+            } else {
+                // TODO: log bad input from the server
+                print("WARNING: ignoring invalid bold span [\(span.startInclusive), \(span.endExclusive)]")
+            }
+        }
+        return validSpans
     }
 
     var body: some View {
