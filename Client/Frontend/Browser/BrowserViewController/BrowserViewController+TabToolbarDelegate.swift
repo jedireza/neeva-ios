@@ -111,7 +111,6 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark")) { _ in
             if let tab = self.tabManager.selectedTab {
                 self.tabManager.removeTabAndUpdateSelectedIndex(tab)
-                self.updateTabCountUsingTabManager(self.tabManager)
             }}
         if let tab = self.tabManager.selectedTab {
             return tab.isPrivate ? [newPrivateTab, closeTab] : [newTab, closeTab]

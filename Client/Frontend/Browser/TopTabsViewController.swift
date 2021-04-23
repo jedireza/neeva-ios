@@ -51,7 +51,6 @@ class TopTabsViewController: UIViewController {
         tabsButton.semanticContentAttribute = .forceLeftToRight
         tabsButton.addTarget(self, action: #selector(TopTabsViewController.tabsTrayTapped), for: .touchUpInside)
         tabsButton.accessibilityIdentifier = "TopTabsViewController.tabsButton"
-        tabsButton.inTopTabs = true
         return tabsButton
     }()
 
@@ -150,8 +149,6 @@ class TopTabsViewController: UIViewController {
 
         tabsButton.applyTheme()
         applyUIMode(isPrivate: tabManager.selectedTab?.isPrivate ?? false)
-
-        updateTabCount(tabDisplayManager.dataStore.count, animated: false)
     }
 
     func switchForegroundStatus(isInForeground reveal: Bool) {
@@ -163,10 +160,6 @@ class TopTabsViewController: UIViewController {
                 cell.favicon.alpha = alpha
             }
         }
-    }
-
-    func updateTabCount(_ count: Int, animated: Bool = true) {
-        self.tabsButton.updateTabCount(count, animated: animated)
     }
 
     @objc func tabsTrayTapped() {

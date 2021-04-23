@@ -249,10 +249,7 @@ class BrowserViewController: UIViewController {
             toolbar = TabToolbar()
             footer.addSubview(toolbar!)
             toolbar?.tabToolbarDelegate = self
-            toolbar?.applyUIMode(isPrivate: tabManager.selectedTab?.isPrivate ?? false)
             toolbar?.applyTheme()
-         
-            updateTabCountUsingTabManager(self.tabManager)
         }
 
         appMenuBadgeUpdate()
@@ -562,7 +559,6 @@ class BrowserViewController: UIViewController {
             tabManager.restoreTabs()
         }
 
-        updateTabCountUsingTabManager(tabManager, animated: false)
         clipboardBarDisplayHandler?.checkIfShouldDisplayBar()
     }
 
@@ -1808,7 +1804,7 @@ extension BrowserViewController: TabManagerDelegate {
             if previous == nil || tab.isPrivate != previous?.isPrivate {
                 applyTheme()
 
-                let ui: [PrivateModeUI?] = [toolbar, topTabsViewController, urlBar]
+                let ui: [PrivateModeUI?] = [topTabsViewController, urlBar]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
 
@@ -1861,8 +1857,6 @@ extension BrowserViewController: TabManagerDelegate {
             }
         }
 
-        updateTabCountUsingTabManager(tabManager)
-
         removeAllBars()
         if let bars = selected?.bars {
             for bar in bars {
@@ -1903,10 +1897,6 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {
-        // If we are restoring tabs then we update the count once at the end
-        if !isRestoring {
-            updateTabCountUsingTabManager(tabManager)
-        }
         tab.tabDelegate = self
     }
 
@@ -1914,15 +1904,13 @@ extension BrowserViewController: TabManagerDelegate {
         if let url = tab.url, !(InternalURL(url)?.isAboutURL ?? false), !tab.isPrivate {
             profile.recentlyClosedTabs.addTab(url as URL, title: tab.title, faviconURL: tab.displayFavicon?.url)
         }
-        updateTabCountUsingTabManager(tabManager)
     }
 
     func tabManagerDidAddTabs(_ tabManager: TabManager) {
-        updateTabCountUsingTabManager(tabManager)
+
     }
 
     func tabManagerDidRestoreTabs(_ tabManager: TabManager) {
-        updateTabCountUsingTabManager(tabManager)
         openUrlAfterRestore()
     }
     
@@ -1955,15 +1943,6 @@ extension BrowserViewController: TabManagerDelegate {
             return
         }
         show(toast: toast, afterWaiting: ButtonToastUX.ToastDelay)
-    }
-
-    func updateTabCountUsingTabManager(_ tabManager: TabManager, animated: Bool = true) {
-        if let selectedTab = tabManager.selectedTab {
-            let count = selectedTab.isPrivate ? tabManager.privateTabs.count : tabManager.normalTabs.count
-            toolbar?.updateTabCount(count, animated: animated)
-            urlBar.updateTabCount(count, animated: !urlBar.inOverlayMode)
-            topTabsViewController?.updateTabCount(count, animated: animated)
-        }
     }
 }
 

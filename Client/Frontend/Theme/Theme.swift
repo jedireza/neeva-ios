@@ -57,7 +57,7 @@ class ActionMenuColor {
 class URLBarColor {
     var border: UIColor { return UIColor.Photon.Grey90A10 }
     func activeBorder(_ isPrivate: Bool) -> UIColor { 
-        return !isPrivate ? UIColor.Photon.Blue40A30 : UIColor.Defaults.MobilePrivatePurple
+        return !isPrivate ? UIColor.Photon.Blue40A30 : UIColor.Defaults.SystemGray01
     }
     var tint: UIColor { return UIColor.Photon.Blue40A30 }
 
@@ -69,7 +69,7 @@ class URLBarColor {
     typealias TextSelectionHighlight = (labelMode: UIColor, textFieldMode: UIColor?)
     func textSelectionHighlight(_ isPrivate: Bool) -> TextSelectionHighlight {
         if isPrivate {
-            let color = UIColor.Defaults.MobilePrivatePurple
+            let color = UIColor.Defaults.PrivateBlue
             return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
         } else {
             return (labelMode: UIColor.Defaults.iOSTextHighlightBlue, textFieldMode: nil)
@@ -100,11 +100,11 @@ class ToolbarButtonColor {
 
 class LoadingBarColor {
     func start(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Photon.Blue40A30 : UIColor.Photon.Magenta60A30
+        return !isPrivate ? UIColor.Neeva.BrandMaya : UIColor.Defaults.SystemGray01
     }
 
     func end(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Photon.Teal60 : UIColor.Photon.Purple60
+        return !isPrivate ? UIColor.Neeva.BrandMaya : UIColor.Defaults.SystemGray01
     }
 }
 
@@ -123,6 +123,8 @@ class TabTrayColor {
     var cellTitleBackground: UIColor { return UIColor.clear }
     var faviconTint: UIColor { return UIColor.black }
     var searchBackground: UIColor { return UIColor.Photon.Grey30 }
+    var tabButton: UIColor { return UIColor.Photon.Grey80 }
+    var toggleButon: UIColor { return UIColor.black }
 }
 
 class TopTabsColor {
@@ -132,7 +134,7 @@ class TopTabsColor {
     var tabForegroundSelected: UIColor { return UIColor.Photon.Grey90 }
     var tabForegroundUnselected: UIColor { return UIColor.Photon.Grey40 }
     func tabSelectedIndicatorBar(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Photon.Blue40 : UIColor.Photon.Purple60
+        return !isPrivate ? UIColor.Photon.Blue40 : UIColor.Defaults.SystemGray01
     }
     var buttonTint: UIColor { return UIColor.Photon.Grey40 }
     var privateModeButtonOffTint: UIColor { return buttonTint }

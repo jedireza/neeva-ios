@@ -17,6 +17,7 @@ extension UIColor {
         static let BrandBlue = UIColor(rgb: 0x415AFF)
         static let BrandBeige = UIColor(rgb: 0xFCF9EE)
         static let BrandPolar = UIColor(rgb:0xD4F0F5)
+        static let BrandMaya = UIColor(rgb: 0x73A8FF)
         static let White = UIColor(rgb: 0xFFFFFF)
         static let Offwhite = UIColor(rgb: 0xFFFDF5)
         static let DarkElevated = UIColor(rgb: 0x3A3A3C)

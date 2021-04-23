@@ -18,8 +18,6 @@ protocol TabToolbarProtocol: AnyObject {
     func updateBackStatus(_ canGoBack: Bool)
     func updateForwardStatus(_ canGoForward: Bool)
     func updatePageStatus(_ isWebPage: Bool)
-    func updateTabCount(_ count: Int, animated: Bool)
-    func privateModeBadge(visible: Bool)
     func appMenuBadge(setVisible: Bool)
     func warningMenuBadge(setVisible: Bool)
 }
@@ -203,7 +201,6 @@ class TabToolbar: UIView {
     let shareButton = ToolbarButton()
     let actionButtons: [Themeable & UIButton]
 
-    fileprivate let privateModeBadge = BadgeWithBackdrop(imageName: "privateModeBadge", backdropCircleColor: UIColor.Defaults.MobilePrivatePurple)
     fileprivate let appMenuBadge = BadgeWithBackdrop(imageName: "menuBadge")
     fileprivate let warningMenuBadge = BadgeWithBackdrop(imageName: "menuWarning", imageMask: "warning-mask")
 
@@ -219,7 +216,6 @@ class TabToolbar: UIView {
         helper = TabToolbarHelper(toolbar: self)
         addButtons(actionButtons)
 
-        privateModeBadge.add(toParent: contentView)
         appMenuBadge.add(toParent: contentView)
         warningMenuBadge.add(toParent: contentView)
 
@@ -228,7 +224,6 @@ class TabToolbar: UIView {
     }
 
     override func updateConstraints() {
-        privateModeBadge.layout(onButton: tabsButton)
         appMenuBadge.layout(onButton: addToSpacesButton)
         warningMenuBadge.layout(onButton: addToSpacesButton)
 
@@ -273,10 +268,6 @@ class TabToolbar: UIView {
 }
 
 extension TabToolbar: TabToolbarProtocol {
-    func privateModeBadge(visible: Bool) {
-        privateModeBadge.show(visible)
-    }
-
     func appMenuBadge(setVisible: Bool) {
         // Warning badges should take priority over the standard badge
         guard warningMenuBadge.badge.isHidden else {
@@ -303,23 +294,14 @@ extension TabToolbar: TabToolbarProtocol {
     func updatePageStatus(_ isWebPage: Bool) {
 
     }
-
-    func updateTabCount(_ count: Int, animated: Bool) {
-        tabsButton.updateTabCount(count, animated: animated)
-    }
 }
 
-extension TabToolbar: Themeable, PrivateModeUI {
+extension TabToolbar: Themeable{
     func applyTheme() {
         backgroundColor = UIColor.theme.browser.background
         helper?.setTheme(forButtons: actionButtons)
 
-        privateModeBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         warningMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
-    }
-
-    func applyUIMode(isPrivate: Bool) {
-        privateModeBadge(visible: isPrivate)
     }
 }

@@ -32,7 +32,7 @@ fileprivate class DarkActionMenuColor: ActionMenuColor {
 
 fileprivate class DarkURLBarColor: URLBarColor {
     override func textSelectionHighlight(_ isPrivate: Bool) -> TextSelectionHighlight {
-        let color = isPrivate ? UIColor.Defaults.MobilePrivatePurple : UIColor(rgb: 0x3d89cc)
+        let color = isPrivate ? UIColor.Defaults.PrivateBlue : UIColor(rgb: 0x3d89cc)
         return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
     }
     override func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
@@ -57,10 +57,13 @@ fileprivate class DarkTabTrayColor: TabTrayColor {
     override var cellBackground: UIColor { return defaultBackground }
     override var toolbar: UIColor { return UIColor.Photon.Grey80 }
     override var toolbarButtonTint: UIColor { return defaultTextAndTint }
+    override var privateModeButtonOnTint: UIColor { return UIColor.black }
     override var cellCloseButton: UIColor { return defaultTextAndTint }
     override var cellTitleBackground: UIColor { return UIColor.Photon.Grey70 }
     override var faviconTint: UIColor { return UIColor.Photon.White100 }
     override var searchBackground: UIColor { return UIColor.Photon.Grey60 }
+    override var tabButton: UIColor { return UIColor.Photon.White100 }
+    override var toggleButon: UIColor { return UIColor.Photon.White100 }
 }
 
 fileprivate class DarkTopTabsColor: TopTabsColor {

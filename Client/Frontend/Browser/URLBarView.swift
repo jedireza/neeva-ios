@@ -122,7 +122,6 @@ class URLBarView: UIView {
     lazy var tabsButton: TabsButton = {
         let tabsButton = TabsButton.tabTrayButton()
         tabsButton.accessibilityIdentifier = "URLBarView.tabsButton"
-        tabsButton.inTopTabs = false
         return tabsButton
     }()
 
@@ -609,10 +608,6 @@ extension URLBarView: TabToolbarProtocol {
 
     func updateForwardStatus(_ canGoForward: Bool) {
         forwardButton.isEnabled = canGoForward
-    }
-
-    func updateTabCount(_ count: Int, animated: Bool = true) {
-        tabsButton.updateTabCount(count, animated: animated)
     }
 
     func updatePageStatus(_ isWebPage: Bool) {
