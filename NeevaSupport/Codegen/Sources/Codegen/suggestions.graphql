@@ -24,17 +24,3 @@ query Suggestions($query: String!) {
     }
   }
 }
-
-query ContactSuggestions($query: String!) {
-  suggestContacts(q: $query) {
-    query
-    requestID
-    contactSuggestions {
-      profile {
-        displayName
-        email
-        pictureURL
-      }
-    }
-  }
-}

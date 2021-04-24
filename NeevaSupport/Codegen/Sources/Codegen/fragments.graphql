@@ -1,25 +1,9 @@
 fragment spaceMetadata on SpaceData {
   name
-  description
-  createdTs
-  lastModifiedTs
-  acl {
-    userID
-    profile {
-      displayName
-      email
-      pictureURL
-    }
-    acl
-  }
   userACL {
     acl
-    userID
   }
   hasPublicACL
-  comments {
-    id
-  }
   thumbnail
   thumbnailSize {
     height
@@ -27,45 +11,4 @@ fragment spaceMetadata on SpaceData {
   }
   resultCount
   isDefaultSpace
-  defaultSpaceType
-}
-
-fragment spaceComments on SpaceData {
-  comments {
-    id
-    userid
-    profile {
-      displayName
-      email
-      pictureURL
-    }
-    createdTs
-    lastModifiedTs
-    comment
-  }
-}
-
-fragment spaceContent on SpaceData {
-  entities {
-    metadata {
-      docID
-      loggingResultType
-    }
-    spaceEntity {
-      url
-      title
-      snippet
-      resultType
-      contentType
-      contentURL
-      contentHeight
-      contentWidth
-      thumbnail
-      createdBy {
-        displayName
-        email
-        pictureURL
-      }
-    }
-  }
 }

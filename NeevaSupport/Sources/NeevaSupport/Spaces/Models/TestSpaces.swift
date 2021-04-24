@@ -7,8 +7,6 @@ extension SpaceListController.Space {
         pageMetadata: .init(pageId: "page-id"),
         space: .init(
             name: "Empty Space",
-            description: "Description",
-            lastModifiedTs: "2020-12-18T16:31:52Z",
             thumbnail: "",
             isDefaultSpace: false
         )
@@ -17,8 +15,6 @@ extension SpaceListController.Space {
         pageMetadata: .init(pageId: "page-id"),
         space: .init(
             name: "Test Space",
-            description: "Description",
-            lastModifiedTs: "2020-12-18T15:57:47Z",
             thumbnail: SpaceThumbnails.stackOverflowThumbnail,
             resultCount: 1,
             isDefaultSpace: false
@@ -28,8 +24,6 @@ extension SpaceListController.Space {
         pageMetadata: .init(pageId: "page-id"),
         space: .init(
             name: "Saved For Later",
-            description: "Description",
-            lastModifiedTs: "2020-12-18T16:31:52Z",
             thumbnail: SpaceThumbnails.githubThumbnail,
             resultCount: 1,
             isDefaultSpace: false
@@ -40,8 +34,6 @@ extension SpaceListController.Space {
         pageMetadata: .init(pageId: "page-id"),
         space: .init(
             name: "Saved For Later",
-            description: "Description",
-            lastModifiedTs: "2020-12-18T16:31:52Z",
             thumbnail: SpaceThumbnails.githubThumbnail,
             resultCount: 0,
             isDefaultSpace: false

@@ -11,6 +11,13 @@ To perform authenticated requests in SwiftUI previews, create a `dev-token.txt` 
 
 Copy the latest `schema.json` file to `Sources/NeevaSupport/schema.json`
 
+You can get the latest `schema.json` file from the monorepo:
+```
+cd client/packages/neeva-lib
+yarn install && yarn build
+```
+You will then see a `gen` directory with the generated `gen/graphql/schema.json` file.
+
 Add your query or mutation to one of the `.graphql` files in `Codegen/Sources/Codegen/` (grouped approximately by theme).
 The name of the query/mutation (with `Query` or `Mutation` appended) will be used as the Swift struct name.
 
