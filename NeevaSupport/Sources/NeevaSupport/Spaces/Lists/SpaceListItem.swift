@@ -15,12 +15,15 @@ struct SpaceListItem: View {
         return HStack(spacing: 16) {
             LargeSpaceIconView(space: space)
             Text(space.space!.name ?? "")
-                .font(.system(size: 16))
-                .fontWeight(.regular)
-                Spacer()
+                .font(.system(size: 16, weight: .semibold))
+            Spacer()
             Image("menu-spaces")
+                .frame(width: 44, height: 44)
                 .foregroundColor(Color .gray)
-        }.padding(.horizontal, 16)
+        }
+        .padding([.top, .bottom], 6)
+        .padding(.leading, 16)
+        .padding(.trailing, 5)
     }
 }
 

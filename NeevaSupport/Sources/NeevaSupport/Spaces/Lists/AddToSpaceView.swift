@@ -141,7 +141,7 @@ public struct AddToSpaceView: View {
                 }
             } else {
                 ScrollView {
-                    VStack {
+                    VStack(spacing: 0) {
                         switch spaceList.state {
                         case .running:
                             LoadingView("Loading spaces…")
@@ -153,8 +153,9 @@ public struct AddToSpaceView: View {
                                 filterAction: { searchTerm = $0 },
                                 createAction: { request.mode = .saveToNewSpace }
                             )
-                            .padding(.horizontal, 4)
-                            .padding(.top, 16)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 8)
+                            .padding(.bottom, 20)
                             if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
                                 Text("No Results Found")
                                     .font(.title)

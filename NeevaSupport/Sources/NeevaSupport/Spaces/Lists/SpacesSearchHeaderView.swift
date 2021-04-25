@@ -14,8 +14,8 @@ struct SpacesSearchHeaderView: View {
     }
 
     var body: some View {
-        HStack {
-            HStack {
+        HStack(spacing: 24) {
+            HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass")
                     .imageScale(.medium)
                     .foregroundColor(.secondary)
@@ -37,18 +37,26 @@ struct SpacesSearchHeaderView: View {
                 }
             }
             .font(.system(size: 14))
-            .padding(10)
-            .padding(.leading, 6)
+            .padding(.horizontal, 16)
+            .frame(height: 40)
             .background(Color(.systemGray6))
-            .cornerRadius(20)
-            .padding(.horizontal, 10)
+            .cornerRadius(80)
             .onTapGesture {
                 self.isEditing = true
             }
-            Button("+ Create") {
+
+            Button {
                 self.createAction()
+            } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: "plus")
+                        .renderingMode(.template)
+                    Text("Create")
+                }
             }
-            .padding(.trailing, 10)
+            .frame(height: 40)
+            .font(.system(size: 16, weight: .semibold))
+            .padding(.trailing, 3)
         }
     }
 }

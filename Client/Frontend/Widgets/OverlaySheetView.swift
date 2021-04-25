@@ -107,6 +107,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     SFSymbolView(.xmark, size: 16, weight: .semibold)
                         .foregroundColor(Color(UIColor.Neeva.Gray60))
                         .frame(width: 44, height: 44)
+                        .padding(.trailing, 4.5)
                 }
             }
             .padding(.top, 8)
