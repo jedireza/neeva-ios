@@ -49,13 +49,12 @@ class AppSettingsTableViewController: SettingsTableViewController {
                                     titleText: NSLocalizedString("Show Search Suggestions", comment: "Label for show search suggestions setting.")),
             NewTabPageSetting(settings: self),
             OpenWithSetting(settings: self),
-            ThemeSetting(settings: self),
             BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyBlockPopups, defaultValue: true,
                         titleText: .AppSettingsBlockPopups),
            ]
 
         if #available(iOS 12.0, *) {
-            generalSettings.insert(SiriPageSetting(settings: self), at: 5)
+            generalSettings.insert(SiriPageSetting(settings: self), at: 4)
         }
 
         // There is nothing to show in the Customize section if we don't include the compact tab layout

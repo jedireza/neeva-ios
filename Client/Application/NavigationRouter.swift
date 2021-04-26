@@ -21,7 +21,6 @@ enum SettingsPage: String {
     case homepage = "homepage"
     case mailto = "mailto"
     case clearPrivateData = "clear-private-data"
-    case theme = "theme"
 }
 
 enum DefaultBrowserPath: String {
@@ -260,8 +259,6 @@ enum NavigationPath {
             viewController.profile = profile
             viewController.tabManager = tabManager
             controller.pushViewController(viewController, animated: true)
-        case .theme:
-            controller.pushViewController(ThemeSettingsController(), animated: true)
         }
     }
     

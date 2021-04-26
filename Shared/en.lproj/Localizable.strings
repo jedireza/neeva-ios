@@ -654,9 +654,6 @@
 /* Label for the button displayed in the menu used to stop the reload of the webpage */
 "Menu.Library.StopReload" = "Stop";
 
-/* Label for the button, displayed in the menu, turns on night mode. */
-"Menu.NightModeTurnOn.Label" = "Enable Night Mode";
-
 /* Label for the button, displayed in the menu, hides images on the webpage when pressed. */
 "Menu.NoImageModeBlockImages.Label" = "Block Images";
 
@@ -1101,49 +1098,6 @@
 
 /* Title of the alert when prompting the user asking to disconnect. */
 "Settings.Disconnect.Title" = "Disconnect Sync?";
-
-/* Section header for brightness slider. */
-"Settings.DisplayTheme.BrightnessThreshold.SectionHeader" = "Threshold";
-
-/* Display (theme) settings label to show if manually switch theme is enabled. */
-"Settings.DisplayTheme.Manual.StatusLabel" = "Manual";
-
-/* Display (theme) settings switch subtitle, explaining the title 'Manually'. */
-"Settings.DisplayTheme.Manual.SwitchSubtitle" = "Pick which theme you want";
-
-/* Display (theme) setting to choose the theme manually. */
-"Settings.DisplayTheme.Manual.SwitchTitle" = "Manually";
-
-/* Option choice in display theme settings for dark theme */
-"Settings.DisplayTheme.OptionDark" = "Dark";
-
-/* Option choice in display theme settings for light theme */
-"Settings.DisplayTheme.OptionLight" = "Light";
-
-/* Display (theme) settings footer describing how the brightness slider works. */
-"Settings.DisplayTheme.SectionFooter" = "The theme will automatically change based on your display brightness. You can set the threshold where the theme changes. The circle indicates your display's current brightness.";
-
-/* Switch mode settings section title */
-"Settings.DisplayTheme.SwitchMode.SectionHeader" = "Switch Mode";
-
-/* Display (theme) settings switch subtitle, explaining the title 'Automatically'. */
-"Settings.DisplayTheme.SwitchSubtitle" = "Switch automatically based on screen brightness";
-
-/* Display (theme) settings label to show if automatically switch theme is enabled.
-   Display (theme) settings switch to choose whether to set the dark mode manually, or automatically based on the brightness slider. */
-"Settings.DisplayTheme.SwitchTitle" = "Automatically";
-
-/* System theme settings section title */
-"Settings.DisplayTheme.SystemTheme.SectionHeader" = "System Theme";
-
-/* System theme settings switch to choose whether to use the same theme as the system */
-"Settings.DisplayTheme.SystemTheme.SwitchTitle" = "Use System Light/Dark Mode";
-
-/* Theme picker settings section title */
-"Settings.DisplayTheme.ThemePicker.SectionHeader" = "Theme Picker";
-
-/* Title in main app settings for Theme settings */
-"Settings.DisplayTheme.Title.v2" = "Theme";
 
 /* Label used for the device name settings section. */
 "Settings.FxA.DeviceName" = "Device Name";
