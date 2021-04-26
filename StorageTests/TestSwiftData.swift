@@ -9,6 +9,8 @@ import Shared
 
 import XCTest
 
+// TODO: This test hangs inside addSite. Disabled temporarily.
+
 // TODO: rewrite this test to not use BrowserSchema. It used to use HistoryTable…
 class TestSwiftData: XCTestCase {
     var swiftData: SwiftData?

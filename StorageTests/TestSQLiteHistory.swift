@@ -9,6 +9,14 @@ import Shared
 
 import XCTest
 
+// Root Bookmarks folders
+extension Strings {
+    static let BookmarksFolderTitleMobile = "Mobile Bookmarks"
+    static let BookmarksFolderTitleMenu = "Bookmarks Menu"
+    static let BookmarksFolderTitleToolbar = "Bookmarks Toolbar"
+    static let BookmarksFolderTitleUnsorted = "Unsorted Bookmarks"
+}
+
 class BaseHistoricalBrowserSchema: Schema {
     var name: String { return "BROWSER" }
     var version: Int { return -1 }
