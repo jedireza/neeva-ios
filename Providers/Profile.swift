@@ -177,10 +177,6 @@ open class BrowserProfile: Profile {
         // side-effect of instantiating SQLiteHistory (and thus BrowserDB) on the main thread.
         prefs.setBool(false, forKey: PrefsKeys.KeyTopSitesCacheIsValid)
 
-        // Set the default homepage to Neeva. This does not change the user's preference,
-        // just the behaviour when there is no homepage
-        prefs.setString(PrefsDefaults.DefaultHomePageURL, forKey: PrefsKeys.KeyDefaultHomePageURL)
-
         // Create the "Downloads" folder in the documents directory.
         if let downloadsPath = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("Downloads").path {
             try? FileManager.default.createDirectory(atPath: downloadsPath, withIntermediateDirectories: true, attributes: nil)

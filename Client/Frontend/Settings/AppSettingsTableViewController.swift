@@ -21,10 +21,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
 
         tableView.accessibilityIdentifier = "AppSettingsTableViewController.tableView"
 
-        // Refresh the user's FxA profile upon viewing settings. This will update their avatar,
-        // display name, etc.
-        ////profile.rustAccount.refreshProfile()
-
         // Asking for UserInfo before showing Browser Settings and showing Profile data if user is login.
         if (NeevaUserInfo.shared.hasLoginCookie()) {
             NeevaUserInfo.shared.loadUserInfoFromDefaults()
@@ -47,14 +43,13 @@ class AppSettingsTableViewController: SettingsTableViewController {
         var generalSettings: [Setting] = [
             BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyShowSearchSuggestions, defaultValue: true,
                                     titleText: NSLocalizedString("Show Search Suggestions", comment: "Label for show search suggestions setting.")),
-            NewTabPageSetting(settings: self),
             OpenWithSetting(settings: self),
             BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyBlockPopups, defaultValue: true,
                         titleText: .AppSettingsBlockPopups),
            ]
 
         if #available(iOS 12.0, *) {
-            generalSettings.insert(SiriPageSetting(settings: self), at: 4)
+            generalSettings.append(SiriPageSetting(settings: self))
         }
 
         // There is nothing to show in the Customize section if we don't include the compact tab layout
@@ -120,7 +115,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 DeleteExportedDataSetting(settings: self),
                 ForceCrashSetting(settings: self),
                 SlowTheDatabase(settings: self),
-                ToggleChronTabs(settings: self)
             ])]
 
         if NeevaUserInfo.shared.hasLoginCookie() {

@@ -488,9 +488,7 @@ extension NeevaHomeViewController: DataObserverDelegate {
             
             self.topSitesManager.currentTraits = self.view.traitCollection
             
-            let numRows = max(self.profile.prefs.intForKey(PrefsKeys.NumberOfTopSiteRows) ?? TopSitesRowCountSettingsController.defaultNumberOfRows, 1)
-            
-            let maxItems = Int(numRows) * self.topSitesManager.numberOfHorizontalItems()
+            let maxItems = self.topSitesManager.numberOfHorizontalItems()
             
             self.topSitesManager.content = Array(result.prefix(maxItems))
             

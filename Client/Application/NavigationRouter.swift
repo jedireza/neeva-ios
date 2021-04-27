@@ -17,8 +17,6 @@ enum HomePanelPath: String {
 // An enum to route to a settings page.
 enum SettingsPage: String {
     case general = "general"
-    case newtab = "newtab"
-    case homepage = "homepage"
     case mailto = "mailto"
     case clearPrivateData = "clear-private-data"
 }
@@ -243,14 +241,6 @@ enum NavigationPath {
         switch settings {
         case .general:
             break // Intentional NOOP; Already displaying the general settings VC
-        case .newtab:
-            let viewController = NewTabContentSettingsViewController(prefs: baseSettingsVC.profile.prefs)
-            viewController.profile = profile
-            controller.pushViewController(viewController, animated: true)
-        case .homepage:
-            let viewController = HomePageSettingViewController(prefs: baseSettingsVC.profile.prefs)
-            viewController.profile = profile
-            controller.pushViewController(viewController, animated: true)
         case .mailto:
             let viewController = OpenWithSettingsViewController(prefs: profile.prefs)
             controller.pushViewController(viewController, animated: true)

@@ -258,30 +258,6 @@ class SlowTheDatabase: HiddenSetting {
     }
 }
 
-///Note: We have disabed it until we find best way to test newTabToolbarButton
-//class ToggleNewTabToolbarButton: HiddenSetting {
-//    override var title: NSAttributedString? {
-//        return NSAttributedString(string: "Debug: Toggle new tab toolbar button", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
-//    }
-//
-//    override func onClick(_ navigationController: UINavigationController?) {
-//        let currentValue = settings.profile.prefs.boolForKey(PrefsKeys.ShowNewTabToolbarButton) ?? false
-//        settings.profile.prefs.setBool(!currentValue, forKey: PrefsKeys.ShowNewTabToolbarButton)
-//    }
-//}
-
-class ToggleChronTabs: HiddenSetting {
-    override var title: NSAttributedString? {
-        // If we are running an A/B test this will also fetch the A/B test variables from leanplum. Re-open app to see the effect.
-        return NSAttributedString(string: "Debug: Toggle chronological tabs", attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
-    }
-
-    override func onClick(_ navigationController: UINavigationController?) {
-        let currentValue = settings.profile.prefs.boolForKey(PrefsKeys.ChronTabsPrefKey) ?? false
-        settings.profile.prefs.setBool(!currentValue, forKey: PrefsKeys.ChronTabsPrefKey)
-    }
-}
-
 // Show the current version of Firefox
 class VersionSetting: Setting {
     unowned let settings: SettingsTableViewController
@@ -480,65 +456,12 @@ class PrivacyPolicySetting: Setting {
     }
 }
 
-class NewTabPageSetting: Setting {
-    let profile: Profile
-
-    override var accessoryView: UIImageView? { return disclosureIndicator }
-
-    override var accessibilityIdentifier: String? { return "NewTab" }
-
-    override var status: NSAttributedString {
-        return NSAttributedString(string: NewTabAccessors.getNewTabPage(self.profile.prefs).settingTitle)
-    }
-
-    override var style: UITableViewCell.CellStyle { return .value1 }
-
-    init(settings: SettingsTableViewController) {
-        self.profile = settings.profile
-        super.init(title: NSAttributedString(string: Strings.SettingsNewTabSectionName, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]))
-    }
-
-    override func onClick(_ navigationController: UINavigationController?) {
-        let viewController = NewTabContentSettingsViewController(prefs: profile.prefs)
-        viewController.profile = profile
-        navigationController?.pushViewController(viewController, animated: true)
-    }
-}
-
 fileprivate func getDisclosureIndicator() -> UIImageView {
     let disclosureIndicator = UIImageView()
     disclosureIndicator.image = UIImage(named: "menu-Disclosure")?.withRenderingMode(.alwaysTemplate)
     disclosureIndicator.tintColor = UIColor.theme.tableView.accessoryViewTint
     disclosureIndicator.sizeToFit()
     return disclosureIndicator
-}
-
-class HomeSetting: Setting {
-    let profile: Profile
-
-    override var accessoryView: UIImageView {
-        getDisclosureIndicator()
-    }
-    
-    override var accessibilityIdentifier: String? { return "Home" }
-
-    override var status: NSAttributedString {
-        return NSAttributedString(string: NewTabAccessors.getHomePage(self.profile.prefs).settingTitle)
-    }
-
-    override var style: UITableViewCell.CellStyle { return .value1 }
-
-    init(settings: SettingsTableViewController) {
-        self.profile = settings.profile
-
-        super.init(title: NSAttributedString(string: Strings.AppMenuOpenHomePageTitleString, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]))
-    }
-
-    override func onClick(_ navigationController: UINavigationController?) {
-        let viewController = HomePageSettingViewController(prefs: profile.prefs)
-        viewController.profile = profile
-        navigationController?.pushViewController(viewController, animated: true)
-    }
 }
 
 @available(iOS 12.0, *)

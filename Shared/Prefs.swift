@@ -6,22 +6,15 @@ import Foundation
 
 public struct PrefsKeys {
     // When this pref is set (by the user) it overrides default behaviour which is just based on app locale.
-    public static let KeyEnableChinaSyncService = "useChinaSyncService"
     public static let KeyLastRemoteTabSyncTime = "lastRemoteTabSyncTime"
     public static let KeyLastSyncFinishTime = "lastSyncFinishTime"
-    public static let KeyDefaultHomePageURL = "KeyDefaultHomePageURL"
     public static let KeyNoImageModeStatus = "NoImageModeStatus"
     public static let KeyNightModeButtonIsInMenu = "NightModeButtonIsInMenuPrefKey"
     public static let KeyNightModeStatus = "NightModeStatus"
     public static let KeyNightModeEnabledDarkTheme = "NightModeEnabledDarkTheme"
     public static let KeyMailToOption = "MailToOption"
     public static let KeyLastVersionNumber = "KeyLastVersionNumber"
-    public static let HasFocusInstalled = "HasFocusInstalled"
-    public static let HasPocketInstalled = "HasPocketInstalled"
     public static let IntroSeen = "IntroViewControllerSeen"
-    public static let HomePageTab = "HomePageTab"
-    public static let HomeButtonHomePageURL = "HomeButtonHomepageURL"
-    public static let NumberOfTopSiteRows = "NumberOfTopSiteRows"
     public static let LoginsSaveEnabled = "saveLogins"
     public static let LoginsShowShortcutMenuItem = "showLoginsInAppMenu"
     public static let KeyInstallSession = "installSessionNumber"
@@ -30,8 +23,6 @@ public struct PrefsKeys {
     public static let KeyDidShowDefaultBrowserOnboarding = "didShowDefaultBrowserOnboarding"
     public static let ShowNewTabToolbarButton = "newTabToolbarButton"
     public static let ContextMenuShowLinkPreviews = "showLinkPreviews"
-    public static let NewTabCustomUrlPrefKey = "HomePageURLPref"
-    public static let ChronTabsPrefKey = "chronTabsPrefKey"
     public static let SessionCount = "sessionCount"
     
     //Activity Stream

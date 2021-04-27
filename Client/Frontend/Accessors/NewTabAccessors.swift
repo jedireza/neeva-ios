@@ -9,7 +9,6 @@ import XCGLogger
 /// Accessors to find what a new tab should do when created without a URL.
 struct NewTabAccessors {
     static let NewTabPrefKey = PrefsKeys.KeyNewTab
-    static let HomePrefKey = PrefsKeys.HomePageTab
     static let Default = NewTabPage.neevaHome
 
     static func getNewTabPage(_ prefs: Prefs) -> NewTabPage {
@@ -22,18 +21,8 @@ struct NewTabAccessors {
     }
 
     static func getHomePage(_ prefs: Prefs) -> NewTabPage {
-        guard let raw = prefs.stringForKey(HomePrefKey) else {
-            return Default
-        }
-        let option = NewTabPage(rawValue: raw) ?? Default
-        // Check if the user has chosen to open a homepage, but no homepage is set,
-        // then use the default.
-        if option == .homePage && HomeButtonHomePageAccessors.getHomePage(prefs) == nil {
-            return Default
-        }
-        return option
+        return Default
     }
-
 }
 
 /// Enum to encode what should happen when the user opens a new tab without a URL.
