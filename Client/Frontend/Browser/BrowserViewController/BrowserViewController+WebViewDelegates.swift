@@ -690,7 +690,6 @@ extension BrowserViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        webView.scrollView.refreshControl?.endRefreshing()
         // every time a user visits a Neeva page, we extract the user cookie
         // and save it to a keychain.
         if !(tabManager.selectedTab?.isPrivate ?? false),

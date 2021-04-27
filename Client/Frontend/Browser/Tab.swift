@@ -278,10 +278,12 @@ class Tab: NSObject {
 
             let rc = UIRefreshControl(frame: .zero, primaryAction: UIAction { _ in
                 webView.reload()
+                // Dismiss refresh control now as the regular progress bar will soon appear.
+                webView.scrollView.refreshControl?.endRefreshing()
             })
             webView.scrollView.refreshControl = rc
             webView.scrollView.bringSubviewToFront(rc)
-            
+
             if #available(iOS 13, *) {
                 webView.allowsLinkPreview = true
             } else {
