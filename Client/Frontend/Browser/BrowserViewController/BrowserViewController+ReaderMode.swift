@@ -90,6 +90,14 @@ extension BrowserViewController {
         let backList = webView.backForwardList.backList
         let forwardList = webView.backForwardList.forwardList
 
+        if !WebServer.sharedInstance.server.isRunning {
+            do {
+                try WebServer.sharedInstance.start()
+            } catch {
+                print("Error starting GCDWebServers server")
+            }
+        }
+
         guard let currentURL = webView.backForwardList.currentItem?.url, let readerModeURL = currentURL.encodeReaderModeURL(WebServer.sharedInstance.baseReaderModeURL()) else { return }
 
         if backList.count > 1 && backList.last?.url == readerModeURL {
