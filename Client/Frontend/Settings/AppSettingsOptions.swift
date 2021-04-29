@@ -553,15 +553,9 @@ class SignOutSetting: Setting{
 
     override func onClick(_ navigationController: UINavigationController?) {
         if NeevaUserInfo.shared.hasLoginCookie() {
-            navigationController?.dismiss(animated: true) {
-                if let url = URL(string: "\(NeevaConstants.appURL)logout") {
-                    // TODO: This does not work properly when invoked on an incognito tab. We should
-                    // figure out how we want to handle that case.
-                    self.delegate?.settingsOpenURLInNewTab(url)
-                    NeevaUserInfo.shared.clearCache()
-                    NeevaUserInfo.shared.deleteLoginCookie()
-                }
-            }
+            NeevaUserInfo.shared.clearCache()
+            NeevaUserInfo.shared.deleteLoginCookie()
+            navigationController?.loadView()
         }
     }
 
