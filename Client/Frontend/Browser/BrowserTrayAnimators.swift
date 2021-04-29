@@ -97,6 +97,7 @@ private extension TrayToBrowserAnimator {
             tabTray.searchBarHolder.alpha = 0
         }, completion: { finished in
             // Remove any of the views we used for the animation
+            UIApplication.shared.windows.first?.backgroundColor = UIColor.Photon.Grey90
             cell.removeFromSuperview()
             tabCollectionViewSnapshot.removeFromSuperview()
             bvc.footer.alpha = 1

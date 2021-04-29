@@ -1350,7 +1350,6 @@ extension BrowserViewController: URLBarDelegate {
         let host = PopOverNeevaMenuViewController(
             delegate: self,
             source: button, isPrivate: isPrivate)
-          
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background
         host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 315))
