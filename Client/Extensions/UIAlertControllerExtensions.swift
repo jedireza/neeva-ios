@@ -11,52 +11,6 @@ typealias UIAlertActionCallback = (UIAlertAction) -> Void
 extension UIAlertController {
 
     /**
-    Builds the Alert view that asks the user if they wish to opt into crash reporting.
-
-    - parameter sendReportCallback: Send report option handler
-    - parameter alwaysSendCallback: Always send option handler
-    - parameter dontSendCallback:   Dont send option handler
-    - parameter neverSendCallback:  Never send option handler
-
-    - returns: UIAlertController for opting into crash reporting after a crash occurred
-    */
-    class func crashOptInAlert(
-        _ sendReportCallback: @escaping UIAlertActionCallback,
-        alwaysSendCallback: @escaping UIAlertActionCallback,
-        dontSendCallback: @escaping UIAlertActionCallback) -> UIAlertController {
-
-        let alert = UIAlertController(
-            title: .CrashOptInAlertTitle,
-            message: .CrashOptInAlertMessage,
-            preferredStyle: .alert
-        )
-
-        let sendReport = UIAlertAction(
-            title: .CrashOptInAlertSend,
-            style: .default,
-            handler: sendReportCallback
-        )
-
-        let alwaysSend = UIAlertAction(
-            title: .CrashOptInAlertAlwaysSend,
-            style: .default,
-            handler: alwaysSendCallback
-        )
-
-        let dontSend = UIAlertAction(
-            title: .CrashOptInAlertDontSend,
-            style: .default,
-            handler: dontSendCallback
-        )
-
-        alert.addAction(sendReport)
-        alert.addAction(alwaysSend)
-        alert.addAction(dontSend)
-
-        return alert
-    }
-
-    /**
     Builds the Alert view that asks the user if they wish to restore their tabs after a crash.
 
     - parameter okayCallback: Okay option handler
@@ -127,38 +81,6 @@ extension UIAlertController {
 
         let okayOption = UIAlertAction(
             title: .ClearWebsiteDataAlertOk,
-            style: .destructive,
-            handler: okayCallback
-        )
-
-        alert.addAction(okayOption)
-        alert.addAction(noOption)
-        return alert
-    }
-
-    /**
-     Builds the Alert view that asks if the users wants to also delete history stored on their other devices.
-
-     - parameter okayCallback: Okay option handler.
-
-     - returns: UIAlertController for asking the user to restore tabs after a crash
-     */
-
-    class func clearSyncedHistoryAlert(okayCallback: @escaping (UIAlertAction) -> Void) -> UIAlertController {
-        let alert = UIAlertController(
-            title: "",
-            message: .ClearSyncedHistoryAlertMessage,
-            preferredStyle: .alert
-        )
-
-        let noOption = UIAlertAction(
-            title: .ClearSyncedHistoryAlertCancel,
-            style: .cancel,
-            handler: nil
-        )
-
-        let okayOption = UIAlertAction(
-            title: .ClearSyncedHistoryAlertOk,
             style: .destructive,
             handler: okayCallback
         )
