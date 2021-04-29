@@ -172,7 +172,6 @@ class URLBarView: UIView {
 
     var profile: Profile? = nil
     
-    fileprivate let privateModeBadge = BadgeWithBackdrop(imageName: "privateModeBadge", backdropCircleColor: UIColor.Defaults.MobilePrivatePurple)
     fileprivate let appMenuBadge = BadgeWithBackdrop(imageName: "menuBadge")
     fileprivate let warningMenuBadge = BadgeWithBackdrop(imageName: "menuWarning", imageMask: "warning-mask")
 
@@ -195,7 +194,6 @@ class URLBarView: UIView {
             addSubview($0)
         }
 
-        privateModeBadge.add(toParent: self)
         appMenuBadge.add(toParent: self)
         warningMenuBadge.add(toParent: self)
 
@@ -260,7 +258,6 @@ class URLBarView: UIView {
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
         
-        privateModeBadge.layout(onButton: tabsButton)
         appMenuBadge.layout(onButton: addToSpacesButton)
         warningMenuBadge.layout(onButton: addToSpacesButton)
     }
@@ -541,7 +538,7 @@ class URLBarView: UIView {
         shareButton.isHidden = !toolbarIsShowing || inOverlayMode
 
         // badge isHidden is tied to private mode on/off, use alpha to hide in this case
-        [privateModeBadge, appMenuBadge, warningMenuBadge].forEach {
+        [appMenuBadge, warningMenuBadge].forEach {
             $0.badge.alpha = (!toolbarIsShowing || inOverlayMode) ? 0 : 1
             $0.backdrop.alpha = (!toolbarIsShowing || inOverlayMode) ? 0 : BadgeWithBackdrop.backdropAlpha
         }
@@ -581,12 +578,6 @@ class URLBarView: UIView {
 }
 
 extension URLBarView: TabToolbarProtocol {
-    func privateModeBadge(visible: Bool) {
-        if UIDevice.current.userInterfaceIdiom != .pad {
-            privateModeBadge.show(visible)
-        }
-    }
-
     func appMenuBadge(setVisible: Bool) {
         // Warning badges should take priority over the standard badge
         guard warningMenuBadge.badge.isHidden else {
@@ -612,6 +603,7 @@ extension URLBarView: TabToolbarProtocol {
 
     func updatePageStatus(_ isWebPage: Bool) {
         shareButton.isEnabled = isWebPage
+        addToSpacesButton.isEnabled = isWebPage && !isPrivateMode
     }
 
     var access: [Any]? {
@@ -747,7 +739,6 @@ extension URLBarView: Themeable {
 
         progressBar.setGradientColors(startColor: UIColor.theme.loadingBar.start(isPrivateMode), endColor: UIColor.theme.loadingBar.end(isPrivateMode))
 
-        privateModeBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         warningMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
     }
@@ -756,10 +747,6 @@ extension URLBarView: Themeable {
 extension URLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
-
-        if UIDevice.current.userInterfaceIdiom != .pad {
-            privateModeBadge.show(isPrivate)
-        }
 
         locationView.applyUIMode(isPrivate: isPrivate)
 

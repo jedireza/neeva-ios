@@ -285,6 +285,7 @@ class BrowserViewController: UIViewController {
 
         if let tab = tabManager.selectedTab,
                let webView = tab.webView {
+            toolbar?.applyUIMode(isPrivate: tab.isPrivate)
             updateURLBarDisplayURL(tab)
             navigationToolbar.updateBackStatus(webView.canGoBack)
             navigationToolbar.updateForwardStatus(webView.canGoForward)
@@ -999,7 +1000,7 @@ class BrowserViewController: UIViewController {
 
     // MARK: Opening New Tabs
     func switchToPrivacyMode(isPrivate: Bool) {
-         if let tabTrayController = self.tabTrayController, tabTrayController.tabDisplayManager.isPrivate != isPrivate {
+        if let tabTrayController = self.tabTrayController, tabTrayController.tabDisplayManager.isPrivate != isPrivate {
             tabTrayController.changePrivacyMode(isPrivate)
         }
         topTabsViewController?.applyUIMode(isPrivate: isPrivate)
@@ -1789,7 +1790,7 @@ extension BrowserViewController: TabManagerDelegate {
             if previous == nil || tab.isPrivate != previous?.isPrivate {
                 applyTheme()
 
-                let ui: [PrivateModeUI?] = [topTabsViewController, urlBar]
+                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar, urlBar]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
 

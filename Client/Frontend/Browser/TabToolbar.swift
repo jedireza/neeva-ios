@@ -31,7 +31,6 @@ protocol TabToolbarDelegate: AnyObject {
     func tabToolbarReloadMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu?
     func tabToolbarDidPressStop(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidPressLibrary(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarTabsMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu?
     func tabToolbarDidPressSearch(_ tabToolbar: TabToolbarProtocol, button: UIButton)
@@ -56,7 +55,7 @@ open class TabToolbarHelper: NSObject {
         self.toolbar = toolbar
         super.init()
 
-        var configuration = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+        let configuration = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
 
         toolbar.backButton.setImage(UIImage(systemName: "arrow.left", withConfiguration: configuration), for: .normal)
         toolbar.backButton.accessibilityLabel = .TabToolbarBackAccessibilityLabel
@@ -126,10 +125,6 @@ open class TabToolbarHelper: NSObject {
         if recognizer.state == .began {
             toolbar.tabToolbarDelegate?.tabToolbarDidLongPressForward(toolbar, button: toolbar.forwardButton)
         }
-    }
-
-    func didClickLibrary() {
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressLibrary(toolbar, button: toolbar.addToSpacesButton)
     }
 }
 
@@ -203,6 +198,8 @@ class TabToolbar: UIView {
 
     fileprivate let appMenuBadge = BadgeWithBackdrop(imageName: "menuBadge")
     fileprivate let warningMenuBadge = BadgeWithBackdrop(imageName: "menuWarning", imageMask: "warning-mask")
+
+    private var isPrivateMode: Bool = false
 
     var helper: TabToolbarHelper?
     private let contentView = UIStackView()
@@ -292,7 +289,8 @@ extension TabToolbar: TabToolbarProtocol {
     }
 
     func updatePageStatus(_ isWebPage: Bool) {
-
+        shareButton.isEnabled = isWebPage
+        addToSpacesButton.isEnabled = isWebPage && !isPrivateMode
     }
 }
 
@@ -303,5 +301,11 @@ extension TabToolbar: Themeable{
 
         appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         warningMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
+    }
+}
+
+extension TabToolbar: PrivateModeUI {
+    func applyUIMode(isPrivate: Bool) {
+        isPrivateMode = isPrivate
     }
 }
