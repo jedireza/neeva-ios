@@ -3,7 +3,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Sentry
+
+// TODO: Migrate to our own Client logging system. Firefox used
+// Sentry, and this is now just a stubbed out version of that.
+
+public typealias SentryRequestFinished = (Error?) -> Void
+
+public enum SentrySeverity {
+    case fatal
+    case error
+    case warning
+    case info
+    case debug
+}
 
 public enum SentryTag: String {
     case swiftData = "SwiftData"
@@ -22,13 +34,8 @@ public class Sentry {
     public static let shared = Sentry()
 
     public static var crashedLastLaunch: Bool {
-        return Client.shared?.crashedLastLaunch() ?? false
+        return false  // TODO: implement
     }
-
-    private let SentryDSNKey = "SentryDSN"
-    private let SentryDeviceAppHashKey = "SentryDeviceAppHash"
-    private let DefaultDeviceAppHash = "0000000000000000000000000000000000000000"
-    private let DeviceAppHashLength = UInt(20)
 
     private var enabled = false
 
@@ -47,47 +54,8 @@ public class Sentry {
             return
         }
 
-        var bundle = Bundle.main
-        if bundle.bundleURL.pathExtension == "appex" {
-            // Peel off two directory levels - MY_APP.app/PlugIns/MY_APP_EXTENSION.appex
-            let url = bundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent()
-            if let extensionBundle = Bundle(url: url) {
-                bundle = extensionBundle
-            }
-        }
-
-        guard let dsn = bundle.object(forInfoDictionaryKey: SentryDSNKey) as? String, !dsn.isEmpty else {
-            Logger.browserLogger.debug("Not enabling Sentry; Not configured in Info.plist")
-            return
-        }
-
-        Logger.browserLogger.debug("Enabling Sentry crash handler")
-
-        do {
-            Client.shared = try Client(dsn: dsn)
-            try Client.shared?.startCrashHandler()
-            enabled = true
-
-            // If we have not already for this install, generate a completely random identifier
-            // for this device. It is stored in the app group so that the same value will
-            // be used for both the main application and the app extensions.
-            if let defaults = UserDefaults(suiteName: AppInfo.sharedContainerIdentifier), defaults.string(forKey: SentryDeviceAppHashKey) == nil {
-                defaults.set(Bytes.generateRandomBytes(DeviceAppHashLength).hexEncodedString, forKey: SentryDeviceAppHashKey)
-            }
-
-            // For all outgoing reports, override the default device identifier with our own random
-            // version. Default to a blank (zero) identifier in case of errors.
-            Client.shared?.beforeSerializeEvent = { event in
-                let deviceAppHash = UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)?.string(forKey: self.SentryDeviceAppHashKey)
-                event.context?.appContext?["device_app_hash"] = deviceAppHash ?? self.DefaultDeviceAppHash
-
-                var attributes = event.extra ?? [:]
-                attributes.merge(with: self.attributes)
-                event.extra = attributes
-            }
-        } catch let error {
-            Logger.browserLogger.error("Failed to initialize Sentry: \(error)")
-        }
+        // TODO: Uncomment this once we have an implementation.
+        //enabled = true
 
         // Ignore SIGPIPE exceptions globally.
         // https://stackoverflow.com/questions/108183/how-to-prevent-sigpipes-or-handle-them-properly
@@ -95,7 +63,7 @@ public class Sentry {
     }
 
     public func crash() {
-        Client.shared?.crash()
+        // TODO: Implement
     }
 
     /*
@@ -107,16 +75,6 @@ public class Sentry {
      */
     private func shouldNotSendEventFor(_ severity: SentrySeverity) -> Bool {
         return !enabled || (AppConstants.BuildChannel == .release && severity != .fatal)
-    }
-
-    private func makeEvent(message: String, tag: String, severity: SentrySeverity, extra: [String: Any]?) -> Event {
-        let event = Event(level: severity)
-        event.message = message
-        event.tags = ["tag": tag]
-        if let extra = extra {
-            event.extra = extra
-        }
-        return event
     }
 
     public func send(message: String, tag: SentryTag = .general, severity: SentrySeverity = .info, extra: [String: Any]? = nil, description: String? = nil, completion: SentryRequestFinished? = nil) {
@@ -136,8 +94,8 @@ public class Sentry {
             return
         }
 
-        let event = makeEvent(message: message, tag: tag.rawValue, severity: severity, extra: extraEvents)
-        Client.shared?.send(event: event, completion: completion)
+        // TODO: Implement
+        completion?(nil)
     }
 
     public func sendWithStacktrace(message: String, tag: SentryTag = .general, severity: SentrySeverity = .info, extra: [String: Any]? = nil, description: String? = nil, completion: SentryRequestFinished? = nil) {
@@ -155,12 +113,9 @@ public class Sentry {
             completion?(nil)
             return
         }
-        Client.shared?.snapshotStacktrace {
-            let event = self.makeEvent(message: message, tag: tag.rawValue, severity: severity, extra: extraEvents)
-            Client.shared?.appendStacktrace(to: event)
-            event.debugMeta = nil
-            Client.shared?.send(event: event, completion: completion)
-        }
+
+        // TODO: Implement
+        completion?(nil)
     }
 
     public func addAttributes(_ attributes: [String: Any]) {
@@ -168,13 +123,11 @@ public class Sentry {
     }
 
     public func breadcrumb(category: String, message: String) {
-        let b = Breadcrumb(level: .info, category: category)
-        b.message = message
-        Client.shared?.breadcrumbs.add(b)
+        // TODO: Implement
     }
 
     public func clearBreadcrumbs() {
-        Client.shared?.breadcrumbs.clear()
+        // TODO: Implement
     }
 
     private func printMessage(message: String, extra: [String: Any]? = nil) {
