@@ -10,45 +10,10 @@ class TabToolbarHelperTests: XCTestCase {
     var subject: TabToolbarHelper!
     var mockToolbar: MockTabToolbar!
 
-    let refreshButtonImage = UIImage.templateImageNamed("nav-refresh")
-    let backButtonImage = UIImage.templateImageNamed("nav-back")
-    let forwardButtonImage = UIImage.templateImageNamed("nav-forward")
-    let menuButtonImage = UIImage.templateImageNamed("nav-menu")
-    let libraryButtonImage = UIImage.templateImageNamed("menu-library")
-    let stopButtonImage = UIImage.templateImageNamed("nav-stop")
-    let searchButtonImage = UIImage.templateImageNamed("search")
-    let ImageNewTab = UIImage.templateImageNamed("nav-add")
-    
     override func setUp() {
         super.setUp()
         mockToolbar = MockTabToolbar()
         subject = TabToolbarHelper(toolbar: mockToolbar)
-    }
-
-    func testSetsInitialImages() {
-        XCTAssertEqual(mockToolbar.multiStateButton.image(for: .normal), refreshButtonImage)
-        XCTAssertEqual(mockToolbar.backButton.image(for: .normal), backButtonImage)
-        XCTAssertEqual(mockToolbar.forwardButton.image(for: .normal), forwardButtonImage)
-    }
-
-    func testStopStateImages() {
-        subject.setMiddleButtonState(.stop)
-        XCTAssertEqual(mockToolbar.multiStateButton.image(for: .normal), stopButtonImage)
-    }
-
-    func testReloadStateImages() {
-        subject.setMiddleButtonState(.reload)
-        XCTAssertEqual(mockToolbar.multiStateButton.image(for: .normal), refreshButtonImage)
-    }
-
-    func testSearchStateImages() {
-        subject.setMiddleButtonState(.search)
-        XCTAssertEqual(mockToolbar.multiStateButton.image(for: .normal), searchButtonImage)
-    }
-
-    func testNewTabStateImages() {
-        subject.setMiddleButtonState(.newTab)
-        XCTAssertEqual(mockToolbar.multiStateButton.image(for: .normal), ImageNewTab)
     }
 }
 
@@ -73,6 +38,7 @@ class MockToolbarButton: ToolbarButton {
 }
 
 class MockTabToolbar: TabToolbarProtocol {
+
     var tabToolbarDelegate: TabToolbarDelegate? {
         get { return nil }
         set { }
@@ -83,20 +49,17 @@ class MockTabToolbar: TabToolbarProtocol {
         get { _tabsButton }
     }
 
-    var _addNewTabButton = MockToolbarButton()
-    var addNewTabButton: ToolbarButton { get { _addNewTabButton } }
-    
-    var _appMenuButton = MockToolbarButton()
-    var appMenuButton: ToolbarButton { get { _appMenuButton } }
-
-    var _libraryButton = MockToolbarButton()
-    var libraryButton: ToolbarButton { get { _libraryButton } }
-
     var _forwardButton = MockToolbarButton()
     var forwardButton: ToolbarButton { get { _forwardButton } }
 
     var _backButton = MockToolbarButton()
     var backButton: ToolbarButton { get { _backButton } }
+
+    var _addToSpacesButton = MockToolbarButton()
+    var addToSpacesButton: ToolbarButton { get { _addToSpacesButton } }
+
+    var _shareButton = MockToolbarButton()
+    var shareButton: ToolbarButton { get { _shareButton } }
 
     var _multiStateButton = MockToolbarButton()
     var multiStateButton: ToolbarButton { get { _multiStateButton } }
@@ -112,22 +75,11 @@ class MockTabToolbar: TabToolbarProtocol {
 
     }
 
-    func updateMiddleButtonState(_ state: MiddleButtonState) {
-        
-    }
-
-    func updateReloadStatus(_ isLoading: Bool) {
-    }
-
     func updatePageStatus(_ isWebPage: Bool) {
 
     }
 
     func updateTabCount(_ count: Int, animated: Bool) {
-
-    }
-
-    func privateModeBadge(visible: Bool) {
 
     }
 

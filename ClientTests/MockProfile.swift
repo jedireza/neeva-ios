@@ -8,54 +8,6 @@ import Shared
 import Storage
 import XCTest
 
-open class MockSyncManager: SyncManager {
-    open var isSyncing = false
-    open var lastSyncFinishTime: Timestamp?
-    open var syncDisplayState: SyncDisplayState?
-
-    open func hasSyncedHistory() -> Deferred<Maybe<Bool>> {
-        return deferMaybe(true)
-    }
-
-    private func completedWithStats(collection: String) -> Deferred<Maybe<SyncStatus>> {
-        return deferMaybe(SyncStatus.completed(SyncEngineStatsSession(collection: collection)))
-    }
-
-    open func syncClients() -> SyncResult { return completedWithStats(collection: "mock_clients") }
-    open func syncClientsThenTabs() -> SyncResult { return completedWithStats(collection: "mock_clientsandtabs") }
-    open func syncHistory() -> SyncResult { return completedWithStats(collection: "mock_history") }
-    open func syncLogins() -> SyncResult { return completedWithStats(collection: "mock_logins") }
-    open func syncBookmarks() -> SyncResult { return completedWithStats(collection: "mock_bookmarks") }
-    open func syncEverything(why: SyncReason) -> Success {
-        return succeed()
-    }
-    open func syncNamedCollections(why: SyncReason, names: [String]) -> Success {
-        return succeed()
-    }
-    open func beginTimedSyncs() {}
-    open func endTimedSyncs() {}
-    open func applicationDidBecomeActive() {
-        self.beginTimedSyncs()
-    }
-    open func applicationDidEnterBackground() {
-        self.endTimedSyncs()
-    }
-
-    open func onNewProfile() {
-    }
-
-    open func onAddedAccount() -> Success {
-        return succeed()
-    }
-    open func onRemovedAccount() -> Success {
-        return succeed()
-    }
-
-    open func hasSyncedLogins() -> Deferred<Maybe<Bool>> {
-        return deferMaybe(true)
-    }
-}
-
 open class MockTabQueue: TabQueue {
     open func addToQueue(_ tab: ShareItem) -> Success {
         return succeed()
@@ -97,17 +49,11 @@ class MockFiles: FileAccessor {
 }
 
 open class MockProfile: Client.Profile {
-    public var rustFxA: RustFirefoxAccounts {
-        return RustFirefoxAccounts.shared
-    }
-
     // Read/Writeable properties for mocking
     public var recommendations: HistoryRecommendations
-    public var places: RustPlaces
     public var files: FileAccessor
     public var history: BrowserHistory & SyncableHistory & ResettableSyncStorage
     public var logins: RustLogins
-    public var syncManager: SyncManager!
 
     fileprivate var legacyPlaces: BrowserHistory & Favicons & SyncableHistory & ResettableSyncStorage & HistoryRecommendations
 
@@ -122,7 +68,6 @@ open class MockProfile: Client.Profile {
 
     init(databasePrefix: String = "mock") {
         files = MockFiles()
-        syncManager = MockSyncManager()
         let loginsDatabasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("\(databasePrefix)_logins.db").path
         try? files.remove("\(databasePrefix)_logins.db")
         let encryptionKey = "AAAAAAAA"
@@ -131,8 +76,6 @@ open class MockProfile: Client.Profile {
         _ = logins.reopenIfClosed()
         db = BrowserDB(filename: "\(databasePrefix).db", schema: BrowserSchema(), files: files)
         readingListDB = BrowserDB(filename: "\(databasePrefix)_ReadingList.db", schema: ReadingListSchema(), files: files)
-        let placesDatabasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("\(databasePrefix)_places.db").path
-        places = RustPlaces(databasePath: placesDatabasePath)
         legacyPlaces = SQLiteHistory(db: self.db, prefs: MockProfilePrefs())
         recommendations = legacyPlaces
         history = legacyPlaces
@@ -147,7 +90,6 @@ open class MockProfile: Client.Profile {
 
         db.reopenIfClosed()
         _ = logins.reopenIfClosed()
-        _ = places.reopenIfClosed()
     }
 
     public func _shutdown() {
@@ -155,7 +97,6 @@ open class MockProfile: Client.Profile {
 
         db.forceClose()
         _ = logins.forceClose()
-        _ = places.forceClose()
     }
 
     public var isShutdown: Bool = false
@@ -174,10 +115,6 @@ open class MockProfile: Client.Profile {
 
     lazy public var certStore: CertStore = {
         return CertStore()
-    }()
-
-    lazy public var searchEngines: SearchEngines = {
-        return SearchEngines(prefs: self.prefs, files: self.files)
     }()
 
     lazy public var prefs: Prefs = {
@@ -211,7 +148,6 @@ open class MockProfile: Client.Profile {
     public func flushAccount() {}
 
     public func removeAccount() {
-        self.syncManager.onRemovedAccount()
     }
 
     public func getClients() -> Deferred<Maybe<[RemoteClient]>> {

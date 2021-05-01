@@ -12,20 +12,6 @@ import WebKit
 
 class ClientTests: XCTestCase {
 
-    func testSyncUA() {
-        let ua = UserAgent.syncUserAgent
-        let device = DeviceInfo.deviceModel()
-        let systemVersion = UIDevice.current.systemVersion
-
-        if AppInfo.appVersion != "0.0.1" {
-            let expectedRegex = "^Firefox-iOS-Sync/[0-9\\.]+b[0-9]* \\(\(device); iPhone OS \(systemVersion)\\) \\([-_A-Za-z0-9= \\(\\)]+\\)$"
-            let loc = ua.range(of: expectedRegex, options: .regularExpression)
-            XCTAssertTrue(loc != nil, "Sync UA is as expected. Was \(ua)")
-        } else {
-            XCTAssertTrue(ua.range(of: "dev") != nil)
-        }
-    }
-
     func testMobileUserAgent() {
         let compare: (String) -> Bool = { ua in
             let range = ua.range(of: "^Mozilla/5\\.0 \\(.+\\) AppleWebKit/[0-9\\.]+ \\(KHTML, like Gecko\\)", options: .regularExpression)
