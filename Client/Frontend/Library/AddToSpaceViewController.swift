@@ -25,6 +25,15 @@ struct AddToSpaceRootView: View {
         }
     }
 
+    private var overlaySheetIsFixedHeight: Bool {
+        switch request.mode {
+        case .saveToNewSpace:
+            return true
+        case .saveToExistingSpace:
+            return false
+        }
+    }
+
     var body: some View {
         OverlaySheetView(model: self.overlaySheetModel, onDismiss: { self.onDismiss() }) {
             AddToSpaceView(
@@ -35,6 +44,7 @@ struct AddToSpaceRootView: View {
                 })
                 .environment(\.onOpenURL, { self.onOpenURL($0) })
                 .overlaySheetTitle(title: self.overlaySheetTitle)
+                .overlaySheetIsFixedHeight(isFixedHeight: self.overlaySheetIsFixedHeight)
         }
         .onAppear() {
             // It seems to be necessary to delay starting the animation until this point to

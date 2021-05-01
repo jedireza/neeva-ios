@@ -34,7 +34,7 @@ extension KeyboardReadable {
     var keyboardPublisher: AnyPublisher<CGFloat, Never> {
         Publishers.Merge(
             NotificationCenter.default
-                .publisher(for: UIResponder.keyboardDidShowNotification)
+                .publisher(for: UIResponder.keyboardWillShowNotification)
                 .map { ($0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? CGFloat(0) },
 
             NotificationCenter.default
@@ -42,5 +42,23 @@ extension KeyboardReadable {
                 .map { _ in CGFloat(0) }
         )
         .eraseToAnyPublisher()
+    }
+}
+
+// Used to observe / read the preference value that we store.
+struct ViewHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat { 0 }
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = value + nextValue()
+    }
+}
+
+// Used to extract the intrinsic size of the content and store it as
+// a preference value.
+extension ViewHeightKey: ViewModifier {
+    func body(content: Content) -> some View {
+        return content.background(GeometryReader { proxy in
+            Color.clear.preference(key: Self.self, value: proxy.size.height)
+        })
     }
 }

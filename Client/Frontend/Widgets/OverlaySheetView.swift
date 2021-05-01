@@ -54,24 +54,40 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @StateObject var model: OverlaySheetModel
 
     @State private var keyboardHeight: CGFloat = 0
+    @State private var topBarHeight: CGFloat = 0
+    @State private var contentHeight: CGFloat = 0
     @State private var title: String = ""
+    @State private var isFixedHeight: Bool = false
 
     let onDismiss: () -> ()
     var content: () -> Content
 
+    private var keyboardIsVisible: Bool {
+        return keyboardHeight > 0
+    }
+
     // The height of the spacer is a function of the outer geometry (i.e.,
     // that of our container) and the current delta height.
     private func getSpacerHeight(_ outerGeometry: GeometryProxy) -> CGFloat {
-        let defaultSize: CGFloat
-        switch self.model.position {
-        case .top:
-            defaultSize = 0
-        case .middle:
-            defaultSize = outerGeometry.size.height / 2
-        case .dismissed:
-            defaultSize = outerGeometry.size.height
+        var size: CGFloat
+        if isFixedHeight {
+            size = outerGeometry.size.height - contentHeight - topBarHeight
+        } else {
+            let defaultSize: CGFloat
+            switch self.model.position {
+            case .top:
+                defaultSize = 0
+            case .middle:
+                if isPortraitMode(outerGeometry) {
+                    defaultSize = outerGeometry.size.height / 2
+                } else {
+                    defaultSize = 0  // Landscape mode does not support half-height
+                }
+            case .dismissed:
+                defaultSize = outerGeometry.size.height
+            }
+            size = defaultSize + self.model.deltaHeight
         }
-        var size = defaultSize + self.model.deltaHeight
         if size < 0 {
             size = 0
         }
@@ -82,19 +98,25 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     private var topDrag: some Gesture {
         DragGesture()
             .onChanged { value in
-                self.onDragChanged(value)
+                if !isFixedHeight {
+                    self.onDragChanged(value)
+                }
             }
             .onEnded { value in
-                self.onDragEnded(value)
+                if !isFixedHeight {
+                    self.onDragEnded(value)
+                }
             }
     }
 
     var topBar: some View {
         VStack(spacing: 0) {
-            RoundedRectangle(cornerRadius: 50)
-                .frame(width: 32, height: 4)
-                .foregroundColor(Color(UIColor.Neeva.Gray60))
-                .padding(.top, 8)
+            if !isFixedHeight {
+                RoundedRectangle(cornerRadius: 50)
+                    .frame(width: 32, height: 4)
+                    .foregroundColor(Color(UIColor.Neeva.Gray60))
+                    .padding(.top, 8)
+            }
             HStack(spacing: 0) {
                 Text(title)
                     .fontWeight(.semibold)
@@ -145,9 +167,18 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
 
                         VStack(spacing: 0) {
                             self.topBar
+                                .modifier(ViewHeightKey())
+                                .onPreferenceChange(ViewHeightKey.self) { self.topBarHeight = $0 }
                             self.content()
+                                .modifier(ViewHeightKey())
+                                .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
                                 .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) { self.title = $0 }
+                                .onPreferenceChange(OverlaySheetIsFixedHeightPreferenceKey.self) { self.isFixedHeight = $0 }
                                 .background(Color(UIColor.systemBackground))
+                            if isFixedHeight {
+                                Color(UIColor.systemBackground)
+                                    .ignoresSafeArea(edges: .bottom)
+                            }
                         }
 
                         // Position the card above the keyboard.
@@ -166,7 +197,14 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         }
         .navigationBarHidden(true)
         .onReceive(keyboardPublisher) { height in
-            keyboardHeight = height
+            if height == 0 {
+                keyboardHeight = 0
+            } else {
+                withAnimation(.easeInOut(duration: OverlaySheetUX.animationDuration * 2)) {
+                    keyboardHeight = height
+                    model.position = .top
+                }
+            }
         }
     }
 
@@ -185,7 +223,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         self.model.deltaHeight += value.translation.height
         var newPosition = self.model.position;
         if self.model.deltaHeight > OverlaySheetUX.slideThreshold {
-            if self.model.position == .top {
+            if self.model.position == .top && !keyboardIsVisible {
                 newPosition = .middle
             } else {
                 self.model.hide()
@@ -229,6 +267,29 @@ struct OverlaySheetTitleViewModifier: ViewModifier {
 extension View {
     func overlaySheetTitle(title: String) -> some View {
         self.modifier(OverlaySheetTitleViewModifier(title: title))
+    }
+}
+
+// This PreferenceKey may be used by a child View of the OverlaySheetView
+// to specify that the content should be treated as fixed height.
+struct OverlaySheetIsFixedHeightPreferenceKey: PreferenceKey {
+    typealias Value = Bool
+    static var defaultValue: Bool = false
+    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+        value = nextValue()
+    }
+}
+struct OverlaySheetIsFixedHeightViewModifier: ViewModifier {
+    let isFixedHeight: Bool
+    func body(content: Content) -> some View {
+        content.preference(
+            key: OverlaySheetIsFixedHeightPreferenceKey.self,
+            value: isFixedHeight)
+    }
+}
+extension View {
+    func overlaySheetIsFixedHeight(isFixedHeight: Bool) -> some View {
+        self.modifier(OverlaySheetIsFixedHeightViewModifier(isFixedHeight: isFixedHeight))
     }
 }
 

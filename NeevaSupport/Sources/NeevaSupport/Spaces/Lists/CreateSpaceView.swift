@@ -50,8 +50,7 @@ struct CreateSpaceView: View {
             .background(Color(hex: 0x4078FB))
             .cornerRadius(40)
             .padding(.horizontal, 16)
-
-            Spacer()
+            .padding(.bottom, 20)
         }
         // Focus the text field automatically when loading this view. Unfortunately,
         // SwiftUI provides no way to do this, so we have to resort to using Introspect.
