@@ -41,6 +41,9 @@ extension Color {
     static let gray96 = Color("gray-96", bundle: .module)
     static let gray80 = Color("gray-80", bundle: .module)
     static let overlayBlue = Color("overlay-blue", bundle: .module)
+    static let defaultBlue = Color("default-blue", bundle: .module)
+    static let quaternarySystemFill = Color(UIColor.quaternarySystemFill)
+    static let tertiaryLabel = Color(UIColor.tertiaryLabel)
 }
 
 extension Image {

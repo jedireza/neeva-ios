@@ -17,9 +17,8 @@ struct CreateSpaceView: View {
             HStack{
                 TextField("Space name", text: $spaceName)
                 if (self.isEditing && !self.spaceName.isEmpty) {
-                    Image(systemName: "xmark.circle.fill")
-                        .imageScale(.medium)
-                        .foregroundColor(Color(.systemGray3))
+                    Symbol.system(.xmarkCircleFill, size: 16, weight: .medium)
+                        .foregroundColor(.tertiaryLabel)
                         .padding([.leading, .trailing], 2)
                         .onTapGesture {
                             withAnimation {
@@ -31,7 +30,7 @@ struct CreateSpaceView: View {
             .font(.system(size: 14))
             .padding(10)
             .padding(.leading, 17)
-            .background(Color(.systemGray6))
+            .background(Color.quaternarySystemFill)
             .cornerRadius(20)
             .padding(16)
             .onTapGesture {
@@ -47,7 +46,7 @@ struct CreateSpaceView: View {
             }
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .background(Color(hex: 0x4078FB))
+            .background(Color.defaultBlue)
             .cornerRadius(40)
             .padding(.horizontal, 16)
             .padding(.bottom, 20)

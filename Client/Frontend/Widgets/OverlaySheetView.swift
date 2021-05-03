@@ -1,6 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
-import Shared
+import NeevaSupport
 import SwiftUI
 
 // This file provides an overlay bottom sheet implementation that starts in a
@@ -120,13 +120,13 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             HStack(spacing: 0) {
                 Text(title)
                     .fontWeight(.semibold)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.primary)
                     .padding(.leading, 16)
                 Spacer()
                 Button {
                     self.model.hide()
                 } label: {
-                    SFSymbolView(.xmark, size: 16, weight: .semibold)
+                    Symbol.system(.xmark, size: 16, weight: .semibold)
                         .foregroundColor(Color(UIColor.Neeva.Gray60))
                         .frame(width: 44, height: 44)
                         .padding(.trailing, 4.5)

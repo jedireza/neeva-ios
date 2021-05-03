@@ -340,8 +340,6 @@
 		C8FBBD5A261F81DF004490A9 /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD50261F81DF004490A9 /* nicons-600.ttf */; };
 		C8FBBD5B261F81DF004490A9 /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD50261F81DF004490A9 /* nicons-600.ttf */; };
 		C8FBBD5C261F81DF004490A9 /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD50261F81DF004490A9 /* nicons-600.ttf */; };
-		C8FBBD76261F8827004490A9 /* Nicons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FBBD75261F8827004490A9 /* Nicons.swift */; };
-		C8FBBD84261F994D004490A9 /* SFSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FBBD83261F994D004490A9 /* SFSymbol.swift */; };
 		CA03B26A247F1D9E00382B62 /* BreachAlertsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA03B269247F1D9E00382B62 /* BreachAlertsClient.swift */; };
 		CA24B52224ABD7D40093848C /* LoginsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B52024ABD7D40093848C /* LoginsListViewModelTests.swift */; };
 		CA24B53924ABFE250093848C /* LoginsListSelectionHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B53824ABFE250093848C /* LoginsListSelectionHelperTests.swift */; };
@@ -1237,8 +1235,6 @@
 		C8FBBD4E261F81DF004490A9 /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
 		C8FBBD4F261F81DF004490A9 /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
 		C8FBBD50261F81DF004490A9 /* nicons-600.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-600.ttf"; sourceTree = "<group>"; };
-		C8FBBD75261F8827004490A9 /* Nicons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nicons.swift; sourceTree = "<group>"; };
-		C8FBBD83261F994D004490A9 /* SFSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbol.swift; sourceTree = "<group>"; };
 		CA03B269247F1D9E00382B62 /* BreachAlertsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreachAlertsClient.swift; sourceTree = "<group>"; };
 		CA24B52024ABD7D40093848C /* LoginsListViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginsListViewModelTests.swift; sourceTree = "<group>"; };
 		CA24B53824ABFE250093848C /* LoginsListSelectionHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginsListSelectionHelperTests.swift; sourceTree = "<group>"; };
@@ -2608,7 +2604,6 @@
 		E4E0BB141AFBC9E4008D6260 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				C8FBBD75261F8827004490A9 /* Nicons.swift */,
 				064741F8AE308A64808E6265 /* Shared.strings */,
 				67AF4B8392ADBAA41F1B3AD0 /* HistoryPanel.strings */,
 				9403451493EE3ADAAEFA2EB1 /* Storage.strings */,
@@ -2667,7 +2662,6 @@
 				E65075901E37F7AB006961AC /* UserAgent.swift */,
 				E65075911E37F7AB006961AC /* WeakList.swift */,
 				C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */,
-				C8FBBD83261F994D004490A9 /* SFSymbol.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4015,7 +4009,6 @@
 			files = (
 				E65075991E37F7AB006961AC /* Cancellable.swift in Sources */,
 				E65075BE1E37F7AB006961AC /* TimeConstants.swift in Sources */,
-				C8FBBD84261F994D004490A9 /* SFSymbol.swift in Sources */,
 				E65075B21E37F7AB006961AC /* Functions.swift in Sources */,
 				E65075B41E37F7AB006961AC /* KeychainCache.swift in Sources */,
 				E65075BA1E37F7AB006961AC /* Prefs.swift in Sources */,
@@ -4031,7 +4024,6 @@
 				E650759D1E37F7AB006961AC /* DeviceInfo.swift in Sources */,
 				E65075971E37F7AB006961AC /* AuthenticationKeychainInfo.swift in Sources */,
 				E65075A51E37F7AB006961AC /* NSFileManagerExtensions.swift in Sources */,
-				C8FBBD76261F8827004490A9 /* Nicons.swift in Sources */,
 				E65075A11E37F7AB006961AC /* HashExtensions.swift in Sources */,
 				3964B09A1EA8F06F00F2EEF4 /* FeatureSwitch.swift in Sources */,
 				E65075981E37F7AB006961AC /* Bytes.swift in Sources */,

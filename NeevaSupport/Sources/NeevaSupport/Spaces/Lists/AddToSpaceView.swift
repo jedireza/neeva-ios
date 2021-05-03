@@ -168,7 +168,7 @@ public struct AddToSpaceView: View {
                                             request.addToExistingSpace(id: space.id, name: space.space?.name ?? "Unknown")
                                             onDismiss()
                                         } label: {
-                                            SpaceListItem(space).foregroundColor(.primary)
+                                            SpaceListItem(space)
                                         }
                                     }
                                 }

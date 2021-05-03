@@ -32,19 +32,25 @@ public enum Nicon: Character {
     // TODO: Add more here
 }
 
-public struct NiconView: View {
-    let nicon: Nicon
-    let size: CGFloat
-    let font: NiconFont
+public enum SFSymbol: String {
+    case squareAndArrowDown = "square.and.arrow.down"
+    case clock = "clock"
+    case magnifyingGlass = "magnifyingglass"
+    case plus = "plus"
+    case xmark = "xmark"
+    case xmarkCircleFill = "xmark.circle.fill"
+    // TODO: Add more here
+}
 
-    public init(_ nicon: Nicon, size: CGFloat = 16, font: NiconFont = .regular) {
-        self.nicon = nicon
-        self.size = size
-        self.font = font
+public struct Symbol {
+    public static func neeva(_ nicon: Nicon, size: CGFloat = 16, weight: NiconFont = .regular) -> some View {
+        Text(String(nicon.rawValue))
+            .font(Font.custom(weight.rawValue, size: size))
     }
 
-    public var body: some View {
-        Text(String(nicon.rawValue))
-            .font(Font.custom(font.rawValue, size: size))
+    public static func system(_ symbol: SFSymbol, size: CGFloat = 16, weight: Font.Weight = .regular) -> some View {
+        Image(systemName: symbol.rawValue)
+            .renderingMode(.template)
+            .font(.system(size: size, weight: weight))
     }
 }

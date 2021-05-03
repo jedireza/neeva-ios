@@ -16,18 +16,16 @@ struct SpacesSearchHeaderView: View {
     var body: some View {
         HStack(spacing: 24) {
             HStack(spacing: 8) {
-                Image(systemName: "magnifyingglass")
-                    .imageScale(.medium)
-                    .foregroundColor(.secondary)
+                Symbol.system(.magnifyingGlass, size: 16, weight: .medium)
+                    .foregroundColor(.tertiaryLabel)
                     .font(.system(size: 16))
                 TextField("Search Spaces", text: $searchText)
                     .onChange(of: searchText) {
                         self.filterAction($0)
                     }
                 if (self.isEditing && !self.searchText.isEmpty) {
-                    Image(systemName: "xmark.circle.fill")
-                        .imageScale(.medium)
-                        .foregroundColor(.secondary)
+                    Symbol.system(.xmarkCircleFill, size: 16, weight: .medium)
+                        .foregroundColor(.tertiaryLabel)
                         .padding([.leading, .trailing], 2)
                         .onTapGesture {
                             withAnimation {
@@ -39,7 +37,7 @@ struct SpacesSearchHeaderView: View {
             .font(.system(size: 14))
             .padding(.horizontal, 16)
             .frame(height: 40)
-            .background(Color(.systemGray6))
+            .background(Color.quaternarySystemFill)
             .cornerRadius(80)
             .onTapGesture {
                 self.isEditing = true
@@ -49,13 +47,13 @@ struct SpacesSearchHeaderView: View {
                 self.createAction()
             } label: {
                 HStack(spacing: 5) {
-                    Image(systemName: "plus")
-                        .renderingMode(.template)
+                    Symbol.system(.plus, size: 16, weight: .semibold)
                     Text("Create")
+                        .font(.system(size: 16, weight: .semibold))
                 }
             }
             .frame(height: 40)
-            .font(.system(size: 16, weight: .semibold))
+            .foregroundColor(.defaultBlue)
             .padding(.trailing, 3)
         }
     }

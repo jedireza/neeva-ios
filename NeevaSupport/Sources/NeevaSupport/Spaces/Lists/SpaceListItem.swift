@@ -12,14 +12,15 @@ struct SpaceListItem: View {
         self.currentURL = currentURL
     }
     var body: some View {
-        return HStack(spacing: 16) {
+        HStack(spacing: 16) {
             LargeSpaceIconView(space: space)
             Text(space.space!.name ?? "")
                 .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(.primary)
             Spacer()
-            Image("menu-spaces")
+            Symbol.neeva(.bookmark, size: 16, weight: .semibold)
                 .frame(width: 44, height: 44)
-                .foregroundColor(Color .gray)
+                .foregroundColor(.tertiaryLabel)
         }
         .padding([.top, .bottom], 6)
         .padding(.leading, 16)

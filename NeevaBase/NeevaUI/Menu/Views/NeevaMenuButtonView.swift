@@ -6,8 +6,8 @@
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 
+import NeevaSupport
 import SwiftUI
-import Shared
 
 public struct NeevaMenuButtonView: View {
     let label: String
@@ -44,9 +44,9 @@ public struct NeevaMenuButtonView: View {
             VStack(spacing: 0) {
                 Group {
                     if let nicon = self.nicon {
-                        NiconView(nicon, size: 20)
+                        Symbol.neeva(nicon, size: 20)
                     } else if let symbol = self.symbol {
-                        SFSymbolView(symbol, size: 20)
+                        Symbol.system(symbol, size: 20)
                     }
                 }
                 .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.buttonColor))
