@@ -283,6 +283,7 @@
 		A83E5B1E1C1DAAAA0026D912 /* UIPasteboardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */; };
 		A9072B801D07B34100459960 /* NoImageModeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9072B7F1D07B34100459960 /* NoImageModeHelper.swift */; };
 		A93067E81D0FE18E00C49C6E /* NightModeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93067E71D0FE18E00C49C6E /* NightModeHelper.swift */; };
+		BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC62C06F263E0E6A00615E70 /* EnvironmentHelper.swift */; };
 		BC6D33C826228EA00050DEC4 /* IntroFirstRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */; };
 		BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */; };
 		BC6D34852622D4DE0050DEC4 /* Roobert-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D347F2622D4DE0050DEC4 /* Roobert-Heavy.otf */; };
@@ -1190,6 +1191,7 @@
 		A83E5B1C1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPasteboardExtensionsTests.swift; sourceTree = "<group>"; };
 		A9072B7F1D07B34100459960 /* NoImageModeHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoImageModeHelper.swift; sourceTree = "<group>"; };
 		A93067E71D0FE18E00C49C6E /* NightModeHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NightModeHelper.swift; sourceTree = "<group>"; };
+		BC62C06F263E0E6A00615E70 /* EnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentHelper.swift; sourceTree = "<group>"; };
 		BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroFirstRunView.swift; sourceTree = "<group>"; };
 		BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Bold.otf"; sourceTree = "<group>"; };
 		BC6D347F2622D4DE0050DEC4 /* Roobert-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Heavy.otf"; sourceTree = "<group>"; };
@@ -2034,6 +2036,7 @@
 				39455F761FC83F430088A22C /* TabEventHandler.swift */,
 				39F819C51FD70F5D009E31E4 /* TabEventHandlers.swift */,
 				39A359E31BFCCE94006B9E87 /* UserActivityHandler.swift */,
+				BC62C06F263E0E6A00615E70 /* EnvironmentHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -4385,6 +4388,7 @@
 				2F44FC721A9E840300FD20CC /* SettingsNavigationController.swift in Sources */,
 				E69E06BA1C76173D00D0F926 /* RequirePasscodeIntervalViewController.swift in Sources */,
 				D0E89A2920910917001CE5C7 /* DownloadsPanel.swift in Sources */,
+				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
 				E660BE061BB0666D009AC090 /* InnerStrokedView.swift in Sources */,
 				0BB5B30B1AC0AD1F0052877D /* LoginsHelper.swift in Sources */,
@@ -4891,6 +4895,7 @@
 				MOZ_BUNDLE_ID = co.neeva.app.ios.browser;
 				MOZ_INTERNAL_URL_SCHEME = neeva;
 				OTHER_SWIFT_FLAGS = "$(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_NEEVA";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PROD;
 			};
 			name = Neeva;
 		};
@@ -4909,12 +4914,13 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.0.13;
+				OTHER_SWIFT_FLAGS = "$(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_NEEVA -DPROD";
 				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser;
 				PRODUCT_MODULE_NAME = Client;
 				PRODUCT_NAME = Client;
 				PROVISIONING_PROFILE_SPECIFIER = "Neeva Browser";
 				SKIP_INSTALL = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = BUDDYBUILD;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PROD;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Client/Client-Bridging-Header.h";
 				VALIDATE_WORKSPACE = YES;
 			};
@@ -5148,6 +5154,7 @@
 				MOZ_BUNDLE_ID = co.neeva.app.ios.browser;
 				MOZ_INTERNAL_URL_SCHEME = neeva;
 				OTHER_SWIFT_FLAGS = "$(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_NEEVA";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEV;
 			};
 			name = Dev;
 		};
@@ -5166,12 +5173,13 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.0.13;
+				OTHER_SWIFT_FLAGS = "$(OTHER_SWIFT_FLAGS_common) -DDEV -DMOZ_CHANNEL_NEEVA";
 				PRODUCT_BUNDLE_IDENTIFIER = "co.neeva.app.ios.browser-dev";
 				PRODUCT_MODULE_NAME = Client;
 				PRODUCT_NAME = Client;
 				PROVISIONING_PROFILE_SPECIFIER = "Neeva Browser-Dev Development";
 				SKIP_INSTALL = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = BUDDYBUILD;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEV;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Client/Client-Bridging-Header.h";
 				VALIDATE_WORKSPACE = YES;
 			};

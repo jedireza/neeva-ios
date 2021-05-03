@@ -37,12 +37,15 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
             self.dismiss( animated: true, completion: nil )
             switch result {
             case .home:
+                ClientLogger.shared.logCounter(.OpenHome, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.home)
                 break
             case .spaces:
+                ClientLogger.shared.logCounter(.OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.spaces)
                 break
             case .settings:
+                ClientLogger.shared.logCounter(.OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
                 self.dismiss( animated: true, completion: nil )
                 let settingsTableViewController = AppSettingsTableViewController()
                 settingsTableViewController.profile = delegate.profile
@@ -65,12 +68,15 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
                 }
                 break
             case .history:
+                ClientLogger.shared.logCounter(.OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.homePanelDidRequestToOpenLibrary(panel: .history)
                 break
             case .downloads:
+                ClientLogger.shared.logCounter(.OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.homePanelDidRequestToOpenLibrary(panel: .downloads)
                 break
             case .feedback:
+                ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.present(SendFeedbackPanel(), animated: true)
                 break
             }

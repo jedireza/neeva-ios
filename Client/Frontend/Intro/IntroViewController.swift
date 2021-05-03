@@ -6,6 +6,7 @@ import Foundation
 import UIKit
 import SnapKit
 import Shared
+import NeevaSupport
 
 class IntroViewController: UIViewController {
     private lazy var welcomeCard = UIView()
@@ -44,12 +45,15 @@ class IntroViewController: UIViewController {
     private func buttonAction(_ option: FirstRunButtonActions){
         switch option {
         case FirstRunButtonActions.signin:
+            ClientLogger.shared.logCounter(.FirstRunSignin, attributes: EnvironmentHelper.shared.getAttributes())
             self.didFinishClosure?(self)
             self.visitSigninPage?()
         case FirstRunButtonActions.signup:
+            ClientLogger.shared.logCounter(.FirstRunSignUp, attributes: EnvironmentHelper.shared.getAttributes())
             self.didFinishClosure?(self)
             self.visitHomePage?()
         case FirstRunButtonActions.skipToBrowser:
+            ClientLogger.shared.logCounter(.FirstRunSkipToBrowser, attributes: EnvironmentHelper.shared.getAttributes())
             self.didFinishClosure?(self)
         }
     }

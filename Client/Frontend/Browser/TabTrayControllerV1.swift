@@ -6,6 +6,7 @@ import UIKit
 import SnapKit
 import Storage
 import Shared
+import NeevaSupport
 
 struct TabTrayControllerUX {
     static let CornerRadius = CGFloat(6.0)
@@ -277,6 +278,12 @@ class TabTrayControllerV1: UIViewController {
             fromView = snapshot
         } else {
             fromView = emptyPrivateTabsView
+        }
+
+        if (tabDisplayManager.isPrivate) {
+            ClientLogger.shared.logCounter(.TurnOffIncognitoMode, attributes: EnvironmentHelper.shared.getAttributes())
+        } else {
+            ClientLogger.shared.logCounter(.TurnOnIncognitoMode, attributes: EnvironmentHelper.shared.getAttributes())
         }
 
         tabManager.willSwitchTabMode(leavingPBM: tabDisplayManager.isPrivate)
@@ -700,6 +707,8 @@ extension TabTrayControllerV1 {
         if tabDisplayManager.isDragging {
             return
         }
+
+        ClientLogger.shared.logCounter(.ClickTrashIcon, attributes: EnvironmentHelper.shared.getAttributes())
 
         let controller = AlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         controller.addAction(UIAlertAction(title: Strings.AppMenuCloseAllTabsTitleString, style: .default, handler: { _ in self.closeTabsForCurrentTray() }), accessibilityIdentifier: "TabTrayController.deleteButton.closeAll")

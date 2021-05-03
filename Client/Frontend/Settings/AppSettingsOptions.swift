@@ -169,6 +169,7 @@ class NeevaProfileSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.SettingSignin, attributes: EnvironmentHelper.shared.getAttributes())
         if !NeevaUserInfo.shared.hasLoginCookie() {
             navigationController?.dismiss(animated: true) {
                 if let url = URL(string: NeevaConstants.appSigninURL) {
@@ -186,6 +187,7 @@ class NeevaSearchSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.SettingAccountSettings, attributes: EnvironmentHelper.shared.getAttributes())
         navigationController?.dismiss(animated: true) {
             if let url = URL(string: NeevaConstants.appSettingsURL) {
                 self.delegate?.settingsOpenURLInNewTab(url)
@@ -329,6 +331,7 @@ class LicenseAndAcknowledgementsSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.ViewLicenses, attributes: EnvironmentHelper.shared.getAttributes())
         setUpAndPushSettingsContentViewController(navigationController, self.url)
     }
 }
@@ -345,6 +348,7 @@ class YourRightsSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.ViewTerms, attributes: EnvironmentHelper.shared.getAttributes())
         setUpAndPushSettingsContentViewController(navigationController, self.url)
     }
 }
@@ -361,6 +365,7 @@ class ShowIntroductionSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.ViewShowTour, attributes: EnvironmentHelper.shared.getAttributes())
         navigationController?.dismiss(animated: true, completion: {
             BrowserViewController.foregroundBVC().presentIntroViewController(true)
         })
@@ -390,6 +395,7 @@ class OpenSupportPageSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.ViewHelp, attributes: EnvironmentHelper.shared.getAttributes())
         navigationController?.dismiss(animated: true) {
             if let url = URL(string: NeevaConstants.appHelpCenterURL) {
                 self.delegate?.settingsOpenURLInNewTab(url)
@@ -411,6 +417,7 @@ class ContentBlockerSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.ViewTrackingProtection, attributes: EnvironmentHelper.shared.getAttributes())
         let viewController = ContentBlockerSettingViewController(prefs: profile.prefs)
         viewController.profile = profile
         viewController.tabManager = tabManager
@@ -435,6 +442,7 @@ class ClearPrivateDataSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.ViewDataManagement, attributes: EnvironmentHelper.shared.getAttributes())
         let viewController = ClearPrivateDataTableViewController()
         viewController.profile = profile
         viewController.tabManager = tabManager
@@ -452,6 +460,7 @@ class PrivacyPolicySetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.ViewPrivacyPolicy, attributes: EnvironmentHelper.shared.getAttributes())
         setUpAndPushSettingsContentViewController(navigationController, self.url)
     }
 }
@@ -500,6 +509,7 @@ class DefaultBrowserSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
         let viewController = DefaultBrowserSettingViewController(prefs: profile.prefs)
         viewController.profile = profile
         navigationController?.pushViewController(viewController, animated: true)
@@ -552,6 +562,7 @@ class SignOutSetting: Setting{
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
+        ClientLogger.shared.logCounter(.SettingSignout, attributes: EnvironmentHelper.shared.getAttributes())
         if NeevaUserInfo.shared.hasLoginCookie() {
             NeevaUserInfo.shared.clearCache()
             NeevaUserInfo.shared.deleteLoginCookie()

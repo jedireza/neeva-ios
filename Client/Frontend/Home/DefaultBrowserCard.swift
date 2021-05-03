@@ -136,11 +136,13 @@ class DefaultBrowserCard: UIView {
     }
     
     @objc private func dismissCard() {
+        ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
         self.dismissClosure?()
         UserDefaults.standard.set(true, forKey: "DidDismissDefaultBrowserCard")
     }
     
     @objc private func showOnboarding() {
+        ClientLogger.shared.logCounter(.PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
         BrowserViewController.foregroundBVC().presentDBOnboardingViewController(true)
         
         // Set default browser onboarding did show to true so it will not show again after user clicks this button
@@ -148,6 +150,7 @@ class DefaultBrowserCard: UIView {
     }
 
     @objc private func openLoginPage(){
+        ClientLogger.shared.logCounter(.PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
         self.signinHandler?()
     }
     

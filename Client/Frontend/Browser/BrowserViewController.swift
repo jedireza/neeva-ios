@@ -552,6 +552,9 @@ class BrowserViewController: UIViewController {
             self.view.alpha = (profile.prefs.intForKey(PrefsKeys.IntroSeen) != nil) ? 1.0 : 0.0
         }
 
+        // config log environment variable
+        ClientLogger.shared.env = EnvironmentHelper.shared.env
+
         if !displayedRestoreTabsAlert && !cleanlyBackgrounded() && crashedLastLaunch() {
             displayedRestoreTabsAlert = true
             showRestoreTabsAlert()
@@ -1326,6 +1329,9 @@ extension BrowserViewController {
 
 extension BrowserViewController: URLBarDelegate {
     func showTabTray() {
+        // log show tap tray
+        ClientLogger.shared.logCounter(.ShowTabTray, attributes: EnvironmentHelper.shared.getAttributes())
+
         Sentry.shared.clearBreadcrumbs()
 
         updateFindInPageVisibility(visible: false)
@@ -1341,6 +1347,9 @@ extension BrowserViewController: URLBarDelegate {
     }
 
     func urlBarDidPressReload(_ urlBar: URLBarView) {
+        // log tap reload
+        ClientLogger.shared.logCounter(.TapReload, attributes: EnvironmentHelper.shared.getAttributes())
+
         tabManager.selectedTab?.reload()
     }
 
@@ -1349,6 +1358,10 @@ extension BrowserViewController: URLBarDelegate {
         let host = PopOverNeevaMenuViewController(
             delegate: self,
             source: button, isPrivate: isPrivate)
+
+        // log tap neeva menu
+        ClientLogger.shared.logCounter(.OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
+
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background
         host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 315))
@@ -1375,7 +1388,10 @@ extension BrowserViewController: URLBarDelegate {
         let host = PopOverTrackingMenuViewController(
             delegate: self,
             source: button)
-          
+
+        // log tap shield
+        ClientLogger.shared.logCounter(.OpenShield, attributes: EnvironmentHelper.shared.getAttributes())
+
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.theme.popupMenu.background
         host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 120))

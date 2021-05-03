@@ -4,6 +4,7 @@
 
 import WebKit
 import Shared
+import NeevaSupport
 
 struct ContentBlockingConfig {
     struct Prefs {
@@ -106,6 +107,12 @@ extension NeevaTabContentBlocker {
 
     static func toggleTrackingProtectionEnabled(prefs: Prefs) {
         let isEnabled = NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: prefs)
+        if isEnabled {
+            ClientLogger.shared.logCounter(.TurnOffBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
+        } else {
+            ClientLogger.shared.logCounter(.TurnOnBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
+        }
+            
         setTrackingProtection(enabled: !isEnabled, prefs: prefs)
     }
 }

@@ -6,6 +6,7 @@ import NeevaSupport
 import UIKit
 import SnapKit
 import Shared
+import NeevaSupport
 
 protocol TabToolbarProtocol: AnyObject {
     var tabToolbarDelegate: TabToolbarDelegate? { get set }
@@ -73,6 +74,7 @@ open class TabToolbarHelper: NSObject {
         toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
         toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the tab toolbar Share button")
         toolbar.shareButton.addAction(UIAction { _ in
+            ClientLogger.shared.logCounter(.ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
             guard
                 let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
                 let tab = bvc.tabManager.selectedTab,
@@ -101,10 +103,12 @@ open class TabToolbarHelper: NSObject {
     }
 
     func didClickSpaces() {
+        ClientLogger.shared.logCounter(.SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu(toolbar, button: toolbar.addToSpacesButton)
     }
 
     func didClickBack() {
+        ClientLogger.shared.logCounter(.ClickBack, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarDidPressBack(toolbar, button: toolbar.backButton)
     }
 
@@ -115,10 +119,12 @@ open class TabToolbarHelper: NSObject {
     }
 
     func didClickTabs() {
+        ClientLogger.shared.logCounter(.ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarDidPressTabs(toolbar, button: toolbar.tabsButton)
     }
 
     func didClickForward() {
+        ClientLogger.shared.logCounter(.ClickForward, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarDidPressForward(toolbar, button: toolbar.forwardButton)
     }
 

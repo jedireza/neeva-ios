@@ -5,6 +5,7 @@
 import UIKit
 import Shared
 import WebKit
+import NeevaSupport
 
 enum Section: Int {
     case sites = 0
@@ -246,6 +247,7 @@ class WebsiteDataManagementViewController: UIViewController, UITableViewDataSour
     }
 
     func clearWebsiteData(_ action: UIAlertAction) {
+        ClientLogger.shared.logCounter(.ClearAllWebsiteData, attributes: EnvironmentHelper.shared.getAttributes())
         let types = WKWebsiteDataStore.allWebsiteDataTypes()
         WKWebsiteDataStore.default().removeData(ofTypes: types, modifiedSince: .distantPast) {}
 

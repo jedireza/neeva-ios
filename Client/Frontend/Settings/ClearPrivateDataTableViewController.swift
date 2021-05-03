@@ -4,6 +4,7 @@
 
 import UIKit
 import Shared
+import NeevaSupport
 
 private let SectionArrow = 0
 private let SectionToggles = 1
@@ -129,6 +130,7 @@ class ClearPrivateDataTableViewController: ThemedTableViewController {
             // We have been asked to clear history and we have an account.
             // (Whether or not it's in a good state is irrelevant.)
             func clearPrivateData(_ action: UIAlertAction) {
+                ClientLogger.shared.logCounter(.ClearPrivateData, attributes: EnvironmentHelper.shared.getAttributes())
                 let toggles = self.toggles
                 self.clearables
                     .enumerated()
