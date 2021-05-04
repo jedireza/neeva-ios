@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
+import Foundation
 
 /// Retrieves all spaces the user can view.
 class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController.Space]> {
@@ -24,6 +25,41 @@ class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController
 extension SpaceListController.Space: Identifiable {
     public var id: String {
         pageMetadata!.pageId!
+    }
+}
+
+/// Retrieves all URLs for a space
+class SpaceURLsQueryController: QueryController<GetSpaceUrLsQuery, [URL]> {
+    private var spaceId: String
+
+    public init(spaceId: String) {
+        self.spaceId = spaceId
+        super.init()
+    }
+
+    override func reload() {
+        self.perform(query: GetSpaceUrLsQuery(id: spaceId))
+    }
+
+    override class func processData(_ data: GetSpaceUrLsQuery.Data) -> [URL] {
+        var urls: [URL] = []
+        if let spaces = data.getSpace?.space, spaces.count == 1, let entities = spaces[0].space?.entities {
+            for entity in entities {
+                if let urlString = entity.spaceEntity?.url {
+                    if let url = URL(string: urlString) {
+                        urls.append(url)
+                    }
+                }
+            }
+        }
+        return urls
+    }
+
+    @discardableResult static func getURLs(
+        spaceId: String,
+        completion: @escaping (Result<[URL], Error>) -> ()
+    ) -> Apollo.Cancellable {
+        Self.perform(query: GetSpaceUrLsQuery(id: spaceId), completion: completion)
     }
 }
 

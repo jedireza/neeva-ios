@@ -12,6 +12,20 @@ query ListSpaces($kind: ListSpacesKind = All) {
   }
 }
 
+query GetSpaceURLs($id: String) {
+  getSpace(input: { id: $id }) {
+    space {
+      space {
+        entities {
+          spaceEntity {
+            url
+          }
+        }
+      }
+    }
+  }
+}
+
 mutation AddToSpace($input: AddSpaceResultByURLInput!) {
   entityId: addSpaceResultByURL(input: $input)
 }

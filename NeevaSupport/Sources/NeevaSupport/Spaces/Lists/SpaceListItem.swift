@@ -4,23 +4,31 @@ import SwiftUI
 
 /// An entry in a space list
 struct SpaceListItem: View {
-    let space: SpaceListController.Space
-    let currentURL: String?
+    let space: Space
+    let icon: Nicon
+    let iconColor: Color
+
     /// - Parameter space: the space to render
-    init(_ space: SpaceListController.Space, currentURL: String? = "") {
+    init(_ space: Space, currentURL: URL) {
         self.space = space
-        self.currentURL = currentURL
+        if SpaceStore.shared.urlInSpace(currentURL, spaceId: space.id) {
+            icon = .bookmarkFill
+            iconColor = .defaultBlue
+        } else {
+            icon = .bookmark
+            iconColor = .tertiaryLabel
+        }
     }
     var body: some View {
         HStack(spacing: 16) {
             LargeSpaceIconView(space: space)
-            Text(space.space!.name ?? "")
+            Text(space.name)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(.primary)
             Spacer()
-            Symbol.neeva(.bookmark, size: 16, weight: .semibold)
+            Symbol.neeva(icon, size: 16, weight: .semibold)
                 .frame(width: 44, height: 44)
-                .foregroundColor(.tertiaryLabel)
+                .foregroundColor(iconColor)
         }
         .padding([.top, .bottom], 6)
         .padding(.leading, 16)
@@ -31,8 +39,8 @@ struct SpaceListItem: View {
 struct SpaceView_Previews: PreviewProvider {
     static var previews: some View {
         List {
-            SpaceListItem(.savedForLater)
-            SpaceListItem(.stackOverflow)
+            SpaceListItem(.savedForLater, currentURL: URL(string: "https://neeva.com")!)
+            SpaceListItem(.stackOverflow, currentURL: URL(string: "https://neeva.com")!)
         }
     }
 }

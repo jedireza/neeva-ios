@@ -11,7 +11,7 @@ fileprivate struct Metrics {
 
 /// Displayed in space lists
 struct LargeSpaceIconView: View {
-    let space: SpaceListController.Space
+    let space: Space
 
     struct EmptyIcon<Content: View>: View {
         let background: Color
@@ -29,14 +29,14 @@ struct LargeSpaceIconView: View {
     }
 
     var body: some View {
-        if space.space!.isDefaultSpace ?? false {
-            EmptyIcon(background: space.space!.resultCount ?? 0 == 0 ? .spaceIconBackground : .gray96) {
+        if space.isDefaultSpace {
+            EmptyIcon(background: space.resultCount == 0 ? .spaceIconBackground : .gray96) {
                 Image(systemName: "star.fill")
                     .font(.system(size: Metrics.starSize))
                     .foregroundColor(.savedForLaterIcon)
             }
         } else if
-            let thumbnail = space.space!.thumbnail?.dataURIBody,
+            let thumbnail = space.thumbnail?.dataURIBody,
             let image = UIImage(data: thumbnail) {
             Image(uiImage: image)
                 .resizable()
@@ -45,12 +45,10 @@ struct LargeSpaceIconView: View {
                 .cornerRadius(Metrics.cornerRadius)
         } else {
             EmptyIcon(background: .spaceIconBackground) {
-                if let name = space.space!.name {
-                    Text(firstCharacters(2, from: name))
-                        .foregroundColor(.white)
-                        .font(.system(size: Metrics.textSize, weight: .medium, design: .default))
-                        .accessibilityHidden(true)
-                }
+                Text(firstCharacters(2, from: space.name))
+                    .foregroundColor(.white)
+                    .font(.system(size: Metrics.textSize, weight: .medium, design: .default))
+                    .accessibilityHidden(true)
             }
         }
     }

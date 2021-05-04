@@ -2,42 +2,35 @@
 
 /// Constant spaces and thumbnail images for use in previews.
 
-extension SpaceListController.Space {
-    static let empty = SpaceListController.Space(
-        pageMetadata: .init(pageId: "page-id"),
-        space: .init(
-            name: "Empty Space",
-            thumbnail: "",
-            isDefaultSpace: false
-        )
+extension Space {
+    static let empty = Space(
+        id: .init(value: "page-id"),
+        name: "Empty Space",
+        thumbnail: nil,
+        resultCount: 0,
+        isDefaultSpace: false
     )
-    static let stackOverflow = SpaceListController.Space(
-        pageMetadata: .init(pageId: "page-id"),
-        space: .init(
-            name: "Test Space",
-            thumbnail: SpaceThumbnails.stackOverflowThumbnail,
-            resultCount: 1,
-            isDefaultSpace: false
-        )
+    static let stackOverflow = Space(
+        id: .init(value: "page-id"),
+        name: "Test Space",
+        thumbnail: SpaceThumbnails.stackOverflowThumbnail,
+        resultCount: 1,
+        isDefaultSpace: false
     )
-    static let savedForLater = SpaceListController.Space(
-        pageMetadata: .init(pageId: "page-id"),
-        space: .init(
-            name: "Saved For Later",
-            thumbnail: SpaceThumbnails.githubThumbnail,
-            resultCount: 1,
-            isDefaultSpace: false
-        )
+    static let savedForLater = Space(
+        id: .init(value: "page-id"),
+        name: "Saved For Later",
+        thumbnail: SpaceThumbnails.githubThumbnail,
+        resultCount: 1,
+        isDefaultSpace: false
     )
 
-    static let savedForLaterEmpty = SpaceListController.Space(
-        pageMetadata: .init(pageId: "page-id"),
-        space: .init(
-            name: "Saved For Later",
-            thumbnail: SpaceThumbnails.githubThumbnail,
-            resultCount: 0,
-            isDefaultSpace: false
-        )
+    static let savedForLaterEmpty = Space(
+        id: .init(value: "page-id"),
+        name: "Saved For Later",
+        thumbnail: SpaceThumbnails.githubThumbnail,
+        resultCount: 0,
+        isDefaultSpace: false
     )
 }
 

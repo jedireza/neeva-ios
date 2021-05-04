@@ -26,6 +26,7 @@ public enum Nicon: Character {
     case arrowUpRight = "\u{10012F}"
     case arrowUpRightDiamondFill = "\u{10065F}"
     case bookmark = "\u{10025E}"
+    case bookmarkFill = "\u{10025F}"
     case bubbleLeft = "\u{10032A}"
     case gear = "\u{10035F}"
     case house = "\u{10039E}"

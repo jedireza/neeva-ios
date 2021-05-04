@@ -4,7 +4,6 @@ import SwiftUI
 import Apollo
 
 public class AddToSpaceRequest: ObservableObject {
-    var spaceList = SpaceListController()
     var cancellable: Apollo.Cancellable? = nil
 
     public let title: String
@@ -42,6 +41,7 @@ public class AddToSpaceRequest: ObservableObject {
         self.title = title
         self.description = description
         self.url = url
+        SpaceStore.shared.refresh()
     }
 
     func addToNewSpace(spaceName: String) {
@@ -110,7 +110,7 @@ public class AddToSpaceRequest: ObservableObject {
 
 public struct AddToSpaceView: View {
     @StateObject var request: AddToSpaceRequest
-    @StateObject var spaceList: SpaceListController
+    @StateObject var spaceStore = SpaceStore.shared
 
     @State private var searchTerm: String? = nil
 
@@ -118,18 +118,47 @@ public struct AddToSpaceView: View {
 
     public init(request: AddToSpaceRequest, onDismiss: @escaping () -> () = {}) {
         self._request = StateObject(wrappedValue: request)
-        self._spaceList = StateObject(wrappedValue: request.spaceList)
         self.onDismiss = onDismiss
     }
 
-    func filter(_ spaces: [SpaceListController.Space]) -> [SpaceListController.Space] {
-        let filtered = spaces.filter { $0.space?.userAcl?.acl >= .edit }
+    func filter(_ spaces: [Space]) -> [Space] {
         if let searchTerm = searchTerm, !searchTerm.isEmpty {
-            return filtered.filter {
-                $0.space?.name?.localizedCaseInsensitiveContains(searchTerm) ?? false
+            return spaces.filter {
+                $0.name.localizedCaseInsensitiveContains(searchTerm)
             }
         }
-        return filtered
+        return spaces
+    }
+
+    var filteredListView: some View {
+        Group {
+            let filteredSpaces = filter(spaceStore.spaces)
+            SpacesSearchHeaderView(
+                filterAction: { searchTerm = $0 },
+                createAction: { request.mode = .saveToNewSpace }
+            )
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 20)
+            if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
+                Text("No Results Found")
+                    .font(.title)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 16)
+            } else {
+                LazyVStack(spacing: 20) {
+                    ForEach(filteredSpaces, id: \.self) { space in
+                        Button {
+                            request.addToExistingSpace(id: space.id.value, name: space.name)
+                            onDismiss()
+                        } label: {
+                            SpaceListItem(space, currentURL: request.url)
+                        }
+                    }
+                }
+                .padding(.bottom, 16)
+            }
+        }
     }
 
     public var body: some View {
@@ -142,38 +171,13 @@ public struct AddToSpaceView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 0) {
-                        switch spaceList.state {
-                        case .running:
+                        switch spaceStore.state {
+                        case .refreshing:
                             LoadingView("Loading spaces…")
-                        case .failure(let error):
-                            ErrorView(error, in: self, tryAgain: { spaceList.reload() })
-                        case .success(let spaces):
-                            let filteredSpaces = filter(spaces)
-                            SpacesSearchHeaderView(
-                                filterAction: { searchTerm = $0 },
-                                createAction: { request.mode = .saveToNewSpace }
-                            )
-                            .padding(.horizontal, 16)
-                            .padding(.top, 8)
-                            .padding(.bottom, 20)
-                            if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
-                                Text("No Results Found")
-                                    .font(.title)
-                                    .foregroundColor(.secondary)
-                                    .padding(.top, 16)
-                            } else {
-                                LazyVStack(spacing: 20) {
-                                    ForEach(filteredSpaces) { space in
-                                        Button {
-                                            request.addToExistingSpace(id: space.id, name: space.space?.name ?? "Unknown")
-                                            onDismiss()
-                                        } label: {
-                                            SpaceListItem(space)
-                                        }
-                                    }
-                                }
-                                .padding(.bottom, 16)
-                            }
+                        case .failed(let error):
+                            ErrorView(error, in: self, tryAgain: { spaceStore.refresh() })
+                        case .ready:
+                            filteredListView
                         }
                     }
                 }

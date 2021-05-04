@@ -4239,6 +4239,271 @@ public final class ListSpacesQuery: GraphQLQuery {
   }
 }
 
+public final class GetSpaceUrLsQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query GetSpaceURLs($id: String) {
+      getSpace(input: {id: $id}) {
+        __typename
+        space {
+          __typename
+          space {
+            __typename
+            entities {
+              __typename
+              spaceEntity {
+                __typename
+                url
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "GetSpaceURLs"
+
+  public let operationIdentifier: String? = "4a632c73193e3dcc84fa38bea4679f6972dd5ff6afb5a84ff38342b916912ada"
+
+  public var id: String?
+
+  public init(id: String? = nil) {
+    self.id = id
+  }
+
+  public var variables: GraphQLMap? {
+    return ["id": id]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("getSpace", arguments: ["input": ["id": GraphQLVariable("id")]], type: .object(GetSpace.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(getSpace: GetSpace? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "getSpace": getSpace.flatMap { (value: GetSpace) -> ResultMap in value.resultMap }])
+    }
+
+    /// Get full details for specific space.
+    /// This returns a space list in case we support getting multiple spaces in the future.
+    public var getSpace: GetSpace? {
+      get {
+        return (resultMap["getSpace"] as? ResultMap).flatMap { GetSpace(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "getSpace")
+      }
+    }
+
+    public struct GetSpace: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["SpaceList"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("space", type: .nonNull(.list(.nonNull(.object(Space.selections))))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(space: [Space]) {
+        self.init(unsafeResultMap: ["__typename": "SpaceList", "space": space.map { (value: Space) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var space: [Space] {
+        get {
+          return (resultMap["space"] as! [ResultMap]).map { (value: ResultMap) -> Space in Space(unsafeResultMap: value) }
+        }
+        set {
+          resultMap.updateValue(newValue.map { (value: Space) -> ResultMap in value.resultMap }, forKey: "space")
+        }
+      }
+
+      public struct Space: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["Space"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("space", type: .object(Space.selections)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(space: Space? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Space", "space": space.flatMap { (value: Space) -> ResultMap in value.resultMap }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var space: Space? {
+          get {
+            return (resultMap["space"] as? ResultMap).flatMap { Space(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "space")
+          }
+        }
+
+        public struct Space: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["SpaceData"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("entities", type: .list(.nonNull(.object(Entity.selections)))),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(entities: [Entity]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var entities: [Entity]? {
+            get {
+              return (resultMap["entities"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Entity] in value.map { (value: ResultMap) -> Entity in Entity(unsafeResultMap: value) } }
+            }
+            set {
+              resultMap.updateValue(newValue.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }, forKey: "entities")
+            }
+          }
+
+          public struct Entity: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SpaceEntity"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("spaceEntity", type: .object(SpaceEntity.selections)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(spaceEntity: SpaceEntity? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SpaceEntity", "spaceEntity": spaceEntity.flatMap { (value: SpaceEntity) -> ResultMap in value.resultMap }])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            public var spaceEntity: SpaceEntity? {
+              get {
+                return (resultMap["spaceEntity"] as? ResultMap).flatMap { SpaceEntity(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "spaceEntity")
+              }
+            }
+
+            public struct SpaceEntity: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["SpaceEntityData"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("url", type: .scalar(String.self)),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(url: String? = nil) {
+                self.init(unsafeResultMap: ["__typename": "SpaceEntityData", "url": url])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var url: String? {
+                get {
+                  return resultMap["url"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "url")
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 public final class AddToSpaceMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
