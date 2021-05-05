@@ -49,6 +49,7 @@ class TabManagerStoreTests: XCTestCase {
         XCTAssertEqual(manager.testCountRestoredTabs(), 0)
     }
 
+    /* TODO(bug/261): Disabled due to flakiness.
     func testPrivateTabsAreArchived() {
         for _ in 0..<2 {
             addTabWithSessionData(isPrivate: true)
@@ -60,6 +61,7 @@ class TabManagerStoreTests: XCTestCase {
         }
         waitForExpectations(timeout: 2, handler: nil)
     }
+    */
 
     func testAddedTabsAreStored() {
         // Add 2 tabs
