@@ -23,7 +23,7 @@ enum BuiltinThemeName: String {
 }
 
 // Convenience reference to these normal mode colors which are used in a few color classes.
-fileprivate let defaultBackground = UIColor.Photon.Grey10
+fileprivate let defaultBackground = UIColor.white
 fileprivate let defaultSeparator = UIColor.Photon.Grey30
 fileprivate let defaultTextAndTint = UIColor.Photon.Grey80
 
@@ -145,7 +145,7 @@ class TopTabsColor {
 }
 
 class TextFieldColor {
-    func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.Photon.Grey25 }
+    func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.tertiarySystemFill }
     func textAndTint(isPrivate: Bool) -> UIColor { return isPrivate ? .white : defaultTextAndTint }
     func disabledTextAndTint(isPrivate: Bool) -> UIColor { isPrivate ? UIColor.Custom.disabledShieldDarkGray : UIColor.Custom.disabledShieldLightGray }
     var separator: UIColor { return .white }

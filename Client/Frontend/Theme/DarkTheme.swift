@@ -5,7 +5,7 @@
 import Foundation
 
 // Convenience reference to these normal mode colors which are used in a few color classes.
-fileprivate let defaultBackground = UIColor.Photon.Grey80
+fileprivate let defaultBackground = UIColor.tertiarySystemBackground
 fileprivate let defaultSeparator = UIColor.Photon.Grey60
 fileprivate let defaultTextAndTint = UIColor.Photon.Grey10
 
@@ -78,7 +78,7 @@ fileprivate class DarkTopTabsColor: TopTabsColor {
 }
 
 fileprivate class DarkTextFieldColor: TextFieldColor {
-    override func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.Photon.Grey60 }
+    override func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.systemFill }
 
     override func textAndTint(isPrivate: Bool) -> UIColor { return defaultTextAndTint }
     override func disabledTextAndTint(isPrivate: Bool) -> UIColor { return UIColor.Custom.disabledShieldDarkGray }
