@@ -35,7 +35,8 @@ struct AddToSpaceRootView: View {
     }
 
     var body: some View {
-        OverlaySheetView(model: self.overlaySheetModel, onDismiss: { self.onDismiss() }) {
+        let config = OverlaySheetConfig(showTitle: true)
+        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() }) {
             AddToSpaceView(
                 request: self.request, onDismiss: {
                     // The user made a selection. Store that and run the animation to hide the

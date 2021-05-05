@@ -49,6 +49,16 @@ class OverlaySheetModel: ObservableObject {
     }
 }
 
+struct OverlaySheetConfig {
+    let showTitle: Bool
+    let backgroundColor: UIColor
+
+    init(showTitle: Bool, backgroundColor: UIColor = .systemBackground) {
+        self.showTitle = showTitle
+        self.backgroundColor = backgroundColor
+    }
+}
+
 // Intended to present content that is flexible in height (e.g., a ScrollView).
 struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @StateObject var model: OverlaySheetModel
@@ -59,7 +69,8 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @State private var title: String = ""
     @State private var isFixedHeight: Bool = false
 
-    let onDismiss: () -> ()
+    let config: OverlaySheetConfig
+    let onDismiss: () -> Void
     var content: () -> Content
 
     private var keyboardIsVisible: Bool {
@@ -118,25 +129,26 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     .padding(.top, 8)
             }
             HStack(spacing: 0) {
-                Text(title)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-                    .padding(.leading, 16)
-                Spacer()
-                Button {
-                    self.model.hide()
-                } label: {
-                    Symbol.system(.xmark, size: 16, weight: .semibold)
-                        .foregroundColor(Color(UIColor.Neeva.Gray60))
-                        .frame(width: 44, height: 44)
-                        .padding(.trailing, 4.5)
+                if config.showTitle {
+                    Text(title)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                        .padding(.leading, 16)
+                    Spacer()
+                    Button {
+                        self.model.hide()
+                    } label: {
+                        Symbol.system(.xmark, size: 16, weight: .semibold)
+                            .foregroundColor(Color(UIColor.Neeva.Gray60))
+                            .frame(width: 44, height: 44)
+                            .padding(.trailing, 4.5)
+                    }
+                } else {
+                    Spacer()
                 }
             }
             .padding(.top, 8)
         }
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(16, corners: [.topLeft, .topRight])
-        .gesture(topDrag)
     }
 
     var body: some View {
@@ -174,15 +186,18 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                                 .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
                                 .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) { self.title = $0 }
                                 .onPreferenceChange(OverlaySheetIsFixedHeightPreferenceKey.self) { self.isFixedHeight = $0 }
-                                .background(Color(UIColor.systemBackground))
                             if isFixedHeight {
-                                Color(UIColor.systemBackground)
-                                    .ignoresSafeArea(edges: .bottom)
+                                Spacer().ignoresSafeArea(edges: .bottom)
                             }
                         }
+                        .background(
+                            Color(config.backgroundColor)
+                                .cornerRadius(16, corners: [.topLeft, .topRight])
+                                .gesture(topDrag)
+                        )
 
                         // Position the card above the keyboard.
-                        Color(UIColor.systemBackground)
+                        Color(config.backgroundColor)
                             .frame(height: keyboardHeight)
                     }
                     // Constrain to full width in portrait mode.
