@@ -20,6 +20,10 @@ struct OverlaySheetUX {
 
     // Width of the sheet when in landscape mode.
     static let landscapeModeWidth: CGFloat = 500
+
+    // Padding inserted below a fixed-height sheet when the keyboard is not
+    // showing. This keeps the content out of the safe area.
+    static let fixedHeightModeBottomPadding: CGFloat = 22
 }
 
 enum OverlaySheetPosition {
@@ -82,7 +86,15 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     private func getSpacerHeight(_ outerGeometry: GeometryProxy) -> CGFloat {
         var size: CGFloat
         if isFixedHeight {
-            size = outerGeometry.size.height - contentHeight - topBarHeight
+            switch self.model.position {
+            case .top, .middle:
+                size = outerGeometry.size.height - contentHeight - topBarHeight
+                if !keyboardIsVisible {
+                    size -= OverlaySheetUX.fixedHeightModeBottomPadding
+                }
+            case .dismissed:
+                size = outerGeometry.size.height
+            }
         } else {
             let defaultSize: CGFloat
             switch self.model.position {
@@ -99,6 +111,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             }
             size = defaultSize + self.model.deltaHeight
         }
+        size -= keyboardHeight  // Take keyboard height into account
         if size < 0 {
             size = 0
         }
@@ -151,6 +164,58 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         }
     }
 
+    var sheet: some View {
+        GeometryReader { outerGeometry in
+            VStack(spacing: 0) {
+                // The height of this spacer is what controls the apparent height of
+                // the sheet. By sizing this spacer instead of the sheet directly
+                // we avoid encroaching on the safe area. That's because the spacer
+                // cannot be made to have negative height.
+                Spacer()
+                    .frame(height: getSpacerHeight(outerGeometry))
+
+                VStack(spacing: 0) {
+                    self.topBar
+                        .modifier(ViewHeightKey())
+                        .onPreferenceChange(ViewHeightKey.self) { self.topBarHeight = $0 }
+                    self.content()
+                        .modifier(ViewHeightKey())
+                        .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
+                        .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) { self.title = $0 }
+                        .onPreferenceChange(OverlaySheetIsFixedHeightPreferenceKey.self) { self.isFixedHeight = $0 }
+                    if isFixedHeight {
+                        Spacer()
+                    }
+                }
+                .background(
+                    Color(config.backgroundColor)
+                        .cornerRadius(16, corners: [.topLeft, .topRight])
+                        .gesture(topDrag)
+                )
+
+                // Position the card above the keyboard.
+                Color(config.backgroundColor)
+                    .frame(height: keyboardHeight)
+            }
+        }
+        .onReceive(keyboardPublisher) { height in
+            // When opening the keyboard, we want our animation to slightly lag behind the keyboard.
+            // When closing the keyboard, we want our animation to slightly lead ahead of the keyboard.
+            let durationScalar: Double
+            if height > 0 {
+                durationScalar = 1.6
+            } else {
+                durationScalar = 0.6
+            }
+            withAnimation(.easeInOut(duration: OverlaySheetUX.animationDuration * durationScalar)) {
+                keyboardHeight = height
+                if height > 0 {
+                    model.position = .top
+                }
+            }
+        }
+    }
+
     var body: some View {
         GeometryReader { outerGeometry in
             ZStack {
@@ -166,61 +231,17 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
 
                 // Used to center the sheet within the container view.
                 HStack(spacing: 0) {
-                    Spacer()
-                        .frame(minWidth: 0)
-
-                    VStack(spacing: 0) {
-                        // The height of this spacer is what controls the apparent height of
-                        // the sheet. By sizing this spacer instead of the sheet directly
-                        // we avoid encroaching on the safe area. That's because the spacer
-                        // cannot be made to have negative height.
-                        Spacer()
-                            .frame(height: getSpacerHeight(outerGeometry))
-
-                        VStack(spacing: 0) {
-                            self.topBar
-                                .modifier(ViewHeightKey())
-                                .onPreferenceChange(ViewHeightKey.self) { self.topBarHeight = $0 }
-                            self.content()
-                                .modifier(ViewHeightKey())
-                                .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
-                                .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) { self.title = $0 }
-                                .onPreferenceChange(OverlaySheetIsFixedHeightPreferenceKey.self) { self.isFixedHeight = $0 }
-                            if isFixedHeight {
-                                Spacer().ignoresSafeArea(edges: .bottom)
-                            }
-                        }
-                        .background(
-                            Color(config.backgroundColor)
-                                .cornerRadius(16, corners: [.topLeft, .topRight])
-                                .gesture(topDrag)
-                        )
-
-                        // Position the card above the keyboard.
-                        Color(config.backgroundColor)
-                            .frame(height: keyboardHeight)
-                    }
-                    // Constrain to full width in portrait mode.
-                    .frame(minWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth,
-                           maxWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth)
-
-                    Spacer()
-                        .frame(minWidth: 0)
+                    Spacer().frame(minWidth: 0)
+                    self.sheet
+                        // Constrain to full width in portrait mode.
+                        .frame(minWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth,
+                               maxWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth)
+                    Spacer().frame(minWidth: 0)
                 }
-                .ignoresSafeArea(edges: [.bottom])
+                .ignoresSafeArea(edges: .bottom)
             }
         }
         .navigationBarHidden(true)
-        .onReceive(keyboardPublisher) { height in
-            if height == 0 {
-                keyboardHeight = 0
-            } else {
-                withAnimation(.easeInOut(duration: OverlaySheetUX.animationDuration * 2)) {
-                    keyboardHeight = height
-                    model.position = .top
-                }
-            }
-        }
     }
 
     private func isPortraitMode(_ outerGeometry: GeometryProxy) -> Bool {
