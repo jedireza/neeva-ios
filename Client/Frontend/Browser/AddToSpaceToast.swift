@@ -19,14 +19,28 @@ struct AddToSpaceToastView: View {
     var labelText: String {
         let spaceName = request.targetSpaceName ?? "## Unknown ##"
         switch request.state {
+        case .initial:
+            assert(false)  // Should not be reached
+            return ""
         case .creatingSpace, .savingToSpace:
             return "Saving..."
         case .savedToSpace:
             return "Saved to \"\(spaceName)\""
+        case .deletingFromSpace:
+            return "Deleting..."
+        case .deletedFromSpace:
+            return "Deleted from \"\(spaceName)\""
         case .failed:
             return "Failed to save to \"\(spaceName)\""
+        }
+    }
+
+    var showOpenSpaceButton: Bool {
+        switch request.state {
+        case .savedToSpace, .deletedFromSpace:
+            return true
         default:
-            return ""
+            return false
         }
     }
 
@@ -39,9 +53,9 @@ struct AddToSpaceToastView: View {
 
             Spacer()
 
-            if request.state == .savedToSpace {
+            if showOpenSpaceButton {
                 Button {
-                    onOpenSpace(request.savedToSpaceID!)
+                    onOpenSpace(request.targetSpaceID!)
                 } label: {
                     Text("Open Space")
                         .foregroundColor(Color(UIColor.Neeva.DefaultAqua))

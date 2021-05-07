@@ -31,7 +31,9 @@ class AddToSpaceViewController: UIHostingController<AnyView> {
                     AddToSpaceView(request: request)
                 case .creatingSpace, .savingToSpace:
                     LoadingView("Saving...")
-                case .savedToSpace:
+                case .deletingFromSpace:
+                    LoadingView("Deleting...")
+                case .savedToSpace, .deletedFromSpace:
                     Color.clear.onAppear { onDismiss() }
                 case .failed:
                     ErrorView(request.error!, in: self)

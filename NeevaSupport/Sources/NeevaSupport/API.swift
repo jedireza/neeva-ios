@@ -3309,6 +3309,35 @@ public enum SnapshotKind: RawRepresentable, Equatable, Hashable, CaseIterable, A
   }
 }
 
+public struct DeleteSpaceResultByURLInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - spaceId
+  ///   - url
+  public init(spaceId: String, url: String) {
+    graphQLMap = ["spaceID": spaceId, "url": url]
+  }
+
+  public var spaceId: String {
+    get {
+      return graphQLMap["spaceID"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "spaceID")
+    }
+  }
+
+  public var url: String {
+    get {
+      return graphQLMap["url"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "url")
+    }
+  }
+}
+
 public enum QuerySuggestionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case standard
@@ -4607,6 +4636,60 @@ public final class CreateSpaceMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "createSpace")
+      }
+    }
+  }
+}
+
+public final class DeleteSpaceResultByUrlMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation DeleteSpaceResultByURL($input: DeleteSpaceResultByURLInput!) {
+      deleteSpaceResultByURL(input: $input)
+    }
+    """
+
+  public let operationName: String = "DeleteSpaceResultByURL"
+
+  public let operationIdentifier: String? = "34c776b14ec3ba076ce8dbbb3bb1eaf87b51a101d777cf22b6b1f2437a897732"
+
+  public var input: DeleteSpaceResultByURLInput
+
+  public init(input: DeleteSpaceResultByURLInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("deleteSpaceResultByURL", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(deleteSpaceResultByUrl: Bool) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "deleteSpaceResultByURL": deleteSpaceResultByUrl])
+    }
+
+    /// API to delete entity from a space by URL.
+    public var deleteSpaceResultByUrl: Bool {
+      get {
+        return resultMap["deleteSpaceResultByURL"]! as! Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "deleteSpaceResultByURL")
       }
     }
   }

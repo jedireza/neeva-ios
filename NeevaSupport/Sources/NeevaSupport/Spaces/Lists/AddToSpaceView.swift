@@ -21,16 +21,16 @@ public class AddToSpaceRequest: ObservableObject {
         case creatingSpace
         case savingToSpace
         case savedToSpace
+        case deletingFromSpace
+        case deletedFromSpace
         case failed
     }
     @Published public var state: State = .initial
 
     // The results from a request. |targetSpaceName| is set on both
-    // success and failure. |savedTo{Space,Entity}ID| are only set
-    // on success.
+    // success and failure. |targetSpaceID| is only set on success.
     @Published public var targetSpaceName: String?
-    @Published public var savedToSpaceID: String?
-    @Published public var savedToEntityID: String?
+    @Published public var targetSpaceID: String?
     @Published public var error: Error?
 
     /// - Parameters:
@@ -94,9 +94,8 @@ public class AddToSpaceRequest: ObservableObject {
                     self.state = .failed
                 }
                 break
-            case .success(let data):
-                self.savedToSpaceID = id
-                self.savedToEntityID = data.entityId
+            case .success(_):
+                self.targetSpaceID = id
                 withAnimation {
                     self.state = .savedToSpace
                 }
@@ -104,6 +103,35 @@ public class AddToSpaceRequest: ObservableObject {
         }
         withAnimation {
             self.state = .savingToSpace
+        }
+    }
+
+    func deleteFromExistingSpace(id: String, name: String) {
+        // Note: This creates a reference cycle between self and the mutation.
+        // This means even if all other references are dropped to self, then
+        // the mutation will attempt to run to completion.
+        self.cancellable = DeleteSpaceResultByUrlMutation(
+            input: DeleteSpaceResultByURLInput(spaceId: id, url: self.url.absoluteString)
+        ).perform { result in
+            self.cancellable = nil
+            self.targetSpaceName = name
+            switch result {
+            case .failure(let error):
+                self.error = error
+                withAnimation {
+                    self.state = .failed
+                }
+                break
+            case .success(_):
+                self.targetSpaceID = id
+                withAnimation {
+                    self.state = .deletedFromSpace
+                }
+                break
+            }
+        }
+        withAnimation {
+            self.state = .deletingFromSpace
         }
     }
 }
@@ -149,7 +177,11 @@ public struct AddToSpaceView: View {
                 LazyVStack(spacing: 20) {
                     ForEach(filteredSpaces, id: \.self) { space in
                         Button {
-                            request.addToExistingSpace(id: space.id.value, name: space.name)
+                            if SpaceStore.shared.urlInSpace(request.url, spaceId: space.id) {
+                                request.deleteFromExistingSpace(id: space.id.value, name: space.name)
+                            } else {
+                                request.addToExistingSpace(id: space.id.value, name: space.name)
+                            }
                             onDismiss()
                         } label: {
                             SpaceListItem(space, currentURL: request.url)

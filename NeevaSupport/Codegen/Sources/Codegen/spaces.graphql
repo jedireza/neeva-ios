@@ -33,3 +33,7 @@ mutation AddToSpace($input: AddSpaceResultByURLInput!) {
 mutation CreateSpace($name: String!) {
   createSpace(input: { name: $name })
 }
+
+mutation DeleteSpaceResultByURL($input: DeleteSpaceResultByURLInput!) {
+  deleteSpaceResultByURL(input: $input)
+}
