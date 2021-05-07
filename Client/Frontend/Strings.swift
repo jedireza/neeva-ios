@@ -1106,7 +1106,7 @@ extension String {
 
 // App Settings
 extension String {
-    public static let AppNeevaSettingsSearch = MZLocalizedString("Search Settings", comment: "Show the Search Settings page from the Neeva section in the settings.")
+    public static let AppNeevaSettingsSearch = MZLocalizedString("Account Settings", comment: "Show the Account Settings page from the Neeva section in the settings.")
     public static let AppSettingsLicenses = MZLocalizedString("Licenses", comment: "Settings item that opens a tab containing the licenses. See http://mzl.la/1NSAWCG")
     public static let AppSettingsYourRights = MZLocalizedString("Terms", comment: "Terms settings section title")
     public static let AppSettingsShowTour = MZLocalizedString("Show Tour", comment: "Show the on-boarding screen again from the settings")

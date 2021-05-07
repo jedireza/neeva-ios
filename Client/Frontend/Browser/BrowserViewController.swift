@@ -1289,6 +1289,9 @@ extension BrowserViewController: SettingsDelegate {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         self.openURLInNewTab(url, isPrivate: isPrivate)
     }
+    func settingsOpenURLInNewNonPrivateTab(_ url: URL) {
+        self.openURLInNewTab(url, isPrivate: false)
+    }
 }
 
 extension BrowserViewController: PresentingModalViewControllerDelegate {

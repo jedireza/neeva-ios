@@ -564,6 +564,7 @@ class WithoutAccountSetting: AccountSetting {
 @objc
 protocol SettingsDelegate: AnyObject {
     func settingsOpenURLInNewTab(_ url: URL)
+    func settingsOpenURLInNewNonPrivateTab(_ url: URL)
 }
 
 // The base settings view controller.

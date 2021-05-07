@@ -190,7 +190,9 @@ class NeevaSearchSetting: Setting {
         ClientLogger.shared.logCounter(.SettingAccountSettings, attributes: EnvironmentHelper.shared.getAttributes())
         navigationController?.dismiss(animated: true) {
             if let url = URL(string: NeevaConstants.appSettingsURL) {
-                self.delegate?.settingsOpenURLInNewTab(url)
+                // Note, we need to force Neeva Account Settings to load in a non-private tab
+                // since it operates on the signed-in user's account.
+                self.delegate?.settingsOpenURLInNewNonPrivateTab(url)
             }
         }
     }
