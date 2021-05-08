@@ -31,9 +31,11 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
             self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         }
+        delegate.isNeevaMenuSheetOpen = true
         
         //Build callbacks for each button action
         self.rootView.embeddedView.menuAction = { result in
+            delegate.isNeevaMenuSheetOpen = false
             self.dismiss( animated: true, completion: nil )
             switch result {
             case .home:
@@ -95,6 +97,12 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
 
     override func viewWillDisappear(_ animated: Bool) {
         self.setAlphaOfBackgroundViews(alpha: 1.0)
+        let rotateCheck = delegate?.isRotateSwitchDismiss ?? false
+
+        if !rotateCheck {
+            delegate?.isNeevaMenuSheetOpen = false
+        }
+        delegate?.isRotateSwitchDismiss = false
     }
 
     func setAlphaOfBackgroundViews(alpha: CGFloat) {

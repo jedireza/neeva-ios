@@ -15,6 +15,7 @@ protocol TabLocationViewDelegate {
     func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView)
     func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView)
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView)
+    func tabLocationViewDidTabShareButton(_ tabLocationView: TabLocationView)
 
     func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu?
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]?
@@ -24,6 +25,7 @@ private struct TabLocationViewUX {
     static let LockIconWidth: CGFloat = 16
     static let ShieldButtonWidth: CGFloat = 44
     static let ReloadButtonWidth: CGFloat = 44
+    static let ShareButtonWidth: CGFloat = 46
     static let ButtonHeight: CGFloat = 36
     static let Spacer0Width: CGFloat = (ReloadButtonWidth - 14) / 2
 }
@@ -44,6 +46,10 @@ class TabLocationView: UIView {
             return
         }
         lockImageView.isHidden = !isSecure
+    }
+
+    func updateShareButton(_ isPage: Bool) {
+        shareButton.isEnabled = isPage
     }
 
     var url: URL? {
@@ -130,6 +136,16 @@ class TabLocationView: UIView {
         reloadButton.isAccessibilityElement = true
         return reloadButton
     }()
+
+    lazy var shareButton: UIButton = {
+        let shareButton = UIButton()
+        shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)), for: .normal)
+        shareButton.addTarget(self, action: #selector(tapShareButton), for: .touchUpInside)
+        shareButton.accessibilityIdentifier = "TabLocationView.shareButton"
+        shareButton.tintColor = .black
+        shareButton.imageView?.contentMode = .scaleAspectFit
+        return shareButton
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -145,7 +161,7 @@ class TabLocationView: UIView {
         addGestureRecognizer(longPressRecognizer)
         addGestureRecognizer(tapRecognizer)
 
-        let subviews = [spacer0, spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton]
+        let subviews = [spacer0, spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton, shareButton]
 
         contentView = UIView()
         for view in subviews {
@@ -157,8 +173,14 @@ class TabLocationView: UIView {
         contentView.snp.makeConstraints { make in
             make.edges.equalTo(self)
         }
-        spacer0.snp.makeConstraints { make in
+        shieldButton.snp.makeConstraints { make in
+            make.width.equalTo(TabLocationViewUX.ShieldButtonWidth)
+            make.height.equalTo(TabLocationViewUX.ButtonHeight)
             make.leading.equalTo(self)
+            make.trailing.equalTo(spacer0.snp.leading)
+        }
+        spacer0.snp.makeConstraints { make in
+            make.leading.equalTo(shieldButton.snp.trailing)
             make.trailing.equalTo(spacer1.snp.leading)
             make.width.equalTo(TabLocationViewUX.Spacer0Width)
             make.height.equalTo(10)
@@ -189,11 +211,11 @@ class TabLocationView: UIView {
             make.height.equalTo(TabLocationViewUX.ButtonHeight)
             make.leading.equalTo(spacer2.snp.trailing)
         }
-        shieldButton.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.ShieldButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+        shareButton.snp.makeConstraints { make in
             make.leading.equalTo(reloadButton.snp.trailing)
             make.trailing.equalTo(self)
+            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.width.equalTo(TabLocationViewUX.ShareButtonWidth)
         }
 
         // Setup UIDragInteraction to handle dragging the location
@@ -213,10 +235,18 @@ class TabLocationView: UIView {
     override func updateConstraints() {
         // This spacer exists to balance out the padding of the reload button
         // (or the shield if somehow only it is visible).
-        spacer0.snp.updateConstraints { make in
-            make.width.equalTo(
-                reloadButton.isHidden && shieldButton.isHidden ? 0 : TabLocationViewUX.Spacer0Width)
+        let currentURL = self.url?.absoluteString ?? ""
+        if currentURL.isEmpty {
+            spacer0.snp.updateConstraints { make in
+                make.width.equalTo(TabLocationViewUX.Spacer0Width * 4)
+            }
+        } else {
+            spacer0.snp.updateConstraints { make in
+                make.width.equalTo(
+                    reloadButton.isHidden && shieldButton.isHidden ? 0 : TabLocationViewUX.Spacer0Width)
+            }
         }
+
         lockImageView.snp.updateConstraints { make in
             make.width.equalTo(
                 lockImageView.isHidden ? 0 : TabLocationViewUX.LockIconWidth)
@@ -231,6 +261,11 @@ class TabLocationView: UIView {
         shieldButton.snp.updateConstraints { make in
             make.width.equalTo(
                 shieldButton.isHidden ? 0 : TabLocationViewUX.ShieldButtonWidth)
+        }
+        shareButton.snp.updateConstraints { make in
+            make.width.equalTo(
+                shareButton.isHidden ? 0 : TabLocationViewUX.ShareButtonWidth
+            )
         }
         super.updateConstraints()
     }
@@ -254,6 +289,10 @@ class TabLocationView: UIView {
 
     @objc func tapReloadButton() {
         delegate?.tabLocationViewDidTapReload(self)
+    }
+
+    @objc func tapShareButton() {
+        delegate?.tabLocationViewDidTabShareButton(self)
     }
 
     @objc func longPressLocation(_ recognizer: UITapGestureRecognizer) {
@@ -339,6 +378,7 @@ extension TabLocationView: Themeable {
         lockImageView.tintColor = textAndTint
         reloadButton.tintColor = textAndTint
         shieldButton.tintColor = textAndTint
+        shareButton.tintColor = textAndTint
 
         let color = ThemeManager.instance.currentName == .dark ?
             UIColor(white: 0.3, alpha: 0.6) :

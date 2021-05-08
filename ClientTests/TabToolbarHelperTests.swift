@@ -61,6 +61,9 @@ class MockTabToolbar: TabToolbarProtocol {
     var _shareButton = MockToolbarButton()
     var shareButton: ToolbarButton { get { _shareButton } }
 
+    var _toolbarNeevaMenuButton = MockToolbarButton()
+    var toolbarNeevaMenuButton: ToolbarButton { get { _toolbarNeevaMenuButton} }
+
     var _multiStateButton = MockToolbarButton()
     var multiStateButton: ToolbarButton { get { _multiStateButton } }
     var actionButtons: [Themeable & UIButton] {

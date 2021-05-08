@@ -124,6 +124,10 @@ class BrowserViewController: UIViewController {
     let downloadQueue = DownloadQueue()
     var isCmdClickForNewTab = false
 
+    var isNeevaMenuSheetOpen = false
+    var popOverNeevaMenuViewController: PopOverNeevaMenuViewController? = nil
+    var isRotateSwitchDismiss = false // keep track whether a dismiss is trigger by rotation
+    var isPreviousOrientationLandscape = false
 
     init(profile: Profile, tabManager: TabManager) {
         self.profile = profile
@@ -131,6 +135,7 @@ class BrowserViewController: UIViewController {
         self.readerModeCache = DiskReaderModeCache.sharedInstance
         super.init(nibName: nil, bundle: nil)
         didInit()
+        self.isPreviousOrientationLandscape = UIWindow.isLandscape
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -157,10 +162,25 @@ class BrowserViewController: UIViewController {
         coordinator.animate(alongsideTransition: { context in
             self.scrollController.updateMinimumZoom()
             self.topTabsViewController?.scrollToCurrentTab(false, centerCell: false)
+
             if let popover = self.displayedPopoverController {
                 self.updateDisplayedPopoverProperties?()
                 self.present(popover, animated: true, completion: nil)
             }
+
+            if self.isNeevaMenuSheetOpen {
+                if !(self.urlBar.toolbarIsShowing && self.isPreviousOrientationLandscape) {
+                    if self.urlBar.toolbarIsShowing {
+                        self.hideNeevaMenuSheet()
+                        self.urlBar.didClickNeevaMenu()
+                    } else {
+                        self.isRotateSwitchDismiss = true
+                        self.popOverNeevaMenuViewController?.dismiss(animated: true, completion: nil)
+                        self.showNeevaMenuSheet()
+                    }
+                }
+            }
+            self.isPreviousOrientationLandscape = UIWindow.isLandscape
         }, completion: { _ in
             self.scrollController.setMinimumZoom()
         })
@@ -996,7 +1016,9 @@ class BrowserViewController: UIViewController {
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
         urlBar.currentURL = tab.url?.displayURL
         urlBar.locationView.showLockIcon(forSecureContent: tab.webView?.hasOnlySecureContent ?? false)
+
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
+        urlBar.locationView.updateShareButton(isPage)
         navigationToolbar.updatePageStatus(isPage)
     }
 
@@ -1230,6 +1252,8 @@ class BrowserViewController: UIViewController {
         if let url = webView.url {
             if tab === tabManager.selectedTab {
                 urlBar.locationView.showLockIcon(forSecureContent: webView.hasOnlySecureContent)
+                let isPage = tab.url?.displayURL?.isWebPage() ?? false
+                urlBar.locationView.updateShareButton(isPage)
             }
 
             if (!InternalURL.isValid(url: url) || url.isReaderModeURL), !url.isFileURL {
@@ -1361,7 +1385,7 @@ extension BrowserViewController: URLBarDelegate {
         let host = PopOverNeevaMenuViewController(
             delegate: self,
             source: button, isPrivate: isPrivate)
-
+        self.popOverNeevaMenuViewController = host
         // log tap neeva menu
         ClientLogger.shared.logCounter(.OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
 
@@ -2476,5 +2500,21 @@ extension BrowserViewController {
                         self.openURLInNewTab(url)
                     }))
         }
+    }
+}
+
+extension BrowserViewController {
+    func showNeevaMenuSheet() {
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        self.showOverlaySheetViewController(
+            NeevaMenuViewController(delegate: self, onDismiss: {
+                self.hideOverlaySheetViewController()
+                self.isNeevaMenuSheetOpen = false
+            }, isPrivate: isPrivate)
+        )
+    }
+
+    func hideNeevaMenuSheet() {
+        self.hideOverlaySheetViewController()
     }
 }

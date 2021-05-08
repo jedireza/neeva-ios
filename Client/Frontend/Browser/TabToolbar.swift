@@ -15,6 +15,7 @@ protocol TabToolbarProtocol: AnyObject {
     var forwardButton: ToolbarButton { get }
     var backButton: ToolbarButton { get }
     var shareButton: ToolbarButton { get }
+    var toolbarNeevaMenuButton: ToolbarButton { get }
     var actionButtons: [Themeable & UIButton] { get }
 
     func updateBackStatus(_ canGoBack: Bool)
@@ -74,17 +75,7 @@ open class TabToolbarHelper: NSObject {
         toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
         toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the tab toolbar Share button")
         toolbar.shareButton.addAction(UIAction { _ in
-            ClientLogger.shared.logCounter(.ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
-            guard
-                let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
-                let tab = bvc.tabManager.selectedTab,
-                let url = tab.url
-            else { return }
-            if url.isFileURL {
-                bvc.share(fileURL: url, buttonView: toolbar.shareButton, presentableVC: bvc)
-            } else {
-                bvc.share(tab: tab, from: toolbar.shareButton, presentableVC: bvc)
-            }
+            self.didPressShareButton()
         }, for: .primaryActionTriggered)
 
         toolbar.tabsButton.addTarget(self, action: #selector(didClickTabs), for: .touchUpInside)
@@ -99,7 +90,30 @@ open class TabToolbarHelper: NSObject {
         toolbar.addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
         toolbar.addToSpacesButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
 
+    
+        toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
+        toolbar.toolbarNeevaMenuButton.accessibilityLabel = "TabToolbar.neevaMenuButton"
+        toolbar.toolbarNeevaMenuButton.addTarget(self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
+
         setTheme(forButtons: toolbar.actionButtons)
+    }
+
+    func didPressToolbarNeevaMenu () {
+        BrowserViewController.foregroundBVC().showNeevaMenuSheet()
+    }
+
+    func didPressShareButton () {
+        ClientLogger.shared.logCounter(.ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
+        guard
+            let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
+            let tab = bvc.tabManager.selectedTab,
+            let url = tab.url
+        else { return }
+        if url.isFileURL {
+            bvc.share(fileURL: url, buttonView: toolbar.shareButton, presentableVC: bvc)
+        } else {
+            bvc.share(tab: tab, from: toolbar.shareButton, presentableVC: bvc)
+        }
     }
 
     func didClickSpaces() {
@@ -201,6 +215,7 @@ class TabToolbar: UIView {
     let forwardButton = ToolbarButton()
     let backButton = ToolbarButton()
     let shareButton = ToolbarButton()
+    let toolbarNeevaMenuButton = ToolbarButton()
     let actionButtons: [Themeable & UIButton]
 
     fileprivate let appMenuBadge = BadgeWithBackdrop(imageName: "menuBadge")
@@ -208,11 +223,14 @@ class TabToolbar: UIView {
 
     private var isPrivateMode: Bool = false
 
+    private var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
+
     var helper: TabToolbarHelper?
     private let contentView = UIStackView()
 
     fileprivate override init(frame: CGRect) {
-        actionButtons = [backButton, forwardButton, shareButton, addToSpacesButton, tabsButton]
+        actionButtons = [backButton, forwardButton, toolbarNeevaMenuButton, addToSpacesButton, tabsButton]
+
         super.init(frame: frame)
         setupAccessibility()
 
@@ -243,6 +261,7 @@ class TabToolbar: UIView {
         forwardButton.accessibilityIdentifier = "TabToolbar.forwardButton"
         shareButton.accessibilityIdentifier = "TabToolbar.shareButton"
         tabsButton.accessibilityIdentifier = "TabToolbar.tabsButton"
+        toolbarNeevaMenuButton.accessibilityIdentifier = "TabToolbar.toolbarNeevaMenuButton"
         addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
         accessibilityNavigationStyle = .combined
         accessibilityLabel = .TabToolbarNavigationToolbarAccessibilityLabel
@@ -308,11 +327,19 @@ extension TabToolbar: Themeable{
 
         appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
         warningMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
+        toolbarNeevaMenuButton.tintColor = UIColor.theme.urlbar.neevaMenuTint(isPrivateMode)
     }
 }
 
 extension TabToolbar: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
+
+        if isPrivate {
+            toolbarNeevaMenuButton.setImage(neevaMenuIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
+        } else {
+            toolbarNeevaMenuButton.setImage(neevaMenuIcon, for: .normal)
+        }
+        applyTheme()
     }
 }

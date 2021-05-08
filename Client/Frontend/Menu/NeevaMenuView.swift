@@ -11,13 +11,15 @@ import Shared
 
 public struct NeevaMenuView: View {
     private let isPrivate: Bool
+    private let noTopPadding: Bool
 
     var menuAction: ((NeevaMenuButtonActions) -> ())? = nil
 
     /// - Parameters:
     ///   - isPrivate: true if current tab is in private mode, false otherwise
-    public init(isPrivate: Bool) {
+    public init(isPrivate: Bool, noTopPadding: Bool = false) {
         self.isPrivate = isPrivate
+        self.noTopPadding = noTopPadding
     }
     
     public var body: some View {
@@ -59,7 +61,7 @@ public struct NeevaMenuView: View {
             .background(Color(UIColor.theme.popupMenu.foreground))
             .cornerRadius(NeevaUIConstants.menuCornerDefault)
         }
-        .padding(NeevaUIConstants.menuOuterPadding)
+        .padding(self.noTopPadding ? [.leading, .trailing, .bottom] : [.leading, .trailing, .bottom, .top], NeevaUIConstants.menuOuterPadding)
         .background(Color(UIColor.theme.popupMenu.background))
     }
 }

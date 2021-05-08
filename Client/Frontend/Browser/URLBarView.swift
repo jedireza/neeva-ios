@@ -153,6 +153,8 @@ class URLBarView: UIView {
         return backButton
     }()
 
+    var toolbarNeevaMenuButton = ToolbarButton()
+
     lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton]
 
     var currentURL: URL? {
@@ -264,7 +266,6 @@ class URLBarView: UIView {
 
     override func updateConstraints() {
         super.updateConstraints()
-
         self.locationContainer.snp.remakeConstraints { make in
             if inOverlayMode {
                 make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.LocationEdgePadding)
@@ -274,7 +275,7 @@ class URLBarView: UIView {
                 if self.toolbarIsShowing {
                     make.trailing.equalTo(self.shareButton.snp.leading).offset(-URLBarViewUX.Padding)
                 } else {
-                    make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.LocationEdgePadding)
+                    make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.Padding * 2)
                 }
             }
             make.height.equalTo(URLBarViewUX.LocationHeight)
@@ -297,6 +298,7 @@ class URLBarView: UIView {
                     make.leading.equalTo(self.forwardButton.snp.trailing)
                 } else {
                     make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.Padding)
+                    make.size.equalTo(0)
                 }
                 make.centerY.equalTo(self.locationContainer)
                 make.size.equalTo(URLBarViewUX.ButtonSize)
@@ -410,6 +412,9 @@ class URLBarView: UIView {
         // the constraints to be calculated too early and there are constraint errors
         if !toolbarIsShowing {
             updateConstraintsIfNeeded()
+            locationView.shareButton.isHidden = false
+        }else {
+            locationView.shareButton.isHidden = true
         }
         updateViewsForOverlayModeAndToolbarChanges()
     }
@@ -613,9 +618,9 @@ extension URLBarView: TabToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar]
+                    return [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar, toolbarNeevaMenuButton]
                 } else {
-                    return [neevaMenuButton, locationContainer, progressBar]
+                    return [neevaMenuButton, locationContainer, progressBar, toolbarNeevaMenuButton]
                 }
             }
         }
@@ -661,6 +666,10 @@ extension URLBarView: TabLocationViewDelegate {
             // do nothing
             break
         }
+    }
+
+    func tabLocationViewDidTabShareButton(_ tabLocationView: TabLocationView) {
+        self.helper?.didPressShareButton()
     }
 
     func tabLocationViewDidTapStop(_ tabLocationView: TabLocationView) {
