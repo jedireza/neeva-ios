@@ -45,6 +45,9 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>nicons-400.ttf</string>
+		<string>nicons-500.ttf</string>
+		<string>nicons-600.ttf</string>
 		<string>FiraSans-Regular.ttf</string>
 		<string>FiraSans-SemiBold.ttf</string>
 		<string>FiraSans-Light.ttf</string>
