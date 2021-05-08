@@ -102,7 +102,8 @@ class LoginsHelper: TabContentScript {
             if message.frameInfo.isMainFrame && type == "request" {
                 requestLogins(res, url: url)
             } else if type == "submit" {
-                if profile.prefs.boolForKey("saveLogins") ?? true {
+                // TODO(issue/281): Disabled by default. Figure out our password management story.
+                if profile.prefs.boolForKey("saveLogins") ?? false {
                     if let login = loginRecordFromScript(res, url: url) {
                         setCredentials(login)
                     }
