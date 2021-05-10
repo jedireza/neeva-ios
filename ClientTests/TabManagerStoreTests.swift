@@ -63,6 +63,7 @@ class TabManagerStoreTests: XCTestCase {
     }
     */
 
+    /* TODO(bug/261): Disabled due to flakiness.
     func testAddedTabsAreStored() {
         // Add 2 tabs
         for _ in 0..<2 {
@@ -99,5 +100,6 @@ class TabManagerStoreTests: XCTestCase {
         }
         waitForExpectations(timeout: 2, handler: nil)
     }
+    */
 }
 
