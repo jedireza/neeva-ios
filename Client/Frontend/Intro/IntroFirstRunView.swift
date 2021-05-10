@@ -9,7 +9,8 @@ import NeevaSupport
 
 struct IntroFirstRunView: View {
     var buttonAction: (_:FirstRunButtonActions)->Void
-    
+    let smallSizeScreen: CGFloat = 375.0
+
     var body: some View {
         VStack() {
             Spacer()
@@ -21,7 +22,7 @@ struct IntroFirstRunView: View {
                     Text("that puts you")
                     Text("first.")
                 }
-                .font(Font.custom("Roobert-Light", size: 48))
+                .font(Font.custom("Roobert-Light", size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48))
                 .foregroundColor(Color(UIColor.Neeva.Gray20))
                 .padding(.top, 40)
 
