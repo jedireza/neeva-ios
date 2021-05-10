@@ -380,6 +380,12 @@ extension TabLocationView: Themeable {
         shieldButton.tintColor = textAndTint
         shareButton.tintColor = textAndTint
 
+        if isPrivateMode {
+            shieldButton.setImage(UIImage.templateImageNamed("incognito"), for: .normal)
+        } else {
+            shieldButton.setImage(UIImage.templateImageNamed("tracking-protection"), for: .normal)
+        }
+
         let color = ThemeManager.instance.currentName == .dark ?
             UIColor(white: 0.3, alpha: 0.6) :
             background
