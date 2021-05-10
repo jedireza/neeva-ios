@@ -40,6 +40,7 @@ class SecurityTests: KIFTestCase {
 
     /// Tap the Error exploit button, which tries to load the error page on localhost
     /// in a new tab via window.open(). Make sure nothing happens.
+    /* Disabled as this test depends on reading tab count from the tabs button.
     func testErrorExploit() {
         // We should only have one tab open.
         let tabcount:String?
@@ -60,6 +61,7 @@ class SecurityTests: KIFTestCase {
         }
         XCTAssert(tabcount != nil && tabcount == newTabcount)
     }
+    */
 
     /// Tap the New tab exploit button, which tries to piggyback off of an error page
     /// to load the session restore exploit. A new tab will load showing an error page,
@@ -77,13 +79,14 @@ class SecurityTests: KIFTestCase {
 
         // Workaround number of tabs not updated
         tester().tapView(withAccessibilityIdentifier: "TabToolbar.tabsButton")
-        tester().tapView(withAccessibilityIdentifier: "closeAllTabsButtonTabTray")
+        tester().tapView(withAccessibilityIdentifier: "TabTrayController.removeTabsButton")
         tester().tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
     }
 
     /// Tap the URL spoof button, which opens a new window to a host with an invalid port.
     /// Since the window has no origin before load, the page is able to modify the document,
     /// so make sure we don't show the URL.
+    /* Disabled as this test depends on reading tab count from the tabs button.
     func testSpoofExploit() {
         tester().tapWebViewElementWithAccessibilityLabel("URL spoof")
 
@@ -99,6 +102,7 @@ class SecurityTests: KIFTestCase {
         tester().tapView(withAccessibilityIdentifier: "closeAllTabsButtonTabTray")
         tester().tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
     }
+    */
 
     // For blob URLs, just show "blob:" to the user (see bug 1446227)
     func testBlobUrlShownAsSchemeOnly() {
@@ -114,7 +118,7 @@ class SecurityTests: KIFTestCase {
 
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)
     func testNeevaSchemeBlockedOnWebpages() {
-        let url = "\(webRoot!)/firefoxScheme.html"
+        let url = "\(webRoot!)/neevaScheme.html"
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
         tester().tapWebViewElementWithAccessibilityLabel("go")
 

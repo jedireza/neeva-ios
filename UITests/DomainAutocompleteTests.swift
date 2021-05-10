@@ -42,6 +42,7 @@ class DomainAutocompleteTests: KIFTestCase {
         BrowserUtils.ensureAutocompletionResult(tester(), textField: textField, prefix: "bar.baz", completion: ".org")
     }
 
+    /* Disabled as this test depends on having a signed-in Neeva user since it generates a search navigation.
     func testAutocompleteAfterDeleteWithBackSpace() {
         tester().waitForAnimationsToFinish()
         tester().tapView(withAccessibilityIdentifier: "url")
@@ -66,6 +67,7 @@ class DomainAutocompleteTests: KIFTestCase {
         // Facebook word appears highlighted and so it is shown as facebook\u{7F} when extracting the value to compare
         BrowserUtils.ensureAutocompletionResult(tester(), textField: textField2 , prefix: "facebook\u{7F}", completion: "")
     }
+    */
 
     // Bug https://bugzilla.mozilla.org/show_bug.cgi?id=1541832 scenario 1
     func testAutocompleteOnechar() {

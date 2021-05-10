@@ -22,6 +22,7 @@ class AuthenticationTests: KIFTestCase {
     /**
      * Tests HTTP authentication credentials and auto-fill.
      */
+    /* Disabled due to Logins infrastructure being stubbed out.
     func testAuthentication() {
         loadAuthPage()
         tester().wait(forTimeInterval: 3)
@@ -65,6 +66,7 @@ class AuthenticationTests: KIFTestCase {
         enterCredentials(usernameValue: "Username", passwordValue: "Password", username: "user", password: "pass")
         tester().waitForWebViewElementWithAccessibilityLabel("logged in")
     }
+    */
 
     fileprivate func loadAuthPage() {
         tester().wait(forTimeInterval: 3)

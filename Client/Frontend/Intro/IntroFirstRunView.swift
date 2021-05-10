@@ -69,6 +69,7 @@ struct IntroFirstRunView: View {
                 .foregroundColor(Color(UIColor.Neeva.Gray20))
                 .multilineTextAlignment(.center)
                 .padding(.top, 50)
+                .accessibilityLabel("Skip")
                 .onTapGesture(perform: {
                     buttonAction(FirstRunButtonActions.skipToBrowser)
                 })

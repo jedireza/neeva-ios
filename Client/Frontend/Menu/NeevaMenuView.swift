@@ -40,6 +40,7 @@ public struct NeevaMenuView: View {
                     NeevaMenuButtonView(label: "Downloads", symbol: .squareAndArrowDown)
                         .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.downloads)})
                     NeevaMenuButtonView(label: "History", symbol: .clock)
+                        .accessibilityIdentifier("NeevaMenu.History")
                         .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.history)})
                 }
                 .background(Color.clear)
@@ -50,6 +51,7 @@ public struct NeevaMenuView: View {
                 NeevaMenuRowButtonView(label:"Settings", nicon: .gear)
                     .padding([.leading, .top, .bottom], NeevaUIConstants.buttonInnerPadding)
                     .padding(.trailing, NeevaUIConstants.buttonInnerPadding - 6)
+                    .accessibilityIdentifier("NeevaMenu.Settings")
                     .onTapGesture(perform: {self.menuAction!(NeevaMenuButtonActions.settings)})
                 Divider()
                 NeevaMenuRowButtonView(label:"Send Feedback", nicon: .bubbleLeft)

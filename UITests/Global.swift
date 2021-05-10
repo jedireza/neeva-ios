@@ -231,28 +231,30 @@ class BrowserUtils {
         }
         
         // if in private mode, close all tabs
-        tester.tapView(withAccessibilityLabel: "smallPrivateMask")
+        tester.tapView(withAccessibilityIdentifier: "TabTrayController.maskButton")
 
-        tester.tapView(withAccessibilityIdentifier: "closeAllTabsButtonTabTray")
+        tester.tapView(withAccessibilityIdentifier: "TabTrayController.removeTabsButton")
         tester.tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
 
-        tester.wait(forTimeInterval: 3)
-        /* go to Normal mode */
-        if (tester.viewExistsWithLabel("Show Tabs")) {
-            tester.tapView(withAccessibilityLabel: "1")
-        } else {
-            tester.tapView(withAccessibilityLabel: "1")
-        }
-        tester.tapView(withAccessibilityIdentifier: "closeAllTabsButtonTabTray")
+        tester.tapView(withAccessibilityIdentifier: "TabTrayController.maskButton")
+
+//        tester.wait(forTimeInterval: 3)
+//        /* go to Normal mode */
+//        if (tester.viewExistsWithLabel("Show Tabs")) {
+//            tester.tapView(withAccessibilityLabel: "1")
+//        } else {
+//            tester.tapView(withAccessibilityLabel: "1")
+//        }
+        tester.tapView(withAccessibilityIdentifier: "TabTrayController.removeTabsButton")
         tester.tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
     }
 
     class func dismissFirstRunUI(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish(withTimeout: 3)
-        if (tester.viewExistsWithLabel("Next")) {
-            tester.tapView(withAccessibilityIdentifier: "nextOnboardingButton")
+        if (tester.viewExistsWithLabel("Skip")) {
+            tester.tapView(withAccessibilityIdentifier: "Skip")
             tester.waitForAnimationsToFinish(withTimeout: 3)
-            tester.tapView(withAccessibilityIdentifier: "startBrowsingButtonSyncView")
+            //tester.tapView(withAccessibilityIdentifier: "startBrowsingButtonSyncView")
         }
     }
     
@@ -283,8 +285,8 @@ class BrowserUtils {
     }
 
     class func openClearPrivateDataDialogKIF(_ tester: KIFUITestActor) {
-        tester.tapView(withAccessibilityLabel: "Menu")
-        tester.tapView(withAccessibilityLabel: "Settings")
+        openNeevaMenu(tester)
+        tester.tapView(withAccessibilityIdentifier: "NeevaMenu.Settings")
         tester.accessibilityScroll(.down)
 
         tester.tapView(withAccessibilityIdentifier: "ClearPrivateData")
@@ -309,8 +311,8 @@ class BrowserUtils {
     }
 
     class func clearPrivateDataKIF(_ tester: KIFUITestActor) {
-        tester.tapView(withAccessibilityLabel: "Menu")
-        tester.tapView(withAccessibilityLabel: "Settings")
+        openNeevaMenu(tester)
+        tester.tapView(withAccessibilityIdentifier: "NeevaMenu.Settings")
         tester.accessibilityScroll(.down)
 
         tester.tapView(withAccessibilityIdentifier: "ClearPrivateData")
@@ -354,15 +356,20 @@ class BrowserUtils {
         XCTAssertEqual(completion, autocompleteFieldlabel!.text, "Expected prefix matches actual prefix")
     }
 
-    class func openLibraryMenu(_ tester: KIFUITestActor) {
+    class func openNeevaMenu(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish()
-        tester.waitForView(withAccessibilityIdentifier: "TabToolbar.menuButton")
-        tester.tapView(withAccessibilityIdentifier: "TabToolbar.menuButton")
+        let neevaMenuIdentifier: String
+        if iPad() {
+            neevaMenuIdentifier = "URLBarView.neevaMenuButton"
+        } else {
+            neevaMenuIdentifier = "TabToolbar.neevaMenuButton"
+        }
+        tester.waitForView(withAccessibilityIdentifier: neevaMenuIdentifier)
+        tester.tapView(withAccessibilityIdentifier: neevaMenuIdentifier)
         tester.waitForAnimationsToFinish()
-        tester.tapView(withAccessibilityIdentifier: "menu-library")
     }
 
-    class func closeLibraryMenu(_ tester: KIFUITestActor) {
+    class func closeHistorySheet(_ tester: KIFUITestActor) {
         if iPad() {
             tester.tapView(withAccessibilityIdentifier: "TabToolbar.libraryButton")
         } else {
@@ -500,79 +507,6 @@ class SimplePageServer {
 
         let webRoot = "http://\(useLocalhostInsteadOfIP ? "localhost" : "127.0.0.1"):\(webServer.port)"
         return webRoot
-    }
-}
-
-class SearchUtils {
-    static func navigateToSearchSettings(_ tester: KIFUITestActor) {
-        let engine = SearchUtils.getDefaultEngine().shortName
-        tester.tapView(withAccessibilityIdentifier: "TabToolbar.menuButton")
-        tester.waitForAnimationsToFinish()
-        tester.tapView(withAccessibilityLabel: "Settings")
-        tester.waitForView(withAccessibilityLabel: "Settings")
-        tester.tapView(withAccessibilityLabel: "Search, \(engine)")
-        tester.waitForView(withAccessibilityIdentifier: "Search")
-    }
-
-    static func navigateFromSearchSettings(_ tester: KIFUITestActor) {
-        tester.tapView(withAccessibilityLabel: "Settings")
-        tester.tapView(withAccessibilityLabel: "Done")
-    }
-
-    // Given that we're at the Search Settings sheet, select the named search engine as the default.
-    // Afterwards, we're still at the Search Settings sheet.
-    static func selectDefaultSearchEngineName(_ tester: KIFUITestActor, engineName: String) {
-        tester.tapView(withAccessibilityLabel: "Default Search Engine", traits: UIAccessibilityTraits.button)
-        tester.waitForView(withAccessibilityLabel: "Default Search Engine")
-        tester.tapView(withAccessibilityLabel: engineName)
-        tester.waitForView(withAccessibilityLabel: "Search")
-    }
-
-    // Given that we're at the Search Settings sheet, return the default search engine's name.
-    static func getDefaultSearchEngineName(_ tester: KIFUITestActor) -> String {
-        let view = tester.waitForCellWithAccessibilityLabel("Default Search Engine")
-        return view.accessibilityValue!
-    }
-
-    static func getDefaultEngine() -> OpenSearchEngine! {
-        guard let userProfile = (UIApplication.shared.delegate as? AppDelegate)?.profile else {
-            XCTFail("Unable to get a reference to the user's profile")
-            return nil
-        }
-        return userProfile.searchEngines.defaultEngine
-    }
-/*
-    static func youTubeSearchEngine() -> OpenSearchEngine {
-        return mockSearchEngine("YouTube", template: "https://m.youtube.com/#/results?q={searchTerms}&sm=", icon: "youtube")!
-    }
-
-    static func mockSearchEngine(_ name: String, template: String, icon: String) -> OpenSearchEngine? {
-        guard let imagePath = Bundle(for: self).path(forResource: icon, ofType: "ico"),
-              let imageData = Data(contentsOfFile: imagePath),
-              let image = UIImage(data: imageData) else {
-            XCTFail("Unable to load search engine image named \(icon).ico")
-            return nil
-        }
-
-        return OpenSearchEngine(engineID: nil, shortName: name, image: image, searchTemplate: template, suggestTemplate: nil, isCustomEngine: true)
-    }
-*/
-    static func addCustomSearchEngine(_ engine: OpenSearchEngine) {
-        guard let userProfile = (UIApplication.shared.delegate as? AppDelegate)?.profile else {
-            XCTFail("Unable to get a reference to the user's profile")
-            return
-        }
-
-        userProfile.searchEngines.addSearchEngine(engine)
-    }
-
-    static func removeCustomSearchEngine(_ engine: OpenSearchEngine) {
-        guard let userProfile = (UIApplication.shared.delegate as? AppDelegate)?.profile else {
-            XCTFail("Unable to get a reference to the user's profile")
-            return
-        }
-
-        userProfile.searchEngines.deleteCustomEngine(engine)
     }
 }
 

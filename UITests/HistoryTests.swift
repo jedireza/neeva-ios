@@ -38,8 +38,8 @@ class HistoryTests: KIFTestCase {
         _ = addHistoryItems(2)
 
         // Check that both appear in the history home panel
-        BrowserUtils.openLibraryMenu(tester())
-        tester().tapView(withAccessibilityIdentifier: "LibraryPanels.History")
+        BrowserUtils.openNeevaMenu(tester())
+        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
 
         // Wait until the dialog shows up
         tester().waitForAnimationsToFinish()
@@ -52,7 +52,7 @@ class HistoryTests: KIFTestCase {
 
 
         // Close History (and so Library) panel
-        BrowserUtils.closeLibraryMenu(tester())
+        BrowserUtils.closeHistorySheet(tester())
     }
 
     // Could be removed since tested on XCUITets -> AP VERIFY OR ADD
@@ -96,17 +96,16 @@ class HistoryTests: KIFTestCase {
             BrowserUtils.addHistoryEntry("Page \(pageNo)", url: URL(string: "\(webRoot!)/numberedPage.html?page=\(pageNo)")!)
         }
         tester().wait(forTimeInterval: 2)
-        let urlToDelete = "\(webRoot!)/numberedPage.html?page=\(102)"
         let oldestUrl = "\(webRoot!)/numberedPage.html?page=\(101)"
         tester().waitForAnimationsToFinish()
-        BrowserUtils.openLibraryMenu(tester())
+        BrowserUtils.openNeevaMenu(tester())
         tester().waitForAnimationsToFinish(withTimeout: 10)
-        tester().waitForView(withAccessibilityIdentifier: "LibraryPanels.History")
-        tester().tapView(withAccessibilityIdentifier: "LibraryPanels.History")
+        tester().waitForView(withAccessibilityIdentifier: "NeevaMenu.History")
+        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
         tester().waitForView(withAccessibilityLabel: "Page 102")
 
         let firstIndexPath = IndexPath(row: 0, section: 1)
-        let list = tester().waitForView(withAccessibilityIdentifier: "LibraryPanels.History") as? UITableView
+        tester().waitForView(withAccessibilityIdentifier: "LibraryPanels.History")
         
         let row = tester().waitForCell(at: firstIndexPath, inTableViewWithAccessibilityIdentifier: "History List")
         tester().swipeView(withAccessibilityLabel: row?.accessibilityLabel, value: row?.accessibilityValue, in: KIFSwipeDirection.left)
@@ -120,11 +119,11 @@ class HistoryTests: KIFTestCase {
         tester().waitForView(withAccessibilityIdentifier: "History List")
         tester().waitForView(withAccessibilityLabel: oldestUrl)
 
-        // check page 1 does not exist
-        tester().waitForAbsenceOfView(withAccessibilityLabel: "Page 97")
+        // check that the deleted page does not exist
+        tester().waitForAbsenceOfView(withAccessibilityLabel: row?.accessibilityLabel)
 
         // Close History (and so Library) panel
-        BrowserUtils.closeLibraryMenu(tester())
+        BrowserUtils.closeHistorySheet(tester())
     }
 
     override func tearDown() {

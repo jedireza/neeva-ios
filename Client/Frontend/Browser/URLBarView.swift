@@ -96,7 +96,7 @@ class URLBarView: UIView {
         neevaMenuButton.isHidden = false
         neevaMenuButton.imageView?.contentMode = .left
         neevaMenuButton.accessibilityLabel = .TabLocationPageOptionsAccessibilityLabel
-        neevaMenuButton.accessibilityIdentifier = "TabLocationView.pageOptionsButton"
+        neevaMenuButton.accessibilityIdentifier = "URLBarView.neevaMenuButton"
         neevaMenuButton.addTarget(self, action: #selector(didClickNeevaMenu), for: UIControl.Event.touchUpInside)
         neevaMenuButton.showsMenuAsPrimaryAction = true
         return neevaMenuButton

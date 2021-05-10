@@ -68,31 +68,30 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         let url1 = urls[0].url
         let url2 = urls[1].url
-        BrowserUtils.openLibraryMenu(tester())
+        BrowserUtils.openNeevaMenu(tester())
         // Open History Panel
-        tester().tapView(withAccessibilityIdentifier: "LibraryPanels.History")
+        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
         tester().waitForView(withAccessibilityLabel: url1)
         tester().waitForView(withAccessibilityLabel: url2)
 
-        BrowserUtils.closeLibraryMenu(tester())
+        BrowserUtils.closeHistorySheet(tester())
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
         BrowserUtils.clearPrivateData([BrowserUtils.Clearable.History], tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
 
-        BrowserUtils.openLibraryMenu(tester())
+        BrowserUtils.openNeevaMenu(tester())
 
         // Open History Panel
         tester().waitForAbsenceOfView(withAccessibilityLabel: url1)
         tester().waitForAbsenceOfView(withAccessibilityLabel: url2)
 
-        BrowserUtils.closeLibraryMenu(tester())
+        BrowserUtils.closeHistorySheet(tester())
     }
 
     func testDisabledHistoryDoesNotClearHistoryPanel() {
         tester().waitForAnimationsToFinish(withTimeout: 3)
         let urls = visitSites(noOfSites: 2)
-        var errorOrNil: NSError?
 
         let url1 = urls[0].url
         let url2 = urls[1].url
@@ -101,18 +100,16 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
         tester().waitForAnimationsToFinish()
-        BrowserUtils.openLibraryMenu(tester())
+        BrowserUtils.openNeevaMenu(tester())
         // Open History Panel
-        tester().tapView(withAccessibilityIdentifier: "LibraryPanels.History")
-        tester().tapView(withAccessibilityIdentifier: "LibraryPanels.Bookmarks")
-        tester().tapView(withAccessibilityIdentifier: "LibraryPanels.History")
+        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
         tester().waitForAnimationsToFinish()
 
         tester().waitForView(withAccessibilityLabel: url1)
         tester().waitForView(withAccessibilityLabel: url2)
 
         // Close History (and so Library) panel
-        BrowserUtils.closeLibraryMenu(tester())
+        BrowserUtils.closeHistorySheet(tester())
     }
     // Disabled due to https://github.com/mozilla-mobile/firefox-ios/issues/7727
     /*func testClearsCookies() {

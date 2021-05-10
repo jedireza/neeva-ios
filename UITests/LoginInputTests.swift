@@ -23,6 +23,7 @@ class LoginInputTests: KIFTestCase {
         super.tearDown()
     }
 
+    /* Disabled as we don't show the Save Login prompt.
     func testLoginFormDisplaysNewSnackbar() {
         let url = "\(webRoot!)/loginForm.html"
         let username = "test@user.com"
@@ -37,7 +38,9 @@ class LoginInputTests: KIFTestCase {
 
         tester().tapView(withAccessibilityIdentifier: "SaveLoginPrompt.dontSaveButton")
     }
+    */
 
+    /* Disabled as we don't show the Update Login prompt.
     func testLoginFormDisplaysUpdateSnackbarIfPreviouslySaved() {
         let url = "\(webRoot!)/loginForm.html"
         let username = "test@user.com"
@@ -62,6 +65,7 @@ class LoginInputTests: KIFTestCase {
         tester().waitForView(withAccessibilityLabel: "Update login \(username) for \(self.webRoot!)?")
         tester().tapView(withAccessibilityIdentifier: "UpdateLoginPrompt.updateButton")
     }
+    */
 
     func testLoginFormDoesntOfferSaveWhenEmptyPassword() {
         let url = "\(webRoot!)/loginForm.html"
@@ -75,6 +79,7 @@ class LoginInputTests: KIFTestCase {
         tester().waitForAbsenceOfView(withAccessibilityLabel: "Save login \(username) for \(self.webRoot!)?")
     }
 
+    /* Disabled as we don't show the Save Login prompt.
     func testLoginFormDoesntOfferUpdateWhenEmptyPassword() {
         let url = "\(webRoot!)/loginForm.html"
         let username = "test@user.com"
@@ -94,4 +99,5 @@ class LoginInputTests: KIFTestCase {
         tester().tapWebViewElementWithAccessibilityLabel("submit_btn")
         tester().waitForAbsenceOfView(withAccessibilityLabel: "Save login \(username) for \(self.webRoot!)?")
     }
+    */
 }

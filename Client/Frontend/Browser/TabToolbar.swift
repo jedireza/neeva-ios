@@ -92,7 +92,7 @@ open class TabToolbarHelper: NSObject {
 
     
         toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
-        toolbar.toolbarNeevaMenuButton.accessibilityLabel = "TabToolbar.neevaMenuButton"
+        toolbar.toolbarNeevaMenuButton.accessibilityIdentifier = "TabToolbar.neevaMenuButton"
         toolbar.toolbarNeevaMenuButton.addTarget(self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
 
         setTheme(forButtons: toolbar.actionButtons)

@@ -24,8 +24,8 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
         let localhostURL = webRoot.replacingOccurrences(of: "127.0.0.1", with: "localhost")
         let url = "\(localhostURL)/numberedPage.html?page=1"
 
-        // URL without "http://".
-        let displayURL = "\(localhostURL)/numberedPage.html?page=1".substring(from: url.index(url.startIndex, offsetBy: "http://".count))
+        // URL without "http://". Path components are not shown.
+        let displayURL = "localhost"
 
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
 
@@ -49,14 +49,13 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
     func testUserInfoRemovedFromURL() {
         let hostWithUsername = webRoot.replacingOccurrences(of: "127.0.0.1", with: "username:password@127.0.0.1")
         let urlWithUserInfo = "\(hostWithUsername)/numberedPage.html?page=1"
-        let url = "\(webRoot!)/numberedPage.html?page=1"
 
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: urlWithUserInfo)
         tester().waitForAnimationsToFinish()
         tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
 
         let urlField = tester().waitForView(withAccessibilityIdentifier: "url") as! UITextField
-        XCTAssertEqual("http://" + urlField.text!, url)
+        XCTAssertEqual(urlField.text!, "127.0.0.1")
     }
 
     override func tearDown() {
