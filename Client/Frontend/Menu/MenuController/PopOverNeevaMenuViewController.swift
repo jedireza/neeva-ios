@@ -25,7 +25,6 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
         super.init(rootView: NeevaMenuContainerView(embeddedView: NeevaMenuView(isPrivate: isPrivate),
                    thresholdHeight: neevaMenuIntrinsicHeight))
         self.delegate = delegate
-        self.setAlphaOfBackgroundViews(alpha: 0.5)
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
@@ -92,25 +91,15 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.presentationController?.containerView?.backgroundColor = UIColor.Photon.Grey90A20
+        self.presentationController?.containerView?.backgroundColor = UIColor.Neeva.Backdrop
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        self.setAlphaOfBackgroundViews(alpha: 1.0)
         let rotateCheck = delegate?.isRotateSwitchDismiss ?? false
 
         if !rotateCheck {
             delegate?.isNeevaMenuSheetOpen = false
         }
         delegate?.isRotateSwitchDismiss = false
-    }
-
-    func setAlphaOfBackgroundViews(alpha: CGFloat) {
-        let statusBar = UIView(frame: (UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame)!)
-        UIView.animate(withDuration: 0.2) {
-            statusBar.alpha = alpha;
-            self.delegate!.view.alpha = alpha;
-            self.delegate!.navigationController?.navigationBar.alpha = alpha;
-        }
     }
 }
