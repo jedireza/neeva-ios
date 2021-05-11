@@ -12,15 +12,24 @@ extension SuggestionsQuery.Data.Suggest.UrlSuggestion.BoldSpan: BoldSpan {}
 
 /// Highlights prtions of a provided string
 struct BoldSpanView: View {
-    let text: String
-    let boldSpan: [BoldSpan]
+    // Represents a substring that may be bolded.
+    private struct TextSpan {
+        let text: Substring
+        let bolded: Bool
+    }
+    private let textSpans: [TextSpan]
 
     /// - Parameters:
     ///   - text: the text to highlight
-    ///   - spans: the spans to render in boldface
-    init(_ text: String, bolding spans: [BoldSpan]) {
-        self.text = text
-        self.boldSpan = BoldSpanView.getValidSpans(spans, in: text)
+    ///   - boldSpans: the spans to render in boldface
+    init(_ text: String, bolding boldSpans: [BoldSpan]) {
+        textSpans = BoldSpanView.generateTextSpans(text: text, boldSpans: BoldSpanView.getValidSpans(boldSpans, in: text))
+    }
+
+    var body: some View {
+        textSpans.enumerated().reduce(Text("")) {
+            return $0 + createText(forSpan: $1.element)
+        }
     }
 
     private static func isValidSpan(_ span: BoldSpan, in text: String) -> Bool {
@@ -49,23 +58,30 @@ struct BoldSpanView: View {
         return validSpans
     }
 
-    var body: some View {
-        if boldSpan.isEmpty {
-            Text(text)
-        } else {
-            let start = String.Index(utf16Offset: boldSpan[0].startInclusive, in: text)
-            boldSpan.enumerated().reduce(Text(text[..<start])) {
-                let (i, span) = $1
-                let start = String.Index(utf16Offset: span.startInclusive, in: text)
-                let endExclusive = String.Index(utf16Offset: span.endExclusive, in: text)
-                let nextStart = i == boldSpan.endIndex - 1
-                    ? text.endIndex
-                    : String.Index(utf16Offset: boldSpan[i + 1].startInclusive, in: text)
-                return $0
-                    + Text(text[start..<endExclusive]).fontWeight(.bold)
-                    + Text(text[endExclusive..<nextStart])
+    private static func generateTextSpans(text: String, boldSpans: [BoldSpan]) -> [TextSpan] {
+        var spans: [TextSpan] = []
+        var textStart = text.startIndex
+        for boldSpan in boldSpans {
+            let boldStart = String.Index(utf16Offset: boldSpan.startInclusive, in: text)
+            let boldEndExclusive = String.Index(utf16Offset: boldSpan.endExclusive, in: text)
+            if textStart < boldStart {
+                spans.append(TextSpan(text: text[textStart..<boldStart], bolded: false))
             }
+            spans.append(TextSpan(text: text[boldStart..<boldEndExclusive], bolded: true))
+            textStart = boldEndExclusive
         }
+        if textStart < text.endIndex {
+            spans.append(TextSpan(text: text[textStart..<text.endIndex], bolded: false))
+        }
+        return spans
+    }
+
+    private func createText(forSpan span: TextSpan) -> Text {
+        var text = Text(span.text)
+        if span.bolded {
+            text = text.fontWeight(.bold)
+        }
+        return text
     }
 }
 
