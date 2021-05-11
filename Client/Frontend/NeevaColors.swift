@@ -23,6 +23,6 @@ extension UIColor {
         static let DarkElevated = UIColor(rgb: 0x3A3A3C)
         static let DefaultAqua = UIColor(rgb: 0x62B9F9)
         static let GlobeFavGray = UIColor(rgb: 0xB4BAC0)
-        static let Backdrop = UIColor(rgb: 0x00000066)  // Black + 40% transparency
+        static let Backdrop = UIColor(rgba: 0x00000066)  // Black + 40% transparency
     }
 }
