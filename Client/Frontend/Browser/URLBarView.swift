@@ -436,15 +436,6 @@ class URLBarView: UIView {
         progressBar.setProgress(0, animated: false)
     }
 
-    func updateReaderModeState(_ state: ReaderModeState) {
-        switch state {
-        case .active:
-            locationView.reloadButton.isHidden = true
-        case .available, .unavailable:
-            locationView.reloadButton.isHidden = false
-        }
-    }
-
     func setAutocompleteSuggestion(_ suggestion: String?) {
         locationTextField?.setAutocompleteSuggestion(suggestion)
         createLeftViewFavicon(suggestion ?? "")
