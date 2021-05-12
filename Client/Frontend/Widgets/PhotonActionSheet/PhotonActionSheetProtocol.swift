@@ -83,12 +83,12 @@ extension PhotonActionSheetProtocol {
         }
     }
 
-        func getRefreshLongPressMenu(for tab: Tab) -> UIMenu? {
-            guard tab.webView?.url != nil && (tab.getContentScript(name: ReaderMode.name()) as? ReaderMode)?.state != .active else {
-                return nil
-            }
+    func getRefreshLongPressMenu(for tab: Tab) -> UIMenu? {
+        guard tab.webView?.url != nil && (tab.getContentScript(name: ReaderMode.name()) as? ReaderMode)?.state != .active else {
+            return nil
+        }
 
-            let toggleDesktopSite = toggleDesktopSiteAction(for: tab)
+        let toggleDesktopSite = toggleDesktopSiteAction(for: tab)
 
         if let url = tab.webView?.url, let helper = tab.contentBlocker, helper.isEnabled, helper.blockingStrengthPref == .strict {
             let isSafelisted = helper.status == .safelisted

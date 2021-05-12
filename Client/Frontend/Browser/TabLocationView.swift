@@ -270,7 +270,7 @@ class TabLocationView: UIView {
         super.updateConstraints()
     }
 
-    private lazy var _accessibilityElements = [urlTextField, reloadButton, shieldButton]
+    private lazy var _accessibilityElements = [urlTextField, reloadButton, shieldButton, shareButton]
 
     override var accessibilityElements: [Any]? {
         get {

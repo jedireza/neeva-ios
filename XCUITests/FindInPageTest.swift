@@ -8,7 +8,7 @@ class FindInPageTests: BaseTestCase {
     private func openFindInPageFromMenu() {
         navigator.goto(BrowserTab)
         waitUntilPageLoad()
-        navigator.goto(PageOptionsMenu)
+        navigator.goto(ShareMenu)
         navigator.goto(FindInPage)
 
         waitForExistence(app.buttons["FindInPage.find_next"], timeout: 5)

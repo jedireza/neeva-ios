@@ -146,12 +146,7 @@ class URLBarView: UIView {
 
     var forwardButton = ToolbarButton()
     var shareButton = ToolbarButton()
-
-    var backButton: ToolbarButton = {
-        let backButton = ToolbarButton()
-        backButton.accessibilityIdentifier = "URLBarView.backButton"
-        return backButton
-    }()
+    var backButton = ToolbarButton()
 
     var toolbarNeevaMenuButton = ToolbarButton()
 
@@ -620,7 +615,7 @@ extension URLBarView: TabToolbarProtocol {
                 if toolbarIsShowing {
                     return [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar, toolbarNeevaMenuButton]
                 } else {
-                    return [neevaMenuButton, locationContainer, progressBar, toolbarNeevaMenuButton]
+                    return [neevaMenuButton, locationContainer, shareButton, progressBar, toolbarNeevaMenuButton]
                 }
             }
         }

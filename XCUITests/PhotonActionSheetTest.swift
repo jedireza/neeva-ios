@@ -33,7 +33,7 @@ class PhotonActionSheetTest: BaseTestCase {
     func testShareOptionIsShown() {
         navigator.goto(BrowserTab)
         waitUntilPageLoad()
-        navigator.goto(PageOptionsMenu)
+        navigator.goto(ShareMenu)
         waitForExistence(app.tables["Context Menu"].cells["action_share"], timeout: 3)
         navigator.browserPerformAction(.shareOption)
 
@@ -91,7 +91,7 @@ class PhotonActionSheetTest: BaseTestCase {
         navigator.openURL("example.com")
         waitUntilPageLoad()
         waitForNoExistence(app.staticTexts["Fennec pasted from CoreSimulatorBridge"])
-        navigator.goto(PageOptionsMenu)
+        navigator.goto(ShareMenu)
         waitForExistence(app.tables["Context Menu"].cells["action_share"], timeout: 5)
         app.tables["Context Menu"].staticTexts["Share Page With…"].tap()
         if #available(iOS 14.0, *) {
@@ -109,7 +109,7 @@ class PhotonActionSheetTest: BaseTestCase {
 
     private func disableFennec() {
         navigator.nowAt(BrowserTab)
-        navigator.goto(PageOptionsMenu)
+        navigator.goto(ShareMenu)
         waitForExistence(app.tables["Context Menu"])
         app.tables["Context Menu"].staticTexts["Share Page With…"].tap()
         waitForExistence(app.buttons["Copy"])
