@@ -1015,8 +1015,11 @@ class BrowserViewController: UIViewController {
     /// Call this whenever the page URL changes.
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
         urlBar.currentURL = tab.url?.displayURL
-        let check = tab.webView?.hasOnlySecureContent ?? false
-        urlBar.locationView.showLockIcon(forSecureContent: tab.webView?.hasOnlySecureContent ?? false)
+
+        let isSecure = tab.webView?.hasOnlySecureContent ?? false
+        let isReaderMode = tab.url?.isReaderModeURL ?? false
+
+        urlBar.locationView.showLockIcon(forSecureContent: isSecure || isReaderMode)
 
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
         urlBar.locationView.updateShareButton(isPage)
@@ -1252,7 +1255,7 @@ class BrowserViewController: UIViewController {
 
         if let url = webView.url {
             if tab === tabManager.selectedTab {
-                urlBar.locationView.showLockIcon(forSecureContent: webView.hasOnlySecureContent)
+                urlBar.locationView.showLockIcon(forSecureContent: webView.hasOnlySecureContent || url.isReaderModeURL)
                 let isPage = tab.url?.displayURL?.isWebPage() ?? false
                 urlBar.locationView.updateShareButton(isPage)
             }
