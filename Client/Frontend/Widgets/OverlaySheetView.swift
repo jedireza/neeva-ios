@@ -16,7 +16,7 @@ struct OverlaySheetUX {
     static let animationDuration: Double = 0.2
 
     // Opacity of the backdrop when the overlay sheet is done animating open.
-    static let backdropMaxOpacity: Double = 0.4
+    static let backdropMaxOpacity: Double = 0.2
 
     // Width of the sheet when in landscape mode.
     static let landscapeModeWidth: CGFloat = 500

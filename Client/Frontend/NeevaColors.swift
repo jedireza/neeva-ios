@@ -30,7 +30,7 @@ extension UIColor {
 
         static let DarkElevated = UIColor(named: "DarkElevated")!
         static let GlobeFavGray = UIColor(named: "GlobeFavGray")!
-        static let Backdrop = UIColor(named: "Backdrop")!  // Black + 40% transparency
+        static let Backdrop = UIColor(named: "Backdrop")!
     }
 }
 
@@ -59,6 +59,6 @@ extension Color {
 
         static let DarkElevated = Color(UIColor(named: "DarkElevated")!)
         static let GlobeFavGray = Color(UIColor(named: "GlobeFavGray")!)
-        static let Backdrop = Color(UIColor(named: "Backdrop")!)  // Black + 40% transparency
+        static let Backdrop = Color(UIColor(named: "Backdrop")!)
     }
 }
