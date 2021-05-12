@@ -715,7 +715,7 @@ class ASHeaderView: UICollectionReusableView {
     lazy fileprivate var titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = self.title
-        titleLabel.textColor = UIColor.Neeva.Gray60
+        titleLabel.textColor = UIColor.Neeva.UI.Gray60
         titleLabel.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.bold)
         titleLabel.minimumScaleFactor = 0.6
         titleLabel.numberOfLines = 1
@@ -755,7 +755,7 @@ class ASHeaderView: UICollectionReusableView {
         moreButton.accessibilityIdentifier = nil;
         titleLabel.text = nil
         moreButton.removeTarget(nil, action: nil, for: .allEvents)
-        titleLabel.textColor = UIColor.Neeva.Gray60
+        titleLabel.textColor = UIColor.Neeva.UI.Gray60
         moreButton.setTitleColor(UIConstants.SystemBlueColor, for: .normal)
     }
 

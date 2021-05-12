@@ -46,8 +46,8 @@ struct IncognitoDescriptionView: View {
             }.padding([.top, .bottom], 20)
             Spacer()
         }
-        .background(Color(UIColor.Neeva.Gray30))
-        .foregroundColor(Color(UIColor.Neeva.Gray96))
+        .background(Color.Neeva.UI.Gray30)
+        .foregroundColor(Color.Neeva.UI.Gray96)
         .navigationBarHidden(true)
     }
 }

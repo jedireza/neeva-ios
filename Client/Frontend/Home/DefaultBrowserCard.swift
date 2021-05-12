@@ -35,10 +35,10 @@ class DefaultBrowserCard: UIView {
         let button = UIButton()
         let neevaIcon = UIImage.templateImageNamed("neevaMenuIcon")
         button.setImage(neevaIcon, for: .normal)
-        button.tintColor = UIColor.Neeva.White
+        button.tintColor = UIColor.Neeva.Brand.White
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 80)
         button.setTitle("Sign in with Neeva", for: .normal)
-        button.backgroundColor = UIColor.Neeva.BrandBlue
+        button.backgroundColor = UIColor.Neeva.Brand.Blue
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         button.titleLabel?.textAlignment = .center
         button.layer.cornerRadius = 24
@@ -49,7 +49,7 @@ class DefaultBrowserCard: UIView {
     lazy var closeButton: UIButton = {
         let closeButton = UIButton()
         closeButton.setImage(UIImage(named: "nav-stop")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        closeButton.imageView?.tintColor = UIColor.Neeva.Gray70
+        closeButton.imageView?.tintColor = UIColor.Neeva.UI.Gray70
         return closeButton
     }()
     lazy var background: UIView = {

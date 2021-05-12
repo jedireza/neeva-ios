@@ -100,11 +100,11 @@ class ToolbarButtonColor {
 
 class LoadingBarColor {
     func start(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Neeva.BrandMaya : UIColor.Defaults.SystemGray01
+        return !isPrivate ? UIColor.Neeva.Brand.Maya : UIColor.Defaults.SystemGray01
     }
 
     func end(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Neeva.BrandMaya : UIColor.Defaults.SystemGray01
+        return !isPrivate ? UIColor.Neeva.Brand.Maya : UIColor.Defaults.SystemGray01
     }
 }
 
@@ -167,8 +167,8 @@ class HomePanelColor {
     var siteTableHeaderBorder: UIColor { return UIColor.Photon.Grey30.withAlphaComponent(0.8) }
 
     var topSitesBackground: UIColor { return UIColor.white }
-    var topSitesFavBg: UIColor { return UIColor.Neeva.Gray97 }
-    var topSitesLabel: UIColor { return UIColor.Neeva.Gray60 }
+    var topSitesFavBg: UIColor { return UIColor.Neeva.UI.Gray97 }
+    var topSitesLabel: UIColor { return UIColor.Neeva.UI.Gray60 }
 
     var activityStreamHeaderText: UIColor { return UIColor.Photon.Grey50 }
     var activityStreamCellTitle: UIColor { return UIColor.black }

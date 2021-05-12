@@ -138,7 +138,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             if !isFixedHeight {
                 RoundedRectangle(cornerRadius: 50)
                     .frame(width: 32, height: 4)
-                    .foregroundColor(Color(UIColor.Neeva.Gray60))
+                    .foregroundColor(Color.Neeva.UI.Gray60)
                     .padding(.top, 8)
             }
             HStack(spacing: 0) {
@@ -152,7 +152,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                         self.model.hide()
                     } label: {
                         Symbol.system(.xmark, size: 16, weight: .semibold)
-                            .foregroundColor(Color(UIColor.Neeva.Gray60))
+                            .foregroundColor(Color.Neeva.UI.Gray60)
                             .frame(width: 44, height: 44)
                             .padding(.trailing, 4.5)
                     }

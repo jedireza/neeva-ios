@@ -36,7 +36,7 @@ fileprivate class DarkURLBarColor: URLBarColor {
         return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
     }
     override func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
-        return isPrivate ? UIColor.Neeva.Offwhite : nil
+        return isPrivate ? UIColor.Neeva.Brand.Offwhite : nil
     }
 }
 
@@ -102,7 +102,7 @@ fileprivate class DarkHomePanelColor: HomePanelColor {
 
     override var topSitesBackground: UIColor { return UIColor(rgb: 0x29282d) }
     override var topSitesFavBg: UIColor { return UIColor(rgb: 0x505054) }
-    override var topSitesLabel: UIColor { return UIColor.Neeva.White}
+    override var topSitesLabel: UIColor { return UIColor.Neeva.Brand.White}
 
     override var downloadedFileIcon: UIColor { return UIColor.Photon.Grey30 }
 
