@@ -47,7 +47,7 @@ class DownloadFilesTests: BaseTestCase {
         XCTAssertTrue(app.tables["Context Menu"].staticTexts[testFileName].exists)
         XCTAssertTrue(app.tables["Context Menu"].cells["download"].exists)
         app.buttons["Cancel"].tap()
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
         checkTheNumberOfDownloadedItems(items: 0)
     }
@@ -55,7 +55,7 @@ class DownloadFilesTests: BaseTestCase {
     // Smoketest
     func testDownloadFile() {
         downloadFile(fileName: testFileName, numberOfDownlowds: 1)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
 
         waitForExistence(app.tables["DownloadsTable"])
@@ -68,7 +68,7 @@ class DownloadFilesTests: BaseTestCase {
     func testDownloadBLOBFile() {
         downloadBLOBFile()
         waitForExistence(app.buttons["Downloads"])
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
 
         waitForExistence(app.tables["DownloadsTable"])
@@ -80,7 +80,7 @@ class DownloadFilesTests: BaseTestCase {
 
     func testDeleteDownloadedFile() {
         downloadFile(fileName: testFileName, numberOfDownlowds: 1)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
         waitForExistence(app.tables["DownloadsTable"])
 
@@ -93,7 +93,7 @@ class DownloadFilesTests: BaseTestCase {
 
     func testShareDownloadedFile() {
         downloadFile(fileName: testFileName, numberOfDownlowds: 1)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
         app.tables.cells.staticTexts[testFileName].swipeLeft()
 
@@ -111,7 +111,7 @@ class DownloadFilesTests: BaseTestCase {
 
     func testLongPressOnDownloadedFile() {
         downloadFile(fileName: testFileName, numberOfDownlowds: 1)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
 
         waitForExistence(app.tables["DownloadsTable"])
@@ -145,7 +145,7 @@ class DownloadFilesTests: BaseTestCase {
 
     func testDownloadMoreThanOneFile() {
         downloadFile(fileName: testFileName, numberOfDownlowds: 2)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
 
         waitForExistence(app.tables["DownloadsTable"])
@@ -161,7 +161,7 @@ class DownloadFilesTests: BaseTestCase {
         downloadFile(fileName: testFileName, numberOfDownlowds: 1)
 
         // Check there is one item
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
 
         waitForExistence(app.tables["DownloadsTable"])
@@ -172,7 +172,7 @@ class DownloadFilesTests: BaseTestCase {
         app.cells.switches["Downloaded Files"].tap()
         navigator.performAction(Action.AcceptClearPrivateData)
 
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
         // Check there is still one item
         checkTheNumberOfDownloadedItems(items: 0)

@@ -22,8 +22,8 @@ class CopiedLinksTests: BaseTestCase {
 
         app.navigationBars["Settings"]/*@START_MENU_TOKEN@*/.buttons["Done"]/*[[".buttons[\"Done\"]",".buttons[\"AppSettingsTableViewController.navigationItem.leftBarButtonItem\"]"],[[[-1,1],[-1,0]]],[1]]@END_MENU_TOKEN@*/.tap()
 
-        app/*@START_MENU_TOKEN@*/.buttons["TabToolbar.menuButton"]/*[[".buttons[\"Menu\"]",".buttons[\"TabToolbar.menuButton\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-        let settingsmenuitemCell = app.tables.cells["Settings"]
+        app.buttons["TabToolbar.neevaMenuButton"].tap()
+        let settingsmenuitemCell = app.buttons["NeevaMenu.Settings"]
         settingsmenuitemCell.tap()
 
         //Check Offer to open copied links, when opening neeva is on

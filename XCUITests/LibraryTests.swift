@@ -30,23 +30,8 @@ class LibraryTestsIphone: IphoneOnlyTestCase {
         if skipPlatform {return}
 
         waitForExistence(app.staticTexts["libraryTitle"], timeout: 3)
-        waitForExistence(app.buttons["menu Bookmark"])
-        waitForExistence(app.buttons["menu panel ReadingList"])
         waitForExistence(app.buttons["menu panel Downloads"])
-        waitForExistence(app.buttons["menu sync"])
         waitForExistence(app.buttons["libraryMoreButton"])
-        
-        // Check if clicking on Bookmark option shows bookmarks
-        app.buttons["menu Bookmark"].tap()
-        navigator.nowAt(LibraryPanel_Bookmarks)
-        waitForExistence(app.tables["Bookmarks List"])
-        navigator.goto(HomePanelsScreen)
-        
-        // Check if clicking on Reading List option shows reading list
-        app.buttons["menu panel ReadingList"].tap()
-        navigator.nowAt(LibraryPanel_ReadingList)
-        waitForExistence(app.tables["ReadingTable"])
-        navigator.goto(HomePanelsScreen)
         
         // Check if clicking on Downloads option shows downloads
         app.buttons["menu panel Downloads"].tap()

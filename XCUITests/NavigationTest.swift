@@ -72,79 +72,6 @@ class NavigationTest: BaseTestCase {
         waitForValueContains(app.textFields["url"], value: "test-mozilla-org")
     }
 
-    func testTapSignInShowsFxAFromTour() {
-        // Open FxAccount from tour option in settings menu and go throughout all the screens there
-        navigator.goto(Intro_FxASignin)
-        navigator.performAction(Action.OpenEmailToSignIn)
-        checkNeevaSyncScreenShown()
-
-        // Disabled due to issue 5937, not possible to tap on Close button
-        // Go back to NewTabScreen
-        // navigator.goto(HomePanelsScreen)
-        // waitForExistence(app.cells["TopSitesCell"])
-    }
-    
-    func testTapSigninShowsFxAFromSettings() {
-        navigator.goto(SettingsScreen)
-        // Open FxAccount from settings menu and check the Sign in to Neeva scren
-        let signInToNeevaStaticText = app.tables["AppSettingsTableViewController.tableView"].staticTexts["Sign in to Sync"]
-        signInToNeevaStaticText.tap()
-        checkNeevaSyncScreenShownViaSettings()
-
-        // After that it is possible to go back to Settings
-        let closeButton = app.navigationBars["Client.FxAWebView"].buttons.element(boundBy: 0)
-        closeButton.tap()
-        
-        let closeButtonFxView = app.navigationBars["Turn on Sync"].buttons["Settings"]
-        closeButtonFxView.tap()
-    }
-    
-    // Beacuse the Settings menu does not stretch tot the top we need a different function to check if the Neeva Sync screen is shown
-    private func checkNeevaSyncScreenShownViaSettings() {
-        waitForExistence(app.navigationBars["Turn on Sync"], timeout: 20)
-        app.buttons["EmailSignIn.button"].tap()
-        waitForExistence(app.webViews.textFields.element(boundBy: 0), timeout:20)
-
-        let email = app.webViews.textFields.element(boundBy: 0)
-        // Verify the placeholdervalues here for the textFields
-        let mailPlaceholder = "Email"
-        let defaultMailPlaceholder = email.placeholderValue!
-        XCTAssertEqual(mailPlaceholder, defaultMailPlaceholder, "The mail placeholder does not show the correct value")
-    }
-
-    func testTapSignInShowsFxAFromRemoteTabPanel() {
-        // Open FxAccount from remote tab panel and check the Sign in to Neeva scren
-        navigator.goto(LibraryPanel_SyncedTabs)
-
-        app.tables.buttons["Sign in to Sync"].tap()
-        waitForExistence(app.buttons["EmailSignIn.button"], timeout: 10)
-        app.buttons["EmailSignIn.button"].tap()
-        checkNeevaSyncScreenShown()
-    }
-
-    private func checkNeevaSyncScreenShown() {
-        // Disable check, page load issues on iOS13.3 sims, issue #5937
-        waitForExistence(app.webViews.firstMatch, timeout: 20)
-        // Workaround BB iOS13
-//        waitForExistence(app.navigationBars["Client.FxAContentView"], timeout: 60)
-//        if isTablet {
-//            waitForExistence(app.webViews.textFields.element(boundBy: 0), timeout: 40)
-//            let email = app.webViews.textFields.element(boundBy: 0)
-//            // Verify the placeholdervalues here for the textFields
-//            let mailPlaceholder = "Email"
-//            let defaultMailPlaceholder = email.placeholderValue!
-//            XCTAssertEqual(mailPlaceholder, defaultMailPlaceholder, "The mail placeholder does not show the correct value")
-//        } else {
-//            waitForExistence(app.textFields.element(boundBy: 0), timeout: 40)
-//            let email = app.textFields.element(boundBy: 0)
-//            XCTAssertTrue(email.exists) // the email field
-//            // Verify the placeholdervalues here for the textFields
-//            let mailPlaceholder = "Email"
-//            let defaultMailPlaceholder = email.placeholderValue!
-//            XCTAssertEqual(mailPlaceholder, defaultMailPlaceholder, "The mail placeholder does not show the correct value")
-//        }
-    }
-
     func testScrollsToTopWithMultipleTabs() {
         navigator.goto(TabTray)
         navigator.openURL(website_1["url"]!)
@@ -286,7 +213,7 @@ class NavigationTest: BaseTestCase {
         waitForExistence(app.tables["Context Menu"])
         XCTAssertTrue(app.tables["Context Menu"].cells["download"].exists)
         app.tables["Context Menu"].cells["download"].tap()
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
         waitForExistence(app.tables["DownloadsTable"])
         // There should be one item downloaded. It's name and size should be shown
@@ -348,7 +275,6 @@ class NavigationTest: BaseTestCase {
         XCTAssertEqual("1", numTabs as? String, "There should be only on tab")
 
         // Now disable the Block PopUps option
-        navigator.goto(BrowserTabMenu)
         navigator.goto(SettingsScreen)
         switchBlockPopUps.tap()
         let switchValueAfter = switchBlockPopUps.value!
@@ -389,6 +315,7 @@ class NavigationTest: BaseTestCase {
     }
 
     // Smoketest
+    /* TODO: Re-write as test of Neeva menu
     func testVerifyBrowserTabMenu() {
         navigator.goto(BrowserTabMenu)
         waitForExistence(app.tables["Context Menu"])
@@ -403,6 +330,7 @@ class NavigationTest: BaseTestCase {
         XCTAssertTrue(app.tables.cells["menu-Settings"].exists)
         XCTAssertTrue(app.buttons["PhotonMenu.close"].exists)
     }
+    */
 
     // Smoketest
     func testURLBar() {

@@ -16,7 +16,7 @@ class PrivateBrowsingTest: BaseTestCase {
     func testPrivateTabDoesNotTrackHistory() {
         navigator.openURL(url1)
         waitForTabsButton()
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         // Go to History screen
         navigator.goto(LibraryPanel_History)
         waitForExistence(app.tables["History List"])

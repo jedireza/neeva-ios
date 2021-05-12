@@ -28,9 +28,7 @@ class ClipBoardTests: BaseTestCase {
     func checkCopiedUrl() {
         if let myString = UIPasteboard.general.string {
             var value = app.textFields["url"].value as! String
-            if value.hasPrefix("http") == false {
-                value = "http://\(value)"
-            }
+            value = "http://\(value)/"
             XCTAssertNotNil(myString)
             XCTAssertEqual(myString, value, "Url matches with the UIPasteboard")
         }
@@ -45,7 +43,7 @@ class ClipBoardTests: BaseTestCase {
         checkCopiedUrl()
 
         navigator.createNewTab()
-        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Fennec"])
+        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         navigator.goto(URLBarOpen)
         app.textFields["address"].press(forDuration: 3)
         app.menuItems["Paste"].tap()
@@ -56,14 +54,12 @@ class ClipBoardTests: BaseTestCase {
     func testClipboardPasteAndGo() {
         navigator.openURL(url)
         waitUntilPageLoad()
-        waitForNoExistence(app.staticTexts["Fennec pasted from XCUITests-Runner"])
-        navigator.goto(PageOptionsMenu)
-        navigator.performAction(Action.CopyAddressPAM)
-
+        copyUrl()
         checkCopiedUrl()
-        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Fennec"])
+
+        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         navigator.createNewTab()
-        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Fennec"])
+        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         app.textFields["url"].press(forDuration: 3)
         waitForExistence(app.tables["Context Menu"])
         app.cells["menu-PasteAndGo"].tap()

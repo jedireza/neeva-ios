@@ -51,7 +51,7 @@ class HomePageSettingsUITests: BaseTestCase {
 
         // Check that it is actually set by opening a different website and going to Home
         navigator.openURL(path(forTestPage: "test-mozilla-org.html"))
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
 
         //Now check open home page should load the previously saved home page
         let homePageMenuItem = app.cells["menu-Home"]

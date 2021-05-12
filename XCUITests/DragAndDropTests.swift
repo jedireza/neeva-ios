@@ -259,7 +259,7 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
         if skipPlatform { return }
 
         // Drop a bookmark/history entry is only allowed on other apps. This test is to check that nothing happens within the app
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_History)
 
         let firstEntryOnList = app.tables["History List"].cells.element(boundBy:
@@ -276,25 +276,6 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
         XCTAssertTrue(secondEntryOnList.exists, "second entry after is not correct")
     }
 
-    func testDragAndDropBookmarkEntry() {
-        if skipPlatform { return }
-
-        navigator.goto(MobileBookmarks)
-        waitForExistence(app.tables["Bookmarks List"])
-
-        let firstEntryOnList = app.tables["Bookmarks List"].cells.element(boundBy: 0).staticTexts[exampleDomainTitle]
-        let secondEntryOnList = app.tables["Bookmarks List"].cells.element(boundBy: 3).staticTexts[twitterTitle]
-
-        XCTAssertTrue(firstEntryOnList.exists, "first entry after is not correct")
-        XCTAssertTrue(secondEntryOnList.exists, "second entry after is not correct")
-
-        // Drag and Drop the element and check that the position of the two elements does not change
-        app.tables["Bookmarks List"].cells.staticTexts[exampleDomainTitle].press(forDuration: 1, thenDragTo: app.tables["Bookmarks List"].cells.staticTexts[twitterTitle])
-
-        XCTAssertTrue(firstEntryOnList.exists, "first entry after is not correct")
-        XCTAssertTrue(secondEntryOnList.exists, "second entry after is not correct")
-    }
-
     // Test disabled due to new way bookmark panel is shown, url is not available. Library implementation bug 1506989
     // Will be removed if this is going the final implementation
     func testTryDragAndDropHistoryToURLBar() {
@@ -304,20 +285,6 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
         waitForExistence(app.tables["History List"].cells.staticTexts[twitterTitle])
 
         app.tables["History List"].cells.staticTexts[twitterTitle].press(forDuration: 1, thenDragTo: app.textFields["url"])
-
-        // It is not allowed to drop the entry on the url field
-        let urlBarValue = app.textFields["url"].value as? String
-        XCTAssertEqual(urlBarValue, "Search or enter address")
-    }
-
-    // Test disabled due to new way bookmark panel is shown, url is not available. Library implementation bug 1506989
-    // Will be removed if this is going the final implementation
-    func testTryDragAndDropBookmarkToURLBar() {
-        if skipPlatform { return }
-
-        navigator.goto(MobileBookmarks)
-        waitForExistence(app.tables["Bookmarks List"])
-        app.tables["Bookmarks List"].cells.staticTexts[twitterTitle].press(forDuration: 1, thenDragTo: app.textFields["url"])
 
         // It is not allowed to drop the entry on the url field
         let urlBarValue = app.textFields["url"].value as? String

@@ -35,12 +35,6 @@ class HistoryTests: BaseTestCase {
         XCTAssertTrue(app.tables.cells["HistoryPanel.recentlyClosedCell"].exists)
     }
 
-    func testOpenSyncDevices() {
-        navigator.goto(LibraryPanel_SyncedTabs)
-        waitForExistence(app.tables.cells.staticTexts["Neeva Sync"])
-        XCTAssertTrue(app.tables.buttons["Sign in to Sync"].exists, "Sing in button does not appear")
-    }
-
     func testClearHistoryFromSettings() {
         // Browse to have an item in history list
         navigator.goto(LibraryPanel_History)
@@ -81,9 +75,9 @@ class HistoryTests: BaseTestCase {
         navigator.goto(HomePanelsScreen)
         userState.url = path(forTestPage: "test-mozilla-book.html")
         navigator.goto(BrowserTab)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         // Workaround to bug 1508368
-        navigator.goto(LibraryPanel_Bookmarks)
+        navigator.goto(LibraryPanel_Downloads)
         navigator.goto(LibraryPanel_History)
         navigator.goto(HistoryRecentlyClosed)
         waitForNoExistence(app.tables["Recently Closed Tabs List"])
@@ -97,7 +91,7 @@ class HistoryTests: BaseTestCase {
         navigator.goto(TabTray)
         navigator.performAction(Action.AcceptRemovingAllTabs)
         navigator.nowAt(NewTabScreen)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(HistoryRecentlyClosed)
 
         // The Closed Tabs list should contain the info of the website just closed
@@ -110,7 +104,7 @@ class HistoryTests: BaseTestCase {
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         navigator.performAction(Action.OpenNewTabFromTabTray)
         navigator.nowAt(NewTabScreen)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(HistoryRecentlyClosed)
         waitForExistence(app.tables["Recently Closed Tabs List"])
     }
@@ -123,7 +117,7 @@ class HistoryTests: BaseTestCase {
         navigator.goto(TabTray)
         navigator.performAction(Action.AcceptRemovingAllTabs)
         navigator.nowAt(NewTabScreen)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(HistoryRecentlyClosed)
         // Once the website is visited and closed it will appear in Recently Closed Tabs list
         waitForExistence(app.tables["Recently Closed Tabs List"])
@@ -147,7 +141,7 @@ class HistoryTests: BaseTestCase {
         navigator.goto(TabTray)
         navigator.performAction(Action.AcceptRemovingAllTabs)
         navigator.nowAt(NewTabScreen)
-        navigator.goto(BrowserTabMenu)
+        navigator.goto(NeevaMenu)
         navigator.goto(HistoryRecentlyClosed)
         waitForExistence(app.tables["Recently Closed Tabs List"])
         XCTAssertTrue(app.tables.cells.staticTexts[closedWebPageLabel].exists)

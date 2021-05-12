@@ -52,28 +52,6 @@ class SaveLoginTest: BaseTestCase {
         XCTAssertEqual(app.tables["Login List"].cells.count, defaultNumRowsLoginsList + 1)
     }
     
-    func testPasscodeLoginsListFromBrowserTabMenu() {
-        navigator.performAction(Action.SetPasscode)
-        navigator.nowAt(PasscodeSettings)
-        navigator.goto(SettingsScreen)
-
-        //Make sure you can access empty Login List from Browser Tab Menu
-        navigator.goto(LockedLoginsSettings)
-        navigator.performAction(Action.UnlockLoginsSettings)
-        waitForExistence(app.tables["Login List"])
-        XCTAssertTrue(app.searchFields["Filter"].exists)
-        XCTAssertEqual(app.tables["Login List"].cells.count, defaultNumRowsLoginsList)
-        saveLogin(givenUrl: testLoginPage)
-        //Make sure you can access populated Login List from Browser Tab Menu
-        navigator.goto(LockedLoginsSettings)
-        navigator.performAction(Action.UnlockLoginsSettings)
-        waitForExistence(app.tables["Login List"])
-        XCTAssertTrue(app.searchFields["Filter"].exists)
-        XCTAssertTrue(app.staticTexts[domain].exists)
-        XCTAssertTrue(app.staticTexts[domainLogin].exists)
-        XCTAssertEqual(app.tables["Login List"].cells.count, defaultNumRowsLoginsList + 1)
-    }
-
     func testSaveLogin() {
         // Initially the login list should be empty
         openLoginsSettings()

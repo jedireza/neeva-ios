@@ -78,6 +78,7 @@ open class TabToolbarHelper: NSObject {
             self.didPressShareButton()
         }, for: .primaryActionTriggered)
 
+        toolbar.tabsButton.accessibilityLabel = .TabTrayButtonShowTabsAccessibilityLabel
         toolbar.tabsButton.addTarget(self, action: #selector(didClickTabs), for: .touchUpInside)
         toolbar.tabsButton.setDynamicMenu {
             toolbar.tabToolbarDelegate?.tabToolbarTabsMenu(toolbar, button: toolbar.tabsButton)

@@ -49,25 +49,6 @@ extension ScreenGraphTest {
         navigator.goto(BrowserTab)
     }
 
-    func testSimpleToggleAction() {
-        // Switch night mode on, by toggling.
-        navigator.performAction(TestActions.ToggleNightMode)
-        XCTAssertTrue(navigator.userState.nightMode)
-        navigator.back()
-        XCTAssertEqual(navigator.screenState, BrowserTab)
-
-        // Nothing should happen here, because night mode is already on.
-        navigator.toggleOn(navigator.userState.nightMode, withAction: TestActions.ToggleNightMode)
-        XCTAssertTrue(navigator.userState.nightMode)
-        XCTAssertEqual(navigator.screenState, BrowserTab)
-
-        // Switch night mode off.
-        navigator.toggleOff(navigator.userState.nightMode, withAction: TestActions.ToggleNightMode)
-        XCTAssertFalse(navigator.userState.nightMode)
-        navigator.back()
-        XCTAssertEqual(navigator.screenState, BrowserTab)
-    }
-
     func testChainedActionPerf1() {
         let navigator = self.navigator!
         measure {
@@ -96,47 +77,6 @@ extension ScreenGraphTest {
         XCTAssertFalse(navigator.can(goto: PasscodeSettingsOn))
         navigator.goto(PasscodeSettingsOff)
         XCTAssertEqual(navigator.screenState, PasscodeSettingsOff)
-    }
-
-    func testConditionalEdgesRerouting() {
-        // The navigator should dynamically reroute to the target screen
-        // if the userState changes.
-        // This test adds to the graph a passcode setting screen. In that screen,
-        // there is a noop action that fatalErrors if it is taken.
-        //
-        let map = createTestGraph(for: self, with: app)
-
-        func typePasscode(_ passCode: String) {
-            passCode.forEach { char in
-                app.keys["\(char)"].tap()
-            }
-        }
-
-        map.addScreenState(SetPasscodeScreen) { screenState in
-            // This is a silly way to organize things here,
-            // and is an artifical way to show that the navigator is re-routing midway through
-            // a goto.
-            screenState.onEnter() { userState in
-                typePasscode(userState.newPasscode)
-                typePasscode(userState.newPasscode)
-                userState.passcode = userState.newPasscode
-            }
-
-            screenState.noop(forAction: "FatalError", transitionTo: PasscodeSettingsOn, if: "passcode == nil") { _ in fatalError() }
-            screenState.noop(forAction: "Very", "Long", "Path", "Of", "Actions", transitionTo: PasscodeSettingsOn, if: "passcode != nil") { _ in }
-        }
-
-        navigator = map.navigator()
-
-        XCTAssertTrue(navigator.can(goto: PasscodeSettingsOn))
-        XCTAssertTrue(navigator.can(goto: PasscodeSettingsOff))
-        XCTAssertTrue(navigator.can(goto: "FatalError"))
-        navigator.goto(PasscodeSettingsOn)
-        XCTAssertTrue(navigator.can(goto: PasscodeSettingsOn))
-        XCTAssertFalse(navigator.can(goto: PasscodeSettingsOff))
-        XCTAssertFalse(navigator.can(goto: "FatalError"))
-
-        XCTAssertEqual(navigator.screenState, PasscodeSettingsOn)
     }
 }
 
@@ -196,7 +136,7 @@ fileprivate func createTestGraph(for test: XCTestCase, with app: XCUIApplication
             userState.url = app.textFields["url"].value as? String
         }
 
-        screenState.tap(app.buttons["TabToolbar.menuButton"], to: BrowserTabMenu)
+        screenState.tap(app.buttons["TabToolbar.neevaMenuButton"], to: NeevaMenu)
         screenState.tap(app.textFields["url"], to: URLBarOpen)
 
         screenState.gesture(forAction: TestActions.LoadURLByPasting, TestActions.LoadURL) { userState in
@@ -215,14 +155,10 @@ fileprivate func createTestGraph(for test: XCTestCase, with app: XCUIApplication
 
     map.addScreenAction(TestActions.LoadURL, transitionTo: WebPageLoading)
 
-    map.addScreenState(BrowserTabMenu) { screenState in
+    map.addScreenState(NeevaMenu) { screenState in
         screenState.dismissOnUse = true
         screenState.onEnterWaitFor(element: app.tables["Context Menu"])
         screenState.tap(app.tables.cells["Settings"], to: SettingsScreen)
-
-        screenState.tap(app.cells["menu-NightMode"], forAction: TestActions.ToggleNightMode, transitionTo: BrowserTabMenu) { userState in
-            userState.nightMode = !userState.nightMode
-        }
 
         screenState.backAction = {
             if isTablet {
@@ -236,29 +172,6 @@ fileprivate func createTestGraph(for test: XCTestCase, with app: XCUIApplication
 
     let navigationControllerBackAction = {
         app.navigationBars.element(boundBy: 0).buttons.element(boundBy: 0).tap()
-    }
-
-    map.addScreenState(SettingsScreen) { screenState in
-        let table = app.tables["AppSettingsTableViewController.tableView"]
-        screenState.onEnterWaitFor(element: table)
-
-        screenState.tap(table.cells["TouchIDPasscode"], to: PasscodeSettingsOff, if: "passcode == nil")
-        screenState.tap(table.cells["TouchIDPasscode"], to: PasscodeSettingsOn, if: "passcode != nil")
-
-        screenState.backAction = navigationControllerBackAction
-    }
-
-    map.addScreenState(PasscodeSettingsOn) { screenState in
-        screenState.backAction = navigationControllerBackAction
-    }
-
-    map.addScreenState(PasscodeSettingsOff) { screenState in
-        screenState.tap(app.staticTexts["Turn Passcode On"], to: SetPasscodeScreen)
-        screenState.backAction = navigationControllerBackAction
-    }
-
-    map.addScreenState(SetPasscodeScreen) { screenState in
-        screenState.backAction = navigationControllerBackAction
     }
 
     return map

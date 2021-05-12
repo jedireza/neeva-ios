@@ -44,8 +44,8 @@ class SearchTests: BaseTestCase {
         app.buttons["urlBar-cancel"].tap()
 
         waitForTabsButton()
-        app.buttons["TabToolbar.menuButton"].tap()
-        navigator.nowAt(BrowserTabMenu)
+        app.buttons["TabToolbar.neevaMenuButton"].tap()
+        navigator.nowAt(NeevaMenu)
         suggestionsOnOff()
 
         // Suggestions should not be shown
@@ -67,8 +67,8 @@ class SearchTests: BaseTestCase {
 
         app.buttons["urlBar-cancel"].tap()
         waitForTabsButton()
-        app.buttons["TabToolbar.menuButton"].tap()
-        navigator.nowAt(BrowserTabMenu)
+        app.buttons["TabToolbar.neevaMenuButton"].tap()
+        navigator.nowAt(NeevaMenu)
 
         // Reset suggestion button, set it to on
         suggestionsOnOff()

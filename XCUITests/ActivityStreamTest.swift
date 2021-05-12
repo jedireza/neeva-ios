@@ -4,9 +4,9 @@
 
 import XCTest
 
-let defaultTopSite = ["topSiteLabel": "wikipedia", "bookmarkLabel": "Wikipedia"]
+let defaultTopSite = ["topSiteLabel": "Wikipedia", "bookmarkLabel": "Wikipedia"]
 let newTopSite = ["url": "www.mozilla.org", "topSiteLabel": "mozilla", "bookmarkLabel": "Internet for people, not profit — Mozilla"]
-let allDefaultTopSites = ["facebook", "youtube", "amazon", "wikipedia", "twitter"]
+let allDefaultTopSites = ["Facebook", "Youtube", "Amazon", "Wikipedia"]
 
 class ActivityStreamTest: BaseTestCase {
     let TopSiteCellgroup = XCUIApplication().cells["TopSitesCell"]
@@ -40,21 +40,21 @@ class ActivityStreamTest: BaseTestCase {
     // Smoketest
     func testDefaultSites() {
         // There should be 5 top sites by default
-        checkNumberOfExpectedTopSites(numberOfExpectedTopSites: 5)
+        checkNumberOfExpectedTopSites(numberOfExpectedTopSites: 4)
         // Check their names so that test is added to Smoketest
-        XCTAssertTrue(TopSiteCellgroup.cells["twitter"].exists)
-        XCTAssertTrue(TopSiteCellgroup.cells["amazon"].exists)
-        XCTAssertTrue(TopSiteCellgroup.cells["wikipedia"].exists)
-        XCTAssertTrue(TopSiteCellgroup.cells["youtube"].exists)
-        XCTAssertTrue(TopSiteCellgroup.cells["facebook"].exists)
+        XCTAssertTrue(TopSiteCellgroup.cells["Amazon"].exists)
+        XCTAssertTrue(TopSiteCellgroup.cells["Wikipedia"].exists)
+        XCTAssertTrue(TopSiteCellgroup.cells["Youtube"].exists)
+        XCTAssertTrue(TopSiteCellgroup.cells["Facebook"].exists)
     }
 
     func testTopSitesAdd() {
+        // TODO: This test doesn't actually test something meaningful here.
         navigator.goto(URLBarOpen)
         if iPad() {
             checkNumberOfExpectedTopSites(numberOfExpectedTopSites: 12)
         } else {
-            checkNumberOfExpectedTopSites(numberOfExpectedTopSites: 8)
+            checkNumberOfExpectedTopSites(numberOfExpectedTopSites: 4)
         }
     }
 
@@ -134,9 +134,10 @@ class ActivityStreamTest: BaseTestCase {
         XCTAssertFalse(app.cells.staticTexts["mozilla"].exists)
     }*/
 
+    /* TODO: Need to enable PinToTopSites action
     func testTopSitesRemoveAllExceptPinnedClearPrivateData() {
         waitForExistence(app.cells["TopSitesCell"].cells.element(boundBy: 0), timeout: 3)
-        navigator.openURL("mozilla.org")
+        navigator.openURL("neeva.com")
         waitUntilPageLoad()
         navigator.performAction(Action.PinToTopSitesPAM)
         // Workaround to have visited website in top sites
@@ -154,6 +155,7 @@ class ActivityStreamTest: BaseTestCase {
         XCTAssertTrue(app.collectionViews.cells[newTopSite["topSiteLabel"]!].exists)
         checkNumberOfExpectedTopSites(numberOfExpectedTopSites: 6)
     }
+    */
 
     func testTopSitesShiftAfterRemovingOne() {
         // Check top site in first and second cell
@@ -172,24 +174,24 @@ class ActivityStreamTest: BaseTestCase {
         waitForExistence(app.collectionViews.cells.collectionViews.cells.element(boundBy: 0))
         let topSiteCells = TopSiteCellgroup.cells
         let topSiteFirstCellAfter = app.collectionViews.cells.collectionViews.cells.element(boundBy: 0).label
-        XCTAssertTrue(topSiteFirstCellAfter == topSiteCells["youtube"].label, "First top site does not match")
+        XCTAssertTrue(topSiteFirstCellAfter == topSiteCells["Youtube"].label, "First top site does not match")
     }
 
     func testTopSitesOpenInNewTab() {
         navigator.goto(HomePanelsScreen)
-        waitForExistence(TopSiteCellgroup.cells["apple"])
-        TopSiteCellgroup.cells["apple"].press(forDuration: 1)
+        waitForExistence(TopSiteCellgroup.cells["Apple"])
+        TopSiteCellgroup.cells["Apple"].press(forDuration: 1)
         app.tables["Context Menu"].cells["Open in New Tab"].tap()
-        // The new tab is open but curren screen is still Homescreen
+        // The new tab is open but current screen is still Homescreen
         XCTAssert(TopSiteCellgroup.exists)
 
         navigator.goto(TabTray)
         app.cells.staticTexts["Home"].tap()
-        waitForExistence(TopSiteCellgroup.cells["apple"])
+        waitForExistence(TopSiteCellgroup.cells["Apple"])
         navigator.nowAt(HomePanelsScreen)
         navigator.goto(TabTray)
-        waitForExistence(app.cells.staticTexts["apple.com"])
-        XCTAssertTrue(app.cells.staticTexts["apple.com"].exists, "A new Tab has not been open")
+        waitForExistence(app.cells.staticTexts["Apple"])
+        XCTAssertTrue(app.cells.staticTexts["Apple"].exists, "A new Tab has not been open")
     }
 
     // Smoketest
@@ -204,8 +206,8 @@ class ActivityStreamTest: BaseTestCase {
         waitForNoExistence(app.tables["Context Menu"], timeoutValue: 15)
         navigator.nowAt(HomePanelsScreen)
         navigator.goto(TabTray)
-        waitForExistence(app.cells.staticTexts[defaultTopSite["bookmarkLabel"]!])
-        let numTabsOpen = app.tables.cells.count
+        waitForExistence(app.cells.staticTexts[defaultTopSite["topSiteLabel"]!])
+        let numTabsOpen = app.cells.count
         XCTAssertEqual(numTabsOpen, 2, "New tab not open")
     }
 
@@ -213,12 +215,12 @@ class ActivityStreamTest: BaseTestCase {
     func testTopSitesOpenInNewPrivateTab() {
         navigator.goto(HomePanelsScreen)
         // Long tap on apple top site, second cell
-        waitForExistence(app.cells["TopSitesCell"].cells["apple"], timeout: 3)
-        app.cells["TopSitesCell"].cells["apple"].press(forDuration:1)
+        waitForExistence(app.cells["TopSitesCell"].cells["Apple"], timeout: 3)
+        app.cells["TopSitesCell"].cells["Apple"].press(forDuration:1)
         app.tables["Context Menu"].cells["Open in New Private Tab"].tap()
 
         XCTAssert(TopSiteCellgroup.exists)
-        XCTAssertFalse(app.staticTexts["Apple"].exists)
+        //XCTAssertFalse(app.staticTexts["Apple"].exists)
 
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         navigator.goto(TabTray)
@@ -229,7 +231,7 @@ class ActivityStreamTest: BaseTestCase {
             app.buttons["Show Tabs"].tap()
         }
         navigator.nowAt(TabTray)
-        waitForExistence(app.tables.cells.staticTexts["Apple"])
+        waitForExistence(app.cells.staticTexts["Apple"])
         app.cells.staticTexts["Apple"].tap()
 
         // The website is open
@@ -254,7 +256,7 @@ class ActivityStreamTest: BaseTestCase {
 
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
 
-        waitForExistence(app.cells.staticTexts[defaultTopSite["bookmarkLabel"]!])
+        waitForExistence(app.cells.staticTexts[defaultTopSite["topSiteLabel"]!])
         let numTabsOpen = userState.numTabs
         XCTAssertEqual(numTabsOpen, 1, "New tab not open")
     }
@@ -356,8 +358,8 @@ class ActivityStreamTest: BaseTestCase {
     func testContextMenuInLandscape() {
         XCUIDevice.shared.orientation = .landscapeLeft
 
-        waitForExistence(TopSiteCellgroup.cells["apple"], timeout: 5)
-        TopSiteCellgroup.cells["apple"].press(forDuration: 1)
+        waitForExistence(TopSiteCellgroup.cells["Apple"], timeout: 5)
+        TopSiteCellgroup.cells["Apple"].press(forDuration: 1)
 
         let contextMenuHeight = app.tables["Context Menu"].frame.size.height
         let parentViewHeight = app.otherElements["Action Sheet"].frame.size.height
