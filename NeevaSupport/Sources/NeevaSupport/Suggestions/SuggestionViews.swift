@@ -39,7 +39,7 @@ fileprivate struct QuerySuggestionView: View {
     var textColor: Color {
         switch suggestion.type {
         case .searchHistory:
-            return .purpleVariant
+            return Color.Neeva.Brand.Purple
         default:
             return .primary
         }

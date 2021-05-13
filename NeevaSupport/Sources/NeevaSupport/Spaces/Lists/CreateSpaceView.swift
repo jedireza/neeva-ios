@@ -46,7 +46,7 @@ struct CreateSpaceView: View {
             }
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .background(Color.defaultBlue)
+            .background(Color.Neeva.Brand.Blue)
             .cornerRadius(40)
             .padding(.horizontal, 16)
             .padding(.bottom, 20)

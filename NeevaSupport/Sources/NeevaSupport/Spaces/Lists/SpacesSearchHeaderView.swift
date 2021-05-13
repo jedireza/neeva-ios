@@ -53,7 +53,7 @@ struct SpacesSearchHeaderView: View {
                 }
             }
             .frame(height: 40)
-            .foregroundColor(.defaultBlue)
+            .foregroundColor(Color.Neeva.Brand.Blue)
             .padding(.trailing, 3)
         }
     }

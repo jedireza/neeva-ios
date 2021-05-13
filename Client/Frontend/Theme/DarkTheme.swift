@@ -131,8 +131,6 @@ class DarkDefaultBrowserCardColor: DefaultBrowserCardColor {
     override var textColor: UIColor { return UIColor(rgb: 0x131415) }
     override var closeButtonBackground: UIColor { return UIColor.Photon.Grey80 }
     override var closeButton: UIColor { return UIColor.Photon.Grey20 }
-    override var brandPistachio: UIColor { return UIColor(rgb: 0xD0ECBF) }
-    override var brandPolar: UIColor { return UIColor(rgb: 0xADE1EA) }
 }
 
 class DarkPopupMenu: PopupMenu {

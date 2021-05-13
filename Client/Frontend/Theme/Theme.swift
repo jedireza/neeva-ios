@@ -208,8 +208,6 @@ class DefaultBrowserCardColor {
     var textColor: UIColor { return UIColor(rgb: 0x131415) }
     var closeButtonBackground: UIColor { return UIColor.Photon.Grey20 }
     var closeButton: UIColor { return UIColor.Photon.Grey80 }
-    var brandPistachio: UIColor { return UIColor(rgb: 0xE4F3DB) }
-    var brandPolar: UIColor{ return UIColor(rgb: 0xD4F0F5) }
 }
 
 class PopupMenu {

@@ -30,7 +30,7 @@ struct LargeSpaceIconView: View {
 
     var body: some View {
         if space.isDefaultSpace {
-            EmptyIcon(background: space.resultCount == 0 ? .spaceIconBackground : .gray96) {
+            EmptyIcon(background: space.resultCount == 0 ? .spaceIconBackground : Color.Neeva.UI.Gray96) {
                 Image(systemName: "star.fill")
                     .font(.system(size: Metrics.starSize))
                     .foregroundColor(.savedForLaterIcon)

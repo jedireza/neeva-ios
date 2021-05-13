@@ -54,7 +54,7 @@ class DefaultBrowserCard: UIView {
     }()
     lazy var background: UIView = {
         let background = UIView()
-        background.backgroundColor = UIColor.theme.defaultBrowserCard.brandPistachio
+        background.backgroundColor = UIColor.Neeva.Brand.Pistachio
         background.layer.cornerRadius = 12
         background.layer.masksToBounds = true
         return background
@@ -69,7 +69,7 @@ class DefaultBrowserCard: UIView {
         background.addSubview(actionButton)
 
         if (!NeevaUserInfo.shared.hasLoginCookie()) {
-            background.backgroundColor = UIColor.theme.defaultBrowserCard.brandPolar
+            background.backgroundColor = UIColor.Neeva.Brand.Polar
             title.text = "Get safer, richer, and"
             title2.text = "better search"
             closeButton.isHidden = true
