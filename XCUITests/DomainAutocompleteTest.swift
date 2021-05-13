@@ -4,7 +4,7 @@
 
 import XCTest
 
-let website = ["url": "www.mozilla.org", "value": "www.mozilla.org", "subDomain": "https://www.mozilla.org/en-US/firefox/products"]
+let website = ["url": "www.wikipedia.org", "value": "wikipedia.org"]
 
 let websiteExample = ["url": "www.example.com", "value": "www.example.com"]
 
@@ -46,16 +46,16 @@ class DomainAutocompleteTest: BaseTestCase {
     // Test that deleting characters works correctly with autocomplete
     func testAutocompleteDeletingChars() {
         navigator.goto(URLBarOpen)
-        app.textFields["address"].typeText("www.moz")
+        app.textFields["address"].typeText("wik")
 
         // First delete the autocompleted part
         app.textFields["address"].typeText("\u{0008}")
         // Then remove an extra char and check that the autocompletion stops working
         app.textFields["address"].typeText("\u{0008}")
-        waitForValueContains(app.textFields["address"], value: "mo")
+        waitForValueContains(app.textFields["address"], value: "wi")
         // Then write another letter and the autocompletion works again
-        app.textFields["address"].typeText("z")
-        waitForValueContains(app.textFields["address"], value: "moz")
+        app.textFields["address"].typeText("k")
+        waitForValueContains(app.textFields["address"], value: "wik")
 
         let value = app.textFields["address"].value
         XCTAssertEqual(value as? String, website["value"]!, "Wrong autocompletion")
@@ -174,6 +174,7 @@ class DomainAutocompleteTest: BaseTestCase {
     }
 
     // This test is disabled for general schema due to bug 1494269
+    /* Disabled as our suggest drop-down depends on being logged in to Neeva.
     func testDeletingCharsUpdateTheResults() {
         let url1 = ["url" : "git.es", "label" : "git.es - Dominio premium en venta"]
         let url2 = ["url" : "github.com", "label" : "The world's leading software development platform · GitHub"]
@@ -204,4 +205,5 @@ class DomainAutocompleteTest: BaseTestCase {
         XCTAssertFalse(app.tables["SiteTable"].staticTexts[url2["label"]!].exists)
         XCTAssertFalse(app.tables["SiteTable"].staticTexts[url1["label"]!].exists)
     }
+    */
 }

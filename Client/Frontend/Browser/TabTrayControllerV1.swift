@@ -981,6 +981,7 @@ class TabCell: UICollectionViewCell {
     let closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage.templateImageNamed("tab_close"), for: [])
+        button.accessibilityIdentifier = "closeTabButtonTabTray"
         button.imageView?.contentMode = .scaleAspectFit
         button.contentMode = .center
         button.tintColor = UIColor.theme.tabTray.cellCloseButton

@@ -207,7 +207,7 @@ class HistoryTests: BaseTestCase {
         navigator.goto(TabTray)
         waitForExistence(app.cells.staticTexts[webpage["label"]!])
         // Close tab by tapping on its 'x' button
-        app.tables.cells.element(boundBy: 0).buttons["closeTabButtonTabTray"].tap()
+        app.collectionViews.cells.element(boundBy: 0).buttons["closeTabButtonTabTray"].tap()
 
         navigator.performAction(Action.OpenNewTabFromTabTray)
         navigator.goto(HomePanelsScreen)
