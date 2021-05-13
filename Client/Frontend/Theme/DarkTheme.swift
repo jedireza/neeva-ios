@@ -77,14 +77,6 @@ fileprivate class DarkTopTabsColor: TopTabsColor {
     override var separator: UIColor { return UIColor.Photon.Grey50 }
 }
 
-fileprivate class DarkTextFieldColor: TextFieldColor {
-    override func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.systemFill }
-
-    override func textAndTint(isPrivate: Bool) -> UIColor { return defaultTextAndTint }
-    override func disabledTextAndTint(isPrivate: Bool) -> UIColor { return UIColor.Custom.disabledShieldDarkGray }
-    override var separator: UIColor { return super.separator.withAlphaComponent(0.3) }
-}
-
 fileprivate class DarkHomePanelColor: HomePanelColor {
     override var toolbarBackground: UIColor { return defaultBackground }
     override var toolbarHighlight: UIColor { return UIColor.Photon.Blue40 }
@@ -150,7 +142,6 @@ class DarkTheme: NormalTheme {
     override var toolbarButton: ToolbarButtonColor { return DarkToolbarButtonColor() }
     override var tabTray: TabTrayColor { return DarkTabTrayColor() }
     override var topTabs: TopTabsColor { return DarkTopTabsColor() }
-    override var textField: TextFieldColor { return DarkTextFieldColor() }
     override var homePanel: HomePanelColor { return DarkHomePanelColor() }
     override var snackbar: SnackBarColor { return DarkSnackBarColor() }
     override var general: GeneralColor { return DarkGeneralColor() }

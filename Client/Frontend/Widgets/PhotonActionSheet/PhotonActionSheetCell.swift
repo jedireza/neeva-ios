@@ -208,7 +208,7 @@ class PhotonActionSheetCell: UITableViewCell {
                 let label = UILabel(frame: CGRect())
                 label.text = action.tabCount
                 label.font = UIFont.boldSystemFont(ofSize: UIConstants.DefaultChromeSmallSize)
-                label.textColor = UIColor.theme.textField.textAndTint(isPrivate: false)
+                label.textColor = UIColor.TextField.textAndTint(isPrivate: false)
                 let image = UIImage(named: iconName)?.withRenderingMode(.alwaysTemplate)
                 statusIcon.image = image
                 statusIcon.addSubview(label)

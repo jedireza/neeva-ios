@@ -385,7 +385,6 @@ class URLBarView: UIView {
         }
 
         locationTextField.applyUIMode(isPrivate: isPrivateMode)
-        locationTextField.applyTheme()
     }
 
     override func becomeFirstResponder() -> Bool {
@@ -730,9 +729,6 @@ extension URLBarView {
 
 extension URLBarView: Themeable {
     func applyTheme() {
-        locationView.applyTheme()
-        locationTextField?.applyTheme()
-
         actionButtons.forEach { $0.applyTheme() }
         tabsButton.applyTheme()
         neevaMenuButton.tintColor = UIColor.theme.urlbar.neevaMenuTint(isPrivateMode)
@@ -831,18 +827,13 @@ class ToolbarTextField: AutocompleteTextField {
     }
 }
 
-extension ToolbarTextField: Themeable {
-    func applyTheme() {
-        backgroundColor = .clear
-        textColor = UIColor.theme.textField.textAndTint(isPrivate: isPrivateMode)
-        clearButtonTintColor = textColor
-        textSelectionColor = UIColor.theme.urlbar.textSelectionHighlight(isPrivateMode)
-        tintColor = textSelectionColor.textFieldMode
-    }
-}
-
 extension ToolbarTextField: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
+        backgroundColor = .clear
+        textColor = UIColor.TextField.textAndTint(isPrivate: isPrivateMode)
+        clearButtonTintColor = textColor
+        textSelectionColor = UIColor.theme.urlbar.textSelectionHighlight(isPrivateMode)
+        tintColor = textSelectionColor.textFieldMode
     }
 }

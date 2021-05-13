@@ -66,3 +66,11 @@ extension Color {
         public static let Backdrop = Color(UIColor.Neeva.Backdrop)
     }
 }
+
+extension UIColor {
+    public struct TextField {
+        public static func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.systemFill }
+        public static func textAndTint(isPrivate: Bool) -> UIColor { return isPrivate ? .white : .label }
+        public static func disabledTextAndTint(isPrivate: Bool) -> UIColor { isPrivate ? UIColor(red: 235, green: 235, blue: 245, alpha: 0.6) : .secondaryLabel }
+    }
+}

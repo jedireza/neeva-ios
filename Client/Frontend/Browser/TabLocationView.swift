@@ -6,6 +6,7 @@ import UIKit
 import Shared
 import SnapKit
 import XCGLogger
+import NeevaSupport
 
 private let log = Logger.browserLogger
 
@@ -368,10 +369,12 @@ extension TabLocationView: AccessibilityActionsSource {
     }
 }
 
-extension TabLocationView: Themeable {
-    func applyTheme() {
-        let background = UIColor.theme.textField.background(isPrivate: isPrivateMode)
-        let textAndTint = UIColor.theme.textField.textAndTint(isPrivate: isPrivateMode)
+extension TabLocationView: PrivateModeUI {
+    func applyUIMode(isPrivate: Bool) {
+        self.isPrivateMode = isPrivate
+
+        let background = UIColor.TextField.background(isPrivate: isPrivateMode)
+        let textAndTint = UIColor.TextField.textAndTint(isPrivate: isPrivateMode)
 
         backgroundColor = background
         urlTextField.textColor = textAndTint
@@ -393,13 +396,6 @@ extension TabLocationView: Themeable {
     }
 }
 
-extension TabLocationView: PrivateModeUI {
-    func applyUIMode(isPrivate: Bool) {
-        self.isPrivateMode = isPrivate
-        applyTheme()
-    }
-}
-
 extension TabLocationView: TabEventHandler {
     func tabDidChangeContentBlocking(_ tab: Tab) {
         updateBlockerStatus(forTab: tab)
@@ -411,10 +407,10 @@ extension TabLocationView: TabEventHandler {
         shieldButton.alpha = 1.0
         switch blocker.status {
         case .blocking, .noBlockedURLs, .safelisted:
-            shieldButton.tintColor = UIColor.theme.textField.textAndTint(isPrivate: isPrivateMode)
+            shieldButton.tintColor = UIColor.TextField.textAndTint(isPrivate: isPrivateMode)
             break
         case .disabled:
-            shieldButton.tintColor = UIColor.theme.textField.disabledTextAndTint(isPrivate: isPrivateMode)
+            shieldButton.tintColor = UIColor.TextField.disabledTextAndTint(isPrivate: isPrivateMode)
             break
         }
     }

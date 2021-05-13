@@ -144,13 +144,6 @@ class TopTabsColor {
     var separator: UIColor { return UIColor.Photon.Grey70 }
 }
 
-class TextFieldColor {
-    func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.tertiarySystemFill }
-    func textAndTint(isPrivate: Bool) -> UIColor { return isPrivate ? .white : defaultTextAndTint }
-    func disabledTextAndTint(isPrivate: Bool) -> UIColor { isPrivate ? UIColor.Custom.disabledShieldDarkGray : UIColor.Custom.disabledShieldLightGray }
-    var separator: UIColor { return .white }
-}
-
 class HomePanelColor {
     var toolbarBackground: UIColor { return defaultBackground }
     var toolbarHighlight: UIColor { return UIColor.Photon.Blue40 }
@@ -228,7 +221,6 @@ protocol Theme {
     var loadingBar: LoadingBarColor { get }
     var tabTray: TabTrayColor { get }
     var topTabs: TopTabsColor { get }
-    var textField: TextFieldColor { get }
     var homePanel: HomePanelColor { get }
     var snackbar: SnackBarColor { get }
     var general: GeneralColor { get }
@@ -248,7 +240,6 @@ class NormalTheme: Theme {
     var loadingBar: LoadingBarColor { return LoadingBarColor() }
     var tabTray: TabTrayColor { return TabTrayColor() }
     var topTabs: TopTabsColor { return TopTabsColor() }
-    var textField: TextFieldColor { return TextFieldColor() }
     var homePanel: HomePanelColor { return HomePanelColor() }
     var snackbar: SnackBarColor { return SnackBarColor() }
     var general: GeneralColor { return GeneralColor() }
