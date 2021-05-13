@@ -6,7 +6,7 @@ import UIKit
 
 public enum AppName: String, CustomStringConvertible {
     case shortName = "Neeva"
-    case longName = "Neeva Daylight"
+    case longName = "Neeva Browser"
 
     public var description: String {
         return self.rawValue
