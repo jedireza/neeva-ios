@@ -1401,10 +1401,10 @@ extension BrowserViewController: URLBarDelegate {
     func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions) {
         switch(page){
         case .home:
-            openURLInNewTab(NeevaConstants.appHomeURL)
+            switchToTabForURLOrOpen(NeevaConstants.appHomeURL)
             break
         case .spaces:
-            openURLInNewTab(NeevaConstants.appSpacesURL)
+            switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
             break
         default:
             break
