@@ -11,7 +11,7 @@ private struct URLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40
     static let TextFieldActiveBorderColor = UIColor.Photon.Blue40
 
-    static let LocationEdgePadding: CGFloat = 16
+    static let LocationEdgePadding: CGFloat = 8
     static let LocationOverlayLeftPadding: CGFloat = 14
     static let LocationOverlayRightPadding: CGFloat = 2
     static let Padding: CGFloat = 5.5
@@ -237,6 +237,12 @@ class URLBarView: UIView {
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
+        neevaMenuButton.snp.makeConstraints { make in
+            make.leading.equalTo(self.forwardButton.snp.trailing)
+            make.centerY.equalTo(self.locationContainer)
+            make.size.equalTo(URLBarViewUX.ButtonSize)
+        }
+
         shareButton.snp.makeConstraints { make in
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
@@ -265,13 +271,12 @@ class URLBarView: UIView {
             if inOverlayMode {
                 make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.LocationEdgePadding)
                 make.trailing.equalTo(self.cancelButton.snp.leading).offset(-2 * URLBarViewUX.Padding)
-            } else {
+            } else if self.toolbarIsShowing {
                 make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(URLBarViewUX.Padding)
-                if self.toolbarIsShowing {
-                    make.trailing.equalTo(self.shareButton.snp.leading).offset(-URLBarViewUX.Padding)
-                } else {
-                    make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.Padding * 2)
-                }
+                make.trailing.equalTo(self.shareButton.snp.leading).offset(-URLBarViewUX.Padding)
+            } else {
+                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.LocationEdgePadding)
+                make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.LocationEdgePadding)
             }
             make.height.equalTo(URLBarViewUX.LocationHeight)
             if self.toolbarIsShowing {
@@ -280,23 +285,11 @@ class URLBarView: UIView {
                 make.top.equalTo(self).offset(UIConstants.TopToolbarPaddingTop)
             }
         }
-
         if inOverlayMode {
             self.locationTextField?.snp.remakeConstraints { make in
                 make.edges.equalTo(self.locationView).inset(
                     UIEdgeInsets(top: 0, left: URLBarViewUX.LocationOverlayLeftPadding,
                                  bottom: 0, right: URLBarViewUX.LocationOverlayRightPadding))
-            }
-        } else {
-            self.neevaMenuButton.snp.remakeConstraints { make in
-                if self.toolbarIsShowing {
-                    make.leading.equalTo(self.forwardButton.snp.trailing)
-                } else {
-                    make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.Padding)
-                    make.size.equalTo(0)
-                }
-                make.centerY.equalTo(self.locationContainer)
-                make.size.equalTo(URLBarViewUX.ButtonSize)
             }
         }
     }
@@ -502,7 +495,7 @@ class URLBarView: UIView {
         // Make sure everything is showing during the transition (we'll hide it afterwards).
         bringSubviewToFront(self.locationContainer)
         cancelButton.isHidden = false
-        neevaMenuButton.isHidden = false
+        neevaMenuButton.isHidden = !toolbarIsShowing
         progressBar.isHidden = false
         addToSpacesButton.isHidden = !toolbarIsShowing
         forwardButton.isHidden = !toolbarIsShowing
@@ -528,7 +521,7 @@ class URLBarView: UIView {
         locationView.overrideAccessibility(enabled: !inOverlayMode)
 
         cancelButton.isHidden = !inOverlayMode
-        neevaMenuButton.isHidden = inOverlayMode
+        neevaMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
         progressBar.isHidden = inOverlayMode
         addToSpacesButton.isHidden = !toolbarIsShowing || inOverlayMode
         forwardButton.isHidden = !toolbarIsShowing || inOverlayMode
