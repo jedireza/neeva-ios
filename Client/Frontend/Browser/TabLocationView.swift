@@ -27,7 +27,7 @@ private struct TabLocationViewUX {
     static let ShieldButtonWidth: CGFloat = 44
     static let ReloadButtonWidth: CGFloat = 44
     static let ShareButtonWidth: CGFloat = 46
-    static let ButtonHeight: CGFloat = 36
+    static let ButtonHeight: CGFloat = 42
     static let Spacer0Width: CGFloat = (ReloadButtonWidth - 14) / 2
 }
 

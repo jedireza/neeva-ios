@@ -10,7 +10,7 @@ private struct SearchInputViewUX {
     static let horizontalSpacing: CGFloat = 16
     static let titleFont = UIFont.systemFont(ofSize: 16)
     static let borderLineWidth: CGFloat = 0.5
-    static let closeButtonSize: CGFloat = 36
+    static let closeButtonSize: CGFloat = 42
 }
 
 @objc protocol SearchInputViewDelegate: AnyObject {

@@ -22,7 +22,7 @@ extension UIColor {
 public struct UIConstants {
     static let DefaultPadding: CGFloat = 10
     static let SnackbarButtonHeight: CGFloat = 57
-    static let TextFieldHeight: CGFloat = 36
+    static let TextFieldHeight: CGFloat = 42
 
     // Portrait mode on a phone:
     static let TopToolbarPaddingTop: CGFloat = 4
