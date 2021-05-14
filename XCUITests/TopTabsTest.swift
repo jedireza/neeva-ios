@@ -17,6 +17,7 @@ let urlValueLongExample = "localhost:\(serverPort)/test-fixture/test-example.htm
 let toastUrl = ["url": "twitter.com", "link": "About", "urlLabel": "about"]
 
 class TopTabsTest: BaseTestCase {
+    /* Disabled as we do not expose the number of tabs through this mechanism
     func testAddTabFromTabTray() {
         waitForTabsButton()
         navigator.goto(TabTray)
@@ -85,6 +86,7 @@ class TopTabsTest: BaseTestCase {
         let value = app.textFields["url"].value as! String
         XCTAssertEqual(value, urlValueLongExample)
     }
+    */
 
     func testCloseOneTab() {
         navigator.openURL(path(forTestPage: "test-mozilla-org.html"))
@@ -158,14 +160,14 @@ class TopTabsTest: BaseTestCase {
             waitForExistence(app.buttons["TabToolbar.tabsButton"],timeout: 5)
         }
 
-        checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 3)
+        checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 2)
 
         // Close all tabs, undo it and check that the number of tabs is correct
         navigator.performAction(Action.AcceptRemovingAllTabs)
-        waitForExistence(app.staticTexts["Private Browsing"], timeout: 10)
-        XCTAssertTrue(app.staticTexts["Private Browsing"].exists, "Private welcome screen is not shown")
+        waitForExistence(app.staticTexts["You are incognito"], timeout: 10)
+        XCTAssertTrue(app.staticTexts["You are incognito"].exists, "Incognito welcome screen is not shown")
         // New behaviour on v14, there is no Undo in Private mode
-        waitForExistence(app.staticTexts["Private Browsing"], timeout:10)
+        waitForExistence(app.staticTexts["You are incognito"], timeout:10)
     }
 
     func testCloseAllTabs() {
@@ -201,30 +203,30 @@ class TopTabsTest: BaseTestCase {
         navigator.performAction(Action.OpenNewTabFromTabTray)
         navigator.nowAt(NewTabScreen)
         waitForTabsButton()
-        // By default with new chron tab there is one tab in private mode
-        checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 3)
+        checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 2)
 
-        // Close all tabs and check that the number of tabs is correct
         navigator.performAction(Action.AcceptRemovingAllTabs)
-        XCTAssertTrue(app.staticTexts["Private Browsing"].exists, "Private welcome screen is not shown")
+        XCTAssertTrue(app.staticTexts["You are incognito"].exists, "Incognito welcome screen is not shown")
     }
     
     // Smoketest
+    /* Disabled as we don't show a button to add tabs in landscape mode
     func testOpenNewTabLandscape() {
         navigator.goto(NewTabScreen)
         XCUIDevice.shared.orientation = .landscapeLeft
         // Verify the '+' icon is shown
-        waitForExistence(app.buttons["TabToolbar.addNewTabButton"], timeout: 15)
+        waitForExistence(app.buttons["TabTrayController.addTabButton"], timeout: 15)
         // Open a new tab using it
-        app.buttons["TabToolbar.addNewTabButton"].tap()
+        app.buttons["TabTrayController.addTabButton"].tap()
         app.typeText("google.com\n")
         waitUntilPageLoad()
 
         // Go back to portrait mode
         XCUIDevice.shared.orientation = .portrait
         // Verify that the '+' is not displayed
-        waitForNoExistence(app.buttons["TabToolbar.addNewTabButton"])
+        waitForNoExistence(app.buttons["TabTrayController.addTabButton"])
     }
+    */
 
     // Smoketest
     func testLongTapTabCounter() {
@@ -232,12 +234,12 @@ class TopTabsTest: BaseTestCase {
             // Long tap on Tab Counter should show the correct options
             waitForExistence(app.buttons["Show Tabs"], timeout: 10)
             app.buttons["Show Tabs"].press(forDuration: 1)
-            waitForExistence(app.cells["quick_action_new_tab"])
-            XCTAssertTrue(app.cells["quick_action_new_tab"].exists)
-            XCTAssertTrue(app.cells["tab_close"].exists)
+            waitForExistence(app.buttons["New Tab"])
+            XCTAssertTrue(app.buttons["New Tab"].exists)
+            XCTAssertTrue(app.buttons["Close Tab"].exists)
 
             // Open New Tab
-            app.cells["quick_action_new_tab"].tap()
+            app.buttons["New Tab"].tap()
             waitForTabsButton()
             checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 2)
             waitForExistence(app.cells.staticTexts["Home"])
@@ -247,8 +249,8 @@ class TopTabsTest: BaseTestCase {
             navigator.nowAt(HomePanelsScreen)
             waitForExistence(app.buttons["Show Tabs"])
             app.buttons["Show Tabs"].press(forDuration: 1)
-            waitForExistence(app.cells["quick_action_new_tab"])
-            app.cells["tab_close"].tap()
+            waitForExistence(app.buttons["New Tab"])
+            app.buttons["Close Tab"].tap()
             checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 1)
 
             // Go to Private Mode
@@ -257,8 +259,8 @@ class TopTabsTest: BaseTestCase {
             navigator.nowAt(HomePanelsScreen)
             waitForExistence(app.buttons["Show Tabs"])
             app.buttons["Show Tabs"].press(forDuration: 1)
-            waitForExistence(app.cells["nav-tabcounter"])
-            app.cells["nav-tabcounter"].tap()
+            waitForExistence(app.buttons["Private Browsing Mode"])
+            app.buttons["Private Browsing Mode"].tap()
             checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 1)
         }
     }
@@ -316,13 +318,14 @@ class TopTabsTestIphone: IphoneOnlyTestCase {
         waitForTabsButton()
         navigator.performAction(Action.OpenPrivateTabLongPressTabsButton)
         checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 1)
-        waitForExistence(app.buttons["smallPrivateMask"])
-        XCTAssertTrue(app.buttons["smallPrivateMask"].isEnabled)
+        waitForExistence(app.buttons["TabTrayController.maskButton"])
+        XCTAssertTrue(app.buttons["TabTrayController.maskButton"].isEnabled)
         XCTAssertTrue(userState.isPrivate)
     }
 
     // This test is disabled for iPad because the toast menu is not shown there
     // Smoketest
+    /* Disabled because we don't expose the number of tabs through the accessibilityValue of the show tabs button
     func testSwitchBetweenTabsToastButton() {
         if skipPlatform { return }
 
@@ -364,6 +367,7 @@ class TopTabsTestIphone: IphoneOnlyTestCase {
         let numPrivTab = app.buttons["Show Tabs"].value as? String
         XCTAssertEqual("3", numPrivTab)
     }
+    */
 
     // This test is disabled for iPad because the toast menu is not shown there
     // Smoketest
@@ -384,7 +388,7 @@ class TopTabsTestIphone: IphoneOnlyTestCase {
         waitForExistence(app.textFields["url"], timeout: 5)
         waitForValueContains(app.textFields["url"], value: "iana")
         navigator.goto(TabTray)
-        XCTAssertTrue(app.buttons["smallPrivateMask"].isEnabled)
+        XCTAssertTrue(app.buttons["TabTrayController.maskButton"].isEnabled)
     }
 }
 

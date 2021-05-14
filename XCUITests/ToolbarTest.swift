@@ -30,31 +30,30 @@ class ToolbarTests: BaseTestCase {
 
         // Check the url placeholder text and that the back and forward buttons are disabled
         XCTAssertTrue(urlPlaceholder == defaultValuePlaceholder, "The placeholder does not show the correct value")
-        XCTAssertFalse(app.buttons["URLBarView.backButton"].isEnabled)
+        XCTAssertFalse(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
-        XCTAssertFalse(app.buttons["Reload"].isEnabled)
 
         // Navigate to two pages and press back once so that all buttons are enabled in landscape mode.
         navigator.openURL(website1["url"]!)
         waitUntilPageLoad()
         waitForExistence(app.webViews.links["Mozilla"], timeout: 10)
         let valueMozilla = app.textFields["url"].value as! String
-        XCTAssertEqual(valueMozilla, urlValueLong)
-        XCTAssertTrue(app.buttons["URLBarView.backButton"].isEnabled)
+        XCTAssertEqual(valueMozilla, "localhost")
+        XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
-        XCTAssertTrue(app.buttons["Reload"].isEnabled)
+        XCTAssertTrue(app.buttons["TabLocationView.reloadButton"].isEnabled)
 
         navigator.openURL(website2)
         waitUntilPageLoad()
-        waitForValueContains(app.textFields["url"], value: "localhost:\(serverPort)")
-        XCTAssertTrue(app.buttons["URLBarView.backButton"].isEnabled)
+        waitForValueContains(app.textFields["url"], value: "localhost")
+        XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
 
-        app.buttons["URLBarView.backButton"].tap()
-        XCTAssertEqual(valueMozilla, urlValueLong)
+        app.buttons["Back"].tap()
+        XCTAssertEqual(valueMozilla, "localhost")
 
         waitUntilPageLoad()
-        XCTAssertTrue(app.buttons["URLBarView.backButton"].isEnabled)
+        XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertTrue(app.buttons["Forward"].isEnabled)
 
         // Open new tab and then go back to previous tab to test navigation buttons.
@@ -62,11 +61,11 @@ class ToolbarTests: BaseTestCase {
         navigator.goto(TabTray)
         waitForExistence(app.cells.staticTexts[website1["label"]!])
         app.cells.staticTexts[website1["label"]!].tap()
-        XCTAssertEqual(valueMozilla, urlValueLong)
+        XCTAssertEqual(valueMozilla, "localhost")
 
         // Test to see if all the buttons are enabled then close tab.
         waitUntilPageLoad()
-        XCTAssertTrue(app.buttons["URLBarView.backButton"].isEnabled)
+        XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertTrue(app.buttons["Forward"].isEnabled)
 
         navigator.nowAt(BrowserTab)
@@ -74,11 +73,11 @@ class ToolbarTests: BaseTestCase {
         navigator.goto(TabTray)
 
         waitForExistence(app.cells.staticTexts[website1["label"]!])
-        app.tables.cells.element(boundBy: 0).buttons["closeTabButtonTabTray"].tap()
+        app.collectionViews.cells.element(boundBy: 0).buttons["closeTabButtonTabTray"].tap()
 
         // Go Back to other tab to see if all buttons are disabled.
         navigator.nowAt(BrowserTab)
-        XCTAssertFalse(app.buttons["URLBarView.backButton"].isEnabled)
+        XCTAssertFalse(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
     }
 
@@ -88,7 +87,7 @@ class ToolbarTests: BaseTestCase {
         waitForTabsButton()
         waitForExistence(app.webViews.links["Mozilla"], timeout: 10)
         let valueMozilla = app.textFields["url"].value as! String
-        XCTAssertEqual(valueMozilla, urlValueLong)
+        XCTAssertEqual(valueMozilla, "localhost")
 
         // Simulate pressing on backspace key should remove the text
         app.textFields["url"].tap()
@@ -108,8 +107,8 @@ class ToolbarTests: BaseTestCase {
         navigator.openURL(website1["url"]!, waitForLoading: true)
         // Adding the waiter right after navigating to the webpage in order to make the test more stable
         waitUntilPageLoad()
-        waitForExistence(app.buttons["TabLocationView.pageOptionsButton"], timeout: 10)
-        let pageActionMenuButton = app.buttons["TabLocationView.pageOptionsButton"]
+        waitForExistence(app.buttons["TabLocationView.shareButton"], timeout: 10)
+        let shareButton = app.buttons["TabLocationView.shareButton"]
         let statusbarElement: XCUIElement = {
             if #available(iOS 13, *) {
                 return XCUIApplication(bundleIdentifier: "com.apple.springboard").statusBars.firstMatch
@@ -118,9 +117,9 @@ class ToolbarTests: BaseTestCase {
             }
         }()
         app.swipeUp()
-        XCTAssertFalse(pageActionMenuButton.exists)
+        XCTAssertFalse(shareButton.exists)
         statusbarElement.tap(force: true)
-        XCTAssertTrue(pageActionMenuButton.isHittable)
+        XCTAssertTrue(shareButton.isHittable)
         statusbarElement.tap(force: true)
         let topElement = app.webViews.otherElements["Internet for people, not profit — Mozilla"].children(matching: .other).matching(identifier: "navigation").element(boundBy: 0).staticTexts["Mozilla"]
         waitForExistence(topElement, timeout: 10)

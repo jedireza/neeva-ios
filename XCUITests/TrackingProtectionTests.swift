@@ -29,7 +29,7 @@ class TrackingProtectionTests: BaseTestCase {
 
         // Now there should not be any shield icon
         waitForNoExistence(app.buttons["TabLocationView.trackingProtectionButton"])
-        waitForExistence(app.buttons["TabToolbar.menuButton"], timeout: 5)
+        waitForExistence(app.buttons["TabToolbar.neevaMenuButton"], timeout: 5)
         navigator.goto(BrowserTab)
 
         // Switch to Private Browsing
@@ -39,7 +39,7 @@ class TrackingProtectionTests: BaseTestCase {
 
         // Make sure TP is off also in PMB
         waitForNoExistence(app.buttons["TabLocationView.trackingProtectionButton"])
-        waitForExistence(app.buttons["TabToolbar.menuButton"], timeout: 10)
+        waitForExistence(app.buttons["TabToolbar.neevaMenuButton"], timeout: 10)
         navigator.goto(SettingsScreen)
         // Enable TP again
         navigator.goto(TrackingProtectionSettings)
@@ -68,6 +68,7 @@ class TrackingProtectionTests: BaseTestCase {
         app.buttons["Done"].tap()
     }
 
+    /* Disabled as we don't have this UI.
     func testMenuWhenThereAreBlockedElements() {
         // Open website which has trackers blocked
         navigator.openURL(websiteWithBlockedElements)
@@ -131,6 +132,7 @@ class TrackingProtectionTests: BaseTestCase {
         navigator.performAction(Action.TrackingProtectionperSiteToggle)
         XCTAssertTrue(app.cells.images["enabled"].exists)
     }
+    */
 
     func testBasicMoreInfo() {
         navigator.goto(TrackingProtectionSettings)
