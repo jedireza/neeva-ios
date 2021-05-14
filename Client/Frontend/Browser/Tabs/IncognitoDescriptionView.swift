@@ -9,6 +9,12 @@ struct IncognitoDescriptionView: View {
     let titleFont = Font.system(size: 20, weight: .semibold)
     let descriptionFont = Font.system(size: 16)
 
+    var paragraph3: some View {
+        Text(verbatim: .IncognitoDescriptionParagraph3Part1) +
+        Text(verbatim: .IncognitoDescriptionParagraph3Part2Bold).fontWeight(.bold) +
+        Text(verbatim: .IncognitoDescriptionParagraph3Part3)
+    }
+
     var body: some View {
         HStack(spacing: 0) {
             Spacer()
@@ -34,11 +40,12 @@ struct IncognitoDescriptionView: View {
                     Text(verbatim: .IncognitoDescriptionParagraph2)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(alignment: .leading)
-                    Text(verbatim: .IncognitoDescriptionParagraph3)
+                    paragraph3
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(alignment: .leading)
                 }
                 .font(descriptionFont)
+                .foregroundColor(Color(UIColor(rgba: 0xEBEBF599)))  // Dark variant of .secondaryLabel
                 .frame(maxWidth: maxTextWidth)
                 .padding([.leading, .trailing], gutterWidth)
 

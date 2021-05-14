@@ -995,7 +995,9 @@ extension String {
     public static let IncognitoOnTitle = MZLocalizedString("You are incognito", tableName: "Incognito", comment: "Title displayed for when there are no open tabs while in incognito mode")
     public static let IncognitoDescriptionParagraph1 =  MZLocalizedString("Neeva won't collect or store any of your personal activity like searches or clicks.", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
     public static let IncognitoDescriptionParagraph2 =  MZLocalizedString("Search privately and with peace of mind, knowing that others can’t see your activity.", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
-    public static let IncognitoDescriptionParagraph3 =  MZLocalizedString("Your activity might still be visible to your internet service provider, your school or employer.", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
+    public static let IncognitoDescriptionParagraph3Part1 =  MZLocalizedString("Your activity ", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
+    public static let IncognitoDescriptionParagraph3Part2Bold =  MZLocalizedString("might still be visible", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
+    public static let IncognitoDescriptionParagraph3Part3 =  MZLocalizedString(" to your internet service provider, your school or employer.", tableName: "Incognito", comment: "Description text displayed when there are no open tabs while in private mode")
 }
 
 // URL Bar
