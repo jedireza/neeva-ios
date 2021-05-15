@@ -150,7 +150,7 @@ class URLBarView: UIView {
 
     var toolbarNeevaMenuButton = ToolbarButton()
 
-    lazy var actionButtons: [Themeable & UIButton] = [self.tabsButton, self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton]
+    lazy var actionButtons: [ToolbarButton] = [self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton]
 
     var currentURL: URL? {
         get {
@@ -199,6 +199,7 @@ class URLBarView: UIView {
 
         // Make sure we hide any views that shouldn't be showing in non-overlay mode.
         updateViewsForOverlayModeAndToolbarChanges()
+        applyUIMode(isPrivate: isPrivateMode)
     }
     
     fileprivate func setupConstraints() {
@@ -459,8 +460,6 @@ class URLBarView: UIView {
 
         delegate?.urlBarDidEnterOverlayMode(self)
 
-        applyTheme()
-
         // Bug 1193755 Workaround - Calling becomeFirstResponder before the animation happens
         // won't take the initial frame of the label into consideration, which makes the label
         // look squished at the start of the animation and expand to be correct. As a workaround,
@@ -488,7 +487,6 @@ class URLBarView: UIView {
         locationTextField?.resignFirstResponder()
         animateToOverlayState(overlayMode: false, didCancel: cancel)
         delegate?.urlBarDidLeaveOverlayMode(self)
-        applyTheme()
     }
 
     func prepareOverlayAnimation() {
@@ -720,23 +718,6 @@ extension URLBarView {
     }
 }
 
-extension URLBarView: Themeable {
-    func applyTheme() {
-        actionButtons.forEach { $0.applyTheme() }
-        tabsButton.applyTheme()
-        neevaMenuButton.tintColor = UIColor.theme.urlbar.neevaMenuTint(isPrivateMode)
-
-        cancelTintColor = UIColor.theme.browser.tint
-        backgroundColor = UIColor.theme.browser.background
-        line.backgroundColor = UIColor.theme.browser.urlBarDivider
-
-        progressBar.setGradientColors(startColor: UIColor.theme.loadingBar.start(isPrivateMode), endColor: UIColor.theme.loadingBar.end(isPrivateMode))
-
-        appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
-        warningMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
-    }
-}
-
 extension URLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
@@ -749,7 +730,17 @@ extension URLBarView: PrivateModeUI {
             neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
         }
 
-        applyTheme()
+
+        neevaMenuButton.tintColor = UIColor.URLBar.neevaMenuTint(isPrivateMode)
+
+        cancelTintColor = UIColor.Browser.tint
+        backgroundColor = UIColor.Browser.background
+        line.backgroundColor = UIColor.Browser.urlBarDivider
+
+        progressBar.setGradientColors(startColor: UIColor.LoadingBar.start(isPrivateMode), endColor: UIColor.LoadingBar.end(isPrivateMode))
+
+        appMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
+        warningMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
     }
 }
 
@@ -826,7 +817,7 @@ extension ToolbarTextField: PrivateModeUI {
         backgroundColor = .clear
         textColor = UIColor.TextField.textAndTint(isPrivate: isPrivateMode)
         clearButtonTintColor = textColor
-        textSelectionColor = UIColor.theme.urlbar.textSelectionHighlight(isPrivateMode)
+        textSelectionColor = UIColor.URLBar.textSelectionHighlight(isPrivateMode)
         tintColor = textSelectionColor.textFieldMode
     }
 }

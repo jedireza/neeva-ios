@@ -5,6 +5,7 @@
 import Foundation
 import SnapKit
 import Shared
+import NeevaSupport
 
 struct TabsButtonUX {
     static let CornerRadius: CGFloat = 2
@@ -31,6 +32,7 @@ class TabsButton: UIButton {
         let imageView = UIImageView(image: doubleSquareIcon)
         imageView.tintColor = UIColor.Photon.Grey80
         imageView.frame = CGRect(x: 0, y: 0, width: 26, height: 24)
+        imageView.tintColor = UIColor.TabTray.tabsButton
         return imageView
     }()
 
@@ -66,11 +68,7 @@ class TabsButton: UIButton {
     @objc func cloneDidClickTabs() {
         sendActions(for: .touchUpInside)
     }
-}
 
-extension TabsButton: Themeable {
-    func applyTheme() {
-        doubleSquareImageView.tintColor = UIColor.theme.tabTray.tabButton
-    }
+
 }
 

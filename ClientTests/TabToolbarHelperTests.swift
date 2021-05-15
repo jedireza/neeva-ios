@@ -66,7 +66,7 @@ class MockTabToolbar: TabToolbarProtocol {
 
     var _multiStateButton = MockToolbarButton()
     var multiStateButton: ToolbarButton { get { _multiStateButton } }
-    var actionButtons: [Themeable & UIButton] {
+    var actionButtons: [ToolbarButton] {
         get { return [] }
     }
 

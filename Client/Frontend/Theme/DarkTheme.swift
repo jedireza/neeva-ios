@@ -30,26 +30,6 @@ fileprivate class DarkActionMenuColor: ActionMenuColor {
     override var closeButtonBackground: UIColor { return defaultBackground }
 }
 
-fileprivate class DarkURLBarColor: URLBarColor {
-    override func textSelectionHighlight(_ isPrivate: Bool) -> TextSelectionHighlight {
-        let color = isPrivate ? UIColor.Defaults.PrivateBlue : UIColor(rgb: 0x3d89cc)
-        return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
-    }
-    override func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
-        return isPrivate ? UIColor.Neeva.Brand.Offwhite : nil
-    }
-}
-
-fileprivate class DarkBrowserColor: BrowserColor {
-    override var background: UIColor { return defaultBackground }
-    override var tint: UIColor { return defaultTextAndTint }
-}
-
-// The back/forward/refresh/menu button (bottom toolbar)
-fileprivate class DarkToolbarButtonColor: ToolbarButtonColor {
-
-}
-
 fileprivate class DarkTabTrayColor: TabTrayColor {
     override var tabTitleText: UIColor { return defaultTextAndTint }
     override var tabTitleBlur: UIBlurEffect.Style { return UIBlurEffect.Style.dark }
@@ -62,7 +42,6 @@ fileprivate class DarkTabTrayColor: TabTrayColor {
     override var cellTitleBackground: UIColor { return UIColor.Photon.Grey70 }
     override var faviconTint: UIColor { return UIColor.Photon.White100 }
     override var searchBackground: UIColor { return UIColor.Photon.Grey60 }
-    override var tabButton: UIColor { return UIColor.Photon.White100 }
     override var toggleButon: UIColor { return UIColor.Photon.White100 }
 }
 
@@ -137,9 +116,6 @@ class DarkPopupMenu: PopupMenu {
 class DarkTheme: NormalTheme {
     override var name: String { return BuiltinThemeName.dark.rawValue }
     override var tableView: TableViewColor { return DarkTableViewColor() }
-    override var urlbar: URLBarColor { return DarkURLBarColor() }
-    override var browser: BrowserColor { return DarkBrowserColor() }
-    override var toolbarButton: ToolbarButtonColor { return DarkToolbarButtonColor() }
     override var tabTray: TabTrayColor { return DarkTabTrayColor() }
     override var topTabs: TopTabsColor { return DarkTopTabsColor() }
     override var homePanel: HomePanelColor { return DarkHomePanelColor() }

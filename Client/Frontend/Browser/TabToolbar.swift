@@ -16,7 +16,7 @@ protocol TabToolbarProtocol: AnyObject {
     var backButton: ToolbarButton { get }
     var shareButton: ToolbarButton { get }
     var toolbarNeevaMenuButton: ToolbarButton { get }
-    var actionButtons: [Themeable & UIButton] { get }
+    var actionButtons: [ToolbarButton] { get }
 
     func updateBackStatus(_ canGoBack: Bool)
     func updateForwardStatus(_ canGoForward: Bool)
@@ -49,10 +49,6 @@ open class TabToolbarHelper: NSObject {
     let ImageNewTab = UIImage.templateImageNamed("nav-add")
 
     let menuActionID = UIAction.Identifier("UpdateMenu")
-    
-    fileprivate func setTheme(forButtons buttons: [Themeable]) {
-        buttons.forEach { $0.applyTheme() }
-    }
 
     init(toolbar: TabToolbarProtocol) {
         self.toolbar = toolbar
@@ -95,8 +91,6 @@ open class TabToolbarHelper: NSObject {
         toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
         toolbar.toolbarNeevaMenuButton.accessibilityIdentifier = "TabToolbar.neevaMenuButton"
         toolbar.toolbarNeevaMenuButton.addTarget(self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
-
-        setTheme(forButtons: toolbar.actionButtons)
     }
 
     func didPressToolbarNeevaMenu () {
@@ -161,9 +155,15 @@ class ToolbarButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         adjustsImageWhenHighlighted = false
-        selectedTintColor = tintColor
-        unselectedTintColor = tintColor
         imageView?.contentMode = .scaleAspectFit
+        selectedTintColor = UIColor.ToolbarButton.selectedTint
+        disabledTintColor = UIColor.ToolbarButton.disabledTint
+        unselectedTintColor = UIColor.Browser.tint
+        tintColor = isEnabled ? unselectedTintColor : disabledTintColor
+        imageView?.tintColor = tintColor
+        setTitleColor(unselectedTintColor, for: .normal)
+        setTitleColor(disabledTintColor, for: .disabled)
+        setTitleColor(selectedTintColor, for: .highlighted)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -195,16 +195,8 @@ class ToolbarButton: UIButton {
     }
 }
 
-extension ToolbarButton: Themeable {
-    func applyTheme() {
-        selectedTintColor = UIColor.theme.toolbarButton.selectedTint
-        disabledTintColor = UIColor.theme.toolbarButton.disabledTint
-        unselectedTintColor = UIColor.theme.browser.tint
-        tintColor = isEnabled ? unselectedTintColor : disabledTintColor
-        imageView?.tintColor = tintColor
-        setTitleColor(unselectedTintColor, for: .normal)
-        setTitleColor(disabledTintColor, for: .disabled)
-        setTitleColor(selectedTintColor, for: .highlighted)
+extension ToolbarButton {
+    func configTint() {
     }
 }
 
@@ -217,7 +209,7 @@ class TabToolbar: UIView {
     let backButton = ToolbarButton()
     let shareButton = ToolbarButton()
     let toolbarNeevaMenuButton = ToolbarButton()
-    let actionButtons: [Themeable & UIButton]
+    let actionButtons: [ToolbarButton]
 
     fileprivate let appMenuBadge = BadgeWithBackdrop(imageName: "menuBadge")
     fileprivate let warningMenuBadge = BadgeWithBackdrop(imageName: "menuWarning", imageMask: "warning-mask")
@@ -230,7 +222,7 @@ class TabToolbar: UIView {
     private let contentView = UIStackView()
 
     fileprivate override init(frame: CGRect) {
-        actionButtons = [backButton, forwardButton, toolbarNeevaMenuButton, addToSpacesButton, tabsButton]
+        actionButtons = [backButton, forwardButton, toolbarNeevaMenuButton, addToSpacesButton]
 
         super.init(frame: frame)
         setupAccessibility()
@@ -238,6 +230,8 @@ class TabToolbar: UIView {
         addSubview(contentView)
         helper = TabToolbarHelper(toolbar: self)
         addButtons(actionButtons)
+        contentView.addArrangedSubview(tabsButton)
+
 
         appMenuBadge.add(toParent: contentView)
         warningMenuBadge.add(toParent: contentView)
@@ -321,17 +315,6 @@ extension TabToolbar: TabToolbarProtocol {
     }
 }
 
-extension TabToolbar: Themeable{
-    func applyTheme() {
-        backgroundColor = UIColor.theme.browser.background
-        helper?.setTheme(forButtons: actionButtons)
-
-        appMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
-        warningMenuBadge.badge.tintBackground(color: UIColor.theme.browser.background)
-        toolbarNeevaMenuButton.tintColor = UIColor.theme.urlbar.neevaMenuTint(isPrivateMode)
-    }
-}
-
 extension TabToolbar: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
@@ -341,6 +324,11 @@ extension TabToolbar: PrivateModeUI {
         } else {
             toolbarNeevaMenuButton.setImage(neevaMenuIcon, for: .normal)
         }
-        applyTheme()
+
+        backgroundColor = UIColor.Browser.background
+
+        appMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
+        warningMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
+        toolbarNeevaMenuButton.tintColor = UIColor.URLBar.neevaMenuTint(isPrivateMode)
     }
 }

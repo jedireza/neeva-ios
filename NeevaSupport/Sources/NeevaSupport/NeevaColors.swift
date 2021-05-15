@@ -21,9 +21,11 @@ extension UIColor {
 
         public struct UI {
             public static let Aqua = UIColor(named: "UI-Aqua", in: Bundle.module, compatibleWith: nil)!
+            public static let Blue40 = UIColor(named: "UI-Blue40", in: Bundle.module, compatibleWith: nil)!
             public static let Gray10 = UIColor(named: "UI-Gray10", in: Bundle.module, compatibleWith: nil)!
             public static let Gray20 = UIColor(named: "UI-Gray20", in: Bundle.module, compatibleWith: nil)!
             public static let Gray30 = UIColor(named: "UI-Gray30", in: Bundle.module, compatibleWith: nil)!
+            public static let Gray50 = UIColor(named: "UI-Gray50", in: Bundle.module, compatibleWith: nil)!
             public static let Gray60 = UIColor(named: "UI-Gray60", in: Bundle.module, compatibleWith: nil)!
             public static let Gray70 = UIColor(named: "UI-Gray70", in: Bundle.module, compatibleWith: nil)!
             public static let Gray96 = UIColor(named: "UI-Gray96", in: Bundle.module, compatibleWith: nil)!
@@ -33,6 +35,12 @@ extension UIColor {
         public static let DarkElevated = UIColor(named: "DarkElevated", in: Bundle.module, compatibleWith: nil)!
         public static let GlobeFavGray = UIColor(named: "GlobeFavGray", in: Bundle.module, compatibleWith: nil)!
         public static let Backdrop = UIColor(named: "Backdrop", in: Bundle.module, compatibleWith: nil)!
+        public static let NeevaMenuIncognito = UIColor(named: "NeevaMenuIncognito", in: Bundle.module, compatibleWith: nil)!
+        public static let TextSelectionHighlight = UIColor(named: "TextSelectionHighlight", in: Bundle.module, compatibleWith: nil)!
+
+        public static let DefaultBackground = UIColor(named: "Background", in: Bundle.module, compatibleWith: nil)!
+        public static let DefaultSeparator = UIColor(named: "Separator", in: Bundle.module, compatibleWith: nil)!
+        public static let DefaultTextAndTint = UIColor(named: "TextAndTint", in: Bundle.module, compatibleWith: nil)!
     }
 }
 
@@ -55,6 +63,7 @@ extension Color {
             public static let Gray10 = Color(UIColor.Neeva.UI.Gray10)
             public static let Gray20 = Color(UIColor.Neeva.UI.Gray20)
             public static let Gray30 = Color(UIColor.Neeva.UI.Gray30)
+            public static let Gray50 = Color(UIColor.Neeva.UI.Gray50)
             public static let Gray60 = Color(UIColor.Neeva.UI.Gray60)
             public static let Gray70 = Color(UIColor.Neeva.UI.Gray70)
             public static let Gray96 = Color(UIColor.Neeva.UI.Gray96)
@@ -64,13 +73,5 @@ extension Color {
         public static let DarkElevated = Color(UIColor.Neeva.DarkElevated)
         public static let GlobeFavGray = Color(UIColor.Neeva.GlobeFavGray)
         public static let Backdrop = Color(UIColor.Neeva.Backdrop)
-    }
-}
-
-extension UIColor {
-    public struct TextField {
-        public static func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.systemFill }
-        public static func textAndTint(isPrivate: Bool) -> UIColor { return isPrivate ? .white : .label }
-        public static func disabledTextAndTint(isPrivate: Bool) -> UIColor { isPrivate ? UIColor(red: 235, green: 235, blue: 245, alpha: 0.6) : .secondaryLabel }
     }
 }

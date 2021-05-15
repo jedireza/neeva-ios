@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 import Foundation
+import NeevaSupport
 
 protocol Themeable: AnyObject {
     func applyTheme()
@@ -54,60 +55,6 @@ class ActionMenuColor {
     var closeButtonBackground: UIColor { return defaultBackground }
 }
 
-class URLBarColor {
-    var border: UIColor { return UIColor.Photon.Grey90A10 }
-    func activeBorder(_ isPrivate: Bool) -> UIColor { 
-        return !isPrivate ? UIColor.Photon.Blue40A30 : UIColor.Defaults.SystemGray01
-    }
-    var tint: UIColor { return UIColor.Photon.Blue40A30 }
-
-    // This text selection color is used in two ways:
-    // 1) <UILabel>.background = textSelectionHighlight.withAlphaComponent(textSelectionHighlightAlpha)
-    // To simulate text highlighting when the URL bar is tapped once, this is a background color to create a simulated selected text effect. The color will have an alpha applied when assigning it to the background.
-    // 2) <UITextField>.tintColor = textSelectionHighlight.
-    // When the text is in edit mode (tapping URL bar second time), this is assigned to the to set the selection (and cursor) color. The color is assigned directly to the tintColor.
-    typealias TextSelectionHighlight = (labelMode: UIColor, textFieldMode: UIColor?)
-    func textSelectionHighlight(_ isPrivate: Bool) -> TextSelectionHighlight {
-        if isPrivate {
-            let color = UIColor.Defaults.PrivateBlue
-            return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
-        } else {
-            return (labelMode: UIColor.Defaults.iOSTextHighlightBlue, textFieldMode: nil)
-        }
-    }
-
-    var readerModeButtonSelected: UIColor { return UIColor.Photon.Blue40 }
-    var readerModeButtonUnselected: UIColor { return UIColor.Photon.Grey50 }
-    var pageOptionsSelected: UIColor { return readerModeButtonSelected }
-    var pageOptionsUnselected: UIColor { return UIColor.theme.browser.tint }
-
-    func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
-        return isPrivate ? UIColor.black : nil
-    }
-}
-
-class BrowserColor {
-    var background: UIColor { return defaultBackground }
-    var urlBarDivider: UIColor { return UIColor.Photon.Grey90A10 }
-    var tint: UIColor { return defaultTextAndTint }
-}
-
-// The back/forward/refresh/menu button (bottom toolbar)
-class ToolbarButtonColor {
-    var selectedTint: UIColor { return UIColor.Photon.Blue40 }
-    var disabledTint: UIColor { return UIColor.Photon.Grey30 }
-}
-
-class LoadingBarColor {
-    func start(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Neeva.Brand.Maya : UIColor.Defaults.SystemGray01
-    }
-
-    func end(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Neeva.Brand.Maya : UIColor.Defaults.SystemGray01
-    }
-}
-
 class TabTrayColor {
     var tabTitleText: UIColor { return UIColor.black }
     var tabTitleBlur: UIBlurEffect.Style { return UIBlurEffect.Style.extraLight }
@@ -123,7 +70,6 @@ class TabTrayColor {
     var cellTitleBackground: UIColor { return UIColor.clear }
     var faviconTint: UIColor { return UIColor.black }
     var searchBackground: UIColor { return UIColor.Photon.Grey30 }
-    var tabButton: UIColor { return UIColor.Photon.Grey80 }
     var toggleButon: UIColor { return UIColor.black }
 }
 
@@ -215,10 +161,6 @@ class PopupMenu {
 protocol Theme {
     var name: String { get }
     var tableView: TableViewColor { get }
-    var urlbar: URLBarColor { get }
-    var browser: BrowserColor { get }
-    var toolbarButton: ToolbarButtonColor { get }
-    var loadingBar: LoadingBarColor { get }
     var tabTray: TabTrayColor { get }
     var topTabs: TopTabsColor { get }
     var homePanel: HomePanelColor { get }
@@ -234,10 +176,6 @@ protocol Theme {
 class NormalTheme: Theme {
     var name: String { return BuiltinThemeName.normal.rawValue }
     var tableView: TableViewColor { return TableViewColor() }
-    var urlbar: URLBarColor { return URLBarColor() }
-    var browser: BrowserColor { return BrowserColor() }
-    var toolbarButton: ToolbarButtonColor { return ToolbarButtonColor() }
-    var loadingBar: LoadingBarColor { return LoadingBarColor() }
     var tabTray: TabTrayColor { return TabTrayColor() }
     var topTabs: TopTabsColor { return TopTabsColor() }
     var homePanel: HomePanelColor { return HomePanelColor() }

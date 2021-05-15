@@ -957,7 +957,7 @@ class TabCell: UICollectionViewCell {
         view.isUserInteractionEnabled = false
         view.alignLeft = true
         view.alignTop = true
-        view.backgroundColor = UIColor.theme.browser.background
+        view.backgroundColor = UIColor.Browser.background
         return view
     }()
 
@@ -1129,7 +1129,7 @@ class SearchBarTextField: UITextField, PrivateModeUI {
     static let leftInset = CGFloat(18)
 
     func applyUIMode(isPrivate: Bool) {
-        tintColor = UIColor.theme.urlbar.textSelectionHighlight(isPrivate).textFieldMode
+        tintColor = UIColor.URLBar.textSelectionHighlight(isPrivate).textFieldMode
     }
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {

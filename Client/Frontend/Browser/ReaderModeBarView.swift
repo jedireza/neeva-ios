@@ -6,6 +6,7 @@ import UIKit
 import SnapKit
 import Shared
 import XCGLogger
+import NeevaSupport
 
 private let log = Logger.browserLogger
 
@@ -93,7 +94,7 @@ class ReaderModeBarView: UIView {
 extension ReaderModeBarView: Themeable {
 
     func applyTheme() {
-        backgroundColor = UIColor.theme.browser.background
-        buttonTintColor = UIColor.theme.browser.tint
+        backgroundColor = UIColor.Browser.background
+        buttonTintColor = UIColor.Browser.tint
     }
 }

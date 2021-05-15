@@ -132,7 +132,7 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
 
     func applyTheme() {
         if style == .popover {
-            view.backgroundColor = UIColor.theme.browser.background.withAlphaComponent(0.7)
+            view.backgroundColor = UIColor.Browser.background.withAlphaComponent(0.7)
         } else {
             tableView.backgroundView?.backgroundColor = UIColor.theme.actionMenu.iPhoneBackground
         }

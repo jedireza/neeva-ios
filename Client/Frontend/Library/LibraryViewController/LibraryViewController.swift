@@ -6,6 +6,7 @@ import Shared
 import SnapKit
 import UIKit
 import Storage
+import NeevaSupport
 
 private enum LibraryViewControllerUX {
     // Height of the top panel switcher button toolbar.
@@ -50,7 +51,7 @@ class LibraryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.theme.browser.background
+        view.backgroundColor = UIColor.Browser.background
         self.edgesForExtendedLayout = []
 
         view.addSubview(buttonContainerView)
