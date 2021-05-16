@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+import NeevaSupport
 import Shared
 
 // An enum to route to HomePanels
@@ -91,7 +92,7 @@ enum NavigationPath {
         } else if urlString.starts(with: "http:") ||  urlString.starts(with: "https:") {
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-            self = .url(webURL: url, isPrivate: isPrivate)
+            self = .url(webURL: NavigationPath.maybeRewriteURL(url, components), isPrivate: isPrivate)
         } else {
             return nil
         }
@@ -257,6 +258,45 @@ enum NavigationPath {
         case .systemSettings:
             UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
         }
+    }
+
+    private static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
+        // Intercept and rewrite Google search queries incoming from e.g. SpotLight.
+        //
+        // Example of what components looks like:
+        //    - scheme : "https"
+        //    - host : "www.google.com"
+        //    - path : "/search"
+        //    ▿ queryItems : 5 elements
+        //      ▿ 0 : q=foo+bar
+        //        - name : "q"
+        //        ▿ value : Optional<String>
+        //          - some : "foo+bar"
+        //      ▿ 1 : ie=UTF-8
+        //        - name : "ie"
+        //        ▿ value : Optional<String>
+        //          - some : "UTF-8"
+        //      ▿ 2 : oe=UTF-8
+        //        - name : "oe"
+        //        ▿ value : Optional<String>
+        //          - some : "UTF-8"
+        //      ▿ 3 : hl=en
+        //        - name : "hl"
+        //        ▿ value : Optional<String>
+        //          - some : "en"
+        //      ▿ 4 : client=safari
+        //        - name : "client"
+        //        ▿ value : Optional<String>
+        //          - some : "safari"
+        if components.host == "www.google.com",
+           components.path == "/search",
+           let queryItems = components.queryItems,
+           queryItems.contains(where: { $0.name == "client" && $0.value == "safari" }),
+           let queryItem = queryItems.first(where: { $0.name == "q" }),
+           let value = queryItem.value {
+            return URL(string: "https://\(NeevaConstants.appHost)/search/?q=\(value)&src=nvobar")!
+        }
+        return url
     }
 }
 
