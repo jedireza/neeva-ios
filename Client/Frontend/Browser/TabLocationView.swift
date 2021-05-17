@@ -28,7 +28,6 @@ private struct TabLocationViewUX {
     static let ReloadButtonWidth: CGFloat = 44
     static let ShareButtonWidth: CGFloat = 46
     static let ButtonHeight: CGFloat = 42
-    static let Spacer0Width: CGFloat = (ReloadButtonWidth - 14) / 2
 }
 
 class TabLocationView: UIView {
@@ -37,8 +36,6 @@ class TabLocationView: UIView {
     var tapRecognizer: UITapGestureRecognizer!
     var contentView: UIView!
     private var isPrivateMode: Bool = false
-
-    fileprivate let menuBadge = BadgeWithBackdrop(imageName: "menuBadge", backdropCircleSize: 32)
 
     func showLockIcon(forSecureContent isSecure: Bool) {
         if url?.absoluteString == "about:blank" {
@@ -92,7 +89,6 @@ class TabLocationView: UIView {
         return urlTextField
     }()
 
-    fileprivate lazy var spacer0 = UIView()
     fileprivate lazy var spacer1 = UIView()
     fileprivate lazy var spacer2 = UIView()
 
@@ -138,7 +134,7 @@ class TabLocationView: UIView {
         return reloadButton
     }()
 
-    lazy var shareButton: UIButton = {
+    private lazy var shareButton: UIButton = {
         let shareButton = UIButton()
         shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)), for: .normal)
         shareButton.addTarget(self, action: #selector(tapShareButton), for: .touchUpInside)
@@ -147,6 +143,13 @@ class TabLocationView: UIView {
         shareButton.imageView?.contentMode = .scaleAspectFit
         return shareButton
     }()
+
+    var showShareButton: Bool = true {
+        didSet {
+            shareButton.isHidden = !showShareButton
+            setNeedsUpdateConstraints()
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -162,7 +165,7 @@ class TabLocationView: UIView {
         addGestureRecognizer(longPressRecognizer)
         addGestureRecognizer(tapRecognizer)
 
-        let subviews = [spacer0, spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton, shareButton]
+        let subviews = [spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton, shareButton]
 
         contentView = UIView()
         for view in subviews {
@@ -174,22 +177,17 @@ class TabLocationView: UIView {
         contentView.snp.makeConstraints { make in
             make.edges.equalTo(self)
         }
+
         shieldButton.snp.makeConstraints { make in
             make.width.equalTo(TabLocationViewUX.ShieldButtonWidth)
             make.height.equalTo(TabLocationViewUX.ButtonHeight)
             make.leading.equalTo(self)
-            make.trailing.equalTo(spacer0.snp.leading)
-        }
-        spacer0.snp.makeConstraints { make in
-            make.leading.equalTo(shieldButton.snp.trailing)
             make.trailing.equalTo(spacer1.snp.leading)
-            make.width.equalTo(TabLocationViewUX.Spacer0Width)
-            make.height.equalTo(10)
         }
         spacer1.snp.makeConstraints { make in
             make.width.equalTo(spacer2)
             make.height.equalTo(10)
-            make.leading.equalTo(spacer0.snp.trailing)
+            make.leading.equalTo(shieldButton.snp.trailing)
             make.trailing.equalTo(lockImageView.snp.leading)
         }
         lockImageView.snp.makeConstraints { make in
@@ -224,9 +222,6 @@ class TabLocationView: UIView {
         let dragInteraction = UIDragInteraction(delegate: self)
         dragInteraction.allowsSimultaneousRecognitionDuringLift = true
         self.addInteraction(dragInteraction)
-
-        menuBadge.add(toParent: contentView)
-        menuBadge.show(false)
     }
 
     required init(coder: NSCoder) {
@@ -234,20 +229,6 @@ class TabLocationView: UIView {
     }
 
     override func updateConstraints() {
-        // This spacer exists to balance out the padding of the reload button
-        // (or the shield if somehow only it is visible).
-        let currentURL = self.url?.absoluteString ?? ""
-        if currentURL.isEmpty {
-            spacer0.snp.updateConstraints { make in
-                make.width.equalTo(TabLocationViewUX.Spacer0Width * 4)
-            }
-        } else {
-            spacer0.snp.updateConstraints { make in
-                make.width.equalTo(
-                    reloadButton.isHidden && shieldButton.isHidden ? 0 : TabLocationViewUX.Spacer0Width)
-            }
-        }
-
         lockImageView.snp.updateConstraints { make in
             make.width.equalTo(
                 lockImageView.isHidden ? 0 : TabLocationViewUX.LockIconWidth)
@@ -322,8 +303,12 @@ class TabLocationView: UIView {
         }
         if let text = urlTextField.text, !text.isEmpty {
             urlTextField.attributedPlaceholder = nil
+            shareButton.isHidden = !showShareButton
+            reloadButton.isHidden = false
         } else {
             urlTextField.attributedPlaceholder = self.placeholder
+            shareButton.isHidden = true
+            reloadButton.isHidden = true
         }
         setNeedsUpdateConstraints()
     }
@@ -388,11 +373,6 @@ extension TabLocationView: PrivateModeUI {
         } else {
             shieldButton.setImage(UIImage.templateImageNamed("tracking-protection"), for: .normal)
         }
-
-        let color = ThemeManager.instance.currentName == .dark ?
-            UIColor(white: 0.3, alpha: 0.6) :
-            background
-        menuBadge.badge.tintBackground(color: color)
     }
 }
 
@@ -417,11 +397,6 @@ extension TabLocationView: TabEventHandler {
 
     func tabDidGainFocus(_ tab: Tab) {
         updateBlockerStatus(forTab: tab)
-        menuBadge.show(tab.changedUserAgent)
-    }
-
-    func tabDidToggleDesktopMode(_ tab: Tab) {
-        menuBadge.show(tab.changedUserAgent)
     }
 }
 

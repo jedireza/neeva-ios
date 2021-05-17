@@ -624,7 +624,7 @@ class SettingsTableViewController: ThemedTableViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        [Notification.Name.ProfileDidStartSyncing, Notification.Name.ProfileDidFinishSyncing, Notification.Name.FirefoxAccountChanged].forEach { name in
+        [Notification.Name.ProfileDidStartSyncing, Notification.Name.ProfileDidFinishSyncing].forEach { name in
             NotificationCenter.default.removeObserver(self, name: name, object: nil)
         }
     }

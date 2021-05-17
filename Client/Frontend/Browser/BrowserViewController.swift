@@ -243,16 +243,6 @@ class BrowserViewController: UIViewController {
         make.right.bottom.left.equalToSuperview()
     }
 
-    @objc fileprivate func appMenuBadgeUpdate() {
-        let hideImagesOn = NoImageModeHelper.isActivated(profile.prefs)
-        let showWhatsNew = shouldShowWhatsNew() && !(AppInfo.whatsNewTopic?.isEmpty ?? true)
-
-        urlBar.warningMenuBadge(setVisible: false)
-        urlBar.appMenuBadge(setVisible: false)
-        toolbar?.warningMenuBadge(setVisible: false)
-        toolbar?.appMenuBadge(setVisible: false)
-    }
-
     func updateToolbarStateForTraitCollection(_ newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator? = nil) {
         let showToolbar = shouldShowFooterForTraitCollection(newCollection)
         let showTopTabs = shouldShowTopTabsForTraitCollection(newCollection)
@@ -269,8 +259,6 @@ class BrowserViewController: UIViewController {
             footer.addSubview(toolbar!)
             toolbar?.tabToolbarDelegate = self
         }
-
-        appMenuBadgeUpdate()
 
         if showTopTabs {
             if topTabsViewController == nil {
@@ -482,8 +470,6 @@ class BrowserViewController: UIViewController {
                 }
             }
         }
-
-        NotificationCenter.default.addObserver(self, selector: #selector(self.appMenuBadgeUpdate), name: .FirefoxAccountStateChange, object: nil)
     }
 
     fileprivate func setupConstraints() {

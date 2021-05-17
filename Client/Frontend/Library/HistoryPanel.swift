@@ -97,8 +97,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
     override init(profile: Profile) {
         super.init(profile: profile)
 
-        [ Notification.Name.FirefoxAccountChanged,
-          Notification.Name.PrivateDataClearedHistory,
+        [ Notification.Name.PrivateDataClearedHistory,
           Notification.Name.DynamicFontChanged,
           Notification.Name.DatabaseWasReopened ].forEach {
             NotificationCenter.default.addObserver(self, selector: #selector(onNotificationReceived), name: $0, object: nil)
@@ -337,7 +336,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
     func onNotificationReceived(_ notification: Notification) {
         switch notification.name {
-        case .FirefoxAccountChanged, .PrivateDataClearedHistory:
+        case .PrivateDataClearedHistory:
             reloadData()
 
             break

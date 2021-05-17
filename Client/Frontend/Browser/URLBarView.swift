@@ -400,9 +400,9 @@ class URLBarView: UIView {
         // the constraints to be calculated too early and there are constraint errors
         if !toolbarIsShowing {
             updateConstraintsIfNeeded()
-            locationView.shareButton.isHidden = false
+            locationView.showShareButton = true
         }else {
-            locationView.shareButton.isHidden = true
+            locationView.showShareButton = false
         }
         updateViewsForOverlayModeAndToolbarChanges()
     }

@@ -5,11 +5,6 @@
 extension Notification.Name {
     public static let DataLoginDidChange = Notification.Name("DataLoginDidChange")
 
-    // add a property to allow the observation of firefox accounts
-    public static let FirefoxAccountChanged = Notification.Name("FirefoxAccountChanged")
-
-    public static let FirefoxAccountStateChange = Notification.Name("FirefoxAccountStateChange")
-
     public static let RegisterForPushNotifications = Notification.Name("RegisterForPushNotifications")
 
     public static let FirefoxAccountProfileChanged = Notification.Name("FirefoxAccountProfileChanged")
