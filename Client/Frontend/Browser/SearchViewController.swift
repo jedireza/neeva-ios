@@ -21,38 +21,6 @@ extension Site: Swift.Identifiable {}
 private struct SearchViewControllerUX {
     static let ImageSize: CGFloat = 29
     static let IconSize: CGFloat = 23
-    static let IconBorderColor = UIColor(white: 0, alpha: 0.1)
-    static let IconBorderWidth: CGFloat = 0.5
-}
-
-struct FaviconView: UIViewRepresentable {
-    let site: Site
-
-    class Coordinator {
-        var site: Site?
-        init() {}
-    }
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    func makeUIView(context: Context) -> UIImageView {
-        let imageView = UIImageView()
-        imageView.layer.borderColor = SearchViewControllerUX.IconBorderColor.cgColor
-        imageView.layer.borderWidth = SearchViewControllerUX.IconBorderWidth
-        imageView.contentMode = .center
-        imageView.layer.cornerRadius = 6 //hmm // this comment was brought over from the original code in TwoLineCell
-        imageView.layer.masksToBounds = true
-        return imageView
-    }
-    func updateUIView(_ imageView: UIImageView, context: Context) {
-        if context.coordinator.site != site {
-            context.coordinator.site = site
-            imageView.setImageAndBackground(forIcon: site.icon, website: site.tileURL) { [weak imageView] in
-                imageView?.image = imageView?.image?.createScaled(.init(width: SearchViewControllerUX.IconSize, height: SearchViewControllerUX.IconSize))
-            }
-        }
-    }
 }
 
 struct SearchSuggestionView: View {
@@ -113,7 +81,7 @@ struct SearchSuggestionView: View {
                                     if let url = URL(string: site.url) {
                                         Button(action: { onOpenURL(url) }) {
                                             HStack {
-                                                FaviconView(site: site)
+                                                FaviconView(site: site, size: SearchViewControllerUX.IconSize, bordered: true)
                                                     .frame(
                                                         width: SearchViewControllerUX.ImageSize,
                                                         height: SearchViewControllerUX.ImageSize

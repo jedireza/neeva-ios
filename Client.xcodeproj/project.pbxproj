@@ -171,7 +171,6 @@
 		3B6F40181DC7849C00656CC6 /* NeevaHomeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6F40171DC7849C00656CC6 /* NeevaHomeTests.swift */; };
 		3BA9A0231D2C208C00BD418C /* Fuzi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BA9A0221D2C208C00BD418C /* Fuzi.framework */; };
 		3BA9A0321D2C2C0500BD418C /* Fuzi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BA9A0221D2C208C00BD418C /* Fuzi.framework */; };
-		3BB50E111D6274CD004B33DF /* NeevaHomeTopSitesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB50E101D6274CD004B33DF /* NeevaHomeTopSitesCell.swift */; };
 		3BB50E201D627539004B33DF /* NeevaHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB50E1F1D627539004B33DF /* NeevaHomeViewController.swift */; };
 		3BB54B311E68EB2B0021DAC4 /* AuthenticationKeychainInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB54B301E68EB2B0021DAC4 /* AuthenticationKeychainInfoTests.swift */; };
 		3BC659491E5BA4AE006D560F /* TopSites in Resources */ = {isa = PBXBuildFile; fileRef = 3BC659481E5BA4AE006D560F /* TopSites */; };
@@ -213,6 +212,8 @@
 		43E69EC3254D081D00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
 		43E69ED7254D081F00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
 		4A59B58AD11B5EE1F80BBDEB /* TestHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */; };
+		4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5CCE8226524B7F0063783D /* FaviconView.swift */; };
+		4AA14F20264C7954003B815A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* HomeView.swift */; };
 		4F514FD41ACD8F2C0022D7EA /* HistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F514FD31ACD8F2C0022D7EA /* HistoryTests.swift */; };
 		4F97573B1AFA6F37006ECC24 /* readerContent.html in Resources */ = {isa = PBXBuildFile; fileRef = 4F9757391AFA6F37006ECC24 /* readerContent.html */; };
 		580B0C4221748CFE00448DF8 /* DataManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580B0C4121748CFE00448DF8 /* DataManagementTests.swift */; };
@@ -1063,7 +1064,6 @@
 		3B6889C41D66950E002AC85E /* UIImageColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImageColors.swift; path = ThirdParty/UIImageColors.swift; sourceTree = "<group>"; };
 		3B6F40171DC7849C00656CC6 /* NeevaHomeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaHomeTests.swift; sourceTree = "<group>"; };
 		3BA9A0221D2C208C00BD418C /* Fuzi.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fuzi.framework; path = Carthage/Build/iOS/Fuzi.framework; sourceTree = "<group>"; };
-		3BB50E101D6274CD004B33DF /* NeevaHomeTopSitesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaHomeTopSitesCell.swift; sourceTree = "<group>"; };
 		3BB50E1F1D627539004B33DF /* NeevaHomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaHomeViewController.swift; sourceTree = "<group>"; };
 		3BB54B301E68EB2B0021DAC4 /* AuthenticationKeychainInfoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationKeychainInfoTests.swift; sourceTree = "<group>"; };
 		3BC659481E5BA4AE006D560F /* TopSites */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TopSites; sourceTree = "<group>"; };
@@ -1099,6 +1099,8 @@
 		43DDB97524099F200058A068 /* ETPViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETPViewModel.swift; sourceTree = "<group>"; };
 		43E69EAF254D064E00B591C2 /* SimpleTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTab.swift; sourceTree = "<group>"; };
 		4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHistory.swift; sourceTree = "<group>"; };
+		4A5CCE8226524B7F0063783D /* FaviconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconView.swift; sourceTree = "<group>"; };
+		4AA14F1F264C7954003B815A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4F514FD31ACD8F2C0022D7EA /* HistoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTests.swift; sourceTree = "<group>"; };
 		4F9757391AFA6F37006ECC24 /* readerContent.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = readerContent.html; sourceTree = "<group>"; };
 		50CB4382AE62CA8EDC4CAE05 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LoginManager.strings; sourceTree = "<group>"; };
@@ -2493,9 +2495,9 @@
 				D0625C97208E87F10081F3B2 /* DownloadQueue.swift */,
 				D04D1B852097859B0074B35F /* DownloadToast.swift */,
 				D03F8EB12004014E003C2224 /* FaviconHandler.swift */,
+				4A5CCE8226524B7F0063783D /* FaviconView.swift */,
 				D3B6923C1B9F9444004B87A4 /* FindInPageBar.swift */,
 				D3B6923E1B9F9A58004B87A4 /* FindInPageHelper.swift */,
-				EBB8950B2193994A00EB91A0 /* NeevaTabContentBlocker.swift */,
 				39F4C1092045DB2E00746155 /* FocusHelper.swift */,
 				D0E55C4E1FB4FD23006DC274 /* FormPostHelper.swift */,
 				D3C3696D1CC6B78800348A61 /* LocalRequestHelper.swift */,
@@ -2504,6 +2506,7 @@
 				744ED5601DBFEB8D00A2B5BE /* MailtoLinkHandler.swift */,
 				D0C95E35200FDC5400E4E51C /* MetadataParserHelper.swift */,
 				F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */,
+				EBB8950B2193994A00EB91A0 /* NeevaTabContentBlocker.swift */,
 				A93067E71D0FE18E00C49C6E /* NightModeHelper.swift */,
 				A9072B7F1D07B34100459960 /* NoImageModeHelper.swift */,
 				7BA8D1C61BA037F500C8AE9E /* OpenInHelper.swift */,
@@ -3111,7 +3114,7 @@
 			children = (
 				3BB50E1F1D627539004B33DF /* NeevaHomeViewController.swift */,
 				2386E4E524F8358E0072EF17 /* DefaultBrowserCard.swift */,
-				3BB50E101D6274CD004B33DF /* NeevaHomeTopSitesCell.swift */,
+				4AA14F1F264C7954003B815A /* HomeView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -4195,6 +4198,7 @@
 				E68E39BE1C46F42000B85F42 /* AppSettingsTableViewController.swift in Sources */,
 				E640E86A1C73A47C00C5F072 /* PasscodeViews.swift in Sources */,
 				D029A04920A62DB0001DB72F /* TemporaryDocument.swift in Sources */,
+				4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */,
 				EBB895332193FFF400EB91A0 /* ContentBlockerSettingViewController.swift in Sources */,
 				BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */,
 				E692E3371C46E86A009D1240 /* AppSettingsOptions.swift in Sources */,
@@ -4252,7 +4256,6 @@
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
 				EBB89509219398E500EB91A0 /* TabContentBlocker+ContentScript.swift in Sources */,
 				D3BE7B461B054F8600641031 /* TestAppDelegate.swift in Sources */,
-				3BB50E111D6274CD004B33DF /* NeevaHomeTopSitesCell.swift in Sources */,
 				048B4C8624A53F3E001B56E8 /* TodayUX.swift in Sources */,
 				1DF4266E251BC46D0086386A /* FaviconFetcher+Non-Bundled.swift in Sources */,
 				C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */,
@@ -4289,6 +4292,7 @@
 				F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */,
 				74821FC51DB56A2500EEEA72 /* OpenWithSettingsViewController.swift in Sources */,
 				D3B6923D1B9F9444004B87A4 /* FindInPageBar.swift in Sources */,
+				4AA14F20264C7954003B815A /* HomeView.swift in Sources */,
 				2F44FC721A9E840300FD20CC /* SettingsNavigationController.swift in Sources */,
 				E69E06BA1C76173D00D0F926 /* RequirePasscodeIntervalViewController.swift in Sources */,
 				D0E89A2920910917001CE5C7 /* DownloadsPanel.swift in Sources */,

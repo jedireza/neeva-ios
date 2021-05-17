@@ -14,18 +14,6 @@ import NeevaSupport
 private let log = Logger.browserLogger
 
 // MARK: -  Lifecycle
-struct NeevaHomeUX {
-    static let rowSpacing: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 30 : 20
-    static let highlightCellHeight: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 250 : 200
-    static let sectionInsetsForSizeClass = UXSizeClasses(compact: 0, regular: 101, other: 20)
-    static let numberOfItemsPerRowForSizeClassIpad = UXSizeClasses(compact: 3, regular: 4, other: 2)
-    static let SectionInsetsForIpad: CGFloat = 101
-    static let SectionInsetsForIphone: CGFloat = 20
-    static let MinimumInsets: CGFloat = 20
-    static let TopSitesInsets: CGFloat = 6
-    static let LibraryShortcutsHeight: CGFloat = 100
-    static let LibraryShortcutsMaxWidth: CGFloat = 350
-}
 /*
  Size classes are the way Apple requires us to specify our UI.
  Split view on iPad can make a landscape app appear with the demensions of an iPhone app
@@ -79,23 +67,21 @@ enum HomePanelType: Int {
 }
 
 protocol HomePanelContextMenu {
-    func getSiteDetails(for indexPath: IndexPath) -> Site?
-    func getContextMenuActions(for site: Site, with indexPath: IndexPath) -> [PhotonActionSheetItem]?
-    func presentContextMenu(for indexPath: IndexPath)
-    func presentContextMenu(for site: Site, with indexPath: IndexPath, completionHandler: @escaping () -> PhotonActionSheet?)
+    func getSiteDetails(for indexPath: IndexPath) -> Site? 
+    func getContextMenuActions(for site: Site) -> [PhotonActionSheetItem]?
+    func presentContextMenu(for site: Site)
+    func presentContextMenu(for site: Site, completionHandler: @escaping () -> PhotonActionSheet?)
 }
 
 extension HomePanelContextMenu {
-    func presentContextMenu(for indexPath: IndexPath) {
-        guard let site = getSiteDetails(for: indexPath) else { return }
-
-        presentContextMenu(for: site, with: indexPath, completionHandler: {
-            return self.contextMenu(for: site, with: indexPath)
+    func presentContextMenu(for site: Site) {
+        presentContextMenu(for: site, completionHandler: {
+            return self.contextMenu(for: site)
         })
     }
 
-    func contextMenu(for site: Site, with indexPath: IndexPath) -> PhotonActionSheet? {
-        guard let actions = self.getContextMenuActions(for: site, with: indexPath) else { return nil }
+    func contextMenu(for site: Site) -> PhotonActionSheet? {
+        guard let actions = self.getContextMenuActions(for: site) else { return nil }
 
         let contextMenu = PhotonActionSheet(site: site, actions: actions)
         contextMenu.modalPresentationStyle = .overFullScreen
@@ -122,28 +108,21 @@ extension HomePanelContextMenu {
     }
 }
 
-class NeevaHomeViewController: UICollectionViewController, HomePanel {
+class NeevaHomeViewController: UIViewController, HomePanel {
     weak var homePanelDelegate: HomePanelDelegate?
     fileprivate let profile: Profile
     fileprivate let flowLayout = UICollectionViewFlowLayout()
 
-    fileprivate lazy var emptyIncognitoDescriptionView = UIView()
-
-    fileprivate lazy var topSitesManager: ASHorizontalScrollCellManager = {
-        let manager = ASHorizontalScrollCellManager()
-        return manager
+    lazy var homeView: UIView = {
+        let home = NeevaHome(viewModel: homeViewModel)
+        let controller = UIHostingController(rootView: home.environmentObject(suggestionsViewModel))
+        controller.view.backgroundColor = UIColor.clear
+        view.addSubview(controller.view)
+        return controller.view
     }()
 
-    fileprivate lazy var longPressRecognizer: UILongPressGestureRecognizer = {
-        return UILongPressGestureRecognizer(target: self, action: #selector(longPress))
-    }()
-
-    // Not used for displaying. Only used for calculating layout.
-    lazy var topSiteCell: ASHorizontalScrollCell = {
-        let customCell = ASHorizontalScrollCell(frame: CGRect(width: self.view.frame.size.width, height: 0))
-        customCell.delegate = self.topSitesManager
-        return customCell
-    }()
+    var suggestionsViewModel = SuggestedSitesViewModel(sites: [Site](), onSuggestedSiteClicked: { _ in }, onSuggestedSiteLongPressed: { _ in })
+    var homeViewModel = HomeViewModel()
 
     lazy var defaultBrowserCard: DefaultBrowserCard = {
         let card = DefaultBrowserCard(frame:.zero, isUserLoggedIn: NeevaUserInfo.shared.isUserLoggedIn)
@@ -152,11 +131,7 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
 
     init(profile: Profile) {
         self.profile = profile
-        super.init(collectionViewLayout: flowLayout)
-        self.collectionView?.delegate = self
-        self.collectionView?.dataSource = self
-
-        collectionView?.addGestureRecognizer(longPressRecognizer)
+        super.init(nibName: nil, bundle: nil)
 
         let refreshEvents: [Notification.Name] = [.DynamicFontChanged, .HomePanelPrefsChanged]
         refreshEvents.forEach { NotificationCenter.default.addObserver(self, selector: #selector(reload), name: $0, object: nil) }
@@ -169,54 +144,8 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        Section.allValues.forEach { self.collectionView?.register(Section($0.rawValue).cellType, forCellWithReuseIdentifier: Section($0.rawValue).cellIdentifier) }
-        self.collectionView?.register(ASHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
-        self.collectionView?.register(ASFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
-        collectionView?.keyboardDismissMode = .onDrag
-
-        let isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
-
-        if(isPrivate){
-            self.view.addSubview(emptyIncognitoDescriptionView)
-            emptyIncognitoDescriptionView.layer.cornerRadius = 12
-            emptyIncognitoDescriptionView.layer.masksToBounds = true
-
-            emptyIncognitoDescriptionView.snp.makeConstraints { make in
-                make.top.equalToSuperview().offset(20)
-                make.bottom.equalTo(collectionView.snp.top).offset(-28)
-                make.width.equalToSuperview().offset(-30)
-                make.centerX.equalTo(self.view)
-            }
-
-            collectionView.snp.makeConstraints { make in
-                make.top.equalTo(emptyIncognitoDescriptionView.snp.bottom)
-                make.bottom.left.right.equalToSuperview()
-            }
-
-            addSubSwiftUIView(IncognitoDescriptionView(), to: emptyIncognitoDescriptionView)
-
-        } else if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") || !NeevaUserInfo.shared.hasLoginCookie() {
-            self.view.addSubview(defaultBrowserCard)
-            defaultBrowserCard.snp.makeConstraints { make in
-                make.top.equalToSuperview()
-                make.bottom.equalTo(collectionView.snp.top)
-                make.width.equalToSuperview()
-                make.centerX.equalTo(self.view)
-            }
-            collectionView.snp.makeConstraints { make in
-                make.top.equalTo(defaultBrowserCard.snp.bottom)
-                make.bottom.left.right.equalToSuperview()
-            }
-            defaultBrowserCard.dismissClosure =  {
-                self.defaultBrowserCard.removeFromSuperview()
-                self.collectionView.snp.makeConstraints { make in
-                    make.top.equalToSuperview()
-                    make.bottom.left.right.equalToSuperview()
-                }
-            }
-            defaultBrowserCard.signinHandler = {
-                self.showSiteWithURLHandler(NeevaConstants.appSigninURL.asURL!)
-            }
+        self.homeView.snp.makeConstraints { make in
+            make.top.bottom.left.right.equalToSuperview()
         }
 
         self.view.backgroundColor = UIColor.theme.homePanel.topSitesBackground
@@ -228,9 +157,8 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
     public func dismissDefaultBrowserCard()
     {
         self.defaultBrowserCard.removeFromSuperview()
-        self.collectionView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.bottom.left.right.equalToSuperview()
+        self.homeView.snp.makeConstraints { make in
+            make.top.bottom.left.right.equalToSuperview()
         }
     }
 
@@ -243,24 +171,9 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
         super.viewDidDisappear(animated)
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: {context in
-            //The AS context menu does not behave correctly. Dismiss it when rotating.
-            if let _ = self.presentedViewController as? PhotonActionSheet {
-                self.presentedViewController?.dismiss(animated: true, completion: nil)
-            }
-            self.collectionViewLayout.invalidateLayout()
-            self.collectionView?.reloadData()
-        }, completion: { _ in
-            // Workaround: label positions are not correct without additional reload
-            self.collectionView?.reloadData()
-        })
-    }
-
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        self.topSitesManager.currentTraits = self.traitCollection
+        reloadAll()
     }
 
     @objc func reload(notification: Notification) {
@@ -269,164 +182,7 @@ class NeevaHomeViewController: UICollectionViewController, HomePanel {
 
     func applyTheme() {
         defaultBrowserCard.applyTheme()
-        collectionView?.backgroundColor = UIColor.theme.homePanel.topSitesBackground
-        self.view.backgroundColor = UIColor.theme.homePanel.topSitesBackground
-        topSiteCell.collectionView.reloadData()
-        if let collectionView = self.collectionView, collectionView.numberOfSections > 0, collectionView.numberOfItems(inSection: 0) > 0 {
-            collectionView.reloadData()
-        }
-    }
-
-    func scrollToTop(animated: Bool = false) {
-        collectionView?.setContentOffset(.zero, animated: animated)
-    }
-}
-
-// MARK: -  Section management
-extension NeevaHomeViewController {
-    enum Section: Int {
-        case topSites
-
-        static let allValues = [topSites]
-        static let count = allValues.count
-
-        var title: String? {
-            switch self {
-            case .topSites: return "TOP SITES"
-            }
-        }
-
-        var headerHeight: CGSize {
-            return CGSize(width: 50, height: 40)
-        }
-
-        var footerHeight: CGSize {
-            return CGSize(width: 50, height: 5)
-        }
-
-        func cellHeight(_ traits: UITraitCollection, width: CGFloat) -> CGFloat {
-            switch self {
-            case .topSites: return 0 //calculated dynamically
-            }
-        }
-
-        /*
-         There are edge cases to handle when calculating section insets
-        - An iPhone 7+ is considered regular width when in landscape
-        - An iPad in 66% split view is still considered regular width
-         */
-        func sectionInsets(_ traits: UITraitCollection, frameWidth: CGFloat) -> CGFloat {
-            var currentTraits = traits
-            if (traits.horizontalSizeClass == .regular && UIScreen.main.bounds.size.width != frameWidth) || UIDevice.current.userInterfaceIdiom == .phone {
-                currentTraits = UITraitCollection(horizontalSizeClass: .compact)
-            }
-            var insets = NeevaHomeUX.sectionInsetsForSizeClass[currentTraits.horizontalSizeClass]
-
-            switch self {
-            case .topSites:
-                insets += NeevaHomeUX.TopSitesInsets
-                return insets
-            }
-        }
-
-        func cellSize(for traits: UITraitCollection, frameWidth: CGFloat) -> CGSize {
-            let height = cellHeight(traits, width: frameWidth)
-            let inset = sectionInsets(traits, frameWidth: frameWidth) * 2
-            return CGSize(width: frameWidth - inset, height: height)
-        }
-
-        var headerView: UIView? {
-            let view = ASHeaderView()
-            view.title = title
-            return view
-        }
-
-        var cellIdentifier: String {
-            switch self {
-            case .topSites: return "TopSiteCell"
-            }
-        }
-
-        var cellType: UICollectionViewCell.Type {
-            switch self {
-            case .topSites: return ASHorizontalScrollCell.self
-            }
-        }
-
-        init(at indexPath: IndexPath) {
-            self.init(rawValue: indexPath.section)!
-        }
-
-        init(_ section: Int) {
-            self.init(rawValue: section)!
-        }
-    }
-}
-
-// MARK: -  Tableview Delegate
-extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
-
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        switch kind {
-        case UICollectionView.elementKindSectionHeader:
-                let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header", for: indexPath) as! ASHeaderView
-                let title = Section(indexPath.section).title
-                switch Section(indexPath.section) {
-                case .topSites:
-                    view.title = title
-                    view.titleLabel.accessibilityIdentifier = "topSitesTitle"
-                    view.moreButton.isHidden = true
-                    return view
-            }
-        case UICollectionView.elementKindSectionFooter:
-                let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath) as! ASFooterView
-                switch Section(indexPath.section) {
-                case .topSites:
-                    return view
-            }
-            default:
-                return UICollectionReusableView()
-        }
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.longPressRecognizer.isEnabled = false
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellSize = Section(indexPath.section).cellSize(for: self.traitCollection, frameWidth: self.view.frame.width)
-
-        switch Section(indexPath.section) {
-        case .topSites:
-            return CGSize(width: cellSize.width, height: 120)
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        switch Section(section) {
-        case .topSites:
-            return Section(section).headerHeight
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        switch Section(section) {
-        case .topSites:
-            return Section(section).footerHeight
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return NeevaHomeUX.rowSpacing
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let insets = Section(section).sectionInsets(self.traitCollection, frameWidth: self.view.frame.width)
-        return UIEdgeInsets(top: 0, left: insets, bottom: 0, right: insets)
+        homeView.backgroundColor = UIColor.theme.homePanel.topSitesBackground
     }
 
     fileprivate func showSiteWithURLHandler(_ url: URL) {
@@ -435,66 +191,34 @@ extension NeevaHomeViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: - Tableview Data Source
-extension NeevaHomeViewController {
-
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return Section.count
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        var numItems: CGFloat = NeevaHomeUX.numberOfItemsPerRowForSizeClassIpad[self.traitCollection.horizontalSizeClass]
-        if UIApplication.shared.statusBarOrientation.isPortrait {
-            numItems = numItems - 1
-        }
-        if self.traitCollection.horizontalSizeClass == .compact && UIApplication.shared.statusBarOrientation.isLandscape {
-            numItems = numItems - 1
-        }
-        switch Section(section) {
-        case .topSites:
-            return topSitesManager.content.isEmpty ? 0 : 1
-        }
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let identifier = Section(indexPath.section).cellIdentifier
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
-
-        switch Section(indexPath.section) {
-        case .topSites:
-            return configureTopSitesCell(cell, forIndexPath: indexPath)
-        }
-    }
-
-    //should all be collectionview
-    func configureTopSitesCell(_ cell: UICollectionViewCell, forIndexPath indexPath: IndexPath) -> UICollectionViewCell {
-        let topSiteCell = cell as! ASHorizontalScrollCell
-        topSiteCell.delegate = self.topSitesManager
-        topSiteCell.setNeedsLayout()
-        topSiteCell.collectionView.reloadData()
-        return cell
-    }
-}
 
 // MARK: - Data Management
 extension NeevaHomeViewController: DataObserverDelegate {
-
     // Reloads both highlights and top sites data from their respective caches. Does not invalidate the cache.
     // See ActivityStreamDataObserver for invalidation logic.
     func reloadAll() {
         TopSitesHandler.getTopSites(profile: profile).uponQueue(.main) { result in
-            // If there is no pending cache update and highlights are empty. Show the onboarding screen
-            self.collectionView?.reloadData()
-            
-            self.topSitesManager.currentTraits = self.view.traitCollection
-            
-            let maxItems = self.topSitesManager.numberOfHorizontalItems()
-            
-            self.topSitesManager.content = Array(result.prefix(maxItems))
-            
-            self.topSitesManager.urlPressedHandler = { [unowned self] url, indexPath in
-                self.longPressRecognizer.isEnabled = false
+
+            self.homeViewModel.isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+            var showDefaultBrowserCard = false
+            if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") || !NeevaUserInfo.shared.hasLoginCookie() {
+                showDefaultBrowserCard = true
+            }
+            self.homeViewModel.showDefaultBrowserCard = showDefaultBrowserCard
+            self.homeViewModel.signInHandler = {
+                self.showSiteWithURLHandler(NeevaConstants.appSigninURL.asURL!)
+            }
+
+            let maxItems = self.numberOfHorizontalItems(currentTraits: self.view.traitCollection)
+
+            self.suggestionsViewModel.sites = Array(result.prefix(maxItems))
+
+            self.suggestionsViewModel.onSuggestedSiteClicked = { [unowned self] url in
                 self.showSiteWithURLHandler(url as URL)
+            }
+
+            self.suggestionsViewModel.onSuggestedSiteLongPressed = { [unowned self] site in
+                self.presentContextMenu(for: (site as Site))
             }
 
             // Refresh the AS data in the background so we'll have fresh data next time we show.
@@ -553,44 +277,42 @@ extension NeevaHomeViewController: DataObserverDelegate {
         return suggested.filter({deleted.firstIndex(of: $0.url) == .none})
     }
 
-    @objc fileprivate func longPress(_ longPressGestureRecognizer: UILongPressGestureRecognizer) {
-        guard longPressGestureRecognizer.state == .began else { return }
-
-        let point = longPressGestureRecognizer.location(in: self.collectionView)
-        guard let indexPath = self.collectionView?.indexPathForItem(at: point) else { return }
-
-        switch Section(indexPath.section) {
-        case .topSites:
-            let topSiteCell = self.collectionView?.cellForItem(at: indexPath) as! ASHorizontalScrollCell
-            let pointInTopSite = longPressGestureRecognizer.location(in: topSiteCell.collectionView)
-            guard let topSiteIndexPath = topSiteCell.collectionView.indexPathForItem(at: pointInTopSite) else { return }
-            presentContextMenu(for: topSiteIndexPath)
+    func numberOfHorizontalItems(currentTraits: UITraitCollection?) -> Int {
+        guard let traits = currentTraits else {
+            return 0
         }
+        let isLandscape = UIApplication.shared.statusBarOrientation.isLandscape
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            if isLandscape {
+                return 8
+            } else {
+                return 6
+            }
+        }
+        // On iPad
+        // The number of items in a row is equal to the number of highlights in a row * 2
+        var numItems = Int(NeevaHomeUX.NumberOfItemsPerRowForSizeClassIpad[traits.horizontalSizeClass])
+        if UIApplication.shared.statusBarOrientation.isPortrait || (traits.horizontalSizeClass == .compact && isLandscape) {
+            numItems = numItems - 1
+        }
+        return numItems * 2
     }
 }
 
 extension NeevaHomeViewController: HomePanelContextMenu {
-    func presentContextMenu(for site: Site, with indexPath: IndexPath, completionHandler: @escaping () -> PhotonActionSheet?) {
+    func getSiteDetails(for indexPath: IndexPath) -> Site? {
+        return suggestionsViewModel.sites[indexPath.item]
+    }
+
+    func presentContextMenu(for site: Site, completionHandler: @escaping () -> PhotonActionSheet?) {
         guard let contextMenu = completionHandler() else { return }
         self.present(contextMenu, animated: true, completion: nil)
     }
 
-    func getSiteDetails(for indexPath: IndexPath) -> Site? {
-        switch Section(indexPath.section) {
-        case .topSites:
-            return topSitesManager.content[indexPath.item]
-        }
-    }
-
-    func getContextMenuActions(for site: Site, with indexPath: IndexPath) -> [PhotonActionSheetItem]? {
+    func getContextMenuActions(for site: Site) -> [PhotonActionSheetItem]? {
         guard let siteURL = URL(string: site.url) else { return nil }
         var sourceView: UIView?
-        switch Section(indexPath.section) {
-        case .topSites:
-            if let topSiteCell = self.collectionView?.cellForItem(at: IndexPath(row: 0, section: 0)) as? ASHorizontalScrollCell {
-                sourceView = topSiteCell.collectionView.cellForItem(at: indexPath)
-            }
-        }
+        sourceView = homeView
 
         let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "quick_action_new_tab") { _, _ in
             self.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
@@ -605,7 +327,7 @@ extension NeevaHomeViewController: HomePanelContextMenu {
             let controller = helper.createActivityViewController({ (_, _) in })
             if UI_USER_INTERFACE_IDIOM() == .pad, let popoverController = controller.popoverPresentationController {
                 let cellRect = sourceView?.frame ?? .zero
-                let cellFrameInSuperview = self.collectionView?.convert(cellRect, to: self.collectionView) ?? .zero
+                let cellFrameInSuperview = self.homeView.convert(cellRect, to: self.homeView) ?? .zero
 
                 popoverController.sourceView = sourceView
                 popoverController.sourceRect = CGRect(origin: CGPoint(x: cellFrameInSuperview.size.width/2, y: cellFrameInSuperview.height/2), size: .zero)
@@ -636,9 +358,7 @@ extension NeevaHomeViewController: HomePanelContextMenu {
 
         var actions = [openInNewTabAction, openInNewPrivateTabAction, shareAction]
 
-        switch Section(indexPath.section) {
-            case .topSites: actions.append(contentsOf: topSiteActions)
-        }
+        actions.append(contentsOf: topSiteActions)
         return actions
     }
 }
@@ -649,141 +369,5 @@ extension NeevaHomeViewController: UIPopoverPresentationControllerDelegate {
     // This is used by the Share UIActivityViewController action sheet on iPad
     func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
         popoverPresentationController.presentedViewController.dismiss(animated: false, completion: nil)
-    }
-}
-
-// MARK: - Section Header View
-private struct NeevaHomeHeaderViewUX {
-    static var SeparatorColor: UIColor { return UIColor.theme.homePanel.separator }
-    // static let TextFont = DynamicFontHelper.defaultHelper.SmallSizeHeavyWeightAS
-    static let ButtonFont = DynamicFontHelper.defaultHelper.MediumSizeBoldFontAS
-    static let SeparatorHeight = 0.5
-    static let Insets: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? NeevaHomeUX.SectionInsetsForIpad + NeevaHomeUX.MinimumInsets : NeevaHomeUX.MinimumInsets
-    static let TitleTopInset: CGFloat = 5
-}
-
-class ASFooterView: UICollectionReusableView {
-
-    var separatorLineView: UIView?
-    var leftConstraint: Constraint? //This constraint aligns content (Titles, buttons) between all sections.
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        let separatorLine = UIView()
-        self.backgroundColor = UIColor.clear
-        addSubview(separatorLine)
-        separatorLine.snp.makeConstraints { make in
-            make.height.equalTo(NeevaHomeHeaderViewUX.SeparatorHeight)
-            leftConstraint = make.leading.equalTo(self.safeArea.leading).inset(insets).constraint
-            make.trailing.equalTo(self.safeArea.trailing).inset(insets)
-            make.top.equalTo(self.snp.top)
-        }
-        separatorLineView = separatorLine
-        applyTheme()
-    }
-
-    var insets: CGFloat {
-        return UIScreen.main.bounds.size.width == self.frame.size.width && UIDevice.current.userInterfaceIdiom == .pad ? NeevaHomeHeaderViewUX.Insets : NeevaHomeUX.MinimumInsets
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        separatorLineView?.isHidden = false
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        // update the insets every time a layout happens.Insets change depending on orientation or size (ipad split screen)
-        leftConstraint?.update(offset: insets)
-    }
-}
-
-extension ASFooterView: Themeable {
-    func applyTheme() {
-        separatorLineView?.backgroundColor = UIColor.clear
-    }
-}
-
-class ASHeaderView: UICollectionReusableView {
-    static let verticalInsets: CGFloat = 4
-
-    lazy fileprivate var titleLabel: UILabel = {
-        let titleLabel = UILabel()
-        titleLabel.text = self.title
-        titleLabel.textColor = UIColor.Neeva.UI.Gray60
-        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.bold)
-        titleLabel.minimumScaleFactor = 0.6
-        titleLabel.numberOfLines = 1
-        titleLabel.adjustsFontSizeToFitWidth = true
-        return titleLabel
-    }()
-
-    lazy var moreButton: UIButton = {
-        let button = UIButton()
-        button.isHidden = true
-        button.titleLabel?.font = NeevaHomeHeaderViewUX.ButtonFont
-        button.contentHorizontalAlignment = .right
-        button.setTitleColor(UIConstants.SystemBlueColor, for: .normal)
-        button.setTitleColor(UIColor.Photon.Grey50, for: .highlighted)
-        return button
-    }()
-
-    var title: String? {
-        willSet(newTitle) {
-            titleLabel.text = newTitle
-        }
-    }
-
-    var leftConstraint: Constraint?
-    var rightConstraint: Constraint?
-
-    var titleInsets: CGFloat {
-        get {
-            return UIScreen.main.bounds.size.width == self.frame.size.width && UIDevice.current.userInterfaceIdiom == .pad ? NeevaHomeHeaderViewUX.Insets : NeevaHomeUX.MinimumInsets
-        }
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        moreButton.isHidden = true
-        moreButton.setTitle(nil, for: .normal)
-        moreButton.accessibilityIdentifier = nil;
-        titleLabel.text = nil
-        moreButton.removeTarget(nil, action: nil, for: .allEvents)
-        titleLabel.textColor = UIColor.Neeva.UI.Gray60
-        moreButton.setTitleColor(UIConstants.SystemBlueColor, for: .normal)
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        addSubview(titleLabel)
-        addSubview(moreButton)
-        moreButton.snp.makeConstraints { make in
-            make.top.equalTo(self.snp.top).offset(ASHeaderView.verticalInsets)
-            make.bottom.equalToSuperview().offset(-ASHeaderView.verticalInsets)
-            self.rightConstraint = make.trailing.equalTo(self.safeArea.trailing).inset(-titleInsets).constraint
-        }
-        moreButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(NeevaHomeUX.rowSpacing)
-            make.trailing.equalTo(moreButton.snp.leading).inset(-NeevaHomeHeaderViewUX.TitleTopInset)
-            make.top.equalTo(self.snp.top).offset(ASHeaderView.verticalInsets)
-            make.bottom.equalToSuperview().offset(-ASHeaderView.verticalInsets)
-        }
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        leftConstraint?.update(offset: titleInsets)
-        rightConstraint?.update(offset: -titleInsets)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

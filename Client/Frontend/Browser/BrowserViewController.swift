@@ -1793,13 +1793,6 @@ extension BrowserViewController: TabManagerDelegate {
     func tabManager(_ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?, isRestoring: Bool) {
         libraryDrawerViewController?.close(immediately: true)
 
-        // Reset the scroll position for the ActivityStreamPanel so that it
-        // is always presented scrolled to the top when switching tabs.
-        if !isRestoring, selected != previous,
-            let activityStreamPanel = neevaHomeViewController {
-            activityStreamPanel.scrollToTop()
-        }
-
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
         // and having multiple views with the same label confuses tests.
         if let wv = previous?.webView {

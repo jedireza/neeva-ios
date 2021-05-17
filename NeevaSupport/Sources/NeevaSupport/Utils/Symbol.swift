@@ -28,6 +28,9 @@ public enum Nicon: Character {
     case bookmark = "\u{10025E}"
     case bookmarkFill = "\u{10025F}"
     case bubbleLeft = "\u{10032A}"
+    case chevronDown = "\u{100188}"
+    case chevronUp = "\u{100187}"
+    case doubleChevronDown = "\u{101006}"
     case gear = "\u{10035F}"
     case house = "\u{10039E}"
     // TODO: Add more here

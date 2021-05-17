@@ -6,6 +6,7 @@ import SnapKit
 import Storage
 import Shared
 import NeevaSupport
+import SwiftUI
 
 class DefaultBrowserCard: UIView {
     public var dismissClosure: (() -> Void)?

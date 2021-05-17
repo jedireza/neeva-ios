@@ -73,7 +73,7 @@ fileprivate class DarkHomePanelColor: HomePanelColor {
 
     override var topSitesBackground: UIColor { return UIColor(rgb: 0x29282d) }
     override var topSitesFavBg: UIColor { return UIColor(rgb: 0x505054) }
-    override var topSitesLabel: UIColor { return UIColor.Neeva.Brand.White}
+    override var topSitesLabel: UIColor { return UIColor.Neeva.Brand.White }
 
     override var downloadedFileIcon: UIColor { return UIColor.Photon.Grey30 }
 
@@ -110,7 +110,7 @@ class DarkPopupMenu: PopupMenu {
     override var textColor: UIColor { return UIColor.white }
     override var secondaryTextColor: UIColor { return UIColor.Photon.Grey20 }
     override var buttonColor: UIColor { return UIColor.white }
-    override var disabledButtonColor: UIColor { return UIColor.Custom.disabledButtonDarkGray}
+    override var disabledButtonColor: UIColor { return UIColor.Custom.disabledButtonDarkGray }
 }
 
 class DarkTheme: NormalTheme {

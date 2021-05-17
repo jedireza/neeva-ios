@@ -20,7 +20,6 @@ struct IncognitoDescriptionView: View {
             Spacer()
             VStack(spacing: 0) {
                 Spacer()
-
                 Circle()
                     .frame(width: circleDiameter, height: circleDiameter)
                     .overlay(
@@ -48,7 +47,6 @@ struct IncognitoDescriptionView: View {
                 .foregroundColor(Color(UIColor(rgba: 0xEBEBF599)))  // Dark variant of .secondaryLabel
                 .frame(maxWidth: maxTextWidth)
                 .padding([.leading, .trailing], gutterWidth)
-
                 Spacer()
             }.padding([.top, .bottom], 20)
             Spacer()
@@ -56,5 +54,11 @@ struct IncognitoDescriptionView: View {
         .background(Color.Neeva.UI.Gray30)
         .foregroundColor(Color.Neeva.UI.Gray96)
         .navigationBarHidden(true)
+    }
+}
+
+struct IncognitoDescriptionView_Previews: PreviewProvider {
+    static var previews: some View {
+        IncognitoDescriptionView()
     }
 }

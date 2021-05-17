@@ -30,6 +30,7 @@ extension UIColor {
             public static let Gray70 = UIColor(named: "UI-Gray70", in: Bundle.module, compatibleWith: nil)!
             public static let Gray96 = UIColor(named: "UI-Gray96", in: Bundle.module, compatibleWith: nil)!
             public static let Gray97 = UIColor(named: "UI-Gray97", in: Bundle.module, compatibleWith: nil)!
+            public static let Gray98 = UIColor(named: "UI-Gray98", in: Bundle.module, compatibleWith: nil)!
         }
 
         public static let DarkElevated = UIColor(named: "DarkElevated", in: Bundle.module, compatibleWith: nil)!
@@ -68,6 +69,7 @@ extension Color {
             public static let Gray70 = Color(UIColor.Neeva.UI.Gray70)
             public static let Gray96 = Color(UIColor.Neeva.UI.Gray96)
             public static let Gray97 = Color(UIColor.Neeva.UI.Gray97)
+            public static let Gray98 = Color(UIColor.Neeva.UI.Gray98)
         }
 
         public static let DarkElevated = Color(UIColor.Neeva.DarkElevated)
