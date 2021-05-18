@@ -81,7 +81,8 @@ struct SuggestedSitesView: View {
             ZStack(alignment: .center) {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: NeevaHomeUX.HorizontalItemSpacing) {
-                        ForEach(viewModel.sites, id: \.title) { suggestedSite in
+                        ForEach(viewModel.sites.indices, id: \.self) { index in
+                            let suggestedSite = viewModel.sites[index]
                             SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
                                 .onTapGesture {
                                     viewModel.onSuggestedSiteClicked(suggestedSite.tileURL)
@@ -104,7 +105,8 @@ struct SuggestedSitesView: View {
             ZStack {
                 ScrollView() {
                     LazyVGrid(columns: columns, spacing: 24) {
-                        ForEach(viewModel.sites, id: \.title) { suggestedSite in
+                        ForEach(viewModel.sites.indices, id: \.self) { index in
+                            let suggestedSite = viewModel.sites[index]
                             SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite).onTapGesture {
                                 viewModel.onSuggestedSiteClicked(suggestedSite.tileURL)
                             }.onLongPressGesture {
