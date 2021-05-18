@@ -55,7 +55,7 @@ public struct LogConfig {
 
         // bottom nav
         case ShowTabTray // Click tab button to see all available tabs
-        case ClickTrashIcon // Click trash icon that reveal the close all tabs option
+        case HideTabTray // Click done button to hide the tab tray
         case ClickNewTabButton // Click the plus new tab button
         case ClickShareButton // Click the share button
         case TurnOnIncognitoMode // Click turn on incognito mode button

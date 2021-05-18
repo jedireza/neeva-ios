@@ -47,7 +47,7 @@ class TabTrayControllerV1: UIViewController {
         let toolbar = TrayToolbar()
         toolbar.addTabButton.addTarget(self, action: #selector(didTapToolbarAddTab), for: .touchUpInside)
         toolbar.maskButton.addTarget(self, action: #selector(didTogglePrivateMode), for: .touchUpInside)
-        toolbar.deleteButton.addTarget(self, action: #selector(didTapToolbarDelete), for: .touchUpInside)
+        toolbar.doneButton.addTarget(self, action: #selector(didTapToolbarDone), for: .touchUpInside)
         return toolbar
     }()
 
@@ -703,19 +703,9 @@ extension TabTrayControllerV1 {
 }
 
 extension TabTrayControllerV1 {
-    @objc func didTapToolbarDelete(_ sender: UIButton) {
-        if tabDisplayManager.isDragging {
-            return
-        }
-
-        ClientLogger.shared.logCounter(.ClickTrashIcon, attributes: EnvironmentHelper.shared.getAttributes())
-
-        let controller = AlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        controller.addAction(UIAlertAction(title: Strings.AppMenuCloseAllTabsTitleString, style: .default, handler: { _ in self.closeTabsForCurrentTray() }), accessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
-        controller.addAction(UIAlertAction(title: .TabTrayCloseAllTabsPromptCancel, style: .cancel, handler: nil), accessibilityIdentifier: "TabTrayController.deleteButton.cancel")
-        controller.popoverPresentationController?.sourceView = sender
-        controller.popoverPresentationController?.sourceRect = sender.bounds
-        present(controller, animated: true, completion: nil)
+    @objc func didTapToolbarDone(_ sender: UIButton) {
+        ClientLogger.shared.logCounter(.HideTabTray, attributes: EnvironmentHelper.shared.getAttributes())
+        dismissTabTray()
     }
 }
 
@@ -866,44 +856,43 @@ class TrayToolbar: UIView, Themeable, PrivateModeUI {
         return button
     }()
 
-    lazy var deleteButton: UIButton = {
-        let symbol = UIImage(systemName: "trash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+    lazy var doneButton: UIButton = {
         let button = UIButton()
-        button.setImage(symbol, for: .normal)
-        button.accessibilityLabel = Strings.TabTrayDeleteMenuButtonAccessibilityLabel
-        button.accessibilityIdentifier = "TabTrayController.removeTabsButton"
+        let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        let title = NSAttributedString(string: "Done", attributes: [NSAttributedString.Key.font: font])
+        button.setAttributedTitle(title, for: .normal)
+        button.accessibilityLabel = .TabTrayDoneAccessibilityLabel
+        button.accessibilityIdentifier = "TabTrayController.doneButton"
         return button
     }()
 
     lazy var maskButton = PrivateModeButton()
-    fileprivate let sideOffset: CGFloat = 32
+    fileprivate let sideOffset: CGFloat = 16
 
     fileprivate override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(addTabButton)
 
-        var buttonToCenter: UIButton?
-        addSubview(deleteButton)
-        buttonToCenter = deleteButton
+        addSubview(maskButton)
+        addSubview(addTabButton)
+        addSubview(doneButton)
 
         maskButton.accessibilityIdentifier = "TabTrayController.maskButton"
 
-        buttonToCenter?.snp.makeConstraints { make in
+        maskButton.snp.makeConstraints { make in
+            make.top.equalTo(self)
+            make.leading.equalTo(self).offset(sideOffset)
+            make.size.equalTo(toolbarButtonSize)
+        }
+
+        addTabButton.snp.makeConstraints { make in
             make.centerX.equalTo(self)
             make.top.equalTo(self)
             make.size.equalTo(toolbarButtonSize)
         }
 
-        addTabButton.snp.makeConstraints { make in
+        doneButton.snp.makeConstraints { make in
             make.top.equalTo(self)
             make.trailing.equalTo(self).offset(-sideOffset)
-            make.size.equalTo(toolbarButtonSize)
-        }
-
-        addSubview(maskButton)
-        maskButton.snp.makeConstraints { make in
-            make.top.equalTo(self)
-            make.leading.equalTo(self).offset(sideOffset)
             make.size.equalTo(toolbarButtonSize)
         }
 
@@ -920,12 +909,11 @@ class TrayToolbar: UIView, Themeable, PrivateModeUI {
     }
 
     func applyTheme() {
-        [addTabButton, deleteButton].forEach {
-            $0.tintColor = UIColor.theme.tabTray.toolbarButtonTint
-        }
         backgroundColor = UIColor.theme.tabTray.toolbar
         maskButton.offTint = UIColor.theme.tabTray.privateModeButtonOffTint
         maskButton.onTint = UIColor.theme.tabTray.privateModeButtonOnTint
+        addTabButton.tintColor = UIColor.theme.tabTray.toolbarButtonTint
+        doneButton.setTitleColor(UIColor.theme.tabTray.toolbarButtonTint, for: .normal)
     }
 }
 

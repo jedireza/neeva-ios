@@ -222,37 +222,21 @@ class BrowserUtils {
     }
     internal static let AllClearables = Set([Clearable.History, Clearable.Cache, Clearable.OfflineData, Clearable.Cookies, Clearable.TrackingProtection])
 
-
     class func resetToAboutHomeKIF(_ tester: KIFUITestActor) {
-        if iPad() {
-            tester.tapView(withAccessibilityIdentifier: "TopTabsViewController.tabsButton")
-        } else {
-            tester.tapView(withAccessibilityIdentifier: "TabToolbar.tabsButton")
-        }
-        
-        // if in private mode, close all tabs
-        tester.tapView(withAccessibilityIdentifier: "TabTrayController.maskButton")
+        BrowserUtils.closeAllTabs()
+    }
 
-        tester.tapView(withAccessibilityIdentifier: "TabTrayController.removeTabsButton")
-        tester.tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
-
-        tester.tapView(withAccessibilityIdentifier: "TabTrayController.maskButton")
-
-//        tester.wait(forTimeInterval: 3)
-//        /* go to Normal mode */
-//        if (tester.viewExistsWithLabel("Show Tabs")) {
-//            tester.tapView(withAccessibilityLabel: "1")
-//        } else {
-//            tester.tapView(withAccessibilityLabel: "1")
-//        }
-        tester.tapView(withAccessibilityIdentifier: "TabTrayController.removeTabsButton")
-        tester.tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
+    class func closeAllTabs() {
+        // Ideally we'd use accessibility APIs here to achieve the same outcome, but
+        // we don't have a convenient UI access point for removing all tabs.
+        let bvc = UIApplication.shared.keyWindow!.rootViewController?.children[0] as! BrowserViewController
+        bvc.tabManager.removeAllTabsAndAddNormalTab()
     }
 
     class func dismissFirstRunUI(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish(withTimeout: 3)
         if (tester.viewExistsWithLabel("Skip")) {
-            tester.tapView(withAccessibilityIdentifier: "Skip")
+            tester.tapView(withAccessibilityLabel: "Skip")
             tester.waitForAnimationsToFinish(withTimeout: 3)
             //tester.tapView(withAccessibilityIdentifier: "startBrowsingButtonSyncView")
         }

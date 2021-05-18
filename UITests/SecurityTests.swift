@@ -77,10 +77,7 @@ class SecurityTests: KIFTestCase {
         // Also make sure the XSS alert doesn't appear.
         XCTAssertFalse(tester().viewExistsWithLabel("Local page loaded"))
 
-        // Workaround number of tabs not updated
-        tester().tapView(withAccessibilityIdentifier: "TabToolbar.tabsButton")
-        tester().tapView(withAccessibilityIdentifier: "TabTrayController.removeTabsButton")
-        tester().tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
+        BrowserUtils.closeAllTabs()
     }
 
     /// Tap the URL spoof button, which opens a new window to a host with an invalid port.
@@ -127,13 +124,6 @@ class SecurityTests: KIFTestCase {
         // Make sure the URL doesn't change.
         XCTAssertEqual(webView.url!.absoluteString, url)
     }
-
-      func closeAllTabs() {
-        tester().tapView(withAccessibilityIdentifier: "TabTrayController.removeTabsButton")
-        tester().waitForAnimationsToFinish(withTimeout: 3)
-        tester().tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
-        
-      }
 
     override func tearDown() {
         BrowserUtils.resetToAboutHomeKIF(tester())
