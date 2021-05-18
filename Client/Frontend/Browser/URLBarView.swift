@@ -15,12 +15,10 @@ private struct URLBarViewUX {
     static let LocationOverlayLeftPadding: CGFloat = 14
     static let LocationOverlayRightPadding: CGFloat = 2
     static let Padding: CGFloat = 5.5
-    static let ButtonPadding: CGFloat = 12
     static let LocationHeight: CGFloat = UIConstants.TextFieldHeight
-    static let ButtonSize: CGFloat = 44  // width and height
+    static let ButtonSize: CGFloat = 40  // width and height
     static let TextFieldCornerRadius: CGFloat = UIConstants.TextFieldHeight / 2
     static let ProgressBarHeight: CGFloat = 3
-    static let ToolbarEdgePaddding: CGFloat = 24
 }
 
 protocol URLBarDelegate: AnyObject {
@@ -222,26 +220,26 @@ class URLBarView: UIView {
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -URLBarViewUX.ToolbarEdgePaddding : -URLBarViewUX.LocationEdgePadding)
+            make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.LocationEdgePadding)
             make.centerY.equalTo(self.locationContainer)
             make.height.equalTo(URLBarViewUX.ButtonSize)
             make.width.equalTo(cancelButton.intrinsicContentSize.width)
         }
 
         backButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.ToolbarEdgePaddding)
+            make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.Padding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
         forwardButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.backButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.backButton.snp.trailing)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
 
         neevaMenuButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.forwardButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.forwardButton.snp.trailing)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
@@ -252,14 +250,14 @@ class URLBarView: UIView {
         }
 
         addToSpacesButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.shareButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.shareButton.snp.trailing)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
         
         tabsButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.addToSpacesButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
-            make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
+            make.leading.equalTo(self.addToSpacesButton.snp.trailing)
+            make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.Padding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
@@ -502,7 +500,7 @@ class URLBarView: UIView {
         addToSpacesButton.isHidden = !toolbarIsShowing
         forwardButton.isHidden = !toolbarIsShowing
         backButton.isHidden = !toolbarIsShowing
-        tabsButton.isHidden = !toolbarIsShowing
+        tabsButton.isHidden = !toolbarIsShowing || topTabsIsShowing
         shareButton.isHidden = !toolbarIsShowing
     }
 
@@ -528,7 +526,7 @@ class URLBarView: UIView {
         addToSpacesButton.isHidden = !toolbarIsShowing || inOverlayMode
         forwardButton.isHidden = !toolbarIsShowing || inOverlayMode
         backButton.isHidden = !toolbarIsShowing || inOverlayMode
-        tabsButton.isHidden = !toolbarIsShowing || inOverlayMode
+        tabsButton.isHidden = !toolbarIsShowing || inOverlayMode || topTabsIsShowing
         shareButton.isHidden = !toolbarIsShowing || inOverlayMode
 
         // badge isHidden is tied to private mode on/off, use alpha to hide in this case

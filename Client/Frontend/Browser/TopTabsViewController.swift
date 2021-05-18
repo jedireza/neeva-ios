@@ -46,6 +46,14 @@ class TopTabsViewController: UIViewController {
         return collectionView
     }()
 
+    fileprivate lazy var tabsButton: TabsButton = {
+        let tabsButton = TabsButton.tabTrayButton()
+        tabsButton.semanticContentAttribute = .forceLeftToRight
+        tabsButton.addTarget(self, action: #selector(TopTabsViewController.tabsTrayTapped), for: .touchUpInside)
+        tabsButton.accessibilityIdentifier = "TopTabsViewController.tabsButton"
+        return tabsButton
+    }()
+
     fileprivate lazy var newTab: UIButton = {
         let newTab = UIButton.newTabButton()
         newTab.semanticContentAttribute = .forceLeftToRight
@@ -106,6 +114,7 @@ class TopTabsViewController: UIViewController {
 
         view.addSubview(topTabFader)
         topTabFader.addSubview(collectionView)
+        view.addSubview(tabsButton)
         view.addSubview(newTab)
         view.addSubview(privateModeButton)
 
@@ -116,7 +125,12 @@ class TopTabsViewController: UIViewController {
 
         newTab.snp.makeConstraints { make in
             make.centerY.equalTo(view)
-            make.trailing.equalTo(view.snp.trailing)
+            make.trailing.equalTo(tabsButton.snp.leading)
+            make.size.equalTo(view.snp.height)
+        }
+        tabsButton.snp.makeConstraints { make in
+            make.centerY.equalTo(view)
+            make.trailing.equalTo(view).offset(-10)
             make.size.equalTo(view.snp.height)
         }
         privateModeButton.snp.makeConstraints { make in
