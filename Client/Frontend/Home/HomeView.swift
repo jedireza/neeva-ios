@@ -154,7 +154,7 @@ struct NeevaHome: View {
                     IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding()
                 }
                 if !viewModel.isPrivate && viewModel.showDefaultBrowserCard {
-                    DefaultBrowserCardView(dismissClosure: viewModel.toggleShowCard).frame(height: 178)
+                    DefaultBrowserCardView(dismissClosure: viewModel.toggleShowCard, signInHandler: viewModel.signInHandler).frame(height: 178)
                 }
                 NeevaHomeRow()
                 Spacer()
@@ -174,10 +174,12 @@ class HomeViewModel: ObservableObject {
 
 struct DefaultBrowserCardView: UIViewRepresentable {
     let dismissClosure: () -> ()
+    let signInHandler: () -> ()
 
     func makeUIView(context: Context) -> DefaultBrowserCard {
         let card = DefaultBrowserCard(frame:.zero, isUserLoggedIn: NeevaUserInfo.shared.isUserLoggedIn)
         card.dismissClosure = dismissClosure
+        card.signinHandler = signInHandler
         return card
     }
 
