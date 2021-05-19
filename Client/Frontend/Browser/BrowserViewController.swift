@@ -2086,13 +2086,13 @@ extension BrowserViewController {
 
     private func visitHomePage() {
         if let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
-            tab.loadRequest(URLRequest(url: NeevaConstants.appSignupURL.asURL!))
+            tab.loadRequest(URLRequest(url: NeevaConstants.appSignupURL))
         }
     }
 
     private func visitSigninPage() {
         if let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
-            tab.loadRequest(URLRequest(url: NeevaConstants.appSigninURL.asURL!))
+            tab.loadRequest(URLRequest(url: NeevaConstants.appSigninURL))
         }
     }
     

@@ -10,12 +10,6 @@ public struct NeevaConstants {
     /// The App Group, used for the keychain and UserDefaults
     public static let appGroup = "group.co.neeva.app.ios.browser"
 
-    public static let appPrivacyURL = "https://neeva.com/privacy"
-    public static let appHelpCenterURL = "https://neeva.com/contact"
-    public static let appSettingsURL = "https://\(appHost)/settings"
-    public static let appSigninURL = "https://\(appHost)/signin"
-    public static let appSignupURL = "https://\(appHost)/signup"
-
     /// The host for the Neeva API/website, such as `neeva.com`
     public static var appHost: String {
         get { Defaults[neevaHostKey] }
@@ -28,9 +22,16 @@ public struct NeevaConstants {
 
     /// The URL form of `appHost`
     public static var appURL: URL { URL(string: "https://\(appHost)/")! }
+    public static let appMarketingURL = URL(string: "https://neeva.com/")!
 
     public static var appHomeURL: URL { appURL }
     public static var appSpacesURL: URL { appURL / "spaces" }
+    public static var appSettingsURL: URL { appURL / "settings" }
+    public static var appSigninURL: URL { appURL / "signin" }
+    public static var appSignupURL: URL { appURL / "signup" }
+
+    public static let appPrivacyURL = appMarketingURL / "privacy"
+    public static let appHelpCenterURL = appMarketingURL / "contact"
 
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }

@@ -172,9 +172,7 @@ class NeevaProfileSetting: Setting {
         ClientLogger.shared.logCounter(.SettingSignin, attributes: EnvironmentHelper.shared.getAttributes())
         if !NeevaUserInfo.shared.hasLoginCookie() {
             navigationController?.dismiss(animated: true) {
-                if let url = URL(string: NeevaConstants.appSigninURL) {
-                    self.delegate?.settingsOpenURLInNewTab(url)
-                }
+                self.delegate?.settingsOpenURLInNewTab(NeevaConstants.appSigninURL)
             }
         }
     }
@@ -189,11 +187,9 @@ class NeevaSearchSetting: Setting {
     override func onClick(_ navigationController: UINavigationController?) {
         ClientLogger.shared.logCounter(.SettingAccountSettings, attributes: EnvironmentHelper.shared.getAttributes())
         navigationController?.dismiss(animated: true) {
-            if let url = URL(string: NeevaConstants.appSettingsURL) {
-                // Note, we need to force Neeva Account Settings to load in a non-private tab
-                // since it operates on the signed-in user's account.
-                self.delegate?.settingsOpenURLInNewNonPrivateTab(url)
-            }
+            // Note, we need to force Neeva Account Settings to load in a non-private tab
+            // since it operates on the signed-in user's account.
+            self.delegate?.settingsOpenURLInNewNonPrivateTab(NeevaConstants.appSettingsURL)
         }
     }
 }
@@ -399,9 +395,7 @@ class OpenSupportPageSetting: Setting {
     override func onClick(_ navigationController: UINavigationController?) {
         ClientLogger.shared.logCounter(.ViewHelp, attributes: EnvironmentHelper.shared.getAttributes())
         navigationController?.dismiss(animated: true) {
-            if let url = URL(string: NeevaConstants.appHelpCenterURL) {
-                self.delegate?.settingsOpenURLInNewTab(url)
-            }
+            self.delegate?.settingsOpenURLInNewTab(NeevaConstants.appHelpCenterURL)
         }
     }
 }
@@ -457,9 +451,7 @@ class PrivacyPolicySetting: Setting {
         return NSAttributedString(string: .AppSettingsPrivacyPolicy, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText])
     }
 
-    override var url: URL? {
-        return URL(string: NeevaConstants.appPrivacyURL)
-    }
+    override var url: URL { NeevaConstants.appPrivacyURL }
 
     override func onClick(_ navigationController: UINavigationController?) {
         ClientLogger.shared.logCounter(.ViewPrivacyPolicy, attributes: EnvironmentHelper.shared.getAttributes())

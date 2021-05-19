@@ -199,7 +199,7 @@ extension NeevaHomeViewController: DataObserverDelegate {
             }
             self.homeViewModel.showDefaultBrowserCard = showDefaultBrowserCard
             self.homeViewModel.signInHandler = {
-                self.showSiteWithURLHandler(NeevaConstants.appSigninURL.asURL!)
+                self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
 
             let maxItems = self.numberOfHorizontalItems(currentTraits: self.view.traitCollection)
