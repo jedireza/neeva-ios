@@ -120,4 +120,13 @@ extension UIColor {
     public struct TabTray {
         public static let tabsButton = UIColor.label
     }
+
+    public struct DefaultBrowserCard {
+        public static let backgroundColor = UIColor.HomePanel.topSitesBackground
+        public static let textColor = UIColor(rgb: 0x131415)
+    }
+
+    public struct HomePanel {
+        public static let topSitesBackground = UIColor.systemBackground
+    }
 }

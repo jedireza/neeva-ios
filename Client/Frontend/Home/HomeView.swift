@@ -95,8 +95,8 @@ struct SuggestedSitesView: View {
                 if UIDevice.current.userInterfaceIdiom != .pad {
                     Rectangle().fill(
                         LinearGradient(gradient: Gradient(stops: [
-                            .init(color: Color(UIColor.theme.homePanel.topSitesBackground).opacity(0), location: 0),
-                            .init(color: Color(UIColor.theme.homePanel.topSitesBackground), location: 1)
+                            .init(color: Color(UIColor.HomePanel.topSitesBackground).opacity(0), location: 0),
+                            .init(color: Color(UIColor.HomePanel.topSitesBackground), location: 1)
                         ]), startPoint: .leading, endPoint: .trailing)
                     ).frame(width: 64).frame(maxWidth: .infinity, alignment: .trailing).allowsHitTesting(false)
                 }

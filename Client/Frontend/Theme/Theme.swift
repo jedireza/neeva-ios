@@ -105,7 +105,6 @@ class HomePanelColor {
     
     var siteTableHeaderBorder: UIColor { return UIColor.Photon.Grey30.withAlphaComponent(0.8) }
 
-    var topSitesBackground: UIColor { return UIColor.white }
     var topSitesFavBg: UIColor { return UIColor.Neeva.UI.Gray97 }
     var topSitesLabel: UIColor { return UIColor.Neeva.UI.Gray60 }
 
@@ -142,13 +141,6 @@ class GeneralColor {
     var switchToggle: UIColor { return UIColor.Photon.Grey90A40 }
 }
 
-class DefaultBrowserCardColor {
-    var backgroundColor: UIColor { return UIColor.green }
-    var textColor: UIColor { return UIColor(rgb: 0x131415) }
-    var closeButtonBackground: UIColor { return UIColor.Photon.Grey20 }
-    var closeButton: UIColor { return UIColor.Photon.Grey80 }
-}
-
 class PopupMenu {
     var background: UIColor { return UIColor(rgb: 0xF2F2F7); }
     var foreground: UIColor { return UIColor.white }
@@ -168,7 +160,6 @@ protocol Theme {
     var general: GeneralColor { get }
     var actionMenu: ActionMenuColor { get }
     var switchToggleTheme: GeneralColor { get }
-    var defaultBrowserCard: DefaultBrowserCardColor { get }
     var userInterfaceStyle: UIUserInterfaceStyle { get }
     var popupMenu: PopupMenu { get }
 }
@@ -183,7 +174,6 @@ class NormalTheme: Theme {
     var general: GeneralColor { return GeneralColor() }
     var actionMenu: ActionMenuColor { return ActionMenuColor() }
     var switchToggleTheme: GeneralColor { return GeneralColor() }
-    var defaultBrowserCard: DefaultBrowserCardColor { return DefaultBrowserCardColor() }
     var userInterfaceStyle: UIUserInterfaceStyle { .light }
     var popupMenu: PopupMenu { return PopupMenu() }
 }

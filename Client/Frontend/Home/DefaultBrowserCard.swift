@@ -19,7 +19,7 @@ class DefaultBrowserCard: UIView {
         title.numberOfLines = 2
         title.lineBreakMode = .byWordWrapping
         title.font = UIFont.systemFont(ofSize: 24, weight: .regular)
-        title.textColor = UIColor.theme.defaultBrowserCard.textColor
+        title.textColor = UIColor.DefaultBrowserCard.textColor
         return title
     }()
     lazy var title2: UILabel = {
@@ -28,7 +28,7 @@ class DefaultBrowserCard: UIView {
         title.numberOfLines = 2
         title.lineBreakMode = .byWordWrapping
         title.font = UIFont.systemFont(ofSize: 24, weight: .regular)
-        title.textColor = UIColor.theme.defaultBrowserCard.textColor
+        title.textColor = UIColor.DefaultBrowserCard.textColor
         return title
     }()
 
@@ -153,10 +153,5 @@ class DefaultBrowserCard: UIView {
     @objc private func openLoginPage(){
         ClientLogger.shared.logCounter(.PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
         self.signinHandler?()
-    }
-    
-    func applyTheme() {
-        title.textColor = UIColor.theme.defaultBrowserCard.textColor
-        backgroundColor = UIColor.theme.homePanel.topSitesBackground
     }
 }

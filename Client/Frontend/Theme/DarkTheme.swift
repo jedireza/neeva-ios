@@ -71,7 +71,6 @@ fileprivate class DarkHomePanelColor: HomePanelColor {
     override var activityStreamCellTitle: UIColor { return UIColor.Photon.Grey20 }
     override var activityStreamCellDescription: UIColor { return UIColor.Photon.Grey30 }
 
-    override var topSitesBackground: UIColor { return UIColor(rgb: 0x29282d) }
     override var topSitesFavBg: UIColor { return UIColor(rgb: 0x505054) }
     override var topSitesLabel: UIColor { return UIColor.Neeva.Brand.White }
 
@@ -97,13 +96,6 @@ fileprivate class DarkGeneralColor: GeneralColor {
     override var switchToggle: UIColor { return UIColor.Photon.Grey40 }
 }
 
-class DarkDefaultBrowserCardColor: DefaultBrowserCardColor {
-    override var backgroundColor: UIColor { return UIColor.Photon.Grey60 }
-    override var textColor: UIColor { return UIColor(rgb: 0x131415) }
-    override var closeButtonBackground: UIColor { return UIColor.Photon.Grey80 }
-    override var closeButton: UIColor { return UIColor.Photon.Grey20 }
-}
-
 class DarkPopupMenu: PopupMenu {
     override var background: UIColor { return UIColor.Photon.Grey60 }
     override var foreground: UIColor { return UIColor.Photon.Grey80 }
@@ -122,7 +114,6 @@ class DarkTheme: NormalTheme {
     override var snackbar: SnackBarColor { return DarkSnackBarColor() }
     override var general: GeneralColor { return DarkGeneralColor() }
     override var actionMenu: ActionMenuColor { return DarkActionMenuColor() }
-    override var defaultBrowserCard: DefaultBrowserCardColor { return DarkDefaultBrowserCardColor() }
     override var userInterfaceStyle: UIUserInterfaceStyle { .dark }
     override var popupMenu: PopupMenu { return DarkPopupMenu() }
 }

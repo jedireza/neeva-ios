@@ -53,7 +53,7 @@ protocol HomePanelDelegate: AnyObject {
     var homePanelIsPrivate: Bool { get }
 }
 
-protocol HomePanel: Themeable {
+protocol HomePanel {
     var homePanelDelegate: HomePanelDelegate? { get set }
 }
 
@@ -116,7 +116,7 @@ class NeevaHomeViewController: UIViewController, HomePanel {
     lazy var homeView: UIView = {
         let home = NeevaHome(viewModel: homeViewModel)
         let controller = UIHostingController(rootView: home.environmentObject(suggestionsViewModel))
-        controller.view.backgroundColor = UIColor.clear
+        controller.view.backgroundColor = UIColor.HomePanel.topSitesBackground
         view.addSubview(controller.view)
         return controller.view
     }()
@@ -148,10 +148,8 @@ class NeevaHomeViewController: UIViewController, HomePanel {
             make.top.bottom.left.right.equalToSuperview()
         }
 
-        self.view.backgroundColor = UIColor.theme.homePanel.topSitesBackground
+        self.view.backgroundColor = UIColor.HomePanel.topSitesBackground
         self.profile.panelDataObservers.activityStream.delegate = self
-
-        applyTheme()
     }
     
     public func dismissDefaultBrowserCard()
@@ -178,11 +176,6 @@ class NeevaHomeViewController: UIViewController, HomePanel {
 
     @objc func reload(notification: Notification) {
         reloadAll()
-    }
-
-    func applyTheme() {
-        defaultBrowserCard.applyTheme()
-        homeView.backgroundColor = UIColor.theme.homePanel.topSitesBackground
     }
 
     fileprivate func showSiteWithURLHandler(_ url: URL) {
