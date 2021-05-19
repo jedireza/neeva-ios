@@ -50,6 +50,10 @@ public struct NeevaConstants {
         /// Pass this header to all requests to Neeva from the iOS app.
         public static let deviceType = Header("X-Neeva-Device-Type", "ios-browser")
     }
+
+    public static func isOnNeevaHome(url: URL?) -> Bool {
+        return url?.scheme == NeevaConstants.appHomeURL.scheme && url?.host == NeevaConstants.appHomeURL.host && url?.path == NeevaConstants.appHomeURL.path
+    }
 }
 
 /// append a given path component to the provided URL.

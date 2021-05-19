@@ -5,6 +5,7 @@
 import Foundation
 import Shared
 import NeevaSupport
+import SwiftUI
 
 extension UIColor {
     // These are defaults from http://design.firefox.com/photon/visuals/color.html
@@ -17,6 +18,18 @@ extension UIColor {
     // Reader Mode Sepia
         static let LightBeige = UIColor(rgb: 0xf0e6dc)
         static let SystemGray01 = UIColor(rgb: 0x8E8E93)
+    }
+}
+
+extension Color {
+    public struct Neeva {
+        public struct Tour {
+            public static let Background = Color(UIColor.Neeva.Tour.Background)
+            public static let Title = Color(UIColor.Neeva.Tour.Title)
+            public static let Description = Color(UIColor.Neeva.Tour.Description)
+            public static let ButtonBackground = Color(UIColor.Neeva.Tour.ButtonBackground)
+            public static let ButtonText = Color(UIColor.Neeva.Tour.ButtonText)
+        }
     }
 }
 
@@ -128,5 +141,17 @@ extension UIColor {
 
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
+    }
+}
+
+extension UIColor {
+    public struct Neeva {
+        public struct Tour {
+            public static let Background = UIColor(named: "Tour-Background")!
+            public static let Title = UIColor(named: "Tour-Title")!
+            public static let Description = UIColor(named: "Tour-Description")!
+            public static let ButtonBackground = UIColor(named: "Tour-Button-Background")!
+            public static let ButtonText = UIColor(named: "Tour-Button-Text")!
+        }
     }
 }

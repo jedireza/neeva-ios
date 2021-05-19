@@ -684,6 +684,10 @@ extension BrowserViewController: WKNavigationDelegate {
         tab.contentBlocker?.notifyContentBlockingChanged()
         self.scrollController.resetZoomState()
 
+        if let currentURL = tab.url, NeevaConstants.isOnNeevaHome(url: currentURL) {
+            showSearchBarPrompt()
+        }
+
         if tabManager.selectedTab === tab {
             updateUIForReaderHomeStateForTab(tab)
         }

@@ -472,6 +472,25 @@ class BrowserViewController: UIViewController {
         }
     }
 
+    func showSearchBarPrompt() {
+        // show tour prompt for search bar
+        if profile.prefs.intForKey(PrefsKeys.SearchInputPromptDismissed) != nil || !NeevaUserInfo.shared.hasLoginCookie() {
+            return
+        }
+
+        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.urlBar.locationView.urlTextField)
+        prompt.view.backgroundColor = UIColor.Neeva.Tour.Background
+        prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
+
+        guard let currentViewController = navigationController?.topViewController else {
+            return
+        }
+
+        if currentViewController is BrowserViewController {
+            present(prompt, animated: true, completion: nil)
+        }
+    }
+
     fileprivate func setupConstraints() {
         topTabsContainer.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.header)
@@ -1353,6 +1372,7 @@ extension BrowserViewController: URLBarDelegate {
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
         }
+
         TelemetryWrapper.recordEvent(category: .action, method: .open, object: .tabTray)
     }
 

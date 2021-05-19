@@ -15,6 +15,7 @@ public struct PrefsKeys {
     public static let KeyMailToOption = "MailToOption"
     public static let KeyLastVersionNumber = "KeyLastVersionNumber"
     public static let IntroSeen = "IntroViewControllerSeen"
+    public static let SearchInputPromptDismissed = "SearchInputPromptDismissed"
     public static let LoginsSaveEnabled = "saveLogins"
     public static let LoginsShowShortcutMenuItem = "showLoginsInAppMenu"
     public static let KeyInstallSession = "installSessionNumber"
