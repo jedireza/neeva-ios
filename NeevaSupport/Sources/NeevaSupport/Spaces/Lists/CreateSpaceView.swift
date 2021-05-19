@@ -17,7 +17,7 @@ struct CreateSpaceView: View {
             HStack{
                 TextField("Space name", text: $spaceName)
                 if (self.isEditing && !self.spaceName.isEmpty) {
-                    Symbol.system(.xmarkCircleFill, size: 16, weight: .medium)
+                    Symbol(.xmarkCircleFill, label: "Clear")
                         .foregroundColor(.tertiaryLabel)
                         .padding([.leading, .trailing], 2)
                         .onTapGesture {

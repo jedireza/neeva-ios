@@ -26,7 +26,7 @@ struct SpaceListItem: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(.primary)
             Spacer()
-            Symbol.neeva(icon, size: 16, weight: .semibold)
+            Symbol(icon, weight: .semibold)
                 .frame(width: 44, height: 44)
                 .foregroundColor(iconColor)
         }

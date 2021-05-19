@@ -136,7 +136,7 @@ struct NeevaHomeRow: View {
                         expansionState = HomeRowExpansionState(rawValue: expansionState.rawValue.advanced(by: 1)) ?? .limited
                     }, label: {
                         let icon = expansionState == .limited ? Nicon.chevronDown : Nicon.chevronUp
-                        Symbol.neeva(icon, size: NeevaHomeUX.ToggleIconSize, weight: .regular)
+                        Symbol(icon, size: NeevaHomeUX.ToggleIconSize, label: "Show \(expansionState == .limited ? "more" : "fewer") suggested sites")
                             .frame(width: NeevaHomeUX.ToggleButtonSize, height: NeevaHomeUX.ToggleButtonSize, alignment: .center)
                             .background(Color.Neeva.UI.Gray98).clipShape(Circle())
                     })

@@ -151,7 +151,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     Button {
                         self.model.hide()
                     } label: {
-                        Symbol.system(.xmark, size: 16, weight: .semibold)
+                        Symbol(.xmark, weight: .semibold, label: "Close")
                             .foregroundColor(Color.Neeva.UI.Gray60)
                             .frame(width: 44, height: 44)
                             .padding(.trailing, 4.5)

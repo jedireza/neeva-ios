@@ -32,7 +32,7 @@ struct IntroFirstRunView: View {
                     HStack(){
                         Text("Sign In")
                         Spacer()
-                        Symbol.neeva(.arrowRight, size: 22, weight: .medium)
+                        Symbol(.arrowRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
                 }
@@ -49,7 +49,7 @@ struct IntroFirstRunView: View {
                     HStack(){
                         Text("Sign Up")
                         Spacer()
-                        Symbol.neeva(.arrowUpRight, size: 22, weight: .medium)
+                        Symbol(.arrowUpRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
                 }

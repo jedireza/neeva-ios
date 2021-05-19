@@ -7,6 +7,7 @@
 //
 
 import NeevaSupport
+import SFSafeSymbols
 import SwiftUI
 
 public struct NeevaMenuRowButtonView: View {
@@ -43,9 +44,9 @@ public struct NeevaMenuRowButtonView: View {
 
                 Group {
                     if let nicon = self.nicon {
-                        Symbol.neeva(nicon, size: 18)
+                        Symbol(nicon, size: 18)
                     } else if let symbol = self.symbol {
-                        Symbol.system(symbol, size: 18)
+                        Symbol(symbol, size: 18)
                     }
                 }
                 .foregroundColor(Color(UIColor.theme.popupMenu.buttonColor))

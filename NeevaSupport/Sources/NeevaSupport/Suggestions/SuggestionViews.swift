@@ -48,11 +48,11 @@ fileprivate struct QuerySuggestionView: View {
     @ViewBuilder var icon: some View {
         switch suggestion.type {
         case .searchHistory:
-            Image(systemName: "clock").foregroundColor(.secondary)
+            Symbol(.clock).foregroundColor(.secondary)
         case .space:
             SpaceIconView()
         default:
-            Image(systemName: "magnifyingglass").foregroundColor(.secondary)
+            Symbol(.magnifyingglass).foregroundColor(.secondary)
         }
     }
 
@@ -66,7 +66,7 @@ fileprivate struct QuerySuggestionView: View {
                 Spacer()
                 if suggestion.type != .space {
                     Button(action: { setInput(suggestion.suggestedQuery) }) {
-                        Image(systemName: "arrow.up.left")
+                        Symbol(.arrowUpLeft)
                     }.buttonStyle(BorderlessButtonStyle())
                 }
             }
@@ -86,7 +86,7 @@ fileprivate struct URLSuggestionView: View {
                    let image = Image(icons: labels) {
                     image
                 } else {
-                    Image(systemName: "questionmark.diamond.fill")
+                    Symbol(.questionmarkDiamondFill)
                         .foregroundColor(.red)
                 }
                 if let title = suggestion.title {

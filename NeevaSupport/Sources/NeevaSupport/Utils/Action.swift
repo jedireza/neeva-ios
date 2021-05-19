@@ -65,7 +65,7 @@ extension Array: View where Element == Action? {
             Menu {
                 self
             } label: {
-                Image(systemName: "ellipsis")
+                Symbol(.ellipsis, label: "Actions")
                     .imageScale(.large)
                     .padding(.vertical, 9)
                     .padding(.horizontal, 5)

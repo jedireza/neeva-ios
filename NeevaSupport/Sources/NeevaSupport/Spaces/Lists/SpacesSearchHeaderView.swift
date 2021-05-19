@@ -16,7 +16,7 @@ struct SpacesSearchHeaderView: View {
     var body: some View {
         HStack(spacing: 24) {
             HStack(spacing: 8) {
-                Symbol.system(.magnifyingGlass, size: 16, weight: .medium)
+                Symbol(.magnifyingglass)
                     .foregroundColor(.tertiaryLabel)
                     .font(.system(size: 16))
                 TextField("Search Spaces", text: $searchText)
@@ -24,7 +24,7 @@ struct SpacesSearchHeaderView: View {
                         self.filterAction($0)
                     }
                 if (self.isEditing && !self.searchText.isEmpty) {
-                    Symbol.system(.xmarkCircleFill, size: 16, weight: .medium)
+                    Symbol(.xmarkCircleFill, label: "Clear")
                         .foregroundColor(.tertiaryLabel)
                         .padding([.leading, .trailing], 2)
                         .onTapGesture {
@@ -47,7 +47,7 @@ struct SpacesSearchHeaderView: View {
                 self.createAction()
             } label: {
                 HStack(spacing: 5) {
-                    Symbol.system(.plus, size: 16, weight: .semibold)
+                    Symbol(.plus, size: 16, weight: .semibold)
                     Text("Create")
                         .font(.system(size: 16, weight: .semibold))
                 }
