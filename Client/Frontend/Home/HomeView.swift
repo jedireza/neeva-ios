@@ -45,6 +45,11 @@ struct SuggestedSiteView: View {
         }
     }
 
+    var hint: String {
+        let pinned = isPinnedSite ? "Pinned " : ""
+        return pinned + "Suggested Site"
+    }
+
     var body: some View {
         VStack(spacing:2) {
             FaviconView(site: site, size: NeevaHomeUX.FaviconSize, bordered: false)
@@ -61,6 +66,8 @@ struct SuggestedSiteView: View {
                     .padding(.top, 4)
             }
         }.frame(width: NeevaHomeUX.SuggestedSiteBlockWidth, height: NeevaHomeUX.SuggestedSiteBlockHeight)
+            .accessibilityLabel(title).accessibilityHint(hint)
+            .accessibilityIdentifier("Home.SuggestedSite")
 
     }
 }
@@ -130,16 +137,19 @@ struct NeevaHomeRow: View {
     var body: some View {
         VStack {
             HStack {
-                Text("SUGGESTED SITES").foregroundColor(Color.Neeva.UI.Gray60).font(Font.custom("Roobert-SemiBold", size:13)).minimumScaleFactor(0.6).lineLimit(1).padding(.leading, 4)
-                    Spacer()
-                    Button(action: {
-                        expansionState = HomeRowExpansionState(rawValue: expansionState.rawValue.advanced(by: 1)) ?? .limited
-                    }, label: {
-                        let icon = expansionState == .limited ? Nicon.chevronDown : Nicon.chevronUp
-                        Symbol(icon, size: NeevaHomeUX.ToggleIconSize, label: "Show \(expansionState == .limited ? "more" : "fewer") suggested sites")
-                            .frame(width: NeevaHomeUX.ToggleButtonSize, height: NeevaHomeUX.ToggleButtonSize, alignment: .center)
-                            .background(Color.Neeva.UI.Gray98).clipShape(Circle())
-                    })
+                Text("Suggested sites").textCase(.uppercase).foregroundColor(Color.Neeva.UI.Gray60)
+                    .font(Font.custom("Roobert-SemiBold", size:13)).minimumScaleFactor(0.6)
+                    .lineLimit(1).padding(.leading, 4)
+                    .accessibilityIdentifier("Home.SuggestedSitesLabel")
+                Spacer()
+                Button(action: {
+                    expansionState = HomeRowExpansionState(rawValue: expansionState.rawValue.advanced(by: 1)) ?? .limited
+                }, label: {
+                    let icon = expansionState == .limited ? Nicon.chevronDown : Nicon.chevronUp
+                    Symbol(icon, size: NeevaHomeUX.ToggleIconSize, label: "Show \(expansionState == .limited ? "more" : "fewer") suggested sites")
+                        .frame(width: NeevaHomeUX.ToggleButtonSize, height: NeevaHomeUX.ToggleButtonSize, alignment: .center)
+                        .background(Color.Neeva.UI.Gray98).clipShape(Circle())
+                }).accessibilityIdentifier("Home.SuggestedSitesToggle")
             }.padding(.bottom)
             SuggestedSitesView(expansionState: $expansionState)
         }.padding()
