@@ -94,7 +94,7 @@ extension UIColor {
 
     public struct ToolbarButton {
         public static let selectedTint = UIColor.Neeva.UI.Blue40
-        public static let disabledTint = UIColor.Neeva.UI.Gray30
+        public static let disabledTint = UIColor.quaternaryLabel
     }
 
 

@@ -87,7 +87,6 @@ open class TabToolbarHelper: NSObject {
         toolbar.addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
         toolbar.addToSpacesButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
 
-    
         toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
         toolbar.toolbarNeevaMenuButton.accessibilityIdentifier = "TabToolbar.neevaMenuButton"
         toolbar.toolbarNeevaMenuButton.accessibilityLabel = "Neeva Menu"
@@ -148,13 +147,14 @@ open class TabToolbarHelper: NSObject {
 class ToolbarButton: UIButton {
     var selectedTintColor: UIColor!
     var unselectedTintColor: UIColor!
-    var disabledTintColor = UIColor.Photon.Grey50
+    var disabledTintColor: UIColor!
 
     // Optionally can associate a separator line that hide/shows along with the button
     weak var separatorLine: UIView?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        adjustsImageWhenDisabled = false
         adjustsImageWhenHighlighted = false
         imageView?.contentMode = .scaleAspectFit
         selectedTintColor = UIColor.ToolbarButton.selectedTint
@@ -232,7 +232,6 @@ class TabToolbar: UIView {
         helper = TabToolbarHelper(toolbar: self)
         addButtons(actionButtons)
         contentView.addArrangedSubview(tabsButton)
-
 
         appMenuBadge.add(toParent: contentView)
         warningMenuBadge.add(toParent: contentView)
