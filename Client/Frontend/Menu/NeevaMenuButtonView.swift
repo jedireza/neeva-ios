@@ -50,12 +50,12 @@ public struct NeevaMenuButtonView: View {
                         Symbol(symbol, size: 20)
                     }
                 }
-                .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.buttonColor))
+                .foregroundColor(self.isDisabled ? Color(UIColor.PopupMenu.disabledButtonColor): Color(UIColor.PopupMenu.buttonColor))
 
                 Spacer()
 
                 Text(label)
-                    .foregroundColor(self.isDisabled ? Color(UIColor.theme.popupMenu.disabledButtonColor): Color(UIColor.theme.popupMenu.textColor))
+                    .foregroundColor(self.isDisabled ? Color(UIColor.PopupMenu.disabledButtonColor): Color(UIColor.PopupMenu.textColor))
                     .font(.system(size: 16))
             }
             .frame(height: 46)
@@ -63,7 +63,7 @@ public struct NeevaMenuButtonView: View {
 
             Spacer()
         }
-        .background(Color(UIColor.theme.popupMenu.foreground))
+        .background(Color(UIColor.PopupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
         .disabled(self.isDisabled)
     }

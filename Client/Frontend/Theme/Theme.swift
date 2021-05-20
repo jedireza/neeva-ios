@@ -140,15 +140,6 @@ class GeneralColor {
     var switchToggle: UIColor { return UIColor.Photon.Grey90A40 }
 }
 
-class PopupMenu {
-    var background: UIColor { return UIColor(rgb: 0xF2F2F7); }
-    var foreground: UIColor { return UIColor.white }
-    var textColor: UIColor { return UIColor.black }
-    var secondaryTextColor: UIColor { return UIColor.Photon.Grey60 }
-    var buttonColor: UIColor { return UIColor.black }
-    var disabledButtonColor: UIColor { return UIColor.Custom.disabledButtonLightGray}
-}
-
 protocol Theme {
     var name: String { get }
     var tableView: TableViewColor { get }
@@ -160,7 +151,6 @@ protocol Theme {
     var actionMenu: ActionMenuColor { get }
     var switchToggleTheme: GeneralColor { get }
     var userInterfaceStyle: UIUserInterfaceStyle { get }
-    var popupMenu: PopupMenu { get }
 }
 
 class NormalTheme: Theme {
@@ -174,5 +164,4 @@ class NormalTheme: Theme {
     var actionMenu: ActionMenuColor { return ActionMenuColor() }
     var switchToggleTheme: GeneralColor { return GeneralColor() }
     var userInterfaceStyle: UIUserInterfaceStyle { .light }
-    var popupMenu: PopupMenu { return PopupMenu() }
 }

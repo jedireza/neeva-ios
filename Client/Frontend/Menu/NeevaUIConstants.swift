@@ -28,6 +28,9 @@ struct NeevaUIConstants{
     static let trackingMenuBlockedFontSize:CGFloat = 18
     static let trackingMenuFontSize:CGFloat = 10
     static let trackingMenuSubtextFontSize:CGFloat = 8
+    static let hallOfShameElementSpacing:CGFloat = 8
+    static let hallOfShameElementFaviconSize:CGFloat = 25
+    static let hallOfShameRowSpacing:CGFloat = 40
 }
 
 public enum NeevaMenuButtonActions{

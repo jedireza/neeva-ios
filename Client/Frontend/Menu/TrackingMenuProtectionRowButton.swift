@@ -18,30 +18,24 @@ public struct TrackingMenuProtectionRowButton: View {
     @State var isTrackingProtectionOn :Bool
 
     public var body: some View {
-        Group{
-            ZStack{
-                VStack{
-                    Text(name)
-                        .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
-                        .font(.system(size: NeevaUIConstants.menuFontSize))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("If this site appears broken, try disabling.")
-                        .foregroundColor(Color(UIColor.theme.popupMenu.secondaryTextColor))
-                        .font(.system(size: NeevaUIConstants.trackingMenuSubtextFontSize))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                Toggle("", isOn: $isTrackingProtectionOn)
-                    .toggleStyle(SwitchToggleStyle(tint: Color.blue))
-                    .onChange(of: isTrackingProtectionOn){ value in
-                        self.toggleAction()
-                    }
-            }
-        }
-        .padding(NeevaUIConstants.menuRowPadding)
-        .frame(minWidth: 0, maxWidth: NeevaUIConstants.menuMaxWidth)
-        .background(Color(UIColor.theme.popupMenu.foreground))
-        .cornerRadius(NeevaUIConstants.menuCornerDefault)
+        HStack {
+            VStack{
+                Text(name)
+                    .foregroundColor(Color(UIColor.PopupMenu.textColor))
+                    .font(.system(size: NeevaUIConstants.menuFontSize))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text("If this site appears broken, try disabling.")
+                    .foregroundColor(Color(UIColor.PopupMenu.secondaryTextColor))
+                    .font(.system(size: NeevaUIConstants.trackingMenuSubtextFontSize))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }.layoutPriority(1)
+            Toggle("", isOn: $isTrackingProtectionOn)
+                .toggleStyle(SwitchToggleStyle(tint: Color.blue))
+                .onChange(of: isTrackingProtectionOn){ value in
+                    self.toggleAction()
+                }.accessibilityHint("Double tap to toggle block tracking")
+        }.applyNeevaMenuPanelSpec()
+        .accessibilityIdentifier("TrackingMenu.TrackingMenuProtectionRow")
     }
 }
 

@@ -96,15 +96,6 @@ fileprivate class DarkGeneralColor: GeneralColor {
     override var switchToggle: UIColor { return UIColor.Photon.Grey40 }
 }
 
-class DarkPopupMenu: PopupMenu {
-    override var background: UIColor { return UIColor.Photon.Grey60 }
-    override var foreground: UIColor { return UIColor.Photon.Grey80 }
-    override var textColor: UIColor { return UIColor.white }
-    override var secondaryTextColor: UIColor { return UIColor.Photon.Grey20 }
-    override var buttonColor: UIColor { return UIColor.white }
-    override var disabledButtonColor: UIColor { return UIColor.Custom.disabledButtonDarkGray }
-}
-
 class DarkTheme: NormalTheme {
     override var name: String { return BuiltinThemeName.dark.rawValue }
     override var tableView: TableViewColor { return DarkTableViewColor() }
@@ -115,5 +106,4 @@ class DarkTheme: NormalTheme {
     override var general: GeneralColor { return DarkGeneralColor() }
     override var actionMenu: ActionMenuColor { return DarkActionMenuColor() }
     override var userInterfaceStyle: UIUserInterfaceStyle { .dark }
-    override var popupMenu: PopupMenu { return DarkPopupMenu() }
 }

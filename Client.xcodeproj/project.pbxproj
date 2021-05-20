@@ -697,9 +697,7 @@
 		EBF47E701F7979DF00899189 /* TelemetryWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF47E6F1F7979DF00899189 /* TelemetryWrapper.swift */; };
 		EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */; };
 		F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */; };
-		F0102C5526052C2300B5F884 /* TrackingBlockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C5426052C2300B5F884 /* TrackingBlockedView.swift */; };
 		F0102C6326052F7100B5F884 /* PopOverTrackingMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */; };
-		F0102C7126053C2A00B5F884 /* TrackingBlameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */; };
 		F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */; };
 		F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */; };
 		F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */; };
@@ -709,7 +707,7 @@
 		F056681725E9509E0082BB61 /* AddToSpaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056681625E9509E0082BB61 /* AddToSpaceViewController.swift */; };
 		F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */; };
 		F072DD3825E935B4006C2665 /* NeevaSearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */; };
-		F090C9CA260683B200D340A3 /* TrackingMenuBlockedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F090C9C9260683B200D340A3 /* TrackingMenuBlockedTextView.swift */; };
+		F08B27EE25FD097F0037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B27ED25FD097F0037D49B /* NeevaSupport */; };
 		F0ACC2AC25E8C7FB0024991B /* NeevaDev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */; };
 		F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
@@ -1612,9 +1610,7 @@
 		EBF47E6F1F7979DF00899189 /* TelemetryWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryWrapper.swift; sourceTree = "<group>"; };
 		EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+FindInPage.swift"; sourceTree = "<group>"; };
 		F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuView.swift; sourceTree = "<group>"; };
-		F0102C5426052C2300B5F884 /* TrackingBlockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingBlockedView.swift; sourceTree = "<group>"; };
 		F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverTrackingMenuViewController.swift; sourceTree = "<group>"; };
-		F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingBlameView.swift; sourceTree = "<group>"; };
 		F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuProtectionRowButton.swift; sourceTree = "<group>"; };
 		F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuButtonView.swift; sourceTree = "<group>"; };
 		F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuRowButtonView.swift; sourceTree = "<group>"; };
@@ -1624,7 +1620,6 @@
 		F056681625E9509E0082BB61 /* AddToSpaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToSpaceViewController.swift; sourceTree = "<group>"; };
 		F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuHelpers.swift; sourceTree = "<group>"; };
 		F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaSearchProvider.swift; sourceTree = "<group>"; };
-		F090C9C9260683B200D340A3 /* TrackingMenuBlockedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuBlockedTextView.swift; sourceTree = "<group>"; };
 		F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NeevaDev.entitlements; sourceTree = "<group>"; };
 		F0ACC19E25E8C2380024991B /* Neeva.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Neeva.entitlements; sourceTree = "<group>"; };
 		F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = NeevaDev.xcconfig; path = Configuration/NeevaDev.xcconfig; sourceTree = "<group>"; };
@@ -2278,10 +2273,7 @@
 			children = (
 				BC54AD3426471B960019FB17 /* MenuController */,
 				F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */,
-				F0102C5426052C2300B5F884 /* TrackingBlockedView.swift */,
-				F0102C7026053C2A00B5F884 /* TrackingBlameView.swift */,
 				F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */,
-				F090C9C9260683B200D340A3 /* TrackingMenuBlockedTextView.swift */,
 				F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */,
 				F0405D1F25FFCA5A00A0A3B2 /* NeevaUIConstants.swift */,
 				F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */,
@@ -4537,7 +4529,6 @@
 				43DDB97624099F200058A068 /* ETPViewModel.swift in Sources */,
 				C4F3B29A1CFCF93A00966259 /* ButtonToast.swift in Sources */,
 				435D7CC5246209AA0043ACB9 /* IntroViewController.swift in Sources */,
-				F0102C5526052C2300B5F884 /* TrackingBlockedView.swift in Sources */,
 				CA4ACE4924C8C91600F55894 /* BreachAlertsDetailView.swift in Sources */,
 				A83E5AB71C1D993D0026D912 /* UIPasteboardExtensions.swift in Sources */,
 				D8EFFA0C1FF5B1FA001D3A09 /* NavigationRouter.swift in Sources */,
@@ -4560,7 +4551,6 @@
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
 				C9C18E0826559007004710CD /* SuggestionViews.swift in Sources */,
 				E47616C71AB74CA600E7DD25 /* ReaderModeBarView.swift in Sources */,
-				F0102C7126053C2A00B5F884 /* TrackingBlameView.swift in Sources */,
 				D821E90E2141B71C00452C55 /* SiriSettingsViewController.swift in Sources */,
 				EBB89507219398E500EB91A0 /* ContentBlocker.swift in Sources */,
 				23ED80FF25C89C9800D0E9D5 /* DefaultBrowserOnboardingViewController.swift in Sources */,
@@ -4597,7 +4587,6 @@
 				D31F95E91AC226CB005C9F3B /* ScreenshotHelper.swift in Sources */,
 				C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */,
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
-				F090C9CA260683B200D340A3 /* TrackingMenuBlockedTextView.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,
 				122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */,
 				C4E398601D22C409004E89BA /* TopTabsLayout.swift in Sources */,

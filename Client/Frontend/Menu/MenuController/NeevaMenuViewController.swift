@@ -15,7 +15,7 @@ struct NeevaMenuRootView: View {
     var embeddedView: NeevaMenuView
 
     var body: some View {
-        let config = OverlaySheetConfig(showTitle: false, backgroundColor: UIColor.theme.popupMenu.background)
+        let config = OverlaySheetConfig(showTitle: false, backgroundColor: UIColor.PopupMenu.background)
         OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() } ) {
             self.embeddedView.overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
         }

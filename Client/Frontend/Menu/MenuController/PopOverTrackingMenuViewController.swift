@@ -17,7 +17,7 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
     
     public init(delegate:BrowserViewController,
                          source:UIView) {
-        super.init(rootView: TrackingMenuView(isTrackingProtectionEnabled: NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: delegate.profile.prefs)))
+        super.init(rootView: TrackingMenuView(isTrackingProtectionEnabled: NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: delegate.profile.prefs), viewModel: TrackingStatsViewModel(trackers: [URL]())))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle

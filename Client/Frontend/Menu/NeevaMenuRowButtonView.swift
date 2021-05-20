@@ -37,7 +37,7 @@ public struct NeevaMenuRowButtonView: View {
         Group{
             HStack(spacing: 0) {
                 Text(label)
-                    .foregroundColor(Color(UIColor.theme.popupMenu.textColor))
+                    .foregroundColor(Color(UIColor.PopupMenu.textColor))
                     .font(.system(size: 17))
 
                 Spacer()
@@ -49,10 +49,10 @@ public struct NeevaMenuRowButtonView: View {
                         Symbol(symbol, size: 18)
                     }
                 }
-                .foregroundColor(Color(UIColor.theme.popupMenu.buttonColor))
+                .foregroundColor(Color(UIColor.PopupMenu.buttonColor))
             }
         }
-        .background(Color(UIColor.theme.popupMenu.foreground))
+        .background(Color(UIColor.PopupMenu.foreground))
     }
 }
 

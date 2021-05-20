@@ -1394,7 +1394,7 @@ extension BrowserViewController: URLBarDelegate {
         ClientLogger.shared.logCounter(.OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
 
         //Fix autolayout sizing
-        host.view.backgroundColor = UIColor.theme.popupMenu.background
+        host.view.backgroundColor = UIColor.PopupMenu.background
         host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 315))
         present(
             host,
@@ -1424,7 +1424,7 @@ extension BrowserViewController: URLBarDelegate {
         ClientLogger.shared.logCounter(.OpenShield, attributes: EnvironmentHelper.shared.getAttributes())
 
         //Fix autolayout sizing
-        host.view.backgroundColor = UIColor.theme.popupMenu.background
+        host.view.backgroundColor = UIColor.PopupMenu.background
         host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 120))
         present(
             host,

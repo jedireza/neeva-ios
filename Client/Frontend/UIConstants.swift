@@ -141,6 +141,16 @@ extension UIColor {
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
     }
+    
+    public struct PopupMenu {
+        public static let background = UIColor.Neeva.MenuBackground
+        public static let foreground = UIColor.Browser.background
+        public static let textColor = UIColor.label
+        public static let secondaryTextColor = UIColor.secondaryLabel
+        public static let buttonColor = UIColor.label
+        public static let disabledButtonColor = UIColor.secondaryLabel
+
+    }
 }
 
 extension UIColor {
