@@ -44,6 +44,8 @@ public enum Nicon: Character {
     case bookmark = "\u{10025E}"
     /// 􀉟
     case bookmarkFill = "\u{10025F}"
+    
+    case bookmarkOnBookmark = "\u{101010}"
     /// 􀌪
     case bubbleLeft = "\u{10032A}"
     /// 􀆈

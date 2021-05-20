@@ -37,7 +37,7 @@ public struct NeevaMenuView: View {
                     Button {
                         self.menuAction!(NeevaMenuButtonActions.spaces)
                     } label: {
-                        NeevaMenuButtonView(label: "Spaces", nicon: .bookmark, isDisabled: self.isPrivate)
+                        NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark, isDisabled: self.isPrivate)
                     }
                     .accessibilityIdentifier("NeevaMenu.Spaces")
                     .disabled(self.isPrivate)
@@ -47,18 +47,18 @@ public struct NeevaMenuView: View {
 
                 HStack(spacing: NeevaUIConstants.menuInnerSectionPadding){
                     Button {
-                        self.menuAction!(NeevaMenuButtonActions.downloads)
+                        self.menuAction!(NeevaMenuButtonActions.settings)
                     } label: {
-                        NeevaMenuButtonView(label: "Downloads", symbol: .squareAndArrowDown)
+                        NeevaMenuButtonView(label: "Settings", nicon: .gear)
                     }
-                    .accessibilityIdentifier("NeevaMenu.Downloads")
+                    .accessibilityIdentifier("NeevaMenu.Settings")
 
                     Button {
-                        self.menuAction!(NeevaMenuButtonActions.history)
+                        self.menuAction!(NeevaMenuButtonActions.feedback)
                     } label: {
-                        NeevaMenuButtonView(label: "History", symbol: .clock)
+                        NeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft)
                     }
-                    .accessibilityIdentifier("NeevaMenu.History")
+                    .accessibilityIdentifier("NeevaMenu.Feedback")
                 }
                 .background(Color.clear)
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)
@@ -66,24 +66,24 @@ public struct NeevaMenuView: View {
 
             VStack(spacing: 0) {
                 Button {
-                    self.menuAction!(NeevaMenuButtonActions.settings)
+                    self.menuAction!(NeevaMenuButtonActions.history)
                 } label: {
-                    NeevaMenuRowButtonView(label:"Settings", nicon: .gear)
+                    NeevaMenuRowButtonView(label:"History", symbol: .clock)
                         .padding([.leading, .top, .bottom], NeevaUIConstants.buttonInnerPadding)
                         .padding(.trailing, NeevaUIConstants.buttonInnerPadding - 6)
                 }
-                .accessibilityIdentifier("NeevaMenu.Settings")
+                .accessibilityIdentifier("NeevaMenu.History")
 
                 Divider()
 
                 Button {
-                    self.menuAction!(NeevaMenuButtonActions.feedback)
+                    self.menuAction!(NeevaMenuButtonActions.downloads)
                 } label: {
-                    NeevaMenuRowButtonView(label:"Send Feedback", nicon: .bubbleLeft)
+                    NeevaMenuRowButtonView(label:"Downloads", symbol: .squareAndArrowDown)
                         .padding([.leading, .top, .bottom], NeevaUIConstants.buttonInnerPadding)
                         .padding(.trailing, NeevaUIConstants.buttonInnerPadding - 6)
                 }
-                .accessibilityIdentifier("NeevaMenu.Feedback")
+                .accessibilityIdentifier("NeevaMenu.Downloads")
             }
             .padding(0)
             .background(Color(UIColor.theme.popupMenu.foreground))

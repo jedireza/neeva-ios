@@ -275,6 +275,18 @@
 		BC85E226264F407C0068092F /* TourPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E225264F407C0068092F /* TourPromptView.swift */; };
 		BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */; };
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
+		BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
+		BCC138902656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
+		BCC138912656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
+		BCC138922656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
+		BCC138A02656CBE70018D87D /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1389F2656CBE70018D87D /* nicons-500.ttf */; };
+		BCC138A12656CBE70018D87D /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1389F2656CBE70018D87D /* nicons-500.ttf */; };
+		BCC138A22656CBE70018D87D /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1389F2656CBE70018D87D /* nicons-500.ttf */; };
+		BCC138A32656CBE70018D87D /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1389F2656CBE70018D87D /* nicons-500.ttf */; };
+		BCC138B12656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
+		BCC138B22656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
+		BCC138B32656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
+		BCC138B42656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
 		C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */; };
 		C40046FA1CF8E0B200B08303 /* BackForwardListAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40046F91CF8E0B200B08303 /* BackForwardListAnimator.swift */; };
 		C45F44691D087DB600CB7EF0 /* TopTabsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45F44681D087DB600CB7EF0 /* TopTabsViewController.swift */; };
@@ -311,18 +323,6 @@
 		C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */; };
 		C8F457AA1F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */; };
 		C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FB0C772321523D00031088 /* PageActionMenu.swift */; };
-		C8FBBD51261F81DF004490A9 /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4E261F81DF004490A9 /* nicons-500.ttf */; };
-		C8FBBD52261F81DF004490A9 /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4E261F81DF004490A9 /* nicons-500.ttf */; };
-		C8FBBD53261F81DF004490A9 /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4E261F81DF004490A9 /* nicons-500.ttf */; };
-		C8FBBD54261F81DF004490A9 /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4E261F81DF004490A9 /* nicons-500.ttf */; };
-		C8FBBD55261F81DF004490A9 /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4F261F81DF004490A9 /* nicons-400.ttf */; };
-		C8FBBD56261F81DF004490A9 /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4F261F81DF004490A9 /* nicons-400.ttf */; };
-		C8FBBD57261F81DF004490A9 /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4F261F81DF004490A9 /* nicons-400.ttf */; };
-		C8FBBD58261F81DF004490A9 /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD4F261F81DF004490A9 /* nicons-400.ttf */; };
-		C8FBBD59261F81DF004490A9 /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD50261F81DF004490A9 /* nicons-600.ttf */; };
-		C8FBBD5A261F81DF004490A9 /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD50261F81DF004490A9 /* nicons-600.ttf */; };
-		C8FBBD5B261F81DF004490A9 /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD50261F81DF004490A9 /* nicons-600.ttf */; };
-		C8FBBD5C261F81DF004490A9 /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8FBBD50261F81DF004490A9 /* nicons-600.ttf */; };
 		CA03B26A247F1D9E00382B62 /* BreachAlertsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA03B269247F1D9E00382B62 /* BreachAlertsClient.swift */; };
 		CA24B52224ABD7D40093848C /* LoginsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B52024ABD7D40093848C /* LoginsListViewModelTests.swift */; };
 		CA24B53924ABFE250093848C /* LoginsListSelectionHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B53824ABFE250093848C /* LoginsListSelectionHelperTests.swift */; };
@@ -1159,6 +1159,9 @@
 		BC85E225264F407C0068092F /* TourPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptView.swift; sourceTree = "<group>"; };
 		BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTourPromptViewController.swift; sourceTree = "<group>"; };
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
+		BCC1388E2656CBDB0018D87D /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
+		BCC1389F2656CBE70018D87D /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
+		BCC138B02656CBF20018D87D /* nicons-600.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-600.ttf"; sourceTree = "<group>"; };
 		C1114054A20B1072F603BD52 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ClearHistoryConfirm.strings; sourceTree = "<group>"; };
 		C2CB4D369C756DA6836BC4A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/3DTouchActions.strings; sourceTree = "<group>"; };
 		C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackForwardListViewController.swift; sourceTree = "<group>"; };
@@ -1192,9 +1195,6 @@
 		C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+WebViewDelegates.swift"; sourceTree = "<group>"; };
 		C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+KeyCommands.swift"; sourceTree = "<group>"; };
 		C8FB0C772321523D00031088 /* PageActionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageActionMenu.swift; sourceTree = "<group>"; };
-		C8FBBD4E261F81DF004490A9 /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
-		C8FBBD4F261F81DF004490A9 /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
-		C8FBBD50261F81DF004490A9 /* nicons-600.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-600.ttf"; sourceTree = "<group>"; };
 		CA03B269247F1D9E00382B62 /* BreachAlertsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreachAlertsClient.swift; sourceTree = "<group>"; };
 		CA24B52024ABD7D40093848C /* LoginsListViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginsListViewModelTests.swift; sourceTree = "<group>"; };
 		CA24B53824ABFE250093848C /* LoginsListSelectionHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginsListSelectionHelperTests.swift; sourceTree = "<group>"; };
@@ -2238,9 +2238,9 @@
 		C8FBBD41261F81A6004490A9 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				C8FBBD4F261F81DF004490A9 /* nicons-400.ttf */,
-				C8FBBD4E261F81DF004490A9 /* nicons-500.ttf */,
-				C8FBBD50261F81DF004490A9 /* nicons-600.ttf */,
+				BCC1389F2656CBE70018D87D /* nicons-500.ttf */,
+				BCC138B02656CBF20018D87D /* nicons-600.ttf */,
+				BCC1388E2656CBDB0018D87D /* nicons-400.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -3568,10 +3568,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				047F9B2E24E1FE1F00CD7DF7 /* Assets.xcassets in Resources */,
-				C8FBBD54261F81DF004490A9 /* nicons-500.ttf in Resources */,
 				1D9E1FE524FEF56C006E561D /* TopSites in Resources */,
-				C8FBBD58261F81DF004490A9 /* nicons-400.ttf in Resources */,
-				C8FBBD5C261F81DF004490A9 /* nicons-600.ttf in Resources */,
+				BCC138A32656CBE70018D87D /* nicons-500.ttf in Resources */,
+				BCC138922656CBDB0018D87D /* nicons-400.ttf in Resources */,
+				BCC138B42656CBF20018D87D /* nicons-600.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3622,10 +3622,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8FBBD53261F81DF004490A9 /* nicons-500.ttf in Resources */,
 				39098DC41CAD5ACB00AE87F3 /* Images.xcassets in Resources */,
-				C8FBBD57261F81DF004490A9 /* nicons-400.ttf in Resources */,
-				C8FBBD5B261F81DF004490A9 /* nicons-600.ttf in Resources */,
+				BCC138912656CBDB0018D87D /* nicons-400.ttf in Resources */,
+				BCC138A22656CBE70018D87D /* nicons-500.ttf in Resources */,
+				BCC138B32656CBF20018D87D /* nicons-600.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3695,6 +3695,7 @@
 				E4B7B77E1A793CF20022C5E0 /* FiraSans-SemiBold.ttf in Resources */,
 				F84B220B1A0910F600AAB793 /* Images.xcassets in Resources */,
 				F35B8D2B1D6380EA008E3D61 /* SessionRestore.html in Resources */,
+				BCC138A02656CBE70018D87D /* nicons-500.ttf in Resources */,
 				7B42406E1CA04CAC009B5C28 /* Menu.xcassets in Resources */,
 				23BEA767251A99ED00A014BF /* NewYorkMedium-Bold.otf in Resources */,
 				2328616825C9BD3D0015EA47 /* DefaultBrowserOnboarding.xcassets in Resources */,
@@ -3703,12 +3704,11 @@
 				BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */,
 				C8399D9522DE5E6200EFA5CA /* disconnect-block-social.json in Resources */,
 				BC6D34852622D4DE0050DEC4 /* Roobert-Heavy.otf in Resources */,
-				C8FBBD55261F81DF004490A9 /* nicons-400.ttf in Resources */,
+				BCC138B12656CBF20018D87D /* nicons-600.ttf in Resources */,
 				BC6D34872622D4DE0050DEC4 /* Roobert-Regular.otf in Resources */,
 				E4CD9F541A71506400318571 /* Reader.html in Resources */,
 				F0ACC2AC25E8C7FB0024991B /* NeevaDev.xcconfig in Resources */,
 				23BEA76A251A99ED00A014BF /* NewYorkMedium-RegularItalic.otf in Resources */,
-				C8FBBD59261F81DF004490A9 /* nicons-600.ttf in Resources */,
 				7B2142FE1E5E055000CDD3FC /* InfoPlist.strings in Resources */,
 				E69922171B94E3EF007C480D /* Licenses.html in Resources */,
 				E4CD9F5B1A71506C00318571 /* Reader.css in Resources */,
@@ -3720,6 +3720,7 @@
 				2F44FB2C1A9D5D8500FD20CC /* Library.xcassets in Resources */,
 				E4B7B77D1A793CF20022C5E0 /* FiraSans-Regular.ttf in Resources */,
 				E4B7B7791A793CF20022C5E0 /* FiraSans-Light.ttf in Resources */,
+				BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */,
 				D0FCF8081FE4772D004A7995 /* MainFrameAtDocumentStart.js in Resources */,
 				EBC9D38722D4D56F0011D881 /* disconnect-block-cookies-content.json in Resources */,
 				D30684F11C84F12A002D8D82 /* SearchPlugins in Resources */,
@@ -3739,7 +3740,6 @@
 				BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */,
 				E4A961381AC06FA50069AD6F /* ReaderViewLoading.html in Resources */,
 				EBE7635820ADCB7600E27F2D /* SendTo.xcassets in Resources */,
-				C8FBBD51261F81DF004490A9 /* nicons-500.ttf in Resources */,
 				E4ECCDAE1AB131770005E717 /* FiraSans-Medium.ttf in Resources */,
 				EBC9D38922D4D56F0011D881 /* disconnect-block-cookies-advertising.json in Resources */,
 				E4424B3C1AC71FB400F44C38 /* FiraSans-Book.ttf in Resources */,
@@ -3769,14 +3769,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E487B24F1AC1CC9200F3E86F /* FiraSans-Medium.ttf in Resources */,
-				C8FBBD52261F81DF004490A9 /* nicons-500.ttf in Resources */,
-				C8FBBD5A261F81DF004490A9 /* nicons-600.ttf in Resources */,
 				E487B2331AC1C64300F3E86F /* FiraSans-Regular.ttf in Resources */,
+				BCC138B22656CBF20018D87D /* nicons-600.ttf in Resources */,
 				EBE7635920ADCB7600E27F2D /* SendTo.xcassets in Resources */,
 				F8708D2E1A0970B70051AB07 /* Images.xcassets in Resources */,
-				C8FBBD56261F81DF004490A9 /* nicons-400.ttf in Resources */,
 				E487B2501AC1CC9800F3E86F /* FiraSans-Light.ttf in Resources */,
 				E487B24E1AC1C66400F3E86F /* FiraSans-SemiBold.ttf in Resources */,
+				BCC138A12656CBE70018D87D /* nicons-500.ttf in Resources */,
+				BCC138902656CBDB0018D87D /* nicons-400.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
