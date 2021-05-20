@@ -3,9 +3,7 @@
 
 import SwiftUI
 import Storage
-import NeevaSupport
 import Shared
-
 
 struct NeevaHomeUX {
     static let FaviconSize: CGFloat = 28

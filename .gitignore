@@ -97,3 +97,6 @@ Client/Assets/*.js.LICENSE.txt
 # L10n
 /firefoxios-l10n
 /ios-l10n-scripts
+
+/Shared/API/schema.json
+/Shared/API/operationIDs.json

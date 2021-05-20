@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import NeevaSupport
 
 struct NeevaMenuRootView: View {
     var overlaySheetModel = OverlaySheetModel()

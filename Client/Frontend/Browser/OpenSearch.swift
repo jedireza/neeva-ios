@@ -5,7 +5,6 @@
 import UIKit
 import Shared
 import Fuzi
-import NeevaSupport
 
 private let TypeSearch = "text/html"
 private let TypeSuggest = "application/x-suggestions+json"

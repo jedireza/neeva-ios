@@ -6,7 +6,6 @@ import Foundation
 import WebKit
 import Shared
 import UIKit
-import NeevaSupport
 
 private let log = Logger.browserLogger
 

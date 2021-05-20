@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import NeevaSupport
 import SwiftUI
+import Shared
 
 // This file provides an overlay bottom sheet implementation that starts in a
 // half-height (or middle) position. The user can drag it to a fullscreen (or

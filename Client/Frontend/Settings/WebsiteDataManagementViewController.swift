@@ -5,7 +5,6 @@
 import UIKit
 import Shared
 import WebKit
-import NeevaSupport
 
 enum Section: Int {
     case sites = 0

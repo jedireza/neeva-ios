@@ -4,7 +4,6 @@
 
 import UIKit
 import Shared
-import NeevaSupport
 
 class TrayToBrowserAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {

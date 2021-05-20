@@ -5,7 +5,6 @@
 import Shared
 import SnapKit
 import Storage
-import NeevaSupport
 
 private struct URLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40

@@ -7,7 +7,6 @@ import WebKit
 import Storage
 import Shared
 import XCGLogger
-import NeevaSupport
 
 private let log = Logger.browserLogger
 

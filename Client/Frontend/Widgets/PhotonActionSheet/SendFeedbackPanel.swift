@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import SwiftUI
-import NeevaSupport
+import Shared
 
 public class SendFeedbackPanel: UIHostingController<AnyView> {
     init(onOpenURL: @escaping (URL) -> ()) {

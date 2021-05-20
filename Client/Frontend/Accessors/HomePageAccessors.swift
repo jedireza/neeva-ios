@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
-import NeevaSupport
 
 /// Accessors for homepage details from the app state.
 /// These are pure functions, so it's quite ok to have them

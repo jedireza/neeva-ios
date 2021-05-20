@@ -6,9 +6,9 @@
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 
-import NeevaSupport
 import SFSafeSymbols
 import SwiftUI
+import Shared
 
 public struct NeevaMenuButtonView: View {
     let label: String

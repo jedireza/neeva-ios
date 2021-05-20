@@ -6,7 +6,6 @@ import UIKit
 import Shared
 import SnapKit
 import XCGLogger
-import NeevaSupport
 
 private let log = Logger.browserLogger
 

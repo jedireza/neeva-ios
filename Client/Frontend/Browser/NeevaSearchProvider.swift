@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import NeevaSupport
 
 let neevaSearchEngine = OpenSearchEngine(
     engineID: nil,

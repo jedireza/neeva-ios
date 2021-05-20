@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import NeevaSupport
+import Shared
 
 struct AddToSpaceRootView: View {
     var overlaySheetModel = OverlaySheetModel()

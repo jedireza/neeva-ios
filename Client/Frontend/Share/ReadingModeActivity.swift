@@ -8,7 +8,6 @@
 
 import Foundation
 import Shared
-import NeevaSupport
 
 class ReadingModeActivity: UIActivity {
     private let readerModeState: ReaderModeState?

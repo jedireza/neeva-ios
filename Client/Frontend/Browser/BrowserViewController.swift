@@ -14,7 +14,6 @@ import MobileCoreServices
 import SDWebImage
 import SwiftyJSON
 import SwiftUI
-import NeevaSupport
 
 private let KVOs: [KVOConstants] = [
     .estimatedProgress,

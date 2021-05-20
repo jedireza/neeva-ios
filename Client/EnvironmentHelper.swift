@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import NeevaSupport
+import Shared
 
 public class EnvironmentHelper {
     public static let shared = EnvironmentHelper()

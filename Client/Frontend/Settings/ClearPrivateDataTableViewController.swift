@@ -4,7 +4,6 @@
 
 import UIKit
 import Shared
-import NeevaSupport
 
 private let SectionArrow = 0
 private let SectionToggles = 1

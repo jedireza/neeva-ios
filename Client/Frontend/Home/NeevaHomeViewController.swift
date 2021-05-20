@@ -9,7 +9,6 @@ import SDWebImage
 import XCGLogger
 import SnapKit
 import SwiftUI
-import NeevaSupport
 
 private let log = Logger.browserLogger
 

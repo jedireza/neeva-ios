@@ -7,9 +7,9 @@
 //
 
 import Foundation
-import NeevaSupport
 import Reachability
 import WebKit
+import Shared
 
 public class NeevaUserInfo {
 

@@ -6,7 +6,6 @@ import UIKit
 import SnapKit
 import Shared
 import Storage
-import NeevaSupport
 import SwiftUI
 import SwiftKeychainWrapper
 

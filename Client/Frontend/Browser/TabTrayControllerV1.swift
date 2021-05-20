@@ -6,7 +6,6 @@ import UIKit
 import SnapKit
 import Storage
 import Shared
-import NeevaSupport
 
 struct TabTrayControllerUX {
     static let CornerRadius = CGFloat(6.0)

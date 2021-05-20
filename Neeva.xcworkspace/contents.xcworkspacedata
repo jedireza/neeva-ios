@@ -5,6 +5,6 @@
       location = "group:Client.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:NeevaSupport/Codegen">
+      location = "group:Codegen">
    </FileRef>
 </Workspace>

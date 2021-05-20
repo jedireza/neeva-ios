@@ -4,7 +4,6 @@
 
 import Foundation
 import Shared
-import NeevaSupport
 import SwiftUI
 
 extension UIColor {

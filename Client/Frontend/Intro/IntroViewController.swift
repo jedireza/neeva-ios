@@ -6,7 +6,6 @@ import Foundation
 import UIKit
 import SnapKit
 import Shared
-import NeevaSupport
 
 class IntroViewController: UIViewController {
     private lazy var welcomeCard = UIView()

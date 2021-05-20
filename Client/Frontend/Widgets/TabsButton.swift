@@ -5,7 +5,6 @@
 import Foundation
 import SnapKit
 import Shared
-import NeevaSupport
 
 struct TabsButtonUX {
     static let CornerRadius: CGFloat = 2

@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import NeevaSupport
+import Shared
 
 typealias NeevaMenuContainerView = VerticalScrollViewIfNeeded<NeevaMenuView>
 let neevaMenuIntrinsicHeight: CGFloat = 312  // TODO: Compute this value instead.

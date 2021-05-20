@@ -6,7 +6,6 @@ import Foundation
 import Shared
 import SwiftKeychainWrapper
 import LocalAuthentication
-import NeevaSupport
 
 // This file contains all of the settings available in the main settings screen of the app.
 

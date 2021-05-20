@@ -5,7 +5,6 @@
 
 import SwiftUI
 import Shared
-import NeevaSupport
 
 struct IntroFirstRunView: View {
     var buttonAction: (FirstRunButtonActions) -> Void

@@ -4,7 +4,6 @@
 
 import WebKit
 import Shared
-import NeevaSupport
 
 struct ContentBlockingConfig {
     struct Prefs {

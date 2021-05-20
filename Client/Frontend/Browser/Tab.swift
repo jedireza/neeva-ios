@@ -8,7 +8,6 @@ import Storage
 import Shared
 import SwiftyJSON
 import XCGLogger
-import NeevaSupport
 
 fileprivate var debugTabCount = 0
 

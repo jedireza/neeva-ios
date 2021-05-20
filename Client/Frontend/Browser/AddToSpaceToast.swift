@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import NeevaSupport
 import SnapKit
 import SwiftUI
+import Shared
 
 extension AddToSpaceRequest {
     var isDone: Bool {

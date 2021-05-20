@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import NeevaSupport
 import Shared
 
 class SearchBarTourPromptViewController: UIHostingController<TourPromptView> {

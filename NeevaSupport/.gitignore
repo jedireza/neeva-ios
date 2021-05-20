@@ -1,7 +1,0 @@
-.DS_Store
-.build
-Package.resolved
-/Packages
-/*.xcodeproj
-xcuserdata/
-dev-token.txt
