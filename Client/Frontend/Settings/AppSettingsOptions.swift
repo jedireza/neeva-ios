@@ -381,7 +381,7 @@ class SendFeedbackSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        navigationController?.pushViewController(SendFeedbackPanel(), animated: true)
+        navigationController?.pushViewController(SendFeedbackPanel(onOpenURL: delegate!.settingsOpenURLInNewNonPrivateTab(_:)), animated: true)
     }
 }
 

@@ -86,7 +86,10 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
                 break
             case .feedback:
                 ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.present(SendFeedbackPanel(), animated: true)
+                delegate.present(SendFeedbackPanel(onOpenURL: {
+                    delegate.dismiss(animated: true, completion: nil)
+                    delegate.openURLInNewTab($0)
+                }), animated: true)
                 break
             }
         }

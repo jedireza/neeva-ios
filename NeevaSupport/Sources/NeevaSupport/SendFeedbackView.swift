@@ -26,6 +26,7 @@ public struct SendFeedbackView: View {
     }
 
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.onOpenURL) var onOpenURL
 
     @State var feedbackText = ""
     @State var shareResults = true
@@ -34,8 +35,23 @@ public struct SendFeedbackView: View {
     public var body: some View {
         NavigationView {
             Form {
-                DecorativeSection {
-                    MultilineTextField("Please type your feedback here", text: $feedbackText)
+                Section(
+                    header: HStack {
+                        VStack(alignment: .leading) {
+                            Text("Need help or want instant answers to FAQs?")
+                                .foregroundColor(.primary)
+                            SwiftUI.Button(action: { onOpenURL(NeevaConstants.appFAQURL) }) {
+                                Text("Visit our Help Center!").underline()
+                            }
+                        }
+                        .font(.body)
+                        Spacer()
+                    }
+                    .padding(.top, 10)
+                    .padding(.bottom, 18)
+                    .textCase(nil)
+                ) {
+                    MultilineTextField("Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!", text: $feedbackText)
                 }
                 if canShareResults {
                     DecorativeSection {

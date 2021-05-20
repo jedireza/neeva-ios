@@ -5,10 +5,13 @@
 import SwiftUI
 import NeevaSupport
 
-public class SendFeedbackPanel: UIHostingController<SendFeedbackView> {
-    init() {
-        super.init(rootView: SendFeedbackView())
-        rootView = SendFeedbackView(onDismiss: dismissVC)
+public class SendFeedbackPanel: UIHostingController<AnyView> {
+    init(onOpenURL: @escaping (URL) -> ()) {
+        super.init(rootView: AnyView(EmptyView()))
+        rootView = AnyView(
+            SendFeedbackView(onDismiss: dismissVC)
+                .environment(\.onOpenURL, onOpenURL)
+        )
 
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
