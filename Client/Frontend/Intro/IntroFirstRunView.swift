@@ -8,7 +8,7 @@ import Shared
 import NeevaSupport
 
 struct IntroFirstRunView: View {
-    var buttonAction: (_:FirstRunButtonActions)->Void
+    var buttonAction: (FirstRunButtonActions) -> Void
     let smallSizeScreen: CGFloat = 375.0
 
     var body: some View {
@@ -25,55 +25,51 @@ struct IntroFirstRunView: View {
                 .font(Font.custom("Roobert-Light", size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48))
                 .foregroundColor(Color.Neeva.UI.Gray20)
                 .padding(.top, 40)
-
             }
-            VStack(){
-                ZStack(){
-                    HStack(){
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Neeva. Ad-free private search that puts you first")
+            .accessibilityAddTraits(.isHeader)
+
+            VStack {
+                Button(action: { buttonAction(.signin) }) {
+                    HStack {
                         Text("Sign In")
                         Spacer()
                         Symbol(.arrowRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
+                    .foregroundColor(Color.Neeva.Brand.Charcoal)
                 }
-                .foregroundColor(Color.Neeva.Brand.Charcoal)
                 .background(Color.Neeva.Brand.Polar)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
                 .shadow(color: Color.Neeva.UI.Gray70, radius: 1, x: 1, y: 1)
                 .padding(.top, 40)
-                .onTapGesture(perform: {
-                    buttonAction(FirstRunButtonActions.signin)
-                })
 
-                ZStack(){
-                    HStack(){
+                Button(action: { buttonAction(.signup) }) {
+                    HStack {
                         Text("Sign Up")
                         Spacer()
                         Symbol(.arrowUpRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
+                    .foregroundColor(Color.Neeva.Brand.White)
                 }
-                .foregroundColor(Color.Neeva.Brand.White)
                 .background(Color.Neeva.Brand.Blue)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
                 .shadow(color: Color.Neeva.UI.Gray70, radius: 1, x: 1, y: 1)
                 .padding(.top, 20)
-                .onTapGesture(perform: {
-                    buttonAction(FirstRunButtonActions.signup)
-                })
             }
             .font(Font.custom("Roobert-SemiBold", size: 18))
 
-            Text("Skip to browser without Neeva search")
-                .underline()
-                .font(Font.custom("Roobert-Regular", size: 16))
-                .foregroundColor(Color.Neeva.UI.Gray20)
-                .multilineTextAlignment(.center)
-                .padding(.top, 50)
-                .accessibilityLabel("Skip")
-                .onTapGesture(perform: {
-                    buttonAction(FirstRunButtonActions.skipToBrowser)
-                })
+            Button(action: { buttonAction(.skipToBrowser) }) {
+                Text("Skip to browser without Neeva search")
+                    .underline()
+                    .font(Font.custom("Roobert-Regular", size: 16))
+                    .foregroundColor(Color.Neeva.UI.Gray20)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.top, 50)
+
             Spacer()
         }
         .padding(35)

@@ -221,13 +221,17 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             ZStack {
                 // The semi-transparent backdrop used to shade the content that lies below
                 // the sheet.
-                Color.black
-                    .opacity(self.model.backdropOpacity)
-                    .ignoresSafeArea()
-                    .modifier(DismissalObserverModifier(backdropOpacity: self.model.backdropOpacity, position: self.model.position, onDismiss: self.onDismiss))
-                    .onTapGesture {
-                        self.model.hide()
-                    }
+                Button(action: self.model.hide) {
+                    Color.black
+                        .opacity(self.model.backdropOpacity)
+                        .ignoresSafeArea()
+                        .modifier(DismissalObserverModifier(backdropOpacity: self.model.backdropOpacity, position: self.model.position, onDismiss: self.onDismiss))
+                }
+                .buttonStyle(LabelOnlyButtonStyle())
+                .accessibilityHint("Dismiss pop-up window")
+                // make this the last option. This will bring the user’s focus first to the
+                // useful content inside of the overlay sheet rather than the close button.
+                .accessibilitySortPriority(-1)
 
                 // Used to center the sheet within the container view.
                 HStack(spacing: 0) {
@@ -345,5 +349,11 @@ fileprivate struct DismissalObserverModifier: AnimatableModifier {
 
     func body(content: Content) -> some View {
         return content
+    }
+}
+
+fileprivate struct LabelOnlyButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
     }
 }

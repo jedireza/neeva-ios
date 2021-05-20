@@ -83,13 +83,14 @@ open class TabToolbarHelper: NSObject {
         toolbar.addToSpacesButton.titleLabel?.font = UIFont(name: NiconFont.medium.rawValue, size: 19.17);
         toolbar.addToSpacesButton.setTitle(String(Nicon.bookmark.rawValue), for: .normal)
         toolbar.addToSpacesButton.contentMode = .center
-        toolbar.addToSpacesButton.accessibilityLabel = Strings.AppMenuButtonAccessibilityLabel
+        toolbar.addToSpacesButton.accessibilityLabel = "Add To Space"
         toolbar.addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
         toolbar.addToSpacesButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
 
     
         toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
         toolbar.toolbarNeevaMenuButton.accessibilityIdentifier = "TabToolbar.neevaMenuButton"
+        toolbar.toolbarNeevaMenuButton.accessibilityLabel = "Neeva Menu"
         toolbar.toolbarNeevaMenuButton.addTarget(self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
     }
 

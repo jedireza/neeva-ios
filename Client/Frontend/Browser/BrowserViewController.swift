@@ -846,6 +846,8 @@ class BrowserViewController: UIViewController {
         overlaySheetViewController.didMove(toParent: self)
 
         self.overlaySheetViewController = overlaySheetViewController
+        
+        UIAccessibility.post(notification: .screenChanged, argument: overlaySheetViewController.view)
     }
 
     func hideOverlaySheetViewController() {
