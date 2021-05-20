@@ -27,6 +27,7 @@ private struct TabLocationViewUX {
     static let ReloadButtonWidth: CGFloat = 44
     static let ShareButtonWidth: CGFloat = 46
     static let ButtonHeight: CGFloat = 42
+    static let IconPadding: CGFloat = -8
 }
 
 class TabLocationView: UIView {
@@ -92,7 +93,7 @@ class TabLocationView: UIView {
     fileprivate lazy var spacer2 = UIView()
 
     fileprivate lazy var lockImageView: UIImageView = {
-        let lockImageView = UIImageView(image: UIImage.templateImageNamed("lock_verified"))
+        let lockImageView = UIImageView(image: UIImage(systemName: "lock.fill"))
         lockImageView.isAccessibilityElement = true
         lockImageView.contentMode = .center
         lockImageView.accessibilityLabel = .TabLocationLockIconAccessibilityLabel
@@ -291,6 +292,7 @@ class TabLocationView: UIView {
     }
 
     fileprivate func updateTextWithURL() {
+        var isQuery = false
         if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
             urlTextField.text = host
         } else {
@@ -298,12 +300,18 @@ class TabLocationView: UIView {
         }
         // NOTE: Punycode support was removed
         if let query = neevaSearchEngine.queryForSearchURL(url) {
+            isQuery = true
             urlTextField.text = query
         }
         if let text = urlTextField.text, !text.isEmpty {
             urlTextField.attributedPlaceholder = nil
             shareButton.isHidden = !showShareButton
             reloadButton.isHidden = false
+
+            // show search icon for query and lock for website
+            let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
+            let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TabLocationViewUX.IconPadding)
+            lockImageView.image = UIImage(systemName: isQuery ? "magnifyingglass" : "lock.fill", withConfiguration: config)?.withAlignmentRectInsets(padding)
         } else {
             urlTextField.attributedPlaceholder = self.placeholder
             shareButton.isHidden = true
