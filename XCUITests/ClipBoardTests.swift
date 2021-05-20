@@ -51,6 +51,7 @@ class ClipBoardTests: BaseTestCase {
     }
 
     // Smoketest
+    /* Disabled: Test needs to be updated.
     func testClipboardPasteAndGo() {
         navigator.openURL(url)
         waitUntilPageLoad()
@@ -66,4 +67,5 @@ class ClipBoardTests: BaseTestCase {
         waitForExistence(app.textFields["url"])
         waitForValueContains(app.textFields["url"], value: "www.example.com")
     }
+    */
 }

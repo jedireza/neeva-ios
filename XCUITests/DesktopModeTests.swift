@@ -162,6 +162,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 
+    /* Disabled: Action to close all tabs does not exist.
     func testLongPressReload() {
         if skipPlatform { return }
         navigator.openURL(path(forTestPage: "test-user-agent.html"))
@@ -185,4 +186,5 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
     }
+    */
 }

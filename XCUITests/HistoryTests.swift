@@ -66,6 +66,7 @@ class HistoryTests: BaseTestCase {
         XCTAssertEqual(app.alerts.buttons["OK"].exists, false)
     }
 
+    /* Disabled: Test depends on close all tabs button
     func testRecentlyClosedOptionAvailable() {
         navigator.goto(HistoryRecentlyClosed)
         waitForNoExistence(app.tables["Recently Closed Tabs List"])
@@ -108,7 +109,9 @@ class HistoryTests: BaseTestCase {
         navigator.goto(HistoryRecentlyClosed)
         waitForExistence(app.tables["Recently Closed Tabs List"])
     }
+    */
 
+    /* Disabled: Test depends on close all tabs button
     func testClearRecentlyClosedHistory() {
         // Open the default website
         userState.url = path(forTestPage: "test-mozilla-book.html")
@@ -132,7 +135,9 @@ class HistoryTests: BaseTestCase {
         navigator.goto(HistoryRecentlyClosed)
         waitForNoExistence(app.tables["Recently Closed Tabs List"])
     }
+    */
 
+    /* Disabled: Test depends on close all tabs button
     func testLongTapOptionsRecentlyClosedItem() {
         // Open the default website
         userState.url = path(forTestPage: "test-mozilla-book.html")
@@ -150,7 +155,9 @@ class HistoryTests: BaseTestCase {
         XCTAssertTrue(app.tables.cells["quick_action_new_tab"].exists)
         XCTAssertTrue(app.tables.cells["quick_action_new_private_tab"].exists)
     }
+    */
 
+    /* Disabled: Test depends on close all tabs button
     func testOpenInNewTabRecentlyClosedItem() {
         // Open the default website
         userState.url = path(forTestPage: "test-mozilla-book.html")
@@ -171,7 +178,9 @@ class HistoryTests: BaseTestCase {
         let numTabsOpen2 = userState.numTabs
         XCTAssertEqual(numTabsOpen2, 2)
     }
+    */
 
+    /* Disabled: Test depends on close all tabs button
     func testOpenInNewPrivateTabRecentlyClosedItem() {
         // Open the default website
         userState.url = path(forTestPage: "test-mozilla-book.html")
@@ -193,6 +202,7 @@ class HistoryTests: BaseTestCase {
         let numTabsOpen = userState.numTabs
         XCTAssertEqual(numTabsOpen, 1)
     }
+    */
 
     func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
         waitForTabsButton()

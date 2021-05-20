@@ -71,13 +71,6 @@ extension ScreenGraphTest {
         navigator.performAction(TestActions.LoadURL)
         XCTAssertEqual(navigator.screenState, WebPageLoading)
     }
-
-    func testConditionalEdgesSimple() {
-        XCTAssertTrue(navigator.can(goto: PasscodeSettingsOff))
-        XCTAssertFalse(navigator.can(goto: PasscodeSettingsOn))
-        navigator.goto(PasscodeSettingsOff)
-        XCTAssertEqual(navigator.screenState, PasscodeSettingsOff)
-    }
 }
 
 
@@ -96,8 +89,6 @@ class TestUserState: MMUserState {
     var newPasscode: String = "111111"
 }
 
-let PasscodeSettingsOn = "PasscodeSettingsOn"
-let PasscodeSettingsOff = "PasscodeSettingsOff"
 let WebPageLoading = "WebPageLoading"
 
 fileprivate class TestActions {
@@ -105,13 +96,6 @@ fileprivate class TestActions {
     static let LoadURL = "LoadURL"
     static let LoadURLByTyping = "LoadURLByTyping"
     static let LoadURLByPasting = "LoadURLByPasting"
-}
-
-public var isTablet: Bool {
-    // There is more value in a variable having the same name,
-    // so it can be used in both predicates and in code
-    // than avoiding the duplication of one line of code.
-    return UIDevice.current.userInterfaceIdiom == .pad
 }
 
 fileprivate func createTestGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScreenGraph<TestUserState> {
