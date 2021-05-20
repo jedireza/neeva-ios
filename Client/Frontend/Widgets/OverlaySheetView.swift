@@ -263,7 +263,9 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         self.model.deltaHeight += value.translation.height
         var newPosition = self.model.position;
         if self.model.deltaHeight > OverlaySheetUX.slideThreshold {
-            if self.model.position == .top && !keyboardIsVisible {
+            // Middle position only makes sense when the keyboard is hidden, and if
+            // the delta is too large, then we just want to dismiss the sheet.
+            if self.model.position == .top && !keyboardIsVisible && self.model.deltaHeight < 4*OverlaySheetUX.slideThreshold {
                 newPosition = .middle
             } else {
                 self.model.hide()
