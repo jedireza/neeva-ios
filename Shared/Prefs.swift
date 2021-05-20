@@ -22,6 +22,7 @@ public struct PrefsKeys {
     public static let KeyETPCoverSheetShowType = "etpCoverSheetShowType"
     public static let KeyDefaultBrowserCardShowType = "defaultBrowserCardShowType"
     public static let KeyDidShowDefaultBrowserOnboarding = "didShowDefaultBrowserOnboarding"
+    public static let KeySetSuggestedSitesToShowAll = "setSuggestedSitesToShowAll"
     public static let ShowNewTabToolbarButton = "newTabToolbarButton"
     public static let ContextMenuShowLinkPreviews = "showLinkPreviews"
     public static let SessionCount = "sessionCount"

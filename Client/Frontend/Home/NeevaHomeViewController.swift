@@ -202,7 +202,7 @@ extension NeevaHomeViewController: DataObserverDelegate {
                 self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
 
-            let maxItems = self.numberOfHorizontalItems(currentTraits: self.view.traitCollection)
+            let maxItems = 8
 
             self.suggestionsViewModel.sites = Array(result.prefix(maxItems))
 
@@ -268,27 +268,6 @@ extension NeevaHomeViewController: DataObserverDelegate {
         let suggested = SuggestedSites.asArray()
         let deleted = profile.prefs.arrayForKey(TopSitesHandler.DefaultSuggestedSitesKey) as? [String] ?? []
         return suggested.filter({deleted.firstIndex(of: $0.url) == .none})
-    }
-
-    func numberOfHorizontalItems(currentTraits: UITraitCollection?) -> Int {
-        guard let traits = currentTraits else {
-            return 0
-        }
-        let isLandscape = UIApplication.shared.statusBarOrientation.isLandscape
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            if isLandscape {
-                return 8
-            } else {
-                return 6
-            }
-        }
-        // On iPad
-        // The number of items in a row is equal to the number of highlights in a row * 2
-        var numItems = Int(NeevaHomeUX.NumberOfItemsPerRowForSizeClassIpad[traits.horizontalSizeClass])
-        if UIApplication.shared.statusBarOrientation.isPortrait || (traits.horizontalSizeClass == .compact && isLandscape) {
-            numItems = numItems - 1
-        }
-        return numItems * 2
     }
 }
 

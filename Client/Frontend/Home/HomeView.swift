@@ -4,6 +4,7 @@
 import SwiftUI
 import Storage
 import NeevaSupport
+import Shared
 
 
 struct NeevaHomeUX {
@@ -132,7 +133,7 @@ enum HomeRowExpansionState: Int {
 }
 
 struct NeevaHomeRow: View {
-    @State private var expansionState: HomeRowExpansionState = .limited
+    @State private var expansionState: HomeRowExpansionState = UserDefaults.standard.bool(forKey: PrefsKeys.KeySetSuggestedSitesToShowAll) ? .all : .limited
 
     var body: some View {
         VStack {
@@ -144,6 +145,7 @@ struct NeevaHomeRow: View {
                 Spacer()
                 Button(action: {
                     expansionState = HomeRowExpansionState(rawValue: expansionState.rawValue.advanced(by: 1)) ?? .limited
+                    UserDefaults.standard.set(expansionState == HomeRowExpansionState.all, forKey: PrefsKeys.KeySetSuggestedSitesToShowAll)
                 }, label: {
                     let icon = expansionState == .limited ? Nicon.chevronDown : Nicon.chevronUp
                     Symbol(icon, size: NeevaHomeUX.ToggleIconSize, label: "Show \(expansionState == .limited ? "more" : "fewer") suggested sites")
