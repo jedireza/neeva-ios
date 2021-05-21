@@ -344,7 +344,13 @@ fileprivate struct DismissalObserverModifier: AnimatableModifier {
         get { backdropOpacity }
         set { backdropOpacity = newValue
             if position == .dismissed && backdropOpacity == 0.0 {
-                onDismiss()
+                // Run after the call stack has unwound as |onDismiss| may tear down
+                // the overlay sheet, which could cause issues for SwiftUI processing.
+                // See issue #401.
+                let onDismiss = self.onDismiss
+                DispatchQueue.main.async {
+                    onDismiss()
+                }
             }
         }
     }
