@@ -17,6 +17,7 @@ class SessionRestoreTests: KIFTestCase {
         super.setUp()
     }
 
+    /* TODO(#405): Disabled as this test is flaky
     func testTabRestore() {
         let url1 = "\(webRoot!)/numberedPage.html?page=1"
         let url2 = "\(webRoot!)/numberedPage.html?page=2"
@@ -67,6 +68,7 @@ class SessionRestoreTests: KIFTestCase {
         }
         XCTAssertFalse(canGoForward, "Reached the end of browser history")
     }
+    */
 
     override func tearDown() {
         BrowserUtils.resetToAboutHomeKIF(tester())
