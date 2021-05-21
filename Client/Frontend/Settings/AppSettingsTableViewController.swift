@@ -115,6 +115,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 DeleteExportedDataSetting(settings: self),
                 ForceCrashSetting(settings: self),
                 SlowTheDatabase(settings: self),
+                FeatureFlagSetting(settings: self),
             ])]
 
         if NeevaUserInfo.shared.hasLoginCookie() {
