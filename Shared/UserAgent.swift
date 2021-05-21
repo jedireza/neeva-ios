@@ -109,12 +109,17 @@ public struct UserAgentBuilder {
         return uaItems.filter{ !$0.isEmptyOrWhitespace() }.joined(separator: " ")
     }
 
+    private static func makeMobileUserAgent(identifier: String) -> UserAgentBuilder {
+        let afterCPU = UIDevice.current.userInterfaceIdiom == .phone ? " iPhone" : ""
+        return UserAgentBuilder(product: UserAgent.product, systemInfo: "(\(UIDevice.current.model); CPU\(afterCPU) OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)", platform: UserAgent.platform, platformDetails: UserAgent.platformDetails, extensions: "\(identifier) \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
+    }
+
     public static func defaultMobileUserAgent() -> UserAgentBuilder {
-        return UserAgentBuilder(product: UserAgent.product, systemInfo: "(\(UIDevice.current.model); CPU OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)", platform: UserAgent.platform, platformDetails: UserAgent.platformDetails, extensions: "Version/\(UIDevice.current.systemVersion)  \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
+        return makeMobileUserAgent(identifier: "Version/\(UIDevice.current.systemVersion)")
     }
 
     public static func neevaMobileUserAgent() -> UserAgentBuilder {
-        return UserAgentBuilder(product: UserAgent.product, systemInfo: "(\(UIDevice.current.model); CPU OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)", platform: UserAgent.platform, platformDetails: UserAgent.platformDetails, extensions: "NeevaBrowserIOS/\(AppInfo.appVersion) \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
+        return makeMobileUserAgent(identifier: "NeevaBrowserIOS/\(AppInfo.appVersion)")
     }
 
     public static func defaultDesktopUserAgent() -> UserAgentBuilder {
