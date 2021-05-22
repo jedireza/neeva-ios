@@ -16,8 +16,15 @@ struct NeevaHomeUX {
     static let SuggestedSiteBlockHeight: CGFloat = 62
     static let ToggleButtonSize: CGFloat = 32
     static let ToggleIconSize: CGFloat = 14
-    static let GridColumnWidth: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 124 : 84
-    static let HorizontalItemSpacing: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 30 : 24
+
+    static func horizontalItemSpacing(isTabletOrLandscape: Bool) -> CGFloat {
+        return isTabletOrLandscape ? 32 : 24
+    }
+
+    static func singleRowWidth(isTabletOrLandscape: Bool) -> CGFloat {
+        let numItems: CGFloat = isTabletOrLandscape ? 8 : 4
+        return numItems * SuggestedSiteBlockWidth + (numItems - 1) * horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)
+    }
 }
 
 class SuggestedSitesViewModel: ObservableObject {
@@ -75,42 +82,54 @@ struct SuggestedSitesView: View {
     @Binding var expansionState: HomeRowExpansionState
     @EnvironmentObject var viewModel: SuggestedSitesViewModel
 
-    let columns = [
-        GridItem(.fixed(NeevaHomeUX.GridColumnWidth)),
-        GridItem(.fixed(NeevaHomeUX.GridColumnWidth)),
-        GridItem(.fixed(NeevaHomeUX.GridColumnWidth)),
-        GridItem(.fixed(NeevaHomeUX.GridColumnWidth))
-    ]
+    var columns:[GridItem] {
+        [GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth),spacing:
+                    NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)),
+        GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth),spacing:
+                    NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)),
+        GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth),spacing:
+                    NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)),
+        GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth))]
+    }
+
+    var isTabletOrLandscape:Bool {
+        return UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.orientation.isLandscape
+    }
 
     var body: some View {
         if expansionState == .limited {
-            ZStack(alignment: .center) {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: NeevaHomeUX.HorizontalItemSpacing) {
-                        ForEach(viewModel.sites.indices, id: \.self) { index in
-                            let suggestedSite = viewModel.sites[index]
-                            SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                                .onTapGesture {
-                                    viewModel.onSuggestedSiteClicked(suggestedSite.tileURL)
-                                }.onLongPressGesture {
-                                    viewModel.onSuggestedSiteLongPressed(suggestedSite)
-                                }
-                        }
-                    }.padding(.vertical).padding(.leading, NeevaHomeUX.HorizontalItemSpacing)
-                }
-                if UIDevice.current.userInterfaceIdiom != .pad {
-                    Rectangle().fill(
-                        LinearGradient(gradient: Gradient(stops: [
-                            .init(color: Color(UIColor.HomePanel.topSitesBackground).opacity(0), location: 0),
-                            .init(color: Color(UIColor.HomePanel.topSitesBackground), location: 1)
-                        ]), startPoint: .leading, endPoint: .trailing)
-                    ).frame(width: 64).frame(maxWidth: .infinity, alignment: .trailing).allowsHitTesting(false)
-                }
-            }.fixedSize(horizontal: UIDevice.current.userInterfaceIdiom == .pad, vertical: true)
+            GeometryReader { geometry in
+                ZStack(alignment: .center) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)) {
+                            ForEach(viewModel.sites.indices, id: \.self) { index in
+                                let suggestedSite = viewModel.sites[index]
+                                SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
+                                    .onTapGesture {
+                                        viewModel.onSuggestedSiteClicked(suggestedSite.tileURL)
+                                    }.onLongPressGesture {
+                                        viewModel.onSuggestedSiteLongPressed(suggestedSite)
+                                    }
+                            }
+                        }.padding(.vertical).frame(maxWidth:.infinity)
+                        .padding(.leading, (geometry.size.width -
+                                NeevaHomeUX.singleRowWidth(isTabletOrLandscape: isTabletOrLandscape)) / 2)
+                    }
+                    if UIDevice.current.userInterfaceIdiom != .pad {
+                        Rectangle().fill(
+                            LinearGradient(gradient: Gradient(stops: [
+                                .init(color: Color(UIColor.HomePanel.topSitesBackground).opacity(0), location: 0),
+                                .init(color: Color(UIColor.HomePanel.topSitesBackground), location: 1)
+                            ]), startPoint: .leading, endPoint: .trailing)
+                        ).frame(width: 80).frame(maxWidth: .infinity, alignment: .trailing).allowsHitTesting(false)
+                    }
+                }.fixedSize(horizontal: false, vertical: true)
+            }
         } else if expansionState == .all {
             ZStack {
                 ScrollView() {
-                    LazyVGrid(columns: columns, spacing: 24) {
+                    LazyVGrid(columns: columns ,spacing:
+                                NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)) {
                         ForEach(viewModel.sites.indices, id: \.self) { index in
                             let suggestedSite = viewModel.sites[index]
                             SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite).onTapGesture {
@@ -201,7 +220,6 @@ struct DefaultBrowserCardView: UIViewRepresentable {
 
 struct NeevaHomeView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaHome(viewModel: HomeViewModel()).environmentObject(SuggestedSitesViewModel(sites: [Site](), onSuggestedSiteClicked: {_ in }, onSuggestedSiteLongPressed: { _ in }))
         NeevaHome(viewModel: HomeViewModel()).environmentObject(SuggestedSitesViewModel(sites: [Site](), onSuggestedSiteClicked: {_ in }, onSuggestedSiteLongPressed: { _ in }))
     }
 }
