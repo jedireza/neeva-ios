@@ -28,16 +28,18 @@ extension View {
 class TrackingStatsViewModel:ObservableObject {
     @Published var numTrackers = 0
     @Published var numDomains = 0
-    @Published var hallOfShameDomains = [Dictionary<URL, Int>.Element]()
+    @Published var hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
 
-    var trackers: [URL] {
+    let settingsHandler: (() -> ())?
+    var trackers: [TrackingEntity] {
         didSet {
             onDataUpdated()
         }
     }
 
-    init(trackers: [URL]) {
+    init(trackers: [TrackingEntity], settingsHandler: (() -> ())?) {
         self.trackers = trackers
+        self.settingsHandler = settingsHandler
         onDataUpdated()
     }
 
@@ -48,7 +50,7 @@ class TrackingStatsViewModel:ObservableObject {
         numDomains = trackerDict.count
 
         guard !trackerDict.isEmpty else {
-            hallOfShameDomains = [Dictionary<URL, Int>.Element]()
+            hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
             return
         }
         hallOfShameDomains = Array(trackerDict[0...min(trackerDict.count - 1, 2)])
@@ -77,23 +79,22 @@ struct TrackingMenuFirstRowElement: View {
 }
 
 struct HallOfShameElement: View {
-    let hallOfShameDomain: Dictionary<URL, Int>.Element
+    let hallOfShameDomain: Dictionary<TrackingEntity, Int>.Element
 
     var body: some View {
         HStack(spacing: NeevaUIConstants.hallOfShameElementSpacing) {
-            FaviconView(site: Site(url: hallOfShameDomain.key.absoluteString, title: "" )
-                        , size: NeevaUIConstants.hallOfShameElementFaviconSize, bordered: true)
+            Image(hallOfShameDomain.key.rawValue).resizable().cornerRadius(5)
                 .frame(width: NeevaUIConstants.hallOfShameElementFaviconSize,
                        height: NeevaUIConstants.hallOfShameElementFaviconSize)
             Text("\(hallOfShameDomain.value)").font(.system(size: NeevaUIConstants.menuFontSize))
         }.accessibilityLabel(
-            "\(hallOfShameDomain.value) trackers blocked from \(hallOfShameDomain.key.baseDomain ?? "")")
+            "\(hallOfShameDomain.value) trackers blocked from \(hallOfShameDomain.key.rawValue)")
         .accessibilityIdentifier("TrackingMenu.HallOfShameElement")
     }
 }
 
 struct HallOfShameView: View {
-    let hallOfShameDomains: [Dictionary<URL, Int>.Element]
+    let hallOfShameDomains: [Dictionary<TrackingEntity, Int>.Element]
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -125,17 +126,19 @@ struct TrackingMenuView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            if !viewModel.trackers.isEmpty {
+            if isTrackingProtectionEnabled {
                 HStack {
                     TrackingMenuFirstRowElement(label: "Trackers", num: viewModel.numTrackers, symbol: nil)
                     TrackingMenuFirstRowElement(label: "Domains", num: viewModel.numDomains, symbol: .personCropCircle)
                 }
-                HallOfShameView(hallOfShameDomains: viewModel.hallOfShameDomains)
+                if !viewModel.hallOfShameDomains.isEmpty {
+                    HallOfShameView(hallOfShameDomains: viewModel.hallOfShameDomains)
+                }
             }
             TrackingMenuProtectionRowButton(name:"Block Tracking",
                                             toggleAction: toggleTrackingProtection,
                                             isTrackingProtectionOn: isTrackingProtectionEnabled)
-            if !viewModel.trackers.isEmpty {
+            if let _ = viewModel.settingsHandler {
                 HStack {
                     Text("Advanced Privacy Settings")
                         .foregroundColor(Color(UIColor.PopupMenu.textColor))
@@ -155,6 +158,7 @@ struct TrackingMenuView: View {
 
 struct TrackingMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuView(isTrackingProtectionEnabled: true, viewModel: TrackingStatsViewModel(trackers: [URL]()))
+        TrackingMenuView(isTrackingProtectionEnabled: true,
+                         viewModel:TrackingStatsViewModel(trackers: [.Amazon, .Amazon, .Adobe, .Adobe,.Criteo,.Google], settingsHandler: {}))
     }
 }

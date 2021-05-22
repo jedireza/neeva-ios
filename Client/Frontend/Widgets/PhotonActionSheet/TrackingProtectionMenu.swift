@@ -86,7 +86,7 @@ extension PhotonActionSheetProtocol {
 
         var data = [String]()
         for category in categories {
-            data += Array(stats.domains[category] ?? Set<String>())
+            data += Array(stats.domains[category] ?? [String]())
         }
 
         nestedTableViewDomainList = NestedTableViewDelegate(dataSource: NestedTableDataSource(data: data))

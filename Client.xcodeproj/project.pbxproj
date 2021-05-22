@@ -199,6 +199,8 @@
 		43DDB97624099F200058A068 /* ETPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DDB97524099F200058A068 /* ETPViewModel.swift */; };
 		43E69EC3254D081D00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
 		43E69ED7254D081F00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
+		4A22DCFA26574AA4009BE9FC /* TrackingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */; };
+		4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */; };
 		4A59B58AD11B5EE1F80BBDEB /* TestHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */; };
 		4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5CCE8226524B7F0063783D /* FaviconView.swift */; };
 		4AA14F20264C7954003B815A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* HomeView.swift */; };
@@ -710,7 +712,6 @@
 		F056681725E9509E0082BB61 /* AddToSpaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056681625E9509E0082BB61 /* AddToSpaceViewController.swift */; };
 		F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */; };
 		F072DD3825E935B4006C2665 /* NeevaSearchProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */; };
-		F08B27EE25FD097F0037D49B /* NeevaSupport in Frameworks */ = {isa = PBXBuildFile; productRef = F08B27ED25FD097F0037D49B /* NeevaSupport */; };
 		F0ACC2AC25E8C7FB0024991B /* NeevaDev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */; };
 		F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
@@ -1122,6 +1123,8 @@
 		43DDB96B240995A70058A068 /* ETPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETPModel.swift; sourceTree = "<group>"; };
 		43DDB97524099F200058A068 /* ETPViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETPViewModel.swift; sourceTree = "<group>"; };
 		43E69EAF254D064E00B591C2 /* SimpleTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTab.swift; sourceTree = "<group>"; };
+		4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingEntity.swift; sourceTree = "<group>"; };
+		4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TrackingEntity.xcassets; sourceTree = "<group>"; };
 		4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHistory.swift; sourceTree = "<group>"; };
 		4A5CCE8226524B7F0063783D /* FaviconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconView.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -2286,6 +2289,8 @@
 				F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */,
 				7B42406D1CA04CAC009B5C28 /* Menu.xcassets */,
 				F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */,
+				4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */,
+				4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
@@ -3917,6 +3922,7 @@
 				BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */,
 				D0FCF8081FE4772D004A7995 /* MainFrameAtDocumentStart.js in Resources */,
 				EBC9D38722D4D56F0011D881 /* disconnect-block-cookies-content.json in Resources */,
+				4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */,
 				D30684F11C84F12A002D8D82 /* SearchPlugins in Resources */,
 				74821FFE1DB6D3AC00EEEA72 /* MailSchemes.plist in Resources */,
 				EBC9D38822D4D56F0011D881 /* disconnect-block-cookies-social.json in Resources */,
@@ -4492,6 +4498,7 @@
 				D0E89A2920910917001CE5C7 /* DownloadsPanel.swift in Sources */,
 				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
+				4A22DCFA26574AA4009BE9FC /* TrackingEntity.swift in Sources */,
 				E660BE061BB0666D009AC090 /* InnerStrokedView.swift in Sources */,
 				0BB5B30B1AC0AD1F0052877D /* LoginsHelper.swift in Sources */,
 				1DA3CE6324EEE83200422BB2 /* SavedTab+ConfigureExtension.swift in Sources */,

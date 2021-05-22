@@ -1,0 +1,205 @@
+//  Copyright © 2021 Neeva. All rights reserved.
+//
+
+import Foundation
+import Shared
+
+public enum TrackingEntity: String {
+    case Google = "Google"
+    case Facebook = "Facebook"
+    case Twitter = "Twitter"
+    case Amazon = "Amazon"
+    case Outbrain = "Outbrain"
+    case Criteo = "Criteo"
+    case Adobe = "Adobe"
+    case Oracle = "Oracle"
+    case WarnerMedia = "WarnerMedia"
+    case IAS = "IAS"
+    case Pinterest = "Pinterest"
+    case VerizonMedia = "VerizonMedia"
+
+    static func getTrackingEntityURLsForCurrentTab() -> [TrackingEntity] {
+        let domainsCollapsedAcrossCategories = BrowserViewController.foregroundBVC()
+            .tabManager.selectedTab?.contentBlocker?
+            .stats.domains.reduce(into: []) { $0.append(contentsOf: $1.value)} ?? [String]()
+        return domainsCollapsedAcrossCategories.map {(domain) -> TrackingEntity? in
+            for element in trackingEntityMap {
+                let url = URL(string: "https://" + domain)!
+                let baseDomain = url.baseDomain!
+                if element.value.contains(baseDomain) {
+                    return element.key
+                }
+            }
+            return nil
+        }.compactMap {$0}
+    }
+}
+
+let trackingEntityMap =
+    [TrackingEntity.Google: [
+        "1emn.com",
+        "2mdn.net",
+        "admeld.com",
+        "admob.com",
+        "app-measurement.com",
+        "apture.com",
+        "asp-cc.com",
+        "blogger.com",
+        "cc-dt.com",
+        "crashlytics.com",
+        "dartsearch.net",
+        "dmtry.com",
+        "doubleclick.com",
+        "doubleclick.net",
+        "firebaseio.com",
+        "gmodules.com",
+        "google-analytics.com",
+        "googleadservices.com",
+        "googleadsserving.cn",
+        "googlegroups.com",
+        "googlesyndication.com",
+        "googletagmanager.com",
+        "googletagservices.com",
+        "googleusercontent.com",
+        "gstatic.com",
+        "invitemedia.com",
+        "page.link",
+        "urchin.com",
+        "waze.com",
+        "youtube.com",
+    ], TrackingEntity.Facebook: [
+        "accountkit.com",
+        "atdmt.com",
+        "atlassbx.com",
+        "atlassolutions.com",
+        "facebook.com",
+        "fbsbx.com",
+        "liverail.com",
+        "whatsapp.net",
+    ], TrackingEntity.Twitter: [
+        "ads-twitter.com",
+        "mopub.com",
+        "twitter.com",
+        "twttr.com",
+    ], TrackingEntity.Amazon: [
+        "alexa.com",
+        "alexametrics.com",
+        "amazon-adsystem.com",
+        "assoc-amazon.com",
+        "assoc-amazon.jp",
+        "graphiq.com",
+        "media-imdb.com",
+        "peer39.com",
+        "peer39.net",
+        "serving-sys.com",
+        "sizmek.com",
+        "twitch.tv",
+        "wfm.com",
+    ], TrackingEntity.Outbrain: [
+        "ligatus.com",
+        "outbrain.com",
+        "veeseo.com",
+        "zemanta.com",
+    ], TrackingEntity.Criteo: [
+        "criteo.com",
+        "criteo.net",
+        "emailretargeting.com",
+        "hlserve.com",
+        "manage.com",
+    ], TrackingEntity.Adobe: [
+        "2o7.net",
+        "adobe.com",
+        "adobetag.com",
+        "auditude.com",
+        "bizible.com",
+        "businesscatalyst.com",
+        "demdex.net",
+        "everestads.net",
+        "everestjs.net",
+        "everesttech.net",
+        "fyre.co",
+        "hitbox.com",
+        "livefyre.com",
+        "marketo.com",
+        "marketo.net",
+        "mktoresp.com",
+        "nedstat.net",
+        "omniture.com",
+        "omtrdc.net",
+        "sitestat.com",
+        "tubemogul.com",
+    ], TrackingEntity.Oracle: [
+        "sekindo.com",
+        "addthis.com",
+        "addthiscdn.com",
+        "addthisedge.com",
+        "atgsvcs.com",
+        "bkrtx.com",
+        "bluekai.com",
+        "bm23.com",
+        "compendium.com",
+        "en25.com",
+        "grapeshot.co.uk",
+        "maxymiser.net",
+        "moat.com",
+        "moatads.com",
+        "moatpixel.com",
+        "nexac.com",
+        "responsys.net",
+    ], TrackingEntity.WarnerMedia: [
+        "247realmedia.com",
+        "adnxs.com",
+        "adultswim.com",
+        "cartoonnetwork.com",
+        "cnn.com",
+        "ncaa.com",
+        "realmedia.com",
+        "tbs.com",
+        "tmz.com",
+        "trutv.com",
+        "turner.com",
+        "ugdturner.com",
+        "warnerbros.com",
+        "yieldoptimizer.com",
+    ], TrackingEntity.IAS: [
+        "adsafeprotected.com",
+        "iasds01.com"
+    ], TrackingEntity.Pinterest: [
+        "pinterest.com"
+    ], TrackingEntity.VerizonMedia: [
+        "adap.tv",
+        "adsonar.com",
+        "adtech.de",
+        "adtechjp.com",
+        "adtechus.com",
+        "advertising.com",
+        "aol.co.uk",
+        "aol.com",
+        "aol.fr",
+        "aolp.jp",
+        "atwola.com",
+        "bluelithium.com",
+        "brightroll.com",
+        "btrll.com",
+        "convertro.com",
+        "engadget.com",
+        "flurry.com",
+        "hostingprod.com",
+        "lexity.com",
+        "mybloglog.com",
+        "nexage.com",
+        "overture.com",
+        "pictela.net",
+        "pulsemgr.com",
+        "rmxads.com",
+        "vidible.tv",
+        "wretch.cc",
+        "yahoo.com",
+        "yahoo.net",
+        "yahoodns.net",
+        "yieldmanager.com",
+        "yieldmanager.net",
+        "yimg.com",
+    ]]
+
+

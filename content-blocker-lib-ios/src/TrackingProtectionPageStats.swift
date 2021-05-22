@@ -4,7 +4,7 @@
 import Shared
 
 struct TPPageStats {
-    var domains: [BlocklistCategory: Set<String>]
+    var domains: [BlocklistCategory: [String]]
 
     var total: Int {
         var total = 0
@@ -13,15 +13,15 @@ struct TPPageStats {
     }
 
     init() {
-        domains = [BlocklistCategory: Set<String>]();
+        domains = [BlocklistCategory: [String]]();
     }
 
-    private init(domains: [BlocklistCategory: Set<String>], blocklistName: BlocklistCategory, host: String) {
+    private init(domains: [BlocklistCategory: [String]], blocklistName: BlocklistCategory, host: String) {
         self.domains = domains
         if self.domains[blocklistName] == nil {
-            self.domains[blocklistName] = Set<String>()
+            self.domains[blocklistName] = [String]()
         }
-       self.domains[blocklistName]?.insert(host);
+       self.domains[blocklistName]?.append(host);
     }
 
     func create(matchingBlocklist blocklistName: BlocklistCategory, host: String) -> TPPageStats {
