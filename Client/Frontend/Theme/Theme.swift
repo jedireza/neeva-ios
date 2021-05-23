@@ -57,7 +57,7 @@ class ActionMenuColor {
 class TabTrayColor {
     var tabTitleText: UIColor { return UIColor.black }
     var tabTitleBlur: UIBlurEffect.Style { return UIBlurEffect.Style.extraLight }
-    var background: UIColor { return UIColor.Photon.Grey80 }
+    var background: UIColor { return UIColor.Neeva.UI.DefaultBackground }
     var cellBackground: UIColor { return defaultBackground }
     var toolbar: UIColor { return defaultBackground }
     var toolbarButtonTint: UIColor { return defaultTextAndTint }

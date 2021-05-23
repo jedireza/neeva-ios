@@ -93,8 +93,6 @@ private extension TrayToBrowserAnimator {
             UIApplication.shared.windows.first?.backgroundColor = UIColor.Browser.background
             tabTray.navigationController?.setNeedsStatusBarAppearanceUpdate()
             tabCollectionViewSnapshot.alpha = 0
-            tabTray.statusBarBG.alpha = 0
-            tabTray.searchBarHolder.alpha = 0
         }, completion: { finished in
             // Remove any of the views we used for the animation
             cell.removeFromSuperview()
@@ -173,13 +171,6 @@ private extension BrowserToTrayAnimator {
         toggleWebViewVisibility(false, usingTabManager: bvc.tabManager)
         bvc.urlBar.isTransitioning = true
 
-        // On iPhone, fading these in produces a darkening at the top of the screen, and then
-        // it brightens back to full white as they fade in. Setting these to not fade in produces a better effect.
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            tabTray.statusBarBG.alpha = 1
-            tabTray.searchBarHolder.alpha = 1
-        }
-
         // Since we are hiding the collection view and the snapshot API takes the snapshot after the next screen update,
         // the screenshot ends up being blank unless we set the collection view hidden after the screen update happens.
         // To work around this, we dispatch the setting of collection view to hidden after the screen update is completed.
@@ -214,9 +205,6 @@ private extension BrowserToTrayAnimator {
                 bvc.urlBar.updateAlphaForSubviews(0)
                 bvc.footer.alpha = 0
                 tabCollectionViewSnapshot.alpha = 1
-
-                tabTray.statusBarBG.alpha = 1
-                tabTray.searchBarHolder.alpha = 1
                 tabTray.toolbar.transform = .identity
                 
                 if !UIAccessibility.isReduceMotionEnabled {

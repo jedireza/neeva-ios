@@ -196,7 +196,7 @@ class BrowserViewController: UIViewController {
         downloadQueue.delegate = self
 
         NotificationCenter.default.addObserver(self, selector: #selector(displayThemeChanged), name: .DisplayThemeChanged, object: nil)
-  }
+    }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         guard urlBar != nil else {
@@ -2364,6 +2364,10 @@ extension BrowserViewController: TabTrayDelegate {
     func tabTrayDidAddToReadingList(_ tab: Tab) -> ReadingListItem? {
         guard let url = tab.url?.absoluteString, !url.isEmpty else { return nil }
         return profile.readingList.createRecordWithURL(url, title: tab.title ?? url, addedBy: UIDevice.current.name).value.successValue
+    }
+
+    func tabTrayDidTapLocationBar(_ tabTray: TabTrayControllerV1) {
+        urlBar.tabLocationViewDidTapLocation(urlBar.locationView)
     }
 
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController) {

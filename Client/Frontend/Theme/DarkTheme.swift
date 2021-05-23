@@ -33,7 +33,7 @@ fileprivate class DarkActionMenuColor: ActionMenuColor {
 fileprivate class DarkTabTrayColor: TabTrayColor {
     override var tabTitleText: UIColor { return defaultTextAndTint }
     override var tabTitleBlur: UIBlurEffect.Style { return UIBlurEffect.Style.dark }
-    override var background: UIColor { return UIColor.Photon.Grey90 }
+    override var background: UIColor { return .black }
     override var cellBackground: UIColor { return defaultBackground }
     override var toolbar: UIColor { return UIColor.Photon.Grey80 }
     override var toolbarButtonTint: UIColor { return defaultTextAndTint }

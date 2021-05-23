@@ -22,6 +22,7 @@ extension UIColor {
         public struct UI {
             public static let Aqua = UIColor(named: "UI-Aqua", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Blue40 = UIColor(named: "UI-Blue40", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let DefaultBackground = UIColor(named: "UI-DefaultBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Gray10 = UIColor(named: "UI-Gray10", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Gray20 = UIColor(named: "UI-Gray20", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Gray30 = UIColor(named: "UI-Gray30", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
