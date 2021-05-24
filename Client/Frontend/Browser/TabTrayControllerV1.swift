@@ -134,7 +134,7 @@ class TabTrayControllerV1: UIViewController {
         webViewContainerBackdrop.alpha = 0
 
         collectionView.alwaysBounceVertical = true
-        collectionView.backgroundColor = UIColor.theme.tabTray.background
+        collectionView.backgroundColor = UIColor.TabTray.background
         collectionView.keyboardDismissMode = .onDrag
 
         collectionView.dragInteractionEnabled = true
@@ -744,7 +744,7 @@ extension TabTrayControllerV1: UIAdaptivePresentationControllerDelegate, UIPopov
 }
 
 // MARK: - Toolbar
-class TrayToolbar: UIView, Themeable, PrivateModeUI {
+class TrayToolbar: UIView, PrivateModeUI {
     fileprivate let toolbarButtonSize = CGSize(width: 44, height: 44)
 
     lazy var addTabButton: UIButton = {
@@ -796,7 +796,14 @@ class TrayToolbar: UIView, Themeable, PrivateModeUI {
             make.size.equalTo(toolbarButtonSize)
         }
 
-        applyTheme()
+        backgroundColor = UIColor.Browser.background
+        addTabButton.tintColor = .label
+        doneButton.setTitleColor(.label, for: .normal)
+
+        // TODO(issue/423): Update these to be dynamic colors
+        maskButton.offTint = UIColor.theme.tabTray.privateModeButtonOffTint
+        maskButton.onTint = UIColor.theme.tabTray.privateModeButtonOnTint
+
         applyUIMode(isPrivate: false)
     }
 
@@ -807,14 +814,6 @@ class TrayToolbar: UIView, Themeable, PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         maskButton.applyUIMode(isPrivate: isPrivate)
     }
-
-    func applyTheme() {
-        backgroundColor = UIColor.theme.tabTray.toolbar
-        maskButton.offTint = UIColor.theme.tabTray.privateModeButtonOffTint
-        maskButton.onTint = UIColor.theme.tabTray.privateModeButtonOnTint
-        addTabButton.tintColor = UIColor.theme.tabTray.toolbarButtonTint
-        doneButton.setTitleColor(UIColor.theme.tabTray.toolbarButtonTint, for: .normal)
-    }
 }
 
 protocol TabCellDelegate: AnyObject {
@@ -822,13 +821,9 @@ protocol TabCellDelegate: AnyObject {
 }
 
 class TabCell: UICollectionViewCell {
-    enum Style {
-        case light
-        case dark
-    }
-
     static let Identifier = "TabCellIdentifier"
-    static let BorderWidth: CGFloat = 3
+    static let SelectedBorderWidth: CGFloat = 3
+    static let UnselectedBorderWidth: CGFloat = 1
 
     let backgroundHolder: UIView = {
         let view = UIView()
@@ -880,6 +875,9 @@ class TabCell: UICollectionViewCell {
     var title = UIVisualEffectView(effect: UIBlurEffect(style: UIColor.theme.tabTray.tabTitleBlur))
     var animator: SwipeAnimator!
 
+    var borderStyleSelected: Bool = false
+    var borderStylePrivate: Bool = false
+
     weak var delegate: TabCellDelegate?
 
     // Changes depending on whether we're full-screen or not.
@@ -926,16 +924,56 @@ class TabCell: UICollectionViewCell {
         }
     }
 
+    func setTabBorder(color: UIColor, width: CGFloat) {
+        if width == 0 {
+            layer.shadowOffset = .zero
+            layer.shadowPath = nil
+            layer.shadowOpacity = 0
+        } else {
+            // This creates a border around a tabcell. Using the shadow craetes a border _outside_ of the tab frame.
+            layer.shadowColor = color.cgColor
+            layer.shadowOpacity = 1
+            layer.shadowRadius = 0 // A 0 radius creates a solid border instead of a gradient blur
+            layer.masksToBounds = false
+            // create a frame that is "BorderWidth" size bigger than the cell
+            layer.shadowOffset = CGSize(width: -width, height: -width)
+            let shadowPath = CGRect(width: layer.frame.width + (width * 2), height: layer.frame.height + (width * 2))
+            layer.shadowPath = UIBezierPath(roundedRect: shadowPath, cornerRadius: TabTrayControllerUX.CornerRadius+width).cgPath
+        }
+    }
+
+    func updateTabBorder() {
+        let color: UIColor
+        let width: CGFloat
+        if borderStyleSelected {
+            width = TabCell.SelectedBorderWidth
+            if borderStylePrivate {
+                color = UIColor.Defaults.SystemGray01
+            } else {
+                color = UIConstants.SystemBlueColor
+            }
+        } else {
+            if traitCollection.userInterfaceStyle == .dark {
+                width = 0
+                color = UIColor()
+            } else {
+                width = TabCell.UnselectedBorderWidth
+                color = UIColor.Neeva.DefaultSeparator
+            }
+        }
+        setTabBorder(color: color, width: width)
+    }
+
     func setTabSelected(_ isPrivate: Bool) {
-        // This creates a border around a tabcell. Using the shadow craetes a border _outside_ of the tab frame.
-        layer.shadowColor = (isPrivate ? UIColor.Defaults.SystemGray01 : UIConstants.SystemBlueColor).cgColor
-        layer.shadowOpacity = 1
-        layer.shadowRadius = 0 // A 0 radius creates a solid border instead of a gradient blur
-        layer.masksToBounds = false
-        // create a frame that is "BorderWidth" size bigger than the cell
-        layer.shadowOffset = CGSize(width: -TabCell.BorderWidth, height: -TabCell.BorderWidth)
-        let shadowPath = CGRect(width: layer.frame.width + (TabCell.BorderWidth * 2), height: layer.frame.height + (TabCell.BorderWidth * 2))
-        layer.shadowPath = UIBezierPath(roundedRect: shadowPath, cornerRadius: TabTrayControllerUX.CornerRadius+TabCell.BorderWidth).cgPath
+        borderStyleSelected = true
+        borderStylePrivate = isPrivate
+        updateTabBorder()
+    }
+
+    func setTabUnselected(_ isPrivate: Bool) {
+        borderStyleSelected = false
+        borderStylePrivate = isPrivate
+        updateTabBorder()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -947,9 +985,11 @@ class TabCell: UICollectionViewCell {
 
         backgroundHolder.frame = CGRect(x: margin, y: margin, width: frame.width, height: frame.height)
         screenshotView.frame = CGRect(size: backgroundHolder.frame.size)
+    }
 
-        let shadowPath = CGRect(width: layer.frame.width + (TabCell.BorderWidth * 2), height: layer.frame.height + (TabCell.BorderWidth * 2))
-        layer.shadowPath = UIBezierPath(roundedRect: shadowPath, cornerRadius: TabTrayControllerUX.CornerRadius+TabCell.BorderWidth).cgPath
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateTabBorder()
     }
 
     func configureWith(tab: Tab, is selected: Bool) {
@@ -975,9 +1015,7 @@ class TabCell: UICollectionViewCell {
         if selected {
             setTabSelected(tab.isPrivate)
         } else {
-            layer.shadowOffset = .zero
-            layer.shadowPath = nil
-            layer.shadowOpacity = 0
+            setTabUnselected(tab.isPrivate)
         }
         screenshotView.image = tab.screenshot
     }

@@ -57,19 +57,13 @@ class ActionMenuColor {
 class TabTrayColor {
     var tabTitleText: UIColor { return UIColor.black }
     var tabTitleBlur: UIBlurEffect.Style { return UIBlurEffect.Style.extraLight }
-    var background: UIColor { return UIColor.Neeva.UI.DefaultBackground }
     var cellBackground: UIColor { return defaultBackground }
-    var toolbar: UIColor { return defaultBackground }
     var toolbarButtonTint: UIColor { return defaultTextAndTint }
-    var privateModeLearnMore: UIColor { return UIColor.Photon.Purple60 }
-    var privateModePurple: UIColor { return UIColor.Photon.Purple60 }
     var privateModeButtonOffTint: UIColor { return toolbarButtonTint }
     var privateModeButtonOnTint: UIColor { return UIColor.Photon.Grey10 }
     var cellCloseButton: UIColor { return UIColor.Photon.Grey50 }
     var cellTitleBackground: UIColor { return UIColor.clear }
     var faviconTint: UIColor { return UIColor.black }
-    var searchBackground: UIColor { return UIColor.Photon.Grey30 }
-    var toggleButon: UIColor { return UIColor.black }
 }
 
 class TopTabsColor {

@@ -5,7 +5,7 @@
 import UIKit
 
 private struct UX {
-    static let BackgroundColor = UIColor.theme.tabTray.toggleButon
+    static let BackgroundColor = UIColor.label
 
     // The amount of pixels the toggle button will expand over the normal size. This results in the larger -> contract animation.
     static let ExpandDelta: CGFloat = 5

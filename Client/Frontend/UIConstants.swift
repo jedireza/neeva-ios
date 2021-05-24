@@ -82,7 +82,14 @@ extension UIColor {
 
     public struct Browser {
         public static let background = UIColor.Neeva.DefaultBackground
-        public static let urlBarDivider = UIColor.Neeva.DefaultSeparator
+        public static let urlBarDivider = UIColor() { traits in
+            switch traits.userInterfaceStyle {
+            case .dark:
+                return UIColor.Browser.background  // Hidden in dark mode
+            default:
+                return UIColor.Neeva.DefaultSeparator
+            }
+        }
         public static let tint = UIColor.Neeva.DefaultTextAndTint
     }
 
@@ -131,6 +138,16 @@ extension UIColor {
 
     public struct TabTray {
         public static let tabsButton = UIColor.label
+
+        // Custom color for the background of the tab grid
+        public static let background = UIColor() { traits in
+            switch traits.userInterfaceStyle {
+            case .dark:
+                return UIColor.black
+            default:
+                return UIColor.Neeva.UI.DefaultBackground
+            }
+        }
     }
 
     public struct DefaultBrowserCard {

@@ -199,7 +199,7 @@ private extension BrowserToTrayAnimator {
                 animations: {
                 cell.title.transform = .identity
 
-                UIApplication.shared.windows.first?.backgroundColor = UIColor.theme.tabTray.background
+                UIApplication.shared.windows.first?.backgroundColor = UIColor.TabTray.background
                 tabTray.navigationController?.setNeedsStatusBarAppearanceUpdate()
 
                 bvc.urlBar.updateAlphaForSubviews(0)
