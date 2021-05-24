@@ -114,13 +114,15 @@ class NeevaHomeViewController: UIViewController, HomePanel {
 
     lazy var homeView: UIView = {
         let home = NeevaHome(viewModel: homeViewModel)
-        let controller = UIHostingController(rootView: home.environmentObject(suggestionsViewModel))
+        let controller = UIHostingController(rootView: home
+                                                .environmentObject(suggestedSitesViewModel))
         controller.view.backgroundColor = UIColor.HomePanel.topSitesBackground
         view.addSubview(controller.view)
         return controller.view
     }()
 
-    var suggestionsViewModel = SuggestedSitesViewModel(sites: [Site](), onSuggestedSiteClicked: { _ in }, onSuggestedSiteLongPressed: { _ in })
+    var suggestedSearchesModel = SuggestedSearchesModel()
+    var suggestedSitesViewModel = SuggestedSitesViewModel(sites: [Site](), onSuggestedSiteClicked: { _ in }, onSuggestedSiteLongPressed: { _ in })
     var homeViewModel = HomeViewModel()
 
     lazy var defaultBrowserCard: DefaultBrowserCard = {
@@ -203,15 +205,17 @@ extension NeevaHomeViewController: DataObserverDelegate {
 
             let maxItems = 8
 
-            self.suggestionsViewModel.sites = Array(result.prefix(maxItems))
+            self.suggestedSitesViewModel.sites = Array(result.prefix(maxItems))
 
-            self.suggestionsViewModel.onSuggestedSiteClicked = { [unowned self] url in
+            self.suggestedSitesViewModel.onSuggestedSiteClicked = { [unowned self] url in
                 self.showSiteWithURLHandler(url as URL)
             }
 
-            self.suggestionsViewModel.onSuggestedSiteLongPressed = { [unowned self] site in
+            self.suggestedSitesViewModel.onSuggestedSiteLongPressed = { [unowned self] site in
                 self.presentContextMenu(for: (site as Site))
             }
+
+            self.suggestedSearchesModel.reload(from: self.profile)
 
             // Refresh the AS data in the background so we'll have fresh data next time we show.
             self.profile.panelDataObservers.activityStream.refreshIfNeeded(forceTopSites: false)
@@ -272,7 +276,7 @@ extension NeevaHomeViewController: DataObserverDelegate {
 
 extension NeevaHomeViewController: HomePanelContextMenu {
     func getSiteDetails(for indexPath: IndexPath) -> Site? {
-        return suggestionsViewModel.sites[indexPath.item]
+        return suggestedSitesViewModel.sites[indexPath.item]
     }
 
     func presentContextMenu(for site: Site, completionHandler: @escaping () -> PhotonActionSheet?) {
