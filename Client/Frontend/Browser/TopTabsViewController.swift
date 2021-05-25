@@ -207,18 +207,15 @@ extension TopTabsViewController: TopTabCellDelegate {
     }
 }
 
-extension TopTabsViewController: Themeable, PrivateModeUI {
+extension TopTabsViewController: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         tabDisplayManager.togglePrivateMode(isOn: isPrivate, createTabOnEmptyPrivateMode: true)
 
-        privateModeButton.onTint = UIColor.theme.topTabs.privateModeButtonOnTint
-        privateModeButton.offTint = UIColor.theme.topTabs.privateModeButtonOffTint
+        privateModeButton.onTint = UIColor.TopTabs.privateModeButtonOnTint
+        privateModeButton.offTint = UIColor.TopTabs.privateModeButtonOffTint
         privateModeButton.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
-    }
-
-    func applyTheme() {
-        newTab.tintColor = UIColor.theme.topTabs.buttonTint
-        view.backgroundColor = UIColor.theme.topTabs.background
+        newTab.tintColor = UIColor.TopTabs.buttonTint
+        view.backgroundColor = UIColor.TopTabs.background
         collectionView.backgroundColor = view.backgroundColor
         tabDisplayManager.refreshStore()
     }

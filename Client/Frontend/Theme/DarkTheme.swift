@@ -41,17 +41,6 @@ fileprivate class DarkTabTrayColor: TabTrayColor {
     override var faviconTint: UIColor { return UIColor.Photon.White100 }
 }
 
-fileprivate class DarkTopTabsColor: TopTabsColor {
-    override var background: UIColor { return UIColor.Photon.Grey80 }
-    override var tabBackgroundSelected: UIColor { return UIColor.Photon.Grey80 }
-    override var tabBackgroundUnselected: UIColor { return UIColor.Photon.Grey80 }
-    override var tabForegroundSelected: UIColor { return UIColor.Photon.Grey10 }
-    override var tabForegroundUnselected: UIColor { return UIColor.Photon.Grey40 }
-    override var closeButtonSelectedTab: UIColor { return tabForegroundSelected }
-    override var closeButtonUnselectedTab: UIColor { return tabForegroundUnselected }
-    override var separator: UIColor { return UIColor.Photon.Grey50 }
-}
-
 fileprivate class DarkHomePanelColor: HomePanelColor {
     override var toolbarBackground: UIColor { return defaultBackground }
     override var toolbarHighlight: UIColor { return UIColor.Photon.Blue40 }
@@ -96,7 +85,6 @@ class DarkTheme: NormalTheme {
     override var name: String { return BuiltinThemeName.dark.rawValue }
     override var tableView: TableViewColor { return DarkTableViewColor() }
     override var tabTray: TabTrayColor { return DarkTabTrayColor() }
-    override var topTabs: TopTabsColor { return DarkTopTabsColor() }
     override var homePanel: HomePanelColor { return DarkHomePanelColor() }
     override var snackbar: SnackBarColor { return DarkSnackBarColor() }
     override var general: GeneralColor { return DarkGeneralColor() }

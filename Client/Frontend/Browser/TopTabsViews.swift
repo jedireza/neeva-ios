@@ -13,7 +13,7 @@ struct TopTabsSeparatorUX {
 class TopTabsSeparator: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor.theme.topTabs.separator
+        self.backgroundColor = UIColor.TopTabs.separator
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -27,7 +27,7 @@ class TopTabsHeaderFooter: UICollectionReusableView {
         super.init(frame: frame)
         line.semanticContentAttribute = .forceLeftToRight
         addSubview(line)
-        line.backgroundColor = UIColor.theme.topTabs.separator
+        line.backgroundColor = UIColor.TopTabs.separator
     }
 
     func arrangeLine(_ kind: String) {
@@ -67,10 +67,10 @@ class TopTabCell: UICollectionViewCell, PrivateModeUI {
 
     var selectedTab = false {
         didSet {
-            backgroundColor = selectedTab ? UIColor.theme.topTabs.tabBackgroundSelected : UIColor.theme.topTabs.tabBackgroundUnselected
-            titleText.textColor = selectedTab ? UIColor.theme.topTabs.tabForegroundSelected : UIColor.theme.topTabs.tabForegroundUnselected
+            backgroundColor = selectedTab ? UIColor.TopTabs.tabBackgroundSelected : UIColor.TopTabs.tabBackgroundUnselected
+            titleText.textColor = selectedTab ? UIColor.TopTabs.tabForegroundSelected : UIColor.TopTabs.tabForegroundUnselected
             highlightLine.isHidden = !selectedTab
-            closeButton.tintColor = selectedTab ? UIColor.theme.topTabs.closeButtonSelectedTab : UIColor.theme.topTabs.closeButtonUnselectedTab
+            closeButton.tintColor = selectedTab ? UIColor.TopTabs.closeButtonSelectedTab : UIColor.TopTabs.closeButtonUnselectedTab
             closeButton.backgroundColor = backgroundColor
             closeButton.layer.shadowColor = backgroundColor?.cgColor
             if selectedTab {
@@ -162,7 +162,7 @@ class TopTabCell: UICollectionViewCell, PrivateModeUI {
     }
 
     func applyUIMode(isPrivate: Bool) {
-        highlightLine.backgroundColor = UIColor.theme.topTabs.tabSelectedIndicatorBar(isPrivate)
+        highlightLine.backgroundColor = UIColor.TopTabs.tabSelectedIndicatorBar(isPrivate)
     }
 
     func configureWith(tab: Tab, isSelected: Bool) {

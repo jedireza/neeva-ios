@@ -66,23 +66,6 @@ class TabTrayColor {
     var faviconTint: UIColor { return UIColor.black }
 }
 
-class TopTabsColor {
-    var background: UIColor { return UIColor.Photon.Grey80 }
-    var tabBackgroundSelected: UIColor { return UIColor.Photon.Grey10 }
-    var tabBackgroundUnselected: UIColor { return UIColor.Photon.Grey80 }
-    var tabForegroundSelected: UIColor { return UIColor.Photon.Grey90 }
-    var tabForegroundUnselected: UIColor { return UIColor.Photon.Grey40 }
-    func tabSelectedIndicatorBar(_ isPrivate: Bool) -> UIColor {
-        return !isPrivate ? UIColor.Photon.Blue40 : UIColor.Defaults.SystemGray01
-    }
-    var buttonTint: UIColor { return UIColor.Photon.Grey40 }
-    var privateModeButtonOffTint: UIColor { return buttonTint }
-    var privateModeButtonOnTint: UIColor { return UIColor.Photon.Grey10 }
-    var closeButtonSelectedTab: UIColor { return tabBackgroundUnselected }
-    var closeButtonUnselectedTab: UIColor { return tabBackgroundSelected }
-    var separator: UIColor { return UIColor.Photon.Grey70 }
-}
-
 class HomePanelColor {
     var toolbarBackground: UIColor { return defaultBackground }
     var toolbarHighlight: UIColor { return UIColor.Photon.Blue40 }
@@ -138,7 +121,6 @@ protocol Theme {
     var name: String { get }
     var tableView: TableViewColor { get }
     var tabTray: TabTrayColor { get }
-    var topTabs: TopTabsColor { get }
     var homePanel: HomePanelColor { get }
     var snackbar: SnackBarColor { get }
     var general: GeneralColor { get }
@@ -151,7 +133,6 @@ class NormalTheme: Theme {
     var name: String { return BuiltinThemeName.normal.rawValue }
     var tableView: TableViewColor { return TableViewColor() }
     var tabTray: TabTrayColor { return TabTrayColor() }
-    var topTabs: TopTabsColor { return TopTabsColor() }
     var homePanel: HomePanelColor { return HomePanelColor() }
     var snackbar: SnackBarColor { return SnackBarColor() }
     var general: GeneralColor { return GeneralColor() }

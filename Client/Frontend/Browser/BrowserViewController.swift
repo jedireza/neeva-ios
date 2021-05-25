@@ -271,7 +271,6 @@ class BrowserViewController: UIViewController {
                     make.height.equalTo(TopTabsUX.TopTabsViewHeight)
                 }
                 self.topTabsViewController = topTabsViewController
-                topTabsViewController.applyTheme()
             }
             topTabsContainer.snp.updateConstraints { make in
                 make.height.equalTo(TopTabsUX.TopTabsViewHeight)
@@ -2379,7 +2378,7 @@ extension BrowserViewController: TabTrayDelegate {
 extension BrowserViewController: Themeable {
     func applyTheme() {
         guard self.isViewLoaded else { return }
-        let ui: [Themeable?] = [readerModeBar, topTabsViewController, searchController, libraryViewController, libraryDrawerViewController]
+        let ui: [Themeable?] = [readerModeBar, searchController, libraryViewController, libraryDrawerViewController]
         ui.forEach { $0?.applyTheme() }
         statusBarOverlay.backgroundColor = shouldShowTopTabsForTraitCollection(traitCollection) ? UIColor.Photon.Grey80 : urlBar.backgroundColor
         setNeedsStatusBarAppearanceUpdate()
