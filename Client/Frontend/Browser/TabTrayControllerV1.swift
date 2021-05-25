@@ -231,7 +231,7 @@ class TabTrayControllerV1: UIViewController {
     override func updateViewConstraints() {
         let centerAlign =
             UIDevice.current.userInterfaceIdiom == .pad ||
-            UIDevice.current.orientation != .portrait
+            (UIDevice.current.orientation != .portrait && UIDevice.current.orientation != .faceUp)
         locationView.snp.remakeConstraints { make in
             make.height.equalTo(UIConstants.TextFieldHeight)
             if centerAlign {
