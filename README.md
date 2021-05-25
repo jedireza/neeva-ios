@@ -75,7 +75,7 @@ To perform authenticated requests in SwiftUI previews, create a `dev-token.txt` 
 
 ## Updating the schema and `API.swift`
 
-Copy the latest `schema.json` file to `Sources/NeevaSupport/schema.json`
+Copy the latest `schema.json` file to `Shared/API/schema.json`
 
 You can get the latest `schema.json` file from the monorepo:
 ```

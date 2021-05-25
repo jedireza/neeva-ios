@@ -29,37 +29,50 @@ extension SpaceListController.Space: Identifiable {
 }
 
 /// Retrieves all URLs for a space
-class SpaceURLsQueryController: QueryController<GetSpaceUrLsQuery, [URL]> {
-    private var spaceId: String
+class SpacesDataQueryController: QueryController<GetSpacesDataQuery, [SpacesDataQueryController.Space]> {
+    struct Space {
+        var id: String
+        var urls: [URL]
+    }
 
-    public init(spaceId: String) {
-        self.spaceId = spaceId
+    private var spaceIds: [String]
+
+    public init(spaceIds: [String]) {
+        self.spaceIds = spaceIds
         super.init()
     }
 
     override func reload() {
-        self.perform(query: GetSpaceUrLsQuery(id: spaceId))
+        self.perform(query: GetSpacesDataQuery(ids: spaceIds))
     }
 
-    override class func processData(_ data: GetSpaceUrLsQuery.Data) -> [URL] {
-        var urls: [URL] = []
-        if let spaces = data.getSpace?.space, spaces.count == 1, let entities = spaces[0].space?.entities {
-            for entity in entities {
-                if let urlString = entity.spaceEntity?.url {
-                    if let url = URL(string: urlString) {
-                        urls.append(url)
+    override class func processData(_ data: GetSpacesDataQuery.Data) -> [Space] {
+        var result: [Space] = []
+        if let spaces = data.getSpace?.space {
+            for space in spaces {
+                if let id = space.pageMetadata?.pageId {
+                    var urls: [URL] = []
+                    if let entities = space.space?.entities {
+                        for entity in entities {
+                            if let urlString = entity.spaceEntity?.url {
+                                if let url = URL(string: urlString) {
+                                    urls.append(url)
+                                }
+                            }
+                        }
                     }
+                    result.append(Space(id: id, urls: urls))
                 }
             }
         }
-        return urls
+        return result
     }
 
-    @discardableResult static func getURLs(
-        spaceId: String,
-        completion: @escaping (Result<[URL], Error>) -> ()
+    @discardableResult static func getSpacesData(
+        spaceIds: [String],
+        completion: @escaping (Result<[Space], Error>) -> ()
     ) -> Apollo.Cancellable {
-        Self.perform(query: GetSpaceUrLsQuery(id: spaceId), completion: completion)
+        Self.perform(query: GetSpacesDataQuery(ids: spaceIds), completion: completion)
     }
 }
 

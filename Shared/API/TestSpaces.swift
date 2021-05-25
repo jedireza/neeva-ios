@@ -6,6 +6,7 @@ extension Space {
     static let empty = Space(
         id: .init(value: "page-id"),
         name: "Empty Space",
+        lastModifiedTs: "2020-12-18T16:31:52Z",
         thumbnail: nil,
         resultCount: 0,
         isDefaultSpace: false
@@ -13,6 +14,7 @@ extension Space {
     static let stackOverflow = Space(
         id: .init(value: "page-id"),
         name: "Test Space",
+        lastModifiedTs: "2020-12-18T15:57:47Z",
         thumbnail: SpaceThumbnails.stackOverflowThumbnail,
         resultCount: 1,
         isDefaultSpace: false
@@ -20,6 +22,7 @@ extension Space {
     static let savedForLater = Space(
         id: .init(value: "page-id"),
         name: "Saved For Later",
+        lastModifiedTs: "2020-12-18T16:31:52Z",
         thumbnail: SpaceThumbnails.githubThumbnail,
         resultCount: 1,
         isDefaultSpace: false
@@ -28,6 +31,7 @@ extension Space {
     static let savedForLaterEmpty = Space(
         id: .init(value: "page-id"),
         name: "Saved For Later",
+        lastModifiedTs: "2020-12-18T16:31:52Z",
         thumbnail: SpaceThumbnails.githubThumbnail,
         resultCount: 0,
         isDefaultSpace: false

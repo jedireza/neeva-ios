@@ -3866,7 +3866,7 @@ public final class ListSpacesQuery: GraphQLQuery {
 
   public let operationName: String = "ListSpaces"
 
-  public let operationIdentifier: String? = "b58a70eef4d167f68d83d584d1115bd2662774ba94137a874ef5fdba882024dd"
+  public let operationIdentifier: String? = "8479ddba600b1bfe2daa269eee72a925bf3e1f0bd64bf4de707693203989258b"
 
   public var queryDocument: String {
     var document: String = operationDefinition
@@ -4058,6 +4058,7 @@ public final class ListSpacesQuery: GraphQLQuery {
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("name", type: .scalar(String.self)),
+              GraphQLField("lastModifiedTs", type: .scalar(String.self)),
               GraphQLField("userACL", type: .object(UserAcl.selections)),
               GraphQLField("hasPublicACL", type: .scalar(Bool.self)),
               GraphQLField("thumbnail", type: .scalar(String.self)),
@@ -4073,8 +4074,8 @@ public final class ListSpacesQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(name: String? = nil, userAcl: UserAcl? = nil, hasPublicAcl: Bool? = nil, thumbnail: String? = nil, thumbnailSize: ThumbnailSize? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "userACL": userAcl.flatMap { (value: UserAcl) -> ResultMap in value.resultMap }, "hasPublicACL": hasPublicAcl, "thumbnail": thumbnail, "thumbnailSize": thumbnailSize.flatMap { (value: ThumbnailSize) -> ResultMap in value.resultMap }, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace])
+          public init(name: String? = nil, lastModifiedTs: String? = nil, userAcl: UserAcl? = nil, hasPublicAcl: Bool? = nil, thumbnail: String? = nil, thumbnailSize: ThumbnailSize? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "lastModifiedTs": lastModifiedTs, "userACL": userAcl.flatMap { (value: UserAcl) -> ResultMap in value.resultMap }, "hasPublicACL": hasPublicAcl, "thumbnail": thumbnail, "thumbnailSize": thumbnailSize.flatMap { (value: ThumbnailSize) -> ResultMap in value.resultMap }, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace])
           }
 
           public var __typename: String {
@@ -4092,6 +4093,15 @@ public final class ListSpacesQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "name")
+            }
+          }
+
+          public var lastModifiedTs: String? {
+            get {
+              return resultMap["lastModifiedTs"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "lastModifiedTs")
             }
           }
 
@@ -4268,15 +4278,19 @@ public final class ListSpacesQuery: GraphQLQuery {
   }
 }
 
-public final class GetSpaceUrLsQuery: GraphQLQuery {
+public final class GetSpacesDataQuery: GraphQLQuery {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    query GetSpaceURLs($id: String) {
-      getSpace(input: {id: $id}) {
+    query GetSpacesData($ids: [String!]) {
+      getSpace(input: {ids: $ids}) {
         __typename
         space {
           __typename
+          pageMetadata {
+            __typename
+            pageID
+          }
           space {
             __typename
             entities {
@@ -4292,18 +4306,18 @@ public final class GetSpaceUrLsQuery: GraphQLQuery {
     }
     """
 
-  public let operationName: String = "GetSpaceURLs"
+  public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "4a632c73193e3dcc84fa38bea4679f6972dd5ff6afb5a84ff38342b916912ada"
+  public let operationIdentifier: String? = "d6b61f8f61b54a78cd099115854705351535f6eeca17a4456f77c6a8e02123f1"
 
-  public var id: String?
+  public var ids: [String]?
 
-  public init(id: String? = nil) {
-    self.id = id
+  public init(ids: [String]?) {
+    self.ids = ids
   }
 
   public var variables: GraphQLMap? {
-    return ["id": id]
+    return ["ids": ids]
   }
 
   public struct Data: GraphQLSelectionSet {
@@ -4311,7 +4325,7 @@ public final class GetSpaceUrLsQuery: GraphQLQuery {
 
     public static var selections: [GraphQLSelection] {
       return [
-        GraphQLField("getSpace", arguments: ["input": ["id": GraphQLVariable("id")]], type: .object(GetSpace.selections)),
+        GraphQLField("getSpace", arguments: ["input": ["ids": GraphQLVariable("ids")]], type: .object(GetSpace.selections)),
       ]
     }
 
@@ -4380,6 +4394,7 @@ public final class GetSpaceUrLsQuery: GraphQLQuery {
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("pageMetadata", type: .object(PageMetadatum.selections)),
             GraphQLField("space", type: .object(Space.selections)),
           ]
         }
@@ -4390,8 +4405,8 @@ public final class GetSpaceUrLsQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(space: Space? = nil) {
-          self.init(unsafeResultMap: ["__typename": "Space", "space": space.flatMap { (value: Space) -> ResultMap in value.resultMap }])
+        public init(pageMetadata: PageMetadatum? = nil, space: Space? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Space", "pageMetadata": pageMetadata.flatMap { (value: PageMetadatum) -> ResultMap in value.resultMap }, "space": space.flatMap { (value: Space) -> ResultMap in value.resultMap }])
         }
 
         public var __typename: String {
@@ -4403,12 +4418,61 @@ public final class GetSpaceUrLsQuery: GraphQLQuery {
           }
         }
 
+        public var pageMetadata: PageMetadatum? {
+          get {
+            return (resultMap["pageMetadata"] as? ResultMap).flatMap { PageMetadatum(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "pageMetadata")
+          }
+        }
+
         public var space: Space? {
           get {
             return (resultMap["space"] as? ResultMap).flatMap { Space(unsafeResultMap: $0) }
           }
           set {
             resultMap.updateValue(newValue?.resultMap, forKey: "space")
+          }
+        }
+
+        public struct PageMetadatum: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PageMetadata"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("pageID", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(pageId: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PageMetadata", "pageID": pageId])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// An optional identifier for the page.
+          public var pageId: String? {
+            get {
+              return resultMap["pageID"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "pageID")
+            }
           }
         }
 
@@ -5135,6 +5199,7 @@ public struct SpaceMetadata: GraphQLFragment {
     fragment spaceMetadata on SpaceData {
       __typename
       name
+      lastModifiedTs
       userACL {
         __typename
         acl
@@ -5157,6 +5222,7 @@ public struct SpaceMetadata: GraphQLFragment {
     return [
       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
       GraphQLField("name", type: .scalar(String.self)),
+      GraphQLField("lastModifiedTs", type: .scalar(String.self)),
       GraphQLField("userACL", type: .object(UserAcl.selections)),
       GraphQLField("hasPublicACL", type: .scalar(Bool.self)),
       GraphQLField("thumbnail", type: .scalar(String.self)),
@@ -5172,8 +5238,8 @@ public struct SpaceMetadata: GraphQLFragment {
     self.resultMap = unsafeResultMap
   }
 
-  public init(name: String? = nil, userAcl: UserAcl? = nil, hasPublicAcl: Bool? = nil, thumbnail: String? = nil, thumbnailSize: ThumbnailSize? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil) {
-    self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "userACL": userAcl.flatMap { (value: UserAcl) -> ResultMap in value.resultMap }, "hasPublicACL": hasPublicAcl, "thumbnail": thumbnail, "thumbnailSize": thumbnailSize.flatMap { (value: ThumbnailSize) -> ResultMap in value.resultMap }, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace])
+  public init(name: String? = nil, lastModifiedTs: String? = nil, userAcl: UserAcl? = nil, hasPublicAcl: Bool? = nil, thumbnail: String? = nil, thumbnailSize: ThumbnailSize? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil) {
+    self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "lastModifiedTs": lastModifiedTs, "userACL": userAcl.flatMap { (value: UserAcl) -> ResultMap in value.resultMap }, "hasPublicACL": hasPublicAcl, "thumbnail": thumbnail, "thumbnailSize": thumbnailSize.flatMap { (value: ThumbnailSize) -> ResultMap in value.resultMap }, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace])
   }
 
   public var __typename: String {
@@ -5191,6 +5257,15 @@ public struct SpaceMetadata: GraphQLFragment {
     }
     set {
       resultMap.updateValue(newValue, forKey: "name")
+    }
+  }
+
+  public var lastModifiedTs: String? {
+    get {
+      return resultMap["lastModifiedTs"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "lastModifiedTs")
     }
   }
 

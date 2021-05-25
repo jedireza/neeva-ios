@@ -12,9 +12,12 @@ query ListSpaces($kind: ListSpacesKind = All) {
   }
 }
 
-query GetSpaceURLs($id: String) {
-  getSpace(input: { id: $id }) {
+query GetSpacesData($ids: [String!]) {
+  getSpace(input: { ids: $ids }) {
     space {
+      pageMetadata {
+        pageID
+      }
       space {
         entities {
           spaceEntity {

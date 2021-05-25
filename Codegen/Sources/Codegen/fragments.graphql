@@ -1,5 +1,6 @@
 fragment spaceMetadata on SpaceData {
   name
+  lastModifiedTs
   userACL {
     acl
   }
