@@ -202,10 +202,10 @@ extension LibraryViewController: Themeable {
         panelDescriptors.forEach { item in
             (item.viewController as? Themeable)?.applyTheme()
         }
-        buttonContainerView.backgroundColor = UIColor.theme.homePanel.toolbarBackground
-        view.backgroundColor = UIColor.theme.homePanel.toolbarBackground
-        buttonTintColor = UIColor.theme.homePanel.toolbarTint
-        buttonSelectedTintColor = UIColor.theme.homePanel.toolbarHighlight
+        buttonContainerView.backgroundColor = UIColor.HomePanel.toolbarBackground
+        view.backgroundColor = UIColor.HomePanel.toolbarBackground
+        buttonTintColor = UIColor.HomePanel.toolbarTint
+        buttonSelectedTintColor = UIColor.HomePanel.toolbarHighlight
         updateButtonTints()
     }
 }

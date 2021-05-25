@@ -52,7 +52,7 @@ struct SearchSuggestionView: View {
     }
 
     var body: some View {
-        let bgColor = Color(UIColor.theme.homePanel.panelBackground)
+        let bgColor = Color(UIColor.HomePanel.panelBackground)
         GeometryReader { outerGeometry in
             VStack(spacing: 0) {
                 if let error = error {

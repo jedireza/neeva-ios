@@ -63,8 +63,8 @@ class ReadingListTableViewCell: UITableViewCell, Themeable {
     var unread: Bool = true {
         didSet {
             readStatusImageView.image = UIImage(named: unread ? "MarkAsRead" : "MarkAsUnread")
-            titleLabel.textColor = unread ? UIColor.theme.homePanel.readingListActive : UIColor.theme.homePanel.readingListDimmed
-            hostnameLabel.textColor = unread ? UIColor.theme.homePanel.readingListActive : UIColor.theme.homePanel.readingListDimmed
+            titleLabel.textColor = unread ? UIColor.HomePanel.readingListActive : UIColor.HomePanel.readingListDimmed
+            hostnameLabel.textColor = unread ? UIColor.HomePanel.readingListActive : UIColor.HomePanel.readingListDimmed
             updateAccessibilityLabel()
         }
     }
@@ -121,8 +121,8 @@ class ReadingListTableViewCell: UITableViewCell, Themeable {
     }
 
     func applyTheme() {
-        titleLabel.textColor = UIColor.theme.homePanel.readingListActive
-        hostnameLabel.textColor = UIColor.theme.homePanel.readingListActive
+        titleLabel.textColor = UIColor.HomePanel.readingListActive
+        hostnameLabel.textColor = UIColor.HomePanel.readingListActive
     }
 
     override func prepareForReuse() {

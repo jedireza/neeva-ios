@@ -64,6 +64,6 @@ class HistoryBackButton: UIButton, Themeable {
         title.textColor = UIColor.theme.general.highlightBlue
         chevron.tintColor = UIColor.theme.general.highlightBlue
         backgroundColor = UIColor.theme.tableView.headerBackground
-        [topBorder, bottomBorder].forEach { $0.backgroundColor = UIColor.theme.homePanel.siteTableHeaderBorder }
+        [topBorder, bottomBorder].forEach { $0.backgroundColor = UIColor.HomePanel.siteTableHeaderBorder }
     }
 }

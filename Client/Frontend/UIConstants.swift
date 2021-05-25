@@ -150,15 +150,6 @@ extension UIColor {
         }
     }
 
-/*
-    fileprivate class DarkTopTabsColor: TopTabsColor {
-        override var tabBackgroundSelected: UIColor { return UIColor.Photon.Grey80 }
-        override var tabForegroundSelected: UIColor { return UIColor.Photon.Grey10 }
-        override var closeButtonSelectedTab: UIColor { return UIColor.Photon.Grey10 }
-        override var closeButtonUnselectedTab: UIColor { return UIColor.Photon.Grey40 }
-        override var separator: UIColor { return UIColor.Photon.Grey50 }
-    }
-    */
     public struct TopTabs {
         public static let background = UIColor.Photon.Grey80
 
@@ -225,6 +216,15 @@ extension UIColor {
 
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
+        public static let toolbarBackground = UIColor.Neeva.DefaultBackground
+        public static let toolbarHighlight = UIColor.Neeva.UI.Blue40
+        public static let toolbarTint = UIColor.secondaryLabel
+        public static let panelBackground = UIColor.systemBackground
+        public static let welcomeScreenText = UIColor.secondaryLabel
+        public static let siteTableHeaderBorder = UIColor.Neeva.UI.Gray30.withAlphaComponent(0.8)
+        public static let readingListActive = UIColor.Neeva.DefaultTextAndTint
+        public static let readingListDimmed = UIColor.Photon.Grey40
+        public static let downloadedFileIcon = UIColor.secondaryLabel
     }
     
     public struct PopupMenu {

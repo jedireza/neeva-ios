@@ -41,35 +41,6 @@ fileprivate class DarkTabTrayColor: TabTrayColor {
     override var faviconTint: UIColor { return UIColor.Photon.White100 }
 }
 
-fileprivate class DarkHomePanelColor: HomePanelColor {
-    override var toolbarBackground: UIColor { return defaultBackground }
-    override var toolbarHighlight: UIColor { return UIColor.Photon.Blue40 }
-    override var toolbarTint: UIColor { return UIColor.Photon.Grey30 }
-    override var panelBackground: UIColor { return UIColor.Photon.Grey90 }
-    override var separator: UIColor { return defaultSeparator }
-    override var border: UIColor { return UIColor.Photon.Grey60 }
-    override var buttonContainerBorder: UIColor { return separator }
-
-    override var welcomeScreenText: UIColor { return UIColor.Photon.Grey30 }
-    
-    override var activityStreamHeaderText: UIColor { return UIColor.Photon.Grey30 }
-    override var activityStreamCellTitle: UIColor { return UIColor.Photon.Grey20 }
-    override var activityStreamCellDescription: UIColor { return UIColor.Photon.Grey30 }
-
-    override var topSitesFavBg: UIColor { return UIColor(rgb: 0x505054) }
-    override var topSitesLabel: UIColor { return UIColor.Neeva.Brand.White }
-
-    override var downloadedFileIcon: UIColor { return UIColor.Photon.Grey30 }
-
-    override var historyHeaderIconsBackground: UIColor { return UIColor.clear }
-
-    override var readingListActive: UIColor { return UIColor.Photon.Grey10 }
-    override var readingListDimmed: UIColor { return UIColor.Photon.Grey40 }
-
-    override var searchSuggestionPillBackground: UIColor { return UIColor.Photon.Grey70 }
-    override var searchSuggestionPillForeground: UIColor { return defaultTextAndTint }
-}
-
 fileprivate class DarkSnackBarColor: SnackBarColor {
 // Use defaults
 }
@@ -85,7 +56,6 @@ class DarkTheme: NormalTheme {
     override var name: String { return BuiltinThemeName.dark.rawValue }
     override var tableView: TableViewColor { return DarkTableViewColor() }
     override var tabTray: TabTrayColor { return DarkTabTrayColor() }
-    override var homePanel: HomePanelColor { return DarkHomePanelColor() }
     override var snackbar: SnackBarColor { return DarkSnackBarColor() }
     override var general: GeneralColor { return DarkGeneralColor() }
     override var actionMenu: ActionMenuColor { return DarkActionMenuColor() }

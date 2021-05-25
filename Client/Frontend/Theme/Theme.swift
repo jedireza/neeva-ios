@@ -66,39 +66,6 @@ class TabTrayColor {
     var faviconTint: UIColor { return UIColor.black }
 }
 
-class HomePanelColor {
-    var toolbarBackground: UIColor { return defaultBackground }
-    var toolbarHighlight: UIColor { return UIColor.Photon.Blue40 }
-    var toolbarTint: UIColor { return UIColor.Photon.Grey50 }
-
-    var panelBackground: UIColor { return UIColor.Photon.White100 }
-
-    var separator: UIColor { return defaultSeparator }
-    var border: UIColor { return UIColor.Photon.Grey60 }
-    var buttonContainerBorder: UIColor { return separator }
-    
-    var welcomeScreenText: UIColor { return UIColor.Photon.Grey50 }
-    
-    var siteTableHeaderBorder: UIColor { return UIColor.Photon.Grey30.withAlphaComponent(0.8) }
-
-    var topSitesFavBg: UIColor { return UIColor.Neeva.UI.Gray97 }
-    var topSitesLabel: UIColor { return UIColor.Neeva.UI.Gray60 }
-
-    var activityStreamHeaderText: UIColor { return UIColor.Photon.Grey50 }
-    var activityStreamCellTitle: UIColor { return UIColor.black }
-    var activityStreamCellDescription: UIColor { return UIColor.Photon.Grey60 }
-
-    var readingListActive: UIColor { return defaultTextAndTint }
-    var readingListDimmed: UIColor { return UIColor.Photon.Grey40 }
-    
-    var downloadedFileIcon: UIColor { return UIColor.Photon.Grey60 }
-    
-    var historyHeaderIconsBackground: UIColor { return UIColor.Photon.White100 }
-
-    var searchSuggestionPillBackground: UIColor { return UIColor.Photon.White100 }
-    var searchSuggestionPillForeground: UIColor { return UIColor.Photon.Blue40 }
-}
-
 class SnackBarColor {
     var highlight: UIColor { return UIColor.Defaults.iOSTextHighlightBlue.withAlphaComponent(0.9) }
     var highlightText: UIColor { return UIColor.Photon.Blue40 }
@@ -121,7 +88,6 @@ protocol Theme {
     var name: String { get }
     var tableView: TableViewColor { get }
     var tabTray: TabTrayColor { get }
-    var homePanel: HomePanelColor { get }
     var snackbar: SnackBarColor { get }
     var general: GeneralColor { get }
     var actionMenu: ActionMenuColor { get }
@@ -133,7 +99,6 @@ class NormalTheme: Theme {
     var name: String { return BuiltinThemeName.normal.rawValue }
     var tableView: TableViewColor { return TableViewColor() }
     var tabTray: TabTrayColor { return TabTrayColor() }
-    var homePanel: HomePanelColor { return HomePanelColor() }
     var snackbar: SnackBarColor { return SnackBarColor() }
     var general: GeneralColor { return GeneralColor() }
     var actionMenu: ActionMenuColor { return ActionMenuColor() }

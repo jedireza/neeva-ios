@@ -199,7 +199,7 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
         return icon
     }
 
-    private func roundRectImageWithLabel(_ label: String, width: CGFloat, height: CGFloat, radius: CGFloat = 5.0, strokeWidth: CGFloat = 1.0, strokeColor: UIColor = UIColor.theme.homePanel.downloadedFileIcon, fontSize: CGFloat = 9.0) -> UIImage? {
+    private func roundRectImageWithLabel(_ label: String, width: CGFloat, height: CGFloat, radius: CGFloat = 5.0, strokeWidth: CGFloat = 1.0, strokeColor: UIColor = UIColor.HomePanel.downloadedFileIcon, fontSize: CGFloat = 9.0) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), false, 0.0)
         let context = UIGraphicsGetCurrentContext()
         context?.setStrokeColor(strokeColor.cgColor)
@@ -241,7 +241,7 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     fileprivate func createEmptyStateOverlayView() -> UIView {
         let overlayView = UIView()
-        overlayView.backgroundColor = UIColor.theme.homePanel.panelBackground
+        overlayView.backgroundColor = UIColor.HomePanel.panelBackground
 
         let logoImageView = UIImageView(image: UIImage.templateImageNamed("emptyDownloads"))
         logoImageView.tintColor = UIColor.Photon.Grey60
@@ -261,7 +261,7 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
         welcomeLabel.text = Strings.DownloadsPanelEmptyStateTitle
         welcomeLabel.textAlignment = .center
         welcomeLabel.font = DynamicFontHelper.defaultHelper.DeviceFontLight
-        welcomeLabel.textColor = UIColor.theme.homePanel.welcomeScreenText
+        welcomeLabel.textColor = UIColor.HomePanel.welcomeScreenText
         welcomeLabel.numberOfLines = 0
         welcomeLabel.adjustsFontSizeToFitWidth = true
 

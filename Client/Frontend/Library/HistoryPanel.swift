@@ -292,7 +292,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         cell.detailTextLabel?.text = ""
         cell.imageView?.image = UIImage.templateImageNamed("forget")
         cell.imageView?.tintColor = HistoryPanelUX.actionIconColor
-        cell.imageView?.backgroundColor = UIColor.theme.homePanel.historyHeaderIconsBackground
         cell.accessibilityIdentifier = "HistoryPanel.clearHistory"
 
         var isEmpty = true
@@ -312,7 +311,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         cell.detailTextLabel?.text = ""
         cell.imageView?.image = UIImage.templateImageNamed("recently_closed")
         cell.imageView?.tintColor = HistoryPanelUX.actionIconColor
-        cell.imageView?.backgroundColor = UIColor.theme.homePanel.historyHeaderIconsBackground
         AdditionalHistoryActionRow.setStyle(enabled: hasRecentlyClosed, forCell: cell)
         cell.accessibilityIdentifier = "HistoryPanel.recentlyClosedCell"
         return cell
@@ -519,7 +517,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         // overlayView becomes the footer view, and for unknown reason, setting the bgcolor is ignored.
         // Create an explicit view for setting the color.
         let bgColor = UIView()
-        bgColor.backgroundColor = UIColor.theme.homePanel.panelBackground
+        bgColor.backgroundColor = UIColor.HomePanel.panelBackground
         overlayView.addSubview(bgColor)
         bgColor.snp.makeConstraints { make in
             // Height behaves oddly: equalToSuperview fails in this case, as does setting top.equalToSuperview(), simply setting this to ample height works.
@@ -532,7 +530,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         welcomeLabel.text = Strings.HistoryPanelEmptyStateTitle
         welcomeLabel.textAlignment = .center
         welcomeLabel.font = DynamicFontHelper.defaultHelper.DeviceFontLight
-        welcomeLabel.textColor = UIColor.theme.homePanel.welcomeScreenText
+        welcomeLabel.textColor = UIColor.HomePanel.welcomeScreenText
         welcomeLabel.numberOfLines = 0
         welcomeLabel.adjustsFontSizeToFitWidth = true
 
