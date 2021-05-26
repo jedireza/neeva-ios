@@ -61,4 +61,20 @@ class SettingsTest: BaseTestCase {
         }
     }
     */
+
+    func testSendFeedback() {
+        navigator.goto(SettingsScreen)
+
+        let settingsTableView = app.tables["AppSettingsTableViewController.tableView"]
+        while settingsTableView.staticTexts["Help"].exists == false {
+            settingsTableView.swipeUp()
+        }
+
+        let sendFeedbackCell = settingsTableView.cells["Send Feedback"]
+        XCTAssertTrue(sendFeedbackCell.isEnabled)
+        sendFeedbackCell.tap()
+
+        waitForExistence(app.buttons["Cancel"])
+        app.buttons["Cancel"].tap()
+    }
 }
