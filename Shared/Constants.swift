@@ -52,6 +52,17 @@ public struct NeevaConstants {
         public static let deviceType = Header("X-Neeva-Device-Type", "ios-browser")
     }
 
+    public static var deviceTypeCookie: HTTPCookie {
+        /// This cookie is set on requests to identify the requester as the iOS app.
+        HTTPCookie(properties: [
+            .name: "DeviceType",
+            .value: "ios-browser",
+            .domain: NeevaConstants.appHost,
+            .path: "/",
+            .expires: Date.distantFuture
+        ])!
+    }
+
     public static let sharedBundle = Bundle(for: BundleHookClass.self)
 
     public static func isOnNeevaHome(url: URL?) -> Bool {

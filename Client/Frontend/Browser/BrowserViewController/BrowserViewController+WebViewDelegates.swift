@@ -458,7 +458,12 @@ extension BrowserViewController: WKNavigationDelegate {
             pendingRequests[url.absoluteString] = navigationAction.request
 
             if NeevaConstants.isAppHost(url.host) {
-               webView.customUserAgent = UserAgent.neevaAppUserAgent()
+                webView.customUserAgent = UserAgent.neevaAppUserAgent()
+                // Set this cookie as another way to communicate that we are the iOS app.
+                // Unfortunately, setting a customUserAgent is ignored by WebKit for
+                // redirected requests. See https://github.com/neevaco/neeva/issues/40875
+                // for more details.
+                webView.configuration.websiteDataStore.httpCookieStore.setCookie(NeevaConstants.deviceTypeCookie)
             } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(domain: url.baseDomain ?? "")
                 webView.customUserAgent = platformSpecificUserAgent
