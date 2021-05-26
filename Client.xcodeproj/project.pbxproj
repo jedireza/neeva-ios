@@ -266,6 +266,7 @@
 		A93067E81D0FE18E00C49C6E /* NightModeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93067E71D0FE18E00C49C6E /* NightModeHelper.swift */; };
 		BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */; };
 		BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */; };
+		BC5C434F265D240E007E2F61 /* QuestPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C434E265D240E007E2F61 /* QuestPromptViewController.swift */; };
 		BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC62C06F263E0E6A00615E70 /* EnvironmentHelper.swift */; };
 		BC6D33C826228EA00050DEC4 /* IntroFirstRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */; };
 		BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */; };
@@ -1199,6 +1200,7 @@
 		A93067E71D0FE18E00C49C6E /* NightModeHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NightModeHelper.swift; sourceTree = "<group>"; };
 		BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaMenuViewController.swift; sourceTree = "<group>"; };
 		BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIWindowExtensions.swift; sourceTree = "<group>"; };
+		BC5C434E265D240E007E2F61 /* QuestPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestPromptViewController.swift; sourceTree = "<group>"; };
 		BC62C06F263E0E6A00615E70 /* EnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentHelper.swift; sourceTree = "<group>"; };
 		BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroFirstRunView.swift; sourceTree = "<group>"; };
 		BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Bold.otf"; sourceTree = "<group>"; };
@@ -2313,6 +2315,7 @@
 				BC85E225264F407C0068092F /* TourPromptView.swift */,
 				BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */,
 				BC93EE852654E31300D1AA07 /* Color.xcassets */,
+				BC5C434E265D240E007E2F61 /* QuestPromptViewController.swift */,
 			);
 			path = Prompt;
 			sourceTree = "<group>";
@@ -4461,6 +4464,7 @@
 				1DF4266E251BC46D0086386A /* FaviconFetcher+Non-Bundled.swift in Sources */,
 				C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */,
 				0B62EFD21AD63CD100ACB9CD /* Clearables.swift in Sources */,
+				BC5C434F265D240E007E2F61 /* QuestPromptViewController.swift in Sources */,
 				431C0CA925C890E500395CE4 /* DefaultBrowserOnboardingViewModel.swift in Sources */,
 				7482205C1DBAB56300EEEA72 /* MailProviders.swift in Sources */,
 				C40046FA1CF8E0B200B08303 /* BackForwardListAnimator.swift in Sources */,

@@ -12,7 +12,7 @@ struct TourPromptView: View {
     var onConfirm: (()-> Void)?
     let title: String
     let description: String
-    let buttonMessage: String
+    let buttonMessage: String?
 
     init(title: String, description: String, buttonMessage: String, onConfirm: (()-> Void)? = nil) {
         self.onConfirm = onConfirm
@@ -35,18 +35,20 @@ struct TourPromptView: View {
                         .font(.callout)
                 }
                 .fixedSize(horizontal: false, vertical: true)
-                Button(action: onConfirm!) {
-                    ZStack {
-                        Color.Neeva.Tour.ButtonBackground
-                        Text(buttonMessage)
-                            .foregroundColor(Color.Neeva.Tour.ButtonText)
-                            .font(.system(size: 16, weight: .bold))
+                if(buttonMessage != nil && !buttonMessage!.isEmpty) {
+                    Button(action: onConfirm!) {
+                        ZStack {
+                            Color.Neeva.Tour.ButtonBackground
+                            Text(buttonMessage!)
+                                .foregroundColor(Color.Neeva.Tour.ButtonText)
+                                .font(.system(size: 16, weight: .bold))
 
+                        }
                     }
+                    .cornerRadius(30)
+                    .frame(height: 40)
+                    .padding(.horizontal, 6)
                 }
-                .cornerRadius(30)
-                .frame(height: 40)
-                .padding(.horizontal, 6)
             }
             .padding([.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
         }

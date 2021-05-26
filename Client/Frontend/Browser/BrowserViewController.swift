@@ -489,6 +489,25 @@ class BrowserViewController: UIViewController {
         }
     }
 
+    func showQuestNeevaMenuPrompt() {
+        let content = PromptContent(title: "Neeva Menu", description: "Find your spaces menu here")
+        //self.urlBar.toolbarNeevaMenuButton
+
+        guard let neevaMenu = self.toolbar?.toolbarNeevaMenuButton else { return }
+        let prompt = QuestPromptViewController(delegate: self, source: neevaMenu, content: content)
+
+        prompt.view.backgroundColor = UIColor.Neeva.Tour.Background
+        prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 145))
+
+        guard let currentViewController = navigationController?.topViewController else {
+            return
+        }
+
+        if currentViewController is BrowserViewController {
+            present(prompt, animated: true, completion: nil)
+        }
+    }
+
     fileprivate func setupConstraints() {
         topTabsContainer.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.header)
@@ -2512,6 +2531,7 @@ extension BrowserViewController {
                 self.isNeevaMenuSheetOpen = false
             }, isPrivate: isPrivate)
         )
+        self.dismissVC()
     }
 
     func hideNeevaMenuSheet() {
