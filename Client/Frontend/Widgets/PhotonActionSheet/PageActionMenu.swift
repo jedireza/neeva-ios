@@ -14,7 +14,8 @@ extension BrowserViewController {
 
         if let popoverPresentationController = controller.popoverPresentationController {
             popoverPresentationController.sourceView = buttonView
-            popoverPresentationController.sourceRect = buttonView.bounds
+            popoverPresentationController.sourceRect =
+                buttonView.convert(buttonView.bounds, to: UIScreen.main.coordinateSpace)
             popoverPresentationController.permittedArrowDirections = .up
         }
 
@@ -23,6 +24,7 @@ extension BrowserViewController {
 
     func share(tab: Tab, from sourceView: UIView, presentableVC: PresentableVC) {
         guard let url = tab.canonicalURL?.displayURL else { return }
+        let sourceRect = sourceView.convert(sourceView.bounds, to: UIScreen.main.coordinateSpace)
 
         if let temporaryDocument = tab.temporaryDocument {
             temporaryDocument.getURL().uponQueue(.main, block: { tempDocURL in
@@ -31,12 +33,14 @@ extension BrowserViewController {
                 if tempDocURL.isFileURL {
                     self.share(fileURL: tempDocURL, buttonView: sourceView, presentableVC: presentableVC)
                 } else {
-                    self.presentActivityViewController(url, tab: tab, sourceView: sourceView, sourceRect: sourceView.bounds, arrowDirection: .up)
+                    self.presentActivityViewController(url, tab: tab, sourceView: sourceView,
+                            sourceRect: sourceRect, arrowDirection: .up)
 
                 }
             })
         } else {
-            self.presentActivityViewController(url, tab: tab, sourceView: view, sourceRect: sourceView.bounds, arrowDirection: .up)
+            self.presentActivityViewController(url, tab: tab, sourceView: view,
+                    sourceRect: sourceRect, arrowDirection: .up)
         }
     }
 }

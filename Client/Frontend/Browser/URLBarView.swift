@@ -411,6 +411,10 @@ class URLBarView: UIView {
     func updateAlphaForSubviews(_ alpha: CGFloat) {
         locationContainer.alpha = alpha
         neevaMenuButton.alpha = alpha
+        actionButtons.forEach {
+            $0.alpha = alpha
+        }
+        tabsButton.alpha = alpha
     }
 
     func updateProgressBar(_ progress: Float) {
