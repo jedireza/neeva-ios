@@ -125,11 +125,6 @@ class NeevaHomeViewController: UIViewController, HomePanel {
     var suggestedSitesViewModel = SuggestedSitesViewModel(sites: [Site](), onSuggestedSiteClicked: { _ in }, onSuggestedSiteLongPressed: { _ in })
     var homeViewModel = HomeViewModel()
 
-    lazy var defaultBrowserCard: DefaultBrowserCard = {
-        let card = DefaultBrowserCard(frame:.zero, isUserLoggedIn: NeevaUserInfo.shared.isUserLoggedIn)
-        return card
-    }()
-
     init(profile: Profile) {
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
@@ -151,14 +146,6 @@ class NeevaHomeViewController: UIViewController, HomePanel {
 
         self.view.backgroundColor = UIColor.HomePanel.topSitesBackground
         self.profile.panelDataObservers.activityStream.delegate = self
-    }
-    
-    public func dismissDefaultBrowserCard()
-    {
-        self.defaultBrowserCard.removeFromSuperview()
-        self.homeView.snp.makeConstraints { make in
-            make.top.bottom.left.right.equalToSuperview()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -193,15 +180,10 @@ extension NeevaHomeViewController: DataObserverDelegate {
     func reloadAll() {
         TopSitesHandler.getTopSites(profile: profile).uponQueue(.main) { result in
 
-            self.homeViewModel.isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
-            var showDefaultBrowserCard = false
-            if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") || !NeevaUserInfo.shared.hasLoginCookie() {
-                showDefaultBrowserCard = true
-            }
-            self.homeViewModel.showDefaultBrowserCard = showDefaultBrowserCard
             self.homeViewModel.signInHandler = {
                 self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
+            self.homeViewModel.updateState()
 
             let maxItems = 8
 

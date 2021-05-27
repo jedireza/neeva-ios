@@ -177,7 +177,6 @@ struct NeevaHomeRow: View {
 
 struct NeevaHome: View {
     @ObservedObject var viewModel: HomeViewModel
-
     var body: some View {
         ScrollView {
             VStack(spacing: 25) {
@@ -185,7 +184,7 @@ struct NeevaHome: View {
                     IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding()
                 }
                 if !viewModel.isPrivate && viewModel.showDefaultBrowserCard {
-                    DefaultBrowserCardView(dismissClosure: viewModel.toggleShowCard, signInHandler: viewModel.signInHandler).frame(height: 178)
+                    PromoCard(model: viewModel)
                 }
                 NeevaHomeRow()
                 Spacer()
@@ -197,24 +196,45 @@ struct NeevaHome: View {
 class HomeViewModel: ObservableObject {
     @Published var isPrivate: Bool = false
     @Published var showDefaultBrowserCard = false
-    @Published var signInHandler: () -> () = {}
+    @Published var buttonClickHandler: () -> () = {}
+    @Published var currentConfig = PromoCardType.getConfig(for: .neevaSignIn)
+
+    var signInHandler: () -> () = {}
+
+    var currentType: PromoCardType = PromoCardType.neevaSignIn {
+        didSet {
+            currentConfig = PromoCardType.getConfig(for: currentType)
+        }
+    }
+
     var toggleShowCard: () -> () {
-        return { self.showDefaultBrowserCard.toggle()}
-    }
-}
-
-struct DefaultBrowserCardView: UIViewRepresentable {
-    let dismissClosure: () -> ()
-    let signInHandler: () -> ()
-
-    func makeUIView(context: Context) -> DefaultBrowserCard {
-        let card = DefaultBrowserCard(frame:.zero, isUserLoggedIn: NeevaUserInfo.shared.isUserLoggedIn)
-        card.dismissClosure = dismissClosure
-        card.signinHandler = signInHandler
-        return card
+        return {
+            ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+            self.showDefaultBrowserCard.toggle()
+            UserDefaults.standard.set(true, forKey: "DidDismissDefaultBrowserCard")
+        }
     }
 
-    func updateUIView(_ defaultBrowserCard: DefaultBrowserCard, context: Context) {
+    func updateState() {
+        isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+        var showDefaultBrowserCard = false
+        if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") || !NeevaUserInfo.shared.hasLoginCookie() {
+            showDefaultBrowserCard = true
+            self.currentType = !NeevaUserInfo.shared.hasLoginCookie() ? .neevaSignIn : .defaultBrowser
+            buttonClickHandler = {
+                if (!NeevaUserInfo.shared.hasLoginCookie()) {
+                    ClientLogger.shared.logCounter(.PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
+                    self.signInHandler()
+                } else {
+                    ClientLogger.shared.logCounter(.PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+                    BrowserViewController.foregroundBVC().presentDBOnboardingViewController(true)
+
+                    // Set default browser onboarding did show to true so it will not show again after user clicks this button
+                    UserDefaults.standard.set(true, forKey: PrefsKeys.KeyDidShowDefaultBrowserOnboarding)
+                }
+            }
+        }
+        self.showDefaultBrowserCard = showDefaultBrowserCard
     }
 }
 

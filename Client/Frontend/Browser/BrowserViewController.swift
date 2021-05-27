@@ -2043,7 +2043,7 @@ extension BrowserViewController {
             dBOnboardingViewController.modalPresentationStyle = .popover
         }
         dBOnboardingViewController.viewModel.goToSettings = {
-            self.neevaHomeViewController?.dismissDefaultBrowserCard()
+            self.neevaHomeViewController?.homeViewModel.updateState()
             dBOnboardingViewController.dismiss(animated: true) {
                 UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
             }

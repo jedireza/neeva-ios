@@ -209,11 +209,6 @@ extension UIColor {
         }
     }
 
-    public struct DefaultBrowserCard {
-        public static let backgroundColor = UIColor.HomePanel.topSitesBackground
-        public static let textColor = UIColor(rgb: 0x131415)
-    }
-
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
         public static let toolbarBackground = UIColor.Neeva.DefaultBackground
