@@ -127,7 +127,7 @@
       </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Neeva"
+      buildConfiguration = "Dev"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -144,7 +144,7 @@
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Neeva">
+      buildConfiguration = "Dev">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Neeva"
