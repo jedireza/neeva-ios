@@ -748,6 +748,7 @@ extension URLBarView: PrivateModeUI {
         isPrivateMode = isPrivate
 
         locationView.applyUIMode(isPrivate: isPrivate)
+        locationTextField?.applyUIMode(isPrivate: isPrivate)
 
         if isPrivate {
             neevaMenuButton.setImage(neevaMenuIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
