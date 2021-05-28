@@ -64,8 +64,11 @@ commands:
 
 jobs:
   build_and_test_all:
+    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
+    # info on using Xcode 12.5.0 at this time.
     macos:
-      xcode: "12.4.0"
+      xcode: "12.5.0"
+    resource_class: m2.medium
     steps:
       - checkout
       - carthage-bootstrap
