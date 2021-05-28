@@ -72,10 +72,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let count = selectedTab.isPrivate ? tabManager.normalTabs.count : tabManager.privateTabs.count
 
         func action() {
-            let result = tabManager.switchPrivacyMode()
-            if result == .createdNewTab, Defaults[.newTabPref] == .blankPage {
-                focusLocationTextField(forTab: tabManager.selectedTab)
-            }
+            _ = tabManager.switchPrivacyMode()
         }
 
         let icon: UIImage?
@@ -102,16 +99,16 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
 
     func getMoreTabToolbarLongPressActions() -> [UIMenuElement] {
         let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemName: "plus")) { _ in
-            let shouldFocusLocationField = Defaults[.newTabPref] == .blankPage
-            self.openBlankNewTab(focusLocationField: shouldFocusLocationField, isPrivate: false)
+            self.openBlankNewTab(focusLocationField: false, isPrivate: false)
         }
         let newPrivateTab = UIAction(title: Strings.NewPrivateTabTitle, image: UIImage(systemName: "plus")) { _ in
-            let shouldFocusLocationField = Defaults[.newTabPref] == .blankPage
-            self.openBlankNewTab(focusLocationField: shouldFocusLocationField, isPrivate: true)}
+            self.openBlankNewTab(focusLocationField: false, isPrivate: true)
+        }
         let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark")) { _ in
             if let tab = self.tabManager.selectedTab {
                 self.tabManager.removeTabAndUpdateSelectedIndex(tab)
-            }}
+            }
+        }
         if let tab = self.tabManager.selectedTab {
             return tab.isPrivate ? [newPrivateTab, closeTab] : [newTab, closeTab]
         }

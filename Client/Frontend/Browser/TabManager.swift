@@ -370,33 +370,9 @@ class TabManager: NSObject {
         if let request = request {
             tab.loadRequest(request)
         } else if !isPopup {
-            let newTabChoice = Defaults[.newTabPref]
-            tab.newTabPageType = newTabChoice
-            switch newTabChoice {
-                case .homePage:
-                // Neeva only has a single homepage location by default
-                let url = NeevaConstants.appURL
-                tab.loadRequest(URLRequest(url: url))
-                case .blankPage:
-                // If we're showing "about:blank" in a webview, set
-                // the <html> `background-color` to match the theme.
-                if let webView = tab.webView as? TabWebView {
-                    webView.applyTheme()
-                }
-                break
-                case .customURL:
-                //custom url saves its location in the home preferences
-                let url = NewTabHomePageAccessors.getHomePage()!
-                tab.loadRequest(URLRequest(url: url))
-                break;
-                default:
-                // The common case, where the NewTabPage enum defines
-                // one of the about:home pages.
-                if let url = newTabChoice.url {
-                    tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)
-                    tab.url = url
-                }
-            }
+            let url = URL(string: "\(InternalURL.baseUrl)/about/home")!
+            tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)
+            tab.url = url
         }
 
         tab.nightMode = Defaults[.nightModeStatus]

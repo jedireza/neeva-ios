@@ -1575,15 +1575,11 @@ extension BrowserViewController: URLBarDelegate {
             return
         }
 
-        if Defaults[.newTabPref] == .blankPage {
-            UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: UIAccessibility.Notification.screenChanged)
-        } else {
-            if let toast = clipboardBarDisplayHandler?.clipboardToast {
-                toast.removeFromSuperview()
-            }
-
-            showNeevaHome(inline: false)
+        if let toast = clipboardBarDisplayHandler?.clipboardToast {
+            toast.removeFromSuperview()
         }
+
+        showNeevaHome(inline: false)
     }
 
     func urlBarDidLeaveOverlayMode(_ urlBar: URLBarView) {
@@ -1905,13 +1901,6 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateInContentHomePanel(selected?.url as URL?)
-        if let tab = selected, Defaults[.newTabPref] == .blankPage {
-            if tab.url == nil, !tab.restoring {
-                urlBar.tabLocationViewDidTapLocation(urlBar.locationView)
-            } else {
-                urlBar.leaveOverlayMode()
-            }
-        }
     }
 
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {
