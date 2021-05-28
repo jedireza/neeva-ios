@@ -53,14 +53,16 @@ class TabLocationView: UIView {
     var url: URL? {
         didSet {
             updateTextWithURL()
-            let showSearchIcon = neevaSearchEngine.queryForSearchURL(url) == nil
-            searchImageViews.0.isHidden = showSearchIcon
-            searchImageViews.1.isHidden = showSearchIcon
-
             shieldButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
             setNeedsUpdateConstraints()
         }
     }
+
+    // If the URL corresponds to a search, then we extract and display the query.
+    var displayText: String {
+        urlTextField.text ?? ""
+    }
+    var displayTextIsQuery: Bool = false
 
     lazy var placeholder: NSAttributedString = {
         return NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.Photon.Grey50])
@@ -101,17 +103,6 @@ class TabLocationView: UIView {
         return lockImageView
     }()
     
-    fileprivate lazy var searchImageViews: (UIView, UIImageView) = {
-          let searchImageView = UIImageView(image: UIImage.templateImageNamed("search"))
-          searchImageView.isAccessibilityElement = false
-          searchImageView.contentMode = .scaleAspectFit
-          let space10px = UIView()
-          space10px.snp.makeConstraints { make in
-              make.width.equalTo(10)
-          }
-          return (space10px, searchImageView)
-    }()
-
     lazy var shieldButton: UIButton = {
         let shieldButton = UIButton()
         shieldButton.setImage(UIImage.templateImageNamed("tracking-protection"), for: .normal)
@@ -292,16 +283,17 @@ class TabLocationView: UIView {
     }
 
     fileprivate func updateTextWithURL() {
-        var isQuery = false
         if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
             urlTextField.text = host
         } else {
             urlTextField.text = url?.absoluteString
         }
         // NOTE: Punycode support was removed
-        if let query = neevaSearchEngine.queryForSearchURL(url) {
-            isQuery = true
+        if let query = neevaSearchEngine.queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url) {
+            displayTextIsQuery = true
             urlTextField.text = query
+        } else {
+            displayTextIsQuery = false
         }
         if let text = urlTextField.text, !text.isEmpty {
             urlTextField.attributedPlaceholder = nil
@@ -311,7 +303,7 @@ class TabLocationView: UIView {
             // show search icon for query and lock for website
             let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
             let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TabLocationViewUX.IconPadding)
-            lockImageView.image = UIImage(systemName: isQuery ? "magnifyingglass" : "lock.fill", withConfiguration: config)?.withAlignmentRectInsets(padding)
+            lockImageView.image = UIImage(systemName: displayTextIsQuery ? "magnifyingglass" : "lock.fill", withConfiguration: config)?.withAlignmentRectInsets(padding)
         } else {
             urlTextField.attributedPlaceholder = self.placeholder
             shareButton.isHidden = true

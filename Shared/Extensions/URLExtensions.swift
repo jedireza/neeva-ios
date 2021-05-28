@@ -126,6 +126,12 @@ extension URL {
         return results
     }
 
+    public func hasQueryParam(_ name: String, value: String) -> Bool {
+        var components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
+        guard let queryItems = components.queryItems else { return false }
+        return queryItems.contains(where: { $0.name == name && $0.value == value })
+    }
+
     public var hostPort: String? {
         if let host = self.host {
             if let port = (self as NSURL).port?.int32Value {

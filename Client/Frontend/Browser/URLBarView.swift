@@ -40,8 +40,6 @@ protocol URLBarDelegate: AnyObject {
     func urlBar(_ urlBar: URLBarView, didRestoreText text: String)
     func urlBar(_ urlBar: URLBarView, didEnterText text: String)
     func urlBar(_ urlBar: URLBarView, didSubmitText text: String)
-    // Returns either (search query, true) or (url, false).
-    func urlBarDisplayTextForURL(_ url: URL?) -> (String?, Bool)
     func urlBarDidBeginDragInteraction(_ urlBar: URLBarView)
 }
 
@@ -633,13 +631,16 @@ extension URLBarView: TabLocationViewDelegate {
     }
 
     func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView) {
-        guard let (locationText, isSearchQuery) = delegate?.urlBarDisplayTextForURL(locationView.url as URL?) else { return }
+        let isSearchQuery = tabLocationView.displayTextIsQuery
 
-        var overlayText = locationText
-        // Make sure to use the result from urlBarDisplayTextForURL as it is responsible for extracting out search terms when on a search page
-        if let text = locationText, let url = URL(string: text), let host = url.host, AppConstants.MOZ_PUNYCODE {
-            overlayText = url.absoluteString.replacingOccurrences(of: host, with: host.asciiHostToUTF8())
+        let overlayText: String
+        if isSearchQuery {
+            overlayText = tabLocationView.displayText
+        } else {
+            // TODO: Decode punycode hostname.
+            overlayText = tabLocationView.url?.absoluteString ?? ""
         }
+
         enterOverlayMode(overlayText, pasted: false, search: isSearchQuery)
     }
 

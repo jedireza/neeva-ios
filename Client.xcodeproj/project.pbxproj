@@ -315,6 +315,7 @@
 		C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */; };
 		C8A4D2F72628C34000192B4D /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D2F62628C34000192B4D /* ViewExtensions.swift */; };
 		C8A4D375262D586C00192B4D /* AddToSpaceToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D374262D586C00192B4D /* AddToSpaceToast.swift */; };
+		C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */; };
 		C8CC4F8725253E79003FDE1F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD46F3324A1606C001B3967 /* WidgetKit.framework */; };
 		C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */; };
 		C8DFFE492294AAB600296DB1 /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */; };
@@ -338,7 +339,6 @@
 		C9C18E0A26559007004710CD /* BoldSpanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DFF26559007004710CD /* BoldSpanView.swift */; };
 		C9C18E1626559118004710CD /* Neeva.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9C18E1426559118004710CD /* Neeva.xcassets */; };
 		C9C18E1E265591A1004710CD /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E1C265591A1004710CD /* Icons.swift */; };
-		C9C18E1F265592ED004710CD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E1B265591A1004710CD /* Constants.swift */; };
 		C9C18E2126559311004710CD /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C9C18E2026559311004710CD /* Defaults */; };
 		C9C18E2326559322004710CD /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C9C18E2226559322004710CD /* KeychainAccess */; };
 		C9C18E3D26559504004710CD /* Incognito.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E3A26559504004710CD /* Incognito.swift */; };
@@ -1236,6 +1236,7 @@
 		C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlaySheetView.swift; sourceTree = "<group>"; };
 		C8A4D2F62628C34000192B4D /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewExtensions.swift; path = Extensions/ViewExtensions.swift; sourceTree = "<group>"; };
 		C8A4D374262D586C00192B4D /* AddToSpaceToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddToSpaceToast.swift; path = Client/Frontend/Browser/AddToSpaceToast.swift; sourceTree = SOURCE_ROOT; };
+		C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaConstants.swift; sourceTree = "<group>"; };
 		C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = effective_tld_names.swift; sourceTree = "<group>"; };
 		C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		C8E18F1D222EDE4400E30E52 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -1272,7 +1273,6 @@
 		C9C18E1326559118004710CD /* NeevaColors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = NeevaColors.xcassets; sourceTree = "<group>"; };
 		C9C18E1426559118004710CD /* Neeva.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Neeva.xcassets; sourceTree = "<group>"; };
 		C9C18E192655917B004710CD /* SendFeedbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeedbackView.swift; sourceTree = "<group>"; };
-		C9C18E1B265591A1004710CD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C9C18E1C265591A1004710CD /* Icons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Icons.swift; sourceTree = "<group>"; };
 		C9C18E29265594DE004710CD /* SpacesSearchHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpacesSearchHeaderView.swift; sourceTree = "<group>"; };
 		C9C18E2A265594DE004710CD /* AddToSpaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToSpaceView.swift; sourceTree = "<group>"; };
@@ -2782,6 +2782,7 @@
 				E65075881E37F7AB006961AC /* Logger.swift */,
 				C9C18E1326559118004710CD /* NeevaColors.xcassets */,
 				C9C18E0F2655910C004710CD /* NeevaColors.swift */,
+				C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */,
 				E65075891E37F7AB006961AC /* NotificationConstants.swift */,
 				E650758B1E37F7AB006961AC /* Prefs.swift */,
 				C9C18DD426558FF3004710CD /* Reachability.swift */,
@@ -2794,7 +2795,6 @@
 				E65075901E37F7AB006961AC /* UserAgent.swift */,
 				E65075911E37F7AB006961AC /* WeakList.swift */,
 				C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */,
-				C9C18E1B265591A1004710CD /* Constants.swift */,
 				C9C18DCB26558FF2004710CD /* Workarounds.swift */,
 			);
 			path = Shared;
@@ -4148,6 +4148,7 @@
 				E65075931E37F7AB006961AC /* AppConstants.swift in Sources */,
 				E65075B81E37F7AB006961AC /* NotificationConstants.swift in Sources */,
 				E65075AC1E37F7AB006961AC /* StringExtensions.swift in Sources */,
+				C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */,
 				C994645F2657052200613110 /* FeatureFlags.swift in Sources */,
 				E65075951E37F7AB006961AC /* GeneralUtils.swift in Sources */,
 				E683F0C21E93D4E90035D990 /* DictionaryExtensions.swift in Sources */,
@@ -4163,7 +4164,6 @@
 				E65075AA1E37F7AB006961AC /* URLProtectionSpaceExtensions.swift in Sources */,
 				EB7FFFC820A9D38D003E1E34 /* AlertController.swift in Sources */,
 				E65075BC1E37F7AB006961AC /* SupportUtils.swift in Sources */,
-				C9C18E1F265592ED004710CD /* Constants.swift in Sources */,
 				C9C18E4E26559766004710CD /* AddToSpaceView.swift in Sources */,
 				E65075B61E37F7AB006961AC /* Loader.swift in Sources */,
 				C9C18E5426559827004710CD /* Space.swift in Sources */,

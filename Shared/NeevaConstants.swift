@@ -25,6 +25,7 @@ public struct NeevaConstants {
     public static let appMarketingURL = URL(string: "https://neeva.com/")!
 
     public static var appHomeURL: URL { appURL }
+    public static var appSearchURL: URL { appURL / "search" }
     public static var appSpacesURL: URL { appURL / "spaces" }
     public static var appSettingsURL: URL { appURL / "settings" }
     public static var appSigninURL: URL { appURL / "signin" }
@@ -65,8 +66,20 @@ public struct NeevaConstants {
 
     public static let sharedBundle = Bundle(for: BundleHookClass.self)
 
-    public static func isOnNeevaHome(url: URL?) -> Bool {
-        return url?.scheme == NeevaConstants.appHomeURL.scheme && url?.host == NeevaConstants.appHomeURL.host && url?.path == NeevaConstants.appHomeURL.path
+    public static func isNeevaHome(url: URL?) -> Bool {
+        return url?.scheme == NeevaConstants.appHomeURL.scheme
+            && url?.host == NeevaConstants.appHomeURL.host
+            && url?.path == NeevaConstants.appHomeURL.path
+    }
+
+    // Returns true if the page has an embedded search box, indicating that we
+    // should not show the same query in the URL bar.
+    // TODO: This should probably be server controlled through a feature flag.
+    public static func isNeevaPageWithSearchBox(url: URL?) -> Bool {
+        return url?.scheme == NeevaConstants.appSearchURL.scheme
+            && url?.host == NeevaConstants.appSearchURL.host
+            && url?.path == NeevaConstants.appSearchURL.path
+            && url?.hasQueryParam("c", value: "Maps") == true
     }
 }
 
