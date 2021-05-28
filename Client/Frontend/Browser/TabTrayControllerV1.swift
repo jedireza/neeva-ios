@@ -925,21 +925,15 @@ class TabCell: UICollectionViewCell {
     }
 
     func setTabBorder(color: UIColor, width: CGFloat) {
-        if width == 0 {
-            layer.shadowOffset = .zero
-            layer.shadowPath = nil
-            layer.shadowOpacity = 0
-        } else {
-            // This creates a border around a tabcell. Using the shadow craetes a border _outside_ of the tab frame.
-            layer.shadowColor = color.cgColor
-            layer.shadowOpacity = 1
-            layer.shadowRadius = 0 // A 0 radius creates a solid border instead of a gradient blur
-            layer.masksToBounds = false
-            // create a frame that is "BorderWidth" size bigger than the cell
-            layer.shadowOffset = CGSize(width: -width, height: -width)
-            let shadowPath = CGRect(width: layer.frame.width + (width * 2), height: layer.frame.height + (width * 2))
-            layer.shadowPath = UIBezierPath(roundedRect: shadowPath, cornerRadius: TabTrayControllerUX.CornerRadius+width).cgPath
-        }
+        // This creates a border around a tabcell. Using the shadow craetes a border _outside_ of the tab frame.
+        layer.shadowColor = color.cgColor
+        layer.shadowOpacity = 1
+        layer.shadowRadius = 0 // A 0 radius creates a solid border instead of a gradient blur
+        layer.masksToBounds = false
+        // create a frame that is "BorderWidth" size bigger than the cell
+        layer.shadowOffset = CGSize(width: -width, height: -width)
+        let shadowPath = CGRect(width: layer.frame.width + (width * 2), height: layer.frame.height + (width * 2))
+        layer.shadowPath = UIBezierPath(roundedRect: shadowPath, cornerRadius: TabTrayControllerUX.CornerRadius+width).cgPath
     }
 
     func updateTabBorder() {
@@ -953,13 +947,8 @@ class TabCell: UICollectionViewCell {
                 color = UIConstants.SystemBlueColor
             }
         } else {
-            if traitCollection.userInterfaceStyle == .dark {
-                width = 0
-                color = UIColor()
-            } else {
-                width = TabCell.UnselectedBorderWidth
-                color = UIColor.Neeva.DefaultSeparator
-            }
+            width = TabCell.UnselectedBorderWidth
+            color = UIColor.Neeva.DefaultSeparator
         }
         setTabBorder(color: color, width: width)
     }
@@ -967,13 +956,11 @@ class TabCell: UICollectionViewCell {
     func setTabSelected(_ isPrivate: Bool) {
         borderStyleSelected = true
         borderStylePrivate = isPrivate
-        updateTabBorder()
     }
 
     func setTabUnselected(_ isPrivate: Bool) {
         borderStyleSelected = false
         borderStylePrivate = isPrivate
-        updateTabBorder()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -985,10 +972,7 @@ class TabCell: UICollectionViewCell {
 
         backgroundHolder.frame = CGRect(x: margin, y: margin, width: frame.width, height: frame.height)
         screenshotView.frame = CGRect(size: backgroundHolder.frame.size)
-    }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
         updateTabBorder()
     }
 
