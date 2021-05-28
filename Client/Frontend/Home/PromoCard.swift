@@ -39,7 +39,7 @@ enum PromoCardType {
                                    buttonLabel: "Set Neeva as Default Browser",
                                    buttonImage: nil,
                                    backgroundColor: Color.Neeva.Brand.Pistachio,
-                                   showDismissButton: false)
+                                   showDismissButton: true)
         }
     }
 }
