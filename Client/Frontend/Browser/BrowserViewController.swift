@@ -1388,7 +1388,8 @@ extension BrowserViewController: URLBarDelegate {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let host = PopOverNeevaMenuViewController(
             delegate: self,
-            source: button, isPrivate: isPrivate)
+            source: button, isPrivate: isPrivate,
+            feedbackImage: screenshot())
         self.popOverNeevaMenuViewController = host
         // log tap neeva menu
         ClientLogger.shared.logCounter(.OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
@@ -2498,13 +2499,28 @@ extension BrowserViewController {
 }
 
 extension BrowserViewController {
+
+    func screenshot() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(view.window!.bounds.size, true, 0)
+        defer { UIGraphicsEndImageContext() }
+
+        if !view.window!.drawHierarchy(in: view.window!.bounds, afterScreenUpdates: false) {
+            // ???
+            print("failed to draw hierarchy")
+        }
+        return UIGraphicsGetImageFromCurrentImageContext()
+
+    }
+
     func showNeevaMenuSheet() {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let image = screenshot()
+
         self.showOverlaySheetViewController(
             NeevaMenuViewController(delegate: self, onDismiss: {
                 self.hideOverlaySheetViewController()
                 self.isNeevaMenuSheetOpen = false
-            }, isPrivate: isPrivate)
+            }, isPrivate: isPrivate, feedbackImage: image)
         )
     }
 

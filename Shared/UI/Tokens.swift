@@ -47,6 +47,7 @@ extension Image {
 }
 
 extension Color {
+    public static let background = Color(UIColor.systemBackground)
     public static let groupedBackground = Color(UIColor.systemGroupedBackground)
 }
 

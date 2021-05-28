@@ -21,7 +21,8 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
     }
     
     public init(delegate:BrowserViewController,
-                source:UIView, isPrivate: Bool) {
+                source:UIView, isPrivate: Bool,
+                feedbackImage: UIImage?) {
         super.init(rootView: NeevaMenuContainerView(embeddedView: NeevaMenuView(isPrivate: isPrivate),
                    thresholdHeight: neevaMenuIntrinsicHeight))
         self.delegate = delegate
@@ -78,10 +79,10 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
                 break
             case .feedback:
                 ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.present(SendFeedbackPanel(onOpenURL: {
+                delegate.present(SendFeedbackPanel(screenshot: feedbackImage, onOpenURL: {
                     delegate.dismiss(animated: true, completion: nil)
                     delegate.openURLInNewTab($0)
-                }	), animated: true)
+                }), animated: true)
                 break
             }
         }

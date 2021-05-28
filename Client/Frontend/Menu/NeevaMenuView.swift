@@ -21,7 +21,7 @@ public struct NeevaMenuView: View {
         self.isPrivate = isPrivate
         self.noTopPadding = noTopPadding
     }
-    
+
     public var body: some View {
         VStack(alignment: .leading, spacing: NeevaUIConstants.menuSectionPadding) {
             VStack(spacing: NeevaUIConstants.menuInnerSectionPadding) {
@@ -97,5 +97,6 @@ public struct NeevaMenuView: View {
 struct NeevaMenuView_Previews: PreviewProvider {
     static var previews: some View {
         NeevaMenuView(isPrivate: false)
-     }
+        NeevaMenuView(isPrivate: true)
+    }
 }

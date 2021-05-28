@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct NeevaMenuRootView: View {
-    var overlaySheetModel = OverlaySheetModel()
-    var onDismiss: () -> ()
-    var isPrivate: Bool
+    @StateObject var overlaySheetModel = OverlaySheetModel()
+    let onDismiss: () -> ()
+    let isPrivate: Bool
     var embeddedView: NeevaMenuView
 
     var body: some View {
@@ -30,7 +30,7 @@ struct NeevaMenuRootView: View {
 class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
     var delegate: BrowserViewController?
 
-    public init(delegate: BrowserViewController, onDismiss: @escaping () -> (), isPrivate: Bool){
+    public init(delegate: BrowserViewController, onDismiss: @escaping () -> (), isPrivate: Bool, feedbackImage: UIImage?){
         super.init(rootView: NeevaMenuRootView(onDismiss: onDismiss, isPrivate: isPrivate, embeddedView:NeevaMenuView(isPrivate: isPrivate, noTopPadding: true) ))
         self.delegate = delegate
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
@@ -85,7 +85,7 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
                 break
             case .feedback:
                 ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.present(SendFeedbackPanel(onOpenURL: {
+                delegate.present(SendFeedbackPanel(screenshot: feedbackImage, onOpenURL: {
                     delegate.dismiss(animated: true, completion: nil)
                     delegate.openURLInNewTab($0)
                 }), animated: true)

@@ -10,7 +10,7 @@ import Defaults
 
 /// Usage: add a `case` to this enum, then reference `FeatureFlag[.myFeature]` to check for that feature’s status.
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
-    case demoFeature = "Demo Feature"
+    case feedbackScreenshot = "Attach Screenshot to Feedback"
 }
 
 extension FeatureFlag {
@@ -25,6 +25,9 @@ extension FeatureFlag {
     public static subscript(flag: FeatureFlag) -> Bool {
         get {
             Self.prune
+            if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
+                return true
+            }
             return Defaults[Self.defaultsKey].contains(flag.rawValue)
         }
         set {

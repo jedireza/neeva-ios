@@ -6,10 +6,10 @@ import SwiftUI
 import Shared
 
 public class SendFeedbackPanel: UIHostingController<AnyView> {
-    init(onOpenURL: @escaping (URL) -> ()) {
+    init(screenshot: UIImage?, onOpenURL: @escaping (URL) -> ()) {
         super.init(rootView: AnyView(EmptyView()))
         rootView = AnyView(
-            SendFeedbackView(onDismiss: dismissVC)
+            SendFeedbackView(screenshot: screenshot, onDismiss: dismissVC)
                 .environment(\.onOpenURL, onOpenURL)
         )
 

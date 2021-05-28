@@ -90,12 +90,15 @@ fileprivate struct GenericErrorView: View {
     let error: Error
     let gqlErrors: [String]?
 
+    @State private var sendingFeedback = false
+
     var errorsForFeedback: String {
         if let errors = gqlErrors {
             return "• \(errors.joined(separator: "\n• "))"
         }
         return error.localizedDescription
     }
+
     var body: some View {
         VStack(spacing: 20) {
             Label("Error", systemImage: "exclamationmark.octagon.fill")
@@ -115,7 +118,12 @@ fileprivate struct GenericErrorView: View {
                     .font(.system(.body, design: .monospaced))
                 }.frame(maxHeight: 130)
             }.padding()
-            SendFeedbackView.Button(initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)")
+            // TODO: proper screenshot?
+            Button(action: { sendingFeedback = true }) {
+                Label("Send Feedback", systemSymbol: .bubbleLeftFill)
+            }.sheet(isPresented: $sendingFeedback) {
+                SendFeedbackView(screenshot: nil, initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)").font(.body)
+            }
         }
     }
 }

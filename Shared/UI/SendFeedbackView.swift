@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import SwiftUI
+import QuickLook
 
 /// Ask the user for feedback
 public struct SendFeedbackView: View {
@@ -9,20 +10,24 @@ public struct SendFeedbackView: View {
     let geoLocationStatus: String?
     let initialText: String
     let onDismiss: (() -> ())?
+    let screenshot: UIImage?
 
     /// - Parameters:
+    ///   - screenshot: A screenshot image that the user may optionally send along with the text
     ///   - onDismiss: If provided, this will be called when the user wants to dismiss the feedback screen. Useful when presenting from UIKit, where `presentationMode.wrappedValue.dismiss()` has no effect
     ///   - canShareResults: if `true`, display a “Share my query to help improve Neeva” toggle
     ///   - requestId: A request ID to send along with the user-provided feedback
     ///   - geoLocationStatus: passed along to the API
     ///   - initialText: Text to pre-fill the feedback input with. If non-empty, the user can submit feedback without entering any additional text.
-    public init(onDismiss: (() -> ())? = nil, canShareResults: Bool = false, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
+    public init(screenshot: UIImage?, onDismiss: (() -> ())? = nil, canShareResults: Bool = false, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
+        self.screenshot = screenshot
         self.canShareResults = canShareResults
         self.requestId = requestId
         self.geoLocationStatus = geoLocationStatus
         self.onDismiss = onDismiss
         self._feedbackText = .init(initialValue: initialText)
         self.initialText = initialText
+        self._editedScreenshot = .init(initialValue: screenshot ?? UIImage())
     }
 
     @Environment(\.presentationMode) var presentationMode
@@ -30,7 +35,10 @@ public struct SendFeedbackView: View {
 
     @State var feedbackText = ""
     @State var shareResults = true
+    @State var shareScreenshot = true
     @State var isSending = false
+    @State var isPreviewing = false
+    @State var editedScreenshot: UIImage
 
     public var body: some View {
         NavigationView {
@@ -40,7 +48,7 @@ public struct SendFeedbackView: View {
                         VStack(alignment: .leading) {
                             Text("Need help or want instant answers to FAQs?")
                                 .foregroundColor(.primary)
-                            SwiftUI.Button(action: { onOpenURL(NeevaConstants.appFAQURL) }) {
+                            Button(action: { onOpenURL(NeevaConstants.appFAQURL) }) {
                                 Text("Visit our Help Center!").underline()
                             }
                         }
@@ -58,18 +66,39 @@ public struct SendFeedbackView: View {
                         Toggle("Share my query to help improve Neeva.", isOn: $shareResults)
                     }
                 }
+                if let screenshot = screenshot, FeatureFlag[.feedbackScreenshot] {
+                    DecorativeSection {
+                        Toggle(isOn: $shareScreenshot) {
+                            VStack(alignment: .leading) {
+                                Text("Share Screenshot")
+                                    .bold()
+                                Button("View or edit") {
+                                    isPreviewing = true
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+                                .disabled(!shareScreenshot)
+                            }
+                        }
+                        .toggleStyle(SwitchToggleStyle(tint: .blue))
+                        .padding(.vertical, 4)
+                        .padding(.leading, -4)
+                        .sheet(isPresented: $isPreviewing) {
+                            QuickLookView(image: $editedScreenshot, original: screenshot)
+                        }
+                    }
+                }
             }
             .navigationTitle("Send Feedback")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    SwiftUI.Button("Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
+                    Button("Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if isSending {
                         ActivityIndicator()
                     } else {
-                        SwiftUI.Button("Send") {
+                        Button("Send") {
                             isSending = true
                             SendFeedbackMutation(
                                 input: .init(
@@ -97,38 +126,33 @@ public struct SendFeedbackView: View {
                     }
                 }
             }
-        }.presentation(isModal: feedbackText != initialText)
+        }
+        .presentation(isModal: feedbackText != initialText)
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
-extension SendFeedbackView {
-    /// A button that will present the “Send Feedback” view as a sheet when tapped.
-    public struct Button: View {
-        @Environment(\.font) private var font
-        @State private var presenting = false
+extension UIImage {
+    // https://stackoverflow.com/a/33675160/5244995
+    convenience init?(color: UIColor, width: CGFloat, height: CGFloat) {
+        let rect = CGRect(origin: .zero, size: CGSize(width: width, height: height))
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0)
+        color.setFill()
+        UIRectFill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
 
-        private let sheet: SendFeedbackView
-        /// Parameters are the same as those passed to `SendFeedbackView`
-        public init(onDismiss: (() -> ())? = nil, canShareResults: Bool = false, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
-            sheet = SendFeedbackView(onDismiss: onDismiss, canShareResults: canShareResults, requestId: requestId, geoLocationStatus: geoLocationStatus, initialText: initialText)
-        }
-
-        public var body: some View {
-            SwiftUI.Button(action: { presenting = true }) {
-                Label("Send Feedback", systemImage: "bubble.left.fill")
-                    .font(font?.bold())
-            }.sheet(isPresented: $presenting) {
-                sheet.font(.body)
-            }
-        }
+        guard let cgImage = image?.cgImage else { return nil }
+        self.init(cgImage: cgImage)
     }
 }
 
 struct SendFeedbackView_Previews: PreviewProvider {
     static var previews: some View {
-        SendFeedbackView()
-        SendFeedbackView(canShareResults: true)
-        SendFeedbackView.Button()
-        SendFeedbackView.Button().font(.largeTitle)
+        // iPhone 12 screen size
+        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 390, height: 844)!)
+        // iPhone 8 screen size
+        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 375, height: 667)!)
+        SendFeedbackView(screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!, canShareResults: true)
     }
 }
