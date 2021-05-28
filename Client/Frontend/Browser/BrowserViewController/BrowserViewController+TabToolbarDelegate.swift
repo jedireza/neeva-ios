@@ -4,6 +4,7 @@
 
 import Shared
 import SwiftUI
+import Defaults
 
 extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
     func tabToolbarDidPressBack(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
@@ -72,7 +73,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
 
         func action() {
             let result = tabManager.switchPrivacyMode()
-            if result == .createdNewTab, NewTabAccessors.getNewTabPage(self.profile.prefs) == .blankPage {
+            if result == .createdNewTab, Defaults[.newTabPref] == .blankPage {
                 focusLocationTextField(forTab: tabManager.selectedTab)
             }
         }
@@ -101,11 +102,11 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
 
     func getMoreTabToolbarLongPressActions() -> [UIMenuElement] {
         let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemName: "plus")) { _ in
-            let shouldFocusLocationField = NewTabAccessors.getNewTabPage(self.profile.prefs) == .blankPage
+            let shouldFocusLocationField = Defaults[.newTabPref] == .blankPage
             self.openBlankNewTab(focusLocationField: shouldFocusLocationField, isPrivate: false)
         }
         let newPrivateTab = UIAction(title: Strings.NewPrivateTabTitle, image: UIImage(systemName: "plus")) { _ in
-            let shouldFocusLocationField = NewTabAccessors.getNewTabPage(self.profile.prefs) == .blankPage
+            let shouldFocusLocationField = Defaults[.newTabPref] == .blankPage
             self.openBlankNewTab(focusLocationField: shouldFocusLocationField, isPrivate: true)}
         let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark")) { _ in
             if let tab = self.tabManager.selectedTab {

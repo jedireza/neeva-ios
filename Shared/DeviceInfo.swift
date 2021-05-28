@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import UIKit
+import Defaults
 
 open class DeviceInfo {
     // List of device names that don't support advanced visual settings
@@ -35,12 +36,14 @@ open class DeviceInfo {
         return String(format: .DeviceInfoClientNameDescription, AppInfo.displayName, UIDevice.current.name)
     }
 
-    open class func clientIdentifier(_ prefs: Prefs) -> String {
-        if let id = prefs.stringForKey("clientIdentifier") {
+
+    private static let clientIdentifierKey = Defaults.Key<String?>("profile.clientIdentifier")
+    open class func clientIdentifier() -> String {
+        if let id = Defaults[clientIdentifierKey] {
             return id
         }
         let id = UUID().uuidString
-        prefs.setString(id, forKey: "clientIdentifier")
+        Defaults[clientIdentifierKey] = id
         return id
     }
 

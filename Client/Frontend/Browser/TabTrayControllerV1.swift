@@ -6,6 +6,7 @@ import UIKit
 import SnapKit
 import Storage
 import Shared
+import Defaults
 
 struct TabTrayControllerUX {
     static let CornerRadius = CGFloat(6.0)
@@ -286,7 +287,7 @@ class TabTrayControllerV1: UIViewController {
 
         // If we are exiting private mode and we have the close private tabs option selected, make sure
         // we clear out all of the private tabs
-        let exitingPrivateMode = !tabDisplayManager.isPrivate && tabManager.shouldClearPrivateTabs()
+        let exitingPrivateMode = !tabDisplayManager.isPrivate && Defaults[.closePrivateTabs]
 
         toolbar.maskButton.setSelected(tabDisplayManager.isPrivate, animated: true)
         collectionView.layoutSubviews()

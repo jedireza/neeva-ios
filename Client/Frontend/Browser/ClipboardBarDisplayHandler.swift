@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 public struct ClipboardBarToastUX {
     static let ToastDelay = DispatchTimeInterval.milliseconds(4000)
@@ -20,13 +21,11 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     private var sessionStarted = true
     private var sessionRestored = false
     private var firstTabLoaded = false
-    private var prefs: Prefs
     private var lastDisplayedURL: String?
     private weak var firstTab: Tab?
     var clipboardToast: ButtonToast?
 
-    init(prefs: Prefs, tabManager: TabManager) {
-        self.prefs = prefs
+    init(tabManager: TabManager) {
         self.tabManager = tabManager
 
         super.init()
@@ -98,7 +97,7 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
             !sessionRestored ||
             !firstTabLoaded ||
             isClipboardURLAlreadyDisplayed(copiedURL) ||
-            self.prefs.intForKey(PrefsKeys.IntroSeen) == nil {
+            !Defaults[.introSeen] {
             return false
         }
         sessionStarted = false
@@ -120,7 +119,7 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     }
 
     func checkIfShouldDisplayBar() {
-        guard self.prefs.boolForKey("showClipboardBar") ?? false else {
+        guard Defaults[.showClipboardBar] else {
             // There's no point in doing any of this work unless the
             // user has asked for it in settings.
             return

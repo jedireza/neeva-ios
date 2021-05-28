@@ -5,6 +5,7 @@
 import Foundation
 import Shared
 import Storage
+import Defaults
 
 protocol PhotonActionSheetProtocol {
     var tabManager: TabManager { get }
@@ -90,7 +91,7 @@ extension PhotonActionSheetProtocol {
 
         let toggleDesktopSite = toggleDesktopSiteAction(for: tab)
 
-        if let url = tab.webView?.url, let helper = tab.contentBlocker, helper.isEnabled, helper.blockingStrengthPref == .strict {
+        if let url = tab.webView?.url, let helper = tab.contentBlocker, helper.isEnabled, Defaults[.contentBlockingStrength] == .strict {
             let isSafelisted = helper.status == .safelisted
 
             let title = !isSafelisted ? Strings.TrackingProtectionReloadWithout : Strings.TrackingProtectionReloadWith

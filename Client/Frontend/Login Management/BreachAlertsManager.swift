@@ -5,6 +5,7 @@
 import Foundation
 import Storage // or whichever module has the LoginsRecord class
 import Shared // or whichever module has the Maybe class
+import Defaults
 
 /// Breach structure decoded from JSON
 struct BreachRecord: Codable, Equatable, Hashable {
@@ -70,8 +71,8 @@ final public class BreachAlertsManager {
         }
 
         // 2. check the last time breach endpoint was accessed
-        guard let dateLastAccessed = profile.prefs.timestampForKey(BreachAlertsClient.etagDateKey) else {
-            profile.prefs.removeObjectForKey(BreachAlertsClient.etagDateKey) // bad key, so delete it
+        guard let dateLastAccessed = Defaults[BreachAlertsClient.etagDateKey] else {
+            Defaults[BreachAlertsClient.etagDateKey] = nil // bad key, so delete it
             self.fetchAndSaveBreaches(completion)
             return
         }
@@ -88,17 +89,16 @@ final public class BreachAlertsManager {
         // 3b. should update - check if the etag is different
         client.fetchEtag(endpoint: .breachedAccounts, profile: self.profile) { etag in
             guard let etag = etag else {
-                self.profile.prefs.removeObjectForKey(BreachAlertsClient.etagKey) // bad key, so delete it
+                Defaults[BreachAlertsClient.etagKey] = nil // bad key, so delete it
                 self.fetchAndSaveBreaches(completion)
                 return
             }
-            let savedEtag = self.profile.prefs.stringForKey(BreachAlertsClient.etagKey)
 
             // 4. if it is, refetch the data and hand entire Set of BreachRecords off
-            if etag != savedEtag {
+            if etag != Defaults[BreachAlertsClient.etagKey] {
                 self.fetchAndSaveBreaches(completion)
             } else {
-                self.profile.prefs.setTimestamp(Date.now(), forKey: BreachAlertsClient.etagDateKey)
+                Defaults[BreachAlertsClient.etagDateKey] = Date.now()
                 self.decodeData(data: fileData, completion)
             }
         }

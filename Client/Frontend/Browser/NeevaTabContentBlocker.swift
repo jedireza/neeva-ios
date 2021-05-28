@@ -4,19 +4,14 @@
 
 import WebKit
 import Shared
+import Defaults
 
-struct ContentBlockingConfig {
-    struct Prefs {
-        static let StrengthKey = "prefkey.trackingprotection.strength"
-        static let EnabledKey = "prefkey.trackingprotection.normalbrowsing"
-    }
-
-    struct Defaults {
-        static let NormalBrowsing = true
-    }
+extension Defaults.Keys {
+    static let contentBlockingStrength = Defaults.Key<BlockingStrength>("profile.prefkey.trackingprotection.strength", default: .basic)
+    static let contentBlockingEnabled = Defaults.Key<Bool>("profile.prefkey.trackingprotection.normalbrowsing", default: true)
 }
 
-enum BlockingStrength: String {
+enum BlockingStrength: String, Codable {
     case basic
     case strict
 
@@ -27,8 +22,6 @@ enum BlockingStrength: String {
  Neeva-specific implementation of tab content blocking.
  */
 class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
-    let userPrefs: Prefs
-
     class func name() -> String {
         return "TrackingProtectionStats"
     }
@@ -43,30 +36,17 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     override var isEnabled: Bool {
-        if let enabled = isUserEnabled {
-            return enabled
-        }
-
-        return isEnabledInPref
+        isUserEnabled ?? Defaults[.contentBlockingEnabled]
     }
 
-    var isEnabledInPref: Bool {
-        return userPrefs.boolForKey(ContentBlockingConfig.Prefs.EnabledKey) ?? ContentBlockingConfig.Defaults.NormalBrowsing
-    }
-
-    var blockingStrengthPref: BlockingStrength {
-        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap(BlockingStrength.init) ?? .basic
-    }
-
-    init(tab: ContentBlockerTab, prefs: Prefs) {
-        userPrefs = prefs
+    override init(tab: ContentBlockerTab) {
         super.init(tab: tab)
         setupForTab()
     }
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(strict: blockingStrengthPref == .strict)
+        let rules = BlocklistFileName.listsForMode(strict: Defaults[.contentBlockingStrength] == .strict)
         ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules)
     }
 
@@ -78,7 +58,7 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     override func currentlyEnabledLists() -> [BlocklistFileName] {
-        return BlocklistFileName.listsForMode(strict: blockingStrengthPref == .strict)
+        return BlocklistFileName.listsForMode(strict: Defaults[.contentBlockingStrength] == .strict)
     }
 
     override func notifyContentBlockingChanged() {
@@ -94,24 +74,19 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
 
 // Static methods to access user prefs for tracking protection
 extension NeevaTabContentBlocker {
-    static func setTrackingProtection(enabled: Bool, prefs: Prefs) {
-        let key = ContentBlockingConfig.Prefs.EnabledKey
-        prefs.setBool(enabled, forKey: key)
-        ContentBlocker.shared.prefsChanged()
+    static func isTrackingProtectionEnabled() -> Bool {
+        Defaults[.contentBlockingEnabled]
     }
 
-    static func isTrackingProtectionEnabled(prefs: Prefs) -> Bool {
-        return prefs.boolForKey(ContentBlockingConfig.Prefs.EnabledKey) ?? ContentBlockingConfig.Defaults.NormalBrowsing
-    }
-
-    static func toggleTrackingProtectionEnabled(prefs: Prefs) {
-        let isEnabled = NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: prefs)
+    static func toggleTrackingProtectionEnabled() {
+        let isEnabled = Defaults[.contentBlockingEnabled]
         if isEnabled {
             ClientLogger.shared.logCounter(.TurnOffBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
         } else {
             ClientLogger.shared.logCounter(.TurnOnBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
         }
             
-        setTrackingProtection(enabled: !isEnabled, prefs: prefs)
+        Defaults[.contentBlockingEnabled] = !isEnabled
+        ContentBlocker.shared.prefsChanged()
     }
 }

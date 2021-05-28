@@ -4,20 +4,18 @@
 
 import Foundation
 import Shared
+import Defaults
 
 open class ClosedTabsStore {
-    let prefs: Prefs
-
     lazy open var tabs: [ClosedTab] = {
-        guard let tabsArray: Data = self.prefs.objectForKey("recentlyClosedTabs") as Any? as? Data,
+        guard let tabsArray = Defaults[.recentlyClosedTabs],
               let unarchivedArray = NSKeyedUnarchiver.unarchiveObject(with: tabsArray) as? [ClosedTab] else {
             return []
         }
         return unarchivedArray
     }()
 
-    public init(prefs: Prefs) {
-        self.prefs = prefs
+    public init() {
     }
 
     open func addTab(_ url: URL, title: String?, faviconURL: String?) {
@@ -26,12 +24,11 @@ open class ClosedTabsStore {
         if tabs.count > 5 {
             tabs.removeLast()
         }
-        let archivedTabsArray = NSKeyedArchiver.archivedData(withRootObject: tabs)
-        prefs.setObject(archivedTabsArray, forKey: "recentlyClosedTabs")
+        Defaults[.recentlyClosedTabs] = NSKeyedArchiver.archivedData(withRootObject: tabs)
     }
 
     open func clearTabs() {
-        prefs.removeObjectForKey("recentlyClosedTabs")
+        Defaults[.recentlyClosedTabs] = nil
         tabs = []
     }
 }

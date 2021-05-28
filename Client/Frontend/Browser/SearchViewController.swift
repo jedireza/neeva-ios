@@ -7,6 +7,7 @@ import Shared
 import Storage
 import SwiftUI
 import Apollo
+import Defaults
 
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didSelectURL url: URL)
@@ -211,7 +212,7 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
         // reason, set the root navigation bar to be visible
         self.navigationController?.isNavigationBarHidden = true
 
-        if isPrivate || searchQuery.isEmpty || !(profile.prefs.boolForKey(PrefsKeys.KeyShowSearchSuggestions) ?? true) || searchQuery.looksLikeAURL() {
+        if isPrivate || searchQuery.isEmpty || !Defaults[.showSearchSuggestions] || searchQuery.looksLikeAURL() {
             self.suggestions = []
             self.rootView = makeSuggestionView()
             return

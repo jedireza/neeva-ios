@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 /// Data source for handling LoginData objects from a Cursor
 class LoginDataSource: NSObject, UITableViewDataSource {
@@ -16,8 +17,8 @@ class LoginDataSource: NSObject, UITableViewDataSource {
     init(viewModel: LoginListViewModel) {
         self.viewModel = viewModel
         boolSettings = (
-            BoolSetting(prefs: viewModel.profile.prefs, prefKey: PrefsKeys.LoginsSaveEnabled, defaultValue: true, attributedTitleText: NSAttributedString(string: Strings.SettingToSaveLogins)),
-            BoolSetting(prefs: viewModel.profile.prefs, prefKey: PrefsKeys.LoginsShowShortcutMenuItem, defaultValue: false, attributedTitleText: NSAttributedString(string: Strings.SettingToShowLoginsInAppMenu)))
+            BoolSetting(prefKey: Defaults.Keys.saveLogins.name, defaultValue: true, attributedTitleText: NSAttributedString(string: Strings.SettingToSaveLogins)),
+            BoolSetting(prefKey: Defaults.Keys.showLoginsInAppMenu.name, defaultValue: false, attributedTitleText: NSAttributedString(string: Strings.SettingToShowLoginsInAppMenu)))
         super.init()
     }
 
@@ -68,7 +69,7 @@ class LoginDataSource: NSObject, UITableViewDataSource {
             cell.hostnameLabel.text = login.hostname
             cell.usernameLabel.textColor = UIColor.theme.tableView.rowDetailText
             cell.usernameLabel.text = login.username.isEmpty ? "(no username)" : login.username
-            if NightModeHelper.hasEnabledDarkTheme(viewModel.profile.prefs) {
+            if Defaults[.nightModeEnabledDarkTheme] {
                 cell.breachAlertImageView.tintColor = BreachAlertsManager.darkMode
             } else {
                 cell.breachAlertImageView.tintColor = BreachAlertsManager.lightMode

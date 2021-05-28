@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 extension BlockingStrength {
     var settingTitle: String {
@@ -144,14 +145,9 @@ class TPAccessoryInfo: ThemedTableViewController {
 }
 
 class ContentBlockerSettingViewController: SettingsTableViewController {
-    let prefs: Prefs
-    var currentBlockingStrength: BlockingStrength
+    var currentBlockingStrength = Defaults[.contentBlockingStrength]
 
-    init(prefs: Prefs) {
-        self.prefs = prefs
-
-        currentBlockingStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .basic
-
+    init() {
         super.init(style: .grouped)
 
         self.title = Strings.SettingsTrackingProtectionSectionName
@@ -168,7 +164,7 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
                 return option == self.currentBlockingStrength
             }, onChecked: {
                 self.currentBlockingStrength = option
-                self.prefs.setString(self.currentBlockingStrength.rawValue, forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                Defaults[.contentBlockingStrength] = self.currentBlockingStrength
                 TabContentBlocker.prefsChanged()
                 self.tableView.reloadData()
                 TelemetryWrapper.recordEvent(category: .action, method: .change, object: .setting, extras: ["pref": "ETP-strength", "to": option.rawValue])
@@ -189,7 +185,7 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
             return setting
         }
 
-        let enabledSetting = BoolSetting(prefs: profile.prefs, prefKey: ContentBlockingConfig.Prefs.EnabledKey, defaultValue: ContentBlockingConfig.Defaults.NormalBrowsing, attributedTitleText: NSAttributedString(string: Strings.TrackingProtectionEnableTitle)) { [weak self] enabled in
+        let enabledSetting = BoolSetting(prefKey: Defaults.Keys.contentBlockingStrength.name, defaultValue: true, attributedTitleText: NSAttributedString(string: Strings.TrackingProtectionEnableTitle)) { [weak self] enabled in
             TabContentBlocker.prefsChanged()
             strengthSetting.forEach { item in
                 item.enabled = enabled

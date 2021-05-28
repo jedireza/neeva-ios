@@ -242,7 +242,7 @@ enum NavigationPath {
         case .general:
             break // Intentional NOOP; Already displaying the general settings VC
         case .mailto:
-            let viewController = OpenWithSettingsViewController(prefs: profile.prefs)
+            let viewController = OpenWithSettingsViewController()
             controller.pushViewController(viewController, animated: true)
         case .clearPrivateData:
             let viewController = ClearPrivateDataTableViewController()

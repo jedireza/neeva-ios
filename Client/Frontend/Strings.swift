@@ -1099,11 +1099,6 @@ extension String {
     public static let PrivateBrowsingLearnMore = MZLocalizedString("Learn More", tableName: "PrivateBrowsing", comment: "Text button displayed when there are no tabs open while in private mode")
 }
 
-// Advanced Account Setting
-extension String {
-    public static let AdvancedAccountUseStageServer = MZLocalizedString("Use stage servers", comment: "Debug option")
-}
-
 // App Settings
 extension String {
     public static let AppNeevaSettingsSearch = MZLocalizedString("Account Settings", comment: "Show the Account Settings page from the Neeva section in the settings.")

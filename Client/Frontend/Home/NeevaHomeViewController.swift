@@ -9,6 +9,7 @@ import SDWebImage
 import XCGLogger
 import SnapKit
 import SwiftUI
+import Defaults
 
 private let log = Logger.browserLogger
 
@@ -244,15 +245,11 @@ extension NeevaHomeViewController: DataObserverDelegate {
     }
 
     fileprivate func deleteTileForSuggestedSite(_ siteURL: String) {
-        var deletedSuggestedSites = profile.prefs.arrayForKey(TopSitesHandler.DefaultSuggestedSitesKey) as? [String] ?? []
-        deletedSuggestedSites.append(siteURL)
-        profile.prefs.setObject(deletedSuggestedSites, forKey: TopSitesHandler.DefaultSuggestedSitesKey)
+        Defaults[.deletedSuggestedSites].append(siteURL)
     }
 
     func defaultTopSites() -> [Site] {
-        let suggested = SuggestedSites.asArray()
-        let deleted = profile.prefs.arrayForKey(TopSitesHandler.DefaultSuggestedSitesKey) as? [String] ?? []
-        return suggested.filter({deleted.firstIndex(of: $0.url) == .none})
+        TopSitesHandler.defaultTopSites()
     }
 }
 

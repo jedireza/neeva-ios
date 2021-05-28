@@ -8,6 +8,7 @@ import Shared
 import Storage
 import SwiftUI
 import SwiftKeychainWrapper
+import Defaults
 
 class AddToSpaceViewController: UIHostingController<AnyView> {
     struct Content: View {
@@ -100,12 +101,8 @@ protocol ShareControllerDelegate: AnyObject {
 
 // Telemetry events are written to NSUserDefaults, and then the host app reads and clears this list.
 func addAppExtensionTelemetryEvent(forMethod method: String) {
-    let profile = BrowserProfile(localName: "profile")
-    var events = profile.prefs.arrayForKey(PrefsKeys.AppExtensionTelemetryEventArray) ?? [[String]]()
     // Currently, only URL objects are shared.
-    let event = ["method": method, "object": "url"]
-    events.append(event)
-    profile.prefs.setObject(events, forKey: PrefsKeys.AppExtensionTelemetryEventArray)
+    Defaults[.appExtensionTelemetryEventArray].append(["method": method, "object": "url"])
 }
 
 class ShareViewController: UIViewController {
@@ -404,7 +401,7 @@ extension ShareViewController {
     func openNeeva(withUrl url: String, isSearch: Bool) {
         // Telemetry is handled in the app delegate that receives this event.
         let profile = BrowserProfile(localName: "profile")
-        profile.prefs.setBool(true, forKey: PrefsKeys.AppExtensionTelemetryOpenUrl)
+        Defaults[.appExtensionTelemetryOpenUrl] = true
 
        func neevaUrl(_ url: String) -> String {
             let encoded = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.alphanumerics) ?? ""

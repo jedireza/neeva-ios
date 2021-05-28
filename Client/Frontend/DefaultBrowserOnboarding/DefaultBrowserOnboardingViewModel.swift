@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 // Data Model
 struct DefaultBrowserOnboardingModel {
@@ -44,18 +45,15 @@ class DefaultBrowserOnboardingViewModel {
         model = DefaultBrowserOnboardingModel(titleImage: getCorrectImage(), titleText: String.DefaultBrowserCardTitle, descriptionText: [String.DefaultBrowserCardDescription, String.DefaultBrowserOnboardingDescriptionStep1, String.DefaultBrowserOnboardingDescriptionStep2, String.DefaultBrowserOnboardingDescriptionStep3], imageText: String.DefaultBrowserOnboardingScreenshot)
     }
     
-    static func shouldShowDefaultBrowserOnboarding(userPrefs: Prefs) -> Bool {
+    static func shouldShowDefaultBrowserOnboarding() -> Bool {
         // Show on 3rd session
         let maxSessionCount = 3
         var shouldShow = false
-        // Get the session count from preferences
-        let currentSessionCount = userPrefs.intForKey(PrefsKeys.SessionCount) ?? 0
-        let didShow = UserDefaults.standard.bool(forKey: PrefsKeys.KeyDidShowDefaultBrowserOnboarding)
-        guard !didShow else { return false }
+        guard !Defaults[.didShowDefaultBrowserOnboarding] else { return false }
         
-        if currentSessionCount == maxSessionCount {
+        if Defaults[.sessionCount] == maxSessionCount {
             shouldShow = true
-            UserDefaults.standard.set(true, forKey: PrefsKeys.KeyDidShowDefaultBrowserOnboarding)
+            Defaults[.didShowDefaultBrowserOnboarding] = true
         }
 
         return shouldShow

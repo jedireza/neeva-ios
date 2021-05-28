@@ -6,17 +6,15 @@ import Foundation
 @testable import Client
 import XCTest
 import Shared
+import Defaults
 
 class ETPCoverSheetTests: XCTestCase {
-    var prefs: NSUserDefaultsPrefs!
-
     override func setUp() {
         super.setUp()
-        prefs = NSUserDefaultsPrefs(prefix: "UpdateViewModelPrefs")
     }
 
     override func tearDown() {
-        prefs.clearAll()
+        UserDefaults.standard.clearProfilePrefs()
         super.tearDown()
     }
     
@@ -24,12 +22,11 @@ class ETPCoverSheetTests: XCTestCase {
         let currentTestAppVersion = "18"
         let supportedVersion = ["18"]
         var sessionValue:Int32 = 0
-        let shouldShow = ETPViewModel.shouldShowETPCoverSheet(userPrefs: prefs, currentAppVersion: currentTestAppVersion, isCleanInstall: true, supportedAppVersions: supportedVersion)
+        let shouldShow = ETPViewModel.shouldShowETPCoverSheet(currentAppVersion: currentTestAppVersion, isCleanInstall: true, supportedAppVersions: supportedVersion)
         // The session value should increase
-        sessionValue = prefs.intForKey(PrefsKeys.KeyInstallSession) ?? 0
-        XCTAssert(sessionValue == 1)
+        XCTAssert(Defaults[.installSession] == 1)
         // We also check that ETP Cover Sheet show type is clean install and it shouldn't show
-        XCTAssert(prefs.stringForKey(PrefsKeys.KeyETPCoverSheetShowType) == ETPCoverSheetShowType.CleanInstall.rawValue)
+        XCTAssert(Defaults[.etpCoverSheetShowType] == .CleanInstall)
         XCTAssert(!shouldShow)
     }
     
@@ -40,17 +37,16 @@ class ETPCoverSheetTests: XCTestCase {
         var shouldShow = false
         var isCleanInstall = true // Only for the first time
         for session in 0...2 {
-           shouldShow = ETPViewModel.shouldShowETPCoverSheet(userPrefs: prefs, currentAppVersion: currentTestAppVersion, isCleanInstall: isCleanInstall, supportedAppVersions: supportedVersion)
+           shouldShow = ETPViewModel.shouldShowETPCoverSheet(currentAppVersion: currentTestAppVersion, isCleanInstall: isCleanInstall, supportedAppVersions: supportedVersion)
             // False after the 1st run
             isCleanInstall = false
         }
         // The session value should increase to 2 as we aim to show when its the 3rd session (0,1,2)
-        sessionValue = prefs.intForKey(PrefsKeys.KeyInstallSession) ?? 0
-        XCTAssert(sessionValue == 2)
+        XCTAssert(Defaults[.installSession] == 2)
         // Should show should be true as we have reached the 3rd session
         XCTAssert(shouldShow)
         // We also check that ETP Cover Sheet show type is do not show as shouldShow is true and next time we don't want to show
-        XCTAssert(prefs.stringForKey(PrefsKeys.KeyETPCoverSheetShowType) == ETPCoverSheetShowType.DoNotShow.rawValue)
+        XCTAssert(Defaults[.etpCoverSheetShowType] == .DoNotShow)
     }
     
     func testShouldShowCoverSheetUpgradeFlow() {
@@ -58,10 +54,10 @@ class ETPCoverSheetTests: XCTestCase {
         let supportedVersion = ["18"]
         var shouldShow = false
         let isCleanInstall = false // For upgrade flow its not a clean install
-        shouldShow = ETPViewModel.shouldShowETPCoverSheet(userPrefs: prefs, currentAppVersion: currentTestAppVersion, isCleanInstall: isCleanInstall, supportedAppVersions: supportedVersion)
+        shouldShow = ETPViewModel.shouldShowETPCoverSheet(currentAppVersion: currentTestAppVersion, isCleanInstall: isCleanInstall, supportedAppVersions: supportedVersion)
         // Should show should be true as we have just come from an upgrade flow
         XCTAssert(shouldShow)
         // We also check that ETP Cover Sheet show type is do not show as shouldShow is true and next time we don't want to show
-        XCTAssert(prefs.stringForKey(PrefsKeys.KeyETPCoverSheetShowType) == ETPCoverSheetShowType.DoNotShow.rawValue)
+        XCTAssert(Defaults[.etpCoverSheetShowType] == .DoNotShow)
     }
 }

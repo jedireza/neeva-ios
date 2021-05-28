@@ -7,6 +7,7 @@ import Shared
 import UIKit
 import Storage
 import WidgetKit
+import Defaults
 
 struct TopSitesHandler {
     static func getTopSites(profile: Profile) -> Deferred<[Site]> {      
@@ -25,7 +26,7 @@ struct TopSitesHandler {
             }
 
             // Fetch the default sites
-            let defaultSites = defaultTopSites(profile)
+            let defaultSites = defaultTopSites()
             // create PinnedSite objects. used by the view layer to tell topsites apart
             let pinnedSites: [Site] = pinned.map({ PinnedSite(site: $0) })
 
@@ -69,13 +70,11 @@ struct TopSitesHandler {
         }
     }
     
-    static func defaultTopSites(_ profile: Profile) -> [Site] {
+    static func defaultTopSites() -> [Site] {
         let suggested = SuggestedSites.asArray()
-        let deleted = profile.prefs.arrayForKey(DefaultSuggestedSitesKey) as? [String] ?? []
-        return suggested.filter({deleted.firstIndex(of: $0.url) == .none})
+        let deleted = Defaults[.deletedSuggestedSites]
+        return suggested.filter { !deleted.contains($0.url) }
     }
-    
-    static let DefaultSuggestedSitesKey = "topSites.deletedSuggestedSites"
 }
 
 open class PinnedSite: Site {

@@ -6,6 +6,7 @@ import Foundation
 import Shared
 import SDWebImage
 import XCGLogger
+import Defaults
 
 private let log = Logger.browserLogger
 
@@ -83,21 +84,17 @@ class TestAppDelegate: AppDelegate {
 
         // Don't show the ETP Coversheet New page.
         if launchArguments.contains(LaunchArguments.SkipETPCoverSheet) {
-            profile.prefs.setString(ETPCoverSheetShowType.DoNotShow.rawValue, forKey: PrefsKeys.KeyETPCoverSheetShowType)
+            Defaults[.etpCoverSheetShowType] = .DoNotShow
         }
         
         // Don't show the What's New page.
         if launchArguments.contains(LaunchArguments.SkipWhatsNew) {
-            profile.prefs.setInt(1, forKey: PrefsKeys.KeyLastVersionNumber)
+            Defaults[.lastVersionNumber] = "1"
         }
 
         // Skip the intro when requested by for example tests or automation
         if launchArguments.contains(LaunchArguments.SkipIntro) {
-            profile.prefs.setInt(1, forKey: PrefsKeys.IntroSeen)
-        }
-
-        if launchArguments.contains(LaunchArguments.StageServer) {
-            profile.prefs.setInt(1, forKey: PrefsKeys.UseStageServer)
+            Defaults[.introSeen] = true
         }
 
         self.profile = profile

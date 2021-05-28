@@ -12,6 +12,7 @@ import SwiftKeychainWrapper
 import LocalAuthentication
 import CoreSpotlight
 import UserNotifications
+import Defaults
 
 #if canImport(BackgroundTasks)
  import BackgroundTasks
@@ -19,7 +20,6 @@ import UserNotifications
 
 private let log = Logger.browserLogger
 
-let LatestAppVersionProfileKey = "latestAppVersion"
 let AllowThirdPartyKeyboardsKey = "settings.allowThirdPartyKeyboards"
 private let InitialPingSentKey = "initialPingSent"
 
@@ -210,14 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 
     func updateSessionCount() {
-        var sessionCount: Int32 = 0
-        
-        // Get the session count from preferences
-        if let currentSessionCount = profile?.prefs.intForKey(PrefsKeys.SessionCount) {
-            sessionCount = currentSessionCount
-        }
-        // increase session count value
-        profile?.prefs.setInt(sessionCount + 1, forKey: PrefsKeys.SessionCount)
+        Defaults[.sessionCount] += 1
     }
 
     func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
@@ -225,8 +218,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             return false
         }
 
-        if let profile = profile, let _ = profile.prefs.boolForKey(PrefsKeys.AppExtensionTelemetryOpenUrl) {
-            profile.prefs.removeObjectForKey(PrefsKeys.AppExtensionTelemetryOpenUrl)
+        if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
+            Defaults[.appExtensionTelemetryOpenUrl] = nil
             var object = TelemetryWrapper.EventObject.url
             if case .text(_) = routerpath {
                 object = .searchText

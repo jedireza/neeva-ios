@@ -4,13 +4,14 @@
 
 import UIKit
 import Shared
+import Defaults
 
 private let SectionArrow = 0
 private let SectionToggles = 1
 private let SectionButton = 2
 private let NumberOfSections = 3
 private let SectionHeaderFooterIdentifier = "SectionHeaderFooterIdentifier"
-private let TogglesPrefKey = "clearprivatedata.toggles"
+private let togglesKey = Defaults.Key<[Bool]?>("profile.clearprivatedata.toggles")
 
 private let log = Logger.browserLogger
 
@@ -41,7 +42,7 @@ class ClearPrivateDataTableViewController: ThemedTableViewController {
     fileprivate lazy var toggles: [Bool] = {
         // If the number of saved toggles doesn't match the number of clearables, just reset
         // and return the default values for the clearables.
-        if let savedToggles = self.profile.prefs.arrayForKey(TogglesPrefKey) as? [Bool], savedToggles.count == self.clearables.count {
+        if let savedToggles = Defaults[togglesKey], savedToggles.count == self.clearables.count {
             return savedToggles
         }
 
@@ -144,7 +145,7 @@ class ClearPrivateDataTableViewController: ThemedTableViewController {
                     .uponQueue(.main) { result in
                         assert(result.isSuccess, "Private data cleared successfully")
 
-                        self.profile.prefs.setObject(self.toggles, forKey: TogglesPrefKey)
+                        Defaults[togglesKey] = self.toggles
 
                         // Disable the Clear Private Data button after it's clicked.
                         self.clearButtonEnabled = false

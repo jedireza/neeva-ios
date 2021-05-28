@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
+import Defaults
 
 public struct NestedTableViewDelegate {
     var dataSource: UITableViewDataSource & UITableViewDelegate
@@ -64,7 +65,7 @@ extension PhotonActionSheetProtocol {
     @available(iOS 11.0, *)
     private func menuActionsForTrackingProtectionDisabled(for tab: Tab) -> [[PhotonActionSheetItem]] {
         let enableTP = PhotonActionSheetItem(title: Strings.EnableTPBlockingGlobally, iconString: "menu-TrackingProtection") { _, _ in
-            NeevaTabContentBlocker.toggleTrackingProtectionEnabled(prefs: self.profile.prefs)
+            NeevaTabContentBlocker.toggleTrackingProtectionEnabled()
             tab.reload()
         }
 
@@ -175,9 +176,9 @@ extension PhotonActionSheetProtocol {
         }
 
         let blockersDescriptionString: String = {
-            if blocker.blockingStrengthPref == .strict {
+            if Defaults[.contentBlockingStrength] == .strict {
                 return Strings.StrictETPWithITP
-            } else if blocker.blockingStrengthPref == .basic {
+            } else if Defaults[.contentBlockingStrength] == .basic {
                 return Strings.StandardETPWithITP
             } else {
                 return Strings.TPPageMenuNoTrackersBlocked
@@ -237,7 +238,7 @@ extension PhotonActionSheetProtocol {
         // ETP is on
         else {
             // Standard mode: show no switch
-            if blocker.blockingStrengthPref == .basic {
+            if Defaults[.contentBlockingStrength] == .basic {
                 items = [[addToSafelistNoSwitch]] + [[blockedtitle, blockersDescription]]
             }
             // Strict mode: show switch

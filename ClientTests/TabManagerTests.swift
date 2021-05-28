@@ -7,6 +7,7 @@ import Shared
 import Storage
 import UIKit
 import WebKit
+import Defaults
 
 import XCTest
 
@@ -200,7 +201,7 @@ class TabManagerTests: XCTestCase {
     }
 
     func testDeletePrivateTabsOnExit() {
-        profile.prefs.setBool(true, forKey: "settings.closePrivateTabs")
+        Defaults[.closePrivateTabs] = true
 
         // create one private and one normal tab
         let tab = manager.addTab()
@@ -226,7 +227,7 @@ class TabManagerTests: XCTestCase {
         XCTAssertEqual(manager.privateTabs.count, 0, "But once we add a normal tab we've switched out of private mode. Private tabs should be deleted")
         XCTAssertEqual(manager.normalTabs.count, 2, "The original normal tab and the new one should both still exist")
 
-        profile.prefs.setBool(false, forKey: "settings.closePrivateTabs")
+        Defaults[.closePrivateTabs] = false
         manager.selectTab(manager.addTab(isPrivate: true))
         manager.selectTab(tab)
         XCTAssertEqual(manager.selectedTab?.isPrivate, false, "The selected tab should not be private")
@@ -234,7 +235,7 @@ class TabManagerTests: XCTestCase {
     }
 
     func testTogglePBMDelete() {
-        profile.prefs.setBool(true, forKey: "settings.closePrivateTabs")
+        Defaults[.closePrivateTabs] = true
 
         let tab = manager.addTab()
         manager.selectTab(tab)
@@ -322,7 +323,7 @@ class TabManagerTests: XCTestCase {
 
     func testDelegatesCalledWhenRemovingPrivateTabs() {
         //setup
-        profile.prefs.setBool(true, forKey: "settings.closePrivateTabs")
+        Defaults[.closePrivateTabs] = true
 
         // create one private and one normal tab
         let tab = manager.addTab()

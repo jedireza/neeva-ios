@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 public let ActivityStreamTopSiteCacheSize: Int32 = 32
 
@@ -58,17 +59,17 @@ class ActivityStreamDataObserver: DataObserver {
             return
         }
 
-        // KeyTopSitesCacheIsValid is false when we want to invalidate. Thats why this logic is so backwards
-        let shouldInvalidateTopSites = topSites || !(profile.prefs.boolForKey(PrefsKeys.KeyTopSitesCacheIsValid) ?? false)
+        // topSitesCacheIsValid is false when we want to invalidate. Thats why this logic is so backwards
+        let shouldInvalidateTopSites = topSites || !Defaults[.topSitesCacheIsValid]
         if !shouldInvalidateTopSites {
             // There is nothing to refresh. Bye
             return
         }
 
-        // Flip the `KeyTopSitesCacheIsValid` flag now to prevent subsequent calls to refresh
+        // Flip the `topSitesCacheIsValid` flag now to prevent subsequent calls to refresh
         // from re-invalidating the cache.
         if shouldInvalidateTopSites {
-            self.profile.prefs.setBool(true, forKey: PrefsKeys.KeyTopSitesCacheIsValid)
+            Defaults[.topSitesCacheIsValid] = true
         }
 
         self.delegate?.willInvalidateDataSources(forceTopSites: topSites)

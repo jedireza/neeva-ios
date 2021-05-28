@@ -5,28 +5,14 @@
 import Foundation
 import Shared
 import XCGLogger
+import Defaults
 
-/// Accessors to find what a new tab should do when created without a URL.
-struct NewTabAccessors {
-    static let NewTabPrefKey = PrefsKeys.KeyNewTab
-    static let Default = NewTabPage.neevaHome
-
-    static func getNewTabPage(_ prefs: Prefs) -> NewTabPage {
-        guard let raw = prefs.stringForKey(NewTabPrefKey) else {
-            return .topSites
-        }
-        let option = NewTabPage(rawValue: raw) ?? Default
-
-        return option
-    }
-
-    static func getHomePage(_ prefs: Prefs) -> NewTabPage {
-        return Default
-    }
+extension Defaults.Keys {
+    static let newTabPref = Defaults.Key<NewTabPage>("profile.NewTabPrefKey", default: .neevaHome)
 }
 
 /// Enum to encode what should happen when the user opens a new tab without a URL.
-enum NewTabPage: String {
+enum NewTabPage: String, Codable {
     case blankPage = "Blank"
     case homePage = "HomePage"
     case neevaHome = "NeevaHome"

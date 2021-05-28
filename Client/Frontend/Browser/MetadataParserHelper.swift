@@ -8,6 +8,7 @@ import Shared
 import Storage
 import XCGLogger
 import WebKit
+import Defaults
 
 private let log = Logger.browserLogger
 
@@ -55,17 +56,14 @@ class MetadataParserHelper: TabEventHandler {
 }
 
 class MediaImageLoader: TabEventHandler {
-    private let prefs: Prefs
-
-    init(_ prefs: Prefs) {
-        self.prefs = prefs
+    init() {
         register(self, forTabEvents: .didLoadPageMetadata)
     }
 
     func tab(_ tab: Tab, didLoadPageMetadata metadata: PageMetadata) {
-        let cacheImages = !NoImageModeHelper.isActivated(prefs)
         if let urlString = metadata.mediaURL,
-            let mediaURL = URL(string: urlString), cacheImages {
+            let mediaURL = URL(string: urlString),
+            !Defaults[.noImageModeStatus] {
             prepareCache(mediaURL)
         }
     }

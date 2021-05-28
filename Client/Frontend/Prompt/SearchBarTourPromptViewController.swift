@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Shared
+import Defaults
 
 class SearchBarTourPromptViewController: UIHostingController<TourPromptView> {
 
@@ -27,7 +28,7 @@ class SearchBarTourPromptViewController: UIHostingController<TourPromptView> {
 
     func onDismiss() {
         self.dismiss(animated: true, completion: nil)
-        BrowserViewController.foregroundBVC().profile.prefs.setInt(1, forKey: PrefsKeys.SearchInputPromptDismissed)
+        Defaults[.searchInputPromptDismissed] = true
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

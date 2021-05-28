@@ -4,6 +4,7 @@
 
 import UIKit
 import Shared
+import Defaults
 
 /// App Settings Screen (triggered by tapping the 'Gear' in the Tab Tray Controller)
 class AppSettingsTableViewController: SettingsTableViewController {
@@ -27,7 +28,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
         }
 
         if showContentBlockerSetting {
-            let viewController = ContentBlockerSettingViewController(prefs: profile.prefs)
+            let viewController = ContentBlockerSettingViewController()
             viewController.profile = profile
             viewController.tabManager = tabManager
             navigationController?.pushViewController(viewController, animated: false)
@@ -39,12 +40,11 @@ class AppSettingsTableViewController: SettingsTableViewController {
     override func generateSettings() -> [SettingSection] {
         var settings = [SettingSection]()
 
-        let prefs = profile.prefs
         var generalSettings: [Setting] = [
-            BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyShowSearchSuggestions, defaultValue: true,
+            BoolSetting(prefKey: Defaults.Keys.showSearchSuggestions.name, defaultValue: true,
                                     titleText: NSLocalizedString("Show Search Suggestions", comment: "Label for show search suggestions setting.")),
             OpenWithSetting(settings: self),
-            BoolSetting(prefs: prefs, prefKey: PrefsKeys.KeyBlockPopups, defaultValue: true,
+            BoolSetting(prefKey: Defaults.Keys.blockPopups.name, defaultValue: true,
                         titleText: .AppSettingsBlockPopups),
            ]
 
@@ -57,10 +57,10 @@ class AppSettingsTableViewController: SettingsTableViewController {
         // be changed.
 
         generalSettings += [
-            BoolSetting(prefs: prefs, prefKey: "showClipboardBar", defaultValue: false,
+            BoolSetting(prefKey: Defaults.Keys.showClipboardBar.name, defaultValue: false,
                         titleText: Strings.SettingsOfferClipboardBarTitle,
                         statusText: Strings.SettingsOfferClipboardBarStatus),
-            BoolSetting(prefs: prefs, prefKey: PrefsKeys.ContextMenuShowLinkPreviews, defaultValue: true,
+            BoolSetting(prefKey: Defaults.Keys.contextMenuShowLinkPreviews.name, defaultValue: true,
                         titleText: Strings.SettingsShowLinkPreviewsTitle,
                         statusText: Strings.SettingsShowLinkPreviewsStatus)
         ]
@@ -84,11 +84,12 @@ class AppSettingsTableViewController: SettingsTableViewController {
         privacySettings.append(ClearPrivateDataSetting(settings: self))
 
         privacySettings += [
-            BoolSetting(prefs: prefs,
-                prefKey: "settings.closePrivateTabs",
+            BoolSetting(
+                prefKey: Defaults.Keys.closePrivateTabs.name,
                 defaultValue: false,
                 titleText: .AppSettingsClosePrivateTabsTitle,
-                statusText: .AppSettingsClosePrivateTabsDescription)
+                statusText: .AppSettingsClosePrivateTabsDescription
+            )
         ]
 
         privacySettings.append(ContentBlockerSetting(settings: self))

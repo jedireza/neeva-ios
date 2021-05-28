@@ -7,6 +7,7 @@ import WebKit
 import Storage
 import Shared
 import XCGLogger
+import Defaults
 
 private let log = Logger.browserLogger
 
@@ -69,12 +70,11 @@ class TabManager: NSObject {
 
     fileprivate let navDelegate: TabManagerNavDelegate
 
-    public static func makeWebViewConfig(isPrivate: Bool, prefs: Prefs?) -> WKWebViewConfiguration {
+    public static func makeWebViewConfig(isPrivate: Bool) -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.dataDetectorTypes = [.phoneNumber]
         configuration.processPool = WKProcessPool()
-        let blockPopups = prefs?.boolForKey(PrefsKeys.KeyBlockPopups) ?? true
-        configuration.preferences.javaScriptCanOpenWindowsAutomatically = !blockPopups
+        configuration.preferences.javaScriptCanOpenWindowsAutomatically = !Defaults[.blockPopups]
         // We do this to go against the configuration of the <meta name="viewport">
         // tag to behave the same way as Safari :-(
         configuration.ignoresViewportScaleLimits = true
@@ -88,12 +88,12 @@ class TabManager: NSObject {
 
     // A WKWebViewConfiguration used for normal tabs
     lazy fileprivate var configuration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs)
+        return TabManager.makeWebViewConfig(isPrivate: false)
     }()
 
     // A WKWebViewConfiguration used for private mode tabs
     lazy fileprivate var privateConfiguration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs)
+        return TabManager.makeWebViewConfig(isPrivate: true)
     }()
 
     var selectedIndex: Int { return _selectedIndex }
@@ -116,7 +116,7 @@ class TabManager: NSObject {
 
         self.profile = profile
         self.navDelegate = TabManagerNavDelegate()
-        self.tabEventHandlers = TabEventHandlers.create(with: profile.prefs)
+        self.tabEventHandlers = TabEventHandlers.create()
 
         self.store = TabManagerStore(imageStore: imageStore)
         super.init()
@@ -195,7 +195,7 @@ class TabManager: NSObject {
         let previous = previous ?? selectedTab
 
         // Make sure to wipe the private tabs if the user has the pref turned on
-        if shouldClearPrivateTabs(), !(tab?.isPrivate ?? false) {
+        if Defaults[.closePrivateTabs], !(tab?.isPrivate ?? false) {
             removeAllPrivateTabs()
         }
 
@@ -246,10 +246,6 @@ class TabManager: NSObject {
         store.preserveTabs(tabs, selectedTab: selectedTab)
     }
 
-    func shouldClearPrivateTabs() -> Bool {
-        return profile.prefs.boolForKey("settings.closePrivateTabs") ?? false
-    }
-
     //Called by other classes to signal that they are entering/exiting private mode
     //This is called by TabTrayVC when the private mode button is pressed and BEFORE we've switched to the new mode
     //we only want to remove all private tabs when leaving PBM and not when entering.
@@ -259,7 +255,7 @@ class TabManager: NSObject {
         // Clear every time entering/exiting this mode.
         Tab.ChangeUserAgent.privateModeHostList = Set<String>()
 
-        if shouldClearPrivateTabs() && leavingPBM {
+        if Defaults[.closePrivateTabs] && leavingPBM {
             removeAllPrivateTabs()
         }
     }
@@ -374,7 +370,7 @@ class TabManager: NSObject {
         if let request = request {
             tab.loadRequest(request)
         } else if !isPopup {
-            let newTabChoice = NewTabAccessors.getNewTabPage(profile.prefs)
+            let newTabChoice = Defaults[.newTabPref]
             tab.newTabPageType = newTabChoice
             switch newTabChoice {
                 case .homePage:
@@ -390,7 +386,7 @@ class TabManager: NSObject {
                 break
                 case .customURL:
                 //custom url saves its location in the home preferences
-                let url = NewTabHomePageAccessors.getHomePage(profile.prefs)!
+                let url = NewTabHomePageAccessors.getHomePage()!
                 tab.loadRequest(URLRequest(url: url))
                 break;
                 default:
@@ -403,8 +399,8 @@ class TabManager: NSObject {
             }
         }
 
-        tab.nightMode = NightModeHelper.isActivated(profile.prefs)
-        tab.noImageMode = NoImageModeHelper.isActivated(profile.prefs)
+        tab.nightMode = Defaults[.nightModeStatus]
+        tab.noImageMode = Defaults[.noImageModeStatus]
 
         if flushToDisk {
         	storeChanges()
@@ -485,7 +481,7 @@ class TabManager: NSObject {
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
         if tab.isPrivate && privateTabs.count < 1 {
-            privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs)
+            privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
         }
 
         tab.close()
@@ -522,7 +518,7 @@ class TabManager: NSObject {
         privateTabs.forEach { $0.close() }
         tabs = normalTabs
 
-        privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs)
+        privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 
     func removeTabsAndAddNormalTab(_ tabs: [Tab]) {
@@ -621,7 +617,7 @@ class TabManager: NSObject {
 
     @objc func prefsDidChange() {
         DispatchQueue.main.async {
-            let allowPopups = !(self.profile.prefs.boolForKey(PrefsKeys.KeyBlockPopups) ?? true)
+            let allowPopups = !Defaults[.blockPopups]
             // Each tab may have its own configuration, so we should tell each of them in turn.
             for tab in self.tabs {
                 tab.webView?.configuration.preferences.javaScriptCanOpenWindowsAutomatically = allowPopups
@@ -674,7 +670,7 @@ extension TabManager {
             return
         }
 
-        var tabToSelect = store.restoreStartupTabs(clearPrivateTabs: shouldClearPrivateTabs(), tabManager: self)
+        var tabToSelect = store.restoreStartupTabs(clearPrivateTabs: Defaults[.closePrivateTabs], tabManager: self)
         let wasLastSessionPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
         if wasLastSessionPrivate, !(tabToSelect?.isPrivate ?? false) {
             tabToSelect = addTab(isPrivate: true)

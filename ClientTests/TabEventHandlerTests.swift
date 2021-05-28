@@ -8,6 +8,7 @@ import WebKit
 import GCDWebServers
 import XCTest
 import Shared
+import Defaults
 
 class TabEventHandlerTests: XCTestCase {
 
@@ -27,8 +28,8 @@ class TabEventHandlerTests: XCTestCase {
 
     func testBlankPopupURL() {
         // Hide intro so it is easier to see the test running and debug it
-        BrowserViewController.foregroundBVC().profile.prefs.setInt(1, forKey: PrefsKeys.IntroSeen)
-        BrowserViewController.foregroundBVC().profile.prefs.setString(ETPCoverSheetShowType.DoNotShow.rawValue, forKey: PrefsKeys.KeyETPCoverSheetShowType)
+        Defaults[.introSeen] = true
+        Defaults[.etpCoverSheetShowType] = .DoNotShow
 
         let webServer = GCDWebServer()
         webServer.addHandler(forMethod: "GET", path: "/blankpopup", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse in
@@ -45,7 +46,7 @@ class TabEventHandlerTests: XCTestCase {
         }
         let webServerBase = "http://localhost:\(webServer.port)"
 
-        BrowserViewController.foregroundBVC().profile.prefs.setBool(false, forKey: PrefsKeys.KeyBlockPopups)
+        Defaults[.blockPopups] = false
         BrowserViewController.foregroundBVC().tabManager.addTab(URLRequest(url: URL(string: "\(webServerBase)/blankpopup")!))
 
         let exists = NSPredicate() { obj,_ in

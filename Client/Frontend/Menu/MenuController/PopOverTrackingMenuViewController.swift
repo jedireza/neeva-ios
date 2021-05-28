@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Defaults
 
 class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
 
@@ -17,7 +18,7 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
     
     public init(delegate:BrowserViewController,
                          source:UIView) {
-        super.init(rootView: TrackingMenuView(isTrackingProtectionEnabled: NeevaTabContentBlocker.isTrackingProtectionEnabled(prefs: delegate.profile.prefs),
+        super.init(rootView: TrackingMenuView(isTrackingProtectionEnabled: Defaults[.contentBlockingEnabled],
             viewModel: TrackingStatsViewModel(
                 trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab(),
                 settingsHandler: nil)))
@@ -32,7 +33,7 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
         self.rootView.menuAction = { result in
             switch result {
             case .tracking:
-                NeevaTabContentBlocker.toggleTrackingProtectionEnabled(prefs: delegate.profile.prefs)
+                NeevaTabContentBlocker.toggleTrackingProtectionEnabled()
                 delegate.tabManager.selectedTab?.reload()
                 break
             case .incognito:

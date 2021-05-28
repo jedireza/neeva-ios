@@ -4,6 +4,7 @@
 import SwiftUI
 import Storage
 import Shared
+import Defaults
 
 struct NeevaHomeUX {
     static let FaviconSize: CGFloat = 28
@@ -145,12 +146,14 @@ struct SuggestedSitesView: View {
     }
 }
 
-enum HomeRowExpansionState: Int {
+enum HomeRowExpansionState: Int, Codable {
     case limited, all
 }
 
+fileprivate let setSuggestedSitesToShowAll = Defaults.Key<HomeRowExpansionState>("profile.setSuggestedSitesToShowAll", default: .limited)
+
 struct NeevaHomeRow: View {
-    @State private var expansionState: HomeRowExpansionState = UserDefaults.standard.bool(forKey: PrefsKeys.KeySetSuggestedSitesToShowAll) ? .all : .limited
+    @Default(setSuggestedSitesToShowAll) private var expansionState
 
     var body: some View {
         VStack {
@@ -162,7 +165,6 @@ struct NeevaHomeRow: View {
                 Spacer()
                 Button(action: {
                     expansionState = HomeRowExpansionState(rawValue: expansionState.rawValue.advanced(by: 1)) ?? .limited
-                    UserDefaults.standard.set(expansionState == HomeRowExpansionState.all, forKey: PrefsKeys.KeySetSuggestedSitesToShowAll)
                 }, label: {
                     let icon = expansionState == .limited ? Nicon.chevronDown : Nicon.chevronUp
                     Symbol(icon, size: NeevaHomeUX.ToggleIconSize, label: "Show \(expansionState == .limited ? "more" : "fewer") suggested sites")
@@ -230,7 +232,7 @@ class HomeViewModel: ObservableObject {
                     BrowserViewController.foregroundBVC().presentDBOnboardingViewController(true)
 
                     // Set default browser onboarding did show to true so it will not show again after user clicks this button
-                    UserDefaults.standard.set(true, forKey: PrefsKeys.KeyDidShowDefaultBrowserOnboarding)
+                    Defaults[.didShowDefaultBrowserOnboarding] = true
                 }
             }
         }

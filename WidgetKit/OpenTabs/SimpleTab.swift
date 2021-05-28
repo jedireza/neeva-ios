@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
+import Defaults
 
 fileprivate let userDefaults = UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!
 
@@ -20,7 +21,7 @@ struct SimpleTab: Hashable, Codable {
 
 extension SimpleTab {
     static func getSimpleTabs() -> [String: SimpleTab] {
-        if let tbs = userDefaults.object(forKey: PrefsKeys.WidgetKitSimpleTabKey) as? Data {
+        if let tbs = Defaults[.widgetKitSimpleTabKey] {
             do {
                 let jsonDecoder = JSONDecoder()
                 let tabs = try jsonDecoder.decode([String: SimpleTab].self, from: tbs)
@@ -35,13 +36,10 @@ extension SimpleTab {
     
     static func saveSimpleTab(tabs:[String: SimpleTab]?) {
         guard let tabs = tabs, !tabs.isEmpty else {
-            userDefaults.removeObject(forKey: PrefsKeys.WidgetKitSimpleTabKey)
+            Defaults[.widgetKitSimpleTabKey] = nil
             return
         }
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(tabs) {
-            userDefaults.set(encoded, forKey: PrefsKeys.WidgetKitSimpleTabKey)
-        }
+        Defaults[.widgetKitSimpleTabKey] = try? JSONEncoder().encode(tabs)
     }
     
     static func convertToSimpleTabs(_ tabs: [SavedTab]) -> [String: SimpleTab] {

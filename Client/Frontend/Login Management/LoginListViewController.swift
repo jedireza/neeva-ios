@@ -7,6 +7,7 @@ import SnapKit
 import Storage
 import Shared
 import SwiftKeychainWrapper
+import Defaults
 
 private extension UITableView {
     var allLoginIndexPaths: [IndexPath] {
@@ -48,11 +49,6 @@ class LoginListViewController: SensitiveViewController {
         button.addTarget(self, action: #selector(tappedSelectionButton), for: .touchUpInside)
         return button
     }()
-
-    static func shouldShowAppMenuShortcut(forPrefs prefs: Prefs) -> Bool {
-        // default to on
-        return prefs.boolForKey(PrefsKeys.LoginsShowShortcutMenuItem) ?? false
-    }
 
     static func create(authenticateInNavigationController navigationController: UINavigationController, profile: Profile, settingsDelegate: SettingsDelegate, webpageNavigationHandler: ((_ url: URL?) -> Void)?) -> Deferred<LoginListViewController?> {
         let deferred = Deferred<LoginListViewController?>()

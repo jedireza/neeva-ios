@@ -952,8 +952,7 @@ class TestSQLiteHistory: XCTestCase {
     // Test that our visit partitioning for frecency is correct.
     func testHistoryLocalAndRemoteVisits() {
         let db = BrowserDB(filename: "testHistoryLocalAndRemoteVisits.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         let siteL = Site(url: "http://url1/", title: "title local only")
         let siteR = Site(url: "http://url2/", title: "title remote only")
@@ -1063,8 +1062,7 @@ class TestSQLiteHistory: XCTestCase {
         // And we can upgrade to the current version.
         db = BrowserDB(filename: "browser-v6-data.db", schema: BrowserSchema(), files: files)
 
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
         let results = history.getSitesByLastVisit(limit: 10, offset: 0).value.successValue
         XCTAssertNotNil(results)
         XCTAssertEqual(results![0]?.url, "http://www.example.com")
@@ -1074,8 +1072,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testDomainUpgrade() {
         let db = BrowserDB(filename: "testDomainUpgrade.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         let site = Site(url: "http://www.example.com/test1.4", title: "title one")
 
@@ -1106,8 +1103,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testDomains() {
         let db = BrowserDB(filename: "testDomains.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         let initialGuid = Bytes.generateGUID()
         let site11 = Site(url: "http://www.example.com/test1.1", title: "title one")
@@ -1159,8 +1155,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testHistoryIsSynced() {
         let db = BrowserDB(filename: "historysynced.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         let initialGUID = Bytes.generateGUID()
         let site = Place(guid: initialGUID, url: "http://www.example.com/test1.3", title: "title")
@@ -1176,8 +1171,7 @@ class TestSQLiteHistory: XCTestCase {
     // and then clears the database.
     func testHistoryTable() {
         let db = BrowserDB(filename: "testHistoryTable.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         let site1 = Site(url: "http://url1/", title: "title one")
         let site1Changed = Site(url: "http://url1/", title: "title one alt")
@@ -1297,8 +1291,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testRemoveRecentHistory() {
         let db = BrowserDB(filename: "testRemoveRecentHistory.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         func delete(date: Date, expectedDeletions: Int) {
             history.clearHistory().succeeded()
@@ -1335,8 +1328,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testRemoveHistoryForUrl() {
         let db = BrowserDB(filename: "testRemoveHistoryForUrl.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         history.setTopSitesCacheSize(20)
         history.clearTopSitesCache().succeeded()
@@ -1356,8 +1348,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testTopSitesFrecencyOrder() {
         let db = BrowserDB(filename: "testTopSitesFrecencyOrder.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         history.setTopSitesCacheSize(20)
         history.clearTopSitesCache().succeeded()
@@ -1404,8 +1395,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testTopSitesFiltersGoogle() {
         let db = BrowserDB(filename: "testTopSitesFiltersGoogle.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         history.setTopSitesCacheSize(20)
         history.clearTopSitesCache().succeeded()
@@ -1462,8 +1452,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testTopSitesCache() {
         let db = BrowserDB(filename: "testTopSitesCache.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         history.setTopSitesCacheSize(20)
         history.clearTopSitesCache().succeeded()
@@ -1547,8 +1536,7 @@ class TestSQLiteHistory: XCTestCase {
 
     func testPinnedTopSites() {
         let db = BrowserDB(filename: "testPinnedTopSites.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         history.setTopSitesCacheSize(20)
         history.clearTopSitesCache().succeeded()
@@ -1639,8 +1627,7 @@ class TestSQLiteHistoryTransactionUpdate: XCTestCase {
     func testUpdateInTransaction() {
         let files = MockFiles()
         let db = BrowserDB(filename: "testUpdateInTransaction.db", schema: BrowserSchema(), files: files)
-        let prefs = MockProfilePrefs()
-        let history = SQLiteHistory(db: db, prefs: prefs)
+        let history = SQLiteHistory(db: db)
 
         history.clearHistory().succeeded()
         let site = Site(url: "http://site/foo", title: "AA")

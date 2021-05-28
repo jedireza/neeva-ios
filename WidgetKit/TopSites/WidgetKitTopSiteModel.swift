@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 struct WidgetKitTopSiteModel: Codable {
     var title: String
@@ -14,15 +15,11 @@ struct WidgetKitTopSiteModel: Codable {
     static let userDefaults = UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!
     
     static func save(widgetKitTopSites: [WidgetKitTopSiteModel]) {
-        userDefaults.removeObject(forKey: PrefsKeys.WidgetKitSimpleTopTab)
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(widgetKitTopSites) {
-            userDefaults.set(encoded, forKey: PrefsKeys.WidgetKitSimpleTopTab)
-        }
+        Defaults[.widgetKitSimpleTopTab] = try? JSONEncoder().encode(widgetKitTopSites)
     }
     
     static func get() -> [WidgetKitTopSiteModel] {
-        if let topSites = userDefaults.object(forKey: PrefsKeys.WidgetKitSimpleTopTab) as? Data {
+        if let topSites = Defaults[.widgetKitSimpleTopTab] {
             do {
                 let jsonDecoder = JSONDecoder()
                 let sites = try jsonDecoder.decode([WidgetKitTopSiteModel].self, from: topSites)

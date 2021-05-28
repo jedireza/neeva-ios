@@ -5,6 +5,7 @@
 import Foundation
 import Shared
 import XCGLogger
+import Defaults
 
 private let log = Logger.syncLogger
 public let TopSiteCacheSize: Int32 = 16
@@ -133,13 +134,11 @@ extension SDRow {
 open class SQLiteHistory {
     let db: BrowserDB
     let favicons: SQLiteFavicons
-    let prefs: Prefs
     let clearTopSitesQuery: (String, Args?) = ("DELETE FROM cached_top_sites", nil)
 
-    required public init(db: BrowserDB, prefs: Prefs) {
+    required public init(db: BrowserDB) {
         self.db = db
         self.favicons = SQLiteFavicons(db: self.db)
-        self.prefs = prefs
     }
 
     public func getSites(forURLs urls: [String]) -> Deferred<Maybe<Cursor<Site?>>> {
@@ -165,11 +164,9 @@ private let topSitesQuery = "SELECT cached_top_sites.*, page_metadata.provider_n
  */
 fileprivate struct SQLiteFrecentHistory: FrecentHistory {
     private let db: BrowserDB
-    private let prefs: Prefs
 
-    init(db: BrowserDB, prefs: Prefs) {
+    init(db: BrowserDB) {
         self.db = db
-        self.prefs = prefs
 
         let empty = "DELETE FROM \(MatViewAwesomebarBookmarksWithFavicons)"
 
@@ -197,7 +194,7 @@ fileprivate struct SQLiteFrecentHistory: FrecentHistory {
     }
 
     fileprivate func updateTopSitesCacheQuery() -> (String, Args?) {
-        let limit = Int(prefs.intForKey(PrefsKeys.KeyTopSitesCacheSize) ?? TopSiteCacheSize)
+        let limit = Int(Defaults[.topSitesCacheSize] ?? TopSiteCacheSize)
         let (topSitesQuery, args) = getTopSitesQuery(historyLimit: limit)
 
         let insertQuery = """
@@ -608,7 +605,7 @@ extension SQLiteHistory: BrowserHistory {
     }
 
     public func getFrecentHistory() -> FrecentHistory {
-        return SQLiteFrecentHistory(db: db, prefs: prefs)
+        return SQLiteFrecentHistory(db: db)
     }
 
     public func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
@@ -616,13 +613,13 @@ extension SQLiteHistory: BrowserHistory {
     }
 
     public func setTopSitesNeedsInvalidation() {
-        prefs.setBool(false, forKey: PrefsKeys.KeyTopSitesCacheIsValid)
+        Defaults[.topSitesCacheIsValid] = false
     }
 
     public func setTopSitesCacheSize(_ size: Int32) {
-        let oldValue = prefs.intForKey(PrefsKeys.KeyTopSitesCacheSize) ?? 0
+        let oldValue = Defaults[.topSitesCacheSize]
         if oldValue != size {
-            prefs.setInt(size, forKey: PrefsKeys.KeyTopSitesCacheSize)
+            Defaults[.topSitesCacheSize] = size
             setTopSitesNeedsInvalidation()
         }
     }
@@ -633,7 +630,7 @@ extension SQLiteHistory: BrowserHistory {
 
     public func clearTopSitesCache() -> Success {
         return self.db.run([clearTopSitesQuery]) >>> {
-            self.prefs.removeObjectForKey(PrefsKeys.KeyTopSitesCacheIsValid)
+            Defaults[.topSitesCacheIsValid] = false
             return succeed()
         }
     }

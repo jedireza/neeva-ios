@@ -187,13 +187,11 @@ private class PaddedSwitch: UIView {
 class BoolSetting: Setting {
     let prefKey: String? // Sometimes a subclass will manage its own pref setting. In that case the prefkey will be nil
 
-    fileprivate let prefs: Prefs
     fileprivate let defaultValue: Bool
     fileprivate let settingDidChange: ((Bool) -> Void)?
     fileprivate let statusText: NSAttributedString?
 
-    init(prefs: Prefs, prefKey: String? = nil, defaultValue: Bool, attributedTitleText: NSAttributedString, attributedStatusText: NSAttributedString? = nil, settingDidChange: ((Bool) -> Void)? = nil) {
-        self.prefs = prefs
+    init(prefKey: String? = nil, defaultValue: Bool, attributedTitleText: NSAttributedString, attributedStatusText: NSAttributedString? = nil, settingDidChange: ((Bool) -> Void)? = nil) {
         self.prefKey = prefKey
         self.defaultValue = defaultValue
         self.settingDidChange = settingDidChange
@@ -201,12 +199,12 @@ class BoolSetting: Setting {
         super.init(title: attributedTitleText)
     }
 
-    convenience init(prefs: Prefs, prefKey: String? = nil, defaultValue: Bool, titleText: String, statusText: String? = nil, settingDidChange: ((Bool) -> Void)? = nil) {
+    convenience init(prefKey: String? = nil, defaultValue: Bool, titleText: String, statusText: String? = nil, settingDidChange: ((Bool) -> Void)? = nil) {
         var statusTextAttributedString: NSAttributedString?
         if let statusTextString = statusText {
             statusTextAttributedString = NSAttributedString(string: statusTextString, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.headerTextLight])
         }
-        self.init(prefs: prefs, prefKey: prefKey, defaultValue: defaultValue, attributedTitleText: NSAttributedString(string: titleText, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]), attributedStatusText: statusTextAttributedString, settingDidChange: settingDidChange)
+        self.init(prefKey: prefKey, defaultValue: defaultValue, attributedTitleText: NSAttributedString(string: titleText, attributes: [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.rowText]), attributedStatusText: statusTextAttributedString, settingDidChange: settingDidChange)
     }
 
     override var status: NSAttributedString? {
@@ -219,7 +217,7 @@ class BoolSetting: Setting {
         let control = UISwitchThemed()
         control.onTintColor = UIConstants.SystemBlueColor
         control.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
-        control.accessibilityIdentifier = prefKey
+        control.accessibilityIdentifier = prefKey?.replacingOccurrences(of: "profile.", with: "")
 
         displayBool(control)
         if let title = title {
@@ -245,52 +243,49 @@ class BoolSetting: Setting {
         guard let key = prefKey else {
             return
         }
-        control.isOn = prefs.boolForKey(key) ?? defaultValue
+        control.isOn = UserDefaults.standard.bool(forKey: key) ?? defaultValue
     }
 
     func writeBool(_ control: UISwitch) {
         guard let key = prefKey else {
             return
         }
-        prefs.setBool(control.isOn, forKey: key)
+        UserDefaults.standard.set(control.isOn, forKey: key)
     }
 }
 
 class PrefPersister: SettingValuePersister {
-    fileprivate let prefs: Prefs
     let prefKey: String
 
-    init(prefs: Prefs, prefKey: String) {
-        self.prefs = prefs
+    init(prefKey: String) {
         self.prefKey = prefKey
     }
 
     func readPersistedValue() -> String? {
-        return prefs.stringForKey(prefKey)
+        return UserDefaults.standard.string(forKey: prefKey)
     }
 
     func writePersistedValue(value: String?) {
         if let value = value {
-            prefs.setString(value, forKey: prefKey)
+            UserDefaults.standard.set(value, forKey: prefKey)
         } else {
-            prefs.removeObjectForKey(prefKey)
+            UserDefaults.standard.removeObject(forKey: prefKey)
         }
     }
 }
 
 class StringPrefSetting: StringSetting {
-    init(prefs: Prefs, prefKey: String, defaultValue: String? = nil, placeholder: String, accessibilityIdentifier: String, settingIsValid isValueValid: ((String?) -> Bool)? = nil, settingDidChange: ((String?) -> Void)? = nil) {
-        super.init(defaultValue: defaultValue, placeholder: placeholder, accessibilityIdentifier: accessibilityIdentifier, persister: PrefPersister(prefs: prefs, prefKey: prefKey), settingIsValid: isValueValid, settingDidChange: settingDidChange)
+    init(prefKey: String, defaultValue: String? = nil, placeholder: String, accessibilityIdentifier: String, settingIsValid isValueValid: ((String?) -> Bool)? = nil, settingDidChange: ((String?) -> Void)? = nil) {
+        super.init(defaultValue: defaultValue, placeholder: placeholder, accessibilityIdentifier: accessibilityIdentifier, persister: PrefPersister(prefKey: prefKey), settingIsValid: isValueValid, settingDidChange: settingDidChange)
     }
 }
 
 class WebPageSetting: StringPrefSetting {
     let isChecked: () -> Bool
 
-    init(prefs: Prefs, prefKey: String, defaultValue: String? = nil, placeholder: String, accessibilityIdentifier: String, isChecked: @escaping () -> Bool = { return false }, settingDidChange: ((String?) -> Void)? = nil) {
+    init(prefKey: String, defaultValue: String? = nil, placeholder: String, accessibilityIdentifier: String, isChecked: @escaping () -> Bool = { return false }, settingDidChange: ((String?) -> Void)? = nil) {
         self.isChecked = isChecked
-        super.init(prefs: prefs,
-                   prefKey: prefKey,
+        super.init(prefKey: prefKey,
                    defaultValue: defaultValue,
                    placeholder: placeholder,
                    accessibilityIdentifier: accessibilityIdentifier,

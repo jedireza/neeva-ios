@@ -6,6 +6,7 @@ import Foundation
 import Shared
 import SwiftKeychainWrapper
 import LocalAuthentication
+import Defaults
 
 // This file contains all of the settings available in the main settings screen of the app.
 
@@ -85,34 +86,6 @@ class ExportLogDataSetting: HiddenSetting {
     override func onClick(_ navigationController: UINavigationController?) {
         Logger.copyPreviousLogsToDocuments()
     }
-}
-
-/*
- FeatureSwitchSetting is a boolean switch for features that are enabled via a FeatureSwitch.
- These are usually features behind a partial release and not features released to the entire population.
- */
-class FeatureSwitchSetting: BoolSetting {
-    let featureSwitch: FeatureSwitch
-    let prefs: Prefs
-
-    init(prefs: Prefs, featureSwitch: FeatureSwitch, with title: NSAttributedString) {
-        self.featureSwitch = featureSwitch
-        self.prefs = prefs
-        super.init(prefs: prefs, defaultValue: featureSwitch.isMember(prefs), attributedTitleText: title)
-    }
-
-    override var hidden: Bool {
-        return !ShowDebugSettings
-    }
-
-    override func displayBool(_ control: UISwitch) {
-        control.isOn = featureSwitch.isMember(prefs)
-    }
-
-    override func writeBool(_ control: UISwitch) {
-        self.featureSwitch.setMembership(control.isOn, for: self.prefs)
-    }
-
 }
 
 class NeevaProfileSetting: Setting {
@@ -413,7 +386,7 @@ class ContentBlockerSetting: Setting {
 
     override func onClick(_ navigationController: UINavigationController?) {
         ClientLogger.shared.logCounter(.ViewTrackingProtection, attributes: EnvironmentHelper.shared.getAttributes())
-        let viewController = ContentBlockerSettingViewController(prefs: profile.prefs)
+        let viewController = ContentBlockerSettingViewController()
         viewController.profile = profile
         viewController.tabManager = tabManager
         navigationController?.pushViewController(viewController, animated: true)
@@ -481,7 +454,7 @@ class SiriPageSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        let viewController = SiriSettingsViewController(prefs: profile.prefs)
+        let viewController = SiriSettingsViewController()
         viewController.profile = profile
         navigationController?.pushViewController(viewController, animated: true)
     }
@@ -503,7 +476,7 @@ class DefaultBrowserSetting: Setting {
 
     override func onClick(_ navigationController: UINavigationController?) {
         ClientLogger.shared.logCounter(.SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
-        let viewController = DefaultBrowserSettingViewController(prefs: profile.prefs)
+        let viewController = DefaultBrowserSettingViewController()
         viewController.profile = profile
         navigationController?.pushViewController(viewController, animated: true)
     }
@@ -517,7 +490,7 @@ class OpenWithSetting: Setting {
     override var accessibilityIdentifier: String? { return "OpenWith.Setting" }
 
     override var status: NSAttributedString {
-        guard let provider = self.profile.prefs.stringForKey(PrefsKeys.KeyMailToOption), provider != "mailto:" else {
+        guard let provider = Defaults[.mailToOption], provider != "mailto:" else {
             return NSAttributedString(string: "")
         }
         if let path = Bundle.main.path(forResource: "MailSchemes", ofType: "plist"), let dictRoot = NSArray(contentsOfFile: path) {
@@ -538,7 +511,7 @@ class OpenWithSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        let viewController = OpenWithSettingsViewController(prefs: profile.prefs)
+        let viewController = OpenWithSettingsViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

@@ -4,9 +4,10 @@
 
 import Foundation
 import Shared
+import Defaults
 
 class UpdateViewModel {
-    //  Internal vars
+    // Internal vars
     var updateCoverSheetModel: UpdateCoverSheetModel?
     var startBrowsing: (() -> Void)?
     
@@ -25,25 +26,26 @@ class UpdateViewModel {
         updateCoverSheetModel = UpdateCoverSheetModel(titleImage: #imageLiteral(resourceName: "splash"), titleText: Strings.WhatsNewString, updates: updates)
     }
     
-    static func isCleanInstall(userPrefs: Prefs) -> Bool {
-        if userPrefs.stringForKey(LatestAppVersionProfileKey)?.components(separatedBy: ".").first == nil {
+    static func isCleanInstall() -> Bool {
+        // TODO: this is never set?
+        if Defaults[.latestAppVersion]?.components(separatedBy: ".").first == nil {
             return true 
         }
         return false
     }
     
-    static func shouldShowUpdateSheet(userPrefs: Prefs, currentAppVersion: String = VersionSetting.appVersion, isCleanInstall: Bool, supportedAppVersions:[String] = []) -> Bool {
+    static func shouldShowUpdateSheet(currentAppVersion: String = VersionSetting.appVersion, isCleanInstall: Bool, supportedAppVersions:[String] = []) -> Bool {
         var willShow = false
         if isCleanInstall {
             // We don't show it but save the currentVersion number
-            userPrefs.setString(currentAppVersion, forKey: PrefsKeys.KeyLastVersionNumber)
+            Defaults[.lastVersionNumber] = currentAppVersion
             willShow = false
         } else {
             // Its not a new install so first we check if there is a version number already saved
-            if let savedVersion = userPrefs.stringForKey(PrefsKeys.KeyLastVersionNumber) {
+            if let savedVersion = Defaults[.lastVersionNumber] {
                // Version number saved in user prefs is not the same as current version, return true
                if savedVersion != currentAppVersion {
-                   userPrefs.setString(currentAppVersion, forKey: PrefsKeys.KeyLastVersionNumber)
+                Defaults[.lastVersionNumber] = currentAppVersion
                    willShow = true
                  // Version number saved in user prefs matches the current version, return false
                } else if savedVersion == currentAppVersion {
@@ -52,7 +54,7 @@ class UpdateViewModel {
             } else {
                 // Only way the version is not saved if the user is coming from an app that didn't have this feature
                 // as its not a clean install. Hence we should still show the update screen but save the version
-                userPrefs.setString(currentAppVersion, forKey: PrefsKeys.KeyLastVersionNumber)
+                Defaults[.lastVersionNumber] = currentAppVersion
                 willShow = true
             }
         }

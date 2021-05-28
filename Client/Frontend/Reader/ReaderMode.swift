@@ -6,8 +6,11 @@ import Foundation
 import Shared
 import WebKit
 import SwiftyJSON
+import Defaults
 
-let ReaderModeProfileKeyStyle = "readermode.style"
+extension Defaults.Keys {
+    static let readerModeStyle = Defaults.Key<ReaderModeStyle>("profile.readermode.style", default: ReaderModeStyle(theme: .light, fontType: .sansSerif, fontSize: ReaderModeFontSize.defaultSize))
+}
 
 enum ReaderModeMessageType: String {
     case stateChange = "ReaderModeStateChange"
@@ -25,7 +28,7 @@ enum ReaderModeState: String {
     case active = "Active"
 }
 
-enum ReaderModeTheme: String {
+enum ReaderModeTheme: String, Codable {
     case light = "light"
     case dark = "dark"
     case sepia = "sepia"
@@ -57,7 +60,7 @@ private struct FontFamily {
     static let families = [serifFamily, sansFamily]
 }
 
-enum ReaderModeFontType: String {
+enum ReaderModeFontType: String, Codable {
     case serif = "serif"
     case serifBold = "serif-bold"
     case sansSerif = "sans-serif"
@@ -84,7 +87,7 @@ enum ReaderModeFontType: String {
     }
 }
 
-enum ReaderModeFontSize: Int {
+enum ReaderModeFontSize: Int, Codable {
     case size1 = 1
     case size2 = 2
     case size3 = 3
@@ -145,7 +148,7 @@ enum ReaderModeFontSize: Int {
     }
 }
 
-struct ReaderModeStyle {
+struct ReaderModeStyle: Codable {
     var theme: ReaderModeTheme
     var fontType: ReaderModeFontType
     var fontSize: ReaderModeFontSize
@@ -155,44 +158,16 @@ struct ReaderModeStyle {
         return JSON(["theme": theme.rawValue, "fontType": fontType.rawValue, "fontSize": fontSize.rawValue]).stringify() ?? ""
     }
 
-    /// Encode the style to a dictionary that can be stored in the profile
-    func encodeAsDictionary() -> [String: Any] {
-        return ["theme": theme.rawValue, "fontType": fontType.rawValue, "fontSize": fontSize.rawValue]
-    }
-
     init(theme: ReaderModeTheme, fontType: ReaderModeFontType, fontSize: ReaderModeFontSize) {
         self.theme = theme
         self.fontType = fontType
         self.fontSize = fontSize
     }
 
-    /// Initialize the style from a dictionary, taken from the profile. Returns nil if the object cannot be decoded.
-    init?(dict: [String: Any]) {
-        let themeRawValue = dict["theme"] as? String
-        let fontTypeRawValue = dict["fontType"] as? String
-        let fontSizeRawValue = dict["fontSize"] as? Int
-        if themeRawValue == nil || fontTypeRawValue == nil || fontSizeRawValue == nil {
-            return nil
-        }
-
-        let theme = ReaderModeTheme(rawValue: themeRawValue!)
-        let fontType = ReaderModeFontType(type: fontTypeRawValue!)
-        let fontSize = ReaderModeFontSize(rawValue: fontSizeRawValue!)
-        if theme == nil || fontSize == nil {
-            return nil
-        }
-
-        self.theme = theme ?? ReaderModeTheme.preferredTheme()
-        self.fontType = fontType
-        self.fontSize = fontSize!
-    }
-    
     mutating func ensurePreferredColorThemeIfNeeded() {
         self.theme = ReaderModeTheme.preferredTheme(for: self.theme)
     }
 }
-
-let DefaultReaderModeStyle = ReaderModeStyle(theme: .light, fontType: .sansSerif, fontSize: ReaderModeFontSize.defaultSize)
 
 /// This struct captures the response from the Readability.js code.
 struct ReadabilityResult {
@@ -329,7 +304,7 @@ class ReaderMode: TabContentScript {
         }
     }
 
-    var style: ReaderModeStyle = DefaultReaderModeStyle {
+    var style: ReaderModeStyle = Defaults.Keys.readerModeStyle.defaultValue {
         didSet {
             if state == ReaderModeState.active {
                 tab?.webView?.evaluateJavascriptInDefaultContentWorld("\(ReaderModeNamespace).setStyle(\(style.encode()))") { object, error in

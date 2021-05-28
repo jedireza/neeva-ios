@@ -8,6 +8,7 @@ import Storage
 import XCGLogger
 import WebKit
 import SwiftyJSON
+import Defaults
 
 private let log = Logger.browserLogger
 
@@ -103,7 +104,7 @@ class LoginsHelper: TabContentScript {
                 requestLogins(res, url: url)
             } else if type == "submit" {
                 // TODO(issue/281): Disabled by default. Figure out our password management story.
-                if profile.prefs.boolForKey("saveLogins") ?? false {
+                if Defaults[.saveLogins] {
                     if let login = loginRecordFromScript(res, url: url) {
                         setCredentials(login)
                     }

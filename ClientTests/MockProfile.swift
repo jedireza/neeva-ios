@@ -76,7 +76,7 @@ open class MockProfile: Client.Profile {
         _ = logins.reopenIfClosed()
         db = BrowserDB(filename: "\(databasePrefix).db", schema: BrowserSchema(), files: files)
         readingListDB = BrowserDB(filename: "\(databasePrefix)_ReadingList.db", schema: ReadingListSchema(), files: files)
-        legacyPlaces = SQLiteHistory(db: self.db, prefs: MockProfilePrefs())
+        legacyPlaces = SQLiteHistory(db: self.db)
         recommendations = legacyPlaces
         history = legacyPlaces
     }
@@ -97,6 +97,7 @@ open class MockProfile: Client.Profile {
 
         db.forceClose()
         _ = logins.forceClose()
+        UserDefaults.standard.clearProfilePrefs()
     }
 
     public var isShutdown: Bool = false
@@ -117,16 +118,12 @@ open class MockProfile: Client.Profile {
         return CertStore()
     }()
 
-    lazy public var prefs: Prefs = {
-        return MockProfilePrefs()
-    }()
-
     lazy public var readingList: ReadingList = {
         return SQLiteReadingList(db: self.readingListDB)
     }()
 
     lazy public var recentlyClosedTabs: ClosedTabsStore = {
-        return ClosedTabsStore(prefs: self.prefs)
+        return ClosedTabsStore()
     }()
 
     internal lazy var remoteClientsAndTabs: RemoteClientsAndTabs = {

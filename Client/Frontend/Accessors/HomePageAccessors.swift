@@ -10,13 +10,13 @@ import Shared
 
 // This HomePagePref is only used when setting the HomePage on the newTab and not setting a custom URL for the Home button.
 class NewTabHomePageAccessors {
-    static func getHomePage(_ prefs: Prefs) -> URL? {
+    static func getHomePage() -> URL? {
         return NeevaConstants.appURL
     }
 }
 
 class HomeButtonHomePageAccessors {
-    static func getHomePage(_ prefs: Prefs) -> URL? {
+    static func getHomePage() -> URL? {
         return NeevaConstants.appURL
     }
 }

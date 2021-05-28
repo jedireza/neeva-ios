@@ -4,6 +4,7 @@
 
 import UIKit
 import Shared
+import Defaults
 
 private struct ReaderModeStyleViewControllerUX {
     static let RowHeight = 50.0
@@ -39,7 +40,7 @@ protocol ReaderModeStyleViewControllerDelegate {
 
 class ReaderModeStyleViewController: UIViewController, Themeable {
     var delegate: ReaderModeStyleViewControllerDelegate?
-    var readerModeStyle: ReaderModeStyle = DefaultReaderModeStyle
+    var readerModeStyle: ReaderModeStyle = Defaults.Keys.readerModeStyle.defaultValue
 
     fileprivate var fontTypeButtons: [FontTypeButton]!
     fileprivate var fontSizeLabel: FontSizeLabel!
@@ -199,11 +200,10 @@ class ReaderModeStyleViewController: UIViewController, Themeable {
         }
     }
     
-    func applyTheme(_ preferences: Prefs, contentScript: TabContentScript) {        
-        guard let readerPreferences = preferences.dictionaryForKey(ReaderModeProfileKeyStyle),
-              let readerMode = contentScript as? ReaderMode,
-              var style = ReaderModeStyle(dict: readerPreferences) else { return }
+    func applyTheme(contentScript: TabContentScript) {        
+        guard let readerMode = contentScript as? ReaderMode else { return }
         
+        var style = Defaults[.readerModeStyle]
         style.ensurePreferredColorThemeIfNeeded()
         readerMode.style = style
     }

@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
+import Defaults
 
 extension BrowserViewController: ReaderModeDelegate {
     func readerMode(_ readerMode: ReaderMode, didChangeReaderModeState state: ReaderModeState, forTab tab: Tab) {
@@ -31,9 +32,8 @@ extension BrowserViewController: ReaderModeStyleViewControllerDelegate {
             newStyle.ensurePreferredColorThemeIfNeeded()
         }
         
-        // Persist the new style to the profile
-        let encodedStyle: [String: Any] = style.encodeAsDictionary()
-        profile.prefs.setObject(encodedStyle, forKey: ReaderModeProfileKeyStyle)
+        // Persist the new style to Defaults
+        Defaults[.readerModeStyle] = style
         // Change the reader mode style on all tabs that have reader mode active
         for tabIndex in 0..<tabManager.count {
             if let tab = tabManager[tabIndex] {
@@ -147,20 +147,15 @@ extension BrowserViewController {
     @objc func dynamicFontChanged(_ notification: Notification) {
         guard notification.name == .DynamicFontChanged else { return }
 
-        var readerModeStyle = DefaultReaderModeStyle
-        if let dict = profile.prefs.dictionaryForKey(ReaderModeProfileKeyStyle) {
-            if let style = ReaderModeStyle(dict: dict as [String: AnyObject]) {
-                readerModeStyle = style
-            }
-        }
+        var readerModeStyle = Defaults[.readerModeStyle]
         readerModeStyle.fontSize = ReaderModeFontSize.defaultSize
         self.readerModeStyleViewController(ReaderModeStyleViewController(), 
                                            didConfigureStyle: readerModeStyle, 
                                            isUsingUserDefinedColor: false)
     }
     
-    func appyThemeForPreferences(_ preferences: Prefs, contentScript: TabContentScript) {
-        ReaderModeStyleViewController().applyTheme(preferences, contentScript: contentScript)
+    func appyThemeForPreferences(contentScript: TabContentScript) {
+        ReaderModeStyleViewController().applyTheme(contentScript: contentScript)
     }
 }
 
@@ -171,13 +166,8 @@ extension BrowserViewController: ReaderModeBarViewDelegate {
         switch buttonType {
         case .settings:
             if let readerMode = tabManager.selectedTab?.getContentScript(name: "ReaderMode") as? ReaderMode, readerMode.state == ReaderModeState.active {
-                var readerModeStyle = DefaultReaderModeStyle
-                if let dict = profile.prefs.dictionaryForKey(ReaderModeProfileKeyStyle) {
-                    if let style = ReaderModeStyle(dict: dict as [String: AnyObject]) {
-                        readerModeStyle = style
-                    }
-                }
-
+                var readerModeStyle = Defaults[.readerModeStyle]
+ 
                 let readerModeStyleViewController = ReaderModeStyleViewController()
                 readerModeStyleViewController.delegate = self
                 readerModeStyleViewController.readerModeStyle = readerModeStyle

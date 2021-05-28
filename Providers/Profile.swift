@@ -11,6 +11,7 @@ import Shared
 import Storage
 import XCGLogger
 import SwiftKeychainWrapper
+import Defaults
 
 // Import these dependencies ONLY for the main `Client` application target.
 #if MOZ_TARGET_CLIENT
@@ -47,7 +48,6 @@ class ProfileFileAccessor: FileAccessor {
  * A Profile manages access to the user's data.
  */
 protocol Profile: AnyObject {
-    var prefs: Prefs { get }
     var queue: TabQueue { get }
     var files: FileAccessor { get }
     var history: BrowserHistory & SyncableHistory & ResettableSyncStorage { get }
@@ -82,15 +82,15 @@ protocol Profile: AnyObject {
     @discardableResult func storeTabs(_ tabs: [RemoteTab]) -> Deferred<Maybe<Int>>
 }
 
-fileprivate let PrefKeyClientID = "PrefKeyClientID"
+fileprivate let clientIDKey = Defaults.Key<String?>("profile.PrefKeyClientID")
 extension Profile {
     var clientID: String {
         let clientID: String
-        if let id = prefs.stringForKey(PrefKeyClientID) {
+        if let id = Defaults[clientIDKey] {
             clientID = id
         } else {
             clientID = UUID().uuidString
-            prefs.setString(clientID, forKey: PrefKeyClientID)
+            Defaults[clientIDKey] = clientID
         }
         return clientID
     }
@@ -159,7 +159,7 @@ open class BrowserProfile: Profile {
         if isNewProfile {
             log.info("New profile. Removing old Keychain/Prefs data.")
             KeychainWrapper.wipeKeychain()
-            prefs.clearAll()
+            UserDefaults.standard.clearProfilePrefs()
         }
 
         // Log SQLite compile_options.
@@ -175,7 +175,7 @@ open class BrowserProfile: Profile {
         // Always start by needing invalidation.
         // This is the same as self.history.setTopSitesNeedsInvalidation, but without the
         // side-effect of instantiating SQLiteHistory (and thus BrowserDB) on the main thread.
-        prefs.setBool(false, forKey: PrefsKeys.KeyTopSitesCacheIsValid)
+        Defaults[.topSitesCacheIsValid] = false
 
         // Create the "Downloads" folder in the documents directory.
         if let downloadsPath = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("Downloads").path {
@@ -257,7 +257,7 @@ open class BrowserProfile: Profile {
      * that this is initialized first.
      */
     fileprivate lazy var legacyPlaces: BrowserHistory & Favicons & SyncableHistory & ResettableSyncStorage & HistoryRecommendations  = {
-        return SQLiteHistory(db: self.db, prefs: self.prefs)
+        return SQLiteHistory(db: self.db)
     }()
 
     var favicons: Favicons {
@@ -280,14 +280,6 @@ open class BrowserProfile: Profile {
         return self.legacyPlaces
     }
 
-    func makePrefs() -> Prefs {
-        return NSUserDefaultsPrefs(prefix: self.localName())
-    }
-
-    lazy var prefs: Prefs = {
-        return self.makePrefs()
-    }()
-
     lazy var readingList: ReadingList = {
         return SQLiteReadingList(db: self.readingListDB)
     }()
@@ -301,7 +293,7 @@ open class BrowserProfile: Profile {
     }()
 
     lazy var recentlyClosedTabs: ClosedTabsStore = {
-        return ClosedTabsStore(prefs: self.prefs)
+        return ClosedTabsStore()
     }()
 
     public func getCachedClients()-> Deferred<Maybe<[RemoteClient]>> {
@@ -346,7 +338,6 @@ open class BrowserProfile: Profile {
         // as a whole, so we hold on to our Prefs, potentially for a little while longer. This is
         // safe as a strong reference, because there's no cycle.
         unowned fileprivate let profile: BrowserProfile
-        fileprivate let prefs: Prefs
         fileprivate var constellationStateUpdate: Any?
 
         let FifteenMinutes = TimeInterval(60 * 15)
@@ -378,7 +369,6 @@ open class BrowserProfile: Profile {
 
         init(profile: BrowserProfile) {
             self.profile = profile
-            self.prefs = profile.prefs
 
             super.init()
         }

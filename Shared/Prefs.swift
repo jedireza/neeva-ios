@@ -2,198 +2,67 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Foundation
+import Defaults
 
-public struct PrefsKeys {
-    // When this pref is set (by the user) it overrides default behaviour which is just based on app locale.
-    public static let KeyLastRemoteTabSyncTime = "lastRemoteTabSyncTime"
-    public static let KeyLastSyncFinishTime = "lastSyncFinishTime"
-    public static let KeyNoImageModeStatus = "NoImageModeStatus"
-    public static let KeyNightModeButtonIsInMenu = "NightModeButtonIsInMenuPrefKey"
-    public static let KeyNightModeStatus = "NightModeStatus"
-    public static let KeyNightModeEnabledDarkTheme = "NightModeEnabledDarkTheme"
-    public static let KeyMailToOption = "MailToOption"
-    public static let KeyLastVersionNumber = "KeyLastVersionNumber"
-    public static let IntroSeen = "IntroViewControllerSeen"
-    public static let SearchInputPromptDismissed = "SearchInputPromptDismissed"
-    public static let LoginsSaveEnabled = "saveLogins"
-    public static let LoginsShowShortcutMenuItem = "showLoginsInAppMenu"
-    public static let KeyInstallSession = "installSessionNumber"
-    public static let KeyETPCoverSheetShowType = "etpCoverSheetShowType"
-    public static let KeyDefaultBrowserCardShowType = "defaultBrowserCardShowType"
-    public static let KeyDidShowDefaultBrowserOnboarding = "didShowDefaultBrowserOnboarding"
-    public static let KeySetSuggestedSitesToShowAll = "setSuggestedSitesToShowAll"
-    public static let ShowNewTabToolbarButton = "newTabToolbarButton"
-    public static let ContextMenuShowLinkPreviews = "showLinkPreviews"
-    public static let SessionCount = "sessionCount"
-    
-    //Activity Stream
-    public static let KeyTopSitesCacheIsValid = "topSitesCacheIsValid"
-    public static let KeyTopSitesCacheSize = "topSitesCacheSize"
-    public static let KeyNewTab = "NewTabPrefKey"
-    public static let ASPocketStoriesVisible = "ASPocketStoriesVisible"
-    public static let ASRecentHighlightsVisible = "ASRecentHighlightsVisible"
-    public static let ASBookmarkHighlightsVisible = "ASBookmarkHighlightsVisible"
-    public static let ASLastInvalidation = "ASLastInvalidation"
-    public static let KeyUseCustomSyncTokenServerOverride = "useCustomSyncTokenServerOverride"
-    public static let KeyCustomSyncTokenServerOverride = "customSyncTokenServerOverride"
-    public static let KeyUseCustomFxAContentServer = "useCustomFxAContentServer"
-    public static let KeyCustomFxAContentServer = "customFxAContentServer"
-    public static let UseStageServer = "useStageSyncService"
-    public static let KeyFxALastCommandIndex = "FxALastCommandIndex"
-    public static let KeyFxAHandledCommands = "FxAHandledCommands"
-    public static let AppExtensionTelemetryOpenUrl = "AppExtensionTelemetryOpenUrl"
-    public static let AppExtensionTelemetryEventArray = "AppExtensionTelemetryEvents"
-    public static let KeyBlockPopups = "blockPopups"
-    public static let KeyShowSearchSuggestions = "search.suggestions.show"
-    
-    // Widgetkit Key
-    public static let WidgetKitSimpleTabKey = "WidgetKitSimpleTabKey"
-    public static let WidgetKitSimpleTopTab = "WidgetKitSimpleTopTab"
+// Data type for the type of sheet which is helpful to know when / how to show the ETP Cover Sheet
+public enum ETPCoverSheetShowType: String, Codable {
+    case CleanInstall
+    case Upgrade
+    case DoNotShow
+    case Unknown
 }
 
-public struct PrefsDefaults {
-    public static let DefaultHomePageURL = "https://alpha.neeva.co"
+extension Defaults.Keys {
+    // automatically recorded
+    public static let sessionCount = Defaults.Key<Int32>("profile.sessionCount", default: 0)
+    public static let latestAppVersion = Defaults.Key<String?>("profile.latestAppVersion")
+    public static let etpCoverSheetShowType = Defaults.Key<ETPCoverSheetShowType?>("profile.etpCoverSheetShowType")
+    public static let installSession = Defaults.Key<Int32>("profile.installSessionNumber", default: 0)
+    public static let searchInputPromptDismissed = Defaults.BoolKey("profile.SearchInputPromptDismissed")
+    public static let introSeen = Defaults.BoolKey("profile.IntroViewControllerSeen")
+    public static let lastVersionNumber = Defaults.Key<String?>("profile.KeyLastVersionNumber")
+    public static let didShowDefaultBrowserOnboarding = Defaults.BoolKey("didShowDefaultBrowserOnboarding")
+
+    // explicit/implicit settings
+    public static let noImageModeStatus = Defaults.BoolKey("profile.NoImageModeStatus")
+    public static let nightModeStatus = Defaults.BoolKey("profile.NightModeStatus")
+    public static let nightModeEnabledDarkTheme = Defaults.BoolKey("profile.NightModeEnabledDarkTheme")
+    public static let mailToOption = Defaults.Key<String?>("profile.MailToOption")
+    public static let contextMenuShowLinkPreviews = Defaults.Key("profile.ContextMenuShowLinkPreviews", default: true)
+    public static let showClipboardBar = Defaults.BoolKey("profile.showClipboardBar")
+    public static let deletedSuggestedSites = Defaults.Key<[String]>("profile.topSites.deletedSuggestedSites", default: [])
+    public static let showSearchSuggestions = Defaults.Key("profile.search.suggestions.show", default: true)
+    public static let blockPopups = Defaults.Key("profile.blockPopups", default: true)
+    public static let closePrivateTabs = Defaults.BoolKey("profile.settings.closePrivateTabs")
+    public static let recentlyClosedTabs = Defaults.Key<Data?>("profile.recentlyClosedTabs")
+    public static let showLoginsInAppMenu = Defaults.BoolKey("profile.showLoginsInAppMenu")
+    public static let saveLogins = Defaults.BoolKey("profile.saveLogins")
+
+    // caches
+    public static let topSitesCacheIsValid = Defaults.BoolKey("profile.topSitesCacheIsValid")
+    public static let topSitesCacheSize = Defaults.Key<Int32?>("profile.topSitesCacheSize")
+
+    // parameters
+    public static let appExtensionTelemetryOpenUrl = Defaults.Key<Bool?>("profile.AppExtensionTelemetryOpenUrl")
+    public static let appExtensionTelemetryEventArray = Defaults.Key<[[String: String]]>("profile.AppExtensionTelemetryEvents", default: [])
+
+    // widgets
+    public static let widgetKitSimpleTabKey = Defaults.Key<Data?>("WidgetKitSimpleTabKey", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
+    public static let widgetKitSimpleTopTab = Defaults.Key<Data?>("WidgetKitSimpleTopTab", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
 }
 
-public protocol Prefs {
-    func getBranchPrefix() -> String
-    func branch(_ branch: String) -> Prefs
-    func setTimestamp(_ value: Timestamp, forKey defaultName: String)
-    func setLong(_ value: UInt64, forKey defaultName: String)
-    func setLong(_ value: Int64, forKey defaultName: String)
-    func setInt(_ value: Int32, forKey defaultName: String)
-    func setString(_ value: String, forKey defaultName: String)
-    func setBool(_ value: Bool, forKey defaultName: String)
-    func setObject(_ value: Any?, forKey defaultName: String)
-    func stringForKey(_ defaultName: String) -> String?
-    func objectForKey<T: Any>(_ defaultName: String) -> T?
-    func boolForKey(_ defaultName: String) -> Bool?
-    func intForKey(_ defaultName: String) -> Int32?
-    func timestampForKey(_ defaultName: String) -> Timestamp?
-    func longForKey(_ defaultName: String) -> Int64?
-    func unsignedLongForKey(_ defaultName: String) -> UInt64?
-    func stringArrayForKey(_ defaultName: String) -> [String]?
-    func arrayForKey(_ defaultName: String) -> [Any]?
-    func dictionaryForKey(_ defaultName: String) -> [String: Any]?
-    func removeObjectForKey(_ defaultName: String)
-    func clearAll()
+extension Defaults {
+    static func BoolKey(_ key: String, suite: UserDefaults = .standard) -> Key<Bool> {
+        Key<Bool>(key, default: false, suite: suite)
+    }
 }
 
-open class MockProfilePrefs: Prefs {
-    let prefix: String
-
-    open func getBranchPrefix() -> String {
-        return self.prefix
-    }
-
-    // Public for testing.
-    open var things = NSMutableDictionary()
-
-    public init(things: NSMutableDictionary, prefix: String) {
-        self.things = things
-        self.prefix = prefix
-    }
-
-    public init() {
-        self.prefix = ""
-    }
-
-    open func branch(_ branch: String) -> Prefs {
-        return MockProfilePrefs(things: self.things, prefix: self.prefix + branch + ".")
-    }
-
-    private func name(_ name: String) -> String {
-        return self.prefix + name
-    }
-
-    open func setTimestamp(_ value: Timestamp, forKey defaultName: String) {
-        self.setLong(value, forKey: defaultName)
-    }
-
-    open func setLong(_ value: UInt64, forKey defaultName: String) {
-        setObject(NSNumber(value: value as UInt64), forKey: defaultName)
-    }
-
-    open func setLong(_ value: Int64, forKey defaultName: String) {
-        setObject(NSNumber(value: value as Int64), forKey: defaultName)
-    }
-
-    open func setInt(_ value: Int32, forKey defaultName: String) {
-        things[name(defaultName)] = NSNumber(value: value as Int32)
-    }
-
-    open func setString(_ value: String, forKey defaultName: String) {
-        things[name(defaultName)] = value
-    }
-
-    open func setBool(_ value: Bool, forKey defaultName: String) {
-        things[name(defaultName)] = value
-    }
-
-    open func setObject(_ value: Any?, forKey defaultName: String) {
-        things[name(defaultName)] = value
-    }
-
-    open func stringForKey(_ defaultName: String) -> String? {
-        return things[name(defaultName)] as? String
-    }
-
-    open func boolForKey(_ defaultName: String) -> Bool? {
-        return things[name(defaultName)] as? Bool
-    }
-
-    open func objectForKey<T: Any>(_ defaultName: String) -> T? {
-        return things[name(defaultName)] as? T
-    }
-
-    open func timestampForKey(_ defaultName: String) -> Timestamp? {
-        return unsignedLongForKey(defaultName)
-    }
-
-    open func unsignedLongForKey(_ defaultName: String) -> UInt64? {
-        return things[name(defaultName)] as? UInt64
-    }
-
-    open func longForKey(_ defaultName: String) -> Int64? {
-        return things[name(defaultName)] as? Int64
-    }
-
-    open func intForKey(_ defaultName: String) -> Int32? {
-        return things[name(defaultName)] as? Int32
-    }
-
-    open func stringArrayForKey(_ defaultName: String) -> [String]? {
-        if let arr = self.arrayForKey(defaultName) {
-            if let arr = arr as? [String] {
-                return arr
+extension UserDefaults {
+    public func clearProfilePrefs() {
+        for key in dictionaryRepresentation().keys {
+            if key.hasPrefix("profile.") {
+                UserDefaults.standard.removeObject(forKey: key)
             }
         }
-        return nil
-    }
-
-    open func arrayForKey(_ defaultName: String) -> [Any]? {
-        let r: Any? = things.object(forKey: name(defaultName)) as Any?
-        if r == nil {
-            return nil
-        }
-        if let arr = r as? [Any] {
-            return arr
-        }
-        return nil
-    }
-
-    open func dictionaryForKey(_ defaultName: String) -> [String: Any]? {
-        return things.object(forKey: name(defaultName)) as? [String: Any]
-    }
-
-    open func removeObjectForKey(_ defaultName: String) {
-        self.things.removeObject(forKey: name(defaultName))
-    }
-
-    open func clearAll() {
-        let dictionary = things as! [String: Any]
-        let keysToDelete: [String] = dictionary.keys.filter { $0.hasPrefix(self.prefix) }
-        things.removeObjects(forKeys: keysToDelete)
     }
 }

@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 /// Errors related to BreachAlertsClient and BreachAlertsManager.
 struct BreachAlertsError: MaybeErrorType {
@@ -21,8 +22,8 @@ public class BreachAlertsClient: BreachAlertsClientProtocol {
     public enum Endpoint: String {
         case breachedAccounts = "https://monitor.firefox.com/hibp/breaches"
     }
-    static let etagKey = "BreachAlertsDataEtag"
-    static let etagDateKey = "BreachAlertsDataDate"
+    static let etagKey = Defaults.Key<String?>("profile.BreachAlertsDataEtag")
+    static let etagDateKey = Defaults.Key<Timestamp?>("profile.BreachAlertsDataDate")
 
     /// Makes a header-only request to an endpoint and hands off the endpoint's etag to a completion handler.
     func fetchEtag(endpoint: Endpoint, profile: Profile, completion: @escaping (_ etag: String?) -> Void) {
@@ -76,12 +77,8 @@ public class BreachAlertsClient: BreachAlertsClientProtocol {
             guard let etag = response.allHeaderFields["Etag"] as Any as? String else { return }
             let date = Date.now()
 
-            if profile.prefs.stringForKey(BreachAlertsClient.etagKey) != etag {
-                profile.prefs.setString(etag, forKey: BreachAlertsClient.etagKey)
-            }
-            if profile.prefs.timestampForKey(BreachAlertsClient.etagDateKey) != date {
-                profile.prefs.setTimestamp(date, forKey: BreachAlertsClient.etagDateKey)
-            }
+            Defaults[BreachAlertsClient.etagKey] = etag
+            Defaults[BreachAlertsClient.etagDateKey] = date
             DispatchQueue.main.async {
                 completion(Maybe(success: data))
             }

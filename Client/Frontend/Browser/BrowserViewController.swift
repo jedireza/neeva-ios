@@ -14,6 +14,7 @@ import MobileCoreServices
 import SDWebImage
 import SwiftyJSON
 import SwiftUI
+import Defaults
 
 private let KVOs: [KVOConstants] = [
     .estimatedProgress,
@@ -442,7 +443,7 @@ class BrowserViewController: UIViewController {
         alertStackView.axis = .vertical
         alertStackView.alignment = .center
 
-        clipboardBarDisplayHandler = ClipboardBarDisplayHandler(prefs: profile.prefs, tabManager: tabManager)
+        clipboardBarDisplayHandler = ClipboardBarDisplayHandler(tabManager: tabManager)
         clipboardBarDisplayHandler?.delegate = self
 
         scrollController.urlBar = urlBar
@@ -460,7 +461,7 @@ class BrowserViewController: UIViewController {
         let dropInteraction = UIDropInteraction(delegate: self)
         view.addInteraction(dropInteraction)
 
-        if !NightModeHelper.isActivated(profile.prefs) {
+        if !Defaults[.nightModeStatus] {
             if #available(iOS 13.0, *) {
                 if ThemeManager.instance.systemThemeIsOn {
                     let userInterfaceStyle = traitCollection.userInterfaceStyle
@@ -472,7 +473,7 @@ class BrowserViewController: UIViewController {
 
     func showSearchBarPrompt() {
         // show tour prompt for search bar
-        if profile.prefs.intForKey(PrefsKeys.SearchInputPromptDismissed) != nil || !NeevaUserInfo.shared.hasLoginCookie() {
+        if Defaults[.searchInputPromptDismissed] || !NeevaUserInfo.shared.hasLoginCookie() {
             return
         }
 
@@ -571,7 +572,7 @@ class BrowserViewController: UIViewController {
         // not flash before we present. This change of alpha also participates in the animation when
         // the intro view is dismissed.
         if UIDevice.current.userInterfaceIdiom == .phone {
-            self.view.alpha = (profile.prefs.intForKey(PrefsKeys.IntroSeen) != nil) ? 1.0 : 0.0
+            self.view.alpha = Defaults[.introSeen] ? 1.0 : 0.0
         }
 
         // config log environment variable
@@ -634,14 +635,14 @@ class BrowserViewController: UIViewController {
         showQueuedAlertIfAvailable()
     }
 
-    // THe logic for shouldShowWhatsNewTab is as follows: If we do not have the LatestAppVersionProfileKey in
-    // the profile, that means that this is a fresh install and we do not show the What's New. If we do have
+    // The logic for shouldShowWhatsNewTab is as follows: If we do not have the latestAppVersion key in
+    // Defaults, that means that this is a fresh install and we do not show the What's New. If we do have
     // that value, we compare it to the major version of the running app. If it is different then this is an
     // upgrade, downgrades are not possible, so we can show the What's New page.
 
     func shouldShowWhatsNew() -> Bool {
         
-        guard let latestMajorAppVersion = profile.prefs.stringForKey(LatestAppVersionProfileKey)?.components(separatedBy: ".").first else {
+        guard let latestMajorAppVersion = Defaults[.latestAppVersion]?.components(separatedBy: ".").first else {
             return false // Clean install, never show What's New
         }
 
@@ -1573,7 +1574,7 @@ extension BrowserViewController: URLBarDelegate {
             return
         }
 
-        if .blankPage == NewTabAccessors.getNewTabPage(profile.prefs) {
+        if Defaults[.newTabPref] == .blankPage {
             UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: UIAccessibility.Notification.screenChanged)
         } else {
             if let toast = clipboardBarDisplayHandler?.clipboardToast {
@@ -1649,7 +1650,7 @@ extension BrowserViewController: TabDelegate {
 
         tab.addContentScript(LocalRequestHelper(), name: LocalRequestHelper.name())
 
-        let blocker = NeevaTabContentBlocker(tab: tab, prefs: profile.prefs)
+        let blocker = NeevaTabContentBlocker(tab: tab)
         tab.contentBlocker = blocker
         tab.addContentScript(blocker, name: NeevaTabContentBlocker.name())
 
@@ -1903,7 +1904,7 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateInContentHomePanel(selected?.url as URL?)
-        if let tab = selected, NewTabAccessors.getNewTabPage(self.profile.prefs) == .blankPage {
+        if let tab = selected, Defaults[.newTabPref] == .blankPage {
             if tab.url == nil, !tab.restoring {
                 urlBar.tabLocationViewDidTapLocation(urlBar.locationView)
             } else {
@@ -1981,7 +1982,7 @@ extension BrowserViewController: UIAdaptivePresentationControllerDelegate {
 
 extension BrowserViewController {
     func presentIntroViewController(_ alwaysShow: Bool = false) {
-        if alwaysShow || profile.prefs.intForKey(PrefsKeys.IntroSeen) == nil {
+        if alwaysShow || !Defaults[.introSeen] {
             showProperIntroVC()
         }
     }
@@ -1991,8 +1992,8 @@ extension BrowserViewController {
             return
         }
         hasTriedToPresentETPAlready = true
-        let cleanInstall = UpdateViewModel.isCleanInstall(userPrefs: profile.prefs)
-        let shouldShow = ETPViewModel.shouldShowETPCoverSheet(userPrefs: profile.prefs, isCleanInstall: cleanInstall)
+        let cleanInstall = UpdateViewModel.isCleanInstall()
+        let shouldShow = ETPViewModel.shouldShowETPCoverSheet(isCleanInstall: cleanInstall)
         guard force || shouldShow else {
             return
         }
@@ -2012,7 +2013,7 @@ extension BrowserViewController {
         }
         etpCoverSheetViewController.viewModel.goToSettings = {
             etpCoverSheetViewController.dismiss(animated: true) {
-                let settingsTableViewController = ContentBlockerSettingViewController(prefs: self.profile.prefs)
+                let settingsTableViewController = ContentBlockerSettingViewController()
                 settingsTableViewController.profile = self.profile
                 settingsTableViewController.tabManager = self.tabManager
                 settingsTableViewController.settingsDelegate = self
@@ -2024,7 +2025,7 @@ extension BrowserViewController {
     
     // Default browser onboarding
     func presentDBOnboardingViewController(_ force: Bool = false) {
-        let shouldShow = DefaultBrowserOnboardingViewModel.shouldShowDefaultBrowserOnboarding(userPrefs: profile.prefs)
+        let shouldShow = DefaultBrowserOnboardingViewModel.shouldShowDefaultBrowserOnboarding()
         guard force || shouldShow else {
             return
         }
@@ -2045,9 +2046,9 @@ extension BrowserViewController {
     }
     
     @discardableResult func presentUpdateViewController(_ force: Bool = false, animated: Bool = true) -> Bool {
-        let cleanInstall = UpdateViewModel.isCleanInstall(userPrefs: profile.prefs)
+        let cleanInstall = UpdateViewModel.isCleanInstall()
         let coverSheetSupportedAppVersion = UpdateViewModel.coverSheetSupportedAppVersion
-        if force || UpdateViewModel.shouldShowUpdateSheet(userPrefs: profile.prefs, isCleanInstall: cleanInstall, supportedAppVersions: coverSheetSupportedAppVersion) {
+        if force || UpdateViewModel.shouldShowUpdateSheet(isCleanInstall: cleanInstall, supportedAppVersions: coverSheetSupportedAppVersion) {
             let updateViewController = UpdateViewController()
             
             updateViewController.viewModel.startBrowsing = {
@@ -2068,7 +2069,7 @@ extension BrowserViewController {
             // On iPad we present it modally in a controller
             present(updateViewController, animated: animated) {
                 // On first run (and forced) open up the homepage in the background.
-                if let homePageURL = NewTabHomePageAccessors.getHomePage(self.profile.prefs), let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
+                if let homePageURL = NewTabHomePageAccessors.getHomePage(), let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
                     tab.loadRequest(URLRequest(url: homePageURL))
                 }
             }
@@ -2083,7 +2084,7 @@ extension BrowserViewController {
         let introViewController = IntroViewController()
 
         introViewController.didFinishClosure = { controller in
-            self.profile.prefs.setInt(1, forKey: PrefsKeys.IntroSeen)
+            Defaults[.introSeen] = true
             controller.dismiss(animated: true) {
                 if self.navigationController?.viewControllers.count ?? 0 > 1 {
                     _ = self.navigationController?.popToRootViewController(animated: true)
@@ -2389,7 +2390,7 @@ extension BrowserViewController: Themeable {
         }
         
         guard let contentScript = self.tabManager.selectedTab?.getContentScript(name: ReaderMode.name()) else { return }
-        appyThemeForPreferences(profile.prefs, contentScript: contentScript)
+        appyThemeForPreferences(contentScript: contentScript)
     }
 }
 

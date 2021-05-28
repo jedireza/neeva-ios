@@ -6,6 +6,7 @@ import Foundation
 import WebKit
 import Shared
 import UIKit
+import Defaults
 
 private let log = Logger.browserLogger
 
@@ -104,7 +105,7 @@ extension BrowserViewController: WKUIDelegate {
        
         let clonedWebView = WKWebView(frame: webView.frame, configuration: webView.configuration)
         completionHandler(UIContextMenuConfiguration(identifier: nil, previewProvider: {
-            guard let url = elementInfo.linkURL, self.profile.prefs.boolForKey(PrefsKeys.ContextMenuShowLinkPreviews) ?? true else { return nil }
+            guard let url = elementInfo.linkURL, Defaults[.contextMenuShowLinkPreviews] else { return nil }
             let previewViewController = UIViewController()
             previewViewController.view.isUserInteractionEnabled = false
 
@@ -410,7 +411,7 @@ extension BrowserViewController: WKNavigationDelegate {
             showSnackbar(forExternalUrl: url, tab: tab) { isOk in
                 guard isOk else { return }
 
-                if let mailToMetadata = url.mailToMetadata(), let mailScheme = self.profile.prefs.stringForKey(PrefsKeys.KeyMailToOption), mailScheme != "mailto" {
+                if let mailToMetadata = url.mailToMetadata(), let mailScheme = Defaults[.mailToOption], mailScheme != "mailto" {
                     self.mailtoLinkHandler.launchMailClientForScheme(mailScheme, metadata: mailToMetadata, defaultMailtoURL: url)
                 } else {
                     UIApplication.shared.open(url, options: [:])

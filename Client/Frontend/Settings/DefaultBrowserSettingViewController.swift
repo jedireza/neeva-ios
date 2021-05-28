@@ -4,10 +4,7 @@ import Intents
 import IntentsUI
 
 class DefaultBrowserSettingViewController: SettingsTableViewController {
-    let prefs: Prefs
-
-    init(prefs: Prefs){
-        self.prefs = prefs
+    init(){
         super.init(style: .grouped)
 
         self.title = "Default Browser"

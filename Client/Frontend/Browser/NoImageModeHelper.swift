@@ -5,10 +5,7 @@
 import Foundation
 import WebKit
 import Shared
-
-struct NoImageModePrefsKey {
-    static let NoImageModeStatus = PrefsKeys.KeyNoImageModeStatus
-}
+import Defaults
 
 class NoImageModeHelper: TabContentScript {
     fileprivate weak var tab: Tab?
@@ -29,14 +26,10 @@ class NoImageModeHelper: TabContentScript {
         // Do nothing.
     }
 
-    static func isActivated(_ prefs: Prefs) -> Bool {
-        return prefs.boolForKey(NoImageModePrefsKey.NoImageModeStatus) ?? false
-    }
-
     static func toggle(isEnabled: Bool, profile: Profile, tabManager: TabManager) {
         BrowserViewController.foregroundBVC().navigationToolbar.appMenuBadge(setVisible: isEnabled)
 
-        profile.prefs.setBool(isEnabled, forKey: PrefsKeys.KeyNoImageModeStatus)
+        Defaults[.noImageModeStatus] = isEnabled
         tabManager.tabs.forEach { $0.noImageMode = isEnabled }
     }
 }

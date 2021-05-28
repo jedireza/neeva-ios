@@ -10,11 +10,3 @@ struct ETPCoverSheetModel {
     var titleText: String
     var descriptionText: String
 }
-
-// Data type for the type of sheet which is helpful to know when / how to show the ETP Cover Sheet
-enum ETPCoverSheetShowType: String {
-    case CleanInstall
-    case Upgrade
-    case DoNotShow
-    case Unknown
-}

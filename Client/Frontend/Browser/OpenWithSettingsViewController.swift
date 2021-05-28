@@ -4,22 +4,13 @@
 
 import Foundation
 import Shared
+import Defaults
 
 class OpenWithSettingsViewController: ThemedTableViewController {
     typealias MailtoProviderEntry = (name: String, scheme: String, enabled: Bool)
     var mailProviderSource = [MailtoProviderEntry]()
 
-    fileprivate let prefs: Prefs
     fileprivate var currentChoice: String = "mailto"
-
-    init(prefs: Prefs) {
-        self.prefs = prefs
-        super.init()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +36,7 @@ class OpenWithSettingsViewController: ThemedTableViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.prefs.setString(currentChoice, forKey: PrefsKeys.KeyMailToOption)
+        Defaults[.mailToOption] = currentChoice
     }
 
     @objc func appDidBecomeActive() {
@@ -56,7 +47,7 @@ class OpenWithSettingsViewController: ThemedTableViewController {
 
     func updateCurrentChoice() {
         var previousChoiceAvailable: Bool = false
-        if let prefMailtoScheme = self.prefs.stringForKey(PrefsKeys.KeyMailToOption) {
+        if let prefMailtoScheme = Defaults[.mailToOption] {
             mailProviderSource.forEach({ (name, scheme, enabled) in
                 if scheme == prefMailtoScheme {
                     previousChoiceAvailable = enabled
@@ -65,10 +56,10 @@ class OpenWithSettingsViewController: ThemedTableViewController {
         }
 
         if !previousChoiceAvailable {
-            self.prefs.setString(mailProviderSource[0].scheme, forKey: PrefsKeys.KeyMailToOption)
+            Defaults[.mailToOption] = mailProviderSource[0].scheme
         }
 
-        if let updatedMailToClient = self.prefs.stringForKey(PrefsKeys.KeyMailToOption) {
+        if let updatedMailToClient = Defaults[.mailToOption] {
             self.currentChoice = updatedMailToClient
         }
     }
