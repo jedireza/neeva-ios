@@ -150,63 +150,59 @@ let MaxTimestampAsDouble = Double(UInt64.max)
  *  when seconds were expected.
  */
 public func someKindOfTimestampStringToTimestamp(_ input: String) -> Timestamp? {
-    var double = 0.0
-    if Scanner(string: input).scanDouble(&double) {
-        // This should never happen. Hah!
-        if double.isNaN || double.isInfinite {
-            return nil
-        }
+    guard let double = Scanner(string: input).scanDouble() else { return nil }
 
-        // `double` will be either huge or negatively huge on overflow, and 0 on underflow.
-        // We clamp to reasonable ranges.
-        if double < 0 {
-            return nil
-        }
-
-        if double >= MaxTimestampAsDouble {
-            // Definitely not representable as a timestamp if the seconds are this large!
-            return nil
-        }
-
-        if double > 1000000000000 {
-            // Oh, this was in milliseconds.
-            return Timestamp(double)
-        }
-
-        let millis = double * 1000
-        if millis >= MaxTimestampAsDouble {
-            // Not representable as a timestamp.
-            return nil
-        }
-
-        return Timestamp(millis)
+    // This should never happen. Hah!
+    if double.isNaN || double.isInfinite {
+        return nil
     }
-    return nil
+
+    // `double` will be either huge or negatively huge on overflow, and 0 on underflow.
+    // We clamp to reasonable ranges.
+    if double < 0 {
+        return nil
+    }
+
+    if double >= MaxTimestampAsDouble {
+        // Definitely not representable as a timestamp if the seconds are this large!
+        return nil
+    }
+
+    if double > 1000000000000 {
+        // Oh, this was in milliseconds.
+        return Timestamp(double)
+    }
+
+    let millis = double * 1000
+    if millis >= MaxTimestampAsDouble {
+        // Not representable as a timestamp.
+        return nil
+    }
+
+    return Timestamp(millis)
 }
 
 public func decimalSecondsStringToTimestamp(_ input: String) -> Timestamp? {
-    var double = 0.0
-    if Scanner(string: input).scanDouble(&double) {
-        // This should never happen. Hah!
-        if double.isNaN || double.isInfinite {
-            return nil
-        }
+    guard let double = Scanner(string: input).scanDouble() else { return nil }
 
-        // `double` will be either huge or negatively huge on overflow, and 0 on underflow.
-        // We clamp to reasonable ranges.
-        if double < 0 {
-            return nil
-        }
-
-        let millis = double * 1000
-        if millis >= MaxTimestampAsDouble {
-            // Not representable as a timestamp.
-            return nil
-        }
-
-        return Timestamp(millis)
+    // This should never happen. Hah!
+    if double.isNaN || double.isInfinite {
+        return nil
     }
-    return nil
+
+    // `double` will be either huge or negatively huge on overflow, and 0 on underflow.
+    // We clamp to reasonable ranges.
+    if double < 0 {
+        return nil
+    }
+
+    let millis = double * 1000
+    if millis >= MaxTimestampAsDouble {
+        // Not representable as a timestamp.
+        return nil
+    }
+
+    return Timestamp(millis)
 }
 
 public func millisecondsToDecimalSeconds(_ input: Timestamp) -> String {

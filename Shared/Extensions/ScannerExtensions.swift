@@ -20,12 +20,4 @@ extension Scanner {
         }
         return nil
     }
-
-    public func scanDouble() -> Double? {
-        var value: Double = 0
-        if scanDouble(&value) {
-            return value
-        }
-        return nil
-    }
 }

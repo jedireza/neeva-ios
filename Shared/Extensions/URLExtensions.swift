@@ -127,7 +127,7 @@ extension URL {
     }
 
     public func hasQueryParam(_ name: String, value: String) -> Bool {
-        var components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
+        let components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
         guard let queryItems = components.queryItems else { return false }
         return queryItems.contains(where: { $0.name == name && $0.value == value })
     }
