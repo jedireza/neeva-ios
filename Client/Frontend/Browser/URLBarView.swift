@@ -198,6 +198,16 @@ class URLBarView: UIView {
 
         // Make sure we hide any views that shouldn't be showing in non-overlay mode.
         updateViewsForOverlayModeAndToolbarChanges()
+
+        // Create LocationTextField and update constraints to layout correctly before hiding it
+        createLocationTextField()
+        inOverlayMode = true
+        updateConstraints()
+        locationTextField?.isHidden = true
+
+        inOverlayMode = false
+        updateConstraints()
+
         applyUIMode(isPrivate: isPrivateMode)
     }
     
@@ -456,7 +466,7 @@ class URLBarView: UIView {
     }
 
     func enterOverlayMode(_ locationText: String?, pasted: Bool, search: Bool) {
-        createLocationTextField()
+        locationTextField?.isHidden = false
         // Show the overlay mode UI, which includes hiding the locationView and replacing it
         // with the editable locationTextField.
         animateToOverlayState(overlayMode: true)
@@ -508,7 +518,7 @@ class URLBarView: UIView {
     }
 
     func transitionToOverlay(_ didCancel: Bool = false) {
-        locationView.contentView.alpha = inOverlayMode ? 0 : 1
+        locationTextField?.leftView?.alpha = inOverlayMode ? 1 : 0
         cancelButton.alpha = inOverlayMode ? 1 : 0
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
@@ -545,14 +555,16 @@ class URLBarView: UIView {
         layoutIfNeeded()
 
         inOverlayMode = overlay
+        locationView.contentView.alpha = inOverlayMode ? 0 : 1
+
 
         if !overlay {
-            removeLocationTextField()
+            locationTextField?.isHidden = true
         }
 
         UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0.0, options: [], animations: {
             self.transitionToOverlay(cancel)
-            self.setNeedsUpdateConstraints()
+            self.updateConstraints()
             self.layoutIfNeeded()
         }, completion: { _ in
             self.updateViewsForOverlayModeAndToolbarChanges()
