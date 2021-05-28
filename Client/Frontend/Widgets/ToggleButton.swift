@@ -4,9 +4,7 @@
 
 import UIKit
 
-private struct UX {
-    static let BackgroundColor = UIColor.label
-
+fileprivate struct UX {
     // The amount of pixels the toggle button will expand over the normal size. This results in the larger -> contract animation.
     static let ExpandDelta: CGFloat = 5
     static let ShowDuration: TimeInterval = 0.4
@@ -16,6 +14,8 @@ private struct UX {
 }
 
 class ToggleButton: UIButton {
+    var selectedBackgroundColor = UIColor.label
+
     func setSelected(_ selected: Bool, animated: Bool = true) {
         self.isSelected = selected
         if animated {
@@ -93,7 +93,6 @@ class ToggleButton: UIButton {
 
     lazy fileprivate var backgroundLayer: CALayer = {
         let backgroundLayer = CALayer()
-        backgroundLayer.backgroundColor = UX.BackgroundColor.cgColor
         backgroundLayer.mask = self.maskShapeLayer
         return backgroundLayer
     }()
@@ -108,6 +107,9 @@ class ToggleButton: UIButton {
         super.layoutSubviews()
         let zeroFrame = CGRect(size: frame.size)
         backgroundView.frame = zeroFrame
+
+        // Set the background color here to respect light/dark mode automatically.
+        backgroundLayer.backgroundColor = selectedBackgroundColor.cgColor
 
         // Make the gradient larger than normal to allow the mask transition to show when it blows up
         // a little larger than the resting size

@@ -801,9 +801,11 @@ class TrayToolbar: UIView, PrivateModeUI {
         addTabButton.tintColor = .label
         doneButton.setTitleColor(.label, for: .normal)
 
-        // TODO(issue/423): Update these to be dynamic colors
-        maskButton.offTint = UIColor.theme.tabTray.privateModeButtonOffTint
-        maskButton.onTint = UIColor.theme.tabTray.privateModeButtonOnTint
+        maskButton.offTint = UIColor.label
+        maskButton.onTint = UIColor { traits in
+            let style: UIUserInterfaceStyle = traits.userInterfaceStyle == .dark ? .light : .dark
+            return UIColor.label.resolvedColor(with: UITraitCollection(userInterfaceStyle: style))
+        }
 
         applyUIMode(isPrivate: false)
     }

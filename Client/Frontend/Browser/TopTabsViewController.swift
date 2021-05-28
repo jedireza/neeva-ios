@@ -211,6 +211,7 @@ extension TopTabsViewController: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         tabDisplayManager.togglePrivateMode(isOn: isPrivate, createTabOnEmptyPrivateMode: true)
 
+        privateModeButton.selectedBackgroundColor = UIColor.black
         privateModeButton.onTint = UIColor.TopTabs.privateModeButtonOnTint
         privateModeButton.offTint = UIColor.TopTabs.privateModeButtonOffTint
         privateModeButton.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
