@@ -1133,40 +1133,42 @@ class BrowserViewController: UIViewController {
 
         let isPinned = deferredSites.value.successValue ?? false
 
-        var topSitesActivity:PinToTopSitesActivity
-        if isPinned == false {
-            topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
-                guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
+        if FeatureFlag[.pinToTopSites] {
+            var topSitesActivity: PinToTopSitesActivity
+            if isPinned == false {
+                topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
+                    guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
 
-                sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
-                    guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
-                        return succeed()
+                    sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
+                        guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
+                            return succeed()
+                        }
+                        return self.profile.history.addPinnedTopSite(site)
+                    }.uponQueue(.main) { result in
+                        if result.isSuccess {
+                            SimpleToast().showAlertWithText(Strings.AppMenuAddPinToTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
+                        }
                     }
-                    return self.profile.history.addPinnedTopSite(site)
-                }.uponQueue(.main) { result in
-                    if result.isSuccess {
-                        SimpleToast().showAlertWithText(Strings.AppMenuAddPinToTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
+                }
+            } else {
+                topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
+                    guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
+
+                    sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
+                        guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
+                            return succeed()
+                        }
+
+                        return self.profile.history.removeFromPinnedTopSites(site)
+                    }.uponQueue(.main) { result in
+                        if result.isSuccess {
+                            SimpleToast().showAlertWithText(Strings.AppMenuRemovePinFromTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
+                        }
                     }
                 }
             }
-        } else {
-            topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
-                guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
-
-                sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
-                    guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
-                        return succeed()
-                    }
-
-                    return self.profile.history.removeFromPinnedTopSites(site)
-                }.uponQueue(.main) { result in
-                    if result.isSuccess {
-                        SimpleToast().showAlertWithText(Strings.AppMenuRemovePinFromTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
-                    }
-                }
-            }
+            appActivities.append(topSitesActivity)
         }
-        appActivities.append(topSitesActivity)
 
         if let tab = tabManager.selectedTab, let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode, readerMode.state != .unavailable {
             let readingModeActivity = ReadingModeActivity(readerModeState: readerMode.state) { [unowned self] in

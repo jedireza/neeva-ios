@@ -11,6 +11,7 @@ import Defaults
 /// Usage: add a `case` to this enum, then reference `FeatureFlag[.myFeature]` to check for that feature’s status.
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case feedbackScreenshot = "Attach Screenshot to Feedback"
+    case pinToTopSites = "Pin to Top Sites"
 }
 
 extension FeatureFlag {

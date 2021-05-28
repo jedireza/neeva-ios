@@ -295,19 +295,21 @@ extension NeevaHomeViewController: HomePanelContextMenu {
             self.hideURLFromTopSites(site)
         })
 
-        let pinTopSite = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin", handler: { _, _ in
-            self.pinTopSite(site)
-        })
-
-        let removePinTopSite = PhotonActionSheetItem(title: Strings.RemovePinTopsiteActionTitle, iconString: "action_unpin", handler: { _, _ in
-            self.removePinTopSite(site)
-        })
-
         let topSiteActions: [PhotonActionSheetItem]
-        if let _ = site as? PinnedSite {
-            topSiteActions = [removePinTopSite]
+        if FeatureFlag[.pinToTopSites] {
+            let pinTopSite = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin", handler: { _, _ in
+                self.pinTopSite(site)
+            })
+            let removePinTopSite = PhotonActionSheetItem(title: Strings.RemovePinTopsiteActionTitle, iconString: "action_unpin", handler: { _, _ in
+                self.removePinTopSite(site)
+            })
+            if let _ = site as? PinnedSite {
+                topSiteActions = [removePinTopSite]
+            } else {
+                topSiteActions = [pinTopSite, removeTopSiteAction]
+            }
         } else {
-            topSiteActions = [pinTopSite, removeTopSiteAction]
+            topSiteActions = [removeTopSiteAction]
         }
 
         var actions = [openInNewTabAction, openInNewPrivateTabAction, shareAction]

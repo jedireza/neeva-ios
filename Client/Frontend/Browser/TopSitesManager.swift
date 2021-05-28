@@ -32,8 +32,14 @@ struct TopSitesHandler {
 
             // Merge default topsites with a user's topsites.
             let mergedSites = mySites.union(defaultSites, f: unionOnURL)
+
             // Merge pinnedSites with sites from the previous step
-            let allSites = pinnedSites.union(mergedSites, f: unionOnURL)
+            let allSites: [Site]
+            if FeatureFlag[.pinToTopSites] {
+                allSites = pinnedSites.union(mergedSites, f: unionOnURL)
+            } else {
+                allSites = mergedSites
+            }
 
             // Favour topsites from defaultSites as they have better favicons. But keep PinnedSites
             let newSites = allSites.map { site -> Site in
