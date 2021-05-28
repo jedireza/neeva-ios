@@ -185,7 +185,7 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
             return setting
         }
 
-        let enabledSetting = BoolSetting(prefKey: Defaults.Keys.contentBlockingStrength.name, defaultValue: true, attributedTitleText: NSAttributedString(string: Strings.TrackingProtectionEnableTitle)) { [weak self] enabled in
+        let enabledSetting = BoolSetting(prefKey: Defaults.Keys.contentBlockingEnabled.name, defaultValue: true, attributedTitleText: NSAttributedString(string: Strings.TrackingProtectionEnableTitle)) { [weak self] enabled in
             TabContentBlocker.prefsChanged()
             strengthSetting.forEach { item in
                 item.enabled = enabled

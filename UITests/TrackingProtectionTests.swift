@@ -151,6 +151,7 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         tester().tapView(withAccessibilityIdentifier: "Settings.TrackingProtectionOption.BlockListBasic")
     }
 
+    /* Disabled as this test is hanging.
     func testSafelist() {
         // Enable strict mode
         enableStrictMode()
@@ -187,4 +188,5 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         disableStrictTP()
         closeTPSetting()
     }
+    */
 }

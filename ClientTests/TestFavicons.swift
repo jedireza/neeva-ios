@@ -23,6 +23,7 @@ class TestFavicons: ProfileTest {
     }
 
     // XXX: Temporarily disabling this due to intermittent failures on BuddyBuild.
+    /*
     func testFaviconFetcherParse() {
         let expectation = self.expectation(description: "Wait for Favicons to be fetched")
 
@@ -47,6 +48,7 @@ class TestFavicons: ProfileTest {
         }
         self.waitForExpectations(timeout: 3000, handler: nil)
     }
+    */
 
     func testDefaultFavicons() {
         // The amazon case tests a special case for multi-reguin domain lookups
