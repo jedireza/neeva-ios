@@ -1792,6 +1792,12 @@ extension BrowserViewController: SearchViewControllerDelegate {
     func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool) {
         self.urlBar.setLocation(text, search: search)
     }
+
+    func searchViewController(_ searchViewController: SearchViewController, didUpdateLensOrBang lensOrBang: ActiveLensBangInfo?) {
+        self.urlBar.lensOrBang = lensOrBang
+        self.urlBar.createLeftViewFavicon()
+    }
+
 }
 
 extension BrowserViewController: TabManagerDelegate {

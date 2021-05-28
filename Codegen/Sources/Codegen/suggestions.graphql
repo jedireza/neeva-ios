@@ -1,8 +1,8 @@
 query Suggestions($query: String!) {
   suggest(q: $query) {
     querySuggestion {
-      suggestedQuery
       type
+      suggestedQuery
       boldSpan {
         startInclusive
         endExclusive
@@ -14,13 +14,28 @@ query Suggestions($query: String!) {
         labels
       }
       suggestedURL
+      title
       author
       timestamp
-      title
       boldSpan {
         startInclusive
         endExclusive
       }
+    }
+    lenseSuggestion {
+      shortcut
+      description
+    }
+    bangSuggestion {
+      shortcut
+      description
+      domain
+    }
+    activeLensBangInfo {
+      domain
+      shortcut
+      description
+      type
     }
   }
 }

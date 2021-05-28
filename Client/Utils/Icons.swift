@@ -49,7 +49,7 @@ struct SpaceIconView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             SpaceIconView()
-        }.previewLayout(.sizeThatFits   )
+        }.previewLayout(.sizeThatFits)
     }
 }
 

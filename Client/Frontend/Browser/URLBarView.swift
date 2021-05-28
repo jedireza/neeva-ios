@@ -62,6 +62,7 @@ class URLBarView: UIView {
 
     weak var delegate: URLBarDelegate?
     weak var tabToolbarDelegate: TabToolbarDelegate?
+    var lensOrBang: ActiveLensBangInfo?
     var helper: TabToolbarHelper?
     var isTransitioning: Bool = false {
         didSet {
@@ -316,8 +317,12 @@ class URLBarView: UIView {
         iconView.contentMode = .scaleAspectFill
 
         let favicons = BrowserViewController.foregroundBVC().tabManager.selectedTab?.favicons
-
-        if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (currentURL?.host == NeevaConstants.appHost && suggestion == "") {
+        if let lensOrBang = self.lensOrBang,
+           let type = lensOrBang.type {
+            iconView.image = UIImage(systemSymbol: type.defaultSymbol)
+                .applyingSymbolConfiguration(UIImage.SymbolConfiguration(weight: .medium))?
+                .withTintColor(.label, renderingMode: .alwaysOriginal)
+        } else if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (currentURL?.host == NeevaConstants.appHost && suggestion == "") {
             iconView.image = UIImage(named: "neevaMenuIcon")
         } else if (suggestion != "") {
             iconView.image = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))?.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor.Neeva.GlobeFavGray)

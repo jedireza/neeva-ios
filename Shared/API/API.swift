@@ -3458,6 +3458,51 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
   }
 }
 
+public enum ActiveLensBangType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case unknown
+  case lens
+  case bang
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "Unknown": self = .unknown
+      case "Lens": self = .lens
+      case "Bang": self = .bang
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .unknown: return "Unknown"
+      case .lens: return "Lens"
+      case .bang: return "Bang"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: ActiveLensBangType, rhs: ActiveLensBangType) -> Bool {
+    switch (lhs, rhs) {
+      case (.unknown, .unknown): return true
+      case (.lens, .lens): return true
+      case (.bang, .bang): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [ActiveLensBangType] {
+    return [
+      .unknown,
+      .lens,
+      .bang,
+    ]
+  }
+}
+
 public enum SpaceACLLevel: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case owner
@@ -4768,8 +4813,8 @@ public final class SuggestionsQuery: GraphQLQuery {
         __typename
         querySuggestion {
           __typename
-          suggestedQuery
           type
+          suggestedQuery
           boldSpan {
             __typename
             startInclusive
@@ -4784,14 +4829,32 @@ public final class SuggestionsQuery: GraphQLQuery {
             labels
           }
           suggestedURL
+          title
           author
           timestamp
-          title
           boldSpan {
             __typename
             startInclusive
             endExclusive
           }
+        }
+        lenseSuggestion {
+          __typename
+          shortcut
+          description
+        }
+        bangSuggestion {
+          __typename
+          shortcut
+          description
+          domain
+        }
+        activeLensBangInfo {
+          __typename
+          domain
+          shortcut
+          description
+          type
         }
       }
     }
@@ -4799,7 +4862,7 @@ public final class SuggestionsQuery: GraphQLQuery {
 
   public let operationName: String = "Suggestions"
 
-  public let operationIdentifier: String? = "bbe08089a593b3f103d16e1988bf333ab40539bf1859c82b1598d3f4b2de0b66"
+  public let operationIdentifier: String? = "2f3d1a7f71a88b12b8254a15c88968e2fded3123efcf418cc236bfaaa606305d"
 
   public var query: String
 
@@ -4848,6 +4911,9 @@ public final class SuggestionsQuery: GraphQLQuery {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("querySuggestion", type: .nonNull(.list(.nonNull(.object(QuerySuggestion.selections))))),
           GraphQLField("urlSuggestion", type: .nonNull(.list(.nonNull(.object(UrlSuggestion.selections))))),
+          GraphQLField("lenseSuggestion", type: .list(.nonNull(.object(LenseSuggestion.selections)))),
+          GraphQLField("bangSuggestion", type: .list(.nonNull(.object(BangSuggestion.selections)))),
+          GraphQLField("activeLensBangInfo", type: .object(ActiveLensBangInfo.selections)),
         ]
       }
 
@@ -4857,8 +4923,8 @@ public final class SuggestionsQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(querySuggestion: [QuerySuggestion], urlSuggestion: [UrlSuggestion]) {
-        self.init(unsafeResultMap: ["__typename": "Suggest", "querySuggestion": querySuggestion.map { (value: QuerySuggestion) -> ResultMap in value.resultMap }, "urlSuggestion": urlSuggestion.map { (value: UrlSuggestion) -> ResultMap in value.resultMap }])
+      public init(querySuggestion: [QuerySuggestion], urlSuggestion: [UrlSuggestion], lenseSuggestion: [LenseSuggestion]? = nil, bangSuggestion: [BangSuggestion]? = nil, activeLensBangInfo: ActiveLensBangInfo? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Suggest", "querySuggestion": querySuggestion.map { (value: QuerySuggestion) -> ResultMap in value.resultMap }, "urlSuggestion": urlSuggestion.map { (value: UrlSuggestion) -> ResultMap in value.resultMap }, "lenseSuggestion": lenseSuggestion.flatMap { (value: [LenseSuggestion]) -> [ResultMap] in value.map { (value: LenseSuggestion) -> ResultMap in value.resultMap } }, "bangSuggestion": bangSuggestion.flatMap { (value: [BangSuggestion]) -> [ResultMap] in value.map { (value: BangSuggestion) -> ResultMap in value.resultMap } }, "activeLensBangInfo": activeLensBangInfo.flatMap { (value: ActiveLensBangInfo) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -4890,14 +4956,44 @@ public final class SuggestionsQuery: GraphQLQuery {
         }
       }
 
+      /// List of suggested lenses
+      public var lenseSuggestion: [LenseSuggestion]? {
+        get {
+          return (resultMap["lenseSuggestion"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [LenseSuggestion] in value.map { (value: ResultMap) -> LenseSuggestion in LenseSuggestion(unsafeResultMap: value) } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [LenseSuggestion]) -> [ResultMap] in value.map { (value: LenseSuggestion) -> ResultMap in value.resultMap } }, forKey: "lenseSuggestion")
+        }
+      }
+
+      /// List of suggested bangs
+      public var bangSuggestion: [BangSuggestion]? {
+        get {
+          return (resultMap["bangSuggestion"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [BangSuggestion] in value.map { (value: ResultMap) -> BangSuggestion in BangSuggestion(unsafeResultMap: value) } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [BangSuggestion]) -> [ResultMap] in value.map { (value: BangSuggestion) -> ResultMap in value.resultMap } }, forKey: "bangSuggestion")
+        }
+      }
+
+      /// Info on the currently active lens or bang
+      public var activeLensBangInfo: ActiveLensBangInfo? {
+        get {
+          return (resultMap["activeLensBangInfo"] as? ResultMap).flatMap { ActiveLensBangInfo(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "activeLensBangInfo")
+        }
+      }
+
       public struct QuerySuggestion: GraphQLSelectionSet {
         public static let possibleTypes: [String] = ["QuerySuggestion"]
 
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("suggestedQuery", type: .nonNull(.scalar(String.self))),
             GraphQLField("type", type: .nonNull(.scalar(QuerySuggestionType.self))),
+            GraphQLField("suggestedQuery", type: .nonNull(.scalar(String.self))),
             GraphQLField("boldSpan", type: .nonNull(.list(.nonNull(.object(BoldSpan.selections))))),
             GraphQLField("source", type: .nonNull(.scalar(QuerySuggestionSource.self))),
           ]
@@ -4909,8 +5005,8 @@ public final class SuggestionsQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(suggestedQuery: String, type: QuerySuggestionType, boldSpan: [BoldSpan], source: QuerySuggestionSource) {
-          self.init(unsafeResultMap: ["__typename": "QuerySuggestion", "suggestedQuery": suggestedQuery, "type": type, "boldSpan": boldSpan.map { (value: BoldSpan) -> ResultMap in value.resultMap }, "source": source])
+        public init(type: QuerySuggestionType, suggestedQuery: String, boldSpan: [BoldSpan], source: QuerySuggestionSource) {
+          self.init(unsafeResultMap: ["__typename": "QuerySuggestion", "type": type, "suggestedQuery": suggestedQuery, "boldSpan": boldSpan.map { (value: BoldSpan) -> ResultMap in value.resultMap }, "source": source])
         }
 
         public var __typename: String {
@@ -4922,21 +5018,21 @@ public final class SuggestionsQuery: GraphQLQuery {
           }
         }
 
-        public var suggestedQuery: String {
-          get {
-            return resultMap["suggestedQuery"]! as! String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "suggestedQuery")
-          }
-        }
-
         public var type: QuerySuggestionType {
           get {
             return resultMap["type"]! as! QuerySuggestionType
           }
           set {
             resultMap.updateValue(newValue, forKey: "type")
+          }
+        }
+
+        public var suggestedQuery: String {
+          get {
+            return resultMap["suggestedQuery"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "suggestedQuery")
           }
         }
 
@@ -5016,9 +5112,9 @@ public final class SuggestionsQuery: GraphQLQuery {
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("icon", type: .nonNull(.object(Icon.selections))),
             GraphQLField("suggestedURL", type: .nonNull(.scalar(String.self))),
+            GraphQLField("title", type: .scalar(String.self)),
             GraphQLField("author", type: .scalar(String.self)),
             GraphQLField("timestamp", type: .scalar(String.self)),
-            GraphQLField("title", type: .scalar(String.self)),
             GraphQLField("boldSpan", type: .nonNull(.list(.nonNull(.object(BoldSpan.selections))))),
           ]
         }
@@ -5029,8 +5125,8 @@ public final class SuggestionsQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(icon: Icon, suggestedUrl: String, author: String? = nil, timestamp: String? = nil, title: String? = nil, boldSpan: [BoldSpan]) {
-          self.init(unsafeResultMap: ["__typename": "URLSuggestion", "icon": icon.resultMap, "suggestedURL": suggestedUrl, "author": author, "timestamp": timestamp, "title": title, "boldSpan": boldSpan.map { (value: BoldSpan) -> ResultMap in value.resultMap }])
+        public init(icon: Icon, suggestedUrl: String, title: String? = nil, author: String? = nil, timestamp: String? = nil, boldSpan: [BoldSpan]) {
+          self.init(unsafeResultMap: ["__typename": "URLSuggestion", "icon": icon.resultMap, "suggestedURL": suggestedUrl, "title": title, "author": author, "timestamp": timestamp, "boldSpan": boldSpan.map { (value: BoldSpan) -> ResultMap in value.resultMap }])
         }
 
         public var __typename: String {
@@ -5060,6 +5156,15 @@ public final class SuggestionsQuery: GraphQLQuery {
           }
         }
 
+        public var title: String? {
+          get {
+            return resultMap["title"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "title")
+          }
+        }
+
         public var author: String? {
           get {
             return resultMap["author"] as? String
@@ -5075,15 +5180,6 @@ public final class SuggestionsQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "timestamp")
-          }
-        }
-
-        public var title: String? {
-          get {
-            return resultMap["title"] as? String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "title")
           }
         }
 
@@ -5185,6 +5281,183 @@ public final class SuggestionsQuery: GraphQLQuery {
             set {
               resultMap.updateValue(newValue, forKey: "endExclusive")
             }
+          }
+        }
+      }
+
+      public struct LenseSuggestion: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["LenseSuggestion"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("shortcut", type: .scalar(String.self)),
+            GraphQLField("description", type: .scalar(String.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(shortcut: String? = nil, description: String? = nil) {
+          self.init(unsafeResultMap: ["__typename": "LenseSuggestion", "shortcut": shortcut, "description": description])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var shortcut: String? {
+          get {
+            return resultMap["shortcut"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "shortcut")
+          }
+        }
+
+        public var description: String? {
+          get {
+            return resultMap["description"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "description")
+          }
+        }
+      }
+
+      public struct BangSuggestion: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["BangSuggestion"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("shortcut", type: .scalar(String.self)),
+            GraphQLField("description", type: .scalar(String.self)),
+            GraphQLField("domain", type: .scalar(String.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(shortcut: String? = nil, description: String? = nil, domain: String? = nil) {
+          self.init(unsafeResultMap: ["__typename": "BangSuggestion", "shortcut": shortcut, "description": description, "domain": domain])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var shortcut: String? {
+          get {
+            return resultMap["shortcut"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "shortcut")
+          }
+        }
+
+        public var description: String? {
+          get {
+            return resultMap["description"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "description")
+          }
+        }
+
+        public var domain: String? {
+          get {
+            return resultMap["domain"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "domain")
+          }
+        }
+      }
+
+      public struct ActiveLensBangInfo: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["ActiveLensBangInfo"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("domain", type: .scalar(String.self)),
+            GraphQLField("shortcut", type: .scalar(String.self)),
+            GraphQLField("description", type: .scalar(String.self)),
+            GraphQLField("type", type: .scalar(ActiveLensBangType.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(domain: String? = nil, shortcut: String? = nil, description: String? = nil, type: ActiveLensBangType? = nil) {
+          self.init(unsafeResultMap: ["__typename": "ActiveLensBangInfo", "domain": domain, "shortcut": shortcut, "description": description, "type": type])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var domain: String? {
+          get {
+            return resultMap["domain"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "domain")
+          }
+        }
+
+        public var shortcut: String? {
+          get {
+            return resultMap["shortcut"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "shortcut")
+          }
+        }
+
+        public var description: String? {
+          get {
+            return resultMap["description"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "description")
+          }
+        }
+
+        public var type: ActiveLensBangType? {
+          get {
+            return resultMap["type"] as? ActiveLensBangType
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "type")
           }
         }
       }

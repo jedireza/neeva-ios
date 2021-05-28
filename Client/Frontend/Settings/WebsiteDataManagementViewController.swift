@@ -6,7 +6,7 @@ import UIKit
 import Shared
 import WebKit
 
-enum Section: Int {
+private enum Section: Int {
     case sites = 0
     case showMore = 1
     case clearAllButton = 2

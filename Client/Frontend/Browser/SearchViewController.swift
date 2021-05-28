@@ -12,6 +12,7 @@ protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didSelectURL url: URL)
     func searchViewController(_ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String)
     func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool)
+    func searchViewController(_ searchViewController: SearchViewController, didUpdateLensOrBang lensOrBang: ActiveLensBangInfo?)
 }
 
 // Storage declares its own Identifiable type
@@ -24,14 +25,14 @@ private struct SearchViewControllerUX {
 
 struct SearchSuggestionView: View {
     let suggestions: [Suggestion]
+    let lensOrBang: ActiveLensBangInfo?
     let history: Cursor<Site>?
     let error: Error?
     let getKeyboardHeight: () -> CGFloat
-    let onAcceptSuggestion: (String) -> ()
     let onReload: () -> ()
-    let onOpenURL: (URL) -> ()
 
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.onOpenURL) var openURL
 
     var privateHeader: Color {
         switch colorScheme {
@@ -64,21 +65,31 @@ struct SearchSuggestionView: View {
                     }
                 } else {
                     List {
-                        ForEach(suggestions) { suggestion in
-                            SuggestionView(suggestion, setInput: onAcceptSuggestion, onTap: {
-                                switch suggestion {
-                                case .query(let query):
-                                    onOpenURL(neevaSearchEngine.searchURLForQuery(query.suggestedQuery)!)
-                                case .url(let url):
-                                    onOpenURL(URL(string: url.suggestedUrl)!)
-                                }
-                            })
+                        let suggestionList = ForEach(suggestions) { suggestion in
+                            SuggestionView(suggestion, activeLensOrBang: lensOrBang)
                         }
+
+                        if let lensOrBang = lensOrBang,
+                           let description = lensOrBang.description {
+                            Section(header: Group {
+                                switch lensOrBang.type {
+                                case .bang:
+                                    Text("Search on \(description)")
+                                default:
+                                    Text(description)
+                                }
+                            }.textCase(nil)) {
+                                suggestionList
+                            }
+                        } else {
+                            suggestionList
+                        }
+
                         if let history = history, history.count > 0 {
-                            SwiftUI.Section(header: suggestions.isEmpty ? nil : Text("History")) {
+                            Section(header: suggestions.isEmpty ? nil : Text("History")) {
                                 ForEach(history.asArray()) { site in
                                     if let url = URL(string: site.url) {
-                                        Button(action: { onOpenURL(url) }) {
+                                        Button(action: { openURL(url) }) {
                                             HStack {
                                                 FaviconView(site: site, size: SearchViewControllerUX.IconSize, bordered: true)
                                                     .frame(
@@ -105,7 +116,6 @@ struct SearchSuggestionView: View {
                     .frame(height: getSpacerHeight(outerGeometry))
             }
             .ignoresSafeArea(edges: [.bottom])
-            .environment(\.onOpenURL, onOpenURL)
         }
     }
 }
@@ -115,6 +125,7 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
 
     fileprivate let isPrivate: Bool
     fileprivate var suggestions: [Suggestion] = []
+    fileprivate var lensOrBang: ActiveLensBangInfo?
     fileprivate var error: Error?
     fileprivate let profile: Profile
     fileprivate var suggestionQuery: Apollo.Cancellable?
@@ -134,16 +145,18 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
     }
 
     fileprivate func makeSuggestionView() -> AnyView {
-        AnyView(SearchSuggestionView(
-            suggestions: suggestions,
-            history: historyData,
-            error: error,
-            getKeyboardHeight: { KeyboardHelper.defaultHelper.currentState?.intersectionHeightForView(self.view) ?? 0
-            },
-            onAcceptSuggestion: { self.searchDelegate?.searchViewController(self, didAcceptSuggestion: $0) },
-            onReload: reloadData,
-            onOpenURL: { self.searchDelegate?.searchViewController(self, didSelectURL: $0) }
-        ))
+        AnyView(
+            SearchSuggestionView(
+                suggestions: suggestions,
+                lensOrBang: lensOrBang,
+                history: historyData,
+                error: error,
+                getKeyboardHeight: { KeyboardHelper.defaultHelper.currentState?.intersectionHeightForView(self.view) ?? 0 },
+                onReload: reloadData
+            )
+            .environment(\.onOpenURL) { self.searchDelegate?.searchViewController(self, didSelectURL: $0) }
+            .environment(\.setSearchInput) { self.searchDelegate?.searchViewController(self, didAcceptSuggestion: $0) }
+        )
     }
 
     override func viewDidLoad() {
@@ -212,21 +225,41 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
                 if nsError.domain != NSURLErrorDomain || nsError.code != NSURLErrorCancelled {
                     self.error = error
                 }
-            case .success(let suggestions):
+            case .success(let (suggestions, lensOrBang)):
                 self.error = nil
                 self.suggestions = suggestions
+                self.searchDelegate?.searchViewController(self, didUpdateLensOrBang: lensOrBang)
+                self.lensOrBang = lensOrBang
             }
             if self.suggestions.isEmpty {
-                self.suggestions = [
-                    .query(
-                        .init(
-                            suggestedQuery: self.searchQuery,
-                            type: .standard,
-                            boldSpan: [.init(startInclusive: 0, endExclusive: self.searchQuery.count)],
-                            source: .unknown
+                if let lensOrBang = self.lensOrBang,
+                   let shortcut = lensOrBang.shortcut,
+                   let description = lensOrBang.description,
+                   let type = lensOrBang.type,
+                   type == .lens || type == .bang,
+                   self.searchQuery.trimmingCharacters(in: .whitespaces) == type.sigil + shortcut {
+                    switch lensOrBang.type {
+                    case .lens:
+                        self.suggestions = [.lens(Suggestion.Lens(shortcut: shortcut, description: description))]
+                    case .bang:
+                        self.suggestions = [.bang(Suggestion.Bang(shortcut: shortcut, description: description, domain: lensOrBang.domain))]
+                    default: fatalError("This should be impossible")
+                    }
+                } else {
+                    self.suggestions = [
+                        .query(
+                            .init(
+                                type: .standard,
+                                suggestedQuery: self.searchQuery,
+                                boldSpan: [.init(startInclusive: 0, endExclusive: self.searchQuery.count)],
+                                source: .unknown
+                            )
                         )
-                    )
-                ]
+                    ]
+                }
+            }
+            if self.lensOrBang == nil {
+                self.searchDelegate?.searchViewController(self, didUpdateLensOrBang: nil)
             }
             self.rootView = self.makeSuggestionView()
         }

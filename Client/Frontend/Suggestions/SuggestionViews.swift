@@ -1,32 +1,75 @@
 import SwiftUI
 import Shared
 
+extension EnvironmentValues {
+    private struct SetSearchInputKey: EnvironmentKey {
+        static var defaultValue: ((String) -> ())? = nil
+    }
+
+    /// Provide this environment key to open URLs in an app other than Safari.
+    public var setSearchInput: (String) -> () {
+        get { self[SetSearchInputKey] ?? { _ in fatalError(".environment(\\.setSearchInput) must be specified") } }
+        set { self[SetSearchInputKey] = newValue }
+    }
+}
+
 /// Renders a provided suggestion
 public struct SuggestionView: View {
     let suggestion: Suggestion
-    let setInput: (String) -> ()
-    let onTap: () -> ()
+    let activeLensOrBang: ActiveLensBangInfo?
 
     /// - Parameters:
     ///   - suggestion: The suggestion to display
     ///   - setInput: Set the user’s input to the provided string (called when tapping the 􀄮 (`arrow.up.left`) icon)
-    ///   - onTap: Called when the user taps the suggestion
-    public init(
-        _ suggestion: Suggestion,
-        setInput: @escaping (String) -> (),
-        onTap: @escaping () -> ()
-    ) {
+    public init(_ suggestion: Suggestion, activeLensOrBang: ActiveLensBangInfo?) {
         self.suggestion = suggestion
-        self.setInput = setInput
-        self.onTap = onTap
+        self.activeLensOrBang = activeLensOrBang
     }
 
     @ViewBuilder public var body: some View {
         switch suggestion {
         case .query(let suggestion):
-            QuerySuggestionView(suggestion: suggestion, setInput: setInput, onTap: onTap)
+            QuerySuggestionView(suggestion: suggestion, activeLensOrBang: activeLensOrBang)
         case .url(let suggestion):
-            URLSuggestionView(suggestion: suggestion, onTap: onTap)
+            URLSuggestionView(suggestion: suggestion)
+        case .bang(let suggestion):
+            BangSuggestionView(suggestion: suggestion)
+        case .lens(let suggestion):
+            LensSuggestionView(suggestion: suggestion)
+        }
+    }
+}
+
+fileprivate struct SuggestionRow<Icon: View, Label: View, Detail: View>: View {
+    let action: () -> ()
+    let icon: () -> Icon
+    let label: () -> Label
+    let detail: () -> Detail
+
+    init(
+        action: @escaping () -> (),
+        @ViewBuilder icon: @escaping () -> Icon,
+        @ViewBuilder label: @escaping () -> Label,
+        @ViewBuilder detail: @escaping () -> Detail
+    ) {
+        self.action = action
+        self.icon = icon
+        self.label = label
+        self.detail = detail
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 0) {
+                icon()
+                    .foregroundColor(.secondary)
+                    .frame(width: 32, alignment: .leading)
+                label()
+                Spacer()
+                detail()
+                    .foregroundColor(.secondary)
+                    .font(.callout)
+            }
         }
     }
 }
@@ -34,8 +77,10 @@ public struct SuggestionView: View {
 /// Renders a query suggestion
 fileprivate struct QuerySuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.QuerySuggestion
-    let setInput: (String) -> ()
-    let onTap: () -> ()
+    let activeLensOrBang: ActiveLensBangInfo?
+
+    @Environment(\.setSearchInput) private var setInput
+    @Environment(\.onOpenURL) private var openURL
 
     var textColor: Color {
         switch suggestion.type {
@@ -46,30 +91,43 @@ fileprivate struct QuerySuggestionView: View {
         }
     }
 
-    @ViewBuilder var icon: some View {
-        switch suggestion.type {
-        case .searchHistory:
-            Symbol(.clock).foregroundColor(.secondary)
-        case .space:
-            SpaceIconView()
-        default:
-            Symbol(.magnifyingglass).foregroundColor(.secondary)
+    var suggestedQuery: String {
+        if let shortcut = activeLensOrBang?.shortcut,
+           let sigil = activeLensOrBang?.type?.sigil {
+            return sigil + shortcut + " " + suggestion.suggestedQuery
+        } else {
+            return suggestion.suggestedQuery
         }
     }
 
     var body: some View {
-        Button(action: onTap) {
-            HStack {
-                icon
-                BoldSpanView(suggestion.suggestedQuery, bolding: suggestion.boldSpan)
-                    .lineLimit(1)
-                    .foregroundColor(textColor)
-                Spacer()
-                if suggestion.type != .space {
-                    Button(action: { setInput(suggestion.suggestedQuery) }) {
-                        Symbol(.arrowUpLeft)
-                    }.buttonStyle(BorderlessButtonStyle())
+        SuggestionRow {
+            openURL(neevaSearchEngine.searchURLForQuery(suggestedQuery)!)
+        } icon: {
+            if let activeType = activeLensOrBang?.type {
+                Symbol(activeType.defaultSymbol)
+            } else {
+                switch suggestion.type {
+                case .searchHistory:
+                    Symbol(.clock)
+                case .space: // unused?
+                    SpaceIconView()
+                case .standard:
+                    Symbol(.magnifyingglass)
+                case .operator, .unknown, .__unknown(_): // seemingly unused
+                    Symbol(.questionmarkCircle).foregroundColor(.secondary)
                 }
+            }
+        } label: {
+            BoldSpanView(suggestion.suggestedQuery, bolding: suggestion.boldSpan)
+                .lineLimit(1)
+                .foregroundColor(textColor)
+        } detail: {
+            if suggestion.type != .space {
+                Button(action: { setInput(suggestedQuery) }) {
+                    Symbol(.arrowUpLeft)
+                        .foregroundColor(.accentColor)
+                }.buttonStyle(BorderlessButtonStyle())
             }
         }
     }
@@ -78,51 +136,92 @@ fileprivate struct QuerySuggestionView: View {
 /// Renders a URL suggestion (and its associated icon)
 fileprivate struct URLSuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion
-    let onTap: () -> ()
+
+    @Environment(\.onOpenURL) private var openURL
 
     var body: some View {
-        Button(action: onTap) {
-            HStack {
-                if let labels = suggestion.icon.labels,
-                   let image = Image(icons: labels) {
-                    image
-                } else {
-                    Symbol(.questionmarkDiamondFill)
-                        .foregroundColor(.red)
-                }
-                if let title = suggestion.title {
-                    BoldSpanView(title, bolding: suggestion.boldSpan).lineLimit(1)
-                } else {
-                    Text(suggestion.suggestedUrl).lineLimit(1)
-                }
-                Spacer()
-                if let formatted = format(suggestion.timestamp, as: .full) {
-                    Text(formatted).foregroundColor(.secondary)
-                }
+        SuggestionRow {
+            openURL(URL(string: suggestion.suggestedUrl)!)
+        } icon: {
+            if let labels = suggestion.icon.labels,
+               let image = Image(icons: labels) {
+                image
+            } else {
+                Symbol(.questionmarkDiamondFill)
+                    .foregroundColor(.red)
+            }
+        } label: {
+            if let title = suggestion.title {
+                BoldSpanView(title, bolding: suggestion.boldSpan).lineLimit(1)
+            } else {
+                Text(suggestion.suggestedUrl).lineLimit(1)
+            }
+        } detail: {
+            if let formatted = format(suggestion.timestamp, as: .full) {
+                Text(formatted)
             }
         }
     }
 }
 
+fileprivate struct BangSuggestionView: View {
+    let suggestion: Suggestion.Bang
+
+    @Environment(\.setSearchInput) private var setInput
+
+    var body: some View {
+        let query = "!\(suggestion.shortcut)"
+        SuggestionRow {
+            setInput(query + " ")
+        } icon: {
+            Symbol(ActiveLensBangType.bang.defaultSymbol)
+        } label: {
+            Text(query)
+        } detail: {
+            Text(suggestion.description)
+        }
+    }
+}
+
+fileprivate struct LensSuggestionView: View {
+    let suggestion: Suggestion.Lens
+
+    @Environment(\.setSearchInput) private var setInput
+
+    var body: some View {
+        let query = "@\(suggestion.shortcut)"
+        SuggestionRow {
+            setInput(query + " ")
+        } icon: {
+            Symbol(ActiveLensBangType.lens.defaultSymbol)
+        } label: {
+            Text(query)
+        } detail: {
+            Text(suggestion.description)
+        }
+    }
+}
+
+
 struct SuggestionView_Previews: PreviewProvider {
     static let query =
         SuggestionsQuery.Data.Suggest.QuerySuggestion(
-            suggestedQuery: "neeva",
             type: .standard,
+            suggestedQuery: "neeva",
             boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
             source: .bing
         )
     static let historyQuery =
         SuggestionsQuery.Data.Suggest.QuerySuggestion(
-            suggestedQuery: "swift set sysroot",
             type: .searchHistory,
+            suggestedQuery: "swift set sysroot",
             boldSpan: [.init(startInclusive: 6, endExclusive: 9), .init(startInclusive: 12, endExclusive: 15)],
             source: .elastic
         )
     static let spaceQuery =
         SuggestionsQuery.Data.Suggest.QuerySuggestion(
-            suggestedQuery: "SavedForLater",
             type: .space,
+            suggestedQuery: "SavedForLater",
             boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
             source: .elastic
         )
@@ -131,18 +230,56 @@ struct SuggestionView_Previews: PreviewProvider {
         SuggestionsQuery.Data.Suggest.UrlSuggestion(
             icon: .init(labels: ["google-email", "email"]),
             suggestedUrl: "https://mail.google.com/mail/u/jed@neeva.co/#inbox/1766c8357ae540a5",
+            title: "How was your Neeva onboarding?",
             author: "feedback@neeva.co",
             timestamp: "2020-12-16T17:05:12Z",
-            title: "How was your Neeva onboarding?",
             boldSpan: [.init(startInclusive: 13, endExclusive: 29)]
         )
 
+    static let bang = Suggestion.Bang(
+        shortcut: "w",
+        description: "Wikipedia",
+        domain: "wikipedia.org"
+    )
+
+    static let logoBang = Suggestion.Bang(
+        shortcut: "imdb",
+        description: "IMDb",
+        domain: "imdb.com"
+    )
+
+    static let noDomainBang = Suggestion.Bang(
+        shortcut: "zillow",
+        description: "Zillow",
+        domain: nil
+    )
+
+    static let lens = Suggestion.Lens(
+        shortcut: "my",
+        description: "Search my personal data"
+    )
+
     static var previews: some View {
-            List {
-                QuerySuggestionView(suggestion: query, setInput: { _ in }, onTap: {})
-                QuerySuggestionView(suggestion: historyQuery, setInput: { _ in }, onTap: {})
-                QuerySuggestionView(suggestion: spaceQuery, setInput: { _ in }, onTap: {})
-                URLSuggestionView(suggestion: url, onTap: {})
+        List {
+            Section(header: Text("Query").textCase(nil)) {
+                QuerySuggestionView(suggestion: spaceQuery, activeLensOrBang: nil)
+                QuerySuggestionView(suggestion: query, activeLensOrBang: nil)
+                QuerySuggestionView(suggestion: historyQuery, activeLensOrBang: nil)
             }
+            Section(header: Text("Query — Bang active").textCase(nil)) {
+                QuerySuggestionView(suggestion: query, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang))
+                QuerySuggestionView(suggestion: historyQuery, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang))
+            }
+            Section(header: Text("Query — Lens active").textCase(nil)) {
+                QuerySuggestionView(suggestion: query, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens))
+                QuerySuggestionView(suggestion: historyQuery, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens))
+            }
+            Section(header: Text("URL, Bang, and Lens").textCase(nil)) {
+                URLSuggestionView(suggestion: url)
+                BangSuggestionView(suggestion: bang)
+                BangSuggestionView(suggestion: noDomainBang)
+                LensSuggestionView(suggestion: lens)
+            }
+        }.environment(\.setSearchInput) { _ in }
     }
 }
