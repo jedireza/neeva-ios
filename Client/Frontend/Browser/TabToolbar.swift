@@ -19,8 +19,6 @@ protocol TabToolbarProtocol: AnyObject {
     func updateBackStatus(_ canGoBack: Bool)
     func updateForwardStatus(_ canGoForward: Bool)
     func updatePageStatus(_ isWebPage: Bool)
-    func appMenuBadge(setVisible: Bool)
-    func warningMenuBadge(setVisible: Bool)
 }
 
 protocol TabToolbarDelegate: AnyObject {
@@ -210,9 +208,6 @@ class TabToolbar: UIView {
     let toolbarNeevaMenuButton = ToolbarButton()
     let actionButtons: [ToolbarButton]
 
-    fileprivate let appMenuBadge = BadgeWithBackdrop(imageName: "menuBadge")
-    fileprivate let warningMenuBadge = BadgeWithBackdrop(imageName: "menuWarning", imageMask: "warning-mask")
-
     private var isPrivateMode: Bool = false
 
     private var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
@@ -227,26 +222,19 @@ class TabToolbar: UIView {
         setupAccessibility()
 
         addSubview(contentView)
-        helper = TabToolbarHelper(toolbar: self)
-        addButtons(actionButtons)
-        contentView.addArrangedSubview(tabsButton)
 
-        appMenuBadge.add(toParent: contentView)
-        warningMenuBadge.add(toParent: contentView)
+        helper = TabToolbarHelper(toolbar: self)
+
+        actionButtons.forEach { contentView.addArrangedSubview($0) }
+        contentView.addArrangedSubview(tabsButton)
 
         contentView.axis = .horizontal
         contentView.distribution = .fillEqually
-    }
-
-    override func updateConstraints() {
-        appMenuBadge.layout(onButton: addToSpacesButton)
-        warningMenuBadge.layout(onButton: addToSpacesButton)
 
         contentView.snp.makeConstraints { make in
             make.leading.trailing.top.equalTo(self)
             make.bottom.equalTo(self.safeArea.bottom)
         }
-        super.updateConstraints()
     }
 
     private func setupAccessibility() {
@@ -264,10 +252,6 @@ class TabToolbar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func addButtons(_ buttons: [UIButton]) {
-        buttons.forEach { contentView.addArrangedSubview($0) }
-    }
-
     override func draw(_ rect: CGRect) {
         if let context = UIGraphicsGetCurrentContext() {
             drawLine(context, start: .zero, end: CGPoint(x: frame.width, y: 0))
@@ -275,7 +259,7 @@ class TabToolbar: UIView {
     }
 
     fileprivate func drawLine(_ context: CGContext, start: CGPoint, end: CGPoint) {
-        context.setStrokeColor(UIColor.black.withAlphaComponent(0.05).cgColor)
+        context.setStrokeColor(UIColor.Browser.urlBarDivider.cgColor)
         context.setLineWidth(2)
         context.move(to: CGPoint(x: start.x, y: start.y))
         context.addLine(to: CGPoint(x: end.x, y: end.y))
@@ -284,21 +268,6 @@ class TabToolbar: UIView {
 }
 
 extension TabToolbar: TabToolbarProtocol {
-    func appMenuBadge(setVisible: Bool) {
-        // Warning badges should take priority over the standard badge
-        guard warningMenuBadge.badge.isHidden else {
-            return
-        }
-
-        appMenuBadge.show(setVisible)
-    }
-
-    func warningMenuBadge(setVisible: Bool) {
-        // Disable other menu badges before showing the warning.
-        if !appMenuBadge.badge.isHidden { appMenuBadge.show(false) }
-        warningMenuBadge.show(setVisible)
-    }
-
     func updateBackStatus(_ canGoBack: Bool) {
         backButton.isEnabled = canGoBack
     }
@@ -325,8 +294,6 @@ extension TabToolbar: PrivateModeUI {
 
         backgroundColor = UIColor.Browser.background
 
-        appMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
-        warningMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
         toolbarNeevaMenuButton.tintColor = UIColor.URLBar.neevaMenuTint(isPrivateMode)
     }
 }

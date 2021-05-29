@@ -82,14 +82,7 @@ extension UIColor {
 
     public struct Browser {
         public static let background = UIColor.Neeva.DefaultBackground
-        public static let urlBarDivider = UIColor() { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor.Browser.background  // Hidden in dark mode
-            default:
-                return UIColor.Neeva.DefaultSeparator
-            }
-        }
+        public static let urlBarDivider = UIColor.systemGray5
         public static let tint = UIColor.Neeva.DefaultTextAndTint
     }
 
