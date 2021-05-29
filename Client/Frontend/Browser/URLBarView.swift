@@ -524,6 +524,7 @@ class URLBarView: UIView {
 
     func transitionToOverlay(_ didCancel: Bool = false) {
         locationTextField?.leftView?.alpha = inOverlayMode ? 1 : 0
+        locationView.contentView.alpha = inOverlayMode ? 0 : 1
         cancelButton.alpha = inOverlayMode ? 1 : 0
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
@@ -560,8 +561,6 @@ class URLBarView: UIView {
         layoutIfNeeded()
 
         inOverlayMode = overlay
-        locationView.contentView.alpha = inOverlayMode ? 0 : 1
-
 
         if !overlay {
             locationTextField?.isHidden = true
