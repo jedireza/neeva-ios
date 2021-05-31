@@ -74,7 +74,7 @@ class TopTabsTest: BaseTestCase {
 
         waitForExistence(app.cells.staticTexts[urlLabel])
         app.cells.staticTexts[urlLabel].tap()
-        let valueMozilla = app.textFields["url"].value as! String
+        let valueMozilla = app.buttons["url"].value as! String
         XCTAssertEqual(valueMozilla, urlValueLong)
 
         navigator.nowAt(BrowserTab)
@@ -83,7 +83,7 @@ class TopTabsTest: BaseTestCase {
 
         waitForExistence(app.cells.staticTexts[urlLabelExample])
         app.cells.staticTexts[urlLabelExample].tap()
-        let value = app.textFields["url"].value as! String
+        let value = app.buttons["url"].value as! String
         XCTAssertEqual(value, urlValueLongExample)
     }
     */
@@ -340,7 +340,7 @@ class TopTabsTestIphone: IphoneOnlyTestCase {
 
         // Check that the tab has changed
         waitUntilPageLoad()
-        waitForValueContains(app.textFields["url"], value: "iana")
+        waitForValueContains(app.buttons["url"], value: "iana")
         XCTAssertTrue(app.links["RFC 2606"].exists)
         waitForExistence(app.buttons["Show Tabs"])
         let numTab = app.buttons["Show Tabs"].value as? String
@@ -360,8 +360,8 @@ class TopTabsTestIphone: IphoneOnlyTestCase {
 
         // Check that the tab has changed
         waitUntilPageLoad()
-        waitForExistence(app.textFields["url"], timeout: 5)
-        waitForValueContains(app.textFields["url"], value: "iana")
+        waitForExistence(app.buttons["url"], timeout: 5)
+        waitForValueContains(app.buttons["url"], value: "iana")
         XCTAssertTrue(app.links["RFC 2606"].exists)
         waitForExistence(app.buttons["Show Tabs"])
         let numPrivTab = app.buttons["Show Tabs"].value as? String
@@ -385,8 +385,8 @@ class TopTabsTestIphone: IphoneOnlyTestCase {
 
         // Check that the tab has changed to the new open one and that the user is in private mode
         waitUntilPageLoad()
-        waitForExistence(app.textFields["url"], timeout: 5)
-        waitForValueContains(app.textFields["url"], value: "iana")
+        waitForExistence(app.buttons["url"], timeout: 5)
+        waitForValueContains(app.buttons["url"], value: "iana")
         navigator.goto(TabTray)
         XCTAssertTrue(app.buttons["TabTrayController.maskButton"].isEnabled)
     }
@@ -416,7 +416,7 @@ class TopTabsTestIpad: IpadOnlyTestCase {
 
     func cellIsSelectedTab(index: Int, url: String, title: String) {
         XCTAssertEqual(app.collectionViews["Top Tabs View"].cells.element(boundBy: index).label, title)
-        waitForValueContains(app.textFields["url"], value: url)
+        waitForValueContains(app.buttons["url"], value: url)
     }
 
     func testTopSitesScrollToVisible() {
@@ -447,6 +447,6 @@ class TopTabsTestIpad: IpadOnlyTestCase {
         // Confirm the view did not scroll to the selected cell
         XCTAssertEqual(app.collectionViews["Top Tabs View"].cells.element(boundBy: lastCell).label, "Home")
         // Confirm the url bar still has selected cell value
-        waitForValueContains(app.textFields["url"], value: urlValueLongExample)
+        waitForValueContains(app.buttons["url"], value: urlValueLongExample)
     }
 }

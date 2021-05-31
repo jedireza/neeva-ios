@@ -5,9 +5,6 @@
 import UIKit
 import Shared
 import SnapKit
-import XCGLogger
-
-private let log = Logger.browserLogger
 
 protocol TabLocationViewDelegate {
     func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView)
@@ -23,9 +20,7 @@ protocol TabLocationViewDelegate {
 
 private struct TabLocationViewUX {
     static let LockIconWidth: CGFloat = 16
-    static let ShieldButtonWidth: CGFloat = 44
-    static let ReloadButtonWidth: CGFloat = 44
-    static let ShareButtonWidth: CGFloat = 46
+    static let ButtonWidth: CGFloat = 44
     static let ButtonHeight: CGFloat = 42
     static let IconPadding: CGFloat = -8
 }
@@ -52,6 +47,8 @@ class TabLocationView: UIView {
 
     var url: URL? {
         didSet {
+            // Report the URL as the accessible value rather than the display text.
+            urlLabel.accessibilityValue = url?.absoluteString ?? ""
             updateTextWithURL()
             shieldButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
             setNeedsUpdateConstraints()
@@ -60,39 +57,27 @@ class TabLocationView: UIView {
 
     // If the URL corresponds to a search, then we extract and display the query.
     var displayText: String {
-        urlTextField.text ?? ""
+        urlLabel.text ?? ""
     }
     var displayTextIsQuery: Bool = false
 
-    lazy var placeholder: NSAttributedString = {
-        return NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.Photon.Grey50])
+    lazy var urlLabel: UILabel = {
+        let label = DisplayTextLabel()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = .label
+        label.lineBreakMode = .byTruncatingHead
+        label.numberOfLines = 1
+        label.textAlignment = .left
+        label.isAccessibilityElement = true
+        label.accessibilityIdentifier = "url"
+        label.accessibilityLabel = "Address Bar"
+        label.accessibilityHint = .TabLocationURLPlaceholder
+        label.accessibilityTraits = .button
+        label.accessibilityRespondsToUserInteraction = true
+        label.accessibilityActionsSource = self
+        label.isUserInteractionEnabled = true  // Needed for KIF-based tests
+        return label
     }()
-
-    lazy var urlTextField: UITextField = {
-        let urlTextField = DisplayTextField()
-
-        // Prevent the field from compressing the toolbar buttons on the 4S in landscape.
-        urlTextField.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-        urlTextField.accessibilityIdentifier = "url"
-        urlTextField.accessibilityActionsSource = self
-        urlTextField.font = UIConstants.DefaultChromeFont
-        urlTextField.backgroundColor = .clear
-        urlTextField.accessibilityLabel = "Address Bar"
-        urlTextField.font = UIFont.preferredFont(forTextStyle: .body)
-        urlTextField.adjustsFontForContentSizeCategory = true
-        urlTextField.textAlignment = .center
-
-        // Remove the default drop interaction from the URL text field so that our
-        // custom drop interaction on the BVC can accept dropped URLs.
-        if let dropInteraction = urlTextField.textDropInteraction {
-            urlTextField.removeInteraction(dropInteraction)
-        }
-
-        return urlTextField
-    }()
-
-    fileprivate lazy var spacer1 = UIView()
-    fileprivate lazy var spacer2 = UIView()
 
     fileprivate lazy var lockImageView: UIImageView = {
         let lockImageView = UIImageView(image: UIImage(systemName: "lock.fill"))
@@ -102,6 +87,8 @@ class TabLocationView: UIView {
         lockImageView.tintColor = .black
         return lockImageView
     }()
+
+    fileprivate lazy var lockAndText = UIView()
     
     lazy var shieldButton: UIButton = {
         let shieldButton = UIButton()
@@ -114,7 +101,7 @@ class TabLocationView: UIView {
     }()
 
     lazy var reloadButton: ReloadButton = {
-        let reloadButton = ReloadButton(frame: .zero, state: .disabled)
+        let reloadButton = ReloadButton(frame: .zero, state: .reload)
         reloadButton.addTarget(self, action: #selector(tapReloadButton), for: .touchUpInside)
         reloadButton.setDynamicMenu { self.delegate?.tabLocationViewReloadMenu(self) }
         reloadButton.tintColor = .black
@@ -130,6 +117,7 @@ class TabLocationView: UIView {
         shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)), for: .normal)
         shareButton.addTarget(self, action: #selector(tapShareButton), for: .touchUpInside)
         shareButton.accessibilityIdentifier = "TabLocationView.shareButton"
+        shareButton.isAccessibilityElement = true
         shareButton.tintColor = .black
         shareButton.imageView?.contentMode = .scaleAspectFit
         return shareButton
@@ -156,7 +144,10 @@ class TabLocationView: UIView {
         addGestureRecognizer(longPressRecognizer)
         addGestureRecognizer(tapRecognizer)
 
-        let subviews = [spacer1, lockImageView, urlTextField, spacer2, reloadButton, shieldButton, shareButton]
+        lockAndText.addSubview(lockImageView)
+        lockAndText.addSubview(urlLabel)
+
+        let subviews = [shieldButton, lockAndText, reloadButton, shareButton]
 
         contentView = UIView()
         for view in subviews {
@@ -169,43 +160,47 @@ class TabLocationView: UIView {
             make.edges.equalTo(self)
         }
 
-        shieldButton.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.ShieldButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
-            make.leading.equalTo(self)
-            make.trailing.equalTo(spacer1.snp.leading)
-        }
-        spacer1.snp.makeConstraints { make in
-            make.width.equalTo(spacer2)
-            make.height.equalTo(10)
-            make.leading.equalTo(shieldButton.snp.trailing)
-            make.trailing.equalTo(lockImageView.snp.leading)
-        }
         lockImageView.snp.makeConstraints { make in
             make.width.equalTo(TabLocationViewUX.LockIconWidth)
-            make.trailing.equalTo(urlTextField.snp.leading)
+            make.leading.equalTo(lockAndText.snp.leading).priority(.high)
+            make.leading.greaterThanOrEqualTo(shieldButton.snp.trailing).priority(.high)
+            make.trailing.equalTo(urlLabel.snp.leading).priority(.high)
             make.centerY.equalTo(self)
         }
-        urlTextField.snp.makeConstraints { make in
-            make.width.equalTo(urlTextField.intrinsicContentSize.width)
-            make.height.equalTo(urlTextField.intrinsicContentSize.height)
+        urlLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self)
+            make.trailing.equalTo(lockAndText.snp.trailing)
+            make.trailing.lessThanOrEqualTo(reloadButton.snp.leading).priority(.high)
+            // In case lockImageView is hidden:
+            make.leading.greaterThanOrEqualTo(shieldButton.snp.trailing).priority(.high)
         }
-        spacer2.snp.makeConstraints { make in
-            make.width.equalTo(spacer1)
-            make.height.equalTo(10)
-            make.leading.equalTo(urlTextField.snp.trailing)
-        }
-        reloadButton.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.ReloadButtonWidth)
+
+        shieldButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self)
+            make.width.equalTo(TabLocationViewUX.ButtonWidth)
             make.height.equalTo(TabLocationViewUX.ButtonHeight)
-            make.leading.equalTo(spacer2.snp.trailing)
+            make.leading.equalTo(self)
+        }
+
+        lockAndText.snp.makeConstraints { make in
+            make.centerX.equalTo(self.snp.centerX).priority(.medium)
+            make.centerY.equalTo(self)
+            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.leading.greaterThanOrEqualTo(shieldButton.snp.trailing).priority(.high)
+            make.trailing.lessThanOrEqualTo(reloadButton.snp.leading).priority(.high)
+        }
+
+        reloadButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self)
+            make.width.equalTo(TabLocationViewUX.ButtonWidth)
+            make.height.equalTo(TabLocationViewUX.ButtonHeight)
         }
         shareButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self)
             make.leading.equalTo(reloadButton.snp.trailing)
             make.trailing.equalTo(self)
             make.height.equalTo(TabLocationViewUX.ButtonHeight)
-            make.width.equalTo(TabLocationViewUX.ShareButtonWidth)
+            make.width.equalTo(TabLocationViewUX.ButtonWidth)
         }
 
         // Setup UIDragInteraction to handle dragging the location
@@ -224,26 +219,23 @@ class TabLocationView: UIView {
             make.width.equalTo(
                 lockImageView.isHidden ? 0 : TabLocationViewUX.LockIconWidth)
         }
-        urlTextField.snp.updateConstraints { make in
-            make.width.equalTo(urlTextField.intrinsicContentSize.width)
-        }
         reloadButton.snp.updateConstraints { make in
             make.width.equalTo(
-                reloadButton.isHidden ? 0 : TabLocationViewUX.ReloadButtonWidth)
+                reloadButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth)
         }
         shieldButton.snp.updateConstraints { make in
             make.width.equalTo(
-                shieldButton.isHidden ? 0 : TabLocationViewUX.ShieldButtonWidth)
+                shieldButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth)
         }
         shareButton.snp.updateConstraints { make in
             make.width.equalTo(
-                shareButton.isHidden ? 0 : TabLocationViewUX.ShareButtonWidth
+                shareButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth
             )
         }
         super.updateConstraints()
     }
 
-    private lazy var _accessibilityElements = [urlTextField, reloadButton, shieldButton, shareButton]
+    private lazy var _accessibilityElements = [shieldButton, urlLabel, reloadButton, shareButton]
 
     override var accessibilityElements: [Any]? {
         get {
@@ -283,20 +275,22 @@ class TabLocationView: UIView {
     }
 
     fileprivate func updateTextWithURL() {
+        var text: String
         if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
-            urlTextField.text = host
+            text = host
         } else {
-            urlTextField.text = url?.absoluteString
+            text = url?.absoluteString ?? ""
         }
         // NOTE: Punycode support was removed
         if let query = neevaSearchEngine.queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url) {
             displayTextIsQuery = true
-            urlTextField.text = query
+            text = query
         } else {
             displayTextIsQuery = false
         }
-        if let text = urlTextField.text, !text.isEmpty {
-            urlTextField.attributedPlaceholder = nil
+        if !text.isEmpty {
+            urlLabel.text = text
+            urlLabel.textColor = .label
             shareButton.isHidden = !showShareButton
             reloadButton.isHidden = false
 
@@ -305,7 +299,8 @@ class TabLocationView: UIView {
             let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TabLocationViewUX.IconPadding)
             lockImageView.image = UIImage(systemName: displayTextIsQuery ? "magnifyingglass" : "lock.fill", withConfiguration: config)?.withAlignmentRectInsets(padding)
         } else {
-            urlTextField.attributedPlaceholder = self.placeholder
+            urlLabel.text = .TabLocationURLPlaceholder
+            urlLabel.textColor = .secondaryLabel
             shareButton.isHidden = true
             reloadButton.isHidden = true
         }
@@ -346,7 +341,7 @@ extension TabLocationView: UIDragInteractionDelegate {
 
 extension TabLocationView: AccessibilityActionsSource {
     func accessibilityCustomActionsForView(_ view: UIView) -> [UIAccessibilityCustomAction]? {
-        if view === urlTextField {
+        if view === urlLabel {
             return delegate?.tabLocationViewLocationAccessibilityActions(self)
         }
         return nil
@@ -361,7 +356,7 @@ extension TabLocationView: PrivateModeUI {
         let textAndTint = UIColor.TextField.textAndTint(isPrivate: isPrivateMode)
 
         backgroundColor = background
-        urlTextField.textColor = textAndTint
+        urlLabel.textColor = textAndTint
         lockImageView.tintColor = textAndTint
         reloadButton.tintColor = textAndTint
         shieldButton.tintColor = textAndTint
@@ -419,7 +414,7 @@ class ReloadButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var _reloadButtonState = ReloadButtonState.disabled
+    private var _reloadButtonState = ReloadButtonState.reload
     
     var reloadButtonState: ReloadButtonState {
         get {
@@ -443,7 +438,7 @@ class ReloadButton: UIButton {
     }
 }
 
-private class DisplayTextField: UITextField {
+private class DisplayTextLabel: UILabel {
     weak var accessibilityActionsSource: AccessibilityActionsSource?
 
     override var accessibilityCustomActions: [UIAccessibilityCustomAction]? {
@@ -453,9 +448,5 @@ private class DisplayTextField: UITextField {
         set {
             super.accessibilityCustomActions = newValue
         }
-    }
-
-    fileprivate override var canBecomeFirstResponder: Bool {
-        return false
     }
 }

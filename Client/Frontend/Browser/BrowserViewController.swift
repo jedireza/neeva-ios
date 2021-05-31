@@ -477,7 +477,7 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.urlBar.locationView.urlTextField)
+        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.urlBar.locationView.urlLabel)
         prompt.view.backgroundColor = UIColor.Neeva.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 

@@ -110,7 +110,7 @@ class SecurityTests: KIFTestCase {
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
         XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://")) // webview internally has "blob:<rest of url>"
         let bvc = UIApplication.shared.keyWindow!.rootViewController?.children[0] as! BrowserViewController
-        XCTAssertEqual(bvc.urlBar.locationView.urlTextField.text, "blob:") // only display "blob:"
+        XCTAssertEqual(bvc.urlBar.locationView.urlLabel.text, "blob:") // only display "blob:"
     }
 
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)

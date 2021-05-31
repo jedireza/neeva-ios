@@ -17,7 +17,7 @@ class SettingsTest: BaseTestCase {
         helpMenu.tap()
 
         waitUntilPageLoad()
-        waitForValueContains(app.textFields["url"], value: "neeva.com")
+        waitForValueContains(app.buttons["url"], value: "neeva.com")
         //waitForExistence(app.webViews.staticTexts["Neeva for iOS Support"])
 
         /* Disabled as this mechanism of querying number of tabs does not work

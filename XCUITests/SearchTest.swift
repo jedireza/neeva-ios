@@ -141,8 +141,8 @@ class SearchTests: BaseTestCase {
 
         navigator.nowAt(HomePanelsScreen)
         waitForExistence(app.collectionViews.cells["TopSitesCell"], timeout: 10)
-        waitForExistence(app.textFields["url"], timeout: 3)
-        app.textFields["url"].tap()
+        waitForExistence(app.buttons["url"], timeout: 3)
+        app.buttons["url"].tap()
         waitForExistence(app.textFields["address"], timeout: 3)
         app.textFields["address"].tap()
 
@@ -155,7 +155,7 @@ class SearchTests: BaseTestCase {
         waitUntilPageLoad()
 
         // Check that the website is loaded
-        waitForValueContains(app.textFields["url"], value: "www.neeva.co")
+        waitForValueContains(app.buttons["url"], value: "www.neeva.co")
         waitUntilPageLoad()
 
         // Go back, write part of moz, check the autocompletion
@@ -181,7 +181,7 @@ class SearchTests: BaseTestCase {
         waitForExistence(app.menuItems["Search with Neeva"])
         app.menuItems["Search with Neeva"].tap()
         waitUntilPageLoad()
-        waitForValueContains(app.textFields["url"], value: "google")
+        waitForValueContains(app.buttons["url"], value: "google")
         // Now there should be two tabs open
         let numTab = app.buttons["Show Tabs"].value as? String
         XCTAssertEqual("2", numTab)
@@ -189,11 +189,11 @@ class SearchTests: BaseTestCase {
     // Bug https://bugzilla.mozilla.org/show_bug.cgi?id=1541832 scenario 4
     func testSearchStartAfterTypingTwoWords() {
         navigator.goto(URLBarOpen)
-        waitForExistence(app.textFields["url"], timeout: 10)
+        waitForExistence(app.buttons["url"], timeout: 10)
         app.typeText("foo bar")
         app.typeText(XCUIKeyboardKey.return.rawValue)
-        waitForExistence(app.textFields["url"], timeout: 20)
-        waitForValueContains(app.textFields["url"], value: "google")
+        waitForExistence(app.buttons["url"], timeout: 20)
+        waitForValueContains(app.buttons["url"], value: "google")
     }
     
     func testSearchIconOnAboutHome() {

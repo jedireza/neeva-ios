@@ -392,7 +392,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.gesture(forAction: Action.LoadURLByTyping) { userState in
             let url = userState.url ?? defaultURL
             // Workaround BB iOS13 be sure tap happens on url bar
-            app.textFields.firstMatch.tap()
+            app.buttons["url"].tap()
             app.textFields.firstMatch.tap()
             app.textFields.firstMatch.typeText(url)
             app.textFields.firstMatch.typeText("\r")
@@ -402,7 +402,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             let url = userState.url ?? defaultURL
             // Workaround BB iOS13 be sure tap happens on url bar
             sleep(1)
-            app.textFields.firstMatch.tap()
+            app.buttons["url"].tap()
             app.textFields.firstMatch.tap()
             app.textFields.firstMatch.typeText("\(url)")
         }
@@ -719,10 +719,10 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     }
 
     func makeURLBarAvailable(_ screenState: MMScreenStateNode<FxUserState>) {
-        screenState.tap(app.textFields["url"], to: URLBarOpen)
+        screenState.tap(app.buttons["url"], to: URLBarOpen)
         screenState.gesture(to: URLBarLongPressMenu) {
             sleep(1)
-            app.textFields["url"].press(forDuration: 1.0)
+            app.buttons["url"].press(forDuration: 1.0)
         }
     }
 

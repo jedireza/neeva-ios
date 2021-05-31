@@ -103,7 +103,7 @@ fileprivate func createTestGraph(for test: XCTestCase, with app: XCUIApplication
 
     map.addScreenState(FirstRun) { screenState in
         screenState.noop(to: BrowserTab)
-        screenState.tap(app.textFields["url"], to: URLBarOpen)
+        screenState.tap(app.buttons["url"], to: URLBarOpen)
     }
 
     map.addScreenState(WebPageLoading) { screenState in
@@ -117,15 +117,15 @@ fileprivate func createTestGraph(for test: XCTestCase, with app: XCUIApplication
 
     map.addScreenState(BrowserTab) { screenState in
         screenState.onEnter { userState in
-            userState.url = app.textFields["url"].value as? String
+            userState.url = app.buttons["url"].value as? String
         }
 
         screenState.tap(app.buttons["TabToolbar.neevaMenuButton"], to: NeevaMenu)
-        screenState.tap(app.textFields["url"], to: URLBarOpen)
+        screenState.tap(app.buttons["url"], to: URLBarOpen)
 
         screenState.gesture(forAction: TestActions.LoadURLByPasting, TestActions.LoadURL) { userState in
             UIPasteboard.general.string = userState.url ?? defaultURL
-            app.textFields["url"].press(forDuration: 1.0)
+            app.buttons["url"].press(forDuration: 1.0)
             app.tables["Context Menu"].cells["menu-PasteAndGo"].firstMatch.tap()
         }
     }

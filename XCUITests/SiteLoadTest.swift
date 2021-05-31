@@ -31,7 +31,7 @@ class SiteLoadTest: BaseTestCase {
             waitForExistence(app.alerts.buttons["OK"])
             app.alerts.buttons["OK"].tap()
             navigator.goto(BrowserTab)
-            waitForExistence(app.textFields["url"])
+            waitForExistence(app.buttons["url"])
             counter += 1
         }
     }

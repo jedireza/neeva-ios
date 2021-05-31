@@ -11,7 +11,7 @@ class BrowsingPDFTests: BaseTestCase {
         navigator.openURL(PDF_website["url"]!)
 
         waitUntilPageLoad()
-        waitForValueContains(app.textFields["url"], value: PDF_website["pdfValue"]!)
+        waitForValueContains(app.buttons["url"], value: PDF_website["pdfValue"]!)
         // Swipe Up and Down
         let webView = app.webViews["Web content"]
         webView.swipeUp()
@@ -33,12 +33,12 @@ class BrowsingPDFTests: BaseTestCase {
 
         // Click on a link on the pdf and check that the website is shown
         app/*@START_MENU_TOKEN@*/.webViews/*[[".otherElements[\"Web content\"].webViews",".otherElements[\"contentView\"].webViews",".webViews"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.children(matching: .other).element.children(matching: .other).element(boundBy: 0).tap()
-        waitForValueContains(app.textFields["url"], value: PDF_website["pdfValue"]!)
+        waitForValueContains(app.buttons["url"], value: PDF_website["pdfValue"]!)
 
         let element = app/*@START_MENU_TOKEN@*/.webViews/*[[".otherElements[\"Web content\"].webViews",".otherElements[\"contentView\"].webViews",".webViews"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.children(matching: .other).element.children(matching: .other).element(boundBy: 0)
         element.children(matching: .other).element(boundBy: 11).tap()
         waitUntilPageLoad()
-        waitForValueContains(app.textFields["url"], value: PDF_website["urlValue"]!)
+        waitForValueContains(app.buttons["url"], value: PDF_website["urlValue"]!)
         XCTAssertTrue(app.webViews.links["Download Now"].exists)
 
         // Go back to pdf view
@@ -47,7 +47,7 @@ class BrowsingPDFTests: BaseTestCase {
         } else {
             app.buttons["TabToolbar.backButton"].tap()
         }
-        waitForValueContains(app.textFields["url"], value: PDF_website["pdfValue"]!)
+        waitForValueContains(app.buttons["url"], value: PDF_website["pdfValue"]!)
     }
 
     func testLongPressOnPDFLink() {
@@ -55,7 +55,7 @@ class BrowsingPDFTests: BaseTestCase {
         waitUntilPageLoad()
         // Long press on a link on the pdf and check the options shown
         app/*@START_MENU_TOKEN@*/.webViews/*[[".otherElements[\"Web content\"].webViews",".otherElements[\"contentView\"].webViews",".webViews"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.children(matching: .other).element.children(matching: .other).element(boundBy: 0).tap()
-        waitForValueContains(app.textFields["url"], value: PDF_website["pdfValue"]!)
+        waitForValueContains(app.buttons["url"], value: PDF_website["pdfValue"]!)
 
         let element = app/*@START_MENU_TOKEN@*/.webViews/*[[".otherElements[\"Web content\"].webViews",".otherElements[\"contentView\"].webViews",".webViews"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.children(matching: .other).element.children(matching: .other).element(boundBy: 0)
         element.children(matching: .other).element(boundBy: 11).press(forDuration: 1)
@@ -81,7 +81,7 @@ class BrowsingPDFTests: BaseTestCase {
         let pdfTopSite = app.collectionViews.cells["TopSitesCell"].cells["pdf995"]
         pdfTopSite.tap()
         waitUntilPageLoad()
-        waitForValueContains(app.textFields["url"], value: PDF_website["pdfValue"]!)
+        waitForValueContains(app.buttons["url"], value: PDF_website["pdfValue"]!)
 
         // Remove pdf pinned site
         navigator.performAction(Action.OpenNewTabFromTabTray)

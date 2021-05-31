@@ -31,7 +31,7 @@ class PrivateBrowsingTest: BaseTestCase {
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
 
         navigator.openURL(url2)
-        waitForValueContains(app.textFields["url"], value: "mozilla")
+        waitForValueContains(app.buttons["url"], value: "mozilla")
         navigator.goto(LibraryPanel_History)
         waitForExistence(app.tables["History List"])
         XCTAssertTrue(app.tables["History List"].staticTexts[url1And3Label].exists)
@@ -59,11 +59,10 @@ class PrivateBrowsingTest: BaseTestCase {
         navigator.goto(URLBarOpen)
         waitUntilPageLoad()
         navigator.openURL(url3)
-        waitForValueContains(app.textFields["url"], value: "test-example")
+        waitForValueContains(app.buttons["url"], value: "test-example")
         navigator.nowAt(NewTabScreen)
         waitForTabsButton()
         navigator.goto(TabTray)
-        print(app.debugDescription)
         waitForExistence(app.cells.staticTexts[url1And3Label])
         let numPrivTabs = userState.numTabs
         XCTAssertEqual(numPrivTabs, 2, "The number of private tabs is not correct")

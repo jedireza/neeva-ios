@@ -87,6 +87,10 @@ class URLBarView: UIView {
 
     private var isPrivateMode = false
 
+    lazy var placeholderText: NSAttributedString = {
+        return NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
+    }()
+
     lazy var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
     lazy var neevaMenuButton: UIButton = {
         let neevaMenuButton = UIButton(frame: .zero)
@@ -367,7 +371,7 @@ class URLBarView: UIView {
 
         guard let locationTextField = locationTextField else { return }
 
-        locationTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        locationTextField.font = UIFont.systemFont(ofSize: 16)
         locationTextField.backgroundColor = .clear
         locationTextField.adjustsFontForContentSizeCategory = true
         locationTextField.clipsToBounds = true
@@ -381,7 +385,7 @@ class URLBarView: UIView {
         locationTextField.textAlignment = .left
         locationTextField.accessibilityIdentifier = "address"
         locationTextField.accessibilityLabel = .URLBarLocationAccessibilityLabel
-        locationTextField.attributedPlaceholder = self.locationView.placeholder
+        locationTextField.attributedPlaceholder = self.placeholderText
 
         createLeftViewFavicon()
 

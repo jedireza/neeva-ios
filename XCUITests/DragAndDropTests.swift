@@ -160,7 +160,7 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
         dragAndDrop(dragElement: app.collectionViews.cells[firstWebsite.tabName], dropOnElement: app.collectionViews.cells[secondWebsite.tabName])
         checkTabsOrder(dragAndDropTab: true, firstTab: secondWebsite.tabName, secondTab: firstWebsite.tabName)
         // Check that focus is kept on last website open
-        XCTAssert(secondWebsite.url.contains(app.textFields["url"].value! as! String), "The tab has not been dropped correctly")
+        XCTAssert(secondWebsite.url.contains(app.buttons["url"].value! as! String), "The tab has not been dropped correctly")
     }
 
     func testRearrangeTabsLandscape() {
@@ -176,7 +176,7 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
 
         checkTabsOrder(dragAndDropTab: true, firstTab: secondWebsite.tabName, secondTab: firstWebsite.tabName)
         // Check that focus is kept on last website open
-        XCTAssert(secondWebsite.url.contains(app.textFields["url"].value! as! String), "The tab has not been dropped correctly")
+        XCTAssert(secondWebsite.url.contains(app.buttons["url"].value! as! String), "The tab has not been dropped correctly")
     }
     /*Disabled due to 5561
     func testDragDropToInvalidArea() {
@@ -190,7 +190,7 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
         // Check that the order of the tabs have not changed
         checkTabsOrder(dragAndDropTab: false, firstTab: firstWebsite.tabName, secondTab: secondWebsite.tabName)
         // Check that focus on the website does not change either
-        XCTAssert(secondWebsite.url.contains(app.textFields["url"].value! as! String), "The tab has not been dropped correctly")
+        XCTAssert(secondWebsite.url.contains(app.buttons["url"].value! as! String), "The tab has not been dropped correctly")
     }*/
 
     func testDragAndDropHomeTab() {
@@ -207,7 +207,7 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
 
         checkTabsOrder(dragAndDropTab: true, firstTab: secondWebsite.tabName , secondTab: homeTabName)
         // Check that focus is kept on last website open
-        XCTAssert(secondWebsite.url.contains(app.textFields["url"].value! as! String), "The tab has not been dropped correctly")
+        XCTAssert(secondWebsite.url.contains(app.buttons["url"].value! as! String), "The tab has not been dropped correctly")
     }
 
     func testRearrangeTabsPrivateMode() {
@@ -221,7 +221,7 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
 
         checkTabsOrder(dragAndDropTab: true, firstTab: secondWebsite.tabName, secondTab: firstWebsite.tabName)
         // Check that focus is kept on last website open
-        XCTAssert(secondWebsite.url.contains(app.textFields["url"].value! as! String), "The tab has not been dropped correctly")
+        XCTAssert(secondWebsite.url.contains(app.buttons["url"].value! as! String), "The tab has not been dropped correctly")
     }
         
     func testRearrangeTabsTabTrayIsKeptinTopTabs() {
@@ -249,7 +249,7 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
         // Check the text in the search field before dragging and dropping the url text field
         waitForValueContains(app.webViews.searchFields.element(boundBy: 0), value: "Search")
         // DragAndDrop the url for only one second so that the TP menu is not shown and the search box is not covered
-        app.textFields["url"].press(forDuration: 1, thenDragTo: app.webViews.searchFields.element(boundBy: 0))
+        app.buttons["url"].press(forDuration: 1, thenDragTo: app.webViews.searchFields.element(boundBy: 0))
 
         // Verify that the text in the search field is the same as the text in the url text field
         XCTAssertEqual(app.webViews.searchFields.element(boundBy: 0).value as? String, websiteWithSearchField)
@@ -284,10 +284,10 @@ class DragAndDropTestIpad: IpadOnlyTestCase {
         navigator.goto(LibraryPanel_History)
         waitForExistence(app.tables["History List"].cells.staticTexts[twitterTitle])
 
-        app.tables["History List"].cells.staticTexts[twitterTitle].press(forDuration: 1, thenDragTo: app.textFields["url"])
+        app.tables["History List"].cells.staticTexts[twitterTitle].press(forDuration: 1, thenDragTo: app.buttons["url"])
 
         // It is not allowed to drop the entry on the url field
-        let urlBarValue = app.textFields["url"].value as? String
+        let urlBarValue = app.buttons["url"].value as? String
         XCTAssertEqual(urlBarValue, "Search or enter address")
     }
 }

@@ -227,7 +227,7 @@ class ActivityStreamTest: BaseTestCase {
         waitForExistence(app.cells.staticTexts.element(boundBy: 0))
         if !app.collectionViews["Apple"].exists {
             app.cells.staticTexts.element(boundBy: 0).tap()
-            waitForValueContains(app.textFields["url"], value: "apple")
+            waitForValueContains(app.buttons["url"], value: "apple")
             app.buttons["Show Tabs"].tap()
         }
         navigator.nowAt(TabTray)
@@ -236,8 +236,8 @@ class ActivityStreamTest: BaseTestCase {
 
         // The website is open
         XCTAssertFalse(TopSiteCellgroup.exists)
-        XCTAssertTrue(app.textFields["url"].exists)
-        waitForValueContains(app.textFields["url"], value: "apple.com")
+        XCTAssertTrue(app.buttons["url"].exists)
+        waitForValueContains(app.buttons["url"], value: "apple.com")
     }
 
     // Smoketest
