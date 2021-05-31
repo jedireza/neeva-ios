@@ -17,6 +17,7 @@ struct NeevaHomeUX {
     static let SuggestedSiteBlockHeight: CGFloat = 62
     static let ToggleButtonSize: CGFloat = 32
     static let ToggleIconSize: CGFloat = 14
+    static let HeaderPadding: CGFloat = 10
 
     static func horizontalItemSpacing(isTabletOrLandscape: Bool) -> CGFloat {
         return isTabletOrLandscape ? 32 : 24
@@ -24,7 +25,9 @@ struct NeevaHomeUX {
 
     static func singleRowWidth(isTabletOrLandscape: Bool) -> CGFloat {
         let numItems: CGFloat = isTabletOrLandscape ? 8 : 4
-        return numItems * SuggestedSiteBlockWidth + (numItems - 1) * horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)
+        return numItems * SuggestedSiteBlockWidth
+            + (numItems - 1) * horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)
+            + 2 * HeaderPadding
     }
 }
 
@@ -99,33 +102,31 @@ struct SuggestedSitesView: View {
 
     var body: some View {
         if expansionState == .limited {
-            GeometryReader { geometry in
-                ZStack(alignment: .center) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)) {
-                            ForEach(viewModel.sites.indices, id: \.self) { index in
-                                let suggestedSite = viewModel.sites[index]
-                                SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                                    .onTapGesture {
-                                        viewModel.onSuggestedSiteClicked(suggestedSite.tileURL)
-                                    }.onLongPressGesture {
-                                        viewModel.onSuggestedSiteLongPressed(suggestedSite)
-                                    }
-                            }
-                        }.padding(.vertical).frame(maxWidth:.infinity)
-                        .padding(.leading, (geometry.size.width -
-                                NeevaHomeUX.singleRowWidth(isTabletOrLandscape: isTabletOrLandscape)) / 2)
-                    }
-                    if UIDevice.current.userInterfaceIdiom != .pad {
-                        Rectangle().fill(
-                            LinearGradient(gradient: Gradient(stops: [
-                                .init(color: Color(UIColor.HomePanel.topSitesBackground).opacity(0), location: 0),
-                                .init(color: Color(UIColor.HomePanel.topSitesBackground), location: 1)
-                            ]), startPoint: .leading, endPoint: .trailing)
-                        ).frame(width: 80).frame(maxWidth: .infinity, alignment: .trailing).allowsHitTesting(false)
-                    }
-                }.fixedSize(horizontal: false, vertical: true)
-            }
+            ZStack(alignment: .center) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)) {
+                        ForEach(viewModel.sites.indices, id: \.self) { index in
+                            let suggestedSite = viewModel.sites[index]
+                            SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
+                                .onTapGesture {
+                                    viewModel.onSuggestedSiteClicked(suggestedSite.tileURL)
+                                }.onLongPressGesture {
+                                    viewModel.onSuggestedSiteLongPressed(suggestedSite)
+                                }
+                        }
+                    }.padding(.vertical).frame(maxWidth:.infinity)
+                    .padding(.leading, (UIScreen.main.bounds.width -
+                            NeevaHomeUX.singleRowWidth(isTabletOrLandscape: isTabletOrLandscape)) / 2)
+                }
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    Rectangle().fill(
+                        LinearGradient(gradient: Gradient(stops: [
+                            .init(color: Color(UIColor.HomePanel.topSitesBackground).opacity(0), location: 0),
+                            .init(color: Color(UIColor.HomePanel.topSitesBackground), location: 1)
+                        ]), startPoint: .leading, endPoint: .trailing)
+                    ).frame(width: 80).frame(maxWidth: .infinity, alignment: .trailing).allowsHitTesting(false)
+                }
+            }.fixedSize(horizontal: false, vertical: true)
         } else if expansionState == .all {
             ZStack {
                 ScrollView() {
@@ -173,7 +174,7 @@ struct NeevaHomeRow: View {
                 }).accessibilityIdentifier("Home.SuggestedSitesToggle")
             }.padding(.bottom)
             SuggestedSitesView(expansionState: $expansionState)
-        }.padding()
+        }.padding(NeevaHomeUX.HeaderPadding)
     }
 }
 
