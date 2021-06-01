@@ -89,9 +89,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             switch self.model.position {
             case .top, .middle:
                 size = outerGeometry.size.height - contentHeight - topBarHeight
-                if !keyboardIsVisible {
-                    size -= OverlaySheetUX.fixedHeightModeBottomPadding
-                }
             case .dismissed:
                 size = outerGeometry.size.height
             }
@@ -111,7 +108,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             }
             size = defaultSize + self.model.deltaHeight
         }
-        size -= keyboardHeight  // Take keyboard height into account
         if size < 0 {
             size = 0
         }
@@ -190,12 +186,10 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 .background(
                     Color(config.backgroundColor)
                         .cornerRadius(16, corners: [.topLeft, .topRight])
+                        .ignoresSafeArea(edges: .bottom)
                         .gesture(topDrag)
                 )
 
-                // Position the card above the keyboard.
-                Color(config.backgroundColor)
-                    .frame(height: keyboardHeight)
             }
         }
         .onReceive(keyboardPublisher) { height in
@@ -235,14 +229,13 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
 
                 // Used to center the sheet within the container view.
                 HStack(spacing: 0) {
-                    Spacer().frame(minWidth: 0)
+                    Spacer(minLength: 0)
                     self.sheet
                         // Constrain to full width in portrait mode.
                         .frame(minWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth,
                                maxWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth)
-                    Spacer().frame(minWidth: 0)
+                    Spacer(minLength: 0)
                 }
-                .ignoresSafeArea(edges: .bottom)
             }
         }
         .navigationBarHidden(true)

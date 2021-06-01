@@ -169,11 +169,17 @@ class ErrorPageHandler: InternalSchemeResponse {
             "short_description": errDomain,
             ]
 
-        let tryAgain: String = .ErrorPageTryAgain
-        var actions = "<script>function reloader() { location.replace((new URL(location.href)).searchParams.get(\"url\")); }" +
-                    "</script><button onclick='reloader()'>\(tryAgain)</button>"
+        let reloadAction = "<script>function reloader() { location.replace((new URL(location.href)).searchParams.get(\"url\")); }" +
+                    "</script><button onclick='reloader()'>\(String.ErrorPageTryAgain)</button>"
+        let goBackAction = "<button class='secondary' onclick='history.back()'>\(Strings.ErrorPagesGoBackButton)</button>"
+        var actions = reloadAction + goBackAction
 
-        if errDomain == kCFErrorDomainCFNetwork as String {
+        // err on the side of showing the generic error page if we’re not sure
+        if errCode == NSURLErrorNotConnectedToInternet
+            || errCode == NSURLErrorNetworkConnectionLost {
+            asset = Bundle.main.path(forResource: "OfflineError", ofType: "html")
+            actions = reloadAction
+        } else if errDomain == kCFErrorDomainCFNetwork as String {
             if let code = CFNetworkErrors(rawValue: Int32(errCode)) {
                 errDomain = cfErrorToName(code)
             }
@@ -201,7 +207,7 @@ class ErrorPageHandler: InternalSchemeResponse {
             variables["warning_advanced1"] = Strings.ErrorPagesAdvancedWarning1
             variables["warning_advanced2"] = Strings.ErrorPagesAdvancedWarning2
             variables["warning_actions"] =
-            "<p><a href='javascript:webkit.messageHandlers.errorPageHelperMessageManager.postMessage({type: \"\(MessageCertVisitOnce)\"})'>\(Strings.ErrorPagesVisitOnceButton)</button></p>"
+            "<button class='secondary' onclick='webkit.messageHandlers.errorPageHelperMessageManager.postMessage({type: \"\(MessageCertVisitOnce)\"})'>\(Strings.ErrorPagesVisitOnceButton)</button>"
         }
 
         variables["actions"] = actions

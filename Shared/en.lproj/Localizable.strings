@@ -322,10 +322,10 @@
 "ErrorPages.AdvancedWarning2.Text" = "It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk.";
 
 /* Warning text on the certificate error page */
-"ErrorPages.CertWarning.Description" = "The owner of %@ has configured their website improperly. To protect your information from being stolen, Neeva has not connected to this website.";
+"ErrorPages.CertWarning.Description" = "Your private information could be stolen from %@. To protect your safety, Neeva has not connected to this website.";
 
 /* Title on the certificate error page */
-"ErrorPages.CertWarning.Title" = "This Connection is Untrusted";
+"ErrorPages.CertWarning.Title" = "This connection is not trusted";
 
 /* Label for button to go back from the error page */
 "ErrorPages.GoBack.Button" = "Go Back";

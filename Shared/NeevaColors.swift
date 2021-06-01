@@ -6,8 +6,8 @@ import UIKit
 import SwiftUI
 
 extension UIColor {
-    public struct Neeva {
-        public struct Brand {
+    public enum Neeva {
+        public enum Brand {
             public static let Charcoal = UIColor(named: "Brand-Charcoal", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Blue = UIColor(named: "Brand-Blue", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Beige = UIColor(named: "Brand-Beige", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
@@ -19,8 +19,9 @@ extension UIColor {
             public static let Purple = UIColor(named: "Brand-Purple", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         }
 
-        public struct UI {
+        public enum UI {
             public static let Aqua = UIColor(named: "UI-Aqua", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let Blue = UIColor(named: "UI-Blue", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Blue40 = UIColor(named: "UI-Blue40", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let DefaultBackground = UIColor(named: "UI-DefaultBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
             public static let Gray10 = UIColor(named: "UI-Gray10", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
@@ -48,8 +49,8 @@ extension UIColor {
 }
 
 extension Color {
-    public struct Neeva {
-        public struct Brand {
+    public enum Neeva {
+        public enum Brand {
             public static let Charcoal = Color(UIColor.Neeva.Brand.Charcoal)
             public static let Blue = Color(UIColor.Neeva.Brand.Blue)
             public static let Beige = Color(UIColor.Neeva.Brand.Beige)
@@ -61,8 +62,9 @@ extension Color {
             public static let Purple = Color(UIColor.Neeva.Brand.Purple)
         }
 
-        public struct UI {
+        public enum UI {
             public static let Aqua = Color(UIColor.Neeva.UI.Aqua)
+            public static let Blue = Color(UIColor.Neeva.UI.Blue)
             public static let Gray10 = Color(UIColor.Neeva.UI.Gray10)
             public static let Gray20 = Color(UIColor.Neeva.UI.Gray20)
             public static let Gray30 = Color(UIColor.Neeva.UI.Gray30)

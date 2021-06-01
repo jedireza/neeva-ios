@@ -141,6 +141,7 @@ public struct AddToSpaceView: View {
     @StateObject var spaceStore = SpaceStore.shared
 
     @State private var searchTerm: String? = nil
+    @State private var backgroundColor: Color? = nil
 
     let onDismiss: () -> ()
 
@@ -159,7 +160,7 @@ public struct AddToSpaceView: View {
     }
 
     var filteredListView: some View {
-        Group {
+        VStack(spacing: 0) {
             let filteredSpaces = filter(spaceStore.spaces)
             SpacesSearchHeaderView(
                 filterAction: { searchTerm = $0 },
@@ -201,16 +202,28 @@ public struct AddToSpaceView: View {
                     onDismiss()
                 }
             } else {
-                ScrollView {
-                    VStack(spacing: 0) {
+                GeometryReader { geom in
+                    let sv = ScrollView {
                         switch spaceStore.state {
                         case .refreshing:
-                            LoadingView("Loading spaces…")
+                            VStack(spacing: 0) {
+                                Spacer()
+                                LoadingView("Loading spaces…")
+                                Spacer()
+                            }
+                            .frame(height: geom.size.height)
                         case .failed(let error):
                             ErrorView(error, in: self, tryAgain: { spaceStore.refresh() })
+                                .frame(height: geom.size.height)
                         case .ready:
                             filteredListView
                         }
+                    }
+                    .onPreferenceChange(ErrorViewBackgroundPreferenceKey.self) { self.backgroundColor = $0 }
+                    if let bg = backgroundColor {
+                        sv.background(bg.ignoresSafeArea())
+                    } else {
+                        sv
                     }
                 }
             }

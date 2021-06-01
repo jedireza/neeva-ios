@@ -1,4 +1,4 @@
-// Copyright Neeva. All rights reserved.
+// Copyright © Neeva. All rights reserved.
 
 import SwiftUI
 

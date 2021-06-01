@@ -2,17 +2,24 @@
 
 import SwiftUI
 
+public struct ErrorViewBackgroundPreferenceKey: PreferenceKey {
+    public static var defaultValue: Color? = nil
+    public static func reduce(value: inout Color?, nextValue: () -> Color?) {
+        value = nextValue()
+    }
+}
+
 struct BigBlueButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .foregroundColor(.white)
-            .padding(.vertical, 7)
-            .padding(.horizontal, 20)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 40)
+            .frame(height: 48)
             .background(
                 Capsule()
-                    .fill(Color.accentColor)
+                    .fill(Color.Neeva.UI.Blue)
                     .opacity(configuration.isPressed ? 0.5 : 1)
-                    .frame(minWidth: 230)
             )
     }
 }
@@ -57,29 +64,28 @@ public struct ErrorView: View {
 
     public var body: some View {
         HStack {
-            Spacer()
+            Spacer(minLength: 0)
             VStack(spacing: 20) {
                 if isLoginError {
                     LoginView()
                 } else if let isOnline = reachability.isOnline, !isOnline {
-                    OfflineView()
+                    OfflineView(tryAgain: tryAgain)
                 } else {
                     GenericErrorView(viewName: viewName, error: error, gqlErrors: gqlErrors)
-                }
-                if let tryAgain = tryAgain, !isLoginError {
-                    Button(action: tryAgain) {
-                        Label("Reload", systemImage: "arrow.clockwise")
+                    if let tryAgain = tryAgain {
+                        Button(action: tryAgain) {
+                            Label("Reload", systemImage: "arrow.clockwise")
+                        }
+                        .font(Font.footnote.bold())
+                        .padding(.vertical)
                     }
-                    .font(Font.footnote.bold())
-                    .padding(.vertical)
                 }
-                Spacer()
             }.onChange(of: reachability.isOnline) { nowOnline in
                 if nowOnline == true {
                     tryAgain?()
                 }
             }
-            Spacer()
+            Spacer(minLength: 0)
         }
     }
 }
@@ -131,44 +137,141 @@ fileprivate struct GenericErrorView: View {
 /// Prompts the user to log into Neeva
 fileprivate struct LoginView: View {
     @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: 50) {
-            Image.neevaLogo
-            VStack(spacing: 20) {
-                Text("Please sign in to continue")
-                    .font(.title2)
-                Text("This content can only be viewed if you sign in")
-                    .font(.system(size: 15))
-            }
-            Button("Sign in to Neeva") { onOpenURL(NeevaConstants.appSigninURL) }
+        ZStack(alignment: .top) {
+            Color.Neeva.Brand.Offwhite
+                .ignoresSafeArea()
+            VStack(spacing: 0) {
+                Spacer(minLength: 22)
+                Spacer(minLength: 0).repeated(2)
+                Text("Oops, this page is a little shy")
+                    .font(.custom("Roobert", size: 24, relativeTo: .title))
+                    .foregroundColor(.Neeva.UI.Gray20)
+                Spacer(minLength: 4)
+                Spacer(minLength: 0)
+                Text("Please sign into Neeva to view this page")
+                    .font(.system(size: 16))
+                    .foregroundColor(.Neeva.UI.Gray50)
+                // hide the image on small iPhones in landscape
+                if horizontalSizeClass == .regular || verticalSizeClass == .regular {
+                    Group {
+                        Spacer(minLength: 22)
+                        Spacer(minLength: 0).repeated(9)
+                        // TODO: fix on non-main bundles
+                        Image("logged-out-decoration", bundle: .main)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(minHeight: 115, maxHeight: 163)
+                            .accessibilityHidden(true)
+                        Spacer(minLength: 0).repeated(7)
+                        Spacer(minLength: 34)
+                    }
+                } else {
+                    Spacer().repeated(2)
+                }
+                Button(action: { onOpenURL(NeevaConstants.appSigninURL) }) {
+                    HStack {
+                        Image.neevaLogo
+                            .renderingMode(.template)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 19)
+                            .padding(.trailing, 3)
+                        Spacer()
+                        Text("Sign In with Neeva")
+                            .fontWeight(.medium)
+                        Spacer()
+                    }
+                }
                 .buttonStyle(BigBlueButtonStyle())
-        }.multilineTextAlignment(.center).padding()
+                .padding(.bottom, 25)
+                Button(action: {}) {
+                    Text("New to Neeva? Join now")
+                        .font(.custom("Roobert", size: 18))
+                        .underline()
+                }.accentColor(.Neeva.UI.Gray20)
+            }
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 32)
+            .padding(.bottom, 16)
+            .frame(maxHeight: 522)
+        }.preference(key: ErrorViewBackgroundPreferenceKey.self, value: Color.Neeva.Brand.Offwhite)
     }
 }
 
 /// Displayed when the device is offline
 fileprivate struct OfflineView: View {
+    let tryAgain: (() -> ())?
+
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     var body: some View {
-        VStack(spacing: 20) {
-            Label("You’re offline", systemImage: "bolt.slash.fill")
-                .font(Font.title.bold())
-                .foregroundColor(.orange)
-            Text("Connect to the Internet to view this content")
+        VStack(alignment: .leading, spacing: 8) {
+            Spacer()
+            Text("Unable to connect to internet")
+                .font(.title2)
+                .fontWeight(.semibold)
+            Text("Your internet seems to be lost. Check your internet connection and try again.")
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer()
+            // hide the image on small iPhones in landscape
+            if horizontalSizeClass == .regular || verticalSizeClass == .regular {
+                HStack {
+                    Spacer(minLength: 0)
+                    Image("offline-decoration")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: 305, minHeight: 100)
+                    Spacer(minLength: 0)
+                }
+                Spacer().repeated(2)
+            }
+            if let tryAgain = tryAgain {
+                Button(action: tryAgain) {
+                    HStack {
+                        Spacer()
+                        Text("Reload Page").fontWeight(.semibold)
+                        Symbol(.arrowClockwise)
+                        Spacer()
+                    }
+                }.buttonStyle(BigBlueButtonStyle())
+            }
+            Spacer()
         }
-        .multilineTextAlignment(.center)
-        .padding()
+        .padding(.horizontal, 32)
     }
 }
 
 
 struct ErrorView_Previews: PreviewProvider {
     static var previews: some View {
-        ErrorView(GraphQLAPI.Error([.init(["message": "login required to access this field"])]), viewName: "\(Self.self)")
+        ZStack(alignment: .top) {
+            Image("mock-large", bundle: .main)
+                .ignoresSafeArea()
+            ErrorView(GraphQLAPI.Error([.init(["message": "login required to access this field"])]), viewName: "\(Self.self)")
+                .padding(.top, 106)
+        }
+        .previewDevice("iPhone X")
+
+        ZStack(alignment: .bottom) {
+            Image("mock", bundle: .main)
+            ErrorView(GraphQLAPI.Error([.init(["message": "login required to access this field"])]), viewName: "\(Self.self)")
+                .frame(height: 435-52-34)
+                .padding(.bottom, 34)
+        }
+        .previewDevice("iPhone X")
+        .previewLayout(.fixed(width: 375, height: 435))
+
         ErrorView(GraphQLAPI.Error([.init(["message": "login required to access this field"])]), viewName: "\(Self.self)", tryAgain: {})
         ErrorView(GraphQLAPI.Error(Array(repeating: .init(["message": "failed to reticulate the splines"]), count: 10)), viewName: "\(Self.self)")
         ErrorView(GraphQLAPI.Error([.init(["message": "failed to reticulate the splines"]), .init(["message": "the server room is on fire"])]), viewName: "\(Self.self)")
         ErrorView(GraphQLAPI.Error([.init(["message": "failed to reticulate the splines"]), .init(["message": "the server room is on fire"])]), viewName: "\(Self.self)", tryAgain: {})
-        OfflineView()
+        OfflineView(tryAgain: nil)
+        OfflineView(tryAgain: {})
     }
 }

@@ -30,15 +30,19 @@ class InternalSchemeHandler: NSObject, WKURLSchemeHandler {
         guard let url = urlSchemeTask.request.url else { return false }
 
         let allowedInternalResources = [
+            "/errorpage-resource/Error.css",
             "/errorpage-resource/NetError.css",
             "/errorpage-resource/CertError.css",
-           // "/reader-mode/..."
+            "/errorpage-resource/OfflineError.css",
+            "/nicons-400.ttf",
+            "/nicons-500.ttf",
+            "/nicons-600.ttf",
         ]
 
         // Handle resources from internal pages. For example 'internal://local/errorpage-resource/CertError.css'.
         if allowedInternalResources.contains(where: { url.path == $0 }) {
             let path = url.lastPathComponent
-            if let res = Bundle.main.path(forResource: path, ofType: nil), let str = try? String(contentsOfFile: res, encoding: .utf8), let data = str.data(using: .utf8) {
+            if let res = Bundle.main.url(forResource: path, withExtension: nil), let data = try? Data(contentsOf: res) {
                 urlSchemeTask.didReceive(URLResponse(url: url, mimeType: nil, expectedContentLength: -1, textEncodingName: nil))
                 urlSchemeTask.didReceive(data)
                 urlSchemeTask.didFinish()

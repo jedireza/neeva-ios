@@ -124,8 +124,8 @@ extension Strings {
     public static let ErrorPagesAdvancedButton = MZLocalizedString("ErrorPages.Advanced.Button", value: "Advanced", comment: "Label for button to perform advanced actions on the error page")
     public static let ErrorPagesAdvancedWarning1 = MZLocalizedString("ErrorPages.AdvancedWarning1.Text", value: "Warning: we can’t confirm your connection to this website is secure.", comment: "Warning text when clicking the Advanced button on error pages")
     public static let ErrorPagesAdvancedWarning2 = MZLocalizedString("ErrorPages.AdvancedWarning2.Text", value: "It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk.", comment: "Additional warning text when clicking the Advanced button on error pages")
-    public static let ErrorPagesCertWarningDescription = MZLocalizedString("ErrorPages.CertWarning.Description", value: "The owner of %@ has configured their website improperly. To protect your information from being stolen, Neeva has not connected to this website.", comment: "Warning text on the certificate error page")
-    public static let ErrorPagesCertWarningTitle = MZLocalizedString("ErrorPages.CertWarning.Title", value: "This Connection is Untrusted", comment: "Title on the certificate error page")
+    public static let ErrorPagesCertWarningDescription = MZLocalizedString("ErrorPages.CertWarning.Description", value: "Your private information could be stolen from %@. To protect your safety, Neeva has not connected to this website.", comment: "Warning text on the certificate error page")
+    public static let ErrorPagesCertWarningTitle = MZLocalizedString("ErrorPages.CertWarning.Title", value: "This connection is not trusted", comment: "Title on the certificate error page")
     public static let ErrorPagesGoBackButton = MZLocalizedString("ErrorPages.GoBack.Button", value: "Go Back", comment: "Label for button to go back from the error page")
     public static let ErrorPagesVisitOnceButton = MZLocalizedString("ErrorPages.VisitOnce.Button", value: "Visit site anyway", comment: "Button label to temporarily continue to the site from the certificate error page")
 }
@@ -1005,7 +1005,7 @@ extension String {
 
 // Error Pages
 extension String {
-    public static let ErrorPageTryAgain = MZLocalizedString("Try again", tableName: "ErrorPages", comment: "Shown in error pages on a button that will try to load the page again")
+    public static let ErrorPageTryAgain = MZLocalizedString("Reload", tableName: "ErrorPages", comment: "Shown in error pages on a button that will try to load the page again")
     public static let ErrorPageOpenInSafari = MZLocalizedString("Open in Safari", tableName: "ErrorPages", comment: "Shown in error pages for files that can't be shown and need to be downloaded.")
 }
 

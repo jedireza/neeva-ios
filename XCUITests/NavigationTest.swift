@@ -296,8 +296,8 @@ class NavigationTest: BaseTestCase {
         waitForExistence(app.buttons["Advanced"], timeout: 10)
         app.buttons["Advanced"].tap()
 
-        waitForExistence(app.links["Visit site anyway"])
-        app.links["Visit site anyway"].tap()
+        waitForExistence(app.buttons["Visit site anyway"])
+        app.buttons["Visit site anyway"].tap()
         waitForExistence(app.webViews.otherElements["expired.badssl.com"], timeout: 10)
         XCTAssertTrue(app.webViews.otherElements["expired.badssl.com"].exists)
     }

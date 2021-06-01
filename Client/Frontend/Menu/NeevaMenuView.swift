@@ -89,7 +89,7 @@ public struct NeevaMenuView: View {
             .background(Color(UIColor.PopupMenu.foreground))
             .cornerRadius(NeevaUIConstants.menuCornerDefault)
         }
-        .padding(self.noTopPadding ? [.leading, .trailing, .bottom] : [.leading, .trailing, .bottom, .top], NeevaUIConstants.menuOuterPadding)
+        .padding(self.noTopPadding ? [.leading, .trailing] : [.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
         .background(Color(UIColor.PopupMenu.background))
     }
 }

@@ -58,10 +58,10 @@ struct SearchSuggestionView: View {
         GeometryReader { outerGeometry in
             VStack(spacing: 0) {
                 if let error = error {
-                    ScrollView {
-                        VStack(spacing: 0) {
+                    GeometryReader { geom in
+                        ScrollView {
                             ErrorView(error, in: self, tryAgain: onReload)
-                            Spacer()
+                                .frame(minHeight: geom.size.height)
                         }
                     }
                 } else {

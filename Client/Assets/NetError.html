@@ -6,7 +6,7 @@
   <head>
     <title>%error_title%</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="internal://local/errorpage-resource/NetError.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="internal://local/errorpage-resource/Error.css" type="text/css" media="all" />
 
     <script type="application/javascript">
       // If the user swipes back and forth to this tab, we want to make sure we make an attempt to reload the original page.
@@ -22,29 +22,36 @@
   </head>
 
   <body dir="&locale.dir;">
+    <h1 id="errorTitleText">%error_title%</h1>
 
-    <!-- PAGE CONTAINER (for styling purposes only) -->
-    <div id="errorPageContainer">
+    <p id="errorShortDesc">%short_description%</p>
 
-      <!-- Error Title -->
-      <div id="errorTitle">
-        <h1 id="errorTitleText">%error_title%</h1>
-      </div>
+    <svg width="252" height="159" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 158h250" class="stroke-ground" stroke-width=".4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path clip-rule="evenodd" d="M177 41.7a4.6 4.6 0 100-9.2 4.6 4.6 0 000 9.2z" class="stroke-ink" stroke-width=".4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M179.2 30.4c-2.5-1-5-.2-5.9 1.8l-.2.7a2.2 2.2 0 101 4.4c.7-.2 1.5-.1 2.2.2 2.5 1 5.1.2 6-1.8.7-2-.7-4.3-3.1-5.3zM218.5 157.9h-19c-2.3 0-3.4-3.1-1.4-4.6l3.4-2.5c-2.8-21-8-43.7-14.5-64.7 0 0-10.8 17-16 24.8a25030.2 25030.2 0 016.4 24.1l6 22.8H163c-2.1 0-3-2.7-1.3-4l3-2.3s-7.7-24-10.3-36a27 27 0 01-1-9.3c.4-2.5 1.4-4.7 2.4-7 4.3-9.2 9.6-18 15.7-26.2 4.6-6.2 10.2-11.2 18.4-11a18.2 18.2 0 0111.4 4.7l.7.7c2 2.6 2.8 6.4 3.5 9.3a443.3 443.3 0 012.7 11.4c5 23 8.5 46.3 10.2 69.8z" class="fill-ink"/>
+      <path d="M184.3 76.8l3.1 10.7" class="stroke-background" stroke-width=".2"/>
+      <path d="M170 46.8c-4.3 5.6-9 11.1-13.8 16.4l-6.9-9.7c-.3-.4-.6-.9-.7-1.3l-.1-1.3v-2.5a5 5 0 00-.1-1.7 64.1 64.1 0 00-4-5 1 1 0 00-1.1-.3c-.8.3-.6 1.2-.4 1.8l1.1 2.5c.3.6.4 1.3.3 2-.4 1.7-1 3.5-1.3 5.3l.2.3" class="stroke-ink" stroke-width=".5"/>
+      <path d="M143.6 54.4c-.6-1.5-1.2-3-2-4.5-.2-.6-.7-1.2-1.2-1-.5.2-.6.7-.7 1.2-.3 2-.4 4-.5 6 0 .8 0 1.6.2 2.4A172.5 172.5 0 00152.2 75c1.7 2 4.7 2.4 7 1a354 354 0 0013.4-15M171.3 62.6l-6.7-9M196.4 40.9c3.7 2.7 7 6 10.1 9.2l3.6 3.6c1.2 1.3 2.5 2.6 3.4 4a9.8 9.8 0 01.7 7.2c-.6 2.3-1.4 4.6-2.2 7l-5.3 15c-.2.8-.5 1.5-.9 2.2a5.3 5.3 0 01-4 2.4" class="stroke-ink" stroke-width=".5"/>
+      <path d="M193.4 55.5c3 2.7 6 5.3 9.2 7.8-1 3.7-3 7.4-4.6 10.9a21.4 21.4 0 00-2.3 11.2c.6 4.5 3.4 8.3 6.5 11.4.4.4.8.7 1.3.8.7 0 1.2-.9 1.1-1.6 0-.7-.5-1.3-1-1.9l-3.4-4.6" class="stroke-ink" stroke-width=".5"/>
+      <path d="M203.7 97.5c.2.5.3 1 .2 1.6 0 .4-.2.7-.5 1-.3.2-.6.2-1 .2a2 2 0 01-1-.5 121.9 121.9 0 01-5-10.2 10 10 0 01-.6-3.3" class="stroke-ink" stroke-width=".5"/>
+      <path d="M201.5 99.8a2 2 0 01-.9.9c-.5.3-1.2.2-1.7-.2s-.6-1-.7-1.6a119.8 119.8 0 00-2-10.6M196.2 58a56 56 0 004.9-13.2" class="stroke-ink" stroke-width=".5"/>
+      <path d="M201.7 91.5c1.7 0 3.2-1 4-2.4.5-.7.8-1.4 1-2.1l.8-2.3" class="stroke-background" stroke-width=".2"/>
+      <path d="M201.4 66.7c-1 2.5-2.3 5-3.4 7.5a21.4 21.4 0 00-2.3 11.2c.6 4.5 3.3 8.3 6.5 11.4.4.4.8.7 1.3.8h.2c.6-.2 1-1 1-1.6-.1-.7-.6-1.3-1-1.9a877.2 877.2 0 01-3.5-4.6" class="stroke-background" stroke-width=".2"/>
+      <path d="M203.7 97.5c.2.5.3 1 .2 1.6 0 .4-.2.7-.5 1-.3.2-.6.2-1 .2a2 2 0 01-1-.5 121.9 121.9 0 01-5-10.2 10 10 0 01-.6-3.3" class="stroke-background" stroke-width=".2"/>
+      <path d="M201.5 99.8a2 2 0 01-.9.9c-.5.3-1.2.2-1.7-.2s-.6-1-.7-1.6a120.3 120.3 0 00-2-10.6" class="stroke-background" stroke-width=".2"/>
+      <path d="M192.2 54.7a79.4 79.4 0 01-9.1 3l-1 .2-6.9 1.7a12.7 12.7 0 01-1.2-4.4 17.7 17.7 0 010-2v-.1-.8-.1-.3-.2-.1-.2a7.8 7.8 0 01.2-1l.1-.8.2-.6c1-3.6 3.5-6.4 8-6.5a8 8 0 012 .3 6.3 6.3 0 013 1.9l.7.8a16.2 16.2 0 01.3.4l.1.2a25.2 25.2 0 012.7 5.6v.2h.1a49.2 49.2 0 01.4 1.4l.1.2c.3.7.4 1.2.3 1.2z" class="fill-blue"/>
+      <path d="M184.5 42.7A36.6 36.6 0 01174 51l.1-.7a40.6 40.6 0 001.6-1 36 36 0 008-6.7l.7.1z" class="fill-gold"/>
+      <path d="M190.8 50.2l-2.6.2h-.7a60.6 60.6 0 01-11.6-.4l-.8-.2-.7-.2V49a22.2 22.2 0 002.2.5c3.7.7 7.5.7 11.2.4l.7-.1 2-.2.3.6z" class="fill-gold"/>
+      <path d="M189.5 47.5l-1 2.3-.3.6a33.8 33.8 0 01-4.7 6.8l-.4.4-1 .3.6-.7.5-.6a33.7 33.7 0 006-9.7l.3.6z" class="fill-gold"/>
+      <path d="M187.4 56.4l-2.6.7h-2.1c-3 0-5.8-.4-8.6-1.3v-.6c2.9 1 6 1.4 9.1 1.4h.8l3.4-.2z" class="fill-gold"/>
+      <path d="M164.8 151.5l17.3 1.7M201.5 150.8l16.6 1.6" class="stroke-background" stroke-width=".2"/>
+      <path d="M200.6 61.6l3.5 2.9M158 61.2l-3.1 3.5" class="stroke-ink" stroke-width=".2"/>
+      <path d="M156.4 32.7a7.5 7.5 0 010 7.5l-12 20.9a7.5 7.5 0 01-6.5 3.7h-24.2a7.5 7.5 0 01-6.5-3.7l-.1-.3-4.3-7.4-7.6-13.2a7.5 7.5 0 010-7.5l12-21a7.5 7.5 0 016.5-3.7h26.9c1 0 2 .5 2.4 1.4l5.3 9.2 4 6.9 4.1 7.2z" class="fill-background" stroke="#D12E19" stroke-width="4.7"/>
+      <path d="M114.7 41.8c0 7.7 4.3 11.1 10.2 11.1 3.8 0 6.6-1.2 8.8-3.6C137 46 138 41 138.6 39c.5-1.6 1.4-3.5 1.4-4.6 0-.6-1-1.2-1.5-1.2-1.4 0-1.9.6-2.7 2.3-.8 1.8-1.9 5.3-2.7 5.3-.5 0-.7-.9-.7-2.5V23.2c0-.8-.5-1.6-1.6-1.6-1 0-1.5.8-1.5 1.6v12.3l-1.7-.3v-14c0-.9-.5-1.6-1.6-1.6-1 0-1.6.7-1.6 1.6V35c-.5 0-1.1 0-1.7.2v-13c0-.8-.5-1.5-1.5-1.5s-1.6.7-1.6 1.6v13.8l-1.7.8v-9.8c0-.8-.5-1.6-1.5-1.6-1.1 0-1.6.8-1.6 1.6v14.6z" fill="#D12E19"/>
+      <path d="M144.8 157.5c1.2-5 0-10.5-3.2-14.5-3-3.8-7.7-6.2-12.4-5.9-4.8.4-9.3 3.9-10.4 8.5-2.1-9.5-6-19-13.2-25.7-7.2-6.6-18.3-9.7-27.1-5.5a26.7 26.7 0 00-12 13 79.5 79.5 0 00-5.2 17.1c-1.3-3-3.7-6.7-6.9-5.8-2 .5-3.1 2.7-3.6 4.7s-.7 4.2-1.9 6c0-2-.5-4-1.8-5.4-1.4-1.4-3.7-2-5.4-1-2.9 1.9-2.1 6.7-4.6 9-1-2.5-2.6-5.2-5.3-5.5-2.4-.4-4.7 1.5-5.8 3.7-1 2.2-1 4.7-1 7.2h119.8z" class="fill-gold"/>
+    </svg>
 
-      <!-- LONG CONTENT (the section most likely to require scrolling) -->
-      <div id="errorLongContent">
-
-        <!-- Short Description -->
-        <div id="errorShortDesc">
-          <p id="errorShortDescText">%short_description%</p>
-        </div>
-
-        <!-- Buttons -->
-        <div id="actions">%actions%</div>
-      </div>
-
-    </div>
-  </div>
-  <div id="decoration"></div>
+    <div id="actions">%actions%</div>
   </body>
 </html>

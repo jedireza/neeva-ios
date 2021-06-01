@@ -1,0 +1,134 @@
+@font-face {
+    font-family: 'nicons-regular';
+    src: url('/nicons-400.ttf') format('truetype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'nicons-medium';
+    src: url('/nicons-500.ttf') format('truetype');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'nicons-semibold';
+    src: url('/nicons-600.ttf') format('truetype');
+    font-weight: 600;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    -webkit-user-select: none;
+    color-scheme: light dark;
+}
+
+:root {
+    /* colors/ui/default-blue */
+    --ui-blue: #4078FB;
+    --button-active: #3254CE;
+
+    /* Label Color / Light / Secondary */
+    --secondary-label: #3C3C4399;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* colors/ui/dark mode-blue */
+        --ui-blue: #4788FF;
+        /* Label Color / Dark / Secondary */
+        --secondary-label: #EBEBF599;
+    }
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+@media (orientation: portrait) {
+    body {
+        padding-top: 94px;
+    }
+}
+
+svg {
+    margin: auto;
+}
+
+h1 {
+    font: -apple-system-title2;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+#description {
+    margin-top: 8px;
+    margin-bottom: 22px;
+}
+
+p {
+    font: -apple-system-body;
+    color: var(--secondary-label);
+}
+
+#actions {
+    margin: 0;
+}
+
+button {
+    width: 100%;
+    height: 48px;
+    border: none;
+    background: var(--ui-blue);
+    color: white;
+    font: -apple-system-body;
+    font-weight: 600;
+    border-radius: 100px;
+    margin-block: 18px;
+    display: block;
+    transition: all 0.25s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+    background: var(--button-active);
+    transition: none;
+}
+
+button.secondary {
+    background-color: transparent;
+    color: var(--ui-blue);
+}
+
+button.secondary:active {
+    background-color: transparent;
+    color: var(--button-active);
+}
+
+.fill-ink { fill: #170C2C }
+.fill-blue { fill: #415AFF }
+.fill-gold { fill: #77734F }
+.fill-peach { fill: #FFC682 }
+.fill-polar { fill: #D4F0F5 }
+.fill-purple { fill: #9D63DB }
+.stroke-ink { stroke: #170C2C }
+.stroke-ground { stroke: #010149 }
+.fill-background { fill: #ffffff }
+.stroke-background { stroke: #ffffff }
+
+@media (prefers-color-scheme: dark) {
+    .fill-ink { fill: #FFFDF5 }
+    .fill-blue { fill: #1C3BC7 }
+    .fill-peach { fill: #F4A649 }
+    .fill-polar { fill: #ADE1EA }
+    .fill-purple { fill: #622CAC }
+    .fill-background { fill: #000000 }
+    .stroke-background { stroke: #000000 }
+    .stroke-ink, .stroke-ground { stroke: #FFFDF5 }
+}

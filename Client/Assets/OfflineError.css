@@ -1,0 +1,10 @@
+button {
+    margin-bottom: 56px
+}
+
+button::after {
+    font-family: nicons-semibold;
+    font-weight: 600;
+    content: "􀅈";
+    margin-left: 8px;
+}
