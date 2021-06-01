@@ -274,13 +274,15 @@ class Tab: NSObject {
             webView.accessibilityLabel = .WebViewAccessibilityLabel
             webView.allowsBackForwardNavigationGestures = true
 
-            let rc = UIRefreshControl(frame: .zero, primaryAction: UIAction { [weak webView] _ in
-                webView?.reload()
-                // Dismiss refresh control now as the regular progress bar will soon appear.
-                webView?.scrollView.refreshControl?.endRefreshing()
-            })
-            webView.scrollView.refreshControl = rc
-            webView.scrollView.bringSubviewToFront(rc)
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                let rc = UIRefreshControl(frame: .zero, primaryAction: UIAction { [weak webView] _ in
+                    webView?.reload()
+                    // Dismiss refresh control now as the regular progress bar will soon appear.
+                    webView?.scrollView.refreshControl?.endRefreshing()
+                })
+                webView.scrollView.refreshControl = rc
+                webView.scrollView.bringSubviewToFront(rc)
+            }
 
             if #available(iOS 13, *) {
                 webView.allowsLinkPreview = true
