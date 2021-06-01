@@ -36,7 +36,7 @@ enum PromoCardType {
         case .defaultBrowser:
             return PromoCardConfig(firstLine: "Browse in peace,",
                                    secondLine: "always",
-                                   buttonLabel: "Set Neeva as Default Browser",
+                                   buttonLabel: "Set as Default Browser",
                                    buttonImage: nil,
                                    backgroundColor: Color.Neeva.Brand.Pistachio,
                                    showDismissButton: true)
