@@ -282,7 +282,7 @@ class TabLocationView: UIView {
             text = url?.absoluteString ?? ""
         }
         // NOTE: Punycode support was removed
-        if let query = neevaSearchEngine.queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url) {
+        if !FeatureFlag[.noQueryInLocationBar], let query = neevaSearchEngine.queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url) {
             displayTextIsQuery = true
             text = query
         } else {

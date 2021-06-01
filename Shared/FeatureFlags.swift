@@ -12,6 +12,7 @@ import Defaults
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case feedbackScreenshot = "Attach Screenshot to Feedback"
     case pinToTopSites = "Pin to Top Sites"
+    case noQueryInLocationBar = "No Query in Location Bar"
 }
 
 extension FeatureFlag {
