@@ -143,6 +143,7 @@ class URLBarView: UIView {
         cancelButton.accessibilityLabel = Strings.BackTitle
         cancelButton.addTarget(self, action: #selector(didClickCancel), for: .touchUpInside)
         cancelButton.alpha = 0
+        cancelButton.isPointerInteractionEnabled = true
         return cancelButton
     }()
 
@@ -214,6 +215,8 @@ class URLBarView: UIView {
         updateConstraints()
 
         applyUIMode(isPrivate: isPrivateMode)
+
+        neevaMenuButton.isPointerInteractionEnabled = true
     }
     
     fileprivate func setupConstraints() {

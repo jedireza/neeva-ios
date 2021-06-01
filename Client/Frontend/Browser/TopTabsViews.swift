@@ -109,6 +109,12 @@ class TopTabCell: UICollectionViewCell, PrivateModeUI {
         closeButton.layer.masksToBounds = false
         closeButton.layer.shadowOffset = CGSize(width: -TopTabsUX.TabTitlePadding, height: 0)
         closeButton.semanticContentAttribute = .forceLeftToRight
+        closeButton.isPointerInteractionEnabled = true
+        closeButton.pointerStyleProvider = { button, effect, style in
+            let params = UIPreviewParameters()
+            params.backgroundColor = UIColor.systemGray
+            return UIPointerStyle(effect: .hover(UITargetedPreview(view: button), preferredTintMode: .underlay, prefersShadow: false, prefersScaledContent: true))
+        }
         return closeButton
     }()
 

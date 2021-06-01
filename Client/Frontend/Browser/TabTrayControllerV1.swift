@@ -754,6 +754,7 @@ class TrayToolbar: UIView, PrivateModeUI {
         button.setImage(symbol, for: .normal)
         button.accessibilityLabel = .TabTrayAddTabAccessibilityLabel
         button.accessibilityIdentifier = "TabTrayController.addTabButton"
+        button.isPointerInteractionEnabled = true
         return button
     }()
 
@@ -764,6 +765,7 @@ class TrayToolbar: UIView, PrivateModeUI {
         button.setAttributedTitle(title, for: .normal)
         button.accessibilityLabel = .TabTrayDoneAccessibilityLabel
         button.accessibilityIdentifier = "TabTrayController.doneButton"
+        button.isPointerInteractionEnabled = true
         return button
     }()
 

@@ -25,6 +25,10 @@ private struct TabLocationViewUX {
     static let IconPadding: CGFloat = -8
 }
 
+let EllipsePointerStyleProvider: UIButton.PointerStyleProvider = { button, effect, style in
+    UIPointerStyle(effect: effect, shape: .path(UIBezierPath(ovalIn: button.bounds)))
+}
+
 class TabLocationView: UIView {
     var delegate: TabLocationViewDelegate?
     var longPressRecognizer: UILongPressGestureRecognizer!
@@ -97,6 +101,7 @@ class TabLocationView: UIView {
         shieldButton.tintColor = UIColor.Photon.Grey50
         shieldButton.imageView?.contentMode = .scaleAspectFill
         shieldButton.accessibilityIdentifier = "TabLocationView.shieldButton"
+        shieldButton.pointerStyleProvider = EllipsePointerStyleProvider
         return shieldButton
     }()
 
@@ -109,6 +114,8 @@ class TabLocationView: UIView {
         reloadButton.accessibilityLabel = .TabLocationReloadAccessibilityLabel
         reloadButton.accessibilityIdentifier = "TabLocationView.reloadButton"
         reloadButton.isAccessibilityElement = true
+        reloadButton.isPointerInteractionEnabled = true
+        reloadButton.pointerStyleProvider = EllipsePointerStyleProvider
         return reloadButton
     }()
 
@@ -120,6 +127,7 @@ class TabLocationView: UIView {
         shareButton.isAccessibilityElement = true
         shareButton.tintColor = .black
         shareButton.imageView?.contentMode = .scaleAspectFit
+        shareButton.pointerStyleProvider = EllipsePointerStyleProvider
         return shareButton
     }()
 

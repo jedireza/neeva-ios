@@ -14,6 +14,7 @@ class PrivateModeButton: ToggleButton, PrivateModeUI {
         accessibilityHint = .TabTrayToggleAccessibilityHint
         let maskImage = UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
         setImage(maskImage, for: [])
+        isPointerInteractionEnabled = true
     }
 
     required init?(coder aDecoder: NSCoder) {

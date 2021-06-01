@@ -18,6 +18,13 @@ class ToggleButton: UIButton {
 
     func setSelected(_ selected: Bool, animated: Bool = true) {
         self.isSelected = selected
+        pointerStyleProvider = selected ? { button, style, effect in
+            // produce a lift effect clipped to the circular background
+            let path = UIBezierPath(ovalIn: self.backgroundView.frame.insetBy(dx: UX.ExpandDelta + 1, dy: UX.ExpandDelta + 1))
+            let params = UIPreviewParameters()
+            params.visiblePath = path
+            return UIPointerStyle(effect: .lift(UITargetedPreview(view: style.preview.view, parameters: params)), shape: .path(path))
+        } : EllipsePointerStyleProvider
         if animated {
             animateSelection(selected)
         }
@@ -101,6 +108,7 @@ class ToggleButton: UIButton {
         super.init(frame: frame)
         contentMode = .redraw
         insertSubview(backgroundView, belowSubview: imageView!)
+        pointerStyleProvider = EllipsePointerStyleProvider
     }
 
     override func layoutSubviews() {

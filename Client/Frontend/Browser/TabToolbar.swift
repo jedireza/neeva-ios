@@ -57,24 +57,28 @@ open class TabToolbarHelper: NSObject {
         let longPressGestureBackButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressBack))
         toolbar.backButton.addGestureRecognizer(longPressGestureBackButton)
         toolbar.backButton.addTarget(self, action: #selector(didClickBack), for: .touchUpInside)
+        toolbar.backButton.isPointerInteractionEnabled = true
 
         toolbar.forwardButton.setImage(UIImage(systemName: "arrow.right", withConfiguration: configuration), for: .normal)
         toolbar.forwardButton.accessibilityLabel = .TabToolbarForwardAccessibilityLabel
         let longPressGestureForwardButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressForward))
         toolbar.forwardButton.addGestureRecognizer(longPressGestureForwardButton)
         toolbar.forwardButton.addTarget(self, action: #selector(didClickForward), for: .touchUpInside)
-
+        toolbar.forwardButton.isPointerInteractionEnabled = true
+        
         toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
         toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the tab toolbar Share button")
         toolbar.shareButton.addAction(UIAction { _ in
             self.didPressShareButton()
         }, for: .primaryActionTriggered)
+        toolbar.shareButton.isPointerInteractionEnabled = true
 
         toolbar.tabsButton.accessibilityLabel = .TabTrayButtonShowTabsAccessibilityLabel
         toolbar.tabsButton.addTarget(self, action: #selector(didClickTabs), for: .touchUpInside)
         toolbar.tabsButton.setDynamicMenu {
             toolbar.tabToolbarDelegate?.tabToolbarTabsMenu(toolbar, button: toolbar.tabsButton)
         }
+        toolbar.tabsButton.isPointerInteractionEnabled = true
         
         toolbar.addToSpacesButton.titleLabel?.font = UIFont(name: NiconFont.medium.rawValue, size: 19.17);
         toolbar.addToSpacesButton.setTitle(String(Nicon.bookmark.rawValue), for: .normal)
@@ -82,11 +86,13 @@ open class TabToolbarHelper: NSObject {
         toolbar.addToSpacesButton.accessibilityLabel = "Add To Space"
         toolbar.addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
         toolbar.addToSpacesButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
+        toolbar.addToSpacesButton.isPointerInteractionEnabled = true
 
         toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
         toolbar.toolbarNeevaMenuButton.accessibilityIdentifier = "TabToolbar.neevaMenuButton"
         toolbar.toolbarNeevaMenuButton.accessibilityLabel = "Neeva Menu"
         toolbar.toolbarNeevaMenuButton.addTarget(self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
+        toolbar.toolbarNeevaMenuButton.isPointerInteractionEnabled = true
     }
 
     func didPressToolbarNeevaMenu () {
