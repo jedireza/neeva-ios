@@ -241,6 +241,14 @@ class TabToolbar: UIView {
             make.leading.trailing.top.equalTo(self)
             make.bottom.equalTo(self.safeArea.bottom)
         }
+
+        let line = UIView()
+        addSubview(line)
+        line.backgroundColor = UIColor.Browser.urlBarDivider
+        line.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(self)
+            make.height.equalTo(0.5)
+        }
     }
 
     private func setupAccessibility() {
@@ -256,20 +264,6 @@ class TabToolbar: UIView {
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func draw(_ rect: CGRect) {
-        if let context = UIGraphicsGetCurrentContext() {
-            drawLine(context, start: .zero, end: CGPoint(x: frame.width, y: 0))
-        }
-    }
-
-    fileprivate func drawLine(_ context: CGContext, start: CGPoint, end: CGPoint) {
-        context.setStrokeColor(UIColor.Browser.urlBarDivider.cgColor)
-        context.setLineWidth(2)
-        context.move(to: CGPoint(x: start.x, y: start.y))
-        context.addLine(to: CGPoint(x: end.x, y: end.y))
-        context.strokePath()
     }
 }
 

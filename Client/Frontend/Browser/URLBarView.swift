@@ -223,7 +223,7 @@ class URLBarView: UIView {
 
         line.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalTo(self)
-            make.height.equalTo(1)
+            make.height.equalTo(0.5)
         }
 
         progressBar.snp.makeConstraints { make in

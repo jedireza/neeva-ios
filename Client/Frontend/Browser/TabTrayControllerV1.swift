@@ -225,7 +225,7 @@ class TabTrayControllerV1: UIViewController {
 
         line.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalTo(topBarHolder)
-            make.height.equalTo(1)
+            make.height.equalTo(0.5)
         }
     }
 
@@ -797,6 +797,14 @@ class TrayToolbar: UIView, PrivateModeUI {
             make.top.equalTo(self)
             make.trailing.equalTo(self).offset(-sideOffset)
             make.size.equalTo(toolbarButtonSize)
+        }
+
+        let line = UIView()
+        addSubview(line)
+        line.backgroundColor = UIColor.Browser.urlBarDivider
+        line.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(self)
+            make.height.equalTo(0.5)
         }
 
         backgroundColor = UIColor.Browser.background
