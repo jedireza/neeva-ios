@@ -62,7 +62,7 @@ class ClipBoardTests: BaseTestCase {
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         app.buttons["url"].press(forDuration: 3)
         waitForExistence(app.tables["Context Menu"])
-        app.cells["menu-PasteAndGo"].tap()
+        app.cells["doc.on.clipboard"].tap()
         waitForExistence(app.buttons["url"])
         waitForValueContains(app.buttons["url"], value: "www.example.com")
     }

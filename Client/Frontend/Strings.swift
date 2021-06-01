@@ -57,7 +57,7 @@ extension Strings {
 // Home Panel Context Menu.
 extension Strings {
     public static let OpenInNewTabContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.OpenInNewTab", value: "Open in New Tab", comment: "The title for the Open in New Tab context menu action for sites in Home Panels")
-    public static let OpenInNewPrivateTabContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.OpenInNewPrivateTab", value: "Open in New Private Tab", comment: "The title for the Open in New Private Tab context menu action for sites in Home Panels")
+    public static let OpenInNewIncognitoTabContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.OpenInNewIncognitoTab", value: "Open in New Incognito Tab", comment: "The title for the Open in New Incognito Tab context menu action for sites in Home Panels")
     public static let BookmarkContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.Bookmark", value: "Bookmark", comment: "The title for the Bookmark context menu action for sites in Home Panels")
     public static let DeleteFromHistoryContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.DeleteFromHistory", value: "Delete from History", comment: "The title for the Delete from History context menu action for sites in Home Panels")
     public static let ShareContextMenuTitle = MZLocalizedString("HomePanel.ContextMenu.Share", value: "Share", comment: "The title for the Share context menu action for sites in Home Panels")
@@ -281,10 +281,10 @@ extension Strings {
 
     public static let FindTitle = MZLocalizedString("Hotkeys.Find.DiscoveryTitle", value: "Find", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let SelectLocationBarTitle = MZLocalizedString("Hotkeys.SelectLocationBar.DiscoveryTitle", value: "Select Location Bar", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
-    public static let privateBrowsingModeTitle = MZLocalizedString("Hotkeys.PrivateMode.DiscoveryTitle", value: "Private Browsing Mode", comment: "Label to switch to private browsing mode")
+    public static let incognitoBrowsingModeTitle = MZLocalizedString("Hotkeys.PrivateMode.DiscoveryTitle", value: "Incognito Browsing Mode", comment: "Label to switch to private browsing mode")
     public static let normalBrowsingModeTitle = MZLocalizedString("Hotkeys.NormalMode.DiscoveryTitle", value: "Normal Browsing Mode", comment: "Label to switch to normal browsing mode")
     public static let NewTabTitle = MZLocalizedString("Hotkeys.NewTab.DiscoveryTitle", value: "New Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
-    public static let NewPrivateTabTitle = MZLocalizedString("Hotkeys.NewPrivateTab.DiscoveryTitle", value: "New Private Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
+    public static let NewIncognitoTabTitle = MZLocalizedString("Hotkeys.NewIncognitoTab.DiscoveryTitle", value: "New Incognito Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let CloseTabTitle = MZLocalizedString("Hotkeys.CloseTab.DiscoveryTitle", value: "Close Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let ShowNextTabTitle = MZLocalizedString("Hotkeys.ShowNextTab.DiscoveryTitle", value: "Show Next Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let ShowPreviousTabTitle = MZLocalizedString("Hotkeys.ShowPreviousTab.DiscoveryTitle", value: "Show Previous Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
@@ -408,14 +408,14 @@ extension Strings {
 extension Strings {
     public static let ContextMenuButtonToastNewTabOpenedLabelText = MZLocalizedString("ContextMenu.ButtonToast.NewTabOpened.LabelText", value: "New Tab opened", comment: "The label text in the Button Toast for switching to a fresh New Tab.")
     public static let ContextMenuButtonToastNewTabOpenedButtonText = MZLocalizedString("ContextMenu.ButtonToast.NewTabOpened.ButtonText", value: "Switch", comment: "The button text in the Button Toast for switching to a fresh New Tab.")
-    public static let ContextMenuButtonToastNewPrivateTabOpenedLabelText = MZLocalizedString("ContextMenu.ButtonToast.NewPrivateTabOpened.LabelText", value: "New Private Tab opened", comment: "The label text in the Button Toast for switching to a fresh New Private Tab.")
-    public static let ContextMenuButtonToastNewPrivateTabOpenedButtonText = MZLocalizedString("ContextMenu.ButtonToast.NewPrivateTabOpened.ButtonText", value: "Switch", comment: "The button text in the Button Toast for switching to a fresh New Private Tab.")
+    public static let ContextMenuButtonToastNewIncognitoTabOpenedLabelText = MZLocalizedString("ContextMenu.ButtonToast.NewIncognitoTabOpened.LabelText", value: "New Incognito Tab opened", comment: "The label text in the Button Toast for switching to a fresh New Incognito Tab.")
+    public static let ContextMenuButtonToastNewIncognitoTabOpenedButtonText = MZLocalizedString("ContextMenu.ButtonToast.NewIncognitoTabOpened.ButtonText", value: "Switch", comment: "The button text in the Button Toast for switching to a fresh New Incognito Tab.")
 }
 
 // Page context menu items (i.e. links and images).
 extension Strings {
     public static let ContextMenuOpenInNewTab = MZLocalizedString("ContextMenu.OpenInNewTabButtonTitle", value: "Open in New Tab", comment: "Context menu item for opening a link in a new tab")
-    public static let ContextMenuOpenInNewPrivateTab = MZLocalizedString("ContextMenu.OpenInNewPrivateTabButtonTitle", tableName: "PrivateBrowsing", value: "Open in New Private Tab", comment: "Context menu option for opening a link in a new private tab")
+    public static let ContextMenuOpenInNewIncognitoTab = MZLocalizedString("ContextMenu.OpenInNewIncognitoTabButtonTitle", tableName: "PrivateBrowsing", value: "Open in New Incognito Tab", comment: "Context menu option for opening a link in a new Incognito Tab")
     public static let ContextMenuDownloadLink = MZLocalizedString("ContextMenu.DownloadLinkButtonTitle", value: "Download Link", comment: "Context menu item for downloading a link URL")
     public static let ContextMenuCopyLink = MZLocalizedString("ContextMenu.CopyLinkButtonTitle", value: "Copy Link", comment: "Context menu item for copying a link URL to the clipboard")
     public static let ContextMenuShareLink = MZLocalizedString("ContextMenu.ShareLinkButtonTitle", value: "Share Link", comment: "Context menu item for sharing a link URL")
@@ -477,7 +477,7 @@ extension Strings {
     public static let AppMenuSharePageTitleString = MZLocalizedString("Menu.SharePageAction.Title", tableName: "Menu", value: "Share Page With…", comment: "Label for the button, displayed in the menu, used to open the share dialog.")
     public static let AppMenuCopyURLTitleString = MZLocalizedString("Menu.CopyAddress.Title", tableName: "Menu", value: "Copy Address", comment: "Label for the button, displayed in the menu, used to copy the page url to the clipboard.")
     public static let AppMenuNewTabTitleString = MZLocalizedString("Menu.NewTabAction.Title", tableName: "Menu", value: "Open New Tab", comment: "Label for the button, displayed in the menu, used to open a new tab")
-    public static let AppMenuNewPrivateTabTitleString = MZLocalizedString("Menu.NewPrivateTabAction.Title", tableName: "Menu", value: "Open New Private Tab", comment: "Label for the button, displayed in the menu, used to open a new private tab.")
+    public static let AppMenuNewIncognitoTabTitleString = MZLocalizedString("Menu.NewIncognitoTabAction.Title", tableName: "Menu", value: "Open New Incognito Tab", comment: "Label for the button, displayed in the menu, used to open a new incognito tab.")
     public static let AppMenuFindInPageTitleString = MZLocalizedString("Menu.FindInPageAction.Title", tableName: "Menu", value: "Find on Page", comment: "Label for the button, displayed in the menu, used to open the toolbar to search for text within the current page.")
     public static let AppMenuViewDesktopSiteTitleString = MZLocalizedString("Menu.ViewDekstopSiteAction.Title", tableName: "Menu", value: "Request Desktop Site", comment: "Label for the button, displayed in the menu, used to request the desktop version of the current website.")
     public static let AppMenuViewMobileSiteTitleString = MZLocalizedString("Menu.ViewMobileSiteAction.Title", tableName: "Menu", value: "Request Mobile Site", comment: "Label for the button, displayed in the menu, used to request the mobile version of the current website.")
@@ -634,7 +634,7 @@ extension Strings {
 
     public static let CardTextWelcome = MZLocalizedString("Intro.Slides.Welcome.Description.v2", tableName: "Intro", value: "Fast, private, and on your side.", comment: "Description for the 'Welcome' panel in the First Run tour.")
     public static let CardTextSearch = MZLocalizedString("Intro.Slides.Search.Description", tableName: "Intro", value: "Searching for something different? Choose another default search engine (or add your own) in Settings.", comment: "Description for the 'Favorite Search Engine' panel in the First Run tour.")
-    public static let CardTextPrivate = MZLocalizedString("Intro.Slides.Private.Description", tableName: "Intro", value: "Tap the mask icon to slip into Private Browsing mode.", comment: "Description for the 'Private Browsing' panel in the First Run tour.")
+    public static let CardTextIncognito = MZLocalizedString("Intro.Slides.Private.Description", tableName: "Intro", value: "Tap the mask icon to slip into Incognito Browsing mode.", comment: "Description for the 'Incognito Browsing' panel in the First Run tour.")
     public static let CardTextMail = MZLocalizedString("Intro.Slides.Mail.Description", tableName: "Intro", value: "Use any email app — not just Mail — with Neeva.", comment: "Description for the 'Mail' panel in the First Run tour.")
     public static let CardTextSync = MZLocalizedString("Intro.Slides.TrailheadSync.Description", tableName: "Intro", value: "Sign in to your account to sync and access more features.", comment: "Description for the 'Sync' panel in the First Run tour.")
     public static let SignInButtonTitle = MZLocalizedString("Turn on Sync…", tableName: "Intro", comment: "The button that opens the sign in page for sync. See http://mzl.la/1T8gxwo")
@@ -652,8 +652,8 @@ extension Strings {
     public static let OpenSelectedTabFromTabTrayKeyCodeTitle = MZLocalizedString("TabTray.OpenSelectedTab.KeyCodeTitle", value: "Open Selected Tab", comment: "Hardware shortcut open the selected tab from the tab tray. Shown in the Discoverability overlay when the hardware Command Key is held down.")
     public static let OpenNewTabFromTabTrayKeyCodeTitle = MZLocalizedString("TabTray.OpenNewTab.KeyCodeTitle", value: "Open New Tab", comment: "Hardware shortcut to open a new tab from the tab tray. Shown in the Discoverability overlay when the hardware Command Key is held down.")
     public static let ReopenClosedTabKeyCodeTitle = MZLocalizedString("ReopenClosedTab.KeyCodeTitle", value: "Reopen Closed Tab", comment: "Hardware shortcut to reopen the last closed tab, from the tab or the tab tray. Shown in the Discoverability overlay when the hardware Command Key is held down.")
-    public static let SwitchToPBMKeyCodeTitle = MZLocalizedString("SwitchToPBM.KeyCodeTitle", value: "Private Browsing Mode", comment: "Hardware shortcut switch to the private browsing tab or tab tray. Shown in the Discoverability overlay when the hardware Command Key is held down.")
-    public static let SwitchToNonPBMKeyCodeTitle = MZLocalizedString("SwitchToNonPBM.KeyCodeTitle", value: "Normal Browsing Mode", comment: "Hardware shortcut for non-private tab or tab. Shown in the Discoverability overlay when the hardware Command Key is held down.")
+    public static let SwitchToIBMKeyCodeTitle = MZLocalizedString("SwitchToPBM.KeyCodeTitle", value: "Incognito Browsing Mode", comment: "Hardware shortcut switch to the private browsing tab or tab tray. Shown in the Discoverability overlay when the hardware Command Key is held down.")
+    public static let SwitchToNonPBMKeyCodeTitle = MZLocalizedString("SwitchToNonPBM.KeyCodeTitle", value: "Normal Browsing Mode", comment: "Hardware shortcut for non-Incognito Tab or tab. Shown in the Discoverability overlay when the hardware Command Key is held down.")
 }
 
 // Share extension
@@ -737,7 +737,7 @@ extension Strings {
 extension String {
     public static let NewTabButtonLabel = MZLocalizedString("TodayWidget.NewTabButtonLabelV1", tableName: "Today", value: "New Search", comment: "Open New Tab button label")
     public static let CopiedLinkLabelFromPasteBoard = MZLocalizedString("TodayWidget.CopiedLinkLabelFromPasteBoardV1", tableName: "Today", value: "Copied Link from clipboard", comment: "Copied Link from clipboard displayed")
-    public static let NewPrivateTabButtonLabel = MZLocalizedString("TodayWidget.PrivateTabButtonLabelV1", tableName: "Today", value: "Private Search", comment: "Open New Private Tab button label")
+    public static let NewIncognitoTabButtonLabel = MZLocalizedString("TodayWidget.IncognitoTabButtonLabelV1", tableName: "Today", value: "Incognito Search", comment: "Open New Incognito Tab button label")
     
     // Widget - Shared
 
@@ -750,21 +750,21 @@ extension String {
     // Quick Action - Medium Size Quick Action
     public static let QuickActionsSubLabel = MZLocalizedString("TodayWidget.QuickActionsSubLabel", tableName: "Today", value: "Neeva - Quick Actions", comment: "Sub label for medium size quick action widget")
     public static let NewSearchButtonLabel = MZLocalizedString("TodayWidget.NewSearchButtonLabelV1", tableName: "Today", value: "Search in Neeva", comment: "Open New Tab button label")
-    public static let NewPrivateTabButtonLabelV2 = MZLocalizedString("TodayWidget.NewPrivateTabButtonLabelV2", tableName: "Today", value: "Search in Private Tab", comment: "Open New Private Tab button label for medium size action")
+    public static let NewIncognitoTabButtonLabelV2 = MZLocalizedString("TodayWidget.NewIncognitoTabButtonLabelV2", tableName: "Today", value: "Search in Incognito Tab", comment: "Open New Incognito Tab button label for medium size action")
     public static let GoToCopiedLinkLabel = MZLocalizedString("TodayWidget.GoToCopiedLinkLabelV1", tableName: "Today", value: "Go to copied link", comment: "Go to link pasted on the clipboard")
     public static let GoToCopiedLinkLabelV2 = MZLocalizedString("TodayWidget.GoToCopiedLinkLabelV2", tableName: "Today", value: "Go to\nCopied Link", comment: "Go to copied link")
     public static let GoToCopiedLinkLabelV3 = MZLocalizedString("TodayWidget.GoToCopiedLinkLabelV3", tableName: "Today", value: "Go to Copied Link", comment: "Go To Copied Link text pasted on the clipboard but this string doesn't have new line character")
-    public static let ClosePrivateTab = MZLocalizedString("TodayWidget.ClosePrivateTabsButton", tableName: "Today", value: "Close Private Tabs", comment: "Close Private Tabs button label")
+    public static let CloseIncognitoTab = MZLocalizedString("TodayWidget.CloseIncognitoTabsButton", tableName: "Today", value: "Close Incognito Tabs", comment: "Close Incognito Tabs button label")
     
     // Quick Action - Medium Size - Gallery View
     public static let NeevaShortcutGalleryDescription = MZLocalizedString("TodayWidget.ShortcutGalleryDescription", tableName: "Today", value: "Add Neevare shortcuts to your Home screen.", comment: "Description for medium size widget to add Neeva Shortcut to home screen")
     
     // Quick Action - Small Size Widget
     public static let SearchInNeevaTitle = NSLocalizedString("TodayWidget.SearchInNeevaTitle", tableName: "Today", value: "Search in Neeva", comment: "Title for small size widget which allows users to search in Neeva. Do not translate the word Neeva.")
-    public static let SearchInPrivateTabLabelV2 = MZLocalizedString("TodayWidget.SearchInPrivateTabLabelV2", tableName: "Today", value: "Search in\nPrivate Tab", comment: "Search in private tab")
+    public static let SearchInIncognitoTabLabelV2 = MZLocalizedString("TodayWidget.SearchInIncognitoTabLabelV2", tableName: "Today", value: "Search in\nIncognito Tab", comment: "Search in Incognito Tab")
     public static let SearchInNeevaV2 = NSLocalizedString("TodayWidget.SearchInNeevaV2", tableName: "Today", value: "Search in\nNeeva", comment: "Search in Neeva. Do not translate the word Neeva")
-    public static let ClosePrivateTabsLabelV2 = MZLocalizedString("TodayWidget.ClosePrivateTabsLabelV2", tableName: "Today", value: "Close\nPrivate Tabs", comment: "Close Private Tabs")
-    public static let ClosePrivateTabsLabelV3 = MZLocalizedString("TodayWidget.ClosePrivateTabsLabelV3", tableName: "Today", value: "Close\nPrivate\nTabs", comment: "Close Private Tabs")
+    public static let CloseIncognitoTabsLabelV2 = MZLocalizedString("TodayWidget.CloseIncognitoTabsLabelV2", tableName: "Today", value: "Close\nIncognito Tabs", comment: "Close Incognito Tabs")
+    public static let CloseIncognitoTabsLabelV3 = MZLocalizedString("TodayWidget.CloseIncognitoTabsLabelV3", tableName: "Today", value: "Close\nPrivate\nTabs", comment: "Close Incognito Tabs")
     public static let GoToCopiedLinkLabelV4 = MZLocalizedString("TodayWidget.GoToCopiedLinkLabelV4", tableName: "Today", value: "Go to\nCopied\nLink", comment: "Go to copied link")
     
     // Quick Action - Small Size Widget - Edit Mode
@@ -773,7 +773,7 @@ extension String {
     public static let DropDownMenuItemNewSearch = MZLocalizedString("TodayWidget.DropDownMenuItemNewSearch", tableName: "Today", value: "New Search", comment: "Quick Actions drop down menu item for new search when widget enters edit mode and drop down menu expands")
     public static let DropDownMenuItemNewPrivateSearch = MZLocalizedString("TodayWidget.DropDownMenuItemNewPrivateSearch", tableName: "Today", value: "New Private Search", comment: "Quick Actions drop down menu item for new private search when widget enters edit mode and drop down menu expands")
     public static let DropDownMenuItemGoToCopiedLink = MZLocalizedString("TodayWidget.DropDownMenuItemGoToCopiedLink", tableName: "Today", value: "Go to Copied Link", comment: "Quick Actions drop down menu item for Go to Copied Link when widget enters edit mode and drop down menu expands")
-    public static let DropDownMenuItemClearPrivateTabs = MZLocalizedString("TodayWidget.DropDownMenuItemClearPrivateTabs", tableName: "Today", value: "Clear Private Tabs", comment: "Quick Actions drop down menu item for lear Private Tabs when widget enters edit mode and drop down menu expands")
+    public static let DropDownMenuItemClearIncognitoTabs = MZLocalizedString("TodayWidget.DropDownMenuItemClearIncognitoTabs", tableName: "Today", value: "Clear Incognito Tabs", comment: "Quick Actions drop down menu item for lear Incognito Tabs when widget enters edit mode and drop down menu expands")
     
     // Quick Action - Small Size - Gallery View
     public static let QuickActionGalleryDescription = MZLocalizedString("TodayWidget.QuickActionGalleryDescription", tableName: "Today", value: "Add a Neeva shortcut to your Home screen. After adding the widget, touch and hold to edit it and select a different shortcut.", comment: "Description for small size widget to add it to home screen")
@@ -1094,7 +1094,7 @@ extension String {
     public static let ReaderModeStyleSepiaLabel = MZLocalizedString("Sepia", comment: "Sepia theme setting in Reading View settings")
 }
 
-// Empty Private tab view
+// Empty Incognito Tab view
 extension String {
     public static let PrivateBrowsingLearnMore = MZLocalizedString("Learn More", tableName: "PrivateBrowsing", comment: "Text button displayed when there are no tabs open while in private mode")
 }
@@ -1113,8 +1113,8 @@ extension String {
     public static let AppSettingsDone = MZLocalizedString("Done", comment: "Done button on left side of the Settings view controller title bar")
     public static let AppSettingsPrivacyTitle = MZLocalizedString("Privacy", comment: "Privacy section title")
     public static let AppSettingsBlockPopups = MZLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")
-    public static let AppSettingsClosePrivateTabsTitle = MZLocalizedString("Close Private Tabs", tableName: "PrivateBrowsing", comment: "Setting for closing private tabs")
-    public static let AppSettingsClosePrivateTabsDescription = MZLocalizedString("When Leaving Private Browsing", tableName: "PrivateBrowsing", comment: "Will be displayed in Settings under 'Close Private Tabs'")
+    public static let AppSettingsCloseIncognitoTabsTitle = MZLocalizedString("Close Incognito Tabs", tableName: "PrivateBrowsing", comment: "Setting for closing Incognito Tabs")
+    public static let AppSettingsCloseIncognitoTabsDescription = MZLocalizedString("When Leaving Private Browsing", tableName: "PrivateBrowsing", comment: "Will be displayed in Settings under 'Close Incognito Tabs'")
     public static let AppSettingsSupport = MZLocalizedString("Support", comment: "Support section title")
     public static let AppSettingsAbout = MZLocalizedString("About", comment: "About settings section title")
 }

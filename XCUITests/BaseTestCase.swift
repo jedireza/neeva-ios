@@ -100,7 +100,7 @@ class BaseTestCase: XCTestCase {
         let app = XCUIApplication()
         UIPasteboard.general.string = url
         app.buttons["url"].press(forDuration: 2.0)
-        app.tables["Context Menu"].cells["menu-PasteAndGo"].firstMatch.tap()
+        app.tables["Context Menu"].cells["doc.on.clipboard"].firstMatch.tap()
 
         if waitForLoadToFinish {
             let finishLoadingTimeout: TimeInterval = 30

@@ -343,12 +343,12 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
 
         screenState.gesture(forAction: Action.LoadURLByPasting, Action.LoadURL) { userState in
             UIPasteboard.general.string = userState.url ?? defaultURL
-            menu.cells["menu-PasteAndGo"].firstMatch.tap()
+            menu.cells["doc.on.clipboard"].firstMatch.tap()
         }
 
         screenState.gesture(forAction: Action.SetURLByPasting) { userState in
             UIPasteboard.general.string = userState.url ?? defaultURL
-            menu.cells["menu-Paste"].firstMatch.tap()
+            menu.cells["doc.on.clipboard.fill"].firstMatch.tap()
         }
 
         screenState.backAction = {
@@ -707,7 +707,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             screenState.dismissOnUse = true
             screenState.tap(app.buttons["New Tab"], forAction: Action.OpenNewTabLongPressTabsButton, transitionTo: NewTabScreen)
             screenState.tap(app.buttons["Close Tab"], forAction: Action.CloseTabFromTabTrayLongPressMenu, Action.CloseTab, transitionTo: HomePanelsScreen)
-            screenState.tap(app.buttons["Private Browsing Mode"], forAction: Action.OpenPrivateTabLongPressTabsButton, transitionTo: NewTabScreen) { userState in
+            screenState.tap(app.buttons["Incognito Browsing Mode"], forAction: Action.OpenPrivateTabLongPressTabsButton, transitionTo: NewTabScreen) { userState in
                 userState.isPrivate = true
             }
         }
@@ -918,7 +918,7 @@ enum BrowserPerformAction: String {
     // Page Menu
     case toggleBookmarkOption  = "menu-Bookmark"
     case addReadingListOption = "addToReadingList"
-    case copyURLOption = "menu-Copy-Link"
+    case copyURLOption = "link"
     case findInPageOption = "menu-FindInPage"
     case toggleDesktopOption = "menu-RequestDesktopSite"
     case pinToTopSitesOption = "action_pin"

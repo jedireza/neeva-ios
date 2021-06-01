@@ -175,6 +175,9 @@ class PhotonActionSheetCell: UITableViewCell {
         titleLabel.text = action.title
         titleLabel.textColor = UIColor.theme.tableView.rowText
         titleLabel.textColor = action.accessory == .Text ? titleLabel.textColor.withAlphaComponent(0.6) : titleLabel.textColor
+        if let tint = action.iconTint {
+            titleLabel.textColor = tint
+        }
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.numberOfLines = 2
         titleLabel.lineBreakMode = .byTruncatingTail

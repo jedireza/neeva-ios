@@ -41,10 +41,10 @@ extension LibraryPanelContextMenu {
             libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
         }
 
-        let openInNewPrivateTabAction = PhotonActionSheetItem(title: Strings.OpenInNewPrivateTabContextMenuTitle, iconString: "quick_action_new_private_tab") { _, _ in
+        let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "quick_action_new_private_tab") { _, _ in
             libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, isPrivate: true)
         }
 
-        return [openInNewTabAction, openInNewPrivateTabAction]
+        return [openInNewTabAction, openInNewIncognitoTabAction]
     }
 }

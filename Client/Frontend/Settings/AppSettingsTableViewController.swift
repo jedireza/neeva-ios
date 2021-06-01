@@ -87,8 +87,8 @@ class AppSettingsTableViewController: SettingsTableViewController {
             BoolSetting(
                 prefKey: Defaults.Keys.closePrivateTabs.name,
                 defaultValue: false,
-                titleText: .AppSettingsClosePrivateTabsTitle,
-                statusText: .AppSettingsClosePrivateTabsDescription
+                titleText: .AppSettingsCloseIncognitoTabsTitle,
+                statusText: .AppSettingsCloseIncognitoTabsDescription
             )
         ]
 

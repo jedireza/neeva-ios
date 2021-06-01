@@ -532,7 +532,7 @@
 "Hotkeys.NormalMode.DiscoveryTitle" = "Normal Browsing Mode";
 
 /* Label to switch to private browsing mode */
-"Hotkeys.PrivateMode.DiscoveryTitle" = "Private Browsing Mode";
+"Hotkeys.PrivateMode.DiscoveryTitle" = "Incognito Browsing Mode";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
 "Hotkeys.Reload.DiscoveryTitle" = "Reload Page";
@@ -1401,7 +1401,7 @@
 "SwitchToNonPBM.KeyCodeTitle" = "Normal Browsing Mode";
 
 /* Hardware shortcut switch to the private browsing tab or tab tray. Shown in the Discoverability overlay when the hardware Command Key is held down. */
-"SwitchToPBM.KeyCodeTitle" = "Private Browsing Mode";
+"SwitchToPBM.KeyCodeTitle" = "Private Incognito Mode";
 
 /* Text displayed when the Sync home panel is empty, describing the features provided by Sync to invite the user to log in. */
 "Sync your tabs, bookmarks, passwords and more." = "Sync your tabs, bookmarks, passwords and more.";

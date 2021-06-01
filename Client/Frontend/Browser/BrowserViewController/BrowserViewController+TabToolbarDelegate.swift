@@ -84,7 +84,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
             icon = UIImage(cgImage: img.cgImage!, scale: img.scale, orientation: .left)
         }
 
-        let privateBrowsingMode = UIAction(title: Strings.privateBrowsingModeTitle, image: icon) { _ in
+        let privateBrowsingMode = UIAction(title: Strings.incognitoBrowsingModeTitle, image: icon) { _ in
             action()
         }
         let normalBrowsingMode = UIAction(title: Strings.normalBrowsingModeTitle, image: icon) { _ in
@@ -98,19 +98,19 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
     }
 
     func getMoreTabToolbarLongPressActions() -> [UIMenuElement] {
-        let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemName: "plus")) { _ in
+        let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemName: "plus.square")) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: false)
         }
-        let newPrivateTab = UIAction(title: Strings.NewPrivateTabTitle, image: UIImage(systemName: "plus")) { _ in
+        let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: true)
         }
-        let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark")) { _ in
+        let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "trash")) { _ in
             if let tab = self.tabManager.selectedTab {
                 self.tabManager.removeTabAndUpdateSelectedIndex(tab)
             }
         }
         if let tab = self.tabManager.selectedTab {
-            return tab.isPrivate ? [newPrivateTab, closeTab] : [newTab, closeTab]
+            return tab.isPrivate ? [newIncognitoTab, closeTab] : [newTab, closeTab]
         }
         return [newTab, closeTab]
     }

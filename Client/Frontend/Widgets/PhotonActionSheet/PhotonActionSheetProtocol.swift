@@ -38,17 +38,17 @@ extension PhotonActionSheetProtocol {
     typealias PageOptionsVC = SettingsDelegate & PresentingModalViewControllerDelegate & UIViewController
 
     func getLongPressLocationBarActions(with urlBar: URLBarView, webViewContainer: UIView) -> [PhotonActionSheetItem] {
-        let pasteGoAction = PhotonActionSheetItem(title: Strings.PasteAndGoTitle, iconString: "menu-PasteAndGo") { _, _ in
+        let pasteGoAction = PhotonActionSheetItem(title: Strings.PasteAndGoTitle, iconString: "doc.on.clipboard", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             if let pasteboardContents = UIPasteboard.general.string {
                 urlBar.delegate?.urlBar(urlBar, didSubmitText: pasteboardContents)
             }
         }
-        let pasteAction = PhotonActionSheetItem(title: Strings.PasteTitle, iconString: "menu-Paste") { _, _ in
+        let pasteAction = PhotonActionSheetItem(title: Strings.PasteTitle, iconString: "doc.on.clipboard.fill", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             if let pasteboardContents = UIPasteboard.general.string {
                 urlBar.enterOverlayMode(pasteboardContents, pasted: true, search: true)
             }
         }
-        let copyAddressAction = PhotonActionSheetItem(title: Strings.CopyAddressTitle, iconString: "menu-Copy-Link") { _, _ in
+        let copyAddressAction = PhotonActionSheetItem(title: Strings.CopyAddressTitle, iconString: "link", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? urlBar.currentURL {
                 UIPasteboard.general.url = url
                 SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: webViewContainer)

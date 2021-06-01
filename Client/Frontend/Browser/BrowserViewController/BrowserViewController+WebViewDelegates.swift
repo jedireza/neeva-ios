@@ -130,7 +130,7 @@ extension BrowserViewController: WKUIDelegate {
                 var toastLabelText: String
                 
                 if isPrivate {
-                    toastLabelText = Strings.ContextMenuButtonToastNewPrivateTabOpenedLabelText
+                    toastLabelText = Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
                 } else {
                     toastLabelText = Strings.ContextMenuButtonToastNewTabOpenedLabelText
                 }
@@ -154,12 +154,12 @@ extension BrowserViewController: WKUIDelegate {
             var actions = [UIAction]()
 
             if !isPrivate {
-                actions.append(UIAction(title: Strings.ContextMenuOpenInNewTab, image: UIImage.templateImageNamed("menu-NewTab"), identifier: UIAction.Identifier(rawValue: "linkContextMenu.openInNewTab")) {_ in
+                actions.append(UIAction(title: Strings.ContextMenuOpenInNewTab, image: UIImage(systemName: "plus.square"), identifier: UIAction.Identifier(rawValue: "linkContextMenu.openInNewTab")) {_ in
                     addTab(url, false)
                 })
             }
 
-            actions.append(UIAction(title: Strings.ContextMenuOpenInNewPrivateTab, image: UIImage.templateImageNamed("menu-NewPrivateTab"), identifier: UIAction.Identifier("linkContextMenu.openInNewPrivateTab")) { _ in
+            actions.append(UIAction(title: Strings.ContextMenuOpenInNewIncognitoTab, image: UIImage.templateImageNamed("incognito"), identifier: UIAction.Identifier("linkContextMenu.openInNewIncognitoTab")) { _ in
                 addTab(url, true)
             })
 
@@ -177,11 +177,11 @@ extension BrowserViewController: WKUIDelegate {
                 }
             })
 
-            actions.append(UIAction(title: Strings.ContextMenuCopyLink, image: UIImage.templateImageNamed("menu-Copy-Link"), identifier: UIAction.Identifier("linkContextMenu.copyLink")) { _ in
+            actions.append(UIAction(title: Strings.ContextMenuCopyLink, image: UIImage(systemName: "link"), identifier: UIAction.Identifier("linkContextMenu.copyLink")) { _ in
                 UIPasteboard.general.url = url
             })
 
-            actions.append(UIAction(title: Strings.ContextMenuShareLink, image: UIImage.templateImageNamed("action_share"), identifier: UIAction.Identifier("linkContextMenu.share")) { _ in
+            actions.append(UIAction(title: Strings.ContextMenuShareLink, image: UIImage(systemName: "square.and.arrow.up"), identifier: UIAction.Identifier("linkContextMenu.share")) { _ in
                 guard let tab = self.tabManager[webView], let helper = tab.getContentScript(name: ContextMenuHelper.name()) as? ContextMenuHelper else { return }
                 // This is only used on ipad for positioning the popover. On iPhone it is an action sheet.
                 let p = webView.convert(helper.touchPoint, to: self.view)

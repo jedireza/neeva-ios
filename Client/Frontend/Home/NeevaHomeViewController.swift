@@ -96,15 +96,15 @@ extension HomePanelContextMenu {
     func getDefaultContextMenuActions(for site: Site, homePanelDelegate: HomePanelDelegate?) -> [PhotonActionSheetItem]? {
         guard let siteURL = URL(string: site.url) else { return nil }
 
-        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "quick_action_new_tab") { _, _ in
+        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "plus.square", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
         }
 
-        let openInNewPrivateTabAction = PhotonActionSheetItem(title: Strings.OpenInNewPrivateTabContextMenuTitle, iconString: "quick_action_new_private_tab") { _, _ in
+        let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "incognito", iconAlignment: .right) { _, _ in
             homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: true)
         }
 
-        return [openInNewTabAction, openInNewPrivateTabAction]
+        return [openInNewTabAction, openInNewIncognitoTabAction]
     }
 }
 
@@ -268,15 +268,15 @@ extension NeevaHomeViewController: HomePanelContextMenu {
         var sourceView: UIView?
         sourceView = homeView
 
-        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "quick_action_new_tab") { _, _ in
+        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "plus.square", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             self.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
         }
 
-        let openInNewPrivateTabAction = PhotonActionSheetItem(title: Strings.OpenInNewPrivateTabContextMenuTitle, iconString: "quick_action_new_private_tab") { _, _ in
+        let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "incognito", iconAlignment: .right) { _, _ in
             self.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: true)
         }
 
-        let shareAction = PhotonActionSheetItem(title: Strings.ShareContextMenuTitle, iconString: "action_share", handler: { _, _ in
+        let shareAction = PhotonActionSheetItem(title: Strings.ShareContextMenuTitle, iconString: "square.and.arrow.up", iconType: .SystemImage, iconAlignment: .right, handler: { _, _ in
             let helper = ShareExtensionHelper(url: siteURL, tab: nil)
             let controller = helper.createActivityViewController({ (_, _) in })
             if UI_USER_INTERFACE_IDIOM() == .pad, let popoverController = controller.popoverPresentationController {
@@ -291,16 +291,16 @@ extension NeevaHomeViewController: HomePanelContextMenu {
             self.present(controller, animated: true, completion: nil)
         })
 
-        let removeTopSiteAction = PhotonActionSheetItem(title: Strings.RemoveContextMenuTitle, iconString: "action_remove", handler: { _, _ in
+        let removeTopSiteAction = PhotonActionSheetItem(title: Strings.RemoveContextMenuTitle, iconString: "trash", iconType: .SystemImage, iconAlignment: .right, iconTint: .systemRed, handler: { _, _ in
             self.hideURLFromTopSites(site)
         })
 
         let topSiteActions: [PhotonActionSheetItem]
         if FeatureFlag[.pinToTopSites] {
-            let pinTopSite = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin", handler: { _, _ in
+            let pinTopSite = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin", iconAlignment: .right, handler: { _, _ in
                 self.pinTopSite(site)
             })
-            let removePinTopSite = PhotonActionSheetItem(title: Strings.RemovePinTopsiteActionTitle, iconString: "action_unpin", handler: { _, _ in
+            let removePinTopSite = PhotonActionSheetItem(title: Strings.RemovePinTopsiteActionTitle, iconString: "action_unpin", iconAlignment: .right, handler: { _, _ in
                 self.removePinTopSite(site)
             })
             if let _ = site as? PinnedSite {
@@ -312,7 +312,7 @@ extension NeevaHomeViewController: HomePanelContextMenu {
             topSiteActions = [removeTopSiteAction]
         }
 
-        var actions = [openInNewTabAction, openInNewPrivateTabAction, shareAction]
+        var actions = [openInNewTabAction, openInNewIncognitoTabAction, shareAction]
 
         actions.append(contentsOf: topSiteActions)
         return actions

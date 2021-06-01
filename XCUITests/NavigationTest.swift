@@ -104,7 +104,7 @@ class NavigationTest: BaseTestCase {
         waitForExistence(app.otherElements.collectionViews.element(boundBy: 0), timeout: 5)
 
         XCTAssertTrue(app.buttons["Open in New Tab"].exists, "The option is not shown")
-        XCTAssertTrue(app.buttons["Open in New Private Tab"].exists, "The option is not shown")
+        XCTAssertTrue(app.buttons["Open in New Incognito Tab"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Copy Link"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Download Link"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Share Link"].exists, "The option is not shown")
@@ -119,7 +119,7 @@ class NavigationTest: BaseTestCase {
         app.webViews.links[website_2["link"]!].press(forDuration: 2)
         waitForExistence(app.collectionViews.staticTexts[website_2["moreLinkLongPressUrl"]!], timeout: 3)
         XCTAssertFalse(app.buttons["Open in New Tab"].exists, "The option is not shown")
-        XCTAssertTrue(app.buttons["Open in New Private Tab"].exists, "The option is not shown")
+        XCTAssertTrue(app.buttons["Open in New Incognito Tab"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Copy Link"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Download Link"].exists, "The option is not shown")
     }
@@ -130,7 +130,7 @@ class NavigationTest: BaseTestCase {
         app.buttons["url"].press(forDuration: 2)
 
         waitForExistence(app.tables["Context Menu"])
-        app.tables.cells["menu-PasteAndGo"].tap()
+        app.tables.cells["doc.on.clipboard"].tap()
         waitUntilPageLoad()
         waitForValueContains(app.buttons["url"], value: website_2["moreLinkLongPressInfo"]!)
     }
@@ -141,7 +141,7 @@ class NavigationTest: BaseTestCase {
         navigator.goto(NewTabScreen)
         app.buttons["url"].press(forDuration: 2)
 
-        app.tables.cells["menu-PasteAndGo"].tap()
+        app.tables.cells["doc.on.clipboard"].tap()
         waitUntilPageLoad()
         waitForValueContains(app.buttons["url"], value: website_2["moreLinkLongPressInfo"]!)
     }
@@ -178,7 +178,7 @@ class NavigationTest: BaseTestCase {
         app.textFields["address"].typeText("\n")
         waitUntilPageLoad()
         app.buttons["url"].press(forDuration:3)
-        app.tables.cells["menu-Copy-Link"].tap()
+        app.tables.cells["link"].tap()
         app.buttons["url"].tap()
         // Since the textField value appears all selected first time is clicked
         // this workaround is necessary

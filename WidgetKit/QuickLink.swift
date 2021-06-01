@@ -29,11 +29,11 @@ enum QuickLink: Int {
         case .search:
             return String.SearchInNeevaV2
         case .privateSearch:
-            return String.SearchInPrivateTabLabelV2
+            return String.SearchInIncognitoTabLabelV2
         case .copiedLink:
             return String.GoToCopiedLinkLabelV2
         case .closePrivateTabs:
-            return String.ClosePrivateTabsLabelV2
+            return String.CloseIncognitoTabsLabelV2
         }
     }
     
