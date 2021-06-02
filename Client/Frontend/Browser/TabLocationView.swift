@@ -59,9 +59,11 @@ class TabLocationView: UIView {
         }
     }
 
+    private var urlLabelTextIsPlaceholder: Bool = false
+
     // If the URL corresponds to a search, then we extract and display the query.
     var displayText: String {
-        urlLabel.text ?? ""
+        urlLabelTextIsPlaceholder ? "" : urlLabel.text ?? ""
     }
     var displayTextIsQuery: Bool = false
 
@@ -297,8 +299,8 @@ class TabLocationView: UIView {
             displayTextIsQuery = false
         }
         if !text.isEmpty {
+            urlLabelTextIsPlaceholder = false
             urlLabel.text = text
-            urlLabel.textColor = .label
             shareButton.isHidden = !showShareButton
             reloadButton.isHidden = false
 
@@ -307,11 +309,12 @@ class TabLocationView: UIView {
             let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TabLocationViewUX.IconPadding)
             lockImageView.image = UIImage(systemName: displayTextIsQuery ? "magnifyingglass" : "lock.fill", withConfiguration: config)?.withAlignmentRectInsets(padding)
         } else {
+            urlLabelTextIsPlaceholder = true
             urlLabel.text = .TabLocationURLPlaceholder
-            urlLabel.textColor = .secondaryLabel
             shareButton.isHidden = true
             reloadButton.isHidden = true
         }
+        applyUIMode(isPrivate: isPrivateMode)
         setNeedsUpdateConstraints()
     }
 }
@@ -362,9 +365,11 @@ extension TabLocationView: PrivateModeUI {
 
         let background = UIColor.TextField.background(isPrivate: isPrivateMode)
         let textAndTint = UIColor.TextField.textAndTint(isPrivate: isPrivateMode)
+        let placeholder = UIColor.TextField.placeholder(isPrivate: isPrivateMode)
+
+        urlLabel.textColor = urlLabelTextIsPlaceholder ? placeholder : textAndTint
 
         backgroundColor = background
-        urlLabel.textColor = textAndTint
         lockImageView.tintColor = textAndTint
         reloadButton.tintColor = textAndTint
         shieldButton.tintColor = textAndTint

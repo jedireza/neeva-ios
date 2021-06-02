@@ -78,6 +78,13 @@ extension UIColor {
         public static func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.systemFill }
         public static func textAndTint(isPrivate: Bool) -> UIColor { return isPrivate ? .white : .label }
         public static func disabledTextAndTint(isPrivate: Bool) -> UIColor { isPrivate ? UIColor(rgba: 0x3C3C4399) : .secondaryLabel }
+        public static func placeholder(isPrivate: Bool) -> UIColor {
+            if isPrivate {
+                return .secondaryLabel.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
+            } else {
+                return .secondaryLabel
+            }
+        }
     }
 
     public struct Browser {
