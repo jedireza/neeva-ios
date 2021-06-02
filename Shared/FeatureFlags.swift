@@ -13,6 +13,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case feedbackScreenshot = "Attach Screenshot to Feedback"
     case pinToTopSites = "Pin to Top Sites"
     case noQueryInLocationBar = "No Query in Location Bar"
+    case readingMode = "Enable Reading Mode"
 }
 
 extension FeatureFlag {

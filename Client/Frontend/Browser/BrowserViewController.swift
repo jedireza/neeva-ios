@@ -1170,7 +1170,10 @@ class BrowserViewController: UIViewController {
             appActivities.append(topSitesActivity)
         }
 
-        if let tab = tabManager.selectedTab, let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode, readerMode.state != .unavailable {
+        if let tab = tabManager.selectedTab,
+           let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode,
+           readerMode.state != .unavailable,
+           FeatureFlag[.readingMode] {
             let readingModeActivity = ReadingModeActivity(readerModeState: readerMode.state) { [unowned self] in
                 switch readerMode.state {
                 case .available:
