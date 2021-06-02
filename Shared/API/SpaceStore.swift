@@ -14,6 +14,8 @@ struct Space: Hashable {
     let thumbnail: String?
     let resultCount: Int
     let isDefaultSpace: Bool
+    let isShared: Bool
+    let isPublic: Bool
 }
 
 // A store of all spaces data available to the client. Hides details of how the
@@ -74,17 +76,23 @@ class SpaceStore: ObservableObject {
         // Build the set of editable spaces:
         for space in spaces {
             if let pageId = space.pageMetadata?.pageId,
-               let name = space.space?.name,
-               let lastModifiedTs = space.space?.lastModifiedTs,
-               space.space?.userAcl?.acl >= .edit {
+               let space = space.space,
+               let name = space.name,
+               let lastModifiedTs = space.lastModifiedTs,
+               let userAcl = space.userAcl?.acl,
+               userAcl >= .edit {
                 self.spaces.append(
                     Space(
                         id: SpaceID(value: pageId),
                         name: name,
                         lastModifiedTs: lastModifiedTs,
-                        thumbnail: space.space?.thumbnail,
-                        resultCount: space.space?.resultCount ?? 0,
-                        isDefaultSpace: space.space?.isDefaultSpace ?? false))
+                        thumbnail: space.thumbnail ?? nil,
+                        resultCount: space.resultCount ?? 0,
+                        isDefaultSpace: space.isDefaultSpace ?? false,
+                        isShared: !(space.acl?.map(\.userId).filter { $0 != NeevaUserInfo.shared.id }.isEmpty ?? true),
+                        isPublic: space.hasPublicAcl ?? false
+                    )
+                )
             }
         }
 

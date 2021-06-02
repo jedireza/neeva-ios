@@ -3,8 +3,19 @@
 import Introspect
 import SwiftUI
 
+fileprivate struct SaveButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Capsule()
+            .fill(configuration.isPressed ? Color(hex: 0x3254CE) : Color.blue)
+            .frame(height: 44)
+            .overlay(
+                configuration.label
+                    .foregroundColor(.white)
+            )
+    }
+}
+
 struct CreateSpaceView: View {
-    @State private var isEditing = false
     @State private var spaceName = ""
     let onDismiss: (String) -> ()
 
@@ -13,44 +24,18 @@ struct CreateSpaceView: View {
     }
 
     var body: some View{
-        VStack {
-            HStack{
-                TextField("Space name", text: $spaceName)
-                if (self.isEditing && !self.spaceName.isEmpty) {
-                    Symbol(.xmarkCircleFill, label: "Clear")
-                        .foregroundColor(.tertiaryLabel)
-                        .padding([.leading, .trailing], 2)
-                        .onTapGesture {
-                            withAnimation {
-                                self.spaceName = ""
-                            }
-                        }
-                }
-            }
-            .font(.system(size: 14))
-            .padding(10)
-            .padding(.leading, 17)
-            .background(Color.quaternarySystemFill)
-            .cornerRadius(20)
-            .padding(16)
-            .onTapGesture {
-                self.isEditing = true
-            }
+        VStack(spacing: 20) {
+            CapsuleTextField("Space name", text: $spaceName)
+
             Button(action: {
                 self.onDismiss(self.spaceName)
             }) {
-                Text("Save")
-                    .fontWeight(.semibold)
-                    .font(.system(size: 14))
-                    .padding(10)
+                Text("Save").fontWeight(.medium)
             }
-            .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .background(Color.Neeva.Brand.Blue)
-            .cornerRadius(40)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 20)
-        }
+            .buttonStyle(SaveButtonStyle())
+            .padding(.bottom, 11)
+        }.padding(16)
         // Focus the text field automatically when loading this view. Unfortunately,
         // SwiftUI provides no way to do this, so we have to resort to using Introspect.
         // See https://github.com/siteline/SwiftUI-Introspect/issues/99 for why this is
@@ -62,7 +47,11 @@ struct CreateSpaceView: View {
 }
 struct CreateSpaceView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateSpaceView(onDismiss: { _ in })
+        Group {
+            CreateSpaceView(onDismiss: { _ in })
+            CreateSpaceView(onDismiss: { _ in })
+                .preferredColorScheme(.dark)
+        }.previewLayout(.sizeThatFits)
     }
 }
 

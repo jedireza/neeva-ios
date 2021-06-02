@@ -140,7 +140,7 @@ public struct AddToSpaceView: View {
     @StateObject var request: AddToSpaceRequest
     @StateObject var spaceStore = SpaceStore.shared
 
-    @State private var searchTerm: String? = nil
+    @State private var searchTerm = ""
     @State private var backgroundColor: Color? = nil
 
     let onDismiss: () -> ()
@@ -151,7 +151,7 @@ public struct AddToSpaceView: View {
     }
 
     func filter(_ spaces: [Space]) -> [Space] {
-        if let searchTerm = searchTerm, !searchTerm.isEmpty {
+        if !searchTerm.isEmpty {
             return spaces.filter {
                 $0.name.localizedCaseInsensitiveContains(searchTerm)
             }
@@ -159,38 +159,39 @@ public struct AddToSpaceView: View {
         return spaces
     }
 
-    var filteredListView: some View {
-        VStack(spacing: 0) {
-            let filteredSpaces = filter(spaceStore.spaces)
-            SpacesSearchHeaderView(
-                filterAction: { searchTerm = $0 },
-                createAction: { request.mode = .saveToNewSpace }
-            )
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
-            .padding(.bottom, 20)
-            if !(searchTerm ?? "").isEmpty && filteredSpaces.isEmpty {
-                Text("No Results Found")
-                    .font(.title)
-                    .foregroundColor(.secondary)
-                    .padding(.top, 16)
-            } else {
-                LazyVStack(spacing: 20) {
-                    ForEach(filteredSpaces, id: \.self) { space in
-                        Button {
-                            if SpaceStore.shared.urlInSpace(request.url, spaceId: space.id) {
-                                request.deleteFromExistingSpace(id: space.id.value, name: space.name)
-                            } else {
-                                request.addToExistingSpace(id: space.id.value, name: space.name)
-                            }
-                            onDismiss()
-                        } label: {
-                            SpaceListItem(space, currentURL: request.url)
+    var searchHeader: some View {
+        SpacesSearchHeaderView(
+            searchText: $searchTerm,
+            createAction: { request.mode = .saveToNewSpace }
+        )
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 20)
+    }
+
+    @ViewBuilder var filteredListView: some View {
+        let filteredSpaces = filter(spaceStore.spaces)
+        if !searchTerm.isEmpty && filteredSpaces.isEmpty {
+            Text("No Results Found")
+                .font(.title)
+                .foregroundColor(.secondary)
+                .padding(.top, 16)
+        } else {
+            LazyVStack(spacing: 14) {
+                ForEach(filteredSpaces, id: \.self) { space in
+                    Button {
+                        if SpaceStore.shared.urlInSpace(request.url, spaceId: space.id) {
+                            request.deleteFromExistingSpace(id: space.id.value, name: space.name)
+                        } else {
+                            request.addToExistingSpace(id: space.id.value, name: space.name)
                         }
+                        onDismiss()
+                    } label: {
+                        SpaceListItem(space, currentURL: request.url)
                     }
                 }
-                .padding(.bottom, 16)
             }
+            .padding(.bottom, 16)
         }
     }
 
@@ -204,19 +205,23 @@ public struct AddToSpaceView: View {
             } else {
                 GeometryReader { geom in
                     let sv = ScrollView {
-                        switch spaceStore.state {
-                        case .refreshing:
-                            VStack(spacing: 0) {
-                                Spacer()
-                                LoadingView("Loading spaces…")
-                                Spacer()
+                        VStack(spacing: 0) {
+                            if case .failed(_) = spaceStore.state {} else {
+                                searchHeader
                             }
-                            .frame(height: geom.size.height)
-                        case .failed(let error):
-                            ErrorView(error, in: self, tryAgain: { spaceStore.refresh() })
-                                .frame(height: geom.size.height)
-                        case .ready:
-                            filteredListView
+                            switch spaceStore.state {
+                            case .refreshing:
+                                VStack(spacing: 14) {
+                                    ForEach(0..<20) { _ in
+                                        LoadingSpaceListItem()
+                                    }
+                                }
+                            case .failed(let error):
+                                ErrorView(error, in: self, tryAgain: { spaceStore.refresh() })
+                                    .frame(height: geom.size.height)
+                            case .ready:
+                                filteredListView
+                            }
                         }
                     }
                     .onPreferenceChange(ErrorViewBackgroundPreferenceKey.self) { self.backgroundColor = $0 }

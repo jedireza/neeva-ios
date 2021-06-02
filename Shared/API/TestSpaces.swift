@@ -9,7 +9,9 @@ extension Space {
         lastModifiedTs: "2020-12-18T16:31:52Z",
         thumbnail: nil,
         resultCount: 0,
-        isDefaultSpace: false
+        isDefaultSpace: false,
+        isShared: false,
+        isPublic: false
     )
     static let stackOverflow = Space(
         id: .init(value: "page-id"),
@@ -17,7 +19,9 @@ extension Space {
         lastModifiedTs: "2020-12-18T15:57:47Z",
         thumbnail: SpaceThumbnails.stackOverflowThumbnail,
         resultCount: 1,
-        isDefaultSpace: false
+        isDefaultSpace: false,
+        isShared: false,
+        isPublic: false
     )
     static let savedForLater = Space(
         id: .init(value: "page-id"),
@@ -25,7 +29,9 @@ extension Space {
         lastModifiedTs: "2020-12-18T16:31:52Z",
         thumbnail: SpaceThumbnails.githubThumbnail,
         resultCount: 1,
-        isDefaultSpace: false
+        isDefaultSpace: true,
+        isShared: false,
+        isPublic: false
     )
 
     static let savedForLaterEmpty = Space(
@@ -34,7 +40,42 @@ extension Space {
         lastModifiedTs: "2020-12-18T16:31:52Z",
         thumbnail: SpaceThumbnails.githubThumbnail,
         resultCount: 0,
-        isDefaultSpace: false
+        isDefaultSpace: true,
+        isShared: false,
+        isPublic: false
+    )
+
+    static let sharedSpace = Space(
+        id: .init(value: "page-id"),
+        name: "Shared Space",
+        lastModifiedTs: "2020-12-18T15:57:47Z",
+        thumbnail: SpaceThumbnails.stackOverflowThumbnail,
+        resultCount: 1,
+        isDefaultSpace: false,
+        isShared: true,
+        isPublic: false
+    )
+
+    static let publicSpace = Space(
+        id: .init(value: "page-id"),
+        name: "Public Space",
+        lastModifiedTs: "2020-12-18T15:57:47Z",
+        thumbnail: SpaceThumbnails.stackOverflowThumbnail,
+        resultCount: 1,
+        isDefaultSpace: false,
+        isShared: false,
+        isPublic: true
+    )
+
+    static let sharedPublicSpace = Space(
+        id: .init(value: "page-id"),
+        name: "Shared, Public Space. Yes, this space is in fact both shared and public!",
+        lastModifiedTs: "2020-12-18T15:57:47Z",
+        thumbnail: SpaceThumbnails.stackOverflowThumbnail,
+        resultCount: 1,
+        isDefaultSpace: false,
+        isShared: true,
+        isPublic: true
     )
 }
 

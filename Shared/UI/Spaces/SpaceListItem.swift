@@ -20,27 +20,59 @@ struct SpaceListItem: View {
         }
     }
     var body: some View {
-        HStack(spacing: 16) {
+        HStack {
             LargeSpaceIconView(space: space)
+                .padding(.trailing, 8)
             Text(space.name)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(.primary)
-            Spacer()
+                .lineLimit(1)
+            if space.isPublic {
+                Symbol(.link, size: 14)
+                    .foregroundColor(.secondary)
+            }
+            if space.isShared {
+                Symbol(.person2Fill, size: 14)
+                    .foregroundColor(.secondary)
+            }
+            Spacer(minLength: 0)
             Symbol(icon, weight: .semibold)
                 .frame(width: 44, height: 44)
                 .foregroundColor(iconColor)
         }
-        .padding([.top, .bottom], 6)
+        .padding(.vertical, 6)
         .padding(.leading, 16)
         .padding(.trailing, 5)
     }
 }
 
+struct LoadingSpaceListItem: View {
+    var body: some View {
+        HStack(spacing: 16) {
+            RoundedRectangle(cornerRadius: 4)
+                .fill(Color.tertiarySystemFill)
+                .frame(width: 36, height: 36)
+            RoundedRectangle(cornerRadius: 4)
+                .fill(Color.tertiarySystemFill)
+                .frame(width: 150, height: 16)
+            Spacer()
+        }
+        .padding(.vertical, 10)
+        .padding(.leading, 16)
+    }
+}
+
 struct SpaceView_Previews: PreviewProvider {
     static var previews: some View {
-        List {
+        LazyVStack(spacing: 14) {
+            LoadingSpaceListItem()
+            SpaceListItem(.empty, currentURL: URL(string: "https://neeva.com")!)
+            SpaceListItem(.savedForLaterEmpty, currentURL: URL(string: "https://neeva.com")!)
             SpaceListItem(.savedForLater, currentURL: URL(string: "https://neeva.com")!)
             SpaceListItem(.stackOverflow, currentURL: URL(string: "https://neeva.com")!)
-        }
+            SpaceListItem(.sharedSpace, currentURL: URL(string: "https://neeva.com")!)
+            SpaceListItem(.publicSpace, currentURL: URL(string: "https://neeva.com")!)
+            SpaceListItem(.sharedPublicSpace, currentURL: URL(string: "https://neeva.com")!)
+        }.padding(.vertical).previewLayout(.sizeThatFits)
     }
 }

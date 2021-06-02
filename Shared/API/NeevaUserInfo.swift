@@ -9,7 +9,7 @@
 import Foundation
 import Reachability
 import WebKit
-import Shared
+import Apollo
 
 public class NeevaUserInfo {
 
@@ -17,8 +17,9 @@ public class NeevaUserInfo {
 
     private let defaults: UserDefaults
 
-    static let shared = NeevaUserInfo()
+    public static let shared = NeevaUserInfo()
 
+    private var userId: String?
     private var userDisplayName: String?
     private var userEmail: String?
     private var userPictureUrl: String?
@@ -79,11 +80,11 @@ public class NeevaUserInfo {
         }
     }
 
-    func clearCache(){
+    public func clearCache(){
         self.clearUserInfoCache()
     }
 
-    func updateKeychainTokenAndFetchUserInfo() {
+    public func updateKeychainTokenAndFetchUserInfo() {
         let cookieStore = WKWebsiteDataStore.default().httpCookieStore
         cookieStore.getAllCookies { cookies in
             if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
@@ -104,7 +105,7 @@ public class NeevaUserInfo {
         }
     }
 
-    func hasLoginCookie() -> Bool{
+    public func hasLoginCookie() -> Bool{
         let token =  try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
         if (token != nil) {
            return true
@@ -112,7 +113,7 @@ public class NeevaUserInfo {
         return false
     }
 
-    func deleteLoginCookie() {
+    public func deleteLoginCookie() {
         let cookieStore = WKWebsiteDataStore.default().httpCookieStore
         cookieStore.getAllCookies { cookies in
             if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
@@ -122,12 +123,13 @@ public class NeevaUserInfo {
         try? NeevaConstants.keychain.remove(NeevaConstants.loginKeychainKey)
     }
 
-    func loadUserInfoFromDefaults() -> Void {
+    public func loadUserInfoFromDefaults() -> Void {
         let userInfoDict = defaults.object(forKey: UserInfoKey) as? [String:String] ?? [String:String]()
 
         userDisplayName = userInfoDict["userDisplayName"]
         userEmail = userInfoDict["userEmail"]
         userPictureUrl = userInfoDict["userPictureUrl"]
+        userId = userInfoDict["userId"]
     }
 
     private func fetchUserPicture() {
@@ -167,13 +169,18 @@ public class NeevaUserInfo {
         return userPictureData
     }
 
+    public var id: String? {
+        return userId
+    }
+
     private func saveUserInfoToDefaults(userInfo: UserInfoQuery.Data.User) -> Void {
-        let userInfoDict = [ "userDisplayName": userInfo.profile.displayName, "userEmail": userInfo.profile.email, "userPictureUrl": userInfo.profile.pictureUrl ]
+        let userInfoDict = [ "userDisplayName": userInfo.profile.displayName, "userEmail": userInfo.profile.email, "userPictureUrl": userInfo.profile.pictureUrl, "userId": userInfo.id ]
         defaults.set(userInfoDict, forKey: UserInfoKey)
 
         userDisplayName = userInfo.profile.displayName
         userEmail = userInfo.profile.email
         userPictureUrl = userInfo.profile.pictureUrl
+        userId = userInfo.id
     }
 
     private func clearUserInfoCache() -> Void {
@@ -181,6 +188,7 @@ public class NeevaUserInfo {
         userEmail = nil
         userPictureUrl = nil
         userPictureData = nil
+        userId = nil
         self.reachability.stopNotifier()
     }
 }

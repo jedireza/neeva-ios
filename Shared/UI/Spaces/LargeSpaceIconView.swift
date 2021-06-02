@@ -5,8 +5,8 @@ import SwiftUI
 fileprivate struct Metrics {
     static let size: CGFloat = 36
     static let cornerRadius: CGFloat = 4
-    static let starSize: CGFloat = 34
-    static let textSize: CGFloat = 26.25
+    static let starSize: CGFloat = 24
+    static let textSize: CGFloat = 16
 }
 
 /// Displayed in space lists
@@ -31,7 +31,8 @@ struct LargeSpaceIconView: View {
     var body: some View {
         if space.isDefaultSpace {
             EmptyIcon(background: space.resultCount == 0 ? .spaceIconBackground : Color.Neeva.UI.Gray96) {
-                Symbol(.starFill, size: Metrics.starSize)
+                Image(systemSymbol: .starFill)
+                    .frame(height: 24)
                     .foregroundColor(.savedForLaterIcon)
             }
         } else if
@@ -46,7 +47,7 @@ struct LargeSpaceIconView: View {
             EmptyIcon(background: .spaceIconBackground) {
                 Text(firstCharacters(2, from: space.name))
                     .foregroundColor(.white)
-                    .font(.system(size: Metrics.textSize, weight: .medium, design: .default))
+                    .font(.system(size: Metrics.textSize, weight: .semibold, design: .default))
                     .accessibilityHidden(true)
             }
         }

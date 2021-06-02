@@ -45,7 +45,6 @@
 		0BF1B7E31AC60DEA00A7B407 /* InsetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */; };
 		0BF42D4F1A7CD09600889E28 /* TestFavicons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF42D4E1A7CD09600889E28 /* TestFavicons.swift */; };
 		0BF8F8DA1AEFF1C900E90BC2 /* noTitle.html in Resources */ = {isa = PBXBuildFile; fileRef = 0BF8F8D91AEFF1C900E90BC2 /* noTitle.html */; };
-		12224FB026081FCF007E8705 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
 		122DE32325F96FE100599A0D /* FindOnPageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE32225F96FE100599A0D /* FindOnPageActivity.swift */; };
 		122DE34125F975D900599A0D /* RequestDesktopSiteActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE34025F975D900599A0D /* RequestDesktopSiteActivity.swift */; };
 		122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */; };
@@ -319,6 +318,7 @@
 		C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */; };
 		C8F457AA1F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */; };
 		C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FB0C772321523D00031088 /* PageActionMenu.swift */; };
+		C9086050266693340049C072 /* CapsuleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908604F266693340049C072 /* CapsuleTextField.swift */; };
 		C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860512666BEE30049C072 /* SpacerExtensions.swift */; };
 		C90860542666BF050049C072 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860532666BF050049C072 /* Environment.swift */; };
 		C994645F2657052200613110 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994645E2657052200613110 /* FeatureFlags.swift */; };
@@ -373,6 +373,7 @@
 		C9C18E6626559B9C004710CD /* ClientLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6426559B9C004710CD /* ClientLogger.swift */; };
 		C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6726559DCF004710CD /* FormatDateTime.swift */; };
 		C9D4564E26558EF80047267A /* RemoteImage in Frameworks */ = {isa = PBXBuildFile; productRef = C9D4564D26558EF80047267A /* RemoteImage */; };
+		C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
 		CA03B26A247F1D9E00382B62 /* BreachAlertsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA03B269247F1D9E00382B62 /* BreachAlertsClient.swift */; };
 		CA24B52224ABD7D40093848C /* LoginsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B52024ABD7D40093848C /* LoginsListViewModelTests.swift */; };
 		CA24B53924ABFE250093848C /* LoginsListSelectionHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B53824ABFE250093848C /* LoginsListSelectionHelperTests.swift */; };
@@ -1236,6 +1237,7 @@
 		C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+WebViewDelegates.swift"; sourceTree = "<group>"; };
 		C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+KeyCommands.swift"; sourceTree = "<group>"; };
 		C8FB0C772321523D00031088 /* PageActionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageActionMenu.swift; sourceTree = "<group>"; };
+		C908604F266693340049C072 /* CapsuleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleTextField.swift; sourceTree = "<group>"; };
 		C90860512666BEE30049C072 /* SpacerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerExtensions.swift; sourceTree = "<group>"; };
 		C90860532666BF050049C072 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
@@ -2346,6 +2348,7 @@
 		C996466726569AF0005FFE83 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				C908604F266693340049C072 /* CapsuleTextField.swift */,
 				C9C18DD926558FF3004710CD /* ActivityIndicator.swift */,
 				C9C18DD226558FF2004710CD /* DecorativeSection.swift */,
 				C9C18DD626558FF3004710CD /* ModalPresentationController.swift */,
@@ -2373,6 +2376,7 @@
 				C9C18E3C26559504004710CD /* API.swift */,
 				C9C18E3B26559504004710CD /* ErrorView.swift */,
 				C9C18E3A26559504004710CD /* Incognito.swift */,
+				12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */,
 				C9C18DD126558FF2004710CD /* Network.swift */,
 				C9C18DD026558FF2004710CD /* QueryController.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
@@ -3214,7 +3218,6 @@
 			isa = PBXGroup;
 			children = (
 				BC85E224264F29660068092F /* Prompt */,
-				12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */,
 				23ED80FD25C899D700D0E9D5 /* DefaultBrowserOnboarding */,
 				2816EFFF1B33E05400522243 /* UIConstants.swift */,
 				2C49854D206173C800893DAE /* photon-colors.swift */,
@@ -4117,6 +4120,7 @@
 				C9C18E402655955D004710CD /* Reachability.swift in Sources */,
 				7B10AABB1E3A1F650002DD08 /* URLRequestExtensions.swift in Sources */,
 				D02818611EF056C800240CAA /* SentryIntegration.swift in Sources */,
+				C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */,
 				E693F0D91E9D64BD0086DC17 /* OptionalExtensions.swift in Sources */,
 				E65075A01E37F7AB006961AC /* ArrayExtensions.swift in Sources */,
 				E65075A31E37F7AB006961AC /* KeychainWrapperExtensions.swift in Sources */,
@@ -4160,6 +4164,7 @@
 				C9C18E4E26559766004710CD /* AddToSpaceView.swift in Sources */,
 				E65075B61E37F7AB006961AC /* Loader.swift in Sources */,
 				C9C18E5426559827004710CD /* Space.swift in Sources */,
+				C9086050266693340049C072 /* CapsuleTextField.swift in Sources */,
 				E65075BF1E37F7AB006961AC /* UserAgent.swift in Sources */,
 				C9C18E5D265598EA004710CD /* AbstractController.swift in Sources */,
 				C9C18E3E26559504004710CD /* ErrorView.swift in Sources */,
@@ -4523,7 +4528,6 @@
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,
 				C9C18DDE26558FF3004710CD /* Action.swift in Sources */,
 				D34510881ACF415700EC27F0 /* SearchLoader.swift in Sources */,
-				12224FB026081FCF007E8705 /* NeevaUserInfo.swift in Sources */,
 				DA9FD88924E213E500168D1E /* QuickLinkSelection.intentdefinition in Sources */,
 				CA7FC7D324A6A9B70012F347 /* LoginListDataSourceHelper.swift in Sources */,
 				CA520E7A24913C1B00CCAB48 /* LoginListViewModel.swift in Sources */,

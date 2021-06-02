@@ -1,12 +1,27 @@
 query ListSpaces($kind: ListSpacesKind = All) {
-  listSpaces(input: { kind: $kind }) {
+  listSpaces(input: {kind: $kind}) {
     requestID
     space {
       pageMetadata {
         pageID
       }
       space {
-        ...spaceMetadata
+        name
+        lastModifiedTs
+        userACL {
+          acl
+        }
+        acl {
+          userID
+        }
+        hasPublicACL
+        thumbnail
+        thumbnailSize {
+          height
+          width
+        }
+        resultCount
+        isDefaultSpace
       }
     }
   }
