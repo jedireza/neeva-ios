@@ -74,10 +74,10 @@ struct PromoCard: View {
     var label: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(model.currentConfig.firstLine)
-                .font(Font.custom("Roobert-Light", size: PromoCardUX.TextFontSize))
+                .font(.roobert(.light, size: PromoCardUX.TextFontSize))
                 .foregroundColor(Color(PromoCardUX.TextColor))
             Text(model.currentConfig.secondLine)
-                .font(Font.custom("Roobert-Light", size: PromoCardUX.TextFontSize))
+                .font(.roobert(.light, size: PromoCardUX.TextFontSize))
                 .foregroundColor(Color(PromoCardUX.TextColor))
         }.frame(maxWidth: .infinity, alignment: .leading).padding()
     }

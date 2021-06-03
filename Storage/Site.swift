@@ -44,9 +44,21 @@ open class Site: Identifiable {
     open var icon: Favicon?
     open var latestVisit: Visit?
 
-    public init(url: String, title: String, guid: String? = nil) {
+    public init(url: String, title: String, id: Int? = nil) {
+        self.url = url
+        self.title = title
+        self.id = id
+    }
+
+    public init(url: String, title: String, guid: String?) {
         self.url = url
         self.title = title
         self.guid = guid
+    }
+}
+
+extension Site: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

@@ -1776,6 +1776,10 @@ extension BrowserViewController: HomePanelDelegate {
         self.show(toast: toast)
     }
     var homePanelIsPrivate: Bool { tabManager.selectedTab?.isPrivate ?? false }
+
+    func homePanel(didEnterQuery query: String) {
+        self.urlBar.enterOverlayMode(query, pasted: true, search: true)
+    }
 }
 
 extension BrowserViewController: SearchViewControllerDelegate {

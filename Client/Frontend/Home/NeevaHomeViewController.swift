@@ -50,6 +50,7 @@ protocol HomePanelDelegate: AnyObject {
     func homePanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
     func homePanel(didSelectURL url: URL, visitType: VisitType)
     func homePanelDidRequestToOpenLibrary(panel: LibraryPanelType)
+    func homePanel(didEnterQuery query: String)
     var homePanelIsPrivate: Bool { get }
 }
 
@@ -66,48 +67,6 @@ enum HomePanelType: Int {
     }
 }
 
-protocol HomePanelContextMenu {
-    func getSiteDetails(for indexPath: IndexPath) -> Site? 
-    func getContextMenuActions(for site: Site) -> [PhotonActionSheetItem]?
-    func presentContextMenu(for site: Site)
-    func presentContextMenu(for site: Site, completionHandler: @escaping () -> PhotonActionSheet?)
-}
-
-extension HomePanelContextMenu {
-    func presentContextMenu(for site: Site) {
-        presentContextMenu(for: site, completionHandler: {
-            return self.contextMenu(for: site)
-        })
-    }
-
-    func contextMenu(for site: Site) -> PhotonActionSheet? {
-        guard let actions = self.getContextMenuActions(for: site) else { return nil }
-
-        let contextMenu = PhotonActionSheet(site: site, actions: actions)
-        contextMenu.modalPresentationStyle = .overFullScreen
-        contextMenu.modalTransitionStyle = .crossDissolve
-
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-
-        return contextMenu
-    }
-
-    func getDefaultContextMenuActions(for site: Site, homePanelDelegate: HomePanelDelegate?) -> [PhotonActionSheetItem]? {
-        guard let siteURL = URL(string: site.url) else { return nil }
-
-        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "plus.square", iconType: .SystemImage, iconAlignment: .right) { _, _ in
-            homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
-        }
-
-        let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "incognito", iconAlignment: .right) { _, _ in
-            homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: true)
-        }
-
-        return [openInNewTabAction, openInNewIncognitoTabAction]
-    }
-}
-
 class NeevaHomeViewController: UIViewController, HomePanel {
     weak var homePanelDelegate: HomePanelDelegate?
     fileprivate let profile: Profile
@@ -115,20 +74,47 @@ class NeevaHomeViewController: UIViewController, HomePanel {
 
     lazy var homeView: UIView = {
         let home = NeevaHome(viewModel: homeViewModel)
-        let controller = UIHostingController(rootView: home
-                                                .environmentObject(suggestedSitesViewModel))
+        let controller = UIHostingController(
+            rootView: home
+                .environmentObject(suggestedSitesViewModel)
+                .environmentObject(suggestedSearchesModel)
+                .environment(\.onOpenURL) { [weak self] url in
+                    self?.showSiteWithURLHandler(url)
+                }
+
+        )
         controller.view.backgroundColor = UIColor.HomePanel.topSitesBackground
         view.addSubview(controller.view)
         return controller.view
     }()
 
-    var suggestedSearchesModel = SuggestedSearchesModel()
-    var suggestedSitesViewModel = SuggestedSitesViewModel(sites: [Site](), onSuggestedSiteClicked: { _ in }, onSuggestedSiteLongPressed: { _ in })
+    var suggestedSearchesModel = SuggestedSearchesModel(suggestedQueries: [])
+    var suggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
+
     var homeViewModel = HomeViewModel()
 
     init(profile: Profile) {
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
+
+        self.suggestedSearchesModel.enterQuery = { [weak self] query in
+            self?.homePanelDelegate?.homePanel(didEnterQuery: query)
+        }
+
+        self.suggestedSitesViewModel.openInNewTab = { [weak self] url, isPrivate in
+            self?.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(url, isPrivate: isPrivate)
+        }
+
+        self.suggestedSitesViewModel.share = { [weak self] url in
+            let helper = ShareExtensionHelper(url: url, tab: nil)
+            let controller = helper.createActivityViewController({ (_, _) in })
+            controller.modalPresentationStyle = .formSheet
+            self?.present(controller, animated: true, completion: nil)
+        }
+
+        self.suggestedSitesViewModel.hideURLFromTopSites = { [weak self] url in
+            self?.hideURLFromTopSites(url)
+        }
 
         let refreshEvents: [Notification.Name] = [.DynamicFontChanged, .HomePanelPrefsChanged]
         refreshEvents.forEach { NotificationCenter.default.addObserver(self, selector: #selector(reload), name: $0, object: nil) }
@@ -190,14 +176,6 @@ extension NeevaHomeViewController: DataObserverDelegate {
 
             self.suggestedSitesViewModel.sites = Array(result.prefix(maxItems))
 
-            self.suggestedSitesViewModel.onSuggestedSiteClicked = { [unowned self] url in
-                self.showSiteWithURLHandler(url as URL)
-            }
-
-            self.suggestedSitesViewModel.onSuggestedSiteLongPressed = { [unowned self] site in
-                self.presentContextMenu(for: (site as Site))
-            }
-
             self.suggestedSearchesModel.reload(from: self.profile)
 
             // Refresh the AS data in the background so we'll have fresh data next time we show.
@@ -253,48 +231,9 @@ extension NeevaHomeViewController: DataObserverDelegate {
     }
 }
 
-extension NeevaHomeViewController: HomePanelContextMenu {
-    func getSiteDetails(for indexPath: IndexPath) -> Site? {
-        return suggestedSitesViewModel.sites[indexPath.item]
-    }
-
-    func presentContextMenu(for site: Site, completionHandler: @escaping () -> PhotonActionSheet?) {
-        guard let contextMenu = completionHandler() else { return }
-        self.present(contextMenu, animated: true, completion: nil)
-    }
-
+// TODO: remove this extension once pin/unpin is finalized
+extension NeevaHomeViewController {
     func getContextMenuActions(for site: Site) -> [PhotonActionSheetItem]? {
-        guard let siteURL = URL(string: site.url) else { return nil }
-        var sourceView: UIView?
-        sourceView = homeView
-
-        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "plus.square", iconType: .SystemImage, iconAlignment: .right) { _, _ in
-            self.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
-        }
-
-        let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "incognito", iconAlignment: .right) { _, _ in
-            self.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(siteURL, isPrivate: true)
-        }
-
-        let shareAction = PhotonActionSheetItem(title: Strings.ShareContextMenuTitle, iconString: "square.and.arrow.up", iconType: .SystemImage, iconAlignment: .right, handler: { _, _ in
-            let helper = ShareExtensionHelper(url: siteURL, tab: nil)
-            let controller = helper.createActivityViewController({ (_, _) in })
-            if UI_USER_INTERFACE_IDIOM() == .pad, let popoverController = controller.popoverPresentationController {
-                let cellRect = sourceView?.frame ?? .zero
-                let cellFrameInSuperview = self.homeView.convert(cellRect, to: self.homeView) ?? .zero
-
-                popoverController.sourceView = sourceView
-                popoverController.sourceRect = CGRect(origin: CGPoint(x: cellFrameInSuperview.size.width/2, y: cellFrameInSuperview.height/2), size: .zero)
-                popoverController.permittedArrowDirections = [.up, .down, .left]
-                popoverController.delegate = self
-            }
-            self.present(controller, animated: true, completion: nil)
-        })
-
-        let removeTopSiteAction = PhotonActionSheetItem(title: Strings.RemoveContextMenuTitle, iconString: "trash", iconType: .SystemImage, iconAlignment: .right, iconTint: .systemRed, handler: { _, _ in
-            self.hideURLFromTopSites(site)
-        })
-
         let topSiteActions: [PhotonActionSheetItem]
         if FeatureFlag[.pinToTopSites] {
             let pinTopSite = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin", iconAlignment: .right, handler: { _, _ in
@@ -306,16 +245,13 @@ extension NeevaHomeViewController: HomePanelContextMenu {
             if let _ = site as? PinnedSite {
                 topSiteActions = [removePinTopSite]
             } else {
-                topSiteActions = [pinTopSite, removeTopSiteAction]
+                topSiteActions = [pinTopSite]
             }
         } else {
-            topSiteActions = [removeTopSiteAction]
+            topSiteActions = []
         }
 
-        var actions = [openInNewTabAction, openInNewIncognitoTabAction, shareAction]
-
-        actions.append(contentsOf: topSiteActions)
-        return actions
+        return topSiteActions
     }
 }
 

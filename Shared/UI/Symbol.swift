@@ -82,6 +82,7 @@ public struct Symbol: View {
         self.label = label
     }
 
+    @_disfavoredOverload
     public init(_ symbol: SFSymbol, size: CGFloat = 16, weight: Font.Weight = .medium, label: String? = nil) {
         self.storage = .system(symbol, weight)
         self.size = size

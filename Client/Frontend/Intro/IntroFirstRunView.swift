@@ -21,7 +21,7 @@ struct IntroFirstRunView: View {
                     Text("that puts you")
                     Text("first.")
                 }
-                .font(Font.custom("Roobert-Light", size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48))
+                .font(.roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48))
                 .foregroundColor(Color.Neeva.UI.Gray20)
                 .padding(.top, 40)
             }
@@ -58,12 +58,12 @@ struct IntroFirstRunView: View {
                 .shadow(color: Color.Neeva.UI.Gray70, radius: 1, x: 1, y: 1)
                 .padding(.top, 20)
             }
-            .font(Font.custom("Roobert-SemiBold", size: 18))
+            .font(.roobert(.semibold, size: 18))
 
             Button(action: { buttonAction(.skipToBrowser) }) {
                 Text("Skip to browser without Neeva search")
                     .underline()
-                    .font(Font.custom("Roobert-Regular", size: 16))
+                    .font(.roobert(size: 16))
                     .foregroundColor(Color.Neeva.UI.Gray20)
                     .multilineTextAlignment(.center)
             }

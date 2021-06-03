@@ -97,6 +97,7 @@ struct SearchSuggestionView: View {
                                                         width: SearchViewControllerUX.ImageSize,
                                                         height: SearchViewControllerUX.ImageSize
                                                     )
+                                                    .cornerRadius(4)
                                                 VStack(alignment: .leading) {
                                                     if !site.title.isEmpty {
                                                         Text(site.title)

@@ -11,6 +11,15 @@ private struct Color {
 }
 
 extension UIColor {
+    public convenience init(light: UIColor, dark: UIColor) {
+        self.init { traits in
+            switch traits.userInterfaceStyle {
+            case .dark: return dark
+            default: return light
+            }
+        }
+    }
+
     /**
      * Initializes and returns a color object for the given RGB hex integer.
      */

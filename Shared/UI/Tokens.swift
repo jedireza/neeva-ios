@@ -37,6 +37,7 @@ extension Color {
 }
 
 extension Color {
+    public static let systemFill = Color(UIColor.systemFill)
     public static let tertiarySystemFill = Color(UIColor.tertiarySystemFill)
     public static let quaternarySystemFill = Color(UIColor.quaternarySystemFill)
 

@@ -26,8 +26,6 @@ struct FaviconView: UIViewRepresentable {
             imageView.layer.borderWidth = FaviconViewUX.IconBorderWidth
         }
         imageView.contentMode = .center
-        imageView.layer.cornerRadius = 6 //hmm // this comment was brought over from the original code in TwoLineCell
-        imageView.layer.masksToBounds = true
         return imageView
     }
 

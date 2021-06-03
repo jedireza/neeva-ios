@@ -116,10 +116,6 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
 
         // Set an empty footer to prevent empty cells from appearing in the list.
         tableView.tableFooterView = UIView()
-
-        if let _ = self as? HomePanelContextMenu {
-            tableView.dragDelegate = self
-        }
     }
 
     deinit {
@@ -202,24 +198,5 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tableView.reloadRows(at: rows, with: .none)
             tableView.reloadSections(IndexSet(rows.map { $0.section }), with: .none)
         }
-    }
-}
-
-@available(iOS 11.0, *)
-extension SiteTableViewController: UITableViewDragDelegate {
-    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        guard let homePanelVC = self as? HomePanelContextMenu, let site = homePanelVC.getSiteDetails(for: indexPath), let url = URL(string: site.url), let itemProvider = NSItemProvider(contentsOf: url) else {
-            return []
-        }
-
-        TelemetryWrapper.recordEvent(category: .action, method: .drag, object: .url, value: .homePanel)
-
-        let dragItem = UIDragItem(itemProvider: itemProvider)
-        dragItem.localObject = site
-        return [dragItem]
-    }
-
-    func tableView(_ tableView: UITableView, dragSessionWillBegin session: UIDragSession) {
-        presentedViewController?.dismiss(animated: true)
     }
 }
