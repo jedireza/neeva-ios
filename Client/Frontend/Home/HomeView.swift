@@ -145,6 +145,7 @@ struct NeevaHome: View {
     }
 }
 
+#if DEV
 struct NeevaHomeView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
@@ -163,3 +164,4 @@ struct NeevaHomeView_Previews: PreviewProvider {
         )
     }
 }
+#endif

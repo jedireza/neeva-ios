@@ -153,7 +153,7 @@ struct SuggestedSitesView: View {
     }
 }
 
-
+#if DEV
 struct SuggestedSitesViews_Previews: PreviewProvider {
     static var previews: some View {
         HStack {
@@ -166,3 +166,4 @@ struct SuggestedSitesViews_Previews: PreviewProvider {
         }.previewLayout(.sizeThatFits).environmentObject(SuggestedSitesViewModel.preview)
     }
 }
+#endif
