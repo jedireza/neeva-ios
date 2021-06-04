@@ -46,6 +46,13 @@ enum ReferringPage {
 
 class BrowserViewController: UIViewController {
     var neevaHomeViewController: NeevaHomeViewController?
+    lazy var cardStripViewController: CardStripViewController? = {
+        let controller = CardStripViewController(tabManager: self.tabManager)
+        addChild(controller)
+        view.addSubview(controller.view)
+        controller.didMove(toParent: self)
+        return controller
+    }()
     var libraryViewController: LibraryViewController?
     var libraryDrawerViewController: DrawerViewController?
     var overlaySheetViewController: UIViewController?
@@ -221,7 +228,7 @@ class BrowserViewController: UIViewController {
     }
 
     func shouldShowTopTabsForTraitCollection(_ newTraitCollection: UITraitCollection) -> Bool {
-        return newTraitCollection.verticalSizeClass == .regular && newTraitCollection.horizontalSizeClass == .regular
+        return !FeatureFlag[.cardStrip] && newTraitCollection.verticalSizeClass == .regular && newTraitCollection.horizontalSizeClass == .regular
     }
 
     func toggleSnackBarVisibility(show: Bool) {
@@ -503,7 +510,11 @@ class BrowserViewController: UIViewController {
             } else {
                 make.height.equalTo(UIConstants.TopToolbarHeight)
             }
-            make.top.equalTo(topTabsContainer.snp.bottom)
+            if FeatureFlag[.cardStrip] {
+                make.top.equalTo(urlBarTopTabsContainer.snp.top)
+            } else {
+                make.top.equalTo(topTabsContainer.snp.bottom)
+            }
         }
 
         header.snp.makeConstraints { make in
@@ -513,6 +524,14 @@ class BrowserViewController: UIViewController {
 
         webViewContainerBackdrop.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
+        }
+
+        if FeatureFlag[.cardStrip] {
+            cardStripViewController?.view.snp.updateConstraints { make in
+                make.left.right.equalTo(self.view)
+                make.bottom.equalTo(self.view.snp.bottom).offset(-CardStripUX.BottomPadding)
+                make.height.equalTo(CardStripUX.Height)
+            }
         }
     }
 
@@ -732,6 +751,7 @@ class BrowserViewController: UIViewController {
                 make.bottom.equalTo(self.view.snp.bottom)
             }
         }
+
 
         alertStackView.snp.remakeConstraints { make in
             make.centerX.equalTo(self.view)

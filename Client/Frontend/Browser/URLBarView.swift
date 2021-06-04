@@ -123,6 +123,11 @@ class URLBarView: UIView {
 
     let line = UIView()
 
+    lazy var cardsButton: CardStripButton = {
+        let cardsButton = CardStripButton()
+        return cardsButton
+    }()
+
     lazy var tabsButton: TabsButton = {
         let tabsButton = TabsButton.tabTrayButton()
         tabsButton.accessibilityIdentifier = "URLBarView.tabsButton"
@@ -194,6 +199,9 @@ class URLBarView: UIView {
         [line, tabsButton, neevaMenuButton, progressBar, cancelButton, addToSpacesButton,
          forwardButton, backButton, shareButton, locationContainer].forEach {
             addSubview($0)
+        }
+        if FeatureFlag[.cardStrip] {
+            addSubview(cardsButton)
         }
 
         appMenuBadge.add(toParent: self)
@@ -271,12 +279,23 @@ class URLBarView: UIView {
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
-        
+
+        if FeatureFlag[.cardStrip] {
+            cardsButton.snp.makeConstraints { make in
+                make.leading.equalTo(self.tabsButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+                make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
+                make.centerY.equalTo(self.locationContainer)
+                make.size.equalTo(URLBarViewUX.ButtonSize)
+            }
+        }
+
         tabsButton.snp.makeConstraints { make in
             make.leading.equalTo(self.addToSpacesButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
-            make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
+            if !FeatureFlag[.cardStrip] {
+                make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
+            }
         }
         
         appMenuBadge.layout(onButton: addToSpacesButton)
@@ -435,6 +454,9 @@ class URLBarView: UIView {
             $0.alpha = alpha
         }
         tabsButton.alpha = alpha
+        if FeatureFlag[.cardStrip] {
+            cardsButton.alpha = alpha
+        }
     }
 
     func updateProgressBar(_ progress: Float) {
@@ -527,6 +549,9 @@ class URLBarView: UIView {
         backButton.isHidden = !toolbarIsShowing
         tabsButton.isHidden = !toolbarIsShowing
         shareButton.isHidden = !toolbarIsShowing
+        if FeatureFlag[.cardStrip] {
+            cardsButton.isHidden = !toolbarIsShowing
+        }
     }
 
     func transitionToOverlay(_ didCancel: Bool = false) {
@@ -536,6 +561,9 @@ class URLBarView: UIView {
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
         tabsButton.alpha = inOverlayMode ? 0 : 1
+        if FeatureFlag[.cardStrip] {
+            cardsButton.alpha = inOverlayMode ? 0 : 1
+        }
         addToSpacesButton.alpha = inOverlayMode ? 0 : 1
         forwardButton.alpha = inOverlayMode ? 0 : 1
         backButton.alpha = inOverlayMode ? 0 : 1
@@ -553,6 +581,9 @@ class URLBarView: UIView {
         forwardButton.isHidden = !toolbarIsShowing || inOverlayMode
         backButton.isHidden = !toolbarIsShowing || inOverlayMode
         tabsButton.isHidden = !toolbarIsShowing || inOverlayMode
+        if FeatureFlag[.cardStrip] {
+            cardsButton.isHidden = !toolbarIsShowing || inOverlayMode
+        }
         shareButton.isHidden = !toolbarIsShowing || inOverlayMode
 
         // badge isHidden is tied to private mode on/off, use alpha to hide in this case
@@ -631,7 +662,11 @@ extension URLBarView: TabToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar, toolbarNeevaMenuButton]
+                    var list = [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar, toolbarNeevaMenuButton]
+                    if FeatureFlag[.cardStrip] {
+                        list.append(cardsButton)
+                    }
+                    return list
                 } else {
                     return [neevaMenuButton, locationContainer, shareButton, progressBar, toolbarNeevaMenuButton]
                 }

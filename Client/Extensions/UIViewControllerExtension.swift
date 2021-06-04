@@ -72,6 +72,7 @@ extension UIViewController {
     ///   - view: The `UIView` instance to which the view should be added.
     func addSubSwiftUIView<Content>(_ swiftUIView: Content, to containerView: UIView) where Content : View {
         let hostingController = UIHostingController(rootView: swiftUIView)
+        hostingController.view.backgroundColor = .clear
 
         /// Add as a child of the current view controller.
         addChild(hostingController)

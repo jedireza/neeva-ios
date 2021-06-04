@@ -812,10 +812,7 @@ class TrayToolbar: UIView, PrivateModeUI {
         doneButton.setTitleColor(.label, for: .normal)
 
         maskButton.offTint = UIColor.label
-        maskButton.onTint = UIColor { traits in
-            let style: UIUserInterfaceStyle = traits.userInterfaceStyle == .dark ? .light : .dark
-            return UIColor.label.resolvedColor(with: UITraitCollection(userInterfaceStyle: style))
-        }
+        maskButton.onTint = UIColor.label.swappedForStyle
 
         applyUIMode(isPrivate: false)
     }

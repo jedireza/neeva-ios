@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import UIKit
+import SwiftUI
 
 class PrivateModeButton: ToggleButton, PrivateModeUI {
     var offTint = UIColor.black
@@ -28,6 +29,35 @@ class PrivateModeButton: ToggleButton, PrivateModeUI {
         imageView?.tintColor = tintColor
 
         accessibilityValue = isSelected ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
+    }
+}
+
+class CardStripButton: ToggleButton {
+    var offTint = UIColor.label
+    var onTint = UIColor.label.swappedForStyle
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        accessibilityLabel = .TabTrayToggleAccessibilityLabel
+        accessibilityHint = .TabTrayToggleAccessibilityHint
+        let docImage = UIImage(named: "news")?.withRenderingMode(.alwaysTemplate)
+        setImage(docImage, for: [])
+        addTarget(self, action: #selector(toggleCardStripTapped), for: .touchUpInside)
+        tintColor = offTint
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc func toggleCardStripTapped() {
+        setSelected(!isSelected, animated: true)
+        tintColor = isSelected ? onTint : offTint
+
+        let cardStrip =
+            BrowserViewController.foregroundBVC().cardStripViewController
+        cardStrip?.cardStripHostingController?.view.isHidden = !isSelected
+        BrowserViewController.foregroundBVC().view.bringSubviewToFront((cardStrip?.view)!)
     }
 }
 

@@ -60,4 +60,11 @@ extension UIColor {
 
         return color
     }
+
+    public var swappedForStyle: UIColor {
+        return UIColor { traits in
+            let style: UIUserInterfaceStyle = traits.userInterfaceStyle == .dark ? .light : .dark
+            return self.resolvedColor(with: UITraitCollection(userInterfaceStyle: style))
+        }
+    }
 }
