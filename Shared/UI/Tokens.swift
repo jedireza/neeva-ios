@@ -38,6 +38,7 @@ extension Color {
 
 extension Color {
     public static let systemFill = Color(UIColor.systemFill)
+    public static let secondarySystemFill = Color(UIColor.secondarySystemFill)
     public static let tertiarySystemFill = Color(UIColor.tertiarySystemFill)
     public static let quaternarySystemFill = Color(UIColor.quaternarySystemFill)
 
@@ -60,7 +61,7 @@ extension Gradient {
 }
 
 /// Return the first `count` characters from the provided string, uppercased.
-func firstCharacters(_ count: Int, from str: String) -> String {
+public func firstCharacters(_ count: Int, from str: String) -> String {
     if str.count <= count {
         return str.uppercased()
     } else {

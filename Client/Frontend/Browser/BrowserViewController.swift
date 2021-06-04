@@ -1220,14 +1220,19 @@ class BrowserViewController: UIViewController {
     @objc fileprivate func openSettings() {
         assert(Thread.isMainThread, "Opening settings requires being invoked on the main thread")
 
-        let settingsTableViewController = AppSettingsTableViewController()
-        settingsTableViewController.profile = profile
-        settingsTableViewController.tabManager = tabManager
-        settingsTableViewController.settingsDelegate = self
+        if FeatureFlag[.legacySettings] {
+            let settingsTableViewController = AppSettingsTableViewController()
+            settingsTableViewController.profile = profile
+            settingsTableViewController.tabManager = tabManager
+            settingsTableViewController.settingsDelegate = self
 
-        let controller = ThemedNavigationController(rootViewController: settingsTableViewController)
-        controller.presentingModalViewControllerDelegate = self
-        self.present(controller, animated: true, completion: nil)
+            let controller = ThemedNavigationController(rootViewController: settingsTableViewController)
+            controller.presentingModalViewControllerDelegate = self
+            self.present(controller, animated: true, completion: nil)
+        } else {
+            let controller = SettingsViewController(bvc: self)
+            self.present(controller, animated: true, completion: nil)
+        }
     }
 
     fileprivate func postLocationChangeNotificationForTab(_ tab: Tab, navigation: WKNavigation?) {

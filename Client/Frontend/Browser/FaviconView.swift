@@ -2,7 +2,6 @@
 //  FaviconView.swift
 //  Client
 //
-//  Created by Yusuf Ozuysal on 5/16/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 

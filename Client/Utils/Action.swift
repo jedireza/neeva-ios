@@ -2,7 +2,6 @@
 //  Action.swift
 //  
 //
-//  Created by Jed Fox on 1/11/21.
 //
 
 import SwiftUI

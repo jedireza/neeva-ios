@@ -2,7 +2,6 @@
 //  UIMenuHelpers.swift
 //  Client
 //
-//  Created by Jed Fox on 1/15/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 import UIKit

@@ -2,7 +2,6 @@
 //  NeevaMenuView.swift
 //
 //
-//  Created by Stuart Allen on 3/13/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 

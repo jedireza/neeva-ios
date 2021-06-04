@@ -320,12 +320,21 @@
 		C9086050266693340049C072 /* CapsuleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908604F266693340049C072 /* CapsuleTextField.swift */; };
 		C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860512666BEE30049C072 /* SpacerExtensions.swift */; };
 		C90860542666BF050049C072 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860532666BF050049C072 /* Environment.swift */; };
+		C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */; };
+		C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */; };
+		C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */; };
+		C98E405F26585AB3003AC0E2 /* SupportSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405E26585AB3003AC0E2 /* SupportSettingsSection.swift */; };
+		C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E406026585C43003AC0E2 /* AboutSettingsSection.swift */; };
+		C98E406326585F01003AC0E2 /* DebugSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */; };
 		C994645F2657052200613110 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994645E2657052200613110 /* FeatureFlags.swift */; };
 		C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9946460265706D500613110 /* FeatureFlagSettings.swift */; };
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */; };
 		C9AFE6E126582ACE000C5A03 /* Error.css in Resources */ = {isa = PBXBuildFile; fileRef = C9AFE6E026582ACE000C5A03 /* Error.css */; };
 		C9AFE6E326582BCB000C5A03 /* OfflineError.html in Resources */ = {isa = PBXBuildFile; fileRef = C9AFE6E226582BCB000C5A03 /* OfflineError.html */; };
+		C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AFE6E626583F5A000C5A03 /* SettingsView.swift */; };
+		C9B2D28226612EF7005EF5AD /* NeevaAccountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */; };
+		C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */; };
 		C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4B82667D5D3001D9C77 /* Roobert.swift */; };
 		C9BED4BB2667E3F8001D9C77 /* HomeViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4BA2667E3F8001D9C77 /* HomeViewModels.swift */; };
 		C9BED4BD2667E453001D9C77 /* SuggestedSitesViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */; };
@@ -378,7 +387,11 @@
 		C9C18E6626559B9C004710CD /* ClientLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6426559B9C004710CD /* ClientLogger.swift */; };
 		C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6726559DCF004710CD /* FormatDateTime.swift */; };
 		C9D4564E26558EF80047267A /* RemoteImage in Frameworks */ = {isa = PBXBuildFile; productRef = C9D4564D26558EF80047267A /* RemoteImage */; };
+		C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */; };
 		C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
+		C9E448BE265D544E00651DCB /* NavigationLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448BD265D544E00651DCB /* NavigationLinkButton.swift */; };
+		C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C0265D555600651DCB /* MailAppSetting.swift */; };
+		C9E448C4265D55D500651DCB /* SiriSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C3265D55D500651DCB /* SiriSetting.swift */; };
 		CA03B26A247F1D9E00382B62 /* BreachAlertsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA03B269247F1D9E00382B62 /* BreachAlertsClient.swift */; };
 		CA24B52224ABD7D40093848C /* LoginsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B52024ABD7D40093848C /* LoginsListViewModelTests.swift */; };
 		CA24B53924ABFE250093848C /* LoginsListSelectionHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA24B53824ABFE250093848C /* LoginsListSelectionHelperTests.swift */; };
@@ -1244,11 +1257,20 @@
 		C908604F266693340049C072 /* CapsuleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleTextField.swift; sourceTree = "<group>"; };
 		C90860512666BEE30049C072 /* SpacerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerExtensions.swift; sourceTree = "<group>"; };
 		C90860532666BF050049C072 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSettingsSection.swift; sourceTree = "<group>"; };
+		C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsSection.swift; sourceTree = "<group>"; };
+		C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsSection.swift; sourceTree = "<group>"; };
+		C98E405E26585AB3003AC0E2 /* SupportSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportSettingsSection.swift; sourceTree = "<group>"; };
+		C98E406026585C43003AC0E2 /* AboutSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsSection.swift; sourceTree = "<group>"; };
+		C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsSection.swift; sourceTree = "<group>"; };
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 		C9946460265706D500613110 /* FeatureFlagSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettings.swift; sourceTree = "<group>"; };
 		C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLookView.swift; sourceTree = "<group>"; };
 		C9AFE6E026582ACE000C5A03 /* Error.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = Error.css; sourceTree = "<group>"; };
 		C9AFE6E226582BCB000C5A03 /* OfflineError.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OfflineError.html; sourceTree = "<group>"; };
+		C9AFE6E626583F5A000C5A03 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountRow.swift; sourceTree = "<group>"; };
+		C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSOProvider.swift; sourceTree = "<group>"; };
 		C9BED4B82667D5D3001D9C77 /* Roobert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Roobert.swift; sourceTree = "<group>"; };
 		C9BED4BA2667E3F8001D9C77 /* HomeViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModels.swift; sourceTree = "<group>"; };
 		C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedSitesViews.swift; sourceTree = "<group>"; };
@@ -1294,6 +1316,11 @@
 		C9C18E6326559B9C004710CD /* LogConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogConfig.swift; sourceTree = "<group>"; };
 		C9C18E6426559B9C004710CD /* ClientLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientLogger.swift; sourceTree = "<group>"; };
 		C9C18E6726559DCF004710CD /* FormatDateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatDateTime.swift; sourceTree = "<group>"; };
+		C9D49FFE265BDF2D00299FC2 /* schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
+		C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountInfoView.swift; sourceTree = "<group>"; };
+		C9E448BD265D544E00651DCB /* NavigationLinkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkButton.swift; sourceTree = SOURCE_ROOT; };
+		C9E448C0265D555600651DCB /* MailAppSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailAppSetting.swift; sourceTree = "<group>"; };
+		C9E448C3265D55D500651DCB /* SiriSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriSetting.swift; sourceTree = "<group>"; };
 		CA03B269247F1D9E00382B62 /* BreachAlertsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreachAlertsClient.swift; sourceTree = "<group>"; };
 		CA24B52024ABD7D40093848C /* LoginsListViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginsListViewModelTests.swift; sourceTree = "<group>"; };
 		CA24B53824ABFE250093848C /* LoginsListSelectionHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginsListSelectionHelperTests.swift; sourceTree = "<group>"; };
@@ -1937,8 +1964,16 @@
 		2F44FC551A9E83E200FD20CC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				EBB895322193FFF400EB91A0 /* ContentBlockerSettingViewController.swift */,
+				C9E448BD265D544E00651DCB /* NavigationLinkButton.swift */,
+				C9AFE6E626583F5A000C5A03 /* SettingsView.swift */,
+				C9E448BF265D553F00651DCB /* Neeva */,
+				C9E448C2265D557300651DCB /* General */,
+				C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */,
+				C98E405E26585AB3003AC0E2 /* SupportSettingsSection.swift */,
+				C98E406026585C43003AC0E2 /* AboutSettingsSection.swift */,
+				C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */,
 				7B4980A71CE363ED0017547C /* Settings.xcassets */,
+				EBB895322193FFF400EB91A0 /* ContentBlockerSettingViewController.swift */,
 				E692E3361C46E86A009D1240 /* AppSettingsOptions.swift */,
 				E68E39BD1C46F42000B85F42 /* AppSettingsTableViewController.swift */,
 				0B62EFD11AD63CD100ACB9CD /* Clearables.swift */,
@@ -2382,11 +2417,13 @@
 		C9C18E1726559132004710CD /* API */ = {
 			isa = PBXGroup;
 			children = (
+				C9D49FFE265BDF2D00299FC2 /* schema.json */,
 				C9C18DC926558FF2004710CD /* AbstractController.swift */,
 				C9C18E3C26559504004710CD /* API.swift */,
 				C9C18E3B26559504004710CD /* ErrorView.swift */,
 				C9C18E3A26559504004710CD /* Incognito.swift */,
 				12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */,
+				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
 				C9C18DD126558FF2004710CD /* Network.swift */,
 				C9C18DD026558FF2004710CD /* QueryController.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
@@ -2415,6 +2452,26 @@
 				C9C18E6426559B9C004710CD /* ClientLogger.swift */,
 			);
 			path = Logging;
+			sourceTree = "<group>";
+		};
+		C9E448BF265D553F00651DCB /* Neeva */ = {
+			isa = PBXGroup;
+			children = (
+				C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */,
+				C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */,
+				C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */,
+			);
+			path = Neeva;
+			sourceTree = "<group>";
+		};
+		C9E448C2265D557300651DCB /* General */ = {
+			isa = PBXGroup;
+			children = (
+				C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */,
+				C9E448C0265D555600651DCB /* MailAppSetting.swift */,
+				C9E448C3265D55D500651DCB /* SiriSetting.swift */,
+			);
+			path = General;
 			sourceTree = "<group>";
 		};
 		D010187021AF0E63009CBB5A /* js */ = {
@@ -4177,6 +4234,7 @@
 				E65075AA1E37F7AB006961AC /* URLProtectionSpaceExtensions.swift in Sources */,
 				EB7FFFC820A9D38D003E1E34 /* AlertController.swift in Sources */,
 				E65075BC1E37F7AB006961AC /* SupportUtils.swift in Sources */,
+				C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */,
 				C9C18E4E26559766004710CD /* AddToSpaceView.swift in Sources */,
 				E65075B61E37F7AB006961AC /* Loader.swift in Sources */,
 				C9C18E5426559827004710CD /* Space.swift in Sources */,
@@ -4434,6 +4492,7 @@
 				D0152245229855A8009DE753 /* OneLineCell.swift in Sources */,
 				D3B6923F1B9F9A58004B87A4 /* FindInPageHelper.swift in Sources */,
 				EB9A179C20E69A7F00B12184 /* DarkTheme.swift in Sources */,
+				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,
 				EB1C84BF212EFFBF001489DF /* BrowserViewController+ReaderMode.swift in Sources */,
 				EBA3B2CD2268F27500728BDB /* PhotonActionSheetWidgets.swift in Sources */,
 				C9C18E0926559007004710CD /* Suggestions.swift in Sources */,
@@ -4453,6 +4512,7 @@
 				C892DA0D22D39A980080F1F7 /* TrackingProtectionMenu.swift in Sources */,
 				C817B34D1FC609500086018E /* UIScrollViewSwizzled.swift in Sources */,
 				39F819C61FD70F5D009E31E4 /* TabEventHandlers.swift in Sources */,
+				C9E448C4265D55D500651DCB /* SiriSetting.swift in Sources */,
 				C8A4D2F72628C34000192B4D /* ViewExtensions.swift in Sources */,
 				E65607611C08B4E200534B02 /* SearchInputView.swift in Sources */,
 				FA6B2AC21D41F02D00429414 /* Punycode.swift in Sources */,
@@ -4469,6 +4529,7 @@
 				D3BE7B461B054F8600641031 /* TestAppDelegate.swift in Sources */,
 				048B4C8624A53F3E001B56E8 /* TodayUX.swift in Sources */,
 				1DF4266E251BC46D0086386A /* FaviconFetcher+Non-Bundled.swift in Sources */,
+				C98E405F26585AB3003AC0E2 /* SupportSettingsSection.swift in Sources */,
 				C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */,
 				0B62EFD21AD63CD100ACB9CD /* Clearables.swift in Sources */,
 				431C0CA925C890E500395CE4 /* DefaultBrowserOnboardingViewModel.swift in Sources */,
@@ -4479,6 +4540,7 @@
 				E68E7ADE1CAC208A00FDCA76 /* RemovePasscodeViewController.swift in Sources */,
 				74C027451B2A348C001B1E88 /* SessionData.swift in Sources */,
 				274A36CC239EB99400A21587 /* LibraryPanelContextMenu.swift in Sources */,
+				C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */,
 				D314E7F71A37B98700426A76 /* TabToolbar.swift in Sources */,
 				048B4C7924A53E7B001B56E8 /* TodayModel.swift in Sources */,
 				435D660723D7962C0046EFA2 /* UpdateCoverSheetTableViewCell.swift in Sources */,
@@ -4493,6 +4555,7 @@
 				F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */,
 				7BEFC6801BFF68C30059C952 /* QuickActions.swift in Sources */,
 				C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */,
+				C9B2D28226612EF7005EF5AD /* NeevaAccountRow.swift in Sources */,
 				D0C95E36200FDC5500E4E51C /* MetadataParserHelper.swift in Sources */,
 				0BF1B7E31AC60DEA00A7B407 /* InsetButton.swift in Sources */,
 				D87F84AC20B891160091F2DA /* TabDisplayManager.swift in Sources */,
@@ -4501,12 +4564,15 @@
 				D8D33A7D1FBD080300A20A28 /* SnapKitExtensions.swift in Sources */,
 				E650755C1E37F747006961AC /* Swizzling.m in Sources */,
 				C99646652655AA9A005FFE83 /* (null) in Sources */,
+				C9E448BE265D544E00651DCB /* NavigationLinkButton.swift in Sources */,
 				F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */,
 				74821FC51DB56A2500EEEA72 /* OpenWithSettingsViewController.swift in Sources */,
 				D3B6923D1B9F9444004B87A4 /* FindInPageBar.swift in Sources */,
 				4AA14F20264C7954003B815A /* HomeView.swift in Sources */,
 				2F44FC721A9E840300FD20CC /* SettingsNavigationController.swift in Sources */,
+				C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */,
 				E69E06BA1C76173D00D0F926 /* RequirePasscodeIntervalViewController.swift in Sources */,
+				C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */,
 				D0E89A2920910917001CE5C7 /* DownloadsPanel.swift in Sources */,
 				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
@@ -4549,6 +4615,7 @@
 				CA520E7A24913C1B00CCAB48 /* LoginListViewModel.swift in Sources */,
 				E65075521E37F6D1006961AC /* UIViewExtensions.swift in Sources */,
 				C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */,
+				C98E406326585F01003AC0E2 /* DebugSettingsSection.swift in Sources */,
 				E6927EC01C7B6FB800D03F75 /* ErrorToast.swift in Sources */,
 				D30B101E1AA7F9C600C01CA3 /* LibraryPanels.swift in Sources */,
 				F84B22041A0910F600AAB793 /* AppDelegate.swift in Sources */,
@@ -4582,7 +4649,9 @@
 				E47616C71AB74CA600E7DD25 /* ReaderModeBarView.swift in Sources */,
 				D821E90E2141B71C00452C55 /* SiriSettingsViewController.swift in Sources */,
 				EBB89507219398E500EB91A0 /* ContentBlocker.swift in Sources */,
+				C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */,
 				23ED80FF25C89C9800D0E9D5 /* DefaultBrowserOnboardingViewController.swift in Sources */,
+				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
 				D88FDA9F1F4E2B9200FD9709 /* PhotonActionSheetProtocol.swift in Sources */,
 				E65075511E37F6D1006961AC /* NSURLExtensionsMailTo.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
@@ -4591,6 +4660,7 @@
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
 				2F44FCC51A9E85E900FD20CC /* SettingsTableViewController.swift in Sources */,
 				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */,
+				C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */,
 				F0405D1025FFCA5200A0A3B2 /* NeevaMenuView.swift in Sources */,
 				F0405D2225FFCA5A00A0A3B2 /* NeevaUIConstants.swift in Sources */,
 				EBC4869D2195F58300CDA48D /* ErrorPageHelper.swift in Sources */,

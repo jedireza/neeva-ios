@@ -3626,13 +3626,14 @@ public final class UserInfoQuery: GraphQLQuery {
           email
           pictureURL
         }
+        authProvider
       }
     }
     """
 
   public let operationName: String = "UserInfo"
 
-  public let operationIdentifier: String? = "a4bade7248b9bdcffc766375d2a6ba93551728d2e2a273104476816119a05dd8"
+  public let operationIdentifier: String? = "c80d3917c1ec2ee50a06b46d8bd5a82155e83df3771ae388afefdf28f09eb786"
 
   public init() {
   }
@@ -3674,6 +3675,7 @@ public final class UserInfoQuery: GraphQLQuery {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("profile", type: .nonNull(.object(Profile.selections))),
+          GraphQLField("authProvider", type: .scalar(String.self)),
         ]
       }
 
@@ -3683,8 +3685,8 @@ public final class UserInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(id: GraphQLID, profile: Profile) {
-        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap])
+      public init(id: GraphQLID, profile: Profile, authProvider: String? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "authProvider": authProvider])
       }
 
       public var __typename: String {
@@ -3713,6 +3715,16 @@ public final class UserInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue.resultMap, forKey: "profile")
+        }
+      }
+
+      /// Name of the authenticator provider the user used to authenticate.
+      public var authProvider: String? {
+        get {
+          return resultMap["authProvider"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "authProvider")
         }
       }
 

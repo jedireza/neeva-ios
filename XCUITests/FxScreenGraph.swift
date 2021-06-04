@@ -144,8 +144,6 @@ class Action {
 
     static let GoToHomePage = "GoToHomePage"
 
-    static let OpenSiriFromSettings = "OpenSiriFromSettings"
-
     static let AcceptClearPrivateData = "AcceptClearPrivateData"
     static let AcceptClearAllWebsiteData = "AcceptClearAllWebsiteData"
     static let TapOnFilterWebsites = "TapOnFilterWebsites"
@@ -329,7 +327,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             }
         }
         makeURLBarAvailable(screenState)
-        screenState.tap(app.buttons["TabToolbar.neevaMenuButton"], to: NeevaMenu)
+        screenState.tap(app.buttons["Neeva Menu"], to: NeevaMenu)
 
         if isTablet {
             screenState.tap(app.buttons["Private Mode"], forAction: Action.TogglePrivateModeFromTabBarNewTab) { userState in
@@ -524,13 +522,11 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.tap(table.cells["Search"], to: SearchSettings)
         screenState.tap(table.cells["NewTab"], to: NewTabSettings)
         screenState.tap(table.cells["Home"], to: HomeSettings)
-        screenState.tap(table.cells["OpenWith.Setting"], to: OpenWithSettings)
-        screenState.tap(table.cells["SiriSettings"], to: SiriSettings)
-        screenState.tap(table.cells["Logins"], to: LoginsSettings, if: "passcode == nil")
-        screenState.tap(table.cells["Logins"], to: LockedLoginsSettings, if: "passcode != nil")
-        screenState.tap(table.cells["ClearPrivateData"], to: ClearPrivateDataSettings)
-        screenState.tap(table.cells["TrackingProtection"], to: TrackingProtectionSettings)
-        screenState.tap(table.cells["ShowTour"], to: ShowTourInSettings)
+        screenState.tap(table.cells["Mail App"], to: OpenWithSettings)
+        screenState.tap(table.cells["Siri Shortcuts"], to: SiriSettings)
+        screenState.tap(table.cells["Data Management"], to: ClearPrivateDataSettings)
+        screenState.tap(table.cells["Tracking Protection"], to: TrackingProtectionSettings)
+        screenState.tap(table.cells["Show Tour"], to: ShowTourInSettings)
 
         screenState.backAction = navigationControllerBackAction
     }
@@ -549,10 +545,6 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     }
 
     map.addScreenState(SiriSettings) { screenState in
-        screenState.gesture(forAction: Action.OpenSiriFromSettings) { userState in
-            // Tap on Open New Tab to open Siri
-            app.cells["SiriSettings"].staticTexts.element(boundBy: 0).tap()
-        }
         screenState.backAction = navigationControllerBackAction
     }
 

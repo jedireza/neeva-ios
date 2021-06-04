@@ -111,7 +111,7 @@ class NeevaProfileSetting: Setting {
     }
 
     override var image: UIImage? {
-        guard let userPictureData = NeevaUserInfo.shared.picture else {
+        guard let userPictureData = NeevaUserInfo.shared.pictureData else {
             return UIImage(named: "placeholder-avatar")!.createScaled(profilePictureSize)
         }
 

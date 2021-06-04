@@ -193,6 +193,7 @@ extension PhotonActionSheetProtocol {
             return PhotonActionSheetUX.RowHeight + 70
         }
 
+        // TODO: refactor for new settings
         let settings = PhotonActionSheetItem(title: Strings.TPProtectionSettings, iconString: "settings") { _, _ in
             let settingsTableViewController = AppSettingsTableViewController()
             settingsTableViewController.profile = self.profile

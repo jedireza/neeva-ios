@@ -2,7 +2,6 @@
 //  File.swift
 //  
 //
-//  Created by Macy Ngan on 4/30/21.
 //
 
 import Foundation

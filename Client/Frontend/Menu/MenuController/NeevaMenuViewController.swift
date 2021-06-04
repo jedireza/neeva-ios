@@ -2,11 +2,11 @@
 //  NeevaMenuViewController.swift
 //  Client
 //
-//  Created by Macy Ngan on 5/5/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 
 import SwiftUI
+import Shared
 
 struct NeevaMenuRootView: View {
     @StateObject var overlaySheetModel = OverlaySheetModel()
@@ -55,24 +55,34 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
             case .settings:
                 ClientLogger.shared.logCounter(.OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
                 self.dismiss( animated: true, completion: nil )
-                let settingsTableViewController = AppSettingsTableViewController()
-                settingsTableViewController.profile = delegate.profile
-                settingsTableViewController.tabManager = delegate.tabManager
-                settingsTableViewController.settingsDelegate = delegate
+                if FeatureFlag[.legacySettings] {
+                    let settingsTableViewController = AppSettingsTableViewController()
+                    settingsTableViewController.profile = delegate.profile
+                    settingsTableViewController.tabManager = delegate.tabManager
+                    settingsTableViewController.settingsDelegate = delegate
 
-                let controller = ThemedNavigationController(rootViewController: settingsTableViewController)
-                // On iPhone iOS13 the WKWebview crashes while presenting file picker if its not full screen. Ref #6232
-                // since there are no intentional uses of file pickers in the web views under the Settings screen, we
-                // can remove this workaround and get the better iOS 13 UX
-                // if UIDevice.current.userInterfaceIdiom == .phone {
-                //     controller.modalPresentationStyle = .fullScreen
-                // }
-                controller.presentingModalViewControllerDelegate = delegate
+                    let controller = ThemedNavigationController(rootViewController: settingsTableViewController)
+                    // On iPhone iOS13 the WKWebview crashes while presenting file picker if its not full screen. Ref #6232
+                    // since there are no intentional uses of file pickers in the web views under the Settings screen, we
+                    // can remove this workaround and get the better iOS 13 UX
+                    // if UIDevice.current.userInterfaceIdiom == .phone {
+                    //     controller.modalPresentationStyle = .fullScreen
+                    // }
+                    controller.presentingModalViewControllerDelegate = delegate
 
-                // Wait to present VC in an async dispatch queue to prevent a case where dismissal
-                // of this popover on iPad seems to block the presentation of the modal VC.
-                DispatchQueue.main.async {
-                    delegate.present(controller, animated: true, completion: nil)
+                    // Wait to present VC in an async dispatch queue to prevent a case where dismissal
+                    // of this popover on iPad seems to block the presentation of the modal VC.
+                    DispatchQueue.main.async {
+                        delegate.present(controller, animated: true, completion: nil)
+                    }
+                } else {
+                    let controller = SettingsViewController(bvc: delegate)
+
+                    // Wait to present VC in an async dispatch queue to prevent a case where dismissal
+                    // of this popover on iPad seems to block the presentation of the modal VC.
+                    DispatchQueue.main.async {
+                        delegate.present(controller, animated: true, completion: nil)
+                    }
                 }
                 break
             case .history:

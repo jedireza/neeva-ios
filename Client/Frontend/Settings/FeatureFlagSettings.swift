@@ -2,12 +2,12 @@
 //  FeatureFlagSettings.swift
 //  Client
 //
-//  Created by Jed Fox on 5/19/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 
 import SwiftUI
 import Shared
+import Defaults
 
 class FeatureFlagSetting: HiddenSetting {
     override var title: NSAttributedString? {
@@ -31,13 +31,20 @@ class FeatureFlagSetting: HiddenSetting {
 
 
 struct FeatureFlagSettingsView: View {
+    @Default(FeatureFlag.defaultsKey) var key
     var body: some View {
-        List(FeatureFlag.allCases, id: \.rawValue) { flag in
-            Toggle(flag.rawValue, isOn: Binding(
-                    get: { FeatureFlag[flag] },
-                    set: { FeatureFlag[flag] = $0 }
-            ))
-        }.listStyle(InsetGroupedListStyle())
+        List {
+            DecorativeSection {
+                // trigger updates when toggling
+                let _ = key
+                ForEach(FeatureFlag.allCases, id: \.rawValue) { flag in
+                    Toggle(flag.rawValue, isOn: Binding(
+                        get: { FeatureFlag[flag] },
+                        set: { FeatureFlag[flag] = $0 }
+                    )).toggleStyle(SwitchToggleStyle(tint: .blue))
+                }
+            }
+        }.listStyle(GroupedListStyle())
     }
 }
 
@@ -47,6 +54,6 @@ struct FeatureFlagSettings_Previews: PreviewProvider {
             FeatureFlagSettingsView()
                 .navigationTitle("Feature Flags")
                 .navigationBarTitleDisplayMode(.inline)
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }

@@ -63,3 +63,31 @@ class SiriShortcuts {
         }
     }
 }
+
+class SiriShortcutManager: ObservableObject {
+    enum ShortcutStatus {
+        case loading
+        case found(INVoiceShortcut)
+        case notFound
+    }
+    @Published var shortcut = ShortcutStatus.loading
+
+    let activityType: SiriShortcuts.activityType
+
+    init(_ activityType: SiriShortcuts.activityType) {
+        self.activityType = activityType
+        self.reload()
+    }
+
+    func reload() {
+        INVoiceShortcutCenter.shared.getAllVoiceShortcuts { (voiceShortcuts, error) in
+            DispatchQueue.main.async {
+                if let foundShortcut = voiceShortcuts?.first(where: { $0.shortcut.userActivity?.activityType == self.activityType.rawValue }) {
+                    self.shortcut = .found(foundShortcut)
+                } else {
+                    self.shortcut = .notFound
+                }
+            }
+        }
+    }
+}

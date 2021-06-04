@@ -2,7 +2,6 @@
 //  PinToTopSitesActivity.swift
 //  Neeva iOS
 //
-//  Created by Neeva on 10/03/21.
 //  Copyright © 2021 Neeva Inc. All rights reserved.
 //
 

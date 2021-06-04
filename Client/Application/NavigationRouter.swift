@@ -116,11 +116,18 @@ enum NavigationPath {
             guard let rootVC = bvc.navigationController else {
                 return
             }
-            let settingsTableViewController = AppSettingsTableViewController()
-            settingsTableViewController.profile = bvc.profile
-            settingsTableViewController.tabManager = bvc.tabManager
-            settingsTableViewController.settingsDelegate = bvc
-            NavigationPath.handleSettings(settings: settingsPath, with: rootVC, baseSettingsVC: settingsTableViewController, and: bvc)
+
+            if FeatureFlag[.legacySettings] {
+                let settingsTableViewController = AppSettingsTableViewController()
+                settingsTableViewController.profile = bvc.profile
+                settingsTableViewController.tabManager = bvc.tabManager
+                settingsTableViewController.settingsDelegate = bvc
+                NavigationPath.handleSettings(settings: settingsPath, with: rootVC, baseSettingsVC: settingsTableViewController, and: bvc)
+            } else {
+                let controller = SettingsViewController(bvc: bvc)
+                bvc.present(controller, animated: true, completion: nil)
+            }
+
         case .defaultBrowser(let path):
             NavigationPath.handleDefaultBrowser(path: path)
         }

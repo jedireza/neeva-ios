@@ -2,7 +2,6 @@
 //  TourPromptView.swift
 //  Client
 //
-//  Created by Macy Ngan on 5/14/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 

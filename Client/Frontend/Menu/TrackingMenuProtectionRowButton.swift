@@ -2,7 +2,6 @@
 //  TrackingMenuProtectionRowButton.swift
 //  Client
 //
-//  Created by Stuart Allen on 19/03/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 import SwiftUI

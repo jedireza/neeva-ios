@@ -4,12 +4,34 @@ import SwiftUI
 
 /// An alternative to `Section { ... }` that doesn’t render an empty view
 /// for VoiceOver users to swipe past
-struct DecorativeSection<Content: View>: View {
+public struct DecorativeSection<Content: View, Footer: View>: View {
     let content: () -> Content
-    init(@ViewBuilder _ content: @escaping () -> Content) {
+    let footer: (() -> Footer)?
+
+    public init(@ViewBuilder _ footer: @escaping () -> Footer, @ViewBuilder _ content: @escaping () -> Content) {
         self.content = content
+        self.footer = footer
     }
-    var body: some View {
-        Section(header: EmptyView().accessibilityHidden(true), content: content)
+
+    public var body: some View {
+        if let footer = footer {
+            Section(header: EmptyView().accessibilityHidden(true), footer: footer(), content: content)
+        } else {
+            Section(header: EmptyView().accessibilityHidden(true), content: content)
+        }
+    }
+}
+
+extension DecorativeSection where Footer == Never {
+    public init(@ViewBuilder _ content: @escaping () -> Content) {
+        self.content = content
+        self.footer = nil
+    }
+}
+
+extension DecorativeSection where Footer == Text {
+    public init(footer: String, @ViewBuilder _ content: @escaping () -> Content) {
+        self.content = content
+        self.footer = { Text(footer) }
     }
 }

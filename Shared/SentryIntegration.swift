@@ -63,7 +63,8 @@ public class Sentry {
     }
 
     public func crash() {
-        // TODO: Implement
+        let ptr = UnsafeMutablePointer<Int>(bitPattern: 1)
+        ptr?.pointee = 0
     }
 
     /*

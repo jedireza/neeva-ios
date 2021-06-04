@@ -10,6 +10,8 @@ import Defaults
 
 /// Usage: add a `case` to this enum, then reference `FeatureFlag[.myFeature]` to check for that feature’s status.
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
+    case legacySettings = "Legacy Settings"
+    case inlineAccountSettings = "Inline Account Settings"
     case feedbackScreenshot = "Attach Screenshot to Feedback"
     case pinToTopSites = "Pin to Top Sites"
     case noQueryInLocationBar = "No Query in Location Bar"
@@ -17,7 +19,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
 }
 
 extension FeatureFlag {
-    fileprivate static let defaultsKey = Defaults.Key<Set<String>>("neevaFeatureFlags", default: [], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    public static let defaultsKey = Defaults.Key<Set<String>>("neevaFeatureFlags", default: [], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
     fileprivate static let prune: Void = {
         let names = Defaults[Self.defaultsKey]

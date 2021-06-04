@@ -5,30 +5,9 @@
 import XCTest
 
 class SettingsTest: BaseTestCase {
-    func testHelpOpensSUMOInTab() {
-        navigator.goto(SettingsScreen)
-        let settingsTableView = app.tables["AppSettingsTableViewController.tableView"]
-
-        while settingsTableView.staticTexts["Help"].exists == false {
-            settingsTableView.swipeUp()
-        }
-        let helpMenu = settingsTableView.cells["Help"]
-        XCTAssertTrue(helpMenu.isEnabled)
-        helpMenu.tap()
-
-        waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "neeva.com")
-        //waitForExistence(app.webViews.staticTexts["Neeva for iOS Support"])
-
-        /* Disabled as this mechanism of querying number of tabs does not work
-        let numTabs = app.buttons["Show Tabs"].value
-        XCTAssertEqual("2", numTabs as? String, "Sume should be open in a different tab")
-        */
-    }
-
     func testOpenSiriOption() {
-        navigator.performAction(Action.OpenSiriFromSettings)
-        waitForExistence(app.buttons["Add to Siri"], timeout: 5)
+        navigator.goto(SiriSettings)
+        waitForExistence(app.buttons["Open New Tab"], timeout: 5)
     }
 
     /* TODO: rewrite this test
@@ -65,12 +44,11 @@ class SettingsTest: BaseTestCase {
     func testSendFeedback() {
         navigator.goto(SettingsScreen)
 
-        let settingsTableView = app.tables["AppSettingsTableViewController.tableView"]
-        while settingsTableView.staticTexts["Help"].exists == false {
-            settingsTableView.swipeUp()
+        while app.buttons["Send Feedback"].exists == false {
+            app.swipeUp()
         }
 
-        let sendFeedbackCell = settingsTableView.cells["Send Feedback"]
+        let sendFeedbackCell = app.buttons["Send Feedback"]
         XCTAssertTrue(sendFeedbackCell.isEnabled)
         sendFeedbackCell.tap()
 

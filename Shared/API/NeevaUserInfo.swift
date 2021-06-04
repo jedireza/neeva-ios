@@ -2,16 +2,16 @@
 //  NeevaUserInfo.swift
 //  Client
 //
-//  Created by BairesDev on 20/03/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 
 import Foundation
 import Reachability
 import WebKit
+import SwiftUI
 import Apollo
 
-public class NeevaUserInfo {
+public class NeevaUserInfo: ObservableObject {
 
     private let UserInfoKey = "UserInfo"
 
@@ -19,17 +19,40 @@ public class NeevaUserInfo {
 
     public static let shared = NeevaUserInfo()
 
-    private var userId: String?
-    private var userDisplayName: String?
-    private var userEmail: String?
-    private var userPictureUrl: String?
-    private var userPictureData: Data?
+    @Published public private(set) var id: String?
+    @Published public private(set) var displayName: String?
+    @Published public private(set) var email: String?
+    @Published public private(set) var pictureUrl: String?
+    @Published public private(set) var pictureData: Data?
+    @Published public private(set) var authProvider: SSOProvider?
+    @Published public private(set) var isLoading = false
 
     /// Using optimistic approach, the user is considered `LoggedIn = true` until we receive a login required GraphQL error.
-    public private(set) var isUserLoggedIn: Bool = true
+    @Published public private(set) var isUserLoggedIn: Bool = true
 
     private let reachability = try! Reachability()
     private var connection: Reachability.Connection?
+
+    public init(previewDisplayName displayName: String?, email: String?, pictureUrl: String?, authProvider: SSOProvider?) {
+        self.displayName = displayName
+        self.email = email
+        self.pictureUrl = pictureUrl
+        self.authProvider = (authProvider?.rawValue).flatMap(SSOProvider.init(rawValue:))
+        defaults = UserDefaults.standard
+        isUserLoggedIn = true
+        fetchUserPicture()
+    }
+
+    public static let previewLoggedOut = NeevaUserInfo(previewLoggedOut: ())
+    public static let previewLoading = NeevaUserInfo(previewLoading: ())
+    private init(previewLoggedOut: ()) {
+        defaults = UserDefaults.standard
+        isUserLoggedIn = false
+    }
+    private init(previewLoading: ()) {
+        defaults = UserDefaults.standard
+        isLoading = true
+    }
 
     private init() {
         self.defaults = UserDefaults.standard
@@ -51,7 +74,11 @@ public class NeevaUserInfo {
             return
         }
 
+        isLoading = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
         UserInfoQuery().fetch { result in
+            self.isLoading = false
             switch result {
             case .success(let data):
                 if let user = data.user {
@@ -77,7 +104,13 @@ public class NeevaUserInfo {
 
                 self.loadUserInfoFromDefaults()
             }
-        }
+        }})
+    }
+
+    public func didLogOut() {
+        clearCache()
+        isUserLoggedIn = false
+        fetch()
     }
 
     public func clearCache(){
@@ -126,14 +159,15 @@ public class NeevaUserInfo {
     public func loadUserInfoFromDefaults() -> Void {
         let userInfoDict = defaults.object(forKey: UserInfoKey) as? [String:String] ?? [String:String]()
 
-        userDisplayName = userInfoDict["userDisplayName"]
-        userEmail = userInfoDict["userEmail"]
-        userPictureUrl = userInfoDict["userPictureUrl"]
-        userId = userInfoDict["userId"]
+        self.id = userInfoDict["userId"]
+        self.displayName = userInfoDict["userDisplayName"]
+        self.email = userInfoDict["userEmail"]
+        self.pictureUrl = userInfoDict["userPictureUrl"]
+        self.authProvider = userInfoDict["userAuthProvider"].flatMap(SSOProvider.init(rawValue:))
     }
 
     private func fetchUserPicture() {
-        guard let url = URL(string: userPictureUrl ?? "") else {
+        guard let url = URL(string: pictureUrl ?? "") else {
             return
         }
 
@@ -143,7 +177,7 @@ public class NeevaUserInfo {
                 return
             }
 
-            self.userPictureData = data
+            self.pictureData = data
         }
 
         dataTask.resume()
@@ -157,38 +191,22 @@ public class NeevaUserInfo {
         return false
     }
 
-    public var displayName: String? {
-        return userDisplayName
-    }
-
-    public var email: String? {
-        return userEmail
-    }
-
-    public var picture: Data? {
-        return userPictureData
-    }
-
-    public var id: String? {
-        return userId
-    }
-
     private func saveUserInfoToDefaults(userInfo: UserInfoQuery.Data.User) -> Void {
-        let userInfoDict = [ "userDisplayName": userInfo.profile.displayName, "userEmail": userInfo.profile.email, "userPictureUrl": userInfo.profile.pictureUrl, "userId": userInfo.id ]
+        let userInfoDict = [ "userDisplayName": userInfo.profile.displayName, "userEmail": userInfo.profile.email, "userPictureUrl": userInfo.profile.pictureUrl, "userAuthProvider": userInfo.authProvider, "userId": userInfo.id ]
         defaults.set(userInfoDict, forKey: UserInfoKey)
 
-        userDisplayName = userInfo.profile.displayName
-        userEmail = userInfo.profile.email
-        userPictureUrl = userInfo.profile.pictureUrl
-        userId = userInfo.id
+        displayName = userInfo.profile.displayName
+        email = userInfo.profile.email
+        pictureUrl = userInfo.profile.pictureUrl
+        authProvider = userInfo.authProvider.flatMap(SSOProvider.init(rawValue:))
     }
 
     private func clearUserInfoCache() -> Void {
-        userDisplayName = nil
-        userEmail = nil
-        userPictureUrl = nil
-        userPictureData = nil
-        userId = nil
+        displayName = nil
+        email = nil
+        pictureUrl = nil
+        pictureData = nil
+        id = nil
         self.reachability.stopNotifier()
     }
 }

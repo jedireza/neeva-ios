@@ -8,28 +8,24 @@ class MailAppSettingsTests: BaseTestCase {
     func testOpenMailAppSettings() {
         navigator.goto(OpenWithSettings)
 
-        // Check that the list is shown
-        waitForExistence(app.tables["OpenWithPage.Setting.Options"])
-        XCTAssertTrue(app.tables["OpenWithPage.Setting.Options"].exists)
-
         // Check that the list is shown with all elements disabled
+        waitForExistence(app.tables.staticTexts["OPEN MAIL LINKS WITH"])
         XCTAssertTrue(app.tables.staticTexts["OPEN MAIL LINKS WITH"].exists)
-        XCTAssertFalse(app.tables.cells.staticTexts["Mail"].isSelected)
-        XCTAssertFalse(app.tables.cells.staticTexts["Outlook"].isSelected)
-        XCTAssertFalse(app.tables.cells.staticTexts["Airmail"].isSelected)
-        XCTAssertFalse(app.tables.cells.staticTexts["Mail.Ru"].isSelected)
-        XCTAssertFalse(app.tables.cells.staticTexts["myMail"].isSelected)
-        XCTAssertFalse(app.tables.cells.staticTexts["Spark"].isSelected)
-        XCTAssertFalse(app.tables.cells.staticTexts["YMail!"].isSelected)
-        XCTAssertFalse(app.tables.cells.staticTexts["Gmail"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["Mail"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["Outlook"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["Airmail"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["Mail.Ru"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["myMail"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["Spark"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["YMail!"].isSelected)
+        XCTAssertFalse(app.tables.cells.buttons["Gmail"].isSelected)
 
         // Check that tapping on an element does nothing
-        waitForExistence(app.tables["OpenWithPage.Setting.Options"])
-        app.tables.cells.staticTexts["Airmail"].tap()
-        XCTAssertFalse(app.tables.cells.staticTexts["Airmail"].isSelected)
+        app.tables.cells.buttons["Airmail"].tap()
+        XCTAssertFalse(app.tables.cells.buttons["Airmail"].isSelected)
 
         // Check that user can go back from that setting
         navigator.nowAt(OpenWithSettings)
-        navigator.goto(SettingsScreen)
+        navigator.back()
     }
 }

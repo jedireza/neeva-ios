@@ -2,7 +2,6 @@
 //  NeevaUIConstants.swift
 //  Client
 //
-//  Created by Stuart Allen on 13/03/21.
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 

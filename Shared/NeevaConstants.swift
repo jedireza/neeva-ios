@@ -4,7 +4,9 @@ import Foundation
 import Defaults
 import KeychainAccess
 
-let neevaHostKey = Defaults.Key<String>("neevaHost", default: "neeva.com", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+extension Defaults.Keys {
+    public static let neevaHost = Defaults.Key<String>("neevaHost", default: "neeva.com", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+}
 
 public struct NeevaConstants {
     /// The App Group, used for the keychain and UserDefaults
@@ -12,8 +14,8 @@ public struct NeevaConstants {
 
     /// The host for the Neeva API/website, such as `neeva.com`
     public static var appHost: String {
-        get { Defaults[neevaHostKey] }
-        set { Defaults[neevaHostKey] = newValue }
+        get { Defaults[.neevaHost] }
+        set { Defaults[.neevaHost] = newValue }
     }
 
     public static func isAppHost(_ host: String?) -> Bool {
@@ -33,6 +35,7 @@ public struct NeevaConstants {
     public static var appFAQURL: URL { appURL / "faq" }
 
     public static let appPrivacyURL = appMarketingURL / "privacy"
+    public static let appTermsURL = appMarketingURL / "terms"
     public static let appHelpCenterURL = appMarketingURL / "contact"
 
     /// The keychain key to store the Neeva login cookie into

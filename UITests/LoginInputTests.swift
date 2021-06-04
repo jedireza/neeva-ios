@@ -5,6 +5,7 @@
 import Foundation
 @testable import Client
 
+
 class LoginInputTests: KIFTestCase {
     fileprivate var webRoot: String!
     fileprivate var profile: Profile!
