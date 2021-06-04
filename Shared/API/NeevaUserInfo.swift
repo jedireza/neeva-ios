@@ -85,6 +85,7 @@ public class NeevaUserInfo: ObservableObject {
                     self.saveUserInfoToDefaults(userInfo: user)
                     self.fetchUserPicture()
                     self.isUserLoggedIn = true
+                    NeevaFeatureFlags.update(featureFlags: user.featureFlags)
                     /// Once we've fetched UserInfo sucessfuly, we don't need to keep monitoring connectivity anymore.
                     self.reachability.stopNotifier()
                 }

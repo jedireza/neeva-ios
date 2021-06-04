@@ -3626,6 +3626,14 @@ public final class UserInfoQuery: GraphQLQuery {
           email
           pictureURL
         }
+        featureFlags {
+          __typename
+          id
+          value
+          intValue
+          floatValue
+          stringValue
+        }
         authProvider
       }
     }
@@ -3633,7 +3641,7 @@ public final class UserInfoQuery: GraphQLQuery {
 
   public let operationName: String = "UserInfo"
 
-  public let operationIdentifier: String? = "c80d3917c1ec2ee50a06b46d8bd5a82155e83df3771ae388afefdf28f09eb786"
+  public let operationIdentifier: String? = "22b5377ca74fa3973228367e94473711011abe5520d6312639d6e9f10196002b"
 
   public init() {
   }
@@ -3675,6 +3683,7 @@ public final class UserInfoQuery: GraphQLQuery {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("profile", type: .nonNull(.object(Profile.selections))),
+          GraphQLField("featureFlags", type: .nonNull(.list(.nonNull(.object(FeatureFlag.selections))))),
           GraphQLField("authProvider", type: .scalar(String.self)),
         ]
       }
@@ -3685,8 +3694,8 @@ public final class UserInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(id: GraphQLID, profile: Profile, authProvider: String? = nil) {
-        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "authProvider": authProvider])
+      public init(id: GraphQLID, profile: Profile, featureFlags: [FeatureFlag], authProvider: String? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "featureFlags": featureFlags.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, "authProvider": authProvider])
       }
 
       public var __typename: String {
@@ -3715,6 +3724,16 @@ public final class UserInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue.resultMap, forKey: "profile")
+        }
+      }
+
+      /// List of feature flags
+      public var featureFlags: [FeatureFlag] {
+        get {
+          return (resultMap["featureFlags"] as! [ResultMap]).map { (value: ResultMap) -> FeatureFlag in FeatureFlag(unsafeResultMap: value) }
+        }
+        set {
+          resultMap.updateValue(newValue.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, forKey: "featureFlags")
         }
       }
 
@@ -3783,6 +3802,94 @@ public final class UserInfoQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "pictureURL")
+          }
+        }
+      }
+
+      public struct FeatureFlag: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["FeatureFlag"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", type: .nonNull(.scalar(Int.self))),
+            GraphQLField("value", type: .scalar(Bool.self)),
+            GraphQLField("intValue", type: .scalar(Int.self)),
+            GraphQLField("floatValue", type: .scalar(Double.self)),
+            GraphQLField("stringValue", type: .scalar(String.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(id: Int, value: Bool? = nil, intValue: Int? = nil, floatValue: Double? = nil, stringValue: String? = nil) {
+          self.init(unsafeResultMap: ["__typename": "FeatureFlag", "id": id, "value": value, "intValue": intValue, "floatValue": floatValue, "stringValue": stringValue])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// The numeric ID of the feature flag.
+        public var id: Int {
+          get {
+            return resultMap["id"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        /// The boolean value of the feature flag, to be populated if the flag is of
+        /// type Boolean.
+        public var value: Bool? {
+          get {
+            return resultMap["value"] as? Bool
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "value")
+          }
+        }
+
+        /// The integer value of the feature flag, to be populated if the flag is of
+        /// type Integer.
+        public var intValue: Int? {
+          get {
+            return resultMap["intValue"] as? Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "intValue")
+          }
+        }
+
+        /// The float value of the feature flag, to be populated if the flag is of
+        /// type Float.
+        public var floatValue: Double? {
+          get {
+            return resultMap["floatValue"] as? Double
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "floatValue")
+          }
+        }
+
+        /// The string value of the feature flag, to be populated if the flag is of
+        /// type String.
+        public var stringValue: String? {
+          get {
+            return resultMap["stringValue"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "stringValue")
           }
         }
       }

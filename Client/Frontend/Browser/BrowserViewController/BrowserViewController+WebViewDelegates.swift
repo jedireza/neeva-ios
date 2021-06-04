@@ -5,6 +5,7 @@
 import Foundation
 import WebKit
 import Shared
+import SwiftyJSON
 import UIKit
 import Defaults
 
@@ -12,6 +13,70 @@ private let log = Logger.browserLogger
 
 /// List of schemes that are allowed to be opened in new tabs.
 private let schemesAllowedToBeOpenedAsPopups = ["http", "https", "javascript", "data", "about"]
+
+fileprivate func setCookiesForNeeva(webView: WKWebView) {
+    let httpCookieStore = webView.configuration.websiteDataStore.httpCookieStore
+
+    // Set this cookie as another way to communicate that we are the iOS app.
+    // Unfortunately, setting a customUserAgent is ignored by WebKit for
+    // redirected requests. See https://github.com/neevaco/neeva/issues/40875
+    // for more details.
+    httpCookieStore.setCookie(NeevaConstants.deviceTypeCookie)
+
+    // Some feature flags need to be echoed to neeva.com to ensure that both
+    // the browser and the site are using consistent feature flag values. This
+    // helps protect against possible race conditions with the two learning
+    // about feature flags at different times. List feature flags below that
+    // should be synchronized in this fashion.
+
+    let boolFlags: [NeevaFeatureFlags.BoolFlag] = [
+        .clientHideSearchBox
+    ]
+    let intFlags: [NeevaFeatureFlags.IntFlag] = [
+    ]
+    let floatFlags: [NeevaFeatureFlags.FloatFlag] = [
+    ]
+    let stringFlags: [NeevaFeatureFlags.StringFlag] = [
+    ]
+
+    var data: [[String: Any]] = []
+    for boolFlag in boolFlags {
+        data.append([
+            "ID": boolFlag.rawValue,
+            "Value": NeevaFeatureFlags[boolFlag]
+        ])
+    }
+    for intFlag in intFlags {
+        data.append([
+            "ID": intFlag.rawValue,
+            "IntValue": NeevaFeatureFlags[intFlag]
+        ])
+    }
+    for floatFlag in floatFlags {
+        data.append([
+            "ID": floatFlag.rawValue,
+            "FloatValue": NeevaFeatureFlags[floatFlag]
+        ])
+    }
+    for stringFlag in stringFlags {
+        data.append([
+            "ID": stringFlag.rawValue,
+            "StringValue": NeevaFeatureFlags[stringFlag]
+        ])
+    }
+
+    var json: JSON = []
+    json.arrayObject = data
+
+    if let base64 = json.stringify()?.data(using: .utf8)?.base64EncodedString() {
+        httpCookieStore.setCookie(HTTPCookie(properties: [
+            .name: "ClientOverrides",
+            .value: base64,
+            .domain: NeevaConstants.appHost,
+            .path: "/"
+        ])!)
+    }
+}
 
 extension BrowserViewController: WKUIDelegate {
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
@@ -460,11 +525,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
             if NeevaConstants.isAppHost(url.host) {
                 webView.customUserAgent = UserAgent.neevaAppUserAgent()
-                // Set this cookie as another way to communicate that we are the iOS app.
-                // Unfortunately, setting a customUserAgent is ignored by WebKit for
-                // redirected requests. See https://github.com/neevaco/neeva/issues/40875
-                // for more details.
-                webView.configuration.websiteDataStore.httpCookieStore.setCookie(NeevaConstants.deviceTypeCookie)
+                setCookiesForNeeva(webView: webView)
             } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(domain: url.baseDomain ?? "")
                 webView.customUserAgent = platformSpecificUserAgent

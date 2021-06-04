@@ -6,6 +6,13 @@ query UserInfo {
       email
       pictureURL
     }
+    featureFlags {
+      id
+      value
+      intValue
+      floatValue
+      stringValue
+    }
     authProvider
   }
 }
