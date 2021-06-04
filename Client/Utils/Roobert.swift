@@ -1,10 +1,4 @@
-//
-//  Roobert.swift
-//  Client
-//
-//  Created by Jed Fox on 6/2/21.
-//  Copyright © 2021 Neeva. All rights reserved.
-//
+// Copyright © Neeva. All rights reserved.
 
 import SwiftUI
 

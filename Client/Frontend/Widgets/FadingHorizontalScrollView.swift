@@ -2,6 +2,11 @@
 
 import SwiftUI
 
+/// This is a custom wrapper for `UIScrollView`, primarily used in `NeevaHome` to display suggested sites.
+/// It adds two gradient overlays over the leading and trailing edges of the scroll view that show the user more content
+/// is visible without obscuring items at the edges of the scroll view’s content. UIKit is currently necessary to support
+/// controlling the visibility of the gradients on scroll and because views laid on top of a SwiftUI `ScrollView` always
+/// prevent touches from passing through to scroll the `ScrollView`.
 struct FadingHorizontalScrollView<Content: View>: UIViewRepresentable {
     let content: (CGSize) -> Content
 
@@ -41,6 +46,7 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
     let scrollView = UIScrollView()
     let hostingController: UIHostingController<Content>
 
+    // CAGradientLayer is used here to render the gradients.
     let leadingGradient = CAGradientLayer()
     let trailingGradient = CAGradientLayer()
 
@@ -56,7 +62,6 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
         self.rootView = rootView
         super.init(frame: .zero)
 
-//        translatesAutoresizingMaskIntoConstraints = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -100,24 +105,33 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
         if UIDevice.current.userInterfaceIdiom != .pad {
             self.layer.addSublayer(leadingGradient)
             self.layer.addSublayer(trailingGradient)
+            // calculate proper gradient opacity after a short delay to give
+            // SwiftUI time to mount the view.
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+                self.scrollViewDidScroll(self.scrollView)
+            }
         }
     }
 
+    // resize this view to match the height of the hosting controller, and update the SwiftUI view
+    // with information about the parent view’s size.
     override func layoutSubviews() {
         hostingController.rootView = rootView(scrollView.bounds.size)
         super.layoutSubviews()
         hostingController.rootView = rootView(scrollView.bounds.size)
+        bounds.size.height = hostingController.view.intrinsicContentSize.height
         scrollViewDidScroll(scrollView)
     }
 
+    // adjust the position and size of the gradient views
     override func layoutSublayers(of layer: CALayer) {
         super.layoutSublayers(of: layer)
-        bounds.size.height = hostingController.view.intrinsicContentSize.height
         trailingGradient.frame.origin.x = bounds.width - trailingGradient.frame.width
         leadingGradient.frame.size.height = bounds.height
         trailingGradient.frame.size.height = bounds.height
     }
 
+    /// adjust the opacity of the gradients based on current scroll position. Rapidly fade them in and out at the edges of the scrollable content area
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         leadingGradient.opacity = Float(max(0, min(1, scrollView.contentOffset.x / 10)))
         trailingGradient.opacity = Float(max(0, min(1, (scrollView.contentSize.width - (scrollView.contentOffset.x + scrollView.bounds.width)) / 10)))

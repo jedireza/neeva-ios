@@ -13,36 +13,32 @@ import Defaults
 
 private let log = Logger.browserLogger
 
-// MARK: -  Lifecycle
-/*
- Size classes are the way Apple requires us to specify our UI.
- Split view on iPad can make a landscape app appear with the demensions of an iPhone app
- Use UXSizeClasses to specify things like offsets/itemsizes with respect to size classes
- For a primer on size classes https://useyourloaf.com/blog/size-classes/
- */
-struct UXSizeClasses {
-    var compact: CGFloat
-    var regular: CGFloat
-    var unspecified: CGFloat
-
-    init(compact: CGFloat, regular: CGFloat, other: CGFloat) {
-        self.compact = compact
-        self.regular = regular
-        self.unspecified = other
+extension EnvironmentValues {
+    private struct OpenInNewTabKey: EnvironmentKey {
+        static var defaultValue: ((URL, _ isPrivate: Bool) -> ())? = nil
     }
 
-    subscript(sizeClass: UIUserInterfaceSizeClass) -> CGFloat {
-        switch sizeClass {
-            case .compact:
-                return self.compact
-            case .regular:
-                return self.regular
-            case .unspecified:
-                return self.unspecified
-            @unknown default:
-                fatalError()
-        }
+    public var openInNewTab: (URL, _ isPrivate: Bool) -> () {
+        get { self[OpenInNewTabKey] ?? { _,_ in fatalError(".environment(\\.openInNewTab) must be specified") } }
+        set { self[OpenInNewTabKey] = newValue }
+    }
 
+    private struct ShareURLKey: EnvironmentKey {
+        static var defaultValue: ((URL) -> ())? = nil
+    }
+
+    public var shareURL: (URL) -> () {
+        get { self[ShareURLKey] ?? { _ in fatalError(".environment(\\.shareURL) must be specified") } }
+        set { self[ShareURLKey] = newValue }
+    }
+
+    private struct HideTopSiteKey: EnvironmentKey {
+        static var defaultValue: ((Site) -> ())? = nil
+    }
+
+    public var hideTopSite: (Site) -> () {
+        get { self[HideTopSiteKey] ?? { _ in fatalError(".environment(\\.hideTopSite) must be specified") } }
+        set { self[HideTopSiteKey] = newValue }
     }
 }
 
@@ -78,8 +74,23 @@ class NeevaHomeViewController: UIViewController, HomePanel {
             rootView: home
                 .environmentObject(suggestedSitesViewModel)
                 .environmentObject(suggestedSearchesModel)
+                .environment(\.setSearchInput) { [weak self] query in
+                    self?.homePanelDelegate?.homePanel(didEnterQuery: query)
+                }
                 .environment(\.onOpenURL) { [weak self] url in
                     self?.showSiteWithURLHandler(url)
+                }
+                .environment(\.shareURL) { [weak self] url in
+                    let helper = ShareExtensionHelper(url: url, tab: nil)
+                    let controller = helper.createActivityViewController({ (_, _) in })
+                    controller.modalPresentationStyle = .formSheet
+                    self?.present(controller, animated: true, completion: nil)
+                }
+                .environment(\.hideTopSite) { [weak self] url in
+                    self?.hideURLFromTopSites(url)
+                }
+                .environment(\.openInNewTab) { [weak self] url, isPrivate in
+                    self?.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(url, isPrivate: isPrivate)
                 }
 
         )
@@ -96,25 +107,6 @@ class NeevaHomeViewController: UIViewController, HomePanel {
     init(profile: Profile) {
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
-
-        self.suggestedSearchesModel.enterQuery = { [weak self] query in
-            self?.homePanelDelegate?.homePanel(didEnterQuery: query)
-        }
-
-        self.suggestedSitesViewModel.openInNewTab = { [weak self] url, isPrivate in
-            self?.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(url, isPrivate: isPrivate)
-        }
-
-        self.suggestedSitesViewModel.share = { [weak self] url in
-            let helper = ShareExtensionHelper(url: url, tab: nil)
-            let controller = helper.createActivityViewController({ (_, _) in })
-            controller.modalPresentationStyle = .formSheet
-            self?.present(controller, animated: true, completion: nil)
-        }
-
-        self.suggestedSitesViewModel.hideURLFromTopSites = { [weak self] url in
-            self?.hideURLFromTopSites(url)
-        }
 
         let refreshEvents: [Notification.Name] = [.DynamicFontChanged, .HomePanelPrefsChanged]
         refreshEvents.forEach { NotificationCenter.default.addObserver(self, selector: #selector(reload), name: $0, object: nil) }

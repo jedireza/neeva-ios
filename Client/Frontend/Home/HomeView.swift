@@ -10,7 +10,6 @@ struct NeevaHomeUX {
     static let FaviconSize: CGFloat = 28
     static let SuggestedSiteIconSize: CGFloat = 40
     static let SuggestedSiteIconCornerRadius: CGFloat = 4
-    static let NumberOfItemsPerRowForSizeClassIpad = UXSizeClasses(compact: 3, regular: 4, other: 2)
     static let PinIconSize: CGFloat = 12
     static let SuggestedSiteTitleFontSize: CGFloat = 14
     static let SuggestedSiteBlockWidth: CGFloat = 64
@@ -31,15 +30,49 @@ struct NeevaHomeUX {
     }
 }
 
+fileprivate enum TriState: Int, Codable {
+    case hidden
+    case compact
+    case expanded
+
+    var verb: String {
+        switch self {
+        case .hidden: return "show"
+        case .compact: return "expand"
+        case .expanded: return "hide"
+        }
+    }
+
+    var icon: Nicon {
+        switch self {
+        case .hidden: return .chevronDown
+        case .compact: return .doubleChevronDown
+        case .expanded: return .chevronUp
+        }
+    }
+
+    var next: TriState {
+        switch self {
+        case .hidden: return .compact
+        case .compact: return .expanded
+        case .expanded: return .hidden
+        }
+    }
+
+    mutating func advance() {
+        self = self.next
+    }
+}
+
 extension Defaults.Keys {
-    fileprivate static let expandSuggestedSites = Defaults.Key<Bool>("profile.home.suggestedSites.expanded", default: false)
+    fileprivate static let expandSuggestedSites = Defaults.Key<TriState>("profile.home.suggestedSites.expanded", default: .compact)
     fileprivate static let expandSearches = Defaults.Key<Bool>("profile.home.searches.expanded", default: true)
     fileprivate static let expandSpaces = Defaults.Key<Bool>("profile.home.spaces.expanded", default: true)
 }
 
 struct NeevaHomeHeader: View {
     let title: String
-    @Binding var isExpanded: Bool
+    let action: () -> ()
     let label: String
     let icon: Nicon
 
@@ -53,8 +86,8 @@ struct NeevaHomeHeader: View {
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
             Spacer()
-            Button(action: { isExpanded.toggle() }) {
-                Symbol(icon, size: NeevaHomeUX.ToggleIconSize, weight: .medium, label: label)
+            Button(action: action) {
+                Symbol(icon, size: NeevaHomeUX.ToggleIconSize, weight: .medium)
                     .frame(width: NeevaHomeUX.ToggleButtonSize, height: NeevaHomeUX.ToggleButtonSize, alignment: .center)
                     .background(Color.Neeva.UI.Gray98).clipShape(Circle())
             }
@@ -62,8 +95,8 @@ struct NeevaHomeHeader: View {
         .accessibilityElement(children: .ignore)
         .accessibilityAddTraits([.isHeader])
         .accessibilityLabel(title)
-        .accessibilityHint("Double-tap to \(isExpanded ? "collapse" : "expand") section")
-        .accessibilityAction { isExpanded.toggle() }
+        .accessibilityHint("Double-tap to \(label)")
+        .accessibilityAction(.default, action)
         .padding([.top, .horizontal], NeevaHomeUX.HeaderPadding)
     }
 }
@@ -87,17 +120,19 @@ struct NeevaHome: View {
                 VStack(spacing: 0) {
                     NeevaHomeHeader(
                         title: "Suggested sites",
-                        isExpanded: $expandSuggestedSites,
-                        label: "Show \(expandSuggestedSites ? "fewer" : "more") suggested sites",
-                        icon: expandSuggestedSites ? .chevronUp : .doubleChevronDown
+                        action: { expandSuggestedSites.advance() },
+                        label: "\(expandSuggestedSites.verb) suggested sites",
+                        icon: expandSuggestedSites.icon
                     )
-                    SuggestedSitesView(isExpanded: expandSuggestedSites)
+                    if expandSuggestedSites != .hidden {
+                        SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
+                    }
 
                     NeevaHomeHeader(
                         title: "Searches",
-                        isExpanded: $expandSearches,
-                        label: "\(expandSearches ? "Hide" : "Show") searches",
-                        icon: expandSuggestedSites ? .chevronUp : .chevronDown
+                        action: { expandSearches.toggle() },
+                        label: "\(expandSearches ? "hide" : "show") searches",
+                        icon: expandSearches ? .chevronUp : .chevronDown
                     )
                     if expandSearches {
                         SuggestedSearchesView()

@@ -8,8 +8,13 @@ struct SuggestedSiteView: View {
     let site: Site!
     let isPinnedSite: Bool!
 
-    @Environment(\.onOpenURL) private var openURL
     @EnvironmentObject private var viewModel: SuggestedSitesViewModel
+
+    @Environment(\.onOpenURL) private var openURL
+    @Environment(\.shareURL) private var shareURL
+    @Environment(\.openInNewTab) private var openInNewTab
+    @Environment(\.hideTopSite) private var hideTopSite
+
     @State private var isDeleting = false
 
     var title: String {
@@ -26,7 +31,7 @@ struct SuggestedSiteView: View {
     }
 
     var body: some View {
-        Button(action: { if let url = site.url.asURL { openURL(url) } }) {
+        Button(action: { site.url.asURL.map(openURL) }) {
             VStack(spacing: 2) {
                 FaviconView(site: site, size: NeevaHomeUX.FaviconSize, bordered: false)
                     .frame(width: NeevaHomeUX.SuggestedSiteIconSize, height: NeevaHomeUX.SuggestedSiteIconSize, alignment: .center)
@@ -52,13 +57,13 @@ struct SuggestedSiteView: View {
             .contextMenu(ContextMenu(menuItems: {
                 Text(site.title.isEmpty ? site.url : site.title)
                 Divider()
-                Button(action: { if let url = site.url.asURL { viewModel.openInNewTab(url, false) } }) {
+                Button(action: { site.url.asURL.map { openInNewTab($0, false) } }) {
                     Label("Open in New Tab", systemSymbol: .plusSquare)
                 }
-                Button(action: { if let url = site.url.asURL { viewModel.openInNewTab(url, true) } }) {
+                Button(action: { site.url.asURL.map { openInNewTab($0, true) } }) {
                     Label("Open in Incognito", image: "incognito")
                 }
-                Button(action: { if let url = site.url.asURL { viewModel.share(url) } }) {
+                Button(action: { site.url.asURL.map(shareURL) }) {
                     Label("Share", systemSymbol: .squareAndArrowUp)
                 }
                 // TODO: make this red
@@ -71,7 +76,7 @@ struct SuggestedSiteView: View {
             }))
             .actionSheet(isPresented: $isDeleting) {
                 ActionSheet(title: Text("Permanently remove \(title) from Suggested Sites?"), buttons: [
-                    .destructive(Text("Remove")) { viewModel.hideURLFromTopSites(site) },
+                    .destructive(Text("Remove")) { hideTopSite(site) },
                     .cancel()
                 ])
             }

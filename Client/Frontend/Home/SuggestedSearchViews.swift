@@ -18,7 +18,9 @@ fileprivate struct ListRowButtonStyle: ButtonStyle {
 
 struct SuggestedSearchesView: View {
     @EnvironmentObject var model: SuggestedSearchesModel
+
     @Environment(\.onOpenURL) private var openURL
+    @Environment(\.setSearchInput) private var setSearchInput
 
     var body: some View {
         VStack(spacing: 0) {
@@ -34,7 +36,7 @@ struct SuggestedSearchesView: View {
                 }
                 .buttonStyle(ListRowButtonStyle())
                 .overlay(
-                    Button(action: { model.enterQuery(query) }) {
+                    Button(action: { setSearchInput(query) }) {
                         VStack {
                             Spacer(minLength: 0)
                             Symbol(.arrowUpLeft)
@@ -57,8 +59,8 @@ struct SuggestedSearchesView_Previews: PreviewProvider {
         VStack(spacing: 0) {
             NeevaHomeHeader(
                 title: "Searches",
-                isExpanded: .constant(true),
-                label: "Hide searches",
+                action: {},
+                label: "hide searches",
                 icon: .chevronUp
             )
             SuggestedSearchesView()

@@ -51,15 +51,9 @@ class HomeViewModel: ObservableObject {
 
 class SuggestedSitesViewModel: ObservableObject {
     @Published var sites: [Site]
-    @Published var openInNewTab: (URL, _ isPrivate: Bool) -> ()
-    @Published var share: (URL) -> ()
-    @Published var hideURLFromTopSites: (Site) -> ()
 
     init(sites: [Site]) {
         self.sites = sites
-        self.openInNewTab = { _, _ in }
-        self.share = { _ in }
-        self.hideURLFromTopSites = { _ in }
     }
 
     #if DEV
@@ -80,11 +74,9 @@ class SuggestedSitesViewModel: ObservableObject {
 
 class SuggestedSearchesModel: ObservableObject {
     @Published var suggestedQueries = [(query: String, site: Site)]()
-    @Published var enterQuery: (String) -> ()
 
     init(suggestedQueries: [(String, Site)]) {
         self.suggestedQueries = suggestedQueries
-        self.enterQuery = { _ in }
     }
 
     var searchUrlForQuery: String {
