@@ -37,7 +37,7 @@ public struct SendFeedbackView: View {
     @State var shareResults = true
     @State var shareScreenshot = true
     @State var isSending = false
-    @State var isPreviewing = false
+    @State var screenshotSheet = ModalState()
     @State var editedScreenshot: UIImage
 
     public var body: some View {
@@ -70,11 +70,8 @@ public struct SendFeedbackView: View {
                     DecorativeSection {
                         Toggle(isOn: $shareScreenshot) {
                             VStack(alignment: .leading) {
-                                Text("Share Screenshot")
-                                    .bold()
-                                Button("View or edit") {
-                                    isPreviewing = true
-                                }
+                                Text("Share Screenshot").bold()
+                                Button("View or edit") { screenshotSheet.present() }
                                 .buttonStyle(BorderlessButtonStyle())
                                 .disabled(!shareScreenshot)
                             }
@@ -82,7 +79,7 @@ public struct SendFeedbackView: View {
                         .toggleStyle(SwitchToggleStyle(tint: .blue))
                         .padding(.vertical, 4)
                         .padding(.leading, -4)
-                        .sheet(isPresented: $isPreviewing) {
+                        .modal(state: $screenshotSheet) {
                             QuickLookView(image: $editedScreenshot, original: screenshot)
                         }
                     }

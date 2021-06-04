@@ -12,7 +12,7 @@ import Shared
 struct SiriSetting: View {
     @ObservedObject var shortcutManager = SiriShortcutManager(.openURL)
 
-    @State var shortcutSheetVisible = false
+    @State var shortcutModal = ModalState()
 
     var isLoading: Bool {
         if case .loading = shortcutManager.shortcut {
@@ -25,23 +25,26 @@ struct SiriSetting: View {
     var body: some View {
         List {
             DecorativeSection(footer: "Use Siri shortcuts to quickly open Neeva via Siri") {
-                NavigationLinkButton("Open New Tab", style: isLoading ? .loading : .modal) { shortcutSheetVisible = true }
-                    .sheet(isPresented: $shortcutSheetVisible) {
-                        switch shortcutManager.shortcut {
-                        case .loading: EmptyView()
-                        case .notFound:
-                            AddToSiriView(
-                                manager: shortcutManager,
-                                isPresented: $shortcutSheetVisible
-                            ).ignoresSafeArea()
-                        case .found(let shortcut):
-                            EditSiriView(
-                                manager: shortcutManager,
-                                shortcut: shortcut,
-                                isPresented: $shortcutSheetVisible
-                            ).ignoresSafeArea()
-                        }
-                    }.disabled(isLoading)
+                let link = NavigationLinkButton("Open New Tab", style: isLoading ? .loading : .modal) { shortcutModal.present() }
+                    .disabled(isLoading)
+                switch shortcutManager.shortcut {
+                case .loading: link
+                case .notFound:
+                    link.modal(state: $shortcutModal) {
+                        AddToSiriView(
+                            manager: shortcutManager,
+                            modalState: $shortcutModal
+                        )
+                    }
+                case .found(let shortcut):
+                    link.modal(state: $shortcutModal) {
+                        EditSiriView(
+                            manager: shortcutManager,
+                            shortcut: shortcut,
+                            modalState: $shortcutModal
+                        )
+                    }
+                }
             }
         }
         .listStyle(GroupedListStyle())
@@ -49,34 +52,35 @@ struct SiriSetting: View {
     }
 }
 
-// TODO: these don’t support swiping down inside the VC to dismiss.
-// maybe we need to turn them into invisible views placed in .background()
-// that present a the INUI* VC using UIKit?
-struct AddToSiriView: UIViewControllerRepresentable {
+struct AddToSiriView: ViewControllerWrapper {
     let manager: SiriShortcutManager
-    @Binding var isPresented: Bool
+    @Binding var modalState: ModalState
 
     class Coordinator: NSObject, INUIAddVoiceShortcutViewControllerDelegate {
         var manager: SiriShortcutManager
-        var isPresented: Binding<Bool>
+        @Binding var modalState: ModalState
 
-        init(manager: SiriShortcutManager, isPresented: Binding<Bool>) {
+        init(manager: SiriShortcutManager, modalState: Binding<ModalState>) {
             self.manager = manager
-            self.isPresented = isPresented
+            self._modalState = modalState
         }
 
         func addVoiceShortcutViewController(_ controller: INUIAddVoiceShortcutViewController, didFinishWith voiceShortcut: INVoiceShortcut?, error: Error?) {
             manager.reload()
-            isPresented.wrappedValue = false
+            modalState.dismiss()
         }
 
         func addVoiceShortcutViewControllerDidCancel(_ controller: INUIAddVoiceShortcutViewController) {
-            isPresented.wrappedValue = false
+            modalState.dismiss()
+        }
+
+        func updateSheetBinding(to newValue: Binding<ModalState>) {
+            _modalState = newValue
         }
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(manager: manager, isPresented: $isPresented)
+        Coordinator(manager: manager, modalState: _modalState)
     }
 
     func makeUIViewController(context: Context) -> some UIViewController {
@@ -88,43 +92,47 @@ struct AddToSiriView: UIViewControllerRepresentable {
         return addViewController
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    func updateUIViewController(_ uiViewController: ViewController, context: Context) {
         context.coordinator.manager = manager
-        context.coordinator.isPresented = $isPresented
+        context.coordinator.updateSheetBinding(to: _modalState)
     }
 }
 
-struct EditSiriView: UIViewControllerRepresentable {
+struct EditSiriView: ViewControllerWrapper {
     let manager: SiriShortcutManager
     let shortcut: INVoiceShortcut
-    @Binding var isPresented: Bool
+    @Binding var modalState: ModalState
 
     class Coordinator: NSObject, INUIEditVoiceShortcutViewControllerDelegate {
         var manager: SiriShortcutManager
-        var isPresented: Binding<Bool>
+        @Binding var modalState: ModalState
 
-        init(manager: SiriShortcutManager, isPresented: Binding<Bool>) {
+        init(manager: SiriShortcutManager, modalState: Binding<ModalState>) {
             self.manager = manager
-            self.isPresented = isPresented
+            self._modalState = modalState
         }
 
         func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController, didUpdate voiceShortcut: INVoiceShortcut?, error: Error?) {
             manager.reload()
-            isPresented.wrappedValue = false
+            modalState.dismiss()
         }
 
         func editVoiceShortcutViewController(_ controller: INUIEditVoiceShortcutViewController, didDeleteVoiceShortcutWithIdentifier deletedVoiceShortcutIdentifier: UUID) {
             manager.reload()
-            isPresented.wrappedValue = false
+            modalState.dismiss()
         }
 
         func editVoiceShortcutViewControllerDidCancel(_ controller: INUIEditVoiceShortcutViewController) {
-            isPresented.wrappedValue = false
+            modalState.dismiss()
+        }
+
+        func updateSheetBinding(to newValue: Binding<ModalState>) {
+            _modalState = newValue
         }
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(manager: manager, isPresented: $isPresented)
+        Coordinator(manager: manager, modalState: _modalState)
     }
 
     func makeUIViewController(context: Context) -> some UIViewController {
@@ -134,9 +142,9 @@ struct EditSiriView: UIViewControllerRepresentable {
         return editViewController
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    func updateUIViewController(_ uiViewController: ViewController, context: Context) {
         context.coordinator.manager = manager
-        context.coordinator.isPresented = $isPresented
+        context.coordinator.updateSheetBinding(to: _modalState)
     }
 }
 

@@ -9,16 +9,6 @@
 import SwiftUI
 import QuickLook
 
-struct QuickLookView: View {
-    @Binding var image: UIImage
-    let original: UIImage
-
-    var body: some View {
-        _QuickLookView(image: $image, original: original)
-            .ignoresSafeArea()
-    }
-}
-
 class CustomPreviewController: QLPreviewController {
     var didReset: (() -> ())!
 
@@ -32,6 +22,7 @@ class CustomPreviewController: QLPreviewController {
                     confirmation.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                     confirmation.addAction(UIAlertAction(title: "Revert to Original", style: .destructive, handler: { _ in
                         self.didReset()
+                        self.reloadData()
                     }))
                     confirmation.popoverPresentationController?.barButtonItem = item
                     self.navigationController!.present(confirmation, animated: true, completion: nil)
@@ -42,61 +33,65 @@ class CustomPreviewController: QLPreviewController {
     }
 }
 
-fileprivate struct _QuickLookView: UIViewControllerRepresentable {
+public struct QuickLookView: ViewControllerWrapper {
     @Binding var image: UIImage
     let original: UIImage
 
-    @Environment(\.presentationMode) var presentationMode
+    public init(image: Binding<UIImage>, original: UIImage) {
+        self._image = image
+        self.original = original
+    }
 
-    func makeCoordinator() -> Coordinator {
+
+    public func makeCoordinator() -> Coordinator {
         Coordinator(image: $image)
     }
 
-    func makeUIViewController(context: Context) -> UINavigationController {
+    public func makeUIViewController(context: Context) -> UINavigationController {
         let vc = CustomPreviewController()
         vc.didReset = { image = original }
         vc.dataSource = context.coordinator
         vc.delegate = context.coordinator
         vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, closure: { _ in
-            presentationMode.wrappedValue.dismiss()
+            vc.dismiss(animated: true, completion: nil)
         })
         let nav = UINavigationController(rootViewController: vc)
         return nav
     }
 
-    func updateUIViewController(_ vc: UINavigationController, context: Context) {
+    public func updateUIViewController(_ vc: UINavigationController, context: Context) {
         context.coordinator.image = $image
         (vc.viewControllers.first! as! QLPreviewController).reloadData()
     }
 
-    class Coordinator: NSObject, QLPreviewControllerDataSource, QLPreviewControllerDelegate {
+    public class Coordinator: NSObject, QLPreviewControllerDataSource, QLPreviewControllerDelegate {
         @Environment(\.onOpenURL) var onOpenURL
         var image: Binding<UIImage>
 
-        init(image: Binding<UIImage>) {
+        fileprivate init(image: Binding<UIImage>) {
             self.image = image
         }
 
         // MARK: - QLPreviewControllerDataSource
 
-        func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
+        public func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
             1
         }
 
-        func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+        public func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
             image.wrappedValue
         }
 
         // MARK: - QLPreviewControllerDelegate
 
-        func previewController(_ controller: QLPreviewController, shouldOpen url: URL, for item: QLPreviewItem) -> Bool {
+        public func previewController(_ controller: QLPreviewController, shouldOpen url: URL, for item: QLPreviewItem) -> Bool {
             onOpenURL(url)
             return false
         }
-        func previewController(_ controller: QLPreviewController, editingModeFor previewItem: QLPreviewItem) -> QLPreviewItemEditingMode {
+        public func previewController(_ controller: QLPreviewController, editingModeFor previewItem: QLPreviewItem) -> QLPreviewItemEditingMode {
             .createCopy
         }
-        func previewController(_ controller: QLPreviewController, didSaveEditedCopyOf previewItem: QLPreviewItem, at url: URL) {
+        public func previewController(_ controller: QLPreviewController, didSaveEditedCopyOf previewItem: QLPreviewItem, at url: URL) {
             if let data = try? Data(contentsOf: url),
                let image = UIImage(data: data) {
                 self.image.wrappedValue = image
@@ -123,10 +118,3 @@ extension UIImage: QLPreviewItem {
         ""
     }
 }
-
-struct QuickLookView_Previews: PreviewProvider {
-    static var previews: some View {
-        QuickLookView(image: .constant(UIImage(color: .systemRed, width: 100, height: 100)!), original: UIImage(color: .systemRed, width: 100, height: 100)!)
-    }
-}
-

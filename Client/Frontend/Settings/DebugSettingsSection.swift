@@ -13,13 +13,15 @@ struct DebugSettingsSection: View {
     @Environment(\.onOpenURL) var openURL
     @Default(.neevaHost) var appHost
 
+    @State var legacySettingsModal = ModalState()
+
     var body: some View {
         Group {
             DecorativeSection {
-                SheetNavigationLink("Legacy Settings") {
-                    LegacySettingsView()
-                        .ignoresSafeArea()
-                }
+                NavigationLinkButton("Legacy Settings", style: .modal, action: { legacySettingsModal.present() })
+                    .modal(state: $legacySettingsModal) {
+                        LegacySettingsView()
+                    }
             }
             SwiftUI.Section(header: Text("Debug — Neeva")) {
                 NavigationLink("Feature Flags", destination: FeatureFlagSettingsView().navigationTitle("Feature Flags"))
@@ -108,23 +110,7 @@ struct DebugSettingsSection: View {
     }
 }
 
-struct AlertView: UIViewControllerRepresentable {
-    @Binding var isOpen: Bool
-    let makeAlert: () -> UIAlertController
-
-    func makeUIViewController(context: Context) -> some UIViewController {
-        UIViewController()
-    }
-    func updateUIViewController(_ vc: UIViewControllerType, context: Context) {
-        if isOpen && vc.presentedViewController == nil {
-            vc.present(makeAlert(), animated: true, completion: nil)
-        } else if !isOpen && vc.presentedViewController != nil {
-            vc.dismiss(animated: true, completion: nil)
-        }
-    }
-}
-
-struct LegacySettingsView: UIViewControllerRepresentable {
+struct LegacySettingsView: ViewControllerWrapper {
     func makeUIViewController(context: Context) -> some UIViewController {
         let settings = AppSettingsTableViewController()
         let bvc = BrowserViewController.foregroundBVC()
@@ -136,8 +122,7 @@ struct LegacySettingsView: UIViewControllerRepresentable {
         controller.presentingModalViewControllerDelegate = bvc
         return controller
     }
-    func updateUIViewController(_ settings: UIViewControllerType, context: Context) {
-    }
+    func updateUIViewController(_ settings: ViewController, context: Context) {}
 }
 
 struct DebugSettingsSection_Previews: PreviewProvider {
