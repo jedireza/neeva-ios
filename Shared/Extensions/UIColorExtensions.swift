@@ -67,4 +67,12 @@ extension UIColor {
             return self.resolvedColor(with: UITraitCollection(userInterfaceStyle: style))
         }
     }
+
+    public var lightVariant: UIColor {
+        return self.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+    }
+
+    public var darkVariant: UIColor {
+        return self.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
+    }
 }

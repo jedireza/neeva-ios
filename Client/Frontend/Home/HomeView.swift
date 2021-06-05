@@ -112,7 +112,7 @@ struct NeevaHome: View {
         ScrollView {
             VStack(spacing: 0) {
                 if viewModel.isPrivate {
-                    IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding()
+                    IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(16.0)
                 }
                 if !viewModel.isPrivate && viewModel.showDefaultBrowserCard {
                     PromoCard(model: viewModel)
