@@ -14,14 +14,10 @@ struct TabTrayControllerUX {
     static let TopBarHeight = UIConstants.TopToolbarPaddingTop + UIConstants.TextFieldHeight + UIConstants.TopToolbarPaddingBottom
     static let FaviconSize = CGFloat(20)
     static let Margin = CGFloat(15)
-    static let ToolbarButtonOffset = CGFloat(10.0)
     static let CloseButtonSize = CGFloat(32)
-    static let CloseButtonMargin = CGFloat(6.0)
     static let CloseButtonEdgeInset = CGFloat(7)
-    static let NumberOfColumnsThin = 1
     static let NumberOfColumnsWide = 3
     static let CompactNumberOfColumnsThin = 2
-    static let MenuFixedWidth: CGFloat = 320
 }
 
 protocol TabTrayDelegate: AnyObject {
@@ -384,14 +380,6 @@ extension TabTrayControllerV1: TabDisplayer {
 }
 
 extension TabTrayControllerV1 {
-
-    @objc func didTapLearnMore() {
-        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        if let langID = Locale.preferredLanguages.first {
-            let learnMoreRequest = URLRequest(url: "https://support.mozilla.org/1/mobile/\(appVersion ?? "0.0")/iOS/\(langID)/private-browsing-ios".asURL!)
-            openNewTab(learnMoreRequest)
-        }
-    }
 
     func closeTabsForCurrentTray() {
         let tabs = self.tabDisplayManager.dataStore.compactMap { $0 }

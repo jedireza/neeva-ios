@@ -179,9 +179,6 @@ class URLBarView: UIView {
 
     var profile: Profile? = nil
     
-    fileprivate let appMenuBadge = BadgeWithBackdrop(imageName: "menuBadge")
-    fileprivate let warningMenuBadge = BadgeWithBackdrop(imageName: "menuWarning", imageMask: "warning-mask")
-
     init(profile: Profile) {
         self.profile = profile
         super.init(frame: CGRect())
@@ -203,9 +200,6 @@ class URLBarView: UIView {
         if FeatureFlag[.cardStrip] {
             addSubview(cardsButton)
         }
-
-        appMenuBadge.add(toParent: self)
-        warningMenuBadge.add(toParent: self)
 
         helper = TabToolbarHelper(toolbar: self)
         setupConstraints()
@@ -297,9 +291,6 @@ class URLBarView: UIView {
                 make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
             }
         }
-        
-        appMenuBadge.layout(onButton: addToSpacesButton)
-        warningMenuBadge.layout(onButton: addToSpacesButton)
     }
 
     override func updateConstraints() {
@@ -585,13 +576,6 @@ class URLBarView: UIView {
             cardsButton.isHidden = !toolbarIsShowing || inOverlayMode
         }
         shareButton.isHidden = !toolbarIsShowing || inOverlayMode
-
-        // badge isHidden is tied to private mode on/off, use alpha to hide in this case
-        [appMenuBadge, warningMenuBadge].forEach {
-            $0.badge.alpha = (!toolbarIsShowing || inOverlayMode) ? 0 : 1
-            $0.backdrop.alpha = (!toolbarIsShowing || inOverlayMode) ? 0 : BadgeWithBackdrop.backdropAlpha
-        }
-        
     }
 
     func animateToOverlayState(overlayMode overlay: Bool, didCancel cancel: Bool = false) {
@@ -627,21 +611,6 @@ class URLBarView: UIView {
 }
 
 extension URLBarView: TabToolbarProtocol {
-    func appMenuBadge(setVisible: Bool) {
-        // Warning badges should take priority over the standard badge
-        guard warningMenuBadge.badge.isHidden else {
-            return
-        }
-
-        appMenuBadge.show(setVisible)
-    }
-
-    func warningMenuBadge(setVisible: Bool) {
-        // Disable other menu badges before showing the warning.
-        if !appMenuBadge.badge.isHidden { appMenuBadge.show(false) }
-        warningMenuBadge.show(setVisible)
-    }
-
     func updateBackStatus(_ canGoBack: Bool) {
         backButton.isEnabled = canGoBack
     }
@@ -805,9 +774,6 @@ extension URLBarView: PrivateModeUI {
         line.backgroundColor = UIColor.Browser.urlBarDivider
 
         progressBar.setGradientColors(startColor: UIColor.LoadingBar.start(isPrivateMode), endColor: UIColor.LoadingBar.end(isPrivateMode))
-
-        appMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
-        warningMenuBadge.badge.tintBackground(color: UIColor.Browser.background)
     }
 }
 
