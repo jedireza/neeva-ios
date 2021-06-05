@@ -87,10 +87,6 @@ class URLBarView: UIView {
 
     private var isPrivateMode = false
 
-    lazy var placeholderText: NSAttributedString = {
-        return NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
-    }()
-
     lazy var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
     lazy var neevaMenuButton: UIButton = {
         let neevaMenuButton = UIButton(frame: .zero)
@@ -398,7 +394,6 @@ class URLBarView: UIView {
         locationTextField.textAlignment = .left
         locationTextField.accessibilityIdentifier = "address"
         locationTextField.accessibilityLabel = .URLBarLocationAccessibilityLabel
-        locationTextField.attributedPlaceholder = self.placeholderText
 
         createLeftViewFavicon()
 
@@ -766,7 +761,6 @@ extension URLBarView: PrivateModeUI {
             neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
         }
 
-
         neevaMenuButton.tintColor = UIColor.URLBar.neevaMenuTint(isPrivateMode)
 
         cancelTintColor = UIColor.Browser.tint
@@ -852,5 +846,13 @@ extension ToolbarTextField: PrivateModeUI {
         clearButtonTintColor = textColor
         textSelectionColor = UIColor.URLBar.textSelectionHighlight(isPrivateMode)
         tintColor = textSelectionColor.textFieldMode
+
+        if isPrivate {
+            attributedPlaceholder =
+                NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel.darkVariant])
+        } else {
+            attributedPlaceholder =
+                NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
+        }
     }
 }
