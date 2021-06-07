@@ -85,11 +85,7 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
             make.edges.equalToSuperview()
         }
 
-        leadingGradient.colors = [
-            UIColor.HomePanel.topSitesBackground.withAlphaComponent(0).cgColor,
-            UIColor.HomePanel.topSitesBackground.cgColor,
-        ]
-        trailingGradient.colors = leadingGradient.colors
+        applyColors()
 
         leadingGradient.transform = CATransform3DMakeRotation(.pi / 2, 0, 0, 1)
         trailingGradient.transform = CATransform3DMakeRotation(-(.pi / 2), 0, 0, 1)
@@ -135,6 +131,19 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         leadingGradient.opacity = Float(max(0, min(1, scrollView.contentOffset.x / 10)))
         trailingGradient.opacity = Float(max(0, min(1, (scrollView.contentSize.width - (scrollView.contentOffset.x + scrollView.bounds.width)) / 10)))
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        applyColors()
+    }
+
+    func applyColors() {
+        leadingGradient.colors = [
+            UIColor.HomePanel.topSitesBackground.withAlphaComponent(0).cgColor,
+            UIColor.HomePanel.topSitesBackground.cgColor,
+        ]
+        trailingGradient.colors = leadingGradient.colors
     }
 
     required init?(coder: NSCoder) {
