@@ -67,7 +67,7 @@ struct CardStrip<Model: CardModel>: View {
             model.onDataUpdated()
         }.frame(maxWidth:.infinity)
         .background(LinearGradient(gradient: Gradient(colors:
-                                                        [.clear, Color(UIColor.label).opacity(0.3), .clear]),
+                                                        [.clear, .label.opacity(0.3), .clear]),
                                                         startPoint: .top, endPoint: .bottom))
     }
 }

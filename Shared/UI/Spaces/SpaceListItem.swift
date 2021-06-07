@@ -13,7 +13,7 @@ struct SpaceListItem: View {
         self.space = space
         if SpaceStore.shared.urlInSpace(currentURL, spaceId: space.id) {
             icon = .bookmarkFill
-            iconColor = Color.Neeva.Brand.Blue
+            iconColor = .Neeva.Brand.Blue
         } else {
             icon = .bookmark
             iconColor = .tertiaryLabel
@@ -25,15 +25,15 @@ struct SpaceListItem: View {
                 .padding(.trailing, 8)
             Text(space.name)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(.primary)
+                .foregroundColor(.label)
                 .lineLimit(1)
             if space.isPublic {
                 Symbol(.link, size: 14)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.secondaryLabel)
             }
             if space.isShared {
                 Symbol(.person2Fill, size: 14)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.secondaryLabel)
             }
             Spacer(minLength: 0)
             Symbol(icon, weight: .semibold)

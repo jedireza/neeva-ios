@@ -48,7 +48,7 @@ public struct SendFeedbackView: View {
                     header: HStack {
                         VStack(alignment: .leading) {
                             Text("Need help or want instant answers to FAQs?")
-                                .foregroundColor(.primary)
+                                .foregroundColor(.label)
                             Button(action: { onOpenURL(NeevaConstants.appFAQURL) }) {
                                 Text("Visit our Help Center!").underline()
                             }

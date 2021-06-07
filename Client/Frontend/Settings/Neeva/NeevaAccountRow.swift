@@ -40,7 +40,7 @@ struct NeevaAccountRow: View {
                 }
                 if let email = userInfo.email {
                     Text(email)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.secondaryLabel)
                         .font(.system(size: 15))
                 }
             }

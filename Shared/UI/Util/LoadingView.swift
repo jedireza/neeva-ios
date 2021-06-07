@@ -33,7 +33,7 @@ public struct LoadingView: View {
                     .padding(.leading)
                     .padding(.vertical, 5)
                     .multilineTextAlignment(.leading)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.secondaryLabel)
             }
         } else {
             HStack {

@@ -15,7 +15,7 @@ struct DetailedSettingsLabel: View {
         VStack(alignment: .leading) {
             Text(title)
             Text(description)
-                .foregroundColor(.secondary)
+                .foregroundColor(.secondaryLabel)
                 .font(.caption)
         }
     }
@@ -39,7 +39,7 @@ struct GeneralSettingsSection: View {
                 if mailToOption != "mailto:",
                    let name = MailAppSetting.mailProviderSource.first { $0.scheme == mailToOption }?.name {
                     Text(name)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.secondaryLabel)
                 }
             }
         }

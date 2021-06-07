@@ -62,12 +62,12 @@ fileprivate struct SuggestionRow<Icon: View, Label: View, Detail: View>: View {
         Button(action: action) {
             HStack(spacing: 0) {
                 icon()
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.secondaryLabel)
                     .frame(width: 32, alignment: .leading)
                 label()
                 Spacer()
                 detail()
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.secondaryLabel)
                     .font(.callout)
             }
         }
@@ -85,9 +85,9 @@ fileprivate struct QuerySuggestionView: View {
     var textColor: Color {
         switch suggestion.type {
         case .searchHistory:
-            return Color.Neeva.Brand.Purple
+            return .Neeva.Brand.Purple
         default:
-            return .primary
+            return .label
         }
     }
 
@@ -115,7 +115,7 @@ fileprivate struct QuerySuggestionView: View {
                 case .standard:
                     Symbol(.magnifyingglass)
                 case .operator, .unknown, .__unknown(_): // seemingly unused
-                    Symbol(.questionmarkCircle).foregroundColor(.secondary)
+                    Symbol(.questionmarkCircle).foregroundColor(.secondaryLabel)
                 }
             }
         } label: {

@@ -64,10 +64,10 @@ struct TrackingMenuFirstRowElement: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text("\(label)").font(.system(size: NeevaUIConstants.menuFontSize)).foregroundColor(.secondary)
+                Text("\(label)").font(.system(size: NeevaUIConstants.menuFontSize)).foregroundColor(.secondaryLabel)
                 if let symbol = symbol {
                     Symbol(symbol, size: 18, weight: .semibold)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.secondaryLabel)
                 }
             }
             Text("\(num)").font(.system(size: NeevaUIConstants.trackingMenuBlockedFontSize))
@@ -97,7 +97,7 @@ struct HallOfShameView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Hall of Shame").font(.system(size: NeevaUIConstants.menuFontSize)).foregroundColor(.secondary)
+            Text("Hall of Shame").font(.system(size: NeevaUIConstants.menuFontSize)).foregroundColor(.secondaryLabel)
             HStack(spacing: NeevaUIConstants.hallOfShameRowSpacing) {
                 HallOfShameElement(hallOfShameDomain: hallOfShameDomains[0])
                 if hallOfShameDomains.count >= 2 {

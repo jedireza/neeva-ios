@@ -174,7 +174,7 @@ public struct AddToSpaceView: View {
         if !searchTerm.isEmpty && filteredSpaces.isEmpty {
             Text("No Results Found")
                 .font(.title)
-                .foregroundColor(.secondary)
+                .foregroundColor(.secondaryLabel)
                 .padding(.top, 16)
         } else {
             LazyVStack(spacing: 14) {

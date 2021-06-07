@@ -28,7 +28,7 @@ struct AboutSettingsSection: View {
                 Text(version)
                 Spacer()
             }.padding(.vertical, 3).contentShape(Rectangle())
-        }.accentColor(.primary)
+        }.accentColor(.label)
 
         NavigationLink(
             "Licenses",

@@ -46,7 +46,7 @@ struct SuggestedSiteView: View {
                         .font(Font(UIFont.systemFont(ofSize: NeevaHomeUX.SuggestedSiteTitleFontSize, weight: UIFont.Weight.regular)))
                         .background(RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4))
                         .padding(.top, 4)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.secondaryLabel)
                 }
                 .contentShape(Rectangle())
             }

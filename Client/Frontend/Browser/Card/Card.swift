@@ -33,14 +33,14 @@ struct Card<Details>: View where Details: CardDetails {
                     .applyCardSpec(size: 32)
 
             } else {
-                Rectangle().foregroundColor(.primary)
+                Rectangle().foregroundColor(.label)
                     .applyCardSpec(size: 32)
             }
             if let thumbnail = details.thumbnail {
                 Image(uiImage: thumbnail).resizable().aspectRatio(contentMode: .fill)
                     .applyCardSpec(size: 180)
             } else {
-                Rectangle().foregroundColor(.primary)
+                Rectangle().foregroundColor(.label)
                     .applyCardSpec(size: 180)
             }
             if let buttonImage = details.closeButtonImage {

@@ -216,7 +216,7 @@ fileprivate struct OfflineView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
             Text("Your internet seems to be lost. Check your internet connection and try again.")
-                .foregroundColor(.secondary)
+                .foregroundColor(.secondaryLabel)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
             // hide the image on small iPhones in landscape

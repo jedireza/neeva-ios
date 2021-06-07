@@ -102,7 +102,7 @@ struct SearchSuggestionView: View {
                                                     if !site.title.isEmpty {
                                                         Text(site.title)
                                                     }
-                                                    Text(site.url).foregroundColor(.secondary)
+                                                    Text(site.url).foregroundColor(.secondaryLabel)
                                                 }.font(.caption).lineLimit(1)
                                             }
                                         }

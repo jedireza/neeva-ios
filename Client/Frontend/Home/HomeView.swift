@@ -81,7 +81,7 @@ struct NeevaHomeHeader: View {
         HStack {
             Text(title)
                 .textCase(.uppercase)
-                .foregroundColor(.secondary)
+                .foregroundColor(.secondaryLabel)
                 .font(.roobert(.semibold, size: 13))
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)

@@ -141,7 +141,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 if config.showTitle {
                     Text(title)
                         .fontWeight(.semibold)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.label)
                         .padding(.leading, 16)
                     Spacer()
                     Button {

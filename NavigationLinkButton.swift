@@ -40,7 +40,7 @@ struct NavigationLinkButton<Label: View>: View {
     var body: some View {
         let button = Button(action: action) {
             HStack {
-                label().foregroundColor(.primary)
+                label().foregroundColor(.label)
                 Spacer(minLength: 0)
                 style.symbol
                     .foregroundColor(.tertiaryLabel)

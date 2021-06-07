@@ -38,7 +38,7 @@ struct MailAppSetting: View {
                             if disabled {
                                 Text(name)
                             } else {
-                                Text(name).foregroundColor(.primary)
+                                Text(name).foregroundColor(.label)
                             }
                         }
                             .disabled(disabled)

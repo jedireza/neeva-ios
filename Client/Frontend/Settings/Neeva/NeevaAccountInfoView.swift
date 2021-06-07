@@ -27,7 +27,7 @@ struct NeevaAccountInfoView: View {
                         Text(userInfo.authProvider?.displayName ?? "Unknown")
                         Text(userInfo.email ?? "")
                             .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.secondaryLabel)
                     }
                     .padding(.vertical, 5)
                 }

@@ -29,7 +29,7 @@ struct SuggestedSearchesView: View {
                     HStack {
                         Symbol(.clock)
                         Text(query.trimmingCharacters(in: .whitespacesAndNewlines))
-                            .foregroundColor(.primary)
+                            .foregroundColor(.label)
                         Spacer()
                     }
                     .frame(height: 37)
@@ -49,7 +49,7 @@ struct SuggestedSearchesView: View {
                 )
             }
         }
-        .foregroundColor(Color(light: .Neeva.UI.Gray70, dark: .secondary))
+        .foregroundColor(Color(light: .Neeva.UI.Gray70, dark: .secondaryLabel))
         .padding(.top, 7)
     }
 }

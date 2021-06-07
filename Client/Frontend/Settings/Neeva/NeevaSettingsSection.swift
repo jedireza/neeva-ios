@@ -37,7 +37,7 @@ struct NeevaSettingsSection: View {
         if userInfo.isLoading {
             HStack(spacing: 10) {
                 ProgressView()
-                Text("Loading account info…").foregroundColor(.secondary)
+                Text("Loading account info…").foregroundColor(.secondaryLabel)
             }
             .frame(height: 60 - 12)
             .opacity(loaderOpacity)

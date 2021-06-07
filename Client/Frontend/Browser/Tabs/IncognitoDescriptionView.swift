@@ -49,7 +49,6 @@ struct IncognitoDescriptionView: View {
             VStack(spacing: 0) {
                 Spacer()
                 Circle()
-                    .foregroundColor(Color(UIColor.label.darkVariant))
                     .frame(width: circleDiameter, height: circleDiameter)
                     .overlay(
                         Image("incognito")
@@ -78,7 +77,7 @@ struct IncognitoDescriptionView: View {
                         .frame(alignment: .leading)
                         .font(descriptionFontSmall)
                 }
-                .foregroundColor(Color(UIColor.secondaryLabel.darkVariant))
+                .foregroundColor(.secondaryLabel)
                 .frame(maxWidth: maxTextWidth)
                 .padding([.leading, .trailing], borderPadding)
                 Spacer()
@@ -89,6 +88,7 @@ struct IncognitoDescriptionView: View {
         }
         .background(Color.Neeva.UI.Gray30)
         .navigationBarHidden(true)
+        .colorScheme(.dark)
     }
 }
 
