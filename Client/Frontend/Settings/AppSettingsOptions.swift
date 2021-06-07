@@ -354,7 +354,7 @@ class SendFeedbackSetting: Setting {
 
     override func onClick(_ navigationController: UINavigationController?) {
         // TODO: capture screenshot before opening settings? or perhaps remove this option entirely?
-        navigationController?.pushViewController(SendFeedbackPanel(screenshot: nil, onOpenURL: delegate!.settingsOpenURLInNewNonPrivateTab(_:)), animated: true)
+        navigationController?.pushViewController(SendFeedbackPanel(screenshot: nil, url: nil, onOpenURL: delegate!.settingsOpenURLInNewNonPrivateTab(_:)), animated: true)
     }
 }
 

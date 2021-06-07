@@ -5,7 +5,6 @@ import QuickLook
 
 /// Ask the user for feedback
 public struct SendFeedbackView: View {
-    let canShareResults: Bool
     let requestId: String?
     let geoLocationStatus: String?
     let initialText: String
@@ -19,9 +18,9 @@ public struct SendFeedbackView: View {
     ///   - requestId: A request ID to send along with the user-provided feedback
     ///   - geoLocationStatus: passed along to the API
     ///   - initialText: Text to pre-fill the feedback input with. If non-empty, the user can submit feedback without entering any additional text.
-    public init(screenshot: UIImage?, onDismiss: (() -> ())? = nil, canShareResults: Bool = false, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
+    public init(screenshot: UIImage?, url: URL?, onDismiss: (() -> ())? = nil, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
         self.screenshot = screenshot
-        self.canShareResults = canShareResults
+        self._url = .init(initialValue: url)
         self.requestId = requestId
         self.geoLocationStatus = geoLocationStatus
         self.onDismiss = onDismiss
@@ -33,8 +32,10 @@ public struct SendFeedbackView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.onOpenURL) var onOpenURL
 
+    @State var url: URL?
     @State var feedbackText = ""
-    @State var shareResults = true
+    @State var shareURL = true
+    @State var isEditingURL = false
     @State var shareScreenshot = true
     @State var isSending = false
     @State var screenshotSheet = ModalState()
@@ -61,22 +62,15 @@ public struct SendFeedbackView: View {
                 ) {
                     MultilineTextField("Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!", text: $feedbackText)
                 }
-                if canShareResults {
-                    DecorativeSection {
-                        Toggle("Share my query to help improve Neeva.", isOn: $shareResults)
-                    }
-                }
                 if let screenshot = screenshot, FeatureFlag[.feedbackScreenshot] {
                     DecorativeSection {
                         Toggle(isOn: $shareScreenshot) {
                             VStack(alignment: .leading) {
                                 Text("Share Screenshot").bold()
                                 Button("View or edit") { screenshotSheet.present() }
-                                .buttonStyle(BorderlessButtonStyle())
-                                .disabled(!shareScreenshot)
+                                    .disabled(!shareScreenshot)
                             }
                         }
-                        .toggleStyle(SwitchToggleStyle(tint: .blue))
                         .padding(.vertical, 4)
                         .padding(.leading, -4)
                         .modal(state: $screenshotSheet) {
@@ -84,10 +78,47 @@ public struct SendFeedbackView: View {
                         }
                     }
                 }
+                if let url = url {
+                    DecorativeSection {
+                        Toggle(isOn: $shareURL) {
+                            VStack(alignment: .leading) {
+                                Text("Share URL")
+                                    .bold()
+                                HStack {
+                                    let displayURL: String = {
+                                        let display = url.absoluteDisplayString
+                                        if display.hasPrefix("https://") {
+                                            return String(display[display.index(display.startIndex, offsetBy: "https://".count)...])
+                                        }
+                                        return display
+                                    }()
+                                    Text(displayURL)
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(1)
+                                    Button("edit") { isEditingURL = true }
+                                        .background(
+                                            NavigationLink(
+                                                destination: EditURLView($url, isActive: $isEditingURL),
+                                                isActive: $isEditingURL
+                                            ) { EmptyView() }
+                                        )
+                                        .disabled(!shareURL)
+                                        .padding(.trailing, 20)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.leading, -4)
+                    }
+                }
             }
-            .navigationTitle("Send Feedback")
+            .toggleStyle(SwitchToggleStyle(tint: .blue))
+            .navigationTitle("Back")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Send Feedback").font(.headline)
+                }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
                 }
@@ -97,10 +128,16 @@ public struct SendFeedbackView: View {
                     } else {
                         Button("Send") {
                             isSending = true
+                            let feedbackText: String
+                            if let url = url, shareURL {
+                                feedbackText = self.feedbackText + "\n\nCurrent URL: \(url.absoluteString)"
+                            } else {
+                                feedbackText = self.feedbackText
+                            }
                             SendFeedbackMutation(
                                 input: .init(
                                     feedback: feedbackText,
-                                    shareResults: canShareResults && shareResults,
+                                    shareResults: false,
                                     requestId: requestId,
                                     geoLocationStatus: geoLocationStatus,
                                     source: .app
@@ -124,8 +161,49 @@ public struct SendFeedbackView: View {
                 }
             }
         }
-        .presentation(isModal: feedbackText != initialText)
+        .presentation(isModal: feedbackText != initialText || isEditingURL)
         .navigationViewStyle(StackNavigationViewStyle())
+    }
+
+    struct EditURLView: View {
+        init(_ url: Binding<URL?>, isActive: Binding<Bool>) {
+            _isActive = isActive
+            _url = url
+            self._urlString = .init(wrappedValue: url.wrappedValue?.absoluteString ?? "")
+        }
+
+        @Binding private var isActive: Bool
+        @Binding private var url: URL?
+        @State private var urlString: String
+
+        var body: some View {
+            Form {
+                DecorativeSection {
+                    MultilineTextField(
+                        "Enter a URL to submit with the feedback",
+                        text: $urlString,
+                        onCommit: { isActive = false },
+                        customize: { tf in
+                            tf.keyboardType = .URL
+                            tf.autocapitalizationType = .none
+                            tf.autocorrectionType = .no
+                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                                tf.becomeFirstResponder()
+                            }
+                        }
+                    )
+                    .onChange(of: urlString) { value in
+                        self.url = URL(string: urlString)
+                    }
+                }
+            }
+            .navigationTitle("Edit URL")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { isActive = false }
+                }
+            }
+        }
     }
 }
 
@@ -147,9 +225,9 @@ extension UIImage {
 struct SendFeedbackView_Previews: PreviewProvider {
     static var previews: some View {
         // iPhone 12 screen size
-        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 390, height: 844)!)
+        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 390, height: 844)!, url: URL(string: "https://neeva.com/search?q=abcdef+ghijklmnop"))
         // iPhone 8 screen size
-        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 375, height: 667)!)
-        SendFeedbackView(screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!, canShareResults: true)
+        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 375, height: 667)!, url: NeevaConstants.appURL)
+        SendFeedbackView(screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!, url: NeevaConstants.appURL)
     }
 }

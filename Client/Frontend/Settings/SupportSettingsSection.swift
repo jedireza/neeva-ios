@@ -20,7 +20,7 @@ struct SupportSettingsSection: View {
         SheetNavigationLink("Send Feedback") {
             // TODO: make SendFeedbackView’s NavigationView optional so we can push it?
             // also TODO: figure out how to send a screenshot here
-            SendFeedbackView(screenshot: nil)
+            SendFeedbackView(screenshot: nil, url: nil)
                 .environment(\.onOpenURL, openURLInNewNonPrivateTab)
         }
         NavigationLinkButton("Help") {

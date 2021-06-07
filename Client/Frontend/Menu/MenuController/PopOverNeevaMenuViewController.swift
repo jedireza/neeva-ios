@@ -88,7 +88,7 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
                 break
             case .feedback:
                 ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.present(SendFeedbackPanel(screenshot: feedbackImage, onOpenURL: {
+                delegate.present(SendFeedbackPanel(screenshot: feedbackImage, url: delegate.tabManager.selectedTab?.canonicalURL, onOpenURL: {
                     delegate.dismiss(animated: true, completion: nil)
                     delegate.openURLInNewTab($0)
                 }), animated: true)

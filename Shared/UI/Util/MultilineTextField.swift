@@ -9,8 +9,9 @@ import UIKit
 
 /// A multi-line text field.
 struct MultilineTextField: View {
-    private var placeholder: String
-    private var onCommit: (() -> Void)?
+    private let placeholder: String
+    private let onCommit: (() -> Void)?
+    private let customize: (UITextView) -> ()
 
     @Binding private var text: String
     private var internalText: Binding<String> {
@@ -29,15 +30,16 @@ struct MultilineTextField: View {
     ///   - text: a binding to the content of the text field
     ///   - onCommit: if non-nil, the user will not be able to manually enter multiple lines (although text can still wrap)
     ///     and pressing the return key will cause `onCommit` to be called.
-    init (_ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil) {
+    init (_ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil, customize: @escaping (UITextView) -> () = { _ in }) {
         self.placeholder = placeholder
         self.onCommit = onCommit
+        self.customize = customize
         self._text = text
         self._showingPlaceholder = State<Bool>(initialValue: self.text.isEmpty)
     }
 
     var body: some View {
-        UITextViewWrapper(text: self.internalText, calculatedHeight: $dynamicHeight, isEnabled: isEnabled, onDone: onCommit)
+        UITextViewWrapper(text: self.internalText, calculatedHeight: $dynamicHeight, isEnabled: isEnabled, onDone: onCommit, customize: customize)
             .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
             .background(placeholderView, alignment: .topLeading)
             .padding(.horizontal, -10)
@@ -63,7 +65,8 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
     @Binding var text: String
     @Binding var calculatedHeight: CGFloat
     let isEnabled: Bool
-    var onDone: (() -> Void)?
+    let onDone: (() -> Void)?
+    let customize: (UITextView) -> ()
 
     func makeUIView(context: UIViewRepresentableContext<UITextViewWrapper>) -> UITextView {
         let textField = UITextView()
@@ -78,8 +81,9 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
         if nil != onDone {
             textField.returnKeyType = .done
         }
-
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        customize(textField)
+
         return textField
     }
 

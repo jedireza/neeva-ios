@@ -128,7 +128,7 @@ fileprivate struct GenericErrorView: View {
             Button(action: { sendingFeedback = true }) {
                 Label("Send Feedback", systemSymbol: .bubbleLeftFill)
             }.sheet(isPresented: $sendingFeedback) {
-                SendFeedbackView(screenshot: nil, initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)").font(.body)
+                SendFeedbackView(screenshot: nil, url: nil, initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)").font(.body)
             }
         }
     }
