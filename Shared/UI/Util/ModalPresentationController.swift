@@ -15,7 +15,7 @@ extension View {
     ///   - isModal: whether to prevent swiping to dismiss
     ///   - onDismissalAttempt: called if `isModal` is true and the user attempts to swipe to dismiss.
     ///   You can use this, for example, to present an action sheet that prompts them to confirm discarding changes.
-    func presentation(isModal: Bool, onDismissalAttempt: (()->())? = nil) -> some View {
+    public func presentation(isModal: Bool, onDismissalAttempt: (()->())? = nil) -> some View {
         GeometryReader { geom in
             ModalView(view: self.padding(geom.safeAreaInsets), isModal: isModal, onDismissalAttempt: onDismissalAttempt)
         }.edgesIgnoringSafeArea(.all)

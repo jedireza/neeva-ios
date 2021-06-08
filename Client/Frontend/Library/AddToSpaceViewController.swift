@@ -15,15 +15,6 @@ struct AddToSpaceRootView: View {
     var onDismiss: () -> ()
     var onOpenURL: (URL) -> ()
 
-    private var overlaySheetTitle: String {
-        switch request.mode {
-        case .saveToNewSpace:
-            return "Create Space"
-        case .saveToExistingSpace:
-            return "Save to Spaces"
-        }
-    }
-
     private var overlaySheetIsFixedHeight: Bool {
         switch request.mode {
         case .saveToNewSpace:
@@ -37,13 +28,13 @@ struct AddToSpaceRootView: View {
         let config = OverlaySheetConfig(showTitle: true)
         OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() }) {
             AddToSpaceView(
-                request: self.request, onDismiss: {
+                request: request, onDismiss: {
                     // The user made a selection. Store that and run the animation to hide the
                     // sheet. When that completes, we'll run the provided onDismiss callback.
                     self.overlaySheetModel.hide()
                 })
                 .environment(\.onOpenURL, { self.onOpenURL($0) })
-                .overlaySheetTitle(title: self.overlaySheetTitle)
+                .overlaySheetTitle(title: request.mode.title)
                 .overlaySheetIsFixedHeight(isFixedHeight: self.overlaySheetIsFixedHeight)
         }
         .onAppear() {

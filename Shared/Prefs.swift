@@ -42,9 +42,8 @@ extension Defaults.Keys {
     public static let topSitesCacheIsValid = Defaults.BoolKey("profile.topSitesCacheIsValid")
     public static let topSitesCacheSize = Defaults.Key<Int32?>("profile.topSitesCacheSize")
 
-    // parameters
-    public static let appExtensionTelemetryOpenUrl = Defaults.Key<Bool?>("profile.AppExtensionTelemetryOpenUrl")
-    public static let appExtensionTelemetryEventArray = Defaults.Key<[[String: String]]>("profile.AppExtensionTelemetryEvents", default: [])
+    // telemetry
+    public static let appExtensionTelemetryOpenUrl = Defaults.Key<Bool?>("profile.AppExtensionTelemetryOpenUrl", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
 
     // widgets
     public static let widgetKitSimpleTabKey = Defaults.Key<Data?>("WidgetKitSimpleTabKey", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)

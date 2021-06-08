@@ -13,6 +13,15 @@ public class AddToSpaceRequest: ObservableObject {
     public enum Mode {
         case saveToExistingSpace
         case saveToNewSpace
+
+        public var title: String {
+            switch self {
+            case .saveToNewSpace:
+                return "Create Space"
+            case .saveToExistingSpace:
+                return "Save to Spaces"
+            }
+        }
     }
     @Published public var mode: Mode = .saveToExistingSpace
 
@@ -137,8 +146,8 @@ public class AddToSpaceRequest: ObservableObject {
 }
 
 public struct AddToSpaceView: View {
-    @StateObject var request: AddToSpaceRequest
-    @StateObject var spaceStore = SpaceStore.shared
+    @ObservedObject var request: AddToSpaceRequest
+    @ObservedObject var spaceStore = SpaceStore.shared
 
     @State private var searchTerm = ""
     @State private var backgroundColor: Color? = nil
@@ -146,7 +155,7 @@ public struct AddToSpaceView: View {
     let onDismiss: () -> ()
 
     public init(request: AddToSpaceRequest, onDismiss: @escaping () -> () = {}) {
-        self._request = StateObject(wrappedValue: request)
+        self.request = request
         self.onDismiss = onDismiss
     }
 
