@@ -56,6 +56,13 @@ class BrowserViewController: UIViewController {
     var libraryViewController: LibraryViewController?
     var libraryDrawerViewController: DrawerViewController?
     var overlaySheetViewController: UIViewController?
+    lazy var simulateForwardViewController: UIViewController? = {
+        let host = SimulateForwardController(tabManager: self.tabManager)
+        addChild(host)
+        view.addSubview(host.view)
+        host.view.isHidden = true
+        return host
+    }()
     var webViewContainer: UIView!
     var urlBar: URLBarView!
     var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
@@ -531,6 +538,14 @@ class BrowserViewController: UIViewController {
                 make.left.right.equalTo(self.view)
                 make.bottom.equalTo(self.view.snp.bottom).offset(-CardStripUX.BottomPadding)
                 make.height.equalTo(CardStripUX.Height)
+            }
+        }
+
+        if FeatureFlag[.swipePlusPlus] {
+            simulateForwardViewController?.view.snp.makeConstraints { make in
+                make.top.bottom.equalTo(webViewContainer)
+                make.width.equalTo(webViewContainer).offset(100)
+                make.leading.equalTo(webViewContainer.snp.trailing).offset(-100)
             }
         }
     }

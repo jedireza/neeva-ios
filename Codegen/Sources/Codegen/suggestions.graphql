@@ -39,3 +39,14 @@ query Suggestions($query: String!) {
     }
   }
 }
+
+query SearchResults($query: String!) {
+  search(q: $query) {
+    resultGroup {
+      result {
+        actionURL
+      }
+    }
+  }
+}
+

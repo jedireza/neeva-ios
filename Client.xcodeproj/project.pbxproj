@@ -192,6 +192,8 @@
 		43DDB97624099F200058A068 /* ETPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DDB97524099F200058A068 /* ETPViewModel.swift */; };
 		43E69EC3254D081D00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
 		43E69ED7254D081F00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
+		4A1D054B26642BF400D63333 /* SimulateForwardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054A26642BF400D63333 /* SimulateForwardController.swift */; };
+		4A1D054D266430DA00D63333 /* SimulateForwardAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054C266430DA00D63333 /* SimulateForwardAnimator.swift */; };
 		4A1D05502669715B00D63333 /* CardStripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054F2669715B00D63333 /* CardStripViewController.swift */; };
 		4A22DCFA26574AA4009BE9FC /* TrackingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */; };
 		4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */; };
@@ -203,6 +205,7 @@
 		4A88F97A266373F9007C203D /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4A88F979266373F9007C203D /* SDWebImageSwiftUI */; };
 		4AA14F20264C7954003B815A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* HomeView.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
+		4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF1948C266EC78A007E2C3B /* SearchResults.swift */; };
 		4F514FD41ACD8F2C0022D7EA /* HistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F514FD31ACD8F2C0022D7EA /* HistoryTests.swift */; };
 		4F97573B1AFA6F37006ECC24 /* readerContent.html in Resources */ = {isa = PBXBuildFile; fileRef = 4F9757391AFA6F37006ECC24 /* readerContent.html */; };
 		580B0C4221748CFE00448DF8 /* DataManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580B0C4121748CFE00448DF8 /* DataManagementTests.swift */; };
@@ -1113,6 +1116,8 @@
 		43DDB96B240995A70058A068 /* ETPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETPModel.swift; sourceTree = "<group>"; };
 		43DDB97524099F200058A068 /* ETPViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETPViewModel.swift; sourceTree = "<group>"; };
 		43E69EAF254D064E00B591C2 /* SimpleTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTab.swift; sourceTree = "<group>"; };
+		4A1D054A26642BF400D63333 /* SimulateForwardController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulateForwardController.swift; sourceTree = "<group>"; };
+		4A1D054C266430DA00D63333 /* SimulateForwardAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulateForwardAnimator.swift; sourceTree = "<group>"; };
 		4A1D054F2669715B00D63333 /* CardStripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStripViewController.swift; sourceTree = "<group>"; };
 		4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingEntity.swift; sourceTree = "<group>"; };
 		4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TrackingEntity.xcassets; sourceTree = "<group>"; };
@@ -1123,6 +1128,7 @@
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4ADC541F265DA2CD00A210CE /* PromoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoCard.swift; sourceTree = "<group>"; };
+		4AF1948C266EC78A007E2C3B /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
 		4F514FD31ACD8F2C0022D7EA /* HistoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTests.swift; sourceTree = "<group>"; };
 		4F9757391AFA6F37006ECC24 /* readerContent.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = readerContent.html; sourceTree = "<group>"; };
 		50CB4382AE62CA8EDC4CAE05 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LoginManager.strings; sourceTree = "<group>"; };
@@ -2214,6 +2220,16 @@
 			path = Card;
 			sourceTree = "<group>";
 		};
+		4AF1948B266EC74C007E2C3B /* Carousel */ = {
+			isa = PBXGroup;
+			children = (
+				4AF1948C266EC78A007E2C3B /* SearchResults.swift */,
+				4A1D054A26642BF400D63333 /* SimulateForwardController.swift */,
+				4A1D054C266430DA00D63333 /* SimulateForwardAnimator.swift */,
+			);
+			path = Carousel;
+			sourceTree = "<group>";
+		};
 		7B0B1B9C1C1B69F500DF4AB5 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -2657,8 +2673,9 @@
 			children = (
 				23F2C365244E44FA00FA4496 /* Tabs */,
 				4A1D054E26696B6D00D63333 /* Card */,
-				C8A4D374262D586C00192B4D /* AddToSpaceToast.swift */,
+				4AF1948B266EC74C007E2C3B /* Carousel */,
 				D38F02D01C05127100175932 /* Authenticator.swift */,
+				C8A4D374262D586C00192B4D /* AddToSpaceToast.swift */,
 				C40046F91CF8E0B200B08303 /* BackForwardListAnimator.swift */,
 				C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */,
 				C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */,
@@ -4514,6 +4531,7 @@
 				2C49854E206173C800893DAE /* photon-colors.swift in Sources */,
 				EBA3B2C32268F16300728BDB /* PhotonActionSheetCell.swift in Sources */,
 				D0EAE0E2228B3762001C875A /* DrawerViewController.swift in Sources */,
+				4A1D054B26642BF400D63333 /* SimulateForwardController.swift in Sources */,
 				E689C7301E0C7617008BAADB /* NSAttributedStringExtensions.swift in Sources */,
 				D0C95E0E200FD3B200E4E51C /* PrintHelper.swift in Sources */,
 				EB9854FF2422686F0040F24B /* AppDelegate+PushNotifications.swift in Sources */,
@@ -4522,6 +4540,7 @@
 				C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */,
 				C9C18E0A26559007004710CD /* BoldSpanView.swift in Sources */,
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
+				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
 				D88FDAAF1F4E2BA000FD9709 /* PhotonActionSheetAnimator.swift in Sources */,
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,
@@ -4590,6 +4609,7 @@
 				C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */,
 				E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */,
 				C82CDD47233E8996002E2743 /* Tab+ChangeUserAgent.swift in Sources */,
+				4A1D054D266430DA00D63333 /* SimulateForwardAnimator.swift in Sources */,
 				C9C18E1E265591A1004710CD /* Icons.swift in Sources */,
 				C4E3984C1D21F2FD004E89BA /* TabTrayButtonExtensions.swift in Sources */,
 				D3FEC38D1AC4B42F00494F45 /* AutocompleteTextField.swift in Sources */,
