@@ -1,9 +1,5 @@
-//
-//  UIMenuHelpers.swift
-//  Client
-//
-//  Copyright © 2021 Neeva. All rights reserved.
-//
+// Copyright Neeva. All rights reserved.
+
 import UIKit
 
 extension UIMenu {

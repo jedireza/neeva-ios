@@ -1,9 +1,4 @@
-//
-//  FeatureFlags.swift
-//  
-//
-//  Created by Jed Fox on 5/19/21.
-//
+// Copyright Neeva. All rights reserved.
 
 import Foundation
 import Defaults

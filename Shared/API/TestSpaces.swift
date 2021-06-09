@@ -1,6 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
-/// Constant spaces and thumbnail images for use in previews.
+// Constant spaces and thumbnail images for use in previews.
 
 extension Space {
     static let empty = Space(

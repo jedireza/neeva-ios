@@ -1,8 +1,7 @@
 // Copyright Neeva. All rights reserved.
-//
-//  Inspired by SwiftUIRefresh:
-//  https://github.com/siteline/SwiftUIRefresh/blob/fa8fac7b5eb5c729983a8bef65f094b5e0d12014/Sources/PullToRefresh.swift
-//
+
+// Inspired by SwiftUIRefresh:
+// https://github.com/siteline/SwiftUIRefresh/blob/fa8fac7b5eb5c729983a8bef65f094b5e0d12014/Sources/PullToRefresh.swift
 
 import SwiftUI
 import Introspect

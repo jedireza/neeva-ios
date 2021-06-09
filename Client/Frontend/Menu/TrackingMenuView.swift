@@ -1,8 +1,4 @@
-//
-//  TrackingMenuView.swift
-//
-//  Copyright © 2021 Neeva. All rights reserved.
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
 import Storage

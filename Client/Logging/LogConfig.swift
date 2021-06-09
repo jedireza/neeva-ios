@@ -1,8 +1,4 @@
-//
-//  File.swift
-//  
-//
-//
+// Copyright Neeva. All rights reserved.
 
 import Foundation
 

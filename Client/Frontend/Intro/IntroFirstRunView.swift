@@ -1,7 +1,4 @@
-//
-//  IntroFirstRunView.swift
-//  Client
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
 import Shared

@@ -1,9 +1,4 @@
-//
-//  AddToSpaceViewController.swift
-//  Client
-//
-//  Copyright © 2020 Neeva. All rights reserved.
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
 import Shared

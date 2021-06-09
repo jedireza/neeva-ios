@@ -1,9 +1,4 @@
-//
-//  PinToTopSitesActivity.swift
-//  Neeva iOS
-//
-//  Copyright © 2021 Neeva Inc. All rights reserved.
-//
+// Copyright Neeva. All rights reserved.
 
 import Foundation
 import Shared

@@ -1,8 +1,4 @@
-//
-//  Action.swift
-//  
-//
-//
+// Copyright Neeva. All rights reserved.
 
 import SwiftUI
 import Shared
