@@ -35,7 +35,7 @@ struct FeatureFlagSettingsView: View {
                     Toggle(flag.rawValue, isOn: Binding(
                         get: { FeatureFlag[flag] },
                         set: { FeatureFlag[flag] = $0 }
-                    )).toggleStyle(SwitchToggleStyle(tint: .blue))
+                    ))
                 }
             }
 
@@ -48,7 +48,9 @@ struct FeatureFlagSettingsView: View {
                     }
                 }
             }
-        }.listStyle(GroupedListStyle())
+        }
+        .listStyle(GroupedListStyle())
+        .applyToggleStyle()
     }
 
     struct BoolFlagView: View {

@@ -11,8 +11,7 @@ struct PrivacySettingsSection: View {
     var body: some View {
         NavigationLink(
             "Data Management",
-            destination: ClearPrivateDataView()
-                .navigationTitle("Data Management")
+            destination: DataManagementView()
                 .onAppear {
                     ClientLogger.shared.logCounter(.ViewDataManagement, attributes: EnvironmentHelper.shared.getAttributes())
                 }
@@ -39,16 +38,6 @@ struct PrivacySettingsSection: View {
 }
 
 // TODO: rewrite in SwiftUI
-struct ClearPrivateDataView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        let viewController = ClearPrivateDataTableViewController()
-        let bvc = BrowserViewController.foregroundBVC()
-        viewController.profile = bvc.profile
-        viewController.tabManager = bvc.tabManager
-        return viewController
-    }
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
-}
 struct TrackingProtectionView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> some UIViewController {
         let viewController = ContentBlockerSettingViewController()

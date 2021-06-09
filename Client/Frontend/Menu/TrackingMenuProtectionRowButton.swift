@@ -25,12 +25,12 @@ public struct TrackingMenuProtectionRowButton: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }.layoutPriority(1)
             Toggle("", isOn: $isTrackingProtectionOn)
-                .toggleStyle(SwitchToggleStyle(tint: Color.blue))
                 .onChange(of: isTrackingProtectionOn){ value in
                     self.toggleAction()
                 }.accessibilityHint("Double tap to toggle block tracking")
         }.applyNeevaMenuPanelSpec()
         .accessibilityIdentifier("TrackingMenu.TrackingMenuProtectionRow")
+        .applyToggleStyle()
     }
 }
 

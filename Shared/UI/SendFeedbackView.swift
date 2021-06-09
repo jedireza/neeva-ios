@@ -112,7 +112,7 @@ public struct SendFeedbackView: View {
                     }
                 }
             }
-            .toggleStyle(SwitchToggleStyle(tint: .blue))
+            .applyToggleStyle()
             .navigationTitle("Back")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

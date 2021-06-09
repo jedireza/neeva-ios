@@ -282,7 +282,7 @@ class BrowserUtils {
     }
 
     class func acceptClearPrivateData(_ tester: KIFUITestActor) {
-        tester.tapView(withAccessibilityLabel: "OK")
+        tester.tapView(withAccessibilityLabel: "Clear Data")
     }
 
     class func clearPrivateData(_ clearables: Set<Clearable>? = AllClearables, _ tester: KIFUITestActor) {
@@ -291,7 +291,7 @@ class BrowserUtils {
             for clearable in AllClearables {
                 tester.setOn(clearables!.contains(clearable), forSwitchWithAccessibilityLabel: clearable.rawValue)
             }
-        tester.tapView(withAccessibilityIdentifier: "ClearPrivateData")
+        tester.tapView(withAccessibilityLabel: "Clear Private Data")
     }
 
     class func clearPrivateDataKIF(_ tester: KIFUITestActor) {

@@ -15,9 +15,9 @@ public struct DecorativeSection<Content: View, Footer: View>: View {
 
     public var body: some View {
         if let footer = footer {
-            Section(header: EmptyView().accessibilityHidden(true), footer: footer(), content: content)
+            Section(header: Text("").accessibilityHidden(true), footer: footer(), content: content)
         } else {
-            Section(header: EmptyView().accessibilityHidden(true), content: content)
+            Section(header: Text("").accessibilityHidden(true), content: content)
         }
     }
 }

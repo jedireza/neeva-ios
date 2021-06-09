@@ -1,4 +1,4 @@
-// Copyright Neeva. All rights reserved.
+// Copyright © Neeva. All rights reserved.
 
 import SwiftUI
 
@@ -13,16 +13,13 @@ fileprivate struct RoundedCorner: Shape {
         return Path(path.cgPath)
     }
 }
+
 extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+    public func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
     }
-}
 
-// From https://designcode.io/swiftui-handbook-hide-keyboard
-extension View {
-    func hideKeyboard() {
-        let resign = #selector(UIResponder.resignFirstResponder)
-        UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
+    public func applyToggleStyle() -> some View {
+        toggleStyle(SwitchToggleStyle(tint: Color.Neeva.UI.Blue))
     }
 }

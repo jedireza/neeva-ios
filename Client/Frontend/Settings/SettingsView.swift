@@ -55,7 +55,7 @@ struct SettingsView: View {
                 }
             }
             .listStyle(GroupedListStyle())
-            .toggleStyle(SwitchToggleStyle(tint: .blue))
+            .applyToggleStyle()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -78,7 +78,7 @@ struct SettingPreviewWrapper<Content: View>: View {
                 content()
             }
             .listStyle(GroupedListStyle())
-            .toggleStyle(SwitchToggleStyle(tint: .blue))
+            .applyToggleStyle()
             .navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)
         }.navigationViewStyle(StackNavigationViewStyle())
