@@ -316,6 +316,8 @@
 		C93EFEDC267123F5000396B5 /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEDB267123F5000396B5 /* SettingsNavigationController.swift */; };
 		C93EFEE226713AF7000396B5 /* ErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE126713AF7000396B5 /* ErrorConstants.swift */; };
 		C93EFEE5267150FD000396B5 /* TabLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE4267150FD000396B5 /* TabLocationView.swift */; };
+		C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */; };
+		C93EFEE926716411000396B5 /* TabLocationBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE826716411000396B5 /* TabLocationBarButton.swift */; };
 		C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */; };
 		C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */; };
 		C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */; };
@@ -1231,6 +1233,8 @@
 		C93EFEDB267123F5000396B5 /* SettingsNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		C93EFEE126713AF7000396B5 /* ErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorConstants.swift; sourceTree = "<group>"; };
 		C93EFEE4267150FD000396B5 /* TabLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationView.swift; sourceTree = "<group>"; };
+		C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationAligner.swift; sourceTree = "<group>"; };
+		C93EFEE826716411000396B5 /* TabLocationBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationBarButton.swift; sourceTree = "<group>"; };
 		C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSettingsSection.swift; sourceTree = "<group>"; };
 		C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsSection.swift; sourceTree = "<group>"; };
 		C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsSection.swift; sourceTree = "<group>"; };
@@ -2313,6 +2317,8 @@
 			isa = PBXGroup;
 			children = (
 				C93EFEE4267150FD000396B5 /* TabLocationView.swift */,
+				C93EFEE826716411000396B5 /* TabLocationBarButton.swift */,
+				C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */,
 			);
 			path = URLBar;
 			sourceTree = "<group>";
@@ -4494,6 +4500,7 @@
 				C9C18DDF26558FF3004710CD /* MutationController.swift in Sources */,
 				0BB5B2881AC0A2B90052877D /* SnackBar.swift in Sources */,
 				C8A4D375262D586C00192B4D /* AddToSpaceToast.swift in Sources */,
+				C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */,
 				EBC4869F2195F58300CDA48D /* SessionRestoreHandler.swift in Sources */,
 				F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */,
 				7BEFC6801BFF68C30059C952 /* QuickActions.swift in Sources */,
@@ -4517,6 +4524,7 @@
 				D0E89A2920910917001CE5C7 /* DownloadsPanel.swift in Sources */,
 				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
+				C93EFEE926716411000396B5 /* TabLocationBarButton.swift in Sources */,
 				4A22DCFA26574AA4009BE9FC /* TrackingEntity.swift in Sources */,
 				E660BE061BB0666D009AC090 /* InnerStrokedView.swift in Sources */,
 				0BB5B30B1AC0AD1F0052877D /* LoginsHelper.swift in Sources */,

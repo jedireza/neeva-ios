@@ -18,7 +18,7 @@ protocol LegacyTabLocationViewDelegate {
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]?
 }
 
-private struct TabLocationViewUX {
+private struct LegacyTabLocationViewUX {
     static let LockIconWidth: CGFloat = 16
     static let ButtonWidth: CGFloat = 44
     static let ButtonHeight: CGFloat = 42
@@ -171,7 +171,7 @@ class LegacyTabLocationView: UIView {
         }
 
         lockImageView.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.LockIconWidth)
+            make.width.equalTo(LegacyTabLocationViewUX.LockIconWidth)
             make.leading.equalTo(lockAndText.snp.leading).priority(.high)
             make.leading.greaterThanOrEqualTo(shieldButton.snp.trailing).priority(.high)
             make.trailing.equalTo(urlLabel.snp.leading).priority(.high)
@@ -187,30 +187,30 @@ class LegacyTabLocationView: UIView {
 
         shieldButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.width.equalTo(TabLocationViewUX.ButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.width.equalTo(LegacyTabLocationViewUX.ButtonWidth)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
             make.leading.equalTo(self)
         }
 
         lockAndText.snp.makeConstraints { make in
             make.centerX.equalTo(self.snp.centerX).priority(.medium)
             make.centerY.equalTo(self)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
             make.leading.greaterThanOrEqualTo(shieldButton.snp.trailing).priority(.high)
             make.trailing.lessThanOrEqualTo(reloadButton.snp.leading).priority(.high)
         }
 
         reloadButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.width.equalTo(TabLocationViewUX.ButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.width.equalTo(LegacyTabLocationViewUX.ButtonWidth)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
         }
         shareButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.leading.equalTo(reloadButton.snp.trailing)
             make.trailing.equalTo(self)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
-            make.width.equalTo(TabLocationViewUX.ButtonWidth)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
+            make.width.equalTo(LegacyTabLocationViewUX.ButtonWidth)
         }
 
         // Setup UIDragInteraction to handle dragging the location
@@ -227,19 +227,19 @@ class LegacyTabLocationView: UIView {
     override func updateConstraints() {
         lockImageView.snp.updateConstraints { make in
             make.width.equalTo(
-                lockImageView.isHidden ? 0 : TabLocationViewUX.LockIconWidth)
+                lockImageView.isHidden ? 0 : LegacyTabLocationViewUX.LockIconWidth)
         }
         reloadButton.snp.updateConstraints { make in
             make.width.equalTo(
-                reloadButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth)
+                reloadButton.isHidden ? 0 : LegacyTabLocationViewUX.ButtonWidth)
         }
         shieldButton.snp.updateConstraints { make in
             make.width.equalTo(
-                shieldButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth)
+                shieldButton.isHidden ? 0 : LegacyTabLocationViewUX.ButtonWidth)
         }
         shareButton.snp.updateConstraints { make in
             make.width.equalTo(
-                shareButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth
+                shareButton.isHidden ? 0 : LegacyTabLocationViewUX.ButtonWidth
             )
         }
         super.updateConstraints()
@@ -307,7 +307,7 @@ class LegacyTabLocationView: UIView {
 
             // show search icon for query and lock for website
             let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
-            let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TabLocationViewUX.IconPadding)
+            let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: LegacyTabLocationViewUX.IconPadding)
             lockImageView.image = UIImage(systemName: displayTextIsQuery ? "magnifyingglass" : "lock.fill", withConfiguration: config)?.withAlignmentRectInsets(padding)
         } else {
             urlLabelTextIsPlaceholder = true
