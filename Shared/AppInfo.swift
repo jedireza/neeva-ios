@@ -20,19 +20,19 @@ open class AppInfo {
     }
 
     public static var displayName: String {
-        return applicationBundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
+        applicationBundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
     }
 
     public static var appVersion: String {
-        return applicationBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        applicationBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
 
     public static var buildNumber: String {
-        return applicationBundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as! String
+        applicationBundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as! String
     }
 
     public static var majorAppVersion: String {
-        return appVersion.components(separatedBy: ".").first!
+        appVersion.components(separatedBy: ".").first!
     }
 
     /// Return the shared container identifier (also known as the app group) to be used with for example background

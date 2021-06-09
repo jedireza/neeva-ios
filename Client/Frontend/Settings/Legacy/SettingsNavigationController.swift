@@ -7,14 +7,6 @@ import UIKit
 class ThemedNavigationController: UINavigationController {
     var presentingModalViewControllerDelegate: PresentingModalViewControllerDelegate?
 
-    @objc func done() {
-        if let delegate = presentingModalViewControllerDelegate {
-            delegate.dismissPresentedModalViewController(self, animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
-
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return topViewController?.preferredStatusBarStyle ?? ThemeManager.instance.statusBarStyle
     }
@@ -41,10 +33,4 @@ extension ThemedNavigationController: Themeable {
 
 protocol PresentingModalViewControllerDelegate: AnyObject {
     func dismissPresentedModalViewController(_ modalViewController: UIViewController, animated: Bool)
-}
-
-class ModalSettingsNavigationController: UINavigationController {
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
-    }
 }

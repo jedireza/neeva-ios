@@ -91,13 +91,13 @@ class SettingsViewController: UIHostingController<AnyView> {
         super.init(rootView: AnyView(EmptyView()))
 
         self.rootView = AnyView(
-            SettingsView(dismiss: dismissVC)
+            SettingsView(dismiss: { self.dismiss(animated: true, completion: nil) })
                 .environment(\.settingsOpenURLInNewNonPrivateTab) { url in
-                    self.dismissVC()
+                    self.dismiss(animated: true, completion: nil)
                     bvc.settingsOpenURLInNewNonPrivateTab(url)
                 }
                 .environment(\.onOpenURL) { url in
-                    self.dismissVC()
+                    self.dismiss(animated: true, completion: nil)
                     bvc.settingsOpenURLInNewTab(url)
                 }
                 .environment(\.settingsPresentIntroViewController) {

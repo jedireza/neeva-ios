@@ -34,7 +34,7 @@ class UpdateViewModel {
         return false
     }
     
-    static func shouldShowUpdateSheet(currentAppVersion: String = VersionSetting.appVersion, isCleanInstall: Bool, supportedAppVersions:[String] = []) -> Bool {
+    static func shouldShowUpdateSheet(currentAppVersion: String = AppInfo.appVersion, isCleanInstall: Bool, supportedAppVersions:[String] = []) -> Bool {
         var willShow = false
         if isCleanInstall {
             // We don't show it but save the currentVersion number

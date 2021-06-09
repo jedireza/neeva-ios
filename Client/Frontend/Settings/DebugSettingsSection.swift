@@ -8,16 +8,8 @@ struct DebugSettingsSection: View {
     @Environment(\.onOpenURL) var openURL
     @Default(.neevaHost) var appHost
 
-    @State var legacySettingsModal = ModalState()
-
     var body: some View {
         Group {
-            DecorativeSection {
-                NavigationLinkButton("Legacy Settings", style: .modal, action: { legacySettingsModal.present() })
-                    .modal(state: $legacySettingsModal) {
-                        LegacySettingsView()
-                    }
-            }
             SwiftUI.Section(header: Text("Debug — Neeva")) {
                 NavigationLink("Feature Flags", destination: FeatureFlagSettingsView().navigationTitle("Feature Flags"))
                 HStack {
@@ -103,21 +95,6 @@ struct DebugSettingsSection: View {
         }
         .listRowBackground(Color.red.opacity(0.2))
     }
-}
-
-struct LegacySettingsView: ViewControllerWrapper {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        let settings = AppSettingsTableViewController()
-        let bvc = BrowserViewController.foregroundBVC()
-        settings.profile = bvc.profile
-        settings.tabManager = bvc.tabManager
-        settings.settingsDelegate = bvc
-
-        let controller = ThemedNavigationController(rootViewController: settings)
-        controller.presentingModalViewControllerDelegate = bvc
-        return controller
-    }
-    func updateUIViewController(_ settings: ViewController, context: Context) {}
 }
 
 struct DebugSettingsSection_Previews: PreviewProvider {

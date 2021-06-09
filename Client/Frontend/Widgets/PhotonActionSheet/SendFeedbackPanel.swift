@@ -7,7 +7,7 @@ public class SendFeedbackPanel: UIHostingController<AnyView> {
     init(screenshot: UIImage?, url: URL?, onOpenURL: @escaping (URL) -> ()) {
         super.init(rootView: AnyView(EmptyView()))
         rootView = AnyView(
-            SendFeedbackView(screenshot: screenshot, url: url, onDismiss: dismissVC)
+            SendFeedbackView(screenshot: screenshot, url: url, onDismiss: { self.dismiss(animated: true, completion: nil) })
                 .environment(\.onOpenURL, onOpenURL)
         )
 

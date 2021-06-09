@@ -117,16 +117,8 @@ enum NavigationPath {
                 return
             }
 
-            if FeatureFlag[.legacySettings] {
-                let settingsTableViewController = AppSettingsTableViewController()
-                settingsTableViewController.profile = bvc.profile
-                settingsTableViewController.tabManager = bvc.tabManager
-                settingsTableViewController.settingsDelegate = bvc
-                NavigationPath.handleSettings(settings: settingsPath, with: rootVC, baseSettingsVC: settingsTableViewController, and: bvc)
-            } else {
-                let controller = SettingsViewController(bvc: bvc)
-                bvc.present(controller, animated: true, completion: nil)
-            }
+            let controller = SettingsViewController(bvc: bvc)
+            bvc.present(controller, animated: true, completion: nil)
 
         case .defaultBrowser(let path):
             NavigationPath.handleDefaultBrowser(path: path)
@@ -232,31 +224,6 @@ enum NavigationPath {
     private static func handleText(text: String, with bvc: BrowserViewController) {
         bvc.openBlankNewTab(focusLocationField: false)
         bvc.urlBar(bvc.urlBar, didSubmitText: text)
-    }
-
-    private static func handleSettings(settings: SettingsPage, with rootNav: UINavigationController, baseSettingsVC: AppSettingsTableViewController, and bvc: BrowserViewController) {
-
-        guard let profile = baseSettingsVC.profile, let tabManager = baseSettingsVC.tabManager else {
-            return
-        }
-
-        let controller = ThemedNavigationController(rootViewController: baseSettingsVC)
-        controller.presentingModalViewControllerDelegate = bvc
-        controller.modalPresentationStyle = UIModalPresentationStyle.formSheet
-        rootNav.present(controller, animated: true, completion: nil)
-
-        switch settings {
-        case .general:
-            break // Intentional NOOP; Already displaying the general settings VC
-        case .mailto:
-            let viewController = OpenWithSettingsViewController()
-            controller.pushViewController(viewController, animated: true)
-        case .clearPrivateData:
-            let viewController = ClearPrivateDataTableViewController()
-            viewController.profile = profile
-            viewController.tabManager = tabManager
-            controller.pushViewController(viewController, animated: true)
-        }
     }
     
     private static func handleDefaultBrowser(path: DefaultBrowserPath) {

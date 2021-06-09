@@ -51,18 +51,6 @@ class HistoryClearable: Clearable {
     }
 }
 
-struct ClearableErrorType: MaybeErrorType {
-    let err: Error
-
-    init(err: Error) {
-        self.err = err
-    }
-
-    var description: String {
-        return "Couldn't clear: \(err)."
-    }
-}
-
 // Clear the web cache. Note, this has to close all open tabs in order to ensure the data
 // cached in them isn't flushed to disk.
 class CacheClearable: Clearable {
@@ -83,28 +71,6 @@ class CacheClearable: Clearable {
         log.debug("CacheClearable succeeded.")
         return succeed()
     }
-}
-
-private func deleteLibraryFolderContents(_ folder: String) throws {
-    let manager = FileManager.default
-    let library = manager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
-    let dir = library.appendingPathComponent(folder)
-    let contents = try manager.contentsOfDirectory(atPath: dir.path)
-    for content in contents {
-        do {
-            try manager.removeItem(at: dir.appendingPathComponent(content))
-        } catch where ((error as NSError).userInfo[NSUnderlyingErrorKey] as? NSError)?.code == Int(EPERM) {
-            // "Not permitted". We ignore this.
-            log.debug("Couldn't delete some library contents.")
-        }
-    }
-}
-
-private func deleteLibraryFolder(_ folder: String) throws {
-    let manager = FileManager.default
-    let library = manager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
-    let dir = library.appendingPathComponent(folder)
-    try manager.removeItem(at: dir)
 }
 
 // Removes all app cache storage.

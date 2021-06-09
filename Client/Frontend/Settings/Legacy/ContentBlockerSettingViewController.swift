@@ -203,42 +203,4 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
         let secondSection = SettingSection(title: NSAttributedString(string: blockListsTitle), footerTitle: optionalFooterTitle, children: strengthSetting)
         return [firstSection, secondSection]
     }
-
-    // The first section header gets a More Info link
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let _defaultFooter = super.tableView(tableView, viewForFooterInSection: section) as? ThemedTableSectionHeaderFooterView
-        guard let defaultFooter = _defaultFooter, section > 0 else {
-            return _defaultFooter
-        }
-
-        if currentBlockingStrength == .basic {
-            return nil
-        }
-
-        // TODO: Get a dedicated string for this.
-        let title = Strings.TrackerProtectionLearnMore
-
-        var attributes = [NSAttributedString.Key: AnyObject]()
-        attributes[NSAttributedString.Key.font] = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.regular)
-        attributes[NSAttributedString.Key.foregroundColor] = UIColor.theme.general.highlightBlue
-
-        let button = UIButton()
-        button.setAttributedTitle(NSAttributedString(string: title, attributes: attributes), for: .normal)
-        button.addTarget(self, action: #selector(moreInfoTapped), for: .touchUpInside)
-
-        defaultFooter.addSubview(button)
-
-        button.snp.makeConstraints { (make) in
-            make.top.equalTo(defaultFooter.titleLabel.snp.bottom)
-            make.leading.equalTo(defaultFooter.titleLabel)
-        }
-
-        return defaultFooter
-    }
-
-    @objc func moreInfoTapped() {
-        let viewController = SettingsContentViewController()
-        viewController.url = SupportUtils.URLForTopic("tracking-protection-ios")
-        navigationController?.pushViewController(viewController, animated: true)
-    }
 }

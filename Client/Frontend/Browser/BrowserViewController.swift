@@ -1254,19 +1254,8 @@ class BrowserViewController: UIViewController {
     @objc fileprivate func openSettings() {
         assert(Thread.isMainThread, "Opening settings requires being invoked on the main thread")
 
-        if FeatureFlag[.legacySettings] {
-            let settingsTableViewController = AppSettingsTableViewController()
-            settingsTableViewController.profile = profile
-            settingsTableViewController.tabManager = tabManager
-            settingsTableViewController.settingsDelegate = self
-
-            let controller = ThemedNavigationController(rootViewController: settingsTableViewController)
-            controller.presentingModalViewControllerDelegate = self
-            self.present(controller, animated: true, completion: nil)
-        } else {
-            let controller = SettingsViewController(bvc: self)
-            self.present(controller, animated: true, completion: nil)
-        }
+        let controller = SettingsViewController(bvc: self)
+        self.present(controller, animated: true, completion: nil)
     }
 
     fileprivate func postLocationChangeNotificationForTab(_ tab: Tab, navigation: WKNavigation?) {
@@ -2016,42 +2005,6 @@ extension BrowserViewController {
         if alwaysShow || !Defaults[.introSeen] {
             showProperIntroVC()
         }
-    }
-    
-    func presentETPCoverSheetViewController(_ force: Bool = false) {
-        guard !hasTriedToPresentETPAlready else {
-            return
-        }
-        hasTriedToPresentETPAlready = true
-        let cleanInstall = UpdateViewModel.isCleanInstall()
-        let shouldShow = ETPViewModel.shouldShowETPCoverSheet(isCleanInstall: cleanInstall)
-        guard force || shouldShow else {
-            return
-        }
-        let etpCoverSheetViewController = ETPCoverSheetViewController()
-        if topTabsVisible {
-            etpCoverSheetViewController.preferredContentSize = CGSize(width: ViewControllerConsts.PreferredSize.UpdateViewController.width, height: ViewControllerConsts.PreferredSize.UpdateViewController.height)
-            etpCoverSheetViewController.modalPresentationStyle = .formSheet
-        } else {
-            etpCoverSheetViewController.modalPresentationStyle = .fullScreen
-        }
-        etpCoverSheetViewController.viewModel.startBrowsing = {
-            etpCoverSheetViewController.dismiss(animated: true) {
-            if self.navigationController?.viewControllers.count ?? 0 > 1 {
-                _ = self.navigationController?.popToRootViewController(animated: true)
-                }
-            }
-        }
-        etpCoverSheetViewController.viewModel.goToSettings = {
-            etpCoverSheetViewController.dismiss(animated: true) {
-                let settingsTableViewController = ContentBlockerSettingViewController()
-                settingsTableViewController.profile = self.profile
-                settingsTableViewController.tabManager = self.tabManager
-                settingsTableViewController.settingsDelegate = self
-                self.presentThemedViewController(navItemLocation: .Left, navItemText: .Close, vcBeingPresented: settingsTableViewController, topTabsVisible: self.topTabsVisible)
-            }
-        }
-        present(etpCoverSheetViewController, animated: true, completion: nil)
     }
     
     // Default browser onboarding

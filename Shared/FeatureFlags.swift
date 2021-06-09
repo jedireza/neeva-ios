@@ -5,7 +5,6 @@ import Defaults
 
 /// Usage: add a `case` to this enum, then reference `FeatureFlag[.myFeature]` to check for that feature’s status.
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
-    case legacySettings = "Legacy Settings"
     case inlineAccountSettings = "Inline Account Settings"
     case feedbackScreenshot = "Attach Screenshot to Feedback"
     case pinToTopSites = "Pin to Top Sites"
