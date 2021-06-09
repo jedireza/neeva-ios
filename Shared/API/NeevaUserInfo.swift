@@ -185,7 +185,7 @@ public class NeevaUserInfo: ObservableObject {
     }
 
     private var isDeviceOnline: Bool {
-        if let connection = connection, connection != .unavailable && connection != .none {
+        if let connection = connection, connection != .unavailable {
             return true
         }
 

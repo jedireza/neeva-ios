@@ -16,14 +16,12 @@ private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([
  * Since both of these use the same SQL query, we can perform the query once and dispatch the results.
  */
 class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
-    fileprivate let profile: Profile
     fileprivate let urlBar: URLBarView
     fileprivate let frecentHistory: FrecentHistory
 
     private var skipNextAutocomplete: Bool
 
     init(profile: Profile, urlBar: URLBarView) {
-        self.profile = profile
         self.urlBar = urlBar
         self.frecentHistory = profile.history.getFrecentHistory()
 
@@ -43,11 +41,6 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
 
     var query: String = "" {
         didSet {
-            guard let profile = self.profile as? BrowserProfile else {
-                assertionFailure("nil profile")
-                return
-            }
-
             currentDeferredHistoryQuery?.cancel()
 
             if query.isEmpty {

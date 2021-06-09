@@ -38,6 +38,13 @@ public struct KeyboardState {
         }
         return 0
     }
+
+    public func animateAlongside(_ animations: @escaping () -> ()) {
+        UIView.animate(withDuration: animationDuration) {
+            UIView.setAnimationCurve(animationCurve)
+            animations()
+        }
+    }
 }
 
 public protocol KeyboardHelperDelegate: AnyObject {

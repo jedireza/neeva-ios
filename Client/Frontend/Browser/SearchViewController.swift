@@ -199,11 +199,10 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
     }
 
     fileprivate func animateSearchEnginesWithKeyboard(_ keyboardState: KeyboardState) {
-        UIView.animate(withDuration: keyboardState.animationDuration, animations: {
-            UIView.setAnimationCurve(keyboardState.animationCurve)
+        keyboardState.animateAlongside {
             self.view.layoutIfNeeded()
             self.rootView = self.makeSuggestionView()
-        })
+        }
     }
 
     fileprivate func reloadData() {

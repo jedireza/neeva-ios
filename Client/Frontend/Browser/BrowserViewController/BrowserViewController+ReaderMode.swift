@@ -166,7 +166,7 @@ extension BrowserViewController: ReaderModeBarViewDelegate {
         switch buttonType {
         case .settings:
             if let readerMode = tabManager.selectedTab?.getContentScript(name: "ReaderMode") as? ReaderMode, readerMode.state == ReaderModeState.active {
-                var readerModeStyle = Defaults[.readerModeStyle]
+                let readerModeStyle = Defaults[.readerModeStyle]
  
                 let readerModeStyleViewController = ReaderModeStyleViewController()
                 readerModeStyleViewController.delegate = self

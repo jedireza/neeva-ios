@@ -745,7 +745,7 @@ class BrowserViewController: UIViewController {
         // Setup the bottom toolbar
         toolbar?.snp.remakeConstraints { make in
             make.edges.equalTo(self.footer)
-            make.height.equalTo(UIConstants.BottomToolbarHeight)
+            make.height.equalTo(UIConstants.BottomToolbarHeight(in: view.window))
         }
 
         footer.snp.remakeConstraints { make in
@@ -988,11 +988,10 @@ class BrowserViewController: UIViewController {
                 urlBar.hideProgressBar()
             }
         case .loading:
-            guard let loading = change?[.newKey] as? Bool else { break }
+            break
         case .URL:
             // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
             if tab.url?.absoluteString == "about:blank" && webView.url == nil {
-                print(webView.url?.origin)
                 break
             }
 
@@ -1591,13 +1590,10 @@ extension BrowserViewController: URLBarDelegate {
 
         // We couldn't build a URL, so check for a matching search keyword.
         let trimmedText = text.trimmingCharacters(in: .whitespaces)
-        guard let possibleKeywordQuerySeparatorSpace = trimmedText.firstIndex(of: " ") else {
+        guard trimmedText.firstIndex(of: " ") != nil else {
             submitSearchText(text, forTab: currentTab)
             return
         }
-
-        let possibleKeyword = String(trimmedText[..<possibleKeywordQuerySeparatorSpace])
-        let possibleQuery = String(trimmedText[trimmedText.index(after: possibleKeywordQuerySeparatorSpace)...])
 
         self.submitSearchText(text, forTab: currentTab)
     }
@@ -1616,9 +1612,6 @@ extension BrowserViewController: URLBarDelegate {
 
     func urlBarDidEnterOverlayMode(_ urlBar: URLBarView) {
         libraryDrawerViewController?.close()
-        guard let profile = profile as? BrowserProfile else {
-            return
-        }
 
         if let toast = clipboardBarDisplayHandler?.clipboardToast {
             toast.removeFromSuperview()
@@ -2348,8 +2341,7 @@ extension BrowserViewController: KeyboardHelperDelegate {
         keyboardState = state
         updateViewConstraints()
 
-        UIView.animate(withDuration: state.animationDuration) {
-            UIView.setAnimationCurve(state.animationCurve)
+        state.animateAlongside {
             self.alertStackView.layoutIfNeeded()
         }
     }
@@ -2362,8 +2354,7 @@ extension BrowserViewController: KeyboardHelperDelegate {
         keyboardState = nil
         updateViewConstraints()
 
-        UIView.animate(withDuration: state.animationDuration) {
-            UIView.setAnimationCurve(state.animationCurve)
+        state.animateAlongside {
             self.alertStackView.layoutIfNeeded()
         }
     }

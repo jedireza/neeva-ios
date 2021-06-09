@@ -47,14 +47,8 @@ public struct UIConstants {
 
     // Bottom bar when in portrait mode on a phone:
     static var ToolbarHeight: CGFloat = 46
-    static var BottomToolbarHeight: CGFloat {
-        get {
-            var bottomInset: CGFloat = 0.0
-            if let window = UIApplication.shared.keyWindow {
-                bottomInset = window.safeAreaInsets.bottom
-            }
-            return ToolbarHeight + bottomInset
-        }
+    static func BottomToolbarHeight(in window: UIWindow? = nil) -> CGFloat {
+        return ToolbarHeight + (window?.safeAreaInsets.bottom ?? 0)
     }
 
     static let SystemBlueColor = UIColor.Photon.Blue40

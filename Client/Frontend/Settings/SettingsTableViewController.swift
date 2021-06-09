@@ -243,7 +243,7 @@ class BoolSetting: Setting {
         guard let key = prefKey else {
             return
         }
-        control.isOn = UserDefaults.standard.bool(forKey: key) ?? defaultValue
+        control.isOn = UserDefaults.standard.bool(forKey: key)
     }
 
     func writeBool(_ control: UISwitch) {

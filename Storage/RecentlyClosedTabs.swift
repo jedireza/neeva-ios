@@ -9,7 +9,7 @@ import Defaults
 open class ClosedTabsStore {
     lazy open var tabs: [ClosedTab] = {
         guard let tabsArray = Defaults[.recentlyClosedTabs],
-              let unarchivedArray = NSKeyedUnarchiver.unarchiveObject(with: tabsArray) as? [ClosedTab] else {
+              let unarchivedArray = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: tabsArray) as? [ClosedTab] else {
             return []
         }
         return unarchivedArray
@@ -24,7 +24,7 @@ open class ClosedTabsStore {
         if tabs.count > 5 {
             tabs.removeLast()
         }
-        Defaults[.recentlyClosedTabs] = NSKeyedArchiver.archivedData(withRootObject: tabs)
+        Defaults[.recentlyClosedTabs] = try? NSKeyedArchiver.archivedData(withRootObject: tabs, requiringSecureCoding: false)
     }
 
     open func clearTabs() {

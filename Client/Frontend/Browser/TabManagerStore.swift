@@ -33,14 +33,14 @@ class TabManagerStore {
         return archivedStartupTabs.0.count > 0
     }
 
-    fileprivate func tabsStateArchivePath() -> String? {
+    fileprivate func tabsStateArchivePath() -> URL? {
         let profilePath: String?
         if  AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest {      profilePath = (UIApplication.shared.delegate as? TestAppDelegate)?.dirForTestProfile
         } else {
             profilePath = fileManager.containerURL( forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)?.appendingPathComponent("profile.profile").path
         }
         guard let path = profilePath else { return nil }
-        return URL(fileURLWithPath: path).appendingPathComponent("tabsState.archive").path
+        return URL(fileURLWithPath: path).appendingPathComponent("tabsState.archive")
     }
 
     fileprivate func prepareSavedTabs(fromTabs tabs: [Tab], selectedTab: Tab?) -> [SavedTab]? {
@@ -70,29 +70,28 @@ class TabManagerStore {
         assert(Thread.isMainThread)
         print("preserve tabs!, existing tabs: \(tabs.count)")
         guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab),
-            let path = tabsStateArchivePath() else {
+            let url = tabsStateArchivePath() else {
                 clearArchive()
                 return succeed()
         }
 
         writeOperation.cancel()
 
-        let tabStateData = NSMutableData()
-        let archiver = NSKeyedArchiver(forWritingWith: tabStateData)
+        let archiver = NSKeyedArchiver(requiringSecureCoding: false)
 
         archiver.encode(savedTabs, forKey: "tabs")
         archiver.finishEncoding()
-        
+
         let simpleTabs = SimpleTab.convertToSimpleTabs(savedTabs)
         
 
         let result = Success()
         writeOperation = DispatchWorkItem {
-            let written = tabStateData.write(toFile: path, atomically: true)
+            try? archiver.encodedData.write(to: url, options: .atomic)
             
             SimpleTab.saveSimpleTab(tabs: simpleTabs)
             // Ignore write failure (could be restoring).
-            log.debug("PreserveTabs write ok: \(written), bytes: \(tabStateData.length)")
+            log.debug("PreserveTabs write ok, bytes: \(archiver.encodedData.count)")
             result.fill(Maybe(success: ()))
         }
 
@@ -140,7 +139,7 @@ class TabManagerStore {
 
     func clearArchive() {
         if let path = tabsStateArchivePath() {
-            try? FileManager.default.removeItem(atPath: path)
+            try? FileManager.default.removeItem(at: path)
         }
     }
 }

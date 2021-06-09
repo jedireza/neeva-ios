@@ -51,11 +51,11 @@ struct TabProvider: TimelineProvider {
         })
     }
     
-    fileprivate func tabsStateArchivePath() -> String? {
+    fileprivate func tabsStateArchivePath() -> URL? {
         let profilePath: String?
         profilePath = FileManager.default.containerURL( forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)?.appendingPathComponent("profile.profile").path
         guard let path = profilePath else { return nil }
-        return URL(fileURLWithPath: path).appendingPathComponent("tabsState.archive").path
+        return URL(fileURLWithPath: path).appendingPathComponent("tabsState.archive")
     }
 }
 

@@ -58,12 +58,6 @@ class TabsButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc override func clone() -> UIView {
-        let button = TabsButton()
-        button.accessibilityLabel = accessibilityLabel
-        return button
-    }
-
     @objc func cloneDidClickTabs() {
         sendActions(for: .touchUpInside)
     }

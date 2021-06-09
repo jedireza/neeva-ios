@@ -135,7 +135,7 @@ extension PhotonActionSheetProtocol {
 
     @available(iOS 11.0, *)
     private func menuActionsForTrackingProtectionEnabled(for tab: Tab, isSafelisted: Bool = false) -> [[PhotonActionSheetItem]] {
-        guard let blocker = tab.contentBlocker, let currentURL = tab.url else {
+        guard tab.contentBlocker != nil, let currentURL = tab.url else {
             return []
         }
 
