@@ -30,6 +30,7 @@ public struct LogConfig {
         case ViewPrivacyPolicy // Click Privacy Policy in setting
         case ViewShowTour // Click Show Tour in setting
         case ViewHelp // Click Help in setting
+        case ViewHelpCenter // Click Help Center in setting
         case ViewLicenses // Click Licenses in setting
         case ViewTerms // Click Terms in setting
 

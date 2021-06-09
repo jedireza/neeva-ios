@@ -12,14 +12,21 @@ struct SupportSettingsSection: View {
             ClientLogger.shared.logCounter(.ViewShowTour, attributes: EnvironmentHelper.shared.getAttributes())
             presentIntroViewController()
         }
+        
         SheetNavigationLink("Send Feedback") {
             // TODO: make SendFeedbackView’s NavigationView optional so we can push it?
             // also TODO: figure out how to send a screenshot here
             SendFeedbackView(screenshot: nil, url: nil)
                 .environment(\.onOpenURL, openURLInNewNonPrivateTab)
         }
+        
         NavigationLinkButton("Help") {
             ClientLogger.shared.logCounter(.ViewHelp, attributes: EnvironmentHelper.shared.getAttributes())
+            openURL(NeevaConstants.appHelpURL)
+        }
+        
+        NavigationLinkButton("Help Center") {
+            ClientLogger.shared.logCounter(.ViewHelpCenter, attributes: EnvironmentHelper.shared.getAttributes())
             openURL(NeevaConstants.appHelpCenterURL)
         }
     }
