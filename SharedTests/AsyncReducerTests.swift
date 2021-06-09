@@ -144,8 +144,8 @@ class TestError: MaybeErrorType {
     var description = "Error"
 }
 
-private let serialQueue = DispatchQueue(label: "com.mozilla.test.serial", attributes: [])
-private let concurrentQueue = DispatchQueue(label: "com.mozilla.test.concurrent", attributes: DispatchQueue.Attributes.concurrent)
+private let serialQueue = DispatchQueue(label: "co.neeva.test.serial", attributes: [])
+private let concurrentQueue = DispatchQueue(label: "co.neeva.test.concurrent", attributes: DispatchQueue.Attributes.concurrent)
 
 func delay(_ delay: Double, closure:@escaping () -> Void) {
     concurrentQueue.asyncAfter(

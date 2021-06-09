@@ -8,7 +8,6 @@ import GCDWebServers
 import Shared
 import Storage
 
-fileprivate let MozDomain = "mozilla"
 fileprivate let MozErrorDownloadsNotEnabled = 100
 fileprivate let MessageOpenInSafari = "openInSafari"
 fileprivate let MessageCertVisitOnce = "certVisitOnce"
@@ -183,7 +182,7 @@ class ErrorPageHandler: InternalSchemeResponse {
             if let code = CFNetworkErrors(rawValue: Int32(errCode)) {
                 errDomain = cfErrorToName(code)
             }
-        } else if errDomain == MozDomain {
+        } else if errDomain == NeevaErrorDomain {
             if errCode == MozErrorDownloadsNotEnabled {
                 let downloadInSafari: String = .ErrorPageOpenInSafari
 

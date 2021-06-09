@@ -7,7 +7,7 @@ import Foundation
 private let DiskReaderModeCacheSharedInstance = DiskReaderModeCache()
 private let MemoryReaderModeCacheSharedInstance = MemoryReaderModeCache()
 
-let ReaderModeCacheErrorDomain = "com.mozilla.client.readermodecache."
+let ReaderModeCacheErrorDomain = "co.neeva.client.readermodecache."
 enum ReaderModeCacheErrorCode: Int {
     case noPathsFound = 0
 }

@@ -15,7 +15,7 @@ open class DatabaseError: MaybeErrorType {
     }
 
     public init(description: String) {
-        self.err = NSError(domain: "mozilla", code: 0, userInfo: [NSLocalizedDescriptionKey: description])
+        self.err = NSError(domain: NeevaErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: description])
     }
 
     public init(err: NSError?) {

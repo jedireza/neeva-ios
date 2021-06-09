@@ -7,10 +7,6 @@ extension Notification.Name {
 
     public static let RegisterForPushNotifications = Notification.Name("RegisterForPushNotifications")
 
-    public static let FirefoxAccountProfileChanged = Notification.Name("FirefoxAccountProfileChanged")
-
-    public static let FirefoxAccountDeviceRegistrationUpdated = Notification.Name("FirefoxAccountDeviceRegistrationUpdated")
-
     public static let PrivateDataClearedHistory = Notification.Name("PrivateDataClearedHistory")
     public static let PrivateDataClearedDownloadedFiles = Notification.Name("PrivateDataClearedDownloadedFiles")
 

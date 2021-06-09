@@ -61,7 +61,7 @@ extension SimpleTab {
             
             // Set Title
             var title = tab.title ?? ""
-            // There is no title then use the base url Ex https://www.mozilla.org/ will be short displayed as `mozilla`
+            // There is no title then use the base url Ex https://www.example.com/ will be short displayed as `example`
             if title.isEmpty {
                 title = url?.shortDisplayString ?? ""
             }

@@ -50,7 +50,7 @@ extension TelemetryWrapper {
         case appExtensionAction = "app-extension-action"
         case prompt = "prompt"
         case enrollment = "enrollment"
-        case firefoxAccount = "neeva_account"
+        case neevaAccount = "neeva_account"
     }
 
     public enum EventMethod: String {

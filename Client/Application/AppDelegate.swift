@@ -204,8 +204,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // that is an iOS bug or not.
         AutocompleteTextField.appearance().semanticContentAttribute = .forceLeftToRight
 
-        pushNotificationSetup()
-
         return shouldPerformAdditionalDelegateHandling
     }
 

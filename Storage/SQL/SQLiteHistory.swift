@@ -918,7 +918,7 @@ extension SQLiteHistory: SyncableHistory {
             // factory.
             for row in cursor.makeIterator() {
                 guard let row = row, cursor.status == .success else {
-                    throw NSError(domain: "mozilla", code: 0, userInfo: [NSLocalizedDescriptionKey: cursor.statusMessage])
+                    throw NSError(domain: NeevaErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: cursor.statusMessage])
                 }
 
                 guard let id = row["siteID"] as? Int,
