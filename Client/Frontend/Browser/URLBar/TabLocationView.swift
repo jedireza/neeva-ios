@@ -7,37 +7,75 @@ enum TabLocationViewUX {
     static let height: CGFloat = 42
 }
 
-struct TabLocationView: View {
-    init(url: URL?) {
-        self.url = url
+struct TabLocationButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .brightness(configuration.isPressed ? -0.3 : 0)
     }
-    let url: URL?
+}
+
+struct TabLocationView: View {
+    enum Status {
+        case insecure
+        case secure
+        case search
+        case untrusted
+        case connectionError
+
+        var icon: Symbol? {
+            switch self {
+            case .insecure: return nil
+            case .secure: return Symbol(.lockFill)
+            case .search: return Symbol(.magnifyingglass)
+            case .untrusted: return Symbol(.lockSlashFill)
+            case .connectionError: return Symbol(.exclamationmarkTriangleFill)
+            }
+        }
+    }
+
+    init(text: String, status: Status, onTap: @escaping () -> ()) {
+        self.text = text
+        self.status = status
+        self.onTap = onTap
+    }
+
+    let text: String
+    let status: Status
+    let onTap: () -> ()
 
     var body: some View {
-        Capsule()
-            .fill(Color.systemFill)
-            .overlay(TabLocationAligner {
-                Text(url?.host ?? "")
-                    .frame(height: TabLocationViewUX.height)
-            } leading: {
-                TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
-            } trailing: {
-//                TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
-                TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
-                TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
+        Button(action: onTap) {
+            Capsule()
+                .fill(Color.systemFill)
+        }
+        .buttonStyle(TabLocationButtonStyle())
+        .overlay(TabLocationAligner {
+            Label {
+                Text(text).truncationMode(.head)
+            } icon: {
+                if let icon = status.icon {
+                    icon
+                }
+            }.frame(height: TabLocationViewUX.height)
+        } leading: {
+            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
+        } trailing: {
+            TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
+            TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
 
-            })
-            .frame(height: TabLocationViewUX.height)
+        })
+        .frame(height: TabLocationViewUX.height)
     }
 }
 
 struct URLBarView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TabLocationView(url: URL(string: "https://a/about"))
-            TabLocationView(url: URL(string: "https://neeva.com/about"))
-            TabLocationView(url: URL(string: "https://long.domain.domain.long/about"))
-            TabLocationView(url: URL(string: "https://vviii.verylong.subdomain.neeva.com/about"))
+            TabLocationView(text: "vviii.verylong.subdomain.neeva.com", status: .insecure) {}
+            TabLocationView(text: "neeva.com", status: .secure) {}
+            TabLocationView(text: "a long search query with words", status: .search) {}
+            TabLocationView(text: "you-broke-it.badssl.com", status: .untrusted) {}
+            TabLocationView(text: "something.badssl.com", status: .connectionError) {}
         }
             .padding()
             .previewLayout(.sizeThatFits)
