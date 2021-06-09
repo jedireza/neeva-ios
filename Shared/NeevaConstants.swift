@@ -56,14 +56,29 @@ public struct NeevaConstants {
         public static let deviceType = Header("X-Neeva-Device-Type", "ios-browser")
     }
 
+    /// This cookie is set on requests to identify the requester as the iOS app.
     public static var deviceTypeCookie: HTTPCookie {
-        /// This cookie is set on requests to identify the requester as the iOS app.
         HTTPCookie(properties: [
             .name: "DeviceType",
             .value: "ios-browser",
             .domain: NeevaConstants.appHost,
             .path: "/",
             .expires: Date.distantFuture
+        ])!
+    }
+
+    /// Generates a login cookie from the given cookie value.
+    public static func loginCookie(for value: String) -> HTTPCookie {
+        HTTPCookie(properties: [
+            .name: "httpd~login",
+            .value: value,
+            .domain: NeevaConstants.appHost,
+            .path: "/",
+            .expires: Date.distantFuture,
+            .secure: true,
+            .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
+            // ! potentially undocumented API
+            .init("HttpOnly"): true
         ])!
     }
 
