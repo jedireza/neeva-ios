@@ -36,9 +36,9 @@ fileprivate enum TriState: Int, Codable {
 
     var verb: String {
         switch self {
-        case .hidden: return "show"
-        case .compact: return "expand"
-        case .expanded: return "hide"
+        case .hidden: return "shows"
+        case .compact: return "expands"
+        case .expanded: return "hides"
         }
     }
 
@@ -92,9 +92,8 @@ struct NeevaHomeHeader: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityAddTraits([.isHeader])
-        .accessibilityLabel(title)
-        .accessibilityHint("Double-tap to \(label)")
+        .accessibilityAddTraits([.isHeader, .isButton])
+        .accessibilityLabel("\(title), \(label)")
         .accessibilityAction(.default, action)
         .padding([.top, .horizontal], NeevaHomeUX.HeaderPadding)
     }
@@ -120,7 +119,7 @@ struct NeevaHome: View {
                     NeevaHomeHeader(
                         title: "Suggested sites",
                         action: { expandSuggestedSites.advance() },
-                        label: "\(expandSuggestedSites.verb) suggested sites",
+                        label: "\(expandSuggestedSites.verb) this section",
                         icon: expandSuggestedSites.icon
                     )
                     if expandSuggestedSites != .hidden {
@@ -130,7 +129,7 @@ struct NeevaHome: View {
                     NeevaHomeHeader(
                         title: "Searches",
                         action: { expandSearches.toggle() },
-                        label: "\(expandSearches ? "hide" : "show") searches",
+                        label: "\(expandSearches ? "hides" : "shows") this section",
                         icon: expandSearches ? .chevronUp : .chevronDown
                     )
                     if expandSearches {

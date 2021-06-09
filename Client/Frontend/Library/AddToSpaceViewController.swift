@@ -53,6 +53,7 @@ class AddToSpaceViewController: UIHostingController<AddToSpaceRootView> {
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
             self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         }
+        self.view.accessibilityViewIsModal = true
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

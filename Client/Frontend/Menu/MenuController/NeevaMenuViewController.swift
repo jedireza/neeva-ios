@@ -33,7 +33,8 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
             self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         }
         delegate.isNeevaMenuSheetOpen = true
-
+        self.view.accessibilityViewIsModal = true
+        
         //Build callbacks for each button action
         self.rootView.embeddedView.menuAction = { result in
             delegate.isNeevaMenuSheetOpen = false

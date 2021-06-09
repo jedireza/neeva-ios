@@ -26,10 +26,10 @@ struct OverlaySheetUX {
     static let fixedHeightModeBottomPadding: CGFloat = 22
 }
 
-enum OverlaySheetPosition {
-    case top
-    case middle
-    case dismissed
+enum OverlaySheetPosition: LocalizedStringKey {
+    case top = "Full screen"
+    case middle = "Half screen"
+    case dismissed = ""
 }
 
 class OverlaySheetModel: ObservableObject {
@@ -135,6 +135,27 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 RoundedRectangle(cornerRadius: 50)
                     .frame(width: 32, height: 4)
                     .foregroundColor(Color.Neeva.UI.Gray60)
+                    .padding(15).background(Color.clear) // make the selectable area larger
+                    .accessibilityElement()
+                    .accessibilityLabel("Pop-up controller")
+                    .accessibilityValue(model.position.rawValue)
+                    .accessibilityHint("Adjust the size of this pop-up window")
+                    // TODO: make this action become disabled instead of doing nothing
+                    .accessibilityAction(named: "Expand") {
+                        withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
+                            self.model.position = .top
+                        }
+                    }
+                    .accessibilityAction(named: model.position == .top ? "Collapse" : "Dismiss") {
+                        if model.position == .top {
+                            withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
+                                self.model.position = .middle
+                            }
+                        } else {
+                            model.hide()
+                        }
+                    }
+                    .padding(-15)
                     .padding(.top, 8)
             }
             HStack(spacing: 0) {
@@ -238,6 +259,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 }
             }
         }
+        .accessibilityAction(.escape, model.hide)
         .navigationBarHidden(true)
     }
 
