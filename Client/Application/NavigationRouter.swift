@@ -234,7 +234,7 @@ enum NavigationPath {
     }
 
     private static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
-        // Intercept and rewrite Google search queries incoming from e.g. SpotLight.
+        // Intercept and rewrite search queries incoming from e.g. SpotLight.
         //
         // Example of what components looks like:
         //    - scheme : "https"
@@ -261,15 +261,45 @@ enum NavigationPath {
         //        - name : "client"
         //        ▿ value : Optional<String>
         //          - some : "safari"
-        if components.host == "www.google.com",
-           components.path == "/search",
-           let queryItems = components.queryItems,
-           queryItems.contains(where: { $0.name == "client" && $0.value == "safari" }),
-           let queryItem = queryItems.first(where: { $0.name == "q" }),
-           let value = queryItem.value {
-            return URL(string: "https://\(NeevaConstants.appHost)/search/?q=\(value)&src=nvobar")!
+        //
+        
+        // search query value
+        var value: String?
+        
+        if let host = components.host, let queryItems = components.queryItems {
+            switch host {
+            case "www.google.com", "www.bing.com", "www.ecosia.org", "search.yahoo.com":
+                // yahoo uses p for the search query name instead of q
+                let queryName = host == "search.yahoo.com" ? "p" : "q"
+                if components.path == "/search" {
+                    value = queryItems.first(where: { $0.name == queryName })?.value
+                }
+            case "duckduckgo.com":
+                // duckduckgo doesn't include the /search path
+                value = queryItems.first(where: { $0.name == "q" })?.value
+            case "yandex.com":
+                if components.path == "/search/touch/" {
+                    value = queryItems.first(where: { $0.name == "text" })?.value
+                }
+            case "www.baidu.com", "www.so.com":
+                let queryName = host == "www.baidu.com" ? "oq" : "src"
+                if components.path == "/s" {
+                    value = queryItems.first(where: { $0.name == queryName })?.value
+                }
+            case "www.sogou.com":
+                if components.path == "/web" {
+                    value = queryItems.first(where: { $0.name == "query" })?.value
+                }
+            default:
+                return url
+            }
         }
-        return url
+        
+        if let value = value, let newURL = neevaSearchEngine.searchURLForQuery(value) {
+            return newURL
+        } else {
+            return url
+        }
     }
 }
 
