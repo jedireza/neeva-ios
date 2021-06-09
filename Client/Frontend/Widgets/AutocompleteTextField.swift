@@ -11,6 +11,7 @@ import Shared
 /// callers must use this instead.
 protocol AutocompleteTextFieldDelegate: AnyObject {
     func autocompleteTextField(_ autocompleteTextField: AutocompleteTextField, didEnterText text: String)
+    func autocompleteTextFieldCompletionCleared(_ autocompleteTextField: AutocompleteTextField)
     func autocompleteTextFieldShouldReturn(_ autocompleteTextField: AutocompleteTextField) -> Bool
     func autocompleteTextFieldShouldClear(_ autocompleteTextField: AutocompleteTextField) -> Bool
     func autocompleteTextFieldDidCancel(_ autocompleteTextField: AutocompleteTextField)
@@ -298,6 +299,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         if isSelectionActive {
             removeCompletion()
             forceResetCursor()
+            autocompleteDelegate?.autocompleteTextFieldCompletionCleared(self)
         } else {
             super.deleteBackward()
         }

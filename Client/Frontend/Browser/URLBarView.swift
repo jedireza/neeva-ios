@@ -709,6 +709,10 @@ extension URLBarView: TabLocationViewDelegate {
 }
 
 extension URLBarView: AutocompleteTextFieldDelegate {
+    func autocompleteTextFieldCompletionCleared(_ autocompleteTextField: AutocompleteTextField) {
+        createLeftViewFavicon()
+    }
+
     func autocompleteTextFieldShouldReturn(_ autocompleteTextField: AutocompleteTextField) -> Bool {
         guard let text = locationTextField?.text else { return true }
         if !text.trimmingCharacters(in: .whitespaces).isEmpty {
@@ -721,7 +725,9 @@ extension URLBarView: AutocompleteTextFieldDelegate {
 
     func autocompleteTextField(_ autocompleteTextField: AutocompleteTextField, didEnterText text: String) {
         delegate?.urlBar(self, didEnterText: text)
-        createLeftViewFavicon()
+        if text.isEmpty  {
+            createLeftViewFavicon()
+        }
     }
 
     func autocompleteTextFieldShouldClear(_ autocompleteTextField: AutocompleteTextField) -> Bool {

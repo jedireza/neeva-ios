@@ -1832,7 +1832,9 @@ extension BrowserViewController: SearchViewControllerDelegate {
 
     func searchViewController(_ searchViewController: SearchViewController, didUpdateLensOrBang lensOrBang: ActiveLensBangInfo?) {
         self.urlBar.lensOrBang = lensOrBang
-        self.urlBar.createLeftViewFavicon()
+        if lensOrBang != nil {
+            self.urlBar.createLeftViewFavicon()
+        }
     }
 
 }

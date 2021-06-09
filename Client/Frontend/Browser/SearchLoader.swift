@@ -97,6 +97,8 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
                         return
                     }
                 }
+
+                self.urlBar.setAutocompleteSuggestion("")
             }
         }
     }
