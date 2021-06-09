@@ -14,9 +14,9 @@ enum QuickLink: Int {
     public var imageName: String {
         switch self {
         case .search:
-            return "faviconFox"
+            return "faviconNeeva"
         case .privateSearch:
-            return "smallPrivateMask"
+            return "incognito"
         case .copiedLink:
             return "copiedLinkIcon"
         case .closePrivateTabs:

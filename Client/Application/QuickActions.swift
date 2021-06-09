@@ -10,7 +10,7 @@ import XCGLogger
 
 enum ShortcutType: String {
     case newTab = "NewTab"
-    case newPrivateTab = "NewPrivateTab"
+    case newIncognitoTab = "NewIncognitoTab"
 
     init?(fullType: String) {
         guard let last = fullType.components(separatedBy: ".").last else { return nil }
@@ -86,7 +86,7 @@ class QuickActions: NSObject {
         switch type {
         case .newTab:
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: false)
-        case .newPrivateTab:
+        case .newIncognitoTab:
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: true)
         }
     }

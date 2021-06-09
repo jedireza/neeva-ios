@@ -37,11 +37,11 @@ extension LibraryPanelContextMenu {
     func getDefaultContextMenuActions(for site: Site, libraryPanelDelegate: LibraryPanelDelegate?) -> [PhotonActionSheetItem]? {
         guard let siteURL = URL(string: site.url) else { return nil }
 
-        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "quick_action_new_tab") { _, _ in
+        let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "plus.square", iconType: .SystemImage) { _, _ in
             libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
         }
 
-        let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "quick_action_new_private_tab") { _, _ in
+        let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "incognito") { _, _ in
             libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, isPrivate: true)
         }
 

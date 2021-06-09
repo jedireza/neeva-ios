@@ -6,7 +6,7 @@
 
 "NSPhotoLibraryAddUsageDescription" = "This lets you save photos.";
 
-"ShortcutItemTitleNewPrivateTab" = "New Private Tab";
+"ShortcutItemTitleNewIncognitoTab" = "New Incognito Tab";
 
 "ShortcutItemTitleNewTab" = "New Tab";
 

@@ -523,7 +523,7 @@
 "Hotkeys.Forward.DiscoveryTitle" = "Forward";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.NewPrivateTab.DiscoveryTitle" = "New Private Tab";
+"Hotkeys.NewPrivateTab.DiscoveryTitle" = "New Incognito Tab";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
 "Hotkeys.NewTab.DiscoveryTitle" = "New Tab";

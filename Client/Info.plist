@@ -118,8 +118,8 @@
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
-			<key>UIApplicationShortcutItemIconFile</key>
-			<string>quick_action_new_tab</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>plus.square</string>
 			<key>UIApplicationShortcutItemTitle</key>
 			<string>ShortcutItemTitleNewTab</string>
 			<key>UIApplicationShortcutItemType</key>
@@ -127,11 +127,11 @@
 		</dict>
 		<dict>
 			<key>UIApplicationShortcutItemIconFile</key>
-			<string>quick_action_new_private_tab</string>
+			<string>incognito</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>ShortcutItemTitleNewPrivateTab</string>
+			<string>ShortcutItemTitleNewIncognitoTab</string>
 			<key>UIApplicationShortcutItemType</key>
-			<string>$(PRODUCT_BUNDLE_IDENTIFIER).NewPrivateTab</string>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER).NewIncognitoTab</string>
 		</dict>
 	</array>
 	<key>UIBackgroundModes</key>

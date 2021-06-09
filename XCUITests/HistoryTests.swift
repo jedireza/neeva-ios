@@ -150,7 +150,7 @@ class HistoryTests: BaseTestCase {
         app.tables.cells.staticTexts[closedWebPageLabel].press(forDuration: 1)
         waitForExistence(app.tables["Context Menu"])
         XCTAssertTrue(app.tables.cells["quick_action_new_tab"].exists)
-        XCTAssertTrue(app.tables.cells["quick_action_new_private_tab"].exists)
+        XCTAssertTrue(app.tables.cells["incognito].exists)
     }
     */
 
@@ -192,7 +192,7 @@ class HistoryTests: BaseTestCase {
 
         app.tables.cells.staticTexts[closedWebPageLabel].press(forDuration: 1)
         waitForExistence(app.tables["Context Menu"])
-        app.tables.cells["quick_action_new_private_tab"].tap()
+        app.tables.cells["incognito"].tap()
 
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         navigator.goto(TabTray)

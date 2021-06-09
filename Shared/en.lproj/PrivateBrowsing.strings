@@ -1,8 +1,8 @@
 /* Setting for closing private tabs */
-"Close Private Tabs" = "Close Private Tabs";
+"Close Private Tabs" = "Close Incognito Tabs";
 
 /* Context menu option for opening a link in a new private tab */
-"ContextMenu.OpenInNewPrivateTabButtonTitle" = "Open in New Private Tab";
+"ContextMenu.OpenInNewPrivateTabButtonTitle" = "Open in New Incognito Tab";
 
 /* Description text displayed when there are no open tabs while in private mode */
 "Neeva won’t remember any of your history or cookies, but new bookmarks will be saved." = "Neeva won’t remember any of your history or cookies, but new bookmarks will be saved.";

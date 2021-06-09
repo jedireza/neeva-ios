@@ -91,7 +91,7 @@ struct ImageButtonWithLabel: View {
                     if isSmall {
                         HStack(alignment: .bottom){
                             Spacer()
-                            Image("faviconFox")
+                            Image("faviconNeeva")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .scaledToFit()

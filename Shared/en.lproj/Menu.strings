@@ -17,7 +17,7 @@
 "Menu.Library.Title" = "Your Library";
 
 /* Label for the button, displayed in the menu, used to open a new private tab. */
-"Menu.NewPrivateTabAction.Title" = "Open New Private Tab";
+"Menu.NewPrivateTabAction.Title" = "Open New Incognito Tab";
 
 /* Label for the button, displayed in the menu, used to open a new tab */
 "Menu.NewTabAction.Title" = "Open New Tab";
