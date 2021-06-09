@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import SwiftUI
+import Shared
 
 public struct TrackingMenuProtectionRowButton: View {
 
@@ -17,11 +18,11 @@ public struct TrackingMenuProtectionRowButton: View {
             VStack{
                 Text(name)
                     .foregroundColor(Color(UIColor.PopupMenu.textColor))
-                    .font(.system(size: NeevaUIConstants.menuFontSize))
+                    .font(.system(size: NeevaUIConstants.trackingMenuFontSize))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Text("If this site appears broken, try disabling.")
+                Text("If the site seems broken, try disabling")
                     .foregroundColor(Color(UIColor.PopupMenu.secondaryTextColor))
-                    .font(.system(size: NeevaUIConstants.trackingMenuSubtextFontSize))
+                    .font(.footnote)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }.layoutPriority(1)
             Toggle("", isOn: $isTrackingProtectionOn)

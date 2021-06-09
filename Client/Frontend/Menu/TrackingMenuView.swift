@@ -55,17 +55,10 @@ class TrackingStatsViewModel:ObservableObject {
 struct TrackingMenuFirstRowElement: View {
     let label: String
     let num: Int
-    let symbol: SFSymbol?
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Text("\(label)").font(.system(size: NeevaUIConstants.menuFontSize)).foregroundColor(.secondaryLabel)
-                if let symbol = symbol {
-                    Symbol(symbol, size: 18, weight: .semibold)
-                        .foregroundColor(.secondaryLabel)
-                }
-            }
+            Text(label).font(.headline).foregroundColor(.secondaryLabel)
             Text("\(num)").font(.system(size: NeevaUIConstants.trackingMenuBlockedFontSize))
         }.applyNeevaMenuPanelSpec()
         .accessibilityLabel("\(num) \(label) blocked")
@@ -93,7 +86,7 @@ struct HallOfShameView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Hall of Shame").font(.system(size: NeevaUIConstants.menuFontSize)).foregroundColor(.secondaryLabel)
+            Text("Hall of Shame").font(.headline).foregroundColor(.secondaryLabel)
             HStack(spacing: NeevaUIConstants.hallOfShameRowSpacing) {
                 HallOfShameElement(hallOfShameDomain: hallOfShameDomains[0])
                 if hallOfShameDomains.count >= 2 {
@@ -123,14 +116,14 @@ struct TrackingMenuView: View {
         VStack(alignment: .leading) {
             if isTrackingProtectionEnabled {
                 HStack {
-                    TrackingMenuFirstRowElement(label: "Trackers", num: viewModel.numTrackers, symbol: nil)
-                    TrackingMenuFirstRowElement(label: "Domains", num: viewModel.numDomains, symbol: .personCropCircle)
+                    TrackingMenuFirstRowElement(label: "Trackers", num: viewModel.numTrackers)
+                    TrackingMenuFirstRowElement(label: "Domains", num: viewModel.numDomains)
                 }
                 if !viewModel.hallOfShameDomains.isEmpty {
                     HallOfShameView(hallOfShameDomains: viewModel.hallOfShameDomains)
                 }
             }
-            TrackingMenuProtectionRowButton(name:"Block Tracking",
+            TrackingMenuProtectionRowButton(name:"Tracking Prevention",
                                             toggleAction: toggleTrackingProtection,
                                             isTrackingProtectionOn: isTrackingProtectionEnabled)
             if let _ = viewModel.settingsHandler {
