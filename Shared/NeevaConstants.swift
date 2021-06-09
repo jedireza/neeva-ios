@@ -37,7 +37,6 @@ public struct NeevaConstants {
 
     public static let appPrivacyURL = appMarketingURL / "privacy"
     public static let appTermsURL = appMarketingURL / "terms"
-    public static let appHelpURL = appMarketingURL / "contact"
 
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }

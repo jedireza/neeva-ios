@@ -20,11 +20,6 @@ struct SupportSettingsSection: View {
                 .environment(\.onOpenURL, openURLInNewNonPrivateTab)
         }
         
-        NavigationLinkButton("Help") {
-            ClientLogger.shared.logCounter(.ViewHelp, attributes: EnvironmentHelper.shared.getAttributes())
-            openURL(NeevaConstants.appHelpURL)
-        }
-        
         NavigationLinkButton("Help Center") {
             ClientLogger.shared.logCounter(.ViewHelpCenter, attributes: EnvironmentHelper.shared.getAttributes())
             openURL(NeevaConstants.appHelpCenterURL)
