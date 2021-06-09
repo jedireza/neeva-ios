@@ -16,12 +16,12 @@ private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([
  * Since both of these use the same SQL query, we can perform the query once and dispatch the results.
  */
 class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
-    fileprivate let urlBar: URLBarView
+    fileprivate let urlBar: LegacyURLBarView
     fileprivate let frecentHistory: FrecentHistory
 
     private var skipNextAutocomplete: Bool
 
-    init(profile: Profile, urlBar: URLBarView) {
+    init(profile: Profile, urlBar: LegacyURLBarView) {
         self.urlBar = urlBar
         self.frecentHistory = profile.history.getFrecentHistory()
 

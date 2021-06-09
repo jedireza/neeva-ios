@@ -33,7 +33,7 @@ class TabScrollingController: NSObject {
 
     weak var header: UIView?
     weak var footer: UIView?
-    weak var urlBar: URLBarView?
+    weak var urlBar: LegacyURLBarView?
     weak var readerModeBar: ReaderModeBarView?
     weak var snackBars: UIView?
 

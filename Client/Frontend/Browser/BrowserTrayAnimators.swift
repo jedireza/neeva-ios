@@ -62,7 +62,7 @@ private extension TrayToBrowserAnimator {
 
         let finalFrame = calculateExpandedCellFrameFromBVC(bvc)
         bvc.footer.alpha = shouldDisplayFooterForBVC(bvc) ? 1 : 0
-        bvc.urlBar.isTransitioning = true
+        bvc.legacyURLBar.isTransitioning = true
 
         // Re-calculate the starting transforms for header/footer views in case we switch orientation
         resetTransformsForViews([bvc.header, bvc.readerModeBar, bvc.footer])
@@ -102,7 +102,7 @@ private extension TrayToBrowserAnimator {
             toggleWebViewVisibility(true, usingTabManager: bvc.tabManager)
             bvc.webViewContainerBackdrop.isHidden = false
             bvc.neevaHomeViewController?.view.isHidden = false
-            bvc.urlBar.isTransitioning = false
+            bvc.legacyURLBar.isTransitioning = false
             tabTray.toolbar.isUserInteractionEnabled = true
             transitionContext.completeTransition(true)
         })
@@ -169,7 +169,7 @@ private extension BrowserToTrayAnimator {
         bvc.statusBarOverlay.isHidden = true
         bvc.toggleSnackBarVisibility(show: false)
         toggleWebViewVisibility(false, usingTabManager: bvc.tabManager)
-        bvc.urlBar.isTransitioning = true
+        bvc.legacyURLBar.isTransitioning = true
 
         // Since we are hiding the collection view and the snapshot API takes the snapshot after the next screen update,
         // the screenshot ends up being blank unless we set the collection view hidden after the screen update happens.
@@ -202,7 +202,7 @@ private extension BrowserToTrayAnimator {
                 UIApplication.shared.windows.first?.backgroundColor = UIColor.TabTray.background
                 tabTray.navigationController?.setNeedsStatusBarAppearanceUpdate()
 
-                bvc.urlBar.updateAlphaForSubviews(0)
+                bvc.legacyURLBar.updateAlphaForSubviews(0)
                 bvc.footer.alpha = 0
                 tabCollectionViewSnapshot.alpha = 1
                 tabTray.toolbar.transform = .identity
@@ -222,7 +222,7 @@ private extension BrowserToTrayAnimator {
                 bvc.neevaHomeViewController?.view.isHidden = false
 
                 resetTransformsForViews([bvc.header, bvc.readerModeBar, bvc.footer])
-                bvc.urlBar.isTransitioning = false
+                bvc.legacyURLBar.isTransitioning = false
                 tabTray.toolbar.isUserInteractionEnabled = true
                 transitionContext.completeTransition(true)
             })
