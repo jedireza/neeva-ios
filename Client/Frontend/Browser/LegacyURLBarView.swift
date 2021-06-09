@@ -102,8 +102,8 @@ class LegacyURLBarView: UIView {
         return neevaMenuButton
     }()
     
-    lazy var locationView: TabLocationView = {
-        let locationView = TabLocationView()
+    lazy var locationView: LegacyTabLocationView = {
+        let locationView = LegacyTabLocationView()
         locationView.layer.cornerRadius = LegacyURLBarViewUX.TextFieldCornerRadius
         locationView.translatesAutoresizingMaskIntoConstraints = false
         locationView.delegate = self
@@ -642,17 +642,17 @@ extension LegacyURLBarView: TabToolbarProtocol {
     }
 }
 
-extension LegacyURLBarView: TabLocationViewDelegate {
+extension LegacyURLBarView: LegacyTabLocationViewDelegate {
 
-    func tabLocationViewDidLongPressReaderMode(_ tabLocationView: TabLocationView) -> Bool {
+    func tabLocationViewDidLongPressReaderMode(_ tabLocationView: LegacyTabLocationView) -> Bool {
         return delegate?.urlBarDidLongPressReaderMode(self) ?? false
     }
 
-    func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu? {
+    func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu? {
         delegate?.urlBarReloadMenu(self, from: tabLocationView.reloadButton)
     }
 
-    func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView) {
         let isSearchQuery = tabLocationView.displayTextIsQuery
 
         let overlayText: String
@@ -666,11 +666,11 @@ extension LegacyURLBarView: TabLocationViewDelegate {
         enterOverlayMode(overlayText, pasted: false, search: isSearchQuery)
     }
 
-    func tabLocationViewDidLongPressLocation(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidLongPressLocation(self)
     }
 
-    func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView) {
         let state = locationView.reloadButton.reloadButtonState
         switch state {
         case .reload:
@@ -683,27 +683,27 @@ extension LegacyURLBarView: TabLocationViewDelegate {
         }
     }
 
-    func tabLocationViewDidTabShareButton(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView) {
         self.helper?.didPressShareButton()
     }
 
-    func tabLocationViewDidTapStop(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapStop(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidPressStop(self)
     }
 
-    func tabLocationViewDidTapReaderMode(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapReaderMode(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidPressReaderMode(self)
     }
     
-    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]? {
+    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]? {
         return delegate?.urlBarLocationAccessibilityActions(self)
     }
 
-    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidBeginDragInteraction(self)
     }
 
-    func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidTapShield(self, from: tabLocationView.shieldButton)
     }
 }

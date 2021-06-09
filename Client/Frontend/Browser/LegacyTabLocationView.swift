@@ -6,16 +6,16 @@ import UIKit
 import Shared
 import SnapKit
 
-protocol TabLocationViewDelegate {
-    func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidLongPressLocation(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTabShareButton(_ tabLocationView: TabLocationView)
+protocol LegacyTabLocationViewDelegate {
+    func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView)
 
-    func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu?
-    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]?
+    func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu?
+    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]?
 }
 
 private struct TabLocationViewUX {
@@ -29,8 +29,8 @@ let EllipsePointerStyleProvider: UIButton.PointerStyleProvider = { button, effec
     UIPointerStyle(effect: effect, shape: .path(UIBezierPath(ovalIn: button.bounds)))
 }
 
-class TabLocationView: UIView {
-    var delegate: TabLocationViewDelegate?
+class LegacyTabLocationView: UIView {
+    var delegate: LegacyTabLocationViewDelegate?
     var longPressRecognizer: UILongPressGestureRecognizer!
     var tapRecognizer: UITapGestureRecognizer!
     var contentView: UIView!
@@ -320,7 +320,7 @@ class TabLocationView: UIView {
     }
 }
 
-extension TabLocationView: UIGestureRecognizerDelegate {
+extension LegacyTabLocationView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // When long pressing a button make sure the textfield's long press gesture is not triggered
         return !(otherGestureRecognizer.view is UIButton)
@@ -333,7 +333,7 @@ extension TabLocationView: UIGestureRecognizerDelegate {
 }
 
 @available(iOS 11.0, *)
-extension TabLocationView: UIDragInteractionDelegate {
+extension LegacyTabLocationView: UIDragInteractionDelegate {
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         // Ensure we actually have a URL in the location bar and that the URL is not local.
         guard let url = self.url, !InternalURL.isValid(url: url), let itemProvider = NSItemProvider(contentsOf: url) else {
@@ -351,7 +351,7 @@ extension TabLocationView: UIDragInteractionDelegate {
     }
 }
 
-extension TabLocationView: AccessibilityActionsSource {
+extension LegacyTabLocationView: AccessibilityActionsSource {
     func accessibilityCustomActionsForView(_ view: UIView) -> [UIAccessibilityCustomAction]? {
         if view === urlLabel {
             return delegate?.tabLocationViewLocationAccessibilityActions(self)
@@ -360,7 +360,7 @@ extension TabLocationView: AccessibilityActionsSource {
     }
 }
 
-extension TabLocationView: PrivateModeUI {
+extension LegacyTabLocationView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         self.isPrivateMode = isPrivate
 
@@ -384,7 +384,7 @@ extension TabLocationView: PrivateModeUI {
     }
 }
 
-extension TabLocationView: TabEventHandler {
+extension LegacyTabLocationView: TabEventHandler {
     func tabDidChangeContentBlocking(_ tab: Tab) {
         updateBlockerStatus(forTab: tab)
     }
