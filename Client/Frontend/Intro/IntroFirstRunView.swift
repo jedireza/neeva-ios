@@ -19,7 +19,7 @@ struct IntroFirstRunView: View {
                     Text("first.")
                 }
                 .font(.roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48))
-                .foregroundColor(Color.Neeva.UI.Gray20)
+                .foregroundColor(Color.neeva.ui.gray20)
                 .padding(.top, 40)
             }
             .accessibilityElement(children: .ignore)
@@ -34,11 +34,11 @@ struct IntroFirstRunView: View {
                         Symbol(.arrowRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
-                    .foregroundColor(Color.Neeva.Brand.Charcoal)
+                    .foregroundColor(Color.neeva.brand.fixed.charcoal)
                 }
-                .background(Color.Neeva.Brand.Polar)
+                .background(Color.neeva.brand.polar)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
-                .shadow(color: Color.Neeva.UI.Gray70, radius: 1, x: 1, y: 1)
+                .shadow(color: Color.neeva.ui.gray70, radius: 1, x: 0, y: 1)
                 .padding(.top, 40)
 
                 Button(action: { buttonAction(.signup) }) {
@@ -48,11 +48,11 @@ struct IntroFirstRunView: View {
                         Symbol(.arrowUpRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
-                    .foregroundColor(Color.Neeva.Brand.White)
+                    .foregroundColor(.neeva.brand.fixed.white)
                 }
-                .background(Color.Neeva.Brand.Blue)
+                .background(Color.neeva.brand.blue)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
-                .shadow(color: Color.Neeva.UI.Gray70, radius: 1, x: 1, y: 1)
+                .shadow(color: Color.neeva.ui.gray70, radius: 1, x: 0, y: 1)
                 .padding(.top, 20)
             }
             .font(.roobert(.semibold, size: 18))
@@ -61,7 +61,7 @@ struct IntroFirstRunView: View {
                 Text("Skip to browser without Neeva search")
                     .underline()
                     .font(.roobert(size: 16))
-                    .foregroundColor(Color.Neeva.UI.Gray20)
+                    .foregroundColor(Color.neeva.ui.gray20)
                     .multilineTextAlignment(.center)
             }
             .padding(.top, 50)
@@ -70,7 +70,7 @@ struct IntroFirstRunView: View {
         }
         .padding(35)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.Neeva.Brand.Beige)
+        .background(Color.neeva.brand.fixed.beige)
         .ignoresSafeArea(.all)
     }
 }

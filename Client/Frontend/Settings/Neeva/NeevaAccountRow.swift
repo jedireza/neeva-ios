@@ -17,12 +17,12 @@ struct NeevaAccountRow: View {
                     Color.secondarySystemFill
                 } else {
                     let name = firstCharacters(2, from: userInfo.displayName ?? "?")
-                    Color.Neeva.Brand.Blue
+                    Color.neeva.brand.blue
                         .overlay(
                             Text(name)
                                 .accessibilityHidden(true)
                                 .font(.system(size: 35/2))
-                                .foregroundColor(Color.Neeva.Brand.White)
+                                .foregroundColor(.white)
                         )
                 }
             }

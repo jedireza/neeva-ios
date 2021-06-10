@@ -88,7 +88,7 @@ struct IncognitoDescriptionView: View {
             .padding(.bottom, borderPadding + 8)
             Spacer()
         }
-        .background(Color.Neeva.UI.Gray30)
+        .background(Color.neeva.DarkElevated)
         .navigationBarHidden(true)
         .colorScheme(.dark)
     }
@@ -97,5 +97,6 @@ struct IncognitoDescriptionView: View {
 struct IncognitoDescriptionView_Previews: PreviewProvider {
     static var previews: some View {
         IncognitoDescriptionView()
+            .previewLayout(.sizeThatFits)
     }
 }

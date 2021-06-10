@@ -12,69 +12,12 @@ struct SiteTableViewControllerUX {
     static let HeaderTextMargin = CGFloat(16)
 }
 
-class SiteTableViewHeader: UITableViewHeaderFooterView, Themeable {
-    let titleLabel = UILabel()
-    fileprivate let bordersHelper = ThemedHeaderFooterViewBordersHelper()
-
-    override var textLabel: UILabel? {
-        return titleLabel
-    }
-
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        titleLabel.font = DynamicFontHelper.defaultHelper.DeviceFontMediumBold
-
-        contentView.addSubview(titleLabel)
-
-        bordersHelper.initBorders(view: self)
-        setDefaultBordersValues()
-
-        // A table view will initialize the header with CGSizeZero before applying the actual size. Hence, the label's constraints
-        // must not impose a minimum width on the content view.
-        titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(contentView).offset(SiteTableViewControllerUX.HeaderTextMargin).priority(1000)
-            make.right.equalTo(contentView).offset(-SiteTableViewControllerUX.HeaderTextMargin).priority(1000)
-            make.left.greaterThanOrEqualTo(contentView) // Fallback for when the left space constraint breaks
-            make.right.lessThanOrEqualTo(contentView) // Fallback for when the right space constraint breaks
-            make.centerY.equalTo(contentView)
-        }
-
-        applyTheme()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        setDefaultBordersValues()
-        applyTheme()
-    }
-
-    func applyTheme() {
-        titleLabel.textColor = UIColor.theme.tableView.headerTextDark
-        contentView.backgroundColor = UIColor.theme.tableView.headerBackground
-        bordersHelper.applyTheme()
-    }
-
-    func showBorder(for location: ThemedHeaderFooterViewBordersHelper.BorderLocation, _ show: Bool) {
-        bordersHelper.showBorder(for: location, show)
-    }
-
-    func setDefaultBordersValues() {
-        bordersHelper.showBorder(for: .top, true)
-        bordersHelper.showBorder(for: .bottom, true)
-    }
-}
-
 /**
  * Provides base shared functionality for site rows and headers.
  */
 @objcMembers
 class SiteTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Themeable {
     fileprivate let CellIdentifier = "CellIdentifier"
-    fileprivate let HeaderIdentifier = "HeaderIdentifier"
     let profile: Profile
 
     var data: Cursor<Site> = Cursor<Site>(status: .success, msg: "No data set")
@@ -106,7 +49,6 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(SiteTableViewCell.self, forCellReuseIdentifier: CellIdentifier)
-        tableView.register(SiteTableViewHeader.self, forHeaderFooterViewReuseIdentifier: HeaderIdentifier)
         tableView.layoutMargins = .zero
         tableView.keyboardDismissMode = .onDrag
 
@@ -163,21 +105,6 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return cell
     }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderIdentifier)
-    }
-
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel?.textColor = UIColor.theme.tableView.headerTextDark
-            header.contentView.backgroundColor = UIColor.theme.tableView.headerBackground
-        }
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return SiteTableViewControllerUX.HeaderHeight
-    }
-
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
@@ -188,7 +115,7 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
 
     func applyTheme() {
         navigationController?.navigationBar.barTintColor = UIColor.theme.tableView.headerBackground
-        navigationController?.navigationBar.tintColor = UIColor.theme.general.controlTint
+        navigationController?.navigationBar.tintColor = .neeva.ui.blue
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.headerTextDark]
         setNeedsStatusBarAppearanceUpdate()
 

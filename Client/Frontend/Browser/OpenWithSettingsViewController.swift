@@ -85,7 +85,8 @@ class OpenWithSettingsViewController: ThemedTableViewController {
         let cell = ThemedTableViewCell()
         let option = mailProviderSource[indexPath.row]
 
-        cell.textLabel?.attributedText = NSAttributedString.tableRowTitle(option.name, enabled: option.enabled)
+        cell.textLabel?.text = option.name
+        cell.textLabel?.alpha = option.enabled ? 1 : 0.4
         cell.accessoryType = (currentChoice == option.scheme && option.enabled) ? .checkmark : .none
         cell.isUserInteractionEnabled = option.enabled
 

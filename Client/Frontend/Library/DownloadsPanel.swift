@@ -82,7 +82,6 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(TwoLineTableViewCell.self, forCellReuseIdentifier: "TwoLineTableViewCell")
-        tableView.register(SiteTableViewHeader.self, forHeaderFooterViewReuseIdentifier: "SiteTableViewHeader")
         tableView.layoutMargins = .zero
         tableView.keyboardDismissMode = .onDrag
         tableView.accessibilityIdentifier = "DownloadsTable"
@@ -285,40 +284,22 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
         return configureDownloadedFile(cell, for: indexPath)
     }
 
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel?.textColor = UIColor.theme.tableView.headerTextDark
-            header.contentView.backgroundColor = UIColor.theme.tableView.headerBackground
-        }
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard groupedDownloadedFiles.numberOfItemsForSection(section) > 0 else { return 0 }
-
-        return DownloadsPanelUX.HeaderHeight
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard groupedDownloadedFiles.numberOfItemsForSection(section) > 0 else { return nil }
-
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "SiteTableViewHeader") as? SiteTableViewHeader
 
         switch section {
         case 0:
-            header?.textLabel?.text = Strings.TableDateSectionTitleToday
+            return Strings.TableDateSectionTitleToday
         case 1:
-            header?.textLabel?.text = Strings.TableDateSectionTitleYesterday
+            return Strings.TableDateSectionTitleYesterday
         case 2:
-            header?.textLabel?.text = Strings.TableDateSectionTitleLastWeek
+            return Strings.TableDateSectionTitleLastWeek
         case 3:
-            header?.textLabel?.text = Strings.TableDateSectionTitleLastMonth
+            return Strings.TableDateSectionTitleLastMonth
         default:
             assertionFailure("Invalid Downloads section \(section)")
+            return nil
         }
-
-        header?.showBorder(for: .top, !isFirstSection(section))
-
-        return header
     }
 
     func isFirstSection(_ section: Int) -> Bool {

@@ -18,7 +18,7 @@ struct BigBlueButtonStyle: ButtonStyle {
             .frame(height: 48)
             .background(
                 Capsule()
-                    .fill(Color.Neeva.UI.Blue)
+                    .fill(Color.neeva.ui.blue)
                     .opacity(configuration.isPressed ? 0.5 : 1)
             )
     }
@@ -142,19 +142,19 @@ fileprivate struct LoginView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Color.Neeva.Brand.Offwhite
+            Color.neeva.brand.offwhite
                 .ignoresSafeArea()
             VStack(spacing: 0) {
                 Spacer(minLength: 22)
                 Spacer(minLength: 0).repeated(2)
                 Text("Oops, this page is a little shy")
                     .font(.custom("Roobert", size: 24, relativeTo: .title))
-                    .foregroundColor(.Neeva.UI.Gray20)
+                    .foregroundColor(.neeva.ui.gray20)
                 Spacer(minLength: 4)
                 Spacer(minLength: 0)
                 Text("Please sign into Neeva to view this page")
                     .font(.system(size: 16))
-                    .foregroundColor(.Neeva.UI.Gray50)
+                    .foregroundColor(.neeva.ui.gray50)
                 // hide the image on small iPhones in landscape
                 if horizontalSizeClass == .regular || verticalSizeClass == .regular {
                     Group {
@@ -192,13 +192,13 @@ fileprivate struct LoginView: View {
                     Text("New to Neeva? Join now")
                         .font(.custom("Roobert", size: 18))
                         .underline()
-                }.accentColor(.Neeva.UI.Gray20)
+                }.accentColor(.neeva.ui.gray20)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, 32)
             .padding(.bottom, 16)
             .frame(maxHeight: 522)
-        }.preference(key: ErrorViewBackgroundPreferenceKey.self, value: Color.Neeva.Brand.Offwhite)
+        }.preference(key: ErrorViewBackgroundPreferenceKey.self, value: Color.neeva.brand.offwhite)
     }
 }
 

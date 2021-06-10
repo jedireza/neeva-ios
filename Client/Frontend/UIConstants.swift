@@ -9,32 +9,23 @@ import SwiftUI
 extension UIColor {
     // These are defaults from http://design.firefox.com/photon/visuals/color.html
     struct Defaults {
-        static let MobileGreyF = UIColor(rgb: 0x636369)
         static let iOSTextHighlightBlue = UIColor(rgb: 0xccdded) // This color should exactly match the ios text highlight
-        static let Purple60A30 = UIColor(rgba: 0x8000d74c)
-        static let MobilePrivatePurple = UIColor.Photon.Purple60
-        static let PrivateBlue = UIColor(rgba: 0x64C7FF4C)
-    // Reader Mode Sepia
         static let LightBeige = UIColor(rgb: 0xf0e6dc)
         static let SystemGray01 = UIColor(rgb: 0x8E8E93)
     }
 }
 
-extension Color {
-    public struct Neeva {
-        public struct Tour {
-            public static let Background = Color(UIColor.Neeva.Tour.Background)
-            public static let Title = Color(UIColor.Neeva.Tour.Title)
-            public static let Description = Color(UIColor.Neeva.Tour.Description)
-            public static let ButtonBackground = Color(UIColor.Neeva.Tour.ButtonBackground)
-            public static let ButtonText = Color(UIColor.Neeva.Tour.ButtonText)
-        }
+extension Color.neeva {
+    public enum Tour {
+        public static let Background = Color(UIColor.neeva.Tour.Background)
+        public static let Title = Color(UIColor.neeva.Tour.Title)
+        public static let Description = Color(UIColor.neeva.Tour.Description)
+        public static let ButtonBackground = Color(UIColor.neeva.Tour.ButtonBackground)
+        public static let ButtonText = Color(UIColor.neeva.Tour.ButtonText)
     }
 }
 
 public struct UIConstants {
-    static let DefaultPadding: CGFloat = 10
-    static let SnackbarButtonHeight: CGFloat = 57
     static let TextFieldHeight: CGFloat = 42
 
     // Portrait mode on a phone:
@@ -82,29 +73,24 @@ extension UIColor {
     }
 
     public struct Browser {
-        public static let background = UIColor.Neeva.DefaultBackground
-        public static let urlBarDivider = UIColor.systemGray5
-        public static let tint = UIColor.Neeva.DefaultTextAndTint
+        public static let background = UIColor.neeva.DefaultBackground
+        // Hidden in dark mode
+        public static let urlBarDivider = UIColor(light: .neeva.DefaultSeparator, dark: .Browser.background)
+        public static let tint = UIColor.neeva.DefaultTextAndTint
     }
 
     public struct LoadingBar {
-        public static func start(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.Neeva.Brand.Maya : UIColor.systemGray }
-        public static func end(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.Neeva.Brand.Maya : UIColor.systemGray }
+        public static func start(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.neeva.brand.maya : UIColor.systemGray }
+        public static func end(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.neeva.brand.maya : UIColor.systemGray }
     }
 
     public struct ToolbarButton {
-        public static let selectedTint = UIColor.Neeva.UI.Blue40
+        public static let selectedTint = UIColor.neeva.ui.blue
         public static let disabledTint = UIColor.quaternaryLabel
     }
 
 
     public struct URLBar {
-        public static let border = UIColor.Neeva.UI.Blue40
-        public static func activeBorder(_ isPrivate: Bool) -> UIColor {
-            return !isPrivate ? UIColor.Neeva.UI.Blue40.withAlphaComponent(0.3) : UIColor(rgb: 0x8E8E93)
-        }
-        public static let tint: UIColor = UIColor.Neeva.UI.Blue40.withAlphaComponent(0.3)
-
         // This text selection color is used in two ways:
         // 1) <UILabel>.background = textSelectionHighlight.withAlphaComponent(textSelectionHighlightAlpha)
         // To simulate text highlighting when the URL bar is tapped once, this is a background color to create a simulated selected text effect. The color will have an alpha applied when assigning it to the background.
@@ -116,17 +102,12 @@ extension UIColor {
                 let color = UIColor(rgba: 0x64C7FF4C)
                 return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
             } else {
-                return (labelMode: UIColor.Neeva.TextSelectionHighlight, textFieldMode: nil)
+                return (labelMode: UIColor.neeva.TextSelectionHighlight, textFieldMode: nil)
             }
         }
 
-        public static let readerModeButtonSelected = UIColor.Neeva.UI.Blue40
-        public static let readerModeButtonUnselected = UIColor.Neeva.UI.Gray50
-        public static let pageOptionsSelected = UIColor.Neeva.UI.Blue40
-        public static let pageOptionsUnselected = UIColor.Browser.tint
-
         public static func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
-            return isPrivate ? UIColor.Neeva.NeevaMenuIncognito : nil
+            return isPrivate ? UIColor.neeva.NeevaMenuIncognito : nil
         }
     }
 
@@ -139,7 +120,7 @@ extension UIColor {
             case .dark:
                 return UIColor.black
             default:
-                return UIColor.Neeva.UI.DefaultBackground
+                return UIColor.neeva.ui.fixed.background
             }
         }
     }
@@ -173,8 +154,6 @@ extension UIColor {
         }
 
         public static let buttonTint = UIColor.Photon.Grey40
-        public static let privateModeButtonOffTint = buttonTint
-        public static let privateModeButtonOnTint = UIColor.Photon.Grey10
         public static let closeButtonSelectedTab = UIColor() { traits in
             switch traits.userInterfaceStyle {
             case .dark:
@@ -205,19 +184,19 @@ extension UIColor {
 
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
-        public static let toolbarBackground = UIColor.Neeva.DefaultBackground
-        public static let toolbarHighlight = UIColor.Neeva.UI.Blue40
+        public static let toolbarBackground = UIColor.neeva.DefaultBackground
+        public static let toolbarHighlight = UIColor.neeva.ui.blue
         public static let toolbarTint = UIColor.secondaryLabel
         public static let panelBackground = UIColor.systemBackground
         public static let welcomeScreenText = UIColor.secondaryLabel
-        public static let siteTableHeaderBorder = UIColor.Neeva.UI.Gray30.withAlphaComponent(0.8)
-        public static let readingListActive = UIColor.Neeva.DefaultTextAndTint
+        public static let siteTableHeaderBorder = UIColor.neeva.ui.gray30.withAlphaComponent(0.8)
+        public static let readingListActive = UIColor.neeva.DefaultTextAndTint
         public static let readingListDimmed = UIColor.Photon.Grey40
         public static let downloadedFileIcon = UIColor.secondaryLabel
     }
     
     public struct PopupMenu {
-        public static let background = UIColor.Neeva.MenuBackground
+        public static let background = UIColor.neeva.MenuBackground
         public static let foreground = UIColor.Browser.background
         public static let textColor = UIColor.label
         public static let secondaryTextColor = UIColor.secondaryLabel
@@ -227,14 +206,12 @@ extension UIColor {
     }
 }
 
-extension UIColor {
-    public struct Neeva {
-        public struct Tour {
-            public static let Background = UIColor(named: "Tour-Background")!
-            public static let Title = UIColor(named: "Tour-Title")!
-            public static let Description = UIColor(named: "Tour-Description")!
-            public static let ButtonBackground = UIColor(named: "Tour-Button-Background")!
-            public static let ButtonText = UIColor(named: "Tour-Button-Text")!
-        }
+extension UIColor.neeva {
+    public enum Tour {
+        public static let Background = UIColor(named: "Tour-Background")!
+        public static let Title = UIColor(named: "Tour-Title")!
+        public static let Description = UIColor(named: "Tour-Description")!
+        public static let ButtonBackground = UIColor(named: "Tour-Button-Background")!
+        public static let ButtonText = UIColor(named: "Tour-Button-Text")!
     }
 }

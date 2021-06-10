@@ -19,7 +19,7 @@ class ThemedTableViewCell: UITableViewCell, Themeable {
         textLabel?.textColor = UIColor.theme.tableView.rowText
         detailTextLabel?.textColor = detailTextColor
         backgroundColor = UIColor.theme.tableView.rowBackground
-        tintColor = UIColor.theme.general.controlTint
+        tintColor = .neeva.ui.blue
     }
 }
 
@@ -186,6 +186,6 @@ class ThemedHeaderFooterViewBordersHelper: Themeable {
 class UISwitchThemed: UISwitch {
     override func layoutSubviews() {
         super.layoutSubviews()
-        onTintColor = UIColor.theme.general.controlTint
+        onTintColor = .neeva.ui.blue
     }
 }

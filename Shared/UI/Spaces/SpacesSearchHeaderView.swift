@@ -25,6 +25,7 @@ struct SpacesSearchHeaderView: View {
                 }
             }
             .frame(height: 40)
+            .foregroundColor(.neeva.ui.blue)
             .padding(.trailing, 3)
         }
     }

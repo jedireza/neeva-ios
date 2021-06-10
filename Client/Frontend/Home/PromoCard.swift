@@ -30,14 +30,14 @@ enum PromoCardType {
                                    secondLine: "search when you sign in",
                                    buttonLabel: "Sign in or Join Neeva",
                                    buttonImage: Image("neevaMenuIcon"),
-                                   backgroundColor: Color.Neeva.Brand.Polar,
+                                   backgroundColor: .neeva.brand.polar,
                                    showDismissButton: false)
         case .defaultBrowser:
             return PromoCardConfig(firstLine: "Browse in peace,",
                                    secondLine: "always",
                                    buttonLabel: "Set as Default Browser",
                                    buttonImage: nil,
-                                   backgroundColor: Color.Neeva.Brand.Pistachio,
+                                   backgroundColor: .neeva.brand.pistachio,
                                    showDismissButton: true)
         }
     }
@@ -64,7 +64,7 @@ struct PromoCard: View {
                     .font(Font(UIFont.systemFont(ofSize: PromoCardUX.ButtonFontSize, weight: .semibold)))
                     .foregroundColor(Color.white)
             }.padding(.vertical).padding(.horizontal, 20).frame(maxWidth: .infinity, alignment: .center)
-            .background(Color.Neeva.Brand.Blue)
+            .background(Color.neeva.brand.blue.colorScheme(.light))
             .clipShape(RoundedRectangle(cornerRadius: PromoCardUX.CornerRadius))
             .padding(.horizontal, 10)
         })
@@ -101,7 +101,7 @@ struct PromoCard: View {
                     model.toggleShowCard()
                 } ,label: {
                     Symbol(.xmark, weight: .semibold, label: "Dismiss")
-                        .foregroundColor(Color.Neeva.UI.Gray70).frame(width: 16, height: 16)
+                        .foregroundColor(Color.neeva.ui.gray70).frame(width: 16, height: 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 }).padding()
             }

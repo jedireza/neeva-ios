@@ -9,8 +9,8 @@ import Shared
 private struct InstructionsViewControllerUX {
     static let TopPadding = CGFloat(20)
     static let TextFont = UIFont.systemFont(ofSize: UIFont.labelFontSize)
-    static let TextColor = UIColor.Photon.Grey60
-    static let LinkColor = UIColor.Photon.Blue60
+    static let TextColor = UIColor.neeva.ui.gray60
+    static let LinkColor = UIColor.neeva.ui.blue
 }
 
 protocol InstructionsViewControllerDelegate: AnyObject {
@@ -76,7 +76,7 @@ class InstructionsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         edgesForExtendedLayout = []
-        view.backgroundColor = UIColor.Photon.White100
+        view.backgroundColor = UIColor.white
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: Strings.SendToCloseButton, style: .done, target: self, action: #selector(close))
         navigationItem.leftBarButtonItem?.accessibilityIdentifier = "InstructionsViewController.navigationItem.leftBarButtonItem"

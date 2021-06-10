@@ -100,10 +100,6 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         libraryPanelDelegate.libraryPanel(didSelectURL: recentlyClosedTabs[indexPath.row].url, visitType: visitType)
     }
 
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0
-    }
-
     // Functions that deal with showing header rows.
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1

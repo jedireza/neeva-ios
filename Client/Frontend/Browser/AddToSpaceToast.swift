@@ -49,7 +49,6 @@ struct AddToSpaceToastView: View {
             Text(labelText)
                 .padding(.leading, 16)
                 .font(.system(size: 14))
-                .foregroundColor(.white)
 
             Spacer()
 
@@ -58,16 +57,17 @@ struct AddToSpaceToastView: View {
                     onOpenSpace(request.targetSpaceID!)
                 } label: {
                     Text("Open Space")
-                        .foregroundColor(Color.Neeva.UI.Aqua)
+                        .foregroundColor(Color.neeva.ui.aqua)
                         .font(.system(size: 16, weight: .semibold))
                 }
                 .padding(.trailing, 16)
             }
             // TODO: Add spinner in the saving case
         }
+        .colorScheme(.dark)
         .navigationBarHidden(true)
         .frame(height: 72)
-        .background(Color.Neeva.DarkElevated)
+        .background(Color.neeva.DarkElevated)
         .cornerRadius(15)
         .padding([.leading, .trailing], 8)
         .padding(.bottom, 14)

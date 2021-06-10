@@ -827,7 +827,7 @@ class TabCell: UICollectionViewCell {
         let view = UIView()
         view.layer.cornerRadius = TabTrayControllerUX.CornerRadius
         view.clipsToBounds = true
-        view.backgroundColor = UIColor.theme.tabTray.cellBackground
+        view.backgroundColor = .tertiarySystemBackground
         return view
     }()
 
@@ -847,7 +847,6 @@ class TabCell: UICollectionViewCell {
         label.isUserInteractionEnabled = false
         label.numberOfLines = 1
         label.font = DynamicFontHelper.defaultHelper.DefaultSmallFontBold
-        label.textColor = UIColor.theme.tabTray.tabTitleText
         return label
     }()
 
@@ -865,12 +864,12 @@ class TabCell: UICollectionViewCell {
         button.accessibilityIdentifier = "closeTabButtonTabTray"
         button.imageView?.contentMode = .scaleAspectFit
         button.contentMode = .center
-        button.tintColor = UIColor.theme.tabTray.cellCloseButton
+        button.tintColor = .secondaryLabel
         button.imageEdgeInsets = UIEdgeInsets(equalInset: TabTrayControllerUX.CloseButtonEdgeInset)
         return button
     }()
 
-    var title = UIVisualEffectView(effect: UIBlurEffect(style: UIColor.theme.tabTray.tabTitleBlur))
+    var title = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
     var animator: SwipeAnimator!
 
     var borderStyleSelected: Bool = false
@@ -946,7 +945,7 @@ class TabCell: UICollectionViewCell {
             }
         } else {
             width = TabCell.UnselectedBorderWidth
-            color = UIColor.Neeva.DefaultSeparator
+            color = UIColor.neeva.DefaultSeparator
         }
         setTabBorder(color: color, width: width)
     }
@@ -992,7 +991,7 @@ class TabCell: UICollectionViewCell {
             favicon.sd_setImage(with: url, placeholderImage: UIImage(named: "defaultFavicon"), options: [], completed: nil)
         } else {
             favicon.image = UIImage(named: "defaultFavicon")
-            favicon.tintColor = UIColor.theme.tabTray.faviconTint
+            favicon.tintColor = .label
         }
         if selected {
             setTabSelected(tab.isPrivate)
