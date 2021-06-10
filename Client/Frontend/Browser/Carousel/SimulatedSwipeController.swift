@@ -6,6 +6,10 @@ enum SwipeDirection {
     case forward, back
 }
 
+struct SimulatedSwipeUX {
+    static let EdgeWidth:CGFloat = 30
+}
+
 class SimulatedSwipeController:
     UIViewController, TabEventHandler, TabManagerDelegate, SimulateForwardAnimatorDelegate {
 
@@ -64,7 +68,7 @@ class SimulatedSwipeController:
 
         blankView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.width.equalToSuperview().offset(-100)
+            make.width.equalToSuperview().offset(-SimulatedSwipeUX.EdgeWidth)
 
             switch swipeDirection {
             case .forward:

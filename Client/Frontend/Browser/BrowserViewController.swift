@@ -551,15 +551,15 @@ class BrowserViewController: UIViewController {
         if FeatureFlag[.swipePlusPlus] {
             simulateForwardViewController?.view.snp.makeConstraints { make in
                 make.top.bottom.equalTo(webViewContainer)
-                make.width.equalTo(webViewContainer).offset(100)
-                make.leading.equalTo(webViewContainer.snp.trailing).offset(-100)
+                make.width.equalTo(webViewContainer).offset(SimulatedSwipeUX.EdgeWidth)
+                make.leading.equalTo(webViewContainer.snp.trailing).offset(-SimulatedSwipeUX.EdgeWidth)
             }
-            simulateBackViewController?.view.snp.makeConstraints { make in
-                make.top.bottom.equalTo(webViewContainer)
-                make.width.equalTo(webViewContainer).offset(100)
-                make.trailing.equalTo(webViewContainer.snp.leading).offset(100)
-            }
+        }
 
+        simulateBackViewController?.view.snp.makeConstraints { make in
+            make.top.bottom.equalTo(webViewContainer)
+            make.width.equalTo(webViewContainer).offset(SimulatedSwipeUX.EdgeWidth)
+            make.trailing.equalTo(webViewContainer.snp.leading).offset(SimulatedSwipeUX.EdgeWidth)
         }
     }
 

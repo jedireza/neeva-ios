@@ -9,6 +9,7 @@ struct SimulateForwardAnimationParameters {
     let totalAlpha: CGFloat
     let minExitVelocity: CGFloat
     let recenterAnimationDuration: TimeInterval
+    let cancelAnimationDuration: TimeInterval
 }
 
 private let DefaultParameters =
@@ -18,7 +19,8 @@ private let DefaultParameters =
         totalScale: 0.9,
         totalAlpha: 0,
         minExitVelocity: 800,
-        recenterAnimationDuration: 1.5)
+        recenterAnimationDuration: 1.5,
+        cancelAnimationDuration: 0.5)
 
 protocol SimulateForwardAnimatorDelegate: AnyObject {
     func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator)
@@ -64,17 +66,27 @@ class SimulatedSwipeAnimator: NSObject {
 
 //MARK: Private Helpers
 extension SimulatedSwipeAnimator {
-    fileprivate func animateBackToCenter() {
-        self.webViewContainer?.transform = .identity
-        self.delegate?.simulateForwardAnimatorFinishedSwipe(self)
-        UIView.animate(withDuration: params.recenterAnimationDuration, animations: {
-            self.animatingView?.alpha = 0
-        }, completion: { finished in
-            if finished {
+    fileprivate func animateBackToCenter(canceledSwipe: Bool) {
+        if !canceledSwipe {
+            self.delegate?.simulateForwardAnimatorFinishedSwipe(self)
+        }
+
+        if canceledSwipe {
+            UIView.animate(withDuration: params.cancelAnimationDuration, animations: {
+                self.webViewContainer?.transform = .identity
                 self.animatingView?.transform = .identity
-                self.animatingView?.alpha = 1
-            }
-        })
+            }, completion: { _ in })
+        } else {
+            self.webViewContainer?.transform = .identity
+            UIView.animate(withDuration: params.recenterAnimationDuration, animations: {
+                self.animatingView?.alpha = 0
+            }, completion: { finished in
+                if finished {
+                    self.animatingView?.transform = .identity
+                    self.animatingView?.alpha = 1
+                }
+            })
+        }
     }
 
     fileprivate func animateAwayWithVelocity(_ velocity: CGPoint, speed: CGFloat) {
@@ -92,7 +104,7 @@ extension SimulatedSwipeAnimator {
             webViewContainer.transform = self.transformForTranslation(translation / 2)
         }, completion: { finished in
             if finished {
-                self.animateBackToCenter()
+                self.animateBackToCenter(canceledSwipe: false)
             }
         })
     }
@@ -120,13 +132,13 @@ extension SimulatedSwipeAnimator {
             webViewContainer?.transform = self.transformForTranslation(translation.x / 2)
             prevOffset = CGPoint(x: translation.x, y: 0)
         case .cancelled:
-            animateBackToCenter()
+            animateBackToCenter(canceledSwipe: true)
         case .ended:
             let velocity = recognizer.velocity(in: animatingView)
             // Bounce back if the velocity is too low or if we have not reached the threshold yet
             let speed = max(abs(velocity.x), params.minExitVelocity)
             if speed < params.minExitVelocity || abs(prevOffset?.x ?? 0) < params.deleteThreshold {
-                animateBackToCenter()
+                animateBackToCenter(canceledSwipe: true)
             } else {
                 animateAwayWithVelocity(velocity, speed: speed)
             }
