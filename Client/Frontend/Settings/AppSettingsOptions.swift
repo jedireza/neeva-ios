@@ -366,7 +366,7 @@ class OpenSupportPageSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        ClientLogger.shared.logCounter(.ViewHelp, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(.ViewHelpCenter, attributes: EnvironmentHelper.shared.getAttributes())
         navigationController?.dismiss(animated: true) {
             self.delegate?.settingsOpenURLInNewTab(NeevaConstants.appHelpCenterURL)
         }
