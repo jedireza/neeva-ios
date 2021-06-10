@@ -177,7 +177,10 @@ public class NeevaUserInfo: ObservableObject {
                 return
             }
 
-            self.pictureData = data
+            // fixes an error caused by updating UI on the background thread
+            DispatchQueue.main.async {
+                self.pictureData = data
+            }
         }
 
         dataTask.resume()
