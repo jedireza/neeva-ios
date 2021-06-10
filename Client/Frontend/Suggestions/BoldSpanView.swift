@@ -25,8 +25,8 @@ struct BoldSpanView: View {
     /// - Parameters:
     ///   - text: the text to highlight
     ///   - boldSpans: the spans to render in boldface
-    init(_ text: String, bolding boldSpans: [BoldSpan]) {
-        textSpans = BoldSpanView.generateTextSpans(text: text, boldSpans: BoldSpanView.getValidSpans(boldSpans, in: text))
+    init(_ text: String, unboldedSpans: [BoldSpan]) {
+        textSpans = BoldSpanView.generateTextSpans(text: text, unboldedSpans: BoldSpanView.getValidSpans(unboldedSpans, in: text))
     }
 
     var body: some View {
@@ -61,20 +61,22 @@ struct BoldSpanView: View {
         return validSpans
     }
 
-    private static func generateTextSpans(text: String, boldSpans: [BoldSpan]) -> [TextSpan] {
+    private static func generateTextSpans(text: String, unboldedSpans: [BoldSpan]) -> [TextSpan] {
         var spans: [TextSpan] = []
         var textStart = text.startIndex
-        for boldSpan in boldSpans {
-            let boldStart = String.Index(utf16Offset: boldSpan.startInclusive, in: text)
-            let boldEndExclusive = String.Index(utf16Offset: boldSpan.endExclusive, in: text)
-            if textStart < boldStart {
-                spans.append(TextSpan(text: text[textStart..<boldStart], bolded: false))
+        for unboldedSpan in unboldedSpans {
+            let unBoldStart = String.Index(utf16Offset: unboldedSpan.startInclusive, in: text)
+            let unBoldEndExclusive = String.Index(utf16Offset: unboldedSpan.endExclusive, in: text)
+            
+            if textStart < unBoldStart {
+                spans.append(TextSpan(text: text[textStart..<unBoldStart], bolded: true))
             }
-            spans.append(TextSpan(text: text[boldStart..<boldEndExclusive], bolded: true))
-            textStart = boldEndExclusive
+            
+            spans.append(TextSpan(text: text[unBoldStart..<unBoldEndExclusive], bolded: false))
+            textStart = unBoldEndExclusive
         }
         if textStart < text.endIndex {
-            spans.append(TextSpan(text: text[textStart..<text.endIndex], bolded: false))
+            spans.append(TextSpan(text: text[textStart..<text.endIndex], bolded: true))
         }
         return spans
     }
@@ -92,7 +94,7 @@ struct BoldSpanView_Previews: PreviewProvider {
     static var previews: some View {
         BoldSpanView(
             "How was your Neeva onboarding?",
-            bolding: [SuggestionsQuery.Data.Suggest.QuerySuggestion.BoldSpan(startInclusive: 13, endExclusive: 29)]
+            unboldedSpans: [SuggestionsQuery.Data.Suggest.QuerySuggestion.BoldSpan(startInclusive: 13, endExclusive: 29)]
         )
     }
 }
