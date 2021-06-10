@@ -21,13 +21,15 @@ private let DefaultParameters =
         recenterAnimationDuration: 1.5)
 
 protocol SimulateForwardAnimatorDelegate: AnyObject {
-    func simulateForwardAnimatorCommittedForward(_ animator: SimulateForwardAnimator)
+    func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator)
+    func simulateForwardAnimatorFinishedSwipe(_ animator: SimulatedSwipeAnimator)
 }
 
-class SimulateForwardAnimator: NSObject {
+class SimulatedSwipeAnimator: NSObject {
     weak var delegate: SimulateForwardAnimatorDelegate?
     weak var animatingView: UIView?
     weak var webViewContainer: UIView?
+    var swipeDirection: SwipeDirection
 
     fileprivate var prevOffset: CGPoint?
     fileprivate let params: SimulateForwardAnimationParameters
@@ -41,16 +43,17 @@ class SimulateForwardAnimator: NSObject {
         return CGPoint(x: animatingView.frame.width / 2, y: animatingView.frame.height / 2)
     }
 
-    init(animatingView: UIView, webViewContainer: UIView, params: SimulateForwardAnimationParameters = DefaultParameters) {
+    init(swipeDirection: SwipeDirection, animatingView: UIView, webViewContainer: UIView,
+         params: SimulateForwardAnimationParameters = DefaultParameters) {
         self.animatingView = animatingView
         self.webViewContainer = webViewContainer
         self.params = params
+        self.swipeDirection = swipeDirection
 
         super.init()
 
         self.panGestureRecogniser = UIPanGestureRecognizer(target: self, action: #selector(didPan))
         animatingView.addGestureRecognizer(self.panGestureRecogniser)
-        self.panGestureRecogniser.delegate = self
     }
 
     func cancelExistingGestures() {
@@ -60,9 +63,10 @@ class SimulateForwardAnimator: NSObject {
 }
 
 //MARK: Private Helpers
-extension SimulateForwardAnimator {
+extension SimulatedSwipeAnimator {
     fileprivate func animateBackToCenter() {
         self.webViewContainer?.transform = .identity
+        self.delegate?.simulateForwardAnimatorFinishedSwipe(self)
         UIView.animate(withDuration: params.recenterAnimationDuration, animations: {
             self.animatingView?.alpha = 0
         }, completion: { finished in
@@ -80,9 +84,9 @@ extension SimulateForwardAnimator {
         }
 
         // Calculate the edge to calculate distance from
-        let translation = -animatingView.frame.width + 100
+        let translation = (-animatingView.frame.width + 100) * (swipeDirection == .back ? -1 : 1)
         let timeStep = TimeInterval(abs(translation) / speed)
-        self.delegate?.simulateForwardAnimatorCommittedForward(self)
+        self.delegate?.simulateForwardAnimatorStartedSwipe(self)
         UIView.animate(withDuration: timeStep, animations: {
             animatingView.transform = self.transformForTranslation(translation)
             webViewContainer.transform = self.transformForTranslation(translation / 2)
@@ -104,7 +108,7 @@ extension SimulateForwardAnimator {
 }
 
 //MARK: Selectors
-extension SimulateForwardAnimator {
+extension SimulatedSwipeAnimator {
     @objc func didPan(_ recognizer: UIPanGestureRecognizer!) {
         let translation = recognizer.translation(in: animatingView)
 
@@ -129,24 +133,5 @@ extension SimulateForwardAnimator {
         default:
             break
         }
-    }
-
-    func close(right: Bool) {
-        let direction = CGFloat(right ? -1 : 1)
-        animateAwayWithVelocity(CGPoint(x: -direction * params.minExitVelocity, y: 0), speed: direction * params.minExitVelocity)
-    }
-
-    @discardableResult @objc func closeWithoutGesture() -> Bool {
-        close(right: false)
-        return true
-    }
-}
-
-extension SimulateForwardAnimator: UIGestureRecognizerDelegate {
-    @objc func gestureRecognizerShouldBegin(_ recognizer: UIGestureRecognizer) -> Bool {
-        let cellView = recognizer.view
-        let panGesture = recognizer as! UIPanGestureRecognizer
-        let translation = panGesture.translation(in: cellView?.superview)
-        return abs(translation.x) > abs(translation.y)
     }
 }
