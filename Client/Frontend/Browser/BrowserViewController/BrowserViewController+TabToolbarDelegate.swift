@@ -112,10 +112,10 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let closeAllTabs = UIAction(title: Strings.CloseAllTabsTitle, image: UIImage(systemName: "trash")) { _ in
             self.tabManager.removeAllTabsAndAddNormalTab()
         }
-        
+
         let tabCount = self.tabManager.tabs.count
         var actions = [newTab]
-        
+
         if let tab = self.tabManager.selectedTab {
             actions = tab.isPrivate ? [newIncognitoTab] : [newTab]
             
@@ -123,11 +123,11 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
                 actions.append(closeTab)
             }
         }
-        
+
         if tabCount > 1 {
             actions.append(closeAllTabs)
         }
-        
+
         return actions
     }
 

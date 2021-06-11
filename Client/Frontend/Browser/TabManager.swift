@@ -569,7 +569,7 @@ class TabManager: NSObject {
     func removeAll() {
         removeTabs(self.tabs)
     }
-    
+
     func removeTabs(_ tabs: [Tab]) {
         for tab in tabs {
             self.removeTab(tab, flushToDisk: false, notify: true)
