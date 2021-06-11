@@ -104,15 +104,31 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: true)
         }
-        let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "trash")) { _ in
+        let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark")) { _ in
             if let tab = self.tabManager.selectedTab {
                 self.tabManager.removeTabAndUpdateSelectedIndex(tab)
             }
         }
-        if let tab = self.tabManager.selectedTab {
-            return tab.isPrivate ? [newIncognitoTab, closeTab] : [newTab, closeTab]
+        let closeAllTabs = UIAction(title: Strings.CloseAllTabsTitle, image: UIImage(systemName: "trash")) { _ in
+            self.tabManager.removeAllTabsAndAddNormalTab()
         }
-        return [newTab, closeTab]
+        
+        let tabCount = self.tabManager.tabs.count
+        var actions = [newTab]
+        
+        if let tab = self.tabManager.selectedTab {
+            actions = tab.isPrivate ? [newIncognitoTab] : [newTab]
+            
+            if tabCount > 1 || !tab.isURLStartingPage {
+                actions.append(closeTab)
+            }
+        }
+        
+        if tabCount > 1 {
+            actions.append(closeAllTabs)
+        }
+        
+        return actions
     }
 
     func tabToolbarTabsMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu? {

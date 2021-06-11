@@ -286,6 +286,7 @@ extension Strings {
     public static let NewTabTitle = MZLocalizedString("Hotkeys.NewTab.DiscoveryTitle", value: "New Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let NewIncognitoTabTitle = MZLocalizedString("Hotkeys.NewIncognitoTab.DiscoveryTitle", value: "New Incognito Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let CloseTabTitle = MZLocalizedString("Hotkeys.CloseTab.DiscoveryTitle", value: "Close Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
+    public static let CloseAllTabsTitle = MZLocalizedString("Hotkeys.CloseAllTabs.DiscoveryTitle", value: "Close All Tabs", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let ShowNextTabTitle = MZLocalizedString("Hotkeys.ShowNextTab.DiscoveryTitle", value: "Show Next Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
     public static let ShowPreviousTabTitle = MZLocalizedString("Hotkeys.ShowPreviousTab.DiscoveryTitle", value: "Show Previous Tab", comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
 }
