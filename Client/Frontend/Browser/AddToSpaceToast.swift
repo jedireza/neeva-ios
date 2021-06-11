@@ -65,7 +65,6 @@ struct AddToSpaceToastView: View {
             // TODO: Add spinner in the saving case
         }
         .colorScheme(.dark)
-        .navigationBarHidden(true)
         .frame(height: 72)
         .background(Color.neeva.DarkElevated)
         .cornerRadius(15)

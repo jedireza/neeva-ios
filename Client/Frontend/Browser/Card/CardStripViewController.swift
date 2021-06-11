@@ -29,7 +29,6 @@ class CardStripViewController: UIViewController {
         self.tabCardModel = TabCardModel(manager: tabManager)
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = .clear
-        self.navigationController?.isNavigationBarHidden = true
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -38,7 +37,6 @@ class CardStripViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tabCardModel.onViewUpdate = { self.navigationController?.isNavigationBarHidden = true }
         cardStripHostingController?.view.snp.updateConstraints { make in
             make.edges.equalToSuperview()
         }
