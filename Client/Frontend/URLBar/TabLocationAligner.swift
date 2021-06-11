@@ -30,6 +30,15 @@ struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
 
     @State private var titleWidth: CGFloat = 0
 
+    @ViewBuilder
+    func formatPX(_ value: CGFloat) -> some View {
+        if debug {
+            Text("\(Measurement(value: Double(value), unit: Unit(symbol: "px")).description)")
+                .font(.caption2)
+                .allowsHitTesting(false)
+        }
+    }
+
     var body: some View {
         GeometryReader { outerGeom in
             HStack(spacing: 0) {
@@ -39,18 +48,30 @@ struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
                         leadingActions()
                         GeometryReader { innerGeom in
                             let leadingControlWidth = leadingGeom.size.width - innerGeom.size.width
-                            let filler: Color = debug ? .systemFill : .clear
+                            let filler: Color = debug ? .systemFill.opacity(0.5) : .clear
                             HStack(spacing: 0) {
+                                let leadingSpace = outerGeom.size.width / 2 - leadingControlWidth
                                 filler
-                                    .frame(minWidth: 0, maxWidth: outerGeom.size.width / 2 - leadingControlWidth)
+                                    .frame(minWidth: 0, maxWidth: leadingSpace)
+                                    .overlay(formatPX(leadingSpace))
+                                    .allowsHitTesting(false)
+
                                 label()
                                     .background(GeometryReader { textGeom in
-                                        Text("").preference(key: TitleWidthPreferenceKey.self, value: textGeom.size.width)
+                                        let color: Color = debug ? .yellow.opacity(0.25) : .clear
+                                        color
+                                            .onChange(of: textGeom.size.width) {
+                                                self.titleWidth = $0
+                                            }
+                                            .allowsHitTesting(false)
                                     })
                                     .layoutPriority(1)
-                                    .onPreferenceChange(TitleWidthPreferenceKey.self) { self.titleWidth = $0 }
+                                    .overlay(formatPX(titleWidth), alignment: .bottomTrailing)
+                                let trailingSpace = outerGeom.size.width / 2 - trailingControlWidth - titleWidth / 2
                                 filler
-                                    .frame(minWidth: 0, maxWidth: outerGeom.size.width / 2 - trailingControlWidth - titleWidth / 2)
+                                    .frame(minWidth: 0, maxWidth: trailingSpace)
+                                    .overlay(formatPX(trailingSpace))
+                                    .allowsHitTesting(false)
                             }
                         }
                     }
