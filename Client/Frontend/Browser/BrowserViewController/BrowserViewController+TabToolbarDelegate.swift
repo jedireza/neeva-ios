@@ -8,6 +8,10 @@ import Defaults
 
 extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
     func tabToolbarDidPressBack(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+        if simulateBackViewController?.goBack() ?? false {
+            return
+        }
+
         tabManager.selectedTab?.goBack()
     }
 
@@ -33,6 +37,10 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
     }
 
     func tabToolbarDidPressForward(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+        if simulateForwardViewController?.goForward() ?? false {
+            return
+        }
+
         tabManager.selectedTab?.goForward()
     }
 

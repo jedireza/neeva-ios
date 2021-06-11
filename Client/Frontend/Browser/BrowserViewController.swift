@@ -56,15 +56,19 @@ class BrowserViewController: UIViewController {
     var libraryViewController: LibraryViewController?
     var libraryDrawerViewController: DrawerViewController?
     var overlaySheetViewController: UIViewController?
-    lazy var simulateForwardViewController: UIViewController? = {
-        let host = SimulatedSwipeController(tabManager: self.tabManager, swipeDirection: .forward)
+    lazy var simulateForwardViewController: SimulatedSwipeController? = {
+        let host = SimulatedSwipeController(tabManager: self.tabManager,
+                                            navigationToolbar: navigationToolbar,
+                                            swipeDirection: .forward)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
         return host
     }()
-    lazy var simulateBackViewController: UIViewController? = {
-        let host = SimulatedSwipeController(tabManager: self.tabManager, swipeDirection: .back)
+    lazy var simulateBackViewController: SimulatedSwipeController? = {
+        let host = SimulatedSwipeController(tabManager: self.tabManager,
+                                            navigationToolbar: navigationToolbar,
+                                            swipeDirection: .back)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -1922,8 +1926,10 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateFindInPageVisibility(visible: false, tab: previous)
-        navigationToolbar.updateBackStatus(selected?.canGoBack ?? false)
-        navigationToolbar.updateForwardStatus(selected?.canGoForward ?? false)
+        navigationToolbar.updateBackStatus(simulateBackViewController?.canGoBack() ?? false
+                                            || selected?.canGoBack ?? false)
+        navigationToolbar.updateForwardStatus(simulateForwardViewController?.canGoForward() ?? false
+                                                || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
             self.urlBar.updateProgressBar(Float(selected?.estimatedProgress ?? 0))
         }
