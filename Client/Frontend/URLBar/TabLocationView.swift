@@ -8,9 +8,20 @@ enum TabLocationViewUX {
 }
 
 struct TabLocationButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .brightness(configuration.isPressed ? -0.3 : 0)
+    struct Body: View {
+        let configuration: Configuration
+
+        @Environment(\.colorScheme) private var colorScheme
+
+        var body: some View {
+            configuration.label
+                .brightness(configuration.isPressed ? (
+                    colorScheme == .dark ? 0.2 : -0.3
+                ) : 0)
+        }
+    }
+    func makeBody(configuration: Configuration) -> Body {
+        Body(configuration: configuration)
     }
 }
 
