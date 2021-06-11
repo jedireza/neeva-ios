@@ -426,6 +426,10 @@ class BrowserViewController: UIViewController {
         urlBarTopTabsContainer.addSubview(legacyURLBar)
         urlBarTopTabsContainer.addSubview(topTabsContainer)
         view.addSubview(header)
+        if FeatureFlag[.newURLBar] {
+            addChild(legacyURLBar.locationView)
+            legacyURLBar.locationView.didMove(toParent: self)
+        }
 
         // UIAccessibilityCustomAction subclass holding an AccessibleAction instance does not work, thus unable to generate AccessibleActions and UIAccessibilityCustomActions "on-demand" and need to make them "persistent" e.g. by being stored in BVC
         pasteGoAction = AccessibleAction(name: Strings.PasteAndGoTitle, handler: { () -> Bool in
@@ -491,7 +495,7 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.locationView.urlLabel)
+        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.legacyLocationView.urlLabel)
         prompt.view.backgroundColor = UIColor.Neeva.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
@@ -805,7 +809,7 @@ class BrowserViewController: UIViewController {
             }
         })
         view.setNeedsUpdateConstraints()
-        legacyURLBar.locationView.reloadButton.reloadButtonState = .disabled
+        legacyURLBar.legacyLocationView.reloadButton.reloadButtonState = .disabled
     }
 
     fileprivate func hideNeevaHome() {
@@ -828,7 +832,7 @@ class BrowserViewController: UIViewController {
                 self.showReaderModeBar(animated: false)
             }
         })
-        legacyURLBar.locationView.reloadButton.reloadButtonState = .reload
+        legacyURLBar.legacyLocationView.reloadButton.reloadButtonState = .reload
     }
 
     fileprivate func updateInContentHomePanel(_ url: URL?) {
@@ -1052,10 +1056,10 @@ class BrowserViewController: UIViewController {
     /// Call this whenever the page URL changes.
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
         legacyURLBar.currentURL = tab.url?.displayURL
-        legacyURLBar.locationView.showLockIcon(forSecureContent: tab.webView?.hasOnlySecureContent ?? false)
+        legacyURLBar.legacyLocationView.showLockIcon(forSecureContent: tab.webView?.hasOnlySecureContent ?? false)
 
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
-        legacyURLBar.locationView.updateShareButton(isPage)
+        legacyURLBar.legacyLocationView.updateShareButton(isPage)
         navigationToolbar.updatePageStatus(isPage)
     }
 
@@ -1114,7 +1118,7 @@ class BrowserViewController: UIViewController {
             // Check that the newly created tab is still selected.
             // This let's the user spam the Cmd+T button without lots of responder changes.
             guard tab == self.tabManager.selectedTab else { return }
-            self.legacyURLBar.tabLocationViewDidTapLocation(self.legacyURLBar.locationView)
+            self.legacyURLBar.tabLocationViewDidTapLocation(self.legacyURLBar.legacyLocationView)
             if let text = searchText {
                 self.legacyURLBar.setLocation(text, search: true)
             }
@@ -1287,9 +1291,9 @@ class BrowserViewController: UIViewController {
 
         if let url = webView.url {
             if tab === tabManager.selectedTab {
-                legacyURLBar.locationView.showLockIcon(forSecureContent: webView.hasOnlySecureContent)
+                legacyURLBar.legacyLocationView.showLockIcon(forSecureContent: webView.hasOnlySecureContent)
                 let isPage = tab.url?.displayURL?.isWebPage() ?? false
-                legacyURLBar.locationView.updateShareButton(isPage)
+                legacyURLBar.legacyLocationView.updateShareButton(isPage)
             }
 
             if (!InternalURL.isValid(url: url) || url.isReaderModeURL), !url.isFileURL {
@@ -2342,7 +2346,7 @@ extension BrowserViewController: TabTrayDelegate {
     }
 
     func tabTrayDidTapLocationBar(_ tabTray: TabTrayControllerV1) {
-        legacyURLBar.tabLocationViewDidTapLocation(legacyURLBar.locationView)
+        legacyURLBar.tabLocationViewDidTapLocation(legacyURLBar.legacyLocationView)
     }
 
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController) {
@@ -2368,7 +2372,7 @@ extension BrowserViewController: Themeable {
         let tabs = tabManager.tabs
         tabs.forEach {
             $0.applyTheme()
-            legacyURLBar.locationView.tabDidChangeContentBlocking($0)
+            legacyURLBar.legacyLocationView.tabDidChangeContentBlocking($0)
         }
         
         guard let contentScript = self.tabManager.selectedTab?.getContentScript(name: ReaderMode.name()) else { return }

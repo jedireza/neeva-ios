@@ -5,6 +5,7 @@
 import Shared
 import SnapKit
 import Storage
+import SwiftUI
 
 private struct LegacyURLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40
@@ -22,7 +23,7 @@ private struct LegacyURLBarViewUX {
     static let ToolbarEdgePaddding: CGFloat = 24
 }
 
-protocol LegacyURLBarDelegate: AnyObject {
+protocol LegacyURLBarDelegate: UIViewController {
     func urlBarDidPressTabs(_ urlBar: LegacyURLBarView)
     func urlBarDidPressReaderMode(_ urlBar: LegacyURLBarView)
     /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
@@ -102,12 +103,16 @@ class LegacyURLBarView: UIView {
         return neevaMenuButton
     }()
     
-    lazy var locationView: LegacyTabLocationView = {
+    lazy var legacyLocationView: LegacyTabLocationView = {
         let locationView = LegacyTabLocationView()
         locationView.layer.cornerRadius = LegacyURLBarViewUX.TextFieldCornerRadius
         locationView.translatesAutoresizingMaskIntoConstraints = false
         locationView.delegate = self
         return locationView
+    }()
+
+    lazy var locationView: UIHostingController<TabLocationView> = {
+        UIHostingController(rootView: TabLocationView(text: "", status: .secure, onTap: { }))
     }()
 
     lazy var locationContainer: UIView = {
@@ -160,11 +165,12 @@ class LegacyURLBarView: UIView {
 
     var currentURL: URL? {
         get {
-            return locationView.url as URL?
+            return legacyLocationView.url as URL?
         }
 
         set(newURL) {
-            locationView.url = newURL
+            legacyLocationView.url = newURL
+            locationView.rootView = .init(text: newURL?.host ?? locationView.rootView.text, status: .secure, onTap: {})
             if let url = newURL, InternalURL(url)?.isAboutHomeURL ?? false {
                 line.isHidden = true
             } else {
@@ -187,7 +193,11 @@ class LegacyURLBarView: UIView {
     }
 
     fileprivate func commonInit() {
-        locationContainer.addSubview(locationView)
+        if FeatureFlag[.newURLBar] {
+            locationContainer.addSubview(locationView.view)
+        } else {
+            locationContainer.addSubview(legacyLocationView)
+        }
 
         [line, tabsButton, neevaMenuButton, progressBar, cancelButton, addToSpacesButton,
          forwardButton, backButton, shareButton, locationContainer].forEach {
@@ -230,7 +240,7 @@ class LegacyURLBarView: UIView {
             make.left.right.equalTo(self)
         }
         
-        locationView.snp.makeConstraints { make in
+        (FeatureFlag[.newURLBar] ? locationView.view : legacyLocationView).snp.makeConstraints { make in
             make.edges.equalTo(self.locationContainer)
         }
         
@@ -311,7 +321,7 @@ class LegacyURLBarView: UIView {
         }
         if inOverlayMode {
             self.locationTextField?.snp.remakeConstraints { make in
-                make.edges.equalTo(self.locationView).inset(
+                make.edges.equalTo(FeatureFlag[.newURLBar] ? locationView.view : legacyLocationView).inset(
                     UIEdgeInsets(top: 0, left: LegacyURLBarViewUX.LocationOverlayLeftPadding,
                                  bottom: 0, right: LegacyURLBarViewUX.LocationOverlayRightPadding))
             }
@@ -426,9 +436,9 @@ class LegacyURLBarView: UIView {
         // the constraints to be calculated too early and there are constraint errors
         if !toolbarIsShowing {
             updateConstraintsIfNeeded()
-            locationView.showShareButton = true
-        }else {
-            locationView.showShareButton = false
+            legacyLocationView.showShareButton = true
+        } else {
+            legacyLocationView.showShareButton = false
         }
         updateViewsForOverlayModeAndToolbarChanges()
     }
@@ -446,7 +456,7 @@ class LegacyURLBarView: UIView {
     }
 
     func updateProgressBar(_ progress: Float) {
-        locationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
+        legacyLocationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
         progressBar.alpha = 1
         progressBar.isHidden = false
         progressBar.setProgress(progress, animated: !isTransitioning)
@@ -460,9 +470,9 @@ class LegacyURLBarView: UIView {
     func updateReaderModeState(_ state: ReaderModeState) {
         switch state {
         case .active:
-            locationView.reloadButton.isHidden = true
+            legacyLocationView.reloadButton.isHidden = true
         case .available, .unavailable:
-            locationView.reloadButton.isHidden = false
+            legacyLocationView.reloadButton.isHidden = false
         }
     }
 
@@ -542,7 +552,7 @@ class LegacyURLBarView: UIView {
 
     func transitionToOverlay(_ didCancel: Bool = false) {
         locationTextField?.leftView?.alpha = inOverlayMode ? 1 : 0
-        locationView.contentView.alpha = inOverlayMode ? 0 : 1
+        legacyLocationView.contentView.alpha = inOverlayMode ? 0 : 1
         cancelButton.alpha = inOverlayMode ? 1 : 0
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
@@ -558,7 +568,7 @@ class LegacyURLBarView: UIView {
 
     func updateViewsForOverlayModeAndToolbarChanges() {
         // This ensures these can't be selected as an accessibility element when in the overlay mode.
-        locationView.overrideAccessibility(enabled: !inOverlayMode)
+        legacyLocationView.overrideAccessibility(enabled: !inOverlayMode)
 
         cancelButton.isHidden = !inOverlayMode
         neevaMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
@@ -671,7 +681,7 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
     }
 
     func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView) {
-        let state = locationView.reloadButton.reloadButtonState
+        let state = legacyLocationView.reloadButton.reloadButtonState
         switch state {
         case .reload:
             delegate?.urlBarDidPressReload(self)
@@ -758,7 +768,7 @@ extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
 
-        locationView.applyUIMode(isPrivate: isPrivate)
+        legacyLocationView.applyUIMode(isPrivate: isPrivate)
         locationTextField?.applyUIMode(isPrivate: isPrivate)
 
         if isPrivate {

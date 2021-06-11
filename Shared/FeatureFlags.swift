@@ -11,6 +11,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case readingMode = "Enable Reading Mode"
     case cardStrip = "Carousel of cards instead of Tab strip"
     case swipePlusPlus = "Additional forward and back swipe gestures"
+    case newURLBar = "New URL Bar"
 }
 
 extension FeatureFlag {
