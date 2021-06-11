@@ -17,7 +17,7 @@ struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
     let trailingActions: () -> Trailing
 
     init(
-        debug: Bool = false,
+        debug: Bool = FeatureFlag[.newURLBarDebug],
         @ViewBuilder label: @escaping () -> Label,
         @ViewBuilder leading: @escaping () -> Leading,
         @ViewBuilder trailing: @escaping () -> Trailing
