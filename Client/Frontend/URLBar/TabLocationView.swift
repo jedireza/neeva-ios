@@ -26,48 +26,43 @@ struct TabLocationButtonStyle: ButtonStyle {
 }
 
 struct TabLocationView: View {
-    enum Status {
-        case insecure
-        case secure
-        case search
-        case untrusted
-        case connectionError
+    @Binding var text: String?
+    let isPrivate: Bool
+    let isLoading: Bool
+    @Binding var url: URL
 
-        var icon: Symbol? {
-            switch self {
-            case .insecure: return nil
-            case .secure: return Symbol(.lockFill)
-            case .search: return Symbol(.magnifyingglass)
-            case .untrusted: return Symbol(.lockSlashFill)
-            case .connectionError: return Symbol(.exclamationmarkTriangleFill)
+    @ViewBuilder
+    var displayedText: some View {
+        let showQueryInLocationBar = NeevaFeatureFlags[.clientHideSearchBox]
+        if let internalURL = InternalURL(url), internalURL.isAboutHomeURL {
+            Text("Search or enter address").foregroundColor(.secondary)
+        } else if showQueryInLocationBar, let query = neevaSearchEngine.queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url) {
+            Label { Text(query) } icon: { Symbol(.magnifyingglass) }
+        } else if let scheme = url.scheme, let host = url.host, (scheme == "https" || scheme == "http") {
+            // NOTE: Punycode support was removed
+            let host = Text(host).truncationMode(.head)
+            if scheme == "https" {
+                Label {
+                    host
+                } icon: {
+                    Symbol(.lockFill)
+                }
+            } else {
+                host
             }
+        } else {
+            Text(url.absoluteString)
         }
     }
 
-    init(text: String, status: Status, onTap: @escaping () -> ()) {
-        self.text = text
-        self.status = status
-        self.onTap = onTap
-    }
-
-    let text: String
-    let status: Status
-    let onTap: () -> ()
-
     var body: some View {
-        Button(action: onTap) {
+        Button(action: { text = url.absoluteString }) {
             Capsule()
                 .fill(Color.systemFill)
         }
         .buttonStyle(TabLocationButtonStyle())
         .overlay(TabLocationAligner {
-            Label {
-                Text(text).truncationMode(.head)
-            } icon: {
-                if let icon = status.icon {
-                    icon
-                }
-            }.frame(height: TabLocationViewUX.height)
+            displayedText.frame(height: TabLocationViewUX.height)
         } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
@@ -82,11 +77,10 @@ struct TabLocationView: View {
 struct URLBarView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TabLocationView(text: "vviii.verylong.subdomain.neeva.com", status: .insecure) {}
-            TabLocationView(text: "neeva.com", status: .secure) {}
-            TabLocationView(text: "a long search query with words", status: .search) {}
-            TabLocationView(text: "you-broke-it.badssl.com", status: .untrusted) {}
-            TabLocationView(text: "something.badssl.com", status: .connectionError) {}
+            TabLocationView(text: .constant(nil), isPrivate: false, isLoading: false, url: .constant(URL(string: "http://vviii.verylong.subdomain.neeva.com")!))
+            TabLocationView(text: .constant(nil), isPrivate: true, isLoading: false, url: .constant(URL(string: "https://neeva.com/asdf")!))
+            TabLocationView(text: .constant(nil), isPrivate: false, isLoading: true, url: .constant(neevaSearchEngine.searchURLForQuery("a long search query with words")!))
+            TabLocationView(text: .constant(nil), isPrivate: true, isLoading: true, url: .constant(URL(string: "ftp://someftpsite.com/dir/file.txt")!))
         }
             .padding()
             .previewLayout(.sizeThatFits)

@@ -112,7 +112,7 @@ class LegacyURLBarView: UIView {
     }()
 
     lazy var locationView: UIHostingController<TabLocationView> = {
-        UIHostingController(rootView: TabLocationView(text: "", status: .secure, onTap: { }))
+        UIHostingController(rootView: TabLocationView(text: .constant(nil), isPrivate: false, isLoading: false, url: .constant(URL(string: "about:blank")!)))
     }()
 
     lazy var locationContainer: UIView = {
@@ -170,7 +170,7 @@ class LegacyURLBarView: UIView {
 
         set(newURL) {
             legacyLocationView.url = newURL
-            locationView.rootView = .init(text: newURL?.host ?? locationView.rootView.text, status: .secure, onTap: {})
+//            locationView.rootView = .init(text: newURL?.host ?? locationView.rootView.text, status: .secure, onTap: {})
             if let url = newURL, InternalURL(url)?.isAboutHomeURL ?? false {
                 line.isHidden = true
             } else {
