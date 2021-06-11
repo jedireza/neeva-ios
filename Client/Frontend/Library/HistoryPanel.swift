@@ -448,40 +448,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         print("Error: No site or no URL when selecting row.")
     }
 
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel?.textColor = UIColor.theme.tableView.headerTextDark
-            header.contentView.backgroundColor = UIColor.theme.tableView.headerBackground
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        // First section is for recently closed and its header has no view.
-        guard section > Section.additionalHistoryActions.rawValue else {
-            return nil
-        }
-
-        // Ensure there are rows in this section.
-        guard groupedSites.numberOfItemsForSection(section - 1) > 0 else {
-            return nil
-        }
-
-        return super.tableView(tableView, viewForHeaderInSection: section)
-    }
-
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // First section is for recently closed and its header has no height.
-        guard section > Section.additionalHistoryActions.rawValue else {
-            return 0
-        }
-
-        // Ensure there are rows in this section.
-        guard groupedSites.numberOfItemsForSection(section - 1) > 0 else {
-            return 0
-        }
-
-        return super.tableView(tableView, heightForHeaderInSection: section)
-    }
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         // Intentionally blank. Required to use UITableViewRowActions

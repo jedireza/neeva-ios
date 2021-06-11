@@ -6,9 +6,11 @@ import Foundation
 import SnapKit
 import Shared
 
-class SnackBarUX {
-    static var MaxWidth: CGFloat = 400
-    static let BorderWidth: CGFloat = 0.5
+fileprivate enum SnackBarUX {
+    static let maxWidth: CGFloat = 400
+    static let borderWidth: CGFloat = 0.5
+    static let padding: CGFloat = 10
+    static let buttonHeight: CGFloat = 57
 }
 
 /**
@@ -23,7 +25,7 @@ class SnackButton: UIButton {
 
     override open var isHighlighted: Bool {
         didSet {
-            self.backgroundColor = isHighlighted ? UIColor.theme.snackbar.highlight : .clear
+            self.backgroundColor = isHighlighted ? .secondarySystemFill : .clear
         }
     }
 
@@ -39,8 +41,7 @@ class SnackButton: UIButton {
         }
         titleLabel?.adjustsFontForContentSizeCategory = false
         setTitle(title, for: .normal)
-        setTitleColor(UIColor.theme.snackbar.highlightText, for: .highlighted)
-        setTitleColor(UIColor.theme.snackbar.title, for: .normal)
+        setTitleColor(.systemBlue, for: .normal)
         addTarget(self, action: #selector(onClick), for: .touchUpInside)
         self.accessibilityIdentifier = accessibilityIdentifier
     }
@@ -55,11 +56,11 @@ class SnackButton: UIButton {
 
     func drawSeparator() {
         let separator = UIView()
-        separator.backgroundColor = UIColor.theme.snackbar.border
+        separator.backgroundColor = .separator
         self.addSubview(separator)
         separator.snp.makeConstraints { make in
             make.leading.equalTo(self)
-            make.width.equalTo(SnackBarUX.BorderWidth)
+            make.width.equalTo(SnackBarUX.borderWidth)
             make.top.bottom.equalTo(self)
         }
     }
@@ -99,7 +100,7 @@ class SnackBar: UIView {
 
     private lazy var titleView: UIStackView = {
         let stack = UIStackView()
-        stack.spacing = UIConstants.DefaultPadding
+        stack.spacing = SnackBarUX.padding
         stack.distribution = .fill
         stack.axis = .horizontal
         stack.alignment = .center
@@ -123,7 +124,7 @@ class SnackBar: UIView {
         titleView.addArrangedSubview(textLabel)
 
         let separator = UIView()
-        separator.backgroundColor = UIColor.theme.snackbar.border
+        separator.backgroundColor = .separator
 
         addSubview(titleView)
         addSubview(separator)
@@ -131,7 +132,7 @@ class SnackBar: UIView {
 
         separator.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self)
-            make.height.equalTo(SnackBarUX.BorderWidth)
+            make.height.equalTo(SnackBarUX.borderWidth)
             make.top.equalTo(buttonsView.snp.top).offset(-1)
         }
 
@@ -141,16 +142,16 @@ class SnackBar: UIView {
         }
 
         titleView.snp.makeConstraints { make in
-            make.top.equalTo(self).offset(UIConstants.DefaultPadding)
-            make.height.greaterThanOrEqualTo(UIConstants.SnackbarButtonHeight - 2 * UIConstants.DefaultPadding)
+            make.top.equalTo(self).offset(SnackBarUX.padding)
+            make.height.greaterThanOrEqualTo(SnackBarUX.buttonHeight - 2 * SnackBarUX.padding)
             make.centerX.equalTo(self).priority(500)
-            make.width.lessThanOrEqualTo(self).inset(UIConstants.DefaultPadding * 2).priority(1000)
+            make.width.lessThanOrEqualTo(self).inset(SnackBarUX.padding * 2).priority(1000)
         }
 
         backgroundColor = UIColor.clear
         self.clipsToBounds = true //overridden by masksToBounds = false
-        self.layer.borderWidth = SnackBarUX.BorderWidth
-        self.layer.borderColor = UIColor.theme.snackbar.border.cgColor
+        self.layer.borderWidth = SnackBarUX.borderWidth
+        self.layer.borderColor = UIColor.separator.cgColor
         self.layer.cornerRadius = 8
         self.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
     }
@@ -172,11 +173,11 @@ class SnackBar: UIView {
         super.updateConstraints()
 
         buttonsView.snp.remakeConstraints { make in
-            make.top.equalTo(titleView.snp.bottom).offset(UIConstants.DefaultPadding)
+            make.top.equalTo(titleView.snp.bottom).offset(SnackBarUX.padding)
             make.bottom.equalTo(self.snp.bottom)
             make.leading.trailing.equalTo(self)
             if self.buttonsView.subviews.count > 0 {
-                make.height.equalTo(UIConstants.SnackbarButtonHeight)
+                make.height.equalTo(SnackBarUX.buttonHeight)
             } else {
                 make.height.equalTo(0)
             }

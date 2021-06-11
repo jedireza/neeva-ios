@@ -46,6 +46,6 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.presentationController?.containerView?.backgroundColor = UIColor.Neeva.Backdrop
+        self.presentationController?.containerView?.backgroundColor = UIColor.neeva.Backdrop
     }
 }

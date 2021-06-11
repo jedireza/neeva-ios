@@ -45,7 +45,9 @@ struct SettingsView: View {
                     PrivacySettingsSection()
                 }
                 SwiftUI.Section(header: Text("Support")) {
-                    SupportSettingsSection()
+                    SupportSettingsSection(onDismiss: {
+                        dismiss()
+                    })
                 }
                 SwiftUI.Section(header: Text("About")) {
                     AboutSettingsSection(showDebugSettings: $showDebugSettings)

@@ -6,7 +6,7 @@ import SwiftUI
 fileprivate struct SaveButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         Capsule()
-            .fill(configuration.isPressed ? Color(hex: 0x3254CE) : Color.blue)
+            .fill(configuration.isPressed ? Color(hex: 0x3254CE) : Color.neeva.ui.blue)
             .frame(height: 44)
             .overlay(
                 configuration.label

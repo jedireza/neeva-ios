@@ -77,7 +77,7 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.presentationController?.containerView?.backgroundColor = UIColor.Neeva.Backdrop
+        self.presentationController?.containerView?.backgroundColor = UIColor.neeva.Backdrop
     }
 
     override func viewWillDisappear(_ animated: Bool) {

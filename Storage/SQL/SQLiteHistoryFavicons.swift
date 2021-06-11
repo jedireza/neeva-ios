@@ -377,7 +377,7 @@ extension SQLiteHistory: Favicons {
 
             func generateBackgroundColor(forURL url: URL) -> UIColor {
                 guard let hash = url.baseDomain?.hashValue else {
-                    return UIColor.Photon.Grey50
+                    return UIColor.neeva.ui.gray50
                 }
                 let index = abs(hash) % (DefaultFaviconBackgroundColors.count - 1)
                 let colorHex = DefaultFaviconBackgroundColors[index]
@@ -389,7 +389,7 @@ extension SQLiteHistory: Favicons {
             label.text = faviconLetter
             label.textAlignment = .center
             label.font = UIFont.systemFont(ofSize: 40, weight: UIFont.Weight.medium)
-            label.textColor = UIColor.Photon.White100
+            label.textColor = UIColor.white
             UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0.0)
             let rect = CGRect(origin: .zero, size: label.bounds.size)
             let context = UIGraphicsGetCurrentContext()!

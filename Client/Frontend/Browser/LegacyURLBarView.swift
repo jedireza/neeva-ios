@@ -348,7 +348,7 @@ class LegacyURLBarView: UIView {
         } else if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (currentURL?.host == NeevaConstants.appHost && suggestion == "") {
             iconView.image = UIImage(named: "neevaMenuIcon")
         } else if (suggestion != "") {
-            iconView.image = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))?.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor.Neeva.GlobeFavGray)
+            iconView.image = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))?.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor.neeva.GlobeFavGray)
 
             let gURL = suggestion.hasPrefix("http") ? URL(string: suggestion)! : URL(string: "https://\(suggestion)")!
 

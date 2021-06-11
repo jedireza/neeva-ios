@@ -88,7 +88,7 @@ struct NeevaHomeHeader: View {
             Button(action: action) {
                 Symbol(icon, size: NeevaHomeUX.ToggleIconSize, weight: .medium)
                     .frame(width: NeevaHomeUX.ToggleButtonSize, height: NeevaHomeUX.ToggleButtonSize, alignment: .center)
-                    .background(Color.Neeva.UI.Gray98).clipShape(Circle())
+                    .background(Color.neeva.ui.fixed.gray98).clipShape(Circle())
             }
         }
         .accessibilityElement(children: .ignore)

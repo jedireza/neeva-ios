@@ -129,7 +129,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         faviconLabel.text = faviconLetter
         faviconLabel.textAlignment = .center
         faviconLabel.font = UIFont.systemFont(ofSize: 40, weight: UIFont.Weight.medium)
-        faviconLabel.textColor = UIColor.Photon.White100
+        faviconLabel.textColor = UIColor.white
         faviconLabel.backgroundColor = color(forUrl: url)
         UIGraphicsBeginImageContextWithOptions(faviconLabel.bounds.size, false, 0.0)
         faviconLabel.layer.render(in: UIGraphicsGetCurrentContext()!)
@@ -151,7 +151,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         }
 
         guard let domain = url.baseDomain else {
-            return UIColor.Photon.Grey50
+            return UIColor.neeva.ui.gray50
         }
         let index = abs(stableHash(domain)) % (DefaultFaviconBackgroundColors.count - 1)
         let colorHex = DefaultFaviconBackgroundColors[index]

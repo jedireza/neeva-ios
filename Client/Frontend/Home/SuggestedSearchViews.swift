@@ -49,7 +49,7 @@ struct SuggestedSearchesView: View {
                 )
             }
         }
-        .foregroundColor(Color(light: .Neeva.UI.Gray70, dark: .secondaryLabel))
+        .foregroundColor(Color(light: .neeva.ui.gray70, dark: .secondaryLabel))
         .padding(.top, 7)
     }
 }

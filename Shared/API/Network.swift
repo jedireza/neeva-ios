@@ -68,7 +68,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         req.addHeader(name: "X-Neeva-Client-ID", value: "co.neeva.app.ios.browser")
         req.addHeader(name: "X-Neeva-Client-Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)
 
-        if let cookie = try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey) {
+        if let cookie = NeevaUserInfo.shared.getLoginCookie() {
             assignCookie(cookie)
         } else if
             ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1",
@@ -88,19 +88,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
 
     private func assignCookie(_ value: String) {
         // only used for URLRequest, not the webview
-        if let cookie = HTTPCookie(properties: [
-            .name: "httpd~login",
-            .value: value,
-            .domain: NeevaConstants.appHost,
-            .path: "/",
-            .expires: Date.distantFuture,
-            .secure: true,
-            .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
-            // ! potentially undocumented API
-            .init("HttpOnly"): true
-        ]) {
-            HTTPCookieStorage.shared.setCookie(cookie)
-        }
+        HTTPCookieStorage.shared.setCookie(NeevaConstants.loginCookie(for: value))
     }
 
     private func clearCookie() {

@@ -49,7 +49,12 @@ public struct SendFeedbackView: View {
                         VStack(alignment: .leading) {
                             Text("Need help or want instant answers to FAQs?")
                                 .foregroundColor(.label)
-                            Button(action: { onOpenURL(NeevaConstants.appFAQURL) }) {
+                            Button(action: {
+                                onOpenURL(NeevaConstants.appFAQURL)
+                                if let onDismiss = onDismiss {
+                                    onDismiss()
+                                }
+                            }) {
                                 Text("Visit our Help Center!").underline()
                             }
                         }
@@ -101,9 +106,10 @@ public struct SendFeedbackView: View {
                                                 destination: EditURLView($url, isActive: $isEditingURL),
                                                 isActive: $isEditingURL
                                             ) { EmptyView() }
+                                            .hidden()
                                         )
                                         .disabled(!shareURL)
-                                        .padding(.trailing, 20)
+                                        .padding(.trailing, 8)
                                 }
                             }
                         }

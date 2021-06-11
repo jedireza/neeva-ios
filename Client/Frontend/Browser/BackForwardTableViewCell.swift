@@ -35,7 +35,6 @@ class BackForwardTableViewCell: UITableViewCell {
         let label = UILabel()
         label.text = " "
         label.font = label.font.withSize(BackForwardViewCellUX.fontSize)
-        label.textColor = UIColor.theme.tabTray.tabTitleText
         return label
     }()
 

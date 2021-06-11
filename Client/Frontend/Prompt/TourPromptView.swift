@@ -17,23 +17,23 @@ struct TourPromptView: View {
 
     var body: some View {
         ZStack {
-            Color.Neeva.Tour.Background
+            Color.neeva.Tour.Background
             ScrollView {
                 VStack(alignment: .leading) {
                     Text(title)
-                        .foregroundColor(Color.Neeva.Tour.Title)
+                        .foregroundColor(Color.neeva.Tour.Title)
                         .font(.headline)
                         .padding(.bottom, 8)
                     Text(description)
-                        .foregroundColor(Color.Neeva.Tour.Description)
+                        .foregroundColor(Color.neeva.Tour.Description)
                         .font(.callout)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 Button(action: onConfirm!) {
                     ZStack {
-                        Color.Neeva.Tour.ButtonBackground
+                        Color.neeva.Tour.ButtonBackground
                         Text(buttonMessage)
-                            .foregroundColor(Color.Neeva.Tour.ButtonText)
+                            .foregroundColor(Color.neeva.Tour.ButtonText)
                             .font(.system(size: 16, weight: .bold))
 
                     }

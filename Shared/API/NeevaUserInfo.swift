@@ -120,7 +120,7 @@ public class NeevaUserInfo: ObservableObject {
 
                 // check if token has changed, when different, save new token
                 // and fetch user info
-                let currentToken = try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
+                let currentToken = self.getLoginCookie()
                 if currentToken != nil, currentToken == authCookie.value {
                     self.isUserLoggedIn = true
                     self.loadUserInfoFromDefaults()
@@ -134,8 +134,12 @@ public class NeevaUserInfo: ObservableObject {
         }
     }
 
+    public func getLoginCookie() -> String? {
+        return try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
+    }
+
     public func hasLoginCookie() -> Bool{
-        let token =  try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
+        let token = getLoginCookie()
         if (token != nil) {
            return true
         }
@@ -173,7 +177,10 @@ public class NeevaUserInfo: ObservableObject {
                 return
             }
 
-            self.pictureData = data
+            // fixes an error caused by updating UI on the background thread
+            DispatchQueue.main.async {
+                self.pictureData = data
+            }
         }
 
         dataTask.resume()

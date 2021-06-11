@@ -31,7 +31,7 @@ public extension UIImageView {
         func finish(bgColor: UIColor?) {
             if let bgColor = bgColor {
                 // If the background color is clear, we may decide to set our own background based on the theme.
-                let color = bgColor.components.alpha < 0.01 ? UIColor.theme.general.faviconBackground : bgColor
+                let color = bgColor.components.alpha < 0.01 ? UIColor(light: .white, dark: .clear) : bgColor
                 self.backgroundColor = color
             }
             completion()

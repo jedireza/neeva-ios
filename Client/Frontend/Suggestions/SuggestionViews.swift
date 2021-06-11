@@ -84,15 +84,6 @@ fileprivate struct QuerySuggestionView: View {
     @Environment(\.setSearchInput) private var setInput
     @Environment(\.onOpenURL) private var openURL
 
-    var textColor: Color {
-        switch suggestion.type {
-        case .searchHistory:
-            return .Neeva.Brand.Purple
-        default:
-            return .label
-        }
-    }
-
     var suggestedQuery: String {
         if let shortcut = activeLensOrBang?.shortcut,
            let sigil = activeLensOrBang?.type?.sigil {
@@ -121,14 +112,13 @@ fileprivate struct QuerySuggestionView: View {
                 }
             }
         } label: {
-            BoldSpanView(suggestion.suggestedQuery, bolding: suggestion.boldSpan)
+            BoldSpanView(suggestion.suggestedQuery, unboldedSpans: suggestion.boldSpan)
                 .lineLimit(1)
-                .foregroundColor(textColor)
         } detail: {
             if suggestion.type != .space {
                 Button(action: { setInput(suggestedQuery) }) {
                     Symbol(.arrowUpLeft)
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.tertiaryLabel)
                 }.buttonStyle(BorderlessButtonStyle())
             }
         }
@@ -154,7 +144,7 @@ fileprivate struct URLSuggestionView: View {
             }
         } label: {
             if let title = suggestion.title {
-                BoldSpanView(title, bolding: suggestion.boldSpan).lineLimit(1)
+                BoldSpanView(title, unboldedSpans: suggestion.boldSpan).lineLimit(1)
             } else {
                 Text(suggestion.suggestedUrl).lineLimit(1)
             }

@@ -23,6 +23,14 @@ fileprivate func setCookiesForNeeva(webView: WKWebView) {
     // for more details.
     httpCookieStore.setCookie(NeevaConstants.deviceTypeCookie)
 
+    // Make sure the login cookie--if we have one--is set. The presence of the
+    // login cookie in the keychain is considered the source of truth for login
+    // state. This may be an invalid login cookie, and in that case, we'll get
+    // a new value for the cookie after going through a login flow.
+    if let cookieValue = NeevaUserInfo.shared.getLoginCookie() {
+        httpCookieStore.setCookie(NeevaConstants.loginCookie(for: cookieValue))
+    }
+
     // Some feature flags need to be echoed to neeva.com to ensure that both
     // the browser and the site are using consistent feature flag values. This
     // helps protect against possible race conditions with the two learning

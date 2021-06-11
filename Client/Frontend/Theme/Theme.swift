@@ -39,10 +39,6 @@ class TableViewColor {
     // Used for table headers in home panel tables
     var headerTextDark: UIColor { return UIColor.Photon.Grey90 }
     var rowActionAccessory: UIColor { return UIColor.Photon.Blue40 }
-    var controlTint: UIColor { return rowActionAccessory }
-    var syncText: UIColor { return defaultTextAndTint }
-    var errorText: UIColor { return UIColor.Photon.Red50 }
-    var warningText: UIColor { return UIColor.Photon.Orange50 }
     var accessoryViewTint: UIColor { return UIColor.Photon.Grey40 }
     var selectedBackground: UIColor { return UIColor.Custom.selectedHighlightLight }
 }
@@ -54,54 +50,16 @@ class ActionMenuColor {
     var closeButtonBackground: UIColor { return defaultBackground }
 }
 
-class TabTrayColor {
-    var tabTitleText: UIColor { return UIColor.black }
-    var tabTitleBlur: UIBlurEffect.Style { return UIBlurEffect.Style.extraLight }
-    var cellBackground: UIColor { return defaultBackground }
-    var toolbarButtonTint: UIColor { return defaultTextAndTint }
-    var privateModeButtonOffTint: UIColor { return toolbarButtonTint }
-    var privateModeButtonOnTint: UIColor { return UIColor.Photon.Grey10 }
-    var cellCloseButton: UIColor { return UIColor.Photon.Grey50 }
-    var cellTitleBackground: UIColor { return UIColor.clear }
-    var faviconTint: UIColor { return UIColor.black }
-}
-
-class SnackBarColor {
-    var highlight: UIColor { return UIColor.Defaults.iOSTextHighlightBlue.withAlphaComponent(0.9) }
-    var highlightText: UIColor { return UIColor.Photon.Blue40 }
-    var border: UIColor { return UIColor.Photon.Grey30 }
-    var title: UIColor { return UIColor.Photon.Blue40 }
-}
-
-class GeneralColor {
-    var faviconBackground: UIColor { return UIColor.clear }
-    var passcodeDot: UIColor { return UIColor.Photon.Grey60 }
-    var highlightBlue: UIColor { return UIColor.Photon.Blue40 }
-    var destructiveRed: UIColor { return UIColor.Photon.Red50 }
-    var separator: UIColor { return defaultSeparator }
-    var settingsTextPlaceholder: UIColor { return UIColor.Photon.Grey40 }
-    var controlTint: UIColor { return UIColor.Photon.Blue40 }
-    var switchToggle: UIColor { return UIColor.Photon.Grey90A40 }
-}
-
 protocol Theme {
     var name: String { get }
     var tableView: TableViewColor { get }
-    var tabTray: TabTrayColor { get }
-    var snackbar: SnackBarColor { get }
-    var general: GeneralColor { get }
     var actionMenu: ActionMenuColor { get }
-    var switchToggleTheme: GeneralColor { get }
     var userInterfaceStyle: UIUserInterfaceStyle { get }
 }
 
 class NormalTheme: Theme {
     var name: String { return BuiltinThemeName.normal.rawValue }
     var tableView: TableViewColor { return TableViewColor() }
-    var tabTray: TabTrayColor { return TabTrayColor() }
-    var snackbar: SnackBarColor { return SnackBarColor() }
-    var general: GeneralColor { return GeneralColor() }
     var actionMenu: ActionMenuColor { return ActionMenuColor() }
-    var switchToggleTheme: GeneralColor { return GeneralColor() }
     var userInterfaceStyle: UIUserInterfaceStyle { .light }
 }

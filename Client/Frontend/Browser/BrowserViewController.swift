@@ -57,7 +57,14 @@ class BrowserViewController: UIViewController {
     var libraryDrawerViewController: DrawerViewController?
     var overlaySheetViewController: UIViewController?
     lazy var simulateForwardViewController: UIViewController? = {
-        let host = SimulateForwardController(tabManager: self.tabManager)
+        let host = SimulatedSwipeController(tabManager: self.tabManager, swipeDirection: .forward)
+        addChild(host)
+        view.addSubview(host.view)
+        host.view.isHidden = true
+        return host
+    }()
+    lazy var simulateBackViewController: UIViewController? = {
+        let host = SimulatedSwipeController(tabManager: self.tabManager, swipeDirection: .back)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -496,7 +503,7 @@ class BrowserViewController: UIViewController {
         }
 
         let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.legacyLocationView.urlLabel)
-        prompt.view.backgroundColor = UIColor.Neeva.Tour.Background
+        prompt.view.backgroundColor = UIColor.neeva.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
         guard let currentViewController = navigationController?.topViewController else {
@@ -548,9 +555,15 @@ class BrowserViewController: UIViewController {
         if FeatureFlag[.swipePlusPlus] {
             simulateForwardViewController?.view.snp.makeConstraints { make in
                 make.top.bottom.equalTo(webViewContainer)
-                make.width.equalTo(webViewContainer).offset(100)
-                make.leading.equalTo(webViewContainer.snp.trailing).offset(-100)
+                make.width.equalTo(webViewContainer).offset(SimulatedSwipeUX.EdgeWidth)
+                make.leading.equalTo(webViewContainer.snp.trailing).offset(-SimulatedSwipeUX.EdgeWidth)
             }
+        }
+
+        simulateBackViewController?.view.snp.makeConstraints { make in
+            make.top.bottom.equalTo(webViewContainer)
+            make.width.equalTo(webViewContainer).offset(SimulatedSwipeUX.EdgeWidth)
+            make.trailing.equalTo(webViewContainer.snp.leading).offset(SimulatedSwipeUX.EdgeWidth)
         }
     }
 

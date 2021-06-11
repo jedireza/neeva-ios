@@ -132,9 +132,10 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     var topBar: some View {
         VStack(spacing: 0) {
             if !isFixedHeight {
-                RoundedRectangle(cornerRadius: 50)
+                Capsule()
+                    .fill(Color.tertiaryLabel)
                     .frame(width: 32, height: 4)
-                    .foregroundColor(Color.Neeva.UI.Gray60)
+                    .foregroundColor(Color.neeva.ui.gray60)
                     .padding(15).background(Color.clear) // make the selectable area larger
                     .accessibilityElement()
                     .accessibilityLabel("Pop-up controller")
@@ -169,7 +170,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                         self.model.hide()
                     } label: {
                         Symbol(.xmark, weight: .semibold, label: "Close")
-                            .foregroundColor(Color.Neeva.UI.Gray60)
+                            .foregroundColor(.tertiaryLabel)
                             .frame(width: 44, height: 44)
                             .padding(.trailing, 4.5)
                     }
