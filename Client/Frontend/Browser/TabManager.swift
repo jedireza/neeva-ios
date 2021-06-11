@@ -403,7 +403,7 @@ class TabManager: NSObject {
         selectTab(nextSelectedTab)
         return result
     }
-
+    
     func removeTabAndUpdateSelectedIndex(_ tab: Tab) {
         guard let index = tabs.firstIndex(where: { $0 === tab }) else { return }
         removeTab(tab, flushToDisk: true, notify: true)
@@ -566,15 +566,15 @@ class TabManager: NSObject {
         recentlyClosedForUndo.removeAll()
     }
 
+    func removeAll() {
+        removeTabs(self.tabs)
+    }
+
     func removeTabs(_ tabs: [Tab]) {
         for tab in tabs {
             self.removeTab(tab, flushToDisk: false, notify: true)
         }
         storeChanges()
-    }
-
-    func removeAll() {
-        removeTabs(self.tabs)
     }
 
     func getTabForURL(_ url: URL) -> Tab? {

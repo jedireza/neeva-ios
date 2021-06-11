@@ -3,7 +3,7 @@
 import SwiftUI
 import Storage
 
-private struct FaviconViewUX {
+private enum FaviconViewUX {
     static let IconBorderColor = UIColor(white: 0, alpha: 0.1)
     static let IconBorderWidth: CGFloat = 0.5
 }

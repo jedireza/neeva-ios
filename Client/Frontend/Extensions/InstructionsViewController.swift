@@ -6,7 +6,7 @@ import UIKit
 import SnapKit
 import Shared
 
-private struct InstructionsViewControllerUX {
+private enum InstructionsViewControllerUX {
     static let TopPadding = CGFloat(20)
     static let TextFont = UIFont.systemFont(ofSize: UIFont.labelFontSize)
     static let TextColor = UIColor.neeva.ui.gray60

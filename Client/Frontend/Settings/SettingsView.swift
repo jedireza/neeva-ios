@@ -4,16 +4,6 @@ import SwiftUI
 import Shared
 
 extension EnvironmentValues {
-    private struct OpenInNonPrivateTabKey: EnvironmentKey {
-        static var defaultValue = { (url: URL) -> () in fatalError("Specify an environment value for settingsOpenURLInNewNonPrivateTab")}
-    }
-    public var settingsOpenURLInNewNonPrivateTab: (URL) -> () {
-        get { self[OpenInNonPrivateTabKey] }
-        set { self[OpenInNonPrivateTabKey] = newValue }
-    }
-}
-
-extension EnvironmentValues {
     private struct PresentIntroKey: EnvironmentKey {
         static var defaultValue = { () -> () in fatalError("Specify an environment value for settingsOpenURLInNewNonPrivateTab")}
     }
@@ -94,9 +84,9 @@ class SettingsViewController: UIHostingController<AnyView> {
 
         self.rootView = AnyView(
             SettingsView(dismiss: { self.dismiss(animated: true, completion: nil) })
-                .environment(\.settingsOpenURLInNewNonPrivateTab) { url in
+                .environment(\.openInNewTab) { url, isPrivate in
                     self.dismiss(animated: true, completion: nil)
-                    bvc.settingsOpenURLInNewNonPrivateTab(url)
+                    bvc.openURLInNewTab(url, isPrivate: isPrivate)
                 }
                 .environment(\.onOpenURL) { url in
                     self.dismiss(animated: true, completion: nil)

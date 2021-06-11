@@ -8,16 +8,16 @@ import Storage
 import Shared
 import Defaults
 
-struct TabTrayControllerUX {
+public enum TabTrayControllerUX {
     static let CornerRadius = CGFloat(6.0)
-    static let TextBoxHeight = CGFloat(32.0)
-    static let TopBarHeight = UIConstants.TopToolbarPaddingTop + UIConstants.TextFieldHeight + UIConstants.TopToolbarPaddingBottom
+    fileprivate static let TextBoxHeight = CGFloat(32.0)
+    fileprivate static let TopBarHeight = UIConstants.TopToolbarPaddingTop + UIConstants.TextFieldHeight + UIConstants.TopToolbarPaddingBottom
     static let FaviconSize = CGFloat(20)
-    static let Margin = CGFloat(15)
-    static let CloseButtonSize = CGFloat(32)
-    static let CloseButtonEdgeInset = CGFloat(7)
-    static let NumberOfColumnsWide = 3
-    static let CompactNumberOfColumnsThin = 2
+    fileprivate static let Margin = CGFloat(15)
+    fileprivate static let CloseButtonSize = CGFloat(32)
+    fileprivate static let CloseButtonEdgeInset = CGFloat(7)
+    fileprivate static let NumberOfColumnsWide = 3
+    fileprivate static let CompactNumberOfColumnsThin = 2
 }
 
 protocol TabTrayDelegate: AnyObject {

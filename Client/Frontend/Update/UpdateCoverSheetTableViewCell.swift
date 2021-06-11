@@ -5,7 +5,7 @@
 import Foundation
 import Shared
 
-struct UpdateCoverSheetTableViewCellUX {
+private enum UpdateCoverSheetTableViewCellUX {
     struct ImageView {
         static let paddingTop = 2
         static let paddingLeft = 18

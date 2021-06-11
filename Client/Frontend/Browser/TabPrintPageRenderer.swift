@@ -4,7 +4,7 @@
 
 import Foundation
 
-private struct PrintedPageUX {
+private enum PrintedPageUX {
     static let PageInsets = CGFloat(36.0)
     static let PageTextFont = DynamicFontHelper.defaultHelper.DefaultSmallFont
     static let PageMarginScale = CGFloat(0.5)

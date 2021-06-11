@@ -5,7 +5,7 @@
 import Foundation
 import SnapKit
 
-struct DrawerViewControllerUX {
+private enum DrawerViewControllerUX {
     static let HandleAlpha: CGFloat = 0.25
     static let HandleWidth: CGFloat = 35
     static let HandleHeight: CGFloat = 5

@@ -6,7 +6,7 @@ import UIKit
 import Shared
 import Defaults
 
-private struct ReaderModeStyleViewControllerUX {
+private enum ReaderModeStyleViewControllerUX {
     static let RowHeight = 50.0
     
     static let SeparatorLineThickness = 1.0

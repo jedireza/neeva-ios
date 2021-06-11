@@ -517,6 +517,9 @@
 "Hotkeys.CloseTab.DiscoveryTitle" = "Close Tab";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
+"Hotkeys.CloseAllTabs.DiscoveryTitle" = "Close All Tabs";
+
+/* Label to display in the Discoverability overlay for keyboard shortcuts */
 "Hotkeys.Find.DiscoveryTitle" = "Find";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */

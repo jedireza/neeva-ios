@@ -3,7 +3,7 @@
 import Foundation
 import SwiftUI
 
-struct CardStripUX {
+public enum CardStripUX {
     static let BottomPadding: CGFloat = 50
     static let Height = 275
 }

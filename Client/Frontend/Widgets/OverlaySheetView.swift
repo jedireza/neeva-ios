@@ -7,7 +7,7 @@ import Shared
 // half-height (or middle) position. The user can drag it to a fullscreen (or
 // top) position or can drag down to dismiss.
 
-struct OverlaySheetUX {
+private enum OverlaySheetUX {
     // Number of points you have to drag the top bar to tigger an animation
     // of the overlay sheet to a new position.
     static let slideThreshold: CGFloat = 100

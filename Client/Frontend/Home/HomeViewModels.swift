@@ -59,14 +59,12 @@ class SuggestedSitesViewModel: ObservableObject {
     #if DEV
     static let preview = SuggestedSitesViewModel(
         sites: [
-            .init(url: "https://amazon.com", title: "Amazon"),
-            .init(url: "https://youtube.com", title: "YouTube"),
-            .init(url: "https://twitter.com", title: "Twitter"),
-            .init(url: "https://facebook.com", title: "Facebook"),
-            .init(url: "https://facebook.com", title: "Facebook"),
-            .init(url: "https://twitter.com", title: "Twitter"),
-            .init(url: "https://youtube.com", title: "YouTube"),
-            .init(url: "https://amazon.com", title: "Amazon"),
+            .init(url: "https://amazon.com", title: "Amazon", id: 1),
+            .init(url: "https://youtube.com", title: "YouTube", id: 2),
+            .init(url: "https://twitter.com", title: "Twitter", id: 3),
+            .init(url: "https://facebook.com", title: "Facebook", id: 4),
+            .init(url: "https://facebook.com", title: "Facebook", id: 5),
+            .init(url: "https://twitter.com", title: "Twitter", id: 6),
         ]
     )
     #endif

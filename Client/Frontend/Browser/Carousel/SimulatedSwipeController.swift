@@ -6,41 +6,31 @@ enum SwipeDirection {
     case forward, back
 }
 
-struct SimulatedSwipeUX {
-    static let EdgeWidth:CGFloat = 30
+public enum SimulatedSwipeUX {
+    static let EdgeWidth: CGFloat = 30
 }
 
 class SimulatedSwipeController:
     UIViewController, TabEventHandler, TabManagerDelegate, SimulateForwardAnimatorDelegate {
 
     func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator) {
-        guard self.swipeDirection == .forward, let tab = self.tabManager.selectedTab,
-              let urls = self.forwardUrlMap[tab.tabUUID]! else {
-            return
-        }
-
-        let index = urls.firstIndex(of: tab.currentURL()!) ?? 0
-        assert(index < urls.count - 1) // If we are here, we have already fake animated and it is too late
-        tab.loadRequest(URLRequest(url: urls[index + 1]))
-        return
+        self.goForward()
     }
 
     func simulateForwardAnimatorFinishedSwipe(_ animator: SimulatedSwipeAnimator) {
-        guard self.swipeDirection == .back, let tab = self.tabManager.selectedTab else {
-            return
-        }
-
-        tabManager.removeTabAndUpdateSelectedIndex(tab)
+        self.goBack()
     }
 
     var animator: SimulatedSwipeAnimator!
     var blankView: UIView!
     var tabManager: TabManager
+    var navigationToolbar: TabToolbarProtocol
     var forwardUrlMap = [String: [URL]?]()
     var swipeDirection: SwipeDirection
 
-    init(tabManager: TabManager, swipeDirection: SwipeDirection) {
+    init(tabManager: TabManager, navigationToolbar: TabToolbarProtocol, swipeDirection: SwipeDirection) {
         self.tabManager = tabManager
+        self.navigationToolbar = navigationToolbar
         self.swipeDirection = swipeDirection
         super.init(nibName: nil, bundle: nil)
 
@@ -92,11 +82,9 @@ class SimulatedSwipeController:
                     switch result {
                     case .failure(let error):
                         let _ = error as NSError
-                        self.forwardUrlMap[tab.tabUUID] = nil
-                        self.view.isHidden = true
+                        self.updateForwardVisibility(id: tab.tabUUID, results: nil)
                     case .success(let results):
-                        self.forwardUrlMap[tab.tabUUID] = results
-                        self.view.isHidden = false
+                        self.updateForwardVisibility(id: tab.tabUUID, results: results)
                     }
                 }
             }
@@ -106,8 +94,7 @@ class SimulatedSwipeController:
             }
 
             guard let index = urls?.firstIndex(of: url), index < (urls?.count ?? 0 - 2) else {
-                forwardUrlMap[tab.tabUUID] = nil
-                view.isHidden = true
+                self.updateForwardVisibility(id: tab.tabUUID, results: nil)
                 return
             }
         case .back:
@@ -123,7 +110,7 @@ class SimulatedSwipeController:
 
         switch swipeDirection {
         case .forward:
-            view.isHidden = (self.forwardUrlMap[tabUUID] == nil)
+            updateForwardVisibility(id: tabUUID, results: self.forwardUrlMap[tabUUID] ?? nil )
         case .back:
             updateBackVisibility(tab: selected)
         }
@@ -136,6 +123,42 @@ class SimulatedSwipeController:
         }
 
         view.isHidden = false
+        navigationToolbar.updateBackStatus(true)
+    }
+
+    func updateForwardVisibility(id: String, results: [URL]?) {
+        forwardUrlMap[id] = results
+        view.isHidden = results == nil
+        navigationToolbar.updateForwardStatus(!view.isHidden)
+    }
+
+    func canGoBack() -> Bool {
+        swipeDirection == .back && !view.isHidden
+    }
+
+    @discardableResult func goBack() -> Bool {
+        guard canGoBack(), swipeDirection == .back, let tab = tabManager.selectedTab else {
+            return false
+        }
+
+        tabManager.removeTabAndUpdateSelectedIndex(tab)
+        return true
+    }
+
+    func canGoForward() -> Bool {
+        swipeDirection == .forward && !view.isHidden
+    }
+
+    @discardableResult func goForward() -> Bool {
+        guard canGoForward(), swipeDirection == .forward, let tab = tabManager.selectedTab,
+              let urls = forwardUrlMap[tab.tabUUID]! else {
+            return false
+        }
+
+        let index = urls.firstIndex(of: tab.currentURL()!) ?? 0
+        assert(index < urls.count - 1) // If we are here, we have already fake animated and it is too late
+        tab.loadRequest(URLRequest(url: urls[index + 1]))
+        return true
     }
 
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {}

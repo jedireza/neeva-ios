@@ -7,7 +7,7 @@ import SnapKit
 import Storage
 import SwiftUI
 
-private struct LegacyURLBarViewUX {
+private enum LegacyURLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40
     static let TextFieldActiveBorderColor = UIColor.Photon.Blue40
 

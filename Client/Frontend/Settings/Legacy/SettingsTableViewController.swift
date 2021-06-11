@@ -5,7 +5,7 @@
 import Shared
 import UIKit
 
-struct SettingsUX {
+private enum SettingsUX {
     static let TableViewHeaderFooterHeight = CGFloat(44)
 }
 

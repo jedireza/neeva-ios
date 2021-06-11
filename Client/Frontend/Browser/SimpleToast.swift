@@ -5,15 +5,15 @@
 import Foundation
 import Shared
 
-struct SimpleToastUX {
+public enum SimpleToastUX {
     static let ToastHeight = BottomToolbarHeight
     static let ToastAnimationDuration = 0.5
     static let ToastDefaultColor = UIColor.Photon.Grey60
-    static let ToastFont = UIFont.systemFont(ofSize: 14, weight: .light)
+    fileprivate static let ToastFont = UIFont.systemFont(ofSize: 14, weight: .light)
     static let ToastDismissAfter = DispatchTimeInterval.milliseconds(4500) // 4.5 seconds.
     static let ToastDelayBefore = DispatchTimeInterval.milliseconds(0) // 0 seconds
-    static let ToastPrivateModeDelayBefore = DispatchTimeInterval.milliseconds(750)
-    static let BottomToolbarHeight = CGFloat(45)
+    fileprivate static let ToastPrivateModeDelayBefore = DispatchTimeInterval.milliseconds(750)
+    fileprivate static let BottomToolbarHeight = CGFloat(45)
     static let ToastCornerRadius: CGFloat = 15.0
 }
 

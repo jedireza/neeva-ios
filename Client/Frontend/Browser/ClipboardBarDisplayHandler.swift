@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import Defaults
 
-public struct ClipboardBarToastUX {
+public enum ClipboardBarToastUX {
     static let ToastDelay = DispatchTimeInterval.milliseconds(4000)
 }
 

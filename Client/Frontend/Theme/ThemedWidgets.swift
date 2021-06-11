@@ -52,7 +52,7 @@ class ThemedTableViewController: UITableViewController, Themeable {
 }
 
 class ThemedTableSectionHeaderFooterView: UITableViewHeaderFooterView, Themeable {
-    private struct UX {
+    private enum UX {
         static let titleHorizontalPadding: CGFloat = 15
         static let titleVerticalPadding: CGFloat = 6
         static let titleVerticalLongPadding: CGFloat = 20

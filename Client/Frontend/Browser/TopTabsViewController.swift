@@ -7,7 +7,7 @@ import Shared
 import Storage
 import WebKit
 
-struct TopTabsUX {
+public enum TopTabsUX {
     static let TopTabsViewHeight: CGFloat = 44
     static let TopTabsBackgroundShadowWidth: CGFloat = 12
     static let TabWidth: CGFloat = 190
@@ -16,7 +16,7 @@ struct TopTabsUX {
     static let HighlightLineWidth: CGFloat = 3
     static let TabNudge: CGFloat = 1 // Nudge the favicon and close button by 1px
     static let TabTitlePadding: CGFloat = 10
-    static let AnimationSpeed: TimeInterval = 0.1
+    fileprivate static let AnimationSpeed: TimeInterval = 0.1
     static let SeparatorYOffset: CGFloat = 7
     static let SeparatorHeight: CGFloat = 32
 }

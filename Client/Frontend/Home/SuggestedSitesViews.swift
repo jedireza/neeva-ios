@@ -4,6 +4,16 @@ import SwiftUI
 import Shared
 import Storage
 
+private enum SuggestedSiteUX {
+    static let FaviconSize: CGFloat = 28
+    static let IconSize: CGFloat = 40
+    static let PinIconSize: CGFloat = 12
+    static let IconCornerRadius: CGFloat = 4
+    static let TitleFontSize: CGFloat = 14
+    static let BlockSize: CGFloat = 64
+    static let BlockSpacing: CGFloat = 24
+}
+
 struct SuggestedSiteView: View {
     let site: Site!
     let isPinnedSite: Bool!
@@ -13,7 +23,7 @@ struct SuggestedSiteView: View {
     @Environment(\.onOpenURL) private var openURL
     @Environment(\.shareURL) private var shareURL
     @Environment(\.openInNewTab) private var openInNewTab
-    @Environment(\.hideTopSite) private var hideTopSite
+    @Environment(\.homeHideTopSite) private var homeHideTopSite
 
     @State private var isDeleting = false
 
@@ -33,24 +43,24 @@ struct SuggestedSiteView: View {
     var body: some View {
         Button(action: { site.url.asURL.map(openURL) }) {
             VStack(spacing: 2) {
-                FaviconView(site: site, size: NeevaHomeUX.FaviconSize, bordered: false)
-                    .frame(width: NeevaHomeUX.SuggestedSiteIconSize, height: NeevaHomeUX.SuggestedSiteIconSize, alignment: .center)
+                FaviconView(site: site, size: SuggestedSiteUX.FaviconSize, bordered: false)
+                    .frame(width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize, alignment: .center)
                     .background(Color.neeva.ui.fixed.gray97)
-                    .clipShape(RoundedRectangle(cornerRadius: NeevaHomeUX.SuggestedSiteIconCornerRadius))
+                    .clipShape(RoundedRectangle(cornerRadius: SuggestedSiteUX.IconCornerRadius))
                 HStack {
                     if isPinnedSite {
                         Image("pin_small").renderingMode(.template).foregroundColor(Color.neeva.ui.gray60)
-                            .frame(width: NeevaHomeUX.PinIconSize, height: NeevaHomeUX.PinIconSize, alignment: .center)
+                            .frame(width: SuggestedSiteUX.PinIconSize, height: SuggestedSiteUX.PinIconSize, alignment: .center)
                     }
                     Text(title).lineLimit(1)
-                        .font(Font(UIFont.systemFont(ofSize: NeevaHomeUX.SuggestedSiteTitleFontSize, weight: UIFont.Weight.regular)))
+                        .font(.system(size: SuggestedSiteUX.TitleFontSize))
                         .background(RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4))
                         .padding(.top, 4)
                         .foregroundColor(.secondaryLabel)
                 }
                 .contentShape(Rectangle())
             }
-            .frame(width: NeevaHomeUX.SuggestedSiteBlockWidth, height: NeevaHomeUX.SuggestedSiteBlockHeight)
+            .frame(width: SuggestedSiteUX.BlockSize, height: SuggestedSiteUX.BlockSize)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(title)
             .accessibilityHint(hint)
@@ -76,7 +86,7 @@ struct SuggestedSiteView: View {
             }))
             .actionSheet(isPresented: $isDeleting) {
                 ActionSheet(title: Text("Permanently remove \(title) from Suggested Sites?"), buttons: [
-                    .destructive(Text("Remove")) { hideTopSite(site) },
+                    .destructive(Text("Remove")) { homeHideTopSite(site) },
                     .cancel()
                 ])
             }
@@ -87,48 +97,26 @@ struct SuggestedSiteView: View {
 struct SuggestedSitesView: View {
     let isExpanded: Bool
     @EnvironmentObject private var viewModel: SuggestedSitesViewModel
+    @Environment(\.viewWidth) private var viewWidth
 
-    var columns:[GridItem] {
-        [GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth), spacing:
-                    NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)),
-        GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth),spacing:
-                    NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)),
-        GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth),spacing:
-                    NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)),
-        GridItem(.fixed(NeevaHomeUX.SuggestedSiteBlockWidth))]
-    }
-
-    var isTabletOrLandscape: Bool {
-        return UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.orientation.isLandscape
-    }
-
-    func spacerWidth(from screenWidth: CGFloat) -> CGFloat {
-        (
-           (screenWidth - (NeevaHomeUX.HeaderPadding - 2) * 2)
-               - NeevaHomeUX.SuggestedSiteBlockWidth * (isTabletOrLandscape ? 8 : 4)
-       ) / (isTabletOrLandscape ? 7 : 3)
+    var columnCount: Int {
+        var columnCount = 0
+        var excessSpace = viewWidth + SuggestedSiteUX.BlockSpacing
+        while excessSpace > 0 {
+            excessSpace -= SuggestedSiteUX.BlockSize + SuggestedSiteUX.BlockSpacing
+            if excessSpace > 0 {
+                columnCount += 1
+            }
+        }
+        return columnCount
     }
 
     var body: some View {
-        if isExpanded && !isTabletOrLandscape {
-            VStack(spacing: NeevaHomeUX.horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)) {
-                HStack {
-                    ForEach(Array(viewModel.sites.prefix(4).enumerated()), id: \.0) { i, suggestedSite in
-                        if i != 0 {
-                            Spacer()
-                        }
-                        SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                    }
-                }
-                if viewModel.sites.count > 4 {
-                    HStack {
-                        ForEach(Array(viewModel.sites.dropFirst(4).enumerated()), id: \.0) { i, suggestedSite in
-                            if i != 0 {
-                                Spacer()
-                            }
-                            SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                        }
-                    }
+        let columns = Array(repeating: GridItem(.fixed(SuggestedSiteUX.BlockSize), spacing: SuggestedSiteUX.BlockSpacing), count: columnCount)
+        if isExpanded {
+            LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing) {
+                ForEach(viewModel.sites, id: \.self) { suggestedSite in
+                    SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
                 }
             }
             .padding(.vertical, 10)
@@ -136,19 +124,18 @@ struct SuggestedSitesView: View {
         } else {
             FadingHorizontalScrollView { size in
                 HStack(spacing: 0) {
-                    let spacerWidth = spacerWidth(from: size.width)
                     ForEach(Array(viewModel.sites.enumerated()), id: \.0) { i, suggestedSite in
-                        if i > 0, spacerWidth > 0 {
-                            Spacer().frame(width: spacerWidth)
+                        if i > 0 {
+                            Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
                         }
                         SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
                     }
                 }
-                .frame(height: NeevaHomeUX.SuggestedSiteBlockHeight)
+                .frame(height: SuggestedSiteUX.BlockSize)
                 .padding(.vertical, 10)
                 .padding(.horizontal, NeevaHomeUX.HeaderPadding - 2)
                 .fixedSize()
-            }.frame(height: NeevaHomeUX.SuggestedSiteBlockHeight + 20)
+            }.frame(height: SuggestedSiteUX.BlockSize + 20)
         }
     }
 }
@@ -163,7 +150,10 @@ struct SuggestedSitesViews_Previews: PreviewProvider {
         Group {
             SuggestedSitesView(isExpanded: false)
             SuggestedSitesView(isExpanded: true)
-        }.previewLayout(.sizeThatFits).environmentObject(SuggestedSitesViewModel.preview)
+        }
+        .previewLayout(.sizeThatFits)
+        .environment(\.viewWidth, 375)
+        .environmentObject(SuggestedSitesViewModel.preview)
     }
 }
 #endif

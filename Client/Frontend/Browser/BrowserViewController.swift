@@ -27,8 +27,8 @@ private let KVOs: [KVOConstants] = [
 
 private let ActionSheetTitleMaxLength = 120
 
-private struct BrowserViewControllerUX {
-    fileprivate static let ShowHeaderTapAreaHeight: CGFloat = 32
+private enum BrowserViewControllerUX {
+    static let ShowHeaderTapAreaHeight: CGFloat = 32
 }
 
 struct UrlToOpenModel {
@@ -56,15 +56,19 @@ class BrowserViewController: UIViewController {
     var libraryViewController: LibraryViewController?
     var libraryDrawerViewController: DrawerViewController?
     var overlaySheetViewController: UIViewController?
-    lazy var simulateForwardViewController: UIViewController? = {
-        let host = SimulatedSwipeController(tabManager: self.tabManager, swipeDirection: .forward)
+    lazy var simulateForwardViewController: SimulatedSwipeController? = {
+        let host = SimulatedSwipeController(tabManager: self.tabManager,
+                                            navigationToolbar: navigationToolbar,
+                                            swipeDirection: .forward)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
         return host
     }()
-    lazy var simulateBackViewController: UIViewController? = {
-        let host = SimulatedSwipeController(tabManager: self.tabManager, swipeDirection: .back)
+    lazy var simulateBackViewController: SimulatedSwipeController? = {
+        let host = SimulatedSwipeController(tabManager: self.tabManager,
+                                            navigationToolbar: navigationToolbar,
+                                            swipeDirection: .back)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -1926,8 +1930,10 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateFindInPageVisibility(visible: false, tab: previous)
-        navigationToolbar.updateBackStatus(selected?.canGoBack ?? false)
-        navigationToolbar.updateForwardStatus(selected?.canGoForward ?? false)
+        navigationToolbar.updateBackStatus(simulateBackViewController?.canGoBack() ?? false
+                                            || selected?.canGoBack ?? false)
+        navigationToolbar.updateForwardStatus(simulateForwardViewController?.canGoForward() ?? false
+                                                || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
             self.legacyURLBar.updateProgressBar(Float(selected?.estimatedProgress ?? 0))
         }
@@ -2422,39 +2428,6 @@ extension BrowserViewController: TopTabsDelegate {
     func topTabsDidChangeTab() {
         libraryDrawerViewController?.close()
         legacyURLBar.leaveOverlayMode(didCancel: true)
-    }
-}
-
-// MARK: - reopen last closed tab
-
-extension BrowserViewController {
-
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        if AppConstants.MOZ_SHAKE_TO_RESTORE {
-                homePanelDidRequestToRestoreClosedTab(motion)
-        }
-    }
-
-    func homePanelDidRequestToRestoreClosedTab(_ motion: UIEvent.EventSubtype) {
-        guard motion == .motionShake, !topTabsVisible, !legacyURLBar.inOverlayMode,
-            let lastClosedURL = profile.recentlyClosedTabs.tabs.first?.url,
-            let selectedTab = tabManager.selectedTab else { return }
-
-        let alertTitleText = Strings.ReopenLastTabAlertTitle
-        let reopenButtonText = Strings.ReopenLastTabButtonText
-        let cancelButtonText = Strings.ReopenLastTabCancelText
-
-        func reopenLastTab(_ action: UIAlertAction) {
-            let request = URLRequest(url: lastClosedURL)
-            let closedTab = tabManager.addTab(request, afterTab: selectedTab, isPrivate: false)
-            tabManager.selectTab(closedTab)
-        }
-
-        let alert = AlertController(title: alertTitleText, message: "", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: reopenButtonText, style: .default, handler: reopenLastTab), accessibilityIdentifier: "BrowserViewController.ReopenLastTabAlert.ReopenButton")
-        alert.addAction(UIAlertAction(title: cancelButtonText, style: .cancel, handler: nil), accessibilityIdentifier: "BrowserViewController.ReopenLastTabAlert.CancelButton")
-
-        self.present(alert, animated: true, completion: nil)
     }
 }
 
