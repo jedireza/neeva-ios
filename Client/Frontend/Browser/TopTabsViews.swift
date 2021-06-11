@@ -190,7 +190,7 @@ class TopTabCell: UICollectionViewCell, PrivateModeUI {
         }
 
         self.selectedTab = isSelected
-        if let siteURL = tab.url?.displayURL {
+        if let siteURL = tab.url.displayURL {
             self.favicon.contentMode = .center
             self.favicon.setImageAndBackground(forIcon: tab.displayFavicon, website: siteURL) { [weak self] in
                 guard let self = self else { return }

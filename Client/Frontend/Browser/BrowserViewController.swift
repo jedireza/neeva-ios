@@ -460,9 +460,7 @@ class BrowserViewController: UIViewController {
             return false
         })
         copyAddressAction = AccessibleAction(name: Strings.CopyAddressTitle, handler: { () -> Bool in
-            if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? self.legacyURLBar.currentURL {
-                UIPasteboard.general.url = url
-            }
+            UIPasteboard.general.url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? self.legacyURLBar.currentURL
             return true
         })
 
@@ -1012,14 +1010,14 @@ class BrowserViewController: UIViewController {
             break
         case .URL:
             // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
-            if tab.url?.absoluteString == "about:blank" && webView.url == nil {
+            if tab.url.absoluteString == "about:blank" && webView.url == nil {
                 break
             }
 
             // To prevent spoofing, only change the URL immediately if the new URL is on
             // the same origin as the current URL. Otherwise, do nothing and wait for
             // didCommitNavigation to confirm the page load.
-            if tab.url?.origin == webView.url?.origin {
+            if tab.url.origin == webView.url?.origin {
                 tab.url = webView.url
 
                 if tab === tabManager.selectedTab && !tab.restoring {
@@ -1056,26 +1054,24 @@ class BrowserViewController: UIViewController {
         updateURLBarDisplayURL(tab)
         scrollController.showToolbars(animated: false)
 
-        if let url = tab.url {
-            if url.isReaderModeURL {
-                showReaderModeBar(animated: false)
-                NotificationCenter.default.addObserver(self, selector: #selector(dynamicFontChanged), name: .DynamicFontChanged, object: nil)
-            } else {
-                hideReaderModeBar(animated: false)
-                NotificationCenter.default.removeObserver(self, name: .DynamicFontChanged, object: nil)
-            }
-
-            updateInContentHomePanel(url as URL)
+        if tab.url.isReaderModeURL {
+            showReaderModeBar(animated: false)
+            NotificationCenter.default.addObserver(self, selector: #selector(dynamicFontChanged), name: .DynamicFontChanged, object: nil)
+        } else {
+            hideReaderModeBar(animated: false)
+            NotificationCenter.default.removeObserver(self, name: .DynamicFontChanged, object: nil)
         }
+
+        updateInContentHomePanel(tab.url)
     }
 
     /// Updates the URL bar text and button states.
     /// Call this whenever the page URL changes.
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
-        legacyURLBar.currentURL = tab.url?.displayURL
+        legacyURLBar.currentURL = tab.url.displayURL
         legacyURLBar.legacyLocationView.showLockIcon(forSecureContent: tab.webView?.hasOnlySecureContent ?? false)
 
-        let isPage = tab.url?.displayURL?.isWebPage() ?? false
+        let isPage = tab.url.displayURL?.isWebPage() ?? false
         legacyURLBar.legacyLocationView.updateShareButton(isPage)
         navigationToolbar.updatePageStatus(isPage)
     }
@@ -1184,7 +1180,7 @@ class BrowserViewController: UIViewController {
         }
         appActivities.append(findInPageActivity)
 
-        let deferredSites = self.profile.history.isPinnedTopSite(tab?.url?.absoluteString ?? "")
+        let deferredSites = self.profile.history.isPinnedTopSite(tab?.url.absoluteString ?? "")
 
         let isPinned = deferredSites.value.successValue ?? false
 
@@ -1192,7 +1188,7 @@ class BrowserViewController: UIViewController {
             var topSitesActivity: PinToTopSitesActivity
             if isPinned == false {
                 topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
-                    guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
+                    guard let url = tab?.url.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
 
                     sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
                         guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
@@ -1207,7 +1203,7 @@ class BrowserViewController: UIViewController {
                 }
             } else {
                 topSitesActivity = PinToTopSitesActivity(isPinned: isPinned) { [weak tab] in
-                    guard let url = tab?.url?.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
+                    guard let url = tab?.url.displayURL, let sql = self.profile.history as? SQLiteHistory else { return }
 
                     sql.getSites(forURLs: [url.absoluteString]).bind { val -> Success in
                         guard let site = val.successValue?.asArray().first?.flatMap({ $0 }) else {
@@ -1282,7 +1278,7 @@ class BrowserViewController: UIViewController {
     fileprivate func postLocationChangeNotificationForTab(_ tab: Tab, navigation: WKNavigation?) {
         let notificationCenter = NotificationCenter.default
         var info = [AnyHashable: Any]()
-        info["url"] = tab.url?.displayURL
+        info["url"] = tab.url.displayURL
         info["title"] = tab.title
         if let visitType = self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue {
             info["visitType"] = visitType
@@ -1309,7 +1305,7 @@ class BrowserViewController: UIViewController {
         if let url = webView.url {
             if tab === tabManager.selectedTab {
                 legacyURLBar.legacyLocationView.showLockIcon(forSecureContent: webView.hasOnlySecureContent)
-                let isPage = tab.url?.displayURL?.isWebPage() ?? false
+                let isPage = tab.url.displayURL?.isWebPage() ?? false
                 legacyURLBar.legacyLocationView.updateShareButton(isPage)
             }
 
@@ -1515,7 +1511,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
 
     func urlBarDidLongPressReaderMode(_ urlBar: LegacyURLBarView) -> Bool {
         guard let tab = tabManager.selectedTab,
-               let url = tab.url?.displayURL
+              let url = tab.url.displayURL
             else {
             UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.ReaderModeAddPageGeneralErrorAccessibilityLabel)
                 return false
@@ -1961,8 +1957,8 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {
-        if let url = tab.url, !(InternalURL(url)?.isAboutURL ?? false), !tab.isPrivate {
-            profile.recentlyClosedTabs.addTab(url as URL, title: tab.title, faviconURL: tab.displayFavicon?.url)
+        if !(InternalURL(tab.url)?.isAboutURL ?? false), !tab.isPrivate {
+            profile.recentlyClosedTabs.addTab(tab.url, title: tab.title, faviconURL: tab.displayFavicon?.url)
         }
     }
 
@@ -2360,7 +2356,8 @@ extension BrowserViewController: TabTrayDelegate {
     func tabTrayDidAddTab(_ tabTray: TabTrayControllerV1, tab: Tab) {}
     
     func tabTrayDidAddToReadingList(_ tab: Tab) -> ReadingListItem? {
-        guard let url = tab.url?.absoluteString, !url.isEmpty else { return nil }
+        let url = tab.url.absoluteString
+        guard !url.isEmpty else { return nil }
         return profile.readingList.createRecordWithURL(url, title: tab.title ?? url, addedBy: UIDevice.current.name).value.successValue
     }
 

@@ -15,13 +15,13 @@ class FaviconHandler {
     }
 
     func loadFaviconURL(_ faviconURL: String, forTab tab: Tab) -> Deferred<Maybe<(Favicon, Data?)>> {
-        guard let iconURL = URL(string: faviconURL), let currentURL = tab.url else {
+        guard let iconURL = URL(string: faviconURL) else {
             return deferMaybe(FaviconError())
         }
 
         let deferred = Deferred<Maybe<(Favicon, Data?)>>()
         let manager = SDWebImageManager.shared
-        let url = currentURL.absoluteString
+        let url = tab.url.absoluteString
         let site = Site(url: url, title: "")
         let options: SDWebImageOptions = tab.isPrivate ? [SDWebImageOptions.lowPriority, SDWebImageOptions.fromCacheOnly] : SDWebImageOptions.lowPriority
 
@@ -72,7 +72,7 @@ class FaviconHandler {
             guard let img = img, let urlString = url?.absoluteString else {
                 // If we failed to download a page-level icon, try getting the domain-level icon
                 // instead before ultimately failing.
-                let siteIconURL = currentURL.domainURL.appendingPathComponent("favicon.ico")
+                let siteIconURL = tab.url.domainURL.appendingPathComponent("favicon.ico")
                 fetch = manager.loadImage(with: siteIconURL, options: options, progress: onProgress, completed: onCompletedSiteFavicon)
 
                 return

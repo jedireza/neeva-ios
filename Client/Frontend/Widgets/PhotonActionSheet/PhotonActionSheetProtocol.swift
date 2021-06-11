@@ -49,10 +49,8 @@ extension PhotonActionSheetProtocol {
             }
         }
         let copyAddressAction = PhotonActionSheetItem(title: Strings.CopyAddressTitle, iconString: "link", iconType: .SystemImage, iconAlignment: .right) { _, _ in
-            if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? urlBar.currentURL {
-                UIPasteboard.general.url = url
-                SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: webViewContainer)
-            }
+            UIPasteboard.general.url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? urlBar.currentURL
+            SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: webViewContainer)
         }
         if UIPasteboard.general.string != nil {
             return [pasteGoAction, pasteAction, copyAddressAction]
@@ -76,11 +74,8 @@ extension PhotonActionSheetProtocol {
             iconName = tab.changedUserAgent ? mobileIcon : "laptopcomputer"
         }
         return UIAction(title: toggleActionTitle, image: UIImage(systemName: iconName)) { _ in
-
-            if let url = tab.url {
-                tab.toggleChangeUserAgent()
-                Tab.ChangeUserAgent.updateDomainList(forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate)
-            }
+            tab.toggleChangeUserAgent()
+            Tab.ChangeUserAgent.updateDomainList(forUrl: tab.url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate)
         }
     }
 

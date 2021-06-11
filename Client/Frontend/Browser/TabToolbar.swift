@@ -103,11 +103,10 @@ open class TabToolbarHelper: NSObject {
         ClientLogger.shared.logCounter(.ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
         guard
             let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
-            let tab = bvc.tabManager.selectedTab,
-            let url = tab.url
+            let tab = bvc.tabManager.selectedTab
         else { return }
-        if url.isFileURL {
-            bvc.share(fileURL: url, buttonView: toolbar.shareButton, presentableVC: bvc)
+        if tab.url.isFileURL {
+            bvc.share(fileURL: tab.url, buttonView: toolbar.shareButton, presentableVC: bvc)
         } else {
             bvc.share(tab: tab, from: toolbar.shareButton, presentableVC: bvc)
         }

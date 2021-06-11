@@ -387,6 +387,7 @@
 		C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B42673EF1D00025A7F /* Environment.swift */; };
 		C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */; };
 		C9E5F2BA2673F83800025A7F /* DispatchQueueExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B92673F83800025A7F /* DispatchQueueExtensions.swift */; };
+		C9E5F2B32673CFCD00025A7F /* TabLocationHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B22673CFCD00025A7F /* TabLocationHostingController.swift */; };
 		C9F49CB9266FBFEA00F3408A /* DataManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CB8266FBFEA00F3408A /* DataManagementView.swift */; };
 		C9F49CBB266FD16000F3408A /* WebsiteDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CBA266FD16000F3408A /* WebsiteDataView.swift */; };
 		C9F49CBD266FDA9500F3408A /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CBC266FDA9500F3408A /* SearchBar.swift */; };
@@ -1253,6 +1254,7 @@
 		C9E5F2B42673EF1D00025A7F /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryExtensions.swift; sourceTree = "<group>"; };
 		C9E5F2B92673F83800025A7F /* DispatchQueueExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DispatchQueueExtensions.swift; path = ../DispatchQueueExtensions.swift; sourceTree = "<group>"; };
+		C9E5F2B22673CFCD00025A7F /* TabLocationHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationHostingController.swift; sourceTree = "<group>"; };
 		C9F49CB8266FBFEA00F3408A /* DataManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementView.swift; sourceTree = "<group>"; };
 		C9F49CBA266FD16000F3408A /* WebsiteDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataView.swift; sourceTree = "<group>"; };
 		C9F49CBC266FDA9500F3408A /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
@@ -2233,6 +2235,7 @@
 			isa = PBXGroup;
 			children = (
 				C93EFEE4267150FD000396B5 /* TabLocationView.swift */,
+				C9E5F2B22673CFCD00025A7F /* TabLocationHostingController.swift */,
 				C93EFEE826716411000396B5 /* TabLocationBarButton.swift */,
 				C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */,
 			);
@@ -4277,6 +4280,7 @@
 				EB9A179F20E6C1A200B12184 /* ThemedWidgets.swift in Sources */,
 				C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */,
 				D029A04920A62DB0001DB72F /* TemporaryDocument.swift in Sources */,
+				C9E5F2B32673CFCD00025A7F /* TabLocationHostingController.swift in Sources */,
 				4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */,
 				EBB895332193FFF400EB91A0 /* ContentBlockerSettingViewController.swift in Sources */,
 				BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */,

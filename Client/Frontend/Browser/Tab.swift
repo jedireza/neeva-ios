@@ -84,13 +84,7 @@ class Tab: NSObject {
 
     // To check if current URL is the starting page i.e. either blank page or internal page like topsites
     var isURLStartingPage: Bool {
-        guard url != nil else {
-            return true
-        }
-        if url!.absoluteString.hasPrefix("internal://") {
-            return true
-        }
-        return false
+        InternalURL.isValid(url: url)
     }
 
     var canonicalURL: URL? {
@@ -101,7 +95,7 @@ class Tab: NSObject {
             // "#" fragment, check if the tab's URL has a fragment and if so,
             // append it to the canonical URL.
             if siteURL.fragment == nil,
-                let fragment = self.url?.fragment,
+               let fragment = self.url.fragment,
                 let siteURLWithFragment = URL(string: "\(string)#\(fragment)") {
                 return siteURLWithFragment
             }
@@ -127,10 +121,10 @@ class Tab: NSObject {
     fileprivate var lastRequest: URLRequest?
     var restoring: Bool = false
     var pendingScreenshot = false
-    var url: URL? {
+    var url: URL {
         didSet {
-            if let _url = url, let internalUrl = InternalURL(_url), internalUrl.isAuthorized {
-                url = URL(string: internalUrl.stripAuthorization)
+            if let internalUrl = InternalURL(url), internalUrl.isAuthorized {
+                url = internalUrl.stripAuthorization
             }
         }
     }
@@ -143,10 +137,7 @@ class Tab: NSObject {
 
     /// Returns true if this tab's URL is known, and it's longer than we want to store.
     var urlIsTooLong: Bool {
-        guard let url = self.url else {
-            return false
-        }
-        return url.absoluteString.lengthOfBytes(using: .utf8) > AppConstants.DB_URL_LENGTH_MAX
+        url.absoluteString.lengthOfBytes(using: .utf8) > AppConstants.DB_URL_LENGTH_MAX
     }
 
     // Use computed property so @available can be used to guard `noImageMode`.
@@ -233,7 +224,7 @@ class Tab: NSObject {
             return nil
         }
 
-        if let displayURL = tab.url?.displayURL, RemoteTab.shouldIncludeURL(displayURL) {
+        if let displayURL = tab.url.displayURL, RemoteTab.shouldIncludeURL(displayURL) {
             let history = Array(tab.historyList.filter(RemoteTab.shouldIncludeURL).reversed())
             return RemoteTab(clientGUID: nil,
                 URL: displayURL,
@@ -334,7 +325,7 @@ class Tab: NSObject {
         } else if let request = lastRequest {
             webView.load(request)
         } else {
-            print("creating webview with no lastRequest and no session data: \(self.url?.description ?? "nil")")
+            print("creating webview with no lastRequest and no session data: \(self.url.description ?? "nil")")
         }
     }
 
@@ -392,9 +383,7 @@ class Tab: NSObject {
     var historyList: [URL] {
         func listToUrl(_ item: WKBackForwardListItem) -> URL { return item.url }
         var tabs = self.backList?.map(listToUrl) ?? [URL]()
-        if let url = url {
-            tabs.append(url)
-        }
+        tabs.append(url)
         return tabs
     }
 
@@ -409,7 +398,7 @@ class Tab: NSObject {
 
         // When picking a display title. Tabs with sessionData are pending a restore so show their old title.
         // To prevent flickering of the display title. If a tab is restoring make sure to use its lastTitle.
-        if let url = self.url, InternalURL(url)?.isAboutHomeURL ?? false, sessionData == nil, !restoring {
+        if InternalURL(url)?.isAboutHomeURL ?? false, sessionData == nil, !restoring {
             return Strings.AppMenuOpenHomePageTitleString
         }
 
@@ -418,12 +407,12 @@ class Tab: NSObject {
             return Strings.AppMenuOpenHomePageTitleString
         }
 
-        if let url = self.url, !InternalURL.isValid(url: url), let shownUrl = url.displayURL?.absoluteString {
+        if !InternalURL.isValid(url: url), let shownUrl = url.displayURL?.absoluteString {
             return shownUrl
         }
 
         guard let lastTitle = lastTitle, !lastTitle.isEmpty else {
-            return self.url?.displayURL?.absoluteString ??  ""
+            return self.url.displayURL?.absoluteString ??  ""
         }
 
         return lastTitle
@@ -611,7 +600,7 @@ class Tab: NSObject {
     }
     
     func updateFaviconCache() {
-        guard let displayFavicon = displayFavicon?.url, let faviconUrl = URL(string: displayFavicon), let baseDomain = url?.baseDomain else {
+        guard let displayFavicon = displayFavicon?.url, let faviconUrl = URL(string: displayFavicon), let baseDomain = url.baseDomain else {
             return
         }
 

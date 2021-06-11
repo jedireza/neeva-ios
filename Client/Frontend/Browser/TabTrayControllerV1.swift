@@ -164,7 +164,6 @@ class TabTrayControllerV1: UIViewController {
             toolbar.applyUIMode(isPrivate: true)
         }
 
-        locationView.url = nil
         locationView.showLockIcon(forSecureContent: false)
         locationView.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
 
@@ -978,7 +977,7 @@ class TabCell: UICollectionViewCell {
 
         if !tab.displayTitle.isEmpty {
             accessibilityLabel = tab.displayTitle
-        } else if let url = tab.url, let about = InternalURL(url)?.aboutComponent {
+        } else if let about = InternalURL(tab.url)?.aboutComponent {
             accessibilityLabel = about
         } else {
             accessibilityLabel = ""

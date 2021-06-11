@@ -39,7 +39,7 @@ private extension TrayToBrowserAnimator {
 
         bvc.webViewContainerBackdrop.isHidden = true
         bvc.statusBarOverlay.isHidden = false
-        if let url = selectedTab.url, !url.isReaderModeURL {
+        if !selectedTab.url.isReaderModeURL {
             bvc.hideReaderModeBar(animated: false)
         }
 

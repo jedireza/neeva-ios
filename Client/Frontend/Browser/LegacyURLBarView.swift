@@ -163,15 +163,15 @@ class LegacyURLBarView: UIView {
 
     lazy var actionButtons: [ToolbarButton] = [self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton]
 
-    var currentURL: URL? {
+    var currentURL: URL {
         get {
-            return legacyLocationView.url as URL?
+            return legacyLocationView.url
         }
 
         set(newURL) {
             legacyLocationView.url = newURL
 //            locationView.rootView = .init(text: newURL?.host ?? locationView.rootView.text, status: .secure, onTap: {})
-            if let url = newURL, InternalURL(url)?.isAboutHomeURL ?? false {
+            if InternalURL(newURL)?.isAboutHomeURL ?? false {
                 line.isHidden = true
             } else {
                 line.isHidden = false
@@ -345,7 +345,7 @@ class LegacyURLBarView: UIView {
             iconView.image = UIImage(systemSymbol: type.defaultSymbol)
                 .applyingSymbolConfiguration(UIImage.SymbolConfiguration(weight: .medium))?
                 .withTintColor(.label, renderingMode: .alwaysOriginal)
-        } else if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (currentURL?.host == NeevaConstants.appHost && suggestion == "") {
+        } else if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (currentURL.host == NeevaConstants.appHost && suggestion == "") {
             iconView.image = UIImage(named: "neevaMenuIcon")
         } else if (suggestion != "") {
             iconView.image = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))?.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor.neeva.GlobeFavGray)
@@ -670,7 +670,7 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
             overlayText = tabLocationView.displayText
         } else {
             // TODO: Decode punycode hostname.
-            overlayText = tabLocationView.url?.absoluteString ?? ""
+            overlayText = tabLocationView.url.absoluteString ?? ""
         }
 
         enterOverlayMode(overlayText, pasted: false, search: isSearchQuery)

@@ -106,7 +106,7 @@ extension BrowserViewController: WKUIDelegate {
         // the request here manually leads to incorrect results!!
         let newTab = tabManager.addPopupForParentTab(bvc: bvc, parentTab: parentTab, configuration: configuration)
 
-        newTab.url = URL(string: "about:blank")
+        newTab.url = URL(string: "about:blank")!
 
         return newTab.webView
     }
@@ -685,7 +685,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if error.code == Int(CFNetworkErrors.cfurlErrorCancelled.rawValue) {
             if let tab = tabManager[webView], tab === tabManager.selectedTab {
-                legacyURLBar.currentURL = tab.url?.displayURL
+                legacyURLBar.currentURL = tab.url.displayURL
             }
             return
         }
@@ -752,7 +752,7 @@ extension BrowserViewController: WKNavigationDelegate {
         tab.contentBlocker?.notifyContentBlockingChanged()
         self.scrollController.resetZoomState()
 
-        if let currentURL = tab.url, NeevaConstants.isNeevaHome(url: currentURL) {
+        if NeevaConstants.isNeevaHome(url: tab.url) {
             showSearchBarPrompt()
         }
 

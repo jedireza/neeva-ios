@@ -24,12 +24,12 @@ class ScreenshotHelper {
      If taking a screenshot of a website, uses apple's `takeSnapshot` function
      */
     func takeScreenshot(_ tab: Tab) {
-        guard let webView = tab.webView, let url = tab.url else {
+        guard let webView = tab.webView else {
             Sentry.shared.send(message: "Tab Snapshot Error", tag: .tabManager, severity: .debug, description: "Tab webView or url is nil")
             return
         }
         //Handle home page snapshots, can not use Apple API snapshot function for this
-        if InternalURL(url)?.isAboutHomeURL ?? false {
+        if InternalURL(tab.url)?.isAboutHomeURL ?? false {
             if let homePanel = controller?.neevaHomeViewController {
                 let screenshot = homePanel.view.screenshot(quality: UIConstants.ActiveScreenshotQuality)
                 tab.setScreenshot(screenshot)

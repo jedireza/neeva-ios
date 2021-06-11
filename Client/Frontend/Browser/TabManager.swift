@@ -220,13 +220,13 @@ class TabManager: NSObject {
             tab.applyTheme()
         }
 
-        if let tab = tab, tab.isPrivate, let url = tab.url, NeevaConstants.isAppHost(url.host), !url.path.starts(with: "/incognito") {
+        if let tab = tab, tab.isPrivate, NeevaConstants.isAppHost(tab.url.host), !tab.url.path.starts(with: "/incognito") {
             tab.webView?.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
                 if cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~incognito" && $0.isSecure }) != nil {
                     return
                 }
 
-                StartIncognitoMutation(url: url).perform { result in
+                StartIncognitoMutation(url: tab.url).perform { result in
                     guard
                         case .success(let data) = result,
                         let url = URL(string: data.startIncognito)
@@ -347,7 +347,7 @@ class TabManager: NSObject {
 
         // If network is not available webView(_:didCommit:) is not going to be called
         // We should set request url in order to show url in url bar even no network
-        tab.url = request?.url
+        tab.url = request.url
         
         if parent == nil || parent?.isPrivate != tab.isPrivate {
             tabs.append(tab)
@@ -370,7 +370,7 @@ class TabManager: NSObject {
         if let request = request {
             tab.loadRequest(request)
         } else if !isPopup {
-            let url = URL(string: "\(InternalURL.baseUrl)/about/home")!
+            let url = InternalURL.aboutHome
             tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)
             tab.url = url
         }

@@ -37,7 +37,7 @@ class LegacyTabLocationView: UIView {
     private var isPrivateMode: Bool = false
 
     func showLockIcon(forSecureContent isSecure: Bool) {
-        if url?.absoluteString == "about:blank" {
+        if url.absoluteString == "about:blank" {
             // Matching the desktop behaviour, we don't mark these pages as secure.
             lockImageView.isHidden = true
             return
@@ -49,12 +49,12 @@ class LegacyTabLocationView: UIView {
         shareButton.isEnabled = isPage
     }
 
-    var url: URL? {
+    var url: URL = InternalURL.aboutHome {
         didSet {
             // Report the URL as the accessible value rather than the display text.
-            urlLabel.accessibilityValue = url?.absoluteString ?? ""
+            urlLabel.accessibilityValue = url.absoluteString
             updateTextWithURL()
-            shieldButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
+            shieldButton.isHidden = !["https", "http"].contains(url.scheme ?? "")
             setNeedsUpdateConstraints()
         }
     }
@@ -286,10 +286,10 @@ class LegacyTabLocationView: UIView {
 
     fileprivate func updateTextWithURL() {
         var text: String
-        if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
+        if let scheme = url.scheme, let host = url.host, (scheme == "https" || scheme == "http") {
             text = host
         } else {
-            text = url?.absoluteString ?? ""
+            text = url.absoluteString 
         }
         // NOTE: Punycode support was removed
         let showQueryInLocationBar = NeevaFeatureFlags[.clientHideSearchBox]
@@ -336,7 +336,7 @@ extension LegacyTabLocationView: UIGestureRecognizerDelegate {
 extension LegacyTabLocationView: UIDragInteractionDelegate {
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         // Ensure we actually have a URL in the location bar and that the URL is not local.
-        guard let url = self.url, !InternalURL.isValid(url: url), let itemProvider = NSItemProvider(contentsOf: url) else {
+        guard !InternalURL.isValid(url: url), let itemProvider = NSItemProvider(contentsOf: url) else {
             return []
         }
 
