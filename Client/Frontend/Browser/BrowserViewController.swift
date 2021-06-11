@@ -2427,39 +2427,6 @@ extension BrowserViewController: TopTabsDelegate {
     }
 }
 
-// MARK: - reopen last closed tab
-
-extension BrowserViewController {
-
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        if AppConstants.MOZ_SHAKE_TO_RESTORE {
-                homePanelDidRequestToRestoreClosedTab(motion)
-        }
-    }
-
-    func homePanelDidRequestToRestoreClosedTab(_ motion: UIEvent.EventSubtype) {
-        guard motion == .motionShake, !topTabsVisible, !urlBar.inOverlayMode,
-            let lastClosedURL = profile.recentlyClosedTabs.tabs.first?.url,
-            let selectedTab = tabManager.selectedTab else { return }
-
-        let alertTitleText = Strings.ReopenLastTabAlertTitle
-        let reopenButtonText = Strings.ReopenLastTabButtonText
-        let cancelButtonText = Strings.ReopenLastTabCancelText
-
-        func reopenLastTab(_ action: UIAlertAction) {
-            let request = URLRequest(url: lastClosedURL)
-            let closedTab = tabManager.addTab(request, afterTab: selectedTab, isPrivate: false)
-            tabManager.selectTab(closedTab)
-        }
-
-        let alert = AlertController(title: alertTitleText, message: "", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: reopenButtonText, style: .default, handler: reopenLastTab), accessibilityIdentifier: "BrowserViewController.ReopenLastTabAlert.ReopenButton")
-        alert.addAction(UIAlertAction(title: cancelButtonText, style: .cancel, handler: nil), accessibilityIdentifier: "BrowserViewController.ReopenLastTabAlert.CancelButton")
-
-        self.present(alert, animated: true, completion: nil)
-    }
-}
-
 extension BrowserViewController {
     public static func foregroundBVC() -> BrowserViewController {
 //        if #available(iOS 13.0, *) {
