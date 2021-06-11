@@ -4,18 +4,6 @@ import SwiftUI
 import Storage
 import Shared
 
-fileprivate struct ListRowButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .contentShape(Rectangle())
-            .background(
-                Color(UIColor(light: .Custom.selectedHighlightLight, dark: .Custom.selectedHighlightDark))
-                    .opacity(configuration.isPressed ? 1 : 0)
-                    .padding(.horizontal, -16)
-            )
-    }
-}
-
 struct SuggestedSearchesView: View {
     @EnvironmentObject var model: SuggestedSearchesModel
 
@@ -34,7 +22,7 @@ struct SuggestedSearchesView: View {
                     }
                     .frame(height: 37)
                 }
-                .buttonStyle(ListRowButtonStyle())
+                .buttonStyle(TableCellButtonStyle())
                 .overlay(
                     Button(action: { setSearchInput(query) }) {
                         VStack {

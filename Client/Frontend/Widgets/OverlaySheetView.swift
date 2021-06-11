@@ -243,7 +243,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                         .ignoresSafeArea()
                         .modifier(DismissalObserverModifier(backdropOpacity: self.model.backdropOpacity, position: self.model.position, onDismiss: self.onDismiss))
                 }
-                .buttonStyle(LabelOnlyButtonStyle())
+                .buttonStyle(HighlightlessButtonStyle())
                 .accessibilityHint("Dismiss pop-up window")
                 // make this the last option. This will bring the user’s focus first to the
                 // useful content inside of the overlay sheet rather than the close button.
@@ -372,11 +372,5 @@ fileprivate struct DismissalObserverModifier: AnimatableModifier {
 
     func body(content: Content) -> some View {
         return content
-    }
-}
-
-fileprivate struct LabelOnlyButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
     }
 }

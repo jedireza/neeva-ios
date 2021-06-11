@@ -9,21 +9,6 @@ public struct ErrorViewBackgroundPreferenceKey: PreferenceKey {
     }
 }
 
-struct BigBlueButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundColor(.white)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 40)
-            .frame(height: 48)
-            .background(
-                Capsule()
-                    .fill(Color.neeva.ui.blue)
-                    .opacity(configuration.isPressed ? 0.5 : 1)
-            )
-    }
-}
-
 /// A view that displays an `Error`
 public struct ErrorView: View {
     let error: Error

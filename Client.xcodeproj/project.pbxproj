@@ -299,6 +299,7 @@
 		C994645F2657052200613110 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994645E2657052200613110 /* FeatureFlags.swift */; };
 		C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9946460265706D500613110 /* FeatureFlagSettings.swift */; };
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */; };
 		C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */; };
 		C9AFE6E126582ACE000C5A03 /* Error.css in Resources */ = {isa = PBXBuildFile; fileRef = C9AFE6E026582ACE000C5A03 /* Error.css */; };
 		C9AFE6E326582BCB000C5A03 /* OfflineError.html in Resources */ = {isa = PBXBuildFile; fileRef = C9AFE6E226582BCB000C5A03 /* OfflineError.html */; };
@@ -381,6 +382,7 @@
 		C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C0265D555600651DCB /* MailAppSetting.swift */; };
 		C9E448C4265D55D500651DCB /* SiriSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C3265D55D500651DCB /* SiriSetting.swift */; };
 		C9E5F2B12673B4A000025A7F /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B02673B4A000025A7F /* NavigationController.swift */; };
+		C9E5F2BC2674025700025A7F /* EdgeInsetsExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2BB2674025700025A7F /* EdgeInsetsExtensions.swift */; };
 		C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B42673EF1D00025A7F /* Environment.swift */; };
 		C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */; };
 		C9E5F2BA2673F83800025A7F /* DispatchQueueExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B92673F83800025A7F /* DispatchQueueExtensions.swift */; };
@@ -1181,6 +1183,7 @@
 		C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsSection.swift; sourceTree = "<group>"; };
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 		C9946460265706D500613110 /* FeatureFlagSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettings.swift; sourceTree = "<group>"; };
+		C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLookView.swift; sourceTree = "<group>"; };
 		C9AFE6E026582ACE000C5A03 /* Error.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = Error.css; sourceTree = "<group>"; };
 		C9AFE6E226582BCB000C5A03 /* OfflineError.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OfflineError.html; sourceTree = "<group>"; };
@@ -1244,6 +1247,7 @@
 		C9E448C0265D555600651DCB /* MailAppSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailAppSetting.swift; sourceTree = "<group>"; };
 		C9E448C3265D55D500651DCB /* SiriSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriSetting.swift; sourceTree = "<group>"; };
 		C9E5F2B02673B4A000025A7F /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		C9E5F2BB2674025700025A7F /* EdgeInsetsExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetsExtensions.swift; sourceTree = "<group>"; };
 		C9E5F2B42673EF1D00025A7F /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryExtensions.swift; sourceTree = "<group>"; };
 		C9E5F2B92673F83800025A7F /* DispatchQueueExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DispatchQueueExtensions.swift; path = ../DispatchQueueExtensions.swift; sourceTree = "<group>"; };
@@ -2238,6 +2242,7 @@
 		C996466726569AF0005FFE83 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */,
 				C908604F266693340049C072 /* CapsuleTextField.swift */,
 				C9C18DD926558FF3004710CD /* ActivityIndicator.swift */,
 				C9C18DD226558FF2004710CD /* DecorativeSection.swift */,
@@ -2662,6 +2667,7 @@
 			children = (
 				C9C18E1726559132004710CD /* API */,
 				C9C18E2426559457004710CD /* UI */,
+				E650756F1E37F7AB006961AC /* Extensions */,
 				064741F8AE308A64808E6265 /* Shared.strings */,
 				67AF4B8392ADBAA41F1B3AD0 /* HistoryPanel.strings */,
 				9403451493EE3ADAAEFA2EB1 /* Storage.strings */,
@@ -2681,7 +2687,6 @@
 				C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */,
 				D35210E01CB2F16600FC5DCB /* Strings.swift */,
 				C994645E2657052200613110 /* FeatureFlags.swift */,
-				E650756F1E37F7AB006961AC /* Extensions */,
 				E4E0BB161AFBC9E4008D6260 /* Supporting Files */,
 				E65075621E37F7AB006961AC /* Accessibility.swift */,
 				EB7FFFBF20A9D38C003E1E34 /* AlertController.swift */,
@@ -2770,6 +2775,7 @@
 				C9BED4C226680A33001D9C77 /* ColorExtensions.swift */,
 				7B10AA9E1E3A15020002DD08 /* DataExtensions.swift */,
 				E683F0C11E93D4E90035D990 /* DictionaryExtensions.swift */,
+				C9E5F2BB2674025700025A7F /* EdgeInsetsExtensions.swift */,
 				C9F49CC5266FFB8200F3408A /* Environment.swift */,
 				E65075721E37F7AB006961AC /* HashExtensions.swift */,
 				E65075731E37F7AB006961AC /* HexExtensions.swift */,
@@ -3998,12 +4004,14 @@
 				C9C18E5726559874004710CD /* NeevaColors.swift in Sources */,
 				C9C18E58265598A0004710CD /* SpaceListItem.swift in Sources */,
 				C9C18E402655955D004710CD /* Reachability.swift in Sources */,
+				C9E5F2BC2674025700025A7F /* EdgeInsetsExtensions.swift in Sources */,
 				C93EFEE226713AF7000396B5 /* ErrorConstants.swift in Sources */,
 				7B10AABB1E3A1F650002DD08 /* URLRequestExtensions.swift in Sources */,
 				D02818611EF056C800240CAA /* SentryIntegration.swift in Sources */,
 				C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */,
 				E693F0D91E9D64BD0086DC17 /* OptionalExtensions.swift in Sources */,
 				C9BED4C326680A33001D9C77 /* ColorExtensions.swift in Sources */,
+				C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */,
 				E65075A01E37F7AB006961AC /* ArrayExtensions.swift in Sources */,
 				E65075A31E37F7AB006961AC /* KeychainWrapperExtensions.swift in Sources */,
 				E65075921E37F7AB006961AC /* Accessibility.swift in Sources */,
