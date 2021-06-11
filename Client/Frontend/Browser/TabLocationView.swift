@@ -18,7 +18,7 @@ protocol TabLocationViewDelegate {
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]?
 }
 
-private struct TabLocationViewUX {
+private enum TabLocationViewUX {
     static let LockIconWidth: CGFloat = 16
     static let ButtonWidth: CGFloat = 44
     static let ButtonHeight: CGFloat = 42

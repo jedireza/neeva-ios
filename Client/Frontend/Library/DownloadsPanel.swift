@@ -6,7 +6,7 @@ import UIKit
 import Shared
 import Storage
 
-private struct DownloadsPanelUX {
+private enum DownloadsPanelUX {
     static let WelcomeScreenPadding: CGFloat = 15
     static let WelcomeScreenItemWidth = 170
     static let HeaderHeight: CGFloat = 28

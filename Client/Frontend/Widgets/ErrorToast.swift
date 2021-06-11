@@ -5,7 +5,7 @@
 import Foundation
 import SnapKit
 
-private struct ErrorToastDefaultUX {
+private enum ErrorToastDefaultUX {
     static let cornerRadius: CGFloat = 40
     static let fillColor = UIColor.Photon.Red70
     static let margins = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)

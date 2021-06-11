@@ -9,22 +9,22 @@ import Shared
 
 // UX definitions and misc table components used for the PhotonActionSheet table view.
 
-struct PhotonActionSheetUX {
+public enum PhotonActionSheetUX {
     static let MaxWidth: CGFloat = 414
     static let Padding: CGFloat = 6
-    static let HeaderFooterHeight: CGFloat = 20
+    fileprivate static let HeaderFooterHeight: CGFloat = 20
     static let RowHeight: CGFloat = 44
-    static let BorderWidth: CGFloat = 0.5
-    static let BorderColor = UIColor.Photon.Grey30
+    fileprivate static let BorderWidth: CGFloat = 0.5
+    fileprivate static let BorderColor = UIColor.Photon.Grey30
     static let CornerRadius: CGFloat = 10
-    static let SiteImageViewSize = 52
+    fileprivate static let SiteImageViewSize = 52
     static let IconSize = CGSize(width: 24, height: 24)
     static let FaviconSize = CGSize(width: 20, height: 20) // favicon when search bar in focus
     static let SiteHeaderName  = "PhotonActionSheetSiteHeaderView"
     static let TitleHeaderName = "PhotonActionSheetTitleHeaderView"
     static let CellName = "PhotonActionSheetCell"
     static let CloseButtonHeight: CGFloat  = 56
-    static let TablePadding: CGFloat = 6
+    fileprivate static let TablePadding: CGFloat = 6
     static let SeparatorRowHeight: CGFloat = 13
     static let TitleHeaderSectionHeight: CGFloat = 40
     static let TitleHeaderSectionHeightWithSite: CGFloat = 70

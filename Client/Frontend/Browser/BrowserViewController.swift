@@ -27,8 +27,8 @@ private let KVOs: [KVOConstants] = [
 
 private let ActionSheetTitleMaxLength = 120
 
-private struct BrowserViewControllerUX {
-    fileprivate static let ShowHeaderTapAreaHeight: CGFloat = 32
+private enum BrowserViewControllerUX {
+    static let ShowHeaderTapAreaHeight: CGFloat = 32
 }
 
 struct UrlToOpenModel {

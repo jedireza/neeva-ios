@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import SnapKit
 
-struct DownloadToastUX {
+private enum DownloadToastUX {
     static let ToastBackgroundColor = UIColor.Photon.Blue40
     static let ToastProgressColor = UIColor.Photon.Blue50
 }

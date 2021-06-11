@@ -9,7 +9,7 @@ import Shared
 
 // This file is the cells used for the PhotonActionSheet table view.
 
-private struct PhotonActionSheetCellUX {
+private enum PhotonActionSheetCellUX {
     static let LabelColor = UIConstants.SystemBlueColor
     static let BorderWidth = CGFloat(0.5)
     static let CellSideOffset = 20

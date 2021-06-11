@@ -8,7 +8,7 @@ import WebKit
 import Storage
 import SnapKit
 
-private struct BackForwardViewUX {
+private enum BackForwardViewUX {
     static let RowHeight: CGFloat = 50
     static let BackgroundColor = UIColor.Photon.Grey10A40
 }

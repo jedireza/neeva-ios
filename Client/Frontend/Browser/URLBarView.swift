@@ -6,7 +6,7 @@ import Shared
 import SnapKit
 import Storage
 
-private struct URLBarViewUX {
+private enum URLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40
     static let TextFieldActiveBorderColor = UIColor.Photon.Blue40
 

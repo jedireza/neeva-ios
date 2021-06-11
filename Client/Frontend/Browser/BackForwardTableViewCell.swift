@@ -8,7 +8,7 @@ import Shared
 
 class BackForwardTableViewCell: UITableViewCell {
 
-    private struct BackForwardViewCellUX {
+    private enum BackForwardViewCellUX {
         static let bgColor = UIColor.Photon.Grey50
         static let faviconWidth = 29
         static let faviconPadding: CGFloat = 20

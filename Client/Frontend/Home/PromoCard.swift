@@ -3,7 +3,7 @@
 import SwiftUI
 import Shared
 
-struct PromoCardUX {
+private enum PromoCardUX {
     static let CornerRadius: CGFloat = 24
     static let ButtonFontSize: CGFloat = 17
     static let TextFontSize: CGFloat = 21

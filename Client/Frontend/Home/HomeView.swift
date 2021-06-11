@@ -5,7 +5,7 @@ import Storage
 import Shared
 import Defaults
 
-struct NeevaHomeUX {
+public enum NeevaHomeUX {
     static let FaviconSize: CGFloat = 28
     static let SuggestedSiteIconSize: CGFloat = 40
     static let SuggestedSiteIconCornerRadius: CGFloat = 4
@@ -13,15 +13,15 @@ struct NeevaHomeUX {
     static let SuggestedSiteTitleFontSize: CGFloat = 14
     static let SuggestedSiteBlockWidth: CGFloat = 64
     static let SuggestedSiteBlockHeight: CGFloat = 62
-    static let ToggleButtonSize: CGFloat = 32
-    static let ToggleIconSize: CGFloat = 14
+    fileprivate static let ToggleButtonSize: CGFloat = 32
+    fileprivate static let ToggleIconSize: CGFloat = 14
     static let HeaderPadding: CGFloat = 16
 
     static func horizontalItemSpacing(isTabletOrLandscape: Bool) -> CGFloat {
         return isTabletOrLandscape ? 32 : 28
     }
 
-    static func singleRowWidth(isTabletOrLandscape: Bool) -> CGFloat {
+    fileprivate static func singleRowWidth(isTabletOrLandscape: Bool) -> CGFloat {
         let numItems: CGFloat = isTabletOrLandscape ? 8 : 4
         return numItems * SuggestedSiteBlockWidth
             + (numItems - 1) * horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)

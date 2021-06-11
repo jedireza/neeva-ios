@@ -6,8 +6,8 @@ enum SwipeDirection {
     case forward, back
 }
 
-struct SimulatedSwipeUX {
-    static let EdgeWidth:CGFloat = 30
+public enum SimulatedSwipeUX {
+    static let EdgeWidth: CGFloat = 30
 }
 
 class SimulatedSwipeController:

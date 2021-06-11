@@ -8,7 +8,7 @@ import Storage
 import XCGLogger
 import WebKit
 
-private struct HistoryPanelUX {
+private enum HistoryPanelUX {
     static let WelcomeScreenItemWidth = 170
     static let IconSize = 23
     static let IconBorderColor = UIColor.Photon.Grey30

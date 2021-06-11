@@ -5,19 +5,19 @@
 import Foundation
 import SnapKit
 
-struct ButtonToastUX {
+public enum ButtonToastUX {
     static let ToastHeight: CGFloat = 55.0
     static let ToastPadding: CGFloat = 15.0
-    static let ToastButtonPadding: CGFloat = 10.0
+    fileprivate static let ToastButtonPadding: CGFloat = 10.0
     static let ToastDelay = DispatchTimeInterval.milliseconds(900)
-    static let ToastButtonBorderRadius: CGFloat = 5
-    static let ToastButtonBorderWidth: CGFloat = 0
+    fileprivate static let ToastButtonBorderRadius: CGFloat = 5
+    fileprivate static let ToastButtonBorderWidth: CGFloat = 0
     static let ToastLabelFont = UIFont.systemFont(ofSize: 14, weight: .light)
-    static let ToastButtonFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
-    static let ToastButtonDefaultColor = UIColor.Photon.Blue50
+    fileprivate static let ToastButtonFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
+    fileprivate static let ToastButtonDefaultColor = UIColor.Photon.Blue50
     static let ToastDescriptionFont = UIFont.systemFont(ofSize: 13)
     
-    struct ToastButtonPaddedView {
+    fileprivate struct ToastButtonPaddedView {
         static let WidthOffset: CGFloat = 20.0
         static let TopOffset: CGFloat = 5.0
         static let BottomOffset: CGFloat = 20.0

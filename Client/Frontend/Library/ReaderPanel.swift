@@ -10,7 +10,7 @@ import XCGLogger
 
 private let log = Logger.browserLogger
 
-private struct ReadingListTableViewCellUX {
+private enum ReadingListTableViewCellUX {
     static let RowHeight: CGFloat = 86
 
     static let ReadIndicatorWidth: CGFloat = 12  // image width
@@ -32,7 +32,7 @@ private struct ReadingListTableViewCellUX {
     static let MarkAsReadButtonTitleEdgeInsets = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
 }
 
-private struct ReadingListPanelUX {
+private enum ReadingListPanelUX {
     // Welcome Screen
     static let WelcomeScreenTopPadding: CGFloat = 16
     static let WelcomeScreenPadding: CGFloat = 15

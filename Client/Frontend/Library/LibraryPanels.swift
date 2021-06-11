@@ -10,7 +10,7 @@ protocol LibraryPanel: Themeable {
     var libraryPanelDelegate: LibraryPanelDelegate? { get set }
 }
 
-struct LibraryPanelUX {
+public enum LibraryPanelUX {
     static let EmptyTabContentOffset = -180
 }
 

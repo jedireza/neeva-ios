@@ -5,9 +5,9 @@
 import Foundation
 import Shared
 
-struct TopTabsSeparatorUX {
+public enum TopTabsSeparatorUX {
     static let Identifier = "Separator"
-    static let Width: CGFloat = 1
+    fileprivate static let Width: CGFloat = 1
 }
 
 class TopTabsSeparator: UICollectionReusableView {

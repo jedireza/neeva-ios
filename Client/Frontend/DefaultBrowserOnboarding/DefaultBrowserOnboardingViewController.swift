@@ -28,7 +28,7 @@ import Shared
  
  */
 
-struct DBOnboardingUX {
+private enum DBOnboardingUX {
     static let textOffset = 20
     static let textOffsetSmall = 13
     static let fontSize: CGFloat = 24

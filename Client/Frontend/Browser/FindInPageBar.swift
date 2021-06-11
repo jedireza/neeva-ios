@@ -12,7 +12,7 @@ protocol FindInPageBarDelegate: AnyObject {
     func findInPageDidPressClose(_ findInPage: FindInPageBar)
 }
 
-private struct FindInPageUX {
+private enum FindInPageUX {
     static let ButtonColor = UIColor.black
     static let MatchCountColor = UIColor.Photon.Grey40
     static let MatchCountFont = UIConstants.DefaultChromeFont
