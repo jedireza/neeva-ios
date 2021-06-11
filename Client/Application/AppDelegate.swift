@@ -138,9 +138,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         browserViewController.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
         browserViewController.restorationClass = AppDelegate.self
 
-        let navigationController = UINavigationController(rootViewController: browserViewController)
+        let navigationController = NavigationController(rootViewController: browserViewController)
         navigationController.delegate = self
-        navigationController.isNavigationBarHidden = true
         navigationController.edgesForExtendedLayout = UIRectEdge(rawValue: 0)
         rootViewController = navigationController
 

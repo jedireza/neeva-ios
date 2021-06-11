@@ -89,7 +89,6 @@ struct IncognitoDescriptionView: View {
             Spacer()
         }
         .background(Color.neeva.DarkElevated)
-        .navigationBarHidden(true)
         .colorScheme(.dark)
     }
 }

@@ -261,7 +261,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             }
         }
         .accessibilityAction(.escape, model.hide)
-        .navigationBarHidden(true)
     }
 
     private func isPortraitMode(_ outerGeometry: GeometryProxy) -> Bool {

@@ -208,10 +208,6 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
     fileprivate func reloadData() {
         suggestionQuery?.cancel()
 
-        // required or else the SwiftUI view will, for some
-        // reason, set the root navigation bar to be visible
-        self.navigationController?.isNavigationBarHidden = true
-
         if isPrivate || searchQuery.isEmpty || !Defaults[.showSearchSuggestions] || searchQuery.looksLikeAURL() {
             self.suggestions = []
             self.rootView = makeSuggestionView()
