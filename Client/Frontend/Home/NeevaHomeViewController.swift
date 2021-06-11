@@ -14,30 +14,12 @@ import Defaults
 private let log = Logger.browserLogger
 
 extension EnvironmentValues {
-    private struct OpenInNewTabKey: EnvironmentKey {
-        static var defaultValue: ((URL, _ isPrivate: Bool) -> ())? = nil
-    }
-
-    public var openInNewTab: (URL, _ isPrivate: Bool) -> () {
-        get { self[OpenInNewTabKey] ?? { _,_ in fatalError(".environment(\\.openInNewTab) must be specified") } }
-        set { self[OpenInNewTabKey] = newValue }
-    }
-
-    private struct ShareURLKey: EnvironmentKey {
-        static var defaultValue: ((URL) -> ())? = nil
-    }
-
-    public var shareURL: (URL) -> () {
-        get { self[ShareURLKey] ?? { _ in fatalError(".environment(\\.shareURL) must be specified") } }
-        set { self[ShareURLKey] = newValue }
-    }
-
     private struct HideTopSiteKey: EnvironmentKey {
         static var defaultValue: ((Site) -> ())? = nil
     }
 
-    public var hideTopSite: (Site) -> () {
-        get { self[HideTopSiteKey] ?? { _ in fatalError(".environment(\\.hideTopSite) must be specified") } }
+    public var homeHideTopSite: (Site) -> () {
+        get { self[HideTopSiteKey] ?? { _ in fatalError(".environment(\\.homeHideTopSite) must be specified") } }
         set { self[HideTopSiteKey] = newValue }
     }
 }
@@ -86,7 +68,7 @@ class NeevaHomeViewController: UIViewController, HomePanel {
                     controller.modalPresentationStyle = .formSheet
                     self?.present(controller, animated: true, completion: nil)
                 }
-                .environment(\.hideTopSite) { [weak self] url in
+                .environment(\.homeHideTopSite) { [weak self] url in
                     self?.hideURLFromTopSites(url)
                 }
                 .environment(\.openInNewTab) { [weak self] url, isPrivate in

@@ -6,7 +6,7 @@ import WebKit
 
 struct NeevaSettingsSection: View {
     @ObservedObject var userInfo: NeevaUserInfo
-    @Environment(\.settingsOpenURLInNewNonPrivateTab) var openURL
+    @Environment(\.openInNewTab) var openURL
     @State var showingAccountDetails = false
 
     static var webView: WKWebView = {
@@ -62,13 +62,13 @@ struct NeevaSettingsSection: View {
             } else {
                 NavigationLinkButton("Account Settings") {
                     ClientLogger.shared.logCounter(.SettingAccountSettings, attributes: EnvironmentHelper.shared.getAttributes())
-                    openURL(NeevaConstants.appSettingsURL)
+                    openURL(NeevaConstants.appSettingsURL, false)
                 }
             }
         } else {
             Button("Sign In or Join Neeva") {
                 ClientLogger.shared.logCounter(.SettingSignin, attributes: EnvironmentHelper.shared.getAttributes())
-                openURL(NeevaConstants.appSigninURL)
+                openURL(NeevaConstants.appSigninURL, false)
             }.frame(height: 60 - 12)
         }
         NavigationLink("Default Browser", destination: DefaultBrowserSetting_().onAppear(perform: {

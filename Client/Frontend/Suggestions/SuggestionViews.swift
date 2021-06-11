@@ -3,18 +3,6 @@
 import SwiftUI
 import Shared
 
-extension EnvironmentValues {
-    private struct SetSearchInputKey: EnvironmentKey {
-        static var defaultValue: ((String) -> ())? = nil
-    }
-
-    /// Provide this environment key to open URLs in an app other than Safari.
-    public var setSearchInput: (String) -> () {
-        get { self[SetSearchInputKey] ?? { _ in fatalError(".environment(\\.setSearchInput) must be specified") } }
-        set { self[SetSearchInputKey] = newValue }
-    }
-}
-
 /// Renders a provided suggestion
 public struct SuggestionView: View {
     let suggestion: Suggestion

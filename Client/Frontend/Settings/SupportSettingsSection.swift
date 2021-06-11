@@ -4,8 +4,7 @@ import SwiftUI
 import Shared
 
 struct SupportSettingsSection: View {
-    @Environment(\.settingsOpenURLInNewNonPrivateTab) var openURLInNewNonPrivateTab
-    @Environment(\.onOpenURL) var openURL
+    @Environment(\.openInNewTab) var openInNewTab
     @Environment(\.settingsPresentIntroViewController) var presentIntroViewController
     
     let onDismiss: (() -> ())?
@@ -25,11 +24,11 @@ struct SupportSettingsSection: View {
                 if let onDismiss = onDismiss {
                     onDismiss()
                 }
-            }).environment(\.onOpenURL, openURLInNewNonPrivateTab)
+            }).environment(\.onOpenURL) { url in openInNewTab(url, false) }
         }
         NavigationLinkButton("Help") {
             ClientLogger.shared.logCounter(.ViewHelp, attributes: EnvironmentHelper.shared.getAttributes())
-            openURL(NeevaConstants.appHelpCenterURL)
+            openInNewTab(NeevaConstants.appHelpCenterURL, false)
         }
     }
 }

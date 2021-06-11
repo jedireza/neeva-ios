@@ -5,28 +5,10 @@ import Storage
 import Shared
 import Defaults
 
-public enum NeevaHomeUX {
-    static let FaviconSize: CGFloat = 28
-    static let SuggestedSiteIconSize: CGFloat = 40
-    static let SuggestedSiteIconCornerRadius: CGFloat = 4
-    static let PinIconSize: CGFloat = 12
-    static let SuggestedSiteTitleFontSize: CGFloat = 14
-    static let SuggestedSiteBlockWidth: CGFloat = 64
-    static let SuggestedSiteBlockHeight: CGFloat = 62
+public struct NeevaHomeUX {
     fileprivate static let ToggleButtonSize: CGFloat = 32
     fileprivate static let ToggleIconSize: CGFloat = 14
     static let HeaderPadding: CGFloat = 16
-
-    static func horizontalItemSpacing(isTabletOrLandscape: Bool) -> CGFloat {
-        return isTabletOrLandscape ? 32 : 28
-    }
-
-    fileprivate static func singleRowWidth(isTabletOrLandscape: Bool) -> CGFloat {
-        let numItems: CGFloat = isTabletOrLandscape ? 8 : 4
-        return numItems * SuggestedSiteBlockWidth
-            + (numItems - 1) * horizontalItemSpacing(isTabletOrLandscape: isTabletOrLandscape)
-            + 2 * HeaderPadding
-    }
 }
 
 fileprivate enum TriState: Int, Codable {
@@ -107,38 +89,40 @@ struct NeevaHome: View {
     @Default(.expandSpaces) private var expandSpaces
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                if viewModel.isPrivate {
-                    IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(16.0)
-                }
-                if !viewModel.isPrivate && viewModel.showDefaultBrowserCard {
-                    PromoCard(model: viewModel)
-                }
+        GeometryReader { geom in
+            ScrollView {
                 VStack(spacing: 0) {
-                    NeevaHomeHeader(
-                        title: "Suggested sites",
-                        action: { expandSuggestedSites.advance() },
-                        label: "\(expandSuggestedSites.verb) this section",
-                        icon: expandSuggestedSites.icon
-                    )
-                    if expandSuggestedSites != .hidden {
-                        SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
+                    if viewModel.isPrivate {
+                        IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(16.0)
                     }
+                    if !viewModel.isPrivate && viewModel.showDefaultBrowserCard {
+                        PromoCard(model: viewModel)
+                    }
+                    VStack(spacing: 0) {
+                        NeevaHomeHeader(
+                            title: "Suggested sites",
+                            action: { expandSuggestedSites.advance() },
+                            label: "\(expandSuggestedSites.verb) this section",
+                            icon: expandSuggestedSites.icon
+                        )
+                        if expandSuggestedSites != .hidden {
+                            SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
+                        }
 
-                    NeevaHomeHeader(
-                        title: "Searches",
-                        action: { expandSearches.toggle() },
-                        label: "\(expandSearches ? "hides" : "shows") this section",
-                        icon: expandSearches ? .chevronUp : .chevronDown
-                    )
-                    if expandSearches {
-                        SuggestedSearchesView()
-                            .padding(.horizontal, NeevaHomeUX.HeaderPadding)
+                        NeevaHomeHeader(
+                            title: "Searches",
+                            action: { expandSearches.toggle() },
+                            label: "\(expandSearches ? "hides" : "shows") this section",
+                            icon: expandSearches ? .chevronUp : .chevronDown
+                        )
+                        if expandSearches {
+                            SuggestedSearchesView()
+                                .padding(.horizontal, NeevaHomeUX.HeaderPadding)
+                        }
                     }
+                    Spacer()
                 }
-                Spacer()
-            }
+            }.environment(\.viewWidth, geom.size.width)
         }
     }
 }

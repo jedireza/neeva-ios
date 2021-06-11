@@ -29,7 +29,7 @@ open class Favicon: Identifiable {
 
 // TODO: Site shouldn't have all of these optional decorators. Include those in the
 // cursor results, perhaps as a tuple.
-open class Site: Identifiable {
+open class Site {
     open var id: Int?
     var guid: String?
 
@@ -58,7 +58,12 @@ open class Site: Identifiable {
 }
 
 extension Site: Hashable {
+    public static func == (lhs: Site, rhs: Site) -> Bool {
+        lhs.id == rhs.id && lhs.guid == rhs.guid
+    }
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(guid)
     }
 }
