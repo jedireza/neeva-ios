@@ -57,6 +57,9 @@ class BrowserViewController: UIViewController {
     var libraryDrawerViewController: DrawerViewController?
     var overlaySheetViewController: UIViewController?
     lazy var simulateForwardViewController: SimulatedSwipeController? = {
+        guard FeatureFlag[.swipePlusPlus] else {
+            return nil
+        }
         let host = SimulatedSwipeController(tabManager: self.tabManager,
                                             navigationToolbar: navigationToolbar,
                                             swipeDirection: .forward)

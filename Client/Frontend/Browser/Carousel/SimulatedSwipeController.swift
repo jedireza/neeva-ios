@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import UIKit
+import SwiftUI
 
 enum SwipeDirection {
     case forward, back
@@ -14,11 +15,15 @@ class SimulatedSwipeController:
     UIViewController, TabEventHandler, TabManagerDelegate, SimulateForwardAnimatorDelegate {
 
     func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator) {
-        self.goForward()
+        if swipeDirection == .forward {
+            self.goForward()
+        }
     }
 
     func simulateForwardAnimatorFinishedSwipe(_ animator: SimulatedSwipeAnimator) {
-        self.goBack()
+        if swipeDirection == .back {
+            self.goBack()
+        }
     }
 
     var animator: SimulatedSwipeAnimator!
@@ -27,6 +32,9 @@ class SimulatedSwipeController:
     var navigationToolbar: TabToolbarProtocol
     var forwardUrlMap = [String: [URL]?]()
     var swipeDirection: SwipeDirection
+    var progressModel = CarouselProgressModel(urls: [], index: 0)
+
+    var progressView: UIHostingController<CarouselProgressView>!
 
     init(tabManager: TabManager, navigationToolbar: TabToolbarProtocol, swipeDirection: SwipeDirection) {
         self.tabManager = tabManager
@@ -43,6 +51,10 @@ class SimulatedSwipeController:
             webViewContainer: BrowserViewController.foregroundBVC().webViewContainer)
         self.animator.delegate = self
 
+        if swipeDirection == .forward {
+            self.progressView = UIHostingController(rootView: CarouselProgressView(model: progressModel))
+            self.progressView.view.backgroundColor = .clear
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -93,10 +105,12 @@ class SimulatedSwipeController:
                 return
             }
 
-            guard let index = urls?.firstIndex(of: url), index < (urls?.count ?? 0 - 2) else {
+            guard let index = urls?.firstIndex(of: url), index < (urls?.count ?? 0) - 1 else {
                 self.updateForwardVisibility(id: tab.tabUUID, results: nil)
                 return
             }
+
+            self.progressModel.index = index
         case .back:
             updateBackVisibility(tab: tab)
         }
@@ -126,10 +140,32 @@ class SimulatedSwipeController:
         navigationToolbar.updateBackStatus(true)
     }
 
-    func updateForwardVisibility(id: String, results: [URL]?) {
+    func updateForwardVisibility(id: String, results: [URL]?, index: Int = -1) {
         forwardUrlMap[id] = results
         view.isHidden = results == nil
         navigationToolbar.updateForwardStatus(!view.isHidden)
+
+        guard let results = results else {
+            progressView.view.removeFromSuperview()
+            progressView.removeFromParent()
+            progressView.navigationController?.isNavigationBarHidden = true
+            progressModel.urls = []
+            progressModel.index = 0
+            return
+        }
+
+        let bvc = BrowserViewController.foregroundBVC()
+        bvc.addChild(progressView)
+        bvc.view.addSubview(progressView.view)
+        progressView.didMove(toParent: bvc)
+        progressView.navigationController?.isNavigationBarHidden = true
+        progressModel.urls = results
+        progressModel.index = index
+        progressView.view.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(bvc.view.snp.bottom)
+                .offset(-UIConstants.BottomToolbarHeight(in: view.window))
+        }
     }
 
     func canGoBack() -> Bool {
@@ -155,7 +191,7 @@ class SimulatedSwipeController:
             return false
         }
 
-        let index = urls.firstIndex(of: tab.currentURL()!) ?? 0
+        let index = urls.firstIndex(of: tab.currentURL()!) ?? -1
         assert(index < urls.count - 1) // If we are here, we have already fake animated and it is too late
         tab.loadRequest(URLRequest(url: urls[index + 1]))
         return true
