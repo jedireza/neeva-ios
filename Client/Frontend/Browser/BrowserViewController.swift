@@ -1435,6 +1435,10 @@ extension BrowserViewController: URLBarDelegate {
     }
 
     func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton){
+        if TourManager.shared.userReachedStep(tapTarget: .neevaMenu) == .resumeAction {
+            self.dismiss(animated: true, completion: nil)
+        }
+
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let host = PopOverNeevaMenuViewController(
             delegate: self,
@@ -1693,6 +1697,9 @@ extension BrowserViewController: TabDelegate {
         tab.addContentScript(blocker, name: NeevaTabContentBlocker.name())
 
         tab.addContentScript(FocusHelper(tab: tab), name: FocusHelper.name())
+
+        let webuiMessageHelper = WebUIMessageHelper(tab: tab, webView: webView)
+        tab.addContentScript(webuiMessageHelper, name: WebUIMessageHelper.name())
     }
 
     func tab(_ tab: Tab, willDeleteWebView webView: WKWebView) {
@@ -2480,6 +2487,7 @@ extension BrowserViewController {
     }
 
     func showNeevaMenuSheet() {
+        TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let image = screenshot()
 
@@ -2489,9 +2497,16 @@ extension BrowserViewController {
                 self.isNeevaMenuSheetOpen = false
             }, isPrivate: isPrivate, feedbackImage: image)
         )
+        self.dismissVC()
     }
 
     func hideNeevaMenuSheet() {
         self.hideOverlaySheetViewController()
+    }
+}
+
+extension UIViewController {
+    @objc func dismissVC() {
+        self.dismiss(animated: true, completion: nil)
     }
 }

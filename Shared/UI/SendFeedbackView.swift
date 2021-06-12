@@ -66,7 +66,14 @@ public struct SendFeedbackView: View {
                     .textCase(nil)
                 ) {
                     MultilineTextField("Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!", text: $feedbackText)
+                        .if(TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu)) { view in
+                            view
+                            .overlay(RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.neeva.brand.blue, lineWidth: 4)
+                                        .padding(.horizontal, -10))
+                        }
                 }
+
                 if let screenshot = screenshot, FeatureFlag[.feedbackScreenshot] {
                     DecorativeSection {
                         Toggle(isOn: $shareScreenshot) {
@@ -152,6 +159,7 @@ public struct SendFeedbackView: View {
                                 isSending = false
                                 switch result {
                                 case .success:
+                                    TourManager.shared.userReachedStep(step: .promptFeedbackInNeevaMenu)
                                     if let onDismiss = onDismiss {
                                         onDismiss()
                                     } else {
@@ -160,6 +168,7 @@ public struct SendFeedbackView: View {
                                 case .failure(let error):
                                     print(error)
                                 }
+                                TourManager.shared.reset()
                             }
                         }
                         .disabled(feedbackText.isEmpty)
@@ -169,6 +178,7 @@ public struct SendFeedbackView: View {
         }
         .presentation(isModal: feedbackText != initialText || isEditingURL)
         .navigationViewStyle(StackNavigationViewStyle())
+        .onDisappear(perform: viewDidDisappear)
     }
 
     struct EditURLView: View {
@@ -210,6 +220,10 @@ public struct SendFeedbackView: View {
                 }
             }
         }
+    }
+
+    private func viewDidDisappear() {
+        TourManager.shared.notifyCurrentViewClose()
     }
 }
 

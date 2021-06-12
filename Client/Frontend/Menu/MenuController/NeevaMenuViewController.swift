@@ -27,6 +27,7 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
 
     public init(delegate: BrowserViewController, onDismiss: @escaping () -> (), isPrivate: Bool, feedbackImage: UIImage?){
         super.init(rootView: NeevaMenuRootView(onDismiss: onDismiss, isPrivate: isPrivate, embeddedView:NeevaMenuView(isPrivate: isPrivate, noTopPadding: true) ))
+
         self.delegate = delegate
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
@@ -38,43 +39,86 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
         //Build callbacks for each button action
         self.rootView.embeddedView.menuAction = { result in
             delegate.isNeevaMenuSheetOpen = false
-            self.rootView.onDismiss()
             switch result {
             case .home:
+                self.rootView.onDismiss()
                 ClientLogger.shared.logCounter(.OpenHome, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.home)
                 break
             case .spaces:
-                ClientLogger.shared.logCounter(.OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.spaces)
+                self.spacesHandler(delegate)
                 break
             case .settings:
-                ClientLogger.shared.logCounter(.OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
-                self.dismiss( animated: true, completion: nil )
-                let controller = SettingsViewController(bvc: delegate)
-
-                // Wait to present VC in an async dispatch queue to prevent a case where dismissal
-                // of this popover on iPad seems to block the presentation of the modal VC.
-                DispatchQueue.main.async {
-                    delegate.present(controller, animated: true, completion: nil)
-                }
+                self.settingsHandler(delegate)
                 break
             case .history:
+                self.rootView.onDismiss()
                 ClientLogger.shared.logCounter(.OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.homePanelDidRequestToOpenLibrary(panel: .history)
                 break
             case .downloads:
+                self.rootView.onDismiss()
                 ClientLogger.shared.logCounter(.OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.homePanelDidRequestToOpenLibrary(panel: .downloads)
                 break
             case .feedback:
-                ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.present(SendFeedbackPanel(screenshot: feedbackImage, url: delegate.tabManager.selectedTab?.canonicalURL, onOpenURL: {
-                    delegate.dismiss(animated: true, completion: nil)
-                    delegate.openURLInNewTab($0)
-                }), animated: true)
+                self.feedbackHandler(delegate, feedbackImage)
                 break
             }
+        }
+    }
+
+    private func spacesHandler(_ delegate: BrowserViewController) {
+        // Without this rootView.onDismiss, Neeva menu sheet would not hide
+        // after navigating to spaces page. User will still see the Neeva
+        // menu sheet open
+        self.rootView.onDismiss()
+        ClientLogger.shared.logCounter(.OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
+
+        // if user started a tour, trigger navigation on webui side
+        // to prevent page refresh, which will lost the states
+        if TourManager.shared.userReachedStep(step: .promptSpaceInNeevaMenu) != .stopAction {
+            delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.spaces)
+        }
+    }
+
+    private func settingsHandler(_ delegate: BrowserViewController) {
+        ClientLogger.shared.logCounter(.OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
+        TourManager.shared.userReachedStep(tapTarget: .settingMenu)
+
+        // Without this dismiss, when user click on settings menu, if there is
+        // a quest prompt display on top of it, settings panel would not
+        // show up
+        self.dismiss( animated: true, completion: nil )
+
+        let controller = SettingsViewController(bvc: delegate)
+
+        // Wait to present VC in an async dispatch queue to prevent a case where dismissal
+        // of this popover on iPad seems to block the presentation of the modal VC.
+        DispatchQueue.main.async {
+            delegate.present(controller, animated: true, completion: nil)
+        }
+
+        // Without this rootView.onDismiss, Neeva menu sheet would not hide
+        // and settings panel will display on top of it. When user close settings
+        // panel, they will still see the Neeva menu sheet open
+        self.rootView.onDismiss()
+    }
+
+    private func feedbackHandler(_ delegate: BrowserViewController, _ feedbackImage: UIImage?) {
+        ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
+        TourManager.shared.userReachedStep(tapTarget: .feedbackMenu)
+
+        // Without this rootView.onDismiss, Neeva menu sheet would not hide
+        // and feedback panel will display on top of it. When user close feedback
+        // panel, they will still see the Neeva menu sheet open
+        self.rootView.onDismiss()
+
+        DispatchQueue.main.asyncAfter(deadline: TourManager.shared.delay()) {
+            delegate.present(SendFeedbackPanel(screenshot: feedbackImage, url: delegate.tabManager.selectedTab?.canonicalURL, onOpenURL: {
+                delegate.dismiss(animated: true, completion: nil)
+                delegate.openURLInNewTab($0)
+            }), animated: true)
         }
     }
 
@@ -89,3 +133,4 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
         view.backgroundColor = .clear
     }
 }
+

@@ -2,45 +2,74 @@
 
 import SwiftUI
 
+fileprivate struct CloseButton: View {
+    var onClose: (()-> Void)
+
+    var body: some View {
+        Button(action: onClose) {
+            ZStack(alignment: .center) {
+                Circle()
+                    .fill(Color.white.opacity(0.18))
+                    .frame(width: 40, height: 40, alignment: .center)
+                Image(systemName: "xmark")
+                    .font(.system(size: 18))
+                    .foregroundColor(Color.neeva.Tour.Title)
+            }
+        }
+        .accessibilityLabel("Dismiss tour")
+    }
+}
+
 struct TourPromptView: View {
     var onConfirm: (()-> Void)?
     let title: String
     let description: String
-    let buttonMessage: String
+    let buttonMessage: String?
+    var onClose: (()-> Void)?
 
-    init(title: String, description: String, buttonMessage: String, onConfirm: (()-> Void)? = nil) {
+    init(title: String, description: String, buttonMessage: String? = nil, onConfirm: (()-> Void)? = nil, onClose: (()-> Void)? = nil) {
         self.onConfirm = onConfirm
         self.title = title
         self.description = description
         self.buttonMessage = buttonMessage
+        self.onClose = onClose
     }
 
     var body: some View {
         ZStack {
             Color.neeva.Tour.Background
             ScrollView {
-                VStack(alignment: .leading) {
-                    Text(title)
-                        .foregroundColor(Color.neeva.Tour.Title)
-                        .font(.headline)
-                        .padding(.bottom, 8)
-                    Text(description)
-                        .foregroundColor(Color.neeva.Tour.Description)
-                        .font(.callout)
-                }
-                .fixedSize(horizontal: false, vertical: true)
-                Button(action: onConfirm!) {
-                    ZStack {
-                        Color.neeva.Tour.ButtonBackground
-                        Text(buttonMessage)
-                            .foregroundColor(Color.neeva.Tour.ButtonText)
-                            .font(.system(size: 16, weight: .bold))
-
+                HStack(alignment:.top) {
+                    VStack {
+                        VStack(alignment: .leading) {
+                            Text(title)
+                                    .foregroundColor(Color.neeva.Tour.Title)
+                                    .font(.headline)
+                                    .padding(.bottom, 8)
+                            Text(description)
+                                .foregroundColor(Color.neeva.Tour.Description)
+                                .font(.callout)
+                        }
+                        .fixedSize(horizontal: false, vertical: true)
+                        if let buttonMessage = buttonMessage, let onConfirm = onConfirm, !buttonMessage.isEmpty {
+                            Button(action: onConfirm) {
+                                ZStack {
+                                    Color.neeva.Tour.ButtonBackground
+                                    Text(buttonMessage)
+                                        .foregroundColor(Color.neeva.Tour.ButtonText)
+                                        .font(.system(size: 16, weight: .bold))
+                                }
+                            }
+                            .cornerRadius(30)
+                            .frame(height: 40)
+                            .padding(.horizontal, 6)
+                        }
+                    }
+                    if onClose != nil {
+                        Spacer()
+                        CloseButton(onClose: onClose!)
                     }
                 }
-                .cornerRadius(30)
-                .frame(height: 40)
-                .padding(.horizontal, 6)
             }
             .padding([.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
         }

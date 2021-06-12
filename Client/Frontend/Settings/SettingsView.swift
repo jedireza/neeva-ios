@@ -56,6 +56,11 @@ struct SettingsView: View {
                 }
             }
         }.navigationViewStyle(StackNavigationViewStyle())
+        .onDisappear(perform: viewDidDisappear)
+    }
+
+    private func viewDidDisappear() {
+        TourManager.shared.notifyCurrentViewClose()
     }
 }
 

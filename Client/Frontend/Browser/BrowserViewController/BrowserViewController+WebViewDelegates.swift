@@ -38,7 +38,8 @@ fileprivate func setCookiesForNeeva(webView: WKWebView) {
     // should be synchronized in this fashion.
 
     let boolFlags: [NeevaFeatureFlags.BoolFlag] = [
-        .clientHideSearchBox
+        .clientHideSearchBox,
+        .browserQuests
     ]
     let intFlags: [NeevaFeatureFlags.IntFlag] = [
     ]
@@ -175,7 +176,6 @@ extension BrowserViewController: WKUIDelegate {
 
     @available(iOS 13.0, *)
     func webView(_ webView: WKWebView, contextMenuConfigurationForElement elementInfo: WKContextMenuElementInfo, completionHandler: @escaping (UIContextMenuConfiguration?) -> Void) {
-       
         let clonedWebView = WKWebView(frame: webView.frame, configuration: webView.configuration)
         completionHandler(UIContextMenuConfiguration(identifier: nil, previewProvider: {
             guard let url = elementInfo.linkURL, Defaults[.contextMenuShowLinkPreviews] else { return nil }
@@ -753,7 +753,7 @@ extension BrowserViewController: WKNavigationDelegate {
         self.scrollController.resetZoomState()
 
         if let currentURL = tab.url, NeevaConstants.isNeevaHome(url: currentURL) {
-            showSearchBarPrompt()
+            showSearchBarTourPrompt()
         }
 
         if tabManager.selectedTab === tab {

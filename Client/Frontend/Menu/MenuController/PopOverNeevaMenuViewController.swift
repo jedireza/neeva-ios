@@ -38,17 +38,23 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
                 break
             case .spaces:
                 ClientLogger.shared.logCounter(.OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.spaces)
+
+                // if user started a tour, trigger navigation on webui side
+                // to prevent page refresh, which will lost the states
+                if TourManager.shared.userReachedStep(step: .promptSpaceInNeevaMenu) != .stopAction {
+                    delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.spaces)
+                } else {
+                    delegate.dismissVC()
+                }
                 break
             case .settings:
                 ClientLogger.shared.logCounter(.OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
-                self.dismiss( animated: true, completion: nil )
+                TourManager.shared.userReachedStep(tapTarget: .settingMenu)
+
                 let controller = SettingsViewController(bvc: delegate)
 
-                // Wait to present VC in an async dispatch queue to prevent a case where dismissal
-                // of this popover on iPad seems to block the presentation of the modal VC.
-                DispatchQueue.main.async {
-                    delegate.present(controller, animated: true, completion: nil)
+                self.dismiss(animated: true) {
+                  delegate.present(controller, animated: true, completion: nil)
                 }
                 break
             case .history:
@@ -61,10 +67,23 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
                 break
             case .feedback:
                 ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.present(SendFeedbackPanel(screenshot: feedbackImage, url: delegate.tabManager.selectedTab?.canonicalURL, onOpenURL: {
-                    delegate.dismiss(animated: true, completion: nil)
-                    delegate.openURLInNewTab($0)
-                }), animated: true)
+
+                if TourManager.shared.userReachedStep(tapTarget: .feedbackMenu) == .resumeAction {
+                    // need to add this dismissVC because without it,
+                    // when user click on feedback menu, the quest popover
+                    // for feedback will disappear, but the Neeva menu
+                    // still shows. Expect behavior will be both quest
+                    // popover and Neeva menu disappear, then open up
+                    // feedback panel
+                    delegate.dismissVC()
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: TourManager.shared.delay()) {
+                    delegate.present(SendFeedbackPanel(screenshot: feedbackImage, url: delegate.tabManager.selectedTab?.canonicalURL, onOpenURL: {
+                        delegate.dismiss(animated: true, completion: nil)
+                        delegate.openURLInNewTab($0)
+                    }), animated: true)
+                }
                 break
             }
         }
