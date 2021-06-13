@@ -7,17 +7,17 @@ import Shared
 
 // Struct that retrives saved tabs and simple tabs dictionary for WidgetKit
 struct SiteArchiver {
-    static func tabsToRestore(tabsStateArchivePath: URL?) -> ([SavedTab], [String: SimpleTab]) {
+    static func tabsToRestore(tabsStateArchivePath: String?) -> ([SavedTab], [String: SimpleTab]) {
         // Get simple tabs for widgetkit
         let simpleTabsDict = SimpleTab.getSimpleTabs()
         
         guard let tabStateArchivePath = tabsStateArchivePath,
-              FileManager.default.fileExists(atPath: tabStateArchivePath.path),
-              let tabData = try? Data(contentsOf: tabStateArchivePath),
-              let unarchiver = try? NSKeyedUnarchiver(forReadingFrom: tabData) else {
+              FileManager.default.fileExists(atPath: tabStateArchivePath),
+              let tabData = try? Data(contentsOf: URL(fileURLWithPath: tabStateArchivePath)) else {
             return ([SavedTab](), simpleTabsDict)
         }
 
+        let unarchiver = try NSKeyedUnarchiver(forReadingWith: tabData)
         unarchiver.setClass(SavedTab.self, forClassName: "Client.SavedTab")
         unarchiver.setClass(SessionData.self, forClassName: "Client.SessionData")
         unarchiver.decodingFailurePolicy = .setErrorAndReturn
