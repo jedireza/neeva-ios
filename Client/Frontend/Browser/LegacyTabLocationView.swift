@@ -5,20 +5,21 @@
 import UIKit
 import Shared
 import SnapKit
+import Combine
 
-protocol TabLocationViewDelegate {
-    func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidLongPressLocation(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView)
-    func tabLocationViewDidTabShareButton(_ tabLocationView: TabLocationView)
+protocol LegacyTabLocationViewDelegate {
+    func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from button: UIButton)
+    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView)
 
-    func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu?
-    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]?
+    func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu?
+    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]?
 }
 
-private enum TabLocationViewUX {
+private enum LegacyTabLocationViewUX {
     static let LockIconWidth: CGFloat = 16
     static let ButtonWidth: CGFloat = 44
     static let ButtonHeight: CGFloat = 42
@@ -29,34 +30,18 @@ let EllipsePointerStyleProvider: UIButton.PointerStyleProvider = { button, effec
     UIPointerStyle(effect: effect, shape: .path(UIBezierPath(ovalIn: button.bounds)))
 }
 
-class TabLocationView: UIView {
-    var delegate: TabLocationViewDelegate?
-    var longPressRecognizer: UILongPressGestureRecognizer!
-    var tapRecognizer: UITapGestureRecognizer!
+class LegacyTabLocationView: UIView {
+    let model: URLBarModel
+    private var subscriptions: Set<AnyCancellable> = []
+
+    var delegate: LegacyTabLocationViewDelegate?
+    private var longPressRecognizer: UILongPressGestureRecognizer!
+    private var tapRecognizer: UITapGestureRecognizer!
     var contentView: UIView!
     private var isPrivateMode: Bool = false
 
-    func showLockIcon(forSecureContent isSecure: Bool) {
-        if url?.absoluteString == "about:blank" {
-            // Matching the desktop behaviour, we don't mark these pages as secure.
-            lockImageView.isHidden = true
-            return
-        }
-        lockImageView.isHidden = !isSecure
-    }
-
     func updateShareButton(_ isPage: Bool) {
         shareButton.isEnabled = isPage
-    }
-
-    var url: URL? {
-        didSet {
-            // Report the URL as the accessible value rather than the display text.
-            urlLabel.accessibilityValue = url?.absoluteString ?? ""
-            updateTextWithURL()
-            shieldButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
-            setNeedsUpdateConstraints()
-        }
     }
 
     private var urlLabelTextIsPlaceholder: Bool = false
@@ -85,7 +70,7 @@ class TabLocationView: UIView {
         return label
     }()
 
-    fileprivate lazy var lockImageView: UIImageView = {
+    private lazy var lockImageView: UIImageView = {
         let lockImageView = UIImageView(image: UIImage(systemName: "lock.fill"))
         lockImageView.isAccessibilityElement = true
         lockImageView.contentMode = .center
@@ -94,9 +79,9 @@ class TabLocationView: UIView {
         return lockImageView
     }()
 
-    fileprivate lazy var lockAndText = UIView()
+    private lazy var lockAndText = UIView()
     
-    lazy var shieldButton: UIButton = {
+    private lazy var shieldButton: UIButton = {
         let shieldButton = UIButton()
         shieldButton.setImage(UIImage.templateImageNamed("tracking-protection"), for: .normal)
         shieldButton.addTarget(self, action: #selector(didPressTPShieldButton(_:)), for: .touchUpInside)
@@ -107,8 +92,8 @@ class TabLocationView: UIView {
         return shieldButton
     }()
 
-    lazy var reloadButton: ReloadButton = {
-        let reloadButton = ReloadButton(frame: .zero, state: .reload)
+    private lazy var reloadButton: ReloadButton = {
+        let reloadButton = ReloadButton(frame: .zero, state: model.$reloadButton, readerMode: model.$readerMode)
         reloadButton.addTarget(self, action: #selector(tapReloadButton), for: .touchUpInside)
         reloadButton.setDynamicMenu { self.delegate?.tabLocationViewReloadMenu(self) }
         reloadButton.tintColor = .black
@@ -140,8 +125,27 @@ class TabLocationView: UIView {
         }
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(model: URLBarModel) {
+        self.model = model
+        super.init(frame: .zero)
+
+        // safe to use unowned instead of weak here because deallocating the location view
+        // causes the subscription to be cancelled
+        model.$url.sink { [unowned self] url in
+            // Report the URL as the accessible value rather than the display text.
+            urlLabel.accessibilityValue = url?.absoluteString ?? ""
+            updateTextWithURL(url)
+            shieldButton.isHidden = !["https", "http"].contains(url?.scheme ?? "")
+            setNeedsUpdateConstraints()
+        }.store(in: &subscriptions)
+        model.$isSecure.sink { [unowned self] isSecure in
+            if model.url?.absoluteString == "about:blank" {
+                // Matching the desktop behaviour, we don't mark these pages as secure.
+                lockImageView.isHidden = true
+                return
+            }
+            lockImageView.isHidden = !isSecure
+        }.store(in: &subscriptions)
 
         register(self, forTabEvents: .didGainFocus, .didToggleDesktopMode, .didChangeContentBlocking)
 
@@ -171,7 +175,7 @@ class TabLocationView: UIView {
         }
 
         lockImageView.snp.makeConstraints { make in
-            make.width.equalTo(TabLocationViewUX.LockIconWidth)
+            make.width.equalTo(LegacyTabLocationViewUX.LockIconWidth)
             make.leading.equalTo(lockAndText.snp.leading).priority(.high)
             make.leading.greaterThanOrEqualTo(shieldButton.snp.trailing).priority(.high)
             make.trailing.equalTo(urlLabel.snp.leading).priority(.high)
@@ -187,30 +191,30 @@ class TabLocationView: UIView {
 
         shieldButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.width.equalTo(TabLocationViewUX.ButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.width.equalTo(LegacyTabLocationViewUX.ButtonWidth)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
             make.leading.equalTo(self)
         }
 
         lockAndText.snp.makeConstraints { make in
             make.centerX.equalTo(self.snp.centerX).priority(.medium)
             make.centerY.equalTo(self)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
             make.leading.greaterThanOrEqualTo(shieldButton.snp.trailing).priority(.high)
             make.trailing.lessThanOrEqualTo(reloadButton.snp.leading).priority(.high)
         }
 
         reloadButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.width.equalTo(TabLocationViewUX.ButtonWidth)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
+            make.width.equalTo(LegacyTabLocationViewUX.ButtonWidth)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
         }
         shareButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.leading.equalTo(reloadButton.snp.trailing)
             make.trailing.equalTo(self)
-            make.height.equalTo(TabLocationViewUX.ButtonHeight)
-            make.width.equalTo(TabLocationViewUX.ButtonWidth)
+            make.height.equalTo(LegacyTabLocationViewUX.ButtonHeight)
+            make.width.equalTo(LegacyTabLocationViewUX.ButtonWidth)
         }
 
         // Setup UIDragInteraction to handle dragging the location
@@ -227,19 +231,19 @@ class TabLocationView: UIView {
     override func updateConstraints() {
         lockImageView.snp.updateConstraints { make in
             make.width.equalTo(
-                lockImageView.isHidden ? 0 : TabLocationViewUX.LockIconWidth)
+                lockImageView.isHidden ? 0 : LegacyTabLocationViewUX.LockIconWidth)
         }
         reloadButton.snp.updateConstraints { make in
             make.width.equalTo(
-                reloadButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth)
+                reloadButton.isHidden ? 0 : LegacyTabLocationViewUX.ButtonWidth)
         }
         shieldButton.snp.updateConstraints { make in
             make.width.equalTo(
-                shieldButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth)
+                shieldButton.isHidden ? 0 : LegacyTabLocationViewUX.ButtonWidth)
         }
         shareButton.snp.updateConstraints { make in
             make.width.equalTo(
-                shareButton.isHidden ? 0 : TabLocationViewUX.ButtonWidth
+                shareButton.isHidden ? 0 : LegacyTabLocationViewUX.ButtonWidth
             )
         }
         super.updateConstraints()
@@ -281,10 +285,10 @@ class TabLocationView: UIView {
     }
 
     @objc func didPressTPShieldButton(_ button: UIButton) {
-        delegate?.tabLocationViewDidTapShield(self)
+        delegate?.tabLocationViewDidTapShield(self, from: button)
     }
 
-    fileprivate func updateTextWithURL() {
+    fileprivate func updateTextWithURL(_ url: URL?) {
         var text: String
         if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
             text = host
@@ -307,7 +311,7 @@ class TabLocationView: UIView {
 
             // show search icon for query and lock for website
             let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
-            let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TabLocationViewUX.IconPadding)
+            let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: LegacyTabLocationViewUX.IconPadding)
             lockImageView.image = UIImage(systemName: displayTextIsQuery ? "magnifyingglass" : "lock.fill", withConfiguration: config)?.withAlignmentRectInsets(padding)
         } else {
             urlLabelTextIsPlaceholder = true
@@ -320,7 +324,7 @@ class TabLocationView: UIView {
     }
 }
 
-extension TabLocationView: UIGestureRecognizerDelegate {
+extension LegacyTabLocationView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // When long pressing a button make sure the textfield's long press gesture is not triggered
         return !(otherGestureRecognizer.view is UIButton)
@@ -333,10 +337,10 @@ extension TabLocationView: UIGestureRecognizerDelegate {
 }
 
 @available(iOS 11.0, *)
-extension TabLocationView: UIDragInteractionDelegate {
+extension LegacyTabLocationView: UIDragInteractionDelegate {
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         // Ensure we actually have a URL in the location bar and that the URL is not local.
-        guard let url = self.url, !InternalURL.isValid(url: url), let itemProvider = NSItemProvider(contentsOf: url) else {
+        guard let url = model.url, !InternalURL.isValid(url: url), let itemProvider = NSItemProvider(contentsOf: model.url) else {
             return []
         }
 
@@ -351,7 +355,7 @@ extension TabLocationView: UIDragInteractionDelegate {
     }
 }
 
-extension TabLocationView: AccessibilityActionsSource {
+extension LegacyTabLocationView: AccessibilityActionsSource {
     func accessibilityCustomActionsForView(_ view: UIView) -> [UIAccessibilityCustomAction]? {
         if view === urlLabel {
             return delegate?.tabLocationViewLocationAccessibilityActions(self)
@@ -360,7 +364,7 @@ extension TabLocationView: AccessibilityActionsSource {
     }
 }
 
-extension TabLocationView: PrivateModeUI {
+extension LegacyTabLocationView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         self.isPrivateMode = isPrivate
 
@@ -384,7 +388,7 @@ extension TabLocationView: PrivateModeUI {
     }
 }
 
-extension TabLocationView: TabEventHandler {
+extension LegacyTabLocationView: TabEventHandler {
     func tabDidChangeContentBlocking(_ tab: Tab) {
         updateBlockerStatus(forTab: tab)
     }
@@ -414,10 +418,29 @@ enum ReloadButtonState: String {
     case disabled = "Disabled"
 }
 
-class ReloadButton: UIButton {
-    convenience init(frame: CGRect, state: ReloadButtonState) {
+fileprivate class ReloadButton: UIButton {
+    private var subscription: AnyCancellable?
+    convenience init(frame: CGRect, state: Published<ReloadButtonState>.Publisher, readerMode: Published<ReaderModeState>.Publisher) {
         self.init(frame: frame)
-        reloadButtonState = state
+        subscription = state.combineLatest(readerMode)
+            .sink { [unowned self] state, readerMode in
+                guard readerMode != .active else {
+                    self.isHidden = true
+                    return
+                }
+
+                let configuration = UIImage.SymbolConfiguration(weight: .medium)
+                switch state {
+                case .reload:
+                    self.isHidden = false
+                    setImage(UIImage(systemName: "arrow.clockwise", withConfiguration: configuration), for: .normal)
+                case .stop:
+                    self.isHidden = false
+                    setImage(UIImage(systemName: "xmark", withConfiguration: configuration), for: .normal)
+                case .disabled:
+                    self.isHidden = true
+                }
+            }
     }
 
     required override init(frame: CGRect) {
@@ -426,29 +449,6 @@ class ReloadButton: UIButton {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private var _reloadButtonState = ReloadButtonState.reload
-    
-    var reloadButtonState: ReloadButtonState {
-        get {
-            return _reloadButtonState
-        }
-        set (newReloadButtonState) {
-            _reloadButtonState = newReloadButtonState
-            
-            let configuration = UIImage.SymbolConfiguration(weight: .medium)
-            switch _reloadButtonState {
-            case .reload:
-                self.isHidden = false
-                setImage(UIImage(systemName: "arrow.clockwise", withConfiguration: configuration), for: .normal)
-            case .stop:
-                self.isHidden = false
-                setImage(UIImage(systemName: "xmark", withConfiguration: configuration), for: .normal)
-            case .disabled:
-                self.isHidden = true
-            }
-        }
     }
 }
 

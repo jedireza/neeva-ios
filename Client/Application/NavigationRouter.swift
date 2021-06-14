@@ -223,7 +223,7 @@ enum NavigationPath {
 
     private static func handleText(text: String, with bvc: BrowserViewController) {
         bvc.openBlankNewTab(focusLocationField: false)
-        bvc.urlBar(bvc.urlBar, didSubmitText: text)
+        bvc.urlBar(bvc.legacyURLBar, didSubmitText: text)
     }
     
     private static func handleDefaultBrowser(path: DefaultBrowserPath) {

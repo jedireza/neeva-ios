@@ -48,8 +48,8 @@ class TabTrayControllerV1: UIViewController {
         return toolbar
     }()
 
-    lazy var locationView: TabLocationView = {
-        let locationView = TabLocationView()
+    lazy var locationView: LegacyTabLocationView = {
+        let locationView = LegacyTabLocationView(model: URLBarModel())
         locationView.layer.cornerRadius = UIConstants.TextFieldHeight / 2
         locationView.translatesAutoresizingMaskIntoConstraints = false
         locationView.delegate = self
@@ -164,8 +164,8 @@ class TabTrayControllerV1: UIViewController {
             toolbar.applyUIMode(isPrivate: true)
         }
 
-        locationView.url = nil
-        locationView.showLockIcon(forSecureContent: false)
+        locationView.model.url = nil
+        locationView.model.isSecure = false
         locationView.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
 
         line.backgroundColor = UIColor.Browser.urlBarDivider
@@ -1032,16 +1032,16 @@ class TabCell: UICollectionViewCell {
     }
 }
 
-extension TabTrayControllerV1: TabLocationViewDelegate {
-    func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView) {
+extension TabTrayControllerV1: LegacyTabLocationViewDelegate {
+    func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView) {
         didTapToolbarAddTab()
         delegate?.tabTrayDidTapLocationBar(self)
     }
-    func tabLocationViewDidLongPressLocation(_ tabLocationView: TabLocationView) {}
-    func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView) {}
-    func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView) {}
-    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView) {}
-    func tabLocationViewDidTabShareButton(_ tabLocationView: TabLocationView) {}
-    func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu? { return nil }
-    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]? { return nil }
+    func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView) {}
+    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView) {}
+    func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from: UIButton) {}
+    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView) {}
+    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView) {}
+    func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu? { return nil }
+    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]? { return nil }
 }

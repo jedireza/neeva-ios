@@ -5,8 +5,10 @@
 import Shared
 import SnapKit
 import Storage
+import SwiftUI
+import Combine
 
-private enum URLBarViewUX {
+private enum LegacyURLBarViewUX {
     static let TextFieldBorderColor = UIColor.Photon.Grey40
     static let TextFieldActiveBorderColor = UIColor.Photon.Blue40
 
@@ -22,37 +24,37 @@ private enum URLBarViewUX {
     static let ToolbarEdgePaddding: CGFloat = 24
 }
 
-protocol URLBarDelegate: AnyObject {
-    func urlBarDidPressTabs(_ urlBar: URLBarView)
-    func urlBarDidPressReaderMode(_ urlBar: URLBarView)
+protocol LegacyURLBarDelegate: UIViewController {
+    func urlBarDidPressTabs(_ urlBar: LegacyURLBarView)
+    func urlBarDidPressReaderMode(_ urlBar: LegacyURLBarView)
     /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
-    func urlBarDidLongPressReaderMode(_ urlBar: URLBarView) -> Bool
-    func urlBarReloadMenu(_ urlBar: URLBarView, from button: UIButton) -> UIMenu?
-    func urlBarDidPressStop(_ urlBar: URLBarView)
-    func urlBarDidPressReload(_ urlBar: URLBarView)
-    func urlBarDidEnterOverlayMode(_ urlBar: URLBarView)
-    func urlBarDidLeaveOverlayMode(_ urlBar: URLBarView)
-    func urlBarDidLongPressLocation(_ urlBar: URLBarView)
-    func urlBarNeevaMenu(_ urlBar: URLBarView, from button: UIButton)
-    func urlBarDidTapShield(_ urlBar: URLBarView, from button: UIButton)
-    func urlBarLocationAccessibilityActions(_ urlBar: URLBarView) -> [UIAccessibilityCustomAction]?
-    func urlBarDidPressScrollToTop(_ urlBar: URLBarView)
-    func urlBar(_ urlBar: URLBarView, didRestoreText text: String)
-    func urlBar(_ urlBar: URLBarView, didEnterText text: String)
-    func urlBar(_ urlBar: URLBarView, didSubmitText text: String)
-    func urlBarDidBeginDragInteraction(_ urlBar: URLBarView)
+    func urlBarDidLongPressReaderMode(_ urlBar: LegacyURLBarView) -> Bool
+    func urlBarReloadMenu(_ urlBar: LegacyURLBarView) -> UIMenu?
+    func urlBarDidPressStop(_ urlBar: LegacyURLBarView)
+    func urlBarDidPressReload(_ urlBar: LegacyURLBarView)
+    func urlBarDidEnterOverlayMode(_ urlBar: LegacyURLBarView)
+    func urlBarDidLeaveOverlayMode(_ urlBar: LegacyURLBarView)
+    func urlBarDidLongPressLocation(_ urlBar: LegacyURLBarView)
+    func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton)
+    func urlBarDidTapShield(_ urlBar: LegacyURLBarView, from button: UIButton)
+    func urlBarLocationAccessibilityActions(_ urlBar: LegacyURLBarView) -> [UIAccessibilityCustomAction]?
+    func urlBarDidPressScrollToTop(_ urlBar: LegacyURLBarView)
+    func urlBar(_ urlBar: LegacyURLBarView, didRestoreText text: String)
+    func urlBar(_ urlBar: LegacyURLBarView, didEnterText text: String)
+    func urlBar(_ urlBar: LegacyURLBarView, didSubmitText text: String)
+    func urlBarDidBeginDragInteraction(_ urlBar: LegacyURLBarView)
 }
 
-class URLBarView: UIView {
+class LegacyURLBarView: UIView {
     // Additional UIAppearance-configurable properties
-    @objc dynamic var locationBorderColor: UIColor = URLBarViewUX.TextFieldBorderColor {
+    @objc dynamic var locationBorderColor: UIColor = LegacyURLBarViewUX.TextFieldBorderColor {
         didSet {
             if !inOverlayMode {
                 locationContainer.layer.borderColor = locationBorderColor.cgColor
             }
         }
     }
-    @objc dynamic var locationActiveBorderColor: UIColor = URLBarViewUX.TextFieldActiveBorderColor {
+    @objc dynamic var locationActiveBorderColor: UIColor = LegacyURLBarViewUX.TextFieldActiveBorderColor {
         didSet {
             if inOverlayMode {
                 locationContainer.layer.borderColor = locationActiveBorderColor.cgColor
@@ -60,7 +62,10 @@ class URLBarView: UIView {
         }
     }
 
-    weak var delegate: URLBarDelegate?
+    let model = URLBarModel()
+    var urlSubscription: AnyCancellable?
+
+    weak var delegate: LegacyURLBarDelegate?
     weak var tabToolbarDelegate: TabToolbarDelegate?
     var lensOrBang: ActiveLensBangInfo?
     var helper: TabToolbarHelper?
@@ -102,12 +107,16 @@ class URLBarView: UIView {
         return neevaMenuButton
     }()
     
-    lazy var locationView: TabLocationView = {
-        let locationView = TabLocationView()
-        locationView.layer.cornerRadius = URLBarViewUX.TextFieldCornerRadius
+    lazy var legacyLocationView: LegacyTabLocationView = {
+        let locationView = LegacyTabLocationView(model: model)
+        locationView.layer.cornerRadius = LegacyURLBarViewUX.TextFieldCornerRadius
         locationView.translatesAutoresizingMaskIntoConstraints = false
         locationView.delegate = self
         return locationView
+    }()
+
+    lazy var locationView: UIHostingController<TabLocationView> = {
+        UIHostingController(rootView: TabLocationView(text: .constant(nil), isPrivate: false, isLoading: false, model: model))
     }()
 
     lazy var locationContainer: UIView = {
@@ -171,21 +180,6 @@ class URLBarView: UIView {
 
     lazy var actionButtons: [ToolbarButton] = [self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton]
 
-    var currentURL: URL? {
-        get {
-            return locationView.url as URL?
-        }
-
-        set(newURL) {
-            locationView.url = newURL
-            if let url = newURL, InternalURL(url)?.isAboutHomeURL ?? false {
-                line.isHidden = true
-            } else {
-                line.isHidden = false
-            }
-        }
-    }
-
     var profile: Profile? = nil
     
     init(profile: Profile) {
@@ -200,7 +194,11 @@ class URLBarView: UIView {
     }
 
     fileprivate func commonInit() {
-        locationContainer.addSubview(locationView)
+        if FeatureFlag[.newURLBar] {
+            locationContainer.addSubview(locationView.view)
+        } else {
+            locationContainer.addSubview(legacyLocationView)
+        }
 
         [line, tabsButton, neevaMenuButton, progressBar, cancelButton, addToSpacesButton,
          forwardButton, backButton, shareButton, locationContainer].forEach {
@@ -229,6 +227,14 @@ class URLBarView: UIView {
         applyUIMode(isPrivate: isPrivateMode)
 
         neevaMenuButton.isPointerInteractionEnabled = true
+
+        urlSubscription = model.$url.sink { [unowned self] newURL in
+            if let url = newURL, InternalURL(url)?.isAboutHomeURL ?? false {
+                line.isHidden = true
+            } else {
+                line.isHidden = false
+            }
+        }
     }
     
     fileprivate func setupConstraints() {
@@ -239,76 +245,76 @@ class URLBarView: UIView {
         }
 
         progressBar.snp.makeConstraints { make in
-            make.top.equalTo(self.snp.bottom).inset(URLBarViewUX.ProgressBarHeight / 2)
-            make.height.equalTo(URLBarViewUX.ProgressBarHeight)
+            make.top.equalTo(self.snp.bottom).inset(LegacyURLBarViewUX.ProgressBarHeight / 2)
+            make.height.equalTo(LegacyURLBarViewUX.ProgressBarHeight)
             make.left.right.equalTo(self)
         }
         
-        locationView.snp.makeConstraints { make in
+        (FeatureFlag[.newURLBar] ? locationView.view : legacyLocationView).snp.makeConstraints { make in
             make.edges.equalTo(self.locationContainer)
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -URLBarViewUX.ToolbarEdgePaddding : -URLBarViewUX.LocationEdgePadding)
+            make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
             make.centerY.equalTo(self.locationContainer)
-            make.height.equalTo(URLBarViewUX.ButtonSize)
+            make.height.equalTo(LegacyURLBarViewUX.ButtonSize)
             make.width.equalTo(cancelButton.intrinsicContentSize.width)
         }
 
         backButton.snp.makeConstraints { make in
             if FeatureFlag[.cardStrip] {
-                make.leading.equalTo(self.newTabButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+                make.leading.equalTo(self.newTabButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
             } else {
-                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.ToolbarEdgePaddding)
+                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.ToolbarEdgePaddding)
             }
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonSize)
+            make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         forwardButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.backButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.backButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonSize)
+            make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         neevaMenuButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.forwardButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.forwardButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonSize)
+            make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         shareButton.snp.makeConstraints { make in
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonSize)
+            make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         addToSpacesButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.shareButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.shareButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonSize)
+            make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         if FeatureFlag[.cardStrip] {
             cardsButton.snp.makeConstraints { make in
-                make.leading.equalTo(self.tabsButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
-                make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
+                make.leading.equalTo(self.tabsButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
+                make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.ToolbarEdgePaddding)
                 make.centerY.equalTo(self.locationContainer)
-                make.size.equalTo(URLBarViewUX.ButtonSize)
+                make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
             }
 
             newTabButton.snp.makeConstraints { make in
-                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.ToolbarEdgePaddding)
+                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.ToolbarEdgePaddding)
                 make.centerY.equalTo(self.locationContainer)
-                make.size.equalTo(URLBarViewUX.ButtonSize)
+                make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
             }
         }
 
         tabsButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.addToSpacesButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.addToSpacesButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonSize)
+            make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
             if !FeatureFlag[.cardStrip] {
-                make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
+                make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.ToolbarEdgePaddding)
             }
         }
     }
@@ -317,16 +323,16 @@ class URLBarView: UIView {
         super.updateConstraints()
         self.locationContainer.snp.remakeConstraints { make in
             if inOverlayMode {
-                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.LocationEdgePadding)
-                make.trailing.equalTo(self.cancelButton.snp.leading).offset(-2 * URLBarViewUX.Padding)
+                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.LocationEdgePadding)
+                make.trailing.equalTo(self.cancelButton.snp.leading).offset(-2 * LegacyURLBarViewUX.Padding)
             } else if self.toolbarIsShowing {
-                make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(URLBarViewUX.Padding)
-                make.trailing.equalTo(self.shareButton.snp.leading).offset(-URLBarViewUX.Padding)
+                make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(LegacyURLBarViewUX.Padding)
+                make.trailing.equalTo(self.shareButton.snp.leading).offset(-LegacyURLBarViewUX.Padding)
             } else {
-                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.LocationEdgePadding)
-                make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.LocationEdgePadding)
+                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.LocationEdgePadding)
+                make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.LocationEdgePadding)
             }
-            make.height.equalTo(URLBarViewUX.LocationHeight)
+            make.height.equalTo(LegacyURLBarViewUX.LocationHeight)
             if self.toolbarIsShowing {
                 make.centerY.equalTo(self)
             } else {
@@ -335,9 +341,9 @@ class URLBarView: UIView {
         }
         if inOverlayMode {
             self.locationTextField?.snp.remakeConstraints { make in
-                make.edges.equalTo(self.locationView).inset(
-                    UIEdgeInsets(top: 0, left: URLBarViewUX.LocationOverlayLeftPadding,
-                                 bottom: 0, right: URLBarViewUX.LocationOverlayRightPadding))
+                make.edges.equalTo(FeatureFlag[.newURLBar] ? locationView.view : legacyLocationView).inset(
+                    UIEdgeInsets(top: 0, left: LegacyURLBarViewUX.LocationOverlayLeftPadding,
+                                 bottom: 0, right: LegacyURLBarViewUX.LocationOverlayRightPadding))
             }
         }
     }
@@ -359,7 +365,7 @@ class URLBarView: UIView {
             iconView.image = UIImage(systemSymbol: type.defaultSymbol)
                 .applyingSymbolConfiguration(UIImage.SymbolConfiguration(weight: .medium))?
                 .withTintColor(.label, renderingMode: .alwaysOriginal)
-        } else if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (currentURL?.host == NeevaConstants.appHost && suggestion == "") {
+        } else if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (model.url?.host == NeevaConstants.appHost && suggestion == "") {
             iconView.image = UIImage(named: "neevaMenuIcon")
         } else if (suggestion != "") {
             iconView.image = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))?.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor.neeva.GlobeFavGray)
@@ -450,9 +456,9 @@ class URLBarView: UIView {
         // the constraints to be calculated too early and there are constraint errors
         if !toolbarIsShowing {
             updateConstraintsIfNeeded()
-            locationView.showShareButton = true
-        }else {
-            locationView.showShareButton = false
+            legacyLocationView.showShareButton = true
+        } else {
+            legacyLocationView.showShareButton = false
         }
         updateViewsForOverlayModeAndToolbarChanges()
     }
@@ -471,7 +477,7 @@ class URLBarView: UIView {
     }
 
     func updateProgressBar(_ progress: Float) {
-        locationView.reloadButton.reloadButtonState = progress != 1 ? .stop : .reload
+        model.reloadButton = progress == 1 ? .reload : .stop
         progressBar.alpha = 1
         progressBar.isHidden = false
         progressBar.setProgress(progress, animated: !isTransitioning)
@@ -480,15 +486,6 @@ class URLBarView: UIView {
     func hideProgressBar() {
         progressBar.isHidden = true
         progressBar.setProgress(0, animated: false)
-    }
-
-    func updateReaderModeState(_ state: ReaderModeState) {
-        switch state {
-        case .active:
-            locationView.reloadButton.isHidden = true
-        case .available, .unavailable:
-            locationView.reloadButton.isHidden = false
-        }
     }
 
     func setAutocompleteSuggestion(_ suggestion: String?) {
@@ -568,7 +565,7 @@ class URLBarView: UIView {
 
     func transitionToOverlay(_ didCancel: Bool = false) {
         locationTextField?.leftView?.alpha = inOverlayMode ? 1 : 0
-        locationView.contentView.alpha = inOverlayMode ? 0 : 1
+        legacyLocationView.contentView.alpha = inOverlayMode ? 0 : 1
         cancelButton.alpha = inOverlayMode ? 1 : 0
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
@@ -585,7 +582,7 @@ class URLBarView: UIView {
 
     func updateViewsForOverlayModeAndToolbarChanges() {
         // This ensures these can't be selected as an accessibility element when in the overlay mode.
-        locationView.overrideAccessibility(enabled: !inOverlayMode)
+        legacyLocationView.overrideAccessibility(enabled: !inOverlayMode)
 
         cancelButton.isHidden = !inOverlayMode
         neevaMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
@@ -633,7 +630,7 @@ class URLBarView: UIView {
     }
 }
 
-extension URLBarView: TabToolbarProtocol {
+extension LegacyURLBarView: TabToolbarProtocol {
     func updateBackStatus(_ canGoBack: Bool) {
         backButton.isEnabled = canGoBack
     }
@@ -671,17 +668,17 @@ extension URLBarView: TabToolbarProtocol {
     }
 }
 
-extension URLBarView: TabLocationViewDelegate {
+extension LegacyURLBarView: LegacyTabLocationViewDelegate {
 
-    func tabLocationViewDidLongPressReaderMode(_ tabLocationView: TabLocationView) -> Bool {
+    func tabLocationViewDidLongPressReaderMode(_ tabLocationView: LegacyTabLocationView) -> Bool {
         return delegate?.urlBarDidLongPressReaderMode(self) ?? false
     }
 
-    func tabLocationViewReloadMenu(_ tabLocationView: TabLocationView) -> UIMenu? {
-        delegate?.urlBarReloadMenu(self, from: tabLocationView.reloadButton)
+    func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu? {
+        delegate?.urlBarReloadMenu(self)
     }
 
-    func tabLocationViewDidTapLocation(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView) {
         let isSearchQuery = tabLocationView.displayTextIsQuery
 
         let overlayText: String
@@ -689,19 +686,18 @@ extension URLBarView: TabLocationViewDelegate {
             overlayText = tabLocationView.displayText
         } else {
             // TODO: Decode punycode hostname.
-            overlayText = tabLocationView.url?.absoluteString ?? ""
+            overlayText = model.url?.absoluteString ?? ""
         }
 
         enterOverlayMode(overlayText, pasted: false, search: isSearchQuery)
     }
 
-    func tabLocationViewDidLongPressLocation(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidLongPressLocation(self)
     }
 
-    func tabLocationViewDidTapReload(_ tabLocationView: TabLocationView) {
-        let state = locationView.reloadButton.reloadButtonState
-        switch state {
+    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView) {
+        switch model.reloadButton {
         case .reload:
             delegate?.urlBarDidPressReload(self)
         case .stop:
@@ -712,32 +708,32 @@ extension URLBarView: TabLocationViewDelegate {
         }
     }
 
-    func tabLocationViewDidTabShareButton(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView) {
         self.helper?.didPressShareButton()
     }
 
-    func tabLocationViewDidTapStop(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapStop(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidPressStop(self)
     }
 
-    func tabLocationViewDidTapReaderMode(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidTapReaderMode(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidPressReaderMode(self)
     }
     
-    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: TabLocationView) -> [UIAccessibilityCustomAction]? {
+    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]? {
         return delegate?.urlBarLocationAccessibilityActions(self)
     }
 
-    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: TabLocationView) {
+    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView) {
         delegate?.urlBarDidBeginDragInteraction(self)
     }
 
-    func tabLocationViewDidTapShield(_ tabLocationView: TabLocationView) {
-        delegate?.urlBarDidTapShield(self, from: tabLocationView.shieldButton)
+    func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from button: UIButton) {
+        delegate?.urlBarDidTapShield(self, from: button)
     }
 }
 
-extension URLBarView: AutocompleteTextFieldDelegate {
+extension LegacyURLBarView: AutocompleteTextFieldDelegate {
     func autocompleteTextFieldCompletionCleared(_ autocompleteTextField: AutocompleteTextField) {
         createLeftViewFavicon()
     }
@@ -776,18 +772,18 @@ extension URLBarView: AutocompleteTextFieldDelegate {
 }
 
 // MARK: UIAppearance
-extension URLBarView {
+extension LegacyURLBarView {
     @objc dynamic var cancelTintColor: UIColor? {
         get { return cancelButton.tintColor }
         set { return cancelButton.tintColor = newValue }
     }
 }
 
-extension URLBarView: PrivateModeUI {
+extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
 
-        locationView.applyUIMode(isPrivate: isPrivate)
+        legacyLocationView.applyUIMode(isPrivate: isPrivate)
         locationTextField?.applyUIMode(isPrivate: isPrivate)
 
         if isPrivate {
@@ -814,7 +810,7 @@ class TabLocationContainerView: UIView {
         let layer = self.layer
         // The container needs is used to clip the text field so we can align the
         // 'clear' button within the rounded corners of the container properly.
-        layer.cornerRadius = URLBarViewUX.TextFieldCornerRadius
+        layer.cornerRadius = LegacyURLBarViewUX.TextFieldCornerRadius
         layer.masksToBounds = true
     }
 
