@@ -24,8 +24,10 @@ class WebUIMessageHelper: TabContentScript {
     
     func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
 
+        let showBrowserQuests = NeevaFeatureFlags[.browserQuests]
+
         let frameOrigin = message.frameInfo.securityOrigin
-        if frameOrigin.host != NeevaConstants.appHost {
+        if !showBrowserQuests || frameOrigin.host != NeevaConstants.appHost {
             return
         }
 
