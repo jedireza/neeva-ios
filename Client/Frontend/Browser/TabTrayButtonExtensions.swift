@@ -56,7 +56,8 @@ class CardStripButton: ToggleButton {
 
         let cardStrip =
             BrowserViewController.foregroundBVC().cardStripViewController
-        cardStrip?.cardStripHostingController?.view.isHidden = !isSelected
+        cardStrip?.view.isHidden = !isSelected
+        cardStrip?.view.isUserInteractionEnabled = isSelected
         BrowserViewController.foregroundBVC().view.bringSubviewToFront((cardStrip?.view)!)
     }
 }

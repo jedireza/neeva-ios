@@ -119,6 +119,19 @@ class URLBarView: UIView {
 
     let line = UIView()
 
+    lazy var newTabButton: UIButton = {
+        let symbol = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+        let newTabButton = UIButton()
+        newTabButton.setImage(symbol, for: .normal)
+        newTabButton.accessibilityIdentifier = "URLBarView.newTabButton"
+        newTabButton.tintColor = UIColor.label
+        newTabButton.addAction(UIAction { _ in
+            BrowserViewController.foregroundBVC().openURLInNewTab(nil)
+        }, for: .primaryActionTriggered)
+        newTabButton.isPointerInteractionEnabled = true
+        return newTabButton
+    }()
+
     lazy var cardsButton: CardStripButton = {
         let cardsButton = CardStripButton()
         return cardsButton
@@ -195,6 +208,7 @@ class URLBarView: UIView {
         }
         if FeatureFlag[.cardStrip] {
             addSubview(cardsButton)
+            addSubview(newTabButton)
         }
 
         helper = TabToolbarHelper(toolbar: self)
@@ -242,7 +256,11 @@ class URLBarView: UIView {
         }
 
         backButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.ToolbarEdgePaddding)
+            if FeatureFlag[.cardStrip] {
+                make.leading.equalTo(self.newTabButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
+            } else {
+                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.ToolbarEdgePaddding)
+            }
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(URLBarViewUX.ButtonSize)
         }
@@ -274,6 +292,12 @@ class URLBarView: UIView {
             cardsButton.snp.makeConstraints { make in
                 make.leading.equalTo(self.tabsButton.snp.trailing).offset(URLBarViewUX.ButtonPadding)
                 make.trailing.equalTo(self.safeArea.trailing).offset(-URLBarViewUX.ToolbarEdgePaddding)
+                make.centerY.equalTo(self.locationContainer)
+                make.size.equalTo(URLBarViewUX.ButtonSize)
+            }
+
+            newTabButton.snp.makeConstraints { make in
+                make.leading.equalTo(self.safeArea.leading).offset(URLBarViewUX.ToolbarEdgePaddding)
                 make.centerY.equalTo(self.locationContainer)
                 make.size.equalTo(URLBarViewUX.ButtonSize)
             }
@@ -442,6 +466,7 @@ class URLBarView: UIView {
         tabsButton.alpha = alpha
         if FeatureFlag[.cardStrip] {
             cardsButton.alpha = alpha
+            newTabButton.alpha = alpha
         }
     }
 
@@ -537,6 +562,7 @@ class URLBarView: UIView {
         shareButton.isHidden = !toolbarIsShowing
         if FeatureFlag[.cardStrip] {
             cardsButton.isHidden = !toolbarIsShowing
+            newTabButton.isHidden = !toolbarIsShowing
         }
     }
 
@@ -549,6 +575,7 @@ class URLBarView: UIView {
         tabsButton.alpha = inOverlayMode ? 0 : 1
         if FeatureFlag[.cardStrip] {
             cardsButton.alpha = inOverlayMode ? 0 : 1
+            newTabButton.alpha = inOverlayMode ? 0 : 1
         }
         addToSpacesButton.alpha = inOverlayMode ? 0 : 1
         forwardButton.alpha = inOverlayMode ? 0 : 1
@@ -569,6 +596,7 @@ class URLBarView: UIView {
         tabsButton.isHidden = !toolbarIsShowing || inOverlayMode
         if FeatureFlag[.cardStrip] {
             cardsButton.isHidden = !toolbarIsShowing || inOverlayMode
+            newTabButton.isHidden = !toolbarIsShowing || inOverlayMode
         }
         shareButton.isHidden = !toolbarIsShowing || inOverlayMode
     }
@@ -629,6 +657,7 @@ extension URLBarView: TabToolbarProtocol {
                     var list = [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar, toolbarNeevaMenuButton]
                     if FeatureFlag[.cardStrip] {
                         list.append(cardsButton)
+                        list.append(newTabButton)
                     }
                     return list
                 } else {

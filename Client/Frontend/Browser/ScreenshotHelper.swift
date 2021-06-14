@@ -17,6 +17,10 @@ class ScreenshotHelper {
     init(controller: BrowserViewController) {
         self.controller = controller
     }
+
+    init() {
+        self.controller = BrowserViewController.foregroundBVC()
+    }
     
     /// Takes a screenshot of the WebView to be displayed on the tab view page
     /**
@@ -28,6 +32,7 @@ class ScreenshotHelper {
             Sentry.shared.send(message: "Tab Snapshot Error", tag: .tabManager, severity: .debug, description: "Tab webView or url is nil")
             return
         }
+
         //Handle home page snapshots, can not use Apple API snapshot function for this
         if InternalURL(url)?.isAboutHomeURL ?? false {
             if let homePanel = controller?.neevaHomeViewController {
@@ -45,7 +50,7 @@ class ScreenshotHelper {
                 if let image = image {
                     tab.setScreenshot(image)
                     if FeatureFlag[.cardStrip] {
-                        BrowserViewController.foregroundBVC().cardStripViewController?.tabCardModel.onDataUpdated()
+                        self.controller?.cardStripViewController?.tabCardModel.onDataUpdated()
                     }
                 } else if let error = error {
                     Sentry.shared.send(message: "Tab snapshot error", tag: .tabManager, severity: .debug, description: error.localizedDescription)

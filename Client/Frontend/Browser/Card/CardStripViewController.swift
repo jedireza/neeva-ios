@@ -16,7 +16,6 @@ class CardStripViewController: UIViewController {
         view.addSubview(host.view)
         host.didMove(toParent: self)
         host.view.translatesAutoresizingMaskIntoConstraints = false
-        host.view.isHidden = true
         return host
     }()
 
@@ -39,6 +38,9 @@ class CardStripViewController: UIViewController {
         super.viewDidLoad()
         cardStripHostingController?.view.snp.updateConstraints { make in
             make.edges.equalToSuperview()
+        }
+        tabCardModel.onViewUpdate = {
+            BrowserViewController.foregroundBVC().view.bringSubviewToFront(self.view)
         }
     }
 

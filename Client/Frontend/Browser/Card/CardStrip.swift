@@ -26,12 +26,29 @@ class TabCardModel: CardModel, TabEventHandler {
 
     init(manager: TabManager) {
         self.manager = manager
-        register(self, forTabEvents: .didClose)
+        register(self, forTabEvents: .didClose, .didChangeURL, .didGainFocus)
         onDataUpdated()
     }
 
     func tabDidClose(_ tab: Tab) {
         onDataUpdated()
+    }
+
+    func tabDidGainFocus(_ tab: Tab) {
+        guard let url = tab.url, InternalURL(url)?.isAboutHomeURL ?? false else {
+            return
+        }
+
+        onViewUpdate()
+        onDataUpdated()
+    }
+
+    func tab(_ tab: Tab, didChangeURL url: URL) {
+        guard let selectedTab = self.manager.selectedTab, selectedTab == tab else {
+            return
+        }
+
+        ScreenshotHelper().takeScreenshot(tab)
     }
 
     func onDataUpdated() {

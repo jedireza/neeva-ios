@@ -51,6 +51,8 @@ class BrowserViewController: UIViewController {
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
+        controller.view.isHidden = true
+        controller.view.isUserInteractionEnabled = false
         return controller
     }()
     var libraryViewController: LibraryViewController?
