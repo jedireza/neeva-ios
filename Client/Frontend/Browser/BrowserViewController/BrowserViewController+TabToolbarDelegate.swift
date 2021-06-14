@@ -129,12 +129,12 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: true)
         }
-        let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark")) { _ in
+        let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark"), attributes: .destructive) { _ in
             if let tab = self.tabManager.selectedTab {
                 self.tabManager.removeTabAndUpdateSelectedIndex(tab)
             }
         }
-        let closeAllTabs = UIAction(title: Strings.CloseAllTabsTitle, image: UIImage(systemName: "trash")) { _ in
+        let closeAllTabs = UIAction(title: Strings.CloseAllTabsTitle, image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
             // make sure the user really wants to close all tabs
             self.showConfirmCloseAllTabs(numberOfTabs: tabCount)
         }
@@ -182,4 +182,3 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         focusLocationTextField(forTab: tabManager.selectedTab)
     }
 }
-
