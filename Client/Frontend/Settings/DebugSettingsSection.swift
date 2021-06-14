@@ -93,7 +93,7 @@ struct DebugSettingsSection: View {
                 }.accentColor(.red)
             }
         }
-        .listRowBackground(Color.red.opacity(0.2))
+        .listRowBackground(Color.red.opacity(0.2).ignoresSafeArea())
     }
 }
 
