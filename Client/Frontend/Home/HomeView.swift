@@ -8,7 +8,7 @@ import Defaults
 public struct NeevaHomeUX {
     fileprivate static let ToggleButtonSize: CGFloat = 32
     fileprivate static let ToggleIconSize: CGFloat = 14
-    static let HeaderPadding: CGFloat = 16
+    static let Padding: CGFloat = 16
 }
 
 fileprivate enum TriState: Int, Codable {
@@ -77,7 +77,7 @@ struct NeevaHomeHeader: View {
         .accessibilityAddTraits([.isHeader, .isButton])
         .accessibilityLabel("\(title), \(label)")
         .accessibilityAction(.default, action)
-        .padding([.top, .horizontal], NeevaHomeUX.HeaderPadding)
+        .padding([.top, .horizontal], NeevaHomeUX.Padding)
     }
 }
 
@@ -93,32 +93,39 @@ struct NeevaHome: View {
             ScrollView {
                 VStack(spacing: 0) {
                     if viewModel.isPrivate {
-                        IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(16.0)
+                        IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(NeevaHomeUX.Padding)
                     }
                     if !viewModel.isPrivate && viewModel.showDefaultBrowserCard {
                         PromoCard(model: viewModel)
                     }
-                    VStack(spacing: 0) {
-                        NeevaHomeHeader(
-                            title: "Suggested sites",
-                            action: { expandSuggestedSites.advance() },
-                            label: "\(expandSuggestedSites.verb) this section",
-                            icon: expandSuggestedSites.icon
-                        )
-                        if expandSuggestedSites != .hidden {
-                            SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
-                        }
+                    NeevaHomeHeader(
+                        title: "Suggested sites",
+                        action: { expandSuggestedSites.advance() },
+                        label: "\(expandSuggestedSites.verb) this section",
+                        icon: expandSuggestedSites.icon
+                    )
+                    if expandSuggestedSites != .hidden {
+                        SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
+                    }
 
-                        NeevaHomeHeader(
-                            title: "Searches",
-                            action: { expandSearches.toggle() },
-                            label: "\(expandSearches ? "hides" : "shows") this section",
-                            icon: expandSearches ? .chevronUp : .chevronDown
-                        )
-                        if expandSearches {
-                            SuggestedSearchesView()
-                                .padding(.horizontal, NeevaHomeUX.HeaderPadding)
-                        }
+                    NeevaHomeHeader(
+                        title: "Searches",
+                        action: { expandSearches.toggle() },
+                        label: "\(expandSearches ? "hides" : "shows") this section",
+                        icon: expandSearches ? .chevronUp : .chevronDown
+                    )
+                    if expandSearches {
+                        SuggestedSearchesView()
+                    }
+
+                    NeevaHomeHeader(
+                        title: "Searches",
+                        action: { expandSearches.toggle() },
+                        label: "\(expandSearches ? "hides" : "shows") this section",
+                        icon: expandSearches ? .chevronUp : .chevronDown
+                    )
+                    if expandSearches {
+                        SuggestedSpacesView()
                     }
                     Spacer()
                 }

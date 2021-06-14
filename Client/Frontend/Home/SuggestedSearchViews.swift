@@ -21,6 +21,7 @@ struct SuggestedSearchesView: View {
                         Spacer()
                     }
                     .frame(height: 37)
+                    .padding(.horizontal, NeevaHomeUX.Padding)
                 }
                 .buttonStyle(TableCellButtonStyle())
                 .overlay(
@@ -32,7 +33,7 @@ struct SuggestedSearchesView: View {
                                 .padding(.leading)
                             Spacer(minLength: 0)
                         }
-                    },
+                    }.padding(.trailing, NeevaHomeUX.Padding),
                     alignment: .trailing
                 )
             }
@@ -62,7 +63,6 @@ struct SuggestedSearchesView_Previews: PreviewProvider {
                         ]
                     )
                 )
-                .padding(.horizontal, NeevaHomeUX.HeaderPadding)
         }
         .padding(.bottom)
         .previewLayout(.sizeThatFits)

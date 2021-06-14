@@ -389,6 +389,7 @@
 		C9E448BE265D544E00651DCB /* NavigationLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448BD265D544E00651DCB /* NavigationLinkButton.swift */; };
 		C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C0265D555600651DCB /* MailAppSetting.swift */; };
 		C9E448C4265D55D500651DCB /* SiriSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C3265D55D500651DCB /* SiriSetting.swift */; };
+		C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CB6266E5E1800F3408A /* SuggestedSpaceViews.swift */; };
 		C9E5F2B12673B4A000025A7F /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B02673B4A000025A7F /* NavigationController.swift */; };
 		C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B42673EF1D00025A7F /* Environment.swift */; };
 		C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */; };
@@ -1262,6 +1263,7 @@
 		C9E448BD265D544E00651DCB /* NavigationLinkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkButton.swift; sourceTree = SOURCE_ROOT; };
 		C9E448C0265D555600651DCB /* MailAppSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailAppSetting.swift; sourceTree = "<group>"; };
 		C9E448C3265D55D500651DCB /* SiriSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriSetting.swift; sourceTree = "<group>"; };
+		C9F49CB6266E5E1800F3408A /* SuggestedSpaceViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedSpaceViews.swift; sourceTree = "<group>"; };
 		C9E5F2B02673B4A000025A7F /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		C9E5F2B42673EF1D00025A7F /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryExtensions.swift; sourceTree = "<group>"; };
@@ -3176,6 +3178,7 @@
 				3BB50E1F1D627539004B33DF /* NeevaHomeViewController.swift */,
 				4ADC541F265DA2CD00A210CE /* PromoCard.swift */,
 				4AA14F1F264C7954003B815A /* HomeView.swift */,
+				C9F49CB6266E5E1800F3408A /* SuggestedSpaceViews.swift */,
 				C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */,
 				C9BED4BA2667E3F8001D9C77 /* HomeViewModels.swift */,
 				C9BED4C02667FA91001D9C77 /* SuggestedSearchViews.swift */,
@@ -4449,6 +4452,7 @@
 				BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */,
 				E6D8D5E71B569D70009E5A58 /* BrowserTrayAnimators.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
+				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,
 				DDA24A431FD84D630098F159 /* DefaultSearchPrefs.swift in Sources */,
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				3BB50E201D627539004B33DF /* NeevaHomeViewController.swift in Sources */,

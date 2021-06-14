@@ -71,7 +71,7 @@ struct PromoCard: View {
     }
 
     var label: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: NeevaHomeUX.Padding) {
             Text(model.currentConfig.firstLine)
                 .font(.roobert(.light, size: PromoCardUX.TextFontSize))
                 .foregroundColor(Color(PromoCardUX.TextColor))

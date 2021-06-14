@@ -179,7 +179,7 @@ public struct AddToSpaceView: View {
     }
 
     @ViewBuilder var filteredListView: some View {
-        let filteredSpaces = filter(spaceStore.spaces)
+        let filteredSpaces = filter(spaceStore.editableSpaces)
         if !searchTerm.isEmpty && filteredSpaces.isEmpty {
             Text("No Results Found")
                 .font(.title)
@@ -223,6 +223,8 @@ public struct AddToSpaceView: View {
                                 VStack(spacing: 14) {
                                     ForEach(0..<20) { _ in
                                         LoadingSpaceListItem()
+                                            .padding(.vertical, 10)
+                                            .padding(.leading, 16)
                                     }
                                 }
                             case .failed(let error):

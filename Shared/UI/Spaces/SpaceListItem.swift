@@ -46,8 +46,10 @@ struct SpaceListItem: View {
     }
 }
 
-struct LoadingSpaceListItem: View {
-    var body: some View {
+public struct LoadingSpaceListItem: View {
+    public init() {}
+
+    public var body: some View {
         HStack(spacing: 16) {
             RoundedRectangle(cornerRadius: 4)
                 .fill(Color.tertiarySystemFill)
@@ -57,8 +59,6 @@ struct LoadingSpaceListItem: View {
                 .frame(width: 150, height: 16)
             Spacer()
         }
-        .padding(.vertical, 10)
-        .padding(.leading, 16)
     }
 }
 
@@ -66,6 +66,8 @@ struct SpaceView_Previews: PreviewProvider {
     static var previews: some View {
         LazyVStack(spacing: 14) {
             LoadingSpaceListItem()
+                .padding(.vertical, 10)
+                .padding(.leading, 16)
             SpaceListItem(.empty, currentURL: URL(string: "https://neeva.com")!)
             SpaceListItem(.savedForLaterEmpty, currentURL: URL(string: "https://neeva.com")!)
             SpaceListItem(.savedForLater, currentURL: URL(string: "https://neeva.com")!)

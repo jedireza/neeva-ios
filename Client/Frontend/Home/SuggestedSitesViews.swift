@@ -120,7 +120,7 @@ struct SuggestedSitesView: View {
                 }
             }
             .padding(.vertical, 10)
-            .padding(.horizontal, NeevaHomeUX.HeaderPadding - 2)
+            .padding(.horizontal, NeevaHomeUX.Padding - 2)
         } else {
             FadingHorizontalScrollView { size in
                 HStack(spacing: 0) {
@@ -133,7 +133,7 @@ struct SuggestedSitesView: View {
                 }
                 .frame(height: SuggestedSiteUX.BlockSize)
                 .padding(.vertical, 10)
-                .padding(.horizontal, NeevaHomeUX.HeaderPadding - 2)
+                .padding(.horizontal, NeevaHomeUX.Padding - 2)
                 .fixedSize()
             }.frame(height: SuggestedSiteUX.BlockSize + 20)
         }

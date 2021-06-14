@@ -10,8 +10,12 @@ fileprivate struct Metrics {
 }
 
 /// Displayed in space lists
-struct LargeSpaceIconView: View {
+public struct LargeSpaceIconView: View {
     let space: Space
+
+    public init(space: Space) {
+        self.space = space
+    }
 
     struct EmptyIcon<Content: View>: View {
         let background: Color
@@ -28,7 +32,7 @@ struct LargeSpaceIconView: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         if space.isDefaultSpace {
             EmptyIcon(background: space.resultCount == 0 ? .spaceIconBackground : .neeva.ui.fixed.gray96) {
                 Image(systemSymbol: .starFill)
