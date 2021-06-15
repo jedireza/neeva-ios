@@ -2,6 +2,7 @@
 
 import SwiftUI
 import Shared
+import Defaults
 
 enum TabLocationViewUX {
     static let height: CGFloat = 42
@@ -38,6 +39,8 @@ struct TabLocationView: View {
     @Environment(\.isIncognito) private var isIncognito
     @Environment(\.colorScheme) private var colorScheme
 
+    @State private var showingTrackingPopover = false
+
     var body: some View {
         let isEditing = model.text != nil
         HStack {
@@ -60,7 +63,13 @@ struct TabLocationView: View {
                     .frame(height: TabLocationViewUX.height)
                     .allowsHitTesting(false)
             } leading: {
-                TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
+                TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) { showingTrackingPopover = true }
+                    .presentAsPopover(isPresented: $showingTrackingPopover, backgroundColor: .PopupMenu.background) {
+                        TrackingMenuView(isTrackingProtectionEnabled: Defaults[.contentBlockingEnabled],
+                                         viewModel: TrackingStatsViewModel(
+                                            trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab(),
+                                            settingsHandler: nil))
+                    }
             } trailing: {
                 Group {
                     if model.readerMode != .active {
