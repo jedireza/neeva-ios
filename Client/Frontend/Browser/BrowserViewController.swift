@@ -443,14 +443,14 @@ class BrowserViewController: UIViewController {
         urlBarTopTabsContainer.addSubview(topTabsContainer)
         view.addSubview(header)
         if FeatureFlag[.newURLBar] {
-            addChild(legacyURLBar.locationView)
-            legacyURLBar.locationView.didMove(toParent: self)
+            addChild(legacyURLBar.locationHost)
+            legacyURLBar.locationHost.didMove(toParent: self)
         }
 
         // UIAccessibilityCustomAction subclass holding an AccessibleAction instance does not work, thus unable to generate AccessibleActions and UIAccessibilityCustomActions "on-demand" and need to make them "persistent" e.g. by being stored in BVC
         pasteGoAction = AccessibleAction(name: Strings.PasteAndGoTitle, handler: { () -> Bool in
             if let pasteboardContents = UIPasteboard.general.string {
-                self.urlBar(self.legacyURLBar, didSubmitText: pasteboardContents)
+                self.urlBar(didSubmitText: pasteboardContents)
                 return true
             }
             return false
@@ -1598,7 +1598,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
         searchLoader?.query = text
     }
 
-    func urlBar(_ urlBar: LegacyURLBarView, didSubmitText text: String) {
+    func urlBar(didSubmitText text: String) {
         guard let currentTab = tabManager.selectedTab else { return }
 
         if let fixupURL = URIFixup.getURL(text) {

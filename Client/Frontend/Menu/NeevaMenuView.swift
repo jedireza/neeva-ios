@@ -4,20 +4,17 @@ import SwiftUI
 import Shared
 
 public struct NeevaMenuView: View {
-    private let isPrivate: Bool
     private let noTopPadding: Bool
+    private let menuAction: ((NeevaMenuButtonActions) -> ())?
 
-    @State var openSpacesPrompt: Bool = false
-    @State var openFeedbackPrompt: Bool = false
-    @State var openSettingsPrompt: Bool = false
+    @State private var openSpacesPrompt = false
+    @State private var openFeedbackPrompt = false
+    @State private var openSettingsPrompt = false
+    @Environment(\.isIncognito) private var isIncognito
 
-    var menuAction: ((NeevaMenuButtonActions) -> ())? = nil
-
-    /// - Parameters:
-    ///   - isPrivate: true if current tab is in private mode, false otherwise
-    public init(isPrivate: Bool, noTopPadding: Bool = false) {
-        self.isPrivate = isPrivate
+    public init(noTopPadding: Bool = false, menuAction: ((NeevaMenuButtonActions) -> ())?) {
         self.noTopPadding = noTopPadding
+        self.menuAction = menuAction
     }
 
     public var body: some View {
@@ -27,10 +24,10 @@ public struct NeevaMenuView: View {
                     Button {
                         self.menuAction!(NeevaMenuButtonActions.home)
                     } label: {
-                        NeevaMenuButtonView(label: "Home", nicon: .house, isDisabled: self.isPrivate)
+                        NeevaMenuButtonView(label: "Home", nicon: .house, isDisabled: isIncognito)
                     }
                     .accessibilityIdentifier("NeevaMenu.Home")
-                    .disabled(self.isPrivate)
+                    .disabled(isIncognito)
                     WithPopover(
                         showPopover: $openSpacesPrompt,
                         popoverSize: CGSize(width:290, height: 150),
@@ -38,10 +35,10 @@ public struct NeevaMenuView: View {
                             Button {
                                 self.menuAction!(NeevaMenuButtonActions.spaces)
                             } label: {
-                                NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark, isDisabled: self.isPrivate)
+                                NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark, isDisabled: isIncognito)
                             }
                             .accessibilityIdentifier("NeevaMenu.Spaces")
-                            .disabled(self.isPrivate)
+                            .disabled(isIncognito)
                         },
                         popoverContent: {
                             TourPromptView(title: "Want to be organized?", description: "Save web pages, images, and videos to a curated Space for easy access later", onClose: onCloseTourPrompt)
@@ -155,7 +152,7 @@ public struct NeevaMenuView: View {
 
 struct NeevaMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuView(isPrivate: false)
-        NeevaMenuView(isPrivate: true)
+        NeevaMenuView(menuAction: nil)
+        NeevaMenuView(menuAction: nil).environment(\.isIncognito, true)
     }
 }

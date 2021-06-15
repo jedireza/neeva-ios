@@ -1038,7 +1038,7 @@ extension TabTrayControllerV1: LegacyTabLocationViewDelegate {
         delegate?.tabTrayDidTapLocationBar(self)
     }
     func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView) {}
-    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView) {}
+    func tabLocationViewDidTapReload() {}
     func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from: UIButton) {}
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView) {}
     func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView) {}

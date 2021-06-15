@@ -41,7 +41,7 @@ protocol LegacyURLBarDelegate: UIViewController {
     func urlBarDidPressScrollToTop(_ urlBar: LegacyURLBarView)
     func urlBar(_ urlBar: LegacyURLBarView, didRestoreText text: String)
     func urlBar(_ urlBar: LegacyURLBarView, didEnterText text: String)
-    func urlBar(_ urlBar: LegacyURLBarView, didSubmitText text: String)
+    func urlBar(didSubmitText text: String)
     func urlBarDidBeginDragInteraction(_ urlBar: LegacyURLBarView)
 }
 
@@ -65,7 +65,13 @@ class LegacyURLBarView: UIView {
     let model = URLBarModel()
     var urlSubscription: AnyCancellable?
 
-    weak var delegate: LegacyURLBarDelegate?
+    weak var delegate: LegacyURLBarDelegate? {
+        didSet {
+            if FeatureFlag[.newURLBar] {
+                locationHost.urlBarDelegate = delegate
+            }
+        }
+    }
     weak var tabToolbarDelegate: TabToolbarDelegate?
     var lensOrBang: ActiveLensBangInfo?
     var helper: TabToolbarHelper?
@@ -115,8 +121,8 @@ class LegacyURLBarView: UIView {
         return locationView
     }()
 
-    lazy var locationView: UIHostingController<TabLocationView> = {
-        UIHostingController(rootView: TabLocationView(text: .constant(nil), isPrivate: false, isLoading: false, model: model))
+    lazy var locationHost: TabLocationHost = {
+        TabLocationHost(model: model, delegate: self, urlBarDelegate: delegate)
     }()
 
     lazy var locationContainer: UIView = {
@@ -195,7 +201,7 @@ class LegacyURLBarView: UIView {
 
     fileprivate func commonInit() {
         if FeatureFlag[.newURLBar] {
-            locationContainer.addSubview(locationView.view)
+            locationContainer.addSubview(locationHost.view)
         } else {
             locationContainer.addSubview(legacyLocationView)
         }
@@ -250,7 +256,7 @@ class LegacyURLBarView: UIView {
             make.left.right.equalTo(self)
         }
         
-        (FeatureFlag[.newURLBar] ? locationView.view : legacyLocationView).snp.makeConstraints { make in
+        (FeatureFlag[.newURLBar] ? locationHost.view : legacyLocationView).snp.makeConstraints { make in
             make.edges.equalTo(self.locationContainer)
         }
         
@@ -341,7 +347,7 @@ class LegacyURLBarView: UIView {
         }
         if inOverlayMode {
             self.locationTextField?.snp.remakeConstraints { make in
-                make.edges.equalTo(FeatureFlag[.newURLBar] ? locationView.view : legacyLocationView).inset(
+                make.edges.equalTo(FeatureFlag[.newURLBar] ? locationHost.view : legacyLocationView).inset(
                     UIEdgeInsets(top: 0, left: LegacyURLBarViewUX.LocationOverlayLeftPadding,
                                  bottom: 0, right: LegacyURLBarViewUX.LocationOverlayRightPadding))
             }
@@ -696,7 +702,7 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
         delegate?.urlBarDidLongPressLocation(self)
     }
 
-    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView) {
+    func tabLocationViewDidTapReload() {
         switch model.reloadButton {
         case .reload:
             delegate?.urlBarDidPressReload(self)
@@ -741,7 +747,7 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
     func autocompleteTextFieldShouldReturn(_ autocompleteTextField: AutocompleteTextField) -> Bool {
         guard let text = locationTextField?.text else { return true }
         if !text.trimmingCharacters(in: .whitespaces).isEmpty {
-            delegate?.urlBar(self, didSubmitText: text)
+            delegate?.urlBar(didSubmitText: text)
             return true
         } else {
             return false
@@ -766,7 +772,7 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
 
     func autocompletePasteAndGo(_ autocompleteTextField: AutocompleteTextField) {
         if let pasteboardContents = UIPasteboard.general.string {
-            self.delegate?.urlBar(self, didSubmitText: pasteboardContents)
+            self.delegate?.urlBar(didSubmitText: pasteboardContents)
         }
     }
 }
@@ -783,7 +789,11 @@ extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
 
-        legacyLocationView.applyUIMode(isPrivate: isPrivate)
+        if FeatureFlag[.newURLBar] {
+            locationHost.applyUIMode(isPrivate: isPrivate)
+        } else {
+            legacyLocationView.applyUIMode(isPrivate: isPrivate)
+        }
         locationTextField?.applyUIMode(isPrivate: isPrivate)
 
         if isPrivate {

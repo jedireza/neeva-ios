@@ -97,6 +97,14 @@ class OpenSearchEngine {
         }
     }
 
+    func queryForLocationBar(from url: URL?) -> String? {
+        let showQueryInLocationBar = NeevaFeatureFlags[.clientHideSearchBox]
+        if showQueryInLocationBar, let query = queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url)  {
+            return query
+        }
+        return nil
+    }
+
     /**
      * Returns the search suggestion URL for the given query.
      */

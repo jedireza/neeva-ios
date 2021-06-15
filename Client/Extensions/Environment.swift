@@ -33,9 +33,17 @@ extension EnvironmentValues {
         static var defaultValue: ((String) -> ())? = nil
     }
 
-    /// Provide this environment key to open URLs in an app other than Safari.
     public var setSearchInput: (String) -> () {
         get { self[SetSearchInputKey] ?? { _ in fatalError(".environment(\\.setSearchInput) must be specified") } }
         set { self[SetSearchInputKey] = newValue }
+    }
+
+    private struct IsIncognitoKey: EnvironmentKey {
+        static var defaultValue = false
+    }
+
+    public var isIncognito: Bool {
+        get { self[IsIncognitoKey] }
+        set { self[IsIncognitoKey] = newValue }
     }
 }

@@ -13,17 +13,20 @@ fileprivate struct TitleWidthPreferenceKey: PreferenceKey {
 /// NOTE: this view has not been tested with layouts where `Leading` is wider than `Trailing`.
 /// If that is possible with the parameters you pass, make sure to check that it works properly.
 struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
+    let transitionToEditing: Bool
     let debug: Bool
     let leadingActions: () -> Leading
     let label: () -> Label
     let trailingActions: () -> Trailing
 
     init(
+        transitionToEditing: Bool,
         debug: Bool = FeatureFlag[.newURLBarDebug],
         @ViewBuilder label: @escaping () -> Label,
         @ViewBuilder leading: @escaping () -> Leading,
         @ViewBuilder trailing: @escaping () -> Trailing
     ) {
+        self.transitionToEditing = transitionToEditing
         self.debug = debug
         self.label = label
         self.leadingActions = leading
@@ -38,6 +41,7 @@ struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
                         leadingActions()
                         GeometryReader { innerGeom in
                             LocationLabelAligner(
+                                transitionToEditing: transitionToEditing,
                                 debug: debug,
                                 label: label,
                                 leadingPadding: leadingGeom.size.width - innerGeom.size.width,
@@ -60,6 +64,7 @@ struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
 }
 
 fileprivate struct LocationLabelAligner<Label: View>: View {
+    let transitionToEditing: Bool
     let debug: Bool
     let label: () -> Label
     let leadingPadding: CGFloat
@@ -88,7 +93,10 @@ fileprivate struct LocationLabelAligner<Label: View>: View {
         ///
         /// If the label would extend over the trailing controls if centered, this offset will align its trailing edge with
         /// the leading edge of the trailing controls.
-        let labelOffset = centerX - leadingPadding - max(-trailingGap, 0)
+        let labelOffset = transitionToEditing
+            // left-align when editing
+            ? titleWidth / 2
+            : centerX - leadingPadding - max(-trailingGap, 0)
 
         label()
             .background(GeometryReader { textGeom in
@@ -128,7 +136,7 @@ extension TabLocationAligner {
 struct TabLocationAligner_Previews: PreviewProvider {
     @ViewBuilder
     static func contents(for title: String) -> some View {
-        TabLocationAligner(debug: true) {
+        TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
         } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
@@ -136,7 +144,15 @@ struct TabLocationAligner_Previews: PreviewProvider {
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
         }.previewStyle()
 
-        TabLocationAligner(debug: true) {
+        TabLocationAligner(transitionToEditing: true, debug: true) {
+            Text("editing")
+        } leading: {
+            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
+        } trailing: {
+            TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
+        }.previewStyle()
+
+        TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
         } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
@@ -145,7 +161,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
             TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
         }.previewStyle()
 
-        TabLocationAligner(debug: true) {
+        TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
         } leading: { } trailing: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
@@ -153,7 +169,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
             TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
         }.previewStyle()
 
-        TabLocationAligner(debug: true) {
+        TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
         } leading: {
             Text("")

@@ -398,8 +398,9 @@
 		C9E5F2BA2673F83800025A7F /* DispatchQueueExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B92673F83800025A7F /* DispatchQueueExtensions.swift */; };
 		C9E5F2BC2674025700025A7F /* EdgeInsetsExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2BB2674025700025A7F /* EdgeInsetsExtensions.swift */; };
 		C9E5F2BE26779F1400025A7F /* URLBarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2BD26779F1400025A7F /* URLBarModel.swift */; };
-		C9E5F2C02677C37A00025A7F /* LocationViewReloadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2BF2677C37A00025A7F /* LocationViewReloadButton.swift */; };
+		C9E5F2C22677D8BA00025A7F /* TabLocationHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2C12677D8BA00025A7F /* TabLocationHost.swift */; };
 		C9E5F2C42677F0A600025A7F /* LocationLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2C32677F0A600025A7F /* LocationLabel.swift */; };
+		C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2C82678062300025A7F /* LocationTextField.swift */; };
 		C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CB6266E5E1800F3408A /* SuggestedSpaceViews.swift */; };
 		C9F49CB9266FBFEA00F3408A /* DataManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CB8266FBFEA00F3408A /* DataManagementView.swift */; };
 		C9F49CBB266FD16000F3408A /* WebsiteDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CBA266FD16000F3408A /* WebsiteDataView.swift */; };
@@ -1198,7 +1199,7 @@
 		C90860512666BEE30049C072 /* SpacerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerExtensions.swift; sourceTree = "<group>"; };
 		C93EFEDB267123F5000396B5 /* SettingsNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		C93EFEE126713AF7000396B5 /* ErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorConstants.swift; sourceTree = "<group>"; };
-		C93EFEE4267150FD000396B5 /* TabLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationView.swift; sourceTree = "<group>"; };
+		C93EFEE4267150FD000396B5 /* TabLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationView.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationAligner.swift; sourceTree = "<group>"; };
 		C93EFEE826716411000396B5 /* TabLocationBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationBarButton.swift; sourceTree = "<group>"; };
 		C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSettingsSection.swift; sourceTree = "<group>"; };
@@ -1278,8 +1279,9 @@
 		C9E5F2B92673F83800025A7F /* DispatchQueueExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DispatchQueueExtensions.swift; path = ../DispatchQueueExtensions.swift; sourceTree = "<group>"; };
 		C9E5F2BB2674025700025A7F /* EdgeInsetsExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetsExtensions.swift; sourceTree = "<group>"; };
 		C9E5F2BD26779F1400025A7F /* URLBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarModel.swift; sourceTree = "<group>"; };
-		C9E5F2BF2677C37A00025A7F /* LocationViewReloadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewReloadButton.swift; sourceTree = "<group>"; };
+		C9E5F2C12677D8BA00025A7F /* TabLocationHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationHost.swift; sourceTree = "<group>"; };
 		C9E5F2C32677F0A600025A7F /* LocationLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLabel.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		C9E5F2C82678062300025A7F /* LocationTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTextField.swift; sourceTree = "<group>"; };
 		C9F49CB6266E5E1800F3408A /* SuggestedSpaceViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedSpaceViews.swift; sourceTree = "<group>"; };
 		C9F49CB8266FBFEA00F3408A /* DataManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementView.swift; sourceTree = "<group>"; };
 		C9F49CBA266FD16000F3408A /* WebsiteDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsiteDataView.swift; sourceTree = "<group>"; };
@@ -2266,9 +2268,10 @@
 		C93EFEE3267150ED000396B5 /* URLBar */ = {
 			isa = PBXGroup;
 			children = (
+				C9E5F2C82678062300025A7F /* LocationTextField.swift */,
 				C93EFEE4267150FD000396B5 /* TabLocationView.swift */,
 				C9E5F2C32677F0A600025A7F /* LocationLabel.swift */,
-				C9E5F2BF2677C37A00025A7F /* LocationViewReloadButton.swift */,
+				C9E5F2C12677D8BA00025A7F /* TabLocationHost.swift */,
 				C9E5F2BD26779F1400025A7F /* URLBarModel.swift */,
 				C93EFEE826716411000396B5 /* TabLocationBarButton.swift */,
 				C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */,
@@ -4328,7 +4331,6 @@
 				EBB895332193FFF400EB91A0 /* ContentBlockerSettingViewController.swift in Sources */,
 				BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */,
 				D38F02D11C05127100175932 /* Authenticator.swift in Sources */,
-				C9E5F2C02677C37A00025A7F /* LocationViewReloadButton.swift in Sources */,
 				E4CD9F6D1A77DD2800318571 /* ReaderModeStyleViewController.swift in Sources */,
 				D0FCF7F51FE45842004A7995 /* UserScriptManager.swift in Sources */,
 				F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */,
@@ -4374,6 +4376,8 @@
 				EB9A179B20E69A7F00B12184 /* ThemeManager.swift in Sources */,
 				C9BED4BB2667E3F8001D9C77 /* HomeViewModels.swift in Sources */,
 				BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */,
+				C9E5F2C22677D8BA00025A7F /* TabLocationHost.swift in Sources */,
+				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
 				EBB89509219398E500EB91A0 /* TabContentBlocker+ContentScript.swift in Sources */,
 				D3BE7B461B054F8600641031 /* TestAppDelegate.swift in Sources */,

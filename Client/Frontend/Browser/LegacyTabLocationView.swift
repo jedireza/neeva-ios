@@ -7,10 +7,10 @@ import Shared
 import SnapKit
 import Combine
 
-protocol LegacyTabLocationViewDelegate {
+protocol LegacyTabLocationViewDelegate: AnyObject {
     func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView)
     func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView)
-    func tabLocationViewDidTapReload(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTapReload()
     func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from button: UIButton)
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView)
     func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView)
@@ -267,7 +267,7 @@ class LegacyTabLocationView: UIView {
     }
 
     @objc func tapReloadButton() {
-        delegate?.tabLocationViewDidTapReload(self)
+        delegate?.tabLocationViewDidTapReload()
     }
 
     @objc func tapShareButton() {
@@ -296,8 +296,7 @@ class LegacyTabLocationView: UIView {
             text = url?.absoluteString ?? ""
         }
         // NOTE: Punycode support was removed
-        let showQueryInLocationBar = NeevaFeatureFlags[.clientHideSearchBox]
-        if showQueryInLocationBar, let query = neevaSearchEngine.queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url) {
+        if let query = neevaSearchEngine.queryForLocationBar(from: url) {
             displayTextIsQuery = true
             text = query
         } else {

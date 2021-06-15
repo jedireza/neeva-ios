@@ -6,13 +6,15 @@ import Shared
 struct NeevaMenuRootView: View {
     @StateObject var overlaySheetModel = OverlaySheetModel()
     let onDismiss: () -> ()
-    let isPrivate: Bool
+    let isIncognito: Bool
     var embeddedView: NeevaMenuView
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: UIColor.PopupMenu.background)
         OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() } ) {
-            self.embeddedView.overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
+            self.embeddedView
+                .environment(\.isIncognito, isIncognito)
+                .overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
         }
         .onAppear() {
             DispatchQueue.main.async {
@@ -26,7 +28,7 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
     var delegate: BrowserViewController?
 
     public init(delegate: BrowserViewController, onDismiss: @escaping () -> (), isPrivate: Bool, feedbackImage: UIImage?){
-        super.init(rootView: NeevaMenuRootView(onDismiss: onDismiss, isPrivate: isPrivate, embeddedView:NeevaMenuView(isPrivate: isPrivate, noTopPadding: true) ))
+        super.init(rootView: NeevaMenuRootView(onDismiss: onDismiss, isIncognito: isPrivate, embeddedView: NeevaMenuView(noTopPadding: true, menuAction: nil) ))
 
         self.delegate = delegate
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
@@ -37,7 +39,7 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
         self.view.accessibilityViewIsModal = true
         
         //Build callbacks for each button action
-        self.rootView.embeddedView.menuAction = { result in
+        let embeddedView = NeevaMenuView(noTopPadding: true) { result in
             delegate.isNeevaMenuSheetOpen = false
             switch result {
             case .home:
@@ -66,6 +68,7 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
                 break
             }
         }
+        self.rootView = NeevaMenuRootView(onDismiss: onDismiss, isIncognito: isPrivate, embeddedView: embeddedView)
     }
 
     private func spacesHandler(_ delegate: BrowserViewController) {

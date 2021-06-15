@@ -8,10 +8,9 @@ struct LocationLabel: View {
     let isSecure: Bool
     
     var body: some View {
-        let showQueryInLocationBar = NeevaFeatureFlags[.clientHideSearchBox]
         if let url = url, let internalURL = InternalURL(url), internalURL.isAboutHomeURL {
-            Text("Search or enter address").foregroundColor(.secondary)
-        } else if showQueryInLocationBar, let query = neevaSearchEngine.queryForSearchURL(url), !NeevaConstants.isNeevaPageWithSearchBox(url: url) {
+            TabLocationViewUX.placeholder.foregroundColor(.secondaryLabel)
+        } else if let query = neevaSearchEngine.queryForLocationBar(from: url) {
             Label { Text(query) } icon: { Symbol(.magnifyingglass) }
         } else if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
             // NOTE: Punycode support was removed
@@ -28,7 +27,7 @@ struct LocationLabel: View {
         } else if let url = url {
             Text(url.absoluteString)
         } else {
-            Text("Search or enter address").foregroundColor(.secondary)
+            TabLocationViewUX.placeholder.foregroundColor(.secondaryLabel)
         }
     }
 }

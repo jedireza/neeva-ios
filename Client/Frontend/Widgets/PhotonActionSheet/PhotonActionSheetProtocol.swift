@@ -40,7 +40,7 @@ extension PhotonActionSheetProtocol {
     func getLongPressLocationBarActions(with urlBar: LegacyURLBarView, webViewContainer: UIView) -> [PhotonActionSheetItem] {
         let pasteGoAction = PhotonActionSheetItem(title: Strings.PasteAndGoTitle, iconString: "doc.on.clipboard", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             if let pasteboardContents = UIPasteboard.general.string {
-                urlBar.delegate?.urlBar(urlBar, didSubmitText: pasteboardContents)
+                urlBar.delegate?.urlBar(didSubmitText: pasteboardContents)
             }
         }
         let pasteAction = PhotonActionSheetItem(title: Strings.PasteTitle, iconString: "doc.on.clipboard.fill", iconType: .SystemImage, iconAlignment: .right) { _, _ in

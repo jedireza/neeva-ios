@@ -3,10 +3,22 @@
 import SwiftUI
 import Shared
 
-typealias NeevaMenuContainerView = VerticalScrollViewIfNeeded<NeevaMenuView>
-let neevaMenuIntrinsicHeight: CGFloat = 312  // TODO: Compute this value instead.
+// can’t be fileprivate because
+struct _NeevaMenuPopover: View {
+    let isIncognito: Bool
+    let menuAction: ((NeevaMenuButtonActions) -> ())?
 
-class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView>{
+    var body: some View {
+        VerticalScrollViewIfNeeded(
+            embeddedView: NeevaMenuView(menuAction: menuAction),
+            thresholdHeight: 312 // TODO: Compute this value instead.
+        ).environment(\.isIncognito, isIncognito)
+    }
+}
+
+fileprivate typealias NeevaMenuPopover = _NeevaMenuPopover
+
+class PopOverNeevaMenuViewController: UIHostingController<_NeevaMenuPopover> {
 
     var delegate: BrowserViewController?
 
@@ -17,8 +29,7 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
     public init(delegate:BrowserViewController,
                 source:UIView, isPrivate: Bool,
                 feedbackImage: UIImage?) {
-        super.init(rootView: NeevaMenuContainerView(embeddedView: NeevaMenuView(isPrivate: isPrivate),
-                   thresholdHeight: neevaMenuIntrinsicHeight))
+        super.init(rootView: NeevaMenuPopover(isIncognito: isPrivate, menuAction: nil))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
@@ -28,7 +39,7 @@ class PopOverNeevaMenuViewController: UIHostingController<NeevaMenuContainerView
         delegate.isNeevaMenuSheetOpen = true
         
         //Build callbacks for each button action
-        self.rootView.embeddedView.menuAction = { result in
+        self.rootView = NeevaMenuPopover(isIncognito: isPrivate) { result in
             delegate.isNeevaMenuSheetOpen = false
             self.dismiss( animated: true, completion: nil )
             switch result {
