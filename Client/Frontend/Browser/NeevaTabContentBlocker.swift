@@ -14,8 +14,9 @@ extension Defaults.Keys {
 enum BlockingStrength: String, Codable {
     case basic
     case strict
+    case neeva
 
-    static let allOptions: [BlockingStrength] = [.basic, .strict]
+    static let allOptions: [BlockingStrength] = [.basic, .strict, .neeva]
 }
 
 /**
@@ -46,7 +47,7 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(strict: Defaults[.contentBlockingStrength] == .strict)
+        let rules = BlocklistFileName.listsForMode(strength: Defaults[.contentBlockingStrength])
         ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules)
     }
 
@@ -58,7 +59,8 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     override func currentlyEnabledLists() -> [BlocklistFileName] {
-        return BlocklistFileName.listsForMode(strict: Defaults[.contentBlockingStrength] == .strict)
+
+        return BlocklistFileName.listsForMode(strength: Defaults[.contentBlockingStrength])
     }
 
     override func notifyContentBlockingChanged() {

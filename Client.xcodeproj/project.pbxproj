@@ -172,6 +172,10 @@
 		4A22DCFA26574AA4009BE9FC /* TrackingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */; };
 		4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */; };
 		4A46E4E426730D790001687E /* CarouselProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A46E4E326730D790001687E /* CarouselProgressView.swift */; };
+		4A255AB2265C48EC00422839 /* ContentBlockingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AAF265C48EB00422839 /* ContentBlockingUtils.swift */; };
+		4A255AB3265C48EC00422839 /* ContentBlockingRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */; };
+		4A255AB4265C48EC00422839 /* trackerDomains.json in Resources */ = {isa = PBXBuildFile; fileRef = 4A255AB1265C48EC00422839 /* trackerDomains.json */; };
+		4A255AB6265C4A2A00422839 /* ContentBlockingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */; };
 		4A59B58AD11B5EE1F80BBDEB /* TestHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */; };
 		4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5CCE8226524B7F0063783D /* FaviconView.swift */; };
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
@@ -1077,6 +1081,10 @@
 		4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingEntity.swift; sourceTree = "<group>"; };
 		4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TrackingEntity.xcassets; sourceTree = "<group>"; };
 		4A46E4E326730D790001687E /* CarouselProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselProgressView.swift; sourceTree = "<group>"; };
+		4A255AAF265C48EB00422839 /* ContentBlockingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingUtils.swift; sourceTree = "<group>"; };
+		4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingRules.swift; sourceTree = "<group>"; };
+		4A255AB1265C48EC00422839 /* trackerDomains.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trackerDomains.json; sourceTree = "<group>"; };
+		4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingConfig.swift; sourceTree = "<group>"; };
 		4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHistory.swift; sourceTree = "<group>"; };
 		4A5CCE8226524B7F0063783D /* FaviconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconView.swift; sourceTree = "<group>"; };
 		4A88F9722662AEAB007C203D /* CardStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStrip.swift; sourceTree = "<group>"; };
@@ -2982,6 +2990,10 @@
 		EBB894F4219398E500EB91A0 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				4A255AB1265C48EC00422839 /* trackerDomains.json */,
+				4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */,
+				4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */,
+				4A255AAF265C48EB00422839 /* ContentBlockingUtils.swift */,
 				EBB894F5219398E500EB91A0 /* TrackingProtectionPageStats.swift */,
 				EBB894F7219398E500EB91A0 /* TabContentBlocker.swift */,
 				EBB894F8219398E500EB91A0 /* ContentBlocker.swift */,
@@ -3826,6 +3838,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A255AB4265C48EC00422839 /* trackerDomains.json in Resources */,
 				D38A1EE01CB458EC0080C842 /* CertError.html in Resources */,
 				0BA1E0301B051A07007675AF /* OfflineError.css in Resources */,
 				3BC659491E5BA4AE006D560F /* TopSites in Resources */,
@@ -4426,6 +4439,7 @@
 				C9E448BE265D544E00651DCB /* NavigationLinkButton.swift in Sources */,
 				F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */,
 				D3B6923D1B9F9444004B87A4 /* FindInPageBar.swift in Sources */,
+				4A255AB2265C48EC00422839 /* ContentBlockingUtils.swift in Sources */,
 				4AA14F20264C7954003B815A /* HomeView.swift in Sources */,
 				C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */,
 				C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */,
@@ -4490,6 +4504,8 @@
 				7BA0601B1C0F4DE200DFADB6 /* TabPeekViewController.swift in Sources */,
 				BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */,
 				E6D8D5E71B569D70009E5A58 /* BrowserTrayAnimators.swift in Sources */,
+				4A255AB3265C48EC00422839 /* ContentBlockingRules.swift in Sources */,
+				CA77ABFD24773C92005079F9 /* BreachAlertsManager.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,
 				DDA24A431FD84D630098F159 /* DefaultSearchPrefs.swift in Sources */,
@@ -4559,6 +4575,10 @@
 				D3A9949C1A3686BD008AD1AC /* BrowserViewController.swift in Sources */,
 				59A681BDFC95A19F05E07223 /* SearchViewController.swift in Sources */,
 				C9BED4C12667FA91001D9C77 /* SuggestedSearchViews.swift in Sources */,
+				E6CF28E71CB43B7900151AB3 /* SensitiveViewController.swift in Sources */,
+				4A255AB6265C4A2A00422839 /* ContentBlockingConfig.swift in Sources */,
+				E68E7ADA1CAC207400FDCA76 /* ChangePasscodeViewController.swift in Sources */,
+				E640E85E1C73A45A00C5F072 /* PasscodeEntryViewController.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,
 				59A68B280D62462B85CF57A4 /* HistoryPanel.swift in Sources */,
 				122DE34125F975D900599A0D /* RequestDesktopSiteActivity.swift in Sources */,

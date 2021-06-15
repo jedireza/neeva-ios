@@ -13,6 +13,9 @@ extension BlockingStrength {
             return Strings.TrackingProtectionOptionBlockListLevelStandard
         case .strict:
             return Strings.TrackingProtectionOptionBlockListLevelStrict
+        case .neeva:
+            return Strings.TrackingProtectionOptionBlockListLevelStrict
+
         }
     }
 
@@ -21,6 +24,8 @@ extension BlockingStrength {
         case .basic:
             return Strings.TrackingProtectionStandardLevelDescription
         case .strict:
+            return Strings.TrackingProtectionStrictLevelDescription
+        case .neeva:
             return Strings.TrackingProtectionStrictLevelDescription
         }
     }
@@ -31,6 +36,8 @@ extension BlockingStrength {
             return "Settings.TrackingProtectionOption.BlockListBasic"
         case .strict:
             return "Settings.TrackingProtectionOption.BlockListStrict"
+        case .neeva:
+            return "Settings.TrackingProtectionOption.BlockListNeeva"
         }
     }
 }

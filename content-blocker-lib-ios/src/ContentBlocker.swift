@@ -4,6 +4,7 @@
 
 import WebKit
 import Shared
+import Foundation
 
 enum BlocklistCategory: CaseIterable {
     case advertising
@@ -11,6 +12,7 @@ enum BlocklistCategory: CaseIterable {
     case social
     case cryptomining
     case fingerprinting
+    case neeva
 
     static func fromFile(_ file: BlocklistFileName) -> BlocklistCategory {
         switch file {
@@ -25,6 +27,7 @@ enum BlocklistCategory: CaseIterable {
         case .fingerprinting:
             return .fingerprinting
         }
+
     }
 }
 
@@ -45,9 +48,17 @@ enum BlocklistFileName: String, CaseIterable {
 
     static var basic: [BlocklistFileName] { return [.advertisingCookies, .analyticsCookies, .socialCookies, .cryptomining, .fingerprinting] }
     static var strict: [BlocklistFileName] { return [.advertisingURLs, .analyticsURLs, .socialURLs, cryptomining, fingerprinting] }
+    static var neevaStrength: [BlocklistFileName] { return [.advertisingURLs] }
 
-    static func listsForMode(strict: Bool) -> [BlocklistFileName] {
-        return strict ? BlocklistFileName.strict : BlocklistFileName.basic
+    static func listsForMode(strength: BlockingStrength) -> [BlocklistFileName] {
+        switch strength {
+        case .basic:
+            return BlocklistFileName.basic
+        case .strict:
+            return BlocklistFileName.strict
+        case .neeva:
+            return BlocklistFileName.neevaStrength
+        }
     }
 }
 
@@ -290,7 +301,6 @@ extension ContentBlocker {
                             assert(false)
                         }
                         assert(rule != nil)
-
                         result.fill(())
                     }
                 }
