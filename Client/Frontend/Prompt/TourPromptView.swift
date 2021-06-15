@@ -44,11 +44,11 @@ struct TourPromptView: View {
                         VStack(alignment: .leading) {
                             Text(title)
                                     .foregroundColor(Color.neeva.Tour.Title)
-                                    .font(.headline)
+                                    .font(.system(size: 16, weight: .semibold))
                                     .padding(.bottom, 8)
                             Text(description)
                                 .foregroundColor(Color.neeva.Tour.Description)
-                                .font(.callout)
+                                .font(.system(size: 14))
                         }
                         .fixedSize(horizontal: false, vertical: true)
                         if let buttonMessage = buttonMessage, let onConfirm = onConfirm, !buttonMessage.isEmpty {
