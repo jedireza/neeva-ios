@@ -251,7 +251,7 @@ class BrowserViewController: UIViewController {
     }
 
     func shouldShowTopTabsForTraitCollection(_ newTraitCollection: UITraitCollection) -> Bool {
-        return !FeatureFlag[.cardStrip] && newTraitCollection.verticalSizeClass == .regular && newTraitCollection.horizontalSizeClass == .regular
+        return !FeatureFlag[.cardStrip] && FeatureFlag[.iPadTopTabs] && newTraitCollection.verticalSizeClass == .regular && newTraitCollection.horizontalSizeClass == .regular
     }
 
     func toggleSnackBarVisibility(show: Bool) {

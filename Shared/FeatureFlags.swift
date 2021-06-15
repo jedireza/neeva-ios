@@ -9,10 +9,11 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case feedbackScreenshot = "Attach Screenshot to Feedback"
     case pinToTopSites = "Pin to Top Sites"
     case readingMode = "Enable Reading Mode"
-    case cardStrip = "Carousel of cards instead of Tab strip"
+    case cardStrip = "Carousel of cards instead of tab strip"
     case swipePlusPlus = "Additional forward and back swipe gestures"
     case newURLBar = "New URL Bar"
     case newURLBarDebug = "New URL Bar: Debug Mode"
+    case iPadTopTabs = "Show tab strip on iPad"
 }
 
 extension FeatureFlag {
