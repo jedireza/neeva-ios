@@ -84,11 +84,16 @@ extension ActiveLensBangType {
 public class SuggestionsController: QueryController<SuggestionsQuery, SuggestionsQueryResult> {
     public override class func processData(_ data: SuggestionsQuery.Data) -> SuggestionsQueryResult {
         let querySuggestions = data.suggest?.querySuggestion ?? []
-        let urlSuggestions = data.suggest?.urlSuggestion ?? []
+        var urlSuggestions = data.suggest?.urlSuggestion ?? []
+        var navSuggestions: [SuggestionsQuery.Data.Suggest.UrlSuggestion] = []
+        // TODO: Rely on score to rank and use partition when we have multiple nav suggestions
+        if let index = urlSuggestions.firstIndex(where: { !($0.subtitle?.isEmpty ?? true)}) {
+            navSuggestions.append(urlSuggestions.remove(at: index))
+        }
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
         return (
-            querySuggestions.map(Suggestion.query) + urlSuggestions.map(Suggestion.url)
+            navSuggestions.map(Suggestion.url) + querySuggestions.map(Suggestion.query) + urlSuggestions.map(Suggestion.url)
                 + bangSuggestions.compactMap(Suggestion.init(bang:)) + lensSuggestions.compactMap(Suggestion.init(lens:)),
             data.suggest?.activeLensBangInfo
         )

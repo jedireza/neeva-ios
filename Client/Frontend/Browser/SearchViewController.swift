@@ -19,7 +19,7 @@ protocol SearchViewControllerDelegate: AnyObject {
 // Storage declares its own Identifiable type
 extension Site: Swift.Identifiable {}
 
-private enum SearchViewControllerUX {
+enum SearchViewControllerUX {
     static let ImageSize: CGFloat = 29
     static let IconSize: CGFloat = 23
 }

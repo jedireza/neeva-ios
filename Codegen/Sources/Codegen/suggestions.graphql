@@ -17,6 +17,8 @@ query Suggestions($query: String!) {
       title
       author
       timestamp
+      subtitle
+      sourceQueryIndex
       boldSpan {
         startInclusive
         endExclusive

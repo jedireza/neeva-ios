@@ -2,6 +2,7 @@
 
 import SwiftUI
 import Shared
+import Storage
 
 /// Renders a provided suggestion
 public struct SuggestionView: View {
@@ -30,21 +31,24 @@ public struct SuggestionView: View {
     }
 }
 
-fileprivate struct SuggestionRow<Icon: View, Label: View, Detail: View>: View {
+fileprivate struct SuggestionRow<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
     let action: () -> ()
     let icon: () -> Icon
     let label: () -> Label
+    let secondaryLabel: () -> SecondaryLabel
     let detail: () -> Detail
 
     init(
         action: @escaping () -> (),
         @ViewBuilder icon: @escaping () -> Icon,
         @ViewBuilder label: @escaping () -> Label,
+        @ViewBuilder secondaryLabel: @escaping () -> SecondaryLabel,
         @ViewBuilder detail: @escaping () -> Detail
     ) {
         self.action = action
         self.icon = icon
         self.label = label
+        self.secondaryLabel = secondaryLabel
         self.detail = detail
     }
 
@@ -54,7 +58,10 @@ fileprivate struct SuggestionRow<Icon: View, Label: View, Detail: View>: View {
                 icon()
                     .foregroundColor(.secondaryLabel)
                     .frame(width: 32, alignment: .leading)
-                label()
+                VStack(alignment: .leading) {
+                    label()
+                    secondaryLabel()
+                }.padding(.leading, 4)
                 Spacer()
                 detail()
                     .foregroundColor(.secondaryLabel)
@@ -102,6 +109,8 @@ fileprivate struct QuerySuggestionView: View {
         } label: {
             BoldSpanView(suggestion.suggestedQuery, unboldedSpans: suggestion.boldSpan)
                 .lineLimit(1)
+        } secondaryLabel: {
+            EmptyView()
         } detail: {
             if suggestion.type != .space {
                 Button(action: { setInput(suggestedQuery) }) {
@@ -126,15 +135,33 @@ fileprivate struct URLSuggestionView: View {
             if let labels = suggestion.icon.labels,
                let image = Image(icons: labels) {
                 image
+            } else if let subtitle = suggestion.subtitle, !subtitle.isEmpty,
+                      let url = suggestion.suggestedUrl {
+                FaviconView(site: Site(url: url, title: subtitle),
+                            size: SearchViewControllerUX.IconSize,
+                            bordered: true)
+                    .frame(
+                        width: SearchViewControllerUX.ImageSize,
+                        height: SearchViewControllerUX.ImageSize
+                    )
+                    .cornerRadius(4)
             } else {
                 Symbol(.questionmarkDiamondFill)
                     .foregroundColor(.red)
             }
         } label: {
-            if let title = suggestion.title {
+            if let subtitle = suggestion.subtitle, !subtitle.isEmpty {
+                Text(subtitle).foregroundColor(.primary).font(.caption).lineLimit(1)
+            } else if let title = suggestion.title {
                 BoldSpanView(title, unboldedSpans: suggestion.boldSpan).lineLimit(1)
             } else {
                 Text(suggestion.suggestedUrl).lineLimit(1)
+            }
+        } secondaryLabel: {
+            if !(suggestion.subtitle?.isEmpty ?? true), let title = suggestion.title,
+               let url = suggestion.suggestedUrl {
+                Text(URL(string: url)?.baseDomain ?? title)
+                    .foregroundColor(.secondaryLabel).font(.caption).lineLimit(1)
             }
         } detail: {
             if let formatted = format(suggestion.timestamp, as: .full) {
@@ -157,6 +184,8 @@ fileprivate struct BangSuggestionView: View {
             Symbol(ActiveLensBangType.bang.defaultSymbol)
         } label: {
             Text(query)
+        } secondaryLabel: {
+            EmptyView()
         } detail: {
             Text(suggestion.description)
         }
@@ -176,6 +205,8 @@ fileprivate struct LensSuggestionView: View {
             Symbol(ActiveLensBangType.lens.defaultSymbol)
         } label: {
             Text(query)
+        } secondaryLabel: {
+            EmptyView()
         } detail: {
             Text(suggestion.description)
         }
