@@ -119,7 +119,7 @@ struct NeevaHome: View {
                     }
 
                     NeevaHomeHeader(
-                        title: "Searches",
+                        title: "Spaces",
                         action: { expandSearches.toggle() },
                         label: "\(expandSearches ? "hides" : "shows") this section",
                         icon: expandSearches ? .chevronUp : .chevronDown
