@@ -109,6 +109,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let actionSheet = UIAlertController(title: nil, message: "Are you sure you want to close all open tabs?", preferredStyle: .actionSheet)
         let closeAction = UIAlertAction(title: "Close \(numberOfTabs) Tabs", style: .destructive) { _ in
             self.tabManager.removeAllTabsAndAddNormalTab()
+            self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
 
@@ -132,6 +133,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark"), attributes: .destructive) { _ in
             if let tab = self.tabManager.selectedTab {
                 self.tabManager.removeTabAndUpdateSelectedIndex(tab)
+                self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
             }
         }
         let closeAllTabs = UIAction(title: Strings.CloseAllTabsTitle, image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
