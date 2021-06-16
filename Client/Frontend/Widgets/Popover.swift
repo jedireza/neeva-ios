@@ -55,7 +55,7 @@ fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
         }
 
         override func viewDidDisappear(_ animated: Bool) {
-            viewDidDisappear(animated)
+            super.viewDidDisappear(animated)
             isPresented = false
         }
 
