@@ -105,22 +105,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         return [privateBrowsingMode]
     }
 
-    func showConfirmCloseAllTabs(numberOfTabs: Int) {
-        let actionSheet = UIAlertController(title: nil, message: "Are you sure you want to close all open tabs?", preferredStyle: .actionSheet)
-        let closeAction = UIAlertAction(title: "Close \(numberOfTabs) Tabs", style: .destructive) { _ in
-            self.tabManager.removeAllTabsAndAddNormalTab()
-            self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-
-        // add all actions to alert
-        actionSheet.addAction(closeAction)
-        actionSheet.addAction(cancelAction)
-
-        // show the alert
-        self.present(actionSheet, animated: true, completion: nil)
-    }
-
+    
     func getMoreTabToolbarLongPressActions() -> [UIMenuElement] {
         let tabCount = self.tabManager.tabs.count
 
@@ -136,10 +121,6 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
                 self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
             }
         }
-        let closeAllTabs = UIAction(title: Strings.CloseAllTabsTitle, image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-            // make sure the user really wants to close all tabs
-            self.showConfirmCloseAllTabs(numberOfTabs: tabCount)
-        }
 
         var actions = [newTab]
 
@@ -152,7 +133,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         }
 
         if tabCount > 1 {
-            actions.append(closeAllTabs)
+            actions.append(TabMenu(tabManager: tabManager, alertPresentViewController: self).createCloseAllTabsAction())
         }
 
         return actions

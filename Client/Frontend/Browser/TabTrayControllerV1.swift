@@ -42,9 +42,15 @@ class TabTrayControllerV1: UIViewController {
     let statusBarBG = UIView()
     lazy var toolbar: TrayToolbar = {
         let toolbar = TrayToolbar()
-        toolbar.addTabButton.addTarget(self, action: #selector(didTapToolbarAddTab), for: .touchUpInside)
         toolbar.maskButton.addTarget(self, action: #selector(didTogglePrivateMode), for: .touchUpInside)
+
+        let menu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
+        toolbar.addTabButton.addTarget(self, action: #selector(didTapToolbarAddTab), for: .touchUpInside)
+        toolbar.addTabButton.setDynamicMenu(menu.createRecentlyClosedTabsMenu)
+
         toolbar.doneButton.addTarget(self, action: #selector(didTapToolbarDone), for: .touchUpInside)
+        toolbar.doneButton.menu = menu.createCloseAllTabsMenu()
+
         return toolbar
     }()
 
@@ -420,7 +426,6 @@ extension TabTrayControllerV1 {
         _ = self.navigationController?.popViewController(animated: true)
         TelemetryWrapper.recordEvent(category: .action, method: .close, object: .tabTray)
     }
-
 }
 
 // MARK: - App Notifications
