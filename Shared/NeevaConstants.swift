@@ -10,7 +10,7 @@ extension Defaults.Keys {
 
 public struct NeevaConstants {
     /// The App Group, used for the keychain and UserDefaults
-    public static let appGroup = "group.co.neeva.app.ios.browser"
+    public static let appGroup = "group." + AppInfo.baseBundleIdentifier
 
     /// The host for the Neeva API/website, such as `neeva.com`
     public static var appHost: String {

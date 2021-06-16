@@ -49,7 +49,7 @@ class TabManagerStoreTests: XCTestCase {
         XCTAssertEqual(manager.testCountRestoredTabs(), 0)
     }
 
-    /* TODO(bug/261): Disabled due to flakiness.
+    /*  TODO(bug/261): Disabled due to flakiness.
     func testPrivateTabsAreArchived() {
         for _ in 0..<2 {
             addTabWithSessionData(isPrivate: true)
@@ -61,9 +61,7 @@ class TabManagerStoreTests: XCTestCase {
         }
         waitForExpectations(timeout: 2, handler: nil)
     }
-    */
 
-    /* TODO(bug/261): Disabled due to flakiness.
     func testAddedTabsAreStored() {
         // Add 2 tabs
         for _ in 0..<2 {
@@ -99,7 +97,6 @@ class TabManagerStoreTests: XCTestCase {
             e.fulfill()
         }
         waitForExpectations(timeout: 2, handler: nil)
-    }
-    */
+    }*/
 }
 
