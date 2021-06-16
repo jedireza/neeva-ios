@@ -5,13 +5,10 @@ import Shared
 import Storage
 
 /// Renders a provided suggestion
-public struct SuggestionView: View {
+public struct SearchSuggestionView: View {
     let suggestion: Suggestion
     let activeLensOrBang: ActiveLensBangInfo?
 
-    /// - Parameters:
-    ///   - suggestion: The suggestion to display
-    ///   - setInput: Set the user’s input to the provided string (called when tapping the 􀄮 (`arrow.up.left`) icon)
     public init(_ suggestion: Suggestion, activeLensOrBang: ActiveLensBangInfo?) {
         self.suggestion = suggestion
         self.activeLensOrBang = activeLensOrBang

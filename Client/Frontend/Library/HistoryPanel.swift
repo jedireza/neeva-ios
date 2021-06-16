@@ -483,7 +483,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         // overlayView becomes the footer view, and for unknown reason, setting the bgcolor is ignored.
         // Create an explicit view for setting the color.
         let bgColor = UIView()
-        bgColor.backgroundColor = UIColor.HomePanel.panelBackground
+        bgColor.backgroundColor = .systemBackground
         overlayView.addSubview(bgColor)
         bgColor.snp.makeConstraints { make in
             // Height behaves oddly: equalToSuperview fails in this case, as does setting top.equalToSuperview(), simply setting this to ample height works.

@@ -24,38 +24,23 @@ enum SearchViewControllerUX {
     static let IconSize: CGFloat = 23
 }
 
-struct SearchSuggestionView: View {
+struct SuggestionsView: View {
     let suggestions: [Suggestion]
     let lensOrBang: ActiveLensBangInfo?
     let history: Cursor<Site>?
     let error: Error?
     let getKeyboardHeight: () -> CGFloat
     let onReload: () -> ()
-
-    @Environment(\.colorScheme) var colorScheme
-    @Environment(\.onOpenURL) var openURL
-
-    var privateHeader: Color {
-        switch colorScheme {
-        case .dark:
-            return Color(UIColor.Photon.Purple40)
-        case .light:
-            return Color(UIColor.Photon.Purple60)
-        @unknown default:
-            fatalError("Invalid color scheme \(colorScheme)")
-        }
-    }
-
-    // This is a hack to cause SwiftUI to call this function again when
-    // outerGeometry changes due to device rotation. By reading that
-    // value, SwiftUI thinks our computation depends on it.
-    func getSpacerHeight(_ outerGeometry: GeometryProxy) -> CGFloat {
-        return self.getKeyboardHeight() + outerGeometry.size.height - outerGeometry.size.height
-    }
+    let onOpenURL: (URL) -> ()
+    let setSearchInput: (String) -> ()
 
     var body: some View {
-        let bgColor = Color(UIColor.HomePanel.panelBackground)
         GeometryReader { outerGeometry in
+            /// This is a hack to cause SwiftUI to call this function again when `outerGeometry` changes due to device rotation.
+            /// By reading that value, SwiftUI thinks our computation depends on it.
+            /// See https://github.com/neevaco/neeva-ios-phoenix/pull/210 for a detailed explanation.
+            let _ = outerGeometry.size.height
+
             VStack(spacing: 0) {
                 if let error = error {
                     GeometryReader { geom in
@@ -65,64 +50,19 @@ struct SearchSuggestionView: View {
                         }
                     }
                 } else {
-                    List {
-                        let suggestionList = ForEach(suggestions) { suggestion in
-                            SuggestionView(suggestion, activeLensOrBang: lensOrBang)
-                        }
-
-                        if let lensOrBang = lensOrBang,
-                           let description = lensOrBang.description {
-                            Section(header: Group {
-                                switch lensOrBang.type {
-                                case .bang:
-                                    Text("Search on \(description)")
-                                default:
-                                    Text(description)
-                                }
-                            }.textCase(nil)) {
-                                suggestionList
-                            }
-                        } else {
-                            suggestionList
-                        }
-
-                        if let history = history, history.count > 0 {
-                            Section(header: suggestions.isEmpty ? nil : Text("History")) {
-                                ForEach(history.asArray()) { site in
-                                    if let url = URL(string: site.url) {
-                                        Button(action: { openURL(url) }) {
-                                            HStack {
-                                                FaviconView(site: site, size: SearchViewControllerUX.IconSize, bordered: true)
-                                                    .frame(
-                                                        width: SearchViewControllerUX.ImageSize,
-                                                        height: SearchViewControllerUX.ImageSize
-                                                    )
-                                                    .cornerRadius(4)
-                                                VStack(alignment: .leading) {
-                                                    if !site.title.isEmpty {
-                                                        Text(site.title)
-                                                    }
-                                                    Text(site.url).foregroundColor(.secondaryLabel)
-                                                }.font(.caption).lineLimit(1)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .listRowBackground(bgColor)
-                    .background(bgColor)
+                    SuggestionsList(suggestions: suggestions, lensOrBang: lensOrBang, history: history)
                 }
                 Spacer()
-                    .frame(height: getSpacerHeight(outerGeometry))
+                    .frame(height: getKeyboardHeight())
             }
             .ignoresSafeArea(edges: [.bottom])
+            .environment(\.onOpenURL, onOpenURL)
+            .environment(\.setSearchInput, setSearchInput)
         }
     }
 }
 
-class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate, LoaderListener, Themeable {
+class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelperDelegate, LoaderListener, Themeable {
     var searchDelegate: SearchViewControllerDelegate?
 
     fileprivate let isPrivate: Bool
@@ -138,26 +78,38 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
     init(profile: Profile, isPrivate: Bool) {
         self.isPrivate = isPrivate
         self.profile = profile
-        super.init(rootView: AnyView(EmptyView()))
-        self.rootView = makeSuggestionView()
+        super.init(rootView: SuggestionsView(suggestions: [], lensOrBang: nil, history: nil, error: nil, getKeyboardHeight: { 0 }, onReload: { }, onOpenURL: { _ in }, setSearchInput: { _ in }))
+        self.render()
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    fileprivate func makeSuggestionView() -> AnyView {
-        AnyView(
-            SearchSuggestionView(
-                suggestions: suggestions,
-                lensOrBang: lensOrBang,
-                history: historyData,
-                error: error,
-                getKeyboardHeight: { KeyboardHelper.defaultHelper.currentState?.intersectionHeightForView(self.view) ?? 0 },
-                onReload: reloadData
-            )
-            .environment(\.onOpenURL) { self.searchDelegate?.searchViewController(self, didSelectURL: $0) }
-            .environment(\.setSearchInput) { self.searchDelegate?.searchViewController(self, didAcceptSuggestion: $0) }
+    fileprivate func render() {
+        rootView = SuggestionsView(
+            suggestions: suggestions,
+            lensOrBang: lensOrBang,
+            history: historyData,
+            error: error,
+            getKeyboardHeight: { [weak self] in
+                if let view = self?.view, let currentState = KeyboardHelper.defaultHelper.currentState {
+                    return currentState.intersectionHeightForView(view)
+                } else {
+                    return 0
+                }
+            },
+            onReload: reloadData,
+            onOpenURL: { [weak self] in
+                if let self = self {
+                    self.searchDelegate?.searchViewController(self, didSelectURL: $0)
+                }
+            },
+            setSearchInput: { [weak self] in
+                if let self = self {
+                    self.searchDelegate?.searchViewController(self, didAcceptSuggestion: $0)
+                }
+            }
         )
     }
 
@@ -201,7 +153,7 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
     fileprivate func animateSearchEnginesWithKeyboard(_ keyboardState: KeyboardState) {
         keyboardState.animateAlongside {
             self.view.layoutIfNeeded()
-            self.rootView = self.makeSuggestionView()
+            self.render()
         }
     }
 
@@ -210,7 +162,7 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
 
         if isPrivate || searchQuery.isEmpty || !Defaults[.showSearchSuggestions] || searchQuery.looksLikeAURL() {
             self.suggestions = []
-            self.rootView = makeSuggestionView()
+            self.render()
             return
         }
 
@@ -258,13 +210,13 @@ class SearchViewController: UIHostingController<AnyView>, KeyboardHelperDelegate
             if self.lensOrBang == nil {
                 self.searchDelegate?.searchViewController(self, didUpdateLensOrBang: nil)
             }
-            self.rootView = self.makeSuggestionView()
+            self.render()
         }
     }
 
     func loader(dataLoaded data: Cursor<Site>) {
         self.historyData = data
-        self.rootView = makeSuggestionView()
+        self.render()
     }
 
     func applyTheme() {

@@ -240,7 +240,7 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     fileprivate func createEmptyStateOverlayView() -> UIView {
         let overlayView = UIView()
-        overlayView.backgroundColor = UIColor.HomePanel.panelBackground
+        overlayView.backgroundColor = .systemBackground
 
         let logoImageView = UIImageView(image: UIImage.templateImageNamed("emptyDownloads"))
         logoImageView.tintColor = UIColor.Photon.Grey60

@@ -187,7 +187,6 @@ extension UIColor {
         public static let toolbarBackground = UIColor.neeva.DefaultBackground
         public static let toolbarHighlight = UIColor.neeva.ui.blue
         public static let toolbarTint = UIColor.secondaryLabel
-        public static let panelBackground = UIColor.systemBackground
         public static let welcomeScreenText = UIColor.secondaryLabel
         public static let siteTableHeaderBorder = UIColor.neeva.ui.gray30.withAlphaComponent(0.8)
         public static let readingListActive = UIColor.neeva.DefaultTextAndTint
