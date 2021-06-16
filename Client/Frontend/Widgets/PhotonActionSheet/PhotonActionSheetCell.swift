@@ -26,8 +26,6 @@ class PhotonActionSheetCell: UITableViewCell {
     static let VerticalPadding: CGFloat = 2
     static let IconSize = 16
 
-    var badgeOverlay: BadgeWithBackdrop?
-
     private func createLabel() -> UILabel {
         let label = UILabel()
         label.minimumScaleFactor = 0.75 // Scale the font if we run out of space
@@ -69,44 +67,11 @@ class PhotonActionSheetCell: UITableViewCell {
         return label
     }()
 
-    struct ToggleSwitch {
-        let mainView: UIImageView = {
-            let background = UIImageView(image: UIImage.templateImageNamed("menu-customswitch-background"))
-            background.contentMode = .scaleAspectFit
-            return background
-        }()
-
-        private let foreground = UIImageView()
-
-        init() {
-            foreground.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            foreground.contentMode = .scaleAspectFit
-            foreground.frame = mainView.frame
-            mainView.isAccessibilityElement = true
-            mainView.addSubview(foreground)
-            setOn(false)
-        }
-
-        func setOn(_ on: Bool) {
-            foreground.image = on ? UIImage(named: "menu-customswitch-on") : UIImage(named: "menu-customswitch-off")
-            mainView.accessibilityIdentifier = on ? "enabled" : "disabled"
-            mainView.tintColor = on ? .neeva.ui.blue : .secondarySystemFill }
-    }
-
-    let toggleSwitch = ToggleSwitch()
-
     lazy var selectedOverlay: UIView = {
         let selectedOverlay = UIView()
         selectedOverlay.backgroundColor = PhotonActionSheetCellUX.SelectedOverlayColor
         selectedOverlay.isHidden = true
         return selectedOverlay
-    }()
-
-    lazy var disclosureIndicator: UIImageView = {
-        let disclosureIndicator = createIconImageView()
-        disclosureIndicator.image = UIImage(named: "menu-Disclosure")?.withRenderingMode(.alwaysTemplate)
-        disclosureIndicator.tintColor = UIColor.theme.tableView.accessoryViewTint
-        return disclosureIndicator
     }()
 
     lazy var stackView: UIStackView = {
@@ -126,12 +91,8 @@ class PhotonActionSheetCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.statusIcon.image = nil
-        disclosureIndicator.removeFromSuperview()
         disclosureLabel.removeFromSuperview()
-        toggleSwitch.mainView.removeFromSuperview()
         statusIcon.layer.cornerRadius = PhotonActionSheetCellUX.CornerRadius
-        badgeOverlay?.backdrop.removeFromSuperview()
-        badgeOverlay?.badge.removeFromSuperview()
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -242,27 +203,12 @@ class PhotonActionSheetCell: UITableViewCell {
             statusIcon.removeFromSuperview()
         }
 
-        if let name = action.badgeIconName, action.isEnabled, let parent = statusIcon.superview {
-            badgeOverlay = BadgeWithBackdrop(imageName: name)
-            badgeOverlay?.add(toParent: parent)
-            badgeOverlay?.layout(onButton: statusIcon)
-            badgeOverlay?.show(true)
-            // Custom dark theme tint needed here, it is overkill to create a '.theme' color just for this.
-            let color = ThemeManager.instance.currentName == .dark ? UIColor(white: 0.3, alpha: 1): UIColor.theme.actionMenu.closeButtonBackground
-            badgeOverlay?.badge.tintBackground(color: color)
-        }
-
         switch action.accessory {
         case .Text:
             disclosureLabel.font = action.bold ? DynamicFontHelper.defaultHelper.DeviceFontLargeBold : DynamicFontHelper.defaultHelper.LargeSizeRegularWeightAS
             disclosureLabel.text = action.accessoryText
             disclosureLabel.textColor = titleLabel.textColor
             stackView.addArrangedSubview(disclosureLabel)
-        case .Disclosure:
-            stackView.addArrangedSubview(disclosureIndicator)
-        case .Switch:
-            toggleSwitch.setOn(action.isEnabled)
-            stackView.addArrangedSubview(toggleSwitch.mainView)
         default:
             break // Do nothing. The rest are not supported yet.
         }

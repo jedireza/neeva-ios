@@ -380,7 +380,7 @@ class SimplePageServer {
         let webServer: GCDWebServer = GCDWebServer()
 
         webServer.addHandler(forMethod: "GET", path: "/image.png", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse? in
-            let img = UIImage(named: "goBack")!.pngData()!
+            let img = UIImage(named: "defaultFavicon")!.pngData()!
             return GCDWebServerDataResponse(data: img, contentType: "image/png")
         }
 

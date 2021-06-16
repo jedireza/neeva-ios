@@ -37,8 +37,6 @@ public enum PresentationStyle {
 }
 
 public enum PhotonActionSheetCellAccessoryType {
-    case Disclosure
-    case Switch
     case Text
     case Sync // Sync is a special case.
     case None
@@ -72,7 +70,6 @@ public struct PhotonActionSheetItem {
     public fileprivate(set) var bold: Bool = false
     public fileprivate(set) var tabCount: String?
     public fileprivate(set) var tapHandler: ((PhotonActionSheetItem, UITableViewCell) -> Void)?
-    public fileprivate(set) var badgeIconName: String?
 
     // Enable title customization beyond what the interface provides,
     public var customRender: ((_ title: UILabel, _ contentView: UIView) -> Void)?
@@ -83,7 +80,7 @@ public struct PhotonActionSheetItem {
     // Normally the icon name is used, but if there is no icon, this is used.
     public var accessibilityId: String?
 
-    init(title: String, text: String? = nil, iconString: String? = nil, iconURL: URL? = nil, iconType: PhotonActionSheetIconType = .Image, iconAlignment: IconAlignment = .left, iconTint: UIColor? = nil, isEnabled: Bool = false, accessory: PhotonActionSheetCellAccessoryType = .None, accessoryText: String? = nil, badgeIconNamed: String? = nil, bold: Bool? = false, tabCount: String? = nil, handler: ((PhotonActionSheetItem, UITableViewCell) -> Void)? = nil) {
+    init(title: String, text: String? = nil, iconString: String? = nil, iconURL: URL? = nil, iconType: PhotonActionSheetIconType = .Image, iconAlignment: IconAlignment = .left, iconTint: UIColor? = nil, isEnabled: Bool = false, accessory: PhotonActionSheetCellAccessoryType = .None, accessoryText: String? = nil, bold: Bool? = false, tabCount: String? = nil, handler: ((PhotonActionSheetItem, UITableViewCell) -> Void)? = nil) {
         self.title = title
         self.iconString = iconString
         self.iconURL = iconURL
@@ -97,7 +94,6 @@ public struct PhotonActionSheetItem {
         self.accessoryText = accessoryText
         self.bold = bold ?? false
         self.tabCount = tabCount
-        self.badgeIconName = badgeIconNamed
     }
 }
 

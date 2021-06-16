@@ -267,25 +267,9 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var action = actions[indexPath.section][indexPath.row]
-        guard let handler = action.tapHandler else {
-            self.dismiss(nil)
-            return
-        }
-
-        // Switches can be toggled on/off without dismissing the menu
-        if action.accessory == .Switch {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
-            action.isEnabled = !action.isEnabled
-            actions[indexPath.section][indexPath.row] = action
-            self.tableView.deselectRow(at: indexPath, animated: true)
-            self.tableView.reloadData()
-        } else {
-            self.dismiss(nil)
-        }
-
-        return handler(action, self.tableView(tableView, cellForRowAt: indexPath))
+        self.dismiss(nil)
+        let action = actions[indexPath.section][indexPath.row]
+        action.tapHandler?(action, self.tableView(tableView, cellForRowAt: indexPath))
     }
 
     func tableView(_ tableView: UITableView, hasFullWidthSeparatorForRowAtIndexPath indexPath: IndexPath) -> Bool {
