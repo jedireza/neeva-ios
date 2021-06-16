@@ -37,6 +37,7 @@ public class Space: Hashable, Identifiable {
     }
 
     public var contentURLs: Set<URL>?
+    public var contentThumbnails: Set<String?>?
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -76,6 +77,7 @@ public class SpaceStore: ObservableObject {
     }
 
     private var disableRefresh = false
+
 
     private var urlToSpacesMap: [URL: [Space]] = [:]
 
@@ -139,8 +141,11 @@ public class SpaceStore: ObservableObject {
                 /// Otherwise, we can use our cached data.
                 if let oldSpace = oldSpaceMap[spaceId],
                    let contentURLs = oldSpace.contentURLs,
+                   let contentThumbnails = oldSpace.contentThumbnails,
                    space.lastModifiedTs == oldSpace.lastModifiedTs {
-                    self.onUpdateSpaceURLs(space: newSpace, contentURLs)
+                    self.onUpdateSpaceURLs(space: newSpace,
+                                           urls: contentURLs,
+                                           thumbnails: contentThumbnails)
                 } else {
                     spacesToFetch.append(newSpace)
                 }
@@ -159,7 +164,11 @@ public class SpaceStore: ObservableObject {
                         /// likely an unnecessary optimization. The window between now and
                         /// when ListSpaces returned is short, and the downside of having a
                         /// stale `lastModifiedTs` stored in our cache is minor.
-                        self.onUpdateSpaceURLs(space: spacesToFetch.first { $0.id.value == space.id }!, Set(space.urls))
+
+                        self.onUpdateSpaceURLs(
+                            space: spacesToFetch.first { $0.id.value == space.id }!,
+                            urls: Set(space.entities.reduce(into: [URL]()) {$0.append($1.0)}),
+                            thumbnails: Set(space.entities.reduce(into: [String?]()) {$0.append($1.1)}))
                     }
                     self.state = .ready
                 case .failure(let error):
@@ -171,8 +180,9 @@ public class SpaceStore: ObservableObject {
         }
     }
 
-    private func onUpdateSpaceURLs(space: Space, _ urls: Set<URL>) {
+    private func onUpdateSpaceURLs(space: Space, urls: Set<URL>, thumbnails: Set<String?>) {
         space.contentURLs = urls
+        space.contentThumbnails = thumbnails
         for url in urls {
             var spaces = urlToSpacesMap[url] ?? []
             spaces.append(space)

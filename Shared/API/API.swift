@@ -4496,6 +4496,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
               spaceEntity {
                 __typename
                 url
+                thumbnail
               }
             }
           }
@@ -4506,7 +4507,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "d6b61f8f61b54a78cd099115854705351535f6eeca17a4456f77c6a8e02123f1"
+  public let operationIdentifier: String? = "4ea494be399584a561f823705dd1bf398b1d0fcb3454f51ee321df2bb2de4cc8"
 
   public var ids: [String]?
 
@@ -4757,6 +4758,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                   GraphQLField("url", type: .scalar(String.self)),
+                  GraphQLField("thumbnail", type: .scalar(String.self)),
                 ]
               }
 
@@ -4766,8 +4768,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(url: String? = nil) {
-                self.init(unsafeResultMap: ["__typename": "SpaceEntityData", "url": url])
+              public init(url: String? = nil, thumbnail: String? = nil) {
+                self.init(unsafeResultMap: ["__typename": "SpaceEntityData", "url": url, "thumbnail": thumbnail])
               }
 
               public var __typename: String {
@@ -4785,6 +4787,15 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "url")
+                }
+              }
+
+              public var thumbnail: String? {
+                get {
+                  return resultMap["thumbnail"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "thumbnail")
                 }
               }
             }

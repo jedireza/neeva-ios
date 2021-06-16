@@ -32,7 +32,7 @@ extension SpaceListController.Space: Identifiable {
 class SpacesDataQueryController: QueryController<GetSpacesDataQuery, [SpacesDataQueryController.Space]> {
     struct Space {
         var id: String
-        var urls: [URL]
+        var entities: [(URL, String?)]
     }
 
     private var spaceIds: [String]
@@ -51,17 +51,17 @@ class SpacesDataQueryController: QueryController<GetSpacesDataQuery, [SpacesData
         if let spaces = data.getSpace?.space {
             for space in spaces {
                 if let id = space.pageMetadata?.pageId {
-                    var urls: [URL] = []
+                    var spaceEntities: [(URL, String?)] = []
                     if let entities = space.space?.entities {
                         for entity in entities {
                             if let urlString = entity.spaceEntity?.url {
                                 if let url = URL(string: urlString) {
-                                    urls.append(url)
+                                    spaceEntities.append((url, entity.spaceEntity?.thumbnail))
                                 }
                             }
                         }
                     }
-                    result.append(Space(id: id, urls: urls))
+                    result.append(Space(id: id, entities: spaceEntities))
                 }
             }
         }

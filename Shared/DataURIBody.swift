@@ -2,7 +2,7 @@
 
 import Foundation
 
-extension String {
+public extension String {
     /// If this string represents a `data:` URL containing base64-encoded data, this returns the decoded data.
     var dataURIBody: Data? {
         guard starts(with: "data:") else { return nil }

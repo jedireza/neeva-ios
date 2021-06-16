@@ -4,12 +4,20 @@ import Foundation
 import SwiftUI
 import SDWebImageSwiftUI
 
+enum CardUX {
+    static let CardSize : CGFloat = 180
+    static let ShadowRadius : CGFloat = 4
+    static let CornerRadius : CGFloat = 8
+    static let ButtonSize : CGFloat = 32
+}
+
 struct CardSpec: ViewModifier {
     let size: CGFloat
 
     func body(content: Content) -> some View {
         content.frame(width: size, height: size)
-            .clipShape(RoundedRectangle(cornerRadius: 8)).shadow(radius: 4)
+            .clipShape(RoundedRectangle(cornerRadius: CardUX.CornerRadius))
+            .shadow(radius: CardUX.ShadowRadius)
     }
 }
 
@@ -29,32 +37,35 @@ struct Card<Details>: View where Details: CardDetails {
                 favicon.resizable()
                     .transition(.fade(duration: 0.5)) // Fade Transition with duration
                     .scaledToFit()
-                    .applyCardSpec(size: 32)
+                    .applyCardSpec(size: CardUX.ButtonSize)
 
             } else {
-                Rectangle().foregroundColor(.label)
-                    .applyCardSpec(size: 32)
+                Rectangle().foregroundColor(.clear)
+                    .applyCardSpec(size: CardUX.ButtonSize)
             }
             if let thumbnail = details.thumbnail {
-                Image(uiImage: thumbnail).resizable().aspectRatio(contentMode: .fill)
-                    .applyCardSpec(size: 180)
+                thumbnail
+                    .applyCardSpec(size: CardUX.CardSize)
             } else {
                 Rectangle().foregroundColor(.label)
-                    .applyCardSpec(size: 180)
+                    .applyCardSpec(size: CardUX.CardSize)
             }
             if let buttonImage = details.closeButtonImage {
                 Button(action: {
                     details.onClose()
                 }, label: {
                     Image(uiImage: buttonImage).resizable().renderingMode(.template)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.white)
                         .scaledToFit().padding(4)
-                        .applyCardSpec(size: 32)
+                        .applyCardSpec(size: CardUX.ButtonSize)
                 })
+            } else {
+                Rectangle().foregroundColor(.clear)
+                    .applyCardSpec(size: CardUX.ButtonSize)
             }
         }.onTapGesture {
             details.onSelect()
-        }
+        }.onDrop(of: ["public.url", "public.text"], delegate: details)
     }
 }
 

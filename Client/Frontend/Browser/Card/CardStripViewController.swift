@@ -9,8 +9,10 @@ public enum CardStripUX {
 }
 
 class CardStripViewController: UIViewController {
-    lazy var cardStripHostingController: UIHostingController<CardStrip<TabCardModel>>? = {
-        let host = UIHostingController(rootView: CardStrip(model: self.tabCardModel))
+    lazy var cardStripHostingController: UIHostingController<TabsAndSpacesView>? = {
+        let host = UIHostingController(
+            rootView: TabsAndSpacesView(
+                tabModel: self.tabCardModel, spaceModel: self.spaceCardModel))
         host.view.backgroundColor = UIColor.clear
         addChild(host)
         view.addSubview(host.view)
@@ -22,10 +24,12 @@ class CardStripViewController: UIViewController {
     weak var tabManager: TabManager?
 
     var tabCardModel: TabCardModel
+    var spaceCardModel: SpaceCardModel
 
     init(tabManager: TabManager) {
         self.tabManager = tabManager
         self.tabCardModel = TabCardModel(manager: tabManager)
+        self.spaceCardModel = SpaceCardModel()
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = .clear
     }

@@ -66,21 +66,68 @@ class TabCardModel: CardModel, TabEventHandler {
     typealias Details = TabCardDetails
 }
 
+class SpaceCardModel: CardModel {
+    var onViewUpdate: () -> () = {}
+
+    func onDataUpdated() {
+        allDetails = manager.getAll().map {SpaceCardDetails(space: $0)}
+        onViewUpdate()
+    }
+
+    func onItemUpdated(with id: String) {}
+
+    @Published var manager = SpaceStore.shared
+
+    @Published var allDetails: [SpaceCardDetails] = []
+}
+
 struct CardStrip<Model: CardModel>: View {
     typealias Details = Model.Details
     @ObservedObject var model: Model
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 32) {
                 ForEach(model.allDetails.indices, id: \.self) { index in
                     let details = model.allDetails[index]
                     Card<Details>(details: details)
                 }
             }.padding().frame(height: 275)
+    }
+}
 
+struct TabsAndSpacesView: View {
+    @ObservedObject var tabModel: TabCardModel
+    @ObservedObject var spaceModel: SpaceCardModel
+    @State var showingSpaces: Bool = false
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                Button(action: {
+                    spaceModel.onDataUpdated()
+                    withAnimation {
+                        showingSpaces.toggle()
+                    }
+                }, label: {
+                    Symbol(.bookmark, size: 24, weight: .semibold, label: "Show Spaces")
+                        .foregroundColor(
+                            Color(showingSpaces ? UIColor.Browser.background : UIColor.label))
+                        .aspectRatio(contentMode: .fit)
+                }).frame(width: 44, height: 44)
+                .background(Color(showingSpaces ? UIColor.label : UIColor.Browser.background))
+                .clipShape(Circle()).animation(.spring())
+                .frame(width: CardUX.CardSize / 2, height: CardUX.CardSize)
+                .background(Color(UIColor.Browser.background))
+                .clipShape(RoundedRectangle(cornerRadius: CardUX.CornerRadius))
+                .shadow(radius: CardUX.ShadowRadius).padding(.leading, 20)
+                if showingSpaces {
+                    CardStrip(model: spaceModel)
+                }
+                CardStrip(model: tabModel)
+            }
         }.onAppear {
-            model.onDataUpdated()
+            tabModel.onDataUpdated()
+            spaceModel.manager.refresh()
         }.frame(maxWidth:.infinity)
         .background(LinearGradient(gradient: Gradient(colors:
                                                         [.clear, .label.opacity(0.3), .clear]),

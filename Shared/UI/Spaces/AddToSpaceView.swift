@@ -79,7 +79,7 @@ public class AddToSpaceRequest: ObservableObject {
         }
     }
 
-    func addToExistingSpace(id: String, name: String) {
+    public func addToExistingSpace(id: String, name: String) {
         // Note: This creates a reference cycle between self and the mutation.
         // This means even if all other references are dropped to self, then
         // the mutation will attempt to run to completion.
