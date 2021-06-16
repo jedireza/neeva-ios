@@ -22,7 +22,7 @@ class OpenSearchEngine {
 
     fileprivate lazy var searchQueryComponentKey: String? = self.getQueryArgFromTemplate()
     
-    var searchTemplate: String { "https://\(NeevaConstants.appHost)/search/?q={searchTerms}&src=nvobar" }
+    var searchTemplate: String { "https://\(NeevaConstants.appHost)/search?q={searchTerms}&src=nvobar" }
     
     fileprivate var suggestTemplate: String { "https://\(NeevaConstants.appHost)/suggest?q={searchTerms}&src=nvobar" }
 
