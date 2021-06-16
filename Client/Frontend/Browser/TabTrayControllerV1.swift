@@ -357,7 +357,21 @@ class TabTrayControllerV1: UIViewController {
 extension TabTrayControllerV1: TabManagerDelegate {
     func tabManager(_ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?, isRestoring: Bool) {}
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {}
-    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {}
+
+    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {
+        let toastView = ToastViewManager.shared.makeToast(text: "Tab closed", buttonText: "restore") {
+            // restores last closed tab
+            guard let lastClosedURL = self.profile.recentlyClosedTabs.tabs.first?.url,
+                  let selectedTab = tabManager.selectedTab else { return }
+
+            let request = URLRequest(url: lastClosedURL)
+            let closedTab = tabManager.addTab(request, afterTab: selectedTab, isPrivate: false)
+            tabManager.selectTab(closedTab)
+        }
+
+        ToastViewManager.shared.clearQueueAndDisplay(toastView)
+    }
+
     func tabManagerDidRestoreTabs(_ tabManager: TabManager) {
         self.emptyPrivateTabsView.isHidden = !self.privateTabsAreEmpty()
     }
