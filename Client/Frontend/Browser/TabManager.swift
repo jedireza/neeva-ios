@@ -376,7 +376,6 @@ class TabManager: NSObject {
         }
 
         tab.nightMode = Defaults[.nightModeStatus]
-        tab.noImageMode = Defaults[.noImageModeStatus]
 
         if flushToDisk {
         	storeChanges()

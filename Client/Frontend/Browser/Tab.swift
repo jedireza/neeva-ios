@@ -149,19 +149,6 @@ class Tab: NSObject {
         return url.absoluteString.lengthOfBytes(using: .utf8) > AppConstants.DB_URL_LENGTH_MAX
     }
 
-    // Use computed property so @available can be used to guard `noImageMode`.
-    var noImageMode: Bool {
-        didSet {
-            guard noImageMode != oldValue else {
-                return
-            }
-
-            contentBlocker?.noImageMode(enabled: noImageMode)
-
-            UserScriptManager.shared.injectUserScriptsIntoTab(self, nightMode: nightMode, noImageMode: noImageMode)
-        }
-    }
-
     var nightMode: Bool {
         didSet {
             guard nightMode != oldValue else {
@@ -174,7 +161,7 @@ class Tab: NSObject {
             // set to black in the WKWebView init.
             webView?.isOpaque = !nightMode
 
-            UserScriptManager.shared.injectUserScriptsIntoTab(self, nightMode: nightMode, noImageMode: noImageMode)
+            UserScriptManager.shared.injectUserScriptsIntoTab(self, nightMode: nightMode)
         }
     }
 
@@ -218,7 +205,6 @@ class Tab: NSObject {
     init(bvc: BrowserViewController, configuration: WKWebViewConfiguration, isPrivate: Bool = false) {
         self.configuration = configuration
         self.nightMode = false
-        self.noImageMode = false
         self.browserViewController = bvc
         super.init()
         self.isPrivate = isPrivate
@@ -299,7 +285,7 @@ class Tab: NSObject {
 
             self.webView = webView
             self.webView?.addObserver(self, forKeyPath: KVOConstants.URL.rawValue, options: .new, context: nil)
-            UserScriptManager.shared.injectUserScriptsIntoTab(self, nightMode: nightMode, noImageMode: noImageMode)
+            UserScriptManager.shared.injectUserScriptsIntoTab(self, nightMode: nightMode)
             tabDelegate?.tab?(self, didCreateWebView: webView)
         }
     }
@@ -641,10 +627,6 @@ extension Tab: ContentBlockerTab {
 
     func currentWebView() -> WKWebView? {
         return webView
-    }
-
-    func imageContentBlockingEnabled() -> Bool {
-        return noImageMode
     }
 }
 

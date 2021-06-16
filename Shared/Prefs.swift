@@ -22,7 +22,6 @@ extension Defaults.Keys {
     public static let didShowDefaultBrowserOnboarding = Defaults.BoolKey("didShowDefaultBrowserOnboarding")
 
     // explicit/implicit settings
-    public static let noImageModeStatus = Defaults.BoolKey("profile.NoImageModeStatus")
     public static let nightModeStatus = Defaults.BoolKey("profile.NightModeStatus")
     public static let nightModeEnabledDarkTheme = Defaults.BoolKey("profile.NightModeEnabledDarkTheme")
     public static let mailToOption = Defaults.Key<String?>("profile.MailToOption")

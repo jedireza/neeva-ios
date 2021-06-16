@@ -65,7 +65,6 @@ class L10nSuite2SnapshotTests: L10nBaseSnapshotTests {
         snapshot("MenuOnWebPage-01")
         navigator.back()
 
-        navigator.toggleOn(userState.noImageMode, withAction: Action.ToggleNoImageMode)
         navigator.toggleOn(userState.nightMode, withAction: Action.ToggleNightMode)
         navigator.goto(BrowserTabMenu)
         snapshot("MenuOnWebPage-02")

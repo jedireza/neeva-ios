@@ -69,26 +69,14 @@ enum BlockerStatus: String {
     case blocking
 }
 
-struct NoImageModeDefaults {
-    static let Script = "[{'trigger':{'url-filter':'.*','resource-type':['image']},'action':{'type':'block'}}]".replacingOccurrences(of: "'", with: "\"")
-    static let ScriptName = "images"
-}
-
 class ContentBlocker {
     var safelistedDomains = SafelistedDomains()
     let ruleStore: WKContentRuleListStore = WKContentRuleListStore.default()
-    var blockImagesRule: WKContentRuleList?
     var setupCompleted = false
 
     static let shared = ContentBlocker()
 
     private init() {
-        let blockImages = NoImageModeDefaults.Script
-        ruleStore.compileContentRuleList(forIdentifier: NoImageModeDefaults.ScriptName, encodedContentRuleList: blockImages) { rule, error in
-            assert(rule != nil && error == nil)
-            self.blockImagesRule = rule
-        }
-
         // Read the safelist at startup
         if let list = readSafelistFile() {
             safelistedDomains.domainSet = Set(list)
@@ -138,30 +126,10 @@ class ContentBlocker {
 
     private func removeTrackingProtection(forTab tab: ContentBlockerTab) {
         tab.currentWebView()?.configuration.userContentController.removeAllContentRuleLists()
-
-        // Add back the block images rule (if needed) after having removed all rules.
-        if let rule = blockImagesRule, tab.imageContentBlockingEnabled() {
-            add(contentRuleList: rule, toTab: tab)
-        }
     }
 
     private func add(contentRuleList: WKContentRuleList, toTab tab: ContentBlockerTab) {
         tab.currentWebView()?.configuration.userContentController.add(contentRuleList)
-    }
-
-    func noImageMode(enabled: Bool, forTab tab: ContentBlockerTab) {
-        guard let rule = blockImagesRule else { return }
-
-        if enabled {
-            add(contentRuleList: rule, toTab: tab)
-        } else {
-            tab.currentWebView()?.configuration.userContentController.remove(rule)
-        }
-
-        // Async required here to ensure remove() call is processed.
-        DispatchQueue.main.async() { [weak tab] in
-            tab?.currentWebView()?.evaluateJavascriptInDefaultContentWorld("window.__firefox__.NoImageMode.setEnabled(\(enabled))")
-        }
     }
 }
 
