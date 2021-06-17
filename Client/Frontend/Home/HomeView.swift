@@ -95,9 +95,11 @@ struct NeevaHome: View {
                     if viewModel.isPrivate {
                         IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(NeevaHomeUX.Padding)
                     }
+
                     if !viewModel.isPrivate && viewModel.showDefaultBrowserCard {
                         PromoCard(model: viewModel)
                     }
+
                     NeevaHomeHeader(
                         title: "Suggested sites",
                         action: { expandSuggestedSites.advance() },
@@ -118,15 +120,18 @@ struct NeevaHome: View {
                         SuggestedSearchesView()
                     }
 
-                    NeevaHomeHeader(
-                        title: "Spaces",
-                        action: { expandSearches.toggle() },
-                        label: "\(expandSearches ? "hides" : "shows") this section",
-                        icon: expandSearches ? .chevronUp : .chevronDown
-                    )
-                    if expandSearches {
-                        SuggestedSpacesView()
+                    if !viewModel.isPrivate {
+                        NeevaHomeHeader(
+                            title: "Spaces",
+                            action: { expandSearches.toggle() },
+                            label: "\(expandSearches ? "hides" : "shows") this section",
+                            icon: expandSearches ? .chevronUp : .chevronDown
+                        )
+                        if expandSearches {
+                            SuggestedSpacesView()
+                        }
                     }
+
                     Spacer()
                 }
             }.environment(\.viewWidth, geom.size.width)

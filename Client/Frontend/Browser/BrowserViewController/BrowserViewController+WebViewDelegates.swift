@@ -14,7 +14,7 @@ private let log = Logger.browserLogger
 /// List of schemes that are allowed to be opened in new tabs.
 private let schemesAllowedToBeOpenedAsPopups = ["http", "https", "javascript", "data", "about"]
 
-fileprivate func setCookiesForNeeva(webView: WKWebView) {
+fileprivate func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
     let httpCookieStore = webView.configuration.websiteDataStore.httpCookieStore
 
     // Set this cookie as another way to communicate that we are the iOS app.
@@ -27,7 +27,7 @@ fileprivate func setCookiesForNeeva(webView: WKWebView) {
     // login cookie in the keychain is considered the source of truth for login
     // state. This may be an invalid login cookie, and in that case, we'll get
     // a new value for the cookie after going through a login flow.
-    if let cookieValue = NeevaUserInfo.shared.getLoginCookie() {
+    if !isPrivate, let cookieValue = NeevaUserInfo.shared.getLoginCookie() {
         httpCookieStore.setCookie(NeevaConstants.loginCookie(for: cookieValue))
     }
 
@@ -533,7 +533,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
             if NeevaConstants.isAppHost(url.host) {
                 webView.customUserAgent = UserAgent.neevaAppUserAgent()
-                setCookiesForNeeva(webView: webView)
+                setCookiesForNeeva(webView: webView, isPrivate: tab.isPrivate)
             } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(domain: url.baseDomain ?? "")
                 webView.customUserAgent = platformSpecificUserAgent
