@@ -64,7 +64,10 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
                     return
                 }
 
-                let deferredHistorySites = result.successValue?.asArray() ?? []
+                // Exclude Neeva search url suggestions from history suggest, since they should
+                // readily be coming as query suggestions.
+                let deferredHistorySites = (result.successValue?.asArray() ?? [])
+                    .filter {!($0.url.hasPrefix(neevaSearchEngine.searchUrlNoQuery))}
 
                 // Load the data in the table view.
                 self.load(ArrayCursor(data: deferredHistorySites))
