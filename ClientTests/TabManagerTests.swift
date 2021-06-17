@@ -487,16 +487,13 @@ class TabManagerTests: XCTestCase {
     }
 
     func testUndoCloseTabsRemovesAutomaticallyCreatedNonPrivateTab() {
-
         let tab = manager.addTab()
         let tabToSave = Tab(bvc: BrowserViewController.foregroundBVC(), configuration: WKWebViewConfiguration())
         tabToSave.sessionData = SessionData(currentPage: 0, urls: [URL(string: "url")!], lastUsedTime: Date.now())
-        guard let savedTab = SavedTab(tab: tabToSave, isSelected: true) else {
-            XCTFail("Failed to serialize tab")
-            return
-        }
-        manager.recentlyClosedForUndo = [savedTab]
-        manager.undoCloseTabs()
+
+        manager.removeTabs([tab])
+        manager.restoreAllClosedTabs()
+
         XCTAssertNotEqual(manager.tabs.first, tab)
     }
 }

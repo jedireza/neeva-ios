@@ -652,7 +652,7 @@ private class TabContentScriptManager: NSObject, WKScriptMessageHandler {
     }
 
     func addContentScript(_ helper: TabContentScript, name: String, forTab tab: Tab) {
-        if let _ = helpers[name] {
+        if helpers[name] != nil {
             assertionFailure("Duplicate helper added: \(name)")
         }
 

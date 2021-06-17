@@ -10,7 +10,7 @@ import XCGLogger
 private let log = Logger.browserLogger
 class TabManagerStore {
     fileprivate var lockedForReading = false
-    fileprivate let imageStore: DiskImageStore?
+    public let imageStore: DiskImageStore?
     fileprivate var fileManager = FileManager.default
     fileprivate let serialQueue = DispatchQueue(label: "tab-manager-write-queue")
     fileprivate var writeOperation = DispatchWorkItem {}
@@ -48,14 +48,14 @@ class TabManagerStore {
         var savedUUIDs = Set<String>()
         for tab in tabs {
             tab.tabUUID = tab.tabUUID.isEmpty ? UUID().uuidString : tab.tabUUID
-            if let savedTab = SavedTab(tab: tab, isSelected: tab == selectedTab) {
-                savedTabs.append(savedTab)
-                if let screenshot = tab.screenshot,
-                   let screenshotUUID = tab.screenshotUUID {
-                    savedUUIDs.insert(screenshotUUID.uuidString)
-                    
-                    imageStore?.put(screenshotUUID.uuidString, image: screenshot)
-                }
+            let savedTab = SavedTab(tab: tab, isSelected: tab == selectedTab)
+            savedTabs.append(savedTab)
+            
+            if let screenshot = tab.screenshot,
+                let screenshotUUID = tab.screenshotUUID {
+                savedUUIDs.insert(screenshotUUID.uuidString)
+
+                imageStore?.put(screenshotUUID.uuidString, image: screenshot)
             }
         }
         // Clean up any screenshots that are no longer associated with a tab.
@@ -110,11 +110,14 @@ class TabManagerStore {
     func restoreTabs(savedTabs: [SavedTab], clearPrivateTabs: Bool, tabManager: TabManager) -> Tab? {
         assertIsMainThread("Restoration is a main-only operation")
         guard !lockedForReading, savedTabs.count > 0 else { return nil }
+
         lockedForReading = true
         defer {
             lockedForReading = false
         }
+
         var savedTabs = savedTabs
+
         // Make sure to wipe the private tabs if the user has the pref turned on
         if clearPrivateTabs {
             savedTabs = savedTabs.filter { !$0.isPrivate }
@@ -125,6 +128,7 @@ class TabManagerStore {
             // Provide an empty request to prevent a new tab from loading the home screen
             var tab = tabManager.addTab(flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: imageStore)
+
             if savedTab.isSelected {
                 tabToSelect = tab
             }

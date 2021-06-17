@@ -15,7 +15,7 @@ class SavedTab: NSObject, NSCoding {
     var screenshotUUID: UUID?
     var faviconURL: String?
     var UUID:String?
-    
+
     var jsonDictionary: [String: AnyObject] {
         let title: String = self.title ?? "null"
         let faviconURL: String = self.faviconURL ?? "null"
@@ -38,8 +38,7 @@ class SavedTab: NSObject, NSCoding {
         return json
     }
     
-    init?(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String) {
-
+    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
@@ -52,7 +51,7 @@ class SavedTab: NSObject, NSCoding {
         super.init()
     }
     
-    required init?(coder: NSCoder) {
+    required init(coder: NSCoder) {
         self.sessionData = coder.decodeObject(forKey: "sessionData") as? SessionData
         self.screenshotUUID = coder.decodeObject(forKey: "screenshotUUID") as? UUID
         self.isSelected = coder.decodeBool(forKey: "isSelected")

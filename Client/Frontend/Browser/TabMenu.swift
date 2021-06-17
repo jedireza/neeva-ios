@@ -42,7 +42,7 @@ class TabMenu {
 
     // MARK: Recently Closed Tabs
     func createRecentlyClosedTabsMenu() -> UIMenu {
-        let recentlyClosed = tabManager.recentlyClosedForUndo
+        let recentlyClosed = tabManager.recentlyClosedTabs
         var actions = [UIAction]()
 
         for tab in recentlyClosed.filter({ !$0.title!.isEmpty }) {

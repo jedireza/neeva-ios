@@ -99,7 +99,7 @@ class TabManager: NSObject {
     var selectedIndex: Int { return _selectedIndex }
 
     // Enables undo of recently closed tabs
-    var recentlyClosedForUndo = [SavedTab]()
+    var recentlyClosedTabs = [SavedTab]()
 
     var normalTabs: [Tab] {
         assert(Thread.isMainThread)
@@ -250,8 +250,6 @@ class TabManager: NSObject {
     //This is called by TabTrayVC when the private mode button is pressed and BEFORE we've switched to the new mode
     //we only want to remove all private tabs when leaving PBM and not when entering.
     func willSwitchTabMode(leavingPBM: Bool) {
-        recentlyClosedForUndo.removeAll()
-
         // Clear every time entering/exiting this mode.
         Tab.ChangeUserAgent.privateModeHostList = Set<String>()
 
@@ -365,6 +363,7 @@ class TabManager: NSObject {
         if !zombie {
             tab.createWebview()
         }
+
         tab.navigationDelegate = self.navDelegate
 
         if let request = request {
@@ -454,6 +453,11 @@ class TabManager: NSObject {
         tabs.remove(at: removalIndex)
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
+        // don't want to remember private tabs
+        if !tab.isPrivate {
+            recentlyClosedTabs.append(SavedTab(tab: tab, isSelected: selectedTab === tab))
+        }
+
         if tab.isPrivate && privateTabs.count < 1 {
             privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
         }
@@ -509,60 +513,63 @@ class TabManager: NSObject {
         removeTabsAndAddNormalTab(tabs)
     }
     
-    func removeTabsWithToast(_ tabs: [Tab]) {
-        recentlyClosedForUndo = normalTabs.compactMap {
-            SavedTab(tab: $0, isSelected: selectedTab === $0)
-        }
+    func removeTabsWithToast(_ tabsToRemove: [Tab]) {
+        removeTabs(tabsToRemove)
 
-        removeTabs(tabs)
         if normalTabs.isEmpty {
             selectTab(addTab())
         }
 
-        tabs.forEach({ $0.hideContent() })
+        tabsToRemove.forEach({ $0.hideContent() })
 
         var toast: ButtonToast?
-        let numberOfTabs = recentlyClosedForUndo.count
+        let numberOfTabs = tabsToRemove.count
+
         if numberOfTabs > 0 {
             toast = ButtonToast(labelText: String.localizedStringWithFormat(Strings.TabsDeleteAllUndoTitle, numberOfTabs), buttonText: Strings.TabsDeleteAllUndoAction, completion: { buttonPressed in
                 if buttonPressed {
-                    self.undoCloseTabs()
+                    self.restoreAllClosedTabs()
                     self.storeChanges()
                     for delegate in self.delegates {
                         delegate.get()?.tabManagerDidAddTabs(self)
                     }
                 }
-                self.eraseUndoCache()
             })
         }
 
         delegates.forEach { $0.get()?.tabManagerDidRemoveAllTabs(self, toast: toast) }
     }
 
-    func undoCloseTabs() {
-        guard let isPrivate = recentlyClosedForUndo.first?.isPrivate else {
-            // No valid tabs
-            return
+    func restoreSavedTabs(_ savedTabs: [SavedTab]) {
+        // makes sure at least one tab is selected
+        // if no tab selected, select the last one (most recently closed)
+        var tabSelected = false
+        for index in 0..<savedTabs.count {
+            let savedTab = savedTabs[index]
+            
+            var tab = addTab(flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
+            tab = savedTabs[index].configureSavedTabUsing(tab, imageStore: store.imageStore)
+
+            if savedTab.isSelected {
+                tabSelected = true
+                selectTab(tab)
+            } else if index == savedTabs.count - 1 && !tabSelected {
+                selectTab(tab)
+            }
         }
 
-        let selectedTab = store.restoreTabs(savedTabs: recentlyClosedForUndo, clearPrivateTabs: false, tabManager: self)
+        delegates.forEach( { $0.get()?.tabManagerDidRestoreTabs(self) } )
 
-        recentlyClosedForUndo.removeAll()
-
-        let tabs = isPrivate ? privateTabs : normalTabs
-        tabs.forEach({ $0.showContent(true) })
-
-        // In non-private mode, delete all tabs will automatically create a tab
-        if let tab = tabs.first, !tab.isPrivate {
-            removeTabAndUpdateSelectedIndex(tab)
+        // remove restored tabs from recently closed
+        for tab in savedTabs {
+            if let index = recentlyClosedTabs.firstIndex(of: tab) {
+                recentlyClosedTabs.remove(at: index)
+            }
         }
-
-        selectTab(selectedTab)
-        delegates.forEach { $0.get()?.tabManagerDidRestoreTabs(self) }
     }
 
-    func eraseUndoCache() {
-        recentlyClosedForUndo.removeAll()
+    func restoreAllClosedTabs() {
+       restoreSavedTabs(recentlyClosedTabs)
     }
 
     func removeAll() {

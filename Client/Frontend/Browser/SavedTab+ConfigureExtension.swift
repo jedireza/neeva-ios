@@ -9,7 +9,7 @@ import Shared
 
 // This cannot be easily imported into extension targets, so we break it out here.
 extension SavedTab {
-    convenience init?(tab: Tab, isSelected: Bool) {
+    convenience init(tab: Tab, isSelected: Bool) {
         assert(Thread.isMainThread)
         
         var sessionData = tab.sessionData
