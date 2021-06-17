@@ -28,7 +28,7 @@ public struct SearchSuggestionView: View {
     }
 }
 
-fileprivate struct SuggestionRow<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
+struct SuggestionRow<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
     let action: () -> ()
     let icon: () -> Icon
     let label: () -> Label
@@ -69,7 +69,7 @@ fileprivate struct SuggestionRow<Icon: View, Label: View, SecondaryLabel: View, 
 }
 
 /// Renders a query suggestion
-fileprivate struct QuerySuggestionView: View {
+struct QuerySuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.QuerySuggestion
     let activeLensOrBang: ActiveLensBangInfo?
 
@@ -157,7 +157,7 @@ fileprivate struct URLSuggestionView: View {
         } secondaryLabel: {
             if !(suggestion.subtitle?.isEmpty ?? true), let title = suggestion.title,
                let url = suggestion.suggestedUrl {
-                Text(URL(string: url)?.baseDomain ?? title)
+                Text(URL(string: url)?.normalizedHostAndPathForDisplay ?? title)
                     .foregroundColor(.secondaryLabel).font(.caption).lineLimit(1)
             }
         } detail: {

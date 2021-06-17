@@ -45,7 +45,7 @@ public extension UIImageView {
             finish(bgColor: bundledIcon.bgcolor)
         } else if let image = FaviconFetcher.getFaviconFromDiskCache(imageKey: website?.baseDomain ?? ""){
             self.image = image
-            finish(bgColor: .label)
+            finish(bgColor: .systemBackground)
         } else {
             let imageURL = URL(string: icon?.url ?? "")
             let defaults = fallbackFavicon(forUrl: website)

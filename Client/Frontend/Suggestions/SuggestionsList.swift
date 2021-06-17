@@ -2,8 +2,19 @@
 
 import SwiftUI
 import Storage
+import Shared
+
 
 struct SuggestionsList: View {
+    static let placeholderQuery =
+        SuggestionsQuery.Data.Suggest.QuerySuggestion(
+            type: .standard,
+            suggestedQuery: "placeholder_query",
+            boldSpan: [.init(startInclusive: 0, endExclusive: 0)],
+            source: .bing
+        )
+    static let placeholderSite = Site(url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
+
     let suggestions: [Suggestion]
     let lensOrBang: ActiveLensBangInfo?
     let history: Cursor<Site>?
@@ -27,11 +38,21 @@ struct SuggestionsList: View {
                     suggestionList
                 }
             } else {
-                suggestionList
+                if (suggestions.isEmpty) {
+                    HistorySuggestionView(site: SuggestionsList.placeholderSite)
+                        .redacted(reason: .placeholder)
+                    ForEach(0..<5) { _ in
+                        QuerySuggestionView(suggestion: SuggestionsList.placeholderQuery,
+                                            activeLensOrBang: nil)
+                            .redacted(reason: .placeholder)
+                    }
+                } else {
+                    suggestionList
+                }
             }
 
             if let history = history, history.count > 0 {
-                Section(header: suggestions.isEmpty ? nil : Text("History")) {
+                Section(header: Text("History")) {
                     ForEach(history.asArray()) { site in
                         HistorySuggestionView(site: site)
                     }

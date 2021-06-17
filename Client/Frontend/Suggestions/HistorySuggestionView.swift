@@ -8,30 +8,27 @@ struct HistorySuggestionView: View {
 
     @Environment(\.onOpenURL) private var openURL
 
-    @ViewBuilder private func content(_ url: URL) -> some View {
-        Button(action: { openURL(url) }) {
-            HStack {
-                FaviconView(site: site, size: SearchViewControllerUX.IconSize, bordered: true)
-                    .frame(
-                        width: SearchViewControllerUX.ImageSize,
-                        height: SearchViewControllerUX.ImageSize
-                    )
-                    .cornerRadius(4)
-                VStack(alignment: .leading) {
-                    if site.title.isEmpty {
-                        Text(site.url)
-                    } else {
-                        Text(site.title)
-                        Text(site.url).foregroundColor(.secondaryLabel)
-                    }
-                }.font(.caption).lineLimit(1)
-            }
-        }
-    }
-
     var body: some View {
-        if let url = URL(string: site.url) {
-            content(url)
+        SuggestionRow {
+            openURL(URL(string: site.url)!)
+        } icon: {
+            FaviconView(site: site,
+                        size: SearchViewControllerUX.IconSize,
+                        bordered: true)
+                .frame(
+                    width: SearchViewControllerUX.ImageSize,
+                    height: SearchViewControllerUX.ImageSize
+                )
+                .cornerRadius(4)
+        } label: {
+            if let title = site.title, !title.isEmpty {
+                Text(title).foregroundColor(.primary).font(.caption).lineLimit(1)
+            }
+        } secondaryLabel: {
+            Text(URL(string: site.url)?.normalizedHostAndPathForDisplay ?? site.url)
+                .foregroundColor(.secondaryLabel).font(.caption).lineLimit(1)
+        } detail: {
+            EmptyView()
         }
     }
 }

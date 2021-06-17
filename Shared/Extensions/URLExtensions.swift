@@ -166,6 +166,19 @@ extension URL {
         return normalizedHost.flatMap { $0 + self.path }
     }
 
+    public var normalizedHostAndPathForDisplay: String {
+        var urlString = self.normalizedHostAndPath ?? self.absoluteString
+        // For http URLs, get rid of the trailing slash if the path is empty or '/'
+        if (self.scheme == "http" || self.scheme == "https") && (self.path == "/") && urlString.hasSuffix("/") {
+            urlString = String(urlString[..<urlString.index(urlString.endIndex, offsetBy: -1)])
+        }
+        if urlString.hasPrefix("https://") {
+            return String(urlString[urlString.index(urlString.startIndex, offsetBy: 8)...])
+        } else {
+            return urlString
+        }
+    }
+
     public var absoluteDisplayString: String {
         var urlString = self.absoluteString
         // For http URLs, get rid of the trailing slash if the path is empty or '/'

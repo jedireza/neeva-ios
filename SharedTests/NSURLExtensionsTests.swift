@@ -396,6 +396,24 @@ class NSURLExtensionsTests: XCTestCase {
         badurls.forEach { XCTAssertNil(URL(string:$0)!.normalizedHostAndPath) }
     }
 
+    func testnormalizedHostAndPathForDisplay() {
+        let goodurls = [
+            ("http://www.example.com/index.html", "example.com/index.html"),
+            ("http://mail.example.com/index.html", "mail.example.com/index.html"),
+            ("https://www.example.com/index.html", "example.com/index.html"),
+            ("https://mail.example.com/index.html", "mail.example.com/index.html"),
+            ("https://mail.example.co.uk/", "mail.example.co.uk"),
+            ("https://m.example.co.uk/index.html", "example.co.uk/index.html")
+        ]
+        let badurls = [
+            ("http:///errors/error.html", "http:///errors/error.html"),
+            ("http://:\(AppInfo.webserverPort)/about/home", "http://:\(AppInfo.webserverPort)/about/home")
+        ]
+
+        goodurls.forEach { XCTAssertEqual(URL(string:$0.0)!.normalizedHostAndPathForDisplay, $0.1) }
+        badurls.forEach { XCTAssertEqual(URL(string:$0.0)!.normalizedHostAndPathForDisplay, $0.1) }
+    }
+
     func testShortDisplayString() {
         let urls = [
             ("https://www.example.com/index.html", "example"),
