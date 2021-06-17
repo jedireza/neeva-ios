@@ -500,12 +500,15 @@ class TabManager: NSObject {
     }
 
     func removeTabsAndAddNormalTab(_ tabs: [Tab]) {
-        for tab in tabs {
+        let isPrivate = selectedTab?.isPrivate
+        for tab in tabs where tab.isPrivate == isPrivate {
             self.removeTab(tab, flushToDisk: false, notify: true)
         }
+
         if normalTabs.isEmpty {
             selectTab(addTab())
         }
+
         storeChanges()
     }
 

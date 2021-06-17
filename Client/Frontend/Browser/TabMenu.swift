@@ -47,7 +47,7 @@ class TabMenu {
 
         for tab in recentlyClosed.filter({ !$0.title!.isEmpty }) {
             actions.append(UIAction(title: tab.title!, handler: { _ in
-
+                self.tabManager.restoreSavedTabs([tab])
             }))
         }
 
