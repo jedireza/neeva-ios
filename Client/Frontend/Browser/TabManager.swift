@@ -18,7 +18,7 @@ protocol TabManagerDelegate: AnyObject {
 
     func tabManagerDidRestoreTabs(_ tabManager: TabManager)
     func tabManagerDidAddTabs(_ tabManager: TabManager)
-    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager, toast: ButtonToast?)
+    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager)
 }
 
 // We can't use a WeakList here because this is a protocol.
@@ -407,6 +407,8 @@ class TabManager: NSObject {
         removeTab(tab, flushToDisk: true, notify: true)
         updateIndexAfterRemovalOf(tab, deletedIndex: index)
 
+       addTabsToRecentlyClosed([tab])
+
         TelemetryWrapper.recordEvent(
             category: .action,
             method: .close,
@@ -453,11 +455,6 @@ class TabManager: NSObject {
         tabs.remove(at: removalIndex)
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
-        // don't want to remember private tabs
-        if !tab.isPrivate {
-            recentlyClosedTabs.append(SavedTab(tab: tab, isSelected: selectedTab === tab))
-        }
-
         if tab.isPrivate && privateTabs.count < 1 {
             privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
         }
@@ -501,6 +498,7 @@ class TabManager: NSObject {
 
     func removeTabsAndAddNormalTab(_ tabs: [Tab]) {
         let isPrivate = selectedTab?.isPrivate
+
         for tab in tabs where tab.isPrivate == isPrivate {
             self.removeTab(tab, flushToDisk: false, notify: true)
         }
@@ -509,13 +507,15 @@ class TabManager: NSObject {
             selectTab(addTab())
         }
 
+        addTabsToRecentlyClosed(tabs)
+
         storeChanges()
     }
 
     func removeAllTabsAndAddNormalTab() {
         removeTabsAndAddNormalTab(tabs)
     }
-    
+
     func removeTabsWithToast(_ tabsToRemove: [Tab]) {
         removeTabs(tabsToRemove)
 
@@ -524,25 +524,18 @@ class TabManager: NSObject {
         }
 
         tabsToRemove.forEach({ $0.hideContent() })
+        addTabsToRecentlyClosed(tabsToRemove)
 
-        var toast: ButtonToast?
-        let numberOfTabs = tabsToRemove.count
-
-        if numberOfTabs > 0 {
-            toast = ButtonToast(labelText: String.localizedStringWithFormat(Strings.TabsDeleteAllUndoTitle, numberOfTabs), buttonText: Strings.TabsDeleteAllUndoAction, completion: { buttonPressed in
-                if buttonPressed {
-                    self.restoreAllClosedTabs()
-                    self.storeChanges()
-                    for delegate in self.delegates {
-                        delegate.get()?.tabManagerDidAddTabs(self)
-                    }
-                }
-            })
-        }
-
-        delegates.forEach { $0.get()?.tabManagerDidRemoveAllTabs(self, toast: toast) }
+        delegates.forEach { $0.get()?.tabManagerDidRemoveAllTabs(self) }
     }
 
+    func addTabsToRecentlyClosed(_ tabs: [Tab]) {
+        let savedTabs = tabs.compactMap { SavedTab(tab: $0, isSelected: selectedTab === $0) }
+        recentlyClosedTabs.append(contentsOf: savedTabs)
+
+        ToastDefaults().showToastForClosedTabs(savedTabs, tabManager: self)
+    }
+    
     func restoreSavedTabs(_ savedTabs: [SavedTab]) {
         // makes sure at least one tab is selected
         // if no tab selected, select the last one (most recently closed)

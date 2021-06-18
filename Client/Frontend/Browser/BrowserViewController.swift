@@ -2009,13 +2009,7 @@ extension BrowserViewController: TabManagerDelegate {
         })
     }
 
-    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager, toast: ButtonToast?) {
-        let tabTrayV1PrivateMode = tabTrayController?.tabDisplayManager.isPrivate
-        guard let toast = toast, !(tabTrayV1PrivateMode ?? false) else {
-            return
-        }
-        show(toast: toast, afterWaiting: ButtonToastUX.ToastDelay)
-    }
+    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager) {}
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate

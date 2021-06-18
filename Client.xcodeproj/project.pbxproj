@@ -194,6 +194,7 @@
 		63306D3921103EAE00F25400 /* SavedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D3821103EAE00F25400 /* SavedTab.swift */; };
 		63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D422110B3CD00F25400 /* TabManagerStore.swift */; };
 		63306D452110BAF000F25400 /* TabManagerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D442110BAF000F25400 /* TabManagerStoreTests.swift */; };
+		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
 		66C3C769267A8858002B50B1 /* ButtonToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C760267A8858002B50B1 /* ButtonToast.swift */; };
 		66C3C76A267A8858002B50B1 /* DownloadToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C761267A8858002B50B1 /* DownloadToast.swift */; };
 		66C3C76B267A8858002B50B1 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C762267A8858002B50B1 /* Toast.swift */; };
@@ -1106,6 +1107,7 @@
 		63306D3821103EAE00F25400 /* SavedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTab.swift; sourceTree = "<group>"; };
 		63306D422110B3CD00F25400 /* TabManagerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabManagerStore.swift; sourceTree = "<group>"; };
 		63306D442110BAF000F25400 /* TabManagerStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabManagerStoreTests.swift; sourceTree = "<group>"; };
+		6643042F267C19D200674549 /* ToastDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastDefaults.swift; sourceTree = "<group>"; };
 		66C3C760267A8858002B50B1 /* ButtonToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonToast.swift; sourceTree = "<group>"; };
 		66C3C761267A8858002B50B1 /* DownloadToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadToast.swift; sourceTree = "<group>"; };
 		66C3C762267A8858002B50B1 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -2148,6 +2150,7 @@
 				66C3C766267A8858002B50B1 /* ToastProgressView.swift */,
 				66C3C767267A8858002B50B1 /* ToastViewManager.swift */,
 				66C3C764267A8858002B50B1 /* ToastWindowManager.swift */,
+				6643042F267C19D200674549 /* ToastDefaults.swift */,
 				66C3C762267A8858002B50B1 /* Toast.swift */,
 				66C3C768267A8858002B50B1 /* AddToSpaceToast.swift */,
 				66C3C760267A8858002B50B1 /* ButtonToast.swift */,
@@ -4430,6 +4433,7 @@
 				66C3C76E267A8858002B50B1 /* SimpleToast.swift in Sources */,
 				435D660723D7962C0046EFA2 /* UpdateCoverSheetTableViewCell.swift in Sources */,
 				C4E3983D1D21F1E7004E89BA /* TopTabsViews.swift in Sources */,
+				66430430267C19D200674549 /* ToastDefaults.swift in Sources */,
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
 				E4CD9F2D1A6DC91200318571 /* LegacyTabLocationView.swift in Sources */,
 				66C3C771267A8858002B50B1 /* AddToSpaceToast.swift in Sources */,

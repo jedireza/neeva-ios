@@ -53,6 +53,7 @@ struct ToastView: View {
                 } else {
                     self.offset = 0
                 }
+
                 viewDelegate?.draggingEnded(dismissing: dismissing)
             }
     }

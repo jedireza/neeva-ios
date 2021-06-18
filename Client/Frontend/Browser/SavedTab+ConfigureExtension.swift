@@ -54,6 +54,7 @@ extension SavedTab {
         tab.sessionData = sessionData
         tab.lastTitle = title
         tab.tabUUID = UUID ?? ""
+
         return tab
     }
 }

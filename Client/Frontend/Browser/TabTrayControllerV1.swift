@@ -358,25 +358,13 @@ extension TabTrayControllerV1: TabManagerDelegate {
     func tabManager(_ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?, isRestoring: Bool) {}
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {}
 
-    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {
-        let toastView = ToastViewManager.shared.makeToast(text: "Tab closed", buttonText: "restore") {
-            // restores last closed tab
-            guard let lastClosedURL = self.profile.recentlyClosedTabs.tabs.first?.url,
-                  let selectedTab = tabManager.selectedTab else { return }
-
-            let request = URLRequest(url: lastClosedURL)
-            let closedTab = tabManager.addTab(request, afterTab: selectedTab, isPrivate: false)
-            tabManager.selectTab(closedTab)
-        }
-
-        ToastViewManager.shared.clearQueueAndDisplay(toastView)
-    }
+    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) { }
 
     func tabManagerDidRestoreTabs(_ tabManager: TabManager) {
         self.emptyPrivateTabsView.isHidden = !self.privateTabsAreEmpty()
     }
     func tabManagerDidAddTabs(_ tabManager: TabManager) {}
-    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager, toast: ButtonToast?) {
+    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager) {
         // No need to handle removeAll toast in TabTray.
         // When closing all normal tabs we automatically focus a tab and show the BVC. Which will handle the Toast.
         // We don't show the removeAll toast in PBM
@@ -400,15 +388,10 @@ extension TabTrayControllerV1: TabDisplayer {
 }
 
 extension TabTrayControllerV1 {
-
     func closeTabsForCurrentTray() {
-        let tabs = self.tabDisplayManager.dataStore.compactMap { $0 }
-        let maxTabs = 100
-        if tabs.count >= maxTabs {
-            self.tabManager.removeTabsAndAddNormalTab(tabs)
-        } else {
-            self.tabManager.removeTabsWithToast(tabs)
-        }
+        let tabs = tabDisplayManager.dataStore.compactMap { $0 }
+        tabManager.removeTabsAndAddNormalTab(tabs)
+
         closeTabsTrayHelper()
     }
     

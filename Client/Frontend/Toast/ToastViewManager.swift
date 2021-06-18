@@ -15,6 +15,7 @@ class ToastViewManager {
     private var queuedToasts = [ToastView]()
 
     // current toast varibles
+    private let toastAnimationTime = 0.5
     private var currentToast: ToastView?
     private var currentToastTimer: Timer?
     private var currentToastIsDragging = false
@@ -48,7 +49,10 @@ class ToastViewManager {
 
         if currentToast != nil {
             dismissCurrentToast(moveToNext: false, overrideDrag: true)
-            present(toast)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + toastAnimationTime) {
+                self.present(toast)
+            }
         } else {
             present(toast)
         }
@@ -85,8 +89,10 @@ class ToastViewManager {
         self.currentToastTimer = nil
         self.currentToastIsDragging = false
 
-        if moveToNext {
-            self.nextToast()
+        DispatchQueue.main.asyncAfter(deadline: .now() + toastAnimationTime) {
+            if moveToNext {
+                self.nextToast()
+            }
         }
     }
 
@@ -94,6 +100,7 @@ class ToastViewManager {
     private func nextToast() {
         if queuedToasts.count > 0 {
             queuedToasts.removeFirst()
+
             if let nextToast = queuedToasts.first {
                 present(nextToast)
             }
