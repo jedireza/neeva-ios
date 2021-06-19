@@ -18,6 +18,7 @@ struct SuggestionsList: View {
     let suggestions: [Suggestion]
     let lensOrBang: ActiveLensBangInfo?
     let history: Cursor<Site>?
+    @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
         List {
@@ -38,7 +39,7 @@ struct SuggestionsList: View {
                     suggestionList
                 }
             } else {
-                if (suggestions.isEmpty) {
+                if (suggestions.isEmpty && !isIncognito) {
                     HistorySuggestionView(site: SuggestionsList.placeholderSite)
                         .redacted(reason: .placeholder)
                     ForEach(0..<5) { _ in
@@ -52,7 +53,7 @@ struct SuggestionsList: View {
             }
 
             if let history = history, history.count > 0 {
-                Section(header: Text("History")) {
+                Section(header: isIncognito ? nil : Text("History")) {
                     ForEach(history.asArray()) { site in
                         HistorySuggestionView(site: site)
                     }
