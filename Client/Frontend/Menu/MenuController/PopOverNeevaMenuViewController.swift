@@ -91,10 +91,7 @@ class PopOverNeevaMenuViewController: UIHostingController<_NeevaMenuPopover> {
                 }
 
                 DispatchQueue.main.asyncAfter(deadline: TourManager.shared.delay()) {
-                    delegate.present(SendFeedbackPanel(screenshot: feedbackImage, url: delegate.tabManager.selectedTab?.canonicalURL, onOpenURL: {
-                        delegate.dismiss(animated: true, completion: nil)
-                        delegate.openURLInNewTab($0)
-                    }), animated: true)
+                    showFeedbackPanel(bvc: delegate, screenshot: feedbackImage)
                 }
                 break
             }

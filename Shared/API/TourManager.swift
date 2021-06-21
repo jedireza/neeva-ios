@@ -22,6 +22,7 @@ public enum TourStep: String {
     case promptSpaceInNeevaMenu = "create_space"
     case promptFeedbackInNeevaMenu = "send_feedback"
     case promptSettingsInNeevaMenu = "connect_personal_account"
+    case openFeedbackPanelWithInputFieldHighlight = "open_feedback_panel_with_input_field_highlight"
     case earlyExit = "early_exit"
     case unknown = ""
 

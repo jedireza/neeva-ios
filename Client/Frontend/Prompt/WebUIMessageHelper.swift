@@ -23,7 +23,6 @@ class WebUIMessageHelper: TabContentScript {
     }
     
     func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-
         let showBrowserQuests = NeevaFeatureFlags[.browserQuests]
 
         let frameOrigin = message.frameInfo.securityOrigin
@@ -37,10 +36,14 @@ class WebUIMessageHelper: TabContentScript {
               let tourStep = TourStep(rawValue: stepName)
         else { return }
 
+
         switch tourStep {
         case .promptSpaceInNeevaMenu, .promptFeedbackInNeevaMenu, .promptSettingsInNeevaMenu:
             TourManager.shared.setActiveStep(id: id, stepName: tourStep, webView: self.webView! as WKWebView)
             BrowserViewController.foregroundBVC().showQuestNeevaMenuPrompt()
+        case .openFeedbackPanelWithInputFieldHighlight:
+            TourManager.shared.setActiveStep(id: id, stepName: tourStep, webView: self.webView! as WKWebView)
+            showFeedbackPanel(bvc: BrowserViewController.foregroundBVC().self)
         default:
             break
         }

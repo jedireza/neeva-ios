@@ -33,6 +33,7 @@ public struct NeevaConstants {
     public static var appSigninURL: URL { appURL / "signin" }
     public static var appSignupURL: URL { appURL / "signup" }
     public static var appFAQURL: URL { appURL / "faq" }
+    public static var appWelcomeToursURL: URL { URL(string: "\(appURL)#modal-hello")! }
 
     public static let appPrivacyURL = appMarketingURL / "privacy"
     public static let appTermsURL = appMarketingURL / "terms"

@@ -13,9 +13,16 @@ struct SupportSettingsSection: View {
     }
     
     var body: some View {
-        NavigationLinkButton("Show Tour") {
-            ClientLogger.shared.logCounter(.ViewShowTour, attributes: EnvironmentHelper.shared.getAttributes())
-            presentIntroViewController()
+        if FeatureFlag[.welcomeTours] {
+            NavigationLinkButton("Welcome Tours") {
+                ClientLogger.shared.logCounter(.ViewShowTour, attributes: EnvironmentHelper.shared.getAttributes())
+                openInNewTab(NeevaConstants.appWelcomeToursURL, false)
+            }
+        } else {
+            NavigationLinkButton("Show Tour") {
+                ClientLogger.shared.logCounter(.ViewShowTour, attributes: EnvironmentHelper.shared.getAttributes())
+                presentIntroViewController()
+            }
         }
         SheetNavigationLink("Send Feedback") {
             // TODO: make SendFeedbackView’s NavigationView optional so we can push it?

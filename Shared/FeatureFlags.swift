@@ -15,6 +15,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case newURLBarDebug = "New URL Bar: Debug Mode"
     case iPadTopTabs = "Show tab strip on iPad"
     case newToastUI = "Use new Toast interface"
+    case welcomeTours = "Navigate to welcome tours web page"
 }
 
 extension FeatureFlag {

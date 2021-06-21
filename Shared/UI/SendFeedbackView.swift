@@ -66,7 +66,7 @@ public struct SendFeedbackView: View {
                     .textCase(nil)
                 ) {
                     MultilineTextField("Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!", text: $feedbackText)
-                        .if(TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu)) { view in
+                        .if(shouldHighlightTextInput()) { view in
                             view
                             .overlay(RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.neeva.brand.blue, lineWidth: 4)
@@ -159,7 +159,7 @@ public struct SendFeedbackView: View {
                                 isSending = false
                                 switch result {
                                 case .success:
-                                    TourManager.shared.userReachedStep(step: .promptFeedbackInNeevaMenu)
+                                    updateTourManagerUponSuccess()
                                     if let onDismiss = onDismiss {
                                         onDismiss()
                                     } else {
@@ -224,6 +224,15 @@ public struct SendFeedbackView: View {
 
     private func viewDidDisappear() {
         TourManager.shared.notifyCurrentViewClose()
+    }
+
+    private func updateTourManagerUponSuccess() {
+        TourManager.shared.userReachedStep(step: .promptFeedbackInNeevaMenu)
+        TourManager.shared.userReachedStep(step: .openFeedbackPanelWithInputFieldHighlight)
+    }
+
+    private func shouldHighlightTextInput() -> Bool {
+        return TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu) || TourManager.shared.isCurrentStep(with: .openFeedbackPanelWithInputFieldHighlight)
     }
 }
 
