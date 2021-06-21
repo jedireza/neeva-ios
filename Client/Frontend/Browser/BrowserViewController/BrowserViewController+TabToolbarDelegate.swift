@@ -81,6 +81,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
 
         func action() {
             _ = tabManager.switchPrivacyMode()
+            neevaHomeViewController?.homeViewModel.isPrivate = tabManager.selectedTab!.isPrivate
         }
 
         let icon: UIImage?

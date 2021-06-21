@@ -399,6 +399,7 @@ class TabManager: NSObject {
         }
 
         selectTab(nextSelectedTab)
+
         return result
     }
     
@@ -490,26 +491,23 @@ class TabManager: NSObject {
         if selectedTab?.isPrivate ?? false {
             _selectedIndex = -1
         }
+
         privateTabs.forEach { $0.close() }
         tabs = normalTabs
 
         privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 
-    func removeTabsAndAddNormalTab(_ tabs: [Tab]) {
-        let isPrivate = selectedTab?.isPrivate
+    func removeTabsAndAddNormalTab(_ tabsToBeRemoved: [Tab]) {
+        let isPrivate = selectedTab?.isPrivate ?? false
+        let tabsToBeRemoved = tabsToBeRemoved.filter { $0.isPrivate == isPrivate }
 
-        for tab in tabs where tab.isPrivate == isPrivate {
-            self.removeTab(tab, flushToDisk: false, notify: true)
-        }
+        removeTabs(tabsToBeRemoved)
+        addTabsToRecentlyClosed(tabsToBeRemoved)
 
         if normalTabs.isEmpty {
             selectTab(addTab())
         }
-
-        addTabsToRecentlyClosed(tabs)
-
-        storeChanges()
     }
 
     func removeAllTabsAndAddNormalTab() {
@@ -576,6 +574,7 @@ class TabManager: NSObject {
         for tab in tabs {
             self.removeTab(tab, flushToDisk: false, notify: true)
         }
+
         storeChanges()
     }
 

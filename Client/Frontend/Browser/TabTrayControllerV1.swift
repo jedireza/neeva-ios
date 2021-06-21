@@ -50,6 +50,11 @@ class TabTrayControllerV1: UIViewController {
 
         toolbar.doneButton.addTarget(self, action: #selector(didTapToolbarDone), for: .touchUpInside)
         toolbar.doneButton.menu = menu.createCloseAllTabsMenu()
+        menu.tabsClosed = { isPrivate in
+            if isPrivate {
+                self.didTogglePrivateMode()
+            }
+        }
 
         return toolbar
     }()

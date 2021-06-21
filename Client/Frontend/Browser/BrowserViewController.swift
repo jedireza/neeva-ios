@@ -1166,6 +1166,8 @@ class BrowserViewController: UIViewController {
         if focusLocationField {
             focusLocationTextField(forTab: freshTab, setSearchText: searchText)
         }
+
+        neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
     }
 
     func openSearchNewTab(isPrivate: Bool = false, _ text: String) {
