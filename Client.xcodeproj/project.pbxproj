@@ -324,6 +324,7 @@
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		C9ACC462267A4408009AE182 /* HistorySuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
+		C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */; };
 		C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */; };
 		C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */; };
 		C9AFE6E126582ACE000C5A03 /* Error.css in Resources */ = {isa = PBXBuildFile; fileRef = C9AFE6E026582ACE000C5A03 /* Error.css */; };
@@ -1232,6 +1233,7 @@
 		C9946460265706D500613110 /* FeatureFlagSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettings.swift; sourceTree = "<group>"; };
 		C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySuggestionView.swift; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
+		C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoAwareHostingController.swift; sourceTree = "<group>"; };
 		C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLookView.swift; sourceTree = "<group>"; };
 		C9AFE6E026582ACE000C5A03 /* Error.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = Error.css; sourceTree = "<group>"; };
@@ -2580,6 +2582,7 @@
 				C9BED4C8266824D7001D9C77 /* FadingHorizontalScrollView.swift */,
 				C9F49CBC266FDA9500F3408A /* SearchBar.swift */,
 				C9E5F2CA2678F05E00025A7F /* Popover.swift */,
+				C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -4577,6 +4580,7 @@
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,
 				66C3C76B267A8858002B50B1 /* Toast.swift in Sources */,
+				C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */,
 				122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */,
 				C4E398601D22C409004E89BA /* TopTabsLayout.swift in Sources */,
 				2816F0001B33E05400522243 /* UIConstants.swift in Sources */,

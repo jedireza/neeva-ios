@@ -3,10 +3,11 @@
 import SwiftUI
 import Shared
 
-// can’t be fileprivate because
+// can’t be fileprivate because the type of the generic on UIHostingController
+// is required to be at least as public as the hosting controller subclass itself.
 struct _NeevaMenuPopover: View {
-    let isIncognito: Bool
-    let menuAction: ((NeevaMenuButtonActions) -> ())?
+    fileprivate let isIncognito: Bool
+    fileprivate let menuAction: ((NeevaMenuButtonActions) -> ())?
 
     var body: some View {
         VerticalScrollViewIfNeeded(
