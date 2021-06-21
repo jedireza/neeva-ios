@@ -314,6 +314,7 @@ class TabManager: NSObject {
         let bvc = BrowserViewController.foregroundBVC()
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
         configureTab(tab, request: request, afterTab: afterTab, flushToDisk: flushToDisk, zombie: zombie)
+
         return tab
     }
 
@@ -537,19 +538,23 @@ class TabManager: NSObject {
     func restoreSavedTabs(_ savedTabs: [SavedTab]) {
         // makes sure at least one tab is selected
         // if no tab selected, select the last one (most recently closed)
-        var tabSelected = false
+        var selectedSavedTab: Tab?
+
         for index in 0..<savedTabs.count {
             let savedTab = savedTabs[index]
-            
-            var tab = addTab(flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
-            tab = savedTabs[index].configureSavedTabUsing(tab, imageStore: store.imageStore)
+            let urlRequest: URLRequest? = savedTab.url != nil ? URLRequest(url: savedTab.url!) : nil
+            var tab = addTab(urlRequest, flushToDisk: false, zombie: false, isPrivate: savedTab.isPrivate)
+            tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
 
             if savedTab.isSelected {
-                tabSelected = true
-                selectTab(tab)
-            } else if index == savedTabs.count - 1 && !tabSelected {
-                selectTab(tab)
+                selectedSavedTab = tab
+            } else if index == savedTabs.count - 1 && selectedSavedTab == nil {
+                selectedSavedTab = tab
             }
+        }
+
+        if let selectedSavedTab = selectedSavedTab {
+            selectTab(selectedSavedTab)
         }
 
         delegates.forEach( { $0.get()?.tabManagerDidRestoreTabs(self) } )
