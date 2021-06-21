@@ -87,6 +87,7 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>QuickActionIntent</string>
+		<string>NSUserActivityTypeBrowsingWeb</string>
 	</array>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>
