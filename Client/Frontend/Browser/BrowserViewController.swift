@@ -972,7 +972,10 @@ class BrowserViewController: UIViewController {
     
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
         legacyURLBar.model.url = url
-        legacyURLBar.leaveOverlayMode()
+        legacyURLBar.model.text = nil
+        if !FeatureFlag[.newURLBar] {
+            legacyURLBar.leaveOverlayMode()
+        }
 
         if let nav = tab.loadRequest(URLRequest(url: url)) {
             self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
@@ -980,7 +983,10 @@ class BrowserViewController: UIViewController {
     }
     
     override func accessibilityPerformEscape() -> Bool {
-        if legacyURLBar.inOverlayMode {
+        if FeatureFlag[.newURLBar], legacyURLBar.model.text != nil {
+            legacyURLBar.model.text = nil
+            return true
+        } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
             return true
         } else if let selectedTab = tabManager.selectedTab, selectedTab.canGoBack {
@@ -1081,7 +1087,11 @@ class BrowserViewController: UIViewController {
         legacyURLBar.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
 
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
-        legacyURLBar.legacyLocationView.updateShareButton(isPage)
+        if FeatureFlag[.newURLBar] {
+            legacyURLBar.model.canShare = isPage
+        } else {
+            legacyURLBar.legacyLocationView.updateShareButton(isPage)
+        }
         navigationToolbar.updatePageStatus(isPage)
     }
 
@@ -1140,7 +1150,9 @@ class BrowserViewController: UIViewController {
             // Check that the newly created tab is still selected.
             // This let's the user spam the Cmd+T button without lots of responder changes.
             guard tab == self.tabManager.selectedTab else { return }
-            self.legacyURLBar.tabLocationViewDidTapLocation(self.legacyURLBar.legacyLocationView)
+            if !FeatureFlag[.newURLBar] {
+                self.legacyURLBar.tabLocationViewDidTapLocation(self.legacyURLBar.legacyLocationView)
+            }
             if let text = searchText {
                 self.legacyURLBar.setLocation(text, search: true)
             }
@@ -1174,8 +1186,10 @@ class BrowserViewController: UIViewController {
         currentViewController.dismiss(animated: true, completion: nil)
         if currentViewController != self {
             _ = self.navigationController?.popViewController(animated: true)
-        } else if legacyURLBar.inOverlayMode {
+        } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
+        } else if FeatureFlag[.newURLBar], legacyURLBar.model.text != nil {
+            legacyURLBar.model.text = nil
         }
     }
 
@@ -1315,7 +1329,11 @@ class BrowserViewController: UIViewController {
             if tab === tabManager.selectedTab {
                 legacyURLBar.model.isSecure = webView.hasOnlySecureContent
                 let isPage = tab.url?.displayURL?.isWebPage() ?? false
-                legacyURLBar.legacyLocationView.updateShareButton(isPage)
+                if FeatureFlag[.newURLBar] {
+                    legacyURLBar.model.canShare = isPage
+                } else {
+                    legacyURLBar.legacyLocationView.updateShareButton(isPage)
+                }
             }
 
             if (!InternalURL.isValid(url: url) || url.isReaderModeURL), !url.isFileURL {
@@ -1587,7 +1605,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
         searchLoader?.setQueryWithoutAutocomplete(text)
     }
 
-    func urlBar(_ urlBar: LegacyURLBarView, didEnterText text: String) {
+    func urlBar(didEnterText text: String) {
         if text.isEmpty {
             hideSearchController()
         } else {
@@ -1629,7 +1647,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
         }
     }
 
-    func urlBarDidEnterOverlayMode(_ urlBar: LegacyURLBarView) {
+    func urlBarDidEnterOverlayMode() {
         libraryDrawerViewController?.close()
 
         if let toast = clipboardBarDisplayHandler?.clipboardToast {
@@ -1639,7 +1657,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
         showNeevaHome(inline: false)
     }
 
-    func urlBarDidLeaveOverlayMode(_ urlBar: LegacyURLBarView) {
+    func urlBarDidLeaveOverlayMode() {
         destroySearchController()
         updateInContentHomePanel(tabManager.selectedTab?.url as URL?)
     }
@@ -1791,7 +1809,7 @@ extension BrowserViewController: LibraryPanelDelegate {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
-        guard !topTabsVisible, !self.legacyURLBar.inOverlayMode else {
+        guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.text == nil : !self.legacyURLBar.inOverlayMode else {
             return
         }
         // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
@@ -1819,7 +1837,7 @@ extension BrowserViewController: HomePanelDelegate {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
-        guard !topTabsVisible, !self.legacyURLBar.inOverlayMode else {
+        guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.text == nil : !self.legacyURLBar.inOverlayMode else {
             return
         }
         // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
@@ -1833,7 +1851,11 @@ extension BrowserViewController: HomePanelDelegate {
     var homePanelIsPrivate: Bool { tabManager.selectedTab?.isPrivate ?? false }
 
     func homePanel(didEnterQuery query: String) {
-        self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
+        if FeatureFlag[.newURLBar] {
+            self.legacyURLBar.model.text = query
+        } else {
+            self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
+        }
     }
 }
 

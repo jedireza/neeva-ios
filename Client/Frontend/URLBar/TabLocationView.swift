@@ -10,17 +10,19 @@ enum TabLocationViewUX {
 }
 
 // note: explicitly ignores the disabled state
-struct TabLocationButtonStyle: ButtonStyle {
+fileprivate struct TabLocationButtonStyle: ButtonStyle {
     struct Body: View {
         let configuration: Configuration
 
-        @Environment(\.colorScheme) private var colorScheme
+        @Environment(\.isIncognito) private var isIncognito
 
         var body: some View {
             configuration.label
-                .brightness(configuration.isPressed ? (
-                    colorScheme == .dark ? 0.2 : -0.3
-                ) : 0)
+                .foregroundColor(
+                    isIncognito
+                        ? configuration.isPressed ? .neeva.DarkElevated : .black
+                        : configuration.isPressed ? .tertiarySystemFill : .systemFill
+                )
         }
     }
     func makeBody(configuration: Configuration) -> Body {
@@ -32,6 +34,7 @@ struct TabLocationView: View {
     @ObservedObject var model: URLBarModel
     let onReload: () -> ()
     let onSubmit: (String) -> ()
+    let onShare: (UIView) -> ()
 
     // TODO: when removing support for iOS 14, change this to a Bool to manage focus
     @State private var textField: UITextField?
@@ -39,7 +42,25 @@ struct TabLocationView: View {
     @Environment(\.isIncognito) private var isIncognito
     @Environment(\.colorScheme) private var colorScheme
 
-    @State private var showingTrackingPopover = false
+    @ViewBuilder var contextMenu: some View {
+        Button(action: {
+            UIPasteboard.general.url = model.url
+        }) {
+            Label("Copy", systemSymbol: .docOnDoc)
+        }
+        Button(action: {
+            UIPasteboard.general.asyncString()
+                .uponQueue(.main) { model.text = $0.successValue as? String }
+        }) {
+            Label("Paste", systemSymbol: .docOnClipboard)
+        }
+        Button(action: {
+            UIPasteboard.general.asyncString()
+                .uponQueue(.main) { ($0.successValue as? String).map(onSubmit) }
+        }) {
+            Label("Paste & Go", systemSymbol: .docOnClipboardFill)
+        }
+    }
 
     var body: some View {
         let isEditing = model.text != nil
@@ -53,7 +74,6 @@ struct TabLocationView: View {
                 }
             }) {
                 Capsule()
-                    .fill(isIncognito ? Color.background : Color.systemFill)
             }
             .disabled(isEditing)
             .buttonStyle(TabLocationButtonStyle())
@@ -63,21 +83,20 @@ struct TabLocationView: View {
                     .frame(height: TabLocationViewUX.height)
                     .allowsHitTesting(false)
             } leading: {
-                TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) { showingTrackingPopover = true }
-                    .presentAsPopover(isPresented: $showingTrackingPopover, backgroundColor: .PopupMenu.background) {
-                        TrackingMenuView(isTrackingProtectionEnabled: Defaults[.contentBlockingEnabled],
-                                         viewModel: TrackingStatsViewModel(
-                                            trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab(),
-                                            settingsHandler: nil))
-                    }
+                LocationViewTrackingButton()
             } trailing: {
                 Group {
                     if model.readerMode != .active {
                         LocationViewReloadButton(state: $model.reloadButton, onTap: onReload)
                     }
-                    TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
-                }
+                    LocationViewShareButton(url: model.url, canShare: model.canShare, onTap: onShare)
+                }.transition(.move(edge: .trailing).combined(with: .opacity))
             }.opacity(isEditing ? 0 : 1))
+            .contextMenu {
+                if model.text == nil {
+                    contextMenu
+                }
+            }
             .overlay(Group {
                 if isEditing {
                     LocationTextField(text: $model.text, onSubmit: onSubmit, textField: $textField)
@@ -100,10 +119,10 @@ struct TabLocationView: View {
 struct URLBarView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TabLocationView(model: URLBarModel(url: "http://vviii.verylong.subdomain.neeva.com"), onReload: {}, onSubmit: { _ in })
-            TabLocationView(model: URLBarModel(url: "https://neeva.com/asdf"), onReload: {}, onSubmit: { _ in }).environment(\.isIncognito, true)
-            TabLocationView(model: URLBarModel(url: neevaSearchEngine.searchURLForQuery("a long search query with words")), onReload: {}, onSubmit: { _ in })
-            TabLocationView(model: URLBarModel(url: "ftp://someftpsite.com/dir/file.txt"), onReload: {}, onSubmit: { _ in }).environment(\.isIncognito, true)
+            TabLocationView(model: URLBarModel(url: "http://vviii.verylong.subdomain.neeva.com"), onReload: {}, onSubmit: { _ in }, onShare: { _ in })
+            TabLocationView(model: URLBarModel(url: "https://neeva.com/asdf"), onReload: {}, onSubmit: { _ in }, onShare: { _ in }).environment(\.isIncognito, true)
+            TabLocationView(model: URLBarModel(url: neevaSearchEngine.searchURLForQuery("a long search query with words")), onReload: {}, onSubmit: { _ in }, onShare: { _ in })
+            TabLocationView(model: URLBarModel(url: "ftp://someftpsite.com/dir/file.txt"), onReload: {}, onSubmit: { _ in }, onShare: { _ in }).environment(\.isIncognito, true)
         }
             .padding()
             .previewLayout(.sizeThatFits)

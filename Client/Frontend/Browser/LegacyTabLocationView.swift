@@ -13,7 +13,7 @@ protocol LegacyTabLocationViewDelegate: AnyObject {
     func tabLocationViewDidTapReload()
     func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from button: UIButton)
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView)
-    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView)
+    func tabLocationViewDidTap(shareButton: UIView)
 
     func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu?
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]?
@@ -271,7 +271,7 @@ class LegacyTabLocationView: UIView {
     }
 
     @objc func tapShareButton() {
-        delegate?.tabLocationViewDidTabShareButton(self)
+        delegate?.tabLocationViewDidTap(shareButton: shareButton)
     }
 
     @objc func longPressLocation(_ recognizer: UITapGestureRecognizer) {

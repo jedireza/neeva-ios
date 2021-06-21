@@ -10,6 +10,7 @@ class URLBarModel: ObservableObject {
     @Published var isSecure = false
     @Published var reloadButton = ReloadButtonState.reload
     @Published var readerMode = ReaderModeState.unavailable
+    @Published var canShare = false
 
     init() {}
     init(url: URL?) {

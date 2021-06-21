@@ -32,15 +32,15 @@ protocol LegacyURLBarDelegate: UIViewController {
     func urlBarReloadMenu(_ urlBar: LegacyURLBarView) -> UIMenu?
     func urlBarDidPressStop(_ urlBar: LegacyURLBarView)
     func urlBarDidPressReload(_ urlBar: LegacyURLBarView)
-    func urlBarDidEnterOverlayMode(_ urlBar: LegacyURLBarView)
-    func urlBarDidLeaveOverlayMode(_ urlBar: LegacyURLBarView)
+    func urlBarDidEnterOverlayMode()
+    func urlBarDidLeaveOverlayMode()
     func urlBarDidLongPressLocation(_ urlBar: LegacyURLBarView)
     func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton)
     func urlBarDidTapShield(_ urlBar: LegacyURLBarView, from button: UIButton)
     func urlBarLocationAccessibilityActions(_ urlBar: LegacyURLBarView) -> [UIAccessibilityCustomAction]?
     func urlBarDidPressScrollToTop(_ urlBar: LegacyURLBarView)
     func urlBar(_ urlBar: LegacyURLBarView, didRestoreText text: String)
-    func urlBar(_ urlBar: LegacyURLBarView, didEnterText text: String)
+    func urlBar(didEnterText text: String)
     func urlBar(didSubmitText text: String)
     func urlBarDidBeginDragInteraction(_ urlBar: LegacyURLBarView)
 }
@@ -500,16 +500,22 @@ class LegacyURLBarView: UIView {
     }
 
     func setLocation(_ location: String?, search: Bool) {
-        guard let text = location, !text.isEmpty else {
-            locationTextField?.text = location
-            return
-        }
-        if search {
-            locationTextField?.text = text
-            // Not notifying when empty agrees with AutocompleteTextField.textDidChange.
-            delegate?.urlBar(self, didRestoreText: text)
+        if FeatureFlag[.newURLBar] {
+            if let location = location {
+                model.text = location
+            }
         } else {
-            locationTextField?.setTextWithoutSearching(text)
+            guard let text = location, !text.isEmpty else {
+                locationTextField?.text = location
+                return
+            }
+            if search {
+                locationTextField?.text = text
+                // Not notifying when empty agrees with AutocompleteTextField.textDidChange.
+                delegate?.urlBar(self, didRestoreText: text)
+            } else {
+                locationTextField?.setTextWithoutSearching(text)
+            }
         }
     }
 
@@ -519,7 +525,7 @@ class LegacyURLBarView: UIView {
         // with the editable locationTextField.
         animateToOverlayState(overlayMode: true)
 
-        delegate?.urlBarDidEnterOverlayMode(self)
+        delegate?.urlBarDidEnterOverlayMode()
 
         // Bug 1193755 Workaround - Calling becomeFirstResponder before the animation happens
         // won't take the initial frame of the label into consideration, which makes the label
@@ -549,7 +555,7 @@ class LegacyURLBarView: UIView {
     func leaveOverlayMode(didCancel cancel: Bool = false) {
         locationTextField?.resignFirstResponder()
         animateToOverlayState(overlayMode: false, didCancel: cancel)
-        delegate?.urlBarDidLeaveOverlayMode(self)
+        delegate?.urlBarDidLeaveOverlayMode()
     }
 
     func prepareOverlayAnimation() {
@@ -714,8 +720,8 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
         }
     }
 
-    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView) {
-        self.helper?.didPressShareButton()
+    func tabLocationViewDidTap(shareButton: UIView) {
+        self.helper?.didPress(shareButton: shareButton)
     }
 
     func tabLocationViewDidTapStop(_ tabLocationView: LegacyTabLocationView) {
@@ -755,14 +761,14 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
     }
 
     func autocompleteTextField(_ autocompleteTextField: AutocompleteTextField, didEnterText text: String) {
-        delegate?.urlBar(self, didEnterText: text)
+        delegate?.urlBar(didEnterText: text)
         if text.isEmpty  {
             createLeftViewFavicon()
         }
     }
 
     func autocompleteTextFieldShouldClear(_ autocompleteTextField: AutocompleteTextField) -> Bool {
-        delegate?.urlBar(self, didEnterText: "")
+        delegate?.urlBar(didEnterText: "")
         return true
     }
 

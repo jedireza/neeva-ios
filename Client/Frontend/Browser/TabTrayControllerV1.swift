@@ -1043,7 +1043,7 @@ extension TabTrayControllerV1: LegacyTabLocationViewDelegate {
     func tabLocationViewDidTapReload() {}
     func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from: UIButton) {}
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView) {}
-    func tabLocationViewDidTabShareButton(_ tabLocationView: LegacyTabLocationView) {}
+    func tabLocationViewDidTap(shareButton: UIView) {}
     func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu? { return nil }
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]? { return nil }
 }

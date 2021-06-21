@@ -14,8 +14,7 @@ extension BrowserViewController {
 
         if let popoverPresentationController = controller.popoverPresentationController {
             popoverPresentationController.sourceView = buttonView
-            popoverPresentationController.sourceRect =
-                buttonView.convert(buttonView.bounds, to: UIScreen.main.coordinateSpace)
+            popoverPresentationController.sourceRect = buttonView.bounds
             popoverPresentationController.permittedArrowDirections = .up
         }
 

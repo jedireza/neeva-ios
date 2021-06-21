@@ -69,7 +69,7 @@ open class TabToolbarHelper: NSObject {
         toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
         toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the tab toolbar Share button")
         toolbar.shareButton.addAction(UIAction { _ in
-            self.didPressShareButton()
+            self.didPress(shareButton: toolbar.shareButton)
         }, for: .primaryActionTriggered)
         toolbar.shareButton.isPointerInteractionEnabled = true
 
@@ -99,7 +99,7 @@ open class TabToolbarHelper: NSObject {
         BrowserViewController.foregroundBVC().showNeevaMenuSheet()
     }
 
-    func didPressShareButton () {
+    func didPress(shareButton: UIView) {
         ClientLogger.shared.logCounter(.ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
         guard
             let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
@@ -107,9 +107,9 @@ open class TabToolbarHelper: NSObject {
             let url = tab.url
         else { return }
         if url.isFileURL {
-            bvc.share(fileURL: url, buttonView: toolbar.shareButton, presentableVC: bvc)
+            bvc.share(fileURL: url, buttonView: shareButton, presentableVC: bvc)
         } else {
-            bvc.share(tab: tab, from: toolbar.shareButton, presentableVC: bvc)
+            bvc.share(tab: tab, from: shareButton, presentableVC: bvc)
         }
     }
 
