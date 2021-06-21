@@ -159,33 +159,10 @@ class PhotonActionSheetCell: UITableViewCell {
                 let image = UIImage(named: iconName)?.withRenderingMode(.alwaysTemplate)
                 statusIcon.image = image
                 statusIcon.tintColor = action.iconTint ?? self.tintColor
-            case .URL:
-                let image = UIImage(named: iconName)?.createScaled(PhotonActionSheetUX.IconSize)
-                statusIcon.layer.cornerRadius = PhotonActionSheetUX.IconSize.width / 2
-                statusIcon.sd_setImage(with: action.iconURL, placeholderImage: image, options: []) { (img, err, _, _) in
-                    if let img = img {
-                        self.statusIcon.image = img.createScaled(PhotonActionSheetUX.IconSize)
-                        self.statusIcon.layer.cornerRadius = PhotonActionSheetUX.IconSize.width / 2
-                    }
-                }
-            case .TabsButton:
-                let label = UILabel(frame: CGRect())
-                label.text = action.tabCount
-                label.font = UIFont.boldSystemFont(ofSize: UIConstants.DefaultChromeSmallSize)
-                label.textColor = UIColor.TextField.textAndTint(isPrivate: false)
-                let image = UIImage(named: iconName)?.withRenderingMode(.alwaysTemplate)
-                statusIcon.image = image
-                statusIcon.addSubview(label)
-                label.snp.makeConstraints { (make) in
-                    make.centerX.equalTo(statusIcon)
-                    make.centerY.equalTo(statusIcon)
-                }
             case .SystemImage:
                 let image = UIImage(systemName: iconName)
                 statusIcon.image = image
                 statusIcon.tintColor = action.iconTint ?? self.tintColor
-            case .None:
-                break
             }
             if statusIcon.superview == nil {
                 if action.iconAlignment == .right {

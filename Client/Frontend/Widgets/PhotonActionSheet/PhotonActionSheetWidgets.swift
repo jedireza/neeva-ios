@@ -44,9 +44,6 @@ public enum PhotonActionSheetCellAccessoryType {
 
 public enum PhotonActionSheetIconType {
     case Image
-    case URL
-    case TabsButton
-    case None
     case SystemImage
 }
 
