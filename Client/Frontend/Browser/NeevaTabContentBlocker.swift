@@ -16,7 +16,7 @@ enum BlockingStrength: String, Codable {
     case strict
     case neeva
 
-    static let allOptions: [BlockingStrength] = [.basic, .strict, .neeva]
+    static let allOptions: [BlockingStrength] = [.basic, .strict]
 }
 
 /**
