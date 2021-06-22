@@ -72,6 +72,7 @@ struct IntroFirstRunView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.neeva.brand.fixed.beige)
         .ignoresSafeArea(.all)
+        .colorScheme(.light)
     }
 }
 
