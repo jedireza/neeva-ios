@@ -55,4 +55,27 @@ extension SQLiteMetadata: Metadata {
         return self.db.run(sql)
     }
 
+    public func metadata(for url: String) -> Deferred<Maybe<Cursor<PageMetadata?>>> {
+        let sql = """
+        SELECT site_url AS url, media_url, title AS metadata_title, type, description, provider_name
+        FROM page_metadata
+        WHERE site_url = ?
+        ORDER BY expired_at DESC
+        LIMIT 1
+        """
+        let args: Args = [url]
+        return db.runQueryConcurrently(sql, args: args, factory: SQLiteHistory.pageMetadataColumnFactory)
+    }
+
+    public func hasMetadata(for url: String) -> Deferred<Maybe<Bool>> {
+        let sql = """
+        SELECT *
+        FROM page_metadata
+        WHERE site_url = ?
+        LIMIT 1
+        """
+        let args: Args = [url]
+        return self.db.queryReturnsResults(sql, args: args)
+    }
+
 }
