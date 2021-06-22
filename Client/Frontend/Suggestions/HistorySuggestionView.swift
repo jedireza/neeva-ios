@@ -10,6 +10,7 @@ struct HistorySuggestionView: View {
 
     var body: some View {
         SuggestionRow {
+            ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
             openURL(URL(string: site.url)!)
         } icon: {
             FaviconView(site: site,

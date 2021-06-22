@@ -58,6 +58,15 @@ public struct LogConfig {
         case SaveToSpace // Click bookmark button to save to space
         case ClickBack // Click back button to navigate to previous page
         case ClickForward // Click forward button to navigate to next page
+
+        // selected suggestion
+        case QuerySuggestion
+        case NavSuggestion
+        case HistorySuggestion
+        case AutocompleteSuggestion
+        case URLSuggestion
+        case BangSuggestion
+        case NoSuggestion
     }
 
     public struct Attribute {

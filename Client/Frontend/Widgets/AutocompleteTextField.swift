@@ -151,7 +151,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     /// Commits the completion by setting the text and removing the highlight.
-    fileprivate func applyCompletion() {
+    @discardableResult fileprivate func applyCompletion() -> Bool {
         // Clear the current completion, then set the text without the attributed style.
         let text = (self.text ?? "") + (self.autocompleteTextLabel?.text ?? "")
         let didRemoveCompletion = removeCompletion()
@@ -161,6 +161,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         if didRemoveCompletion {
             selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
         }
+        return didRemoveCompletion
     }
 
     /// Removes the autocomplete-highlighted. Returns true if a completion was actually removed
@@ -251,7 +252,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        applyCompletion()
+        let didApplyAutocomplete = applyCompletion()
+        let interaction: LogConfig.Interaction = didApplyAutocomplete
+            ? .AutocompleteSuggestion : .NoSuggestion
+        ClientLogger.shared.logCounter(interaction)
         return autocompleteDelegate?.autocompleteTextFieldShouldReturn(self) ?? true
     }
 

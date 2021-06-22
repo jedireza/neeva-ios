@@ -87,6 +87,9 @@ struct QuerySuggestionView: View {
 
     var body: some View {
         SuggestionRow {
+            let interaction: LogConfig.Interaction = activeLensOrBang != nil
+                ? .BangSuggestion : .QuerySuggestion
+            ClientLogger.shared.logCounter(interaction)
             openURL(neevaSearchEngine.searchURLForQuery(suggestedQuery)!)
         } icon: {
             if let activeType = activeLensOrBang?.type {
@@ -127,6 +130,10 @@ fileprivate struct URLSuggestionView: View {
 
     var body: some View {
         SuggestionRow {
+            let interaction: LogConfig.Interaction = suggestion.title?.isEmpty ?? false ?
+                .NavSuggestion : .URLSuggestion
+            ClientLogger.shared.logCounter(interaction)
+
             openURL(URL(string: suggestion.suggestedUrl)!)
         } icon: {
             if let labels = suggestion.icon.labels,
