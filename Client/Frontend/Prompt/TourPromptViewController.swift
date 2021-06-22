@@ -23,7 +23,7 @@ class TourPromptViewController: UIHostingController<TourPromptView> {
     var delegate: BrowserViewController?
 
     public init(delegate:BrowserViewController, source: UIView, content: TourPromptContent) {
-        super.init(rootView: TourPromptView(title: content.title, description: content.description, buttonMessage: content.buttonMessage ?? "", onConfirm: content.onButtonClick ?? nil, onClose: content.onClose ?? nil))
+        super.init(rootView: TourPromptView(title: content.title, description: content.description, buttonMessage: content.buttonMessage ?? "", onConfirm: content.onButtonClick ?? nil, onClose: content.onClose ?? nil, staticColorMode: true))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
         if content.onButtonClick == nil {

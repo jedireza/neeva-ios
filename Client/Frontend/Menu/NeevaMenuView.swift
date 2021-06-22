@@ -41,9 +41,10 @@ public struct NeevaMenuView: View {
                             .disabled(isIncognito)
                         },
                         popoverContent: {
-                            TourPromptView(title: "Want to be organized?", description: "Save web pages, images, and videos to a curated Space for easy access later", onClose: onCloseTourPrompt)
-                        })
-
+                            TourPromptView(title: "Want to be organized?", description: "Save web pages, images, and videos to a curated Space for easy access later", onClose: onCloseTourPrompt, staticColorMode: true)
+                        },
+                        staticColorMode: true
+                    )
                 }
                 .background(Color.clear)
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)
@@ -61,8 +62,10 @@ public struct NeevaMenuView: View {
                             .accessibilityIdentifier("NeevaMenu.Settings")
                         },
                         popoverContent: {
-                            TourPromptView(title: "Want to search personal documents?", description: "Search information in your email, online files and folders, and calendar!", onClose: onCloseTourPrompt)
-                        })
+                            TourPromptView(title: "Want to search personal documents?", description: "Search information in your email, online files and folders, and calendar!", onClose: onCloseTourPrompt, staticColorMode: true)
+                        },
+                        staticColorMode: true
+                    )
 
                     WithPopover(
                         showPopover: $openFeedbackPrompt,
@@ -76,8 +79,10 @@ public struct NeevaMenuView: View {
                             .accessibilityIdentifier("NeevaMenu.Feedback")
                         },
                         popoverContent: {
-                            TourPromptView(title: "Have feedback?", description: "We'd love to hear your thoughts!", onClose: onCloseTourPrompt)
-                        })
+                            TourPromptView(title: "Have feedback?", description: "We'd love to hear your thoughts!", onClose: onCloseTourPrompt, staticColorMode: true)
+                        },
+                        staticColorMode: true
+                    )
                 }
                 .background(Color.clear)
                 .cornerRadius(NeevaUIConstants.menuCornerDefault)

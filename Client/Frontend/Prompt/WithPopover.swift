@@ -13,13 +13,14 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
     var popoverSize: CGSize? = nil
     let content: () -> Content
     let popoverContent: () -> PopoverContent
+    let staticColorMode: Bool?
 
     var body: some View {
         content()
         .if(showPopover) { view in
             view
             .background(
-                Wrapper(showPopover: $showPopover, popoverSize: popoverSize, popoverContent: popoverContent)
+                Wrapper(showPopover: $showPopover, popoverSize: popoverSize, popoverContent: popoverContent, staticColorMode: staticColorMode)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             )
         }
@@ -30,12 +31,14 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
         @Binding var showPopover: Bool
         let popoverSize: CGSize?
         let popoverContent: () -> PopoverContent
+        let staticColorMode: Bool?
 
         func makeUIViewController(context: UIViewControllerRepresentableContext<Wrapper<PopoverContent>>) -> WrapperViewController<PopoverContent> {
             return WrapperViewController(
                 popoverSize: popoverSize,
-                popoverContent: popoverContent) {
-                    self.showPopover = false
+                popoverContent: popoverContent,
+                staticColorMode: self.staticColorMode) {
+                self.showPopover = false
             }
         }
 
@@ -57,16 +60,18 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
         var popoverSize: CGSize?
         let popoverContent: () -> PopoverContent
         let onDismiss: () -> Void
-
+        let staticColorMode: Bool?
         var popoverVC: UIViewController?
 
         required init?(coder: NSCoder) { fatalError("") }
         init(popoverSize: CGSize?,
              popoverContent: @escaping () -> PopoverContent,
+             staticColorMode:Bool? = false,
              onDismiss: @escaping() -> Void) {
             self.popoverSize = popoverSize
             self.popoverContent = popoverContent
             self.onDismiss = onDismiss
+            self.staticColorMode = staticColorMode
             super.init(nibName: nil, bundle: nil)
         }
 
@@ -79,7 +84,7 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             let vc = UIHostingController(rootView: popoverContent())
             if let size = popoverSize { vc.preferredContentSize = size }
             vc.modalPresentationStyle = UIModalPresentationStyle.popover
-            vc.view.backgroundColor = UIColor.neeva.Tour.Background
+            vc.view.backgroundColor = self.staticColorMode! ? UIColor.neeva.Tour.Background.lightVariant : UIColor.neeva.Tour.Background
             if let popover = vc.popoverPresentationController {
                 popover.sourceView = view
                 popover.delegate = self

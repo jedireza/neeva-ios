@@ -26,13 +26,16 @@ struct TourPromptView: View {
     let description: String
     let buttonMessage: String?
     var onClose: (()-> Void)?
+    let staticColorMode: Bool?
+    @Environment(\.colorScheme) private var colorScheme
 
-    init(title: String, description: String, buttonMessage: String? = nil, onConfirm: (()-> Void)? = nil, onClose: (()-> Void)? = nil) {
+    init(title: String, description: String, buttonMessage: String? = nil, onConfirm: (()-> Void)? = nil, onClose: (()-> Void)? = nil, staticColorMode: Bool = false) {
         self.onConfirm = onConfirm
         self.title = title
         self.description = description
         self.buttonMessage = buttonMessage
         self.onClose = onClose
+        self.staticColorMode = staticColorMode
     }
 
     var body: some View {
@@ -43,7 +46,7 @@ struct TourPromptView: View {
                     VStack {
                         VStack(alignment: .leading) {
                             Text(title)
-                                    .foregroundColor(Color.neeva.Tour.Title)
+                                .foregroundColor(Color.neeva.Tour.Title)
                                     .font(.system(size: 16, weight: .semibold))
                                     .padding(.bottom, 8)
                             Text(description)
@@ -73,6 +76,7 @@ struct TourPromptView: View {
             }
             .padding([.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
         }
+        .colorScheme(staticColorMode! ? .light : colorScheme)
     }
 }
 
