@@ -121,11 +121,11 @@ struct NeevaHome: View {
 
                         NeevaHomeHeader(
                             title: "Spaces",
-                            action: { expandSearches.toggle() },
-                            label: "\(expandSearches ? "hides" : "shows") this section",
-                            icon: expandSearches ? .chevronUp : .chevronDown
+                            action: { expandSpaces.toggle() },
+                            label: "\(expandSpaces ? "hides" : "shows") this section",
+                            icon: expandSpaces ? .chevronUp : .chevronDown
                         )
-                        if expandSearches {
+                        if expandSpaces {
                             SuggestedSpacesView()
                         }
                     }
