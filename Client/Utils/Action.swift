@@ -2,6 +2,7 @@
 
 import SwiftUI
 import Shared
+import SFSafeSymbols
 
 /// An action that’s able to be represented both as a button/menu item
 /// and an accessibility action for VoiceOver users.
@@ -9,19 +10,34 @@ public struct Action: Identifiable {
     /// The display name of the string
     let name: String
     /// The SF Symbol name of the icon displayed next to the name
-    let icon: String
+    let icon: SFSymbol
     /// A function that performs the action
     let handler: () -> ()
 
     public var id: String { name }
 
     /// The standard “Edit” action
-    static func edit(condition: Bool = true, handler: @escaping () -> ()) -> Action? {
-        Action("Edit", icon: "pencil", condition: condition, handler: handler)
+    static func edit(handler: @escaping () -> ()) -> Action {
+        Action("Edit", icon: .pencil, handler: handler)
+    }
+    /// The standard “Edit” action
+    static func edit(condition: Bool, handler: @escaping () -> ()) -> Action? {
+        Action("Edit", icon: .pencil, condition: condition, handler: handler)
+    }
+
+    /// The standard “Delete” action
+    static func delete(handler: @escaping () -> ()) -> Action {
+        Action("Delete", icon: .trash, handler: handler)
     }
     /// The standard “Delete” action
     static func delete(condition: Bool = true, handler: @escaping () -> ()) -> Action? {
-        Action("Delete", icon: "trash", condition: condition, handler: handler)
+        Action("Delete", icon: .trash, condition: condition, handler: handler)
+    }
+
+    init(_ name: String, icon: SFSymbol, handler: @escaping () -> ()) {
+        self.name = name
+        self.icon = icon
+        self.handler = handler
     }
 
     /// - Parameters:
@@ -29,7 +45,7 @@ public struct Action: Identifiable {
     ///   - icon: the SF Symbol icon
     ///   - condition: convenience for actions which are only available in some cases
     ///   - handler: the function to call when the action is activated
-    init?(_ name: String, icon: String, condition: Bool = true, handler: @escaping () -> ()) {
+    init?(_ name: String, icon: SFSymbol, condition: Bool, handler: @escaping () -> ()) {
         if condition {
             self.name = name
             self.icon = icon
@@ -41,12 +57,18 @@ public struct Action: Identifiable {
 
     var view: some View {
         Button(action: handler) {
-            Label(name, systemImage: icon)
+            Label(name, systemSymbol: icon)
         }
     }
 
     func addTo<V: View>(_ view: V) -> some View {
         view.accessibilityAction(named: name, handler)
+    }
+}
+
+extension View {
+    func accessibilityAction(_ action: Action) -> some View {
+        accessibilityAction(named: action.name, action.handler)
     }
 }
 

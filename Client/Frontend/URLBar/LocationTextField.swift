@@ -37,21 +37,32 @@ struct LocationTextField: View {
                         text = nil
                     }
                 )
-                    .keyboardType(.webSearch)
-                    .disableAutocorrection(true)
-                    .autocapitalization(.none)
-                    .accessibilityLabel("Address and Search")
-                    .introspectTextField { tf in
-                        tf.enablesReturnKeyAutomatically = true
-                        tf.returnKeyType = .go
-                        tf.clearButtonMode = .whileEditing
+                .keyboardType(.webSearch)
+                .disableAutocorrection(true)
+                .autocapitalization(.none)
+                .accessibilityLabel("Address and Search")
+                .introspectTextField { tf in
+                    tf.enablesReturnKeyAutomatically = true
+                    tf.returnKeyType = .go
+                    tf.clearButtonMode = .whileEditing
+                    if textField?.superview == nil {
                         // TODO: When dropping support for iOS 14, change this to use .focused()
-                        if textField?.superview == nil {
-                            tf.becomeFirstResponder()
+                        tf.becomeFirstResponder()
+
+                        if !(text?.isEmpty ?? true) {
                             tf.selectAll(nil)
+                            tf.tintColor = .neeva.ui.blue.withAlphaComponent(0)
+                            tf.addAction(UIAction { _ in  }, for: .valueChanged)
                         }
-                        textField = tf
                     }
+                    textField = tf
+                }
+                .onChange(of: text) { value in
+                    textField?.tintColor = .neeva.ui.blue
+                }
+                .onTapGesture {
+                    textField?.tintColor = .neeva.ui.blue
+                }
             }
             .padding(.trailing, 6)
             .offset(x: textFieldOffset, y: 0)

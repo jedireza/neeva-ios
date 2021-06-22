@@ -4,6 +4,22 @@ import SwiftUI
 import Shared
 
 struct LocationLabel: View {
+    @Binding var url: URL?
+    let isSecure: Bool
+
+    var body: some View {
+        LocationAndIconLabel(url: url, isSecure: isSecure)
+            .lineLimit(1)
+            .frame(height: TabLocationViewUX.height)
+            .allowsHitTesting(false)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Address Bar")
+            .accessibilityValue((isSecure ? "Secure connection, " : "") + (url?.absoluteString ?? ""))
+            .accessibilityAddTraits(.isButton)
+    }
+}
+
+fileprivate struct LocationAndIconLabel: View {
     let url: URL?
     let isSecure: Bool
     
@@ -35,10 +51,10 @@ struct LocationLabel: View {
 struct LocationLabel_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LocationLabel(url: URL(string: "http://vviii.verylong.subdomain.neeva.com"), isSecure: false)
-            LocationLabel(url: URL(string: "https://neeva.com/asdf"), isSecure: true)
-            LocationLabel(url: neevaSearchEngine.searchURLForQuery("a long search query with words"), isSecure: false)
-            LocationLabel(url: URL(string: "ftp://someftpsite.com/dir/file.txt"), isSecure: false)
+            LocationLabel(url: .constant(URL(string: "http://vviii.verylong.subdomain.neeva.com")), isSecure: false)
+            LocationLabel(url: .constant(URL(string: "https://neeva.com/asdf")), isSecure: true)
+            LocationLabel(url: .constant(neevaSearchEngine.searchURLForQuery("a long search query with words")), isSecure: false)
+            LocationLabel(url: .constant(URL(string: "ftp://someftpsite.com/dir/file.txt")), isSecure: false)
         }.padding().previewLayout(.sizeThatFits)
     }
 }

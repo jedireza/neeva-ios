@@ -15,7 +15,7 @@ protocol LegacyTabLocationViewDelegate: AnyObject {
     func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView)
     func tabLocationViewDidTap(shareButton: UIView)
 
-    func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu?
+    func tabLocationViewReloadMenu() -> UIMenu?
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]?
 }
 
@@ -95,7 +95,7 @@ class LegacyTabLocationView: UIView {
     private lazy var reloadButton: ReloadButton = {
         let reloadButton = ReloadButton(frame: .zero, state: model.$reloadButton, readerMode: model.$readerMode)
         reloadButton.addTarget(self, action: #selector(tapReloadButton), for: .touchUpInside)
-        reloadButton.setDynamicMenu { self.delegate?.tabLocationViewReloadMenu(self) }
+        reloadButton.setDynamicMenu { self.delegate?.tabLocationViewReloadMenu() }
         reloadButton.tintColor = .black
         reloadButton.imageView?.contentMode = .scaleAspectFit
         reloadButton.accessibilityLabel = .TabLocationReloadAccessibilityLabel

@@ -686,7 +686,7 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
         return delegate?.urlBarDidLongPressReaderMode(self) ?? false
     }
 
-    func tabLocationViewReloadMenu(_ tabLocationView: LegacyTabLocationView) -> UIMenu? {
+    func tabLocationViewReloadMenu() -> UIMenu? {
         delegate?.urlBarReloadMenu(self)
     }
 

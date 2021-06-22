@@ -39,7 +39,8 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationView> {
                 model: model,
                 onReload: { [weak self] in self?.delegate?.tabLocationViewDidTapReload() },
                 onSubmit: { [weak self] in self?.urlBarDelegate?.urlBar(didSubmitText: $0) },
-                onShare: { [weak self] in self?.delegate?.tabLocationViewDidTap(shareButton: $0) }
+                onShare: { [weak self] in self?.delegate?.tabLocationViewDidTap(shareButton: $0) },
+                buildReloadMenu: { [weak self] in self?.delegate?.tabLocationViewReloadMenu() }
             )
         }
         self.view.backgroundColor = .clear
