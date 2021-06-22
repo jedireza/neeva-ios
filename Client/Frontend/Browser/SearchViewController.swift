@@ -26,6 +26,7 @@ enum SearchViewControllerUX {
 
 struct SuggestionsView: View {
     let isIncognito: Bool
+    let hasPotentialSuggestions: Bool
     let suggestions: [Suggestion]
     let lensOrBang: ActiveLensBangInfo?
     let history: Cursor<Site>?
@@ -51,7 +52,7 @@ struct SuggestionsView: View {
                         }
                     }
                 } else {
-                    SuggestionsList(suggestions: suggestions, lensOrBang: lensOrBang, history: history)
+                    SuggestionsList(hasPotentialSuggestions: hasPotentialSuggestions, suggestions: suggestions, lensOrBang: lensOrBang, history: history)
                 }
                 Spacer()
                     .frame(height: getKeyboardHeight())
@@ -80,7 +81,7 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
     init(profile: Profile, isPrivate: Bool) {
         self.isPrivate = isPrivate
         self.profile = profile
-        super.init(rootView: SuggestionsView(isIncognito: isPrivate, suggestions: [], lensOrBang: nil, history: nil, error: nil, getKeyboardHeight: { 0 }, onReload: { }, onOpenURL: { _ in }, setSearchInput: { _ in }))
+        super.init(rootView: SuggestionsView(isIncognito: isPrivate, hasPotentialSuggestions: false, suggestions: [], lensOrBang: nil, history: nil, error: nil, getKeyboardHeight: { 0 }, onReload: { }, onOpenURL: { _ in }, setSearchInput: { _ in }))
         self.render()
     }
 
@@ -91,6 +92,7 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
     fileprivate func render() {
         rootView = SuggestionsView(
             isIncognito: isPrivate,
+            hasPotentialSuggestions: shouldShowSuggestions,
             suggestions: suggestions,
             lensOrBang: lensOrBang,
             history: historyData,
@@ -142,6 +144,10 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
         }
     }
 
+    var shouldShowSuggestions: Bool {
+        !isPrivate && !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL()
+    }
+
     func keyboardHelper(_ keyboardHelper: KeyboardHelper, keyboardWillShowWithState state: KeyboardState) {
         animateSearchEnginesWithKeyboard(state)
     }
@@ -163,7 +169,7 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
     fileprivate func reloadData() {
         suggestionQuery?.cancel()
 
-        if isPrivate || searchQuery.isEmpty || !Defaults[.showSearchSuggestions] || searchQuery.looksLikeAURL() {
+        if !shouldShowSuggestions {
             self.suggestions = []
             self.render()
             return

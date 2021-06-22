@@ -10,11 +10,12 @@ struct SuggestionsList: View {
         SuggestionsQuery.Data.Suggest.QuerySuggestion(
             type: .standard,
             suggestedQuery: "placeholder_query",
-            boldSpan: [.init(startInclusive: 0, endExclusive: 0)],
+            boldSpan: [],
             source: .bing
         )
     static let placeholderSite = Site(url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
 
+    let hasPotentialSuggestions: Bool
     let suggestions: [Suggestion]
     let lensOrBang: ActiveLensBangInfo?
     let history: Cursor<Site>?
@@ -39,13 +40,17 @@ struct SuggestionsList: View {
                     suggestionList
                 }
             } else {
-                if (suggestions.isEmpty && !isIncognito) {
+                if suggestions.isEmpty && hasPotentialSuggestions {
                     HistorySuggestionView(site: SuggestionsList.placeholderSite)
                         .redacted(reason: .placeholder)
+                        .disabled(true)
                     ForEach(0..<5) { _ in
-                        QuerySuggestionView(suggestion: SuggestionsList.placeholderQuery,
-                                            activeLensOrBang: nil)
-                            .redacted(reason: .placeholder)
+                        QuerySuggestionView(
+                            suggestion: SuggestionsList.placeholderQuery,
+                            activeLensOrBang: nil
+                        )
+                        .redacted(reason: .placeholder)
+                        .disabled(true)
                     }
                 } else {
                     suggestionList
@@ -74,9 +79,9 @@ struct SuggestionsList_Previews: PreviewProvider {
             ]
         )
         Group {
-            SuggestionsList(suggestions: suggestions, lensOrBang: nil, history: history)
-            SuggestionsList(suggestions: suggestions, lensOrBang: ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang), history: history)
-            SuggestionsList(suggestions: suggestions, lensOrBang: ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens), history: history)
+            SuggestionsList(hasPotentialSuggestions: true, suggestions: suggestions, lensOrBang: nil, history: history)
+            SuggestionsList(hasPotentialSuggestions: true, suggestions: suggestions, lensOrBang: ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang), history: history)
+            SuggestionsList(hasPotentialSuggestions: true, suggestions: suggestions, lensOrBang: ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens), history: history)
         }.previewLayout(.fixed(width: 375, height: 250))
     }
 }
