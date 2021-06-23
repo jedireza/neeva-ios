@@ -249,6 +249,6 @@ public struct AddToSpaceView: View {
 
 struct AddToSpaceView_Previews: PreviewProvider {
     static var previews: some View {
-        AddToSpaceView(request: AddToSpaceRequest(title: "Hello, world!", description: "<h1>Testing!</h1>", url: URL(string: "https://google.com")!), onDismiss: { print("Done") })
+        AddToSpaceView(request: AddToSpaceRequest(title: "Hello, world!", description: "<h1>Testing!</h1>", url: "https://google.com"), onDismiss: { print("Done") })
     }
 }

@@ -370,7 +370,7 @@ class TabManager: NSObject {
         if let request = request {
             tab.loadRequest(request)
         } else if !isPopup {
-            let url = URL(string: "\(InternalURL.baseUrl)/about/home")!
+            let url = InternalURL.baseUrl / "about" / "home"
             tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)
             tab.url = url
         }

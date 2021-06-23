@@ -53,7 +53,7 @@ class ReadingListTableViewCell: UITableViewCell, Themeable {
         }
     }
 
-    var url = URL(string: "http://www.example.com")! {
+    var url: URL = "http://www.example.com" {
         didSet {
             hostnameLabel.text = simplifiedHostnameFromURL(url)
             updateAccessibilityLabel()

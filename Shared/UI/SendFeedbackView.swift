@@ -254,7 +254,7 @@ extension UIImage {
 struct SendFeedbackView_Previews: PreviewProvider {
     static var previews: some View {
         // iPhone 12 screen size
-        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 390, height: 844)!, url: URL(string: "https://neeva.com/search?q=abcdef+ghijklmnop"))
+        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 390, height: 844)!, url: "https://neeva.com/search?q=abcdef+ghijklmnop")
         // iPhone 8 screen size
         SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 375, height: 667)!, url: NeevaConstants.appURL)
         SendFeedbackView(screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!, url: NeevaConstants.appURL)

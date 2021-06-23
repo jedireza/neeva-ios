@@ -34,7 +34,7 @@ open class Site {
     var guid: String?
 
     open var tileURL: URL {
-        return URL(string: url)?.domainURL ?? URL(string: "about:blank")!
+        return URL(string: url)?.domainURL ?? .aboutBlank
     }
 
     public let url: String

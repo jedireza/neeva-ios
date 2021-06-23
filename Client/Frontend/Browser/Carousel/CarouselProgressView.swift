@@ -49,6 +49,6 @@ struct CarouselProgressView: View {
 
 struct CarouselProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        CarouselProgressView(model: CarouselProgressModel(urls: [URL(string: "http://facebook.com")!, URL(string: "http://facebook.com")!, URL(string: "http://google.com")!, URL(string: "http://facebook.com")!, URL(string: "http://theverge.com")!, URL(string: "http://facebook.com")!, URL(string: "http://google.com")!, URL(string: "http://facebook.com")!, URL(string: "http://facebook.com")!, URL(string: "http://facebook.com")!, URL(string: "http://linkedin.com")!, URL(string: "http://facebook.com")!, URL(string: "http://google.com")!, URL(string: "http://facebook.com")!, URL(string: "http://hp.com")!], index: 0))
+        CarouselProgressView(model: CarouselProgressModel(urls: ["http://facebook.com", "http://facebook.com", "http://google.com", "http://facebook.com", "http://theverge.com", "http://facebook.com", "http://google.com", "http://facebook.com", "http://facebook.com", "http://facebook.com", "http://linkedin.com", "http://facebook.com", "http://google.com", "http://facebook.com", "http://hp.com"], index: 0))
     }
 }

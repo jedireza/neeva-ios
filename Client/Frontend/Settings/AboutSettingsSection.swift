@@ -55,9 +55,8 @@ struct LicensesView: UIViewRepresentable {
 
         ClientLogger.shared.logCounter(.ViewLicenses, attributes: EnvironmentHelper.shared.getAttributes())
 
-        if let url = URL(string: "\(InternalURL.baseUrl)/\(AboutLicenseHandler.path)") {
-            webView.load(PrivilegedRequest(url: url) as URLRequest)
-        }
+        let url = InternalURL.baseUrl / AboutLicenseHandler.path
+        webView.load(PrivilegedRequest(url: url) as URLRequest)
 
         return webView
     }

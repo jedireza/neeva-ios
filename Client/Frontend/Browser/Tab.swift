@@ -316,11 +316,10 @@ class Tab: NSObject {
                 return
             }
 
-            if let restoreURL = URL(string: "\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)?history=\(json)") {
-                let request = PrivilegedRequest(url: restoreURL) as URLRequest
-                webView.load(request)
-                lastRequest = request
-            }
+            let restoreURL = InternalURL.baseUrl / (SessionRestoreHandler.path + "?history=\(json)")
+            let request = PrivilegedRequest(url: restoreURL) as URLRequest
+            webView.load(request)
+            lastRequest = request
         } else if let request = lastRequest {
             webView.load(request)
         } else {

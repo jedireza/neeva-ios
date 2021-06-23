@@ -51,10 +51,10 @@ fileprivate struct LocationAndIconLabel: View {
 struct LocationLabel_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LocationLabel(url: .constant(URL(string: "http://vviii.verylong.subdomain.neeva.com")), isSecure: false)
-            LocationLabel(url: .constant(URL(string: "https://neeva.com/asdf")), isSecure: true)
+            LocationLabel(url: .constant("http://vviii.verylong.subdomain.neeva.com"), isSecure: false)
+            LocationLabel(url: .constant("https://neeva.com/asdf"), isSecure: true)
             LocationLabel(url: .constant(neevaSearchEngine.searchURLForQuery("a long search query with words")), isSecure: false)
-            LocationLabel(url: .constant(URL(string: "ftp://someftpsite.com/dir/file.txt")), isSecure: false)
+            LocationLabel(url: .constant("ftp://someftpsite.com/dir/file.txt"), isSecure: false)
         }.padding().previewLayout(.sizeThatFits)
     }
 }

@@ -139,7 +139,7 @@ class LegacyTabLocationView: UIView {
             setNeedsUpdateConstraints()
         }.store(in: &subscriptions)
         model.$isSecure.sink { [unowned self] isSecure in
-            if model.url?.absoluteString == "about:blank" {
+            if model.url == .aboutBlank {
                 // Matching the desktop behaviour, we don't mark these pages as secure.
                 lockImageView.isHidden = true
                 return

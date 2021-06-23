@@ -4,6 +4,26 @@
 
 import UIKit
 
+// MARK: Well Known URLs
+extension URL {
+    public static let aboutBlank: URL = "about:blank"
+}
+
+extension URL: ExpressibleByStringLiteral {
+    public init(stringLiteral value: StaticString) {
+        self = URL(string: "\(value)")!
+    }
+}
+
+/// append a given path component to the provided URL.
+/// ```
+/// URL(string: "https://example.com") / "foo" / "bar" == URL(string: "https://example.com/foo/bar")
+/// ```
+public func / (_ lhs: URL, rhs: String) -> URL {
+    lhs.appendingPathComponent(rhs)
+}
+
+
 private struct ETLDEntry: CustomStringConvertible {
     let entry: String
 
@@ -205,7 +225,7 @@ extension URL {
         }
 
         if self.absoluteString.starts(with: "blob:") {
-            return URL(string: "blob:")
+            return "blob:"
         }
 
         if self.isFileURL {
@@ -374,7 +394,7 @@ extension URL {
 public struct InternalURL {
     public static let uuid = UUID().uuidString
     public static let scheme = "internal"
-    public static let baseUrl = "\(scheme)://local"
+    public static let baseUrl = URL(string: "\(scheme)://local")!
     public enum Path: String {
         case errorpage = "errorpage"
         case sessionrestore = "sessionrestore"

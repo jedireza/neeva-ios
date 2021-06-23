@@ -24,7 +24,7 @@ public struct NeevaConstants {
 
     /// The URL form of `appHost`
     public static var appURL: URL { URL(string: "https://\(appHost)/")! }
-    public static let appMarketingURL = URL(string: "https://neeva.com/")!
+    public static let appMarketingURL: URL = "https://neeva.com/"
 
     public static var appHomeURL: URL { appURL }
     public static var appSearchURL: URL { appURL / "search" }
@@ -125,11 +125,3 @@ public struct NeevaConstants {
 }
 
 fileprivate class BundleHookClass {}
-
-/// append a given path component to the provided URL.
-/// ```
-/// URL(string: "https://example.com") / "foo" / "bar" == URL(string: "https://example.com/foo/bar")
-/// ```
-public func / (_ lhs: URL, rhs: String) -> URL {
-    lhs.appendingPathComponent(rhs)
-}

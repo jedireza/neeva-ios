@@ -141,8 +141,8 @@ struct TabLocationBarButton_Previews: PreviewProvider {
         }
         HStack {
             LocationViewShareButton(url: nil, canShare: false, onTap: { _ in })
-            LocationViewShareButton(url: URL(string: "https://neeva.com/"), canShare: false, onTap: { _ in })
-            LocationViewShareButton(url: URL(string: "https://neeva.com/"), canShare: true, onTap: { _ in })
+            LocationViewShareButton(url: "https://neeva.com/", canShare: false, onTap: { _ in })
+            LocationViewShareButton(url: "https://neeva.com/", canShare: true, onTap: { _ in })
         }
     }
 }

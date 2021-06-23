@@ -866,7 +866,7 @@ class BrowserViewController: UIViewController {
             }
             if isAboutHomeURL {
                 showNeevaHome(inline: true)
-            } else if !url.absoluteString.hasPrefix("\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)") {
+            } else if !url.absoluteString.hasPrefix((InternalURL.baseUrl / SessionRestoreHandler.path).absoluteString) {
                 hideNeevaHome()
             }
         } else if isAboutHomeURL {
@@ -1023,7 +1023,7 @@ class BrowserViewController: UIViewController {
             break
         case .URL:
             // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
-            if tab.url?.absoluteString == "about:blank" && webView.url == nil {
+            if tab.url == .aboutBlank && webView.url == nil {
                 break
             }
 
