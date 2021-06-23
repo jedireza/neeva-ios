@@ -6,6 +6,10 @@ import Foundation
 import UIKit
 
 public extension String {
+    func capitalizingFirstLetter() -> String {
+            return prefix(1).capitalized + dropFirst()
+    }
+
     func escape() -> String? {
         // We can't guaruntee that strings have a valid string encoding, as this is an entry point for tainted data,
         // we should be very careful about forcefully dereferencing optional types.

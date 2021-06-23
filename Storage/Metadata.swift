@@ -9,6 +9,6 @@ import Shared
 public protocol Metadata {
     @discardableResult func storeMetadata(_ metadata: PageMetadata, forPageURL: URL, expireAt: UInt64) -> Success
     func deleteExpiredMetadata() -> Success
-    func metadata(for url: String) -> Deferred<Maybe<Cursor<PageMetadata?>>>
-    func hasMetadata(for url: String) -> Deferred<Maybe<Bool>>
+    func metadata(for url: URL) -> Deferred<Maybe<Cursor<PageMetadata?>>>
+    func hasMetadata(for url: URL) -> Deferred<Maybe<Bool>>
 }

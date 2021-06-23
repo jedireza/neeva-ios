@@ -3,6 +3,7 @@
 import Foundation
 import SwiftUI
 import SDWebImageSwiftUI
+import Shared
 
 enum CardUX {
     static let CardSize : CGFloat = 180
@@ -16,7 +17,7 @@ struct CardSpec: ViewModifier {
 
     func body(content: Content) -> some View {
         content.frame(width: size, height: size)
-            .clipShape(RoundedRectangle(cornerRadius: CardUX.CornerRadius))
+            .cornerRadius(CardUX.CornerRadius)
             .shadow(radius: CardUX.ShadowRadius)
     }
 }
@@ -36,9 +37,15 @@ struct Card<Details>: View where Details: CardDetails {
             if let favicon = details.favicon {
                 favicon.resizable()
                     .transition(.fade(duration: 0.5)) // Fade Transition with duration
-                    .scaledToFit()
+                    .scaledToFit().background(Color.white)
                     .applyCardSpec(size: CardUX.ButtonSize)
-
+            } else if let title = details.title {
+                Text(title).font(.headline)
+                    .frame(height: CardUX.ButtonSize)
+                    .frame(maxWidth: CardUX.CardSize)
+                    .background(Color(UIColor.Browser.background))
+                    .cornerRadius(CardUX.CornerRadius)
+                    .shadow(radius: CardUX.ShadowRadius)
             } else {
                 Rectangle().foregroundColor(.clear)
                     .applyCardSpec(size: CardUX.ButtonSize)

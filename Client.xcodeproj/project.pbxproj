@@ -165,6 +165,7 @@
 		43A5643923CD1E1C00B6857D /* Update.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43A5643623CD1E1B00B6857D /* Update.xcassets */; };
 		43E69EC3254D081D00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
 		43E69ED7254D081F00B591C2 /* SimpleTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E69EAF254D064E00B591C2 /* SimpleTab.swift */; };
+		4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */; };
 		4A1D054B26642BF400D63333 /* SimulatedSwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */; };
 		4A1D054D266430DA00D63333 /* SimulatedSwipeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */; };
 		4A1D05502669715B00D63333 /* CardStripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054F2669715B00D63333 /* CardStripViewController.swift */; };
@@ -182,6 +183,7 @@
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
 		4A88F97A266373F9007C203D /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4A88F979266373F9007C203D /* SDWebImageSwiftUI */; };
 		4AA14F20264C7954003B815A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* HomeView.swift */; };
+		4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
 		4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF1948C266EC78A007E2C3B /* SearchResults.swift */; };
 		4F514FD41ACD8F2C0022D7EA /* HistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F514FD31ACD8F2C0022D7EA /* HistoryTests.swift */; };
@@ -1081,6 +1083,7 @@
 		43A5643523CD1E1B00B6857D /* UpdateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateViewController.swift; sourceTree = "<group>"; };
 		43A5643623CD1E1B00B6857D /* Update.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Update.xcassets; sourceTree = "<group>"; };
 		43E69EAF254D064E00B591C2 /* SimpleTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTab.swift; sourceTree = "<group>"; };
+		4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGroupView.swift; sourceTree = "<group>"; };
 		4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeController.swift; sourceTree = "<group>"; };
 		4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeAnimator.swift; sourceTree = "<group>"; };
 		4A1D054F2669715B00D63333 /* CardStripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStripViewController.swift; sourceTree = "<group>"; };
@@ -1097,6 +1100,7 @@
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserPrimitive.swift; sourceTree = "<group>"; };
 		4ADC541F265DA2CD00A210CE /* PromoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoCard.swift; sourceTree = "<group>"; };
 		4AF1948C266EC78A007E2C3B /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
 		4F514FD31ACD8F2C0022D7EA /* HistoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTests.swift; sourceTree = "<group>"; };
@@ -2133,6 +2137,8 @@
 			isa = PBXGroup;
 			children = (
 				4A88F9722662AEAB007C203D /* CardStrip.swift */,
+				4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */,
+				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A1D054F2669715B00D63333 /* CardStripViewController.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
@@ -4457,6 +4463,7 @@
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
 				E4CD9F2D1A6DC91200318571 /* LegacyTabLocationView.swift in Sources */,
 				66C3C771267A8858002B50B1 /* AddToSpaceToast.swift in Sources */,
+				4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */,
 				C9C18DDF26558FF3004710CD /* MutationController.swift in Sources */,
 				0BB5B2881AC0A2B90052877D /* SnackBar.swift in Sources */,
 				C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */,
@@ -4620,6 +4627,7 @@
 				59A681BDFC95A19F05E07223 /* SearchViewController.swift in Sources */,
 				C9BED4C12667FA91001D9C77 /* SuggestedSearchViews.swift in Sources */,
 				4A255AB6265C4A2A00422839 /* ContentBlockingConfig.swift in Sources */,
+				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,
 				66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */,
 				59A68B280D62462B85CF57A4 /* HistoryPanel.swift in Sources */,

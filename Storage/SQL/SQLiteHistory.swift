@@ -134,11 +134,13 @@ extension SDRow {
 open class SQLiteHistory {
     let db: BrowserDB
     let favicons: SQLiteFavicons
+    let metadata: SQLiteMetadata
     let clearTopSitesQuery: (String, Args?) = ("DELETE FROM cached_top_sites", nil)
 
     required public init(db: BrowserDB) {
         self.db = db
         self.favicons = SQLiteFavicons(db: self.db)
+        self.metadata = SQLiteMetadata(db: self.db)
     }
 
     public func getSites(forURLs urls: [String]) -> Deferred<Maybe<Cursor<Site?>>> {

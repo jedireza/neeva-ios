@@ -55,26 +55,28 @@ extension SQLiteMetadata: Metadata {
         return self.db.run(sql)
     }
 
-    public func metadata(for url: String) -> Deferred<Maybe<Cursor<PageMetadata?>>> {
+    public func metadata(for url: URL) -> Deferred<Maybe<Cursor<PageMetadata?>>> {
+        let cacheKey = url.displayURL?.absoluteString
         let sql = """
         SELECT site_url AS url, media_url, title AS metadata_title, type, description, provider_name
         FROM page_metadata
-        WHERE site_url = ?
+        WHERE cache_key = ?
         ORDER BY expired_at DESC
         LIMIT 1
         """
-        let args: Args = [url]
+        let args: Args = [cacheKey]
         return db.runQueryConcurrently(sql, args: args, factory: SQLiteHistory.pageMetadataColumnFactory)
     }
 
-    public func hasMetadata(for url: String) -> Deferred<Maybe<Bool>> {
+    public func hasMetadata(for url: URL) -> Deferred<Maybe<Bool>> {
+        let cacheKey = url.displayURL?.absoluteString
         let sql = """
         SELECT *
         FROM page_metadata
-        WHERE site_url = ?
+        WHERE cache_key = ?
         LIMIT 1
         """
-        let args: Args = [url]
+        let args: Args = [cacheKey]
         return self.db.queryReturnsResults(sql, args: args)
     }
 

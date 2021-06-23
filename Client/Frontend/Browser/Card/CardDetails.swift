@@ -5,37 +5,23 @@ import Storage
 import SDWebImageSwiftUI
 import SwiftUI
 import Shared
+import Combine
 
-// The intention for a browser primitive is to represent any metadata or entity tied to a url
-// with a card in a heterogenous UI. Tabs are the canonical browser primitive, but Spaces, a single
-// entry in a Space, a History entry, a product in a web page can be a browser primitive as well.
-// The framework here tries to establish rules around how these primitives should be represented
-// and how they can interact with the user and each other. Ex: Dragging a product on top of a tab
-// card should save that product as metadata in the tab, or clicking on a History item should
-// navigate to that url in the current tab (SelectingManager is TabManager), but swiping it away
-// should delete it from history (ClosingManager is History DB), links within a page can be cards
-// and dragging them to a space card should add them to the Space.
+protocol SelectableThumbnail {
+    associatedtype ThumbnailView: View
 
-protocol BrowserPrimitive {
-    var primitiveUrl: URL? { get }
-    var displayTitle: String { get }
-    var displayFavicon: Favicon? { get }
-    var image: UIImage? { get }
-    var pageMetadata: PageMetadata? { get }
+    var thumbnail: ThumbnailView { get }
+    func onSelect()
 }
 
-protocol CardDetails: ObservableObject, DropDelegate {
+protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     associatedtype Item: BrowserPrimitive
-    associatedtype Thumbnail: View
 
     var id:String { get }
     var closeButtonImage: UIImage? { get }
     var title: String { get }
     var favicon: WebImage? { get }
-    var thumbnail: Thumbnail { get }
-    var pageImage: WebImage? { get }
 
-    func onSelect()
     func onClose()
 }
 
@@ -43,49 +29,6 @@ extension CardDetails {
     func performDrop(info: DropInfo) -> Bool {
         return false
     }
-}
-
-protocol Closeable {
-    associatedtype Manager: ClosingManager where Manager.Item == Self
-
-    func close(with manager: Manager)
-}
-
-protocol Selectable {
-    associatedtype Manager: SelectingManager where Manager.Item == Self
-
-    func select(with manager: Manager)
-}
-
-protocol AccessingManagerProvider {
-    associatedtype Manager : AccessingManager
-    var manager: Manager { get set }
-}
-
-protocol AccessingManager {
-    associatedtype Item
-    func get(for id: String) -> Item?
-    func getAll() -> [Item]
-}
-
-protocol ClosingManagerProvider {
-    associatedtype Manager : ClosingManager
-    var manager: Manager { get set }
-}
-
-protocol ClosingManager {
-    associatedtype Item
-    func close(_ item: Item)
-}
-
-protocol SelectingManagerProvider {
-    associatedtype Manager : SelectingManager
-    var manager: Manager { get set }
-}
-
-protocol SelectingManager {
-    associatedtype Item
-    func select(_ item: Item)
 }
 
 extension CardDetails where Item: Selectable, Self: SelectingManagerProvider, Self.Manager.Item == Item, Manager: AccessingManager {
@@ -130,55 +73,6 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
         }
         return nil
     }
-
-    var pageImage: WebImage? {
-        guard let url: String = manager.get(for: id)?.pageMetadata?.mediaURL else {
-            return nil
-        }
-        return WebImage(url: URL(string: url))
-    }
-}
-
-extension TabManager: ClosingManager, SelectingManager, AccessingManager {
-    typealias Item = Tab
-
-    func close(_ tab: Tab) {
-        removeTabAndUpdateSelectedIndex(tab)
-    }
-
-    func select(_ tab: Tab) {
-        selectTab(tab)
-    }
-
-    func get(for id: String) -> Tab? {
-        getTabForUUID(uuid: id)
-    }
-
-    func getAll() -> [Tab] {
-        let isPrivate = selectedTab?.isPrivate ?? false
-        return tabs.filter{$0.isPrivate == isPrivate}
-    }
-}
-
-extension Tab: Closeable, Selectable, BrowserPrimitive {
-
-    var primitiveUrl: URL? {
-        url
-    }
-
-    var image: UIImage? {
-        screenshot
-    }
-
-    typealias Manager = TabManager
-
-    func close(with manager: TabManager) {
-        manager.close(self)
-    }
-
-    func select(with manager: TabManager) {
-        manager.select(self)
-    }
 }
 
 class TabCardDetails: CardDetails, AccessingManagerProvider,
@@ -221,78 +115,63 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 }
 
-extension Space: BrowserPrimitive {
-    var primitiveUrl: URL? {
-        url
+struct SpaceEntityThumbnail: SelectableThumbnail {
+    let data: Data
+    let selected: () -> ()
+    var thumbnail: some View {
+        Image(uiImage: UIImage(data: data)!).resizable()
+            .aspectRatio(contentMode: .fill)
     }
 
-    var displayTitle: String {
-        name
-    }
-
-    var displayFavicon: Favicon? {
-        nil
-    }
-
-    var image: UIImage? {
-        if let thumbnail = thumbnail?.dataURIBody {
-            return UIImage(data: thumbnail)
-        }
-        return nil
-    }
-
-    var pageMetadata: PageMetadata? {
-        return nil
+    func onSelect() {
+        selected()
     }
 }
 
-extension SpaceStore: AccessingManager {
-    func get(for id: String) -> Space? {
-        allSpaces.first(where: { $0.id.id == id })
-    }
-
-    func getAll() -> [Space] {
-        allSpaces
-    }
-
-    typealias Item = Space
-}
-
-class SpaceCardDetails: CardDetails, AccessingManagerProvider {
+class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     static let Spacing : CGFloat = 5
 
+    typealias Item = Space
+    typealias Manager = SpaceStore
+    typealias Thumbnail = SpaceEntityThumbnail
+
+    @Published var manager = SpaceStore.shared
+    var anyCancellable: AnyCancellable? = nil
     var id: String
     var closeButtonImage: UIImage? = nil
+    var allDetails: [SpaceEntityThumbnail] = []
+
+    var thumbnail: some View {
+        ThumbnailGroupView(model: self)
+    }
 
     init(id: String) {
         self.id = id
+        self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
+            self?.updateDetails()
+            self?.objectWillChange.send()
+        }
+        updateDetails()
     }
 
-    init(space: Space) {
-        self.id = space.id.id
+    convenience init(space: Space) {
+        self.init(id: space.id.id)
     }
 
-    var thumbnail: some View {
-        let thumbnails = manager.get(for: id)?.contentThumbnails?.compactMap{ $0?.dataURIBody }
-            .prefix(4) ?? []
-        let size: CGFloat = thumbnails.count == 1 ?
-            CardUX.CardSize - 2 * SpaceCardDetails.Spacing
-            : CardUX.CardSize / 2 - 2 * SpaceCardDetails.Spacing
-        let rows = Array(repeating: GridItem(.fixed(size),
-                                             spacing: SpaceCardDetails.Spacing),
-                         count: thumbnails.count > 2 ? 2 : 1)
-        return LazyHGrid(rows: rows, alignment: .center, spacing: 0) {
-            ForEach(thumbnails, id: \.self) { data in
-                Image(uiImage: UIImage(data: data)!).resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: size, height: size)
-                    .clipShape(RoundedRectangle(cornerRadius: CardUX.CornerRadius))
-                    .overlay(RoundedRectangle(cornerRadius: CardUX.CornerRadius)
-                                .stroke(Color(UIColor.tertiaryLabel)))
-                    .padding(4)
-            }
-        }.frame(maxWidth: .infinity, maxHeight: .infinity).background(Color.white)
+    func updateDetails() {
+        allDetails = manager.get(for: id)?.contentThumbnails?.compactMap{ $0?.dataURIBody }
+            .map {SpaceEntityThumbnail(data: $0, selected: onSelect)} ?? []
     }
+
+    func onSelect() {
+        guard let url = manager.get(for: id)?.primitiveUrl else {
+            return
+        }
+
+        BrowserViewController.foregroundBVC().openURLInNewTab(url)
+    }
+
+    func onClose() { }
 
     func performDrop(info: DropInfo) -> Bool {
         guard info.hasItemsConforming(to: ["public.text", "public.url"]) else {
@@ -342,21 +221,41 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider {
 
         return true
     }
+}
+
+class SiteCardDetails: CardDetails, AccessingManagerProvider {
+    typealias Item = Site
+    typealias Manager = SiteFetcher
+
+    @Published var manager: SiteFetcher
+    var anyCancellable: AnyCancellable? = nil
+    var id: String
+    var closeButtonImage: UIImage?
+
+    var thumbnail: some View {
+        return WebImage(url:
+                            URL(string: manager.get(for: id)?.pageMetadata?.mediaURL ?? ""))
+            .resizable().aspectRatio(contentMode: .fill)
+    }
+
+    init(url: URL, profile: Profile, fetcher: SiteFetcher) {
+        self.id = url.absoluteString
+        self.manager = fetcher
+        self.anyCancellable = fetcher.objectWillChange.sink { [weak self] (_) in
+                    self?.objectWillChange.send()
+        }
+        fetcher.load(url: url.absoluteString, profile: profile)
+    }
 
     func onSelect() {
-        guard let url = manager.get(for: id)?.primitiveUrl else {
+        guard let site = manager.get(for: id) else {
             return
         }
 
-        BrowserViewController.foregroundBVC().openURLInNewTab(url)
+        BrowserViewController.foregroundBVC().tabManager.selectedTab?.select(site)
     }
 
-    func onClose() { }
-
-    var manager: SpaceStore = {
-        SpaceStore.shared
-    }()
-
-    typealias Item = Space
-    typealias Manager = SpaceStore
+    func onClose() {}
 }
+
+
