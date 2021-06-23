@@ -62,31 +62,13 @@ class CacheClearable: Clearable {
     var label: String { .ClearableCache }
 
     func clear() -> Success {
-        let dataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+        let dataTypes = Set([WKWebsiteDataTypeFetchCache, WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache, WKWebsiteDataTypeOfflineWebApplicationCache, WKWebsiteDataTypeServiceWorkerRegistrations])
         WKWebsiteDataStore.default().removeData(ofTypes: dataTypes, modifiedSince: .distantPast, completionHandler: {})
 
         MemoryReaderModeCache.sharedInstance.clear()
         DiskReaderModeCache.sharedInstance.clear()
 
         log.debug("CacheClearable succeeded.")
-        return succeed()
-    }
-}
-
-// Removes all app cache storage.
-class SiteDataClearable: Clearable {
-    let tabManager: TabManager
-    init(tabManager: TabManager) {
-        self.tabManager = tabManager
-    }
-
-    var label: String { .ClearableOfflineData }
-
-    func clear() -> Success {
-        let dataTypes = Set([WKWebsiteDataTypeOfflineWebApplicationCache])
-        WKWebsiteDataStore.default().removeData(ofTypes: dataTypes, modifiedSince: .distantPast, completionHandler: {})
-
-        log.debug("SiteDataClearable succeeded.")
         return succeed()
     }
 }

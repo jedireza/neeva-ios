@@ -9,7 +9,6 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
     case history = "Browsing History"
     case cache = "Cache"
     case cookies = "Cookies"
-    case siteData = "Offline Website Data"
     case trackingProtection = "Tracking Protection"
     case downloads = "Downloaded Files"
 
@@ -23,8 +22,6 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
             return CacheClearable(tabManager: tabManager)
         case .cookies:
             return CookiesClearable(tabManager: tabManager)
-        case .siteData:
-            return SiteDataClearable(tabManager: tabManager)
         case .trackingProtection:
             return TrackingProtectionClearable()
         case .downloads:
