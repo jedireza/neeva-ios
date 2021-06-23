@@ -394,7 +394,7 @@ extension URL {
 public struct InternalURL {
     public static let uuid = UUID().uuidString
     public static let scheme = "internal"
-    public static let baseUrl = URL(string: "\(scheme)://local")!
+    public static let baseUrl = "\(scheme)://local"
     public enum Path: String {
         case errorpage = "errorpage"
         case sessionrestore = "sessionrestore"

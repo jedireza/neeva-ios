@@ -866,7 +866,7 @@ class BrowserViewController: UIViewController {
             }
             if isAboutHomeURL {
                 showNeevaHome(inline: true)
-            } else if !url.absoluteString.hasPrefix((InternalURL.baseUrl / SessionRestoreHandler.path).absoluteString) {
+            } else if !url.absoluteString.hasPrefix("\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)") {
                 hideNeevaHome()
             }
         } else if isAboutHomeURL {
