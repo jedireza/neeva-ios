@@ -7,9 +7,12 @@ import Shared
 
 private let temporaryDocumentOperationQueue = OperationQueue()
 
+// This class downloads an URL to a local temp file that is kept around for the
+// lifetime of the object.
 class TemporaryDocument: NSObject {
     fileprivate let request: URLRequest
     fileprivate let filename: String
+    let mimeType: String?
 
     fileprivate var session: URLSession?
 
@@ -20,6 +23,7 @@ class TemporaryDocument: NSObject {
     init(preflightResponse: URLResponse, request: URLRequest) {
         self.request = request
         self.filename = preflightResponse.suggestedFilename ?? "unknown"
+        self.mimeType = preflightResponse.mimeType
 
         super.init()
 

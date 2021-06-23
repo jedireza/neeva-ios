@@ -652,12 +652,10 @@ extension BrowserViewController: WKNavigationDelegate {
         // representative of the contents of the web view.
         if navigationResponse.isForMainFrame, let tab = tabManager[webView] {
             if response.mimeType != MIMEType.HTML, let request = request {
-                tab.temporaryDocument = TemporaryDocument(preflightResponse: response, request: request)
+                tab.provisionalTemporaryDocument = TemporaryDocument(preflightResponse: response, request: request)
             } else {
-                tab.temporaryDocument = nil
+                tab.provisionalTemporaryDocument = nil
             }
-
-            tab.mimeType = response.mimeType
         }
         
         if isCmdClickForNewTab {
@@ -674,6 +672,10 @@ extension BrowserViewController: WKNavigationDelegate {
 
     /// Invoked when an error occurs while starting to load data for the main frame.
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        if let tab = tabManager[webView] {
+            tab.provisionalTemporaryDocument = nil
+        }
+
         // Ignore the "Frame load interrupted" error that is triggered when we cancel a request
         // to open an external application and hand it over to UIApplication.openURL(). The result
         // will be that we switch to the external app, for example the app store, while keeping the
@@ -751,9 +753,20 @@ extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = tabManager[webView] else { return }
         tab.url = webView.url
+
+        // The document has changed. This metadata is now invalid.
+        tab.pageMetadata = nil
+
+        // Note: We would not have received a decidePolicyFor:response callback if the
+        // document came out of the page cache. In that case, temporaryDocument would
+        // not have been updated, so we effectively clear it here.
+        tab.temporaryDocument = tab.provisionalTemporaryDocument
+        tab.provisionalTemporaryDocument = nil
+
         // When tab url changes after web content starts loading on the page
         // We notify the contect blocker change so that content blocker status can be correctly shown on beside the URL bar
         tab.contentBlocker?.notifyContentBlockingChanged()
+
         self.scrollController.resetZoomState()
 
         if let currentURL = tab.url, NeevaConstants.isNeevaHome(url: currentURL) {
@@ -789,6 +802,13 @@ extension BrowserViewController: WKNavigationDelegate {
                     }
                 }
             }
+        }
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError: Error) {
+        // If the page failed to fully load, we still consider it finished.
+        if let tab = tabManager[webView] {
+            navigateInTab(tab: tab, to: navigation, webViewStatus: .finishedNavigation)
         }
     }
 }

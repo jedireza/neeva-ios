@@ -134,12 +134,16 @@ class Tab: NSObject {
             }
         }
     }
-    var mimeType: String?
     var isEditing: Bool = false
     var currentFaviconUrl: URL?
-    // When viewing a non-HTML content type in the webview (like a PDF document), this URL will
-    // point to a tempfile containing the content so it can be shared to external applications.
+
+    // When viewing a non-HTML content type in the webview (like a PDF document), this var will
+    // be non-nil and hold a reference to a tempfile containing the downloaded content so it can
+    // be shared to external applications.
     var temporaryDocument: TemporaryDocument?
+    // During navigation, the instance is held in a provisional state here, and only promoted to
+    // the above var when navigation commits.
+    var provisionalTemporaryDocument: TemporaryDocument?
 
     /// Returns true if this tab's URL is known, and it's longer than we want to store.
     var urlIsTooLong: Bool {

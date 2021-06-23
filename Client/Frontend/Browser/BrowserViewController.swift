@@ -1932,7 +1932,7 @@ extension BrowserViewController: TabManagerDelegate {
             //
             // https://bugzilla.mozilla.org/show_bug.cgi?id=1516524
             if #available(iOS 12.0, *) {
-                if tab.mimeType == MIMEType.PDF {
+                if tab.temporaryDocument?.mimeType == MIMEType.PDF {
                     let previousZoomScale = webView.scrollView.zoomScale
                     let previousContentOffset = webView.scrollView.contentOffset
 

@@ -350,4 +350,30 @@ class NavigationTest: BaseTestCase {
         XCTAssertFalse(app.keyboards.count > 0, "The keyboard is shown")
     }
     */
+
+    // Confirms that the share menu shows the right contents when navigating back
+    // from a PDF. See https://github.com/neevaco/neeva-ios-phoenix/issues/634,
+    // in which the share menu was incorrectly reporting data about the PDF after
+    // navigating back.
+    func testShareMenuNavigatingBackFromPDF() {
+        navigator.openURL(path(forTestPage: "test-pdf.html"))
+        waitUntilPageLoad()
+
+        app.webViews.links["nineteen for me"].tap()
+        waitUntilPageLoad()
+
+        navigator.goto(ShareMenu)
+        waitForExistence(app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"], timeout: 10)
+        app.navigationBars["UIActivityContentView"].buttons["Close"].tap()
+
+        waitForExistence(app.buttons["Back"], timeout: 5)
+        app.buttons["Back"].tap()
+        waitUntilPageLoad()
+
+        // Now confirm that we get a ShareMenu for the current page and not
+        // the PDF again.
+        navigator.nowAt(BrowserTab)
+        navigator.goto(ShareMenu)
+        waitForExistence(app.navigationBars["UIActivityContentView"].otherElements["localhost"], timeout: 10)
+    }
  }
