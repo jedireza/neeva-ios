@@ -39,9 +39,9 @@ struct CarouselProgressView: View {
         }.padding(CarouselProgressUX.Padding)
         .frame(minHeight: CarouselProgressUX.MinHeight)
         .background(LinearGradient(
-                        gradient: Gradient(colors:[Color.neeva.brand.pistachio,
-                                                   Color.neeva.brand.blue,
-                                                   Color.neeva.brand.pistachio]),
+                        gradient: Gradient(colors:[Color.brand.pistachio,
+                                                   Color.brand.blue,
+                                                   Color.brand.pistachio]),
                         startPoint: .leading, endPoint: .trailing))
         .clipShape(Capsule()).shadow(radius: 3).padding()
     }

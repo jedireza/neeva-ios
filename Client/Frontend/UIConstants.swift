@@ -15,13 +15,13 @@ extension UIColor {
     }
 }
 
-extension Color.neeva {
+extension Color {
     public enum Tour {
-        public static let Background = Color(UIColor.neeva.Tour.Background)
-        public static let Title = Color(UIColor.neeva.Tour.Title)
-        public static let Description = Color(UIColor.neeva.Tour.Description)
-        public static let ButtonBackground = Color(UIColor.neeva.Tour.ButtonBackground)
-        public static let ButtonText = Color(UIColor.neeva.Tour.ButtonText)
+        public static let Background = Color(UIColor.Tour.Background)
+        public static let Title = Color(UIColor.Tour.Title)
+        public static let Description = Color(UIColor.Tour.Description)
+        public static let ButtonBackground = Color(UIColor.Tour.ButtonBackground)
+        public static let ButtonText = Color(UIColor.Tour.ButtonText)
     }
 }
 
@@ -73,19 +73,19 @@ extension UIColor {
     }
 
     public struct Browser {
-        public static let background = UIColor.neeva.DefaultBackground
+        public static let background = UIColor.DefaultBackground
         // Hidden in dark mode
-        public static let urlBarDivider = UIColor(light: .neeva.DefaultSeparator, dark: .Browser.background)
-        public static let tint = UIColor.neeva.DefaultTextAndTint
+        public static let urlBarDivider = UIColor(light: .DefaultSeparator, dark: .Browser.background)
+        public static let tint = UIColor.DefaultTextAndTint
     }
 
     public struct LoadingBar {
-        public static func start(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.neeva.brand.maya : UIColor.systemGray }
-        public static func end(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.neeva.brand.maya : UIColor.systemGray }
+        public static func start(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.brand.adaptive.maya : UIColor.systemGray }
+        public static func end(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.brand.adaptive.maya : UIColor.systemGray }
     }
 
     public struct ToolbarButton {
-        public static let selectedTint = UIColor.neeva.ui.blue
+        public static let selectedTint = UIColor.ui.adaptive.blue
         public static let disabledTint = UIColor.quaternaryLabel
     }
 
@@ -102,12 +102,12 @@ extension UIColor {
                 let color = UIColor(rgba: 0x64C7FF4C)
                 return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
             } else {
-                return (labelMode: UIColor.neeva.TextSelectionHighlight, textFieldMode: nil)
+                return (labelMode: UIColor.TextSelectionHighlight, textFieldMode: nil)
             }
         }
 
         public static func neevaMenuTint(_ isPrivate: Bool) -> UIColor? {
-            return isPrivate ? UIColor.neeva.NeevaMenuIncognito : nil
+            return isPrivate ? UIColor(light: .brand.charcoal, dark: .brand.white) : nil
         }
     }
 
@@ -120,7 +120,7 @@ extension UIColor {
             case .dark:
                 return UIColor.black
             default:
-                return UIColor.neeva.ui.fixed.background
+                return UIColor.ui.background
             }
         }
     }
@@ -184,18 +184,17 @@ extension UIColor {
 
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
-        public static let toolbarBackground = UIColor.neeva.DefaultBackground
-        public static let toolbarHighlight = UIColor.neeva.ui.blue
+        public static let toolbarBackground = UIColor.DefaultBackground
+        public static let toolbarHighlight = UIColor.ui.adaptive.blue
         public static let toolbarTint = UIColor.secondaryLabel
         public static let welcomeScreenText = UIColor.secondaryLabel
-        public static let siteTableHeaderBorder = UIColor.neeva.ui.gray30.withAlphaComponent(0.8)
-        public static let readingListActive = UIColor.neeva.DefaultTextAndTint
+        public static let readingListActive = UIColor.DefaultTextAndTint
         public static let readingListDimmed = UIColor.Photon.Grey40
         public static let downloadedFileIcon = UIColor.secondaryLabel
     }
     
     public struct PopupMenu {
-        public static let background = UIColor.neeva.MenuBackground
+        public static let background = UIColor.MenuBackground
         public static let foreground = UIColor.Browser.background
         public static let textColor = UIColor.label
         public static let secondaryTextColor = UIColor.secondaryLabel
@@ -205,7 +204,7 @@ extension UIColor {
     }
 }
 
-extension UIColor.neeva {
+extension UIColor {
     public enum Tour {
         public static let Background = UIColor(named: "Tour-Background")!
         public static let Title = UIColor(named: "Tour-Title")!

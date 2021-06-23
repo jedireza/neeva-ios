@@ -370,7 +370,7 @@
 		C9C18E51265597B0004710CD /* Symbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DD526558FF3004710CD /* Symbol.swift */; };
 		C9C18E53265597C0004710CD /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = C9C18E52265597C0004710CD /* SFSafeSymbols */; };
 		C9C18E5426559827004710CD /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E30265594DE004710CD /* Space.swift */; };
-		C9C18E552655983B004710CD /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DCE26558FF2004710CD /* Tokens.swift */; };
+		C9C18E552655983B004710CD /* SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DCE26558FF2004710CD /* SystemColors.swift */; };
 		C9C18E5626559871004710CD /* NeevaColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9C18E1326559118004710CD /* NeevaColors.xcassets */; };
 		C9C18E5726559874004710CD /* NeevaColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E0F2655910C004710CD /* NeevaColors.swift */; };
 		C9C18E58265598A0004710CD /* SpaceListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E2D265594DE004710CD /* SpaceListItem.swift */; };
@@ -1257,7 +1257,7 @@
 		C9C18DCA26558FF2004710CD /* MultilineTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineTextField.swift; sourceTree = "<group>"; };
 		C9C18DCC26558FF2004710CD /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		C9C18DCD26558FF2004710CD /* MutationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationController.swift; sourceTree = "<group>"; };
-		C9C18DCE26558FF2004710CD /* Tokens.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
+		C9C18DCE26558FF2004710CD /* SystemColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemColors.swift; sourceTree = "<group>"; };
 		C9C18DD026558FF2004710CD /* QueryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryController.swift; sourceTree = "<group>"; };
 		C9C18DD126558FF2004710CD /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		C9C18DD226558FF2004710CD /* DecorativeSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecorativeSection.swift; sourceTree = "<group>"; };
@@ -2397,7 +2397,6 @@
 				C996466626569AC9005FFE83 /* Spaces */,
 				C9C18E192655917B004710CD /* SendFeedbackView.swift */,
 				C9C18DD526558FF3004710CD /* Symbol.swift */,
-				C9C18DCE26558FF2004710CD /* Tokens.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -2822,6 +2821,7 @@
 				CE7F115E1F3CCEF900ABFC0B /* RemoteDevices.swift */,
 				E650758C1E37F7AB006961AC /* RollingFileLogger.swift */,
 				D02818601EF056C800240CAA /* SentryIntegration.swift */,
+				C9C18DCE26558FF2004710CD /* SystemColors.swift */,
 				E650758E1E37F7AB006961AC /* SystemUtils.swift */,
 				E650758F1E37F7AB006961AC /* TimeConstants.swift */,
 				E65075901E37F7AB006961AC /* UserAgent.swift */,
@@ -4125,7 +4125,7 @@
 				E65075921E37F7AB006961AC /* Accessibility.swift in Sources */,
 				C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */,
 				CD1CE85F24EDE66A00006DFB /* WKWebViewExtensions.swift in Sources */,
-				C9C18E552655983B004710CD /* Tokens.swift in Sources */,
+				C9C18E552655983B004710CD /* SystemColors.swift in Sources */,
 				C9C18E4F26559784004710CD /* SpaceStore.swift in Sources */,
 				E65075B51E37F7AB006961AC /* LaunchArguments.swift in Sources */,
 				C9C18E43265595D2004710CD /* SendFeedbackView.swift in Sources */,

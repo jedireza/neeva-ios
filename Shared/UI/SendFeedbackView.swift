@@ -69,7 +69,7 @@ public struct SendFeedbackView: View {
                         .if(shouldHighlightTextInput()) { view in
                             view
                             .overlay(RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.neeva.brand.blue, lineWidth: 4)
+                                        .stroke(Color.brand.blue, lineWidth: 4)
                                         .padding(.horizontal, -10))
                         }
                 }

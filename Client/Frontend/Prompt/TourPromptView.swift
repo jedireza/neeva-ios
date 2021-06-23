@@ -13,7 +13,7 @@ fileprivate struct CloseButton: View {
                     .frame(width: 40, height: 40, alignment: .center)
                 Image(systemName: "xmark")
                     .font(.system(size: 18))
-                    .foregroundColor(Color.neeva.Tour.Title)
+                    .foregroundColor(Color.Tour.Title)
             }
         }
         .accessibilityLabel("Dismiss tour")
@@ -40,26 +40,26 @@ struct TourPromptView: View {
 
     var body: some View {
         ZStack {
-            Color.neeva.Tour.Background
+            Color.Tour.Background
             ScrollView {
                 HStack(alignment:.top) {
                     VStack {
                         VStack(alignment: .leading) {
                             Text(title)
-                                .foregroundColor(Color.neeva.Tour.Title)
+                                .foregroundColor(Color.Tour.Title)
                                     .font(.system(size: 16, weight: .semibold))
                                     .padding(.bottom, 8)
                             Text(description)
-                                .foregroundColor(Color.neeva.Tour.Description)
+                                .foregroundColor(Color.Tour.Description)
                                 .font(.system(size: 14))
                         }
                         .fixedSize(horizontal: false, vertical: true)
                         if let buttonMessage = buttonMessage, let onConfirm = onConfirm, !buttonMessage.isEmpty {
                             Button(action: onConfirm) {
                                 ZStack {
-                                    Color.neeva.Tour.ButtonBackground
+                                    Color.Tour.ButtonBackground
                                     Text(buttonMessage)
-                                        .foregroundColor(Color.neeva.Tour.ButtonText)
+                                        .foregroundColor(Color.Tour.ButtonText)
                                         .font(.system(size: 16, weight: .bold))
                                 }
                             }

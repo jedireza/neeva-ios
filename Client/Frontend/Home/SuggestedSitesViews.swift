@@ -45,11 +45,11 @@ struct SuggestedSiteView: View {
             VStack(spacing: 2) {
                 FaviconView(site: site, size: SuggestedSiteUX.FaviconSize, bordered: false)
                     .frame(width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize, alignment: .center)
-                    .background(Color.neeva.ui.fixed.gray97)
-                    .clipShape(RoundedRectangle(cornerRadius: SuggestedSiteUX.IconCornerRadius))
+                    .background(Color(light: .ui.gray97, dark: .systemFill))
+                    .cornerRadius(SuggestedSiteUX.IconCornerRadius)
                 HStack {
                     if isPinnedSite {
-                        Image("pin_small").renderingMode(.template).foregroundColor(Color.neeva.ui.gray60)
+                        Image("pin_small").renderingMode(.template).foregroundColor(Color.ui.gray60)
                             .frame(width: SuggestedSiteUX.PinIconSize, height: SuggestedSiteUX.PinIconSize, alignment: .center)
                     }
                     Text(title).lineLimit(1)

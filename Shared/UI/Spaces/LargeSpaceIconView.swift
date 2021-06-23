@@ -34,10 +34,10 @@ public struct LargeSpaceIconView: View {
 
     public var body: some View {
         if space.isDefaultSpace {
-            EmptyIcon(background: space.resultCount == 0 ? .spaceIconBackground : .neeva.ui.fixed.gray96) {
+            EmptyIcon(background: space.resultCount == 0 ? .spaceIconBackground : .ui.gray96) {
                 Image(systemSymbol: .starFill)
                     .frame(height: 24)
-                    .foregroundColor(.savedForLaterIcon)
+                    .foregroundColor(.hex(0xFF8852))
             }
         } else if
             let thumbnail = space.thumbnail?.dataURIBody,
@@ -49,7 +49,7 @@ public struct LargeSpaceIconView: View {
                 .cornerRadius(Metrics.cornerRadius)
         } else {
             EmptyIcon(background: .spaceIconBackground) {
-                Text(firstCharacters(2, from: space.name))
+                Text(space.name.prefix(2).uppercased())
                     .foregroundColor(.white)
                     .font(.system(size: Metrics.textSize, weight: .semibold, design: .default))
                     .accessibilityHidden(true)

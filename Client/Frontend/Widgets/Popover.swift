@@ -52,7 +52,7 @@ fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
 
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
-            presentationController?.containerView?.backgroundColor = .neeva.Backdrop
+            presentationController?.containerView?.backgroundColor = .ui.backdrop
         }
 
         override func viewDidDisappear(_ animated: Bool) {

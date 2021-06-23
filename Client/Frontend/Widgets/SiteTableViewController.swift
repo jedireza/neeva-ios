@@ -115,7 +115,7 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
 
     func applyTheme() {
         navigationController?.navigationBar.barTintColor = UIColor.theme.tableView.headerBackground
-        navigationController?.navigationBar.tintColor = .neeva.ui.blue
+        navigationController?.navigationBar.tintColor = .ui.adaptive.blue
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.headerTextDark]
         setNeedsStatusBarAppearanceUpdate()
 

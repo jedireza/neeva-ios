@@ -50,7 +50,7 @@ public struct BigBlueButtonStyle: ButtonStyle {
             .frame(height: 48)
             .background(
                 Capsule()
-                    .fill(Color.neeva.ui.blue)
+                    .fill(Color.ui.adaptive.blue)
                     .opacity(configuration.isPressed ? 0.5 : 1)
             )
     }

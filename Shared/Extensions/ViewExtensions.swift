@@ -19,7 +19,7 @@ extension View {
     }
 
     public func applyToggleStyle() -> some View {
-        toggleStyle(SwitchToggleStyle(tint: Color.neeva.ui.blue))
+        toggleStyle(SwitchToggleStyle(tint: Color.ui.adaptive.blue))
     }
 }
 

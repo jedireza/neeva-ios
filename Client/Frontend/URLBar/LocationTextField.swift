@@ -51,17 +51,17 @@ struct LocationTextField: View {
 
                         if !(text?.isEmpty ?? true) {
                             tf.selectAll(nil)
-                            tf.tintColor = .neeva.ui.blue.withAlphaComponent(0)
+                            tf.tintColor = .ui.adaptive.blue.withAlphaComponent(0)
                             tf.addAction(UIAction { _ in  }, for: .valueChanged)
                         }
                     }
                     textField = tf
                 }
                 .onChange(of: text) { value in
-                    textField?.tintColor = .neeva.ui.blue
+                    textField?.tintColor = .ui.adaptive.blue
                 }
                 .onTapGesture {
-                    textField?.tintColor = .neeva.ui.blue
+                    textField?.tintColor = .ui.adaptive.blue
                 }
             }
             .padding(.trailing, 6)

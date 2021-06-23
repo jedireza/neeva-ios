@@ -70,7 +70,7 @@ struct NeevaSettingsSection: View {
                         BrowserViewController.foregroundBVC().dismissVC()
                     }
                 }.if (TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
-                    view.throbbingHighlightBorderStyle(highlight: Color.neeva.Tour.Background)
+                    view.throbbingHighlightBorderStyle(highlight: Color.Tour.Background)
 
                 }
             }

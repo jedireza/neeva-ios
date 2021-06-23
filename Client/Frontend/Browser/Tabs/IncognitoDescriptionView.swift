@@ -88,7 +88,7 @@ struct IncognitoDescriptionView: View {
             .padding(.bottom, borderPadding + 8)
             Spacer()
         }
-        .background(Color.neeva.DarkElevated)
+        .background(Color.elevatedDarkBackground)
         .colorScheme(.dark)
     }
 }

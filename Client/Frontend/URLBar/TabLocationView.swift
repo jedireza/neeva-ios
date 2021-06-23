@@ -25,7 +25,7 @@ fileprivate struct TabLocationButtonStyle: ButtonStyle {
             configuration.label
                 .foregroundColor(
                     isIncognito
-                        ? highlight ? .neeva.DarkElevated : .black
+                        ? highlight ? .elevatedDarkBackground : .black
                         : highlight ? .tertiarySystemFill : .systemFill
                 )
         }

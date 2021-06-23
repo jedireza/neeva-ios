@@ -57,7 +57,7 @@ struct AddToSpaceToastView: View {
                     onOpenSpace(request.targetSpaceID!)
                 } label: {
                     Text("Open Space")
-                        .foregroundColor(Color.neeva.ui.aqua)
+                        .foregroundColor(Color.ui.aqua)
                         .font(.system(size: 16, weight: .semibold))
                 }
                 .padding(.trailing, 16)
@@ -66,7 +66,7 @@ struct AddToSpaceToastView: View {
         }
         .colorScheme(.dark)
         .frame(height: 72)
-        .background(Color.neeva.DarkElevated)
+        .background(Color.elevatedDarkBackground)
         .cornerRadius(15)
         .padding([.leading, .trailing], 8)
         .padding(.bottom, 14)

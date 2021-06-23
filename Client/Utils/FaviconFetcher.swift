@@ -151,7 +151,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         }
 
         guard let domain = url.baseDomain else {
-            return UIColor.neeva.ui.gray50
+            return UIColor.ui.gray50
         }
         let index = abs(stableHash(domain)) % (DefaultFaviconBackgroundColors.count - 1)
         let colorHex = DefaultFaviconBackgroundColors[index]

@@ -17,7 +17,7 @@ extension BrowserViewController {
         }
 
         let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.legacyLocationView.urlLabel)
-        prompt.view.backgroundColor = UIColor.neeva.Tour.Background
+        prompt.view.backgroundColor = UIColor.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
         guard let currentViewController = navigationController?.topViewController else {
@@ -62,7 +62,7 @@ extension BrowserViewController {
 
         let prompt = TourPromptViewController(delegate: self, source: target, content: content)
 
-        prompt.view.backgroundColor = UIColor.neeva.Tour.Background.lightVariant
+        prompt.view.backgroundColor = UIColor.Tour.Background.lightVariant
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 300, height: 190))
 
         guard let currentViewController = navigationController?.topViewController else {

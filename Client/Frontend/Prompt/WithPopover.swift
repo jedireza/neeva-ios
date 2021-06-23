@@ -84,7 +84,7 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             let vc = UIHostingController(rootView: popoverContent())
             if let size = popoverSize { vc.preferredContentSize = size }
             vc.modalPresentationStyle = UIModalPresentationStyle.popover
-            vc.view.backgroundColor = self.staticColorMode! ? UIColor.neeva.Tour.Background.lightVariant : UIColor.neeva.Tour.Background
+            vc.view.backgroundColor = self.staticColorMode! ? UIColor.Tour.Background.lightVariant : UIColor.Tour.Background
             if let popover = vc.popoverPresentationController {
                 popover.sourceView = view
                 popover.delegate = self

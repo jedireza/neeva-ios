@@ -22,7 +22,7 @@ class ThemedNavigationController: UINavigationController {
 extension ThemedNavigationController: Themeable {
     func applyTheme() {
         navigationBar.barTintColor = UIColor.theme.tableView.headerBackground
-        navigationBar.tintColor = .neeva.ui.blue
+        navigationBar.tintColor = .ui.adaptive.blue
         navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.headerTextDark]
         setNeedsStatusBarAppearanceUpdate()
         viewControllers.forEach {

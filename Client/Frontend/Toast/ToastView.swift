@@ -130,7 +130,7 @@ struct ToastView: View {
                         }, label: {
                             Text(buttonText)
                                 .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(Color.neeva.ui.aqua)
+                                .foregroundColor(Color.ui.aqua)
 
                         })
                     }

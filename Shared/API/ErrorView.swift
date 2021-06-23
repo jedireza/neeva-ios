@@ -127,19 +127,19 @@ fileprivate struct LoginView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Color.neeva.brand.offwhite
+            Color.brand.offwhite
                 .ignoresSafeArea()
             VStack(spacing: 0) {
                 Spacer(minLength: 22)
                 Spacer(minLength: 0).repeated(2)
                 Text("Oops, this page is a little shy")
                     .font(.custom("Roobert", size: 24, relativeTo: .title))
-                    .foregroundColor(.neeva.ui.gray20)
+                    .foregroundColor(.ui.gray20)
                 Spacer(minLength: 4)
                 Spacer(minLength: 0)
                 Text("Please sign into Neeva to view this page")
                     .font(.system(size: 16))
-                    .foregroundColor(.neeva.ui.gray50)
+                    .foregroundColor(.ui.gray50)
                 // hide the image on small iPhones in landscape
                 if horizontalSizeClass == .regular || verticalSizeClass == .regular {
                     Group {
@@ -159,7 +159,7 @@ fileprivate struct LoginView: View {
                 }
                 Button(action: { onOpenURL(NeevaConstants.appSigninURL) }) {
                     HStack {
-                        Image.neevaLogo
+                        Image("neeva-logo", bundle: .main)
                             .renderingMode(.template)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -177,13 +177,15 @@ fileprivate struct LoginView: View {
                     Text("New to Neeva? Join now")
                         .font(.custom("Roobert", size: 18))
                         .underline()
-                }.accentColor(.neeva.ui.gray20)
+                }.accentColor(.ui.gray20)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, 32)
             .padding(.bottom, 16)
             .frame(maxHeight: 522)
-        }.preference(key: ErrorViewBackgroundPreferenceKey.self, value: Color.neeva.brand.offwhite)
+        }
+        .preference(key: ErrorViewBackgroundPreferenceKey.self, value: Color.brand.offwhite)
+        .colorScheme(.light)
     }
 }
 

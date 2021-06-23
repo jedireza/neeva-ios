@@ -212,8 +212,8 @@ extension TopTabsViewController: PrivateModeUI {
         tabDisplayManager.togglePrivateMode(isOn: isPrivate, createTabOnEmptyPrivateMode: true)
 
         privateModeButton.selectedBackgroundColor = UIColor.black
-        privateModeButton.onTint = UIColor.neeva.ui.gray60.darkVariant
-        privateModeButton.offTint = UIColor.neeva.ui.fixed.gray10
+        privateModeButton.onTint = UIColor.ui.gray60
+        privateModeButton.offTint = UIColor.ui.gray10
         privateModeButton.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
         newTab.tintColor = UIColor.TopTabs.buttonTint
         view.backgroundColor = UIColor.TopTabs.background

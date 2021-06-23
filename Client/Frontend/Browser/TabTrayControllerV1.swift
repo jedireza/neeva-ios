@@ -952,7 +952,7 @@ class TabCell: UICollectionViewCell {
             }
         } else {
             width = TabCell.UnselectedBorderWidth
-            color = UIColor.neeva.DefaultSeparator
+            color = UIColor.DefaultSeparator
         }
         setTabBorder(color: color, width: width)
     }

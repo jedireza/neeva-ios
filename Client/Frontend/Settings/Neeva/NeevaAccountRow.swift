@@ -13,11 +13,11 @@ struct NeevaAccountRow: View {
                    let image = UIImage(data: data) {
                     Image(uiImage: image)
                         .resizable()
-                } else if userInfo.pictureUrl != nil {
+                } else if let pictureUrl = userInfo.pictureUrl, !pictureUrl.isEmpty {
                     Color.secondarySystemFill
                 } else {
-                    let name = firstCharacters(2, from: userInfo.displayName ?? "?")
-                    Color.neeva.brand.blue
+                    let name = (userInfo.displayName ?? "?").prefix(2).uppercased()
+                    Color.brand.blue
                         .overlay(
                             Text(name)
                                 .accessibilityHidden(true)

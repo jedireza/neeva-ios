@@ -135,7 +135,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 Capsule()
                     .fill(Color.tertiaryLabel)
                     .frame(width: 32, height: 4)
-                    .foregroundColor(Color.neeva.ui.gray60)
                     .padding(15).background(Color.clear) // make the selectable area larger
                     .accessibilityElement()
                     .accessibilityLabel("Pop-up controller")

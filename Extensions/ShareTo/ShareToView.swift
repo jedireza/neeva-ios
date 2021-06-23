@@ -83,7 +83,7 @@ struct ShareToAction<Icon: View>: View {
         }
         .padding(.vertical, 14)
         .padding(.horizontal, 16)
-        .foregroundColor(.neeva.ui.gray30)
+        .foregroundColor(.label)
     }
 }
 

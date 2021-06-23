@@ -377,7 +377,7 @@ extension SQLiteHistory: Favicons {
 
             func generateBackgroundColor(forURL url: URL) -> UIColor {
                 guard let hash = url.baseDomain?.hashValue else {
-                    return UIColor.neeva.ui.gray50
+                    return UIColor.ui.gray50
                 }
                 let index = abs(hash) % (DefaultFaviconBackgroundColors.count - 1)
                 let colorHex = DefaultFaviconBackgroundColors[index]

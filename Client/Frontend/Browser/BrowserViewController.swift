@@ -512,7 +512,7 @@ class BrowserViewController: UIViewController {
         }
 
         let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.legacyLocationView.urlLabel)
-        prompt.view.backgroundColor = UIColor.neeva.Tour.Background
+        prompt.view.backgroundColor = UIColor.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
         guard let currentViewController = navigationController?.topViewController else {
