@@ -356,7 +356,7 @@ extension Strings {
 //Clipboard Toast
 extension Strings {
     public static let GoToCopiedLink = MZLocalizedString("ClipboardToast.GoToCopiedLink.Title", value: "Go to copied link?", comment: "Message displayed when the user has a copied link on the clipboard")
-    public static let GoButtonTittle = MZLocalizedString("ClipboardToast.GoToCopiedLink.Button", value: "Go", comment: "The button to open a new tab with the copied link")
+    public static let GoButtonTitle = MZLocalizedString("ClipboardToast.GoToCopiedLink.Button", value: "Go", comment: "The button to open a new tab with the copied link")
 
     public static let SettingsOfferClipboardBarTitle = MZLocalizedString("Settings.OfferClipboardBar.Title", value: "Offer to Open Copied Links", comment: "Title of setting to enable the Go to Copied URL feature. See https://bug1223660.bmoattachments.org/attachment.cgi?id=8898349")
     public static let SettingsOfferClipboardBarStatus = MZLocalizedString("Settings.OfferClipboardBar.Status", value: "When Opening Neeva", comment: "Description displayed under the ”Offer to Open Copied Link” option. See https://bug1223660.bmoattachments.org/attachment.cgi?id=8898349")

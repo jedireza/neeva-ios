@@ -14,21 +14,54 @@ private enum ToastViewUX {
     static let threshold: CGFloat = 15
 }
 
+struct ToastStateContent {
+    var text: String?
+    var buttonText: String?
+    var buttonAction: (() -> ())?
+}
+
+class ToastViewContent: ObservableObject {
+    @Published var currentToastStateContent: ToastStateContent
+
+    func updateStatus(with status: ToastProgressStatus) {
+        switch status {
+        case .inProgress:
+            currentToastStateContent = normalContent
+        case .success:
+            if let completedContent = completedContent {
+                currentToastStateContent = completedContent
+            }
+        case .failed:
+            if let failedContent = failedContent {
+                currentToastStateContent = failedContent
+            }
+        }
+    }
+
+    var normalContent: ToastStateContent
+    var completedContent: ToastStateContent?
+    var failedContent: ToastStateContent?
+
+    init(normalContent: ToastStateContent, completedContent: ToastStateContent? = nil, failedContent: ToastStateContent? = nil) {
+        self.currentToastStateContent = normalContent
+
+        self.normalContent = normalContent
+        self.completedContent = completedContent
+        self.failedContent = failedContent
+    }
+}
+
 struct ToastView: View {
     /// used by ToastViewModel to dismiss view
     weak var viewDelegate: ToastViewDelegate?
 
     // how long the Toast is shown
     var displayTime = 4.5
+    var autoDismiss = true
 
     // content
-    let text: String
-
-    // button will hide if text is nil
-    var buttonText: String?
-    var buttonAction: (() -> ())?
-
-    var showProgressView = false
+    @ObservedObject var content: ToastViewContent
+    var toastProgressViewModel: ToastProgressViewModel?
 
     @State var offset: CGFloat = 0
 
@@ -68,21 +101,28 @@ struct ToastView: View {
                     .frame(minHeight: ToastViewUX.height)
 
                 HStack(spacing: 16) {
-                    if showProgressView {
-                        ToastProgressView()
+                    if let toastProgressViewModel = toastProgressViewModel {
+                        ToastProgressView { _ in
+                            content.updateStatus(with: toastProgressViewModel.status)
+
+                            Timer.scheduledTimer(withTimeInterval: displayTime, repeats: false, block: { _ in
+                                viewDelegate?.dismiss()
+                            })
+                        }
+                        .environmentObject(toastProgressViewModel)
                     }
 
-                    Text(text)
+                    Text(content.currentToastStateContent.text ?? "")
                         .lineLimit(3)
                         .font(.system(size: 16, weight: .medium))
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.vertical)
 
-                    if let buttonText = buttonText {
+                    if let buttonText = content.currentToastStateContent.buttonText {
                         Spacer()
 
                         Button(action: {
-                            if let buttonAction = buttonAction {
+                            if let buttonAction = content.currentToastStateContent.buttonAction {
                                 buttonAction()
                             }
 
@@ -106,6 +146,6 @@ struct ToastView: View {
 
 struct ToastView_Previews: PreviewProvider {
     static var previews: some View {
-        ToastView(text: "Tab Closed", buttonText: "Restore")
+        ToastView(content: ToastViewContent(normalContent: ToastStateContent(text: "Tab Closed")))
     }
 }

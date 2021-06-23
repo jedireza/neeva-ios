@@ -3,6 +3,7 @@
 import UIKit
 import SwiftUI
 import SnapKit
+import Shared
 
 enum ToastQueueLocation {
     case first
@@ -21,8 +22,13 @@ class ToastViewManager {
     private var currentToastIsDragging = false
 
     /// Creates Toast that can then be displayed
-    public func makeToast(text: String, buttonText: String?, buttonAction: (() -> ())? = nil, showsProgress: Bool = false, displayTime: Double = 4.5) -> ToastView {
-        return ToastView(displayTime: displayTime, text: text, buttonText: buttonText, buttonAction: buttonAction, showProgressView: showsProgress)
+    public func makeToast(text: String, buttonText: String? = nil, toastProgressViewModel: ToastProgressViewModel? = nil, displayTime: Double = 4.5, autoDismiss: Bool = true, buttonAction: (() -> ())? = nil) -> ToastView {
+        let content = ToastViewContent(normalContent: ToastStateContent(text: text, buttonText: buttonText, buttonAction: buttonAction))
+        return ToastView(displayTime: displayTime, autoDismiss: autoDismiss, content: content, toastProgressViewModel: toastProgressViewModel)
+    }
+
+    public func makeToast(content: ToastViewContent, toastProgressViewModel: ToastProgressViewModel? = nil, displayTime: Double = 4.5, autoDismiss: Bool = true) -> ToastView {
+        return ToastView(displayTime: displayTime, autoDismiss: autoDismiss, content: content, toastProgressViewModel: toastProgressViewModel)
     }
 
     /// Adds Toast view to queue of Toasts to be displayed in linear order
@@ -69,13 +75,16 @@ class ToastViewManager {
         // creates new window to display Toast in
         toastWindowManager.createWindow(with: toastViewHostingController)
 
-        // add timer to dismiss toast automatically
-        currentToastTimer = Timer.scheduledTimer(withTimeInterval: toast.displayTime, repeats: false, block: { _ in
-            self.dismissCurrentToast()
-        })
+        // add timer if Toast should auto dismiss or if download completed by the time the Toast is displayed
+        if let toastProgressViewModel = toast.toastProgressViewModel, toastProgressViewModel.status != .inProgress || toast.autoDismiss {
+            // add timer to dismiss toast automatically
+            currentToastTimer = Timer.scheduledTimer(withTimeInterval: toast.displayTime, repeats: false, block: { _ in
+                self.dismissCurrentToast()
+            })
+        }
     }
 
-    private func dismissCurrentToast(moveToNext: Bool = true, overrideDrag: Bool = false) {
+    public func dismissCurrentToast(moveToNext: Bool = true, overrideDrag: Bool = false) {
         guard (!currentToastIsDragging || overrideDrag) else {
             return
         }

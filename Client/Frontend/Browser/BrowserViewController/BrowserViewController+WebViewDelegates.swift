@@ -211,13 +211,23 @@ extension BrowserViewController: WKUIDelegate {
                 } else {
                     toastLabelText = Strings.ContextMenuButtonToastNewTabOpenedLabelText
                 }
-                // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-                let toast = ButtonToast(labelText: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, completion: { buttonPressed in
-                    if buttonPressed {
+
+                if FeatureFlag[.newToastUI] {
+                    let toastView = ToastViewManager.shared.makeToast(text: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
                         self.tabManager.selectTab(tab)
-                    }
-                })
-                self.show(toast: toast)
+                    })
+
+                    ToastViewManager.shared.enqueue(toast: toastView)
+                } else {
+                    // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
+                    let toast = ButtonToast(labelText: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, completion: { buttonPressed in
+                        if buttonPressed {
+                            self.tabManager.selectTab(tab)
+                        }
+                    })
+                    
+                    self.show(toast: toast)
+                }
             }
 
             let getImageData = { (_ url: URL, success: @escaping (Data) -> Void) in

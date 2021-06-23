@@ -138,20 +138,29 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
 
             self.lastDisplayedURL = absoluteString
 
-            self.clipboardToast =
-                ButtonToast(
-                    labelText: Strings.GoToCopiedLink,
-                    descriptionText: url.absoluteDisplayString,
-                    buttonText: Strings.GoButtonTittle,
-                    completion: { buttonPressed in
-                        if buttonPressed {
-                            self.delegate?.settingsOpenURLInNewTab(url)
-                        }
-            })
+            if FeatureFlag[.newToastUI] {
+                let toastView = ToastViewManager.shared.makeToast(text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle, buttonAction: {
+                    self.delegate?.settingsOpenURLInNewTab(url)
+                })
 
-            if let toast = self.clipboardToast {
-                self.delegate?.shouldDisplay(clipboardBar: toast)
+                ToastViewManager.shared.enqueue(toast: toastView)
+            } else {
+                self.clipboardToast =
+                    ButtonToast(
+                        labelText: Strings.GoToCopiedLink,
+                        descriptionText: url.absoluteDisplayString,
+                        buttonText: Strings.GoButtonTitle,
+                        completion: { buttonPressed in
+                            if buttonPressed {
+                                self.delegate?.settingsOpenURLInNewTab(url)
+                            }
+                })
+
+                if let toast = self.clipboardToast {
+                    self.delegate?.shouldDisplay(clipboardBar: toast)
+                }
             }
+
         }
     }
 }

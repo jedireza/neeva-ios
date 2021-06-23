@@ -51,7 +51,13 @@ extension PhotonActionSheetProtocol {
         let copyAddressAction = PhotonActionSheetItem(title: Strings.CopyAddressTitle, iconString: "link", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? urlBar.model.url {
                 UIPasteboard.general.url = url
-                SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: webViewContainer)
+
+                if FeatureFlag[.newToastUI] {
+                    let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
+                    ToastViewManager.shared.enqueue(toast: toastView)
+                } else {
+                    SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: webViewContainer)
+                }
             }
         }
         if UIPasteboard.general.string != nil {
