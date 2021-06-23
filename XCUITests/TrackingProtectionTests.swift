@@ -11,6 +11,7 @@ let disabledStrictTPString = "No trackers known to Neeva were detected on this p
 let websiteWithBlockedElements = "twitter.com"
 let differentWebsite = path(forTestPage: "test-example.html")
 
+/* Disabled as we don't have this UI.
 class TrackingProtectionTests: BaseTestCase {
 
     // Smoketest
@@ -68,7 +69,6 @@ class TrackingProtectionTests: BaseTestCase {
         app.buttons["Done"].tap()
     }
 
-    /* Disabled as we don't have this UI.
     func testMenuWhenThereAreBlockedElements() {
         // Open website which has trackers blocked
         navigator.openURL(websiteWithBlockedElements)
@@ -132,7 +132,6 @@ class TrackingProtectionTests: BaseTestCase {
         navigator.performAction(Action.TrackingProtectionperSiteToggle)
         XCTAssertTrue(app.cells.images["enabled"].exists)
     }
-    */
 
     func testBasicMoreInfo() {
         navigator.goto(TrackingProtectionSettings)
@@ -156,3 +155,4 @@ class TrackingProtectionTests: BaseTestCase {
         app.buttons["Tracking Protection"].tap()
     }
 }
+*/

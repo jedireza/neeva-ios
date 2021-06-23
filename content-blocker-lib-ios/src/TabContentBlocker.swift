@@ -47,14 +47,7 @@ class TabContentBlocker {
         }
     }
 
-    var stats: TPPageStats = TPPageStats() {
-        didSet {
-            guard let _ = self.tab else { return }
-            if stats.total <= 1 {
-                notifyContentBlockingChanged()
-            }
-        }
-    }
+    var stats: TPPageStats = TPPageStats()
 
     init(tab: ContentBlockerTab) {
         self.tab = tab

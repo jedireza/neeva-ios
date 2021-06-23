@@ -5,6 +5,7 @@
 import WebKit
 import Shared
 import Foundation
+import Defaults
 
 enum BlocklistCategory: CaseIterable {
     case advertising
@@ -92,9 +93,19 @@ class ContentBlocker {
                 }
             }
         }
+
+        Defaults.observe(.contentBlockingEnabled, options: []) { [unowned self] change in
+            if change.newValue {
+                ClientLogger.shared.logCounter(.TurnOffBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
+            } else {
+                ClientLogger.shared.logCounter(.TurnOnBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
+            }
+
+            self.prefsChanged()
+        }.tieToLifetime(of: self)
     }
 
-    func prefsChanged() {
+    private func prefsChanged() {
         // This class func needs to notify all the active instances of ContentBlocker to update.
         NotificationCenter.default.post(name: .contentBlockerTabSetupRequired, object: nil)
     }

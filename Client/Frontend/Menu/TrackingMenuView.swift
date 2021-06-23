@@ -4,6 +4,7 @@ import SwiftUI
 import Storage
 import SFSafeSymbols
 import Shared
+import Defaults
 
 struct NeevaMenuPanelSpec: ViewModifier {
     func body(content: Content) -> some View {
@@ -25,16 +26,14 @@ class TrackingStatsViewModel:ObservableObject {
     @Published var numDomains = 0
     @Published var hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
 
-    let settingsHandler: (() -> ())?
     var trackers: [TrackingEntity] {
         didSet {
             onDataUpdated()
         }
     }
 
-    init(trackers: [TrackingEntity], settingsHandler: (() -> ())?) {
+    init(trackers: [TrackingEntity]) {
         self.trackers = trackers
-        self.settingsHandler = settingsHandler
         onDataUpdated()
     }
 
@@ -101,17 +100,11 @@ struct HallOfShameView: View {
 }
 
 struct TrackingMenuView: View {
-    var menuAction: ((TrackingMenuButtonActions) -> ())?
-    var isTrackingProtectionEnabled: Bool
     @ObservedObject var viewModel: TrackingStatsViewModel
 
-    init(menuAction: ((TrackingMenuButtonActions) -> ())? = nil,
-         isTrackingProtectionEnabled: Bool, viewModel: TrackingStatsViewModel) {
-        self.menuAction = menuAction
-        self.isTrackingProtectionEnabled = isTrackingProtectionEnabled
-        self.viewModel = viewModel
-    }
-    
+    @Default(.contentBlockingEnabled) private var isTrackingProtectionEnabled
+    @State private var isShowingPopup = false
+
     var body: some View {
         VStack(alignment: .leading) {
             if isTrackingProtectionEnabled {
@@ -123,30 +116,31 @@ struct TrackingMenuView: View {
                     HallOfShameView(hallOfShameDomains: viewModel.hallOfShameDomains)
                 }
             }
-            TrackingMenuProtectionRowButton(name:"Tracking Prevention",
-                                            toggleAction: toggleTrackingProtection,
-                                            isTrackingProtectionOn: isTrackingProtectionEnabled)
-            if let _ = viewModel.settingsHandler {
-                HStack {
-                    Text("Advanced Privacy Settings")
-                        .foregroundColor(Color(UIColor.PopupMenu.textColor))
-                        .font(.system(size: NeevaUIConstants.menuFontSize)).frame(maxWidth: .infinity, alignment: .leading)
-                    Image("tracking-protection").renderingMode(.template)
-                        .frame(width: 24, height: 24)
-                }.applyNeevaMenuPanelSpec()
-            }
-        }.padding(NeevaUIConstants.menuOuterPadding)
-            .background(Color(UIColor.PopupMenu.background)).fixedSize(horizontal: true, vertical: true)
-    }
 
-    func toggleTrackingProtection(){
-        self.menuAction!(TrackingMenuButtonActions.tracking)
+            TrackingMenuProtectionRowButton(isTrackingProtectionEnabled: $isTrackingProtectionEnabled)
+
+            if FeatureFlag[.newTrackingProtectionSettings] {
+                Button(action: { isShowingPopup = true }) {
+                    HStack {
+                        Text("Advanced Privacy Settings")
+                        Spacer()
+                        Symbol(.shieldLefthalfFill)
+                    }
+                }
+                .buttonStyle(TableCellButtonStyle(padding: -NeevaUIConstants.menuInnerPadding))
+                .applyNeevaMenuPanelSpec()
+                .sheet(isPresented: $isShowingPopup) {
+                    TrackingMenuSettingsView(host: "example.com")
+                }
+            }
+        }
+        .padding(NeevaUIConstants.menuOuterPadding)
+        .background(Color(UIColor.PopupMenu.background)).fixedSize(horizontal: true, vertical: true)
     }
 }
 
 struct TrackingMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuView(isTrackingProtectionEnabled: true,
-                         viewModel:TrackingStatsViewModel(trackers: [.Amazon, .Amazon, .Adobe, .Adobe,.Criteo,.Google], settingsHandler: {}))
+        TrackingMenuView(viewModel: TrackingStatsViewModel(trackers: [.Amazon, .Amazon, .Adobe, .Adobe, .Criteo, .Google]))
     }
 }

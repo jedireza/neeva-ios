@@ -8,7 +8,7 @@ public struct DecorativeSection<Content: View, Footer: View>: View {
     let content: () -> Content
     let footer: (() -> Footer)?
 
-    public init(@ViewBuilder _ footer: @escaping () -> Footer, @ViewBuilder _ content: @escaping () -> Content) {
+    public init(@ViewBuilder content: @escaping () -> Content, @ViewBuilder footer: @escaping () -> Footer) {
         self.content = content
         self.footer = footer
     }

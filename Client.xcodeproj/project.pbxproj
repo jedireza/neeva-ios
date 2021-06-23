@@ -323,6 +323,7 @@
 		C994645F2657052200613110 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994645E2657052200613110 /* FeatureFlags.swift */; };
 		C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9946460265706D500613110 /* FeatureFlagSettings.swift */; };
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */; };
 		C9ACC462267A4408009AE182 /* HistorySuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
 		C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */; };
@@ -1234,6 +1235,7 @@
 		C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsSection.swift; sourceTree = "<group>"; };
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 		C9946460265706D500613110 /* FeatureFlagSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettings.swift; sourceTree = "<group>"; };
+		C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuSettingsView.swift; sourceTree = "<group>"; };
 		C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySuggestionView.swift; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
 		C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoAwareHostingController.swift; sourceTree = "<group>"; };
@@ -2232,6 +2234,7 @@
 			children = (
 				BC54AD3426471B960019FB17 /* MenuController */,
 				F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */,
+				C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */,
 				F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */,
 				F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */,
 				F0405D1F25FFCA5A00A0A3B2 /* NeevaUIConstants.swift */,
@@ -4461,6 +4464,7 @@
 				F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */,
 				7BEFC6801BFF68C30059C952 /* QuickActions.swift in Sources */,
 				C9E5F2BA2673F83800025A7F /* DispatchQueueExtensions.swift in Sources */,
+				C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */,
 				BC0E275D26805A2600EAAE00 /* FeedbackHelper.swift in Sources */,
 				C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */,
 				C9B2D28226612EF7005EF5AD /* NeevaAccountRow.swift in Sources */,

@@ -6,6 +6,7 @@ import Shared
 
 struct PrivacySettingsSection: View {
     @Default(.closePrivateTabs) var closePrivateTabs
+    @Default(.contentBlockingEnabled) private var contentBlockingEnabled
     @Environment(\.onOpenURL) var openURL
 
     var body: some View {
@@ -22,14 +23,29 @@ struct PrivacySettingsSection: View {
                 description: "When Leaving Private Browsing"
             )
         }
-        NavigationLink(
-            "Tracking Protection",
-            destination: TrackingProtectionView()
+        if FeatureFlag[.newTrackingProtectionSettings] {
+            NavigationLink(
+                "Tracking Protection",
+                destination: List {
+                    Section(header: Text("Global Privacy Settings").padding(.top, 21)) {
+                        TrackingSettingsBlock(
+                            blockTrackingCookies: .constant(true),
+                            blockTrackingRequests: .constant(true),
+                            upgradeToHTTPS: .constant(true)
+                        )
+                    }
+                    TrackingAttribution()
+                }
+                .listStyle(GroupedListStyle())
+                .applyToggleStyle()
                 .navigationTitle("Tracking Protection")
                 .onAppear {
                     ClientLogger.shared.logCounter(.ViewTrackingProtection, attributes: EnvironmentHelper.shared.getAttributes())
                 }
-        )
+            )
+        } else {
+            Toggle("Tracking Protection", isOn: $contentBlockingEnabled)
+        }
         NavigationLinkButton("Privacy Policy") {
             ClientLogger.shared.logCounter(.ViewPrivacyPolicy, attributes: EnvironmentHelper.shared.getAttributes())
             openURL(NeevaConstants.appPrivacyURL)

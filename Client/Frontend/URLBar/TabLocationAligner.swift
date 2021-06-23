@@ -139,7 +139,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
         } leading: {
-            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
+            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
         } trailing: {
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
         }.previewStyle()
@@ -147,7 +147,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
         TabLocationAligner(transitionToEditing: true, debug: true) {
             Text("editing")
         } leading: {
-            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
+            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
         } trailing: {
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
         }.previewStyle()
@@ -155,7 +155,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
         } leading: {
-            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
+            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
         } trailing: {
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
             TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
@@ -164,7 +164,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
         } leading: { } trailing: {
-            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
+            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
             TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
         }.previewStyle()

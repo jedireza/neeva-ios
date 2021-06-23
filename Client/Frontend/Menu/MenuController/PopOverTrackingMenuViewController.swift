@@ -11,31 +11,14 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
         fatalError("init(coder:) has not been implemented")
     }
     
-    public init(delegate:BrowserViewController,
-                         source:UIView) {
-        super.init(rootView: TrackingMenuView(isTrackingProtectionEnabled: Defaults[.contentBlockingEnabled],
-            viewModel: TrackingStatsViewModel(
-                trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab(),
-                settingsHandler: nil)))
+    public init(delegate: BrowserViewController, source: UIView) {
+        let viewModel = TrackingStatsViewModel(trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab())
+        super.init(rootView: TrackingMenuView(viewModel: viewModel))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
         self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
         NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
             self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        }
-        
-        //Build callbacks for each button action
-        self.rootView.menuAction = { result in
-            switch result {
-            case .tracking:
-                NeevaTabContentBlocker.toggleTrackingProtectionEnabled()
-                delegate.tabManager.selectedTab?.reload()
-                break
-            case .incognito:
-                delegate.openURLInNewTab(nil, isPrivate: true)
-                self.dismiss( animated: true, completion: nil )
-                break
-            }
         }
         
         //Create host as a popup

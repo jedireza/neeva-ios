@@ -74,16 +74,4 @@ extension NeevaTabContentBlocker {
     static func isTrackingProtectionEnabled() -> Bool {
         Defaults[.contentBlockingEnabled]
     }
-
-    static func toggleTrackingProtectionEnabled() {
-        let isEnabled = Defaults[.contentBlockingEnabled]
-        if isEnabled {
-            ClientLogger.shared.logCounter(.TurnOffBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
-        } else {
-            ClientLogger.shared.logCounter(.TurnOnBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
-        }
-            
-        Defaults[.contentBlockingEnabled] = !isEnabled
-        ContentBlocker.shared.prefsChanged()
-    }
 }

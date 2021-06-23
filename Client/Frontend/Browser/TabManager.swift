@@ -38,6 +38,10 @@ extension TabManager: TabEventHandler {
     func tab(_ tab: Tab, didLoadFavicon favicon: Favicon?, with: Data?) {
         store.preserveTabs(tabs, selectedTab: selectedTab)
     }
+
+    func tabDidChangeContentBlocking(_ tab: Tab) {
+        tab.reload()
+    }
 }
 
 // TabManager must extend NSObjectProtocol in order to implement WKNavigationDelegate
@@ -121,7 +125,7 @@ class TabManager: NSObject {
         self.store = TabManagerStore(imageStore: imageStore)
         super.init()
 
-        register(self, forTabEvents: .didLoadFavicon)
+        register(self, forTabEvents: .didLoadFavicon, .didChangeContentBlocking)
 
         addNavigationDelegate(self)
 

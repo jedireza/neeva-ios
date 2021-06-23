@@ -16,7 +16,8 @@ extension View {
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         background(
-            Popover(isPresented: isPresented, content: content(), backgroundColor: backgroundColor)
+            // negative padding to counteract system padding
+            Popover(isPresented: isPresented, content: content().padding(.vertical, -6.5), backgroundColor: backgroundColor)
         )
     }
 }
@@ -57,6 +58,13 @@ fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
         override func viewDidDisappear(_ animated: Bool) {
             super.viewDidDisappear(animated)
             isPresented = false
+        }
+
+        override func viewDidLayoutSubviews() {
+            super.viewDidLayoutSubviews()
+            UIView.performWithoutAnimation {
+                preferredContentSize = sizeThatFits(in: view.intrinsicContentSize)
+            }
         }
 
         // Returning None here makes sure that the Popover is actually presented as a Popover and

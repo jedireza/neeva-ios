@@ -58,6 +58,8 @@ public enum Nicon: Character {
     case gear = "\u{10035F}"
     /// 􀎞
     case house = "\u{10039E}"
+    /// 🅯
+    case ccBy = "\u{101013}"
     // TODO: Add more here
 }
 
@@ -68,7 +70,7 @@ public enum Nicon: Character {
 /// the symbol will be hidden from screen readers.
 public struct Symbol: View {
     private enum Icon {
-        case neeva(Nicon, NiconFont)
+        case neeva(Nicon, NiconFont, Font.TextStyle)
         case system(SFSymbol, Font.Weight)
     }
     private let storage: Icon
@@ -76,8 +78,8 @@ public struct Symbol: View {
     private let label: String?
 
     // since this comes first, Neeva custom icons take priority over SF Symbols with the same name
-    public init(_ nicon: Nicon, size: CGFloat = 16, weight: NiconFont = .regular, label: String? = nil) {
-        self.storage = .neeva(nicon, weight)
+    public init(_ nicon: Nicon, size: CGFloat = 16, weight: NiconFont = .regular, relativeTo: Font.TextStyle = .body, label: String? = nil) {
+        self.storage = .neeva(nicon, weight, relativeTo)
         self.size = size
         self.label = label
     }
@@ -92,9 +94,9 @@ public struct Symbol: View {
     public var body: some View {
         let icon = Group {
             switch storage {
-            case let .neeva(nicon, weight):
+            case let .neeva(nicon, weight, relativeTo):
                 Text(String(nicon.rawValue))
-                    .font(Font.custom(weight.rawValue, size: size))
+                    .font(Font.custom(weight.rawValue, size: size, relativeTo: relativeTo))
             case let .system(symbol, weight):
                 Image(systemSymbol: symbol)
                     .renderingMode(.template)

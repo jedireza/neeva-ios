@@ -2,34 +2,23 @@
 
 import SwiftUI
 import Shared
+import Defaults
 
 public struct TrackingMenuProtectionRowButton: View {
 
-    /// - Parameters:
-    ///   - name: The display name of the button
-    ///   - toggleAction: function to call when toggling tracking protection
-    ///   - isTrackingProtection: Original value and state change value for the tracking protection switch
-    let name: String
-    var toggleAction: () -> ()
-    @State var isTrackingProtectionOn :Bool
+    @Binding var isTrackingProtectionEnabled: Bool
 
     public var body: some View {
-        HStack {
-            VStack{
-                Text(name)
-                    .foregroundColor(Color(UIColor.PopupMenu.textColor))
+        Toggle(isOn: $isTrackingProtectionEnabled) {
+            VStack(alignment: .leading) {
+                Text("Tracking Prevention")
                     .font(.system(size: NeevaUIConstants.trackingMenuFontSize))
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text("Website not working? Try disabling")
-                    .foregroundColor(Color(UIColor.PopupMenu.secondaryTextColor))
+                    .foregroundColor(.secondaryLabel)
                     .font(.footnote)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }.layoutPriority(1)
-            Toggle("", isOn: $isTrackingProtectionOn)
-                .onChange(of: isTrackingProtectionOn){ value in
-                    self.toggleAction()
-                }.accessibilityHint("Double tap to toggle block tracking")
-        }.applyNeevaMenuPanelSpec()
+            }
+        }
+        .applyNeevaMenuPanelSpec()
         .accessibilityIdentifier("TrackingMenu.TrackingMenuProtectionRow")
         .applyToggleStyle()
     }
@@ -37,6 +26,7 @@ public struct TrackingMenuProtectionRowButton: View {
 
 struct TrackingMenuProtectionRowButton_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuProtectionRowButton(name: "Test", toggleAction: {return}, isTrackingProtectionOn: true)
+        TrackingMenuProtectionRowButton(isTrackingProtectionEnabled: .constant(true))
+        TrackingMenuProtectionRowButton(isTrackingProtectionEnabled: .constant(false))
     }
 }
