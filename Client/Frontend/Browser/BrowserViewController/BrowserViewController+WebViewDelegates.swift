@@ -17,11 +17,15 @@ private let schemesAllowedToBeOpenedAsPopups = ["http", "https", "javascript", "
 fileprivate func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
     let httpCookieStore = webView.configuration.websiteDataStore.httpCookieStore
 
-    // Set this cookie as another way to communicate that we are the iOS app.
+    // DEPRECATED in favor of BrowserType and BrowserVersion cookies.
+    httpCookieStore.setCookie(NeevaConstants.deviceTypeCookie)
+
+    // Let the website know who we are. Needed as we send a Safari UA string.
     // Unfortunately, setting a customUserAgent is ignored by WebKit for
     // redirected requests. See https://github.com/neevaco/neeva/issues/40875
     // for more details.
-    httpCookieStore.setCookie(NeevaConstants.deviceTypeCookie)
+    httpCookieStore.setCookie(NeevaConstants.browserTypeCookie)
+    httpCookieStore.setCookie(NeevaConstants.browserVersionCookie)
 
     // Make sure the login cookie--if we have one--is set. The presence of the
     // login cookie in the keychain is considered the source of truth for login

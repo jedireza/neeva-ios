@@ -27,6 +27,14 @@ open class AppInfo {
         applicationBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
 
+    public static var appVersionReportedToNeeva: String {
+        #if DEV
+            appVersion + "-dev"
+        #else
+            appVersion
+        #endif
+    }
+
     public static var buildNumber: String {
         applicationBundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as! String
     }

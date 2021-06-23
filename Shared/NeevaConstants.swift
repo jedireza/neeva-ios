@@ -68,6 +68,28 @@ public struct NeevaConstants {
         ])!
     }
 
+    /// This cookie is set on requests to identify the requester as the iOS app.
+    public static var browserTypeCookie: HTTPCookie {
+        HTTPCookie(properties: [
+            .name: "BrowserType",
+            .value: "neeva-ios",
+            .domain: NeevaConstants.appHost,
+            .path: "/",
+            .expires: Date.distantFuture
+        ])!
+    }
+
+    /// This cookie is set on requests to identify the version of the browser.
+    public static var browserVersionCookie: HTTPCookie {
+        HTTPCookie(properties: [
+            .name: "BrowserVersion",
+            .value: AppInfo.appVersionReportedToNeeva,
+            .domain: NeevaConstants.appHost,
+            .path: "/",
+            .expires: Date.distantFuture
+        ])!
+    }
+
     /// Generates a login cookie from the given cookie value.
     public static func loginCookie(for value: String) -> HTTPCookie {
         HTTPCookie(properties: [
