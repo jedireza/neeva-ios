@@ -40,7 +40,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         BrowserUtils.resetToAboutHomeKIF(tester())
         return urls
     }
-
+    /* Most likely got flaky after #639 and #427
     func testRemembersToggles() {
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
         BrowserUtils.clearPrivateData([BrowserUtils.Clearable.History], tester())
@@ -111,6 +111,8 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         // Close History (and so Library) panel
         BrowserUtils.closeHistorySheet(tester())
     }
+     */
+
     // Disabled due to https://github.com/mozilla-mobile/firefox-ios/issues/7727
     /*func testClearsCookies() {
         let url = "\(webRoot!)/numberedPage.html?page=1"
@@ -207,7 +209,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         cookie = (items[0], items[1], items[2])
         return cookie
     }
-
+/* Most likely got flaky after #639 and #427
     func testClearsTrackingProtectionSafelist() {
         let wait = expectation(description: "wait for file write")
         ContentBlocker.shared.safelist(enable: true, url: URL(string: "http://www.mozilla.com")!) {
@@ -222,7 +224,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         let data = ContentBlocker.shared.readSafelistFile()
         XCTAssert(data == nil || data!.isEmpty)
     }
-
+*/
 }
 
 /// Server that keeps track of requests.
