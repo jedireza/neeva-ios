@@ -26,7 +26,7 @@ struct TourPromptView: View {
     let description: String
     let buttonMessage: String?
     var onClose: (()-> Void)?
-    let staticColorMode: Bool?
+    let staticColorMode: Bool
     @Environment(\.colorScheme) private var colorScheme
 
     init(title: String, description: String, buttonMessage: String? = nil, onConfirm: (()-> Void)? = nil, onClose: (()-> Void)? = nil, staticColorMode: Bool = false) {
@@ -76,7 +76,7 @@ struct TourPromptView: View {
             }
             .padding([.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
         }
-        .colorScheme(staticColorMode! ? .light : colorScheme)
+        .colorScheme(staticColorMode ? .light : colorScheme)
     }
 }
 
