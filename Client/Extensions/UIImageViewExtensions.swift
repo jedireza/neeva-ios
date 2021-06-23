@@ -79,7 +79,7 @@ public extension UIImageView {
 
     private func fallbackFavicon(forUrl url: URL?) -> (image: UIImage, color: UIColor) {
         if let url = url {
-            return (FaviconFetcher.letter(forUrl: url), FaviconFetcher.color(forUrl: url))
+            return FaviconFetcher.letter(forUrl: url)
         } else {
             return (FaviconFetcher.defaultFavicon, .white)
         }

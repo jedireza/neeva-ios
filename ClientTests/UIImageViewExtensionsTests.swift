@@ -21,8 +21,7 @@ class UIImageViewExtensionsTests: XCTestCase {
         let url = URL(string: "http://mozilla.com")
         let imageView = UIImageView()
 
-        let goodIcon = FaviconFetcher.letter(forUrl: url!)
-        let correctColor = FaviconFetcher.color(forUrl: url!)
+        let (goodIcon, correctColor) = FaviconFetcher.letter(forUrl: url!)
         imageView.setImageAndBackground(forIcon: nil, website: url) {}
         XCTAssertEqual(imageView.image!, goodIcon, "The correct default favicon should be applied")
         XCTAssertEqual(imageView.backgroundColor, correctColor, "The correct default color should be applied")

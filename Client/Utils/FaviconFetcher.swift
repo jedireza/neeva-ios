@@ -31,7 +31,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
     public static var userAgent: String = ""
     static let ExpirationTime = TimeInterval(60*60*24*7) // Only check for icons once a week
     
-    private static var characterToFaviconCache = [String: UIImage]()
+    private static var characterToFaviconCache = [String: (UIImage, UIColor)]()
     static var defaultFavicon: UIImage = {
         return UIImage(named: "defaultFavicon")!
     }()
@@ -113,15 +113,15 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
 
     // Create (or return from cache) a fallback image for a site based on the first letter of the site's domain
     // Letter is white on a colored background
-    class func letter(forUrl url: URL) -> UIImage {
+    class func letter(forUrl url: URL) -> (image: UIImage, color: UIColor) {
         guard let character = url.baseDomain?.first else {
-            return defaultFavicon
+            return (defaultFavicon, .white)
         }
 
         let faviconLetter = String(character).uppercased()
 
-        if let cachedFavicon = characterToFaviconCache[faviconLetter] {
-            return cachedFavicon
+        if let cachedFaviconAndColor = characterToFaviconCache[faviconLetter] {
+            return cachedFaviconAndColor
         }
 
         var faviconImage = UIImage()
@@ -136,8 +136,9 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         faviconImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        characterToFaviconCache[faviconLetter] = faviconImage
-        return faviconImage
+        let result = (faviconImage, faviconLabel.backgroundColor!)
+        characterToFaviconCache[faviconLetter] = result
+        return result
     }
 
     // Returns a color based on the url's hash

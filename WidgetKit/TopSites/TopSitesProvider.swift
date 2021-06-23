@@ -20,7 +20,7 @@ struct TopSitesProvider: TimelineProvider {
             guard !site.imageKey.isEmpty else { continue }
             let fetchedImage = FaviconFetcher.getFaviconFromDiskCache(imageKey: site.imageKey)
             let bundledFavicon = getBundledFaviconWithBackground(siteUrl: site.url)
-            let letterFavicon = FaviconFetcher.letter(forUrl: site.url)
+            let letterFavicon = FaviconFetcher.letter(forUrl: site.url).image
             let image = bundledFavicon ?? fetchedImage ?? letterFavicon
             tabFaviconDictionary[site.imageKey] = Image(uiImage: image)
         }
