@@ -478,7 +478,7 @@ class BrowserViewController: UIViewController {
         alertStackView.alignment = .center
 
         clipboardBarDisplayHandler = ClipboardBarDisplayHandler(tabManager: tabManager)
-        clipboardBarDisplayHandler?.delegate = self
+        clipboardBarDisplayHandler?.bvc = self
 
         scrollController.urlBar = legacyURLBar
         scrollController.readerModeBar = readerModeBar
@@ -1144,6 +1144,11 @@ class BrowserViewController: UIViewController {
         tabManager.selectTab(tabManager.addTab(request, isPrivate: isPrivate))
     }
 
+    func openURLInNewTabPreservingIncognitoState(_ url: URL) {
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        self.openURLInNewTab(url, isPrivate: isPrivate)
+    }
+
     func focusLocationTextField(forTab tab: Tab?, setSearchText searchText: String? = nil) {
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
             // Without a delay, the text field fails to become first responder
@@ -1397,16 +1402,6 @@ class BrowserViewController: UIViewController {
 extension BrowserViewController: ClipboardBarDisplayHandlerDelegate {
     func shouldDisplay(clipboardBar bar: ButtonToast) {
         show(toast: bar, duration: ClipboardBarToastUX.ToastDelay)
-    }
-}
-
-extension BrowserViewController: SettingsDelegate {
-    func settingsOpenURLInNewTab(_ url: URL) {
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        self.openURLInNewTab(url, isPrivate: isPrivate)
-    }
-    func settingsOpenURLInNewNonPrivateTab(_ url: URL) {
-        self.openURLInNewTab(url, isPrivate: false)
     }
 }
 

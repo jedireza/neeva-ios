@@ -15,7 +15,7 @@ protocol ClipboardBarDisplayHandlerDelegate: AnyObject {
 }
 
 class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
-    weak var delegate: (ClipboardBarDisplayHandlerDelegate & SettingsDelegate)?
+    weak var bvc: (ClipboardBarDisplayHandlerDelegate & BrowserViewController)?
     weak var settingsDelegate: SettingsDelegate?
     weak var tabManager: TabManager?
     private var sessionStarted = true
@@ -140,7 +140,7 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
 
             if FeatureFlag[.newToastUI] {
                 let toastView = ToastViewManager.shared.makeToast(text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle, buttonAction: {
-                    self.delegate?.settingsOpenURLInNewTab(url)
+                    self.bvc?.openURLInNewTabPreservingIncognitoState(url)
                 })
 
                 ToastViewManager.shared.enqueue(toast: toastView)
@@ -152,12 +152,12 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
                         buttonText: Strings.GoButtonTitle,
                         completion: { buttonPressed in
                             if buttonPressed {
-                                self.delegate?.settingsOpenURLInNewTab(url)
+                                self.bvc?.openURLInNewTabPreservingIncognitoState(url)
                             }
                 })
 
                 if let toast = self.clipboardToast {
-                    self.delegate?.shouldDisplay(clipboardBar: toast)
+                    self.bvc?.shouldDisplay(clipboardBar: toast)
                 }
             }
 

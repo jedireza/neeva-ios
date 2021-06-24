@@ -95,7 +95,7 @@ class SettingsViewController: UIHostingController<AnyView> {
                 }
                 .environment(\.onOpenURL) { url in
                     self.dismiss(animated: true, completion: nil)
-                    bvc.settingsOpenURLInNewTab(url)
+                    bvc.openURLInNewTabPreservingIncognitoState(url)
                 }
                 .environment(\.settingsPresentIntroViewController) {
                     self.dismiss(animated: true) {

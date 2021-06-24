@@ -53,18 +53,6 @@ struct PrivacySettingsSection: View {
     }
 }
 
-// TODO: rewrite in SwiftUI
-struct TrackingProtectionView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        let viewController = ContentBlockerSettingViewController()
-        let bvc = BrowserViewController.foregroundBVC()
-        viewController.profile = bvc.profile
-        viewController.tabManager = bvc.tabManager
-        return viewController
-    }
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
-}
-
 struct PrivacySettingsSection_Previews: PreviewProvider {
     static var previews: some View {
         SettingPreviewWrapper {
