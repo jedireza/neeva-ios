@@ -62,17 +62,21 @@ struct NeevaSettingsSection: View {
             } else {
                 NavigationLinkButton("Account Settings") {
                     ClientLogger.shared.logCounter(.SettingAccountSettings, attributes: EnvironmentHelper.shared.getAttributes())
-                    // if user is in a tour, trigger navigation on webui side to
-                    // prevent page refresh, which will cause lost of states
-                    if TourManager.shared.userReachedStep(step: .promptSettingsInNeevaMenu, tapTarget: .accountSetting) != .stopAction {
-                        openURL(NeevaConstants.appSettingsURL, false)
-                    } else {
-                        BrowserViewController.foregroundBVC().dismissVC()
-                    }
-                }.if (TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
-                    view.throbbingHighlightBorderStyle(highlight: Color.Tour.Background)
-
+                    openURL(NeevaConstants.appSettingsURL, false)
+                    BrowserViewController.foregroundBVC().dismissVC()
                 }
+            }
+
+            NavigationLinkButton("Connected Apps") {
+                // if user is in a tour, trigger navigation on webui side to
+                // prevent page refresh, which will cause lost of states
+                if TourManager.shared.userReachedStep(step: .promptSettingsInNeevaMenu, tapTarget: .connectedApps) != .stopAction {
+                    openURL(NeevaConstants.appConnectionsURL, false)
+                } else {
+                    BrowserViewController.foregroundBVC().dismissVC()
+                }
+            }.if (TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
+                view.throbbingHighlightBorderStyle(highlight: Color.Tour.Background, staticColorMode: true)
             }
         } else {
             Button("Sign In or Join Neeva") {

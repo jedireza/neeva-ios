@@ -5,17 +5,21 @@ import SwiftUI
 struct ThrobbingHighlightBorder: ViewModifier {
     // animation effect
     @State var isAtMaxScale = false
+    @Environment(\.colorScheme) private var colorScheme
+
     private let animation = Animation.easeInOut(duration: 1).repeatForever(autoreverses: true)
     var highlight: Color = Color.blue
+    var staticColorMode: Bool
 
     func body(content: Content) -> some View {
         content
-            .padding()
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(highlight, lineWidth: 4)
+                    .padding([.horizontal, .vertical], -8)
                     .opacity(Double(2 - (isAtMaxScale ? 1.5 : 1.0)))
                     .scaleEffect(isAtMaxScale ? 1.05 : 1.0)
+                    .colorScheme(staticColorMode ? .light : colorScheme)
                     .onAppear() {
                         withAnimation(self.animation, {
                             self.isAtMaxScale.toggle()
@@ -26,7 +30,7 @@ struct ThrobbingHighlightBorder: ViewModifier {
 }
 
 public extension View {
-    func throbbingHighlightBorderStyle(highlight: Color) -> some View {
-        self.modifier(ThrobbingHighlightBorder(highlight: highlight))
+    func throbbingHighlightBorderStyle(highlight: Color, staticColorMode: Bool? = false) -> some View {
+        self.modifier(ThrobbingHighlightBorder(highlight: highlight, staticColorMode: staticColorMode!))
     }
 }

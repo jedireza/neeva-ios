@@ -15,7 +15,7 @@ public enum TapTarget: String {
     case spaceMenu = "spaceMenu"
     case settingMenu = "settingMenu"
     case feedbackMenu = "feedbackMenu"
-    case accountSetting = "accountSetting"
+    case connectedApps = "connectedApps"
 }
 
 public enum TourStep: String {
@@ -33,7 +33,7 @@ public enum TourStep: String {
         case .promptFeedbackInNeevaMenu:
             return [.neevaMenu, .feedbackMenu]
         case .promptSettingsInNeevaMenu:
-            return [.neevaMenu, .settingMenu, .accountSetting]
+            return [.neevaMenu, .settingMenu, .connectedApps]
         default:
             return []
         }
