@@ -223,14 +223,18 @@ class BrowserUtils {
     internal static let AllClearables = Set([Clearable.History, Clearable.Cache, Clearable.OfflineData, Clearable.Cookies, Clearable.TrackingProtection])
 
     class func resetToAboutHomeKIF(_ tester: KIFUITestActor) {
-        BrowserUtils.closeAllTabs()
+        BrowserUtils.closeAllTabs(tester)
     }
 
-    class func closeAllTabs() {
-        // Ideally we'd use accessibility APIs here to achieve the same outcome, but
-        // we don't have a convenient UI access point for removing all tabs.
-        let bvc = UIApplication.shared.keyWindow!.rootViewController?.children[0] as! BrowserViewController
-        bvc.tabManager.removeAllTabsAndAddNormalTab()
+    class func closeAllTabs(_ tester: KIFUITestActor) {
+        tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 3)
+        
+        if tester.viewExistsWithLabel("Close All Tabs") {
+            tester.tapView(withAccessibilityLabel: "Close All Tabs")
+            tester.tapView(withAccessibilityLabel: "Confirm Close All Tabs")
+        } else {
+            tester.tapView(withAccessibilityIdentifier: "Close Tab Action")
+        }
     }
 
     class func dismissFirstRunUI(_ tester: KIFUITestActor) {

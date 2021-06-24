@@ -116,19 +116,21 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: true)
         }
+
         let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark"), attributes: .destructive) { _ in
             if let tab = self.tabManager.selectedTab {
                 self.tabManager.removeTabAndUpdateSelectedIndex(tab)
                 self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
             }
         }
+        closeTab.accessibilityIdentifier = "Close Tab Action"
 
         var actions = [newTab]
 
         if let tab = self.tabManager.selectedTab {
             actions = tab.isPrivate ? [newIncognitoTab] : [newTab]
             
-            if tabCount > 1 || !tab.isURLStartingPage {
+            if tabCount > 0 || !tab.isURLStartingPage {
                 actions.append(closeTab)
             }
         }

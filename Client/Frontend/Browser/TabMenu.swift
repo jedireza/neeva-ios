@@ -35,6 +35,7 @@ class TabMenu {
                 tabsClosed(isPrivate)
             }
         }
+        closeAction.accessibilityLabel = "Confirm Close All Tabs"
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
 
@@ -47,10 +48,13 @@ class TabMenu {
     }
 
     func createCloseAllTabsAction() -> UIAction {
-        return UIAction(title: "Close All Tabs", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+        let action = UIAction(title: "Close All Tabs", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
             // make sure the user really wants to close all tabs
             self.showConfirmCloseAllTabs(numberOfTabs: self.getTabCountForCurrentType())
         }
+        action.accessibilityLabel = "Close All Tabs"
+
+        return action
     }
 
     func createCloseAllTabsMenu() -> UIMenu {

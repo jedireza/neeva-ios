@@ -77,7 +77,7 @@ class SecurityTests: KIFTestCase {
         // Also make sure the XSS alert doesn't appear.
         XCTAssertFalse(tester().viewExistsWithLabel("Local page loaded"))
 
-        BrowserUtils.closeAllTabs()
+        BrowserUtils.closeAllTabs(tester())
     }
 
     /// Tap the URL spoof button, which opens a new window to a host with an invalid port.
