@@ -138,7 +138,7 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
 
             self.lastDisplayedURL = absoluteString
 
-            if FeatureFlag[.newToastUI] {
+            if !FeatureFlag[.useOldToast] {
                 let toastView = ToastViewManager.shared.makeToast(text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle, buttonAction: {
                     self.bvc?.openURLInNewTabPreservingIncognitoState(url)
                 })

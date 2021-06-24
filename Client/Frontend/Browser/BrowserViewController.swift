@@ -1227,7 +1227,7 @@ class BrowserViewController: UIViewController {
                         return self.profile.history.addPinnedTopSite(site)
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
-                            if FeatureFlag[.newToastUI] {
+                            if !FeatureFlag[.useOldToast] {
                                 let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
                                 ToastViewManager.shared.enqueue(toast: toastView)
                             } else {
@@ -1248,7 +1248,7 @@ class BrowserViewController: UIViewController {
                         return self.profile.history.removeFromPinnedTopSites(site)
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
-                            if FeatureFlag[.newToastUI] {
+                            if !FeatureFlag[.useOldToast] {
                                 let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage)
                                 ToastViewManager.shared.enqueue(toast: toastView)
                             } else {
@@ -1560,7 +1560,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
         switch result.value {
         case .success:
             UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.ReaderModeAddPageSuccessAcessibilityLabel)
-            if FeatureFlag[.newToastUI] {
+            if !FeatureFlag[.useOldToast] {
                 let toastView = ToastViewManager.shared.makeToast(text: Strings.ShareAddToReadingListDone)
                 ToastViewManager.shared.enqueue(toast: toastView)
             } else {
@@ -1826,7 +1826,7 @@ extension BrowserViewController: LibraryPanelDelegate {
         }
 
         // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-        if FeatureFlag[.newToastUI] {
+        if !FeatureFlag[.useOldToast] {
             let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
                 self.tabManager.selectTab(tab)
             })
@@ -1864,7 +1864,7 @@ extension BrowserViewController: HomePanelDelegate {
         }
 
         // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-        if FeatureFlag[.newToastUI] {
+        if !FeatureFlag[.useOldToast] {
             let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
                 self.tabManager.selectTab(tab)
             })
@@ -2217,7 +2217,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                 }
 
                 // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-                if FeatureFlag[.newToastUI] {
+                if !FeatureFlag[.useOldToast] {
                     let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
                         self.tabManager.selectTab(tab)
                     })

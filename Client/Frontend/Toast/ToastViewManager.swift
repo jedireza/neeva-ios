@@ -76,12 +76,17 @@ class ToastViewManager {
         toastWindowManager.createWindow(with: toastViewHostingController)
 
         // add timer if Toast should auto dismiss or if download completed by the time the Toast is displayed
-        if let toastProgressViewModel = toast.toastProgressViewModel, toastProgressViewModel.status != .inProgress || toast.autoDismiss {
-            // add timer to dismiss toast automatically
-            currentToastTimer = Timer.scheduledTimer(withTimeInterval: toast.displayTime, repeats: false, block: { _ in
-                self.dismissCurrentToast()
-            })
+        if let toastProgressViewModel = toast.toastProgressViewModel, toastProgressViewModel.status != .inProgress {
+            startToastDismissTimer(for: toast)
+        } else if toast.autoDismiss {
+            startToastDismissTimer(for: toast)
         }
+    }
+
+    private func startToastDismissTimer(for toast: ToastView) {
+        currentToastTimer = Timer.scheduledTimer(withTimeInterval: toast.displayTime, repeats: false, block: { _ in
+            self.dismissCurrentToast()
+        })
     }
 
     public func dismissCurrentToast(moveToNext: Bool = true, overrideDrag: Bool = false) {

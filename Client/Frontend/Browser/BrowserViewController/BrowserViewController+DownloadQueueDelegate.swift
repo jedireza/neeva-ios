@@ -7,7 +7,7 @@ import Shared
 
 extension BrowserViewController: DownloadQueueDelegate {
     func downloadQueue(_ downloadQueue: DownloadQueue, didStartDownload download: Download) {
-        if FeatureFlag[.newToastUI] {
+        if !FeatureFlag[.useOldToast] {
             ToastDefaults().showToastForDownload(download: download)
         } else {
             // If no other download toast is shown, create a new download toast and show it.
@@ -49,7 +49,7 @@ extension BrowserViewController: DownloadQueueDelegate {
             return
         }
 
-        if !FeatureFlag[.newToastUI] {
+        if !FeatureFlag[.useOldToast] {
             DispatchQueue.main.async {
                 downloadToast.dismiss(false)
 

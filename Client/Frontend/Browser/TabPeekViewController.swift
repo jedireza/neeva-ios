@@ -44,7 +44,7 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
                     guard let wself = self, let url = wself.tab?.canonicalURL else { return }
                     UIPasteboard.general.url = url
 
-                    if FeatureFlag[.newToastUI] {
+                    if !FeatureFlag[.useOldToast] {
                         let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
                         ToastViewManager.shared.enqueue(toast: toastView)
                     } else {
@@ -71,7 +71,7 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
                 guard let wself = self, let url = wself.tab?.canonicalURL else { return }
                 UIPasteboard.general.url = url
 
-                if FeatureFlag[.newToastUI] {
+                if !FeatureFlag[.useOldToast] {
                     let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
                     ToastViewManager.shared.enqueue(toast: toastView)
                 } else {

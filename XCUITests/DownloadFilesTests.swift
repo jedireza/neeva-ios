@@ -71,7 +71,7 @@ class DownloadFilesTests: BaseTestCase {
 
     func testDownloadBLOBFile() {
         downloadBLOBFile()
-        waitForExistence(app.buttons["Downloads"])
+        
         navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_Downloads)
 

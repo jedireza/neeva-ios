@@ -212,7 +212,7 @@ extension BrowserViewController: WKUIDelegate {
                     toastLabelText = Strings.ContextMenuButtonToastNewTabOpenedLabelText
                 }
 
-                if FeatureFlag[.newToastUI] {
+                if !FeatureFlag[.useOldToast] {
                     let toastView = ToastViewManager.shared.makeToast(text: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
                         self.tabManager.selectTab(tab)
                     })

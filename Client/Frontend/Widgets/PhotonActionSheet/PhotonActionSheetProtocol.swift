@@ -52,7 +52,7 @@ extension PhotonActionSheetProtocol {
             if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? urlBar.model.url {
                 UIPasteboard.general.url = url
 
-                if FeatureFlag[.newToastUI] {
+                if !FeatureFlag[.useOldToast] {
                     let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
                     ToastViewManager.shared.enqueue(toast: toastView)
                 } else {
