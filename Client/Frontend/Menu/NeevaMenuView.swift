@@ -21,10 +21,8 @@ public struct NeevaMenuView: View {
         VStack(alignment: .leading, spacing: NeevaUIConstants.menuSectionPadding) {
             VStack(spacing: NeevaUIConstants.menuInnerSectionPadding) {
                 HStack(spacing: NeevaUIConstants.menuInnerSectionPadding){
-                    Button {
+                    NeevaMenuButtonView(label: "Home", nicon: .house) {
                         self.menuAction!(NeevaMenuButtonActions.home)
-                    } label: {
-                        NeevaMenuButtonView(label: "Home", nicon: .house, isDisabled: isIncognito)
                     }
                     .accessibilityIdentifier("NeevaMenu.Home")
                     .disabled(isIncognito)
@@ -32,10 +30,8 @@ public struct NeevaMenuView: View {
                         showPopover: $openSpacesPrompt,
                         popoverSize: CGSize(width:290, height: 150),
                         content: {
-                            Button {
+                            NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
                                 self.menuAction!(NeevaMenuButtonActions.spaces)
-                            } label: {
-                                NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark, isDisabled: isIncognito)
                             }
                             .accessibilityIdentifier("NeevaMenu.Spaces")
                             .disabled(isIncognito)
@@ -54,10 +50,8 @@ public struct NeevaMenuView: View {
                         showPopover: $openSettingsPrompt,
                         popoverSize: CGSize(width:290, height: 180),
                         content: {
-                            Button {
+                            NeevaMenuButtonView(label: "Settings", nicon: .gear)  {
                                 self.menuAction!(NeevaMenuButtonActions.settings)
-                            } label: {
-                                NeevaMenuButtonView(label: "Settings", nicon: .gear)
                             }
                             .accessibilityIdentifier("NeevaMenu.Settings")
                         },
@@ -71,10 +65,8 @@ public struct NeevaMenuView: View {
                         showPopover: $openFeedbackPrompt,
                         popoverSize: CGSize(width:290, height: 120),
                         content: {
-                            Button {
+                            NeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft) {
                                 self.menuAction!(NeevaMenuButtonActions.feedback)
-                            } label: {
-                                NeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft)
                             }
                             .accessibilityIdentifier("NeevaMenu.Feedback")
                         },
@@ -89,23 +81,15 @@ public struct NeevaMenuView: View {
             }
 
             VStack(spacing: 0) {
-                Button {
+                NeevaMenuRowButtonView(label: "History", symbol: .clock) {
                     self.menuAction!(NeevaMenuButtonActions.history)
-                } label: {
-                    NeevaMenuRowButtonView(label:"History", symbol: .clock)
-                        .padding([.leading, .top, .bottom], NeevaUIConstants.buttonInnerPadding)
-                        .padding(.trailing, NeevaUIConstants.buttonInnerPadding - 6)
                 }
                 .accessibilityIdentifier("NeevaMenu.History")
 
                 Divider()
 
-                Button {
+                NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
                     self.menuAction!(NeevaMenuButtonActions.downloads)
-                } label: {
-                    NeevaMenuRowButtonView(label:"Downloads", symbol: .squareAndArrowDown)
-                        .padding([.leading, .top, .bottom], NeevaUIConstants.buttonInnerPadding)
-                        .padding(.trailing, NeevaUIConstants.buttonInnerPadding - 6)
                 }
                 .accessibilityIdentifier("NeevaMenu.Downloads")
             }

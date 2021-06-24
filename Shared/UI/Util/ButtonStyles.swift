@@ -23,7 +23,7 @@ public struct TableCellButtonStyle: ButtonStyle {
         configuration.label
             .contentShape(Rectangle())
             .background(
-                Color(UIColor(light: UIColor(rgb: 0xd1d1d6), dark: UIColor(rgba: 0x3C3C432E)))
+                Color(UIColor(light: UIColor(rgb: 0xd1d1d6), dark: UIColor(rgb: 0x3b3b3d)))
                     .opacity(configuration.isPressed ? 1 : 0)
                     .padding(padding)
             )

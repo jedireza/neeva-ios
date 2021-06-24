@@ -196,11 +196,6 @@ extension UIColor {
     public struct PopupMenu {
         public static let background = UIColor.MenuBackground
         public static let foreground = UIColor.Browser.background
-        public static let textColor = UIColor.label
-        public static let secondaryTextColor = UIColor.secondaryLabel
-        public static let buttonColor = UIColor.label
-        public static let disabledButtonColor = UIColor.secondaryLabel
-
     }
 }
 

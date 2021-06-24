@@ -15,6 +15,7 @@ extension Color {
     public static let label = Color.primary
     public static let secondaryLabel = Color.secondary
     public static let tertiaryLabel = Color(UIColor.tertiaryLabel)
+    public static let quaternaryLabel = Color(UIColor.quaternaryLabel)
 }
 
 // MARK: System Backgrounds

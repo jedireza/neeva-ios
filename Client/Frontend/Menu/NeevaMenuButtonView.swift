@@ -8,63 +8,65 @@ public struct NeevaMenuButtonView: View {
     let label: String
     let nicon: Nicon?
     let symbol: SFSymbol?
-    let isDisabled: Bool
-    
+    let action: () -> ()
+
+    @Environment(\.isEnabled) private var isEnabled
+
     /// - Parameters:
     ///   - label: The text displayed on the button
     ///   - nicon: The Nicon to use
     ///   - isDisabled: Whether to apply gray out disabled style
-    public init(label: String, nicon: Nicon, isDisabled: Bool = false) {
+    public init(label: String, nicon: Nicon, action: @escaping () -> ()) {
         self.label = label
         self.nicon = nicon
         self.symbol = nil
-        self.isDisabled = isDisabled
+        self.action = action
     }
 
     /// - Parameters:
     ///   - label: The text displayed on the button
     ///   - symbol: The SFSymbol to use
     ///   - isDisabled: Whether to apply gray out disabled style
-    public init(label: String, symbol: SFSymbol, isDisabled: Bool = false) {
+    public init(label: String, symbol: SFSymbol, action: @escaping () -> ()) {
         self.label = label
         self.nicon = nil
         self.symbol = symbol
-        self.isDisabled = isDisabled
+        self.action = action
     }
     
     public var body: some View {
-        HStack(spacing: 0) {
-            Spacer()
-
-            VStack(spacing: 0) {
-                Group {
-                    if let nicon = self.nicon {
-                        Symbol(nicon, size: 20)
-                    } else if let symbol = self.symbol {
-                        Symbol(symbol, size: 20)
-                    }
-                }
-                .foregroundColor(self.isDisabled ? Color(UIColor.PopupMenu.disabledButtonColor): Color(UIColor.PopupMenu.buttonColor))
-
+        Button(action: action) {
+            HStack(spacing: 0) {
                 Spacer()
 
-                Text(label)
-                    .foregroundColor(self.isDisabled ? Color(UIColor.PopupMenu.disabledButtonColor): Color(UIColor.PopupMenu.textColor))
-                    .font(.system(size: 16))
-            }
-            .frame(height: 46)
-            .padding([.top, .bottom], NeevaUIConstants.buttonInnerPadding)
+                VStack(spacing: 0) {
+                    Group {
+                        if let nicon = self.nicon {
+                            Symbol(nicon, size: 20)
+                        } else if let symbol = self.symbol {
+                            Symbol(symbol, size: 20)
+                        }
+                    }
 
-            Spacer()
+                    Spacer()
+
+                    Text(label)
+                        .font(.system(size: 16))
+                }
+                .frame(height: 46)
+                .padding([.top, .bottom], NeevaUIConstants.buttonInnerPadding)
+
+                Spacer()
+            }.foregroundColor(isEnabled ? .label : .quaternaryLabel)
         }
+        .buttonStyle(TableCellButtonStyle())
         .background(Color(UIColor.PopupMenu.foreground))
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
-        .disabled(self.isDisabled)
     }
 }
 
 struct NeevaMenuButtonView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuButtonView(label: "Test", nicon: .house)
+        NeevaMenuButtonView(label: "Test", nicon: .house) {}
     }
 }
