@@ -230,6 +230,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         return true
     }
 
+    // handles universal links
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        if checkForUniversalURL(application, continue: userActivity, restorationHandler: restorationHandler) {
+            return true
+        }
+
+        return false
+    }
+
+    func checkForUniversalURL(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        // Get URL components from the incoming user activity.
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let incomingURL = userActivity.webpageURL,
+            let components = NSURLComponents(url: incomingURL, resolvingAgainstBaseURL: true) else {
+            return false
+        }
+
+        BrowserViewController.foregroundBVC().openURLInNewTab(incomingURL)
+
+        return true
+    }
+
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.
     // Eventually we'll sync in response to notifications.
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -416,51 +438,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         FaviconFetcher.userAgent = UserAgent.desktopUserAgent()
     }
 
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        let bvc = BrowserViewController.foregroundBVC()
-        if #available(iOS 12.0, *) {
-            if userActivity.activityType == SiriShortcuts.activityType.openURL.rawValue {
-                bvc.openBlankNewTab(focusLocationField: false)
-                return true
-            }
-        }
-
-        // If the `NSUserActivity` has a `webpageURL`, it is either a deep link or an old history item
-        // reached via a "Spotlight" search before we began indexing visited pages via CoreSpotlight.
-        if let url = userActivity.webpageURL {
-            let query = url.getQuery()
-
-            // Check for fxa sign-in code and launch the login screen directly
-            if query["signin"] != nil {
-                // bvc.launchFxAFromDeeplinkURL(url) // Was using Adjust. Consider hooking up again when replacement system in-place.
-                return true
-            }
-
-            // Per Adjust documenation, https://docs.adjust.com/en/universal-links/#running-campaigns-through-universal-links,
-            // it is recommended that links contain the `deep_link` query parameter. This link will also
-            // be url encoded.
-            if let deepLink = query["deep_link"]?.removingPercentEncoding, let url = URL(string: deepLink) {
-                bvc.switchToTabForURLOrOpen(url)
-                return true
-            }
-
-            bvc.switchToTabForURLOrOpen(url)
-            return true
-        }
-
-        // Otherwise, check if the `NSUserActivity` is a CoreSpotlight item and switch to its tab or
-        // open a new one.
-        if userActivity.activityType == CSSearchableItemActionType {
-            if let userInfo = userActivity.userInfo,
-                let urlString = userInfo[CSSearchableItemActivityIdentifier] as? String,
-                let url = URL(string: urlString) {
-                bvc.switchToTabForURLOrOpen(url)
-                return true
-            }
-        }
-
-        return false
-    }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(shortcutItem, withBrowserViewController: BrowserViewController.foregroundBVC())

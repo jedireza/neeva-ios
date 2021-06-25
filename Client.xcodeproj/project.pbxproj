@@ -196,6 +196,8 @@
 		63306D3921103EAE00F25400 /* SavedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D3821103EAE00F25400 /* SavedTab.swift */; };
 		63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D422110B3CD00F25400 /* TabManagerStore.swift */; };
 		63306D452110BAF000F25400 /* TabManagerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D442110BAF000F25400 /* TabManagerStoreTests.swift */; };
+    6692829A2684EF1A00DDF117 /* Neeva.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC19E25E8C2380024991B /* Neeva.entitlements */; };
+		6692829B2684EF1A00DDF117 /* NeevaDev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */; };
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
 		66C3C769267A8858002B50B1 /* ButtonToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C760267A8858002B50B1 /* ButtonToast.swift */; };
 		66C3C76A267A8858002B50B1 /* DownloadToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C761267A8858002B50B1 /* DownloadToast.swift */; };
@@ -3875,6 +3877,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6692829A2684EF1A00DDF117 /* Neeva.entitlements in Resources */,
+				6692829B2684EF1A00DDF117 /* NeevaDev.entitlements in Resources */,
 				4A255AB4265C48EC00422839 /* trackerDomains.json in Resources */,
 				D38A1EE01CB458EC0080C842 /* CertError.html in Resources */,
 				0BA1E0301B051A07007675AF /* OfflineError.css in Resources */,
