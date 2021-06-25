@@ -33,7 +33,7 @@ public struct NeevaConstants {
     public static var appConnectionsURL: URL { appURL / "connections" }
     public static var appMemoryModeURL: URL { URL(string: "\(appURL)settings#memory-mode")! }
     public static var appSigninURL: URL { appURL / "signin" }
-    public static var appSignupURL: URL { appURL / "signup" }
+    public static var appSignupURL: URL { appURL / "p/signup" }
     public static var appFAQURL: URL { appURL / "faq" }
     public static var appWelcomeToursURL: URL { URL(string: "\(appURL)#modal-hello")! }
 
