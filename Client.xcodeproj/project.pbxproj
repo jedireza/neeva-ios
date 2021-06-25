@@ -196,9 +196,9 @@
 		63306D3921103EAE00F25400 /* SavedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D3821103EAE00F25400 /* SavedTab.swift */; };
 		63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D422110B3CD00F25400 /* TabManagerStore.swift */; };
 		63306D452110BAF000F25400 /* TabManagerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D442110BAF000F25400 /* TabManagerStoreTests.swift */; };
-    6692829A2684EF1A00DDF117 /* Neeva.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC19E25E8C2380024991B /* Neeva.entitlements */; };
-		6692829B2684EF1A00DDF117 /* NeevaDev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */; };
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
+		6692829A2684EF1A00DDF117 /* Neeva.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC19E25E8C2380024991B /* Neeva.entitlements */; };
+		6692829B2684EF1A00DDF117 /* NeevaDev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */; };
 		66C3C769267A8858002B50B1 /* ButtonToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C760267A8858002B50B1 /* ButtonToast.swift */; };
 		66C3C76A267A8858002B50B1 /* DownloadToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C761267A8858002B50B1 /* DownloadToast.swift */; };
 		66C3C76B267A8858002B50B1 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C762267A8858002B50B1 /* Toast.swift */; };
@@ -392,7 +392,6 @@
 		C9C18E6526559B9C004710CD /* LogConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6326559B9C004710CD /* LogConfig.swift */; };
 		C9C18E6626559B9C004710CD /* ClientLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6426559B9C004710CD /* ClientLogger.swift */; };
 		C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6726559DCF004710CD /* FormatDateTime.swift */; };
-		C9D4564E26558EF80047267A /* RemoteImage in Frameworks */ = {isa = PBXBuildFile; productRef = C9D4564D26558EF80047267A /* RemoteImage */; };
 		C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */; };
 		C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
 		C9DF5691266A83F4009A2E6C /* ShareToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5690266A83F4009A2E6C /* ShareToView.swift */; };
@@ -1676,7 +1675,6 @@
 				3BA9A0231D2C208C00BD418C /* Fuzi.framework in Frameworks */,
 				7BA4A9471C4CED900091D032 /* GCDWebServers.framework in Frameworks */,
 				0B8E0FF41A932BD500161DC3 /* ImageIO.framework in Frameworks */,
-				C9D4564E26558EF80047267A /* RemoteImage in Frameworks */,
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */,
@@ -3574,7 +3572,6 @@
 			);
 			name = Client;
 			packageProductDependencies = (
-				C9D4564D26558EF80047267A /* RemoteImage */,
 				4A88F979266373F9007C203D /* SDWebImageSwiftUI */,
 			);
 			productName = Client;
@@ -3738,7 +3735,6 @@
 			packageReferences = (
 				C9D4564626558EDA0047267A /* XCRemoteSwiftPackageReference "apollo-ios" */,
 				C9D4564926558EE90047267A /* XCRemoteSwiftPackageReference "KeychainAccess" */,
-				C9D4564C26558EF80047267A /* XCRemoteSwiftPackageReference "RemoteImage" */,
 				C9D4564F26558F170047267A /* XCRemoteSwiftPackageReference "Defaults" */,
 				C9D4565226558F270047267A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				C9D4565526558F360047267A /* XCRemoteSwiftPackageReference "Reachability" */,
@@ -5807,14 +5803,6 @@
 				minimumVersion = 4.2.2;
 			};
 		};
-		C9D4564C26558EF80047267A /* XCRemoteSwiftPackageReference "RemoteImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/crelies/RemoteImage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
-			};
-		};
 		C9D4564F26558F170047267A /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Defaults";
@@ -5900,11 +5888,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C9D4565226558F270047267A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
 			productName = Introspect;
-		};
-		C9D4564D26558EF80047267A /* RemoteImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C9D4564C26558EF80047267A /* XCRemoteSwiftPackageReference "RemoteImage" */;
-			productName = RemoteImage;
 		};
 		C9DF56C3266A89EA009A2E6C /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
