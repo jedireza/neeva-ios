@@ -5,6 +5,7 @@
 import Foundation
 import Shared
 
+/* Disabled until we switch to the new URL bar
 class DomainAutocompleteTests: KIFTestCase {
     override func setUp() {
         super.setUp()
@@ -113,3 +114,4 @@ class DomainAutocompleteTests: KIFTestCase {
         BrowserUtils.clearPrivateDataKIF(tester())
     }
 }
+*/

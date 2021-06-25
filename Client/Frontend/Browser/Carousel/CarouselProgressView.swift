@@ -31,7 +31,7 @@ struct CarouselProgressView: View {
             ForEach(Array(model.urls.enumerated()), id: \.0) { i, url in
                 let size: CGFloat = i == model.index ?
                     CarouselProgressUX.SelectedSize : CarouselProgressUX.RegularSize
-                FaviconView(site: Site(url: url.absoluteString, title: ""),
+                FaviconView(url: url,
                             size: size, bordered: false)
                     .frame(width: size, height: size).clipShape(Circle())
                     .shadow(radius: 2).animation(model.index == -1 ? nil : .spring())

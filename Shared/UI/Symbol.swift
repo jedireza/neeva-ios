@@ -77,15 +77,17 @@ public struct Symbol: View {
     private let size: CGFloat
     private let label: String?
 
+    public static let defaultSize: CGFloat = 16
+
     // since this comes first, Neeva custom icons take priority over SF Symbols with the same name
-    public init(_ nicon: Nicon, size: CGFloat = 16, weight: NiconFont = .regular, relativeTo: Font.TextStyle = .body, label: String? = nil) {
+    public init(_ nicon: Nicon, size: CGFloat = Symbol.defaultSize, weight: NiconFont = .regular, relativeTo: Font.TextStyle = .body, label: String? = nil) {
         self.storage = .neeva(nicon, weight, relativeTo)
         self.size = size
         self.label = label
     }
 
     @_disfavoredOverload
-    public init(_ symbol: SFSymbol, size: CGFloat = 16, weight: Font.Weight = .medium, label: String? = nil) {
+    public init(_ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize, weight: Font.Weight = .medium, label: String? = nil) {
         self.storage = .system(symbol, weight)
         self.size = size
         self.label = label

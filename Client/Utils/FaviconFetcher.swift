@@ -115,7 +115,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
     // Letter is white on a colored background
     class func letter(forUrl url: URL) -> (image: UIImage, color: UIColor) {
         guard let character = url.baseDomain?.first else {
-            return (defaultFavicon, .white)
+            return (defaultFavicon, .clear)
         }
 
         let faviconLetter = String(character).uppercased()

@@ -13,6 +13,13 @@ fileprivate struct RoundedCorner: Shape {
     }
 }
 
+public extension UIRectCorner {
+    static let top: UIRectCorner = [.topLeft, .topRight]
+    static let bottom: UIRectCorner = [.bottomLeft, .bottomRight]
+    static let left: UIRectCorner = [.topLeft, .bottomLeft]
+    static let right: UIRectCorner = [.topRight, .bottomRight]
+}
+
 extension View {
     public func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))

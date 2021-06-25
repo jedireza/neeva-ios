@@ -8,7 +8,7 @@ struct LocationLabel: View {
     let isSecure: Bool
 
     var body: some View {
-        LocationAndIconLabel(url: url, isSecure: isSecure)
+        LocationLabelAndIcon(url: url, isSecure: isSecure)
             .lineLimit(1)
             .frame(height: TabLocationViewUX.height)
             .allowsHitTesting(false)
@@ -19,7 +19,7 @@ struct LocationLabel: View {
     }
 }
 
-fileprivate struct LocationAndIconLabel: View {
+struct LocationLabelAndIcon: View {
     let url: URL?
     let isSecure: Bool
     

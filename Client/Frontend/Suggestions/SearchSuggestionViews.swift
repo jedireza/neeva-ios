@@ -7,17 +7,15 @@ import Storage
 /// Renders a provided suggestion
 public struct SearchSuggestionView: View {
     let suggestion: Suggestion
-    let activeLensOrBang: ActiveLensBangInfo?
 
-    public init(_ suggestion: Suggestion, activeLensOrBang: ActiveLensBangInfo?) {
+    public init(_ suggestion: Suggestion) {
         self.suggestion = suggestion
-        self.activeLensOrBang = activeLensOrBang
     }
 
     @ViewBuilder public var body: some View {
         switch suggestion {
         case .query(let suggestion):
-            QuerySuggestionView(suggestion: suggestion, activeLensOrBang: activeLensOrBang)
+            QuerySuggestionView(suggestion: suggestion)
         case .url(let suggestion):
             URLSuggestionView(suggestion: suggestion)
         case .bang(let suggestion):
@@ -71,14 +69,15 @@ struct SuggestionRow<Icon: View, Label: View, SecondaryLabel: View, Detail: View
 /// Renders a query suggestion
 struct QuerySuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.QuerySuggestion
-    let activeLensOrBang: ActiveLensBangInfo?
 
+    @EnvironmentObject private var model: NeevaSuggestionModel
     @Environment(\.setSearchInput) private var setInput
     @Environment(\.onOpenURL) private var openURL
 
     var suggestedQuery: String {
-        if let shortcut = activeLensOrBang?.shortcut,
-           let sigil = activeLensOrBang?.type?.sigil {
+        if let lensOrBang = model.activeLensBang,
+           let shortcut = lensOrBang.shortcut,
+           let sigil = lensOrBang.type?.sigil {
             return sigil + shortcut + " " + suggestion.suggestedQuery
         } else {
             return suggestion.suggestedQuery
@@ -87,12 +86,12 @@ struct QuerySuggestionView: View {
 
     var body: some View {
         SuggestionRow {
-            let interaction: LogConfig.Interaction = activeLensOrBang != nil
+            let interaction: LogConfig.Interaction = model.activeLensBang != nil
                 ? .BangSuggestion : .QuerySuggestion
             ClientLogger.shared.logCounter(interaction)
             openURL(neevaSearchEngine.searchURLForQuery(suggestedQuery)!)
         } icon: {
-            if let activeType = activeLensOrBang?.type {
+            if let activeType = model.activeLensBang?.type {
                 Symbol(activeType.defaultSymbol)
             } else {
                 switch suggestion.type {
@@ -140,8 +139,8 @@ fileprivate struct URLSuggestionView: View {
                let image = Image(icons: labels) {
                 image
             } else if let subtitle = suggestion.subtitle, !subtitle.isEmpty,
-                      let url = suggestion.suggestedUrl {
-                FaviconView(site: Site(url: url, title: subtitle),
+                      let url = URL(string: suggestion.suggestedUrl) {
+                FaviconView(url: url,
                             size: SearchViewControllerUX.IconSize,
                             bordered: true)
                     .frame(
@@ -277,24 +276,25 @@ struct SuggestionView_Previews: PreviewProvider {
     static var previews: some View {
         List {
             Section(header: Text("Query").textCase(nil)) {
-                QuerySuggestionView(suggestion: spaceQuery, activeLensOrBang: nil)
-                QuerySuggestionView(suggestion: query, activeLensOrBang: nil)
-                QuerySuggestionView(suggestion: historyQuery, activeLensOrBang: nil)
-            }
+                QuerySuggestionView(suggestion: spaceQuery)
+                QuerySuggestionView(suggestion: query)
+                QuerySuggestionView(suggestion: historyQuery)
+            }.environmentObject(NeevaSuggestionModel(previewLensBang: nil, suggestions: []))
             Section(header: Text("Query — Bang active").textCase(nil)) {
-                QuerySuggestionView(suggestion: query, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang))
-                QuerySuggestionView(suggestion: historyQuery, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang))
-            }
+                QuerySuggestionView(suggestion: query)
+                QuerySuggestionView(suggestion: historyQuery)
+            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang), suggestions: []))
             Section(header: Text("Query — Lens active").textCase(nil)) {
-                QuerySuggestionView(suggestion: query, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens))
-                QuerySuggestionView(suggestion: historyQuery, activeLensOrBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens))
-            }
+                QuerySuggestionView(suggestion: query)
+                QuerySuggestionView(suggestion: historyQuery)
+            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens), suggestions: []))
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {
                 URLSuggestionView(suggestion: url)
                 BangSuggestionView(suggestion: bang)
                 BangSuggestionView(suggestion: noDomainBang)
                 LensSuggestionView(suggestion: lens)
             }
-        }.environment(\.setSearchInput) { _ in }
+        }
+        .environment(\.setSearchInput) { _ in }
     }
 }

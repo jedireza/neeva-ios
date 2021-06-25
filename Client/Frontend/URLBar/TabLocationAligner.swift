@@ -12,23 +12,26 @@ fileprivate struct TitleWidthPreferenceKey: PreferenceKey {
 
 /// NOTE: this view has not been tested with layouts where `Leading` is wider than `Trailing`.
 /// If that is possible with the parameters you pass, make sure to check that it works properly.
-struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
+struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Trailing: View>: View {
     let transitionToEditing: Bool
     let debug: Bool
     let leadingActions: () -> Leading
     let label: () -> Label
+    let labelOverlay: (EdgeInsets) -> LabelOverlay
     let trailingActions: () -> Trailing
 
     init(
         transitionToEditing: Bool,
         debug: Bool = FeatureFlag[.newURLBarDebug],
         @ViewBuilder label: @escaping () -> Label,
+        @ViewBuilder labelOverlay: @escaping (EdgeInsets) -> LabelOverlay,
         @ViewBuilder leading: @escaping () -> Leading,
         @ViewBuilder trailing: @escaping () -> Trailing
     ) {
         self.transitionToEditing = transitionToEditing
         self.debug = debug
         self.label = label
+        self.labelOverlay = labelOverlay
         self.leadingActions = leading
         self.trailingActions = trailing
     }
@@ -40,15 +43,20 @@ struct TabLocationAligner<Leading: View, Label: View, Trailing: View>: View {
                     HStack(spacing: 0) {
                         leadingActions()
                         GeometryReader { innerGeom in
-                            LocationLabelAligner(
-                                transitionToEditing: transitionToEditing,
-                                debug: debug,
-                                label: label,
-                                leadingPadding: leadingGeom.size.width - innerGeom.size.width,
-                                trailingPadding: outerGeom.size.width - leadingGeom.size.width,
-                                centerX: outerGeom.size.width / 2,
-                                centerY: innerGeom.size.height / 2
-                            )
+                            let leadingPadding = leadingGeom.size.width - innerGeom.size.width
+                            let trailingPadding = outerGeom.size.width - leadingGeom.size.width
+                            ZStack {
+                                LocationLabelAligner(
+                                    transitionToEditing: transitionToEditing,
+                                    debug: debug,
+                                    label: label,
+                                    leadingPadding: leadingPadding,
+                                    trailingPadding: trailingPadding,
+                                    centerX: outerGeom.size.width / 2,
+                                    centerY: innerGeom.size.height / 2
+                                )
+                                labelOverlay(EdgeInsets(top: 0, leading: leadingPadding, bottom: 0, trailing: trailingPadding))
+                            }
                         } // GeometryReader
                     } // HStack
                 } // GeometryReader
@@ -138,24 +146,24 @@ struct TabLocationAligner_Previews: PreviewProvider {
     static func contents(for title: String) -> some View {
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
-        } leading: {
-            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
+        } labelOverlay: { _ in } leading: {
+            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
         }.previewStyle()
 
         TabLocationAligner(transitionToEditing: true, debug: true) {
             Text("editing")
-        } leading: {
-            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
+        } labelOverlay: { _ in } leading: {
+            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
         }.previewStyle()
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
-        } leading: {
-            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
+        } labelOverlay: { _ in } leading: {
+            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
             TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
@@ -163,15 +171,15 @@ struct TabLocationAligner_Previews: PreviewProvider {
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
-        } leading: { } trailing: {
-            TabLocationBarButton(label: Symbol(.shieldLefthalfFill)) {}
+        } labelOverlay: { _ in } leading: { } trailing: {
+            TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
             TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
         }.previewStyle()
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
-        } leading: {
+        } labelOverlay: { _ in } leading: {
             Text("")
         } trailing: {
             Text("")

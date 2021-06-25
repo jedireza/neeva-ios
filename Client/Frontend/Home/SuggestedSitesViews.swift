@@ -43,7 +43,7 @@ struct SuggestedSiteView: View {
     var body: some View {
         Button(action: { site.url.asURL.map(openURL) }) {
             VStack(spacing: 2) {
-                FaviconView(site: site, size: SuggestedSiteUX.FaviconSize, bordered: false)
+                FaviconView(url: site.url.asURL!, icon: site.icon, size: SuggestedSiteUX.FaviconSize, bordered: false)
                     .frame(width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize, alignment: .center)
                     .background(Color(light: .ui.gray97, dark: .systemFill))
                     .cornerRadius(SuggestedSiteUX.IconCornerRadius)

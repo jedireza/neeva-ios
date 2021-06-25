@@ -9,9 +9,6 @@ import SwiftUI
 import Combine
 
 private enum LegacyURLBarViewUX {
-    static let TextFieldBorderColor = UIColor.Photon.Grey40
-    static let TextFieldActiveBorderColor = UIColor.Photon.Blue40
-
     static let LocationEdgePadding: CGFloat = 8
     static let LocationOverlayLeftPadding: CGFloat = 14
     static let LocationOverlayRightPadding: CGFloat = 2
@@ -34,7 +31,7 @@ protocol LegacyURLBarDelegate: UIViewController {
     func urlBarDidPressReload(_ urlBar: LegacyURLBarView)
     func urlBarDidEnterOverlayMode()
     func urlBarDidLeaveOverlayMode()
-    func urlBarDidLongPressLocation(_ urlBar: LegacyURLBarView)
+    func urlBarDidLongPressLegacyLocation(_ urlBar: LegacyURLBarView)
     func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton)
     func urlBarDidTapShield(_ urlBar: LegacyURLBarView, from button: UIButton)
     func urlBarLocationAccessibilityActions(_ urlBar: LegacyURLBarView) -> [UIAccessibilityCustomAction]?
@@ -46,24 +43,10 @@ protocol LegacyURLBarDelegate: UIViewController {
 }
 
 class LegacyURLBarView: UIView {
-    // Additional UIAppearance-configurable properties
-    @objc dynamic var locationBorderColor: UIColor = LegacyURLBarViewUX.TextFieldBorderColor {
-        didSet {
-            if !inOverlayMode {
-                locationContainer.layer.borderColor = locationBorderColor.cgColor
-            }
-        }
-    }
-    @objc dynamic var locationActiveBorderColor: UIColor = LegacyURLBarViewUX.TextFieldActiveBorderColor {
-        didSet {
-            if inOverlayMode {
-                locationContainer.layer.borderColor = locationActiveBorderColor.cgColor
-            }
-        }
-    }
-
     let model = URLBarModel()
-    var urlSubscription: AnyCancellable?
+    let historySuggestionModel: HistorySuggestionModel
+    let neevaSuggestionModel: NeevaSuggestionModel
+    var subscriptions: Set<AnyCancellable> = []
 
     weak var delegate: LegacyURLBarDelegate? {
         didSet {
@@ -73,7 +56,6 @@ class LegacyURLBarView: UIView {
         }
     }
     weak var tabToolbarDelegate: TabToolbarDelegate?
-    var lensOrBang: ActiveLensBangInfo?
     var helper: TabToolbarHelper?
     var isTransitioning: Bool = false {
         didSet {
@@ -122,7 +104,7 @@ class LegacyURLBarView: UIView {
     }()
 
     lazy var locationHost: TabLocationHost = {
-        TabLocationHost(model: model, delegate: self, urlBarDelegate: delegate)
+        TabLocationHost(model: model, historySuggestionModel: historySuggestionModel, neevaSuggestionModel: neevaSuggestionModel, delegate: self, urlBarDelegate: delegate)
     }()
 
     lazy var locationContainer: UIView = {
@@ -190,13 +172,14 @@ class LegacyURLBarView: UIView {
     
     init(profile: Profile) {
         self.profile = profile
+        self.historySuggestionModel = HistorySuggestionModel(profile: profile)
+        self.neevaSuggestionModel = NeevaSuggestionModel(isIncognito: isPrivateMode)
         super.init(frame: CGRect())
         commonInit()
     }
 
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
+        fatalError("init(coder:) has not been implemented")
     }
 
     fileprivate func commonInit() {
@@ -234,12 +217,24 @@ class LegacyURLBarView: UIView {
 
         neevaMenuButton.isPointerInteractionEnabled = true
 
-        urlSubscription = model.$url.sink { [unowned self] newURL in
+        model.$url.sink { [unowned self] newURL in
             if let url = newURL, InternalURL(url)?.isAboutHomeURL ?? false {
                 line.isHidden = true
             } else {
                 line.isHidden = false
             }
+        }.store(in: &subscriptions)
+
+        if !FeatureFlag[.newURLBar] {
+            neevaSuggestionModel.$activeLensBang.sink { [unowned self] newLensBang in
+                if newLensBang != nil {
+                    self.createLeftViewFavicon()
+                }
+            }.store(in: &subscriptions)
+            historySuggestionModel.$autocompleteSuggestion.sink { [unowned self] suggestion in
+                locationTextField?.setAutocompleteSuggestion(suggestion)
+                createLeftViewFavicon(suggestion)
+            }.store(in: &subscriptions)
         }
     }
     
@@ -366,7 +361,7 @@ class LegacyURLBarView: UIView {
         iconView.contentMode = .scaleAspectFill
 
         let favicons = BrowserViewController.foregroundBVC().tabManager.selectedTab?.favicons
-        if let lensOrBang = self.lensOrBang,
+        if let lensOrBang = neevaSuggestionModel.activeLensBang,
            let type = lensOrBang.type {
             iconView.image = UIImage(systemSymbol: type.defaultSymbol)
                 .applyingSymbolConfiguration(UIImage.SymbolConfiguration(weight: .medium))?
@@ -494,15 +489,10 @@ class LegacyURLBarView: UIView {
         progressBar.setProgress(0, animated: false)
     }
 
-    func setAutocompleteSuggestion(_ suggestion: String?) {
-        locationTextField?.setAutocompleteSuggestion(suggestion)
-        createLeftViewFavicon(suggestion ?? "")
-    }
-
     func setLocation(_ location: String?, search: Bool) {
         if FeatureFlag[.newURLBar] {
             if let location = location {
-                model.text = location
+                SearchQueryModel.shared.value = location
             }
         } else {
             guard let text = location, !text.isEmpty else {
@@ -705,7 +695,7 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
     }
 
     func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView) {
-        delegate?.urlBarDidLongPressLocation(self)
+        delegate?.urlBarDidLongPressLegacyLocation(self)
     }
 
     func tabLocationViewDidTapReload() {
@@ -761,6 +751,7 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
     }
 
     func autocompleteTextField(_ autocompleteTextField: AutocompleteTextField, didEnterText text: String) {
+        SearchQueryModel.shared.value = text
         delegate?.urlBar(didEnterText: text)
         if text.isEmpty  {
             createLeftViewFavicon()
@@ -768,6 +759,7 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
     }
 
     func autocompleteTextFieldShouldClear(_ autocompleteTextField: AutocompleteTextField) -> Bool {
+        SearchQueryModel.shared.value = ""
         delegate?.urlBar(didEnterText: "")
         return true
     }
@@ -783,17 +775,11 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
     }
 }
 
-// MARK: UIAppearance
-extension LegacyURLBarView {
-    @objc dynamic var cancelTintColor: UIColor? {
-        get { return cancelButton.tintColor }
-        set { return cancelButton.tintColor = newValue }
-    }
-}
-
 extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
+
+        neevaSuggestionModel.isIncognito = isPrivate
 
         if FeatureFlag[.newURLBar] {
             locationHost.applyUIMode(isPrivate: isPrivate)
@@ -810,7 +796,6 @@ extension LegacyURLBarView: PrivateModeUI {
 
         neevaMenuButton.tintColor = UIColor.URLBar.neevaMenuTint(isPrivateMode)
 
-        cancelTintColor = UIColor.Browser.tint
         backgroundColor = UIColor.Browser.background
         line.backgroundColor = UIColor.Browser.urlBarDivider
 

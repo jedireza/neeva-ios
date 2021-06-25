@@ -9,11 +9,12 @@ struct HistorySuggestionView: View {
     @Environment(\.onOpenURL) private var openURL
 
     var body: some View {
+        let url = site.url.asURL!
         SuggestionRow {
             ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
-            openURL(URL(string: site.url)!)
+            openURL(url)
         } icon: {
-            FaviconView(site: site,
+            FaviconView(url: url, icon: site.icon,
                         size: SearchViewControllerUX.IconSize,
                         bordered: true)
                 .frame(

@@ -28,14 +28,16 @@ struct LocationViewTrackingButton: View {
         let label = isIncognito
             ? Image("incognito", label: Text("Tracking Protection, Incognito"))
             : Image("tracking-protection", label: Text("Tracking Protection"))
-        TabLocationBarButton(label: label.renderingMode(.template))
-            { showingPopover = true }
-            .presentAsPopover(
-                isPresented: $showingPopover,
-                backgroundColor: .PopupMenu.background
-            ) {
-                TrackingMenuView(viewModel: viewModel)
-            }
+        TabLocationBarButton(label: label.renderingMode(.template)) {
+            ClientLogger.shared.logCounter(.OpenShield, attributes: EnvironmentHelper.shared.getAttributes())
+            showingPopover = true
+        }
+        .presentAsPopover(
+            isPresented: $showingPopover,
+            backgroundColor: .PopupMenu.background
+        ) {
+            TrackingMenuView(viewModel: viewModel)
+        }
     }
 }
 
@@ -72,7 +74,7 @@ struct LocationViewReloadButton: View {
         }
 
         func makeUIView(context: Context) -> UIButton {
-            let button = UIButton()
+            let button = UIButton(type: .system)
             button.tintColor = .label
             button.addTarget(context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered)
             return button
@@ -81,7 +83,7 @@ struct LocationViewReloadButton: View {
         func updateUIView(_ button: UIButton, context: Context) {
             button.setImage(
                 UIImage(systemSymbol: state == .reload ? .arrowClockwise : .xmark)
-                    .withConfiguration(UIImage.SymbolConfiguration(weight: .medium)),
+                    .withConfiguration(UIImage.SymbolConfiguration(pointSize: Symbol.defaultSize, weight: .medium, scale: .medium)),
                 for: .normal
             )
             button.accessibilityLabel = state == .reload ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel

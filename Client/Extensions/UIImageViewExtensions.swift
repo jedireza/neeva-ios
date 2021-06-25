@@ -27,11 +27,11 @@ extension UIColor {
 
 public extension UIImageView {
 
-    func setImageAndBackground(forIcon icon: Favicon?, website: URL?, completion: @escaping () -> Void) {
+    func setImageAndBackground(forIcon icon: Favicon?, website: URL?, defaultBackground: UIColor = .init(light: .white, dark: .clear), completion: @escaping () -> Void) {
         func finish(bgColor: UIColor?) {
             if let bgColor = bgColor {
                 // If the background color is clear, we may decide to set our own background based on the theme.
-                let color = bgColor.components.alpha < 0.01 ? UIColor(light: .white, dark: .clear) : bgColor
+                let color = bgColor.components.alpha < 0.01 ? defaultBackground : bgColor
                 self.backgroundColor = color
             }
             completion()
@@ -81,7 +81,7 @@ public extension UIImageView {
         if let url = url {
             return FaviconFetcher.letter(forUrl: url)
         } else {
-            return (FaviconFetcher.defaultFavicon, .white)
+            return (FaviconFetcher.defaultFavicon, .clear)
         }
     }
     

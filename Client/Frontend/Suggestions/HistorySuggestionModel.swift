@@ -6,6 +6,7 @@ import Foundation
 import Shared
 import Storage
 import XCGLogger
+import Combine
 
 private let log = Logger.browserLogger
 
@@ -15,19 +16,31 @@ private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([
  * Shared data source for the SearchViewController and the URLBar domain completion.
  * Since both of these use the same SQL query, we can perform the query once and dispatch the results.
  */
-class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
-    fileprivate let urlBar: LegacyURLBarView
+class HistorySuggestionModel: ObservableObject {
     fileprivate let frecentHistory: FrecentHistory
 
-    private var skipNextAutocomplete: Bool
+    @Published private(set) var autocompleteSuggestion = ""
+    @Published private(set) var sites: [Site]?
 
-    init(profile: Profile, urlBar: LegacyURLBarView) {
-        self.urlBar = urlBar
+    private var skipNextAutocomplete = false
+
+    convenience init(previewSites: [Site]? = nil) {
+        self.init(profile: BrowserProfile(localName: "profile"))
+        self.sites = sites
+    }
+
+    init(profile: Profile) {
         self.frecentHistory = profile.history.getFrecentHistory()
+        subscribe()
+    }
 
-        self.skipNextAutocomplete = false
+    func clearSuggestion() {
+        autocompleteSuggestion = ""
+    }
 
-        super.init()
+    func setQueryWithoutAutocomplete(_ query: String) {
+        skipNextAutocomplete = true
+        SearchQueryModel.shared.value = query
     }
 
     fileprivate lazy var topDomains: [String] = {
@@ -39,12 +52,20 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
     // this is defensive against any changes to queue (or cancellation) behaviour in future.
     private weak var currentDeferredHistoryQuery: CancellableDeferred<Maybe<Cursor<Site>>>?
 
-    var query: String = "" {
-        didSet {
+    private var searchTextSubscription: AnyCancellable?
+
+    private func subscribe() {
+        searchTextSubscription = SearchQueryModel.shared.$value.withPrevious().sink { [unowned self] oldQuery, query in
             currentDeferredHistoryQuery?.cancel()
 
+            guard let query = query else {
+                sites = nil
+                return
+            }
+
             if query.isEmpty {
-                load(Cursor(status: .success, msg: "Empty query"))
+                sites = []
+                autocompleteSuggestion = ""
                 return
             }
 
@@ -70,11 +91,11 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
                     .filter {!($0.url.hasPrefix(NeevaConstants.appSearchURL.absoluteString))}
 
                 // Load the data in the table view.
-                self.load(ArrayCursor(data: deferredHistorySites))
+                self.sites = deferredHistorySites
 
                 // If the new search string is not longer than the previous
                 // we don't need to find an autocomplete suggestion.
-                guard oldValue.count < self.query.count else {
+                guard (oldQuery?.count ?? 0) < query.count else {
                     return
                 }
 
@@ -87,8 +108,8 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
 
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
-                    if let completion = self.completionForURL(site.url, favicon: site.icon) {
-                        self.urlBar.setAutocompleteSuggestion(completion)
+                    if let completion = self.completionForURL(site.url) {
+                        self.autocompleteSuggestion = completion
                         return
                     }
                 }
@@ -96,22 +117,17 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
                 // If there are no search history matches, try matching one of the Alexa top domains.
                 for domain in self.topDomains {
                     if let completion = self.completionForDomain(domain) {
-                        self.urlBar.setAutocompleteSuggestion(completion)
+                        self.autocompleteSuggestion = completion
                         return
                     }
                 }
 
-                self.urlBar.setAutocompleteSuggestion("")
+                self.autocompleteSuggestion = ""
             }
         }
     }
 
-    func setQueryWithoutAutocomplete(_ query: String) {
-        skipNextAutocomplete = true
-        self.query = query
-    }
-
-    fileprivate func completionForURL(_ url: String, favicon: Favicon?) -> String? {
+    fileprivate func completionForURL(_ url: String) -> String? {
         // Extract the pre-path substring from the URL. This should be more efficient than parsing via
         // NSURL since we need to only look at the beginning of the string.
         // Note that we won't match non-HTTP(S) URLs.
@@ -121,7 +137,7 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
 
         // If the pre-path component (including the scheme) starts with the query, just use it as is.
         var prePathURL = (url as NSString).substring(with: match.range(at: 0))
-        if prePathURL.hasPrefix(query) {
+        if prePathURL.hasPrefix(SearchQueryModel.shared.value ?? "") {
             // Trailing slashes in the autocompleteTextField cause issues with Swype keyboard. Bug 1194714
             if prePathURL.hasSuffix("/") {
                 prePathURL.remove(at: prePathURL.index(before: prePathURL.endIndex))
@@ -139,7 +155,7 @@ class SearchLoader: Loader<Cursor<Site>, SearchViewController> {
 
     fileprivate func completionForDomain(_ domain: String) -> String? {
         let domainWithDotPrefix: String = ".\(domain)"
-        if let range = domainWithDotPrefix.range(of: ".\(query)", options: .caseInsensitive, range: nil, locale: nil) {
+        if let range = domainWithDotPrefix.range(of: ".\(SearchQueryModel.shared.value ?? "")", options: .caseInsensitive, range: nil, locale: nil) {
             // We don't actually want to match the top-level domain ("com", "org", etc.) by itself, so
             // so make sure the result includes at least one ".".
             let matchedDomain = String(domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])

@@ -13,7 +13,6 @@ protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didSelectURL url: URL)
     func searchViewController(_ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String)
     func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool)
-    func searchViewController(_ searchViewController: SearchViewController, didUpdateLensOrBang lensOrBang: ActiveLensBangInfo?)
 }
 
 // Storage declares its own Identifiable type
@@ -25,14 +24,10 @@ enum SearchViewControllerUX {
 }
 
 struct SuggestionsView: View {
-    let isIncognito: Bool
-    let hasPotentialSuggestions: Bool
-    let suggestions: [Suggestion]
-    let lensOrBang: ActiveLensBangInfo?
-    let history: Cursor<Site>?
-    let error: Error?
+    // not an ObservedObject because we pass it directly to .environmentObject without reading any mutable properties
+    let historyModel: HistorySuggestionModel
+    @ObservedObject var neevaModel: NeevaSuggestionModel
     let getKeyboardHeight: () -> CGFloat
-    let onReload: () -> ()
     let onOpenURL: (URL) -> ()
     let setSearchInput: (String) -> ()
 
@@ -44,15 +39,17 @@ struct SuggestionsView: View {
             let _ = outerGeometry.size.height
 
             VStack(spacing: 0) {
-                if let error = error {
+                if let error = neevaModel.error {
                     GeometryReader { geom in
                         ScrollView {
-                            ErrorView(error, in: self, tryAgain: onReload)
+                            ErrorView(error, in: self, tryAgain: neevaModel.reload)
                                 .frame(minHeight: geom.size.height)
                         }
                     }
                 } else {
-                    SuggestionsList(hasPotentialSuggestions: hasPotentialSuggestions, suggestions: suggestions, lensOrBang: lensOrBang, history: history)
+                    SuggestionsList()
+                        .environmentObject(historyModel)
+                        .environmentObject(neevaModel)
                 }
                 Spacer()
                     .frame(height: getKeyboardHeight())
@@ -60,28 +57,26 @@ struct SuggestionsView: View {
             .ignoresSafeArea(edges: [.bottom])
             .environment(\.onOpenURL, onOpenURL)
             .environment(\.setSearchInput, setSearchInput)
-            .environment(\.isIncognito, isIncognito)
+            .environment(\.isIncognito, neevaModel.isIncognito)
         }
     }
 }
 
-class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelperDelegate, LoaderListener, Themeable {
+class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelperDelegate {
     var searchDelegate: SearchViewControllerDelegate?
 
-    fileprivate let isPrivate: Bool
-    fileprivate var suggestions: [Suggestion] = []
-    fileprivate var lensOrBang: ActiveLensBangInfo?
-    fileprivate var error: Error?
+    fileprivate let historyModel: HistorySuggestionModel
+    fileprivate let neevaModel: NeevaSuggestionModel
+
     fileprivate let profile: Profile
-    fileprivate var suggestionQuery: Apollo.Cancellable?
-    fileprivate var historyData: Cursor<Site>? = nil
 
     static var userAgent: String?
 
-    init(profile: Profile, isPrivate: Bool) {
-        self.isPrivate = isPrivate
+    init(profile: Profile, historyModel: HistorySuggestionModel, neevaModel: NeevaSuggestionModel) {
         self.profile = profile
-        super.init(rootView: SuggestionsView(isIncognito: isPrivate, hasPotentialSuggestions: false, suggestions: [], lensOrBang: nil, history: nil, error: nil, getKeyboardHeight: { 0 }, onReload: { }, onOpenURL: { _ in }, setSearchInput: { _ in }))
+        self.historyModel = historyModel
+        self.neevaModel = neevaModel
+        super.init(rootView: SuggestionsView(historyModel: historyModel, neevaModel: neevaModel, getKeyboardHeight: { 0 }, onOpenURL: { _ in }, setSearchInput: { _ in }))
         self.render()
     }
 
@@ -91,12 +86,8 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
 
     fileprivate func render() {
         rootView = SuggestionsView(
-            isIncognito: isPrivate,
-            hasPotentialSuggestions: shouldShowSuggestions,
-            suggestions: suggestions,
-            lensOrBang: lensOrBang,
-            history: historyData,
-            error: error,
+            historyModel: historyModel,
+            neevaModel: neevaModel,
             getKeyboardHeight: { [weak self] in
                 if let view = self?.view, let currentState = KeyboardHelper.defaultHelper.currentState {
                     return currentState.intersectionHeightForView(view)
@@ -104,7 +95,6 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
                     return 0
                 }
             },
-            onReload: reloadData,
             onOpenURL: { [weak self] in
                 if let self = self {
                     self.searchDelegate?.searchViewController(self, didSelectURL: $0)
@@ -122,30 +112,11 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
         super.viewDidLoad()
 
         KeyboardHelper.defaultHelper.addDelegate(self)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(dynamicFontChanged), name: .DynamicFontChanged, object: nil)
-    }
-
-    @objc func dynamicFontChanged(_ notification: Notification) {
-        guard notification.name == .DynamicFontChanged else { return }
-
-        reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        reloadData()
-    }
-
-    var searchQuery: String = "" {
-        didSet {
-            // Reload the tableView to show the updated text in each engine.
-            reloadData()
-        }
-    }
-
-    var shouldShowSuggestions: Bool {
-        !isPrivate && !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL()
+        neevaModel.reload()
     }
 
     func keyboardHelper(_ keyboardHelper: KeyboardHelper, keyboardWillShowWithState state: KeyboardState) {
@@ -164,73 +135,6 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
             self.view.layoutIfNeeded()
             self.render()
         }
-    }
-
-    fileprivate func reloadData() {
-        suggestionQuery?.cancel()
-
-        if !shouldShowSuggestions {
-            self.suggestions = []
-            self.render()
-            return
-        }
-
-        suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { result in
-            self.suggestionQuery = nil
-            switch result {
-            case .failure(let error):
-                let nsError = error as NSError
-                if nsError.domain != NSURLErrorDomain || nsError.code != NSURLErrorCancelled {
-                    self.error = error
-                }
-            case .success(let (suggestions, lensOrBang)):
-                self.error = nil
-                self.suggestions = suggestions
-                self.searchDelegate?.searchViewController(self, didUpdateLensOrBang: lensOrBang)
-                self.lensOrBang = lensOrBang
-            }
-            if self.suggestions.isEmpty {
-                if let lensOrBang = self.lensOrBang,
-                   let shortcut = lensOrBang.shortcut,
-                   let description = lensOrBang.description,
-                   let type = lensOrBang.type,
-                   type == .lens || type == .bang,
-                   self.searchQuery.trimmingCharacters(in: .whitespaces) == type.sigil + shortcut {
-                    switch lensOrBang.type {
-                    case .lens:
-                        self.suggestions = [.lens(Suggestion.Lens(shortcut: shortcut, description: description))]
-                    case .bang:
-                        self.suggestions = [.bang(Suggestion.Bang(shortcut: shortcut, description: description, domain: lensOrBang.domain))]
-                    default: fatalError("This should be impossible")
-                    }
-                } else {
-                    self.suggestions = [
-                        .query(
-                            .init(
-                                type: .standard,
-                                suggestedQuery: self.searchQuery,
-                                boldSpan: [.init(startInclusive: 0, endExclusive: self.searchQuery.count)],
-                                source: .unknown
-                            )
-                        )
-                    ]
-                }
-            }
-            if self.lensOrBang == nil {
-                self.searchDelegate?.searchViewController(self, didUpdateLensOrBang: nil)
-            }
-            self.render()
-        }
-    }
-
-    func loader(dataLoaded data: Cursor<Site>) {
-        self.historyData = data
-        self.render()
-    }
-
-    func applyTheme() {
-        reloadData()
-        self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
     }
 }
 
@@ -294,14 +198,3 @@ extension SearchViewController {
 //    }
 }
 
-/**
- * Private extension containing string operations specific to this view controller
- */
-fileprivate extension String {
-    func looksLikeAURL() -> Bool {
-        // The assumption here is that if the user is typing in a forward slash and there are no spaces
-        // involved, it's going to be a URL. If we type a space, any url would be invalid.
-        // See https://bugzilla.mozilla.org/show_bug.cgi?id=1192155 for additional details.
-        return self.contains("/") && !self.contains(" ")
-    }
-}

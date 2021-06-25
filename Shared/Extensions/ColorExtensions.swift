@@ -14,7 +14,7 @@ extension Color {
     /// ```
     ///
     /// Source: [Stack Overflow](https://stackoverflow.com/a/56894458/5244995)
-    init(hex: UInt, opacity: Double = 1) {
+    public init(hex: UInt, opacity: Double = 1) {
         self.init(
             .sRGB,
             red: Double((hex >> 16) & 0xff) / 255,
@@ -29,7 +29,7 @@ extension Color {
     /// ```
     /// Image(...).foregroundColor(.hex(0xff0000))
     /// ```
-    static func hex(_ hex: UInt, opacity: Double = 1) -> Color {
+    public static func hex(_ hex: UInt, opacity: Double = 1) -> Color {
         Color(hex: hex, opacity: opacity)
     }
 }

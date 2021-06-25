@@ -3,14 +3,25 @@
 import SwiftUI
 import Combine
 
-class TabLocationHost: IncognitoAwareHostingController<TabLocationView> {
+struct TabLocationViewWrapper: View {
+    let historyModel: HistorySuggestionModel
+    let neevaModel: NeevaSuggestionModel
+    let content: () -> TabLocationView
+
+    var body: some View {
+        content()
+            .environmentObject(historyModel)
+            .environmentObject(neevaModel)
+    }
+}
+class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
     private let model: URLBarModel
     private weak var delegate: LegacyTabLocationViewDelegate?
     weak var urlBarDelegate: LegacyURLBarDelegate? {
         didSet {
             subscriptions = []
             if urlBarDelegate != nil {
-                model.$text.zip(model.$text.dropFirst())
+                SearchQueryModel.shared.$value.withPrevious()
                     .sink { [weak urlBarDelegate] oldValue, newValue in
                         if oldValue == nil, newValue != nil {
                             urlBarDelegate?.urlBarDidEnterOverlayMode()
@@ -29,19 +40,27 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationView> {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(model: URLBarModel, delegate: LegacyTabLocationViewDelegate, urlBarDelegate: LegacyURLBarDelegate?) {
+    init(
+        model: URLBarModel,
+        historySuggestionModel: HistorySuggestionModel,
+        neevaSuggestionModel: NeevaSuggestionModel,
+        delegate: LegacyTabLocationViewDelegate,
+        urlBarDelegate: LegacyURLBarDelegate?
+    ) {
         self.model = model
         self.delegate = delegate
         self.urlBarDelegate = urlBarDelegate
         super.init()
         setRootView {
-            TabLocationView(
-                model: model,
-                onReload: { [weak self] in self?.delegate?.tabLocationViewDidTapReload() },
-                onSubmit: { [weak self] in self?.urlBarDelegate?.urlBar(didSubmitText: $0) },
-                onShare: { [weak self] in self?.delegate?.tabLocationViewDidTap(shareButton: $0) },
-                buildReloadMenu: { [weak self] in self?.delegate?.tabLocationViewReloadMenu() }
-            )
+            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel) {
+                TabLocationView(
+                    model: model,
+                    onReload: { [weak self] in self?.delegate?.tabLocationViewDidTapReload() },
+                    onSubmit: { [weak self] in self?.urlBarDelegate?.urlBar(didSubmitText: $0) },
+                    onShare: { [weak self] in self?.delegate?.tabLocationViewDidTap(shareButton: $0) },
+                    buildReloadMenu: { [weak self] in self?.delegate?.tabLocationViewReloadMenu() }
+                )
+            }
         }
         self.view.backgroundColor = .clear
     }

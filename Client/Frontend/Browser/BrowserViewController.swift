@@ -90,7 +90,6 @@ class BrowserViewController: UIViewController {
     var screenshotHelper: ScreenshotHelper!
     fileprivate var homePanelIsInline = false
     var shouldSetUrlTypeSearch = false
-    fileprivate var searchLoader: SearchLoader?
     let alertStackView = UIStackView() // All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
     var findInPageBar: FindInPageBar?
     lazy var mailtoLinkHandler = MailtoLinkHandler()
@@ -433,7 +432,6 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        // Setup the URL bar, wrapped in a view to get transparency effect
         legacyURLBar = LegacyURLBarView(profile: profile)
         legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
         legacyURLBar.delegate = self
@@ -925,14 +923,11 @@ class BrowserViewController: UIViewController {
         }
 
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        let searchController = SearchViewController(profile: profile, isPrivate: isPrivate)
+
+        let searchController = SearchViewController(profile: profile, historyModel: legacyURLBar.historySuggestionModel, neevaModel: legacyURLBar.neevaSuggestionModel)
         searchController.searchDelegate = self
 
-        let searchLoader = SearchLoader(profile: profile, urlBar: legacyURLBar)
-        searchLoader.addListener(searchController)
-
         self.searchController = searchController
-        self.searchLoader = searchLoader
     }
 
     fileprivate func showSearchController() {
@@ -967,15 +962,14 @@ class BrowserViewController: UIViewController {
         hideSearchController()
 
         searchController = nil
-        searchLoader = nil
     }
     
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
         legacyURLBar.model.url = url
-        legacyURLBar.model.text = nil
         if !FeatureFlag[.newURLBar] {
             legacyURLBar.leaveOverlayMode()
         }
+        SearchQueryModel.shared.value = nil
 
         if let nav = tab.loadRequest(URLRequest(url: url)) {
             self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
@@ -983,8 +977,8 @@ class BrowserViewController: UIViewController {
     }
     
     override func accessibilityPerformEscape() -> Bool {
-        if FeatureFlag[.newURLBar], legacyURLBar.model.text != nil {
-            legacyURLBar.model.text = nil
+        if FeatureFlag[.newURLBar], SearchQueryModel.shared.value != nil {
+            SearchQueryModel.shared.value = nil
             return true
         } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
@@ -1195,8 +1189,8 @@ class BrowserViewController: UIViewController {
             _ = self.navigationController?.popViewController(animated: true)
         } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
-        } else if FeatureFlag[.newURLBar], legacyURLBar.model.text != nil {
-            legacyURLBar.model.text = nil
+        } else if FeatureFlag[.newURLBar], SearchQueryModel.shared.value != nil {
+            SearchQueryModel.shared.value = nil
         }
     }
 
@@ -1588,8 +1582,8 @@ extension BrowserViewController: LegacyURLBarDelegate {
         }
     }
 
-    func urlBarDidLongPressLocation(_ urlBar: LegacyURLBarView) {
-        let urlActions = self.getLongPressLocationBarActions(with: urlBar, webViewContainer: self.webViewContainer)
+    func urlBarDidLongPressLegacyLocation(_ urlBar: LegacyURLBarView) {
+        let urlActions = self.getLegacyLongPressLocationBarActions(with: urlBar, webViewContainer: self.webViewContainer)
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
         self.presentSheetWith(actions: [urlActions], on: self, from: urlBar)
@@ -1613,8 +1607,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
             showSearchController()
         }
 
-        searchController?.searchQuery = text
-        searchLoader?.setQueryWithoutAutocomplete(text)
+        legacyURLBar.historySuggestionModel.setQueryWithoutAutocomplete(text)
     }
 
     func urlBar(didEnterText text: String) {
@@ -1623,9 +1616,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
         } else {
             showSearchController()
         }
-
-        searchController?.searchQuery = text
-        searchLoader?.query = text
     }
 
     func urlBar(didSubmitText text: String) {
@@ -1821,7 +1811,7 @@ extension BrowserViewController: LibraryPanelDelegate {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
-        guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.text == nil : !self.legacyURLBar.inOverlayMode else {
+        guard !topTabsVisible, FeatureFlag[.newURLBar] ? SearchQueryModel.shared.value == nil : !self.legacyURLBar.inOverlayMode else {
             return
         }
 
@@ -1859,7 +1849,7 @@ extension BrowserViewController: HomePanelDelegate {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
-        guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.text == nil : !self.legacyURLBar.inOverlayMode else {
+        guard !topTabsVisible, FeatureFlag[.newURLBar] ? SearchQueryModel.shared.value == nil : !self.legacyURLBar.inOverlayMode else {
             return
         }
 
@@ -1884,7 +1874,7 @@ extension BrowserViewController: HomePanelDelegate {
 
     func homePanel(didEnterQuery query: String) {
         if FeatureFlag[.newURLBar] {
-            self.legacyURLBar.model.text = query
+            SearchQueryModel.shared.value = query
         } else {
             self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
         }
@@ -1905,14 +1895,6 @@ extension BrowserViewController: SearchViewControllerDelegate {
     func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool) {
         self.legacyURLBar.setLocation(text, search: search)
     }
-
-    func searchViewController(_ searchViewController: SearchViewController, didUpdateLensOrBang lensOrBang: ActiveLensBangInfo?) {
-        self.legacyURLBar.lensOrBang = lensOrBang
-        if lensOrBang != nil {
-            self.legacyURLBar.createLeftViewFavicon()
-        }
-    }
-
 }
 
 extension BrowserViewController: TabManagerDelegate {
@@ -2448,7 +2430,7 @@ extension BrowserViewController: TabTrayDelegate {
 extension BrowserViewController: Themeable {
     func applyTheme() {
         guard self.isViewLoaded else { return }
-        let ui: [Themeable?] = [readerModeBar, searchController, libraryViewController, libraryDrawerViewController]
+        let ui: [Themeable?] = [readerModeBar, libraryViewController, libraryDrawerViewController]
         ui.forEach { $0?.applyTheme() }
         statusBarOverlay.backgroundColor = shouldShowTopTabsForTraitCollection(traitCollection) ? UIColor.Photon.Grey80 : legacyURLBar.backgroundColor
         setNeedsStatusBarAppearanceUpdate()

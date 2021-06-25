@@ -80,7 +80,7 @@ extension UIColor {
     }
 
     public static let elevatedDarkBackground = UIColor(named: "DarkElevated", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let TextSelectionHighlight = UIColor(named: "TextSelectionHighlight", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let textSelectionHighlight = UIColor(named: "TextSelectionHighlight", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 
     public static let DefaultBackground = UIColor(named: "Background", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let DefaultSeparator = UIColor(named: "Separator", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
@@ -165,6 +165,7 @@ extension Color {
     }
 
     public static let elevatedDarkBackground = Color(UIColor.elevatedDarkBackground)
+    public static let textSelectionHighlight = Color(UIColor.textSelectionHighlight)
 
     public static let spaceIconBackground = Color.brand.variant.polar
 }

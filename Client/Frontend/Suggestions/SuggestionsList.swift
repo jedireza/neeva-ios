@@ -15,19 +15,17 @@ struct SuggestionsList: View {
         )
     static let placeholderSite = Site(url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
 
-    let hasPotentialSuggestions: Bool
-    let suggestions: [Suggestion]
-    let lensOrBang: ActiveLensBangInfo?
-    let history: Cursor<Site>?
+    @EnvironmentObject private var historyModel: HistorySuggestionModel
+    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
         List {
-            let suggestionList = ForEach(suggestions) { suggestion in
-                SearchSuggestionView(suggestion, activeLensOrBang: lensOrBang)
+            let suggestionList = ForEach(neevaModel.suggestions) { suggestion in
+                SearchSuggestionView(suggestion)
             }
 
-            if let lensOrBang = lensOrBang,
+            if let lensOrBang = neevaModel.activeLensBang,
                let description = lensOrBang.description {
                 Section(header: Group {
                     switch lensOrBang.type {
@@ -40,15 +38,12 @@ struct SuggestionsList: View {
                     suggestionList
                 }
             } else {
-                if suggestions.isEmpty && hasPotentialSuggestions {
+                if neevaModel.suggestions.isEmpty && neevaModel.shouldShowSuggestions {
                     HistorySuggestionView(site: SuggestionsList.placeholderSite)
                         .redacted(reason: .placeholder)
                         .disabled(true)
                     ForEach(0..<5) { _ in
-                        QuerySuggestionView(
-                            suggestion: SuggestionsList.placeholderQuery,
-                            activeLensOrBang: nil
-                        )
+                        QuerySuggestionView(suggestion: SuggestionsList.placeholderQuery)
                         .redacted(reason: .placeholder)
                         .disabled(true)
                     }
@@ -57,9 +52,9 @@ struct SuggestionsList: View {
                 }
             }
 
-            if let history = history, history.count > 0 {
+            if let history = historyModel.sites, !history.isEmpty {
                 Section(header: isIncognito ? nil : Text("History")) {
-                    ForEach(history.asArray()) { site in
+                    ForEach(history) { site in
                         HistorySuggestionView(site: site)
                     }
                 }
@@ -71,17 +66,21 @@ struct SuggestionsList: View {
 struct SuggestionsList_Previews: PreviewProvider {
     static var previews: some View {
         let suggestions =  [Suggestion.query(.init(type: .standard, suggestedQuery: "hello world", boldSpan: [], source: .unknown))]
-        let history = ArrayCursor(
-            data: [
-                Site(url: "https://neeva.com", title: "Neeva", id: 1),
-                Site(url: "https://neeva.com", title: "", id: 2),
-                Site(url: "https://google.com", title: "Google", id: 3)
-            ]
-        )
+        let history = [
+            Site(url: "https://neeva.com", title: "Neeva", id: 1),
+            Site(url: "https://neeva.com", title: "", id: 2),
+            Site(url: "https://google.com", title: "Google", id: 3)
+        ]
         Group {
-            SuggestionsList(hasPotentialSuggestions: true, suggestions: suggestions, lensOrBang: nil, history: history)
-            SuggestionsList(hasPotentialSuggestions: true, suggestions: suggestions, lensOrBang: ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang), history: history)
-            SuggestionsList(hasPotentialSuggestions: true, suggestions: suggestions, lensOrBang: ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens), history: history)
+            SuggestionsList()
+                .environmentObject(HistorySuggestionModel(previewSites: history))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: nil, suggestions: suggestions))
+            SuggestionsList()
+                .environmentObject(HistorySuggestionModel(previewSites: history))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang), suggestions: suggestions))
+            SuggestionsList()
+                .environmentObject(HistorySuggestionModel(previewSites: history))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens), suggestions: suggestions))
         }.previewLayout(.fixed(width: 375, height: 250))
     }
 }

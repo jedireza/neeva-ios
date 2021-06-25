@@ -9,9 +9,19 @@ private enum FaviconViewUX {
 }
 
 struct FaviconView: UIViewRepresentable {
-    let site: Site
+    init(url: URL, icon: Favicon? = nil, size: CGFloat, bordered: Bool, defaultBackground: UIColor = .systemBackground) {
+        self.url = url
+        self.icon = icon
+        self.size = size
+        self.bordered = bordered
+        self.defaultBackground = defaultBackground
+    }
+
+    let url: URL
+    let icon: Favicon?
     let size: CGFloat
     let bordered: Bool
+    let defaultBackground: UIColor
 
     func makeUIView(context: Context) -> UIImageView {
         let imageView = UIImageView()
@@ -24,7 +34,7 @@ struct FaviconView: UIViewRepresentable {
     }
 
     func updateUIView(_ imageView: UIImageView, context: Context) {
-        imageView.setImageAndBackground(forIcon: site.icon, website: site.tileURL) { [weak imageView] in
+        imageView.setImageAndBackground(forIcon: icon, website: url, defaultBackground: defaultBackground) { [weak imageView] in
             imageView?.image = imageView?.image?.createScaled(.init(width: size, height: size))
         }
     }
