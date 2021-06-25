@@ -18,11 +18,15 @@ public class ClientLogger {
     public init() {
         self.env = ClientLogEnvironment.init(rawValue: "Prod")!
         // disable client logging until we have a plan for privacy control
-        self.status = .disabled
+        self.status = .enabled
     }
 
     public func logCounter(_ path: LogConfig.Interaction, attributes: [ClientLogCounterAttribute] = []) {
         if self.status != ClientLoggerStatus.enabled {
+            return
+        }
+
+        if !LogConfig.featureFlagEnabled(for: LogConfig.category(for: path)) {
             return
         }
 

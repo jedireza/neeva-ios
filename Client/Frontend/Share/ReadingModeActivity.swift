@@ -25,7 +25,6 @@ class ReadingModeActivity: UIActivity {
     }
 
     override func perform() {
-        ClientLogger.shared.logCounter(.ShowReaderMode, attributes: EnvironmentHelper.shared.getAttributes())
         callback()
         activityDidFinish(true)
     }
