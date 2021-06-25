@@ -53,14 +53,14 @@ class HistoryTests: BaseTestCase {
     func testClearPrivateDataButtonDisabled() {
         //Clear private data from settings and confirm
         navigator.goto(ClearPrivateDataSettings)
-        app.tables.cells["Clear Private Data"].tap()
+        app.tables.cells["Clear Selected Data on This Device"].tap()
         app.sheets.buttons["Clear Data"].tap()
         
         //Wait for OK pop-up to disappear after confirming
         waitForNoExistence(app.alerts.buttons["Clear Data"], timeoutValue:5)
         
         //Assert that the button has been replaced with a success message
-        XCTAssertFalse(app.tables.cells["Clear Private Data"].exists)
+        XCTAssertFalse(app.tables.cells["Clear Selected Data on This Device"].exists)
     }
 
     /* Disabled: Test depends on close all tabs button

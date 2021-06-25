@@ -522,7 +522,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.tap(table.cells["Home"], to: HomeSettings)
         screenState.tap(table.cells["Mail App"], to: OpenWithSettings)
         screenState.tap(table.cells["Siri Shortcuts"], to: SiriSettings)
-        screenState.tap(table.cells["Data Management"], to: ClearPrivateDataSettings)
+        screenState.tap(table.cells["Clear Browsing Data"], to: ClearPrivateDataSettings)
         screenState.tap(table.cells["Tracking Protection"], to: TrackingProtectionSettings)
         screenState.tap(table.cells["Show Tour"], to: ShowTourInSettings)
 
@@ -650,7 +650,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     map.addScreenState(ClearPrivateDataSettings) { screenState in
         screenState.tap(app.cells["Website Data"], to: WebsiteDataSettings)
         screenState.gesture(forAction: Action.AcceptClearPrivateData) { userState in
-            app.tables.cells["Clear Private Data"].tap()
+            app.tables.cells["Clear Selected Data on This Device"].tap()
             app.sheets.buttons["Clear Data"].tap()
         }
         screenState.backAction = navigationControllerBackAction

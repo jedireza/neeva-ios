@@ -14,6 +14,15 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
 
     var id: String { rawValue }
 
+    var description: String? {
+        switch self {
+        case .cookies:
+            return "Clearing it will sign you out of most sites."
+        default:
+            return nil
+        }
+    }
+
     func clearable(profile: Profile, tabManager: TabManager) -> Clearable {
         switch self {
         case .history:
@@ -38,6 +47,7 @@ struct DataManagementView: View {
     @State private var clearDataTypes = Defaults[.clearDataTypes]
     @State private var isDeleting = false
     @State var showingSuccess = false
+    @Environment(\.openInNewTab) var openURL
 
     func onClear() {
         let bvc = BrowserViewController.foregroundBVC()
@@ -57,9 +67,9 @@ struct DataManagementView: View {
                 NavigationLink("Website Data", destination: WebsiteDataView())
             }
 
-            Section(header: Text("Clear Private Data")) {
+            Section(header: Text("Data on This Device")) {
                 ForEach(ClearableDataType.allCases) { dataType in
-                    Toggle(dataType.rawValue, isOn: Binding {
+                    Toggle(isOn: Binding {
                         clearDataTypes.contains(dataType)
                     } set: { isOn in
                         if isOn {
@@ -67,22 +77,28 @@ struct DataManagementView: View {
                         } else {
                             clearDataTypes.remove(dataType)
                         }
-                    })
+                    }){
+                        if let description = dataType.description {
+                            DetailedSettingsLabel(title: dataType.rawValue, description: description)
+                        } else {
+                            Text(dataType.rawValue)
+                        }
+                    }
                 }
             }.onChange(of: clearDataTypes) { _ in
                 showingSuccess = false
             }
 
-            DecorativeSection {
+            Group {
                 HStack {
                     Spacer(minLength: 0)
                     if showingSuccess {
-                        Text("Private data cleared successfully")
+                        Text("Selected data cleared successfully")
                             .multilineTextAlignment(.center)
                             .foregroundColor(.green)
                             .saturation(0.5)
                     } else {
-                        Button("Clear Private Data") { isDeleting = true }
+                        Button("Clear Selected Data on This Device") { isDeleting = true }
                             .disabled(clearDataTypes.isEmpty)
                             .accentColor(.red)
                     }
@@ -97,8 +113,17 @@ struct DataManagementView: View {
                     )
                 }
             }
+
+            if NeevaFeatureFlags[.neevaMemory] {
+                Section(header: Text("Data in Neeva Memory")) {
+                    NavigationLinkButton("Manage Neeva Memory") {
+                        openURL(NeevaConstants.appMemoryModeURL, false)
+                        BrowserViewController.foregroundBVC().dismissVC()
+                    }
+                }
+            }
         }
-        .navigationTitle("Data Management")
+        .navigationTitle("Clear Browsing Data")
         .listStyle(GroupedListStyle())
         .applyToggleStyle()
     }

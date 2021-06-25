@@ -11,7 +11,7 @@ struct PrivacySettingsSection: View {
 
     var body: some View {
         NavigationLink(
-            "Data Management",
+            "Clear Browsing Data",
             destination: DataManagementView()
                 .onAppear {
                     ClientLogger.shared.logCounter(.ViewDataManagement, attributes: EnvironmentHelper.shared.getAttributes())

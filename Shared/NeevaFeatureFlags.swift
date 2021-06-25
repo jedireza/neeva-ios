@@ -39,11 +39,13 @@ public class NeevaFeatureFlags {
     public enum BoolFlag: Int, CaseIterable {
         case clientHideSearchBox = 34933
         case browserQuests = 42234
+        case neevaMemory = 40640
 
         public var name: String {
             switch self {
             case .clientHideSearchBox: return "client.hide_search_box"
             case .browserQuests: return "ios.quests"
+            case .neevaMemory: return "privacy.frontend_options"
             }
         }
     }

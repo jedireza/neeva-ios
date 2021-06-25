@@ -277,7 +277,7 @@ class BrowserUtils {
         tester.tapView(withAccessibilityIdentifier: "NeevaMenu.Settings")
         tester.accessibilityScroll(.down)
 
-        tester.tapView(withAccessibilityLabel: "Data Management")
+        tester.tapView(withAccessibilityLabel: "Clear Browsing Data")
     }
 
     class func closeClearPrivateDataDialog(_ tester: KIFUITestActor) {
@@ -295,7 +295,7 @@ class BrowserUtils {
             for clearable in AllClearables {
                 tester.setOn(clearables!.contains(clearable), forSwitchWithAccessibilityLabel: clearable.rawValue)
             }
-        tester.tapView(withAccessibilityLabel: "Clear Private Data")
+        tester.tapView(withAccessibilityLabel: "Clear Selected Data on This Device")
     }
 
     class func clearPrivateDataKIF(_ tester: KIFUITestActor) {
@@ -303,8 +303,8 @@ class BrowserUtils {
         tester.tapView(withAccessibilityIdentifier: "NeevaMenu.Settings")
         tester.accessibilityScroll(.down)
 
-        tester.tapView(withAccessibilityLabel: "Data Management")
-        tester.tapView(withAccessibilityLabel: "Clear Private Data")
+        tester.tapView(withAccessibilityLabel: "Clear Browsing Data")
+        tester.tapView(withAccessibilityLabel: "Clear Selected Data on This Device")
         acceptClearPrivateData(tester)
         closeClearPrivateDataDialog(tester)
     }
