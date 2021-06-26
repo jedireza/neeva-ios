@@ -3,12 +3,12 @@
 import Foundation
 import SwiftUI
 
-public enum CardStripUX {
+public enum CardControllerUX {
     static let BottomPadding: CGFloat = 50
     static let Height = 275
 }
 
-class CardStripViewController: UIViewController {
+class CardViewController: UIViewController {
     lazy var cardStripHostingController: UIHostingController<TabsAndSpacesView>? = {
         let host = UIHostingController(
             rootView: TabsAndSpacesView(
@@ -23,15 +23,29 @@ class CardStripViewController: UIViewController {
         return host
     }()
 
+    lazy var cardGridHostingController: UIHostingController<CardGrid>? = {
+        let host = UIHostingController(
+            rootView: CardGrid(spacesModel: self.spaceCardModel,
+                               tabModel: self.tabCardModel,
+                               tabGroupModel: self.tabGroupCardModel))
+        host.view.backgroundColor = UIColor.white
+        host.view.translatesAutoresizingMaskIntoConstraints = false
+        return host
+    }()
+
     weak var tabManager: TabManager?
+    var tabGroupManager: TabGroupManager
 
     var tabCardModel: TabCardModel
+    var tabGroupCardModel: TabGroupCardModel
     var spaceCardModel: SpaceCardModel
     var sitesCardModel: SiteCardModel
 
     init(tabManager: TabManager) {
         self.tabManager = tabManager
-        self.tabCardModel = TabCardModel(manager: tabManager)
+        self.tabGroupManager = TabGroupManager(tabManager: tabManager)
+        self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
+        self.tabGroupCardModel = TabGroupCardModel(manager: tabGroupManager)
         self.spaceCardModel = SpaceCardModel()
         self.sitesCardModel = SiteCardModel(urls: [],
                                             profile: BrowserViewController.foregroundBVC().profile)

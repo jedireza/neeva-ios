@@ -5,6 +5,7 @@ import Storage
 import SDWebImageSwiftUI
 import SwiftUI
 import Shared
+import Combine
 
 /// The intention for a browser primitive is to represent any metadata or entity tied to a url with a card in a heterogenous UI. Tabs are
 /// the canonical browser primitive, but Spaces, a single entry in a Space, a History entry, a product in a web page can be a browser
@@ -21,7 +22,7 @@ import Shared
 /// be derived from any of the data provided by the primitive. (We can choose image as the thumbnail but can also fallback to using a
 /// mediaUrl inside the pageMetadata). This is also why CardDetails is the DropDelegate rather than the BrowserPrimitive.
 
-protocol BrowserPrimitive {
+protocol BrowserPrimitive: Swift.Identifiable {
     var primitiveUrl: URL? { get }
     var displayTitle: String { get }
     var displayFavicon: Favicon? { get }
@@ -75,6 +76,10 @@ protocol SelectingManager {
 // MARK: Tab: BrowserPrimitive
 
 extension Tab: Closeable, Selectable, BrowserPrimitive {
+    var id: String {
+        tabUUID
+    }
+
     var primitiveUrl: URL? {
         url
     }
@@ -220,56 +225,24 @@ extension Tab: SelectingManager {
     }
 }
 
-typealias Journey = [Site: [BrowserPrimitive]]
+struct TabGroup {
+    var children: [Tab]
+    var id: String
+}
 
-// MARK: Journey: BrowserPrimitive
+extension TabGroup: BrowserPrimitive, Closeable {
+    typealias Manager = TabGroupManager
 
-extension Journey: BrowserPrimitive {
     var primitiveUrl: URL? {
-        guard count > 0 else {
-            assert(false)
-            return nil
-        }
-
-        guard count > 1 else {
-            return keys.first!.primitiveUrl
-        }
-
-        if isNeevaSearchJourney {
-            return NeevaConstants.appURL
-        }
-
-
-        if keysCollapsedAcrossDomains.count == 1  {
-            return keysCollapsedAcrossDomains.first
-        }
-
-        return keys.first!.primitiveUrl
+        children.first!.url
     }
 
     var displayTitle: String {
-        guard count > 0 else {
-            assert(false)
-            return ""
-        }
-
-        guard count > 1 else {
-            return keys.first!.displayTitle
-        }
-
-        if isNeevaSearchJourney {
-            return keys.map {neevaSearchEngine.queryForSearchURL($0.primitiveUrl)}.reduce("") { $0 + $1! + " " }
-        }
-
-        if keysCollapsedAcrossDomains.count == 1, let domain = keysCollapsedAcrossDomains.first?.baseDomain  {
-            return domain.capitalizingFirstLetter()
-        }
-
-        return keys.first!.displayTitle
+        children.first!.displayTitle
     }
 
     var displayFavicon: Favicon? {
-        nil
+        children.first!.displayFavicon
     }
 
     var image: UIImage? {
@@ -280,13 +253,45 @@ extension Journey: BrowserPrimitive {
         nil
     }
 
-    var isNeevaSearchJourney : Bool {
-        keys.allSatisfy({$0.url.hasPrefix(NeevaConstants.appSearchURL.absoluteString)})
+    func close(with manager: TabGroupManager) {
+        manager.close(self)
+    }
+}
+
+class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
+    typealias Item = TabGroup
+    let tabManager: TabManager
+    @Published var tabGroups: [String: TabGroup] = [:]
+    var anyCancellable: AnyCancellable? = nil
+
+    init(tabManager: TabManager) {
+        self.tabManager = tabManager
+        updateTabGroups()
+        self.anyCancellable = tabManager.objectWillChange.sink { [weak self] (_) in
+            self?.updateTabGroups()
+        }
     }
 
-    var keysCollapsedAcrossDomains : [URL] {
-        Array(keys.reduce(into: [:]) { $0[($1.primitiveUrl?.domainURL)!] =
-            ($0[($1.primitiveUrl?.domainURL)!] ?? 0) + 1 }.keys)
+    func updateTabGroups() {
+        tabGroups = tabManager.getAll().filter {$0.parent != nil}
+            .reduce(into: [String: [Tab]]()) { dict, tab in
+                dict[tab.parent!.tabUUID, default: [tab.parent!]].append(tab)
+            }.reduce(into: [String: TabGroup]()) {dict, element in
+                dict[element.key + "group"] = TabGroup(children: element.value, id: element.key + "group")
+            }
+        objectWillChange.send()
+    }
+
+    func get(for id: String) -> TabGroup? {
+        return tabGroups[id]
+    }
+
+    func getAll() -> [TabGroup] {
+        Array(tabGroups.values)
+    }
+
+    func close(_ item: TabGroup) {
+        item.children.forEach { tabManager.close($0) }
     }
 }
 

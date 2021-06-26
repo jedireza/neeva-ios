@@ -29,7 +29,7 @@ private extension View {
 struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
 
-    let size: CGFloat = 170
+    let size: CGFloat = CardUX.CardSize - 10
     let spacing: CGFloat = 12
     let smallSpacing: CGFloat = 4
 

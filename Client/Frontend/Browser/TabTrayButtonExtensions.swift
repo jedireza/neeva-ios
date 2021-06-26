@@ -55,7 +55,7 @@ class CardStripButton: ToggleButton {
         tintColor = isSelected ? onTint : offTint
 
         let cardStrip =
-            BrowserViewController.foregroundBVC().cardStripViewController
+            BrowserViewController.foregroundBVC().cardViewController
         cardStrip?.view.isHidden = !isSelected
         cardStrip?.view.isUserInteractionEnabled = isSelected
         BrowserViewController.foregroundBVC().view.bringSubviewToFront((cardStrip?.view)!)

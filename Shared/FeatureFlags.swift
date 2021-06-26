@@ -17,6 +17,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case useOldToast = "Use the old Toast framework"
     case welcomeTours = "Navigate to welcome tours web page"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
+    case cardGrid = "New Switcher UI"
 }
 
 extension FeatureFlag {

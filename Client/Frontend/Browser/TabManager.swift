@@ -45,7 +45,7 @@ extension TabManager: TabEventHandler {
 }
 
 // TabManager must extend NSObjectProtocol in order to implement WKNavigationDelegate
-class TabManager: NSObject {
+class TabManager: NSObject, ObservableObject {
     fileprivate var delegates = [WeakTabManagerDelegate]()
     fileprivate let tabEventHandlers: [TabEventHandler]
     fileprivate let store: TabManagerStore
@@ -69,7 +69,7 @@ class TabManager: NSObject {
         }
     }
 
-    fileprivate(set) var tabs = [Tab]()
+    @Published fileprivate(set) var tabs = [Tab]()
     fileprivate var _selectedIndex = -1
 
     fileprivate let navDelegate: TabManagerNavDelegate
@@ -223,6 +223,7 @@ class TabManager: NSObject {
             TabEvent.post(.didGainFocus, for: tab)
             tab.applyTheme()
         }
+        objectWillChange.send()
 
         if let tab = tab, tab.isPrivate, let url = tab.url, NeevaConstants.isAppHost(url.host), !url.path.starts(with: "/incognito") {
             tab.webView?.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in

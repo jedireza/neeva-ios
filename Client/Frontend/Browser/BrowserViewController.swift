@@ -46,8 +46,8 @@ enum ReferringPage {
 
 class BrowserViewController: UIViewController {
     var neevaHomeViewController: NeevaHomeViewController?
-    lazy var cardStripViewController: CardStripViewController? = {
-        let controller = CardStripViewController(tabManager: self.tabManager)
+    lazy var cardViewController: CardViewController? = {
+        let controller = CardViewController(tabManager: self.tabManager)
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -552,10 +552,10 @@ class BrowserViewController: UIViewController {
         }
 
         if FeatureFlag[.cardStrip] {
-            cardStripViewController?.view.snp.updateConstraints { make in
+            cardViewController?.view.snp.updateConstraints { make in
                 make.left.right.equalTo(self.view)
-                make.bottom.equalTo(self.view.snp.bottom).offset(-CardStripUX.BottomPadding)
-                make.height.equalTo(CardStripUX.Height)
+                make.bottom.equalTo(self.view.snp.bottom).offset(-CardControllerUX.BottomPadding)
+                make.height.equalTo(CardControllerUX.Height)
             }
         }
 
@@ -1443,10 +1443,20 @@ extension BrowserViewController: LegacyURLBarDelegate {
         Sentry.shared.clearBreadcrumbs()
 
         updateFindInPageVisibility(visible: false)
-        
-        let tabTrayController = TabTrayControllerV1(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
-        navigationController?.pushViewController(tabTrayController, animated: true)
-        self.tabTrayController = tabTrayController
+
+        if FeatureFlag[.cardGrid], let grid = self.cardViewController?.cardGridHostingController {
+            addChild(grid)
+            webViewContainer.addSubview(grid.view)
+            grid.didMove(toParent: self)
+
+            grid.view.snp.updateConstraints { make in
+                make.edges.equalToSuperview()
+            }
+        } else {
+            let tabTrayController = TabTrayControllerV1(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
+            navigationController?.pushViewController(tabTrayController, animated: true)
+            self.tabTrayController = tabTrayController
+        }
 
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)

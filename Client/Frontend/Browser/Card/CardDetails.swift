@@ -58,11 +58,12 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
         manager.get(for: id)?.displayTitle ?? ""
     }
 
-    var thumbnail: some View {
-        guard let image = manager.get(for: id)?.image else {
-            return Image(systemName: "folder.fill").resizable().aspectRatio(contentMode: .fill)
+    @ViewBuilder var thumbnail: some View {
+        if let image = manager.get(for: id)?.image {
+            Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)
+        } else {
+            Color.white
         }
-        return Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)
     }
 
     var favicon: WebImage? {
@@ -83,15 +84,10 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
     var id: String
     var manager: TabManager
 
-    init(id: String, manager: TabManager) {
-        self.id = id
-        self.manager = manager
-    }
-
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
     init(tab: Tab, manager: TabManager) {
-        self.id = tab.tabUUID
+        self.id = tab.id
         self.manager = manager
     }
 
@@ -145,7 +141,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         ThumbnailGroupView(model: self)
     }
 
-    init(id: String) {
+    private init(id: String) {
         self.id = id
         self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
             self?.updateDetails()
@@ -256,6 +252,28 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
     }
 
     func onClose() {}
+}
+
+class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManagerProvider, ThumbnailModel {
+    typealias Item = TabGroup
+    typealias Manager = TabGroupManager
+
+    var manager: TabGroupManager
+    var id: String
+    @Published var allDetails: [TabCardDetails] = []
+
+    var thumbnail: some View {
+        return ThumbnailGroupView(model: self)
+    }
+
+    init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
+        self.id = tabGroup.id
+        self.manager = tabGroupManager
+        allDetails = manager.get(for: id)?.children
+            .map({ TabCardDetails(tab: $0, manager: manager.tabManager) }) ?? []
+    }
+
+    func onSelect() {}
 }
 
 
