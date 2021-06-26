@@ -360,6 +360,7 @@ class TabManager: NSObject {
                 insertIndex += 1
             }
             tab.parent = parent
+            tab.rootUUID = parent.rootUUID
             tabs.insert(tab, at: insertIndex)
         }
 

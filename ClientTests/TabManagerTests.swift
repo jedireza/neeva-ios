@@ -495,4 +495,30 @@ class TabManagerTests: XCTestCase {
 
         XCTAssertNotEqual(manager.tabs.first, tab)
     }
+
+    func testRootUUIDNotEqualToUUID() {
+        let tab = manager.addTab()
+        XCTAssertNotEqual(tab.tabUUID, tab.rootUUID)
+    }
+
+    func testRootUUIDEqualToAncestorRootUUID() {
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab(afterTab: tab1)
+        XCTAssertEqual(tab2.rootUUID, tab1.rootUUID)
+
+        let tab3 = manager.addTab(afterTab: tab2)
+        XCTAssertEqual(tab3.rootUUID, tab1.rootUUID)
+    }
+
+    func testRootUUIDIsPersisted() {
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab(afterTab: tab1)
+        let initialRootUUID = tab1.rootUUID
+
+        manager.removeTabs([tab1, tab2])
+        manager.restoreAllClosedTabs()
+
+        XCTAssertNotEqual(manager.tabs.first?.rootUUID, initialRootUUID)
+        XCTAssertNotEqual(manager.tabs.last?.rootUUID, initialRootUUID)
+    }
 }

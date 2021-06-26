@@ -196,6 +196,8 @@ class Tab: NSObject {
     // If this tab has been opened from another, its parent will point to the tab from which it was opened
     weak var parent: Tab?
 
+    var rootUUID: String = UUID().uuidString
+
     fileprivate var contentScriptManager = TabContentScriptManager()
 
     fileprivate let configuration: WKWebViewConfiguration
