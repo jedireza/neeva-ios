@@ -112,6 +112,9 @@ public class SpaceStore: ObservableObject {
     private func onUpdateSpaces(_ spaces: [SpaceListController.Space]) {
         let oldSpaceMap: [SpaceID: Space] = Dictionary(uniqueKeysWithValues: allSpaces.map { ($0.id, $0) })
 
+        // Clear to avoid holding stale data. Will be rebuilt below.
+        urlToSpacesMap = [:]
+
         var spacesToFetch: [Space] = []
 
         var allSpaces = [Space]()
