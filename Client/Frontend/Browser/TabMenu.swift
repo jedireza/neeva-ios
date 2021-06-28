@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import UIKit
+import Shared
 
 class TabMenu {
     var tabManager: TabManager
@@ -73,16 +74,20 @@ class TabMenu {
 
     // MARK: Recently Closed Tabs
     func createRecentlyClosedTabsMenu() -> UIMenu {
-        let recentlyClosed = tabManager.recentlyClosedTabs
-        var actions = [UIAction]()
-
-        for tab in recentlyClosed {
-            actions.append(UIAction(title: tab.title ?? "Untitled", handler: { _ in
-                self.tabManager.restoreSavedTabs([tab])
-            }))
+        let recentlyClosed = tabManager.recentlyClosedTabs.filter {
+            !InternalURL.isValid(url: ($0.url ?? URL(string: ""))!)
         }
 
-        return UIMenu(sections: [actions])
+        var actions = [UIAction]()
+        for tab in recentlyClosed {
+            let action = UIAction(title: tab.title ?? "Untitled", discoverabilityTitle: tab.url?.absoluteString) { _ in
+                self.tabManager.restoreSavedTabs([tab])
+            }
+            action.accessibilityLabel = tab.title ?? "Untitled"
+            actions.append(action)
+        }
+
+        return UIMenu(title: "Recently Closed", children: actions)
     }
 
     init(tabManager: TabManager, neevaHomeViewController: NeevaHomeViewController? = nil, alertPresentViewController: UIViewController? = nil) {
