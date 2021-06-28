@@ -3,26 +3,25 @@
 import SwiftUI
 import SFSafeSymbols
 
-enum ToastProgressStatus: String {
-    case inProgress = ""
-    case success = "checkmark"
-    case failed = "xmark"
+enum ToastProgressStatus {
+    case inProgress
+    case success
+    case failed
 
-    var icon: SFSymbol? {
+    var icon: SFSymbol{
         switch self {
+        case .inProgress:
+            return .circle
         case .success:
-            return .checkmark
+            return .checkmarkCircleFill
         case .failed:
-            return .xmark
-        default:
-            return nil
+            return .xmarkCircleFill
         }
     }
 }
 
 class ToastProgressViewModel: ObservableObject {
     @Published var status: ToastProgressStatus = .inProgress
-    @Published var download: Download?
 }
 
 struct ToastProgressView: View {
@@ -33,18 +32,10 @@ struct ToastProgressView: View {
 
     var body: some View {
         ZStack(alignment: .center) {
-            if let icon = toastProgressViewModel.status.icon {
-                Circle()
-                    .foregroundColor(.white)
-
-                Image(systemSymbol: icon)
-                    .foregroundColor(backgroundColor)
-                    .padding(8)
-            } else {
-                Circle()
-                    .stroke(Color.white, style: StrokeStyle(lineWidth: 2))
-            }
-        }.frame(width: 24, height: 24).onChange(of: toastProgressViewModel.status) { _ in
+            Image(systemSymbol: toastProgressViewModel.status.icon)
+                .foregroundColor(.white)
+                .frame(width: 24, height: 24)
+        }.onChange(of: toastProgressViewModel.status) { _ in
             if let stateDidChange = stateDidChange {
                 stateDidChange(toastProgressViewModel.status)
             }
@@ -55,6 +46,7 @@ struct ToastProgressView: View {
 struct ToastProgressView_Previews: PreviewProvider {
     static var previews: some View {
         ToastProgressView()
+            .environmentObject(ToastProgressViewModel())
             .preferredColorScheme(.dark)
     }
 }

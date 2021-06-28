@@ -2519,9 +2519,13 @@ extension BrowserViewController {
                     onDismiss: {
                         self.hideOverlaySheetViewController()
                         if request.state != .initial {
-                            self.show(toast: AddToSpaceToast(request: request, onOpenSpace: { spaceID in
-                                self.openURLInNewTab(NeevaConstants.appSpacesURL / spaceID)
-                            }))
+                            if !FeatureFlag[.useOldToast] {
+                                ToastDefaults().showToastForSpace(request: request)
+                            } else {
+                                self.show(toast: AddToSpaceToast(request: request, onOpenSpace: { spaceID in
+                                    self.openURLInNewTab(NeevaConstants.appSpacesURL / spaceID)
+                                }))
+                            }
                         }
                     },
                     onOpenURL: { url in

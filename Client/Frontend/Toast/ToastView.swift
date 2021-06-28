@@ -64,7 +64,6 @@ struct ToastView: View {
     var toastProgressViewModel: ToastProgressViewModel?
 
     @State var offset: CGFloat = 0
-
     var opacity: CGFloat {
         let delta = abs(offset) - ToastViewUX.threshold
         return delta > 0 ? 1 - delta / (ToastViewUX.threshold * 3) : 1
@@ -105,9 +104,11 @@ struct ToastView: View {
                         ToastProgressView { _ in
                             content.updateStatus(with: toastProgressViewModel.status)
 
-                            Timer.scheduledTimer(withTimeInterval: displayTime, repeats: false, block: { _ in
-                                viewDelegate?.dismiss()
-                            })
+                            if toastProgressViewModel.status == .success {
+                                Timer.scheduledTimer(withTimeInterval: displayTime, repeats: false, block: { _ in
+                                    viewDelegate?.dismiss()
+                                })
+                            }
                         }
                         .environmentObject(toastProgressViewModel)
                     }
@@ -141,11 +142,16 @@ struct ToastView: View {
         .gesture(drag)
         .opacity(Double(opacity))
         .animation(.interactiveSpring(), value: offset)
+        .onAppear() {
+            if let toastProgressViewModel = toastProgressViewModel {
+                content.updateStatus(with: toastProgressViewModel.status)
+            }
+        }
     }
 }
 
 struct ToastView_Previews: PreviewProvider {
     static var previews: some View {
-        ToastView(content: ToastViewContent(normalContent: ToastStateContent(text: "Tab Closed")))
+        ToastView(content: ToastViewContent(normalContent: ToastStateContent(text: "Tab Closed", buttonText: "restore")))
     }
 }
