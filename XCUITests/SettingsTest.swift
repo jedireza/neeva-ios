@@ -5,11 +5,6 @@
 import XCTest
 
 class SettingsTest: BaseTestCase {
-    func testOpenSiriOption() {
-        navigator.goto(SiriSettings)
-        waitForExistence(app.buttons["Open New Tab"], timeout: 5)
-    }
-
     /* TODO: rewrite this test
     func testDefaultBrowser() {
         // A default browser card should be available on the home screen

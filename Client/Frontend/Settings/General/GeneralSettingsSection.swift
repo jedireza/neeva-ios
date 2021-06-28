@@ -39,7 +39,6 @@ struct GeneralSettingsSection: View {
             }
         }
         Toggle("Block Pop-up Windows", isOn: $blockPopups)
-        NavigationLink("Siri Shortcuts", destination: SiriSetting())
         Toggle(isOn: $showClipboardBar) {
             DetailedSettingsLabel(
                 title: "Offer to Open Copied Links",

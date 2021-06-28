@@ -232,7 +232,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
     // handles universal links
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        if continueSiriIntent(application, continue: userActivity, restorationHandler: restorationHandler) {
+            return true
+        }
+
         if checkForUniversalURL(application, continue: userActivity, restorationHandler: restorationHandler) {
+            return true
+        }
+
+        return false
+    }
+
+    func continueSiriIntent(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        if let intent = userActivity.interaction?.intent as? OpenURLIntent {
+            BrowserViewController.foregroundBVC().openURLInNewTab(intent.url)
+            return true
+        }
+
+        if let intent = userActivity.interaction?.intent as? SearchNeevaIntent,
+           let query = intent.query,
+           let url = neevaSearchEngine.searchURLForQuery(query) {
+            BrowserViewController.foregroundBVC().openURLInNewTab(url)
             return true
         }
 
@@ -242,8 +262,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     func checkForUniversalURL(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         // Get URL components from the incoming user activity.
         guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-            let incomingURL = userActivity.webpageURL,
-            let components = NSURLComponents(url: incomingURL, resolvingAgainstBaseURL: true) else {
+            let incomingURL = userActivity.webpageURL else {
             return false
         }
 
@@ -438,13 +457,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         FaviconFetcher.userAgent = UserAgent.desktopUserAgent()
     }
 
-
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(shortcutItem, withBrowserViewController: BrowserViewController.foregroundBVC())
 
         completionHandler(handledShortCutItem)
     }
-
 }
 
 // MARK: - Root View Controller Animations

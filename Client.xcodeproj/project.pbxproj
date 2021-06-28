@@ -198,9 +198,14 @@
 		63306D3921103EAE00F25400 /* SavedTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D3821103EAE00F25400 /* SavedTab.swift */; };
 		63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D422110B3CD00F25400 /* TabManagerStore.swift */; };
 		63306D452110BAF000F25400 /* TabManagerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63306D442110BAF000F25400 /* TabManagerStoreTests.swift */; };
+		6604922826843975002AC35D /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 6604922726843975002AC35D /* Intents.intentdefinition */; };
+		6604922926843A57002AC35D /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 6604922726843975002AC35D /* Intents.intentdefinition */; };
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
 		6692829A2684EF1A00DDF117 /* Neeva.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC19E25E8C2380024991B /* Neeva.entitlements */; };
 		6692829B2684EF1A00DDF117 /* NeevaDev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */; };
+		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
+		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
+		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		66C3C769267A8858002B50B1 /* ButtonToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C760267A8858002B50B1 /* ButtonToast.swift */; };
 		66C3C76A267A8858002B50B1 /* DownloadToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C761267A8858002B50B1 /* DownloadToast.swift */; };
 		66C3C76B267A8858002B50B1 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C762267A8858002B50B1 /* Toast.swift */; };
@@ -416,7 +421,6 @@
 		C9DF56D5266A8F96009A2E6C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C9DF56D4266A8F96009A2E6C /* SDWebImageSwiftUI */; };
 		C9E448BE265D544E00651DCB /* NavigationLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448BD265D544E00651DCB /* NavigationLinkButton.swift */; };
 		C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C0265D555600651DCB /* MailAppSetting.swift */; };
-		C9E448C4265D55D500651DCB /* SiriSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C3265D55D500651DCB /* SiriSetting.swift */; };
 		C9E5F2B12673B4A000025A7F /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B02673B4A000025A7F /* NavigationController.swift */; };
 		C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B42673EF1D00025A7F /* Environment.swift */; };
 		C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */; };
@@ -445,7 +449,6 @@
 		D03DCD95211B63D000151ACA /* DateGroupedTableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03DCD94211B63D000151ACA /* DateGroupedTableData.swift */; };
 		D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03F8EB12004014E003C2224 /* FaviconHandler.swift */; };
 		D03F8F23200EAC1F003C2224 /* AllFramesAtDocumentStart.js in Resources */ = {isa = PBXBuildFile; fileRef = D03F8F22200EAC1E003C2224 /* AllFramesAtDocumentStart.js */; };
-		D04CD74A216CF86B004FF5B0 /* SiriShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04CD747216CF86A004FF5B0 /* SiriShortcuts.swift */; };
 		D053D6742211CD53006C6B64 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D053D6732211CD53006C6B64 /* KeychainStore.swift */; };
 		D05434E3225BBC4100FDE4EF /* RustShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05434E2225BBC4100FDE4EF /* RustShared.swift */; };
 		D054352A226687A400FDE4EF /* UIBarButtonItemExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0543529226687A400FDE4EF /* UIBarButtonItemExtensions.swift */; };
@@ -787,6 +790,13 @@
 			remoteGlobalIDString = 288A2D851AB8B3260023ABC3;
 			remoteInfo = Shared;
 		};
+		66A6A73426840376005425D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F84B21B61A090F8100AAB793 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 66A6A71D26840376005425D0;
+			remoteInfo = ClientIntent;
+		};
 		7B9BF92E1E435DE400CB24F4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F84B21B61A090F8100AAB793 /* Project object */;
@@ -922,6 +932,7 @@
 			files = (
 				047F9B3224E1FE1F00CD7DF7 /* WidgetKitExtension.appex in Embed App Extensions */,
 				F84B22541A0920C600AAB793 /* ShareTo.appex in Embed App Extensions */,
+				66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1121,7 +1132,13 @@
 		63306D3821103EAE00F25400 /* SavedTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedTab.swift; sourceTree = "<group>"; };
 		63306D422110B3CD00F25400 /* TabManagerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabManagerStore.swift; sourceTree = "<group>"; };
 		63306D442110BAF000F25400 /* TabManagerStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabManagerStoreTests.swift; sourceTree = "<group>"; };
+		6604922726843975002AC35D /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
 		6643042F267C19D200674549 /* ToastDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastDefaults.swift; sourceTree = "<group>"; };
+		66A6A6D42683E632005425D0 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		66A6A6DF2683E633005425D0 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
+		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		66C3C760267A8858002B50B1 /* ButtonToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonToast.swift; sourceTree = "<group>"; };
 		66C3C761267A8858002B50B1 /* DownloadToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadToast.swift; sourceTree = "<group>"; };
 		66C3C762267A8858002B50B1 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -1314,7 +1331,6 @@
 		C9DF56AF266A86C4009A2E6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C9E448BD265D544E00651DCB /* NavigationLinkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLinkButton.swift; sourceTree = SOURCE_ROOT; };
 		C9E448C0265D555600651DCB /* MailAppSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailAppSetting.swift; sourceTree = "<group>"; };
-		C9E448C3265D55D500651DCB /* SiriSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriSetting.swift; sourceTree = "<group>"; };
 		C9E5F2B02673B4A000025A7F /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		C9E5F2B42673EF1D00025A7F /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryExtensions.swift; sourceTree = "<group>"; };
@@ -1346,7 +1362,6 @@
 		D03F8F20200EABB0003C2224 /* __firefox__.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = __firefox__.js; sourceTree = "<group>"; };
 		D03F8F22200EAC1E003C2224 /* AllFramesAtDocumentStart.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AllFramesAtDocumentStart.js; sourceTree = "<group>"; };
 		D03F8F24200EACD8003C2224 /* ContextMenu.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ContextMenu.js; sourceTree = "<group>"; };
-		D04CD747216CF86A004FF5B0 /* SiriShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SiriShortcuts.swift; path = Extensions/SiriShortcuts.swift; sourceTree = "<group>"; };
 		D053D6732211CD53006C6B64 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
 		D05434E2225BBC4100FDE4EF /* RustShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RustShared.swift; sourceTree = "<group>"; };
 		D0543529226687A400FDE4EF /* UIBarButtonItemExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItemExtensions.swift; sourceTree = "<group>"; };
@@ -1715,6 +1730,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				392E18031FEC4D7B00EBA79C /* MappaMundi.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		66A6A71B26840376005425D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66A6A71F26840376005425D0 /* Intents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2166,6 +2189,15 @@
 			path = Carousel;
 			sourceTree = "<group>";
 		};
+		6607950C268395A70074FCA5 /* SiriShortcuts */ = {
+			isa = PBXGroup;
+			children = (
+				6604922726843975002AC35D /* Intents.intentdefinition */,
+				66A6A72026840376005425D0 /* ClientIntent */,
+			);
+			path = SiriShortcuts;
+			sourceTree = "<group>";
+		};
 		668CA09726797E9800BA756F /* Toast */ = {
 			isa = PBXGroup;
 			children = (
@@ -2183,10 +2215,18 @@
 			path = Toast;
 			sourceTree = "<group>";
 		};
+		66A6A72026840376005425D0 /* ClientIntent */ = {
+			isa = PBXGroup;
+			children = (
+				66A6A72126840376005425D0 /* IntentHandler.swift */,
+				66A6A72326840376005425D0 /* Info.plist */,
+			);
+			path = ClientIntent;
+			sourceTree = "<group>";
+		};
 		7B0B1B9C1C1B69F500DF4AB5 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D04CD747216CF86A004FF5B0 /* SiriShortcuts.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -2240,6 +2280,8 @@
 				3905274B1C874D35007E0BB7 /* NotificationCenter.framework */,
 				DAD46F3324A1606C001B3967 /* WidgetKit.framework */,
 				DAD46F3524A1606C001B3967 /* SwiftUI.framework */,
+				66A6A6D42683E632005425D0 /* Intents.framework */,
+				66A6A6DF2683E633005425D0 /* IntentsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2342,13 +2384,6 @@
 				C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */,
 			);
 			path = URLBar;
-			sourceTree = "<group>";
-		};
-		C94D40662684CA7B003A6766 /* Search */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Search;
 			sourceTree = "<group>";
 		};
 		C996466626569AC9005FFE83 /* Spaces */ = {
@@ -2469,7 +2504,6 @@
 			children = (
 				C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */,
 				C9E448C0265D555600651DCB /* MailAppSetting.swift */,
-				C9E448C3265D55D500651DCB /* SiriSetting.swift */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -3081,6 +3115,7 @@
 				F84B21D61A090F8100AAB793 /* ClientTests */,
 				EBB894E9219398E500EB91A0 /* content-blocker-lib-ios */,
 				F8708D1E1A0970990051AB07 /* Extensions */,
+				6607950C268395A70074FCA5 /* SiriShortcuts */,
 				C8FBBD41261F81A6004490A9 /* Fonts */,
 				7B604FC11C496005006EEEC3 /* Frameworks */,
 				F84B21BF1A090F8100AAB793 /* Products */,
@@ -3116,6 +3151,7 @@
 				3B43E3D01D95C48D00BBA9DB /* StoragePerfTests.xctest */,
 				047F9B2724E1FE1C00CD7DF7 /* WidgetKitExtension.appex */,
 				C9DF5696266A84A4009A2E6C /* ShareTo Preview Support.app */,
+				66A6A71E26840376005425D0 /* ClientIntent.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3238,7 +3274,6 @@
 				2C49854D206173C800893DAE /* photon-colors.swift */,
 				392ED7D51D0AEEEE009D9B62 /* Accessors */,
 				D3A994941A368691008AD1AC /* Browser */,
-				C94D40662684CA7B003A6766 /* Search */,
 				C93EFEE3267150ED000396B5 /* URLBar */,
 				7B0B1B9C1C1B69F500DF4AB5 /* Extensions */,
 				F84B22211A09122500AAB793 /* Home */,
@@ -3458,6 +3493,23 @@
 			productReference = 3BFE4B071D342FB800DDF53F /* XCUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		66A6A71D26840376005425D0 /* ClientIntent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 66A6A73A26840376005425D0 /* Build configuration list for PBXNativeTarget "ClientIntent" */;
+			buildPhases = (
+				66A6A71A26840376005425D0 /* Sources */,
+				66A6A71B26840376005425D0 /* Frameworks */,
+				66A6A71C26840376005425D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ClientIntent;
+			productName = ClientIntent;
+			productReference = 66A6A71E26840376005425D0 /* ClientIntent.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		7BEB64401C7345600092C02E /* L10nSnapshotTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E60138631C89EAE700DF9756 /* Build configuration list for PBXNativeTarget "L10nSnapshotTests" */;
@@ -3575,6 +3627,7 @@
 				288A2D9C1AB8B3260023ABC3 /* PBXTargetDependency */,
 				F84B22521A0920C600AAB793 /* PBXTargetDependency */,
 				047F9B3124E1FE1F00CD7DF7 /* PBXTargetDependency */,
+				66A6A73526840376005425D0 /* PBXTargetDependency */,
 			);
 			name = Client;
 			packageProductDependencies = (
@@ -3667,6 +3720,9 @@
 						LastSwiftMigration = 0820;
 						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
+					66A6A71D26840376005425D0 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 					7BEB64401C7345600092C02E = {
 						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
@@ -3754,6 +3810,7 @@
 				F84B21BD1A090F8100AAB793 /* Client */,
 				F84B22481A0920C600AAB793 /* ShareTo */,
 				047F9B2624E1FE1C00CD7DF7 /* WidgetKitExtension */,
+				66A6A71D26840376005425D0 /* ClientIntent */,
 				288A2D851AB8B3260023ABC3 /* Shared */,
 				2FCAE2191ABB51F800877008 /* Storage */,
 				F84B21D21A090F8100AAB793 /* ClientTests */,
@@ -3831,6 +3888,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		3BFE4B051D342FB800DDF53F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		66A6A71C26840376005425D0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4322,6 +4386,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		66A6A71A26840376005425D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6604922926843A57002AC35D /* Intents.intentdefinition in Sources */,
+				66A6A72226840376005425D0 /* IntentHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7BEB64431C7345600092C02E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4395,7 +4468,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9C18DEA26558FF3004710CD /* FrontViewController.swift in Sources */,
-				D04CD74A216CF86B004FF5B0 /* SiriShortcuts.swift in Sources */,
 				EB9A179F20E6C1A200B12184 /* ThemedWidgets.swift in Sources */,
 				C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */,
 				D029A04920A62DB0001DB72F /* TemporaryDocument.swift in Sources */,
@@ -4441,7 +4513,6 @@
 				D01017F5219CB6BD009CBB5A /* DownloadContentScript.swift in Sources */,
 				C817B34D1FC609500086018E /* UIScrollViewSwizzled.swift in Sources */,
 				39F819C61FD70F5D009E31E4 /* TabEventHandlers.swift in Sources */,
-				C9E448C4265D55D500651DCB /* SiriSetting.swift in Sources */,
 				FA6B2AC21D41F02D00429414 /* Punycode.swift in Sources */,
 				BC5C442326600F23007E2F61 /* WithPopover.swift in Sources */,
 				43446CEA2412066500F5C643 /* UIViewControllerExtension.swift in Sources */,
@@ -4655,6 +4726,7 @@
 				C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */,
 				C9BED4C9266824D7001D9C77 /* FadingHorizontalScrollView.swift in Sources */,
 				D3972BF31C22412B00035B87 /* ShareExtensionHelper.swift in Sources */,
+				6604922826843975002AC35D /* Intents.intentdefinition in Sources */,
 				F35B8D2D1D6383E9008E3D61 /* SessionRestoreHelper.swift in Sources */,
 				744ED5611DBFEB8D00A2B5BE /* MailtoLinkHandler.swift in Sources */,
 				4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */,
@@ -4769,6 +4841,11 @@
 			isa = PBXTargetDependency;
 			target = 288A2D851AB8B3260023ABC3 /* Shared */;
 			targetProxy = 43118CDE251A9CAD00F24376 /* PBXContainerItemProxy */;
+		};
+		66A6A73526840376005425D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 66A6A71D26840376005425D0 /* ClientIntent */;
+			targetProxy = 66A6A73426840376005425D0 /* PBXContainerItemProxy */;
 		};
 		7B9BF92F1E435DE400CB24F4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4976,6 +5053,151 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		66A6A73B26840376005425D0 /* Neeva */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = A9735M6NPH;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SiriShortcuts/ClientIntent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser.ClientIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Neeva;
+		};
+		66A6A73C26840376005425D0 /* Dev */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = A9735M6NPH;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = SiriShortcuts/ClientIntent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "co.neeva.app.ios.browser-dev.ClientIntent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Dev;
+		};
 		C9DF56A2266A84A5009A2E6C /* Neeva */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5174,6 +5396,7 @@
 		F0FF957225E03EFF00008BD2 /* Neeva */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neeva.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -5439,6 +5662,7 @@
 		F0FF95C125E03F8F00008BD2 /* Dev */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_Developer;
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaDev.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -5698,6 +5922,15 @@
 			buildConfigurations = (
 				F0FF958425E03EFF00008BD2 /* Neeva */,
 				F0FF95D325E03F8F00008BD2 /* Dev */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Neeva;
+		};
+		66A6A73A26840376005425D0 /* Build configuration list for PBXNativeTarget "ClientIntent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66A6A73B26840376005425D0 /* Neeva */,
+				66A6A73C26840376005425D0 /* Dev */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Neeva;
