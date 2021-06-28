@@ -220,7 +220,7 @@ class TabTrayControllerV1: UIViewController {
 
         toolbar.snp.makeConstraints { make in
             make.left.right.bottom.equalTo(view)
-            make.height.equalTo(UIConstants.BottomToolbarHeight(in: UIApplication.shared.keyWindow))
+            make.height.equalTo(UIConstants.BottomToolbarHeight)
         }
 
         topBarHolder.snp.makeConstraints { make in

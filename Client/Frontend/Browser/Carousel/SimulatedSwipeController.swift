@@ -164,7 +164,7 @@ class SimulatedSwipeController:
         progressView.view.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(bvc.view.snp.bottom)
-                .offset(-UIConstants.BottomToolbarHeight(in: view.window))
+                .offset(-UIConstants.BottomToolbarHeight)
         }
     }
 

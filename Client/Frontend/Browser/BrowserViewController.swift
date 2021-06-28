@@ -769,7 +769,7 @@ class BrowserViewController: UIViewController {
         // Setup the bottom toolbar
         toolbar?.snp.remakeConstraints { make in
             make.edges.equalTo(self.footer)
-            make.height.equalTo(UIConstants.BottomToolbarHeight(in: UIApplication.shared.keyWindow))
+            make.height.equalTo(UIConstants.BottomToolbarHeight)
         }
 
         footer.snp.remakeConstraints { make in

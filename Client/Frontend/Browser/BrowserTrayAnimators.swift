@@ -74,7 +74,7 @@ private extension TrayToBrowserAnimator {
             container.layoutIfNeeded()
             cell.title.transform = CGAffineTransform(translationX: 0, y: -cell.title.frame.height)
             bvc.tabTrayDidDismiss(tabTray)
-            tabTray.toolbar.transform = CGAffineTransform(translationX: 0, y: UIConstants.BottomToolbarHeight(in: bvc.view.window))
+            tabTray.toolbar.transform = CGAffineTransform(translationX: 0, y: UIConstants.BottomToolbarHeight)
             tabCollectionViewSnapshot.transform = CGAffineTransform(scaleX: 0.9, y: 0.9) 
         }
 
@@ -179,7 +179,7 @@ private extension BrowserToTrayAnimator {
             tabTray.collectionView.isHidden = true
             let finalFrame = calculateCollapsedCellFrameUsingCollectionView(tabTray.collectionView,
                 atIndex: scrollToIndex)
-            tabTray.toolbar.transform = CGAffineTransform(translationX: 0, y: UIConstants.BottomToolbarHeight(in: bvc.view.window))
+            tabTray.toolbar.transform = CGAffineTransform(translationX: 0, y: UIConstants.BottomToolbarHeight)
             
             let frameResizeClosure = {
                 cell.frame = finalFrame
@@ -289,7 +289,7 @@ private func calculateExpandedCellFrameFromBVC(_ bvc: BrowserViewController) -> 
     }
 
     if let url = bvc.tabManager.selectedTab?.url, bvc.toolbar == nil, let internalPage = InternalURL(url), internalPage.isAboutURL {
-        frame.size.height += UIConstants.BottomToolbarHeight(in: bvc.view.window)
+        frame.size.height += UIConstants.BottomToolbarHeight
     }
 
     return frame
