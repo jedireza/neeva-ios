@@ -15,6 +15,7 @@ protocol CardModel: ThumbnailModel {
     associatedtype Details: CardDetails where Details.Item == Manager.Item
     var manager: Manager { get }
     var allDetails: [Details] { get set }
+    var allDetailsWithExclusionList: [Details] { get set }
 
     func onDataUpdated()
 }
@@ -26,6 +27,7 @@ class TabCardModel: CardModel, TabEventHandler {
     var anyCancellable: AnyCancellable? = nil
 
     @Published var allDetails: [TabCardDetails] = []
+    @Published var allDetailsWithExclusionList: [TabCardDetails] = []
 
     init(manager: TabManager, groupManager: TabGroupManager) {
         self.manager = manager
@@ -60,8 +62,11 @@ class TabCardModel: CardModel, TabEventHandler {
 
     func onDataUpdated() {
         groupManager.updateTabGroups()
-        let childTabs = groupManager.getAll().reduce(into: [Tab]()) { $0.append(contentsOf: $1.children) }
-        allDetails = manager.getAll().filter { !childTabs.contains($0) }
+        let childTabs = groupManager.getAll()
+            .reduce(into: [Tab]()) { $0.append(contentsOf: $1.children) }
+        allDetails = manager.getAll()
+            .map {TabCardDetails(tab: $0, manager: manager)}
+        allDetailsWithExclusionList = manager.getAll().filter { !childTabs.contains($0) }
             .map {TabCardDetails(tab: $0, manager: manager)}
         onViewUpdate()
     }
@@ -69,7 +74,12 @@ class TabCardModel: CardModel, TabEventHandler {
 
 class SpaceCardModel: CardModel {
     @Published var manager = SpaceStore.shared
-    @Published var allDetails: [SpaceCardDetails] = []
+    @Published var allDetails: [SpaceCardDetails] = [] {
+        didSet {
+            allDetailsWithExclusionList = allDetails
+        }
+    }
+    @Published var allDetailsWithExclusionList: [SpaceCardDetails] = []
     var onViewUpdate: () -> () = {}
     var anyCancellable: AnyCancellable? = nil
 
@@ -91,7 +101,12 @@ class SiteCardModel: CardModel {
     typealias Details = SiteCardDetails
 
     @Published var manager = SiteFetcher()
-    @Published var allDetails: [SiteCardDetails] = []
+    @Published var allDetails: [SiteCardDetails] = [] {
+        didSet {
+            allDetailsWithExclusionList = allDetails
+        }
+    }
+    @Published var allDetailsWithExclusionList: [SiteCardDetails] = []
     var anyCancellable: AnyCancellable? = nil
     var profile: Profile
 
@@ -119,7 +134,13 @@ class TabGroupCardModel: CardModel {
     var manager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
 
-    var allDetails: [TabGroupCardDetails] = []
+    var allDetails: [TabGroupCardDetails] = [] {
+        didSet {
+            allDetailsWithExclusionList = allDetails
+        }
+    }
+    var allDetailsWithExclusionList: [TabGroupCardDetails] = []
+
 
     init(manager: TabGroupManager) {
         self.manager = manager

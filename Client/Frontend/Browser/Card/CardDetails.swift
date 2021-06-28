@@ -43,7 +43,7 @@ extension CardDetails where Item: Selectable, Self: SelectingManagerProvider, Se
 extension CardDetails where Item: Closeable, Self: ClosingManagerProvider, Self.Manager.Item == Item, Manager: AccessingManager {
 
     var closeButtonImage: UIImage? {
-        UIImage(systemName: "xmark.circle.fill")
+        UIImage(systemName: "xmark")
     }
 
     func onClose() {

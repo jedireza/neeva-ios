@@ -273,11 +273,11 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     }
 
     func updateTabGroups() {
-        tabGroups = tabManager.getAll().filter {$0.parent != nil}
+        tabGroups = tabManager.getAll()
             .reduce(into: [String: [Tab]]()) { dict, tab in
-                dict[tab.parent!.tabUUID, default: [tab.parent!]].append(tab)
-            }.reduce(into: [String: TabGroup]()) {dict, element in
-                dict[element.key + "group"] = TabGroup(children: element.value, id: element.key + "group")
+                dict[tab.rootUUID, default: []].append(tab)
+            }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) {dict, element in
+                dict[element.key] = TabGroup(children: element.value, id: element.key)
             }
         objectWillChange.send()
     }

@@ -38,7 +38,7 @@ struct CardGrid: View {
                                 .transition(AnyTransition.opacity.combined(
                                                 with: .move(edge: .trailing)))
                         }
-                        ForEach(tabModel.allDetails, id: \.id) { details in
+                        ForEach(tabModel.allDetailsWithExclusionList, id: \.id) { details in
                             Card<TabCardDetails>(details: details, config: .grid)
                                 .transition(AnyTransition.opacity.combined(
                                                 with: .move(edge: .trailing)))

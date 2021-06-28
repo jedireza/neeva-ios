@@ -8,25 +8,9 @@ import Shared
 enum CardUX {
     static let CardSize : CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 180 : 160
     static let ShadowRadius : CGFloat = 2
-    static let CornerRadius : CGFloat = 8
-    static let ButtonSize : CGFloat = 32
-    static let FaviconSize : CGFloat = 20
-}
-
-struct CardSpec: ViewModifier {
-    let size: CGFloat
-
-    func body(content: Content) -> some View {
-        content.frame(width: size, height: size)
-            .cornerRadius(CardUX.CornerRadius)
-            .shadow(radius: CardUX.ShadowRadius)
-    }
-}
-
-private extension View {
-    func applyCardSpec(size: CGFloat) -> some View {
-        self.modifier(CardSpec(size: size))
-    }
+    static let CornerRadius : CGFloat = 5
+    static let ButtonSize : CGFloat = 28
+    static let FaviconSize : CGFloat = 18
 }
 
 enum CardConfig {
@@ -39,59 +23,48 @@ struct Card<Details>: View where Details: CardDetails {
     let config: CardConfig
 
     var body: some View {
-        VStack(alignment: .center, spacing: 6) {
+        VStack(alignment: .center, spacing: 0) {
             HStack(spacing: 0) {
                     if let favicon = details.favicon {
                         favicon.resizable()
-                            .transition(.fade(duration: 0.5))
-                            .scaledToFit().background(Color.white)
-                            .applyCardSpec(size: CardUX.FaviconSize).padding(6)
+                            .transition(.fade(duration: 0.5)).background(Color.white)
+                            .scaledToFit()
+                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                            .cornerRadius(CardUX.CornerRadius)
+                            .padding(5)
                     }
                     if let title = details.title {
                         Text(title).font(.subheadline)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.trailing, 6)
+                            .frame(maxWidth: .infinity,
+                                   alignment: details.favicon != nil ? .leading : .center)
+                            .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }
-                    if case .grid = config, let buttonImage = details.closeButtonImage {
+                    if let buttonImage = details.closeButtonImage {
                         Button(action: {
                             details.onClose()
                         }, label: {
                             Image(uiImage: buttonImage).resizable().renderingMode(.template)
-                                .foregroundColor(.label)
-                                .scaledToFit()
+                                .foregroundColor(.secondaryLabel)
+                                .padding(4)
                                 .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                                .padding(6)
+                                .padding(5)
                         })
                     }
                 }.frame(width: CardUX.CardSize, height: CardUX.ButtonSize)
                 .background(Color(UIColor.Browser.background))
-                .cornerRadius(CardUX.CornerRadius)
-                .shadow(radius: CardUX.ShadowRadius)
+            Color(UIColor.Browser.urlBarDivider).frame(maxWidth: .infinity, maxHeight: 1)
             if let thumbnail = details.thumbnail {
                 Button(action: details.onSelect,
                        label: {
-                            thumbnail.applyCardSpec(size: CardUX.CardSize)
+                        thumbnail.frame(width: CardUX.CardSize, height: CardUX.CardSize).clipped()
                        })
             } else {
                 Rectangle().foregroundColor(.label)
-                    .applyCardSpec(size: CardUX.CardSize)
+                    .frame(width: CardUX.CardSize, height: CardUX.CardSize)
             }
-            if case .carousel = config {
-                if let buttonImage = details.closeButtonImage {
-                    Button(action: {
-                        details.onClose()
-                    }, label: {
-                        Image(uiImage: buttonImage).resizable().renderingMode(.template)
-                            .foregroundColor(.white)
-                            .scaledToFit().padding(4)
-                            .applyCardSpec(size: CardUX.ButtonSize)
-                    })
-                } else {
-                    Rectangle().foregroundColor(.clear)
-                        .applyCardSpec(size: CardUX.ButtonSize)
-                }
-            }
-        }.onDrop(of: ["public.url", "public.text"], delegate: details)
+        }.cornerRadius(CardUX.CornerRadius)
+        .shadow(radius: CardUX.ShadowRadius)
+        .onDrop(of: ["public.url", "public.text"], delegate: details)
     }
 }
 
