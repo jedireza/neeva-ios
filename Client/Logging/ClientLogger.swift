@@ -26,6 +26,11 @@ public class ClientLogger {
             return
         }
 
+        // If there is no tabs, assume that logging is OK for allowed actions
+        if BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false {
+            return
+        }
+
         if !LogConfig.featureFlagEnabled(for: LogConfig.category(for: path)) {
             return
         }
