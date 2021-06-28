@@ -250,7 +250,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
 
         if let intent = userActivity.interaction?.intent as? SearchNeevaIntent,
-           let query = intent.query,
+           let query = intent.text,
            let url = neevaSearchEngine.searchURLForQuery(query) {
             BrowserViewController.foregroundBVC().openURLInNewTab(url)
             return true

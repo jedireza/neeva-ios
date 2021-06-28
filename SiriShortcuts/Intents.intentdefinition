@@ -123,12 +123,12 @@
 			<integer>1</integer>
 			<key>INIntentManagedParameterCombinations</key>
 			<dict>
-				<key>query</key>
+				<key>text</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Search for ${query} in Neeva</string>
+					<string>Search Neeva for ${text}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>antZ8U</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -139,14 +139,14 @@
 			<string>SearchNeeva</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key>query</key>
+				<key>text</key>
 				<dict>
 					<key>INIntentParameterCombinationIsLinked</key>
 					<true/>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Search for ${query} in Neeva</string>
+					<string>Search Neeva for ${text}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>BX8pHw</string>
 				</dict>
@@ -157,7 +157,7 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
-					<string>Query</string>
+					<string>Text</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>iqpbOU</string>
 					<key>INIntentParameterDisplayPriority</key>
@@ -176,7 +176,7 @@
 						<true/>
 					</dict>
 					<key>INIntentParameterName</key>
-					<string>query</string>
+					<string>text</string>
 					<key>INIntentParameterPromptDialogs</key>
 					<array>
 						<dict>

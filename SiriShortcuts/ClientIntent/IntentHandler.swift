@@ -22,8 +22,8 @@ class OpenURLIntentHandler: NSObject, OpenURLIntentHandling {
 }
 
 class SearchNeevaIntentHandler: NSObject, SearchNeevaIntentHandling {
-    func resolveQuery(for intent: SearchNeevaIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
-        if let query = intent.query {
+    func resolveText(for intent: SearchNeevaIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+        if let query = intent.text {
             completion(.success(with: query))
         } else {
             completion(INStringResolutionResult.needsValue())
