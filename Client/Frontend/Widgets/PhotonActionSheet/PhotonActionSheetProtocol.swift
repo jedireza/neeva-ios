@@ -96,21 +96,7 @@ extension PhotonActionSheetProtocol {
         }
 
         let toggleDesktopSite = toggleDesktopSiteAction(for: tab)
-
-        if let url = tab.webView?.url, let helper = tab.contentBlocker, helper.isEnabled, Defaults[.contentBlockingStrength] == .strict {
-            let isSafelisted = helper.status == .safelisted
-
-            let title = !isSafelisted ? Strings.TrackingProtectionReloadWithout : Strings.TrackingProtectionReloadWith
-            let imageName = !isSafelisted ? "shield.lefthalf.fill.slash" : "shield.lefthalf.fill"
-            let toggleTP = UIAction(title: title, image: UIImage(systemName: imageName)) { _ in
-                ContentBlocker.shared.safelist(enable: !isSafelisted, url: url) {
-                    tab.reload()
-                }
-            }
-            return UIMenu(children: [toggleDesktopSite, toggleTP])
-        } else {
-            return UIMenu(children: [toggleDesktopSite])
-        }
+        return UIMenu(children: [toggleDesktopSite])
     }
 
 }

@@ -7,7 +7,6 @@ import Shared
 import Defaults
 
 extension Defaults.Keys {
-    static let contentBlockingStrength = Defaults.Key<BlockingStrength>("profile.prefkey.trackingprotection.strength", default: .basic)
     static let contentBlockingEnabled = Defaults.Key<Bool>("profile.prefkey.trackingprotection.normalbrowsing", default: true)
 }
 
@@ -47,7 +46,7 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(strength: Defaults[.contentBlockingStrength])
+        let rules = BlocklistFileName.listsForMode(strength: .basic)
         ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules)
     }
 
@@ -60,7 +59,7 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
 
     override func currentlyEnabledLists() -> [BlocklistFileName] {
 
-        return BlocklistFileName.listsForMode(strength: Defaults[.contentBlockingStrength])
+        return BlocklistFileName.listsForMode(strength: .basic)
     }
 
     override func notifyContentBlockingChanged() {
