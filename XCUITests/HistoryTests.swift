@@ -204,6 +204,7 @@ class HistoryTests: BaseTestCase {
     func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
         waitForTabsButton()
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
+        navigator.nowAt(NewTabScreen)
         // Open the default website
         userState.url = path(forTestPage: "test-mozilla-book.html")
         navigator.goto(BrowserTab)
@@ -217,7 +218,7 @@ class HistoryTests: BaseTestCase {
         app.collectionViews.cells.element(boundBy: 0).buttons["closeTabButtonTabTray"].tap()
 
         navigator.performAction(Action.OpenNewTabFromTabTray)
-        navigator.goto(HomePanelsScreen)
+        navigator.goto(NewTabScreen)
         navigator.goto(LibraryPanel_History)
         XCTAssertFalse(app.cells.staticTexts["Recently Closed"].isSelected)
         waitForNoExistence(app.tables["Recently Closed Tabs List"])

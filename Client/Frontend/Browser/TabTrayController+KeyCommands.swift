@@ -27,7 +27,7 @@ extension TabTrayControllerV1 {
 
     @objc func didTogglePrivateModeKeyCommand() {
         // NOTE: We cannot and should not capture telemetry here.
-        didTogglePrivateMode()
+        didToggleToolbarIncognitoButton()
     }
 
     @objc func didCloseTabKeyCommand() {

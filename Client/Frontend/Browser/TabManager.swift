@@ -415,7 +415,7 @@ class TabManager: NSObject, ObservableObject {
         removeTab(tab, flushToDisk: true, notify: true)
         updateIndexAfterRemovalOf(tab, deletedIndex: index)
 
-       addTabsToRecentlyClosed([tab])
+        addTabsToRecentlyClosed([tab])
 
         TelemetryWrapper.recordEvent(
             category: .action,

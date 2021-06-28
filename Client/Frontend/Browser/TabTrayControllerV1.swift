@@ -42,17 +42,17 @@ class TabTrayControllerV1: UIViewController {
     let statusBarBG = UIView()
     lazy var toolbar: TrayToolbar = {
         let toolbar = TrayToolbar()
-        toolbar.maskButton.addTarget(self, action: #selector(didTogglePrivateMode), for: .touchUpInside)
+        toolbar.maskButton.addTarget(self, action: #selector(didToggleToolbarIncognitoButton), for: .touchUpInside)
 
         let menu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
-        toolbar.addTabButton.addTarget(self, action: #selector(didTapToolbarAddTab), for: .touchUpInside)
+        toolbar.addTabButton.addTarget(self, action: #selector(didTapToolbarAddTabButton), for: .touchUpInside)
         toolbar.addTabButton.setDynamicMenu(menu.createRecentlyClosedTabsMenu)
 
-        toolbar.doneButton.addTarget(self, action: #selector(didTapToolbarDone), for: .touchUpInside)
+        toolbar.doneButton.addTarget(self, action: #selector(didTapToolbarDoneButton), for: .touchUpInside)
         toolbar.doneButton.menu = menu.createCloseAllTabsMenu()
         menu.tabsClosed = { isPrivate in
             if isPrivate {
-                self.didTogglePrivateMode()
+                self.didToggleToolbarIncognitoButton()
             }
         }
 
@@ -168,7 +168,6 @@ class TabTrayControllerV1: UIViewController {
             make.top.left.right.equalTo(self.collectionView)
             make.bottom.equalTo(self.toolbar.snp.top)
         }
-        addSubSwiftUIView(IncognitoDescriptionView(), to: emptyPrivateTabsView)
 
         if let tab = tabManager.selectedTab, tab.isPrivate {
             tabDisplayManager.togglePrivateMode(isOn: true, createTabOnEmptyPrivateMode: false)
@@ -258,10 +257,16 @@ class TabTrayControllerV1: UIViewController {
         view.setNeedsUpdateConstraints()
     }
 
-    @objc func didTogglePrivateMode() {
+    @objc func didToggleToolbarIncognitoButton() {
         if tabDisplayManager.isDragging {
             return
         }
+        if !tabDisplayManager.isPrivate && tabManager.privateTabs.isEmpty {
+            tabManager.switchPrivacyMode()
+            dismissTabTray()
+            return
+        }
+
         toolbar.isUserInteractionEnabled = false
 
         let scaleDownTransform = CGAffineTransform(scaleX: 0.9, y: 0.9)
@@ -341,7 +346,7 @@ class TabTrayControllerV1: UIViewController {
         return tabDisplayManager.isPrivate && tabManager.privateTabs.isEmpty
     }
 
-    @objc func didTapToolbarAddTab() {
+    @objc func didTapToolbarAddTabButton() {
         if tabDisplayManager.isDragging {
             return
         }
@@ -418,7 +423,7 @@ extension TabTrayControllerV1 {
 
     func changePrivacyMode(_ isPrivate: Bool) {
         if isPrivate != tabDisplayManager.isPrivate {
-            didTogglePrivateMode()
+            didToggleToolbarIncognitoButton()
         }
     }
 
@@ -595,11 +600,14 @@ extension TabTrayControllerV1 {
     func removeByButtonOrSwipe(tab: Tab, cell: TabCell) {
         tabDisplayManager.tabDisplayCompletionDelegate = self
         tabDisplayManager.closeActionPerformed(forCell: cell)
+        if tabDisplayManager.isPrivate && tabManager.privateTabs.isEmpty {
+            didToggleToolbarIncognitoButton()
+        }
     }
 }
 
 extension TabTrayControllerV1 {
-    @objc func didTapToolbarDone(_ sender: UIButton) {
+    @objc func didTapToolbarDoneButton(_ sender: UIButton) {
         ClientLogger.shared.logCounter(.HideTabTray, attributes: EnvironmentHelper.shared.getAttributes())
         dismissTabTray()
     }
@@ -1041,7 +1049,7 @@ class TabCell: UICollectionViewCell {
 
 extension TabTrayControllerV1: LegacyTabLocationViewDelegate {
     func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView) {
-        didTapToolbarAddTab()
+        didTapToolbarAddTabButton()
         delegate?.tabTrayDidTapLocationBar(self)
     }
     func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView) {}

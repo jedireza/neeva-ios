@@ -113,6 +113,7 @@ class NavigationTest: BaseTestCase {
 
     func testLongPressLinkOptionsPrivateMode() {
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
+        navigator.nowAt(NewTabScreen)
 
         navigator.openURL(path(forTestPage: "test-example.html"))
         waitForExistence(app.webViews.links[website_2["link"]!], timeout: 5)
@@ -137,6 +138,8 @@ class NavigationTest: BaseTestCase {
 
     func testCopyLinkPrivateMode() {
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
+        navigator.nowAt(NewTabScreen)
+
         longPressLinkOptions(optionSelected: "Copy Link")
         navigator.goto(NewTabScreen)
         app.buttons["url"].press(forDuration: 2)
@@ -234,6 +237,8 @@ class NavigationTest: BaseTestCase {
 
     func testShareLinkPrivateMode() {
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
+        navigator.nowAt(NewTabScreen)
+
         longPressLinkOptions(optionSelected: "Share Link")
         waitForExistence(app.buttons["Copy"], timeout: 3)
         XCTAssertTrue(app.buttons["Copy"].exists, "The share menu is not shown")
