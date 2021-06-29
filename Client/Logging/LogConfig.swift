@@ -41,7 +41,7 @@ public struct LogConfig {
         case ViewTrackingProtection // Click Tracking Protection in setting
         case ViewPrivacyPolicy // Click Privacy Policy in setting
         case ViewShowTour // Click Show Tour in setting
-        case ViewHelp // Click Help in setting
+        case ViewHelpCenter // Click Help Center in setting
         case ViewLicenses // Click Licenses in setting
         case ViewTerms // Click Terms in setting
 
@@ -117,7 +117,7 @@ public struct LogConfig {
         case .ViewTrackingProtection: return .Settings
         case .ViewPrivacyPolicy: return .Settings
         case .ViewShowTour: return .Settings
-        case .ViewHelp: return .Settings
+        case .ViewHelpCenter: return .Settings
         case .ViewLicenses: return .Settings
         case .ViewTerms: return .Settings
         case .ClearPrivateData: return .Settings
