@@ -117,6 +117,8 @@
 			<string>generic</string>
 			<key>INIntentConfigurable</key>
 			<true/>
+			<key>INIntentDescription</key>
+			<string>Open a Search in the Neeva app</string>
 			<key>INIntentDescriptionID</key>
 			<string>gJTK8U</string>
 			<key>INIntentLastParameterTag</key>
