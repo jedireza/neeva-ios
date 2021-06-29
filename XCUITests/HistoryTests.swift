@@ -196,30 +196,14 @@ class HistoryTests: BaseTestCase {
         waitForTabsButton()
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         navigator.nowAt(NewTabScreen)
+
         // Open the default website
-        userState.url = path(forTestPage: "test-mozilla-book.html")
-        navigator.goto(BrowserTab)
-        // It is necessary to open two sites so that when one is closed private mode is not closed
-        navigator.openNewURL(urlString: path(forTestPage: "test-mozilla-org.html"))
+        navigator.openURL("neeva.com")
         waitUntilPageLoad()
-        waitForTabsButton()
-        navigator.goto(TabTray)
-        waitForExistence(app.cells.staticTexts[webpage["label"]!])
-        // Close tab by tapping on its 'x' button
-        app.collectionViews.cells.element(boundBy: 0).buttons["closeTabButtonTabTray"].tap()
+        closeAllTabs()
 
-        navigator.performAction(Action.OpenNewTabFromTabTray)
-        navigator.goto(NewTabScreen)
-        navigator.goto(LibraryPanel_History)
-        XCTAssertFalse(app.cells.staticTexts["Recently Closed"].isSelected)
-        waitForNoExistence(app.tables["Recently Closed Tabs List"])
-
-        // Now verify that on regular mode the recently closed list is empty too
-        navigator.toggleOff(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.goto(NewTabScreen)
-        navigator.goto(LibraryPanel_History)
-        XCTAssertFalse(app.cells.staticTexts["Recently Closed"].isSelected)
-        waitForNoExistence(app.tables["Recently Closed Tabs List"])
+        showRecentlyClosedTabs()
+        XCTAssertFalse(app.buttons["Ad-free, private search - Neeva"].exists)
     }
     
     // Private function created to select desired option from the "Clear Recent History" list

@@ -535,6 +535,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func addTabsToRecentlyClosed(_ tabs: [Tab]) {
+        let tabs = tabs.filter { !$0.isPrivate }
         let savedTabs = tabs.compactMap { SavedTab(tab: $0, isSelected: selectedTab === $0) }
         recentlyClosedTabs.append(contentsOf: savedTabs)
 
