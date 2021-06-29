@@ -26,7 +26,7 @@ class HistorySuggestionModel: ObservableObject {
 
     convenience init(previewSites: [Site]? = nil) {
         self.init(profile: BrowserProfile(localName: "profile"))
-        self.sites = sites
+        self.sites = previewSites
     }
 
     init(profile: Profile) {

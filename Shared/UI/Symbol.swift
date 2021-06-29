@@ -69,7 +69,7 @@ public enum Nicon: Character {
 /// you **must** provide a `label` so screen reader users will be able to access the button. If you do not provide a label,
 /// the symbol will be hidden from screen readers.
 public struct Symbol: View {
-    private enum Icon {
+    public enum Icon {
         case neeva(Nicon, NiconFont, Font.TextStyle)
         case system(SFSymbol, Font.Weight)
     }

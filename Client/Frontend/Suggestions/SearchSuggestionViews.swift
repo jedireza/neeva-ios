@@ -122,7 +122,7 @@ struct QuerySuggestionView: View {
 }
 
 /// Renders a URL suggestion (and its associated icon)
-fileprivate struct URLSuggestionView: View {
+struct URLSuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion
 
     @Environment(\.onOpenURL) private var openURL

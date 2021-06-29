@@ -18,10 +18,12 @@ class NeevaSuggestionModel: ObservableObject {
         return false
     }
 
-    init(previewLensBang: ActiveLensBangInfo?, suggestions: [Suggestion]) {
-        self.isIncognito = false
+    init(searchQueryForTesting: String? = nil, isIncognito: Bool = false,
+         previewLensBang: ActiveLensBangInfo?, suggestions: [Suggestion]) {
+        self.isIncognito = isIncognito
         self.suggestions = suggestions
         self.activeLensBang = previewLensBang
+        self.searchQuery = searchQueryForTesting
     }
 
     init(isIncognito: Bool) {
