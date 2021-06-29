@@ -39,11 +39,9 @@ class TabMenu {
         closeAction.accessibilityLabel = "Confirm Close All Tabs"
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-
         // add all actions to alert
         actionSheet.addAction(closeAction)
         actionSheet.addAction(cancelAction)
-
         // show the alert
         alertPresentViewController.present(actionSheet, animated: true, completion: nil)
     }
