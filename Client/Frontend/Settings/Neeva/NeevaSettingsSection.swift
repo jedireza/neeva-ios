@@ -24,7 +24,6 @@ struct NeevaSettingsSection: View {
         return webView
     }()
 
-    @GestureState private var isTapped = false
     @State var showingSettings = false
     @State var loaderOpacity = 0.0
     @State var userInfoOpacity = 1.0

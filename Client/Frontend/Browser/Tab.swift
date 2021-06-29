@@ -42,20 +42,6 @@ protocol URLChangeDelegate {
     func tab(_ tab: Tab, urlDidChangeTo url: URL)
 }
 
-struct TabState {
-    var isPrivate: Bool = false
-    var url: URL?
-    var title: String?
-    var favicon: Favicon?
-}
-
-enum TabUrlType: String {
-    case regular
-    case search
-    case followOnSearch
-    case organicSearch
-}
-
 class Tab: NSObject {
     fileprivate var _isPrivate: Bool = false
     internal fileprivate(set) var isPrivate: Bool {
@@ -67,10 +53,6 @@ class Tab: NSObject {
                 _isPrivate = newValue
             }
         }
-    }
-    var urlType: TabUrlType = .regular
-    var tabState: TabState {
-        return TabState(isPrivate: _isPrivate, url: url, title: displayTitle, favicon: displayFavicon)
     }
 
     // PageMetadata is derived from the page content itself, and as such lags behind the

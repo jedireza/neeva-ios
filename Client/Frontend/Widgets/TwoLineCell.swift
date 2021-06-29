@@ -6,11 +6,9 @@ import UIKit
 
 private enum TwoLineCellUX {
     static let ImageSize: CGFloat = 29
-    static let ImageCornerRadius: CGFloat = 8
     static let BorderViewMargin: CGFloat = 16
     static let BadgeSize: CGFloat = 16
     static let BadgeMargin: CGFloat = 16
-    static let BorderFrameSize: CGFloat = 32
     static let DetailTextTopMargin: CGFloat = 0
 }
 
@@ -88,21 +86,8 @@ class TwoLineTableViewCell: UITableViewCell, Themeable {
         imageView?.backgroundColor = color
     }
 
-    func setRightBadge(_ badge: UIImage?) {
-        if let badge = badge {
-            self.accessoryView = UIImageView(image: badge)
-        } else {
-            self.accessoryView = nil
-        }
-        twoLineHelper.hasRightBadge = badge != nil
-    }
-
     func setLines(_ text: String?, detailText: String?) {
         twoLineHelper.setLines(text, detailText: detailText)
-    }
-
-    func mergeAccessibilityLabels(_ views: [AnyObject?]? = nil) {
-        twoLineHelper.mergeAccessibilityLabels(views)
     }
 }
 
@@ -110,79 +95,6 @@ class SiteTableViewCell: TwoLineTableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         twoLineHelper.layoutSubviews(accessoryWidth: self.contentView.frame.origin.x)
-    }
-}
-
-class TwoLineHeaderFooterView: UITableViewHeaderFooterView, Themeable {
-    fileprivate let twoLineHelper = TwoLineCellHelper()
-    fileprivate let bordersHelper = ThemedHeaderFooterViewBordersHelper()
-
-    // UITableViewHeaderFooterView includes textLabel and detailTextLabel, so we can't override
-    // them.  Unfortunately, they're also used in ways that interfere with us just using them: I get
-    // hard crashes in layout if I just use them; it seems there's a battle over adding to the
-    // contentView.  So we add our own members, and cover up the other ones.
-    let _textLabel = UILabel()
-    let _detailTextLabel = UILabel()
-
-    let imageView = UIImageView()
-
-    // Yes, this is strange.
-    override var textLabel: UILabel? {
-        return _textLabel
-    }
-
-    // Yes, this is strange.
-    override var detailTextLabel: UILabel? {
-        return _detailTextLabel
-    }
-
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        twoLineHelper.setUpViews(self, textLabel: _textLabel, detailTextLabel: _detailTextLabel, imageView: imageView)
-        bordersHelper.initBorders(view: self)
-        setDefaultBordersValues()
-
-        contentView.addSubview(_textLabel)
-        contentView.addSubview(_detailTextLabel)
-        contentView.addSubview(imageView)
-
-        layoutMargins = .zero
-
-        applyTheme()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func applyTheme() {
-        twoLineHelper.applyTheme()
-        bordersHelper.applyTheme()
-    }
-
-    func showBorder(for location: ThemedHeaderFooterViewBordersHelper.BorderLocation, _ show: Bool) {
-        bordersHelper.showBorder(for: location, show)
-    }
-
-    func setDefaultBordersValues() {
-        bordersHelper.showBorder(for: .top, true)
-        bordersHelper.showBorder(for: .bottom, true)
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        twoLineHelper.layoutSubviews()
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        twoLineHelper.setUpViews(self, textLabel: _textLabel, detailTextLabel: _detailTextLabel, imageView: imageView)
-        setDefaultBordersValues()
-        applyTheme()
-    }
-
-    func mergeAccessibilityLabels(_ views: [AnyObject?]? = nil) {
-        twoLineHelper.mergeAccessibilityLabels(views)
     }
 }
 
@@ -270,35 +182,5 @@ private class TwoLineCellHelper {
             textLabel.text = text
             detailTextLabel.text = detailText
         }
-    }
-
-    func mergeAccessibilityLabels(_ labels: [AnyObject?]?) {
-        let labels = labels ?? [textLabel, imageView, detailTextLabel]
-
-        let label = labels.map({ (label: AnyObject?) -> NSAttributedString? in
-            var label = label
-            if let view = label as? UIView {
-                label = view.value(forKey: "accessibilityLabel") as (AnyObject?)
-            }
-
-            if let attrString = label as? NSAttributedString {
-                return attrString
-            } else if let string = label as? String {
-                return NSAttributedString(string: string)
-            } else {
-                return nil
-            }
-        }).filter({
-            $0 != nil
-        }).reduce(NSMutableAttributedString(string: ""), {
-            if $0.length > 0 {
-                $0.append(NSAttributedString(string: ", "))
-            }
-            $0.append($1!)
-            return $0
-        })
-
-        container?.isAccessibilityElement = true
-        container?.setValue(NSAttributedString(attributedString: label), forKey: "accessibilityLabel")
     }
 }

@@ -247,7 +247,6 @@ class ReaderMode: TabContentScript {
 
     fileprivate weak var tab: Tab?
     var state = ReaderModeState.unavailable
-    fileprivate var originalURL: URL?
 
     class func name() -> String {
         return "ReaderMode"

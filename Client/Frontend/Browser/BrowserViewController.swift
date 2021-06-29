@@ -36,14 +36,6 @@ struct UrlToOpenModel {
     var isPrivate: Bool
 }
 
-/// Enum used to track flow for telemetry events
-enum ReferringPage {
-    case onboarding
-    case appMenu
-    case settings
-    case none
-}
-
 class BrowserViewController: UIViewController {
     var neevaHomeViewController: NeevaHomeViewController?
     lazy var cardViewController: CardViewController? = {
@@ -89,19 +81,15 @@ class BrowserViewController: UIViewController {
     var searchController: SearchViewController?
     var screenshotHelper: ScreenshotHelper!
     fileprivate var homePanelIsInline = false
-    var shouldSetUrlTypeSearch = false
     let alertStackView = UIStackView() // All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
     var findInPageBar: FindInPageBar?
     lazy var mailtoLinkHandler = MailtoLinkHandler()
     var urlFromAnotherApp: UrlToOpenModel?
     var isCrashAlertShowing: Bool = false
-    fileprivate var customSearchBarButton: UIBarButtonItem?
 
     // popover rotation handling
     var displayedPopoverController: UIViewController?
     var updateDisplayedPopoverProperties: (() -> Void)?
-
-    var openInHelper: OpenInHelper?
 
     // location label actions
     fileprivate var pasteGoAction: AccessibleAction!
@@ -126,7 +114,6 @@ class BrowserViewController: UIViewController {
     var scrollController = TabScrollingController()
 
     fileprivate var keyboardState: KeyboardState?
-    var hasTriedToPresentETPAlready = false
     var pendingToast: Toast? // A toast that might be waiting for BVC to appear before displaying
     var downloadToast: DownloadToast? // A toast that is showing the combined download progress
 
@@ -503,25 +490,6 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func showSearchBarPrompt() {
-        // show tour prompt for search bar
-        if Defaults[.searchInputPromptDismissed] || !NeevaUserInfo.shared.hasLoginCookie() {
-            return
-        }
-
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.legacyLocationView.urlLabel)
-        prompt.view.backgroundColor = UIColor.Tour.Background
-        prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
-
-        guard let currentViewController = navigationController?.topViewController else {
-            return
-        }
-
-        if currentViewController is BrowserViewController {
-            present(prompt, animated: true, completion: nil)
-        }
-    }
-
     fileprivate func setupConstraints() {
         topTabsContainer.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.header)
@@ -691,20 +659,6 @@ class BrowserViewController: UIViewController {
             show(toast: toast, afterWaiting: ButtonToastUX.ToastDelay)
         }
         showQueuedAlertIfAvailable()
-    }
-
-    // The logic for shouldShowWhatsNewTab is as follows: If we do not have the latestAppVersion key in
-    // Defaults, that means that this is a fresh install and we do not show the What's New. If we do have
-    // that value, we compare it to the major version of the running app. If it is different then this is an
-    // upgrade, downgrades are not possible, so we can show the What's New page.
-
-    func shouldShowWhatsNew() -> Bool {
-        
-        guard let latestMajorAppVersion = Defaults[.latestAppVersion]?.components(separatedBy: ".").first else {
-            return false // Clean install, never show What's New
-        }
-
-        return latestMajorAppVersion != AppInfo.majorAppVersion && DeviceInfo.hasConnectivity()
     }
 
     fileprivate func showQueuedAlertIfAvailable() {
@@ -1302,13 +1256,6 @@ class BrowserViewController: UIViewController {
         present(controller, animated: true, completion: nil)
     }
 
-    @objc fileprivate func openSettings() {
-        assert(Thread.isMainThread, "Opening settings requires being invoked on the main thread")
-
-        let controller = SettingsViewController(bvc: self)
-        self.present(controller, animated: true, completion: nil)
-    }
-
     fileprivate func postLocationChangeNotificationForTab(_ tab: Tab, navigation: WKNavigation?) {
         let notificationCenter = NotificationCenter.default
         var info = [AnyHashable: Any]()
@@ -1894,7 +1841,6 @@ extension BrowserViewController: HomePanelDelegate {
 extension BrowserViewController: SearchViewControllerDelegate {
     func searchViewController(_ searchViewController: SearchViewController, didSelectURL url: URL) {
         guard let tab = tabManager.selectedTab else { return }
-        shouldSetUrlTypeSearch = true
         finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
     }
 

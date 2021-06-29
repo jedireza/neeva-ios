@@ -10,8 +10,6 @@ public enum ButtonToastUX {
     static let ToastPadding: CGFloat = 15.0
     fileprivate static let ToastButtonPadding: CGFloat = 10.0
     static let ToastDelay = DispatchTimeInterval.milliseconds(900)
-    fileprivate static let ToastButtonBorderRadius: CGFloat = 5
-    fileprivate static let ToastButtonBorderWidth: CGFloat = 0
     static let ToastLabelFont = UIFont.systemFont(ofSize: 14, weight: .light)
     fileprivate static let ToastButtonFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
     fileprivate static let ToastButtonDefaultColor = UIColor.Photon.Blue50

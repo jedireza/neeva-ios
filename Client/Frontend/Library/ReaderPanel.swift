@@ -23,26 +23,6 @@ private enum ReadingListTableViewCellUX {
     static let TitleLabelRightOffset: CGFloat = -40
 
     static let HostnameLabelBottomOffset: CGFloat = 11
-
-    static let DeleteButtonTitleColor = UIColor.Photon.White100
-    static let DeleteButtonTitleEdgeInsets = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
-
-    static let MarkAsReadButtonBackgroundColor = UIColor.Photon.Blue50
-    static let MarkAsReadButtonTitleColor = UIColor.Photon.White100
-    static let MarkAsReadButtonTitleEdgeInsets = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
-}
-
-private enum ReadingListPanelUX {
-    // Welcome Screen
-    static let WelcomeScreenTopPadding: CGFloat = 16
-    static let WelcomeScreenPadding: CGFloat = 15
-
-    static let WelcomeScreenItemWidth = 220
-    static let WelcomeScreenItemOffset = -20
-
-    static let WelcomeScreenCircleWidth = 40
-    static let WelcomeScreenCircleOffset = 20
-    static let WelcomeScreenCircleSpacer = 10
 }
 
 class ReadingListTableViewCell: UITableViewCell, Themeable {

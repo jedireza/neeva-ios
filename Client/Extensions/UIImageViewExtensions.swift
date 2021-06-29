@@ -16,13 +16,6 @@ extension UIColor {
         getRed(&r, green: &g, blue: &b, alpha: &a)
         return (r, g, b, a)
     }
-
-    func image(_ size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
-        return UIGraphicsImageRenderer(size: size).image { rendererContext in
-            self.setFill()
-            rendererContext.fill(CGRect(origin: .zero, size: size))
-        }
-    }
 }
 
 public extension UIImageView {
@@ -62,20 +55,6 @@ public extension UIImageView {
     func setFavicon(forSite site: Site, completion: @escaping () -> Void ) {
         setImageAndBackground(forIcon: site.icon, website: site.tileURL, completion: completion)
     }
-    
-   /*
-    * If the webpage has low-res favicon, use defaultFavIcon
-    */
-    func setFaviconOrDefaultIcon(forSite site: Site, completion: @escaping () -> Void ) {
-        setImageAndBackground(forIcon: site.icon, website: site.tileURL) { [weak self] in
-            if let image = self?.image, image.size.width < 32 || image.size.height < 32 {
-                let defaults = self?.fallbackFavicon(forUrl: site.tileURL)
-                self?.image = defaults?.image
-                self?.backgroundColor = defaults?.color
-            }
-            completion()
-        }
-    }
 
     private func fallbackFavicon(forUrl url: URL?) -> (image: UIImage, color: UIColor) {
         if let url = url {
@@ -89,29 +68,5 @@ public extension UIImageView {
         let templateImage = self.image?.withRenderingMode(.alwaysTemplate)
         self.image = templateImage
         self.tintColor = color
-    }
-}
-
-open class ImageOperation: NSObject, SDWebImageOperation {
-    open var cacheOperation: Operation?
-
-    var cancelled: Bool {
-        return cacheOperation?.isCancelled ?? false
-    }
-
-    @objc open func cancel() {
-        cacheOperation?.cancel()
-    }
-}
-
-extension UIImage {
-    func overlayWith(image: UILabel) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: size.width, height: size.height), false, 0.0)
-        draw(in: CGRect(origin: CGPoint.zero, size: size))
-        image.draw(CGRect(origin: CGPoint.zero, size: image.frame.size))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        
-        return newImage
     }
 }

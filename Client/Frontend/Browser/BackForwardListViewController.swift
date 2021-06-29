@@ -10,7 +10,6 @@ import SnapKit
 
 private enum BackForwardViewUX {
     static let RowHeight: CGFloat = 50
-    static let BackgroundColor = UIColor.Photon.Grey10A40
 }
 
 class BackForwardListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate {
@@ -18,7 +17,6 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
     fileprivate let BackForwardListCellIdentifier = "BackForwardListViewController"
     fileprivate var profile: Profile
     fileprivate lazy var sites = [String: Site]()
-    fileprivate var dismissing = false
     fileprivate var currentRow = 0
     fileprivate var verticalConstraints: [Constraint] = []
 

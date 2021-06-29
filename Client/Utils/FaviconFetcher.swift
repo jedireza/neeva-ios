@@ -29,8 +29,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
     static let MaximumFaviconSize = 1 * 1024 * 1024 // 1 MiB file size limit
 
     public static var userAgent: String = ""
-    static let ExpirationTime = TimeInterval(60*60*24*7) // Only check for icons once a week
-    
+
     private static var characterToFaviconCache = [String: (UIImage, UIColor)]()
     static var defaultFavicon: UIImage = {
         return UIImage(named: "defaultFavicon")!

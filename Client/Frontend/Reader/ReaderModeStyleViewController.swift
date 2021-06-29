@@ -14,7 +14,6 @@ private enum ReaderModeStyleViewControllerUX {
     static let Width = 270.0
     static let Height = 4.0 * RowHeight + 3.0 * SeparatorLineThickness
     
-    static let ThemeRowBackgroundColor = UIColor.Photon.White100
     static let ThemeTitleColorLight = UIColor.Photon.Grey70
     static let ThemeTitleColorDark = UIColor.Photon.White100
     static let ThemeTitleColorSepia = UIColor.Photon.Grey70

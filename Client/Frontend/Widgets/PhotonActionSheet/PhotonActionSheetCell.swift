@@ -10,11 +10,6 @@ import Shared
 // This file is the cells used for the PhotonActionSheet table view.
 
 private enum PhotonActionSheetCellUX {
-    static let LabelColor = UIConstants.SystemBlueColor
-    static let BorderWidth = CGFloat(0.5)
-    static let CellSideOffset = 20
-    static let TitleLabelOffset = 10
-    static let CellTopBottomOffset = 12
     static let StatusIconSize = 24
     static let SelectedOverlayColor = UIColor(white: 0.0, alpha: 0.25)
     static let CornerRadius: CGFloat = 3
@@ -135,7 +130,6 @@ class PhotonActionSheetCell: UITableViewCell {
     func configure(with action: PhotonActionSheetItem) {
         titleLabel.text = action.title
         titleLabel.textColor = UIColor.theme.tableView.rowText
-        titleLabel.textColor = action.accessory == .Text ? titleLabel.textColor.withAlphaComponent(0.6) : titleLabel.textColor
         if let tint = action.iconTint {
             titleLabel.textColor = tint
         }
@@ -178,16 +172,6 @@ class PhotonActionSheetCell: UITableViewCell {
             }
         } else {
             statusIcon.removeFromSuperview()
-        }
-
-        switch action.accessory {
-        case .Text:
-            disclosureLabel.font = action.bold ? DynamicFontHelper.defaultHelper.DeviceFontLargeBold : DynamicFontHelper.defaultHelper.LargeSizeRegularWeightAS
-            disclosureLabel.text = action.accessoryText
-            disclosureLabel.textColor = titleLabel.textColor
-            stackView.addArrangedSubview(disclosureLabel)
-        default:
-            break // Do nothing. The rest are not supported yet.
         }
 
         action.customRender?(titleLabel, contentView)

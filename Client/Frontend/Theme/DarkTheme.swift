@@ -6,7 +6,6 @@ import Foundation
 
 // Convenience reference to these normal mode colors which are used in a few color classes.
 fileprivate let defaultBackground = UIColor.tertiarySystemBackground
-fileprivate let defaultSeparator = UIColor.Photon.Grey60
 fileprivate let defaultTextAndTint = UIColor.Photon.Grey10
 
 fileprivate class DarkTableViewColor: TableViewColor {
@@ -18,7 +17,6 @@ fileprivate class DarkTableViewColor: TableViewColor {
     override var headerBackground: UIColor { return UIColor.Photon.Grey80 }
     override var headerTextLight: UIColor { return UIColor.Photon.Grey30 }
     override var headerTextDark: UIColor { return UIColor.Photon.Grey30 }
-    override var accessoryViewTint: UIColor { return UIColor.Photon.Grey40 }
     override var selectedBackground: UIColor { return UIColor.Custom.selectedHighlightDark }
 }
 

@@ -38,8 +38,6 @@ class TableViewColor {
     var headerTextLight: UIColor { return UIColor.Photon.Grey50 }
     // Used for table headers in home panel tables
     var headerTextDark: UIColor { return UIColor.Photon.Grey90 }
-    var rowActionAccessory: UIColor { return UIColor.Photon.Blue40 }
-    var accessoryViewTint: UIColor { return UIColor.Photon.Grey40 }
     var selectedBackground: UIColor { return UIColor.Custom.selectedHighlightLight }
 }
 

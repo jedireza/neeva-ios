@@ -7,7 +7,6 @@ import SnapKit
 import Shared
 
 fileprivate enum SnackBarUX {
-    static let maxWidth: CGFloat = 400
     static let borderWidth: CGFloat = 0.5
     static let padding: CGFloat = 10
     static let buttonHeight: CGFloat = 57

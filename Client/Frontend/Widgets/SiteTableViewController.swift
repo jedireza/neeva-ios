@@ -6,10 +6,7 @@ import UIKit
 import Storage
 
 private enum SiteTableViewControllerUX {
-    static let HeaderHeight = CGFloat(32)
     static let RowHeight = CGFloat(44)
-    static let HeaderFont = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.medium)
-    static let HeaderTextMargin = CGFloat(16)
 }
 
 /**

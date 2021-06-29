@@ -14,10 +14,3 @@ class NewTabHomePageAccessors {
         return NeevaConstants.appURL
     }
 }
-
-class HomeButtonHomePageAccessors {
-    static func getHomePage() -> URL? {
-        return NeevaConstants.appURL
-    }
-}
-

@@ -20,10 +20,6 @@ private enum OverlaySheetUX {
 
     // Width of the sheet when in landscape mode.
     static let landscapeModeWidth: CGFloat = 500
-
-    // Padding inserted below a fixed-height sheet when the keyboard is not
-    // showing. This keeps the content out of the safe area.
-    static let fixedHeightModeBottomPadding: CGFloat = 22
 }
 
 enum OverlaySheetPosition: LocalizedStringKey {

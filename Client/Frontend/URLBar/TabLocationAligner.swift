@@ -3,13 +3,6 @@
 import SwiftUI
 import Shared
 
-fileprivate struct TitleWidthPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
 /// NOTE: this view has not been tested with layouts where `Leading` is wider than `Trailing`.
 /// If that is possible with the parameters you pass, make sure to check that it works properly.
 struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Trailing: View>: View {

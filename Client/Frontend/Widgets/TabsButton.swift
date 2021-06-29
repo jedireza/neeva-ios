@@ -6,12 +6,6 @@ import Foundation
 import SnapKit
 import Shared
 
-private enum TabsButtonUX {
-    static let CornerRadius: CGFloat = 2
-    static let TitleFont: UIFont = UIConstants.DefaultChromeSmallFontBold
-    static let BorderStrokeWidth: CGFloat = 2
-}
-
 class TabsButton: UIButton {
     override var transform: CGAffineTransform {
         didSet {

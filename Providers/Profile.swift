@@ -82,20 +82,6 @@ protocol Profile: AnyObject {
     @discardableResult func storeTabs(_ tabs: [RemoteTab]) -> Deferred<Maybe<Int>>
 }
 
-fileprivate let clientIDKey = Defaults.Key<String?>("profile.PrefKeyClientID")
-extension Profile {
-    var clientID: String {
-        let clientID: String
-        if let id = Defaults[clientIDKey] {
-            clientID = id
-        } else {
-            clientID = UUID().uuidString
-            Defaults[clientIDKey] = clientID
-        }
-        return clientID
-    }
-}
-
 open class BrowserProfile: Profile {
     fileprivate let name: String
     fileprivate let keychain: KeychainWrapper
@@ -325,91 +311,4 @@ open class BrowserProfile: Profile {
 
         return RustLogins(databasePath: databasePath, encryptionKey: loginsKey, salt: salt)
     }()
-
-    class NoAccountError: MaybeErrorType {
-        var description = "No account."
-    }
-
-    // Extends NSObject so we can use timers.
-    public class BrowserSyncManager: NSObject {
-        // We shouldn't live beyond our containing BrowserProfile, either in the main app or in
-        // an extension.
-        // But it's possible that we'll finish a side-effect sync after we've ditched the profile
-        // as a whole, so we hold on to our Prefs, potentially for a little while longer. This is
-        // safe as a strong reference, because there's no cycle.
-        unowned fileprivate let profile: BrowserProfile
-        fileprivate var constellationStateUpdate: Any?
-
-        let FifteenMinutes = TimeInterval(60 * 15)
-        let OneMinute = TimeInterval(60)
-
-        fileprivate var syncTimer: Timer?
-
-        fileprivate var backgrounded: Bool = true
-        public func applicationDidEnterBackground() {
-            self.backgrounded = true
-            self.endTimedSyncs()
-        }
-
-        deinit {
-            if let c = constellationStateUpdate {
-                NotificationCenter.default.removeObserver(c)
-            }
-        }
-
-        /**
-         * Locking is managed by syncSeveral. Make sure you take and release these
-         * whenever you do anything Sync-ey.
-         */
-        fileprivate let syncLock = NSRecursiveLock()
-
-        func canSendUsageData() -> Bool {
-            return false
-        }
-
-        init(profile: BrowserProfile) {
-            self.profile = profile
-
-            super.init()
-        }
-
-        func doInBackgroundAfter(_ millis: Int64, _ block: @escaping () -> Void) {
-            let queue = DispatchQueue.global(qos: DispatchQoS.background.qosClass)
-            //Pretty ambiguous here. I'm thinking .now was DispatchTime.now() and not Date.now()
-            queue.asyncAfter(deadline: DispatchTime.now() + DispatchTimeInterval.milliseconds(Int(millis)), execute: block)
-        }
-
-        fileprivate func repeatingTimerAtInterval(_ interval: TimeInterval, selector: Selector) -> Timer {
-            return Timer.scheduledTimer(timeInterval: interval, target: self, selector: selector, userInfo: nil, repeats: true)
-        }
-
-        /**
-         * The caller is responsible for calling this on the same thread on which it called
-         * beginTimedSyncs.
-         */
-        public func endTimedSyncs() {
-            if let t = self.syncTimer {
-                log.debug("Stopping sync timer.")
-                self.syncTimer = nil
-                t.invalidate()
-            }
-        }
-
-
-        public class ScopedKeyError: MaybeErrorType {
-            public var description = "No key data found for scope."
-        }
-        
-        public class SyncUnlockGetURLError: MaybeErrorType {
-            public var description = "Failed to get token server endpoint url."
-        }
-
-        public func notify(deviceIDs: [GUID], collectionsChanged collections: [String], reason: String) -> Success {
-           return succeed()
-        }
-
-        public func notifyAll(collectionsChanged collections: [String], reason: String) -> Success {
-            return succeed()
-        }
-    }
 }

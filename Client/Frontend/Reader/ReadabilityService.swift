@@ -7,7 +7,6 @@ import WebKit
 
 private let ReadabilityServiceSharedInstance = ReadabilityService()
 
-private let ReadabilityTaskDefaultTimeout = 15
 private let ReadabilityServiceDefaultConcurrency = 1
 
 enum ReadabilityOperationResult {
