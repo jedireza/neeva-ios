@@ -3,7 +3,6 @@
 import Foundation
 import Defaults
 import KeychainAccess
-import UIKit
 
 extension Defaults.Keys {
     public static let neevaHost = Defaults.Key<String>("neevaHost", default: "neeva.com", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
@@ -48,10 +47,6 @@ public struct NeevaConstants {
     /// The shared keychain accessible to the Neeva app and its extensions
     public static let keychain = Keychain(service: "Neeva", accessGroup: appGroup)
 
-    public static var deviceTypeValue: String {
-        UIDevice.current.userInterfaceIdiom == .pad ? "tablet" : "phone"
-    }
-
     public struct Header {
         public let name: String
         public let value: String
@@ -61,14 +56,14 @@ public struct NeevaConstants {
         }
 
         /// Pass this header to all requests to Neeva from the iOS app.
-        public static let deviceType = Header("X-Neeva-Device-Type", deviceTypeValue)
+        public static let deviceType = Header("X-Neeva-Device-Type", "ios-browser")
     }
 
     /// This cookie is set on requests to identify the requester as the iOS app.
     public static var deviceTypeCookie: HTTPCookie {
         HTTPCookie(properties: [
             .name: "DeviceType",
-            .value: deviceTypeValue,
+            .value: "ios-browser",
             .domain: NeevaConstants.appHost,
             .path: "/",
             .expires: Date.distantFuture
