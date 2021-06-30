@@ -12,6 +12,7 @@ fileprivate enum LocationTextFieldIconUX {
 struct LocationTextFieldIcon: View {
     let currentUrl: URL?
 
+    @EnvironmentObject private var searchQuery: SearchQueryModel
     @EnvironmentObject private var neevaModel: NeevaSuggestionModel
     @EnvironmentObject private var historyModel: HistorySuggestionModel
 
@@ -20,24 +21,60 @@ struct LocationTextFieldIcon: View {
             let suggestion = historyModel.autocompleteSuggestion
             if let type = neevaModel.activeLensBang?.type {
                 Image(systemSymbol: type.defaultSymbol)
-            } else if let url = suggestion.contains("://") ? URL(string: suggestion) : URL(string: "https://\(suggestion)") {
+            } else if
+                let suggestion = suggestion,
+                let url = suggestion.contains("://") ? URL(string: suggestion) : URL(string: "https://\(suggestion)") {
                 FaviconView(url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false, defaultBackground: .clear)
                     .cornerRadius(4)
-            } else if
-                suggestion == NeevaConstants.appHost ||
-                    suggestion == "https://\(NeevaConstants.appHost)" ||
-                    (suggestion == "" && currentUrl?.host == NeevaConstants.appHost) {
+            } else if searchQuery.value.looksLikeAURL, let url = searchQuery.value.contains("://") ? URL(string: searchQuery.value) : URL(string: "https://\(searchQuery.value)")  {
+                FaviconView(url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false, defaultBackground: .clear)
+                    .cornerRadius(4)
+            } else {
                 Image("neevaMenuIcon")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             }
         }
         .frame(width: LocationTextFieldIconUX.size, height: LocationTextFieldIconUX.size)
+        .transition(.identity)
     }
 }
 
 struct LocationTextFieldIcon_Previews: PreviewProvider {
     static var previews: some View {
-        LocationTextFieldIcon(currentUrl: nil)
+        Group {
+            LocationTextFieldIcon(currentUrl: nil)
+                .previewDisplayName("Empty")
+
+            HStack(spacing: 20) {
+                LocationTextFieldIcon(currentUrl: nil)
+                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang, suggestions: []))
+                LocationTextFieldIcon(currentUrl: nil)
+                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens, suggestions: []))
+            }.previewDisplayName("Lens/Bang")
+
+            HStack(spacing: 20) {
+                LocationTextFieldIcon(currentUrl: nil)
+                    .environmentObject(HistorySuggestionModel(previewSuggestion: "example.com"))
+                LocationTextFieldIcon(currentUrl: nil)
+                    .environmentObject(HistorySuggestionModel(previewSuggestion: "apple.com"))
+            }.previewDisplayName("Domain autocomplete suggestion")
+
+            HStack(spacing: 20) {
+                LocationTextFieldIcon(currentUrl: nil)
+                    .environmentObject(SearchQueryModel(previewValue: "https://example.com"))
+                LocationTextFieldIcon(currentUrl: nil)
+                    .environmentObject(SearchQueryModel(previewValue: "https://apple.com"))
+            }.previewDisplayName("Entered URL")
+
+            LocationTextFieldIcon(currentUrl: nil)
+                .environmentObject(SearchQueryModel(previewValue: "https://github.com projects"))
+                .previewDisplayName("Entered Query")
+    }
+        .padding()
+        .previewLayout(.sizeThatFits)
+        .environmentObject(SearchQueryModel.shared)
+        .environmentObject(NeevaSuggestionModel(previewLensBang: nil, suggestions: []))
+        .environmentObject(HistorySuggestionModel(previewSites: []))
     }
 }

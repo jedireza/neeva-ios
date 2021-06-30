@@ -850,6 +850,13 @@
     "domain": "nbcnews.com"
   },
   {
+    "title": "neeva",
+    "url": "https://www.neeva.com/",
+    "image_url": "neeva-com.png",
+    "background_color": "#fff",
+    "domain": "neeva.com"
+  },
+  {
     "title": "netflix",
     "url": "https://www.netflix.com/",
     "image_url": "netflix-com.png",

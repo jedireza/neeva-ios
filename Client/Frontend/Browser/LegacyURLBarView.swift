@@ -233,7 +233,7 @@ class LegacyURLBarView: UIView {
             }.store(in: &subscriptions)
             historySuggestionModel.$autocompleteSuggestion.sink { [unowned self] suggestion in
                 locationTextField?.setAutocompleteSuggestion(suggestion)
-                createLeftViewFavicon(suggestion)
+                createLeftViewFavicon(suggestion ?? "")
             }.store(in: &subscriptions)
         }
     }
@@ -493,6 +493,7 @@ class LegacyURLBarView: UIView {
         if FeatureFlag[.newURLBar] {
             if let location = location {
                 SearchQueryModel.shared.value = location
+                model.isEditing = true
             }
         } else {
             guard let text = location, !text.isEmpty else {
@@ -735,12 +736,12 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
     }
 }
 
-extension LegacyURLBarView: AutocompleteTextFieldDelegate {
-    func autocompleteTextFieldCompletionCleared(_ autocompleteTextField: AutocompleteTextField) {
+extension LegacyURLBarView: LegacyAutocompleteTextFieldDelegate {
+    func legacyAutocompleteTextFieldCompletionCleared(_ autocompleteTextField: LegacyAutocompleteTextField) {
         createLeftViewFavicon()
     }
 
-    func autocompleteTextFieldShouldReturn(_ autocompleteTextField: AutocompleteTextField) -> Bool {
+    func legacyAutocompleteTextFieldShouldReturn(_ autocompleteTextField: LegacyAutocompleteTextField) -> Bool {
         guard let text = locationTextField?.text else { return true }
         if !text.trimmingCharacters(in: .whitespaces).isEmpty {
             delegate?.urlBar(didSubmitText: text)
@@ -750,7 +751,7 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
         }
     }
 
-    func autocompleteTextField(_ autocompleteTextField: AutocompleteTextField, didEnterText text: String) {
+    func legacyAutocompleteTextField(_ autocompleteTextField: LegacyAutocompleteTextField, didEnterText text: String) {
         SearchQueryModel.shared.value = text
         delegate?.urlBar(didEnterText: text)
         if text.isEmpty  {
@@ -758,17 +759,17 @@ extension LegacyURLBarView: AutocompleteTextFieldDelegate {
         }
     }
 
-    func autocompleteTextFieldShouldClear(_ autocompleteTextField: AutocompleteTextField) -> Bool {
+    func legacyAutocompleteTextFieldShouldClear(_ autocompleteTextField: LegacyAutocompleteTextField) -> Bool {
         SearchQueryModel.shared.value = ""
         delegate?.urlBar(didEnterText: "")
         return true
     }
 
-    func autocompleteTextFieldDidCancel(_ autocompleteTextField: AutocompleteTextField) {
+    func legacyAutocompleteTextFieldDidCancel(_ autocompleteTextField: LegacyAutocompleteTextField) {
         leaveOverlayMode(didCancel: true)
     }
 
-    func autocompletePasteAndGo(_ autocompleteTextField: AutocompleteTextField) {
+    func legacyAutocompletePasteAndGo(_ autocompleteTextField: LegacyAutocompleteTextField) {
         if let pasteboardContents = UIPasteboard.general.string {
             self.delegate?.urlBar(didSubmitText: pasteboardContents)
         }
@@ -820,7 +821,7 @@ class TabLocationContainerView: UIView {
     }
 }
 
-class ToolbarTextField: AutocompleteTextField {
+class ToolbarTextField: LegacyAutocompleteTextField {
     private var isPrivateMode = false
 
     @objc dynamic var clearButtonTintColor: UIColor? {

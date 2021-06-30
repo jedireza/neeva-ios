@@ -1,130 +1,250 @@
-// Copyright Neeva. All rights reserved.
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+// This code is loosely based on https://github.com/Antol/APAutocompleteTextField
 
 import SwiftUI
 import Shared
+import Combine
 
-fileprivate enum LocationTextFieldUX {
-    static let textFieldOffset: CGFloat = 200
-}
-
-struct LocationTextField: View {
-    let currentUrl: URL?
+struct LocationTextField: UIViewRepresentable {
+    @Binding var text: String
+    @Binding var editing: Bool
     let onSubmit: (String) -> ()
-    @Binding var textField: UITextField?
 
     @EnvironmentObject private var historyModel: HistorySuggestionModel
-    @ObservedObject private var searchQuery = SearchQueryModel.shared
-    @State private var textFieldOffset: CGFloat = LocationTextFieldUX.textFieldOffset
 
-    var body: some View {
-        let query = searchQuery.value
-        let suggestion = historyModel.autocompleteSuggestion
-        HStack(spacing: 0) {
-            LocationTextFieldIcon(currentUrl: currentUrl)
-                .frame(width: TabLocationViewUX.height)
+    func makeUIView(context: Context) -> AutocompleteTextField {
+        let tf = AutocompleteTextField(text: $text, isActive: $editing, onSubmit: onSubmit, historyModel: historyModel)
 
-            ZStack(alignment: .leading) {
-                if searchQuery.isEmpty {
-                    TabLocationViewUX.placeholder
-                        .foregroundColor(.secondaryLabel)
-                        .accessibilityHidden(true)
-                        .transition(.identity)
-                } else if
-                    let query = query,
-                    suggestion != query,
-                    let range = suggestion.range(of: query),
-                    range.lowerBound == suggestion.startIndex {
-                    HStack(spacing: 0) {
-                        Text(query)
-                            .foregroundColor(.clear)
-                        Text(suggestion[range.upperBound...])
-                            .padding(.vertical, 1)
-                            .padding(.trailing, 3)
-                            .background(Color.textSelectionHighlight.cornerRadius(2, corners: .right))
-                            .padding(.vertical, -1)
-                    }.padding(.top, 1).animation(nil).transition(.identity)
-                }
-                TextField(
-                    "",
-                    text: Binding { searchQuery.value ?? "" } set: { searchQuery.value = $0 },
-                    onCommit: {
-                        if historyModel.autocompleteSuggestion.isEmpty {
-                            onSubmit(searchQuery.value ?? "")
-                        } else {
-                            onSubmit(historyModel.autocompleteSuggestion)
-                        }
+        tf.font = UIFont.systemFont(ofSize: 16)
+        tf.backgroundColor = .clear
+        tf.adjustsFontForContentSizeCategory = true
+        tf.clipsToBounds = true
+        tf.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        tf.keyboardType = .webSearch
+        tf.autocorrectionType = .no
+        tf.autocapitalizationType = .none
+        tf.returnKeyType = .go
+        tf.clearButtonMode = .whileEditing
+        tf.textAlignment = .left
+        tf.accessibilityIdentifier = "address"
+        tf.accessibilityLabel = .URLBarLocationAccessibilityLabel
+        tf.enablesReturnKeyAutomatically = true
+        tf.attributedPlaceholder =
+            NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
 
-                        searchQuery.value = nil
-                    }
-                )
-                .keyboardType(.webSearch)
-                .disableAutocorrection(true)
-                .autocapitalization(.none)
-                .accessibilityLabel("Address and Search")
-                .introspectTextField { tf in
-                    tf.enablesReturnKeyAutomatically = true
-                    tf.returnKeyType = .go
-                    tf.clearButtonMode = .whileEditing
-                    if textField?.superview == nil {
-                        // TODO: When dropping support for iOS 14, change this to use .focused()
-                        tf.becomeFirstResponder()
 
-                        if !searchQuery.isEmpty {
-                            tf.selectAll(nil)
-                            tf.tintColor = .ui.adaptive.blue.withAlphaComponent(0)
-                            tf.addAction(UIAction { _ in  }, for: .valueChanged)
-                        }
-                    }
-                    textField = tf
-                }
-                .onChange(of: searchQuery.value) { newQuery in
-                    textField?.tintColor = .ui.adaptive.blue
-                    if let newQuery = newQuery,
-                       let query = query,
-                       let last = query.last,
-                       newQuery + String(last) == query,
-                       !suggestion.isEmpty {
-                        historyModel.clearSuggestion()
-                        historyModel.setQueryWithoutAutocomplete(query)
-                    }
-                }
-                .onTapGesture {
-                    textField?.tintColor = .ui.adaptive.blue
-                }
-            }
-            .padding(.trailing, 6)
-            .offset(x: textFieldOffset, y: 0)
-            .onAppear {
-                textFieldOffset = 0
-            }
-            .onDisappear {
-                textFieldOffset = LocationTextFieldUX.textFieldOffset
-                textField = nil
-            }
+        tf.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        DispatchQueue.main.async {
+            tf.becomeFirstResponder()
+            tf.selectAll(nil)
+        }
+        tf.text = text
+
+        return tf
+    }
+
+    func updateUIView(_ tf: AutocompleteTextField, context: Context) {
+        tf.onSubmit = onSubmit
+        if tf.text != text {
+            tf.text = text
+        }
+        if !editing {
+            tf.resignFirstResponder()
         }
     }
 }
 
-struct LocationTextField_Previews: PreviewProvider {
-//    struct Preview: View {
-//        @State var text: String?
-//        let activeLensBang: ActiveLensBangInfo?
-//
-//        var body: some View {
-//            LocationTextField(model: SuggestionModel(profile: profile), currentUrl: nil, activeLensBang: activeLensBang, onSubmit: { _ in }, textField: .constant(nil))
-//        }
-//    }
-    static var previews: some View {
-        Group {
-//            Preview(text: "", activeLensBang: nil)
-//            Preview(text: "hello, world", activeLensBang: nil)
-//            Preview(text: "https://apple.com/", activeLensBang: nil)
-//            Preview(text: "!w something", activeLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang))
-//            Preview(text: "@w something", activeLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens))
+class AutocompleteTextField: UITextField, UITextFieldDelegate {
+    var onSubmit: (String) -> ()
+
+    @Binding private var binding: String
+    @Binding private var isActive: Bool
+    private var historyModel: HistorySuggestionModel
+
+    private let copyShortcutKey = "c"
+    fileprivate var defaultTint = UIColor.ui.adaptive.blue
+    private var subscription: AnyCancellable?
+
+    override var accessibilityValue: String? {
+        get {
+            return (self.text ?? "") + (historyModel.autocompleteSuggestion ?? "")
         }
-        .frame(height: TabLocationViewUX.height)
-        .background(Capsule().fill(Color.systemFill))
-        .padding()
-        .previewLayout(.sizeThatFits)
+        set(value) {
+            super.accessibilityValue = value
+        }
+    }
+
+    init(text: Binding<String>, isActive: Binding<Bool>, onSubmit: @escaping (String) -> (), historyModel: HistorySuggestionModel) {
+        self._binding = text
+        self._isActive = isActive
+        self.onSubmit = onSubmit
+        self.historyModel = historyModel
+        super.init(frame: .zero)
+        super.delegate = self
+
+        self.addAction(UIAction { [weak self] _ in
+            guard let self = self, let text = self.text else { return }
+            self.binding = text
+        }, for: .editingChanged)
+
+        subscription = historyModel.$autocompleteSuggestion.sink { [unowned self] suggestion in
+            // TODO: unify this logic with LocationEditView
+            if let suggestion = suggestion,
+               isEditing && markedTextRange == nil,
+               let normalized = Optional(normalizeString(self.text ?? "")),
+               suggestion.hasPrefix(normalized),
+               normalized.count < suggestion.count {
+                tintColor = defaultTint.withAlphaComponent(0)
+            } else {
+                tintColor = defaultTint
+            }
+        }
+        tintColor = defaultTint.withAlphaComponent(0)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var keyCommands: [UIKeyCommand]? {
+        return [
+            UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: [], action: #selector(self.handleKeyCommand(sender:))),
+            UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: [], action: #selector(self.handleKeyCommand(sender:))),
+            UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(self.handleKeyCommand(sender:))),
+            UIKeyCommand(input: copyShortcutKey, modifierFlags: .command, action: #selector(self.handleKeyCommand(sender:)))
+        ]
+    }
+
+    @objc func handleKeyCommand(sender: UIKeyCommand) {
+        guard let input = sender.input else {
+            return
+        }
+        switch input {
+        case UIKeyCommand.inputLeftArrow:
+            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-left-arrow"])
+            if historyModel.autocompleteSuggestion != nil {
+                applyCompletion()
+
+                // Set the current position to the beginning of the text.
+                selectedTextRange = textRange(from: beginningOfDocument, to: beginningOfDocument)
+            } else if let range = selectedTextRange {
+                if range.start == beginningOfDocument {
+                    break
+                }
+
+                guard let cursorPosition = position(from: range.start, offset: -1) else {
+                    break
+                }
+
+                selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
+            }
+        case UIKeyCommand.inputRightArrow:
+            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-right-arrow"])
+            if historyModel.autocompleteSuggestion != nil {
+                applyCompletion()
+
+                // Set the current position to the end of the text.
+                selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
+            } else if let range = selectedTextRange {
+                if range.end == endOfDocument {
+                    break
+                }
+
+                guard let cursorPosition = position(from: range.end, offset: 1) else {
+                    break
+                }
+
+                selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
+            }
+        case UIKeyCommand.inputEscape:
+            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-cancel"])
+            isActive = false
+        case copyShortcutKey:
+            if let suggestion = historyModel.autocompleteSuggestion {
+                UIPasteboard.general.string = suggestion
+            } else if let selectedTextRange = self.selectedTextRange {
+                UIPasteboard.general.string = self.text(in: selectedTextRange)
+            }
+        default:
+            break
+        }
+    }
+
+    fileprivate func normalizeString(_ string: String) -> String {
+        return string.lowercased().stringByTrimmingLeadingCharactersInSet(CharacterSet.whitespaces)
+    }
+
+    /// Commits the completion by setting the text and removing the highlight.
+    @discardableResult fileprivate func applyCompletion() -> Bool {
+        // Clear the current completion, then set the text without the attributed style.
+        guard let suggestion = historyModel.autocompleteSuggestion else { return false }
+        binding = suggestion
+        // Move the cursor to the end of the completion.
+        selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
+        return true
+    }
+
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        applyCompletion()
+        return true
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let didApplyAutocomplete = applyCompletion()
+        let interaction: LogConfig.Interaction = didApplyAutocomplete
+            ? .AutocompleteSuggestion : .NoSuggestion
+        ClientLogger.shared.logCounter(interaction)
+        if let text = text {
+            if !text.trimmingCharacters(in: .whitespaces).isEmpty {
+                onSubmit(text)
+                return true
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+
+    override func setMarkedText(_ markedText: String?, selectedRange: NSRange) {
+        // Clear the autocompletion if any provisionally inserted text has been
+        // entered (e.g., a partial composition from a Japanese keyboard).
+        historyModel.clearSuggestion()
+        super.setMarkedText(markedText, selectedRange: selectedRange)
+    }
+
+    override func deleteBackward() {
+        if !historyModel.clearSuggestion() {
+            if selectedTextRange != textRange(from: beginningOfDocument, to: beginningOfDocument) {
+                historyModel.skipNextAutocomplete()
+            }
+            super.deleteBackward()
+        }
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        applyCompletion()
+        super.touchesBegan(touches, with: event)
+    }
+}
+
+extension AutocompleteTextField: MenuHelperInterface {
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == MenuHelper.SelectorPasteAndGo {
+            return UIPasteboard.general.hasStrings
+        }
+
+        return super.canPerformAction(action, withSender: sender)
+    }
+
+    @objc func menuHelperPasteAndGo() {
+        UIPasteboard.general.asyncString().uponQueue(.main) {
+            if let input = $0.successValue as? String {
+                self.onSubmit(input)
+            }
+        }
     }
 }

@@ -19,14 +19,15 @@ private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([
 class HistorySuggestionModel: ObservableObject {
     fileprivate let frecentHistory: FrecentHistory
 
-    @Published private(set) var autocompleteSuggestion = ""
+    @Published private(set) var autocompleteSuggestion: String?
     @Published private(set) var sites: [Site]?
 
-    private var skipNextAutocomplete = false
+    private var shouldSkipNextAutocomplete = false
 
-    convenience init(previewSites: [Site]? = nil) {
+    convenience init(previewSites: [Site]? = nil, previewSuggestion: String? = nil) {
         self.init(profile: BrowserProfile(localName: "profile"))
         self.sites = previewSites
+        self.autocompleteSuggestion = previewSuggestion
     }
 
     init(profile: Profile) {
@@ -34,12 +35,18 @@ class HistorySuggestionModel: ObservableObject {
         subscribe()
     }
 
-    func clearSuggestion() {
-        autocompleteSuggestion = ""
+    @discardableResult func clearSuggestion() -> Bool {
+        let cleared = autocompleteSuggestion != nil
+        autocompleteSuggestion = nil
+        return cleared
+    }
+
+    func skipNextAutocomplete() {
+        shouldSkipNextAutocomplete = true
     }
 
     func setQueryWithoutAutocomplete(_ query: String) {
-        skipNextAutocomplete = true
+        skipNextAutocomplete()
         SearchQueryModel.shared.value = query
     }
 
@@ -58,14 +65,10 @@ class HistorySuggestionModel: ObservableObject {
         searchTextSubscription = SearchQueryModel.shared.$value.withPrevious().sink { [unowned self] oldQuery, query in
             currentDeferredHistoryQuery?.cancel()
 
-            guard let query = query else {
-                sites = nil
-                return
-            }
-
             if query.isEmpty {
                 sites = []
-                autocompleteSuggestion = ""
+                autocompleteSuggestion = nil
+                shouldSkipNextAutocomplete = false
                 return
             }
 
@@ -93,16 +96,10 @@ class HistorySuggestionModel: ObservableObject {
                 // Load the data in the table view.
                 self.sites = deferredHistorySites
 
-                // If the new search string is not longer than the previous
-                // we don't need to find an autocomplete suggestion.
-                guard (oldQuery?.count ?? 0) < query.count else {
-                    return
-                }
-
                 // If we should skip the next autocomplete, reset
                 // the flag and bail out here.
-                guard !self.skipNextAutocomplete else {
-                    self.skipNextAutocomplete = false
+                guard !self.shouldSkipNextAutocomplete else {
+                    self.shouldSkipNextAutocomplete = false
                     return
                 }
 
@@ -122,7 +119,9 @@ class HistorySuggestionModel: ObservableObject {
                     }
                 }
 
-                self.autocompleteSuggestion = ""
+                if self.autocompleteSuggestion != nil {
+                    self.autocompleteSuggestion = nil
+                }
             }
         }
     }
@@ -137,7 +136,7 @@ class HistorySuggestionModel: ObservableObject {
 
         // If the pre-path component (including the scheme) starts with the query, just use it as is.
         var prePathURL = (url as NSString).substring(with: match.range(at: 0))
-        if prePathURL.hasPrefix(SearchQueryModel.shared.value ?? "") {
+        if prePathURL.hasPrefix(SearchQueryModel.shared.value) {
             // Trailing slashes in the autocompleteTextField cause issues with Swype keyboard. Bug 1194714
             if prePathURL.hasSuffix("/") {
                 prePathURL.remove(at: prePathURL.index(before: prePathURL.endIndex))
@@ -155,7 +154,7 @@ class HistorySuggestionModel: ObservableObject {
 
     fileprivate func completionForDomain(_ domain: String) -> String? {
         let domainWithDotPrefix: String = ".\(domain)"
-        if let range = domainWithDotPrefix.range(of: ".\(SearchQueryModel.shared.value ?? "")", options: .caseInsensitive, range: nil, locale: nil) {
+        if let range = domainWithDotPrefix.range(of: ".\(SearchQueryModel.shared.value)", options: .caseInsensitive, range: nil, locale: nil) {
             // We don't actually want to match the top-level domain ("com", "org", etc.) by itself, so
             // so make sure the result includes at least one ".".
             let matchedDomain = String(domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])

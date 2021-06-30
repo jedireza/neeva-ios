@@ -198,7 +198,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Force the ToolbarTextField in LTR mode - without this change the UITextField's clear
         // button will be in the incorrect position and overlap with the input text. Not clear if
         // that is an iOS bug or not.
-        AutocompleteTextField.appearance().semanticContentAttribute = .forceLeftToRight
+        LegacyAutocompleteTextField.appearance().semanticContentAttribute = .forceLeftToRight
 
         return shouldPerformAdditionalDelegateHandling
     }

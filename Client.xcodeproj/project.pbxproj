@@ -340,6 +340,7 @@
 		C94D40682684CC35003A6766 /* PublisherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40672684CC35003A6766 /* PublisherExtensions.swift */; };
 		C94D406A2684D442003A6766 /* NeevaSuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40692684D442003A6766 /* NeevaSuggestionModel.swift */; };
 		C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D406B2684E677003A6766 /* SearchQueryModel.swift */; };
+		C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D409C268CADD4003A6766 /* LocationEditView.swift */; };
 		C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */; };
 		C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */; };
 		C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */; };
@@ -530,7 +531,7 @@
 		D3CFD3641CC5605B0064AB4A /* SecurityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CFD3631CC5605B0064AB4A /* SecurityTests.swift */; };
 		D3D488591ABB54CD00A93597 /* FileAccessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D488581ABB54CD00A93597 /* FileAccessorTests.swift */; };
 		D3E171C21A841EAD00AB44CD /* KIFHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = D3E171C11A841EAD00AB44CD /* KIFHelper.js */; };
-		D3FEC38D1AC4B42F00494F45 /* AutocompleteTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FEC38C1AC4B42F00494F45 /* AutocompleteTextField.swift */; };
+		D3FEC38D1AC4B42F00494F45 /* LegacyAutocompleteTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3FEC38C1AC4B42F00494F45 /* LegacyAutocompleteTextField.swift */; };
 		D47A50F7254840210019A838 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		D595529825D1F5590040B30B /* WidgetIntents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = D595529725D1F5590040B30B /* WidgetIntents.intentdefinition */; };
 		D59643E325C9B8E000EAB8B9 /* ClearPrivateData.strings in Resources */ = {isa = PBXBuildFile; fileRef = 58E14A8F991610DB13A9F1E1 /* ClearPrivateData.strings */; };
@@ -1262,6 +1263,7 @@
 		C94D40672684CC35003A6766 /* PublisherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublisherExtensions.swift; sourceTree = "<group>"; };
 		C94D40692684D442003A6766 /* NeevaSuggestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSuggestionModel.swift; sourceTree = "<group>"; };
 		C94D406B2684E677003A6766 /* SearchQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueryModel.swift; sourceTree = "<group>"; };
+		C94D409C268CADD4003A6766 /* LocationEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationEditView.swift; sourceTree = "<group>"; };
 		C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSettingsSection.swift; sourceTree = "<group>"; };
 		C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsSection.swift; sourceTree = "<group>"; };
 		C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsSection.swift; sourceTree = "<group>"; };
@@ -1445,7 +1447,7 @@
 		D3D488581ABB54CD00A93597 /* FileAccessorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileAccessorTests.swift; sourceTree = "<group>"; };
 		D3E171C11A841EAD00AB44CD /* KIFHelper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = KIFHelper.js; sourceTree = "<group>"; };
 		D3FA77831A43B2CE0010CD32 /* OpenSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenSearch.swift; sourceTree = "<group>"; };
-		D3FEC38C1AC4B42F00494F45 /* AutocompleteTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutocompleteTextField.swift; sourceTree = "<group>"; };
+		D3FEC38C1AC4B42F00494F45 /* LegacyAutocompleteTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyAutocompleteTextField.swift; sourceTree = "<group>"; };
 		D595529725D1F5590040B30B /* WidgetIntents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WidgetIntents.intentdefinition; sourceTree = "<group>"; };
 		D815A3A724A53F3200AAB221 /* TabToolbarHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabToolbarHelperTests.swift; sourceTree = "<group>"; };
 		D81E377D2242FF61006AC72D /* Client-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Client-Bridging-Header.h"; path = "Client/Client-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
@@ -2225,13 +2227,6 @@
 			path = ClientIntent;
 			sourceTree = "<group>";
 		};
-		7B0B1B9C1C1B69F500DF4AB5 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Extensions;
-			sourceTree = "<group>";
-		};
 		7B3632D21C2983F000D12AF9 /* L10nSnapshotTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -2373,6 +2368,7 @@
 		C93EFEE3267150ED000396B5 /* URLBar */ = {
 			isa = PBXGroup;
 			children = (
+				C94D409C268CADD4003A6766 /* LocationEditView.swift */,
 				C9E5F2C82678062300025A7F /* LocationTextField.swift */,
 				C94D40642683B48A003A6766 /* LocationTextFieldIcon.swift */,
 				C93EFEE4267150FD000396B5 /* TabLocationView.swift */,
@@ -2639,7 +2635,7 @@
 			isa = PBXGroup;
 			children = (
 				EBA3B2CE2268F3E700728BDB /* PhotonActionSheet */,
-				D3FEC38C1AC4B42F00494F45 /* AutocompleteTextField.swift */,
+				D3FEC38C1AC4B42F00494F45 /* LegacyAutocompleteTextField.swift */,
 				D0EAE0E1228B3762001C875A /* DrawerViewController.swift */,
 				D863C8E31F68BFC20058D95F /* GradientProgressBar.swift */,
 				0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */,
@@ -3270,7 +3266,6 @@
 				392ED7D51D0AEEEE009D9B62 /* Accessors */,
 				D3A994941A368691008AD1AC /* Browser */,
 				C93EFEE3267150ED000396B5 /* URLBar */,
-				7B0B1B9C1C1B69F500DF4AB5 /* Extensions */,
 				F84B22211A09122500AAB793 /* Home */,
 				EBC486972195F46A00CDA48D /* InternalSchemeHandler */,
 				43A5643423CD1E1B00B6857D /* Update */,
@@ -4504,6 +4499,7 @@
 				EBF47E701F7979DF00899189 /* TelemetryWrapper.swift in Sources */,
 				E68F36981EA694000048CF44 /* PanelDataObservers.swift in Sources */,
 				C94D40652683B48A003A6766 /* LocationTextFieldIcon.swift in Sources */,
+				C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */,
 				31ADB5DA1E58CEC300E87909 /* ClipboardBarDisplayHandler.swift in Sources */,
 				C9C18DE526558FF3004710CD /* PullToRefresh.swift in Sources */,
 				EB9A179D20E69A7F00B12184 /* Theme.swift in Sources */,
@@ -4545,6 +4541,7 @@
 				C9BED4BB2667E3F8001D9C77 /* HomeViewModels.swift in Sources */,
 				BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */,
 				C9E5F2C22677D8BA00025A7F /* TabLocationHost.swift in Sources */,
+				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
 				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
 				4A3D299126850CB60082F293 /* CardGrid.swift in Sources */,
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
@@ -4706,7 +4703,7 @@
 				4A1D054D266430DA00D63333 /* SimulatedSwipeAnimator.swift in Sources */,
 				C9C18E1E265591A1004710CD /* Icons.swift in Sources */,
 				C4E3984C1D21F2FD004E89BA /* TabTrayButtonExtensions.swift in Sources */,
-				D3FEC38D1AC4B42F00494F45 /* AutocompleteTextField.swift in Sources */,
+				D3FEC38D1AC4B42F00494F45 /* LegacyAutocompleteTextField.swift in Sources */,
 				EBE26B57220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift in Sources */,
 				E68AEDB01B18F81A00133D99 /* SwipeAnimator.swift in Sources */,
 				EBB89504219398E500EB91A0 /* TrackingProtectionPageStats.swift in Sources */,

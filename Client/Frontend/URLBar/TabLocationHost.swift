@@ -6,12 +6,15 @@ import Combine
 struct TabLocationViewWrapper: View {
     let historyModel: HistorySuggestionModel
     let neevaModel: NeevaSuggestionModel
+    let model: URLBarModel
     let content: () -> TabLocationView
 
     var body: some View {
         content()
             .environmentObject(historyModel)
             .environmentObject(neevaModel)
+            .environmentObject(model)
+            .environmentObject(SearchQueryModel.shared)
     }
 }
 class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
@@ -21,16 +24,23 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         didSet {
             subscriptions = []
             if urlBarDelegate != nil {
-                SearchQueryModel.shared.$value.withPrevious()
-                    .sink { [weak urlBarDelegate] oldValue, newValue in
-                        if oldValue == nil, newValue != nil {
+                model.$isEditing
+                    .withPrevious()
+                    .sink { [weak urlBarDelegate] change in
+                        switch change {
+                        case (false, true):
                             urlBarDelegate?.urlBarDidEnterOverlayMode()
-                        } else if oldValue != nil, newValue == nil {
+                        case (true, false):
                             urlBarDelegate?.urlBarDidLeaveOverlayMode()
+                        default: break
                         }
-
-                        if let newValue = newValue {
-                            urlBarDelegate?.urlBar(didEnterText: newValue)
+                    }
+                    .store(in: &subscriptions)
+                model.$isEditing
+                    .combineLatest(SearchQueryModel.shared.$value)
+                    .sink { [weak urlBarDelegate] isEditing, query in
+                        if isEditing {
+                            urlBarDelegate?.urlBar(didEnterText: query)
                         }
                     }
                     .store(in: &subscriptions)
@@ -52,9 +62,8 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         self.urlBarDelegate = urlBarDelegate
         super.init()
         setRootView {
-            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel) {
+            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model) {
                 TabLocationView(
-                    model: model,
                     onReload: { [weak self] in self?.delegate?.tabLocationViewDidTapReload() },
                     onSubmit: { [weak self] in self?.urlBarDelegate?.urlBar(didSubmitText: $0) },
                     onShare: { [weak self] in self?.delegate?.tabLocationViewDidTap(shareButton: $0) },

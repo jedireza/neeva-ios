@@ -12,13 +12,10 @@ class NeevaSuggestionModel: ObservableObject {
     @Published var isIncognito: Bool // TODO: don’t duplicate this source of truth
 
     var shouldShowSuggestions: Bool {
-        if let searchQuery = searchQuery {
-            return !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL()
-        }
-        return false
+        return !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL
     }
 
-    init(searchQueryForTesting: String? = nil, isIncognito: Bool = false,
+    init(searchQueryForTesting: String = SearchQueryModel.shared.value, isIncognito: Bool = false,
          previewLensBang: ActiveLensBangInfo?, suggestions: [Suggestion]) {
         self.isIncognito = isIncognito
         self.suggestions = suggestions
@@ -34,7 +31,7 @@ class NeevaSuggestionModel: ObservableObject {
     private var subscription: AnyCancellable?
     fileprivate var suggestionQuery: Apollo.Cancellable?
 
-    private var searchQuery: String? {
+    private var searchQuery = SearchQueryModel.shared.value {
         didSet {
             if searchQuery != oldValue { reload() }
         }
@@ -43,14 +40,14 @@ class NeevaSuggestionModel: ObservableObject {
     func reload() {
         suggestionQuery?.cancel()
 
-        guard let searchQuery = searchQuery,
-              shouldShowSuggestions
-        else {
+        guard shouldShowSuggestions else {
             suggestions = []
             activeLensBang = nil
             error = nil
             return
         }
+
+        let searchQuery = searchQuery
 
         suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { result in
             self.suggestionQuery = nil
@@ -93,14 +90,5 @@ class NeevaSuggestionModel: ObservableObject {
                 }
             }
         }
-    }
-}
-
-fileprivate extension String {
-    func looksLikeAURL() -> Bool {
-        // The assumption here is that if the user is typing in a forward slash and there are no spaces
-        // involved, it's going to be a URL. If we type a space, any url would be invalid.
-        // See https://bugzilla.mozilla.org/show_bug.cgi?id=1192155 for additional details.
-        return self.contains("/") && !self.contains(" ")
     }
 }

@@ -22,7 +22,7 @@ struct LocationViewTrackingButton: View {
     @StateObject private var viewModel = TrackingStatsViewModel(
         trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab()
     )
-    @Environment(\.isIncognito) var isIncognito
+    @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
         let label = isIncognito
@@ -133,15 +133,20 @@ struct LocationViewShareButton: View {
 struct TabLocationBarButton_Previews: PreviewProvider {
     static var previews: some View {
         HStack {
+            LocationViewTrackingButton()
+            LocationViewTrackingButton()
+                .environment(\.isIncognito, true)
+        }.previewLayout(.sizeThatFits)
+        HStack {
             LocationViewReloadButton(buildMenu: { nil }, state: .constant(.disabled)) {}
             LocationViewReloadButton(buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) }, state: .constant(.reload)) {}
             LocationViewReloadButton(buildMenu: { nil }, state: .constant(.stop)) {}
-        }
+        }.previewLayout(.sizeThatFits)
         HStack {
             LocationViewShareButton(url: nil, canShare: false, onTap: { _ in })
             LocationViewShareButton(url: "https://neeva.com/", canShare: false, onTap: { _ in })
             LocationViewShareButton(url: "https://neeva.com/", canShare: true, onTap: { _ in })
-        }
+        }.previewLayout(.sizeThatFits)
     }
 }
 

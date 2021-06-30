@@ -7,20 +7,20 @@
 import UIKit
 import Shared
 
-/// Delegate for the text field events. Since AutocompleteTextField owns the UITextFieldDelegate,
+/// Delegate for the text field events. Since LegacyAutocompleteTextField owns the UITextFieldDelegate,
 /// callers must use this instead.
-protocol AutocompleteTextFieldDelegate: AnyObject {
-    func autocompleteTextField(_ autocompleteTextField: AutocompleteTextField, didEnterText text: String)
-    func autocompleteTextFieldCompletionCleared(_ autocompleteTextField: AutocompleteTextField)
-    func autocompleteTextFieldShouldReturn(_ autocompleteTextField: AutocompleteTextField) -> Bool
-    func autocompleteTextFieldShouldClear(_ autocompleteTextField: AutocompleteTextField) -> Bool
-    func autocompleteTextFieldDidCancel(_ autocompleteTextField: AutocompleteTextField)
-    func autocompletePasteAndGo(_ autocompleteTextField: AutocompleteTextField)
+protocol LegacyAutocompleteTextFieldDelegate: AnyObject {
+    func legacyAutocompleteTextField(_ autocompleteTextField: LegacyAutocompleteTextField, didEnterText text: String)
+    func legacyAutocompleteTextFieldCompletionCleared(_ autocompleteTextField: LegacyAutocompleteTextField)
+    func legacyAutocompleteTextFieldShouldReturn(_ autocompleteTextField: LegacyAutocompleteTextField) -> Bool
+    func legacyAutocompleteTextFieldShouldClear(_ autocompleteTextField: LegacyAutocompleteTextField) -> Bool
+    func legacyAutocompleteTextFieldDidCancel(_ autocompleteTextField: LegacyAutocompleteTextField)
+    func legacyAutocompletePasteAndGo(_ autocompleteTextField: LegacyAutocompleteTextField)
 }
 
-class AutocompleteTextField: UITextField, UITextFieldDelegate {
+class LegacyAutocompleteTextField: UITextField, UITextFieldDelegate {
     let padding = UIEdgeInsets(top: 0, left:30, bottom: 0, right: 35)
-    var autocompleteDelegate: AutocompleteTextFieldDelegate?
+    var autocompleteDelegate: LegacyAutocompleteTextFieldDelegate?
     // AutocompleteTextLabel repersents the actual autocomplete text.
     // The textfields "text" property only contains the entered text, while this label holds the autocomplete text
     // This makes sure that the autocomplete doesnt mess with keyboard suggestions provided by third party keyboards.
@@ -72,10 +72,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     fileprivate func commonInit() {
         super.delegate = self
-        super.addTarget(self, action: #selector(AutocompleteTextField.textDidChange), for: .editingChanged)
+        super.addTarget(self, action: #selector(LegacyAutocompleteTextField.textDidChange), for: .editingChanged)
         notifyTextChanged = debounce(0.1, action: {
             if self.isEditing {
-                self.autocompleteDelegate?.autocompleteTextField(self, didEnterText: self.normalizeString(self.text ?? ""))
+                self.autocompleteDelegate?.legacyAutocompleteTextField(self, didEnterText: self.normalizeString(self.text ?? ""))
             }
         })
     }
@@ -132,7 +132,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
             }
         case UIKeyCommand.inputEscape:
             TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-cancel"])
-            autocompleteDelegate?.autocompleteTextFieldDidCancel(self)
+            autocompleteDelegate?.legacyAutocompleteTextFieldDidCancel(self)
         case copyShortcutKey:
             if isSelectionActive {
                 UIPasteboard.general.string = self.autocompleteTextLabel?.text
@@ -175,7 +175,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     @objc fileprivate func clear() {
         text = ""
         removeCompletion()
-        autocompleteDelegate?.autocompleteTextField(self, didEnterText: "")
+        autocompleteDelegate?.legacyAutocompleteTextField(self, didEnterText: "")
     }
 
     // `shouldChangeCharactersInRange` is called before the text changes, and textDidChange is called after.
@@ -188,7 +188,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         // can reset itself since it will only lookup results if the new text is
         // longer than the previous text.
         if lastReplacement == nil {
-            autocompleteDelegate?.autocompleteTextField(self, didEnterText: "")
+            autocompleteDelegate?.legacyAutocompleteTextField(self, didEnterText: "")
         }
 
         lastReplacement = string
@@ -256,12 +256,12 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         let interaction: LogConfig.Interaction = didApplyAutocomplete
             ? .AutocompleteSuggestion : .NoSuggestion
         ClientLogger.shared.logCounter(interaction)
-        return autocompleteDelegate?.autocompleteTextFieldShouldReturn(self) ?? true
+        return autocompleteDelegate?.legacyAutocompleteTextFieldShouldReturn(self) ?? true
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         removeCompletion()
-        return autocompleteDelegate?.autocompleteTextFieldShouldClear(self) ?? true
+        return autocompleteDelegate?.legacyAutocompleteTextFieldShouldClear(self) ?? true
     }
 
     override func setMarkedText(_ markedText: String?, selectedRange: NSRange) {
@@ -303,7 +303,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         if isSelectionActive {
             removeCompletion()
             forceResetCursor()
-            autocompleteDelegate?.autocompleteTextFieldCompletionCleared(self)
+            autocompleteDelegate?.legacyAutocompleteTextFieldCompletionCleared(self)
         } else {
             super.deleteBackward()
         }
@@ -327,7 +327,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 }
 
-extension AutocompleteTextField: MenuHelperInterface {
+extension LegacyAutocompleteTextField: MenuHelperInterface {
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         if action == MenuHelper.SelectorPasteAndGo {
             return UIPasteboard.general.hasStrings
@@ -337,11 +337,11 @@ extension AutocompleteTextField: MenuHelperInterface {
     }
 
     @objc func menuHelperPasteAndGo() {
-        autocompleteDelegate?.autocompletePasteAndGo(self)
+        autocompleteDelegate?.legacyAutocompletePasteAndGo(self)
     }
 }
 
-class UILabelExtendedView: UILabel {
+fileprivate class UILabelExtendedView: UILabel {
     var padding = UIEdgeInsets(top: 0, left: 30, bottom: -1, right: 0)
 
     public override func drawText(in rect: CGRect) {

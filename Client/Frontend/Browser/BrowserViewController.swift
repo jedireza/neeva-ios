@@ -923,7 +923,7 @@ class BrowserViewController: UIViewController {
         if !FeatureFlag[.newURLBar] {
             legacyURLBar.leaveOverlayMode()
         }
-        SearchQueryModel.shared.value = nil
+        legacyURLBar.model.isEditing = false
 
         if let nav = tab.loadRequest(URLRequest(url: url)) {
             self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
@@ -931,8 +931,8 @@ class BrowserViewController: UIViewController {
     }
     
     override func accessibilityPerformEscape() -> Bool {
-        if FeatureFlag[.newURLBar], SearchQueryModel.shared.value != nil {
-            SearchQueryModel.shared.value = nil
+        if FeatureFlag[.newURLBar], legacyURLBar.model.isEditing {
+            legacyURLBar.model.isEditing = false
             return true
         } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
@@ -1143,8 +1143,8 @@ class BrowserViewController: UIViewController {
             _ = self.navigationController?.popViewController(animated: true)
         } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
-        } else if FeatureFlag[.newURLBar], SearchQueryModel.shared.value != nil {
-            SearchQueryModel.shared.value = nil
+        } else if FeatureFlag[.newURLBar], legacyURLBar.model.isEditing {
+            legacyURLBar.model.isEditing = false
         }
     }
 
@@ -1768,7 +1768,7 @@ extension BrowserViewController: LibraryPanelDelegate {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
-        guard !topTabsVisible, FeatureFlag[.newURLBar] ? SearchQueryModel.shared.value == nil : !self.legacyURLBar.inOverlayMode else {
+        guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.isEditing == false : !self.legacyURLBar.inOverlayMode else {
             return
         }
 
@@ -1806,7 +1806,7 @@ extension BrowserViewController: HomePanelDelegate {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
-        guard !topTabsVisible, FeatureFlag[.newURLBar] ? SearchQueryModel.shared.value == nil : !self.legacyURLBar.inOverlayMode else {
+        guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.isEditing == false : !self.legacyURLBar.inOverlayMode else {
             return
         }
 
@@ -1832,6 +1832,7 @@ extension BrowserViewController: HomePanelDelegate {
     func homePanel(didEnterQuery query: String) {
         if FeatureFlag[.newURLBar] {
             SearchQueryModel.shared.value = query
+            legacyURLBar.model.isEditing = true
         } else {
             self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
         }

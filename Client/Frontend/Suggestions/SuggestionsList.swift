@@ -77,10 +77,10 @@ struct SuggestionsList_Previews: PreviewProvider {
                 .environmentObject(NeevaSuggestionModel(previewLensBang: nil, suggestions: suggestions))
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang), suggestions: suggestions))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang, suggestions: suggestions))
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens), suggestions: suggestions))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens, suggestions: suggestions))
         }.previewLayout(.fixed(width: 375, height: 250))
     }
 }

@@ -57,6 +57,9 @@ extension Suggestion: Identifiable {
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
 public typealias SuggestionsQueryResult = ([Suggestion], ActiveLensBangInfo?)
 extension ActiveLensBangInfo: Equatable {
+    static let previewBang = ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang)
+    static let previewLens = ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens)
+
     public static func == (lhs: ActiveLensBangInfo, rhs: ActiveLensBangInfo) -> Bool {
         lhs.description == rhs.description && lhs.domain == rhs.domain && lhs.shortcut == rhs.shortcut && lhs.type == rhs.type
     }

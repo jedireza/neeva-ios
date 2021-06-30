@@ -7,8 +7,9 @@ class SearchQueryModel: ObservableObject {
 
     private init() {}
 
-    @Published var value: String? = nil
+    init(previewValue: String) {
+        self.value = previewValue
+    }
 
-    var isEditing: Bool { value != nil }
-    var isEmpty: Bool { value?.isEmpty ?? true }
+    @Published var value: String = ""
 }

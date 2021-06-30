@@ -4,7 +4,7 @@ import SwiftUI
 import Shared
 
 struct LocationLabel: View {
-    @Binding var url: URL?
+    let url: URL?
     let isSecure: Bool
 
     var body: some View {
@@ -51,10 +51,20 @@ struct LocationLabelAndIcon: View {
 struct LocationLabel_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LocationLabel(url: .constant("http://vviii.verylong.subdomain.neeva.com"), isSecure: false)
-            LocationLabel(url: .constant("https://neeva.com/asdf"), isSecure: true)
-            LocationLabel(url: .constant(neevaSearchEngine.searchURLForQuery("a long search query with words")), isSecure: false)
-            LocationLabel(url: .constant("ftp://someftpsite.com/dir/file.txt"), isSecure: false)
-        }.padding().previewLayout(.sizeThatFits)
+            LocationLabel(url: nil, isSecure: false)
+                .previewDisplayName("Placeholder")
+
+            LocationLabel(url: "https://vviii.verylong.subdomain.neeva.com", isSecure: false)
+                .previewDisplayName("Insecure URL")
+
+            LocationLabel(url: "https://neeva.com/asdf", isSecure: true)
+                .previewDisplayName("Secure URL")
+
+            LocationLabel(url: neevaSearchEngine.searchURLForQuery("a long search query with words"), isSecure: true)
+                .previewDisplayName("Search")
+
+            LocationLabel(url: "ftp://someftpsite.com/dir/file.txt", isSecure: false)
+                .previewDisplayName("Non-HTTP")
+        }.padding(.horizontal).previewLayout(.sizeThatFits)
     }
 }
