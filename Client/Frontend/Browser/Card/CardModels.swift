@@ -56,7 +56,7 @@ class TabCardModel: CardModel, TabEventHandler {
             return
         }
 
-        ScreenshotHelper().takeScreenshot(tab)
+        ScreenshotHelper().takeDelayedScreenshot(tab)
         onDataUpdated()
     }
 

@@ -28,6 +28,7 @@ private extension View {
 
 struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
+    @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
 
     let size: CGFloat = CardUX.CardSize - 10
     let spacing: CGFloat = 12
@@ -62,8 +63,11 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     func itemFor( _ index: Int) -> some View {
         let item = model.allDetails[index]
         let blockSize = numItems < 5 ? itemSize : (index < 3 ? itemSize : smallItemSize)
-        return item.thumbnail.applyThumbnailGroupSpec(size: blockSize,
-                                                      onSelect: index < 3 ? item.onSelect : {})
+        return item.thumbnail.applyThumbnailGroupSpec(
+            size: blockSize, onSelect: index < 3 ? {
+                item.onSelect()
+                selectionCompletion()
+            } : {})
     }
 
     var body: some View {

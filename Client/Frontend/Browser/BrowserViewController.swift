@@ -38,8 +38,17 @@ struct UrlToOpenModel {
 
 class BrowserViewController: UIViewController {
     var neevaHomeViewController: NeevaHomeViewController?
-    lazy var cardViewController: CardViewController? = {
-        let controller = CardViewController(tabManager: self.tabManager)
+    lazy var cardStripViewController: CardViewController? = {
+        let controller = CardViewController(tabManager: self.tabManager, config: .carousel)
+        addChild(controller)
+        view.addSubview(controller.view)
+        controller.didMove(toParent: self)
+        controller.view.isHidden = true
+        controller.view.isUserInteractionEnabled = false
+        return controller
+    }()
+    lazy var cardGridViewController: CardViewController? = {
+        let controller = CardViewController(tabManager: self.tabManager, config: .grid)
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -520,7 +529,7 @@ class BrowserViewController: UIViewController {
         }
 
         if FeatureFlag[.cardStrip] {
-            cardViewController?.view.snp.updateConstraints { make in
+            cardStripViewController?.view.snp.updateConstraints { make in
                 make.left.right.equalTo(self.view)
                 make.bottom.equalTo(self.view.snp.bottom).offset(-CardControllerUX.BottomPadding)
                 make.height.equalTo(CardControllerUX.Height)
@@ -745,7 +754,6 @@ class BrowserViewController: UIViewController {
             }
         }
 
-
         alertStackView.snp.remakeConstraints { make in
             make.centerX.equalTo(self.view)
             make.width.equalTo(self.view.safeArea.width)
@@ -756,6 +764,12 @@ class BrowserViewController: UIViewController {
                 make.bottom.lessThanOrEqualTo(self.view.safeArea.bottom)
             } else {
                 make.bottom.equalTo(self.view.safeArea.bottom)
+            }
+        }
+
+        if FeatureFlag[.cardGrid], let grid = self.cardGridViewController {
+            grid.view.snp.makeConstraints {make in
+                make.edges.equalTo(webViewContainer.snp.edges)
             }
         }
     }
@@ -1391,14 +1405,8 @@ extension BrowserViewController: LegacyURLBarDelegate {
 
         updateFindInPageVisibility(visible: false)
 
-        if FeatureFlag[.cardGrid], let grid = self.cardViewController?.cardGridHostingController {
-            addChild(grid)
-            webViewContainer.addSubview(grid.view)
-            grid.didMove(toParent: self)
-
-            grid.view.snp.updateConstraints { make in
-                make.edges.equalToSuperview()
-            }
+        if FeatureFlag[.cardGrid], let grid = self.cardGridViewController {
+            grid.showGrid()
         } else {
             let tabTrayController = TabTrayControllerV1(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
             navigationController?.pushViewController(tabTrayController, animated: true)

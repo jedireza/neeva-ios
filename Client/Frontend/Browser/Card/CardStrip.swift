@@ -14,9 +14,11 @@ struct CardStrip<Model: CardModel>: View {
             LazyHStack(spacing: 32) {
                 ForEach(model.allDetails.indices, id: \.self) { index in
                     let details = model.allDetails[index]
-                    Card<Details>(details: details, config: .carousel).onLongPressGesture {
-                        onLongPress(model.allDetails[index].id)
-                    }
+                    Card<Details>(details: details, config: .carousel)
+                        .environment(\.selectionCompletion) {}
+                        .onLongPressGesture {
+                            onLongPress(model.allDetails[index].id)
+                        }
                 }
             }.padding().frame(height: 275)
     }

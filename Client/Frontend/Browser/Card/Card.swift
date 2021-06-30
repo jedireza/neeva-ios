@@ -11,6 +11,7 @@ enum CardUX {
     static let CornerRadius : CGFloat = 5
     static let ButtonSize : CGFloat = 28
     static let FaviconSize : CGFloat = 18
+    static let HeaderSize : CGFloat = ButtonSize + 1
 }
 
 enum CardConfig {
@@ -18,9 +19,21 @@ enum CardConfig {
     case grid
 }
 
+extension EnvironmentValues {
+    private struct SelectionCompletionKey: EnvironmentKey {
+        static var defaultValue: (() -> ())? = nil
+    }
+
+    public var selectionCompletion: () -> () {
+        get { self[SelectionCompletionKey] ?? { fatalError(".environment(\\.selectionCompletion) must be specified") } }
+        set { self[SelectionCompletionKey] = newValue }
+    }
+}
+
 struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
     let config: CardConfig
+    @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -54,8 +67,10 @@ struct Card<Details>: View where Details: CardDetails {
                 .background(Color(UIColor.Browser.background))
             Color(UIColor.Browser.urlBarDivider).frame(maxWidth: .infinity, maxHeight: 1)
             if let thumbnail = details.thumbnail {
-                Button(action: details.onSelect,
-                       label: {
+                Button(action: {
+                    details.onSelect()
+                    selectionCompletion()
+                }, label: {
                         thumbnail.frame(width: CardUX.CardSize, height: CardUX.CardSize).clipped()
                        })
             } else {
