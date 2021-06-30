@@ -70,6 +70,17 @@ To simplify the build process, these compiled files are checked-in to this repos
 npm run build
 ```
 
+## Periphery
+
+Periphery scans the project (currently just the `Client` code) for unused variables, constants, functions, structs, and classes.
+To use Periphery, first install it using [Homebrew](https://brew.sh):
+
+```sh
+brew tap peripheryapp/periphery && brew install periphery
+```
+
+Then switch to the Periphery target in Xcode and build (⌘B). You‘ll get a large number of warnings as a result. Note that many of the warnings are either false positives (i.e. the constant is actually used somewhere in the project) or are due to parameters passed in iOS’s standard delegate pattern.
+
 ## SwiftUI Previews
 To perform authenticated requests in SwiftUI previews, create a `dev-token.txt` file in `NeevaSupport` and copy over your `httpd~login` token from the app or website. This file is ignored by Git, but will be copied over when creating the preview.
 
