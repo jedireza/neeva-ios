@@ -16,10 +16,6 @@ class WebsiteDataController: ObservableObject {
             self.siteRecords = records.sorted { $0.displayName < $1.displayName }
         }
     }
-
-    init(records: [WKWebsiteDataRecord]) {
-        self.siteRecords = records
-    }
 }
 
 struct WebsiteDataView: View {
@@ -118,9 +114,8 @@ struct WebsiteDataView: View {
 
 struct WebsiteDataView_Previews: PreviewProvider {
     static var previews: some View {
-        let record = WKWebsiteDataRecord()
         NavigationView {
-            WebsiteDataView()//(websiteData: .init(records: [record]))
+            WebsiteDataView()
                 .navigationBarTitleDisplayMode(.inline)
         }
     }

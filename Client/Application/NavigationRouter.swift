@@ -112,8 +112,8 @@ enum NavigationPath {
         switch link {
         case .homePanel(let panelPath):
             NavigationPath.handleHomePanel(panel: panelPath, with: bvc)
-        case .settings(let settingsPath):
-            guard let rootVC = bvc.navigationController else {
+        case .settings:
+            guard bvc.navigationController != nil else {
                 return
             }
 

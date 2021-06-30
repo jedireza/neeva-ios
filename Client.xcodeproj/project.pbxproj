@@ -215,8 +215,6 @@
 		6604922826843975002AC35D /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 6604922726843975002AC35D /* Intents.intentdefinition */; };
 		6604922926843A57002AC35D /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 6604922726843975002AC35D /* Intents.intentdefinition */; };
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
-		6692829A2684EF1A00DDF117 /* Neeva.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC19E25E8C2380024991B /* Neeva.entitlements */; };
-		6692829B2684EF1A00DDF117 /* NeevaDev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */; };
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -449,7 +447,6 @@
 		C9F49CB9266FBFEA00F3408A /* DataManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CB8266FBFEA00F3408A /* DataManagementView.swift */; };
 		C9F49CBB266FD16000F3408A /* WebsiteDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CBA266FD16000F3408A /* WebsiteDataView.swift */; };
 		C9F49CBD266FDA9500F3408A /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CBC266FDA9500F3408A /* SearchBar.swift */; };
-		C9F49CC4266FF8CC00F3408A /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CC3266FF8CC00F3408A /* ViewExtensions.swift */; };
 		C9F49CC6266FFB8200F3408A /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F49CC5266FFB8200F3408A /* Environment.swift */; };
 		C9F49CD226711B8700F3408A /* LockProtected.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB912B9122722A7800DF585A /* LockProtected.swift */; };
 		C9F49CD326711B8B00F3408A /* ReadWriteLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB912B9022722A7800DF585A /* ReadWriteLock.swift */; };
@@ -690,7 +687,6 @@
 		EB84945822D4FA8A0004C2E2 /* disconnect-block-cryptomining.json in Resources */ = {isa = PBXBuildFile; fileRef = EB84945622D4FA8A0004C2E2 /* disconnect-block-cryptomining.json */; };
 		EB8A0A77206ABCE000A9859A /* WebPagesForTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7A651020699BD200B52A5F /* WebPagesForTesting.swift */; };
 		EB912B9A22722B5F00DF585A /* Deferred.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB912B8E22722A7800DF585A /* Deferred.swift */; };
-		EB912B9C22722B6800DF585A /* LockProtected.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB912B9122722A7800DF585A /* LockProtected.swift */; };
 		EB94075320850C9F00702E05 /* photon-colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C49854D206173C800893DAE /* photon-colors.swift */; };
 		EB9A179B20E69A7F00B12184 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9A179820E69A7E00B12184 /* ThemeManager.swift */; };
 		EB9A179C20E69A7F00B12184 /* DarkTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9A179920E69A7E00B12184 /* DarkTheme.swift */; };
@@ -3960,8 +3956,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6692829A2684EF1A00DDF117 /* Neeva.entitlements in Resources */,
-				6692829B2684EF1A00DDF117 /* NeevaDev.entitlements in Resources */,
 				4A255AB4265C48EC00422839 /* trackerDomains.json in Resources */,
 				D38A1EE01CB458EC0080C842 /* CertError.html in Resources */,
 				0BA1E0301B051A07007675AF /* OfflineError.css in Resources */,
@@ -4286,7 +4280,6 @@
 				E65075A21E37F7AB006961AC /* HexExtensions.swift in Sources */,
 				288A2DB61AB8B38D0023ABC3 /* Result.swift in Sources */,
 				E65075AD1E37F7AB006961AC /* UIColorExtensions.swift in Sources */,
-				EB912B9C22722B6800DF585A /* LockProtected.swift in Sources */,
 				E650759C1E37F7AB006961AC /* DeferredUtils.swift in Sources */,
 				C9C18E4D26559711004710CD /* ModalPresentationController.swift in Sources */,
 				E65075941E37F7AB006961AC /* AppInfo.swift in Sources */,
@@ -4298,7 +4291,6 @@
 				E65075B71E37F7AB006961AC /* Logger.swift in Sources */,
 				E65075961E37F7AB006961AC /* AsyncReducer.swift in Sources */,
 				C9C18E4B265596AC004710CD /* Network.swift in Sources */,
-				C9F49CC4266FF8CC00F3408A /* ViewExtensions.swift in Sources */,
 				C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */,
 				7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */,
 				C9C18E51265597B0004710CD /* Symbol.swift in Sources */,
@@ -4546,7 +4538,6 @@
 				BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */,
 				C9E5F2C22677D8BA00025A7F /* TabLocationHost.swift in Sources */,
 				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
-				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
 				4A3D299126850CB60082F293 /* CardGrid.swift in Sources */,
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
 				EBB89509219398E500EB91A0 /* TabContentBlocker+ContentScript.swift in Sources */,
@@ -4643,7 +4634,6 @@
 				E65075521E37F6D1006961AC /* UIViewExtensions.swift in Sources */,
 				C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */,
 				C98E406326585F01003AC0E2 /* DebugSettingsSection.swift in Sources */,
-				4A1D05502669715B00D63333 /* CardViewController.swift in Sources */,
 				4A1D05502669715B00D63333 /* CardViewController.swift in Sources */,
 				D30B101E1AA7F9C600C01CA3 /* LibraryPanels.swift in Sources */,
 				F84B22041A0910F600AAB793 /* AppDelegate.swift in Sources */,
@@ -4749,7 +4739,6 @@
 				744ED5611DBFEB8D00A2B5BE /* MailtoLinkHandler.swift in Sources */,
 				4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */,
 				C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */,
-				C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */,
 				C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */,
 				43A5643823CD1E1C00B6857D /* UpdateViewController.swift in Sources */,
 				E4C358551AF144BA00299F7E /* FSReadingList.m in Sources */,
@@ -5101,7 +5090,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 51;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = A9735M6NPH;
@@ -5179,7 +5167,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 51;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = A9735M6NPH;
@@ -5253,7 +5240,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"Extensions/ShareTo/Preview Support/Preview Content\"";
 				DEVELOPMENT_TEAM = A9735M6NPH;
@@ -5330,7 +5316,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Extensions/ShareTo/Preview Support/Preview Content\"";
 				DEVELOPMENT_TEAM = A9735M6NPH;
@@ -5411,6 +5396,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neeva.entitlements;
+				COPY_PHASE_STRIP = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -5677,6 +5663,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaDev.entitlements;
+				COPY_PHASE_STRIP = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

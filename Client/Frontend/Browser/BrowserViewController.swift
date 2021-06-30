@@ -890,8 +890,6 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-
         let searchController = SearchViewController(profile: profile, historyModel: legacyURLBar.historySuggestionModel, neevaModel: legacyURLBar.neevaSuggestionModel)
         searchController.searchDelegate = self
 

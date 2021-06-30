@@ -388,7 +388,8 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    enum SwitchPrivacyModeResult { case createdNewTab; case usedExistingTab }
+    enum SwitchPrivacyModeResult { case createdNewTab, usedExistingTab }
+    @discardableResult
     func switchPrivacyMode() -> SwitchPrivacyModeResult {
         var result = SwitchPrivacyModeResult.usedExistingTab
         guard let selectedTab = selectedTab else { return result }
