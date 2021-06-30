@@ -12,7 +12,7 @@ public struct TrackingMenuProtectionRowButton: View {
         Toggle(isOn: $isTrackingProtectionEnabled) {
             VStack(alignment: .leading) {
                 Text("Tracking Prevention")
-                    .font(.system(size: NeevaUIConstants.trackingMenuFontSize))
+                    .withFont(.bodyLarge)
                 Text("Website not working? Try disabling")
                     .foregroundColor(.secondaryLabel)
                     .font(.footnote)

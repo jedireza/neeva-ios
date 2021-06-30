@@ -157,14 +157,14 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             HStack(spacing: 0) {
                 if config.showTitle {
                     Text(title)
-                        .fontWeight(.semibold)
+                        .withFont(.headingMedium)
                         .foregroundColor(.label)
                         .padding(.leading, 16)
                     Spacer()
                     Button {
                         self.model.hide()
                     } label: {
-                        Symbol(.xmark, weight: .semibold, label: "Close")
+                        Symbol(.xmark, style: .headingMedium, label: "Close")
                             .foregroundColor(.tertiaryLabel)
                             .frame(width: 44, height: 44)
                             .padding(.trailing, 4.5)

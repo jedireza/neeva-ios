@@ -14,14 +14,14 @@ struct SpacesSearchHeaderView: View {
 
     var body: some View {
         HStack(spacing: 24) {
-            CapsuleTextField("Search Spaces", text: $searchText, icon: Symbol(.magnifyingglass))
+            CapsuleTextField("Search Spaces", text: $searchText, icon: Symbol(.magnifyingglass, style: .labelLarge))
             Button {
                 self.createAction()
             } label: {
                 HStack(spacing: 5) {
-                    Symbol(.plus, size: 16, weight: .semibold)
+                    Symbol(.plus, style: .labelLarge)
                     Text("Create")
-                        .font(.system(size: 16, weight: .semibold))
+                        .withFont(.labelLarge)
                 }
             }
             .frame(height: 40)

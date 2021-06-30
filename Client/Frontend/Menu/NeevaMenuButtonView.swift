@@ -51,7 +51,7 @@ public struct NeevaMenuButtonView: View {
                     Spacer()
 
                     Text(label)
-                        .font(.system(size: 16))
+                        .withFont(.bodyLarge)
                 }
                 .frame(height: 46)
                 .padding([.top, .bottom], NeevaUIConstants.buttonInnerPadding)

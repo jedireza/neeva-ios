@@ -8,8 +8,6 @@ struct IncognitoDescriptionView: View {
     let lineSpacing: CGFloat = 12
     let borderPadding: CGFloat = 14
     let maxTextWidth: CGFloat = 380
-    let titleFont = Font.system(size: 20, weight: .semibold)
-    let descriptionFont = Font.system(size: 16)
     let descriptionFontSmall = Font.system(size: 12)
 
     // TODO: Refactor to share code with BoldSpanView
@@ -61,7 +59,7 @@ struct IncognitoDescriptionView: View {
                             .frame(width: iconSize))
 
                 Text(verbatim: .IncognitoOnTitle)
-                    .font(titleFont)
+                    .withFont(.headingMedium)
                     .foregroundColor(Color(UIColor.label.darkVariant))
                     .padding([.top, .bottom], lineSpacing)
 
@@ -69,15 +67,15 @@ struct IncognitoDescriptionView: View {
                     BoldSpan(.IncognitoDescriptionParagraph1)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(alignment: .leading)
-                        .font(descriptionFont)
+                        .withFont(unkerned: .bodyLarge)
                     BoldSpan(.IncognitoDescriptionParagraph2)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(alignment: .leading)
-                        .font(descriptionFont)
+                        .withFont(unkerned: .bodyLarge)
                     BoldSpan(.IncognitoDescriptionParagraph3)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(alignment: .leading)
-                        .font(descriptionFontSmall)
+                        .withFont(unkerned: .bodyXSmall)
                 }
                 .foregroundColor(.secondaryLabel)
                 .frame(maxWidth: maxTextWidth)

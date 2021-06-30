@@ -61,9 +61,8 @@ struct NeevaHomeHeader: View {
     var body: some View {
         HStack {
             Text(title)
-                .textCase(.uppercase)
+                .withFont(.headingMedium)
                 .foregroundColor(.secondaryLabel)
-                .font(.roobert(.semibold, size: 13))
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
             Spacer()

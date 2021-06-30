@@ -114,8 +114,8 @@ struct ToastView: View {
                     }
 
                     Text(content.currentToastStateContent.text ?? "")
+                        .withFont(.bodyMedium)
                         .lineLimit(3)
-                        .font(.system(size: 16, weight: .medium))
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.vertical)
 
@@ -130,7 +130,7 @@ struct ToastView: View {
                             viewDelegate?.dismiss()
                         }, label: {
                             Text(buttonText)
-                                .font(.system(size: 16, weight: .semibold))
+                                .withFont(.labelLarge)
                                 .foregroundColor(Color.ui.aqua)
 
                         })

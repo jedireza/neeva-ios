@@ -24,18 +24,19 @@ struct SpaceListItem: View {
             LargeSpaceIconView(space: space)
                 .padding(.trailing, 8)
             Text(space.name)
-                .font(.system(size: 16, weight: .semibold))
+                .withFont(.headingMedium)
                 .foregroundColor(.label)
                 .lineLimit(1)
             if space.isPublic {
-                Symbol(.link, size: 14)
+                Symbol(.link, style: .labelMedium)
                     .foregroundColor(.secondaryLabel)
             }
             if space.isShared {
-                Symbol(.person2Fill, size: 14)
+                Symbol(.person2Fill, style: .labelMedium)
                     .foregroundColor(.secondaryLabel)
             }
             Spacer(minLength: 0)
+            // TODO(jed): fix font
             Symbol(icon, weight: .semibold)
                 .frame(width: 44, height: 44)
                 .foregroundColor(iconColor)

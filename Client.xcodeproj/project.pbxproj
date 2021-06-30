@@ -340,6 +340,7 @@
 		C94D40682684CC35003A6766 /* PublisherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40672684CC35003A6766 /* PublisherExtensions.swift */; };
 		C94D406A2684D442003A6766 /* NeevaSuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40692684D442003A6766 /* NeevaSuggestionModel.swift */; };
 		C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D406B2684E677003A6766 /* SearchQueryModel.swift */; };
+		C94D4096268A617F003A6766 /* NeevaFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4095268A617F003A6766 /* NeevaFonts.swift */; };
 		C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D409C268CADD4003A6766 /* LocationEditView.swift */; };
 		C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */; };
 		C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */; };
@@ -1263,6 +1264,7 @@
 		C94D40672684CC35003A6766 /* PublisherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublisherExtensions.swift; sourceTree = "<group>"; };
 		C94D40692684D442003A6766 /* NeevaSuggestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSuggestionModel.swift; sourceTree = "<group>"; };
 		C94D406B2684E677003A6766 /* SearchQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueryModel.swift; sourceTree = "<group>"; };
+		C94D4095268A617F003A6766 /* NeevaFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaFonts.swift; sourceTree = "<group>"; };
 		C94D409C268CADD4003A6766 /* LocationEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationEditView.swift; sourceTree = "<group>"; };
 		C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSettingsSection.swift; sourceTree = "<group>"; };
 		C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsSection.swift; sourceTree = "<group>"; };
@@ -2875,6 +2877,7 @@
 				E65075911E37F7AB006961AC /* WeakList.swift */,
 				C93EFEE126713AF7000396B5 /* ErrorConstants.swift */,
 				C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */,
+				C94D4095268A617F003A6766 /* NeevaFonts.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4221,6 +4224,7 @@
 				D02818611EF056C800240CAA /* SentryIntegration.swift in Sources */,
 				C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */,
 				E693F0D91E9D64BD0086DC17 /* OptionalExtensions.swift in Sources */,
+				C94D4096268A617F003A6766 /* NeevaFonts.swift in Sources */,
 				C9BED4C326680A33001D9C77 /* ColorExtensions.swift in Sources */,
 				C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */,
 				E65075A01E37F7AB006961AC /* ArrayExtensions.swift in Sources */,

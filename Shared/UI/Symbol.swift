@@ -69,46 +69,58 @@ public enum Nicon: Character {
 /// you **must** provide a `label` so screen reader users will be able to access the button. If you do not provide a label,
 /// the symbol will be hidden from screen readers.
 public struct Symbol: View {
-    public enum Icon {
-        case neeva(Nicon, NiconFont, Font.TextStyle)
-        case system(SFSymbol, Font.Weight)
+    private enum Icon {
+        case neeva(Nicon, Font)
+        case sfSymbol(SFSymbol, SystemFont)
     }
-    private let storage: Icon
-    private let size: CGFloat
+    private enum SystemFont {
+        case system(CGFloat, Font.Weight)
+        case custom(FontStyle)
+    }
+
+    private let icon: Icon
     private let label: String?
 
     public static let defaultSize: CGFloat = 16
 
     // since this comes first, Neeva custom icons take priority over SF Symbols with the same name
     public init(_ nicon: Nicon, size: CGFloat = Symbol.defaultSize, weight: NiconFont = .regular, relativeTo: Font.TextStyle = .body, label: String? = nil) {
-        self.storage = .neeva(nicon, weight, relativeTo)
-        self.size = size
+        self.icon = .neeva(nicon, Font.custom(weight.rawValue, size: size, relativeTo: relativeTo))
         self.label = label
     }
 
     @_disfavoredOverload
     public init(_ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize, weight: Font.Weight = .medium, label: String? = nil) {
-        self.storage = .system(symbol, weight)
-        self.size = size
+        self.icon = .sfSymbol(symbol, .system(size, weight))
         self.label = label
     }
 
-    public var body: some View {
-        let icon = Group {
-            switch storage {
-            case let .neeva(nicon, weight, relativeTo):
-                Text(String(nicon.rawValue))
-                    .font(Font.custom(weight.rawValue, size: size, relativeTo: relativeTo))
-            case let .system(symbol, weight):
-                Image(systemSymbol: symbol)
-                    .renderingMode(.template)
-                    .font(.system(size: size, weight: weight))
-            }
+    public init(_ symbol: SFSymbol, style: FontStyle, label: String? = nil) {
+        self.icon = .sfSymbol(symbol, .custom(style))
+        self.label = label
+    }
+
+    @ViewBuilder private var content: some View {
+        switch icon {
+        case let .neeva(nicon, font):
+            Text(String(nicon.rawValue))
+                .font(font)
+        case let .sfSymbol(symbol, .system(size, weight)):
+            Image(systemSymbol: symbol)
+                .renderingMode(.template)
+                .font(.system(size: size, weight: weight))
+        case let .sfSymbol(symbol, .custom(style)):
+            Image(systemSymbol: symbol)
+                .renderingMode(.template)
+                .withFont(style)
         }
+    }
+
+    public var body: some View {
         if let label = label {
-            icon.accessibilityLabel(label)
+            content.accessibilityLabel(label)
         } else {
-            icon.accessibilityHidden(true)
+            content.accessibilityHidden(true)
         }
     }
 }

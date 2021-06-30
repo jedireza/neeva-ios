@@ -48,7 +48,7 @@ struct SuggestedSpaceView: View {
     var body: some View {
         HStack(spacing: NeevaHomeUX.Padding) {
             LargeSpaceIconView(space: space)
-            Text(space.name).fontWeight(.medium)
+            Text(space.name).withFont(.labelMedium)
             Spacer()
         }
         .padding(.horizontal, NeevaHomeUX.Padding)

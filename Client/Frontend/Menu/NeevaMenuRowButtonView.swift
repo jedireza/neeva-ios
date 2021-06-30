@@ -34,7 +34,7 @@ public struct NeevaMenuRowButtonView: View {
         Button(action: action) {
             HStack(spacing: 0) {
                 Text(label)
-                    .font(.system(size: 17))
+                    .withFont(.bodyLarge)
 
                 Spacer()
 

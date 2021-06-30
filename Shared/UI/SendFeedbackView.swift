@@ -48,6 +48,7 @@ public struct SendFeedbackView: View {
                     header: HStack {
                         VStack(alignment: .leading) {
                             Text("Need help or want instant answers to FAQs?")
+                                .withFont(.bodyLarge)
                                 .foregroundColor(.label)
                             Button(action: {
                                 onOpenURL(NeevaConstants.appFAQURL)
@@ -56,6 +57,7 @@ public struct SendFeedbackView: View {
                                 }
                             }) {
                                 Text("Visit our Help Center!").underline()
+                                    .withFont(.bodyLarge)
                             }
                         }
                         .font(.body)
@@ -78,8 +80,10 @@ public struct SendFeedbackView: View {
                     DecorativeSection {
                         Toggle(isOn: $shareScreenshot) {
                             VStack(alignment: .leading) {
-                                Text("Share Screenshot").bold()
-                                Button("View or edit") { screenshotSheet.present() }
+                                Text("Share Screenshot").bold().withFont(.labelLarge)
+                                Button(action: { screenshotSheet.present() }) {
+                                    Text("View or edit").withFont(.labelMedium)
+                                }
                                     .disabled(!shareScreenshot)
                             }
                         }
@@ -94,8 +98,7 @@ public struct SendFeedbackView: View {
                     DecorativeSection {
                         Toggle(isOn: $shareURL) {
                             VStack(alignment: .leading) {
-                                Text("Share URL")
-                                    .bold()
+                                Text("Share URL").bold().withFont(.labelLarge)
                                 HStack {
                                     let displayURL: String = {
                                         let display = url.absoluteDisplayString
@@ -107,7 +110,9 @@ public struct SendFeedbackView: View {
                                     Text(displayURL)
                                         .foregroundColor(.secondary)
                                         .lineLimit(1)
-                                    Button("edit") { isEditingURL = true }
+                                    Button(action: { isEditingURL = true }) {
+                                        Text("edit").withFont(.labelMedium)
+                                    }
                                         .background(
                                             NavigationLink(
                                                 destination: EditURLView($url, isActive: $isEditingURL),

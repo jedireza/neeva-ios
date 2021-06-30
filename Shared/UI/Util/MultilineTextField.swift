@@ -73,6 +73,7 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
         textField.delegate = context.coordinator
 
         textField.isEditable = true
+        // TODO(jed): set font to .bodyLarge
         textField.font = UIFont.preferredFont(forTextStyle: .body)
         textField.isSelectable = true
         textField.isUserInteractionEnabled = true

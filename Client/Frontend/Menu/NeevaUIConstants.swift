@@ -12,9 +12,6 @@ struct NeevaUIConstants{
 
     static let buttonInnerPadding: CGFloat = 16
     
-    static let menuFontSize:CGFloat = 20
-    static let trackingMenuBlockedFontSize:CGFloat = 24
-    static let trackingMenuFontSize:CGFloat = 17
     static let hallOfShameElementSpacing:CGFloat = 8
     static let hallOfShameElementFaviconSize:CGFloat = 25
     static let hallOfShameRowSpacing:CGFloat = 60

@@ -25,12 +25,12 @@ struct LocationLabelAndIcon: View {
     
     var body: some View {
         if let url = url, let internalURL = InternalURL(url), internalURL.isAboutHomeURL {
-            TabLocationViewUX.placeholder.foregroundColor(.secondaryLabel)
+            TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(.secondaryLabel)
         } else if let query = neevaSearchEngine.queryForLocationBar(from: url) {
-            Label { Text(query) } icon: { Symbol(.magnifyingglass) }
+            Label { Text(query).withFont(.bodyLarge) } icon: { Symbol(.magnifyingglass) }
         } else if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
             // NOTE: Punycode support was removed
-            let host = Text(host).truncationMode(.head)
+            let host = Text(host).withFont(.bodyLarge).truncationMode(.head)
             if isSecure {
                 Label {
                     host
@@ -41,9 +41,9 @@ struct LocationLabelAndIcon: View {
                 host
             }
         } else if let url = url {
-            Text(url.absoluteString)
+            Text(url.absoluteString).withFont(.bodyLarge)
         } else {
-            TabLocationViewUX.placeholder.foregroundColor(.secondaryLabel)
+            TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(.secondaryLabel)
         }
     }
 }

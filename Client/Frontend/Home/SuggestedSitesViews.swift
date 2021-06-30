@@ -9,7 +9,6 @@ private enum SuggestedSiteUX {
     static let IconSize: CGFloat = 40
     static let PinIconSize: CGFloat = 12
     static let IconCornerRadius: CGFloat = 4
-    static let TitleFontSize: CGFloat = 14
     static let BlockSize: CGFloat = 64
     static let BlockSpacing: CGFloat = 24
 }
@@ -52,8 +51,9 @@ struct SuggestedSiteView: View {
                         Image("pin_small").renderingMode(.template).foregroundColor(Color.ui.gray60)
                             .frame(width: SuggestedSiteUX.PinIconSize, height: SuggestedSiteUX.PinIconSize, alignment: .center)
                     }
-                    Text(title).lineLimit(1)
-                        .font(.system(size: SuggestedSiteUX.TitleFontSize))
+                    Text(title)
+                        .withFont(.bodyMedium)
+                        .lineLimit(1)
                         .background(RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4))
                         .padding(.top, 4)
                         .foregroundColor(.secondaryLabel)

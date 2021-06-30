@@ -137,8 +137,8 @@ fileprivate struct LoginView: View {
                     .foregroundColor(.ui.gray20)
                 Spacer(minLength: 4)
                 Spacer(minLength: 0)
-                Text("Please sign into Neeva to view this page")
-                    .font(.system(size: 16))
+                Text("Please sign in to Neeva to view this page")
+                    .withFont(.bodyLarge)
                     .foregroundColor(.ui.gray50)
                 // hide the image on small iPhones in landscape
                 if horizontalSizeClass == .regular || verticalSizeClass == .regular {
@@ -200,9 +200,9 @@ fileprivate struct OfflineView: View {
         VStack(alignment: .leading, spacing: 8) {
             Spacer()
             Text("Unable to connect to internet")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .withFont(.headingXLarge)
             Text("Your internet seems to be lost. Check your internet connection and try again.")
+                .withFont(.bodyLarge)
                 .foregroundColor(.secondaryLabel)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
@@ -222,7 +222,7 @@ fileprivate struct OfflineView: View {
                 Button(action: tryAgain) {
                     HStack {
                         Spacer()
-                        Text("Reload Page").fontWeight(.semibold)
+                        Text("Reload Page").withFont(.labelLarge)
                         Symbol(.arrowClockwise)
                         Spacer()
                     }

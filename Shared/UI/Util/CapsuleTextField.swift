@@ -23,8 +23,9 @@ struct CapsuleTextField<Icon: View>: View {
                 icon.foregroundColor(.secondaryLabel)
             }
             ZStack(alignment: .leading) {
-                if text.isEmpty { Text(placeholder).foregroundColor(.secondaryLabel).accessibilityHidden(true) }
+                if text.isEmpty { Text(placeholder).withFont(.bodyMedium).foregroundColor(.secondaryLabel).accessibilityHidden(true) }
                 TextField("", text: $text, onEditingChanged: { isEditing = $0 }).accessibilityLabel(placeholder)
+                    .withFont(unkerned: .bodyMedium)
             }
             if isEditing && !text.isEmpty {
                 Button(action: { text = "" }) {

@@ -126,7 +126,7 @@ struct TabLocationView: View {
                 Button {
                     model.isEditing = false
                 } label: {
-                    Text("Cancel").fontWeight(.medium)
+                    Text("Cancel").withFont(.labelMedium)
                 }
                 .transition(.move(edge: .trailing))
                 .accentColor(.ui.adaptive.blue)

@@ -48,17 +48,15 @@ class SuggestionViewsTests: XCTestCase {
         let model = NeevaSuggestionModel(previewLensBang: nil,
                                          suggestions: [SuggestionViewsTests.sampleQuery])
         let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
-        let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
+         let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
         XCTAssertNotNil(query)
         let querySuggestion =
             QuerySuggestionView(suggestion:
                                     SuggestionViewsTests.sampleQuerySuggestion).environmentObject(model)
-        let hStack = try querySuggestion.inspect().find(ViewType.HStack.self)
-        XCTAssertNotNil(hStack)
-        let image = try hStack.find(Symbol.self).group().image(0).actualImage()
+        let image = try querySuggestion.inspect().find(ViewType.Image.self).actualImage()
         XCTAssertEqual(image,
                        Image(systemName: SFSymbol.magnifyingglass.rawValue).renderingMode(.template))
-        let label = try hStack.find(BoldSpanView.self).text().string(locale: Locale(identifier: "en"))
+        let label = try querySuggestion.inspect().find(BoldSpanView.self).text().string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva", label)
     }
 

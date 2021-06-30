@@ -57,8 +57,8 @@ struct TrackingMenuFirstRowElement: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(label).font(.headline).foregroundColor(.secondaryLabel)
-            Text("\(num)").font(.system(size: NeevaUIConstants.trackingMenuBlockedFontSize))
+            Text(label).withFont(.headingMedium).foregroundColor(.secondaryLabel)
+            Text("\(num)").withFont(.displayMedium)
         }.applyNeevaMenuPanelSpec()
         .accessibilityLabel("\(num) \(label) blocked")
         .accessibilityIdentifier("TrackingMenu.TrackingMenuFirstRowElement")
@@ -73,7 +73,7 @@ struct HallOfShameElement: View {
             Image(hallOfShameDomain.key.rawValue).resizable().cornerRadius(5)
                 .frame(width: NeevaUIConstants.hallOfShameElementFaviconSize,
                        height: NeevaUIConstants.hallOfShameElementFaviconSize)
-            Text("\(hallOfShameDomain.value)").font(.system(size: NeevaUIConstants.menuFontSize))
+            Text("\(hallOfShameDomain.value)").withFont(.displayMedium)
         }.accessibilityLabel(
             "\(hallOfShameDomain.value) trackers blocked from \(hallOfShameDomain.key.rawValue)")
         .accessibilityIdentifier("TrackingMenu.HallOfShameElement")
@@ -85,7 +85,7 @@ struct HallOfShameView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Hall of Shame").font(.headline).foregroundColor(.secondaryLabel)
+            Text("Hall of Shame").withFont(.headingMedium).foregroundColor(.secondaryLabel)
             HStack(spacing: NeevaUIConstants.hallOfShameRowSpacing) {
                 HallOfShameElement(hallOfShameDomain: hallOfShameDomains[0])
                 if hallOfShameDomains.count >= 2 {
@@ -122,7 +122,7 @@ struct TrackingMenuView: View {
             if FeatureFlag[.newTrackingProtectionSettings] {
                 Button(action: { isShowingPopup = true }) {
                     HStack {
-                        Text("Advanced Privacy Settings")
+                        Text("Advanced Privacy Settings").withFont(.bodyLarge)
                         Spacer()
                         Symbol(.shieldLefthalfFill)
                     }

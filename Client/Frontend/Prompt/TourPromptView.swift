@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import SwiftUI
+import Shared
 
 fileprivate struct CloseButton: View {
     var onClose: (()-> Void)
@@ -12,7 +13,7 @@ fileprivate struct CloseButton: View {
                     .fill(Color.white.opacity(0.18))
                     .frame(width: 40, height: 40, alignment: .center)
                 Image(systemName: "xmark")
-                    .font(.system(size: 18))
+                    .withFont(.labelSmall)
                     .foregroundColor(Color.Tour.Title)
             }
         }
@@ -47,8 +48,8 @@ struct TourPromptView: View {
                         VStack(alignment: .leading) {
                             Text(title)
                                 .foregroundColor(Color.Tour.Title)
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .padding(.bottom, 8)
+                                .font(.system(size: 16, weight: .semibold))
+                                .padding(.bottom, 8)
                             Text(description)
                                 .foregroundColor(Color.Tour.Description)
                                 .font(.system(size: 14))
@@ -59,8 +60,8 @@ struct TourPromptView: View {
                                 ZStack {
                                     Color.Tour.ButtonBackground
                                     Text(buttonMessage)
+                                        .withFont(.labelLarge)
                                         .foregroundColor(Color.Tour.ButtonText)
-                                        .font(.system(size: 16, weight: .bold))
                                 }
                             }
                             .cornerRadius(30)
