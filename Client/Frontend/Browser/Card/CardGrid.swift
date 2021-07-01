@@ -64,6 +64,7 @@ class GridModel: ObservableObject {
     @Published var fullscreen = true
     @Published var showAnimationThumbnail = true
     var changeVisibility: ((Bool) -> ())!
+    var scrollOffset: CGFloat = CGFloat.zero
 
     func show() {
         fullscreen = false
@@ -72,15 +73,11 @@ class GridModel: ObservableObject {
 }
 
 struct CardGrid: View {
-    @ObservedObject var spacesModel: SpaceCardModel
-    @ObservedObject var tabModel: TabCardModel
-    @ObservedObject var tabGroupModel: TabGroupCardModel
-    @ObservedObject var gridModel: GridModel
+    @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var gridModel: GridModel
 
     @State var switcherState: SwitcherViews = .tabs
-
-    let columns = Array(repeating: GridItem(.fixed(CardUX.CardSize),
-                                            spacing: CardGridUX.GridSpacing), count: 2)
 
     var indexInsideTabGroupModel: Int? {
         let selectedTab = tabModel.manager.selectedTab!
@@ -108,7 +105,7 @@ struct CardGrid: View {
     var yOffset: CGFloat {
         let rows = floor(CGFloat(indexInGrid) / 2.0)
         return  (CardUX.HeaderSize + CardUX.CardSize + CardGridUX.GridSpacing) * rows
-            + CardGridUX.YStaticOffset
+            + CardGridUX.YStaticOffset + gridModel.scrollOffset
     }
 
     var selectedThumbnail: some View {
@@ -129,62 +126,12 @@ struct CardGrid: View {
         return details?.thumbnail
     }
 
-    var picker: some View {
-        Picker("", selection: $switcherState.animation()) {
-            ForEach(SwitcherViews.allCases, id: \.rawValue) { view in
-                Image(systemName: view.rawValue).tag(view).frame(width: 64)
-            }
-        }.pickerStyle(SegmentedPickerStyle())
-            .background(Color(UIColor.Browser.background))
-            .padding(CardGridUX.PickerPadding)
-            .frame(width: 160, height: CardGridUX.PickerHeight)
-    }
-
-    var spacesCards: some View {
-        ForEach(spacesModel.allDetails, id: \.id) { details in
-            Card<SpaceCardDetails>(details: details, config: .grid)
-                .environment(\.selectionCompletion) {
-                    gridModel.changeVisibility(false)
-                    gridModel.showAnimationThumbnail = true
-                    gridModel.fullscreen = true
-                    switcherState = .tabs
-                }
-        }
-    }
-
-    var tabGroupsCards: some View {
-        ForEach(tabGroupModel.allDetails, id: \.id) { details in
-            Card<TabGroupCardDetails>(details: details, config: .grid)
-                .environment(\.selectionCompletion) {
-                    gridModel.showAnimationThumbnail = true
-                }
-        }
-    }
-
-    var tabCards: some View {
-        ForEach(tabModel.allDetailsWithExclusionList, id: \.id) { details in
-            Card<TabCardDetails>(details: details, config: .grid)
-                .environment(\.selectionCompletion) {
-                    gridModel.showAnimationThumbnail = true
-                }
-        }
-    }
-
     var body: some View {
-        GeometryReader {geom in
+        GeometryReader { geom in
             ZStack {
                 VStack(spacing: 0) {
-                    picker
-                    ScrollView(.vertical, showsIndicators: false) {
-                        LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                            if case .spaces = switcherState {
-                                spacesCards
-                            } else {
-                                tabGroupsCards
-                                tabCards
-                            }
-                        }.padding(.top, 20)
-                    }
+                    GridPicker(switcherState: $switcherState)
+                    CardsContainer(switcherState: $switcherState)
                     Spacer(minLength: 0)
                 }
                 if gridModel.showAnimationThumbnail {
@@ -197,7 +144,7 @@ struct CardGrid: View {
                     .cornerRadius(CardUX.CornerRadius).clipped()
                     .offset(x: gridModel.fullscreen ? 0 : xOffset,
                             y: gridModel.fullscreen ? 0: yOffset - geom.size.height / 2)
-                    .animation(.spring()).onAppear() {
+                    .animation(.spring()).onAppear {
                         if !gridModel.fullscreen {
                                 gridModel.fullscreen.toggle()
                         }
@@ -206,4 +153,113 @@ struct CardGrid: View {
             }
         }
     }
+}
+
+struct CardsContainer: View {
+    @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var gridModel: GridModel
+    @Binding var switcherState: SwitcherViews
+
+    let columns = Array(repeating: GridItem(.fixed(CardUX.CardSize),
+                                            spacing: CardGridUX.GridSpacing), count: 2)
+
+    var indexInsideTabGroupModel: Int? {
+        let selectedTab = tabModel.manager.selectedTab!
+        return tabGroupModel.allDetails
+            .firstIndex(where: { $0.id == selectedTab.rootUUID })
+    }
+
+    var body: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            ScrollViewReader { value in
+                LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
+                    if case .spaces = switcherState {
+                        SpaceCardsView()
+                            .environment(\.selectionCompletion) {
+                                gridModel.changeVisibility(false)
+                                gridModel.showAnimationThumbnail = true
+                                gridModel.fullscreen = true
+                                switcherState = .tabs
+                                value.scrollTo(tabModel.manager.selectedTab?.tabUUID)
+                            }
+                    } else {
+                        TabCardsView().environment(\.selectionCompletion) {
+                            withAnimation {
+                                value.scrollTo(
+                                    indexInsideTabGroupModel != nil ?
+                                        tabModel.manager.selectedTab?.rootUUID :
+                                        tabModel.manager.selectedTab?.tabUUID)
+                            }
+                            gridModel.showAnimationThumbnail = true
+                        }
+                    }
+                }.padding(.top, 20).onAppear() {
+                    value.scrollTo(
+                        indexInsideTabGroupModel != nil ?
+                            tabModel.manager.selectedTab?.rootUUID :
+                            tabModel.manager.selectedTab?.tabUUID)
+                }.background(GeometryReader { proxy in
+                    Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self,
+                                           value:  proxy.frame(in: .named("scroll")).minY)
+                })
+            }
+        }.coordinateSpace(name: "scroll")
+        .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
+            gridModel.scrollOffset = scrollOffset
+        }
+    }
+}
+
+struct SpaceCardsView: View {
+    @EnvironmentObject var spacesModel: SpaceCardModel
+
+    var body: some View {
+        ForEach(spacesModel.allDetails, id: \.id) { details in
+            Card(details: details, config: .grid)
+                .id(details.id)
+        }
+    }
+}
+
+struct TabCardsView: View {
+    @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+
+    var body: some View {
+        Group {
+            ForEach(tabGroupModel.allDetails, id: \.id) { details in
+                Card(details: details, config: .grid)
+                    .id(details.id)
+            }
+            ForEach(tabModel.allDetailsWithExclusionList, id: \.id) { details in
+                Card(details: details, config: .grid)
+                    .id(details.id)
+            }
+        }
+    }
+}
+
+struct GridPicker: View {
+    @Binding var switcherState: SwitcherViews
+
+    var body: some View {
+        Picker("", selection: $switcherState) {
+            ForEach(SwitcherViews.allCases, id: \.rawValue) { view in
+                Image(systemName: view.rawValue).tag(view).frame(width: 64)
+            }
+        }.pickerStyle(SegmentedPickerStyle())
+            .background(Color(UIColor.Browser.background))
+            .padding(CardGridUX.PickerPadding)
+            .frame(width: 160, height: CardGridUX.PickerHeight)
+    }
+}
+
+struct ScrollViewOffsetPreferenceKey: PreferenceKey {
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
+    }
+
+    typealias Value = CGFloat
+    static var defaultValue = CGFloat.zero
 }

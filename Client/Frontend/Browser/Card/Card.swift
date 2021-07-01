@@ -19,6 +19,19 @@ enum CardConfig {
     case grid
 }
 
+struct BorderTreatment: ViewModifier {
+    let isSelected: Bool
+
+    func body(content: Content) -> some View {
+        if isSelected {
+            content.overlay(RoundedRectangle(cornerRadius: CardUX.CornerRadius)
+                                .stroke(Color.ui.adaptive.blue, lineWidth: 3))
+        } else {
+            content.shadow(radius: CardUX.ShadowRadius)
+        }
+    }
+}
+
 extension EnvironmentValues {
     private struct SelectionCompletionKey: EnvironmentKey {
         static var defaultValue: (() -> ())? = nil
@@ -47,7 +60,7 @@ struct Card<Details>: View where Details: CardDetails {
                             .padding(5)
                     }
                     if let title = details.title {
-                        Text(title).font(.subheadline)
+                        Text(title).withFont(.labelMedium)
                             .frame(maxWidth: .infinity,
                                    alignment: details.favicon != nil ? .leading : .center)
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
@@ -78,7 +91,7 @@ struct Card<Details>: View where Details: CardDetails {
                     .frame(width: CardUX.CardSize, height: CardUX.CardSize)
             }
         }.cornerRadius(CardUX.CornerRadius)
-        .shadow(radius: CardUX.ShadowRadius)
+        .modifier(BorderTreatment(isSelected: details.isSelected))
         .onDrop(of: ["public.url", "public.text"], delegate: details)
     }
 }

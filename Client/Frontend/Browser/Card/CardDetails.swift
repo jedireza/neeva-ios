@@ -21,11 +21,16 @@ protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     var closeButtonImage: UIImage? { get }
     var title: String { get }
     var favicon: WebImage? { get }
+    var isSelected: Bool { get }
 
     func onClose()
 }
 
 extension CardDetails {
+    var isSelected: Bool {
+        false
+    }
+
     func performDrop(info: DropInfo) -> Bool {
         return false
     }
@@ -83,6 +88,9 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     var id: String
     var manager: TabManager
+    var isSelected: Bool {
+        self.manager.selectedTab?.tabUUID == id
+    }
 
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
@@ -270,6 +278,9 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
 
     var manager: TabGroupManager
     var id: String
+    var isSelected: Bool {
+        manager.tabManager.selectedTab?.rootUUID == id
+    }
     @Published var allDetails: [TabCardDetails] = []
 
     var thumbnail: some View {

@@ -24,18 +24,19 @@ class CardViewController: UIViewController {
         return host
     }()
 
-    lazy var cardGridHostingController: UIHostingController<CardGrid>? = {
+    lazy var cardGrid: UIView? = {
         let host = UIHostingController(
-            rootView: CardGrid(spacesModel: self.spaceCardModel,
-                               tabModel: self.tabCardModel,
-                               tabGroupModel: self.tabGroupCardModel,
-                               gridModel: self.gridModel))
+            rootView: CardGrid()
+                .environmentObject(self.tabCardModel)
+                .environmentObject(self.tabGroupCardModel)
+                .environmentObject(self.spaceCardModel)
+                .environmentObject(self.gridModel))
         host.view.backgroundColor = UIColor.white
         addChild(host)
         view.addSubview(host.view)
         host.didMove(toParent: self)
         host.view.translatesAutoresizingMaskIntoConstraints = false
-        return host
+        return host.view
     }()
 
     weak var tabManager: TabManager?
@@ -77,7 +78,7 @@ class CardViewController: UIViewController {
                 make.edges.equalToSuperview()
             }
         case .grid:
-            cardGridHostingController?.view.snp.updateConstraints { make in
+            cardGrid?.snp.updateConstraints { make in
                 make.edges.equalToSuperview()
             }
         }
