@@ -55,7 +55,7 @@ extension SavedTab {
         tab.lastTitle = title
         tab.tabUUID = UUID ?? ""
         tab.rootUUID = rootUUID ?? ""
-
+        
         return tab
     }
 }

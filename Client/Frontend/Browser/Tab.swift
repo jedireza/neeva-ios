@@ -290,7 +290,7 @@ class Tab: NSObject {
             for url in sessionData.urls {
                 urls.append(url.absoluteString)
             }
-
+      
             let currentPage = sessionData.currentPage
             self.sessionData = nil
             var jsonDict = [String: AnyObject]()

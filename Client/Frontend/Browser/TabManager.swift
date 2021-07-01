@@ -561,6 +561,10 @@ class TabManager: NSObject, ObservableObject {
             var tab = addTab(urlRequest, flushToDisk: false, zombie: false, isPrivate: isPrivate)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
 
+            DispatchQueue.main.async {
+                tab.restore(tab.webView!)
+            }
+
             if savedTab.isSelected {
                 selectedSavedTab = tab
             } else if index == savedTabs.count - 1 && selectedSavedTab == nil {
