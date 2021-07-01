@@ -53,20 +53,15 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
     weak var libraryPanelDelegate: LibraryPanelDelegate?
     var recentlyClosedTabs: [SavedTab] = []
     weak var recentlyClosedTabsPanel: RecentlyClosedTabsPanel?
-    weak var tabManager: TabManager?
 
-    var longPressIndexPath: IndexPath?
-
-    fileprivate lazy var longPressRecognizer: UILongPressGestureRecognizer = {
-        return UILongPressGestureRecognizer(target: self, action: #selector(RecentlyClosedTabsPanelSiteTableViewController.longPress))
-    }()
+    weak var tabManager: TabManager!
+    var tabMenu: TabMenu!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.addGestureRecognizer(longPressRecognizer)
         tableView.accessibilityIdentifier = "Recently Closed Tabs List"
-
         tabManager = BrowserViewController.foregroundBVC().tabManager
+        tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -75,20 +70,12 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
     }
 
     func loadData()  {
-        if let recentlyClosedTabs = tabManager?.recentlyClosedTabs {
+        if let recentlyClosedTabs = tabManager?.recentlyClosedTabs, recentlyClosedTabs.count > 0 {
             self.recentlyClosedTabs = recentlyClosedTabs
             self.tableView.reloadData()
+        } else {
+            navigationController?.popViewController(animated: true)
         }
-    }
-
-    @objc fileprivate func longPress(_ longPressGestureRecognizer: UILongPressGestureRecognizer) {
-        guard longPressGestureRecognizer.state == .began else { return }
-        let touchPoint = longPressGestureRecognizer.location(in: tableView)
-
-        guard let indexPath = tableView.indexPathForRow(at: touchPoint) else { return }
-        longPressIndexPath = indexPath
-
-        presentContextMenu(for: indexPath, savedTab: recentlyClosedTabs[indexPath.row])
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -119,6 +106,22 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         navigationController?.popViewController(animated: true)
     }
 
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let index = indexPath.row
+        let savedTab = recentlyClosedTabs[index]
+
+        return tabMenu.createOpenTabMenu(savedTab) { (tab, isPrivate) in
+            self.loadData()
+
+            let toastLabelText: String = isPrivate ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText : Strings.ContextMenuButtonToastNewTabOpenedLabelText
+            let toastView = ToastViewManager.shared.makeToast(text: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
+                self.tabManager?.selectTab(tab)
+            })
+
+            ToastViewManager.shared.enqueue(toast: toastView)
+        }
+    }
+
     // Functions that deal with showing header rows.
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -126,35 +129,6 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.recentlyClosedTabs.count
-    }
-}
-
-extension RecentlyClosedTabsPanelSiteTableViewController: LibraryPanelContextMenu, PhotonActionSheetDelegate {
-    func presentContextMenu(for site: Site, with indexPath: IndexPath, completionHandler: @escaping () -> PhotonActionSheet?) {
-        guard let contextMenu = completionHandler() else { return }
-        contextMenu.savedTab = recentlyClosedTabs[indexPath.row]
-        contextMenu.delegate = self
-
-        self.present(contextMenu, animated: true, completion: nil)
-    }
-
-    func getSiteDetails(for indexPath: IndexPath) -> Site? {
-        let closedTab = recentlyClosedTabs[indexPath.row]
-        let site: Site
-        if let title = closedTab.title {
-            site = Site(url: String(describing: closedTab.url), title: title)
-        } else {
-            site = Site(url: String(describing: closedTab.url), title: "")
-        }
-        return site
-    }
-
-    func getContextMenuActions(for site: Site, savedTab: SavedTab?, with indexPath: IndexPath) -> [PhotonActionSheetItem]? {
-        return getDefaultContextMenuActions(for: site, savedTab: savedTab, libraryPanelDelegate: libraryPanelDelegate)
-    }
-
-    func didDismiss() {
-        loadData()
     }
 }
 

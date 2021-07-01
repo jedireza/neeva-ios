@@ -74,6 +74,9 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
     var libraryPanelDelegate: LibraryPanelDelegate?
 
+    var tabManager: TabManager!
+    var tabMenu: TabMenu!
+
     var groupedSites = DateGroupedTableData<Site>()
 
     var refreshControl: UIRefreshControl?
@@ -88,10 +91,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
     }
 
     lazy var emptyStateOverlayView: UIView = createEmptyStateOverlayView()
-
-    lazy var longPressRecognizer: UILongPressGestureRecognizer = {
-        return UILongPressGestureRecognizer(target: self, action: #selector(onLongPressGestureRecognized))
-    }()
 
     // MARK: - Lifecycle
     override init(profile: Profile) {
@@ -110,9 +109,11 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.addGestureRecognizer(longPressRecognizer)
         tableView.accessibilityIdentifier = "History List"
         tableView.prefetchDataSource = self
+
+        tabManager = BrowserViewController.foregroundBVC().tabManager
+        tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -363,16 +364,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         }
     }
 
-    func onLongPressGestureRecognized(_ longPressGestureRecognizer: UILongPressGestureRecognizer) {
-        guard longPressGestureRecognizer.state == .began else { return }
-        let touchPoint = longPressGestureRecognizer.location(in: tableView)
-        guard let indexPath = tableView.indexPathForRow(at: touchPoint) else { return }
-
-        if indexPath.section != Section.additionalHistoryActions.rawValue {
-            presentContextMenu(for: indexPath, savedTab: nil)
-        }
-    }
-
     func onRefreshPulled() {
         refreshControl?.beginRefreshing()
     }
@@ -454,6 +445,20 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         print("Error: No site or no URL when selecting row.")
     }
 
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard let site = siteForIndexPath(indexPath) else { return nil }
+
+        return tabMenu.createHistoryTabMenu(for: site,
+                                            pinToTopSites: { self.pinToTopSites(site) },
+                                            removeHistoryForURLAtIndexPath: { self.removeHistoryForURLAtIndexPath(indexPath: indexPath) }) { tab, isPrivate in
+            let toastLabelText: String = isPrivate ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText : Strings.ContextMenuButtonToastNewTabOpenedLabelText
+            let toastView = ToastViewManager.shared.makeToast(text: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
+                self.tabManager.selectTab(tab)
+            })
+
+            ToastViewManager.shared.enqueue(toast: toastView)
+        }
+    }
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         // Intentionally blank. Required to use UITableViewRowActions
@@ -554,31 +559,5 @@ extension HistoryPanel: UITableViewDataSourcePrefetching {
         }
 
         return indexPath.row >= groupedSites.numberOfItemsForSection(indexPath.section - 1) - 1
-    }
-}
-
-extension HistoryPanel: LibraryPanelContextMenu {
-    func presentContextMenu(for site: Site, with indexPath: IndexPath, completionHandler: @escaping () -> PhotonActionSheet?) {
-        guard let contextMenu = completionHandler() else { return }
-        present(contextMenu, animated: true, completion: nil)
-    }
-
-    func getSiteDetails(for indexPath: IndexPath) -> Site? {
-        return siteForIndexPath(indexPath)
-    }
-
-    func getContextMenuActions(for site: Site, savedTab: SavedTab?, with indexPath: IndexPath) -> [PhotonActionSheetItem]? {
-        guard var actions = getDefaultContextMenuActions(for: site, savedTab: savedTab, libraryPanelDelegate: libraryPanelDelegate) else { return nil }
-
-        let removeAction = PhotonActionSheetItem(title: Strings.DeleteFromHistoryContextMenuTitle, iconString: "action_delete", handler: { _, _ in
-            self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
-        })
-
-        let pinTopSite = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin", handler: { _, _ in
-            self.pinToTopSites(site)
-        })
-        actions.append(pinTopSite)
-        actions.append(removeAction)
-        return actions
     }
 }

@@ -588,7 +588,7 @@ class TabManager: NSObject, ObservableObject {
             }
         }
 
-        return selectedTab
+        return selectedSavedTab
     }
 
     func restoreAllClosedTabs() {

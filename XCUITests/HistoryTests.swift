@@ -182,8 +182,7 @@ class HistoryTests: BaseTestCase {
         waitForExistence(app.tables["Recently Closed Tabs List"])
         app.tables.cells.staticTexts["https://neeva.com"].press(forDuration: 1)
 
-        waitForExistence(app.tables["Context Menu"])
-        app.tables.cells["incognito"].tap()
+        app.buttons["Open in New Incognito Tab"].tap()
 
         navigator.nowAt(NewTabScreen)
         navigator.goto(TabTray)
