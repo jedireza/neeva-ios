@@ -22,7 +22,7 @@ class InitialViewController: UIHostingController<ShareToView> {
                     if didComplete {
                         self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
                     } else {
-                        self?.extensionContext?.cancelRequest(withError: NSError())
+                        self?.extensionContext?.cancelRequest(withError: NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil))
                     }
                 })
             } else {
