@@ -75,7 +75,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
     var libraryPanelDelegate: LibraryPanelDelegate?
 
     var tabManager: TabManager!
-    var tabMenu: TabMenu!
 
     var groupedSites = DateGroupedTableData<Site>()
 
@@ -113,7 +112,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         tableView.prefetchDataSource = self
 
         tabManager = BrowserViewController.foregroundBVC().tabManager
-        tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -448,7 +446,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         guard let site = siteForIndexPath(indexPath) else { return nil }
 
-        return tabMenu.createHistoryTabMenu(for: site,
+        return createHistoryLinkMenu(for: site,
                                             pinToTopSites: { self.pinToTopSites(site) },
                                             removeHistoryForURLAtIndexPath: { self.removeHistoryForURLAtIndexPath(indexPath: indexPath) }) { tab, isPrivate in
             let toastLabelText: String = isPrivate ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText : Strings.ContextMenuButtonToastNewTabOpenedLabelText
@@ -520,6 +518,45 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
             make.width.equalTo(HistoryPanelUX.WelcomeScreenItemWidth)
         }
         return overlayView
+    }
+
+    func createHistoryLinkMenu(for site: Site, pinToTopSites: @escaping () -> Void,
+                              removeHistoryForURLAtIndexPath: @escaping () -> Void, openedTab: @escaping (Tab?, Bool) -> Void) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let currentTab = self.tabManager.selectedTab
+
+            guard let url = URL(string: site.url) else {
+                return nil
+            }
+
+            let newTabAction = UIAction(
+                title: "Open in New tab",
+                image: UIImage(systemName: "plus.square")) { _ in
+                let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: currentTab, isPrivate: false)
+                openedTab(tab, false)
+            }
+
+            let newIncognitoTabAction = UIAction(
+                title: "Open in New Incognito Tab",
+                image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)) { _ in
+                let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: currentTab, isPrivate: true)
+                openedTab(tab, true)
+            }
+
+            let pinTopSite = UIAction(
+                title: Strings.PinTopsiteActionTitle,
+                image: UIImage(named: "action_pin")?.withRenderingMode(.alwaysTemplate)) { _ in
+                pinToTopSites()
+            }
+
+            let removeAction = UIAction(
+                title: Strings.DeleteFromHistoryContextMenuTitle,
+                image: UIImage(named: "action_delete")?.withRenderingMode(.alwaysTemplate), attributes: .destructive) { _ in
+                removeHistoryForURLAtIndexPath()
+            }
+
+            return UIMenu(children: FeatureFlag[.pinToTopSites] ? [newTabAction, newIncognitoTabAction, pinTopSite, removeAction] : [newTabAction, newIncognitoTabAction, removeAction])
+        }
     }
 
     override func applyTheme() {

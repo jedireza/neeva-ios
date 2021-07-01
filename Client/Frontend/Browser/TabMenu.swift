@@ -110,45 +110,6 @@ class TabMenu {
         }
     }
 
-    func createHistoryTabMenu(for site: Site, pinToTopSites: @escaping () -> Void,
-                              removeHistoryForURLAtIndexPath: @escaping () -> Void, openedTab: @escaping (Tab?, Bool) -> Void) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let currentTab = self.tabManager.selectedTab
-
-            guard let url = URL(string: site.url) else {
-                return nil
-            }
-
-            let newTabAction = UIAction(
-                title: "Open in New tab",
-                image: UIImage(systemName: "plus.square")) { _ in
-                let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: currentTab, isPrivate: false)
-                openedTab(tab, false)
-            }
-
-            let newIncognitoTabAction = UIAction(
-                title: "Open in New Incognito Tab",
-                image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)) { _ in
-                let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: currentTab, isPrivate: true)
-                openedTab(tab, true)
-            }
-
-            let pinTopSite = UIAction(
-                title: Strings.PinTopsiteActionTitle,
-                image: UIImage(named: "action_pin")?.withRenderingMode(.alwaysTemplate)) { _ in
-                pinToTopSites()
-            }
-
-            let removeAction = UIAction(
-                title: Strings.DeleteFromHistoryContextMenuTitle,
-                image: UIImage(named: "action_delete")?.withRenderingMode(.alwaysTemplate), attributes: .destructive) { _ in
-                removeHistoryForURLAtIndexPath()
-            }
-
-            return UIMenu(children: FeatureFlag[.pinToTopSites] ? [newTabAction, newIncognitoTabAction, pinTopSite, removeAction] : [newTabAction, newIncognitoTabAction, removeAction])
-        }
-    }
-
     // MARK: Initialization
     init(tabManager: TabManager, neevaHomeViewController: NeevaHomeViewController? = nil, alertPresentViewController: UIViewController? = nil) {
         self.tabManager = tabManager
