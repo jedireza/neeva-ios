@@ -5,21 +5,23 @@ import Defaults
 
 /// Usage: add a `case` to this enum, then reference `FeatureFlag[.myFeature]` to check for that feature’s status.
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
-    case inlineAccountSettings = "Inline Account Settings"
-    case feedbackScreenshot = "Attach Screenshot to Feedback"
-    case pinToTopSites = "Pin to Top Sites"
-    case readingMode = "Enable Reading Mode"
+    // IMPORTANT: when adding a new feature flag, make sure to keep this list
+    // in alphabetical order to reduce merge conflicts.
+    case cardGrid = "New Switcher UI"
     case cardStrip = "Carousel of cards instead of tab strip"
-    case swipePlusPlus = "Additional forward and back swipe gestures"
+    case feedbackQuery = "Share feedback query"
+    case feedbackScreenshot = "Attach Screenshot to Feedback"
+    case iPadTopTabs = "Show tab strip on iPad"
+    case inlineAccountSettings = "Inline Account Settings"
+    case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case newURLBar = "New URL Bar"
     case newURLBarDebug = "New URL Bar: Debug Mode"
-    case iPadTopTabs = "Show tab strip on iPad"
+    case pinToTopSites = "Pin to Top Sites"
+    case readingMode = "Enable Reading Mode"
+    case swipePlusPlus = "Additional forward and back swipe gestures"
+    case undoCloseTabToast = "Undo close tab toast"
     case useOldToast = "Use the old Toast framework"
     case welcomeTours = "Navigate to welcome tours web page"
-    case newTrackingProtectionSettings = "New Tracking Protection Settings"
-    case cardGrid = "New Switcher UI"
-    case undoCloseTabToast = "Undo close tab toast"
-    case feedbackQuery = "Share feedback query"
 }
 
 extension FeatureFlag {
