@@ -9,7 +9,7 @@ protocol ToastViewDelegate: AnyObject {
     func draggingEnded(dismissing: Bool)
 }
 
-private enum ToastViewUX {
+public enum ToastViewUX {
     static let height: CGFloat = 53
     static let threshold: CGFloat = 15
 }

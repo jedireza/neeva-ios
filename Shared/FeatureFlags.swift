@@ -18,7 +18,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case welcomeTours = "Navigate to welcome tours web page"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case cardGrid = "New Switcher UI"
-    case undoCloseTabToast = "Undo close tab toast"
 }
 
 extension FeatureFlag {

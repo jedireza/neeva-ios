@@ -400,7 +400,7 @@ extension TabTrayControllerV1: TabDisplayer {
 extension TabTrayControllerV1 {
     func closeTabsForCurrentTray() {
         let tabs = tabDisplayManager.dataStore.compactMap { $0 }
-        tabManager.removeTabsAndAddNormalTab(tabs)
+        tabManager.removeTabsAndAddNormalTab(tabs, showToast: true)
 
         closeTabsTrayHelper()
     }

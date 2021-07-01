@@ -25,11 +25,11 @@ class TabMenu {
 
                 // wait for tabManager to switch to normal mode before closing private tabs
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    tabManager.removeTabsWithToast(tabManager.privateTabs)
+                    tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: false)
                     neevaHomeViewController?.homeViewModel.isPrivate = tabManager.selectedTab!.isPrivate
                 }
             } else {
-                tabManager.removeTabsWithToast(tabManager.normalTabs)
+                tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: false)
             }
 
             if let tabsClosed = tabsClosed {

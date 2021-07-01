@@ -310,7 +310,7 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    func addTab(_ request: URLRequest? = nil, configuration: WKWebViewConfiguration? = nil, afterTab: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false) -> Tab {
+    func addTab(_ request: URLRequest? = nil, webView: WKWebView? = nil, configuration: WKWebViewConfiguration? = nil, afterTab: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false) -> Tab {
         assert(Thread.isMainThread)
 
         // Take the given configuration. Or if it was nil, take our default configuration for the current browsing mode.
@@ -318,7 +318,7 @@ class TabManager: NSObject, ObservableObject {
 
         let bvc = BrowserViewController.foregroundBVC()
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
-        configureTab(tab, request: request, afterTab: afterTab, flushToDisk: flushToDisk, zombie: zombie)
+        configureTab(tab, request: request, webView: webView, afterTab: afterTab, flushToDisk: flushToDisk, zombie: zombie)
 
         return tab
     }
@@ -346,7 +346,7 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    func configureTab(_ tab: Tab, request: URLRequest?, afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false) {
+    func configureTab(_ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false) {
         assert(Thread.isMainThread)
 
         // If network is not available webView(_:didCommit:) is not going to be called
@@ -367,7 +367,9 @@ class TabManager: NSObject, ObservableObject {
 
         delegates.forEach { $0.get()?.tabManager(self, didAddTab: tab, isRestoring: store.isRestoringTabs) }
 
-        if !zombie {
+        if let webView = webView {
+            tab.restore(webView)
+        } else if !zombie {
             tab.createWebview()
         }
 
@@ -411,12 +413,12 @@ class TabManager: NSObject, ObservableObject {
         return result
     }
     
-    func removeTabAndUpdateSelectedIndex(_ tab: Tab) {
+    func removeTabAndUpdateSelectedIndex(_ tab: Tab, allowToast: Bool = false) {
         guard let index = tabs.firstIndex(where: { $0 === tab }) else { return }
+        addTabsToRecentlyClosed([tab], allowToast: allowToast)
         removeTab(tab, flushToDisk: true, notify: true)
-        updateIndexAfterRemovalOf(tab, deletedIndex: index)
 
-        addTabsToRecentlyClosed([tab])
+        updateIndexAfterRemovalOf(tab, deletedIndex: index)
 
         TelemetryWrapper.recordEvent(
             category: .action,
@@ -506,12 +508,12 @@ class TabManager: NSObject, ObservableObject {
         privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 
-    func removeTabsAndAddNormalTab(_ tabsToBeRemoved: [Tab]) {
+    func removeTabsAndAddNormalTab(_ tabsToBeRemoved: [Tab], showToast: Bool) {
         let isPrivate = selectedTab?.isPrivate ?? false
         let tabsToBeRemoved = tabsToBeRemoved.filter { $0.isPrivate == isPrivate }
 
+        addTabsToRecentlyClosed(tabsToBeRemoved, allowToast: showToast)
         removeTabs(tabsToBeRemoved)
-        addTabsToRecentlyClosed(tabsToBeRemoved)
 
         if normalTabs.isEmpty {
             selectTab(addTab())
@@ -519,10 +521,11 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func removeAllTabsAndAddNormalTab() {
-        removeTabsAndAddNormalTab(tabs)
+        removeTabsAndAddNormalTab(tabs, showToast: false)
     }
 
     func removeTabsWithToast(_ tabsToRemove: [Tab]) {
+        addTabsToRecentlyClosed(tabsToRemove, allowToast: true)
         removeTabs(tabsToRemove)
 
         if normalTabs.isEmpty {
@@ -530,17 +533,20 @@ class TabManager: NSObject, ObservableObject {
         }
 
         tabsToRemove.forEach({ $0.hideContent() })
-        addTabsToRecentlyClosed(tabsToRemove)
-
         delegates.forEach { $0.get()?.tabManagerDidRemoveAllTabs(self) }
     }
 
-    func addTabsToRecentlyClosed(_ tabs: [Tab]) {
+    func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
         let tabs = tabs.filter { !$0.isPrivate }
-        let savedTabs = tabs.compactMap { SavedTab(tab: $0, isSelected: selectedTab === $0) }
+        let savedTabs = tabs.map { SavedTab(tab: $0, isSelected: selectedTab === $0) }
         recentlyClosedTabs.append(contentsOf: savedTabs)
 
-        ToastDefaults().showToastForClosedTabs(savedTabs, tabManager: self)
+        if allowToast {
+            // small delay prevents tab bar from getting squished
+            DispatchQueue.main.asyncAfter(deadline: .now() + BrowserToTrayAnimator().transitionDuration(using: nil)) {
+                ToastDefaults().showToastForClosedTabs(savedTabs, tabManager: self)
+            }
+        }
     }
     
     func restoreSavedTabs(_ savedTabs: [SavedTab]) {
@@ -561,8 +567,11 @@ class TabManager: NSObject, ObservableObject {
             }
         }
 
-        if let selectedSavedTab = selectedSavedTab {
-            selectTab(selectedSavedTab)
+        // delay tab opening to prevent tab bar shrinking
+        DispatchQueue.main.asyncAfter(deadline: .now() + BrowserToTrayAnimator().transitionDuration(using: nil)) {
+            if let selectedSavedTab = selectedSavedTab {
+                self.selectTab(selectedSavedTab)
+            }
         }
 
         delegates.forEach( { $0.get()?.tabManagerDidRestoreTabs(self) } )

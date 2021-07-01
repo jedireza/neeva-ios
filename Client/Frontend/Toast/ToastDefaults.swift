@@ -11,15 +11,10 @@ class ToastDefaults: NSObject {
     private var spaceRequestListener: Any?
 
     func showToastForClosedTabs(_ savedTabs: [SavedTab], tabManager: TabManager) {
-        if !FeatureFlag[.undoCloseTabToast] {
-            return
-        }
-
         guard savedTabs.count > 0 else {
             return
         }
 
-        let savedTabs = savedTabs.filter { !$0.isPrivate }
         var toastText = "Tab Closed"
 
         if savedTabs.count > 0 {
