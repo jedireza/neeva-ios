@@ -15,7 +15,7 @@ public enum LibraryPanelUX {
 }
 
 protocol LibraryPanelDelegate: AnyObject {
-    func libraryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
+    func libraryPanelDidRequestToOpenInNewTab(_ url: URL, _ savedTab: SavedTab?, isPrivate: Bool)
     func libraryPanel(didSelectURL url: URL, visitType: VisitType)
     func libraryPanel(didSelectURLString url: String, visitType: VisitType)
 }

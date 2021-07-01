@@ -56,7 +56,6 @@ protocol Profile: AnyObject {
     var favicons: Favicons { get }
     var logins: RustLogins { get }
     var certStore: CertStore { get }
-    var recentlyClosedTabs: ClosedTabsStore { get }
     var panelDataObservers: PanelDataObservers { get }
 
     #if !MOZ_TARGET_NOTIFICATIONSERVICE
@@ -276,10 +275,6 @@ open class BrowserProfile: Profile {
 
     lazy var certStore: CertStore = {
         return CertStore()
-    }()
-
-    lazy var recentlyClosedTabs: ClosedTabsStore = {
-        return ClosedTabsStore()
     }()
 
     public func getCachedClients()-> Deferred<Maybe<[RemoteClient]>> {

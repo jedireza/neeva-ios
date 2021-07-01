@@ -122,10 +122,6 @@ open class MockProfile: Client.Profile {
         return SQLiteReadingList(db: self.readingListDB)
     }()
 
-    lazy public var recentlyClosedTabs: ClosedTabsStore = {
-        return ClosedTabsStore()
-    }()
-
     internal lazy var remoteClientsAndTabs: RemoteClientsAndTabs = {
         return SQLiteRemoteClientsAndTabs(db: self.db)
     }()

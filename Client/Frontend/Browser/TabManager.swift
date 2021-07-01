@@ -212,6 +212,7 @@ class TabManager: NSObject, ObservableObject {
         store.preserveTabs(tabs, selectedTab: selectedTab)
 
         assert(tab === selectedTab, "Expected tab is selected")
+
         selectedTab?.createWebview()
         selectedTab?.lastExecutedTime = Date.now()
 
@@ -549,7 +550,7 @@ class TabManager: NSObject, ObservableObject {
         }
     }
     
-    func restoreSavedTabs(_ savedTabs: [SavedTab]) {
+    func restoreSavedTabs(_ savedTabs: [SavedTab], isPrivate: Bool = false, shouldSelectTab: Bool = true) -> Tab? {
         // makes sure at least one tab is selected
         // if no tab selected, select the last one (most recently closed)
         var selectedSavedTab: Tab?
@@ -557,7 +558,7 @@ class TabManager: NSObject, ObservableObject {
         for index in 0..<savedTabs.count {
             let savedTab = savedTabs[index]
             let urlRequest: URLRequest? = savedTab.url != nil ? URLRequest(url: savedTab.url!) : nil
-            var tab = addTab(urlRequest, flushToDisk: false, zombie: false, isPrivate: savedTab.isPrivate)
+            var tab = addTab(urlRequest, flushToDisk: false, zombie: false, isPrivate: isPrivate)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
 
             if savedTab.isSelected {
@@ -567,9 +568,9 @@ class TabManager: NSObject, ObservableObject {
             }
         }
 
-        // delay tab opening to prevent tab bar shrinking
-        DispatchQueue.main.asyncAfter(deadline: .now() + BrowserToTrayAnimator().transitionDuration(using: nil)) {
-            if let selectedSavedTab = selectedSavedTab {
+        if let selectedSavedTab = selectedSavedTab, shouldSelectTab {
+            // delay tab opening to prevent tab bar shrinking
+            DispatchQueue.main.asyncAfter(deadline: .now() + BrowserToTrayAnimator().transitionDuration(using: nil)) {
                 self.selectTab(selectedSavedTab)
             }
         }
@@ -582,10 +583,12 @@ class TabManager: NSObject, ObservableObject {
                 recentlyClosedTabs.remove(at: index)
             }
         }
+
+        return selectedTab
     }
 
     func restoreAllClosedTabs() {
-       restoreSavedTabs(recentlyClosedTabs)
+        _ = restoreSavedTabs(recentlyClosedTabs)
     }
 
     func removeAll() {
@@ -603,6 +606,11 @@ class TabManager: NSObject, ObservableObject {
     func getTabForURL(_ url: URL) -> Tab? {
         assert(Thread.isMainThread)
         return tabs.filter({ $0.webView?.url == url }).first
+    }
+
+    func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {
+        assert(Thread.isMainThread)
+        return recentlyClosedTabs.filter({ $0.url == url }).first
     }
     
     func getTabForUUID(uuid: String) -> Tab? {

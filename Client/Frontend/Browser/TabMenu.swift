@@ -73,13 +73,13 @@ class TabMenu {
     // MARK: Recently Closed Tabs
     func createRecentlyClosedTabsMenu() -> UIMenu {
         let recentlyClosed = tabManager.recentlyClosedTabs.filter {
-            !InternalURL.isValid(url: ($0.url ?? URL(string: ""))!)
+            !InternalURL.isValid(url: ($0.url ?? URL(string: "")))
         }
 
         var actions = [UIAction]()
         for tab in recentlyClosed {
             let action = UIAction(title: tab.title ?? "Untitled", discoverabilityTitle: tab.url?.absoluteString) { _ in
-                self.tabManager.restoreSavedTabs([tab])
+                _ = self.tabManager.restoreSavedTabs([tab])
             }
             action.accessibilityLabel = tab.title ?? "Untitled"
             actions.append(action)

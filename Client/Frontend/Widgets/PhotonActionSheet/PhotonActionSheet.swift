@@ -8,11 +8,15 @@ import SnapKit
 import Shared
 
 // This file is main table view used for the action sheet
+protocol PhotonActionSheetDelegate {
+    func didDismiss()
+}
 
 class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, Themeable {
     fileprivate(set) var actions: [[PhotonActionSheetItem]]
 
     private var site: Site?
+    public var savedTab: SavedTab?
     private let style: PresentationStyle
     private var tintColor = UIColor.theme.actionMenu.foreground
     private var heightConstraint: Constraint?
@@ -43,6 +47,8 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
             self.transitioningDelegate = photonTransitionDelegate
         }
     }
+
+    var delegate: PhotonActionSheetDelegate?
 
     init(site: Site, actions: [PhotonActionSheetItem], closeButtonTitle: String = Strings.CloseButtonTitle) {
         self.site = site
@@ -234,7 +240,9 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
     }
 
     @objc func dismiss(_ gestureRecognizer: UIGestureRecognizer?) {
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true) {
+            self.delegate?.didDismiss()
+        }
     }
 
     deinit {

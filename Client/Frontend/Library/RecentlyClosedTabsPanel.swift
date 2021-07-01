@@ -51,8 +51,11 @@ class RecentlyClosedTabsPanel: UIViewController, LibraryPanel {
 
 class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
     weak var libraryPanelDelegate: LibraryPanelDelegate?
-    var recentlyClosedTabs: [ClosedTab] = []
+    var recentlyClosedTabs: [SavedTab] = []
     weak var recentlyClosedTabsPanel: RecentlyClosedTabsPanel?
+    weak var tabManager: TabManager?
+
+    var longPressIndexPath: IndexPath?
 
     fileprivate lazy var longPressRecognizer: UILongPressGestureRecognizer = {
         return UILongPressGestureRecognizer(target: self, action: #selector(RecentlyClosedTabsPanelSiteTableViewController.longPress))
@@ -62,14 +65,30 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         super.viewDidLoad()
         tableView.addGestureRecognizer(longPressRecognizer)
         tableView.accessibilityIdentifier = "Recently Closed Tabs List"
-        self.recentlyClosedTabs = profile.recentlyClosedTabs.tabs
+
+        tabManager = BrowserViewController.foregroundBVC().tabManager
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadData()
+    }
+
+    func loadData()  {
+        if let recentlyClosedTabs = tabManager?.recentlyClosedTabs {
+            self.recentlyClosedTabs = recentlyClosedTabs
+            self.tableView.reloadData()
+        }
     }
 
     @objc fileprivate func longPress(_ longPressGestureRecognizer: UILongPressGestureRecognizer) {
         guard longPressGestureRecognizer.state == .began else { return }
         let touchPoint = longPressGestureRecognizer.location(in: tableView)
+
         guard let indexPath = tableView.indexPathForRow(at: touchPoint) else { return }
-        presentContextMenu(for: indexPath)
+        longPressIndexPath = indexPath
+
+        presentContextMenu(for: indexPath, savedTab: recentlyClosedTabs[indexPath.row])
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -77,9 +96,11 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         guard let twoLineCell = cell as? TwoLineTableViewCell else {
             return cell
         }
+
         let tab = recentlyClosedTabs[indexPath.row]
-        let displayURL = tab.url.displayURL ?? tab.url
-        twoLineCell.setLines(tab.title, detailText: displayURL.absoluteDisplayString)
+        let displayURL = tab.url?.displayURL ?? tab.url
+        twoLineCell.setLines(tab.title, detailText: displayURL?.absoluteDisplayString)
+
         let site: Favicon? = (tab.faviconURL != nil) ? Favicon(url: tab.faviconURL!) : nil
         cell.imageView?.layer.borderColor = RecentlyClosedPanelUX.IconBorderColor.cgColor
         cell.imageView?.layer.borderWidth = RecentlyClosedPanelUX.IconBorderWidth
@@ -87,17 +108,15 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         cell.imageView?.setImageAndBackground(forIcon: site, website: displayURL) { [weak cell] in
             cell?.imageView?.image = cell?.imageView?.image?.createScaled(RecentlyClosedPanelUX.IconSize)
         }
+
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let libraryPanelDelegate = libraryPanelDelegate else {
-            log.warning("No site or no URL when selecting row.")
-            return
-        }
-        let visitType = VisitType.typed    // Means History, too.
-        libraryPanelDelegate.libraryPanel(didSelectURL: recentlyClosedTabs[indexPath.row].url, visitType: visitType)
+
+        _ = tabManager?.restoreSavedTabs([recentlyClosedTabs[indexPath.row]])
+        navigationController?.popViewController(animated: true)
     }
 
     // Functions that deal with showing header rows.
@@ -108,12 +127,14 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.recentlyClosedTabs.count
     }
-
 }
 
-extension RecentlyClosedTabsPanelSiteTableViewController: LibraryPanelContextMenu {
+extension RecentlyClosedTabsPanelSiteTableViewController: LibraryPanelContextMenu, PhotonActionSheetDelegate {
     func presentContextMenu(for site: Site, with indexPath: IndexPath, completionHandler: @escaping () -> PhotonActionSheet?) {
         guard let contextMenu = completionHandler() else { return }
+        contextMenu.savedTab = recentlyClosedTabs[indexPath.row]
+        contextMenu.delegate = self
+
         self.present(contextMenu, animated: true, completion: nil)
     }
 
@@ -128,8 +149,12 @@ extension RecentlyClosedTabsPanelSiteTableViewController: LibraryPanelContextMen
         return site
     }
 
-    func getContextMenuActions(for site: Site, with indexPath: IndexPath) -> [PhotonActionSheetItem]? {
-        return getDefaultContextMenuActions(for: site, libraryPanelDelegate: libraryPanelDelegate)
+    func getContextMenuActions(for site: Site, savedTab: SavedTab?, with indexPath: IndexPath) -> [PhotonActionSheetItem]? {
+        return getDefaultContextMenuActions(for: site, savedTab: savedTab, libraryPanelDelegate: libraryPanelDelegate)
+    }
+
+    func didDismiss() {
+        loadData()
     }
 }
 

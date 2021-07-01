@@ -29,11 +29,11 @@ class HistoryClearable: Clearable {
 
         // Treat desktop sites as part of browsing history.
         Tab.ChangeUserAgent.clear()
+        BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.removeAll()
 
         return profile.history.clearHistory().bindQueue(.main) { success in
             SDImageCache.shared.clearDisk()
             SDImageCache.shared.clearMemory()
-            self.profile.recentlyClosedTabs.clearTabs()
             CSSearchableIndex.default().deleteAllSearchableItems()
             NotificationCenter.default.post(name: .PrivateDataClearedHistory, object: nil)
             log.debug("HistoryClearable succeeded: \(success).")

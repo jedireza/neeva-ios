@@ -84,7 +84,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
     var clearHistoryCell: UITableViewCell?
 
     var hasRecentlyClosed: Bool {
-        return profile.recentlyClosedTabs.tabs.count > 0
+        return BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.count > 0
     }
 
     lazy var emptyStateOverlayView: UIView = createEmptyStateOverlayView()
@@ -272,7 +272,8 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
             self.profile.history.clearHistory().uponQueue(.main) { _ in
                 self.reloadData()
             }
-            self.profile.recentlyClosedTabs.clearTabs()
+
+            BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.removeAll()
         }))
         let cancelAction = UIAlertAction(title: Strings.CancelString, style: .cancel)
         alert.addAction(cancelAction)
@@ -368,7 +369,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         guard let indexPath = tableView.indexPathForRow(at: touchPoint) else { return }
 
         if indexPath.section != Section.additionalHistoryActions.rawValue {
-            presentContextMenu(for: indexPath)
+            presentContextMenu(for: indexPath, savedTab: nil)
         }
     }
 
@@ -566,8 +567,8 @@ extension HistoryPanel: LibraryPanelContextMenu {
         return siteForIndexPath(indexPath)
     }
 
-    func getContextMenuActions(for site: Site, with indexPath: IndexPath) -> [PhotonActionSheetItem]? {
-        guard var actions = getDefaultContextMenuActions(for: site, libraryPanelDelegate: libraryPanelDelegate) else { return nil }
+    func getContextMenuActions(for site: Site, savedTab: SavedTab?, with indexPath: IndexPath) -> [PhotonActionSheetItem]? {
+        guard var actions = getDefaultContextMenuActions(for: site, savedTab: savedTab, libraryPanelDelegate: libraryPanelDelegate) else { return nil }
 
         let removeAction = PhotonActionSheetItem(title: Strings.DeleteFromHistoryContextMenuTitle, iconString: "action_delete", handler: { _, _ in
             self.removeHistoryForURLAtIndexPath(indexPath: indexPath)

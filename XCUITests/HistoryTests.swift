@@ -185,14 +185,15 @@ class HistoryTests: BaseTestCase {
         waitForExistence(app.tables["Context Menu"])
         app.tables.cells["incognito"].tap()
 
+        navigator.nowAt(NewTabScreen)
+        navigator.goto(TabTray)
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
 
-        navigator.goto(TabTray)
         let numTabsOpen = userState.numTabs
         XCTAssertEqual(numTabsOpen, 1)
     }
 
-    func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
+    func testPrivateClosedSiteDoesNotAppearOnRecentlyClosedMenu() {
         waitForTabsButton()
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         navigator.nowAt(NewTabScreen)
@@ -204,6 +205,23 @@ class HistoryTests: BaseTestCase {
 
         showRecentlyClosedTabs()
         XCTAssertFalse(app.buttons["Ad-free, private search - Neeva"].exists)
+    }
+
+    func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
+        waitForTabsButton()
+        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
+        navigator.nowAt(NewTabScreen)
+
+        // Open the default website
+        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
+        waitUntilPageLoad()
+        closeAllTabs()
+
+        navigator.nowAt(NewTabScreen)
+        navigator.goto(NeevaMenu)
+        navigator.goto(HistoryRecentlyClosed)
+
+        XCTAssertFalse(app.tables.cells.staticTexts[closedWebPageLabel].exists)
     }
     
     // Private function created to select desired option from the "Clear Recent History" list

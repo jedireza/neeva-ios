@@ -47,7 +47,8 @@ class ToastWindowManager {
     private func getY() -> CGFloat {
         let height = UIScreen.main.bounds.height
         let safeArea = UIApplication.shared.windows.first?.safeAreaInsets
+        let padding: CGFloat = 45
 
-        return height - (safeArea?.top ?? 0) - UIConstants.BottomToolbarHeight - ToastViewUX.height - ToastViewUX.threshold
+        return height - (safeArea?.top ?? 0) - UIConstants.BottomToolbarHeight - padding - ToastViewUX.threshold
     }
 }

@@ -1755,7 +1755,6 @@ extension BrowserViewController: TabDelegate {
 }
 
 extension BrowserViewController: LibraryPanelDelegate {
-
     func libraryPanel(didSelectURL url: URL, visitType: VisitType) {
         guard let tab = tabManager.selectedTab else { return }
         finishEditingAndSubmit(url, visitType: visitType, forTab: tab)
@@ -1770,30 +1769,14 @@ extension BrowserViewController: LibraryPanelDelegate {
         return self.libraryPanel(didSelectURL: url, visitType: visitType)
     }
 
-    func libraryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
-        let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
+    func libraryPanelDidRequestToOpenInNewTab(_ url: URL, _ savedTab: SavedTab?, isPrivate: Bool) {
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
-        guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.isEditing == false : !self.legacyURLBar.inOverlayMode else {
+        guard let savedTab = savedTab else {
             return
         }
 
-        // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-        if !FeatureFlag[.useOldToast] {
-            let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
-                self.tabManager.selectTab(tab)
-            })
-
-            ToastViewManager.shared.enqueue(toast: toastView)
-        } else {
-            let toast = ButtonToast(labelText: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, completion: { buttonPressed in
-                if buttonPressed {
-                    self.tabManager.selectTab(tab)
-                }
-            })
-
-            self.show(toast: toast)
-        }
+        _ = self.tabManager.restoreSavedTabs([savedTab], isPrivate: isPrivate, shouldSelectTab: true)
     }
 }
 
@@ -1810,6 +1793,7 @@ extension BrowserViewController: HomePanelDelegate {
 
     func homePanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
+
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesnt correctly dismiss the homepanels
         guard !topTabsVisible, FeatureFlag[.newURLBar] ? legacyURLBar.model.isEditing == false : !self.legacyURLBar.inOverlayMode else {
@@ -1971,11 +1955,7 @@ extension BrowserViewController: TabManagerDelegate {
         tab.tabDelegate = self
     }
 
-    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {
-        if let url = tab.url, !(InternalURL(url)?.isAboutURL ?? false), !tab.isPrivate {
-            profile.recentlyClosedTabs.addTab(url as URL, title: tab.title, faviconURL: tab.displayFavicon?.url)
-        }
-    }
+    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) { }
 
     func tabManagerDidAddTabs(_ tabManager: TabManager) {
 

@@ -7,22 +7,22 @@ import Shared
 
 protocol LibraryPanelContextMenu {
     func getSiteDetails(for indexPath: IndexPath) -> Site?
-    func getContextMenuActions(for site: Site, with indexPath: IndexPath) -> [PhotonActionSheetItem]?
-    func presentContextMenu(for indexPath: IndexPath)
+    func getContextMenuActions(for site: Site, savedTab: SavedTab?, with indexPath: IndexPath) -> [PhotonActionSheetItem]?
+    func presentContextMenu(for indexPath: IndexPath, savedTab: SavedTab?)
     func presentContextMenu(for site: Site, with indexPath: IndexPath, completionHandler: @escaping () -> PhotonActionSheet?)
 }
 
 extension LibraryPanelContextMenu {
-    func presentContextMenu(for indexPath: IndexPath) {
+    func presentContextMenu(for indexPath: IndexPath, savedTab: SavedTab?) {
         guard let site = getSiteDetails(for: indexPath) else { return }
 
         presentContextMenu(for: site, with: indexPath, completionHandler: {
-            return self.contextMenu(for: site, with: indexPath)
+            return self.contextMenu(for: site, savedTab: savedTab, with: indexPath)
         })
     }
 
-    func contextMenu(for site: Site, with indexPath: IndexPath) -> PhotonActionSheet? {
-        guard let actions = self.getContextMenuActions(for: site, with: indexPath) else { return nil }
+    func contextMenu(for site: Site, savedTab: SavedTab?, with indexPath: IndexPath) -> PhotonActionSheet? {
+        guard let actions = self.getContextMenuActions(for: site, savedTab: savedTab, with: indexPath) else { return nil }
 
         let contextMenu = PhotonActionSheet(site: site, actions: actions)
         contextMenu.modalPresentationStyle = .overFullScreen
@@ -34,15 +34,15 @@ extension LibraryPanelContextMenu {
         return contextMenu
     }
 
-    func getDefaultContextMenuActions(for site: Site, libraryPanelDelegate: LibraryPanelDelegate?) -> [PhotonActionSheetItem]? {
+    func getDefaultContextMenuActions(for site: Site, savedTab: SavedTab?, libraryPanelDelegate: LibraryPanelDelegate?) -> [PhotonActionSheetItem]? {
         guard let siteURL = URL(string: site.url) else { return nil }
 
         let openInNewTabAction = PhotonActionSheetItem(title: Strings.OpenInNewTabContextMenuTitle, iconString: "plus.square", iconType: .SystemImage) { _, _ in
-            libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, isPrivate: false)
+            libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, savedTab, isPrivate: false)
         }
 
         let openInNewIncognitoTabAction = PhotonActionSheetItem(title: Strings.OpenInNewIncognitoTabContextMenuTitle, iconString: "incognito") { _, _ in
-            libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, isPrivate: true)
+            libraryPanelDelegate?.libraryPanelDidRequestToOpenInNewTab(siteURL, savedTab, isPrivate: true)
         }
 
         return [openInNewTabAction, openInNewIncognitoTabAction]
