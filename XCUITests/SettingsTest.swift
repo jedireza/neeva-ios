@@ -35,19 +35,4 @@ class SettingsTest: BaseTestCase {
         }
     }
     */
-
-    func testSendFeedback() {
-        navigator.goto(SettingsScreen)
-
-        while app.buttons["Send Feedback"].exists == false {
-            app.swipeUp()
-        }
-
-        let sendFeedbackCell = app.buttons["Send Feedback"]
-        XCTAssertTrue(sendFeedbackCell.isEnabled)
-        sendFeedbackCell.tap()
-
-        waitForExistence(app.buttons["Cancel"])
-        app.buttons["Cancel"].tap()
-    }
 }

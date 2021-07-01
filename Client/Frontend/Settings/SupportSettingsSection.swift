@@ -25,15 +25,6 @@ struct SupportSettingsSection: View {
             }
         }
         
-        SheetNavigationLink("Send Feedback") {
-            // TODO: make SendFeedbackView’s NavigationView optional so we can push it?
-            // also TODO: figure out how to send a screenshot here
-            SendFeedbackView(screenshot: nil, url: nil, onDismiss: {
-                if let onDismiss = onDismiss {
-                    onDismiss()
-                }
-            }).environment(\.onOpenURL) { url in openInNewTab(url, false) }
-        }
         NavigationLinkButton("Help Center") {
             ClientLogger.shared.logCounter(.ViewHelpCenter, attributes: EnvironmentHelper.shared.getAttributes())
             openInNewTab(NeevaConstants.appHelpCenterURL, false)
