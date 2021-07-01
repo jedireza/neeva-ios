@@ -10,6 +10,7 @@ public struct SendFeedbackView: View {
     let initialText: String
     let onDismiss: (() -> ())?
     let screenshot: UIImage?
+    let query: String?
 
     /// - Parameters:
     ///   - screenshot: A screenshot image that the user may optionally send along with the text
@@ -18,7 +19,7 @@ public struct SendFeedbackView: View {
     ///   - requestId: A request ID to send along with the user-provided feedback
     ///   - geoLocationStatus: passed along to the API
     ///   - initialText: Text to pre-fill the feedback input with. If non-empty, the user can submit feedback without entering any additional text.
-    public init(screenshot: UIImage?, url: URL?, onDismiss: (() -> ())? = nil, requestId: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
+    public init(screenshot: UIImage?, url: URL?, onDismiss: (() -> ())? = nil, requestId: String? = nil, query: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
         self.screenshot = screenshot
         self._url = .init(initialValue: url)
         self.requestId = requestId
@@ -27,6 +28,7 @@ public struct SendFeedbackView: View {
         self._feedbackText = .init(initialValue: initialText)
         self.initialText = initialText
         self._editedScreenshot = .init(initialValue: screenshot ?? UIImage())
+        self.query = query
     }
 
     @Environment(\.presentationMode) var presentationMode
@@ -40,6 +42,8 @@ public struct SendFeedbackView: View {
     @State var isSending = false
     @State var screenshotSheet = ModalState()
     @State var editedScreenshot: UIImage
+    @State var shareQuery = true
+
 
     public var body: some View {
         NavigationView {
@@ -94,7 +98,20 @@ public struct SendFeedbackView: View {
                         }
                     }
                 }
-                if let url = url {
+
+                if let query = query, requestId != nil, FeatureFlag[.feedbackQuery] {
+                    DecorativeSection {
+                        Toggle(isOn: $shareQuery) {
+                            VStack(alignment: .leading) {
+                                Text("Share My Search")
+                                    .bold()
+                                Text("“\(query)”")
+                                    .foregroundColor(.secondaryLabel)
+                                    .lineLimit(1)
+                            }
+                        }
+                    }
+                } else if let url = url {
                     DecorativeSection {
                         Toggle(isOn: $shareURL) {
                             VStack(alignment: .leading) {
@@ -144,39 +161,8 @@ public struct SendFeedbackView: View {
                     if isSending {
                         ActivityIndicator()
                     } else {
-                        Button("Send") {
-                            isSending = true
-                            let feedbackText: String
-                            if let url = url, shareURL {
-                                feedbackText = self.feedbackText + "\n\nCurrent URL: \(url.absoluteString)"
-                            } else {
-                                feedbackText = self.feedbackText
-                            }
-                            SendFeedbackMutation(
-                                input: .init(
-                                    feedback: feedbackText,
-                                    shareResults: false,
-                                    requestId: requestId,
-                                    geoLocationStatus: geoLocationStatus,
-                                    source: .app
-                                )
-                            ).perform { result in
-                                isSending = false
-                                switch result {
-                                case .success:
-                                    updateTourManagerUponSuccess()
-                                    if let onDismiss = onDismiss {
-                                        onDismiss()
-                                    } else {
-                                        presentationMode.wrappedValue.dismiss()
-                                    }
-                                case .failure(let error):
-                                    print(error)
-                                }
-                                TourManager.shared.reset()
-                            }
-                        }
-                        .disabled(feedbackText.isEmpty)
+                        Button("Send", action: sendFeedbackHandler)
+                            .disabled(feedbackText.isEmpty)
                     }
                 }
             }
@@ -238,6 +224,43 @@ public struct SendFeedbackView: View {
 
     private func shouldHighlightTextInput() -> Bool {
         return TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu) || TourManager.shared.isCurrentStep(with: .openFeedbackPanelWithInputFieldHighlight)
+    }
+
+    private func sendFeedbackHandler() {
+        isSending = true
+        let feedbackText: String
+
+        if let url = url, shareURL, (query == nil || requestId == nil || !FeatureFlag[.feedbackQuery]) {
+            feedbackText = self.feedbackText + "\n\nCurrent URL: \(url.absoluteString)"
+        } else {
+            feedbackText = self.feedbackText
+        }
+
+        let shareResults = FeatureFlag[.feedbackQuery] ? shareQuery && query != nil : false
+
+        SendFeedbackMutation(
+            input: .init(
+                feedback: feedbackText,
+                shareResults: shareResults,
+                requestId: (requestId?.isEmpty ?? true) ? nil : requestId,
+                geoLocationStatus: geoLocationStatus,
+                source: .app
+            )
+        ).perform { result in
+            isSending = false
+            switch result {
+            case .success:
+                updateTourManagerUponSuccess()
+                if let onDismiss = onDismiss {
+                    onDismiss()
+                } else {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            case .failure(let error):
+                print(error)
+            }
+            TourManager.shared.reset()
+        }
     }
 }
 
