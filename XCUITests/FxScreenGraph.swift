@@ -111,7 +111,6 @@ class Action {
     static let TogglePrivateModeFromTabBarBrowserTab = "TogglePrivateModeFromTabBarBrowserTab"
     static let TogglePrivateModeFromTabBarNewTab = "TogglePrivateModeFromTabBarNewTab"
 
-    static let ToggleNightMode = "ToggleNightMode"
     static let ToggleTrackingProtection = "ToggleTrackingProtection"
 
     static let Bookmark = "Bookmark"
@@ -219,8 +218,6 @@ class FxUserState: MMUserState {
     var passcode: String? = nil
     var newPasscode: String = "111111"
     var wrongPasscode: String = "111112"
-
-    var nightMode = false
 
     var pocketInNewTab = false
     var bookmarksInNewTab = true
@@ -890,7 +887,7 @@ extension MMNavigator where T == FxUserState {
 
     func browserPerformAction(_ view: BrowserPerformAction) {
         let PageMenuOptions = [.shareOption, .toggleBookmarkOption, .addReadingListOption, .findInPageOption, .sendToDeviceOption, .toggleDesktopOption, BrowserPerformAction.copyURLOption]
-        let BrowserMenuOptions = [.openTopSitesOption, .toggleNightMode, BrowserPerformAction.openSettingsOption]
+        let BrowserMenuOptions = [.openTopSitesOption, BrowserPerformAction.openSettingsOption]
 
         let app = XCUIApplication()
 
@@ -920,7 +917,6 @@ enum BrowserPerformAction: String {
     case openBookMarksOption = "menu-panel-Bookmarks"
     case openHistoryOption = "menu-panel-History"
     case openReadingListOption = "menu-panel-ReadingList"
-    case toggleNightMode = "menu-NightMode"
     case openSettingsOption = "menu-Settings"
 }
 

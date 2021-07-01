@@ -384,8 +384,6 @@ class TabManager: NSObject, ObservableObject {
             tab.url = url
         }
 
-        tab.nightMode = Defaults[.nightModeStatus]
-
         if flushToDisk {
         	storeChanges()
         }

@@ -135,22 +135,6 @@ class Tab: NSObject {
         return url.absoluteString.lengthOfBytes(using: .utf8) > AppConstants.DB_URL_LENGTH_MAX
     }
 
-    var nightMode: Bool {
-        didSet {
-            guard nightMode != oldValue else {
-                return
-            }
-
-            webView?.evaluateJavascriptInDefaultContentWorld("window.__firefox__.NightMode.setEnabled(\(nightMode))")
-            // For WKWebView background color to take effect, isOpaque must be false,
-            // which is counter-intuitive. Default is true. The color is previously
-            // set to black in the WKWebView init.
-            webView?.isOpaque = !nightMode
-
-            UserScriptManager.shared.injectUserScriptsIntoTab(self, nightMode: nightMode)
-        }
-    }
-
     var contentBlocker: NeevaTabContentBlocker?
 
     /// The last title shown by this tab. Used by the tab tray to show titles for zombie tabs.
@@ -192,7 +176,6 @@ class Tab: NSObject {
 
     init(bvc: BrowserViewController, configuration: WKWebViewConfiguration, isPrivate: Bool = false) {
         self.configuration = configuration
-        self.nightMode = false
         self.browserViewController = bvc
         super.init()
         self.isPrivate = isPrivate
@@ -273,7 +256,7 @@ class Tab: NSObject {
 
             self.webView = webView
             self.webView?.addObserver(self, forKeyPath: KVOConstants.URL.rawValue, options: .new, context: nil)
-            UserScriptManager.shared.injectUserScriptsIntoTab(self, nightMode: nightMode)
+            UserScriptManager.shared.injectUserScriptsIntoTab(self)
             tabDelegate?.tab?(self, didCreateWebView: webView)
         }
     }

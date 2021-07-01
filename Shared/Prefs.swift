@@ -22,8 +22,6 @@ extension Defaults.Keys {
     public static let didShowDefaultBrowserOnboarding = Defaults.BoolKey("didShowDefaultBrowserOnboarding")
 
     // explicit/implicit settings
-    public static let nightModeStatus = Defaults.BoolKey("profile.NightModeStatus")
-    public static let nightModeEnabledDarkTheme = Defaults.BoolKey("profile.NightModeEnabledDarkTheme")
     public static let mailToOption = Defaults.Key<String?>("profile.MailToOption")
     public static let contextMenuShowLinkPreviews = Defaults.Key("profile.ContextMenuShowLinkPreviews", default: true)
     public static let showClipboardBar = Defaults.BoolKey("profile.showClipboardBar")
