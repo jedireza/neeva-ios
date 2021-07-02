@@ -317,11 +317,7 @@ class LegacyURLBarView: UIView {
             if inOverlayMode {
                 make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.LocationEdgePadding)
                 if FeatureFlag[.newURLBar] {
-                    if self.toolbarIsShowing {
-                       make.trailing.equalTo(self.shareButton.snp.leading).offset(-LegacyURLBarViewUX.Padding)
-                   } else {
-                       make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.LocationEdgePadding)
-                   }
+                    make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
                 } else {
                     make.trailing.equalTo(self.legacyCancelButton.snp.leading).offset(-2 * LegacyURLBarViewUX.Padding)
                 }
