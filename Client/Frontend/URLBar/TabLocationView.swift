@@ -98,7 +98,9 @@ struct TabLocationView: View {
                         if model.readerMode != .active {
                             LocationViewReloadButton(buildMenu: buildReloadMenu, state: $model.reloadButton, onTap: onReload)
                         }
-                        LocationViewShareButton(url: model.url, canShare: model.canShare, onTap: onShare)
+                        if model.canShare, model.includeShareButtonInLocationView {
+                            LocationViewShareButton(url: model.url, onTap: onShare)
+                        }
                     }.transition(.opacity)
                 }.opacity(model.isEditing ? 0 : 1)
 

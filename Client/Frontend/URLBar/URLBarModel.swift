@@ -13,6 +13,7 @@ class URLBarModel: ObservableObject {
     @Published var reloadButton = ReloadButtonState.reload
     @Published var readerMode = ReaderModeState.unavailable
     @Published var canShare = false
+    @Published var includeShareButtonInLocationView = true
 
     init() {}
     init(previewURL: URL?, isSecure: Bool) {

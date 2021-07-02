@@ -92,13 +92,12 @@ struct LocationViewReloadButton: View {
 
 struct LocationViewShareButton: View {
     let url: URL?
-    let canShare: Bool
     let onTap: (UIView) -> ()
 
     @State private var shareTargetView: UIView?
 
     var body: some View {
-        if canShare, let url = url, !url.absoluteString.isEmpty {
+        if let url = url, !url.absoluteString.isEmpty {
             TabLocationBarButton(label: Symbol(.squareAndArrowUp, label: "Share")) {
                 if let shareTargetView = shareTargetView {
                     onTap(shareTargetView)
@@ -140,9 +139,8 @@ struct TabLocationBarButton_Previews: PreviewProvider {
             LocationViewReloadButton(buildMenu: { nil }, state: .constant(.stop)) {}
         }.previewLayout(.sizeThatFits)
         HStack {
-            LocationViewShareButton(url: nil, canShare: false, onTap: { _ in })
-            LocationViewShareButton(url: "https://neeva.com/", canShare: false, onTap: { _ in })
-            LocationViewShareButton(url: "https://neeva.com/", canShare: true, onTap: { _ in })
+            LocationViewShareButton(url: nil, onTap: { _ in })
+            LocationViewShareButton(url: "https://neeva.com/", onTap: { _ in })
         }.previewLayout(.sizeThatFits)
     }
 }

@@ -455,9 +455,17 @@ class LegacyURLBarView: UIView {
         // the constraints to be calculated too early and there are constraint errors
         if !toolbarIsShowing {
             updateConstraintsIfNeeded()
-            legacyLocationView.showShareButton = true
+            if FeatureFlag[.newURLBar] {
+                model.includeShareButtonInLocationView = true
+            } else {
+                legacyLocationView.showShareButton = true
+            }
         } else {
-            legacyLocationView.showShareButton = false
+            if FeatureFlag[.newURLBar] {
+                model.includeShareButtonInLocationView = false
+            } else {
+                legacyLocationView.showShareButton = false
+            }
         }
         updateViewsForOverlayModeAndToolbarChanges()
     }
@@ -566,9 +574,9 @@ class LegacyURLBarView: UIView {
 
     func transitionToOverlay(_ didCancel: Bool = false) {
         locationTextField?.leftView?.alpha = inOverlayMode ? 1 : 0
-        legacyLocationView.contentView.alpha = inOverlayMode ? 0 : 1
         if !FeatureFlag[.newURLBar] {
             legacyCancelButton.alpha = inOverlayMode ? 1 : 0
+            legacyLocationView.contentView.alpha = inOverlayMode ? 0 : 1
         }
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
@@ -583,8 +591,10 @@ class LegacyURLBarView: UIView {
     }
 
     func updateViewsForOverlayModeAndToolbarChanges() {
-        // This ensures these can't be selected as an accessibility element when in the overlay mode.
-        legacyLocationView.overrideAccessibility(enabled: !inOverlayMode)
+        if !FeatureFlag[.newURLBar] {
+            // This ensures these can't be selected as an accessibility element when in the overlay mode.
+            legacyLocationView.overrideAccessibility(enabled: !inOverlayMode)
+        }
 
         if !FeatureFlag[.newURLBar] {
             legacyCancelButton.isHidden = !inOverlayMode
