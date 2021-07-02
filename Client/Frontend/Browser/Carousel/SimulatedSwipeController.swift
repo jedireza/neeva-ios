@@ -7,7 +7,7 @@ enum SwipeDirection {
     case forward, back
 }
 
-public enum SimulatedSwipeUX {
+public enum SwipeUX {
     static let EdgeWidth: CGFloat = 30
 }
 
@@ -70,7 +70,7 @@ class SimulatedSwipeController:
 
         blankView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.width.equalToSuperview().offset(-SimulatedSwipeUX.EdgeWidth)
+            make.width.equalToSuperview().offset(-SwipeUX.EdgeWidth)
 
             switch swipeDirection {
             case .forward:

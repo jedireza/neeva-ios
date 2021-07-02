@@ -96,7 +96,7 @@ extension SimulatedSwipeAnimator {
         }
 
         // Calculate the edge to calculate distance from
-        let translation = (-animatingView.frame.width + SimulatedSwipeUX.EdgeWidth)
+        let translation = (-animatingView.frame.width + SwipeUX.EdgeWidth)
             * (swipeDirection == .back ? -1 : 1)
         let timeStep = TimeInterval(abs(translation) / speed)
         self.delegate?.simulateForwardAnimatorStartedSwipe(self)

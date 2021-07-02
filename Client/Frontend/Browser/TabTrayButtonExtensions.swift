@@ -32,36 +32,6 @@ class PrivateModeButton: ToggleButton, PrivateModeUI {
     }
 }
 
-class CardStripButton: ToggleButton {
-    var offTint = UIColor.label
-    var onTint = UIColor.label.swappedForStyle
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        accessibilityLabel = .TabTrayToggleAccessibilityLabel
-        accessibilityHint = .TabTrayToggleAccessibilityHint
-        let docImage = UIImage(named: "news")?.withRenderingMode(.alwaysTemplate)
-        setImage(docImage, for: [])
-        addTarget(self, action: #selector(toggleCardStripTapped), for: .touchUpInside)
-        tintColor = offTint
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    @objc func toggleCardStripTapped() {
-        setSelected(!isSelected, animated: true)
-        tintColor = isSelected ? onTint : offTint
-
-        let cardStrip =
-            BrowserViewController.foregroundBVC().cardStripViewController
-        cardStrip?.view.isHidden = !isSelected
-        cardStrip?.view.isUserInteractionEnabled = isSelected
-        BrowserViewController.foregroundBVC().view.bringSubviewToFront((cardStrip?.view)!)
-    }
-}
-
 extension UIButton {
     static func newTabButton() -> UIButton {
         let newTab = UIButton()

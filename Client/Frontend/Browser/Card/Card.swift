@@ -6,7 +6,7 @@ import SDWebImageSwiftUI
 import Shared
 
 enum CardUX {
-    static let CardSize : CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 180 : 160
+    static let CardSize : CGFloat = 160
     static let ShadowRadius : CGFloat = 2
     static let CornerRadius : CGFloat = 5
     static let ButtonSize : CGFloat = 28

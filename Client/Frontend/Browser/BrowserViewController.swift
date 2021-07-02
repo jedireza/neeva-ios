@@ -43,8 +43,6 @@ class BrowserViewController: UIViewController {
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
-        controller.view.isHidden = true
-        controller.view.isUserInteractionEnabled = false
         return controller
     }()
     lazy var cardGridViewController: CardViewController? = {
@@ -528,7 +526,8 @@ class BrowserViewController: UIViewController {
 
         if FeatureFlag[.cardStrip] {
             cardStripViewController?.view.snp.updateConstraints { make in
-                make.left.right.equalTo(self.view)
+                make.leading.equalTo(self.view.snp.trailing).offset(-CardControllerUX.HandleWidth)
+                make.width.equalTo(self.view)
                 make.bottom.equalTo(self.view.snp.bottom).offset(-CardControllerUX.BottomPadding)
                 make.height.equalTo(CardControllerUX.Height)
             }
@@ -537,15 +536,15 @@ class BrowserViewController: UIViewController {
         if FeatureFlag[.swipePlusPlus] {
             simulateForwardViewController?.view.snp.makeConstraints { make in
                 make.top.bottom.equalTo(webViewContainer)
-                make.width.equalTo(webViewContainer).offset(SimulatedSwipeUX.EdgeWidth)
-                make.leading.equalTo(webViewContainer.snp.trailing).offset(-SimulatedSwipeUX.EdgeWidth)
+                make.width.equalTo(webViewContainer).offset(SwipeUX.EdgeWidth)
+                make.leading.equalTo(webViewContainer.snp.trailing).offset(-SwipeUX.EdgeWidth)
             }
         }
 
         simulateBackViewController?.view.snp.makeConstraints { make in
             make.top.bottom.equalTo(webViewContainer)
-            make.width.equalTo(webViewContainer).offset(SimulatedSwipeUX.EdgeWidth)
-            make.trailing.equalTo(webViewContainer.snp.leading).offset(SimulatedSwipeUX.EdgeWidth)
+            make.width.equalTo(webViewContainer).offset(SwipeUX.EdgeWidth)
+            make.trailing.equalTo(webViewContainer.snp.leading).offset(SwipeUX.EdgeWidth)
         }
     }
 

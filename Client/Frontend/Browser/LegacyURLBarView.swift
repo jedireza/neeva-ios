@@ -129,11 +129,6 @@ class LegacyURLBarView: UIView {
         return newTabButton
     }()
 
-    lazy var cardsButton: CardStripButton = {
-        let cardsButton = CardStripButton()
-        return cardsButton
-    }()
-
     lazy var tabsButton: TabsButton = {
         let tabsButton = TabsButton.tabTrayButton()
         tabsButton.accessibilityIdentifier = "URLBarView.tabsButton"
@@ -194,7 +189,6 @@ class LegacyURLBarView: UIView {
             addSubview($0)
         }
         if FeatureFlag[.cardStrip] {
-            addSubview(cardsButton)
             addSubview(newTabButton)
         }
 
@@ -296,13 +290,6 @@ class LegacyURLBarView: UIView {
         }
 
         if FeatureFlag[.cardStrip] {
-            cardsButton.snp.makeConstraints { make in
-                make.leading.equalTo(self.tabsButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
-                make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.ToolbarEdgePaddding)
-                make.centerY.equalTo(self.locationContainer)
-                make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
-            }
-
             newTabButton.snp.makeConstraints { make in
                 make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.ToolbarEdgePaddding)
                 make.centerY.equalTo(self.locationContainer)
@@ -314,9 +301,7 @@ class LegacyURLBarView: UIView {
             make.leading.equalTo(self.addToSpacesButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
-            if !FeatureFlag[.cardStrip] {
-                make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.ToolbarEdgePaddding)
-            }
+            make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.ToolbarEdgePaddding)
         }
     }
 
@@ -472,7 +457,6 @@ class LegacyURLBarView: UIView {
         }
         tabsButton.alpha = alpha
         if FeatureFlag[.cardStrip] {
-            cardsButton.alpha = alpha
             newTabButton.alpha = alpha
         }
     }
@@ -561,7 +545,6 @@ class LegacyURLBarView: UIView {
         tabsButton.isHidden = !toolbarIsShowing
         shareButton.isHidden = !toolbarIsShowing
         if FeatureFlag[.cardStrip] {
-            cardsButton.isHidden = !toolbarIsShowing
             newTabButton.isHidden = !toolbarIsShowing
         }
     }
@@ -574,7 +557,6 @@ class LegacyURLBarView: UIView {
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
         tabsButton.alpha = inOverlayMode ? 0 : 1
         if FeatureFlag[.cardStrip] {
-            cardsButton.alpha = inOverlayMode ? 0 : 1
             newTabButton.alpha = inOverlayMode ? 0 : 1
         }
         addToSpacesButton.alpha = inOverlayMode ? 0 : 1
@@ -595,7 +577,6 @@ class LegacyURLBarView: UIView {
         backButton.isHidden = !toolbarIsShowing || inOverlayMode
         tabsButton.isHidden = !toolbarIsShowing || inOverlayMode
         if FeatureFlag[.cardStrip] {
-            cardsButton.isHidden = !toolbarIsShowing || inOverlayMode
             newTabButton.isHidden = !toolbarIsShowing || inOverlayMode
         }
         shareButton.isHidden = !toolbarIsShowing || inOverlayMode
@@ -656,7 +637,6 @@ extension LegacyURLBarView: TabToolbarProtocol {
                 if toolbarIsShowing {
                     var list = [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar, toolbarNeevaMenuButton]
                     if FeatureFlag[.cardStrip] {
-                        list.append(cardsButton)
                         list.append(newTabButton)
                     }
                     return list
