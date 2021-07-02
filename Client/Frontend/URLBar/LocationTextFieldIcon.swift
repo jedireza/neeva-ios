@@ -5,8 +5,8 @@ import Shared
 import Storage
 
 fileprivate enum LocationTextFieldIconUX {
-    static let size: CGFloat = 24
-    static let faviconSize: CGFloat = 20
+    static let size: CGFloat = 16
+    static let faviconSize: CGFloat = 14
 }
 
 struct LocationTextFieldIcon: View {
@@ -36,6 +36,7 @@ struct LocationTextFieldIcon: View {
             }
         }
         .frame(width: LocationTextFieldIconUX.size, height: LocationTextFieldIconUX.size)
+        .frame(width: TabLocationViewUX.height)
         .transition(.identity)
     }
 }
@@ -46,21 +47,21 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
             LocationTextFieldIcon(currentUrl: nil)
                 .previewDisplayName("Empty")
 
-            HStack(spacing: 20) {
+            HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
                     .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang, suggestions: []))
                 LocationTextFieldIcon(currentUrl: nil)
                     .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens, suggestions: []))
             }.previewDisplayName("Lens/Bang")
 
-            HStack(spacing: 20) {
+            HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
                     .environmentObject(HistorySuggestionModel(previewSuggestion: "example.com"))
                 LocationTextFieldIcon(currentUrl: nil)
                     .environmentObject(HistorySuggestionModel(previewSuggestion: "apple.com"))
             }.previewDisplayName("Domain autocomplete suggestion")
 
-            HStack(spacing: 20) {
+            HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
                     .environmentObject(SearchQueryModel(previewValue: "https://example.com"))
                 LocationTextFieldIcon(currentUrl: nil)
@@ -70,7 +71,12 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
             LocationTextFieldIcon(currentUrl: nil)
                 .environmentObject(SearchQueryModel(previewValue: "https://github.com projects"))
                 .previewDisplayName("Entered Query")
-    }
+        }
+        .frame(height: TabLocationViewUX.height)
+        .background(
+            Capsule()
+                .fill(Color.systemFill)
+        )
         .padding()
         .previewLayout(.sizeThatFits)
         .environmentObject(SearchQueryModel.shared)

@@ -105,7 +105,6 @@ struct TabLocationView: View {
                 HStack(spacing: 0) {
                     if model.isEditing {
                         LocationTextFieldIcon(currentUrl: model.url)
-                            .frame(width: TabLocationViewUX.height)
                             .transition(.opacity)
                         LocationEditView(isEditing: $model.isEditing, onSubmit: onSubmit)
                             // force the view to be recreated each time edit mode is entered
