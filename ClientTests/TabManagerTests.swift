@@ -35,6 +35,8 @@ struct MethodSpy {
 }
 
 fileprivate let spyDidSelectedTabChange = "tabManager(_:didSelectedTabChange:previous:isRestoring:)"
+fileprivate let spyRestoredTabs = "tabManagerDidRestoreTabs(_:)"
+
 
 open class MockTabManagerDelegate: TabManagerDelegate {
     //this array represents the order in which delegate methods should be called.
@@ -518,7 +520,46 @@ class TabManagerTests: XCTestCase {
         manager.removeTabs([tab1, tab2])
         manager.restoreAllClosedTabs()
 
-        XCTAssertNotEqual(manager.tabs.first?.rootUUID, initialRootUUID)
-        XCTAssertNotEqual(manager.tabs.last?.rootUUID, initialRootUUID)
+        let _ = MethodSpy(functionName: spyRestoredTabs) { tabs in
+            XCTAssertEqual(tabs.count, 2)
+            XCTAssertEqual(tabs.first??.rootUUID, initialRootUUID)
+            XCTAssertEqual(tabs.last??.rootUUID, initialRootUUID)
+        }
+    }
+
+    func testParentUUIDNilOnCreation() {
+        let tab = manager.addTab()
+        XCTAssertNil(tab.parentUUID)
+    }
+
+    func testParentUUIDEqualToAncestorParentUUID() {
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab(afterTab: tab1)
+        XCTAssertEqual(tab2.parent, tab1)
+        XCTAssertEqual(tab2.parentUUID, tab1.tabUUID)
+        XCTAssertNil(tab1.parentUUID)
+
+
+        let tab3 = manager.addTab(afterTab: tab2)
+        XCTAssertEqual(tab3.parentUUID, tab2.tabUUID)
+        XCTAssertEqual(tab3.parent, tab2)
+        XCTAssertTrue(tab3.isDescendentOf(tab1))
+        XCTAssertEqual(tab2.parentUUID, tab1.tabUUID)
+    }
+
+    func testParentUUIDIsPersisted() {
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab(afterTab: tab1)
+        let initialParentUUID = tab2.parentUUID
+
+        manager.removeTabs([tab1, tab2])
+        manager.restoreAllClosedTabs()
+
+        let _ = MethodSpy(functionName: spyRestoredTabs) { tabs in
+            XCTAssertEqual(tabs.count, 2)
+            XCTAssertNil(tabs.first??.parentUUID)
+            XCTAssertEqual(tabs.last??.parentUUID, initialParentUUID)
+            XCTAssertEqual(tabs.last??.parent, tabs.first)
+        }
     }
 }

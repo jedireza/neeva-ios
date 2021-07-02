@@ -362,6 +362,7 @@ class TabManager: NSObject, ObservableObject {
                 insertIndex += 1
             }
             tab.parent = parent
+            tab.parentUUID = parent.tabUUID
             tab.rootUUID = parent.rootUUID
             tabs.insert(tab, at: insertIndex)
         }
@@ -556,7 +557,8 @@ class TabManager: NSObject, ObservableObject {
         for index in 0..<savedTabs.count {
             let savedTab = savedTabs[index]
             let urlRequest: URLRequest? = savedTab.url != nil ? URLRequest(url: savedTab.url!) : nil
-            var tab = addTab(urlRequest, flushToDisk: false, zombie: false, isPrivate: isPrivate)
+            var tab = addTab(urlRequest, afterTab: getTabForUUID(uuid: savedTab.parentUUID ?? ""),
+                             flushToDisk: false, zombie: false, isPrivate: isPrivate)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
 
             DispatchQueue.main.async {

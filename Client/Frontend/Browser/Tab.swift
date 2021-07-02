@@ -161,6 +161,7 @@ class Tab: NSObject {
 
     // If this tab has been opened from another, its parent will point to the tab from which it was opened
     weak var parent: Tab?
+    var parentUUID: String? = nil
 
     var rootUUID: String = UUID().uuidString
 
