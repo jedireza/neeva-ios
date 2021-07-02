@@ -15,15 +15,7 @@ import SDWebImage
 import SwiftyJSON
 import SwiftUI
 import Defaults
-
-private let KVOs: [KVOConstants] = [
-    .estimatedProgress,
-    .loading,
-    .canGoBack,
-    .canGoForward,
-    .URL,
-    .title,
-]
+import Combine
 
 private let ActionSheetTitleMaxLength = 120
 
@@ -989,73 +981,6 @@ class BrowserViewController: UIViewController {
         return false
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        guard let webView = object as? WKWebView, let tab = tabManager[webView] else {
-            assert(false)
-            return
-        }
-        guard let kp = keyPath, let path = KVOConstants(rawValue: kp) else {
-            assertionFailure("Unhandled KVO key: \(keyPath ?? "nil")")
-            return
-        }
-
-        if let helper = tab.getContentScript(name: ContextMenuHelper.name()) as? ContextMenuHelper {
-            // This is zero-cost if already installed. It needs to be checked frequently (hence every event here triggers this function), as when a new tab is created it requires multiple attempts to setup the handler correctly.
-             helper.replaceGestureHandlerIfNeeded()
-        }
-
-        switch path {
-        case .estimatedProgress:
-            guard tab === tabManager.selectedTab else { break }
-            if let url = webView.url, !InternalURL.isValid(url: url) {
-                legacyURLBar.updateProgressBar(Float(webView.estimatedProgress))
-            } else {
-                legacyURLBar.hideProgressBar()
-            }
-        case .loading:
-            break
-        case .URL:
-            // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
-            if tab.url == .aboutBlank && webView.url == nil {
-                break
-            }
-
-            // To prevent spoofing, only change the URL immediately if the new URL is on
-            // the same origin as the current URL. Otherwise, do nothing and wait for
-            // didCommitNavigation to confirm the page load.
-            if tab.url?.origin == webView.url?.origin {
-                tab.url = webView.url
-
-                if tab === tabManager.selectedTab && !tab.restoring {
-                    updateUIForReaderHomeStateForTab(tab)
-                }
-                // Catch history pushState navigation, but ONLY for same origin navigation,
-                // for reasons above about URL spoofing risk.
-                navigateInTab(tab: tab, webViewStatus: .url)
-            }
-        case .title:
-            // Ensure that the tab title *actually* changed to prevent repeated calls
-            // to navigateInTab(tab:).
-            guard let title = tab.title else { break }
-            if !title.isEmpty && title != tab.lastTitle {
-                tab.lastTitle = title
-                navigateInTab(tab: tab, webViewStatus: .title)
-            }
-        case .canGoBack:
-            guard tab === tabManager.selectedTab, let canGoBack = change?[.newKey] as? Bool else {
-                break
-            }
-            toolbarModel.canGoBack = canGoBack
-        case .canGoForward:
-            guard tab === tabManager.selectedTab, let canGoForward = change?[.newKey] as? Bool else {
-                break
-            }
-            toolbarModel.canGoForward = canGoForward
-        default:
-            assertionFailure("Unhandled KVO key: \(keyPath ?? "nil")")
-        }
-    }
-
     func updateUIForReaderHomeStateForTab(_ tab: Tab) {
         updateURLBarDisplayURL(tab)
         scrollController.showToolbars(animated: false)
@@ -1656,12 +1581,92 @@ extension BrowserViewController: LegacyURLBarDelegate {
 
 extension BrowserViewController: TabDelegate {
 
+    private func subscribe(to webView: WKWebView, for tab: Tab) {
+        let updateGestureHandler = {
+            if let helper = tab.getContentScript(name: ContextMenuHelper.name()) as? ContextMenuHelper {
+                // This is zero-cost if already installed. It needs to be checked frequently (hence every event here triggers this function), as when a new tab is created it requires multiple attempts to setup the handler correctly.
+                helper.replaceGestureHandlerIfNeeded()
+            }
+        }
+
+        let tabManager = tabManager
+
+        // Observers that live as long as the tab. They are all cancelled in Tab/close(), so it is safe to use a strong reference to self.
+        webView.publisher(for: \.estimatedProgress, options: .new)
+            .forEach(updateGestureHandler)
+            .filter { _ in tab === tabManager.selectedTab }
+            .sink { [self] estimatedProgress in
+                if let url = webView.url, !InternalURL.isValid(url: url) {
+                    legacyURLBar.updateProgressBar(Float(estimatedProgress))
+                } else {
+                    legacyURLBar.hideProgressBar()
+                }
+            }
+            .store(in: &tab.webViewSubscriptions)
+
+        // only used to trigger updateGestureHandler?
+        webView.publisher(for: \.isLoading, options: .new)
+            .forEach(updateGestureHandler)
+            .sink { _ in }
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.url, options: .new)
+            .forEach(updateGestureHandler)
+            // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
+            .filter { tab.url != .aboutBlank || $0 != nil }
+            // To prevent spoofing, only change the URL immediately if the new URL is on
+            // the same origin as the current URL. Otherwise, do nothing and wait for
+            // didCommitNavigation to confirm the page load.
+            .filter { tab.url?.origin == $0?.origin }
+            .sink { [self] url in
+                tab.url = url
+
+                if tab === tabManager.selectedTab && !tab.restoring {
+                    updateUIForReaderHomeStateForTab(tab)
+                }
+                // Catch history pushState navigation, but ONLY for same origin navigation,
+                // for reasons above about URL spoofing risk.
+                navigateInTab(tab: tab, webViewStatus: .url)
+            }
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.title, options: .new)
+            .forEach(updateGestureHandler)
+            .compactMap { $0 }
+            // Ensure that the tab title *actually* changed to prevent repeated calls
+            // to navigateInTab(tab:).
+            .filter { !$0.isEmpty && $0 != tab.lastTitle }
+            .sink { [self] title in
+                tab.lastTitle = title
+                navigateInTab(tab: tab, webViewStatus: .title)
+            }
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.canGoBack, options: .new)
+            .forEach(updateGestureHandler)
+            .filter { _ in tab === tabManager.selectedTab }
+            .assign(to: \.canGoBack, on: toolbarModel)
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.canGoForward, options: .new)
+            .forEach(updateGestureHandler)
+            .filter { _ in tab === tabManager.selectedTab }
+            .assign(to: \.canGoForward, on: toolbarModel)
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.scrollView
+            .publisher(for: \.contentSize, options: .new)
+            .sink { _ in
+                self.scrollController.contentSizeDidChange()
+            }
+            .store(in: &tab.webViewSubscriptions)
+    }
+
     func tab(_ tab: Tab, didCreateWebView webView: WKWebView) {
         webView.frame = webViewContainer.frame
-        // Observers that live as long as the tab. Make sure these are all cleared in willDeleteWebView below!
-        KVOs.forEach { webView.addObserver(self, forKeyPath: $0.rawValue, options: .new, context: nil) }
-        webView.scrollView.addObserver(self.scrollController, forKeyPath: KVOConstants.contentSize.rawValue, options: .new, context: nil)
         webView.uiDelegate = self
+
+        self.subscribe(to: webView, for: tab)
 
         let formPostHelper = FormPostHelper(tab: tab)
         tab.addContentScript(formPostHelper, name: FormPostHelper.name())
@@ -1715,8 +1720,6 @@ extension BrowserViewController: TabDelegate {
 
     func tab(_ tab: Tab, willDeleteWebView webView: WKWebView) {
         tab.cancelQueuedAlerts()
-        KVOs.forEach { webView.removeObserver(self, forKeyPath: $0.rawValue) }
-        webView.scrollView.removeObserver(self.scrollController, forKeyPath: KVOConstants.contentSize.rawValue)
         webView.uiDelegate = nil
         webView.scrollView.delegate = nil
         webView.removeFromSuperview()
