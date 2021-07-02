@@ -181,6 +181,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     /// Commits the completion by setting the text and removing the highlight.
     @discardableResult fileprivate func applyCompletion() -> Bool {
+        tintColor = defaultTint
         // Clear the current completion, then set the text without the attributed style.
         guard let suggestion = historyModel.autocompleteSuggestion else { return false }
         binding = suggestion
