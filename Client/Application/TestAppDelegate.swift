@@ -82,11 +82,6 @@ class TestAppDelegate: AppDelegate {
             profile = BrowserProfile(localName: "testProfile")
         }
 
-        // Don't show the ETP Coversheet New page.
-        if launchArguments.contains(LaunchArguments.SkipETPCoverSheet) {
-            Defaults[.etpCoverSheetShowType] = .DoNotShow
-        }
-        
         // Don't show the What's New page.
         if launchArguments.contains(LaunchArguments.SkipWhatsNew) {
             Defaults[.lastVersionNumber] = "1"

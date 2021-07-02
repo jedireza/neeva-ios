@@ -33,8 +33,6 @@ extension PhotonActionSheetProtocol {
         viewController.present(sheet, animated: true, completion: nil)
     }
 
-    typealias PageOptionsVC = SettingsDelegate & PresentingModalViewControllerDelegate & UIViewController
-
     func getLegacyLongPressLocationBarActions(with urlBar: LegacyURLBarView, webViewContainer: UIView) -> [PhotonActionSheetItem] {
         let pasteGoAction = PhotonActionSheetItem(title: Strings.PasteAndGoTitle, iconString: "doc.on.clipboard", iconType: .SystemImage, iconAlignment: .right) { _, _ in
             if let pasteboardContents = UIPasteboard.general.string {

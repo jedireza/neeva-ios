@@ -221,7 +221,6 @@ extension Strings {
 
     // Setting
     public static let SettingToSaveLogins = MZLocalizedString("Settings.SaveLogins.Title", value: "Save Logins", comment: "Setting to enable the built-in password manager")
-    public static let SettingToShowLoginsInAppMenu = MZLocalizedString("Settings.ShowLoginsInAppMenu.Title", value: "Show in Application Menu", comment: "Setting to show Logins & Passwords quick access in the application menu")
 
     // List view
     public static let LoginsListTitle = MZLocalizedString("LoginsList.Title", value: "SAVED LOGINS", comment: "Title for the list of logins")

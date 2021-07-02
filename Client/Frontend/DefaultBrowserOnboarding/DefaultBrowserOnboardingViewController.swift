@@ -6,6 +6,7 @@ import Foundation
 import UIKit
 import SnapKit
 import Shared
+import Defaults
 
 /*
     
@@ -267,7 +268,7 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     
     @objc private func goToSettings() {
         viewModel.goToSettings?()
-        UserDefaults.standard.set(true, forKey: "DidDismissDefaultBrowserCard") // Don't show default browser card if this button is clicked
+        Defaults[.didDismissDefaultBrowserCard] = true // Don't show default browser card if this button is clicked
         TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .goToSettingsDefaultBrowserOnboarding)
     }
     

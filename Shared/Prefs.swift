@@ -2,24 +2,17 @@
 
 import Defaults
 
-// Data type for the type of sheet which is helpful to know when / how to show the ETP Cover Sheet
-public enum ETPCoverSheetShowType: String, Codable {
-    case CleanInstall
-    case Upgrade
-    case DoNotShow
-    case Unknown
-}
-
+// If you add a setting here, make sure it’s either exposed through
+// user-visible settings or in InternalSettingsView
 extension Defaults.Keys {
     // automatically recorded
     public static let sessionCount = Defaults.Key<Int32>("profile.sessionCount", default: 0)
     public static let latestAppVersion = Defaults.Key<String?>("profile.latestAppVersion")
-    public static let etpCoverSheetShowType = Defaults.Key<ETPCoverSheetShowType?>("profile.etpCoverSheetShowType")
-    public static let installSession = Defaults.Key<Int32>("profile.installSessionNumber", default: 0)
     public static let searchInputPromptDismissed = Defaults.BoolKey("profile.SearchInputPromptDismissed")
     public static let introSeen = Defaults.BoolKey("profile.IntroViewControllerSeen")
     public static let lastVersionNumber = Defaults.Key<String?>("profile.KeyLastVersionNumber")
     public static let didShowDefaultBrowserOnboarding = Defaults.BoolKey("didShowDefaultBrowserOnboarding")
+    public static let didDismissDefaultBrowserCard = Defaults.BoolKey("profile.didDismissDefaultBrowserCard")
 
     // explicit/implicit settings
     public static let mailToOption = Defaults.Key<String?>("profile.MailToOption")
@@ -30,7 +23,6 @@ extension Defaults.Keys {
     public static let blockPopups = Defaults.Key("profile.blockPopups", default: true)
     public static let closePrivateTabs = Defaults.BoolKey("profile.settings.closePrivateTabs")
     public static let recentlyClosedTabs = Defaults.Key<Data?>("profile.recentlyClosedTabs")
-    public static let showLoginsInAppMenu = Defaults.BoolKey("profile.showLoginsInAppMenu")
     public static let saveLogins = Defaults.BoolKey("profile.saveLogins")
 
     // caches
