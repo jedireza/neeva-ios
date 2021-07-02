@@ -62,7 +62,7 @@ class BrowserViewController: UIViewController {
             return nil
         }
         let host = SimulatedSwipeController(tabManager: self.tabManager,
-                                            navigationToolbar: navigationToolbar,
+                                            toolbarModel: toolbarModel,
                                             swipeDirection: .forward)
         addChild(host)
         view.addSubview(host.view)
@@ -71,7 +71,7 @@ class BrowserViewController: UIViewController {
     }()
     lazy var simulateBackViewController: SimulatedSwipeController? = {
         let host = SimulatedSwipeController(tabManager: self.tabManager,
-                                            navigationToolbar: navigationToolbar,
+                                            toolbarModel: toolbarModel,
                                             swipeDirection: .back)
         addChild(host)
         view.addSubview(host.view)
@@ -84,7 +84,25 @@ class BrowserViewController: UIViewController {
     var readerModeBar: ReaderModeBarView?
     var readerModeCache: ReaderModeCache
     var statusBarOverlay: UIView = UIView()
-    fileprivate(set) var toolbar: TabToolbar?
+    let toolbarModel = TabToolbarModel()
+    enum ToolbarType {
+        case legacy(TabToolbar)
+        case modern(TabToolbarHost)
+
+        var common: PrivateModeUI {
+            switch self {
+            case .legacy(let legacy): return legacy
+            case .modern(let modern): return modern
+            }
+        }
+        var view: UIView {
+            switch self {
+            case .legacy(let legacy): return legacy
+            case .modern(let modern): return modern.view
+            }
+        }
+    }
+    fileprivate(set) var toolbar: ToolbarType?
     var searchController: SearchViewController?
     var screenshotHelper: ScreenshotHelper!
     fileprivate var homePanelIsInline = false
@@ -128,9 +146,6 @@ class BrowserViewController: UIViewController {
     // TODO: weak references?
     var ignoredNavigation = Set<WKNavigation>()
     var typedNavigation = [WKNavigation: VisitType]()
-    var navigationToolbar: TabToolbarProtocol {
-        return toolbar ?? legacyURLBar
-    }
 
     var topTabsViewController: TopTabsViewController?
     let topTabsContainer = UIView()
@@ -267,14 +282,33 @@ class BrowserViewController: UIViewController {
         legacyURLBar.topTabsIsShowing = showTopTabs
         legacyURLBar.setShowToolbar(!showToolbar)
 
-        toolbar?.removeFromSuperview()
-        toolbar?.tabToolbarDelegate = nil
+        switch toolbar {
+        case .legacy(let toolbar):
+            toolbar.removeFromSuperview()
+            toolbar.tabToolbarDelegate = nil
+        case .modern(let host):
+            host.willMove(toParent: nil)
+            host.view.removeFromSuperview()
+            host.tabToolbarDelegate = nil
+        case nil:
+            break
+        }
         toolbar = nil
 
         if showToolbar {
-            toolbar = TabToolbar()
-            footer.addSubview(toolbar!)
-            toolbar?.tabToolbarDelegate = self
+            if FeatureFlag[.newTabToolbar] {
+                let toolbar = TabToolbarHost(model: toolbarModel, delegate: self)
+                toolbar.willMove(toParent: self)
+                toolbar.view.setContentHuggingPriority(.required, for: .vertical)
+                footer.addSubview(toolbar.view)
+                addChild(toolbar)
+                self.toolbar = .modern(toolbar)
+            } else {
+                let toolbar = TabToolbar(model: toolbarModel)
+                footer.addSubview(toolbar)
+                toolbar.tabToolbarDelegate = self
+                self.toolbar = .legacy(toolbar)
+            }
         }
 
         if showTopTabs {
@@ -307,10 +341,10 @@ class BrowserViewController: UIViewController {
 
         if let tab = tabManager.selectedTab,
                let webView = tab.webView {
-            toolbar?.applyUIMode(isPrivate: tab.isPrivate)
+            toolbar?.common.applyUIMode(isPrivate: tab.isPrivate)
             updateURLBarDisplayURL(tab)
-            navigationToolbar.updateBackStatus(webView.canGoBack)
-            navigationToolbar.updateForwardStatus(webView.canGoForward)
+            toolbarModel.canGoBack = webView.canGoBack
+            toolbarModel.canGoForward = webView.canGoForward
         }
 
         libraryDrawerViewController?.view.snp.remakeConstraints(constraintsForLibraryDrawerView)
@@ -420,7 +454,7 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        legacyURLBar = LegacyURLBarView(profile: profile)
+        legacyURLBar = LegacyURLBarView(profile: profile, toolbarModel: toolbarModel)
         legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
         legacyURLBar.delegate = self
         legacyURLBar.tabToolbarDelegate = self
@@ -720,16 +754,18 @@ class BrowserViewController: UIViewController {
 
             let findInPageHeight = (findInPageBar == nil) ? 0 : UIConstants.ToolbarHeight
             if let toolbar = self.toolbar {
-                make.bottom.equalTo(toolbar.snp.top).offset(-findInPageHeight)
+                make.bottom.equalTo(toolbar.view.snp.top).offset(-findInPageHeight)
             } else {
                 make.bottom.equalTo(self.view).offset(-findInPageHeight)
             }
         }
 
         // Setup the bottom toolbar
-        toolbar?.snp.remakeConstraints { make in
+        toolbar?.view.snp.remakeConstraints { make in
             make.edges.equalTo(self.footer)
-            make.height.equalTo(UIConstants.BottomToolbarHeight)
+            if !FeatureFlag[.newTabToolbar] {
+                make.height.equalTo(UIConstants.BottomToolbarHeight)
+            }
         }
 
         footer.snp.remakeConstraints { make in
@@ -745,7 +781,7 @@ class BrowserViewController: UIViewController {
             make.top.equalTo(self.legacyURLBar.snp.bottom)
             make.left.right.equalTo(self.view)
             if self.homePanelIsInline {
-                make.bottom.equalTo(self.toolbar?.snp.top ?? self.view.snp.bottom)
+                make.bottom.equalTo(self.toolbar?.view.snp.top ?? self.view.snp.bottom)
             } else {
                 make.bottom.equalTo(self.view.snp.bottom)
             }
@@ -757,7 +793,7 @@ class BrowserViewController: UIViewController {
             if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view), keyboardHeight > 0 {
                 make.bottom.equalTo(self.view).offset(-keyboardHeight)
             } else if let toolbar = self.toolbar {
-                make.bottom.lessThanOrEqualTo(toolbar.snp.top)
+                make.bottom.lessThanOrEqualTo(toolbar.view.snp.top)
                 make.bottom.lessThanOrEqualTo(self.view.safeArea.bottom)
             } else {
                 make.bottom.equalTo(self.view.safeArea.bottom)
@@ -1009,12 +1045,12 @@ class BrowserViewController: UIViewController {
             guard tab === tabManager.selectedTab, let canGoBack = change?[.newKey] as? Bool else {
                 break
             }
-            navigationToolbar.updateBackStatus(canGoBack)
+            toolbarModel.canGoBack = canGoBack
         case .canGoForward:
             guard tab === tabManager.selectedTab, let canGoForward = change?[.newKey] as? Bool else {
                 break
             }
-            navigationToolbar.updateForwardStatus(canGoForward)
+            toolbarModel.canGoForward = canGoForward
         default:
             assertionFailure("Unhandled KVO key: \(keyPath ?? "nil")")
         }
@@ -1049,7 +1085,7 @@ class BrowserViewController: UIViewController {
         } else {
             legacyURLBar.legacyLocationView.updateShareButton(isPage)
         }
-        navigationToolbar.updatePageStatus(isPage)
+        toolbarModel.isPage = isPage
     }
 
     // MARK: Opening New Tabs
@@ -1845,7 +1881,7 @@ extension BrowserViewController: TabManagerDelegate {
             updateURLBarDisplayURL(tab)
 
             if previous == nil || tab.isPrivate != previous?.isPrivate {
-                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar, legacyURLBar]
+                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar?.common, legacyURLBar]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
 
@@ -1906,9 +1942,9 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateFindInPageVisibility(visible: false, tab: previous)
-        navigationToolbar.updateBackStatus(simulateBackViewController?.canGoBack() ?? false
+        toolbarModel.canGoBack = (simulateBackViewController?.canGoBack() ?? false
                                             || selected?.canGoBack ?? false)
-        navigationToolbar.updateForwardStatus(simulateForwardViewController?.canGoForward() ?? false
+        toolbarModel.canGoForward = (simulateForwardViewController?.canGoForward() ?? false
                                                 || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
             self.legacyURLBar.updateProgressBar(Float(selected?.estimatedProgress ?? 0))

@@ -167,4 +167,5 @@ extension Color {
     public static let textSelectionHighlight = Color(UIColor.textSelectionHighlight)
 
     public static let spaceIconBackground = Color.brand.variant.polar
+    public static let chrome = Color(UIColor(light: .systemBackground, dark: .tertiarySystemBackground))
 }

@@ -124,3 +124,9 @@ public struct Symbol: View {
         }
     }
 }
+
+extension Symbol {
+    public static func uiImage(_ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize, weight: UIImage.SymbolWeight = .medium) -> UIImage {
+        UIImage(systemSymbol: symbol, withConfiguration: UIImage.SymbolConfiguration(pointSize: size, weight: weight, scale: .medium))
+    }
+}

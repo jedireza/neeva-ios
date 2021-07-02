@@ -56,7 +56,8 @@ class LegacyURLBarView: UIView {
         }
     }
     weak var tabToolbarDelegate: TabToolbarDelegate?
-    var helper: TabToolbarHelper?
+    var helper: LegacyTabToolbarHelper!
+    let toolbarModel: TabToolbarModel
     var isTransitioning: Bool = false {
         didSet {
             if isTransitioning {
@@ -78,7 +79,7 @@ class LegacyURLBarView: UIView {
     /// a panel, the first responder will be resigned, yet the overlay mode UI is still active.
     var inOverlayMode = false
 
-    private var isPrivateMode = false
+    var isPrivateMode = false
 
     lazy var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
     lazy var neevaMenuButton: UIButton = {
@@ -165,10 +166,11 @@ class LegacyURLBarView: UIView {
 
     var profile: Profile? = nil
     
-    init(profile: Profile) {
+    init(profile: Profile, toolbarModel: TabToolbarModel) {
         self.profile = profile
         self.historySuggestionModel = HistorySuggestionModel(profile: profile)
         self.neevaSuggestionModel = NeevaSuggestionModel(isIncognito: isPrivateMode)
+        self.toolbarModel = toolbarModel
         super.init(frame: CGRect())
         commonInit()
     }
@@ -192,7 +194,8 @@ class LegacyURLBarView: UIView {
             addSubview(newTabButton)
         }
 
-        helper = TabToolbarHelper(toolbar: self)
+        helper = LegacyTabToolbarHelper(toolbar: self)
+        subscriptions.formUnion(helper.subscribe(to: toolbarModel))
         setupConstraints()
 
         // Make sure we hide any views that shouldn't be showing in non-overlay mode.
@@ -348,9 +351,7 @@ class LegacyURLBarView: UIView {
         let favicons = BrowserViewController.foregroundBVC().tabManager.selectedTab?.favicons
         if let lensOrBang = neevaSuggestionModel.activeLensBang,
            let type = lensOrBang.type {
-            iconView.image = UIImage(systemSymbol: type.defaultSymbol)
-                .applyingSymbolConfiguration(UIImage.SymbolConfiguration(weight: .medium))?
-                .withTintColor(.label, renderingMode: .alwaysOriginal)
+            iconView.image = Symbol.uiImage(type.defaultSymbol).withTintColor(.label, renderingMode: .alwaysOriginal)
         } else if suggestion == NeevaConstants.appHost || suggestion == "https://\(NeevaConstants.appHost)" || (model.url?.host == NeevaConstants.appHost && suggestion == "") {
             iconView.image = UIImage(named: "neevaMenuIcon")
         } else if (suggestion != "") {
@@ -614,7 +615,7 @@ class LegacyURLBarView: UIView {
     }
 }
 
-extension LegacyURLBarView: TabToolbarProtocol {
+extension LegacyURLBarView: LegacyTabToolbarProtocol {
     func updateBackStatus(_ canGoBack: Bool) {
         backButton.isEnabled = canGoBack
     }

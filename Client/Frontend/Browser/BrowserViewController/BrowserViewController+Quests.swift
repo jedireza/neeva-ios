@@ -52,8 +52,8 @@ extension BrowserViewController {
         scrollController.showToolbars(animated: true)
 
         if !self.legacyURLBar.toolbarIsShowing {
-            guard let neevaMenu = self.toolbar?.toolbarNeevaMenuButton else { return }
-            target = neevaMenu
+            guard case .legacy(let toolbar) = self.toolbar else { return }
+            target = toolbar.toolbarNeevaMenuButton
         } else {
             target = self.legacyURLBar.neevaMenuButton
         }
