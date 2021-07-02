@@ -97,13 +97,14 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                isEditing && markedTextRange == nil,
                let normalized = Optional(normalizeString(self.text ?? "")),
                suggestion.hasPrefix(normalized),
-               normalized.count < suggestion.count {
+               normalized.count < suggestion.count,
+               !normalized.isEmpty {
                 tintColor = defaultTint.withAlphaComponent(0)
             } else {
                 tintColor = defaultTint
             }
         }
-        tintColor = defaultTint.withAlphaComponent(0)
+        tintColor = text.wrappedValue.isEmpty ? defaultTint : defaultTint.withAlphaComponent(0)
     }
 
     required init?(coder aDecoder: NSCoder) {
