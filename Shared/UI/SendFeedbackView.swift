@@ -99,7 +99,7 @@ public struct SendFeedbackView: View {
                     }
                 }
 
-                if let query = query, requestId != nil, FeatureFlag[.feedbackQuery] {
+                if let query = query, requestId != nil, NeevaFeatureFlags[.feedbackQuery] {
                     DecorativeSection {
                         Toggle(isOn: $shareQuery) {
                             VStack(alignment: .leading) {
@@ -230,13 +230,13 @@ public struct SendFeedbackView: View {
         isSending = true
         let feedbackText: String
 
-        if let url = url, shareURL, (query == nil || requestId == nil || !FeatureFlag[.feedbackQuery]) {
+        if let url = url, shareURL, (query == nil || requestId == nil || !NeevaFeatureFlags[.feedbackQuery]) {
             feedbackText = self.feedbackText + "\n\nCurrent URL: \(url.absoluteString)"
         } else {
             feedbackText = self.feedbackText
         }
 
-        let shareResults = FeatureFlag[.feedbackQuery] ? shareQuery && query != nil : false
+        let shareResults = NeevaFeatureFlags[.feedbackQuery] ? shareQuery && query != nil : false
 
         SendFeedbackMutation(
             input: .init(

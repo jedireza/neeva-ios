@@ -41,6 +41,8 @@ public class NeevaFeatureFlags {
         case browserQuests = 42234
         case suggestionsLogging = 45278
         case neevaMemory = 40640
+        case feedbackQuery = 46831
+        case welcomeTours = 46832
 
         public var name: String {
             switch self {
@@ -48,6 +50,8 @@ public class NeevaFeatureFlags {
             case .browserQuests: return "ios.quests"
             case .suggestionsLogging: return "ios.log.suggestions"
             case .neevaMemory: return "privacy.frontend_options"
+            case .feedbackQuery: return "ios.feedback_query"
+            case .welcomeTours: return "ios.welcome_tours"
             }
         }
     }

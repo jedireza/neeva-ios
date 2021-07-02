@@ -9,7 +9,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     // in alphabetical order to reduce merge conflicts.
     case cardGrid = "New Switcher UI"
     case cardStrip = "Carousel of cards instead of tab strip"
-    case feedbackQuery = "Share feedback query"
     case feedbackScreenshot = "Attach Screenshot to Feedback"
     case iPadTopTabs = "Show tab strip on iPad"
     case inlineAccountSettings = "Inline Account Settings"
@@ -23,7 +22,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case swipePlusPlus = "Additional forward and back swipe gestures"
     case undoCloseTabToast = "Undo close tab toast"
     case useOldToast = "Use the old Toast framework"
-    case welcomeTours = "Navigate to welcome tours web page"
 }
 
 extension FeatureFlag {

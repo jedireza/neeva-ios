@@ -13,7 +13,7 @@ struct SupportSettingsSection: View {
     }
     
     var body: some View {
-        if FeatureFlag[.welcomeTours] {
+        if NeevaFeatureFlags[.welcomeTours] {
             NavigationLinkButton("Welcome Tours") {
                 ClientLogger.shared.logCounter(.ViewShowTour, attributes: EnvironmentHelper.shared.getAttributes())
                 openInNewTab(NeevaConstants.appWelcomeToursURL, false)
