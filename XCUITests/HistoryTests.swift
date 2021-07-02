@@ -66,21 +66,7 @@ class HistoryTests: BaseTestCase {
         XCTAssertFalse(app.tables.cells["Clear Selected Data on This Device"].exists)
     }
 
-    func closeAllTabs() {
-        app.buttons["Show Tabs"].press(forDuration: 3)
-
-        let closeAllTabButton = app.buttons["Close All Tabs"]
-        if closeAllTabButton.exists {
-            closeAllTabButton.tap()
-
-            waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
-            app.buttons["Confirm Close All Tabs"].tap()
-        } else {
-            app.buttons["Close Tab"].tap()
-        }
-    }
-
-    func showRecentlyClosedTabs() {
+    private func showRecentlyClosedTabs() {
         navigator.nowAt(NewTabScreen)
         navigator.goto(TabTray)
         app.buttons["Add Tab"].press(forDuration: 4)
@@ -282,7 +268,7 @@ class HistoryTests: BaseTestCase {
         
     }
     
-    func testAllOptionsArePresent(){
+    func testAllOptionsArePresent() {
         // Go to 'goolge.com' to create a recent history entry.
         navigateToExample()
         navigator.performAction(Action.ClearRecentHistory)

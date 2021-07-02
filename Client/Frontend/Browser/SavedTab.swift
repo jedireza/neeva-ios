@@ -17,6 +17,7 @@ class SavedTab: NSObject, NSCoding {
     var UUID: String?
     var rootUUID: String?
     var parentUUID: String?
+    var tabIndex: Int?
 
     var jsonDictionary: [String: AnyObject] {
         let title: String = self.title ?? "null"
@@ -32,7 +33,8 @@ class SavedTab: NSObject, NSCoding {
             "url": url as AnyObject,
             "UUID": self.UUID as AnyObject,
             "rootUUID": self.UUID as AnyObject,
-            "parentUUID": self.UUID as AnyObject
+            "parentUUID": self.UUID as AnyObject,
+            "tabIndex": self.tabIndex as AnyObject
         ]
         
         if let sessionDataInfo = self.sessionData?.jsonDictionary {
@@ -41,8 +43,8 @@ class SavedTab: NSObject, NSCoding {
         
         return json
     }
-    
-    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String?) {
+
+    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String, tabIndex: Int?) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
@@ -53,6 +55,7 @@ class SavedTab: NSObject, NSCoding {
         self.UUID = uuid
         self.rootUUID = rootUUID
         self.parentUUID = parentUUID
+        self.tabIndex = tabIndex
         
         super.init()
     }
@@ -68,6 +71,7 @@ class SavedTab: NSObject, NSCoding {
         self.UUID = coder.decodeObject(forKey: "UUID") as? String
         self.rootUUID = coder.decodeObject(forKey: "rootUUID") as? String
         self.parentUUID = coder.decodeObject(forKey: "parentUUID") as? String
+        self.tabIndex = coder.decodeObject(forKey: "tabIndex") as? Int
     }
     
     func encode(with coder: NSCoder) {
@@ -81,5 +85,6 @@ class SavedTab: NSObject, NSCoding {
         coder.encode(UUID, forKey: "UUID")
         coder.encode(rootUUID, forKey: "rootUUID")
         coder.encode(parentUUID, forKey: "parentUUID")
+        coder.encode(tabIndex, forKey: "tabIndex")
     }
 }

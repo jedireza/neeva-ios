@@ -10,6 +10,7 @@ protocol ToastViewDelegate: AnyObject {
 }
 
 public enum ToastViewUX {
+    static let defaultDisplayTime = 4.5
     static let height: CGFloat = 53
     static let threshold: CGFloat = 15
 }
@@ -56,7 +57,7 @@ struct ToastView: View {
     weak var viewDelegate: ToastViewDelegate?
 
     // how long the Toast is shown
-    var displayTime = 4.5
+    var displayTime = ToastViewUX.defaultDisplayTime
     var autoDismiss = true
 
     // content

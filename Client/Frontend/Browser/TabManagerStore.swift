@@ -48,7 +48,7 @@ class TabManagerStore {
         var savedUUIDs = Set<String>()
         for tab in tabs {
             tab.tabUUID = tab.tabUUID.isEmpty ? UUID().uuidString : tab.tabUUID
-            let savedTab = SavedTab(tab: tab, isSelected: tab == selectedTab)
+            let savedTab = SavedTab(tab: tab, isSelected: tab == selectedTab, tabIndex: nil)
             savedTabs.append(savedTab)
             
             if let screenshot = tab.screenshot,

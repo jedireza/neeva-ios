@@ -63,6 +63,8 @@ class TabDisplayManager: NSObject {
         return searchedTabs != nil
     }
 
+    private let tabAnimationDuration = 0.2
+
     private var tabsToDisplay: [Tab] {
         if let searchedTabs = searchedTabs {
             // tabs can be deleted while a search is active. Make sure the tab still exists in the tabmanager before displaying
@@ -217,7 +219,7 @@ class TabDisplayManager: NSObject {
     func hideDisplayedTabs( completion: @escaping () -> Void) {
         let cells = collectionView.visibleCells
 
-        UIView.animate(withDuration: 0.2,
+        UIView.animate(withDuration: tabAnimationDuration,
                        animations: {
                             cells.forEach {
                                 $0.alpha = 0
@@ -426,10 +428,15 @@ extension TabDisplayManager: TabManagerDelegate {
             return
         }
 
-        updateWith(animationType: .addTab) { [weak self] in
-            if let me = self, let index = me.tabsToDisplay.firstIndex(of: tab) {
-                me.dataStore.insert(tab, at: index)
-                me.collectionView.insertItems(at: [IndexPath(row: index, section: 0)])
+        if let index = tabsToDisplay.firstIndex(of: tab) {
+            dataStore.insert(tab, at: index)
+            collectionView.insertItems(at: [IndexPath(row: index, section: 0)])
+
+            // delay to make sure tab loads before setting active
+            DispatchQueue.main.asyncAfter(deadline: .now() + tabAnimationDuration) { [unowned self] in
+                for tabToDisplay in tabsToDisplay {
+                    updateCellFor(tab: tabToDisplay, selectedTabChanged: false)
+                }
             }
         }
     }
@@ -474,7 +481,7 @@ extension TabDisplayManager: TabManagerDelegate {
         })
     }
 
-    private func updateWith(animationType: TabAnimationType, operation: (() -> Void)?) {
+    public func updateWith(animationType: TabAnimationType, operation: (() -> Void)?) {
         if let op = operation {
             operations.insert((animationType, op), at: 0)
         }

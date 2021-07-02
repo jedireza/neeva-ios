@@ -352,7 +352,10 @@ class TabTrayControllerV1: UIViewController {
         // We dismiss the tab tray once we are done. So no need to re-enable the toolbar
         toolbar.isUserInteractionEnabled = false
 
-        tabManager.selectTab(tabManager.addTab(request, isPrivate: tabDisplayManager.isPrivate))
+        tabDisplayManager.updateWith(animationType: .addTab) { [weak self] in
+            guard let me = self else { return }
+            me.tabManager.selectTab(me.tabManager.addTab(request, isPrivate: me.tabDisplayManager.isPrivate))
+        }
     }
 }
 

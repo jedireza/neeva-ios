@@ -9,7 +9,7 @@ import Shared
 
 // This cannot be easily imported into extension targets, so we break it out here.
 extension SavedTab {
-    convenience init(tab: Tab, isSelected: Bool) {
+    convenience init(tab: Tab, isSelected: Bool, tabIndex: Int?) {
         assert(Thread.isMainThread)
         
         var sessionData = tab.sessionData
@@ -27,8 +27,8 @@ extension SavedTab {
                 sessionData = SessionData(currentPage: currentPage, urls: urls, lastUsedTime: tab.lastExecutedTime ?? Date.now())
             }
         }
-        
-        self.init(screenshotUUID: tab.screenshotUUID, isSelected: isSelected, title: tab.title ?? tab.lastTitle, isPrivate: tab.isPrivate, faviconURL: tab.displayFavicon?.url, url: tab.url, sessionData: sessionData, uuid: tab.tabUUID, rootUUID: tab.rootUUID, parentUUID: tab.parentUUID)
+
+        self.init(screenshotUUID: tab.screenshotUUID, isSelected: isSelected, title: tab.title ?? tab.lastTitle, isPrivate: tab.isPrivate, faviconURL: tab.displayFavicon?.url, url: tab.url, sessionData: sessionData, uuid: tab.tabUUID, rootUUID: tab.rootUUID, parentUUID: tab.parentUUID ?? "", tabIndex: tabIndex)
     }
     
     func configureSavedTabUsing(_ tab: Tab, imageStore: DiskImageStore? = nil) -> Tab {

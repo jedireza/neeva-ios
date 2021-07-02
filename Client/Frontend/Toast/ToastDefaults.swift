@@ -24,7 +24,7 @@ class ToastDefaults: NSObject {
 
             let toastContent = ToastViewContent(normalContent: ToastStateContent(text: toastText, buttonText: "restore", buttonAction: {
                 // restores last closed tab
-                tabManager.restoreSavedTabs(savedTabs)
+                _ = tabManager.restoreSavedTabs(savedTabs)
             }))
 
             let toastView = ToastViewManager.shared.makeToast(content: toastContent)

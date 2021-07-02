@@ -105,6 +105,11 @@ class TabManager: NSObject, ObservableObject {
     // Enables undo of recently closed tabs
     var recentlyClosedTabs = [SavedTab]()
 
+    // groups tabs closed together in a certain amount of time into one Toast
+    let toastGroupTimerInterval: TimeInterval = 1.5
+    var timerToTabsToast: Timer?
+    var closedTabsToShowToastFor = [SavedTab]()
+
     var normalTabs: [Tab] {
         assert(Thread.isMainThread)
         return tabs.filter { !$0.isPrivate }
@@ -311,7 +316,7 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    func addTab(_ request: URLRequest? = nil, webView: WKWebView? = nil, configuration: WKWebViewConfiguration? = nil, afterTab: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false) -> Tab {
+    func addTab(_ request: URLRequest? = nil, webView: WKWebView? = nil, configuration: WKWebViewConfiguration? = nil, atIndex: Int? = nil, afterTab: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false) -> Tab {
         assert(Thread.isMainThread)
 
         // Take the given configuration. Or if it was nil, take our default configuration for the current browsing mode.
@@ -319,7 +324,7 @@ class TabManager: NSObject, ObservableObject {
 
         let bvc = BrowserViewController.foregroundBVC()
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
-        configureTab(tab, request: request, webView: webView, afterTab: afterTab, flushToDisk: flushToDisk, zombie: zombie)
+        configureTab(tab, request: request, webView: webView, atIndex: atIndex, afterTab: afterTab, flushToDisk: flushToDisk, zombie: zombie)
 
         return tab
     }
@@ -347,14 +352,16 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    func configureTab(_ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false) {
+    func configureTab(_ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, atIndex: Int? = nil, afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false) {
         assert(Thread.isMainThread)
 
         // If network is not available webView(_:didCommit:) is not going to be called
         // We should set request url in order to show url in url bar even no network
         tab.url = request?.url
         
-        if parent == nil || parent?.isPrivate != tab.isPrivate {
+        if let atIndex = atIndex, atIndex <= tabs.count {
+            tabs.insert(tab, at: atIndex)
+        } else if parent == nil || parent?.isPrivate != tab.isPrivate {
             tabs.append(tab)
         } else if let parent = parent, var insertIndex = tabs.firstIndex(of: parent) {
             insertIndex += 1
@@ -538,14 +545,17 @@ class TabManager: NSObject, ObservableObject {
 
     func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
         let tabs = tabs.filter { !$0.isPrivate }
-        let savedTabs = tabs.map { SavedTab(tab: $0, isSelected: selectedTab === $0) }
+        let savedTabs = tabs.map { SavedTab(tab: $0, isSelected: selectedTab === $0, tabIndex: self.tabs.firstIndex(of: $0)) }
         recentlyClosedTabs.append(contentsOf: savedTabs)
 
         if allowToast {
-            // small delay prevents tab bar from getting squished
-            DispatchQueue.main.asyncAfter(deadline: .now() + BrowserToTrayAnimator().transitionDuration(using: nil)) {
-                ToastDefaults().showToastForClosedTabs(savedTabs, tabManager: self)
-            }
+            closedTabsToShowToastFor.append(contentsOf: savedTabs)
+
+            timerToTabsToast?.invalidate()
+            timerToTabsToast = Timer.scheduledTimer(withTimeInterval: toastGroupTimerInterval, repeats: false, block: { _ in
+                ToastDefaults().showToastForClosedTabs(self.closedTabsToShowToastFor, tabManager: self)
+                self.closedTabsToShowToastFor.removeAll()
+            })
         }
     }
     
@@ -557,13 +567,16 @@ class TabManager: NSObject, ObservableObject {
         for index in 0..<savedTabs.count {
             let savedTab = savedTabs[index]
             let urlRequest: URLRequest? = savedTab.url != nil ? URLRequest(url: savedTab.url!) : nil
-            var tab = addTab(urlRequest, afterTab: getTabForUUID(uuid: savedTab.parentUUID ?? ""),
-                             flushToDisk: false, zombie: false, isPrivate: isPrivate)
-            tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
 
-            DispatchQueue.main.async {
-                tab.restore(tab.webView!)
+            var tab: Tab!
+            if let tabIndex = savedTab.tabIndex {
+                tab = addTab(urlRequest, atIndex: tabIndex, flushToDisk: false, zombie: false, isPrivate: isPrivate)
+            } else {
+                tab = addTab(urlRequest, afterTab: getTabForUUID(uuid: savedTab.parentUUID ?? ""), flushToDisk: false, zombie: false, isPrivate: isPrivate)
             }
+
+            tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
+            tab.restore(tab.webView!)
 
             if savedTab.isSelected {
                 selectedSavedTab = tab
@@ -573,10 +586,7 @@ class TabManager: NSObject, ObservableObject {
         }
 
         if let selectedSavedTab = selectedSavedTab, shouldSelectTab {
-            // delay tab opening to prevent tab bar shrinking
-            DispatchQueue.main.asyncAfter(deadline: .now() + BrowserToTrayAnimator().transitionDuration(using: nil)) {
-                self.selectTab(selectedSavedTab)
-            }
+            self.selectTab(selectedSavedTab)
         }
 
         delegates.forEach( { $0.get()?.tabManagerDidRestoreTabs(self) } )
