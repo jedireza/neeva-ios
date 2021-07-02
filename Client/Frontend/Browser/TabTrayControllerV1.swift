@@ -197,14 +197,6 @@ class TabTrayControllerV1: UIViewController {
         tabLayoutDelegate.traitCollection = traitCollection
     }
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        //special case for iPad
-        if UIDevice.current.userInterfaceIdiom == .pad && ThemeManager.instance.currentName == .normal {
-            return .default
-        }
-        return ThemeManager.instance.statusBarStyle
-    }
-
     fileprivate func makeConstraints() {
         webViewContainerBackdrop.snp.makeConstraints { make in
             make.edges.equalTo(self.view)

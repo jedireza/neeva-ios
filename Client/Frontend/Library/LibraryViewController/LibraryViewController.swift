@@ -68,7 +68,13 @@ class LibraryViewController: UIViewController {
         }
 
         updateButtons()
-        applyTheme()
+
+        buttonContainerView.backgroundColor = UIColor.HomePanel.toolbarBackground
+        view.backgroundColor = UIColor.HomePanel.toolbarBackground
+        buttonTintColor = UIColor.HomePanel.toolbarTint
+        buttonSelectedTintColor = UIColor.HomePanel.toolbarHighlight
+        updateButtonTints()
+
         if selectedPanel == nil {
             selectedPanel = .history
         }
@@ -114,10 +120,6 @@ class LibraryViewController: UIViewController {
         panel.view.accessibilityNavigationStyle = .combined
         panel.view.accessibilityLabel = accessibilityLabel
         panel.title = accessibilityLabel
-    }
-
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ThemeManager.instance.currentName == .dark ? .lightContent : .default
     }
 
     fileprivate func hideCurrentPanel() {
@@ -193,19 +195,5 @@ class LibraryViewController: UIViewController {
                 button.setImage(image, for: .normal)
             }
         }
-    }
-}
-
-// MARK: UIAppearance
-extension LibraryViewController: Themeable {
-    func applyTheme() {
-        panelDescriptors.forEach { item in
-            (item.viewController as? Themeable)?.applyTheme()
-        }
-        buttonContainerView.backgroundColor = UIColor.HomePanel.toolbarBackground
-        view.backgroundColor = UIColor.HomePanel.toolbarBackground
-        buttonTintColor = UIColor.HomePanel.toolbarTint
-        buttonSelectedTintColor = UIColor.HomePanel.toolbarHighlight
-        updateButtonTints()
     }
 }

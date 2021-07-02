@@ -31,10 +31,6 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
         super.init(rootView: NeevaMenuRootView(onDismiss: onDismiss, isIncognito: isPrivate, embeddedView: NeevaMenuView(noTopPadding: true, menuAction: nil) ))
 
         self.delegate = delegate
-        self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
-            self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        }
         delegate.isNeevaMenuSheetOpen = true
         self.view.accessibilityViewIsModal = true
         

@@ -67,8 +67,8 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        (navigationController as? ThemedNavigationController)?.applyTheme()
-    }
+        reloadData()
+     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,6 +89,11 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         // Set an empty footer to prevent empty cells from appearing in the list.
         tableView.tableFooterView = UIView()
+
+        updateEmptyPanelState()
+
+        tableView.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
+        tableView.separatorColor = UIColor.legacyTheme.tableView.separator
     }
 
     deinit {
@@ -380,18 +385,5 @@ class DownloadsPanel: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
         return self
-    }
-}
-
-extension DownloadsPanel: Themeable {
-    func applyTheme() {
-        emptyStateOverlayView.removeFromSuperview()
-        emptyStateOverlayView = createEmptyStateOverlayView()
-        updateEmptyPanelState()
-
-        tableView.backgroundColor = UIColor.theme.tableView.rowBackground
-        tableView.separatorColor = UIColor.theme.tableView.separator
-
-        reloadData()
     }
 }

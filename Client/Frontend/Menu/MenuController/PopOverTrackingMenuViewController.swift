@@ -16,10 +16,6 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
         super.init(rootView: TrackingMenuView(viewModel: viewModel))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
-        self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
-            self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        }
         
         //Create host as a popup
         let popoverMenuViewController = self.popoverPresentationController

@@ -37,7 +37,7 @@ protocol ReaderModeStyleViewControllerDelegate {
 
 // MARK: -
 
-class ReaderModeStyleViewController: UIViewController, Themeable {
+class ReaderModeStyleViewController: UIViewController {
     var delegate: ReaderModeStyleViewControllerDelegate?
     var readerModeStyle: ReaderModeStyle = Defaults.Keys.readerModeStyle.defaultValue
 
@@ -58,7 +58,7 @@ class ReaderModeStyleViewController: UIViewController, Themeable {
         // Our preferred content size has a fixed width and height based on the rows + padding
         super.viewDidLoad()
         preferredContentSize = CGSize(width: ReaderModeStyleViewControllerUX.Width, height: ReaderModeStyleViewControllerUX.Height)
-        popoverPresentationController?.backgroundColor = UIColor.theme.tableView.rowBackground
+        popoverPresentationController?.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
 
         // Font type row
 
@@ -176,26 +176,20 @@ class ReaderModeStyleViewController: UIViewController, Themeable {
         selectTheme(readerModeStyle.theme)
         slider.value = Float(UIScreen.main.brightness)
         
-        applyTheme()
-    }
-    
-    
-    // MARK: - Applying Theme
-    func applyTheme() {
-        fontTypeRow.backgroundColor = UIColor.theme.tableView.rowBackground
-        fontSizeRow.backgroundColor = UIColor.theme.tableView.rowBackground
-        brightnessRow.backgroundColor = UIColor.theme.tableView.rowBackground
-        fontSizeLabel.textColor = UIColor.theme.tableView.rowText
+        fontTypeRow.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
+        fontSizeRow.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
+        brightnessRow.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
+        fontSizeLabel.textColor = UIColor.legacyTheme.tableView.rowText
         fontTypeButtons.forEach { button in
-            button.setTitleColor(UIColor.theme.tableView.rowText, for: .selected)
+            button.setTitleColor(UIColor.legacyTheme.tableView.rowText, for: .selected)
             button.setTitleColor(UIColor.Photon.Grey40, for: [])
         }
         fontSizeButtons.forEach { button in
-            button.setTitleColor(UIColor.theme.tableView.rowText, for: .normal)
-            button.setTitleColor(UIColor.theme.tableView.disabledRowText, for: .disabled)
+            button.setTitleColor(UIColor.legacyTheme.tableView.rowText, for: .normal)
+            button.setTitleColor(UIColor.legacyTheme.tableView.disabledRowText, for: .disabled)
         }
         separatorLines.forEach { line in
-            line.backgroundColor = UIColor.theme.tableView.separator
+            line.backgroundColor = UIColor.legacyTheme.tableView.separator
         }
     }
     

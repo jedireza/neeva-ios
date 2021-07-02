@@ -564,7 +564,7 @@ class Tab: NSObject {
     }
 
     func applyTheme() {
-        UITextField.appearance().keyboardAppearance = isPrivate ? .dark : (ThemeManager.instance.currentName == .dark ? .dark : .light)
+        UITextField.appearance().keyboardAppearance = isPrivate ? .dark : .default
     }
     
     func updateFaviconCache() {

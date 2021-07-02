@@ -63,18 +63,9 @@ class UpdateCoverSheetTableViewCell: UITableViewCell {
             make.bottom.equalTo(snp.bottom).offset(UpdateCoverSheetTableViewCellUX.DescriptionLabel.bottom)
             make.leading.equalTo(updateCoverSheetCellImageView.snp.trailing).offset(UpdateCoverSheetTableViewCellUX.DescriptionLabel.leading)
         }
-        fxThemeSupport()
-    }
-    
-    func fxThemeSupport() {
-        if UpdateViewController.theme == .dark {
-            self.updateCoverSheetCellImageView.setImageColor(color: .white)
-            self.updateCoverSheetCellDescriptionLabel.textColor = .white
-            self.contentView.backgroundColor = .black
-        } else {
-            self.updateCoverSheetCellImageView.setImageColor(color: .black)
-            self.updateCoverSheetCellDescriptionLabel.textColor = .black
-            self.contentView.backgroundColor = .white
-        }
+
+        self.updateCoverSheetCellImageView.setImageColor(color: .label)
+        self.updateCoverSheetCellDescriptionLabel.textColor = .label
+        self.contentView.backgroundColor = .systemBackground
     }
 }

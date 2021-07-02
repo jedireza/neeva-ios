@@ -45,14 +45,6 @@ struct AddToSpaceRootView: View {
 class AddToSpaceViewController: UIHostingController<AddToSpaceRootView> {
     init(request: AddToSpaceRequest, onDismiss: @escaping () -> (), onOpenURL: @escaping (URL) -> ()) {
         super.init(rootView: AddToSpaceRootView(request: request, onDismiss: onDismiss, onOpenURL: onOpenURL))
-
-        // Make sure the theme is propagated properly, even if it changes while the sheet
-        // is visible. This is needed for UI that does not just take its colors from the
-        // current Theme object.
-        self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
-            self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        }
         self.view.accessibilityViewIsModal = true
     }
 

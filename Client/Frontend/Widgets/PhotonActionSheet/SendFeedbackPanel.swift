@@ -10,11 +10,6 @@ public class SendFeedbackPanel: UIHostingController<AnyView> {
             SendFeedbackView(screenshot: screenshot, url: url, onDismiss: { self.dismiss(animated: true, completion: nil) }, requestId: requestId, query: query)
                 .environment(\.onOpenURL, onOpenURL)
         )
-
-        self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
-            self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        }
     }
 
     required init?(coder aDecoder: NSCoder) {

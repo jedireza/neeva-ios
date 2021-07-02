@@ -32,9 +32,4 @@ extension UIColor {
         static let White100 = UIColor(rgb: 0xffffff)
 
     }
-
-    struct Custom {
-        static let selectedHighlightDark = UIColor(rgb: 0x2D2D2D)
-        static let selectedHighlightLight = UIColor(rgb: 0xd1d1d6)
-    }
 }

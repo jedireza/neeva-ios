@@ -50,12 +50,6 @@ extension BrowserViewController: ReaderModeStyleViewControllerDelegate {
 }
 
 extension BrowserViewController {
-    func updateReaderModeBar() {
-        if let readerModeBar = readerModeBar {
-            readerModeBar.applyTheme()
-        }
-    }
-
     func showReaderModeBar(animated: Bool) {
         if self.readerModeBar == nil {
             let readerModeBar = ReaderModeBarView(frame: CGRect.zero)
@@ -64,8 +58,6 @@ extension BrowserViewController {
             self.readerModeBar = readerModeBar
             scrollController.readerModeBar = self.readerModeBar
         }
-
-        updateReaderModeBar()
 
         self.updateViewConstraints()
     }

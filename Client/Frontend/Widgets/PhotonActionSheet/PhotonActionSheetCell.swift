@@ -129,7 +129,7 @@ class PhotonActionSheetCell: UITableViewCell {
 
     func configure(with action: PhotonActionSheetItem) {
         titleLabel.text = action.title
-        titleLabel.textColor = UIColor.theme.tableView.rowText
+        titleLabel.textColor = UIColor.legacyTheme.tableView.rowText
         if let tint = action.iconTint {
             titleLabel.textColor = tint
         }
@@ -139,7 +139,7 @@ class PhotonActionSheetCell: UITableViewCell {
         titleLabel.minimumScaleFactor = 0.5
 
         subtitleLabel.text = action.text
-        subtitleLabel.textColor = UIColor.theme.tableView.rowText
+        subtitleLabel.textColor = UIColor.legacyTheme.tableView.rowText
         subtitleLabel.isHidden = action.text == nil
         subtitleLabel.numberOfLines = 0
         titleLabel.font = action.bold ? DynamicFontHelper.defaultHelper.DeviceFontLargeBold : DynamicFontHelper.defaultHelper.LargeSizeRegularWeightAS

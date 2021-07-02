@@ -90,7 +90,7 @@ class PhotonActionSheetTitleHeaderView: UITableViewHeaderFooterView {
         let titleLabel = UILabel()
         titleLabel.font = DynamicFontHelper.defaultHelper.SmallSizeRegularWeightAS
         titleLabel.numberOfLines = 1
-        titleLabel.textColor = UIColor.theme.tableView.headerTextLight
+        titleLabel.textColor = UIColor.legacyTheme.tableView.headerTextLight
         return titleLabel
     }()
 
@@ -222,8 +222,8 @@ class PhotonActionSheetSiteHeaderView: UITableViewHeaderFooterView {
         }
         self.titleLabel.text = site.title.isEmpty ? site.url : site.title
         self.descriptionLabel.text = site.tileURL.baseDomain
-        self.titleLabel.textColor = ThemeManager.instance.current.actionMenu.foreground
-        self.descriptionLabel.textColor = ThemeManager.instance.current.actionMenu.foreground
+        self.titleLabel.textColor = UIColor.legacyTheme.actionMenu.foreground
+        self.descriptionLabel.textColor = UIColor.legacyTheme.actionMenu.foreground
         
     }
 }

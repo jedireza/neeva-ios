@@ -2,62 +2,36 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 import Foundation
-
-protocol Themeable: AnyObject {
-    func applyTheme()
-}
+import Shared
 
 protocol PrivateModeUI {
     func applyUIMode(isPrivate: Bool)
 }
 
-extension UIColor {
-    static var theme: Theme {
-        return ThemeManager.instance.current
-    }
-}
-
-enum BuiltinThemeName: String {
-    case normal
-    case dark
-}
-
 // Convenience reference to these normal mode colors which are used in a few color classes.
-fileprivate let defaultBackground = UIColor.white
-fileprivate let defaultSeparator = UIColor.Photon.Grey30
-fileprivate let defaultTextAndTint = UIColor.Photon.Grey80
+fileprivate let defaultBackground = UIColor(light: .white, dark: .tertiarySystemBackground)
 
-class TableViewColor {
-    var rowBackground: UIColor { return UIColor.Photon.White100 }
-    var rowText: UIColor { return UIColor.Photon.Grey90 }
-    var rowDetailText: UIColor { return UIColor.Photon.Grey60 }
-    var disabledRowText: UIColor { return UIColor.Photon.Grey40 }
-    var separator: UIColor { return defaultSeparator }
-    var headerBackground: UIColor { return defaultBackground }
-    // Used for table headers in Settings and Photon menus
-    var headerTextLight: UIColor { return UIColor.Photon.Grey50 }
-    // Used for table headers in home panel tables
-    var headerTextDark: UIColor { return UIColor.Photon.Grey90 }
-    var selectedBackground: UIColor { return UIColor.Custom.selectedHighlightLight }
-}
+extension UIColor {
+    enum legacyTheme {
+        enum tableView {
+            static let rowBackground = UIColor(light: .Photon.White100, dark: .Photon.Grey70)
+            static let rowText = UIColor(light: .Photon.Grey90, dark: .Photon.Grey90)
+            static let rowDetailText = UIColor(light: .Photon.Grey60, dark: .Photon.Grey30)
+            static let disabledRowText = UIColor.Photon.Grey40
+            static let separator = UIColor(light: .Photon.Grey30, dark: .Photon.Grey60)
+            static let headerBackground = UIColor(light: .white, dark: .Photon.Grey80)
+            // Used for table headers in Settings and Photon menus
+            static let headerTextLight = UIColor(light: .Photon.Grey50, dark: .Photon.Grey30)
+            // Used for table headers in home panel tables
+            static let headerTextDark = UIColor(light: .Photon.Grey90, dark: .Photon.Grey30)
+            static let selectedBackground = UIColor(light: .init(rgb: 0xd1d1d6), dark: .init(rgb: 0x2D2D2D))
+        }
 
-class ActionMenuColor {
-    var foreground: UIColor { return defaultTextAndTint }
-    var iPhoneBackgroundBlurStyle: UIBlurEffect.Style { return UIBlurEffect.Style.light }
-    var iPhoneBackground: UIColor { return defaultBackground.withAlphaComponent(0.9) }
-    var closeButtonBackground: UIColor { return defaultBackground }
-}
-
-protocol Theme {
-    var name: String { get }
-    var tableView: TableViewColor { get }
-    var actionMenu: ActionMenuColor { get }
-    var userInterfaceStyle: UIUserInterfaceStyle { get }
-}
-
-class NormalTheme: Theme {
-    var name: String { return BuiltinThemeName.normal.rawValue }
-    var tableView: TableViewColor { return TableViewColor() }
-    var actionMenu: ActionMenuColor { return ActionMenuColor() }
-    var userInterfaceStyle: UIUserInterfaceStyle { .light }
+        enum actionMenu {
+            static let foreground = UIColor(light: .Photon.Grey80, dark: .Photon.White100)
+            static let iPhoneBackgroundBlurStyle = UIBlurEffect.Style.regular
+            static let iPhoneBackground = defaultBackground.withAlphaComponent(0.9)
+            static let closeButtonBackground = defaultBackground
+        }
+    }
 }

@@ -6,7 +6,7 @@ import UIKit
 import Shared
 import Storage
 
-protocol LibraryPanel: Themeable {
+protocol LibraryPanel: AnyObject {
     var libraryPanelDelegate: LibraryPanelDelegate? { get set }
 }
 
@@ -32,27 +32,13 @@ protocol PresentingModalViewControllerDelegate: AnyObject {
 class ThemedNavigationController: UINavigationController {
     var presentingModalViewControllerDelegate: PresentingModalViewControllerDelegate?
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return topViewController?.preferredStatusBarStyle ?? ThemeManager.instance.statusBarStyle
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         modalPresentationStyle = .formSheet
         modalPresentationCapturesStatusBarAppearance = true
-        applyTheme()
-    }
-}
-
-extension ThemedNavigationController: Themeable {
-    func applyTheme() {
-        navigationBar.barTintColor = UIColor.theme.tableView.headerBackground
+        navigationBar.barTintColor = UIColor.legacyTheme.tableView.headerBackground
         navigationBar.tintColor = .ui.adaptive.blue
-        navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.headerTextDark]
-        setNeedsStatusBarAppearanceUpdate()
-        viewControllers.forEach {
-            ($0 as? Themeable)?.applyTheme()
-        }
+        navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.legacyTheme.tableView.headerTextDark]
     }
 }
 

@@ -12,14 +12,14 @@ private enum TwoLineCellUX {
     static let DetailTextTopMargin: CGFloat = 0
 }
 
-class TwoLineTableViewCell: UITableViewCell, Themeable {
+class TwoLineTableViewCell: UITableViewCell {
     fileprivate let twoLineHelper = TwoLineCellHelper()
 
     let _textLabel = UILabel()
     let _detailTextLabel = UILabel()
     lazy var selectedView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.theme.tableView.selectedBackground
+        view.backgroundColor = UIColor.legacyTheme.tableView.selectedBackground
         return view
     }()
 
@@ -46,7 +46,7 @@ class TwoLineTableViewCell: UITableViewCell, Themeable {
 
         separatorInset = UIEdgeInsets(top: 0, left: TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin, bottom: 0, right: 0)
 
-        applyTheme()
+        twoLineHelper.applyTheme()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -65,11 +65,6 @@ class TwoLineTableViewCell: UITableViewCell, Themeable {
         self.selectionStyle = .default
         separatorInset = UIEdgeInsets(top: 0, left: TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin, bottom: 0, right: 0)
         twoLineHelper.setupDynamicFonts()
-        applyTheme()
-    }
-
-    func applyTheme() {
-        twoLineHelper.applyTheme()
     }
 
     // Save background color on UITableViewCell "select" because it disappears in the default behavior
@@ -126,8 +121,8 @@ private class TwoLineCellHelper {
             self.container?.backgroundColor = UIColor.clear
         }
 
-        textLabel.textColor = UIColor.theme.tableView.rowText
-        detailTextLabel.textColor = UIColor.theme.tableView.rowDetailText
+        textLabel.textColor = UIColor.legacyTheme.tableView.rowText
+        detailTextLabel.textColor = UIColor.legacyTheme.tableView.rowDetailText
     }
 
     func setupDynamicFonts() {

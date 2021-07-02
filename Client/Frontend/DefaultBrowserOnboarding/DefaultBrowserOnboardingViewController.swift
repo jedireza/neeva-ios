@@ -43,15 +43,7 @@ private enum DBOnboardingUX {
 class DefaultBrowserOnboardingViewController: UIViewController {
     // Public constants
     let viewModel = DefaultBrowserOnboardingViewModel()
-    static let theme = BuiltinThemeName(rawValue: ThemeManager.instance.current.name) ?? .normal
     // Private vars
-    private var fxTextThemeColour: UIColor {
-        // For dark theme we want to show light colours and for light we want to show dark colours
-        return DefaultBrowserOnboardingViewController.theme == .dark ? .white : .black
-    }
-    private var fxBackgroundThemeColour: UIColor {
-        return DefaultBrowserOnboardingViewController.theme == .dark ? UIColor(rgb: 0x1C1C1E) : .white
-    }
     private var descriptionFontSize: CGFloat {
         return screenSize.height > 1000 ? DBOnboardingUX.fontSizeXSmall : (screenSize.height > 668 ? DBOnboardingUX.fontSize : DBOnboardingUX.fontSizeSmall)
     }
@@ -83,7 +75,6 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     private lazy var imageText: UILabel = {
         let label = UILabel()
         label.text = viewModel.model?.imageText
-        label.textColor = fxTextThemeColour
         label.font = UIFont.systemFont(ofSize: 18)
         label.textAlignment = .left
         label.numberOfLines = 1
@@ -92,7 +83,6 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = viewModel.model?.titleText
-        label.textColor = fxTextThemeColour
         label.font = UIFont.boldSystemFont(ofSize: titleFontSize)
         label.textAlignment = .center
         label.numberOfLines = 2
@@ -101,7 +91,6 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     private lazy var descriptionText: UILabel = {
         let label = UILabel()
         label.text = viewModel.model?.descriptionText[0]
-        label.textColor = fxTextThemeColour
         label.font = UIFont.systemFont(ofSize: descriptionFontSize)
         label.textAlignment = .left
         label.numberOfLines = 3
@@ -110,7 +99,6 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     private lazy var descriptionLabel1: UILabel = {
         let label = UILabel()
         label.text = viewModel.model?.descriptionText[1]
-        label.textColor = fxTextThemeColour
         label.font = UIFont.systemFont(ofSize: descriptionFontSize)
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -119,7 +107,6 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     private lazy var descriptionLabel2: UILabel = {
         let label = UILabel()
         label.text = viewModel.model?.descriptionText[2]
-        label.textColor = fxTextThemeColour
         label.font = UIFont.systemFont(ofSize: descriptionFontSize)
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -128,7 +115,6 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     private lazy var descriptionLabel3: UILabel = {
         let label = UILabel()
         label.text = viewModel.model?.descriptionText[3]
-        label.textColor = fxTextThemeColour
         label.font = UIFont.systemFont(ofSize: descriptionFontSize)
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -173,8 +159,6 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     }
     
     func initialViewSetup() {
-        self.view.backgroundColor = fxBackgroundThemeColour
-        
         // Initialize
         self.view.addSubview(topImageView)
         self.view.addSubview(imageText)

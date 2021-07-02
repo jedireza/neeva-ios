@@ -34,7 +34,7 @@ class RecentlyClosedTabsPanel: UIViewController, LibraryPanel {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = UIColor.theme.tableView.headerBackground
+        view.backgroundColor = UIColor.legacyTheme.tableView.headerBackground
 
         tableViewController.libraryPanelDelegate = libraryPanelDelegate
         tableViewController.recentlyClosedTabsPanel = self
@@ -129,11 +129,5 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.recentlyClosedTabs.count
-    }
-}
-
-extension RecentlyClosedTabsPanel: Themeable {
-    func applyTheme() {
-        tableViewController.tableView.reloadData()
     }
 }

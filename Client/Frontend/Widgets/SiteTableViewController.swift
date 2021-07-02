@@ -13,7 +13,7 @@ private enum SiteTableViewControllerUX {
  * Provides base shared functionality for site rows and headers.
  */
 @objcMembers
-class SiteTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Themeable {
+class SiteTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     fileprivate let CellIdentifier = "CellIdentifier"
     let profile: Profile
 
@@ -27,7 +27,12 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
     init(profile: Profile) {
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
-        applyTheme()
+        navigationController?.navigationBar.barTintColor = UIColor.legacyTheme.tableView.headerBackground
+        navigationController?.navigationBar.tintColor = .ui.adaptive.blue
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.legacyTheme.tableView.headerTextDark]
+
+        tableView.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
+        tableView.separatorColor = UIColor.legacyTheme.tableView.separator
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -98,7 +103,7 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if self.tableView(tableView, hasFullWidthSeparatorForRowAtIndexPath: indexPath) {
             cell.separatorInset = .zero
         }
-        cell.textLabel?.textColor = UIColor.theme.tableView.rowText
+        cell.textLabel?.textColor = UIColor.legacyTheme.tableView.rowText
         return cell
     }
 
@@ -108,19 +113,5 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
 
     func tableView(_ tableView: UITableView, hasFullWidthSeparatorForRowAtIndexPath indexPath: IndexPath) -> Bool {
         return false
-    }
-
-    func applyTheme() {
-        navigationController?.navigationBar.barTintColor = UIColor.theme.tableView.headerBackground
-        navigationController?.navigationBar.tintColor = .ui.adaptive.blue
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.theme.tableView.headerTextDark]
-        setNeedsStatusBarAppearanceUpdate()
-
-        tableView.backgroundColor = UIColor.theme.tableView.rowBackground
-        tableView.separatorColor = UIColor.theme.tableView.separator
-        if let rows = tableView.indexPathsForVisibleRows {
-            tableView.reloadRows(at: rows, with: .none)
-            tableView.reloadSections(IndexSet(rows.map { $0.section }), with: .none)
-        }
     }
 }

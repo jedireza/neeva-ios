@@ -218,25 +218,19 @@ class BrowserViewController: UIViewController {
         tabManager.addDelegate(self)
         tabManager.addNavigationDelegate(self)
         downloadQueue.delegate = self
-
-        NotificationCenter.default.addObserver(self, selector: #selector(displayThemeChanged), name: .DisplayThemeChanged, object: nil)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         guard legacyURLBar != nil else {
-            return ThemeManager.instance.statusBarStyle
+            return .default
         }
         
         // top-tabs are always dark, so special-case this to light
         if legacyURLBar.topTabsIsShowing {
             return .lightContent
         } else {
-            return ThemeManager.instance.statusBarStyle
+            return .default
         }
-    }
-
-    @objc func displayThemeChanged(notification: Notification) {
-        applyTheme()
     }
 
     func shouldShowFooterForTraitCollection(_ previousTraitCollection: UITraitCollection) -> Bool {
@@ -487,12 +481,18 @@ class BrowserViewController: UIViewController {
         let dropInteraction = UIDropInteraction(delegate: self)
         view.addInteraction(dropInteraction)
 
-        if #available(iOS 13.0, *) {
-            if ThemeManager.instance.systemThemeIsOn {
-                let userInterfaceStyle = traitCollection.userInterfaceStyle
-                ThemeManager.instance.current = userInterfaceStyle == .dark ? DarkTheme() : NormalTheme()
-            }
+        statusBarOverlay.backgroundColor = shouldShowTopTabsForTraitCollection(traitCollection) ? UIColor.Photon.Grey80 : legacyURLBar.backgroundColor
+        setNeedsStatusBarAppearanceUpdate()
+
+        for tab in tabManager.tabs {
+            // Update the `background-color` of any blank webviews.
+            (tab.webView as? TabWebView)?.applyTheme()
+            legacyURLBar.legacyLocationView.tabDidChangeContentBlocking(tab)
         }
+        tabManager.selectedTab?.applyTheme()
+
+        guard let contentScript = self.tabManager.selectedTab?.getContentScript(name: ReaderMode.name()) else { return }
+        appyThemeForPreferences(contentScript: contentScript)
     }
 
     fileprivate func setupConstraints() {
@@ -1336,17 +1336,6 @@ class BrowserViewController: UIViewController {
             }
         }
     }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        if #available(iOS 13.0, *) {
-            if self.traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection), ThemeManager.instance.systemThemeIsOn {
-                let userInterfaceStyle = traitCollection.userInterfaceStyle
-                ThemeManager.instance.current = userInterfaceStyle == .dark ? DarkTheme() : NormalTheme()
-            }
-        }
-    }
 }
 
 extension BrowserViewController: ClipboardBarDisplayHandlerDelegate {
@@ -1856,8 +1845,6 @@ extension BrowserViewController: TabManagerDelegate {
             updateURLBarDisplayURL(tab)
 
             if previous == nil || tab.isPrivate != previous?.isPrivate {
-                applyTheme()
-
                 let ui: [PrivateModeUI?] = [topTabsViewController, toolbar, legacyURLBar]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
@@ -2360,32 +2347,6 @@ extension BrowserViewController: TabTrayDelegate {
 
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController) {
         self.present(viewController, animated: false, completion: nil)
-    }
-}
-
-// MARK: Browser Chrome Theming
-extension BrowserViewController: Themeable {
-    func applyTheme() {
-        guard self.isViewLoaded else { return }
-        let ui: [Themeable?] = [readerModeBar, libraryViewController, libraryDrawerViewController]
-        ui.forEach { $0?.applyTheme() }
-        statusBarOverlay.backgroundColor = shouldShowTopTabsForTraitCollection(traitCollection) ? UIColor.Photon.Grey80 : legacyURLBar.backgroundColor
-        setNeedsStatusBarAppearanceUpdate()
-
-        (presentedViewController as? Themeable)?.applyTheme()
-
-        // Update the `background-color` of any blank webviews.
-        let webViews = tabManager.tabs.compactMap({ $0.webView as? TabWebView })
-        webViews.forEach({ $0.applyTheme() })
-
-        let tabs = tabManager.tabs
-        tabs.forEach {
-            $0.applyTheme()
-            legacyURLBar.legacyLocationView.tabDidChangeContentBlocking($0)
-        }
-        
-        guard let contentScript = self.tabManager.selectedTab?.getContentScript(name: ReaderMode.name()) else { return }
-        appyThemeForPreferences(contentScript: contentScript)
     }
 }
 

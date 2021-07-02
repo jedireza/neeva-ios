@@ -112,6 +112,8 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         tableView.prefetchDataSource = self
 
         tabManager = BrowserViewController.foregroundBVC().tabManager
+
+        updateEmptyPanelState()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -557,14 +559,6 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
             return UIMenu(children: FeatureFlag[.pinToTopSites] ? [newTabAction, newIncognitoTabAction, pinTopSite, removeAction] : [newTabAction, newIncognitoTabAction, removeAction])
         }
-    }
-
-    override func applyTheme() {
-        emptyStateOverlayView.removeFromSuperview()
-        emptyStateOverlayView = createEmptyStateOverlayView()
-        updateEmptyPanelState()
-
-        super.applyTheme()
     }
 }
 

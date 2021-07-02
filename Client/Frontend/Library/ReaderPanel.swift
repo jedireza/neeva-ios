@@ -25,7 +25,7 @@ private enum ReadingListTableViewCellUX {
     static let HostnameLabelBottomOffset: CGFloat = 11
 }
 
-class ReadingListTableViewCell: UITableViewCell, Themeable {
+class ReadingListTableViewCell: UITableViewCell {
     var title: String = "Example" {
         didSet {
             titleLabel.text = title
@@ -92,7 +92,8 @@ class ReadingListTableViewCell: UITableViewCell, Themeable {
             make.leading.trailing.equalTo(self.titleLabel)
         }
 
-        applyTheme()
+        titleLabel.textColor = UIColor.HomePanel.readingListActive
+        hostnameLabel.textColor = UIColor.HomePanel.readingListActive
     }
 
     func setupDynamicFonts() {
@@ -100,14 +101,8 @@ class ReadingListTableViewCell: UITableViewCell, Themeable {
         hostnameLabel.font = DynamicFontHelper.defaultHelper.DeviceFontSmallLight
     }
 
-    func applyTheme() {
-        titleLabel.textColor = UIColor.HomePanel.readingListActive
-        hostnameLabel.textColor = UIColor.HomePanel.readingListActive
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
-        applyTheme()
         setupDynamicFonts()
     }
 

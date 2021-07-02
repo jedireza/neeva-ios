@@ -33,10 +33,6 @@ class PopOverNeevaMenuViewController: UIHostingController<_NeevaMenuPopover> {
         super.init(rootView: NeevaMenuPopover(isIncognito: isPrivate, menuAction: nil))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
-        self.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        NotificationCenter.default.addObserver(forName: .DisplayThemeChanged, object: nil, queue: .main) { [weak self] _ in
-            self?.overrideUserInterfaceStyle = ThemeManager.instance.current.userInterfaceStyle
-        }
         delegate.isNeevaMenuSheetOpen = true
         
         //Build callbacks for each button action

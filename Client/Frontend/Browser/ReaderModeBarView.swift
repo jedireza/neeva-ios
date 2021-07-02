@@ -55,6 +55,9 @@ class ReaderModeBarView: UIView {
             make.height.centerX.centerY.equalTo(self)
             make.width.equalTo(80)
         }
+
+        backgroundColor = UIColor.Browser.background
+        buttonTintColor = UIColor.Browser.tint
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -90,10 +93,3 @@ class ReaderModeBarView: UIView {
     }
 }
 
-extension ReaderModeBarView: Themeable {
-
-    func applyTheme() {
-        backgroundColor = UIColor.Browser.background
-        buttonTintColor = UIColor.Browser.tint
-    }
-}

@@ -68,19 +68,10 @@ public enum UpdateViewControllerUX {
 class UpdateViewController: UIViewController {
     // Public constants 
     let viewModel:UpdateViewModel = UpdateViewModel()
-    static let theme = BuiltinThemeName(rawValue: ThemeManager.instance.current.name) ?? .normal
     // Private vars
-    private var fxTextThemeColour: UIColor {
-        // For dark theme we want to show light colours and for light we want to show dark colours
-        return UpdateViewController.theme == .dark ? .white : .black
-    }
-    private var fxBackgroundThemeColour: UIColor {
-        return UpdateViewController.theme == .dark ? .black : .white
-    }
     private lazy var updatesTableView: UITableView = {
         let tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(UpdateCoverSheetTableViewCell.self, forCellReuseIdentifier: UpdateViewControllerUX.MidTableView.cellIdentifier)
-        tableView.backgroundColor = fxBackgroundThemeColour
         tableView.separatorStyle = .none
         tableView.sectionHeaderHeight = 0
         tableView.sectionFooterHeight = 0
@@ -96,7 +87,6 @@ class UpdateViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = viewModel.updateCoverSheetModel?.titleText
-        label.textColor = fxTextThemeColour
         label.font = UIFont.systemFont(ofSize: 34)
         label.textAlignment = .left
         label.numberOfLines = 0
@@ -136,8 +126,6 @@ class UpdateViewController: UIViewController {
     }
     
     private func initialViewSetup() {
-        self.view.backgroundColor = fxBackgroundThemeColour
-        
         // Initialize
         self.view.addSubview(doneButton)
         self.view.addSubview(titleImageView)
@@ -237,7 +225,6 @@ extension UpdateViewController: UITableViewDelegate, UITableViewDataSource {
         let currentLastItem = viewModel.updates[indexPath.row]
         cell?.updateCoverSheetCellDescriptionLabel.text = currentLastItem.updateText
         cell?.updateCoverSheetCellImageView.image = currentLastItem.updateImage
-        cell?.fxThemeSupport()
         return cell!
     }
 }

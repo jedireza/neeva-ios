@@ -12,13 +12,13 @@ protocol PhotonActionSheetDelegate {
     func didDismiss()
 }
 
-class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, Themeable {
+class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
     fileprivate(set) var actions: [[PhotonActionSheetItem]]
 
     private var site: Site?
     public var savedTab: SavedTab?
     private let style: PresentationStyle
-    private var tintColor = UIColor.theme.actionMenu.foreground
+    private var tintColor = UIColor.legacyTheme.actionMenu.foreground
     private var heightConstraint: Constraint?
     var tableView = UITableView(frame: .zero, style: .grouped)
 
@@ -91,7 +91,7 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
         // In a popover the popover provides the blur background
         // Not using a background color allows the view to style correctly with the popover arrow
         if self.popoverPresentationController == nil {
-            let blurEffect = UIBlurEffect(style: UIColor.theme.actionMenu.iPhoneBackgroundBlurStyle)
+            let blurEffect = UIBlurEffect(style: UIColor.legacyTheme.actionMenu.iPhoneBackgroundBlurStyle)
             let blurEffectView = UIVisualEffectView(effect: blurEffect)
             tableView.backgroundView = blurEffectView
         }
@@ -132,32 +132,16 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
     }
 
     @objc func reduceTransparencyChanged() {
-        // If the user toggles transparency settings, re-apply the theme to also toggle the blur effect.
-        applyTheme()
-    }
-
-    func applyTheme() {
-        if style == .popover {
-            view.backgroundColor = UIColor.Browser.background.withAlphaComponent(0.7)
-        } else {
-            tableView.backgroundView?.backgroundColor = UIColor.theme.actionMenu.iPhoneBackground
-        }
-
         // Apply or remove the background blur effect
         if let visualEffectView = tableView.backgroundView as? UIVisualEffectView {
             if UIAccessibility.isReduceTransparencyEnabled {
                 // Remove the visual effect and the background alpha
                 visualEffectView.effect = nil
-                tableView.backgroundView?.backgroundColor = UIColor.theme.actionMenu.iPhoneBackground.withAlphaComponent(1.0)
+                tableView.backgroundView?.backgroundColor = UIColor.legacyTheme.actionMenu.iPhoneBackground.withAlphaComponent(1.0)
             } else {
-                visualEffectView.effect = UIBlurEffect(style: UIColor.theme.actionMenu.iPhoneBackgroundBlurStyle)
+                visualEffectView.effect = UIBlurEffect(style: UIColor.legacyTheme.actionMenu.iPhoneBackgroundBlurStyle)
             }
         }
-
-        tintColor = UIColor.theme.actionMenu.foreground
-        closeButton.backgroundColor = UIColor.theme.actionMenu.closeButtonBackground
-
-        tableView.reloadData()
     }
 
     @objc func stopRotateSyncIcon() {
@@ -191,7 +175,14 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
         // UITableView has a large default footer height, remove this extra space
         tableView.sectionFooterHeight = 1
 
-        applyTheme()
+        if style == .popover {
+            view.backgroundColor = UIColor.Browser.background.withAlphaComponent(0.7)
+        } else {
+            tableView.backgroundView?.backgroundColor = UIColor.legacyTheme.actionMenu.iPhoneBackground
+        }
+
+        tintColor = UIColor.legacyTheme.actionMenu.foreground
+        closeButton.backgroundColor = UIColor.legacyTheme.actionMenu.closeButtonBackground
 
         DispatchQueue.main.async {
             // Pick up the correct/final tableview.contentsize in order to set the height.

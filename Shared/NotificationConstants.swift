@@ -46,6 +46,4 @@ extension Notification.Name {
     public static let HomePanelPrefsChanged = Notification.Name("HomePanelPrefsChanged")
 
     public static let FileDidDownload = Notification.Name("FileDidDownload")
-
-    public static let DisplayThemeChanged = Notification.Name("DisplayThemeChanged")
 }

@@ -687,8 +687,6 @@
 		EB8A0A77206ABCE000A9859A /* WebPagesForTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7A651020699BD200B52A5F /* WebPagesForTesting.swift */; };
 		EB912B9A22722B5F00DF585A /* Deferred.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB912B8E22722A7800DF585A /* Deferred.swift */; };
 		EB94075320850C9F00702E05 /* photon-colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C49854D206173C800893DAE /* photon-colors.swift */; };
-		EB9A179B20E69A7F00B12184 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9A179820E69A7E00B12184 /* ThemeManager.swift */; };
-		EB9A179C20E69A7F00B12184 /* DarkTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9A179920E69A7E00B12184 /* DarkTheme.swift */; };
 		EB9A179D20E69A7F00B12184 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9A179A20E69A7E00B12184 /* Theme.swift */; };
 		EBA1CC1E214AB8FD009E6B06 /* StorageTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289A4C121C4EB90600A460E3 /* StorageTestUtils.swift */; };
 		EBA3B2C32268F16300728BDB /* PhotonActionSheetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA3B2C22268F16300728BDB /* PhotonActionSheetCell.swift */; };
@@ -1596,8 +1594,6 @@
 		EB912B8E22722A7800DF585A /* Deferred.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deferred.swift; sourceTree = "<group>"; };
 		EB912B9022722A7800DF585A /* ReadWriteLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadWriteLock.swift; sourceTree = "<group>"; };
 		EB912B9122722A7800DF585A /* LockProtected.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LockProtected.swift; sourceTree = "<group>"; };
-		EB9A179820E69A7E00B12184 /* ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
-		EB9A179920E69A7E00B12184 /* DarkTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DarkTheme.swift; sourceTree = "<group>"; };
 		EB9A179A20E69A7E00B12184 /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		EBA3B2C22268F16300728BDB /* PhotonActionSheetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonActionSheetCell.swift; sourceTree = "<group>"; };
 		EBA3B2CC2268F27500728BDB /* PhotonActionSheetWidgets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonActionSheetWidgets.swift; sourceTree = "<group>"; };
@@ -3016,8 +3012,6 @@
 		EB9A179720E69A7E00B12184 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
-				EB9A179820E69A7E00B12184 /* ThemeManager.swift */,
-				EB9A179920E69A7E00B12184 /* DarkTheme.swift */,
 				EB9A179A20E69A7E00B12184 /* Theme.swift */,
 			);
 			path = Theme;
@@ -4499,7 +4493,6 @@
 				274A36C9239EB94000A21587 /* LibraryPanelButton.swift in Sources */,
 				435D660523D794B90046EFA2 /* UpdateViewModel.swift in Sources */,
 				D3B6923F1B9F9A58004B87A4 /* FindInPageHelper.swift in Sources */,
-				EB9A179C20E69A7F00B12184 /* DarkTheme.swift in Sources */,
 				BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */,
 				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,
 				EB1C84BF212EFFBF001489DF /* BrowserViewController+ReaderMode.swift in Sources */,
@@ -4527,7 +4520,6 @@
 				D301AAEE1A3A55B70078DD1D /* TabTrayControllerV1.swift in Sources */,
 				C9F49CB9266FBFEA00F3408A /* DataManagementView.swift in Sources */,
 				F056681725E9509E0082BB61 /* AddToSpaceViewController.swift in Sources */,
-				EB9A179B20E69A7F00B12184 /* ThemeManager.swift in Sources */,
 				C9BED4BB2667E3F8001D9C77 /* HomeViewModels.swift in Sources */,
 				BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */,
 				C9E5F2C22677D8BA00025A7F /* TabLocationHost.swift in Sources */,

@@ -23,16 +23,16 @@ class DefaultBrowserOnboardingViewModel {
         setupUpdateModel()
     }
 
-    private func getCorrectImage() -> UIImage {
+    private func getCorrectImage(for traits: UITraitCollection) -> UIImage {
         let layoutDirection = UIApplication.shared.userInterfaceLayoutDirection
-        switch ThemeManager.instance.currentName {
+        switch traits.userInterfaceStyle {
         case .dark:
             if layoutDirection == .leftToRight {
                 return UIImage(named: "Dark-LTR")!
             } else {
                 return UIImage(named: "Dark-RTL")!
             }
-        case .normal:
+        default:
             if layoutDirection == .leftToRight {
                 return UIImage(named: "Light-LTR")!
             } else {
@@ -42,7 +42,7 @@ class DefaultBrowserOnboardingViewModel {
     }
     
     private func setupUpdateModel() {
-        model = DefaultBrowserOnboardingModel(titleImage: getCorrectImage(), titleText: String.DefaultBrowserCardTitle, descriptionText: [String.DefaultBrowserCardDescription, String.DefaultBrowserOnboardingDescriptionStep1, String.DefaultBrowserOnboardingDescriptionStep2, String.DefaultBrowserOnboardingDescriptionStep3], imageText: String.DefaultBrowserOnboardingScreenshot)
+        model = DefaultBrowserOnboardingModel(titleImage: getCorrectImage(for: UIApplication.shared.keyWindow!.traitCollection), titleText: String.DefaultBrowserCardTitle, descriptionText: [String.DefaultBrowserCardDescription, String.DefaultBrowserOnboardingDescriptionStep1, String.DefaultBrowserOnboardingDescriptionStep2, String.DefaultBrowserOnboardingDescriptionStep3], imageText: String.DefaultBrowserOnboardingScreenshot)
     }
     
     static func shouldShowDefaultBrowserOnboarding() -> Bool {
