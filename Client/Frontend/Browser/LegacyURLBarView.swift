@@ -725,9 +725,6 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
             delegate?.urlBarDidPressReload(self)
         case .stop:
             delegate?.urlBarDidPressStop(self)
-        case .disabled:
-            // do nothing
-            break
         }
     }
 

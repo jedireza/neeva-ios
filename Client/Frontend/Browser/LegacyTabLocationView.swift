@@ -414,7 +414,6 @@ extension LegacyTabLocationView: TabEventHandler {
 enum ReloadButtonState: String {
     case reload = "Reload"
     case stop = "Stop"
-    case disabled = "Disabled"
 }
 
 fileprivate class ReloadButton: UIButton {
@@ -428,16 +427,13 @@ fileprivate class ReloadButton: UIButton {
                     return
                 }
 
+                self.isHidden = false
                 let configuration = UIImage.SymbolConfiguration(weight: .medium)
                 switch state {
                 case .reload:
-                    self.isHidden = false
                     setImage(UIImage(systemName: "arrow.clockwise", withConfiguration: configuration), for: .normal)
                 case .stop:
-                    self.isHidden = false
                     setImage(UIImage(systemName: "xmark", withConfiguration: configuration), for: .normal)
-                case .disabled:
-                    self.isHidden = true
                 }
             }
     }

@@ -44,10 +44,8 @@ struct LocationViewReloadButton: View {
     let onTap: () -> ()
 
     var body: some View {
-        if state != .disabled {
-            Content(buildMenu: buildMenu, state: state, onTap: onTap)
-                .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
-        }
+        Content(buildMenu: buildMenu, state: state, onTap: onTap)
+            .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
     }
 
     struct Content: UIViewRepresentable {
@@ -134,7 +132,6 @@ struct TabLocationBarButton_Previews: PreviewProvider {
                 .environment(\.isIncognito, true)
         }.previewLayout(.sizeThatFits)
         HStack {
-            LocationViewReloadButton(buildMenu: { nil }, state: .constant(.disabled)) {}
             LocationViewReloadButton(buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) }, state: .constant(.reload)) {}
             LocationViewReloadButton(buildMenu: { nil }, state: .constant(.stop)) {}
         }.previewLayout(.sizeThatFits)
