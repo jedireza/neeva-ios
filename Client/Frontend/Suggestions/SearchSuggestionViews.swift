@@ -26,12 +26,39 @@ public struct SearchSuggestionView: View {
     }
 }
 
-struct SuggestionRow<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
+public enum SuggestionConfig {
+    case row
+    case chip
+}
+
+struct SuggestionSpec: ViewModifier {
+    let config: SuggestionConfig
+
+    func body(content: Content) -> some View {
+        switch config {
+        case .row:
+            content
+        case .chip:
+            content.padding(6)
+                .background(Capsule().fill(Color.DefaultBackground).shadow(radius: 2))
+        }
+    }
+}
+
+private extension View {
+    func apply(config: SuggestionConfig) -> some View {
+        self.modifier(SuggestionSpec(config: config))
+    }
+}
+
+struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
     let action: () -> ()
     let icon: () -> Icon
     let label: () -> Label
     let secondaryLabel: () -> SecondaryLabel
     let detail: () -> Detail
+
+    @Environment(\.suggestionConfig) private var config
 
     init(
         action: @escaping () -> (),
@@ -56,13 +83,15 @@ struct SuggestionRow<Icon: View, Label: View, SecondaryLabel: View, Detail: View
                 VStack(alignment: .leading) {
                     label()
                     secondaryLabel()
-                }.padding(.leading, 4)
-                Spacer()
-                detail()
-                    .foregroundColor(.secondaryLabel)
-                    .font(.callout)
-            }
-        }
+                }.padding(.leading, config == .row ? 4 : 0)
+                if case .row = config {
+                    Spacer()
+                    detail()
+                        .foregroundColor(.secondaryLabel)
+                        .font(.callout)
+                }
+            }.apply(config: config)
+        }.accentColor(.primary).font(.subheadline)
     }
 }
 
@@ -85,7 +114,7 @@ struct QuerySuggestionView: View {
     }
 
     var body: some View {
-        SuggestionRow {
+        SuggestionView {
             let interaction: LogConfig.Interaction = model.activeLensBang != nil
                 ? .BangSuggestion : .QuerySuggestion
             ClientLogger.shared.logCounter(interaction)
@@ -128,7 +157,7 @@ struct URLSuggestionView: View {
     @Environment(\.onOpenURL) private var openURL
 
     var body: some View {
-        SuggestionRow {
+        SuggestionView {
             let interaction: LogConfig.Interaction = suggestion.title?.isEmpty ?? false ?
                 .NavSuggestion : .URLSuggestion
             ClientLogger.shared.logCounter(interaction)
@@ -181,7 +210,7 @@ fileprivate struct BangSuggestionView: View {
 
     var body: some View {
         let query = "!\(suggestion.shortcut)"
-        SuggestionRow {
+        SuggestionView {
             setInput(query + " ")
         } icon: {
             Symbol(ActiveLensBangType.bang.defaultSymbol)
@@ -202,7 +231,7 @@ fileprivate struct LensSuggestionView: View {
 
     var body: some View {
         let query = "@\(suggestion.shortcut)"
-        SuggestionRow {
+        SuggestionView {
             setInput(query + " ")
         } icon: {
             Symbol(ActiveLensBangType.lens.defaultSymbol)

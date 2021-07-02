@@ -59,7 +59,6 @@ public struct UIConstants {
     static let ActiveScreenshotQuality: CGFloat = 0.5
 }
 
-
 extension UIColor {
     public struct TextField {
         public static func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.systemFill }

@@ -9,13 +9,16 @@ import SFSafeSymbols
 import Storage
 
 extension SuggestionsList: Inspectable { }
+extension PlaceholderSuggestions: Inspectable { }
 extension SearchSuggestionView: Inspectable { }
 extension QuerySuggestionView: Inspectable { }
 extension URLSuggestionView: Inspectable { }
 extension HistorySuggestionView: Inspectable { }
-extension SuggestionRow: Inspectable { }
+extension SuggestionView: Inspectable { }
 extension Symbol: Inspectable { }
 extension BoldSpanView: Inspectable { }
+extension NeevaSuggestionsList: Inspectable { }
+extension NavSuggestionsList: Inspectable { }
 
 class SuggestionViewsTests: XCTestCase {
     static let sampleQuerySuggestion = SuggestionsQuery.Data.Suggest.QuerySuggestion(
@@ -133,10 +136,11 @@ class SuggestionViewsTests: XCTestCase {
         let list = try suggestionList.inspect().find(ViewType.List.self)
         XCTAssertNotNil(list)
 
-        // We should be showing a placeholder with 1 history suggestion and 5 query suggestions
+        // We should be showing a placeholder with 1 actual suggestion, and 6 placeholders:
+        // 1 history suggestion and 5 query suggestions
         XCTAssertEqual(2, list.count)
-        XCTAssertNotNil(try list.tupleView(0).find(HistorySuggestionView.self))
-        XCTAssertEqual(5, try list.tupleView(0).forEach(1).count)
+        XCTAssertEqual(2, list.findAll(HistorySuggestionView.self).count)
+        XCTAssertEqual(5, list.findAll(QuerySuggestionView.self).count)
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {

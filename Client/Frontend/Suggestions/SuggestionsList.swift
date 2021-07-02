@@ -4,15 +4,7 @@ import SwiftUI
 import Storage
 import Shared
 
-
 struct SuggestionsList: View {
-    static let placeholderQuery =
-        SuggestionsQuery.Data.Suggest.QuerySuggestion(
-            type: .standard,
-            suggestedQuery: "placeholder_query",
-            boldSpan: [],
-            source: .bing
-        )
     static let placeholderSite = Site(url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
 
     @EnvironmentObject private var historyModel: HistorySuggestionModel
@@ -21,9 +13,7 @@ struct SuggestionsList: View {
 
     var body: some View {
         List {
-            let suggestionList = ForEach(neevaModel.suggestions) { suggestion in
-                SearchSuggestionView(suggestion)
-            }
+            let suggestionList = NeevaSuggestionsList()
 
             if let lensOrBang = neevaModel.activeLensBang,
                let description = lensOrBang.description {
@@ -39,26 +29,12 @@ struct SuggestionsList: View {
                 }
             } else {
                 if neevaModel.suggestions.isEmpty && neevaModel.shouldShowSuggestions {
-                    HistorySuggestionView(site: SuggestionsList.placeholderSite)
-                        .redacted(reason: .placeholder)
-                        .disabled(true)
-                    ForEach(0..<5) { _ in
-                        QuerySuggestionView(suggestion: SuggestionsList.placeholderQuery)
-                        .redacted(reason: .placeholder)
-                        .disabled(true)
-                    }
+                    PlaceholderSuggestions()
                 } else {
                     suggestionList
                 }
             }
-
-            if let history = historyModel.sites, !history.isEmpty {
-                Section(header: isIncognito ? nil : Text("History")) {
-                    ForEach(history) { site in
-                        HistorySuggestionView(site: site)
-                    }
-                }
-            }
+            NavSuggestionsList()
         }
     }
 }

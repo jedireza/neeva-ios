@@ -7,6 +7,7 @@ import Defaults
 
 class NeevaSuggestionModel: ObservableObject {
     @Published var suggestions: [Suggestion] = []
+    @Published var rowSuggestions: [Suggestion] = []
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
     @Published var isIncognito: Bool // TODO: don’t duplicate this source of truth
@@ -57,9 +58,10 @@ class NeevaSuggestionModel: ObservableObject {
                 if nsError.domain != NSURLErrorDomain || nsError.code != NSURLErrorCancelled {
                     self.error = error
                 }
-            case .success(let (suggestions, lensOrBang)):
+            case .success(let (suggestions, navSuggestions, lensOrBang)):
                 self.error = nil
                 self.suggestions = suggestions
+                self.rowSuggestions = navSuggestions
                 self.activeLensBang = lensOrBang
             }
             if self.suggestions.isEmpty {

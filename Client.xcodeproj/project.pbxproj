@@ -187,6 +187,7 @@
 		4A255AB3265C48EC00422839 /* ContentBlockingRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */; };
 		4A255AB4265C48EC00422839 /* trackerDomains.json in Resources */ = {isa = PBXBuildFile; fileRef = 4A255AB1265C48EC00422839 /* trackerDomains.json */; };
 		4A255AB6265C4A2A00422839 /* ContentBlockingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */; };
+		4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A360214268CF74500C56328 /* SuggestionBlocks.swift */; };
 		4A3D299126850CB60082F293 /* CardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3D299026850CB60082F293 /* CardGrid.swift */; };
 		4A3D2993268583710082F293 /* CardModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3D2992268583710082F293 /* CardModels.swift */; };
 		4A3D2998268993FE0082F293 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 4A3D2997268993FE0082F293 /* ViewInspector */; };
@@ -1110,6 +1111,7 @@
 		4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingRules.swift; sourceTree = "<group>"; };
 		4A255AB1265C48EC00422839 /* trackerDomains.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trackerDomains.json; sourceTree = "<group>"; };
 		4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingConfig.swift; sourceTree = "<group>"; };
+		4A360214268CF74500C56328 /* SuggestionBlocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBlocks.swift; sourceTree = "<group>"; };
 		4A3D299026850CB60082F293 /* CardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGrid.swift; sourceTree = "<group>"; };
 		4A3D2992268583710082F293 /* CardModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardModels.swift; sourceTree = "<group>"; };
 		4A3D29992689A0520082F293 /* SuggestionViewsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionViewsTests.swift; sourceTree = "<group>"; };
@@ -2413,6 +2415,7 @@
 				C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */,
 				C9ACC463267A45AC009AE182 /* SuggestionsList.swift */,
 				C9C18DFD26559007004710CD /* SearchSuggestionViews.swift */,
+				4A360214268CF74500C56328 /* SuggestionBlocks.swift */,
 				C9C18DFE26559007004710CD /* SearchSuggestionsModel.swift */,
 				C9C18DFF26559007004710CD /* BoldSpanView.swift */,
 			);
@@ -4716,6 +4719,7 @@
 				59A681BDFC95A19F05E07223 /* SearchViewController.swift in Sources */,
 				C9BED4C12667FA91001D9C77 /* SuggestedSearchViews.swift in Sources */,
 				4A255AB6265C4A2A00422839 /* ContentBlockingConfig.swift in Sources */,
+				4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */,
 				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,
 				66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */,

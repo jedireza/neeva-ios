@@ -55,7 +55,7 @@ extension Suggestion: Identifiable {
 }
 
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
-public typealias SuggestionsQueryResult = ([Suggestion], ActiveLensBangInfo?)
+public typealias SuggestionsQueryResult = ([Suggestion], [Suggestion], ActiveLensBangInfo?)
 extension ActiveLensBangInfo: Equatable {
     static let previewBang = ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang)
     static let previewLens = ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens)
@@ -96,8 +96,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
         return (
-            navSuggestions.map(Suggestion.url) + querySuggestions.map(Suggestion.query) + urlSuggestions.map(Suggestion.url)
+            querySuggestions.map(Suggestion.query) + urlSuggestions.map(Suggestion.url)
                 + bangSuggestions.compactMap(Suggestion.init(bang:)) + lensSuggestions.compactMap(Suggestion.init(lens:)),
+            navSuggestions.map(Suggestion.url),
             data.suggest?.activeLensBangInfo
         )
     }

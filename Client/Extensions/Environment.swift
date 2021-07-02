@@ -46,4 +46,13 @@ extension EnvironmentValues {
         get { self[IsIncognitoKey] }
         set { self[IsIncognitoKey] = newValue }
     }
+
+    private struct suggestionConfigKey: EnvironmentKey {
+        static var defaultValue = SuggestionConfig.row
+    }
+
+    public var suggestionConfig: SuggestionConfig {
+        get { self[suggestionConfigKey] }
+        set { self[suggestionConfigKey] = newValue }
+    }
 }

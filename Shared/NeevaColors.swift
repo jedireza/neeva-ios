@@ -163,7 +163,7 @@ extension Color {
             public static let aqua = Color(UIColor.ui.variant.aqua)
         }
     }
-
+    public static let DefaultBackground = Color(UIColor.DefaultBackground)
     public static let elevatedDarkBackground = Color(UIColor.elevatedDarkBackground)
     public static let textSelectionHighlight = Color(UIColor.textSelectionHighlight)
 
