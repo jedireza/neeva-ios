@@ -19,9 +19,6 @@ struct TabLocationBarButton<Label: View>: View {
 
 struct LocationViewTrackingButton: View {
     @State private var showingPopover = false
-    @StateObject private var viewModel = TrackingStatsViewModel(
-        trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab()
-    )
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
@@ -36,7 +33,7 @@ struct LocationViewTrackingButton: View {
             isPresented: $showingPopover,
             backgroundColor: .PopupMenu.background
         ) {
-            TrackingMenuView(viewModel: viewModel)
+            TrackingMenuView()
         }
     }
 }
