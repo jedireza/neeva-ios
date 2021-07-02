@@ -40,7 +40,7 @@ struct LocationTextField: UIViewRepresentable {
 
         DispatchQueue.main.async {
             tf.becomeFirstResponder()
-            tf.selectAll(nil)
+            tf.selectedTextRange = tf.textRange(from: tf.beginningOfDocument, to: tf.endOfDocument)
         }
         tf.text = text
 
@@ -182,8 +182,8 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     /// Commits the completion by setting the text and removing the highlight.
     @discardableResult fileprivate func applyCompletion() -> Bool {
         tintColor = defaultTint
-        // Clear the current completion, then set the text without the attributed style.
-        guard let suggestion = historyModel.autocompleteSuggestion else { return false }
+        // Clear the current completion, then set the text.
+        guard let suggestion = historyModel.autocompleteSuggestion, suggestion != text else { return false }
         binding = suggestion
         // Move the cursor to the end of the completion.
         selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
@@ -228,7 +228,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         applyCompletion()
-        super.touchesBegan(touches, with: event)
+//        super.touchesBegan(touches, with: event)
     }
 }
 

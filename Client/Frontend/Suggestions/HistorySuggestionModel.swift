@@ -105,7 +105,7 @@ class HistorySuggestionModel: ObservableObject {
 
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
-                    if let completion = self.completionForURL(site.url) {
+                    if let completion = self.completionForURL(site.url, from: query) {
                         self.autocompleteSuggestion = completion
                         return
                     }
@@ -126,7 +126,7 @@ class HistorySuggestionModel: ObservableObject {
         }
     }
 
-    fileprivate func completionForURL(_ url: String) -> String? {
+    fileprivate func completionForURL(_ url: String, from query: String) -> String? {
         // Extract the pre-path substring from the URL. This should be more efficient than parsing via
         // NSURL since we need to only look at the beginning of the string.
         // Note that we won't match non-HTTP(S) URLs.
@@ -138,7 +138,7 @@ class HistorySuggestionModel: ObservableObject {
         var prePathURL = (url as NSString).substring(with: match.range(at: 0))
         if prePathURL.hasPrefix(SearchQueryModel.shared.value) {
             // Trailing slashes in the autocompleteTextField cause issues with Swype keyboard. Bug 1194714
-            if prePathURL.hasSuffix("/") {
+            if prePathURL.hasSuffix("/"), !query.hasSuffix("/") {
                 prePathURL.remove(at: prePathURL.index(before: prePathURL.endIndex))
             }
             return prePathURL
