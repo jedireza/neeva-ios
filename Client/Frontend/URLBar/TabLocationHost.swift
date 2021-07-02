@@ -58,9 +58,10 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
             }
             .store(in: &subscriptions)
         model.$isEditing
+            .withPrevious()
             .combineLatest(SearchQueryModel.shared.$value)
             .sink { [weak urlBar] isEditing, query in
-                if isEditing {
+                if isEditing == (true, true) {
                     urlBar?.delegate?.urlBar(didEnterText: query)
                 }
             }
