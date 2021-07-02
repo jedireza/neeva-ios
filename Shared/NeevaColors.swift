@@ -57,8 +57,7 @@ extension UIColor {
 
     public enum ui {
         public static let aqua = UIColor(named: "UI/Aqua", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let backdrop = UIColor(named: "Backdrop", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let background = UIColor(named: "UI/Background", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let backdrop = UIColor(named: "UI/Backdrop", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         public static let gray10 = UIColor(named: "UI/Gray 10", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         public static let gray20 = UIColor(named: "UI/Gray 20", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         public static let gray30 = UIColor(named: "UI/Gray 30", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
@@ -72,6 +71,7 @@ extension UIColor {
 
         public enum adaptive {
             public static let blue = UIColor(named: "UI/Blue", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let separator = UIColor(named: "UI/Separator", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         }
 
         public enum variant {
@@ -83,9 +83,9 @@ extension UIColor {
     public static let textSelectionHighlight = UIColor(named: "TextSelectionHighlight", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 
     public static let DefaultBackground = UIColor(named: "Background", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let DefaultSeparator = UIColor(named: "Separator", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let DefaultTextAndTint = UIColor(named: "TextAndTint", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let MenuBackground = UIColor(named: "MenuBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let TabTrayBackground = UIColor(named: "TabTrayBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 }
 
 extension Color {
@@ -143,7 +143,6 @@ extension Color {
     public enum ui {
         public static let aqua = Color(UIColor.ui.aqua)
         public static let backdrop = Color(UIColor.ui.backdrop)
-        public static let background = Color(UIColor.ui.background)
         public static let gray10 = Color(UIColor.ui.gray10)
         public static let gray20 = Color(UIColor.ui.gray20)
         public static let gray30 = Color(UIColor.ui.gray30)

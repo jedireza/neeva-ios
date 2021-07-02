@@ -76,7 +76,7 @@ extension UIColor {
     public struct Browser {
         public static let background = UIColor.DefaultBackground
         // Hidden in dark mode
-        public static let urlBarDivider = UIColor(light: .DefaultSeparator, dark: .Browser.background)
+        public static let urlBarDivider = UIColor.ui.adaptive.separator
         public static let tint = UIColor.DefaultTextAndTint
     }
 
@@ -116,14 +116,7 @@ extension UIColor {
         public static let tabsButton = UIColor.label
 
         // Custom color for the background of the tab grid
-        public static let background = UIColor() { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor.black
-            default:
-                return UIColor.ui.background
-            }
-        }
+        public static let background = UIColor.TabTrayBackground
     }
 
     public struct TopTabs {

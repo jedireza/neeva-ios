@@ -5,9 +5,9 @@
         "color-space" : "srgb",
         "components" : {
           "alpha" : "1.000",
-          "blue" : "0xDF",
-          "green" : "0xD7",
-          "red" : "0xD7"
+          "blue" : "0xEA",
+          "green" : "0xE5",
+          "red" : "0xE5"
         }
       },
       "idiom" : "universal"
@@ -20,13 +20,8 @@
         }
       ],
       "color" : {
-        "color-space" : "srgb",
-        "components" : {
-          "alpha" : "1.000",
-          "blue" : "0x4F",
-          "green" : "0x4A",
-          "red" : "0x4A"
-        }
+        "platform" : "ios",
+        "reference" : "tertiarySystemBackgroundColor"
       },
       "idiom" : "universal"
     }
