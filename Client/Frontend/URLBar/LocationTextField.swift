@@ -194,11 +194,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let didApplyAutocomplete = applyCompletion()
-        let interaction: LogConfig.Interaction = didApplyAutocomplete
-            ? .AutocompleteSuggestion : .NoSuggestion
+        let interaction: LogConfig.Interaction = historyModel.autocompleteSuggestion == nil
+            ? .NoSuggestion : .AutocompleteSuggestion
         ClientLogger.shared.logCounter(interaction)
-        if let text = text {
+        if let text = historyModel.autocompleteSuggestion ?? text {
             if !text.trimmingCharacters(in: .whitespaces).isEmpty {
                 onSubmit(text)
                 return true
