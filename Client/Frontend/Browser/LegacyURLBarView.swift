@@ -141,16 +141,16 @@ class LegacyURLBarView: UIView {
         return progressBar
     }()
 
-    fileprivate lazy var cancelButton: UIButton = {
-        let cancelButton = InsetButton()
-        cancelButton.setTitle(Strings.CancelString, for: .normal)
-        cancelButton.setTitleColor(.systemBlue, for: .normal)
-        cancelButton.accessibilityIdentifier = "urlBar-cancel"
-        cancelButton.accessibilityLabel = Strings.BackTitle
-        cancelButton.addTarget(self, action: #selector(didClickCancel), for: .touchUpInside)
-        cancelButton.alpha = 0
-        cancelButton.isPointerInteractionEnabled = true
-        return cancelButton
+    fileprivate lazy var legacyCancelButton: UIButton = {
+        let legacyCancelButton = InsetButton()
+        legacyCancelButton.setTitle(Strings.CancelString, for: .normal)
+        legacyCancelButton.setTitleColor(.systemBlue, for: .normal)
+        legacyCancelButton.accessibilityIdentifier = "urlBar-cancel"
+        legacyCancelButton.accessibilityLabel = Strings.BackTitle
+        legacyCancelButton.addTarget(self, action: #selector(didClickCancel), for: .touchUpInside)
+        legacyCancelButton.alpha = 0
+        legacyCancelButton.isPointerInteractionEnabled = true
+        return legacyCancelButton
     }()
 
     var addToSpacesButton = ToolbarButton()
@@ -184,7 +184,10 @@ class LegacyURLBarView: UIView {
             locationContainer.addSubview(legacyLocationView)
         }
 
-        [line, tabsButton, neevaMenuButton, progressBar, cancelButton, addToSpacesButton,
+        if !FeatureFlag[.newURLBar] {
+            addSubview(legacyCancelButton)
+        }
+        [line, tabsButton, neevaMenuButton, progressBar, addToSpacesButton,
          forwardButton, backButton, shareButton, locationContainer].forEach {
             addSubview($0)
         }
@@ -248,12 +251,14 @@ class LegacyURLBarView: UIView {
         (FeatureFlag[.newURLBar] ? locationHost.view : legacyLocationView).snp.makeConstraints { make in
             make.edges.equalTo(self.locationContainer)
         }
-        
-        cancelButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
-            make.centerY.equalTo(self.locationContainer)
-            make.height.equalTo(LegacyURLBarViewUX.ButtonSize)
-            make.width.equalTo(cancelButton.intrinsicContentSize.width)
+
+        if !FeatureFlag[.newURLBar] {
+            legacyCancelButton.snp.makeConstraints { make in
+                make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
+                make.centerY.equalTo(self.locationContainer)
+                make.height.equalTo(LegacyURLBarViewUX.ButtonSize)
+                make.width.equalTo(legacyCancelButton.intrinsicContentSize.width)
+            }
         }
 
         backButton.snp.makeConstraints { make in
@@ -310,7 +315,15 @@ class LegacyURLBarView: UIView {
         self.locationContainer.snp.remakeConstraints { make in
             if inOverlayMode {
                 make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.LocationEdgePadding)
-                make.trailing.equalTo(self.cancelButton.snp.leading).offset(-2 * LegacyURLBarViewUX.Padding)
+                if FeatureFlag[.newURLBar] {
+                    if self.toolbarIsShowing {
+                       make.trailing.equalTo(self.shareButton.snp.leading).offset(-LegacyURLBarViewUX.Padding)
+                   } else {
+                       make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.LocationEdgePadding)
+                   }
+                } else {
+                    make.trailing.equalTo(self.legacyCancelButton.snp.leading).offset(-2 * LegacyURLBarViewUX.Padding)
+                }
             } else if self.toolbarIsShowing {
                 make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(LegacyURLBarViewUX.Padding)
                 make.trailing.equalTo(self.shareButton.snp.leading).offset(-LegacyURLBarViewUX.Padding)
@@ -536,7 +549,9 @@ class LegacyURLBarView: UIView {
     func prepareOverlayAnimation() {
         // Make sure everything is showing during the transition (we'll hide it afterwards).
         bringSubviewToFront(self.locationContainer)
-        cancelButton.isHidden = false
+        if !FeatureFlag[.newURLBar] {
+            legacyCancelButton.isHidden = false
+        }
         neevaMenuButton.isHidden = !toolbarIsShowing
         progressBar.isHidden = false
         addToSpacesButton.isHidden = !toolbarIsShowing
@@ -552,7 +567,9 @@ class LegacyURLBarView: UIView {
     func transitionToOverlay(_ didCancel: Bool = false) {
         locationTextField?.leftView?.alpha = inOverlayMode ? 1 : 0
         legacyLocationView.contentView.alpha = inOverlayMode ? 0 : 1
-        cancelButton.alpha = inOverlayMode ? 1 : 0
+        if !FeatureFlag[.newURLBar] {
+            legacyCancelButton.alpha = inOverlayMode ? 1 : 0
+        }
         neevaMenuButton.alpha = inOverlayMode ? 0 : 1
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
         tabsButton.alpha = inOverlayMode ? 0 : 1
@@ -569,7 +586,9 @@ class LegacyURLBarView: UIView {
         // This ensures these can't be selected as an accessibility element when in the overlay mode.
         legacyLocationView.overrideAccessibility(enabled: !inOverlayMode)
 
-        cancelButton.isHidden = !inOverlayMode
+        if !FeatureFlag[.newURLBar] {
+            legacyCancelButton.isHidden = !inOverlayMode
+        }
         neevaMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
         progressBar.isHidden = inOverlayMode
         addToSpacesButton.isHidden = !toolbarIsShowing || inOverlayMode
@@ -632,7 +651,11 @@ extension LegacyURLBarView: TabToolbarProtocol {
         get {
             if inOverlayMode {
                 guard let locationTextField = locationTextField else { return nil }
-                return [locationTextField, cancelButton]
+                if FeatureFlag[.newURLBar] {
+                    return [locationHost]
+                } else {
+                    return [locationTextField, legacyCancelButton]
+                }
             } else {
                 if toolbarIsShowing {
                     var list = [backButton, forwardButton, neevaMenuButton, locationContainer, shareButton, addToSpacesButton, tabsButton, progressBar, toolbarNeevaMenuButton]
