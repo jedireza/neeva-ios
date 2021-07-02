@@ -16,6 +16,7 @@ class SavedTab: NSObject, NSCoding {
     var faviconURL: String?
     var UUID: String?
     var rootUUID: String?
+    var parentUUID: String?
 
     var jsonDictionary: [String: AnyObject] {
         let title: String = self.title ?? "null"
@@ -30,7 +31,8 @@ class SavedTab: NSObject, NSCoding {
             "screenshotUUID": uuid as AnyObject,
             "url": url as AnyObject,
             "UUID": self.UUID as AnyObject,
-            "rootUUID": self.UUID as AnyObject
+            "rootUUID": self.UUID as AnyObject,
+            "parentUUID": self.UUID as AnyObject
         ]
         
         if let sessionDataInfo = self.sessionData?.jsonDictionary {
@@ -40,7 +42,7 @@ class SavedTab: NSObject, NSCoding {
         return json
     }
     
-    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String) {
+    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String?) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
@@ -50,6 +52,7 @@ class SavedTab: NSObject, NSCoding {
         self.sessionData = sessionData
         self.UUID = uuid
         self.rootUUID = rootUUID
+        self.parentUUID = parentUUID
         
         super.init()
     }
@@ -64,6 +67,7 @@ class SavedTab: NSObject, NSCoding {
         self.url = coder.decodeObject(forKey: "url") as? URL
         self.UUID = coder.decodeObject(forKey: "UUID") as? String
         self.rootUUID = coder.decodeObject(forKey: "rootUUID") as? String
+        self.parentUUID = coder.decodeObject(forKey: "parentUUID") as? String
     }
     
     func encode(with coder: NSCoder) {
@@ -76,5 +80,6 @@ class SavedTab: NSObject, NSCoding {
         coder.encode(url, forKey: "url")
         coder.encode(UUID, forKey: "UUID")
         coder.encode(rootUUID, forKey: "rootUUID")
+        coder.encode(parentUUID, forKey: "parentUUID")
     }
 }

@@ -5,8 +5,9 @@
 import UIKit
 import SnapKit
 import Shared
+import Combine
 
-protocol TabToolbarProtocol: AnyObject {
+protocol LegacyTabToolbarProtocol: AnyObject {
     var tabToolbarDelegate: TabToolbarDelegate? { get set }
     var tabsButton: TabsButton { get }
     var addToSpacesButton: ToolbarButton { get }
@@ -15,38 +16,30 @@ protocol TabToolbarProtocol: AnyObject {
     var shareButton: ToolbarButton { get }
     var toolbarNeevaMenuButton: ToolbarButton { get }
     var actionButtons: [ToolbarButton] { get }
-
-    func updateBackStatus(_ canGoBack: Bool)
-    func updateForwardStatus(_ canGoForward: Bool)
-    func updatePageStatus(_ isWebPage: Bool)
+    var isPrivateMode: Bool { get }
 }
 
 protocol TabToolbarDelegate: AnyObject {
-    func tabToolbarDidPressBack(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidPressForward(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidLongPressBack(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidLongPressForward(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidPressReload(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarReloadMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu?
-    func tabToolbarDidPressStop(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarTabsMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu?
-    func tabToolbarDidPressSearch(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidPressAddNewTab(_ tabToolbar: TabToolbarProtocol, button: UIButton)
+    func tabToolbarDidPressBack()
+    func tabToolbarDidPressForward()
+    func tabToolbarDidLongPressBackForward()
+    func tabToolbarDidPressReload()
+    func tabToolbarReloadMenu() -> UIMenu?
+    func tabToolbarDidPressStop()
+    func tabToolbarSpacesMenu()
+    func tabToolbarDidPressTabs()
+    func tabToolbarTabsMenu() -> UIMenu?
+    func tabToolbarDidPressSearch()
+    func tabToolbarDidPressAddNewTab()
 }
 
 @objcMembers
-open class TabToolbarHelper: NSObject {
-    let toolbar: TabToolbarProtocol
-    let ImageReload = UIImage.templateImageNamed("nav-refresh")
-    let ImageStop = UIImage.templateImageNamed("nav-stop")
-    let ImageSearch = UIImage.templateImageNamed("search")
-    let ImageNewTab = UIImage.templateImageNamed("nav-add")
+open class LegacyTabToolbarHelper: NSObject {
+    let toolbar: LegacyTabToolbarProtocol
 
     let menuActionID = UIAction.Identifier("UpdateMenu")
 
-    init(toolbar: TabToolbarProtocol) {
+    init(toolbar: LegacyTabToolbarProtocol) {
         self.toolbar = toolbar
         super.init()
 
@@ -54,14 +47,14 @@ open class TabToolbarHelper: NSObject {
 
         toolbar.backButton.setImage(UIImage(systemName: "arrow.left", withConfiguration: configuration), for: .normal)
         toolbar.backButton.accessibilityLabel = .TabToolbarBackAccessibilityLabel
-        let longPressGestureBackButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressBack))
+        let longPressGestureBackButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressBackForward))
         toolbar.backButton.addGestureRecognizer(longPressGestureBackButton)
         toolbar.backButton.addTarget(self, action: #selector(didClickBack), for: .touchUpInside)
         toolbar.backButton.isPointerInteractionEnabled = true
 
         toolbar.forwardButton.setImage(UIImage(systemName: "arrow.right", withConfiguration: configuration), for: .normal)
         toolbar.forwardButton.accessibilityLabel = .TabToolbarForwardAccessibilityLabel
-        let longPressGestureForwardButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressForward))
+        let longPressGestureForwardButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressBackForward))
         toolbar.forwardButton.addGestureRecognizer(longPressGestureForwardButton)
         toolbar.forwardButton.addTarget(self, action: #selector(didClickForward), for: .touchUpInside)
         toolbar.forwardButton.isPointerInteractionEnabled = true
@@ -76,7 +69,7 @@ open class TabToolbarHelper: NSObject {
         toolbar.tabsButton.accessibilityLabel = .TabTrayButtonShowTabsAccessibilityLabel
         toolbar.tabsButton.addTarget(self, action: #selector(didClickTabs), for: .touchUpInside)
         toolbar.tabsButton.setDynamicMenu {
-            toolbar.tabToolbarDelegate?.tabToolbarTabsMenu(toolbar, button: toolbar.tabsButton)
+            toolbar.tabToolbarDelegate?.tabToolbarTabsMenu()
         }
         toolbar.tabsButton.isPointerInteractionEnabled = true
         
@@ -115,34 +108,41 @@ open class TabToolbarHelper: NSObject {
 
     func didClickSpaces() {
         ClientLogger.shared.logCounter(.SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu(toolbar, button: toolbar.addToSpacesButton)
+        toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu()
     }
 
     func didClickBack() {
         ClientLogger.shared.logCounter(.ClickBack, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressBack(toolbar, button: toolbar.backButton)
+        toolbar.tabToolbarDelegate?.tabToolbarDidPressBack()
     }
 
-    func didLongPressBack(_ recognizer: UILongPressGestureRecognizer) {
+    func didLongPressBackForward(_ recognizer: UILongPressGestureRecognizer) {
         if recognizer.state == .began {
-            toolbar.tabToolbarDelegate?.tabToolbarDidLongPressBack(toolbar, button: toolbar.backButton)
+            toolbar.tabToolbarDelegate?.tabToolbarDidLongPressBackForward()
         }
     }
 
     func didClickTabs() {
         ClientLogger.shared.logCounter(.ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressTabs(toolbar, button: toolbar.tabsButton)
+        toolbar.tabToolbarDelegate?.tabToolbarDidPressTabs()
     }
 
     func didClickForward() {
         ClientLogger.shared.logCounter(.ClickForward, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressForward(toolbar, button: toolbar.forwardButton)
+        toolbar.tabToolbarDelegate?.tabToolbarDidPressForward()
     }
 
-    func didLongPressForward(_ recognizer: UILongPressGestureRecognizer) {
-        if recognizer.state == .began {
-            toolbar.tabToolbarDelegate?.tabToolbarDidLongPressForward(toolbar, button: toolbar.forwardButton)
-        }
+    func subscribe(to model: TabToolbarModel) -> Set<AnyCancellable> {
+        [
+            model.$canGoBack.sink { [weak toolbar] in toolbar?.backButton.isEnabled = $0 },
+            model.$canGoForward.sink { [weak toolbar] in toolbar?.forwardButton.isEnabled = $0 },
+            model.$isPage.sink { [weak toolbar] isWebPage in
+                if let toolbar = toolbar {
+                    toolbar.shareButton.isEnabled = isWebPage
+                    toolbar.addToSpacesButton.isEnabled = isWebPage && !toolbar.isPrivateMode
+                }
+            },
+        ]
     }
 }
 
@@ -203,7 +203,7 @@ extension ToolbarButton {
     }
 }
 
-class TabToolbar: UIView {
+class TabToolbar: UIView, LegacyTabToolbarProtocol {
     weak var tabToolbarDelegate: TabToolbarDelegate?
 
     let tabsButton = TabsButton()
@@ -214,22 +214,24 @@ class TabToolbar: UIView {
     let toolbarNeevaMenuButton = ToolbarButton()
     let actionButtons: [ToolbarButton]
 
-    private var isPrivateMode: Bool = false
+    var isPrivateMode = false
 
     private var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
 
-    var helper: TabToolbarHelper?
+    var helper: LegacyTabToolbarHelper?
     private let contentView = UIStackView()
 
-    fileprivate override init(frame: CGRect) {
+    private var subscriptions: Set<AnyCancellable>?
+
+    init(model: TabToolbarModel) {
         actionButtons = [backButton, forwardButton, toolbarNeevaMenuButton, addToSpacesButton]
 
-        super.init(frame: frame)
+        super.init(frame: .zero)
         setupAccessibility()
 
         addSubview(contentView)
 
-        helper = TabToolbarHelper(toolbar: self)
+        helper = LegacyTabToolbarHelper(toolbar: self)
 
         actionButtons.forEach { contentView.addArrangedSubview($0) }
         contentView.addArrangedSubview(tabsButton)
@@ -249,6 +251,8 @@ class TabToolbar: UIView {
             make.top.leading.trailing.equalTo(self)
             make.height.equalTo(0.5)
         }
+
+        subscriptions = helper?.subscribe(to: model)
     }
 
     private func setupAccessibility() {
@@ -264,21 +268,6 @@ class TabToolbar: UIView {
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension TabToolbar: TabToolbarProtocol {
-    func updateBackStatus(_ canGoBack: Bool) {
-        backButton.isEnabled = canGoBack
-    }
-
-    func updateForwardStatus(_ canGoForward: Bool) {
-        forwardButton.isEnabled = canGoForward
-    }
-
-    func updatePageStatus(_ isWebPage: Bool) {
-        shareButton.isEnabled = isWebPage
-        addToSpacesButton.isEnabled = isWebPage && !isPrivateMode
     }
 }
 

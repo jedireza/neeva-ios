@@ -7,13 +7,13 @@
 import XCTest
 
 class TabToolbarHelperTests: XCTestCase {
-    var subject: TabToolbarHelper!
+    var subject: LegacyTabToolbarHelper!
     var mockToolbar: MockTabToolbar!
 
     override func setUp() {
         super.setUp()
         mockToolbar = MockTabToolbar()
-        subject = TabToolbarHelper(toolbar: mockToolbar)
+        subject = LegacyTabToolbarHelper(toolbar: mockToolbar)
     }
 }
 
@@ -37,7 +37,9 @@ class MockToolbarButton: ToolbarButton {
     }
 }
 
-class MockTabToolbar: TabToolbarProtocol {
+class MockTabToolbar: LegacyTabToolbarProtocol {
+
+    var isPrivateMode = false
 
     var tabToolbarDelegate: TabToolbarDelegate? {
         get { return nil }

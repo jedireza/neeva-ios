@@ -7,7 +7,7 @@ import SwiftUI
 import Defaults
 
 extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
-    func tabToolbarDidPressBack(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressBack() {
         if simulateBackViewController?.goBack() ?? false {
             return
         }
@@ -15,28 +15,28 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         tabManager.selectedTab?.goBack()
     }
 
-    func tabToolbarDidLongPressBack(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidLongPressBackForward() {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
         showBackForwardList()
     }
 
-    func tabToolbarDidPressReload(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressReload() {
         tabManager.selectedTab?.reload()
     }
 
-    func tabToolbarReloadMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu? {
+    func tabToolbarReloadMenu() -> UIMenu? {
         guard let tab = tabManager.selectedTab else {
             return nil
         }
         return self.getRefreshLongPressMenu(for: tab)
     }
 
-    func tabToolbarDidPressStop(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressStop() {
         tabManager.selectedTab?.stop()
     }
 
-    func tabToolbarDidPressForward(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressForward() {
         if simulateForwardViewController?.goForward() ?? false {
             return
         }
@@ -44,13 +44,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         tabManager.selectedTab?.goForward()
     }
 
-    func tabToolbarDidLongPressForward(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-        showBackForwardList()
-    }
-
-    func tabToolbarDidPressLibrary(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressLibrary() {
         if let libraryDrawerViewController = self.libraryDrawerViewController, libraryDrawerViewController.isOpen {
             libraryDrawerViewController.close()
         } else {
@@ -58,99 +52,80 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         }
     }
     
-    func tabToolbarDidPressAddNewTab(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressAddNewTab() {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         tabManager.selectTab(tabManager.addTab(nil, isPrivate: isPrivate))
         focusLocationTextField(forTab: tabManager.selectedTab)
     }
     
-    func tabToolbarSpacesMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarSpacesMenu() {
         guard let tab = tabManager.selectedTab else { return }
         guard let url = tab.canonicalURL?.displayURL else { return }
         showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
     }
     
-    func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressTabs() {
         showTabTray()
         TelemetryWrapper.recordEvent(category: .action, method: .press, object: .tabToolbar, value: .tabView)
     }
 
-    func getTabToolbarLongPressActionsForModeSwitching() -> [UIMenuElement] {
-        guard let selectedTab = tabManager.selectedTab else { return [] }
-        let count = selectedTab.isPrivate ? tabManager.normalTabs.count : tabManager.privateTabs.count
-
-        func action() {
-            _ = tabManager.switchPrivacyMode()
-            neevaHomeViewController?.homeViewModel.isPrivate = tabManager.selectedTab!.isPrivate
+    func tabToolbarTabsMenu() -> UIMenu? {
+        guard self.presentedViewController == nil else {
+            return nil
         }
+
+        let count = tabManager.selectedTab?.isPrivate ?? false ? tabManager.normalTabs.count : tabManager.privateTabs.count
 
         let icon: UIImage?
         if count <= 50 {
-                    icon = UIImage(systemName: "\(count).square")
+            icon = UIImage(systemName: "\(count).square")
         } else {
             // ideally this would be infinity.square but there is no such icon
-            let img = UIImage(systemName: "8.square")!
+            let img = UIImage(systemSymbol: ._8Square)
             icon = UIImage(cgImage: img.cgImage!, scale: img.scale, orientation: .left)
         }
 
-        let privateBrowsingMode = UIAction(title: Strings.incognitoBrowsingModeTitle, image: icon) { _ in
-            action()
+        let switchPrivacyMode = { [self] (_: UIAction) in
+            _ = tabManager.switchPrivacyMode()
+            neevaHomeViewController?.homeViewModel.isPrivate = tabManager.selectedTab!.isPrivate
         }
-        let normalBrowsingMode = UIAction(title: Strings.normalBrowsingModeTitle, image: icon) { _ in
-            action()
-        }
+        let incognitoActions = [
+            tabManager.selectedTab?.isPrivate ?? false
+                ? UIAction(title: Strings.normalBrowsingModeTitle, image: icon, handler: switchPrivacyMode)
+                : UIAction(title: Strings.incognitoBrowsingModeTitle, image: icon, handler: switchPrivacyMode)
+        ]
 
-        if let tab = self.tabManager.selectedTab {
-            return tab.isPrivate ? [normalBrowsingMode] : [privateBrowsingMode]
-        }
-        return [privateBrowsingMode]
-    }
-
-    
-    func getMoreTabToolbarLongPressActions() -> [UIMenuElement] {
         let tabCount = self.tabManager.tabs.count
 
-        let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemName: "plus.square")) { _ in
+        let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare)) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: false)
         }
         let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: true)
         }
 
-        let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemName: "xmark"), attributes: .destructive) { _ in
-            if let tab = self.tabManager.selectedTab {
-                self.tabManager.removeTabAndUpdateSelectedIndex(tab)
-                self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
-            }
-        }
-        closeTab.accessibilityIdentifier = "Close Tab Action"
-
-        var actions = [newTab]
+        var tabActions = [newTab]
 
         if let tab = self.tabManager.selectedTab {
-            actions = tab.isPrivate ? [newIncognitoTab] : [newTab]
-            
+            tabActions = tab.isPrivate ? [newIncognitoTab] : [newTab]
+
             if tabCount > 0 || !tab.isURLStartingPage {
-                actions.append(closeTab)
+                let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark), attributes: .destructive) { _ in
+                    if let tab = self.tabManager.selectedTab {
+                        self.tabManager.removeTabAndUpdateSelectedIndex(tab)
+                        self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
+                    }
+                }
+                closeTab.accessibilityIdentifier = "Close Tab Action"
+                tabActions.append(closeTab)
             }
         }
 
         if tabCount > 1 {
-            actions.append(TabMenu(tabManager: tabManager, alertPresentViewController: self).createCloseAllTabsAction())
+            tabActions.append(TabMenu(tabManager: tabManager, alertPresentViewController: self).createCloseAllTabsAction())
         }
 
-        return actions
-    }
-
-    func tabToolbarTabsMenu(_ tabToolbar: TabToolbarProtocol, button: UIButton) -> UIMenu? {
-        guard self.presentedViewController == nil else {
-            return nil
-        }
-        var actions: [[UIMenuElement]] = []
-        actions.append(getTabToolbarLongPressActionsForModeSwitching())
-        actions.append(getMoreTabToolbarLongPressActions())
-
-        return UIMenu(sections: actions)
+        return UIMenu(sections: [incognitoActions, tabActions])
     }
 
     func showBackForwardList() {
@@ -164,7 +139,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         }
     }
 
-    func tabToolbarDidPressSearch(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+    func tabToolbarDidPressSearch() {
         focusLocationTextField(forTab: tabManager.selectedTab)
     }
 }

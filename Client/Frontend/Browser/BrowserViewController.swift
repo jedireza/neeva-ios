@@ -15,15 +15,7 @@ import SDWebImage
 import SwiftyJSON
 import SwiftUI
 import Defaults
-
-private let KVOs: [KVOConstants] = [
-    .estimatedProgress,
-    .loading,
-    .canGoBack,
-    .canGoForward,
-    .URL,
-    .title,
-]
+import Combine
 
 private let ActionSheetTitleMaxLength = 120
 
@@ -62,7 +54,7 @@ class BrowserViewController: UIViewController {
             return nil
         }
         let host = SimulatedSwipeController(tabManager: self.tabManager,
-                                            navigationToolbar: navigationToolbar,
+                                            toolbarModel: toolbarModel,
                                             swipeDirection: .forward)
         addChild(host)
         view.addSubview(host.view)
@@ -71,7 +63,7 @@ class BrowserViewController: UIViewController {
     }()
     lazy var simulateBackViewController: SimulatedSwipeController? = {
         let host = SimulatedSwipeController(tabManager: self.tabManager,
-                                            navigationToolbar: navigationToolbar,
+                                            toolbarModel: toolbarModel,
                                             swipeDirection: .back)
         addChild(host)
         view.addSubview(host.view)
@@ -84,7 +76,25 @@ class BrowserViewController: UIViewController {
     var readerModeBar: ReaderModeBarView?
     var readerModeCache: ReaderModeCache
     var statusBarOverlay: UIView = UIView()
-    fileprivate(set) var toolbar: TabToolbar?
+    let toolbarModel = TabToolbarModel()
+    enum ToolbarType {
+        case legacy(TabToolbar)
+        case modern(TabToolbarHost)
+
+        var common: PrivateModeUI {
+            switch self {
+            case .legacy(let legacy): return legacy
+            case .modern(let modern): return modern
+            }
+        }
+        var view: UIView {
+            switch self {
+            case .legacy(let legacy): return legacy
+            case .modern(let modern): return modern.view
+            }
+        }
+    }
+    fileprivate(set) var toolbar: ToolbarType?
     var searchController: SearchViewController?
     var screenshotHelper: ScreenshotHelper!
     fileprivate var homePanelIsInline = false
@@ -128,9 +138,6 @@ class BrowserViewController: UIViewController {
     // TODO: weak references?
     var ignoredNavigation = Set<WKNavigation>()
     var typedNavigation = [WKNavigation: VisitType]()
-    var navigationToolbar: TabToolbarProtocol {
-        return toolbar ?? legacyURLBar
-    }
 
     var topTabsViewController: TopTabsViewController?
     let topTabsContainer = UIView()
@@ -267,14 +274,33 @@ class BrowserViewController: UIViewController {
         legacyURLBar.topTabsIsShowing = showTopTabs
         legacyURLBar.setShowToolbar(!showToolbar)
 
-        toolbar?.removeFromSuperview()
-        toolbar?.tabToolbarDelegate = nil
+        switch toolbar {
+        case .legacy(let toolbar):
+            toolbar.removeFromSuperview()
+            toolbar.tabToolbarDelegate = nil
+        case .modern(let host):
+            host.willMove(toParent: nil)
+            host.view.removeFromSuperview()
+            host.tabToolbarDelegate = nil
+        case nil:
+            break
+        }
         toolbar = nil
 
         if showToolbar {
-            toolbar = TabToolbar()
-            footer.addSubview(toolbar!)
-            toolbar?.tabToolbarDelegate = self
+            if FeatureFlag[.newTabToolbar] {
+                let toolbar = TabToolbarHost(model: toolbarModel, delegate: self)
+                toolbar.willMove(toParent: self)
+                toolbar.view.setContentHuggingPriority(.required, for: .vertical)
+                footer.addSubview(toolbar.view)
+                addChild(toolbar)
+                self.toolbar = .modern(toolbar)
+            } else {
+                let toolbar = TabToolbar(model: toolbarModel)
+                footer.addSubview(toolbar)
+                toolbar.tabToolbarDelegate = self
+                self.toolbar = .legacy(toolbar)
+            }
         }
 
         if showTopTabs {
@@ -307,10 +333,10 @@ class BrowserViewController: UIViewController {
 
         if let tab = tabManager.selectedTab,
                let webView = tab.webView {
-            toolbar?.applyUIMode(isPrivate: tab.isPrivate)
+            toolbar?.common.applyUIMode(isPrivate: tab.isPrivate)
             updateURLBarDisplayURL(tab)
-            navigationToolbar.updateBackStatus(webView.canGoBack)
-            navigationToolbar.updateForwardStatus(webView.canGoForward)
+            toolbarModel.canGoBack = webView.canGoBack
+            toolbarModel.canGoForward = webView.canGoForward
         }
 
         libraryDrawerViewController?.view.snp.remakeConstraints(constraintsForLibraryDrawerView)
@@ -420,7 +446,7 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        legacyURLBar = LegacyURLBarView(profile: profile)
+        legacyURLBar = LegacyURLBarView(profile: profile, toolbarModel: toolbarModel)
         legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
         legacyURLBar.delegate = self
         legacyURLBar.tabToolbarDelegate = self
@@ -720,16 +746,18 @@ class BrowserViewController: UIViewController {
 
             let findInPageHeight = (findInPageBar == nil) ? 0 : UIConstants.ToolbarHeight
             if let toolbar = self.toolbar {
-                make.bottom.equalTo(toolbar.snp.top).offset(-findInPageHeight)
+                make.bottom.equalTo(toolbar.view.snp.top).offset(-findInPageHeight)
             } else {
                 make.bottom.equalTo(self.view).offset(-findInPageHeight)
             }
         }
 
         // Setup the bottom toolbar
-        toolbar?.snp.remakeConstraints { make in
+        toolbar?.view.snp.remakeConstraints { make in
             make.edges.equalTo(self.footer)
-            make.height.equalTo(UIConstants.BottomToolbarHeight)
+            if !FeatureFlag[.newTabToolbar] {
+                make.height.equalTo(UIConstants.BottomToolbarHeight)
+            }
         }
 
         footer.snp.remakeConstraints { make in
@@ -745,7 +773,7 @@ class BrowserViewController: UIViewController {
             make.top.equalTo(self.legacyURLBar.snp.bottom)
             make.left.right.equalTo(self.view)
             if self.homePanelIsInline {
-                make.bottom.equalTo(self.toolbar?.snp.top ?? self.view.snp.bottom)
+                make.bottom.equalTo(self.toolbar?.view.snp.top ?? self.view.snp.bottom)
             } else {
                 make.bottom.equalTo(self.view.snp.bottom)
             }
@@ -757,7 +785,7 @@ class BrowserViewController: UIViewController {
             if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view), keyboardHeight > 0 {
                 make.bottom.equalTo(self.view).offset(-keyboardHeight)
             } else if let toolbar = self.toolbar {
-                make.bottom.lessThanOrEqualTo(toolbar.snp.top)
+                make.bottom.lessThanOrEqualTo(toolbar.view.snp.top)
                 make.bottom.lessThanOrEqualTo(self.view.safeArea.bottom)
             } else {
                 make.bottom.equalTo(self.view.safeArea.bottom)
@@ -951,73 +979,6 @@ class BrowserViewController: UIViewController {
         return false
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        guard let webView = object as? WKWebView, let tab = tabManager[webView] else {
-            assert(false)
-            return
-        }
-        guard let kp = keyPath, let path = KVOConstants(rawValue: kp) else {
-            assertionFailure("Unhandled KVO key: \(keyPath ?? "nil")")
-            return
-        }
-
-        if let helper = tab.getContentScript(name: ContextMenuHelper.name()) as? ContextMenuHelper {
-            // This is zero-cost if already installed. It needs to be checked frequently (hence every event here triggers this function), as when a new tab is created it requires multiple attempts to setup the handler correctly.
-             helper.replaceGestureHandlerIfNeeded()
-        }
-
-        switch path {
-        case .estimatedProgress:
-            guard tab === tabManager.selectedTab else { break }
-            if let url = webView.url, !InternalURL.isValid(url: url) {
-                legacyURLBar.updateProgressBar(Float(webView.estimatedProgress))
-            } else {
-                legacyURLBar.hideProgressBar()
-            }
-        case .loading:
-            break
-        case .URL:
-            // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
-            if tab.url == .aboutBlank && webView.url == nil {
-                break
-            }
-
-            // To prevent spoofing, only change the URL immediately if the new URL is on
-            // the same origin as the current URL. Otherwise, do nothing and wait for
-            // didCommitNavigation to confirm the page load.
-            if tab.url?.origin == webView.url?.origin {
-                tab.url = webView.url
-
-                if tab === tabManager.selectedTab && !tab.restoring {
-                    updateUIForReaderHomeStateForTab(tab)
-                }
-                // Catch history pushState navigation, but ONLY for same origin navigation,
-                // for reasons above about URL spoofing risk.
-                navigateInTab(tab: tab, webViewStatus: .url)
-            }
-        case .title:
-            // Ensure that the tab title *actually* changed to prevent repeated calls
-            // to navigateInTab(tab:).
-            guard let title = tab.title else { break }
-            if !title.isEmpty && title != tab.lastTitle {
-                tab.lastTitle = title
-                navigateInTab(tab: tab, webViewStatus: .title)
-            }
-        case .canGoBack:
-            guard tab === tabManager.selectedTab, let canGoBack = change?[.newKey] as? Bool else {
-                break
-            }
-            navigationToolbar.updateBackStatus(canGoBack)
-        case .canGoForward:
-            guard tab === tabManager.selectedTab, let canGoForward = change?[.newKey] as? Bool else {
-                break
-            }
-            navigationToolbar.updateForwardStatus(canGoForward)
-        default:
-            assertionFailure("Unhandled KVO key: \(keyPath ?? "nil")")
-        }
-    }
-
     func updateUIForReaderHomeStateForTab(_ tab: Tab) {
         updateURLBarDisplayURL(tab)
         scrollController.showToolbars(animated: false)
@@ -1047,7 +1008,7 @@ class BrowserViewController: UIViewController {
         } else {
             legacyURLBar.legacyLocationView.updateShareButton(isPage)
         }
-        navigationToolbar.updatePageStatus(isPage)
+        toolbarModel.isPage = isPage
     }
 
     // MARK: Opening New Tabs
@@ -1618,12 +1579,92 @@ extension BrowserViewController: LegacyURLBarDelegate {
 
 extension BrowserViewController: TabDelegate {
 
+    private func subscribe(to webView: WKWebView, for tab: Tab) {
+        let updateGestureHandler = {
+            if let helper = tab.getContentScript(name: ContextMenuHelper.name()) as? ContextMenuHelper {
+                // This is zero-cost if already installed. It needs to be checked frequently (hence every event here triggers this function), as when a new tab is created it requires multiple attempts to setup the handler correctly.
+                helper.replaceGestureHandlerIfNeeded()
+            }
+        }
+
+        let tabManager = tabManager
+
+        // Observers that live as long as the tab. They are all cancelled in Tab/close(), so it is safe to use a strong reference to self.
+        webView.publisher(for: \.estimatedProgress, options: .new)
+            .forEach(updateGestureHandler)
+            .filter { _ in tab === tabManager.selectedTab }
+            .sink { [self] estimatedProgress in
+                if let url = webView.url, !InternalURL.isValid(url: url) {
+                    legacyURLBar.updateProgressBar(Float(estimatedProgress))
+                } else {
+                    legacyURLBar.hideProgressBar()
+                }
+            }
+            .store(in: &tab.webViewSubscriptions)
+
+        // only used to trigger updateGestureHandler?
+        webView.publisher(for: \.isLoading, options: .new)
+            .forEach(updateGestureHandler)
+            .sink { _ in }
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.url, options: .new)
+            .forEach(updateGestureHandler)
+            // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
+            .filter { tab.url != .aboutBlank || $0 != nil }
+            // To prevent spoofing, only change the URL immediately if the new URL is on
+            // the same origin as the current URL. Otherwise, do nothing and wait for
+            // didCommitNavigation to confirm the page load.
+            .filter { tab.url?.origin == $0?.origin }
+            .sink { [self] url in
+                tab.url = url
+
+                if tab === tabManager.selectedTab && !tab.restoring {
+                    updateUIForReaderHomeStateForTab(tab)
+                }
+                // Catch history pushState navigation, but ONLY for same origin navigation,
+                // for reasons above about URL spoofing risk.
+                navigateInTab(tab: tab, webViewStatus: .url)
+            }
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.title, options: .new)
+            .forEach(updateGestureHandler)
+            .compactMap { $0 }
+            // Ensure that the tab title *actually* changed to prevent repeated calls
+            // to navigateInTab(tab:).
+            .filter { !$0.isEmpty && $0 != tab.lastTitle }
+            .sink { [self] title in
+                tab.lastTitle = title
+                navigateInTab(tab: tab, webViewStatus: .title)
+            }
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.canGoBack, options: .new)
+            .forEach(updateGestureHandler)
+            .filter { _ in tab === tabManager.selectedTab }
+            .assign(to: \.canGoBack, on: toolbarModel)
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.publisher(for: \.canGoForward, options: .new)
+            .forEach(updateGestureHandler)
+            .filter { _ in tab === tabManager.selectedTab }
+            .assign(to: \.canGoForward, on: toolbarModel)
+            .store(in: &tab.webViewSubscriptions)
+
+        webView.scrollView
+            .publisher(for: \.contentSize, options: .new)
+            .sink { _ in
+                self.scrollController.contentSizeDidChange()
+            }
+            .store(in: &tab.webViewSubscriptions)
+    }
+
     func tab(_ tab: Tab, didCreateWebView webView: WKWebView) {
         webView.frame = webViewContainer.frame
-        // Observers that live as long as the tab. Make sure these are all cleared in willDeleteWebView below!
-        KVOs.forEach { webView.addObserver(self, forKeyPath: $0.rawValue, options: .new, context: nil) }
-        webView.scrollView.addObserver(self.scrollController, forKeyPath: KVOConstants.contentSize.rawValue, options: .new, context: nil)
         webView.uiDelegate = self
+
+        self.subscribe(to: webView, for: tab)
 
         let formPostHelper = FormPostHelper(tab: tab)
         tab.addContentScript(formPostHelper, name: FormPostHelper.name())
@@ -1677,8 +1718,6 @@ extension BrowserViewController: TabDelegate {
 
     func tab(_ tab: Tab, willDeleteWebView webView: WKWebView) {
         tab.cancelQueuedAlerts()
-        KVOs.forEach { webView.removeObserver(self, forKeyPath: $0.rawValue) }
-        webView.scrollView.removeObserver(self.scrollController, forKeyPath: KVOConstants.contentSize.rawValue)
         webView.uiDelegate = nil
         webView.scrollView.delegate = nil
         webView.removeFromSuperview()
@@ -1843,7 +1882,7 @@ extension BrowserViewController: TabManagerDelegate {
             updateURLBarDisplayURL(tab)
 
             if previous == nil || tab.isPrivate != previous?.isPrivate {
-                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar, legacyURLBar]
+                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar?.common, legacyURLBar]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
 
@@ -1904,9 +1943,9 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateFindInPageVisibility(visible: false, tab: previous)
-        navigationToolbar.updateBackStatus(simulateBackViewController?.canGoBack() ?? false
+        toolbarModel.canGoBack = (simulateBackViewController?.canGoBack() ?? false
                                             || selected?.canGoBack ?? false)
-        navigationToolbar.updateForwardStatus(simulateForwardViewController?.canGoForward() ?? false
+        toolbarModel.canGoForward = (simulateForwardViewController?.canGoForward() ?? false
                                                 || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
             self.legacyURLBar.updateProgressBar(Float(selected?.estimatedProgress ?? 0))

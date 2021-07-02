@@ -16,7 +16,6 @@ protocol ClipboardBarDisplayHandlerDelegate: AnyObject {
 
 class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     weak var bvc: (ClipboardBarDisplayHandlerDelegate & BrowserViewController)?
-    weak var settingsDelegate: SettingsDelegate?
     weak var tabManager: TabManager?
     private var sessionStarted = true
     private var sessionRestored = false

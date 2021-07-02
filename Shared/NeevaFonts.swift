@@ -61,7 +61,7 @@ fileprivate struct WithFont: ViewModifier {
     }
 }
 
-fileprivate extension FontStyle {
+extension FontStyle {
     var lineHeightMultiplier: CGFloat {
         switch self {
         case .displayXLarge, .displayLarge, .displayMedium:

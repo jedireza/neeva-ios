@@ -29,7 +29,6 @@ class TabEventHandlerTests: XCTestCase {
     func testBlankPopupURL() {
         // Hide intro so it is easier to see the test running and debug it
         Defaults[.introSeen] = true
-        Defaults[.etpCoverSheetShowType] = .DoNotShow
 
         let webServer = GCDWebServer()
         webServer.addHandler(forMethod: "GET", path: "/blankpopup", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse in

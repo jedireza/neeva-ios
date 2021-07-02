@@ -5,7 +5,7 @@ import Shared
 
 extension EnvironmentValues {
     private struct PresentIntroKey: EnvironmentKey {
-        static var defaultValue = { () -> () in fatalError("Specify an environment value for settingsOpenURLInNewNonPrivateTab")}
+        static var defaultValue = { () -> () in fatalError("Specify an environment value for \\.settingsPresentIntroViewController") }
     }
     public var settingsPresentIntroViewController: () -> () {
         get { self[PresentIntroKey] }

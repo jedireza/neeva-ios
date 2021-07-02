@@ -8,6 +8,7 @@ import Storage
 import Shared
 import SwiftyJSON
 import XCGLogger
+import Combine
 
 fileprivate var debugTabCount = 0
 
@@ -97,6 +98,8 @@ class Tab: NSObject {
 
     var webView: WKWebView?
     var tabDelegate: TabDelegate?
+    /// This set is cleared out when the tab is closed, ensuring that any subscriptions are invalidated.
+    var webViewSubscriptions: Set<AnyCancellable> = []
     weak var urlDidChangeDelegate: URLChangeDelegate?     // TODO: generalize this.
     var bars = [SnackBar]()
     var favicons = [Favicon]() {
@@ -161,6 +164,7 @@ class Tab: NSObject {
 
     // If this tab has been opened from another, its parent will point to the tab from which it was opened
     weak var parent: Tab?
+    var parentUUID: String? = nil
 
     var rootUUID: String = UUID().uuidString
 
@@ -255,7 +259,13 @@ class Tab: NSObject {
             restore(webView)
 
             self.webView = webView
-            self.webView?.addObserver(self, forKeyPath: KVOConstants.URL.rawValue, options: .new, context: nil)
+            webView.publisher(for: \.url, options: .new)
+                .compactMap { $0 }
+                .sink { [weak urlDidChangeDelegate] in
+                    urlDidChangeDelegate?.tab(self, urlDidChangeTo: $0)
+                }
+                .store(in: &webViewSubscriptions)
+
             UserScriptManager.shared.injectUserScriptsIntoTab(self)
             tabDelegate?.tab?(self, didCreateWebView: webView)
         }
@@ -319,8 +329,6 @@ class Tab: NSObject {
     func close() {
         contentScriptManager.uninstall(tab: self)
 
-        webView?.removeObserver(self, forKeyPath: KVOConstants.URL.rawValue)
-
         if let webView = webView {
             tabDelegate?.tab?(self, willDeleteWebView: webView)
         }
@@ -328,6 +336,7 @@ class Tab: NSObject {
         webView?.navigationDelegate = nil
         webView?.removeFromSuperview()
         webView = nil
+        webViewSubscriptions = []
     }
 
     var loading: Bool {
@@ -535,18 +544,6 @@ class Tab: NSObject {
         alertQueue.forEach { alert in
             alert.cancel()
         }
-    }
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        guard let webView = object as? WKWebView, webView == self.webView,
-            let path = keyPath, path == KVOConstants.URL.rawValue else {
-            return assertionFailure("Unhandled KVO key: \(keyPath ?? "nil")")
-        }
-        guard let url = self.webView?.url else {
-            return
-        }
-
-        self.urlDidChangeDelegate?.tab(self, urlDidChangeTo: url)
     }
 
     func isDescendentOf(_ ancestor: Tab) -> Bool {

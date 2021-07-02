@@ -22,14 +22,21 @@ class HomeViewModel: ObservableObject {
         return {
             ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
             self.showDefaultBrowserCard.toggle()
-            UserDefaults.standard.set(true, forKey: "DidDismissDefaultBrowserCard")
+            Defaults[.didDismissDefaultBrowserCard] = true
         }
     }
 
     func updateState() {
         isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
         var showDefaultBrowserCard = false
-        if #available(iOS 14.0, *), !UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") || !NeevaUserInfo.shared.hasLoginCookie() {
+
+        // TODO: remove once all users have upgraded
+        if UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {
+            UserDefaults.standard.removeObject(forKey: "DidDismissDefaultBrowserCard")
+            Defaults[.didDismissDefaultBrowserCard] = true
+        }
+
+        if #available(iOS 14.0, *), !Defaults[.didDismissDefaultBrowserCard] || !NeevaUserInfo.shared.hasLoginCookie() {
             showDefaultBrowserCard = true
             self.currentType = !NeevaUserInfo.shared.hasLoginCookie() ? .neevaSignIn : .defaultBrowser
             buttonClickHandler = {

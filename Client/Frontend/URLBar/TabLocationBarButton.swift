@@ -44,47 +44,13 @@ struct LocationViewReloadButton: View {
     let onTap: () -> ()
 
     var body: some View {
-        Content(buildMenu: buildMenu, state: state, onTap: onTap)
-            .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
-    }
-
-    struct Content: UIViewRepresentable {
-        let buildMenu: () -> UIMenu?
-        let state: ReloadButtonState
-        let onTap: () -> ()
-
-        class Coordinator {
-            var onTap: () -> ()
-            init(onTap: @escaping () -> ()) {
-                self.onTap = onTap
-            }
-
-            @objc func action() {
-                onTap()
-            }
+        UIKitButton(action: onTap) {
+            $0.tintColor = .label
+            $0.setImage(Symbol.uiImage(state == .reload ? .arrowClockwise : .xmark), for: .normal)
+            $0.accessibilityLabel = state == .reload ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel
+            $0.setDynamicMenu(buildMenu)
         }
-
-        func makeCoordinator() -> Coordinator {
-            Coordinator(onTap: onTap)
-        }
-
-        func makeUIView(context: Context) -> UIButton {
-            let button = UIButton(type: .system)
-            button.tintColor = .label
-            button.addTarget(context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered)
-            return button
-        }
-
-        func updateUIView(_ button: UIButton, context: Context) {
-            button.setImage(
-                UIImage(systemSymbol: state == .reload ? .arrowClockwise : .xmark)
-                    .withConfiguration(UIImage.SymbolConfiguration(pointSize: Symbol.defaultSize, weight: .medium, scale: .medium)),
-                for: .normal
-            )
-            button.accessibilityLabel = state == .reload ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel
-            button.setDynamicMenu(buildMenu)
-            context.coordinator.onTap = onTap
-        }
+        .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
     }
 }
 
