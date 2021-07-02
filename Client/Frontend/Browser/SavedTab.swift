@@ -42,7 +42,7 @@ class SavedTab: NSObject, NSCoding {
         return json
     }
     
-    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String) {
+    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String?) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
