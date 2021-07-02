@@ -96,7 +96,7 @@ struct TabLocationView: View {
                 } trailing: {
                     Group {
                         if model.readerMode != .active, let url = model.url, !InternalURL.isValid(url: url) {
-                            LocationViewReloadButton(buildMenu: buildReloadMenu, state: $model.reloadButton, onTap: onReload)
+                            LocationViewReloadButton(buildMenu: buildReloadMenu, state: model.reloadButton, onTap: onReload)
                         }
                         if model.canShare, model.includeShareButtonInLocationView {
                             LocationViewShareButton(url: model.url, onTap: onShare)

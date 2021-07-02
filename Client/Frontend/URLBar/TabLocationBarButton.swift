@@ -40,7 +40,7 @@ struct LocationViewTrackingButton: View {
 
 struct LocationViewReloadButton: View {
     let buildMenu: () -> UIMenu?
-    @Binding var state: ReloadButtonState
+    let state: ReloadButtonState
     let onTap: () -> ()
 
     var body: some View {
@@ -98,8 +98,8 @@ struct TabLocationBarButton_Previews: PreviewProvider {
                 .environment(\.isIncognito, true)
         }.previewLayout(.sizeThatFits)
         HStack {
-            LocationViewReloadButton(buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) }, state: .constant(.reload)) {}
-            LocationViewReloadButton(buildMenu: { nil }, state: .constant(.stop)) {}
+            LocationViewReloadButton(buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) }, state: .reload) {}
+            LocationViewReloadButton(buildMenu: { nil }, state: .stop) {}
         }.previewLayout(.sizeThatFits)
         HStack {
             LocationViewShareButton(url: nil, onTap: { _ in })
