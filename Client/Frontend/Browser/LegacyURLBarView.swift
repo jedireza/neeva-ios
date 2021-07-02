@@ -48,13 +48,7 @@ class LegacyURLBarView: UIView {
     let neevaSuggestionModel: NeevaSuggestionModel
     var subscriptions: Set<AnyCancellable> = []
 
-    weak var delegate: LegacyURLBarDelegate? {
-        didSet {
-            if FeatureFlag[.newURLBar] {
-                locationHost.urlBarDelegate = delegate
-            }
-        }
-    }
+    weak var delegate: LegacyURLBarDelegate?
     weak var tabToolbarDelegate: TabToolbarDelegate?
     var helper: TabToolbarHelper?
     var isTransitioning: Bool = false {
@@ -104,7 +98,7 @@ class LegacyURLBarView: UIView {
     }()
 
     lazy var locationHost: TabLocationHost = {
-        TabLocationHost(model: model, historySuggestionModel: historySuggestionModel, neevaSuggestionModel: neevaSuggestionModel, delegate: self, urlBarDelegate: delegate)
+        TabLocationHost(model: model, historySuggestionModel: historySuggestionModel, neevaSuggestionModel: neevaSuggestionModel, delegate: self, urlBar: self)
     }()
 
     lazy var locationContainer: UIView = {
