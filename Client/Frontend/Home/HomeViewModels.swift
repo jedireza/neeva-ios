@@ -6,29 +6,13 @@ import Shared
 
 class HomeViewModel: ObservableObject {
     @Published var isPrivate: Bool = false
-    @Published var showDefaultBrowserCard = false
+    @Published var promoCard: PromoCardType? = nil
     @Published var buttonClickHandler: () -> () = {}
-    @Published var currentConfig = PromoCardType.getConfig(for: .neevaSignIn)
 
     var signInHandler: () -> () = {}
 
-    var currentType: PromoCardType = PromoCardType.neevaSignIn {
-        didSet {
-            currentConfig = PromoCardType.getConfig(for: currentType)
-        }
-    }
-
-    var toggleShowCard: () -> () {
-        return {
-            ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
-            self.showDefaultBrowserCard.toggle()
-            Defaults[.didDismissDefaultBrowserCard] = true
-        }
-    }
-
     func updateState() {
         isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
-        var showDefaultBrowserCard = false
 
         // TODO: remove once all users have upgraded
         if UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {
@@ -36,23 +20,26 @@ class HomeViewModel: ObservableObject {
             Defaults[.didDismissDefaultBrowserCard] = true
         }
 
-        if #available(iOS 14.0, *), !Defaults[.didDismissDefaultBrowserCard] || !NeevaUserInfo.shared.hasLoginCookie() {
-            showDefaultBrowserCard = true
-            self.currentType = !NeevaUserInfo.shared.hasLoginCookie() ? .neevaSignIn : .defaultBrowser
-            buttonClickHandler = {
-                if (!NeevaUserInfo.shared.hasLoginCookie()) {
-                    ClientLogger.shared.logCounter(.PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
-                    self.signInHandler()
-                } else {
-                    ClientLogger.shared.logCounter(.PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
-                    BrowserViewController.foregroundBVC().presentDBOnboardingViewController(true)
-
-                    // Set default browser onboarding did show to true so it will not show again after user clicks this button
-                    Defaults[.didShowDefaultBrowserOnboarding] = true
-                }
+        if !NeevaUserInfo.shared.hasLoginCookie() {
+            promoCard = .neevaSignIn {
+                ClientLogger.shared.logCounter(.PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
+                self.signInHandler()
             }
+        } else if !Defaults[.didDismissDefaultBrowserCard] {
+            promoCard = .defaultBrowser {
+                ClientLogger.shared.logCounter(.PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+                BrowserViewController.foregroundBVC().presentDBOnboardingViewController(true)
+
+                // Set default browser onboarding did show to true so it will not show again after user clicks this button
+                Defaults[.didShowDefaultBrowserOnboarding] = true
+            } onClose: {
+                ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                self.promoCard = nil
+                Defaults[.didDismissDefaultBrowserCard] = true
+            }
+        } else {
+            promoCard = nil
         }
-        self.showDefaultBrowserCard = showDefaultBrowserCard
     }
 }
 

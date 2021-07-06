@@ -182,6 +182,7 @@ class DefaultBrowserOnboardingViewController: UIViewController {
     }
     
     private func setupView() {
+        view.backgroundColor = .systemBackground
         // Close button target setup
         closeButton.addTarget(self, action: #selector(dismissAnimated), for: .touchUpInside)
         // Close button constraints setup

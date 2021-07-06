@@ -3,114 +3,159 @@
 import SwiftUI
 import Shared
 
-private enum PromoCardUX {
-    static let CornerRadius: CGFloat = 24
-    static let ButtonFontSize: CGFloat = 17
-    static let TextFontSize: CGFloat = 21
-    static let TextColor: UIColor = UIColor(rgb: 0x131415)
-}
-
 struct PromoCardConfig {
-    let firstLine: String
-    let secondLine: String
+    let title: String
     let buttonLabel: String
     let buttonImage: Image?
     let backgroundColor: Color
-    let showDismissButton: Bool
 }
 
 enum PromoCardType {
-    case neevaSignIn
-    case defaultBrowser
+    case neevaSignIn(action: () -> ())
+    case defaultBrowser(action: () -> (), onClose: () -> ())
 
-    static func getConfig(for type: PromoCardType) -> PromoCardConfig {
-        switch type {
+    var action: () -> () {
+        switch self {
+        case .neevaSignIn(let action):
+            return action
+        case .defaultBrowser(let action, _):
+            return action
+        }
+    }
+
+    var title: String {
+        switch self {
         case .neevaSignIn:
-            return PromoCardConfig(firstLine: "Get safer, richer and better",
-                                   secondLine: "search when you sign in",
-                                   buttonLabel: "Sign in or Join Neeva",
-                                   buttonImage: Image("neevaMenuIcon"),
-                                   backgroundColor: .brand.adaptive.polar,
-                                   showDismissButton: false)
+            return "Get safer, richer and better\nsearch when you sign in"
         case .defaultBrowser:
-            return PromoCardConfig(firstLine: "Browse in peace,",
-                                   secondLine: "always",
-                                   buttonLabel: "Set as Default Browser",
-                                   buttonImage: nil,
-                                   backgroundColor: .brand.adaptive.pistachio,
-                                   showDismissButton: true)
+            return "Browse in peace,\nalways"
+        }
+    }
+
+    @ViewBuilder
+    var buttonLabel: some View {
+        switch self {
+        case .neevaSignIn:
+            HStack(spacing: 8) {
+                Image("neevaMenuIcon")
+                    .renderingMode(.template)
+                    .frame(width: 18, height: 16)
+                Text("Sign in or Join Neeva")
+                    .padding(.horizontal, 20)
+            }
+        case .defaultBrowser:
+            Text("Set as Default Browser")
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .neevaSignIn:
+            return .brand.adaptive.polar
+        case .defaultBrowser:
+            return .brand.adaptive.pistachio
         }
     }
 }
 
 struct PromoCard: View {
-    @ObservedObject var model: HomeViewModel
+    let type: PromoCardType
 
-    var isTabletOrLandscape:Bool {
-        return UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.orientation.isLandscape
+    var isTabletOrLandscape: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.orientation.isLandscape
     }
 
     var button: some View {
-        Button(action: {
-            model.buttonClickHandler()
-        }, label: {
-            HStack(spacing: 20) {
-                if let image = model.currentConfig.buttonImage {
-                    image.renderingMode(.template)
-                        .foregroundColor(.white)
-                        .frame(width: 18, height: 16)
-                }
-                Text(model.currentConfig.buttonLabel)
-                    .font(Font(UIFont.systemFont(ofSize: PromoCardUX.ButtonFontSize, weight: .semibold)))
-                    .foregroundColor(Color.white)
-            }.padding(.vertical).padding(.horizontal, 20).frame(maxWidth: .infinity, alignment: .center)
-            .background(Color.brand.blue)
-            .clipShape(RoundedRectangle(cornerRadius: PromoCardUX.CornerRadius))
-            .padding(.horizontal, 10)
-        })
+        Button(action: type.action) {
+            HStack {
+                Spacer()
+                type.buttonLabel
+                Spacer()
+            }
+            .font(.system(size: 16, weight: .semibold))
+            .foregroundColor(.white)
+            .frame(height: 48)
+            .background(Capsule().fill(Color.brand.blue))
+        }
     }
 
+    @ViewBuilder
     var label: some View {
-        VStack(alignment: .leading, spacing: NeevaHomeUX.Padding) {
-            Text(model.currentConfig.firstLine)
-                .font(.roobert(.light, size: PromoCardUX.TextFontSize))
-                .foregroundColor(Color(PromoCardUX.TextColor))
-            Text(model.currentConfig.secondLine)
-                .font(.roobert(.light, size: PromoCardUX.TextFontSize))
-                .foregroundColor(Color(PromoCardUX.TextColor))
-        }.frame(maxWidth: .infinity, alignment: .leading).padding()
+        let size: CGFloat = 24
+        let lineSpacing = 32 - size
+        Text(type.title)
+            .font(.roobert(.regular, size: size))
+            .lineSpacing(lineSpacing)
+            .foregroundColor(.hex(0x131415))
+            .padding(.vertical, lineSpacing)
+    }
+
+    @ViewBuilder
+    var closeButton: some View {
+        if case .defaultBrowser(_, let onClose) = type {
+            Button(action: onClose) {
+                Symbol(.xmark, weight: .semibold, label: "Dismiss")
+                    .foregroundColor(Color.ui.gray70)
+                    .padding()
+            }
+        }
+    }
+
+    var background: some View {
+        let shape = RoundedRectangle(cornerRadius: 12)
+        let innerShadowAmount: CGFloat = 1.25
+        return shape
+            .fill(type.color)
+            .background(
+                shape
+                    .fill(Color.black.opacity(0.03))
+                    .blur(radius: 0.5)
+                    .offset(y: -0.5)
+            )
+            .overlay(
+                // Reference: https://www.hackingwithswift.com/plus/swiftui-special-effects/shadows-and-glows
+                shape
+                    .inset(by: -innerShadowAmount)
+                    .stroke(Color.black.opacity(0.2), lineWidth: innerShadowAmount * 2)
+                    .blur(radius: 0.5)
+                    .offset(y: -innerShadowAmount)
+                    .mask(shape)
+            )
+
     }
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: PromoCardUX.CornerRadius)
-                .fill(model.currentConfig.backgroundColor).shadow(radius: 2)
+        Group {
             if isTabletOrLandscape {
                 HStack {
                     label
+                    Spacer()
                     button
-                }.padding().padding(.bottom, 10)
+                    closeButton
+                }
             } else {
-                VStack {
-                    label
+                VStack(spacing: 16) {
+                    HStack(alignment: .top) {
+                        label
+                        Spacer()
+                        closeButton
+                    }
                     button
-                }.padding().padding(.bottom, 10)
+                }
             }
-            if (model.currentConfig.showDismissButton) {
-                Button(action: {
-                    model.toggleShowCard()
-                } ,label: {
-                    Symbol(.xmark, weight: .semibold, label: "Dismiss")
-                        .foregroundColor(Color.ui.gray70).frame(width: 16, height: 16)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                }).padding()
-            }
-        }.fixedSize(horizontal: false, vertical: true).frame(maxWidth: 650).padding()
+        }
+        .padding(25)
+        .background(background)
+        .frame(maxWidth: 650)
+        .padding()
     }
 }
 
 struct PromoCard_Previews: PreviewProvider {
     static var previews: some View {
-        PromoCard(model: HomeViewModel())
+        Group {
+            PromoCard(type: .neevaSignIn(action: {}))
+            PromoCard(type: .defaultBrowser(action: {}, onClose: {}))
+        }.previewLayout(.sizeThatFits)
     }
 }

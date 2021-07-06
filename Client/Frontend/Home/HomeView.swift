@@ -94,8 +94,8 @@ struct NeevaHome: View {
                     if viewModel.isPrivate {
                         IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(NeevaHomeUX.Padding)
                     } else {
-                        if viewModel.showDefaultBrowserCard {
-                            PromoCard(model: viewModel)
+                        if let promoCardType = viewModel.promoCard {
+                            PromoCard(type: promoCardType)
                         }
 
                         NeevaHomeHeader(
