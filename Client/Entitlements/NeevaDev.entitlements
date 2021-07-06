@@ -4,13 +4,6 @@
 <dict>
 	<key>aps-environment</key>
 	<string>development</string>
-	<key>com.apple.developer.associated-domains</key>
-	<array>
-		<string>webcredentials:neeva.com</string>
-		<string>applinks:neeva.com</string>
-		<string>applinks:m1.neeva.com</string>
-		<string>webcredentials:m1.neeva.com</string>
-	</array>
 	<key>com.apple.developer.siri</key>
 	<true/>
 	<key>com.apple.developer.web-browser</key>
