@@ -788,7 +788,8 @@ class BrowserViewController: UIViewController {
 
         if FeatureFlag[.cardGrid], let grid = self.cardGridViewController {
             grid.view.snp.makeConstraints {make in
-                make.edges.equalTo(webViewContainer.snp.edges)
+                make.leading.trailing.bottom.equalToSuperview()
+                make.top.equalTo(legacyURLBar.snp.bottom)
             }
         }
     }

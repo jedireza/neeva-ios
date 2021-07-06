@@ -77,7 +77,7 @@ struct Card<Details>: View where Details: CardDetails {
                         })
                     }
                 }.frame(width: CardUX.CardSize, height: CardUX.ButtonSize)
-                .background(Color(UIColor.Browser.background))
+                .background(Color.DefaultBackground)
             Color(UIColor.Browser.urlBarDivider).frame(maxWidth: .infinity, maxHeight: 1)
             if let thumbnail = details.thumbnail {
                 Button(action: {

@@ -28,6 +28,7 @@ class TabCardModel: CardModel, TabEventHandler {
 
     @Published var allDetails: [TabCardDetails] = []
     @Published var allDetailsWithExclusionList: [TabCardDetails] = []
+    @Published var selectedTabID: String? = nil
 
     init(manager: TabManager, groupManager: TabGroupManager) {
         self.manager = manager
@@ -68,6 +69,7 @@ class TabCardModel: CardModel, TabEventHandler {
             .map {TabCardDetails(tab: $0, manager: manager)}
         allDetailsWithExclusionList = manager.getAll().filter { !childTabs.contains($0) }
             .map {TabCardDetails(tab: $0, manager: manager)}
+        selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
     }
 }

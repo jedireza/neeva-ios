@@ -27,14 +27,14 @@ class CardViewController: UIViewController {
         return host.view
     }()
 
-    lazy var cardGrid: UIView? = {
+    lazy var cardGrid: UIView = {
         let host = UIHostingController(
             rootView: CardGrid()
                 .environmentObject(self.tabCardModel)
                 .environmentObject(self.tabGroupCardModel)
                 .environmentObject(self.spaceCardModel)
                 .environmentObject(self.gridModel))
-        host.view.backgroundColor = UIColor.white
+        host.view.backgroundColor = UIColor.TabTray.background
         addChild(host)
         view.addSubview(host.view)
         host.didMove(toParent: self)
@@ -42,7 +42,20 @@ class CardViewController: UIViewController {
         return host.view
     }()
 
-    weak var tabManager: TabManager?
+    lazy var toolbar: UIView = {
+        let host = UIHostingController(
+            rootView: SwitcherToolbarView()
+                .environmentObject(self.gridModel)
+                .environmentObject(self.toolbarModel))
+        host.view.backgroundColor = UIColor.clear
+        addChild(host)
+        view.addSubview(host.view)
+        host.didMove(toParent: self)
+        host.view.translatesAutoresizingMaskIntoConstraints = false
+        return host.view
+    }()
+
+    var tabManager: TabManager
     var tabGroupManager: TabGroupManager
     let config: CardConfig
     var tabCardModel: TabCardModel
@@ -50,6 +63,7 @@ class CardViewController: UIViewController {
     var spaceCardModel: SpaceCardModel
     var sitesCardModel: SiteCardModel
     var gridModel = GridModel()
+    var toolbarModel: SwitcherToolbarModel
     var cardStripModel = CardStripModel()
     var leadingConstraint: Constraint? = nil
 
@@ -62,11 +76,19 @@ class CardViewController: UIViewController {
         self.spaceCardModel = SpaceCardModel()
         self.sitesCardModel = SiteCardModel(urls: [],
                                             profile: BrowserViewController.foregroundBVC().profile)
+        self.toolbarModel = SwitcherToolbarModel(tabManager: tabManager)
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = .clear
-        gridModel.changeVisibility = { isVisible in
-            self.view.isHidden = !isVisible
-            self.view.isUserInteractionEnabled = isVisible
+        gridModel.updateVisibility = { isHidden in
+            self.view.isHidden = isHidden
+            self.view.isUserInteractionEnabled = !isHidden
+            if !isHidden {
+                self.parent?.view.bringSubviewToFront(self.view)
+            }
+        }
+        gridModel.buildMenu = {
+            let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
+            return tabMenu.createCloseAllTabsMenu()
         }
         cardStripModel.onToggleVisible = { isVisible in
             self.view.superview?.layoutIfNeeded()
@@ -100,8 +122,13 @@ class CardViewController: UIViewController {
                 make.edges.equalToSuperview()
             }
         case .grid:
-            cardGrid?.snp.updateConstraints { make in
-                make.edges.equalToSuperview()
+            cardGrid.snp.updateConstraints { make in
+                make.top.leading.trailing.equalToSuperview()
+                make.bottom.equalToSuperview().offset(-UIConstants.BottomToolbarHeight)
+            }
+            toolbar.snp.updateConstraints { make in
+                make.bottom.leading.trailing.equalToSuperview()
+                make.top.equalTo(cardGrid.snp.bottom)
             }
         }
     }

@@ -40,6 +40,42 @@ struct UIKitButton: UIViewRepresentable {
     }
 }
 
+struct ToggleButtonView: UIViewRepresentable {
+    let customize: (ToggleButton) -> ()
+    let action: () -> ()
+
+    init(action: @escaping () -> (), customize: @escaping (ToggleButton) -> ()) {
+        self.customize = customize
+        self.action = action
+    }
+
+    class Coordinator {
+        var onTap: () -> ()
+        init(onTap: @escaping () -> ()) {
+            self.onTap = onTap
+        }
+
+        @objc func action() {
+            onTap()
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onTap: action)
+    }
+
+    func makeUIView(context: Context) -> ToggleButton {
+        let button = ToggleButton()
+        button.addTarget(context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered)
+        return button
+    }
+
+    func updateUIView(_ button: ToggleButton, context: Context) {
+        customize(button)
+        context.coordinator.onTap = action
+    }
+}
+
 struct UIKitButton_Previews: PreviewProvider {
     static var previews: some View {
         UIKitButton(action: {}) {

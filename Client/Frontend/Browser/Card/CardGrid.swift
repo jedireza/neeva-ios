@@ -61,14 +61,15 @@ private extension View {
 }
 
 class GridModel: ObservableObject {
-    @Published var fullscreen = true
+    @Published var isHidden = true
     @Published var showAnimationThumbnail = true
-    var changeVisibility: ((Bool) -> ())!
+    var updateVisibility: ((Bool) -> ())!
     var scrollOffset: CGFloat = CGFloat.zero
+    var buildMenu: (() -> UIMenu)!
 
     func show() {
-        fullscreen = false
-        changeVisibility(true)
+        isHidden = false
+        updateVisibility(false)
     }
 }
 
@@ -135,18 +136,18 @@ struct CardGrid: View {
                     Spacer(minLength: 0)
                 }
                 if gridModel.showAnimationThumbnail {
-                    selectedThumbnail.runAfter(toggling: gridModel.fullscreen, fromTrueToFalse: {
+                    selectedThumbnail.runAfter(toggling: gridModel.isHidden, fromTrueToFalse: {
                         gridModel.showAnimationThumbnail = false
                     }, fromFalseToTrue: {
-                        gridModel.changeVisibility(false)
-                    }).frame(width: gridModel.fullscreen ? geom.size.width : CardUX.CardSize,
-                             height: gridModel.fullscreen ? geom.size.height : CardUX.CardSize)
+                        gridModel.updateVisibility(true)
+                    }).frame(width: gridModel.isHidden ? geom.size.width : CardUX.CardSize,
+                             height: gridModel.isHidden ? geom.size.height : CardUX.CardSize)
                     .cornerRadius(CardUX.CornerRadius).clipped()
-                    .offset(x: gridModel.fullscreen ? 0 : xOffset,
-                            y: gridModel.fullscreen ? 0: yOffset - geom.size.height / 2)
+                    .offset(x: gridModel.isHidden ? 0 : xOffset,
+                            y: gridModel.isHidden ? 0: yOffset - geom.size.height / 2)
                     .animation(.spring()).onAppear {
-                        if !gridModel.fullscreen {
-                                gridModel.fullscreen.toggle()
+                        if !gridModel.isHidden {
+                                gridModel.isHidden.toggle()
                         }
                     }
                 }
@@ -177,9 +178,9 @@ struct CardsContainer: View {
                     if case .spaces = switcherState {
                         SpaceCardsView()
                             .environment(\.selectionCompletion) {
-                                gridModel.changeVisibility(false)
+                                gridModel.updateVisibility(true)
                                 gridModel.showAnimationThumbnail = true
-                                gridModel.fullscreen = true
+                                gridModel.isHidden = true
                                 switcherState = .tabs
                                 value.scrollTo(tabModel.manager.selectedTab?.tabUUID)
                             }
@@ -194,11 +195,16 @@ struct CardsContainer: View {
                             gridModel.showAnimationThumbnail = true
                         }
                     }
-                }.padding(.top, 20).onAppear() {
+                }.padding(.top, 20).onAppear {
                     value.scrollTo(
                         indexInsideTabGroupModel != nil ?
                             tabModel.manager.selectedTab?.rootUUID :
-                            tabModel.manager.selectedTab?.tabUUID)
+                            tabModel.selectedTabID)
+                }.onChange(of: tabModel.selectedTabID) { _ in
+                    value.scrollTo(
+                        indexInsideTabGroupModel != nil ?
+                            tabModel.manager.selectedTab?.rootUUID :
+                            tabModel.selectedTabID)
                 }.background(GeometryReader { proxy in
                     Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self,
                                            value:  proxy.frame(in: .named("scroll")).minY)
@@ -249,7 +255,7 @@ struct GridPicker: View {
                 Image(systemName: view.rawValue).tag(view).frame(width: 64)
             }
         }.pickerStyle(SegmentedPickerStyle())
-            .background(Color(UIColor.Browser.background))
+            .background(Color.DefaultBackground)
             .padding(CardGridUX.PickerPadding)
             .frame(width: 160, height: CardGridUX.PickerHeight)
     }

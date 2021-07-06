@@ -27,7 +27,7 @@ struct CardStrip<Model: CardModel>: View {
 struct CardStripButtonSpec: ViewModifier {
     func body(content: Content) -> some View {
         content.frame(width: CardUX.CardSize / 2, height: 124)
-            .background(Color(UIColor.Browser.background))
+            .background(Color.DefaultBackground)
             .clipShape(Capsule())
             .shadow(radius: CardUX.ShadowRadius).padding(.leading, 20)
     }
