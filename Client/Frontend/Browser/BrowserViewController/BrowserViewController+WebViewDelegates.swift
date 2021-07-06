@@ -605,8 +605,16 @@ extension BrowserViewController: WKNavigationDelegate {
         // Check if this response should be handed off to Passbook.
         if let passbookHelper = OpenPassBookHelper(request: request, response: response, canShowInWebView: canShowInWebView, forceDownload: forceDownload, browserViewController: self) {
             // Open our helper and cancel this response from the webview.
-            passbookHelper.open()
             decisionHandler(.cancel)
+            if let url = responseURL {
+                URLSession.shared.dataTask(with: url) { data, _, _ in
+                    DispatchQueue.main.async {
+                        if let data = data {
+                            passbookHelper.open(passData: data)
+                        }
+                    }
+                }
+            }
             return
         }
 

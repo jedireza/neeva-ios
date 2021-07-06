@@ -48,12 +48,7 @@ struct MIMEType {
     }
 }
 
-protocol OpenInHelper {
-    init?(request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool, browserViewController: BrowserViewController)
-    func open()
-}
-
-class DownloadHelper: NSObject, OpenInHelper {
+class DownloadHelper: NSObject {
     fileprivate let request: URLRequest
     fileprivate let preflightResponse: URLResponse
     fileprivate let browserViewController: BrowserViewController
@@ -125,7 +120,7 @@ class DownloadHelper: NSObject, OpenInHelper {
     }
 }
 
-class OpenPassBookHelper: NSObject, OpenInHelper {
+class OpenPassBookHelper: NSObject {
     fileprivate var url: URL
 
     fileprivate let browserViewController: BrowserViewController
@@ -138,11 +133,10 @@ class OpenPassBookHelper: NSObject, OpenInHelper {
         super.init()
     }
 
-    func open() {
-        guard let passData = try? Data(contentsOf: url) else { return }
-
+    func open(passData: Data) {
         do {
             let pass = try PKPass(data: passData)
+
 
             let passLibrary = PKPassLibrary()
             if passLibrary.containsPass(pass) {
@@ -163,7 +157,7 @@ class OpenPassBookHelper: NSObject, OpenInHelper {
     }
 }
 
-class OpenQLPreviewHelper: NSObject, OpenInHelper, QLPreviewControllerDataSource {
+class OpenQLPreviewHelper: NSObject, QLPreviewControllerDataSource {
     var url: NSURL
 
     fileprivate let browserViewController: BrowserViewController
