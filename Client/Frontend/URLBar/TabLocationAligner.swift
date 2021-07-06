@@ -38,17 +38,19 @@ struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Traili
                         GeometryReader { innerGeom in
                             let leadingPadding = leadingGeom.size.width - innerGeom.size.width
                             let trailingPadding = outerGeom.size.width - leadingGeom.size.width
-                            ZStack {
-                                LocationLabelAligner(
-                                    transitionToEditing: transitionToEditing,
-                                    debug: debug,
-                                    label: label,
-                                    leadingPadding: leadingPadding,
-                                    trailingPadding: trailingPadding,
-                                    centerX: outerGeom.size.width / 2,
-                                    centerY: innerGeom.size.height / 2
-                                )
-                                labelOverlay(EdgeInsets(top: 0, leading: leadingPadding, bottom: 0, trailing: trailingPadding))
+                            VStack(alignment: transitionToEditing ? .leading : .center, spacing: 0) {
+                                HStack { Spacer() }
+                                ZStack {
+                                    LocationLabelAligner(
+                                        transitionToEditing: transitionToEditing,
+                                        debug: debug,
+                                        label: label,
+                                        leadingPadding: leadingPadding,
+                                        trailingPadding: trailingPadding,
+                                        availableWidth: innerGeom.size.width
+                                    )
+                                    labelOverlay(EdgeInsets(top: 0, leading: leadingPadding, bottom: 0, trailing: trailingPadding))
+                                }
                             }
                         } // GeometryReader
                     } // HStack
@@ -70,8 +72,7 @@ fileprivate struct LocationLabelAligner<Label: View>: View {
     let label: () -> Label
     let leadingPadding: CGFloat
     let trailingPadding: CGFloat
-    let centerX: CGFloat
-    let centerY: CGFloat
+    let availableWidth: CGFloat
 
     @State private var titleWidth: CGFloat = 0
 
@@ -85,20 +86,6 @@ fileprivate struct LocationLabelAligner<Label: View>: View {
     }
 
     var body: some View {
-        /// The space between the end of the title and the trailing controls, if the title was centered inside the location view.
-        ///
-        /// Can be negative if the title is wide enough to collide with the trailing controls.
-        let trailingGap = centerX - trailingPadding - titleWidth / 2
-
-        /// The offset necessary (from the trailing edge of the leading controls) to center the label in the aligner.
-        ///
-        /// If the label would extend over the trailing controls if centered, this offset will align its trailing edge with
-        /// the leading edge of the trailing controls.
-        let labelOffset = transitionToEditing
-            // left-align when editing
-            ? titleWidth / 2
-            : centerX - leadingPadding - max(-trailingGap, 0)
-
         label()
             .background(GeometryReader { textGeom in
                 (debug ? Color.yellow.opacity(0.25) : Color.clear)
@@ -112,8 +99,12 @@ fileprivate struct LocationLabelAligner<Label: View>: View {
                     .overlay(formatPX("width", titleWidth), alignment: .bottomTrailing)
                     .allowsHitTesting(false)
             })
-            .position(x: labelOffset, y: centerY)
-            .overlay(formatPX("x", labelOffset).padding(.leading, 5), alignment: .topLeading)
+            // if the edge of the title would extend past the trailing edge of the available space…
+            .offset(x: (titleWidth / 2) > (availableWidth / 2 - trailingPadding)
+                        // right-align
+                        ? (availableWidth - titleWidth) / 2
+                        // otherwise center-align in the superview
+                        : -(trailingPadding - leadingPadding) / 2)
             .background(Group {
                 if debug {
                     Color.green
@@ -121,7 +112,7 @@ fileprivate struct LocationLabelAligner<Label: View>: View {
                         .allowsHitTesting(false)
                 }
             })
-
+            .animation(nil)
     }
 }
 
@@ -139,6 +130,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
     static func contents(for title: String) -> some View {
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
+                .frame(height: TabLocationViewUX.height)
         } labelOverlay: { _ in } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
@@ -147,6 +139,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
 
         TabLocationAligner(transitionToEditing: true, debug: true) {
             Text("editing")
+                .frame(height: TabLocationViewUX.height)
         } labelOverlay: { _ in } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
@@ -155,6 +148,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
+                .frame(height: TabLocationViewUX.height)
         } labelOverlay: { _ in } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
@@ -164,6 +158,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
+                .frame(height: TabLocationViewUX.height)
         } labelOverlay: { _ in } leading: { } trailing: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
             TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
@@ -172,6 +167,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
             Text(title)
+                .frame(height: TabLocationViewUX.height)
         } labelOverlay: { _ in } leading: {
             Text("")
         } trailing: {
