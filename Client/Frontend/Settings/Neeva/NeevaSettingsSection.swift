@@ -77,6 +77,10 @@ struct NeevaSettingsSection: View {
             }.if (TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
                 view.throbbingHighlightBorderStyle(highlight: Color.Tour.Background, staticColorMode: true)
             }
+            NavigationLinkButton("Invite your friends!") {
+                openURL(NeevaConstants.appReferralsURL, false)
+                BrowserViewController.foregroundBVC().dismissVC()
+            }
         } else {
             Button("Sign In or Join Neeva") {
                 ClientLogger.shared.logCounter(.SettingSignin, attributes: EnvironmentHelper.shared.getAttributes())
