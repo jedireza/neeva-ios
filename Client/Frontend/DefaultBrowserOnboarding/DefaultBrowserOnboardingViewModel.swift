@@ -42,7 +42,7 @@ class DefaultBrowserOnboardingViewModel {
     }
     
     private func setupUpdateModel() {
-        model = DefaultBrowserOnboardingModel(titleImage: getCorrectImage(for: UIApplication.shared.keyWindow!.traitCollection), titleText: String.DefaultBrowserCardTitle, descriptionText: [String.DefaultBrowserCardDescription, String.DefaultBrowserOnboardingDescriptionStep1, String.DefaultBrowserOnboardingDescriptionStep2, String.DefaultBrowserOnboardingDescriptionStep3], imageText: String.DefaultBrowserOnboardingScreenshot)
+        model = DefaultBrowserOnboardingModel(titleImage: getCorrectImage(for: UIWindow.keyWindow!.traitCollection), titleText: String.DefaultBrowserCardTitle, descriptionText: [String.DefaultBrowserCardDescription, String.DefaultBrowserOnboardingDescriptionStep1, String.DefaultBrowserOnboardingDescriptionStep2, String.DefaultBrowserOnboardingDescriptionStep3], imageText: String.DefaultBrowserOnboardingScreenshot)
     }
     
     static func shouldShowDefaultBrowserOnboarding() -> Bool {

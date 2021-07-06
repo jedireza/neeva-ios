@@ -39,12 +39,7 @@ public struct UIConstants {
     static var ToolbarHeight: CGFloat = 46
     static var BottomToolbarHeight: CGFloat {
         get {
-            var bottomInset: CGFloat = 0.0
-            /// TODO: Remove dependency on deprecated `keyWindow` property.
-            if let window = UIApplication.shared.keyWindow {
-                bottomInset = window.safeAreaInsets.bottom
-            }
-            return ToolbarHeight + bottomInset
+            return ToolbarHeight + safeArea.bottom
         }
     }
 
@@ -57,6 +52,11 @@ public struct UIConstants {
     /// JPEG compression quality for persisted screenshots. Must be between 0-1.
     static let ScreenshotQuality: Float = 0.3
     static let ActiveScreenshotQuality: CGFloat = 0.5
+
+    static var safeArea: UIEdgeInsets {
+        let window = UIApplication.shared.windows[0]
+        return window.safeAreaInsets
+    }
 }
 
 extension UIColor {

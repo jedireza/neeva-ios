@@ -62,7 +62,7 @@ extension PhotonActionSheetProtocol {
     func toggleDesktopSiteAction(for tab: Tab) -> UIAction {
 
         let defaultUAisDesktop = UserAgent.isDesktop(ua: UserAgent.getUserAgent())
-        let hasHomeButton = UIApplication.shared.keyWindow?.safeAreaInsets.bottom == 0
+        let hasHomeButton = UIConstants.safeArea.bottom == 0
                 let mobileIcon = hasHomeButton ? "iphone.homebutton" : "iphone"
         let toggleActionTitle: String
         let iconName: String
