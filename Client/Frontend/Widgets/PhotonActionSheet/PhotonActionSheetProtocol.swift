@@ -58,37 +58,4 @@ extension PhotonActionSheetProtocol {
             return [copyAddressAction]
         }
     }
-
-    func toggleDesktopSiteAction(for tab: Tab) -> UIAction {
-
-        let defaultUAisDesktop = UserAgent.isDesktop(ua: UserAgent.getUserAgent())
-        let hasHomeButton = UIConstants.safeArea.bottom == 0
-                let mobileIcon = hasHomeButton ? "iphone.homebutton" : "iphone"
-        let toggleActionTitle: String
-        let iconName: String
-        if defaultUAisDesktop {
-            toggleActionTitle = tab.changedUserAgent ? Strings.AppMenuViewDesktopSiteTitleString : Strings.AppMenuViewMobileSiteTitleString
-            iconName = tab.changedUserAgent ? "laptopcomputer" : mobileIcon
-        } else {
-            toggleActionTitle = tab.changedUserAgent ? Strings.AppMenuViewMobileSiteTitleString : Strings.AppMenuViewDesktopSiteTitleString
-            iconName = tab.changedUserAgent ? mobileIcon : "laptopcomputer"
-        }
-        return UIAction(title: toggleActionTitle, image: UIImage(systemName: iconName)) { _ in
-
-            if let url = tab.url {
-                tab.toggleChangeUserAgent()
-                Tab.ChangeUserAgent.updateDomainList(forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate)
-            }
-        }
-    }
-
-    func getRefreshLongPressMenu(for tab: Tab) -> UIMenu? {
-        guard tab.webView?.url != nil && (tab.getContentScript(name: ReaderMode.name()) as? ReaderMode)?.state != .active else {
-            return nil
-        }
-
-        let toggleDesktopSite = toggleDesktopSiteAction(for: tab)
-        return UIMenu(children: [toggleDesktopSite])
-    }
-
 }

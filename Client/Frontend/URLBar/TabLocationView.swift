@@ -9,6 +9,7 @@ enum TabLocationViewUX {
     static let height: CGFloat = 42
     static let placeholder = Text("Search or enter address")
     static let textFieldOffset: CGFloat = 75
+    static let animation = Animation.spring(response: 0.3)
 }
 
 struct OffsetModifier: ViewModifier {
@@ -42,7 +43,7 @@ struct TabLocationView: View {
                 .uponQueue(.main) {
                     if let query = $0.successValue as? String {
                         SearchQueryModel.shared.value = query
-                        model.isEditing = true
+                        model.setEditing(to: true)
                     }
                 }
         }
@@ -82,7 +83,7 @@ struct TabLocationView: View {
                                     // TODO: Decode punycode hostname.
                                     SearchQueryModel.shared.value = model.url?.absoluteString ?? ""
                                 }
-                                model.isEditing = true
+                                model.setEditing(to: true)
                             },
                             copyAction: copyAction,
                             pasteAction: pasteAction,
@@ -108,7 +109,7 @@ struct TabLocationView: View {
                     if model.isEditing {
                         LocationTextFieldIcon(currentUrl: model.url)
                             .transition(.opacity)
-                        LocationEditView(isEditing: $model.isEditing, onSubmit: onSubmit)
+                        LocationEditView(isEditing: Binding(get: { model.isEditing }, set: model.setEditing(to:)), onSubmit: onSubmit)
                             // force the view to be recreated each time edit mode is entered
                             .id(token)
                             .transition(.modifier(active: OffsetModifier(x: TabLocationViewUX.textFieldOffset), identity: OffsetModifier(x: 0)).combined(with: .opacity))
@@ -125,14 +126,14 @@ struct TabLocationView: View {
 
             if model.isEditing {
                 Button {
-                    model.isEditing = false
+                    model.setEditing(to: false)
                 } label: {
                     Text("Cancel").withFont(.labelMedium)
                 }
                 .transition(.move(edge: .trailing))
                 .accentColor(.ui.adaptive.blue)
             }
-        }.animation(.spring(response: 0.3))
+        }
     }
 }
 

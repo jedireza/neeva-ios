@@ -23,9 +23,6 @@ private enum LegacyURLBarViewUX {
 
 protocol LegacyURLBarDelegate: UIViewController {
     func urlBarDidPressTabs(_ urlBar: LegacyURLBarView)
-    func urlBarDidPressReaderMode(_ urlBar: LegacyURLBarView)
-    /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
-    func urlBarDidLongPressReaderMode(_ urlBar: LegacyURLBarView) -> Bool
     func urlBarReloadMenu(_ urlBar: LegacyURLBarView) -> UIMenu?
     func urlBarDidPressStop(_ urlBar: LegacyURLBarView)
     func urlBarDidPressReload(_ urlBar: LegacyURLBarView)
@@ -35,7 +32,6 @@ protocol LegacyURLBarDelegate: UIViewController {
     func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton)
     func urlBarDidTapShield(_ urlBar: LegacyURLBarView, from button: UIButton)
     func urlBarLocationAccessibilityActions(_ urlBar: LegacyURLBarView) -> [UIAccessibilityCustomAction]?
-    func urlBarDidPressScrollToTop(_ urlBar: LegacyURLBarView)
     func urlBar(_ urlBar: LegacyURLBarView, didRestoreText text: String)
     func urlBar(didEnterText text: String)
     func urlBar(didSubmitText text: String)
@@ -430,7 +426,7 @@ class LegacyURLBarView: UIView {
 
     override func becomeFirstResponder() -> Bool {
         if FeatureFlag[.newURLBar] {
-            model.isEditing = true
+            model.setEditing(to: true)
             return true
         } else {
             return self.legacyLocationTextField?.becomeFirstResponder() ?? false
@@ -495,7 +491,7 @@ class LegacyURLBarView: UIView {
         if FeatureFlag[.newURLBar] {
             if let location = location {
                 SearchQueryModel.shared.value = location
-                model.isEditing = true
+                model.setEditing(to: true)
             }
         } else {
             guard let text = location, !text.isEmpty else {
@@ -514,7 +510,7 @@ class LegacyURLBarView: UIView {
 
     func enterOverlayMode(_ locationText: String?, pasted: Bool, search: Bool) {
         if FeatureFlag[.newURLBar] {
-            model.isEditing = true
+            model.setEditing(to: true)
         } else {
             legacyLocationTextField?.isHidden = false
         }
@@ -554,7 +550,7 @@ class LegacyURLBarView: UIView {
 
     func leaveOverlayMode(didCancel cancel: Bool = false) {
         if FeatureFlag[.newURLBar] {
-            model.isEditing = false
+            model.setEditing(to: false)
         } else {
             legacyLocationTextField?.resignFirstResponder()
         }
@@ -645,10 +641,6 @@ class LegacyURLBarView: UIView {
     @objc func didClickCancel() {
         leaveOverlayMode(didCancel: true)
     }
-
-    @objc func tappedScrollToTopArea() {
-        delegate?.urlBarDidPressScrollToTop(self)
-    }
 }
 
 extension LegacyURLBarView: LegacyTabToolbarProtocol {
@@ -693,11 +685,6 @@ extension LegacyURLBarView: LegacyTabToolbarProtocol {
 }
 
 extension LegacyURLBarView: LegacyTabLocationViewDelegate {
-
-    func tabLocationViewDidLongPressReaderMode(_ tabLocationView: LegacyTabLocationView) -> Bool {
-        return delegate?.urlBarDidLongPressReaderMode(self) ?? false
-    }
-
     func tabLocationViewReloadMenu() -> UIMenu? {
         delegate?.urlBarReloadMenu(self)
     }
@@ -737,10 +724,6 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
         delegate?.urlBarDidPressStop(self)
     }
 
-    func tabLocationViewDidTapReaderMode(_ tabLocationView: LegacyTabLocationView) {
-        delegate?.urlBarDidPressReaderMode(self)
-    }
-    
     func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]? {
         return delegate?.urlBarLocationAccessibilityActions(self)
     }

@@ -21,21 +21,6 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         showBackForwardList()
     }
 
-    func tabToolbarDidPressReload() {
-        tabManager.selectedTab?.reload()
-    }
-
-    func tabToolbarReloadMenu() -> UIMenu? {
-        guard let tab = tabManager.selectedTab else {
-            return nil
-        }
-        return self.getRefreshLongPressMenu(for: tab)
-    }
-
-    func tabToolbarDidPressStop() {
-        tabManager.selectedTab?.stop()
-    }
-
     func tabToolbarDidPressForward() {
         if simulateForwardViewController?.goForward() ?? false {
             return
@@ -44,20 +29,6 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         tabManager.selectedTab?.goForward()
     }
 
-    func tabToolbarDidPressLibrary() {
-        if let libraryDrawerViewController = self.libraryDrawerViewController, libraryDrawerViewController.isOpen {
-            libraryDrawerViewController.close()
-        } else {
-            showLibrary()
-        }
-    }
-    
-    func tabToolbarDidPressAddNewTab() {
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        tabManager.selectTab(tabManager.addTab(nil, isPrivate: isPrivate))
-        focusLocationTextField(forTab: tabManager.selectedTab)
-    }
-    
     func tabToolbarSpacesMenu() {
         guard let tab = tabManager.selectedTab else { return }
         guard let url = tab.canonicalURL?.displayURL else { return }
@@ -137,9 +108,5 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
             backForwardViewController.backForwardTransitionDelegate = BackForwardListAnimator()
             self.present(backForwardViewController, animated: true, completion: nil)
         }
-    }
-
-    func tabToolbarDidPressSearch() {
-        focusLocationTextField(forTab: tabManager.selectedTab)
     }
 }

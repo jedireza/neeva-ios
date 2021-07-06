@@ -23,14 +23,9 @@ protocol TabToolbarDelegate: AnyObject {
     func tabToolbarDidPressBack()
     func tabToolbarDidPressForward()
     func tabToolbarDidLongPressBackForward()
-    func tabToolbarDidPressReload()
-    func tabToolbarReloadMenu() -> UIMenu?
-    func tabToolbarDidPressStop()
     func tabToolbarSpacesMenu()
     func tabToolbarDidPressTabs()
     func tabToolbarTabsMenu() -> UIMenu?
-    func tabToolbarDidPressSearch()
-    func tabToolbarDidPressAddNewTab()
 }
 
 @objcMembers

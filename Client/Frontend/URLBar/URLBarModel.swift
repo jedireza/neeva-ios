@@ -2,18 +2,25 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class URLBarModel: ObservableObject {
     @Published var url: URL?
     /// `true` iff all assets on the page are secure (i.e. there is no mixed content)
     @Published var isSecure = false
 
-    @Published var isEditing = false
+    @Published private(set) var isEditing = false
 
     @Published var reloadButton = ReloadButtonState.reload
     @Published var readerMode = ReaderModeState.unavailable
     @Published var canShare = false
     @Published var includeShareButtonInLocationView = true
+
+    func setEditing(to value: Bool) {
+        withAnimation(TabLocationViewUX.animation) {
+            isEditing = value
+        }
+    }
 
     init() {}
     init(previewURL: URL?, isSecure: Bool) {
