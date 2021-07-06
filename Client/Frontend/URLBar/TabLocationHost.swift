@@ -15,38 +15,12 @@ struct TabLocationViewWrapper: View {
             .environmentObject(neevaModel)
             .environmentObject(model)
             .environmentObject(SearchQueryModel.shared)
+            .ignoresSafeArea()
     }
 }
 class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
     private let model: URLBarModel
     private weak var delegate: LegacyTabLocationViewDelegate?
-    weak var urlBarDelegate: LegacyURLBarDelegate? {
-        didSet {
-            subscriptions = []
-            if urlBarDelegate != nil {
-                model.$isEditing
-                    .withPrevious()
-                    .sink { [weak urlBarDelegate] change in
-                        switch change {
-                        case (false, true):
-                            urlBarDelegate?.urlBarDidEnterOverlayMode()
-                        case (true, false):
-                            urlBarDelegate?.urlBarDidLeaveOverlayMode()
-                        default: break
-                        }
-                    }
-                    .store(in: &subscriptions)
-                model.$isEditing
-                    .combineLatest(SearchQueryModel.shared.$value)
-                    .sink { [weak urlBarDelegate] isEditing, query in
-                        if isEditing {
-                            urlBarDelegate?.urlBar(didEnterText: query)
-                        }
-                    }
-                    .store(in: &subscriptions)
-            }
-        }
-    }
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -55,23 +29,44 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         historySuggestionModel: HistorySuggestionModel,
         neevaSuggestionModel: NeevaSuggestionModel,
         delegate: LegacyTabLocationViewDelegate,
-        urlBarDelegate: LegacyURLBarDelegate?
+        urlBar: LegacyURLBarView?
     ) {
         self.model = model
         self.delegate = delegate
-        self.urlBarDelegate = urlBarDelegate
         super.init()
         setRootView {
             TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model) {
                 TabLocationView(
-                    onReload: { [weak self] in self?.delegate?.tabLocationViewDidTapReload() },
-                    onSubmit: { [weak self] in self?.urlBarDelegate?.urlBar(didSubmitText: $0) },
-                    onShare: { [weak self] in self?.delegate?.tabLocationViewDidTap(shareButton: $0) },
-                    buildReloadMenu: { [weak self] in self?.delegate?.tabLocationViewReloadMenu() }
+                    onReload: { [weak delegate] in delegate?.tabLocationViewDidTapReload() },
+                    onSubmit: { [weak urlBar] in urlBar?.delegate?.urlBar(didSubmitText: $0) },
+                    onShare: { [weak delegate] in delegate?.tabLocationViewDidTap(shareButton: $0) },
+                    buildReloadMenu: { [weak delegate] in delegate?.tabLocationViewReloadMenu() }
                 )
             }
         }
         self.view.backgroundColor = .clear
+
+        model.$isEditing
+            .withPrevious()
+            .sink { [weak urlBar] change in
+                switch change {
+                case (false, true):
+                    urlBar?.enterOverlayMode(nil, pasted: false, search: false)
+                case (true, false):
+                    urlBar?.leaveOverlayMode()
+                default: break
+                }
+            }
+            .store(in: &subscriptions)
+        model.$isEditing
+            .withPrevious()
+            .combineLatest(SearchQueryModel.shared.$value)
+            .sink { [weak urlBar] isEditing, query in
+                if isEditing == (true, true) {
+                    urlBar?.delegate?.urlBar(didEnterText: query)
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

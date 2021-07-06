@@ -100,7 +100,9 @@ struct HallOfShameView: View {
 }
 
 struct TrackingMenuView: View {
-    @ObservedObject var viewModel: TrackingStatsViewModel
+    @StateObject var viewModel = TrackingStatsViewModel(
+        trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab()
+    )
 
     @Default(.contentBlockingEnabled) private var isTrackingProtectionEnabled
     @State private var isShowingPopup = false

@@ -40,7 +40,7 @@ struct LocationTextField: UIViewRepresentable {
 
         DispatchQueue.main.async {
             tf.becomeFirstResponder()
-            tf.selectAll(nil)
+            tf.selectedTextRange = tf.textRange(from: tf.beginningOfDocument, to: tf.endOfDocument)
         }
         tf.text = text
 
@@ -97,13 +97,14 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                isEditing && markedTextRange == nil,
                let normalized = Optional(normalizeString(self.text ?? "")),
                suggestion.hasPrefix(normalized),
-               normalized.count < suggestion.count {
+               normalized.count < suggestion.count,
+               !normalized.isEmpty {
                 tintColor = defaultTint.withAlphaComponent(0)
             } else {
                 tintColor = defaultTint
             }
         }
-        tintColor = defaultTint.withAlphaComponent(0)
+        tintColor = text.wrappedValue.isEmpty ? defaultTint : defaultTint.withAlphaComponent(0)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -180,8 +181,9 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     /// Commits the completion by setting the text and removing the highlight.
     @discardableResult fileprivate func applyCompletion() -> Bool {
-        // Clear the current completion, then set the text without the attributed style.
-        guard let suggestion = historyModel.autocompleteSuggestion else { return false }
+        tintColor = defaultTint
+        // Clear the current completion, then set the text.
+        guard let suggestion = historyModel.autocompleteSuggestion, suggestion != text else { return false }
         binding = suggestion
         // Move the cursor to the end of the completion.
         selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
@@ -194,11 +196,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let didApplyAutocomplete = applyCompletion()
-        let interaction: LogConfig.Interaction = didApplyAutocomplete
-            ? .AutocompleteSuggestion : .NoSuggestion
+        let interaction: LogConfig.Interaction = historyModel.autocompleteSuggestion == nil
+            ? .NoSuggestion : .AutocompleteSuggestion
         ClientLogger.shared.logCounter(interaction)
-        if let text = text {
+        if let text = historyModel.autocompleteSuggestion ?? text {
             if !text.trimmingCharacters(in: .whitespaces).isEmpty {
                 onSubmit(text)
                 return true
@@ -227,7 +228,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         applyCompletion()
-        super.touchesBegan(touches, with: event)
+//        super.touchesBegan(touches, with: event)
     }
 }
 

@@ -95,17 +95,18 @@ struct TabLocationView: View {
                     }
                 } trailing: {
                     Group {
-                        if model.readerMode != .active {
-                            LocationViewReloadButton(buildMenu: buildReloadMenu, state: $model.reloadButton, onTap: onReload)
+                        if model.readerMode != .active, let url = model.url, !InternalURL.isValid(url: url) {
+                            LocationViewReloadButton(buildMenu: buildReloadMenu, state: model.reloadButton, onTap: onReload)
                         }
-                        LocationViewShareButton(url: model.url, canShare: model.canShare, onTap: onShare)
+                        if model.canShare, model.includeShareButtonInLocationView {
+                            LocationViewShareButton(url: model.url, onTap: onShare)
+                        }
                     }.transition(.opacity)
                 }.opacity(model.isEditing ? 0 : 1)
 
                 HStack(spacing: 0) {
                     if model.isEditing {
                         LocationTextFieldIcon(currentUrl: model.url)
-                            .frame(width: TabLocationViewUX.height)
                             .transition(.opacity)
                         LocationEditView(isEditing: $model.isEditing, onSubmit: onSubmit)
                             // force the view to be recreated each time edit mode is entered

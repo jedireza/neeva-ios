@@ -19,9 +19,6 @@ struct TabLocationBarButton<Label: View>: View {
 
 struct LocationViewTrackingButton: View {
     @State private var showingPopover = false
-    @StateObject private var viewModel = TrackingStatsViewModel(
-        trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab()
-    )
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
@@ -36,38 +33,35 @@ struct LocationViewTrackingButton: View {
             isPresented: $showingPopover,
             backgroundColor: .PopupMenu.background
         ) {
-            TrackingMenuView(viewModel: viewModel)
+            TrackingMenuView()
         }
     }
 }
 
 struct LocationViewReloadButton: View {
     let buildMenu: () -> UIMenu?
-    @Binding var state: ReloadButtonState
+    let state: ReloadButtonState
     let onTap: () -> ()
 
     var body: some View {
-        if state != .disabled {
-            UIKitButton(action: onTap) {
-                $0.tintColor = .label
-                $0.setImage(Symbol.uiImage(state == .reload ? .arrowClockwise : .xmark), for: .normal)
-                $0.accessibilityLabel = state == .reload ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel
-                $0.setDynamicMenu(buildMenu)
-            }
-            .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
+        UIKitButton(action: onTap) {
+            $0.tintColor = .label
+            $0.setImage(Symbol.uiImage(state == .reload ? .arrowClockwise : .xmark), for: .normal)
+            $0.accessibilityLabel = state == .reload ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel
+            $0.setDynamicMenu(buildMenu)
         }
+        .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
     }
 }
 
 struct LocationViewShareButton: View {
     let url: URL?
-    let canShare: Bool
     let onTap: (UIView) -> ()
 
     @State private var shareTargetView: UIView?
 
     var body: some View {
-        if canShare, let url = url, !url.absoluteString.isEmpty {
+        if let url = url, !url.absoluteString.isEmpty {
             TabLocationBarButton(label: Symbol(.squareAndArrowUp, label: "Share")) {
                 if let shareTargetView = shareTargetView {
                     onTap(shareTargetView)
@@ -104,14 +98,12 @@ struct TabLocationBarButton_Previews: PreviewProvider {
                 .environment(\.isIncognito, true)
         }.previewLayout(.sizeThatFits)
         HStack {
-            LocationViewReloadButton(buildMenu: { nil }, state: .constant(.disabled)) {}
-            LocationViewReloadButton(buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) }, state: .constant(.reload)) {}
-            LocationViewReloadButton(buildMenu: { nil }, state: .constant(.stop)) {}
+            LocationViewReloadButton(buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) }, state: .reload) {}
+            LocationViewReloadButton(buildMenu: { nil }, state: .stop) {}
         }.previewLayout(.sizeThatFits)
         HStack {
-            LocationViewShareButton(url: nil, canShare: false, onTap: { _ in })
-            LocationViewShareButton(url: "https://neeva.com/", canShare: false, onTap: { _ in })
-            LocationViewShareButton(url: "https://neeva.com/", canShare: true, onTap: { _ in })
+            LocationViewShareButton(url: nil, onTap: { _ in })
+            LocationViewShareButton(url: "https://neeva.com/", onTap: { _ in })
         }.previewLayout(.sizeThatFits)
     }
 }

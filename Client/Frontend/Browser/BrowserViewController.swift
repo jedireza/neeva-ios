@@ -822,7 +822,6 @@ class BrowserViewController: UIViewController {
             }
         })
         view.setNeedsUpdateConstraints()
-        legacyURLBar.model.reloadButton = .disabled
     }
 
     fileprivate func hideNeevaHome() {
@@ -845,7 +844,6 @@ class BrowserViewController: UIViewController {
                 self.showReaderModeBar(animated: false)
             }
         })
-        legacyURLBar.model.reloadButton = .reload
     }
 
     fileprivate func updateInContentHomePanel(_ url: URL?) {
