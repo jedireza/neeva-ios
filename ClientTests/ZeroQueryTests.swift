@@ -8,14 +8,14 @@ import XCTest
 import Shared
 import Storage
 
-class NeevaHomeTests: XCTestCase {
+class ZeroQueryTests: XCTestCase {
     var profile: MockProfile!
-    var vc: NeevaHomeViewController!
+    var vc: ZeroQueryViewController!
 
     override func setUp() {
         super.setUp()
         self.profile = MockProfile()
-        self.vc = NeevaHomeViewController(profile: self.profile)
+        self.vc = ZeroQueryViewController(profile: self.profile)
     }
 
     override func tearDown() {

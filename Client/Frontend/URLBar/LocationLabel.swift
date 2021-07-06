@@ -24,7 +24,7 @@ struct LocationLabelAndIcon: View {
     let isSecure: Bool
     
     var body: some View {
-        if let url = url, let internalURL = InternalURL(url), internalURL.isAboutHomeURL {
+        if let url = url, let internalURL = InternalURL(url), internalURL.isZeroQueryURL {
             TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(.secondaryLabel)
         } else if let query = neevaSearchEngine.queryForLocationBar(from: url) {
             Label { Text(query).withFont(.bodyLarge) } icon: { Symbol(.magnifyingglass) }

@@ -18,46 +18,31 @@ extension EnvironmentValues {
         static var defaultValue: ((Site) -> ())? = nil
     }
 
-    public var homeHideTopSite: (Site) -> () {
-        get { self[HideTopSiteKey] ?? { _ in fatalError(".environment(\\.homeHideTopSite) must be specified") } }
+    public var zeroQueryHideTopSite: (Site) -> () {
+        get { self[HideTopSiteKey] ?? { _ in fatalError(".environment(\\.zeroQueryHideTopSite) must be specified") } }
         set { self[HideTopSiteKey] = newValue }
     }
 }
 
-protocol HomePanelDelegate: AnyObject {
-    func homePanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
-    func homePanel(didSelectURL url: URL, visitType: VisitType)
-    func homePanelDidRequestToOpenLibrary(panel: LibraryPanelType)
-    func homePanel(didEnterQuery query: String)
-    var homePanelIsPrivate: Bool { get }
+protocol ZeroQueryPanelDelegate: AnyObject {
+    func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
+    func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType)
+    func zeroQueryPanelDidRequestToOpenLibrary(panel: LibraryPanelType)
+    func zeroQueryPanel(didEnterQuery query: String)
 }
 
-protocol HomePanel {
-    var homePanelDelegate: HomePanelDelegate? { get set }
-}
-
-enum HomePanelType: Int {
-    case topSites = 0
-
-    var internalUrl: URL {
-        let aboutUrl: URL! = URL(string: "\(InternalURL.baseUrl)/\(AboutHomeHandler.path)")
-        return URL(string: "#panel=\(self.rawValue)", relativeTo: aboutUrl)!
-    }
-}
-
-class NeevaHomeViewController: UIViewController, HomePanel {
-    weak var homePanelDelegate: HomePanelDelegate?
+class ZeroQueryViewController: UIViewController {
+    weak var delegate: ZeroQueryPanelDelegate?
     fileprivate let profile: Profile
     fileprivate let flowLayout = UICollectionViewFlowLayout()
 
-    lazy var homeView: UIView = {
-        let home = NeevaHome(viewModel: homeViewModel)
+    lazy var zeroQueryView: UIView = {
         let controller = UIHostingController(
-            rootView: home
+            rootView: ZeroQueryView(viewModel: model)
                 .environmentObject(suggestedSitesViewModel)
                 .environmentObject(suggestedSearchesModel)
                 .environment(\.setSearchInput) { [weak self] query in
-                    self?.homePanelDelegate?.homePanel(didEnterQuery: query)
+                    self?.delegate?.zeroQueryPanel(didEnterQuery: query)
                 }
                 .environment(\.onOpenURL) { [weak self] url in
                     self?.showSiteWithURLHandler(url)
@@ -68,11 +53,11 @@ class NeevaHomeViewController: UIViewController, HomePanel {
                     controller.modalPresentationStyle = .formSheet
                     self?.present(controller, animated: true, completion: nil)
                 }
-                .environment(\.homeHideTopSite) { [weak self] url in
+                .environment(\.zeroQueryHideTopSite) { [weak self] url in
                     self?.hideURLFromTopSites(url)
                 }
                 .environment(\.openInNewTab) { [weak self] url, isPrivate in
-                    self?.homePanelDelegate?.homePanelDidRequestToOpenInNewTab(url, isPrivate: isPrivate)
+                    self?.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(url, isPrivate: isPrivate)
                 }
 
         )
@@ -84,7 +69,7 @@ class NeevaHomeViewController: UIViewController, HomePanel {
     var suggestedSearchesModel = SuggestedSearchesModel(suggestedQueries: [])
     var suggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
 
-    var homeViewModel = HomeViewModel()
+    var model = ZeroQueryModel()
 
     init(profile: Profile) {
         self.profile = profile
@@ -101,7 +86,7 @@ class NeevaHomeViewController: UIViewController, HomePanel {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.homeView.snp.makeConstraints { make in
+        self.zeroQueryView.snp.makeConstraints { make in
             make.top.bottom.left.right.equalToSuperview()
         }
 
@@ -129,22 +114,22 @@ class NeevaHomeViewController: UIViewController, HomePanel {
 
     fileprivate func showSiteWithURLHandler(_ url: URL) {
         let visitType = VisitType.bookmark
-        homePanelDelegate?.homePanel(didSelectURL: url, visitType: visitType)
+        delegate?.zeroQueryPanel(didSelectURL: url, visitType: visitType)
     }
 }
 
 
 // MARK: - Data Management
-extension NeevaHomeViewController: DataObserverDelegate {
+extension ZeroQueryViewController: DataObserverDelegate {
     // Reloads both highlights and top sites data from their respective caches. Does not invalidate the cache.
     // See ActivityStreamDataObserver for invalidation logic.
     func reloadAll() {
         TopSitesHandler.getTopSites(profile: profile).uponQueue(.main) { result in
 
-            self.homeViewModel.signInHandler = {
+            self.model.signInHandler = {
                 self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
-            self.homeViewModel.updateState()
+            self.model.updateState()
 
             let maxItems = 8
 
@@ -206,7 +191,7 @@ extension NeevaHomeViewController: DataObserverDelegate {
 }
 
 // TODO: remove this extension once pin/unpin is finalized
-extension NeevaHomeViewController {
+extension ZeroQueryViewController {
     func getContextMenuActions(for site: Site) -> [PhotonActionSheetItem]? {
         let topSiteActions: [PhotonActionSheetItem]
         if FeatureFlag[.pinToTopSites] {
@@ -229,7 +214,7 @@ extension NeevaHomeViewController {
     }
 }
 
-extension NeevaHomeViewController: UIPopoverPresentationControllerDelegate {
+extension ZeroQueryViewController: UIPopoverPresentationControllerDelegate {
 
     // Dismiss the popover if the device is being rotated.
     // This is used by the Share UIActivityViewController action sheet on iPad

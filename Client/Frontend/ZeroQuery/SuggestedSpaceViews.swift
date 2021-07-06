@@ -11,13 +11,13 @@ struct SuggestedSpacesView: View {
     var body: some View {
         VStack {
             if case .refreshing = spaceStore.state, spaceStore.allSpaces.isEmpty {
-                VStack(spacing: NeevaHomeUX.Padding) {
+                VStack(spacing: ZeroQueryUX.Padding) {
                     ForEach(0..<3) { _ in
                         LoadingSpaceListItem()
                     }
                 }
-                .padding(.horizontal, NeevaHomeUX.Padding)
-                .padding(.vertical, NeevaHomeUX.Padding / 2)
+                .padding(.horizontal, ZeroQueryUX.Padding)
+                .padding(.vertical, ZeroQueryUX.Padding / 2)
             } else {
                 VStack(spacing: 0) {
                     // show the 3 most recently updated spaces
@@ -35,7 +35,7 @@ struct SuggestedSpacesView: View {
                 }())
             }
         }
-        .padding(.vertical, NeevaHomeUX.Padding / 2)
+        .padding(.vertical, ZeroQueryUX.Padding / 2)
         .onAppear {
             spaceStore.refresh()
         }
@@ -46,20 +46,20 @@ struct SuggestedSpaceView: View {
     let space: Space
 
     var body: some View {
-        HStack(spacing: NeevaHomeUX.Padding) {
+        HStack(spacing: ZeroQueryUX.Padding) {
             LargeSpaceIconView(space: space)
             Text(space.name).withFont(.labelMedium)
             Spacer()
         }
-        .padding(.horizontal, NeevaHomeUX.Padding)
-        .padding(.vertical, NeevaHomeUX.Padding / 2)
+        .padding(.horizontal, ZeroQueryUX.Padding)
+        .padding(.vertical, ZeroQueryUX.Padding / 2)
     }
 }
 
 struct SuggestedSpaceViews_Previews: PreviewProvider {
     static var previews: some View {
         SuggestedSpaceView(space: .stackOverflow)
-            .padding(.vertical, NeevaHomeUX.Padding / 2)
+            .padding(.vertical, ZeroQueryUX.Padding / 2)
             .previewLayout(.sizeThatFits)
         SuggestedSpacesView(spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace]))
             .previewLayout(.sizeThatFits)

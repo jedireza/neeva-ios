@@ -5,15 +5,6 @@
 import Foundation
 import Shared
 
-// An enum to route to HomePanels
-enum HomePanelPath: String {
-    
-    case topSites = "top-sites"
-    case history = "history"
-    case downloads = "downloads"
-    case newPrivateTab = "new-private-tab"
-}
-
 // An enum to route to a settings page.
 enum SettingsPage: String {
     case general = "general"
@@ -29,7 +20,6 @@ enum DefaultBrowserPath: String {
 // To open a URL use /open-url or to open a blank tab use /open-url with no params
 enum DeepLink {
     case settings(SettingsPage)
-    case homePanel(HomePanelPath)
     case defaultBrowser(DefaultBrowserPath)
     init?(urlString: String) {
         let paths = urlString.split(separator: "/")
@@ -38,8 +28,6 @@ enum DeepLink {
         }
         if component == "settings", let link = SettingsPage(rawValue: String(componentPath)) {
             self = .settings(link)
-        } else if component == "homepanel", let link = HomePanelPath(rawValue: String(componentPath)) {
-            self = .homePanel(link)
         } else if component == "default-browser", let link = DefaultBrowserPath(rawValue: String(componentPath)) {
             self = .defaultBrowser(link)
         } else {
@@ -110,8 +98,6 @@ enum NavigationPath {
 
     private static func handleDeepLink(_ link: DeepLink, with bvc: BrowserViewController) {
         switch link {
-        case .homePanel(let panelPath):
-            NavigationPath.handleHomePanel(panel: panelPath, with: bvc)
         case .settings:
             guard bvc.navigationController != nil else {
                 return
@@ -193,16 +179,6 @@ enum NavigationPath {
              return
          }
          bvc.tabManager.selectTab(tab)
-    }
-
-    private static func handleHomePanel(panel: HomePanelPath, with bvc: BrowserViewController) {
-        switch panel {
-        
-        case .history: bvc.showLibrary(panel: .history)
-        case .downloads: bvc.showLibrary(panel: .downloads)
-        case .topSites: bvc.openURLInNewTab(HomePanelType.topSites.internalUrl)
-        case .newPrivateTab: bvc.openBlankNewTab(focusLocationField: false, isPrivate: true)
-        }
     }
 
     private static func handleURL(url: URL?, isPrivate: Bool, with bvc: BrowserViewController) {
@@ -321,8 +297,6 @@ extension DeepLink: Equatable {}
 func == (lhs: DeepLink, rhs: DeepLink) -> Bool {
     switch (lhs, rhs) {
     case let (.settings(lhs), .settings(rhs)):
-        return lhs == rhs
-    case let (.homePanel(lhs), .homePanel(rhs)):
         return lhs == rhs
     case let (.defaultBrowser(lhs), .defaultBrowser(rhs)):
         return lhs == rhs

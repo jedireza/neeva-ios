@@ -24,7 +24,7 @@ class ScreenshotHelper {
     
     /// Takes a screenshot of the WebView to be displayed on the tab view page
     /**
-     If taking a screenshot of the home page, uses our custom screenshot `UIView` extension function
+     If taking a screenshot of the zero query page, uses our custom screenshot `UIView` extension function
      If taking a screenshot of a website, uses apple's `takeSnapshot` function
      */
     func takeScreenshot(_ tab: Tab) {
@@ -33,10 +33,10 @@ class ScreenshotHelper {
             return
         }
 
-        //Handle home page snapshots, can not use Apple API snapshot function for this
-        if InternalURL(url)?.isAboutHomeURL ?? false {
-            if let homePanel = controller?.neevaHomeViewController {
-                let screenshot = homePanel.view.screenshot(quality: UIConstants.ActiveScreenshotQuality)
+        //Handle zero query page snapshots, can not use Apple API snapshot function for this
+        if InternalURL(url)?.isZeroQueryURL ?? false {
+            if let zeroQueryVC = controller?.zeroQueryViewController {
+                let screenshot = zeroQueryVC.view.screenshot(quality: UIConstants.ActiveScreenshotQuality)
                 tab.setScreenshot(screenshot)
             }
         //Handle webview screenshots

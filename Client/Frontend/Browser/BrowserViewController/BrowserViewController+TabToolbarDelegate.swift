@@ -58,7 +58,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
 
         let switchPrivacyMode = { [self] (_: UIAction) in
             _ = tabManager.switchPrivacyMode()
-            neevaHomeViewController?.homeViewModel.isPrivate = tabManager.selectedTab!.isPrivate
+            zeroQueryViewController?.model.isPrivate = tabManager.selectedTab!.isPrivate
         }
         let incognitoActions = [
             tabManager.selectedTab?.isPrivate ?? false
@@ -84,7 +84,7 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
                 let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark), attributes: .destructive) { _ in
                     if let tab = self.tabManager.selectedTab {
                         self.tabManager.removeTabAndUpdateSelectedIndex(tab)
-                        self.neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
+                        self.zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
                     }
                 }
                 closeTab.accessibilityIdentifier = "Close Tab Action"

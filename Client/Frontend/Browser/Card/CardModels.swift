@@ -46,7 +46,7 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 
     func tabDidGainFocus(_ tab: Tab) {
-        guard let url = tab.url, InternalURL(url)?.isAboutHomeURL ?? false else {
+        guard let url = tab.url, InternalURL(url)?.isZeroQueryURL ?? false else {
             return
         }
         onDataUpdated()

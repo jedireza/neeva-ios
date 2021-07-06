@@ -52,12 +52,12 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
             case .history:
                 self.rootView.onDismiss()
                 ClientLogger.shared.logCounter(.OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.homePanelDidRequestToOpenLibrary(panel: .history)
+                delegate.zeroQueryPanelDidRequestToOpenLibrary(panel: .history)
                 break
             case .downloads:
                 self.rootView.onDismiss()
                 ClientLogger.shared.logCounter(.OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.homePanelDidRequestToOpenLibrary(panel: .downloads)
+                delegate.zeroQueryPanelDidRequestToOpenLibrary(panel: .downloads)
                 break
             case .feedback:
                 self.feedbackHandler(delegate, feedbackImage)

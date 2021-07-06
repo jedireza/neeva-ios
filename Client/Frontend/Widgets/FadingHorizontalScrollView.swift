@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-/// This is a custom wrapper for `UIScrollView`, primarily used in `NeevaHome` to display suggested sites.
+/// This is a custom wrapper for `UIScrollView`, primarily used in `ZeroQueryView` to display suggested sites.
 /// It adds two gradient overlays over the leading and trailing edges of the scroll view that show the user more content
 /// is visible without obscuring items at the edges of the scroll view’s content. UIKit is currently necessary to support
 /// controlling the visibility of the gradients on scroll and because views laid on top of a SwiftUI `ScrollView` always

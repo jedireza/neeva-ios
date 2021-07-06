@@ -117,7 +117,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
         //error url's are OK as they are used to populate history on session restore.
         listData = items.filter {
             guard let internalUrl = InternalURL($0.url) else { return true }
-            if internalUrl.isAboutHomeURL {
+            if internalUrl.isZeroQueryURL {
                 return true
             }
             if let url = internalUrl.originalURLFromErrorPage, InternalURL.isValid(url: url) {
@@ -245,8 +245,8 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
         cell.connectingBackwards = indexPath.item != listData.count-1
         cell.connectingForwards = indexPath.item != 0
 
-        let isAboutHomeURL = InternalURL(item.url)?.isAboutHomeURL ?? false
-        guard !isAboutHomeURL else {
+        let isZeroQueryURL = InternalURL(item.url)?.isZeroQueryURL ?? false
+        guard !isZeroQueryURL else {
             cell.site = Site(url: item.url.absoluteString, title: Strings.NeevaHomePage)
             return cell
         }

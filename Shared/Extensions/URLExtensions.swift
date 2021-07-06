@@ -490,7 +490,7 @@ public struct InternalURL {
         return nil
     }
 
-    public var isAboutHomeURL: Bool {
+    public var isZeroQueryURL: Bool {
         if let urlParam = extractedUrlParam, let internalUrlParam = InternalURL(urlParam) {
             return internalUrlParam.aboutComponent?.hasPrefix("home") ?? false
         }

@@ -21,7 +21,7 @@ struct SuggestedSearchesView: View {
                         Spacer()
                     }
                     .frame(height: 37)
-                    .padding(.horizontal, NeevaHomeUX.Padding)
+                    .padding(.horizontal, ZeroQueryUX.Padding)
                 }
                 .buttonStyle(TableCellButtonStyle())
                 .overlay(
@@ -33,7 +33,7 @@ struct SuggestedSearchesView: View {
                                 .padding(.leading)
                             Spacer(minLength: 0)
                         }
-                    }.padding(.trailing, NeevaHomeUX.Padding),
+                    }.padding(.trailing, ZeroQueryUX.Padding),
                     alignment: .trailing
                 )
             }
@@ -46,7 +46,7 @@ struct SuggestedSearchesView: View {
 struct SuggestedSearchesView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0) {
-            NeevaHomeHeader(
+            ZeroQueryHeader(
                 title: "Searches",
                 action: {},
                 label: "hide searches",

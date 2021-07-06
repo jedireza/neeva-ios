@@ -63,7 +63,7 @@ class LegacyURLBarView: UIView {
 
     fileprivate var legacyLocationTextField: ToolbarTextField?
 
-    /// Overlay mode is the state where the lock/reader icons are hidden, the home panels are shown,
+    /// Overlay mode is the state where the lock/reader icons are hidden, the zero query panels are shown,
     /// and the Cancel button is visible (allowing the user to leave overlay mode). Overlay mode
     /// is *not* tied to the location text field's editing state; for instance, when selecting
     /// a panel, the first responder will be resigned, yet the overlay mode UI is still active.
@@ -209,7 +209,7 @@ class LegacyURLBarView: UIView {
         neevaMenuButton.isPointerInteractionEnabled = true
 
         model.$url.sink { [unowned self] newURL in
-            if let url = newURL, InternalURL(url)?.isAboutHomeURL ?? false {
+            if let url = newURL, InternalURL(url)?.isZeroQueryURL ?? false {
                 line.isHidden = true
             } else {
                 line.isHidden = false

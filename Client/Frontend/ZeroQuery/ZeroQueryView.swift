@@ -5,7 +5,7 @@ import Storage
 import Shared
 import Defaults
 
-public struct NeevaHomeUX {
+public struct ZeroQueryUX {
     fileprivate static let ToggleButtonSize: CGFloat = 32
     fileprivate static let ToggleIconSize: CGFloat = 14
     static let Padding: CGFloat = 16
@@ -51,7 +51,7 @@ extension Defaults.Keys {
     fileprivate static let expandSpaces = Defaults.Key<Bool>("profile.home.spaces.expanded", default: true)
 }
 
-struct NeevaHomeHeader: View {
+struct ZeroQueryHeader: View {
     let title: String
     let action: () -> ()
     let label: String
@@ -67,8 +67,8 @@ struct NeevaHomeHeader: View {
                 .lineLimit(1)
             Spacer()
             Button(action: action) {
-                Symbol(icon, size: NeevaHomeUX.ToggleIconSize, weight: .medium)
-                    .frame(width: NeevaHomeUX.ToggleButtonSize, height: NeevaHomeUX.ToggleButtonSize, alignment: .center)
+                Symbol(icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
+                    .frame(width: ZeroQueryUX.ToggleButtonSize, height: ZeroQueryUX.ToggleButtonSize, alignment: .center)
                     .background(Color(light: .ui.gray98, dark: .systemFill)).clipShape(Circle())
             }
         }
@@ -76,12 +76,12 @@ struct NeevaHomeHeader: View {
         .accessibilityAddTraits([.isHeader, .isButton])
         .accessibilityLabel("\(title), \(label)")
         .accessibilityAction(.default, action)
-        .padding([.top, .horizontal], NeevaHomeUX.Padding)
+        .padding([.top, .horizontal], ZeroQueryUX.Padding)
     }
 }
 
-struct NeevaHome: View {
-    @ObservedObject var viewModel: HomeViewModel
+struct ZeroQueryView: View {
+    @ObservedObject var viewModel: ZeroQueryModel
 
     @Default(.expandSuggestedSites) private var expandSuggestedSites
     @Default(.expandSearches) private var expandSearches
@@ -92,13 +92,13 @@ struct NeevaHome: View {
             ScrollView {
                 VStack(spacing: 0) {
                     if viewModel.isPrivate {
-                        IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(NeevaHomeUX.Padding)
+                        IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(ZeroQueryUX.Padding)
                     } else {
                         if let promoCardType = viewModel.promoCard {
                             PromoCard(type: promoCardType)
                         }
 
-                        NeevaHomeHeader(
+                        ZeroQueryHeader(
                             title: "Suggested sites",
                             action: { expandSuggestedSites.advance() },
                             label: "\(expandSuggestedSites.verb) this section",
@@ -108,7 +108,7 @@ struct NeevaHome: View {
                             SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
                         }
 
-                        NeevaHomeHeader(
+                        ZeroQueryHeader(
                             title: "Searches",
                             action: { expandSearches.toggle() },
                             label: "\(expandSearches ? "hides" : "shows") this section",
@@ -118,7 +118,7 @@ struct NeevaHome: View {
                             SuggestedSearchesView()
                         }
 
-                        NeevaHomeHeader(
+                        ZeroQueryHeader(
                             title: "Spaces",
                             action: { expandSpaces.toggle() },
                             label: "\(expandSpaces ? "hides" : "shows") this section",
@@ -137,10 +137,10 @@ struct NeevaHome: View {
 }
 
 #if DEV
-struct NeevaHomeView_Previews: PreviewProvider {
+struct ZeroQueryView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            NeevaHome(viewModel: HomeViewModel())
+            ZeroQueryView(viewModel: ZeroQueryModel())
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environmentObject(SuggestedSitesViewModel.preview)

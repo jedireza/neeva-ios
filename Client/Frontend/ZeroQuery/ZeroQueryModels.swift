@@ -4,7 +4,7 @@ import Storage
 import Defaults
 import Shared
 
-class HomeViewModel: ObservableObject {
+class ZeroQueryModel: ObservableObject {
     @Published var isPrivate: Bool = false
     @Published var promoCard: PromoCardType? = nil
     @Published var buttonClickHandler: () -> () = {}

@@ -282,7 +282,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         let defaults = UserDefaults()
         defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
         
-        BrowserViewController.foregroundBVC().neevaHomeViewController?.reloadAll()
+        BrowserViewController.foregroundBVC().zeroQueryViewController?.reloadAll()
         
         // Resume file downloads.
         // TODO: iOS 13 needs to iterate all the BVCs.

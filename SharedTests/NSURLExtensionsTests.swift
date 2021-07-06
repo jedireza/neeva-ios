@@ -191,33 +191,33 @@ class NSURLExtensionsTests: XCTestCase {
         }
     }
 
-    func testisAboutHomeURL() {
+    func testisZeroQueryURL() {
         let goodurls = [
-            "\(InternalURL.baseUrl)/sessionrestore?url=\(InternalURL.baseUrl)/about/home%23panel%3D1",
-            "\(InternalURL.baseUrl)/about/home#panel=0"
+            "\(InternalURL.baseUrl)/sessionrestore?url=\(InternalURL.baseUrl)/about/home",
+            "\(InternalURL.baseUrl)/about/home"
             ]
         let badurls = [
             "http://google.com",
             "http://localhost:\(AppInfo.webserverPort)/sessionrestore.html",
             "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com",
-            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com/about/home/%23panel%3D1",
+            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com/about/home/",
             ]
 
         checkUrls(goodurls: goodurls, badurls: badurls, checker: { url in
-            return url.isAboutHomeURL
+            return url.isZeroQueryURL
         })
     }
 
     func testisAboutURL() {
         let goodurls = [
-            "\(InternalURL.baseUrl)/about/home#panel=0",
+            "\(InternalURL.baseUrl)/about/home",
             "\(InternalURL.baseUrl)/about/license"
         ]
         let badurls = [
             "http://google.com",
             "http://localhost:\(AppInfo.webserverPort)/sessionrestore.html",
             "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com",
-            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com/about/home/%23panel%3D1",
+            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com/about/home/",
             ]
 
         checkUrls(goodurls: goodurls, badurls: badurls, checker: { url in
@@ -232,7 +232,7 @@ class NSURLExtensionsTests: XCTestCase {
         let badurls = [
             "http://google.com",
             "http://localhost:\(AppInfo.webserverPort)/sessionrestore.html",
-            "http://localhost:1234/about/home/#panel=0"
+            "http://localhost:1234/about/home/"
         ]
 
         checkUrls(goodurls: goodurls, badurls: badurls, checker: { url in
@@ -243,7 +243,7 @@ class NSURLExtensionsTests: XCTestCase {
     func testoriginalURLFromErrorURL() {
         let goodurls = [
             ("\(InternalURL.baseUrl)/\(InternalURL.Path.errorpage)?url=http%3A//mozilla.com", URL(string: "http://mozilla.com")),
-            ("\(InternalURL.baseUrl)/\(InternalURL.Path.errorpage)?url=http%3A//localhost%3A\(AppInfo.webserverPort)/about/home/%23panel%3D1", URL(string: "http://localhost:\(AppInfo.webserverPort)/about/home/#panel=1")),
+            ("\(InternalURL.baseUrl)/\(InternalURL.Path.errorpage)?url=http%3A//localhost%3A\(AppInfo.webserverPort)/about/home/", URL(string: "http://localhost:\(AppInfo.webserverPort)/about/home/")),
             ]
 
         goodurls.forEach {
@@ -261,7 +261,7 @@ class NSURLExtensionsTests: XCTestCase {
         let badurls = [
             "http://google.com",
             "http://localhost:\(AppInfo.webserverPort)/sessionrestore.html",
-            "http://localhost:1234/about/home/#panel=0"
+            "http://localhost:1234/about/home/"
         ]
 
         checkUrls(goodurls: goodurls, badurls: badurls) { url in
@@ -295,7 +295,7 @@ class NSURLExtensionsTests: XCTestCase {
         let badurls = [
             "http://google.com",
             "http://localhost:\(AppInfo.webserverPort)/sessionrestore.html",
-            "http://localhost:1234/about/home/#panel=0",
+            "http://localhost:1234/about/home/",
             "http://localhost:\(AppInfo.webserverPort)/reader-mode/page",
             "about:reader?url="
         ]
@@ -371,7 +371,7 @@ class NSURLExtensionsTests: XCTestCase {
             ("https://mail.example.co.uk/index.html", "https://mail.example.co.uk/index.html"),
         ]
         let badurls = [
-            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//localhost%3A\(AppInfo.webserverPort)/about/home/%23panel%3D1",
+            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//localhost%3A\(AppInfo.webserverPort)/about/home/",
             "http://localhost:\(AppInfo.webserverPort)/errors/error.html",
 
         ]

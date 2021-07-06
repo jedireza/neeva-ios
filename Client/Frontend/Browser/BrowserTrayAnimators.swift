@@ -35,7 +35,7 @@ private extension TrayToBrowserAnimator {
         // Hide browser components
         bvc.toggleSnackBarVisibility(show: false)
         toggleWebViewVisibility(false, usingTabManager: bvc.tabManager)
-        bvc.neevaHomeViewController?.view.isHidden = true
+        bvc.zeroQueryViewController?.view.isHidden = true
 
         bvc.webViewContainerBackdrop.isHidden = true
         bvc.statusBarOverlay.isHidden = false
@@ -101,7 +101,7 @@ private extension TrayToBrowserAnimator {
             bvc.toggleSnackBarVisibility(show: true)
             toggleWebViewVisibility(true, usingTabManager: bvc.tabManager)
             bvc.webViewContainerBackdrop.isHidden = false
-            bvc.neevaHomeViewController?.view.isHidden = false
+            bvc.zeroQueryViewController?.view.isHidden = false
             bvc.legacyURLBar.isTransitioning = false
             tabTray.toolbar.isUserInteractionEnabled = true
             transitionContext.completeTransition(true)
@@ -161,7 +161,7 @@ private extension BrowserToTrayAnimator {
         cell.title.transform = CGAffineTransform(translationX: 0, y: -cell.title.frame.size.height)
 
         // Hide views we don't want to show during the animation in the BVC
-        bvc.neevaHomeViewController?.view.isHidden = true
+        bvc.zeroQueryViewController?.view.isHidden = true
         bvc.statusBarOverlay.isHidden = true
         bvc.toggleSnackBarVisibility(show: false)
         toggleWebViewVisibility(false, usingTabManager: bvc.tabManager)
@@ -215,7 +215,7 @@ private extension BrowserToTrayAnimator {
 
                 bvc.toggleSnackBarVisibility(show: true)
                 toggleWebViewVisibility(true, usingTabManager: bvc.tabManager)
-                bvc.neevaHomeViewController?.view.isHidden = false
+                bvc.zeroQueryViewController?.view.isHidden = false
 
                 resetTransformsForViews([bvc.header, bvc.readerModeBar, bvc.footer])
                 bvc.legacyURLBar.isTransitioning = false
@@ -278,8 +278,9 @@ private func calculateCollapsedCellFrameUsingCollectionView(_ collectionView: UI
 private func calculateExpandedCellFrameFromBVC(_ bvc: BrowserViewController) -> CGRect {
     var frame = bvc.webViewContainer.frame
 
-    // If we're navigating to a home panel and we were expecting to show the toolbar, add more height to end frame since
-    // there is no toolbar for home panels
+    // TODO: is this still true?
+    // If we're navigating to the zero query screen and we were expecting to show the toolbar, add more height to end frame since
+    // there is no toolbar for zero query panels
     if !bvc.shouldShowFooterForTraitCollection(bvc.traitCollection) {
         return frame
     }

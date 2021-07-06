@@ -29,7 +29,7 @@ struct UrlToOpenModel {
 }
 
 class BrowserViewController: UIViewController {
-    var neevaHomeViewController: NeevaHomeViewController?
+    var zeroQueryViewController: ZeroQueryViewController?
     lazy var cardStripViewController: CardViewController? = {
         let controller = CardViewController(tabManager: self.tabManager, config: .carousel)
         addChild(controller)
@@ -97,7 +97,7 @@ class BrowserViewController: UIViewController {
     fileprivate(set) var toolbar: ToolbarType?
     var searchController: SearchViewController?
     var screenshotHelper: ScreenshotHelper!
-    fileprivate var homePanelIsInline = false
+    fileprivate var zeroQueryIsInline = false
     let alertStackView = UIStackView() // All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
     var findInPageBar: FindInPageBar?
     lazy var mailtoLinkHandler = MailtoLinkHandler()
@@ -348,7 +348,7 @@ class BrowserViewController: UIViewController {
         }
 
         view.setNeedsUpdateConstraints()
-        neevaHomeViewController?.view.setNeedsUpdateConstraints()
+        zeroQueryViewController?.view.setNeedsUpdateConstraints()
 
         if let tab = tabManager.selectedTab,
                let webView = tab.webView {
@@ -406,7 +406,7 @@ class BrowserViewController: UIViewController {
         }
 
         // If we are displying a private tab, hide any elements in the tab that we wouldn't want shown
-        // when the app is in the home switcher
+        // when the app is in the app switcher
         guard let privateTab = tabManager.selectedTab, privateTab.isPrivate else {
             return
         }
@@ -415,7 +415,7 @@ class BrowserViewController: UIViewController {
         webViewContainerBackdrop.alpha = 1
         webViewContainer.alpha = 0
         legacyURLBar.locationContainer.alpha = 0
-        neevaHomeViewController?.view.alpha = 0
+        zeroQueryViewController?.view.alpha = 0
         topTabsViewController?.switchForegroundStatus(isInForeground: false)
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
         presentedViewController?.view.alpha = 0
@@ -427,7 +427,7 @@ class BrowserViewController: UIViewController {
         UIView.animate(withDuration: 0.2, delay: 0, options: UIView.AnimationOptions(), animations: {
             self.webViewContainer.alpha = 1
             self.legacyURLBar.locationContainer.alpha = 1
-            self.neevaHomeViewController?.view.alpha = 1
+            self.zeroQueryViewController?.view.alpha = 1
             self.topTabsViewController?.switchForegroundStatus(isInForeground: true)
             self.presentedViewController?.popoverPresentationController?.containerView?.alpha = 1
             self.presentedViewController?.view.alpha = 1
@@ -758,12 +758,12 @@ class BrowserViewController: UIViewController {
 
         legacyURLBar.setNeedsUpdateConstraints()
 
-        // Remake constraints even if we're already showing the home controller.
-        // The home controller may change sizes if we tap the URL bar while on about:home.
-        neevaHomeViewController?.view.snp.remakeConstraints { make in
+        // Remake constraints even if we're already showing the zero query controller.
+        // The zero query controller may change sizes if we tap the URL bar while it's open.
+        zeroQueryViewController?.view.snp.remakeConstraints { make in
             make.top.equalTo(self.legacyURLBar.snp.bottom)
             make.left.right.equalTo(self.view)
-            if self.homePanelIsInline {
+            if self.zeroQueryIsInline {
                 make.bottom.equalTo(self.toolbar?.view.snp.top ?? self.view.snp.bottom)
             } else {
                 make.bottom.equalTo(self.view.snp.bottom)
@@ -791,22 +791,22 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    fileprivate func showNeevaHome(inline: Bool) {
-        homePanelIsInline = inline
-        if self.neevaHomeViewController == nil {
-            let neevaHomeViewController = NeevaHomeViewController(profile: profile)
-            neevaHomeViewController.homePanelDelegate = self
-            self.neevaHomeViewController = neevaHomeViewController
-            addChild(neevaHomeViewController)
-            view.addSubview(neevaHomeViewController.view)
-            neevaHomeViewController.didMove(toParent: self)
+    fileprivate func showZeroQuery(inline: Bool) {
+        zeroQueryIsInline = inline
+        if self.zeroQueryViewController == nil {
+            let zeroQueryViewController = ZeroQueryViewController(profile: profile)
+            zeroQueryViewController.delegate = self
+            self.zeroQueryViewController = zeroQueryViewController
+            addChild(zeroQueryViewController)
+            view.addSubview(zeroQueryViewController.view)
+            zeroQueryViewController.didMove(toParent: self)
         }
 
         // We have to run this animation, even if the view is already showing
         // because there may be a hide animation running and we want to be sure
         // to override its results.
         UIView.animate(withDuration: 0.2, animations: { () -> Void in
-            self.neevaHomeViewController?.view.alpha = 1
+            self.zeroQueryViewController?.view.alpha = 1
         }, completion: { finished in
             if finished {
                 self.webViewContainer.accessibilityElementsHidden = true
@@ -816,18 +816,18 @@ class BrowserViewController: UIViewController {
         view.setNeedsUpdateConstraints()
     }
 
-    fileprivate func hideNeevaHome() {
-        guard let neevaHomeViewController = self.neevaHomeViewController else {
+    fileprivate func hideZeroQuery() {
+        guard let zeroQueryViewController = self.zeroQueryViewController else {
             return
         }
 
-        self.neevaHomeViewController = nil
+        self.zeroQueryViewController = nil
         UIView.animate(withDuration: 0.2, delay: 0, options: .beginFromCurrentState, animations: { () -> Void in
-            neevaHomeViewController.view.alpha = 0
+            zeroQueryViewController.view.alpha = 0
         }, completion: { _ in
-            neevaHomeViewController.willMove(toParent: nil)
-            neevaHomeViewController.view.removeFromSuperview()
-            neevaHomeViewController.removeFromParent()
+            zeroQueryViewController.willMove(toParent: nil)
+            zeroQueryViewController.view.removeFromSuperview()
+            zeroQueryViewController.removeFromParent()
             self.webViewContainer.accessibilityElementsHidden = false
             UIAccessibility.post(notification: UIAccessibility.Notification.screenChanged, argument: nil)
 
@@ -838,20 +838,20 @@ class BrowserViewController: UIViewController {
         })
     }
 
-    fileprivate func updateInContentHomePanel(_ url: URL?) {
-        let isAboutHomeURL = url.flatMap { InternalURL($0)?.isAboutHomeURL } ?? false
+    fileprivate func updateInZeroQuery(_ url: URL?) {
+        let isZeroQueryURL = url.flatMap { InternalURL($0)?.isZeroQueryURL } ?? false
         if !legacyURLBar.inOverlayMode {
             guard let url = url else {
-                hideNeevaHome()
+                hideZeroQuery()
                 return
             }
-            if isAboutHomeURL {
-                showNeevaHome(inline: true)
+            if isZeroQueryURL {
+                showZeroQuery(inline: true)
             } else if !url.absoluteString.hasPrefix("\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)") {
-                hideNeevaHome()
+                hideZeroQuery()
             }
-        } else if isAboutHomeURL {
-            showNeevaHome(inline: false)
+        } else if isZeroQueryURL {
+            showZeroQuery(inline: false)
         }
     }
 
@@ -925,7 +925,7 @@ class BrowserViewController: UIViewController {
             make.left.right.bottom.equalTo(self.view)
         }
 
-        neevaHomeViewController?.view?.isHidden = true
+        zeroQueryViewController?.view?.isHidden = true
 
         searchController.didMove(toParent: self)
     }
@@ -935,7 +935,7 @@ class BrowserViewController: UIViewController {
             searchController.willMove(toParent: nil)
             searchController.view.removeFromSuperview()
             searchController.removeFromParent()
-            neevaHomeViewController?.view?.isHidden = false
+            zeroQueryViewController?.view?.isHidden = false
         }
     }
 
@@ -984,7 +984,7 @@ class BrowserViewController: UIViewController {
                 NotificationCenter.default.removeObserver(self, name: .DynamicFontChanged, object: nil)
             }
 
-            updateInContentHomePanel(url as URL)
+            updateInZeroQuery(url as URL)
         }
     }
 
@@ -1080,7 +1080,7 @@ class BrowserViewController: UIViewController {
             focusLocationTextField(forTab: freshTab, setSearchText: searchText)
         }
 
-        neevaHomeViewController?.homeViewModel.isPrivate = self.tabManager.selectedTab!.isPrivate
+        zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
     }
 
     func openSearchNewTab(isPrivate: Bool = false, _ text: String) {
@@ -1316,14 +1316,13 @@ extension BrowserViewController {
 
     func urlBarDidEnterOverlayMode() {
         libraryDrawerViewController?.close()
-        showNeevaHome(inline: false)
+        showZeroQuery(inline: false)
     }
 
     func urlBarDidLeaveOverlayMode() {
         destroySearchController()
-        updateInContentHomePanel(tabManager.selectedTab?.url as URL?)
+        updateInZeroQuery(tabManager.selectedTab?.url as URL?)
     }
-
 }
 
 extension BrowserViewController: PresentingModalViewControllerDelegate {
@@ -1576,7 +1575,7 @@ extension BrowserViewController: LibraryPanelDelegate {
 
     func libraryPanelDidRequestToOpenInNewTab(_ url: URL, _ savedTab: SavedTab?, isPrivate: Bool) {
         // If we are showing toptabs a user can just use the top tab bar
-        // If in overlay mode switching doesnt correctly dismiss the homepanels
+        // If in overlay mode switching doesn't correctly dismiss the zero query screen
         guard let savedTab = savedTab else {
             return
         }
@@ -1585,22 +1584,22 @@ extension BrowserViewController: LibraryPanelDelegate {
     }
 }
 
-extension BrowserViewController: HomePanelDelegate {
-    func homePanelDidRequestToOpenLibrary(panel: LibraryPanelType) {
+extension BrowserViewController: ZeroQueryPanelDelegate {
+    func zeroQueryPanelDidRequestToOpenLibrary(panel: LibraryPanelType) {
         showLibrary(panel: panel)
         view.endEditing(true)
     }
 
-    func homePanel(didSelectURL url: URL, visitType: VisitType) {
+    func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType) {
         guard let tab = tabManager.selectedTab else { return }
         finishEditingAndSubmit(url, visitType: visitType, forTab: tab)
     }
 
-    func homePanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
+    func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
         let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
 
         // If we are showing toptabs a user can just use the top tab bar
-        // If in overlay mode switching doesnt correctly dismiss the homepanels
+        // If in overlay mode switching doesn't correctly dismiss the zero query screen
         guard !topTabsVisible, FeatureFlag[.newURLBar] ? !legacyURLBar.model.isEditing : !self.legacyURLBar.inOverlayMode else {
             return
         }
@@ -1612,9 +1611,8 @@ extension BrowserViewController: HomePanelDelegate {
 
         ToastViewManager.shared.enqueue(toast: toastView)
     }
-    var homePanelIsPrivate: Bool { tabManager.selectedTab?.isPrivate ?? false }
 
-    func homePanel(didEnterQuery query: String) {
+    func zeroQueryPanel(didEnterQuery query: String) {
         if FeatureFlag[.newURLBar] {
             SearchQueryModel.shared.value = query
             legacyURLBar.model.setEditing(to: true)
@@ -1741,7 +1739,7 @@ extension BrowserViewController: TabManagerDelegate {
             topTabsDidChangeTab()
         }
 
-        updateInContentHomePanel(selected?.url as URL?)
+        updateInZeroQuery(selected?.url as URL?)
     }
 
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {
@@ -1805,7 +1803,7 @@ extension BrowserViewController {
             dBOnboardingViewController.modalPresentationStyle = .popover
         }
         dBOnboardingViewController.viewModel.goToSettings = {
-            self.neevaHomeViewController?.homeViewModel.updateState()
+            self.zeroQueryViewController?.model.updateState()
             dBOnboardingViewController.dismiss(animated: true) {
                 UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
             }

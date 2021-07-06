@@ -6,7 +6,7 @@ import Storage
 
 class TabMenu {
     var tabManager: TabManager
-    var neevaHomeViewController: NeevaHomeViewController?
+    var zeroQueryViewController: ZeroQueryViewController?
     var alertPresentViewController: UIViewController?
 
     var tabsClosed: ((Bool) -> ())?
@@ -27,7 +27,7 @@ class TabMenu {
                 // wait for tabManager to switch to normal mode before closing private tabs
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: false)
-                    neevaHomeViewController?.homeViewModel.isPrivate = tabManager.selectedTab!.isPrivate
+                    zeroQueryViewController?.model.isPrivate = tabManager.selectedTab!.isPrivate
                 }
             } else {
                 tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: false)
@@ -111,9 +111,9 @@ class TabMenu {
     }
 
     // MARK: Initialization
-    init(tabManager: TabManager, neevaHomeViewController: NeevaHomeViewController? = nil, alertPresentViewController: UIViewController? = nil) {
+    init(tabManager: TabManager, zeroQueryViewController: ZeroQueryViewController? = nil, alertPresentViewController: UIViewController? = nil) {
         self.tabManager = tabManager
-        self.neevaHomeViewController = neevaHomeViewController
+        self.zeroQueryViewController = zeroQueryViewController
         self.alertPresentViewController = alertPresentViewController
     }
 }
