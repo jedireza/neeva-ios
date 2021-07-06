@@ -193,14 +193,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                             description: "", url: url)
                         request.addToExistingSpace(id:space.id.id, name: space.name)
 
-                        if !FeatureFlag[.useOldToast] {
-                            ToastDefaults().showToastForSpace(request: request)
-                        } else {
-                            let bvc = BrowserViewController.foregroundBVC()
-                            bvc.show(toast: AddToSpaceToast(request: request, onOpenSpace: { spaceID in
-                                bvc.openURLInNewTab(NeevaConstants.appSpacesURL / spaceID)
-                            }))
-                        }
+                        ToastDefaults().showToastForSpace(request: request)
                     }
                 }
             }
@@ -221,13 +214,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                                                         url: (bvc.tabManager.selectedTab?.url)!)
                         request.addToExistingSpace(id:space.id.id, name: space.name)
 
-                        if !FeatureFlag[.useOldToast] {
-                            ToastDefaults().showToastForSpace(request: request)
-                        } else {
-                            bvc.show(toast: AddToSpaceToast(request: request, onOpenSpace: { spaceID in
-                                bvc.openURLInNewTab(NeevaConstants.appSpacesURL / spaceID)
-                            }))
-                        }
+                        ToastDefaults().showToastForSpace(request: request)
                     }
                 }
             }

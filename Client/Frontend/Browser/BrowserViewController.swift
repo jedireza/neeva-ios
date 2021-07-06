@@ -131,8 +131,6 @@ class BrowserViewController: UIViewController {
     var scrollController = TabScrollingController()
 
     fileprivate var keyboardState: KeyboardState?
-    var pendingToast: Toast? // A toast that might be waiting for BVC to appear before displaying
-    var downloadToast: DownloadToast? // A toast that is showing the combined download progress
 
     // Tracking navigation items to record history types.
     // TODO: weak references?
@@ -686,10 +684,6 @@ class BrowserViewController: UIViewController {
 
         super.viewDidAppear(animated)
 
-        if let toast = self.pendingToast {
-            self.pendingToast = nil
-            show(toast: toast, afterWaiting: ButtonToastUX.ToastDelay)
-        }
         showQueuedAlertIfAvailable()
     }
 
@@ -1143,12 +1137,8 @@ class BrowserViewController: UIViewController {
                         return self.profile.history.addPinnedTopSite(site)
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
-                            if !FeatureFlag[.useOldToast] {
-                                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
-                                ToastViewManager.shared.enqueue(toast: toastView)
-                            } else {
-                                SimpleToast().showAlertWithText(Strings.AppMenuAddPinToTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
-                            }
+                            let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
+                            ToastViewManager.shared.enqueue(toast: toastView)
                         }
                     }
                 }
@@ -1164,12 +1154,8 @@ class BrowserViewController: UIViewController {
                         return self.profile.history.removeFromPinnedTopSites(site)
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
-                            if !FeatureFlag[.useOldToast] {
-                                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage)
-                                ToastViewManager.shared.enqueue(toast: toastView)
-                            } else {
-                                SimpleToast().showAlertWithText(Strings.AppMenuRemovePinFromTopSitesConfirmMessage, bottomContainer: self.webViewContainer)
-                            }
+                            let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage)
+                            ToastViewManager.shared.enqueue(toast: toastView)
                         }
                     }
                 }
@@ -1294,12 +1280,6 @@ class BrowserViewController: UIViewController {
                 }
             }
         }
-    }
-}
-
-extension BrowserViewController: ClipboardBarDisplayHandlerDelegate {
-    func shouldDisplay(clipboardBar bar: ButtonToast) {
-        show(toast: bar, duration: ClipboardBarToastUX.ToastDelay)
     }
 }
 
@@ -1462,12 +1442,8 @@ extension BrowserViewController: LegacyURLBarDelegate {
         switch result.value {
         case .success:
             UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.ReaderModeAddPageSuccessAcessibilityLabel)
-            if !FeatureFlag[.useOldToast] {
-                let toastView = ToastViewManager.shared.makeToast(text: Strings.ShareAddToReadingListDone)
-                ToastViewManager.shared.enqueue(toast: toastView)
-            } else {
-                SimpleToast().showAlertWithText(Strings.ShareAddToReadingListDone, bottomContainer: self.webViewContainer)
-            }
+            let toastView = ToastViewManager.shared.makeToast(text: Strings.ShareAddToReadingListDone)
+            ToastViewManager.shared.enqueue(toast: toastView)
         case .failure(let error):
             UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.ReaderModeAddPageMaybeExistsErrorAccessibilityLabel)
             print("readingList.createRecordWithURL(url: \"\(url.absoluteString)\", ...) failed with error: \(error)")
@@ -1559,11 +1535,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
 
     func urlBarDidEnterOverlayMode() {
         libraryDrawerViewController?.close()
-
-        if let toast = clipboardBarDisplayHandler?.clipboardToast {
-            toast.removeFromSuperview()
-        }
-
         showNeevaHome(inline: false)
     }
 
@@ -1821,21 +1792,11 @@ extension BrowserViewController: HomePanelDelegate {
         }
 
         // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-        if !FeatureFlag[.useOldToast] {
-            let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
-                self.tabManager.selectTab(tab)
-            })
+        let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
+            self.tabManager.selectTab(tab)
+        })
 
-            ToastViewManager.shared.enqueue(toast: toastView)
-        } else {
-            let toast = ButtonToast(labelText: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, completion: { buttonPressed in
-                if buttonPressed {
-                    self.tabManager.selectTab(tab)
-                }
-            })
-
-            self.show(toast: toast)
-        }
+        ToastViewManager.shared.enqueue(toast: toastView)
     }
     var homePanelIsPrivate: Bool { tabManager.selectedTab?.isPrivate ?? false }
 
@@ -1987,23 +1948,6 @@ extension BrowserViewController: TabManagerDelegate {
         guard let url = urlFromAnotherApp?.url else { return }
         openURLInNewTab(url, isPrivate: urlFromAnotherApp?.isPrivate ?? false)
         urlFromAnotherApp = nil
-    }
-
-    func show(toast: Toast, afterWaiting delay: DispatchTimeInterval = SimpleToastUX.ToastDelayBefore, duration: DispatchTimeInterval? = SimpleToastUX.ToastDismissAfter) {
-        if let downloadToast = toast as? DownloadToast {
-            self.downloadToast = downloadToast
-        }
-
-        // If BVC isnt visible hold on to this toast until viewDidAppear
-        if self.view.window == nil {
-            self.pendingToast = toast
-            return
-        }
-
-        toast.showToast(viewController: self, delay: delay, duration: duration, makeConstraints: { make in
-            make.left.right.equalTo(self.view)
-            make.bottom.equalTo(self.webViewContainer?.snp.bottom ?? 0)
-        })
     }
 
     func tabManagerDidRemoveAllTabs(_ tabManager: TabManager) {}
@@ -2160,21 +2104,11 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                 }
 
                 // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-                if !FeatureFlag[.useOldToast] {
-                    let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
-                        self.tabManager.selectTab(tab)
-                    })
+                let toastView = ToastViewManager.shared.makeToast(text: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
+                    self.tabManager.selectTab(tab)
+                })
 
-                    ToastViewManager.shared.enqueue(toast: toastView)
-                } else {
-                    let toast = ButtonToast(labelText: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, completion: { buttonPressed in
-                        if buttonPressed {
-                            self.tabManager.selectTab(tab)
-                        }
-                    })
-
-                    self.show(toast: toast)
-                }
+                ToastViewManager.shared.enqueue(toast: toastView)
             }
 
             if !isPrivate {
@@ -2444,13 +2378,7 @@ extension BrowserViewController {
                     onDismiss: {
                         self.hideOverlaySheetViewController()
                         if request.state != .initial {
-                            if !FeatureFlag[.useOldToast] {
-                                ToastDefaults().showToastForSpace(request: request)
-                            } else {
-                                self.show(toast: AddToSpaceToast(request: request, onOpenSpace: { spaceID in
-                                    self.openURLInNewTab(NeevaConstants.appSpacesURL / spaceID)
-                                }))
-                            }
+                            ToastDefaults().showToastForSpace(request: request)
                         }
                     },
                     onOpenURL: { url in

@@ -25,7 +25,7 @@ class ToastProgressViewModel: ObservableObject {
 }
 
 struct ToastProgressView: View {
-    var backgroundColor: Color = Color(SimpleToastUX.ToastDefaultColor)
+    var backgroundColor: Color = Color(ToastViewUX.ToastDefaultColor)
     var stateDidChange: ((ToastProgressStatus) -> ())?
 
     @EnvironmentObject var toastProgressViewModel: ToastProgressViewModel

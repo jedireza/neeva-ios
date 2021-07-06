@@ -13,6 +13,7 @@ public enum ToastViewUX {
     static let defaultDisplayTime = 4.5
     static let height: CGFloat = 53
     static let threshold: CGFloat = 15
+    static let ToastDefaultColor = UIColor.Photon.Grey60
 }
 
 struct ToastStateContent {
@@ -20,6 +21,7 @@ struct ToastStateContent {
     var buttonText: String?
     var buttonAction: (() -> ())?
 }
+
 
 class ToastViewContent: ObservableObject {
     @Published var currentToastStateContent: ToastStateContent
@@ -97,7 +99,7 @@ struct ToastView: View {
 
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 16)
-                    .foregroundColor(Color(SimpleToastUX.ToastDefaultColor))
+                    .foregroundColor(Color(ToastViewUX.ToastDefaultColor))
                     .frame(minHeight: ToastViewUX.height)
 
                 HStack(spacing: 16) {

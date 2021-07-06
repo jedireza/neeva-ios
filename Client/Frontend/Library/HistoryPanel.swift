@@ -215,12 +215,8 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
     func pinToTopSites(_ site: Site) {
         profile.history.addPinnedTopSite(site).uponQueue(.main) { result in
             if result.isSuccess {
-                if !FeatureFlag[.useOldToast] {
-                    let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
-                    ToastViewManager.shared.enqueue(toast: toastView)
-                } else {
-                    SimpleToast().showAlertWithText(Strings.AppMenuAddPinToTopSitesConfirmMessage, bottomContainer: self.view)
-                }
+                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
+                ToastViewManager.shared.enqueue(toast: toastView)
             }
         }
     }

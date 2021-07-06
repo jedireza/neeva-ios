@@ -44,12 +44,8 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
                     guard let wself = self, let url = wself.tab?.canonicalURL else { return }
                     UIPasteboard.general.url = url
 
-                    if !FeatureFlag[.useOldToast] {
-                        let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
-                        ToastViewManager.shared.enqueue(toast: toastView)
-                    } else {
-                        SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: wself.view)
-                    }
+                    let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
+                    ToastViewManager.shared.enqueue(toast: toastView)
                 })
             }
         }
@@ -71,12 +67,8 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
                 guard let wself = self, let url = wself.tab?.canonicalURL else { return }
                 UIPasteboard.general.url = url
 
-                if !FeatureFlag[.useOldToast] {
-                    let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
-                    ToastViewManager.shared.enqueue(toast: toastView)
-                } else {
-                    SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: wself.view)
-                }
+                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
+                ToastViewManager.shared.enqueue(toast: toastView)
             })
         }
         actions.append(UIAction(title: .TabPeekCloseTab, image: UIImage(systemName: "trash"), identifier: nil) { [weak self] _ in

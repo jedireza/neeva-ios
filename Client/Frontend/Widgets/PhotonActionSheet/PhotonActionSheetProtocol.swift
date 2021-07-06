@@ -48,12 +48,8 @@ extension PhotonActionSheetProtocol {
             if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? urlBar.model.url {
                 UIPasteboard.general.url = url
 
-                if !FeatureFlag[.useOldToast] {
-                    let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
-                    ToastViewManager.shared.enqueue(toast: toastView)
-                } else {
-                    SimpleToast().showAlertWithText(Strings.AppMenuCopyURLConfirmMessage, bottomContainer: webViewContainer)
-                }
+                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
+                ToastViewManager.shared.enqueue(toast: toastView)
             }
         }
         if UIPasteboard.general.string != nil {

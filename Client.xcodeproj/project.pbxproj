@@ -219,15 +219,10 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		66C3C769267A8858002B50B1 /* ButtonToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C760267A8858002B50B1 /* ButtonToast.swift */; };
-		66C3C76A267A8858002B50B1 /* DownloadToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C761267A8858002B50B1 /* DownloadToast.swift */; };
-		66C3C76B267A8858002B50B1 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C762267A8858002B50B1 /* Toast.swift */; };
 		66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C763267A8858002B50B1 /* ToastView.swift */; };
 		66C3C76D267A8858002B50B1 /* ToastWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C764267A8858002B50B1 /* ToastWindowManager.swift */; };
-		66C3C76E267A8858002B50B1 /* SimpleToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C765267A8858002B50B1 /* SimpleToast.swift */; };
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
-		66C3C771267A8858002B50B1 /* AddToSpaceToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C768267A8858002B50B1 /* AddToSpaceToast.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
 		66DA9E49268E8EFB001EFF13 /* ToastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DA9E48268E8EFB001EFF13 /* ToastTests.swift */; };
 		742A56391D80B54A00BDB803 /* PhotonActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742A56381D80B54A00BDB803 /* PhotonActionSheet.swift */; };
@@ -1151,15 +1146,10 @@
 		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		66C3C760267A8858002B50B1 /* ButtonToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonToast.swift; sourceTree = "<group>"; };
-		66C3C761267A8858002B50B1 /* DownloadToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadToast.swift; sourceTree = "<group>"; };
-		66C3C762267A8858002B50B1 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		66C3C763267A8858002B50B1 /* ToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		66C3C764267A8858002B50B1 /* ToastWindowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastWindowManager.swift; sourceTree = "<group>"; };
-		66C3C765267A8858002B50B1 /* SimpleToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleToast.swift; sourceTree = "<group>"; };
 		66C3C766267A8858002B50B1 /* ToastProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastProgressView.swift; sourceTree = "<group>"; };
 		66C3C767267A8858002B50B1 /* ToastViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastViewManager.swift; sourceTree = "<group>"; };
-		66C3C768267A8858002B50B1 /* AddToSpaceToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToSpaceToast.swift; sourceTree = "<group>"; };
 		66C3C772267A8909002B50B1 /* TabMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenu.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		742A56381D80B54A00BDB803 /* PhotonActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotonActionSheet.swift; sourceTree = "<group>"; };
@@ -2217,11 +2207,6 @@
 				66C3C767267A8858002B50B1 /* ToastViewManager.swift */,
 				66C3C764267A8858002B50B1 /* ToastWindowManager.swift */,
 				6643042F267C19D200674549 /* ToastDefaults.swift */,
-				66C3C762267A8858002B50B1 /* Toast.swift */,
-				66C3C768267A8858002B50B1 /* AddToSpaceToast.swift */,
-				66C3C760267A8858002B50B1 /* ButtonToast.swift */,
-				66C3C761267A8858002B50B1 /* DownloadToast.swift */,
-				66C3C765267A8858002B50B1 /* SimpleToast.swift */,
 			);
 			path = Toast;
 			sourceTree = "<group>";
@@ -4584,13 +4569,11 @@
 				C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */,
 				4A46E4E426730D790001687E /* CarouselProgressView.swift in Sources */,
 				D314E7F71A37B98700426A76 /* TabToolbar.swift in Sources */,
-				66C3C76E267A8858002B50B1 /* SimpleToast.swift in Sources */,
 				435D660723D7962C0046EFA2 /* UpdateCoverSheetTableViewCell.swift in Sources */,
 				C4E3983D1D21F1E7004E89BA /* TopTabsViews.swift in Sources */,
 				66430430267C19D200674549 /* ToastDefaults.swift in Sources */,
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
 				E4CD9F2D1A6DC91200318571 /* LegacyTabLocationView.swift in Sources */,
-				66C3C771267A8858002B50B1 /* AddToSpaceToast.swift in Sources */,
 				4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */,
 				C9C18DDF26558FF3004710CD /* MutationController.swift in Sources */,
 				0BB5B2881AC0A2B90052877D /* SnackBar.swift in Sources */,
@@ -4684,7 +4667,6 @@
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
-				66C3C769267A8858002B50B1 /* ButtonToast.swift in Sources */,
 				3BB50E201D627539004B33DF /* NeevaHomeViewController.swift in Sources */,
 				F84B22241A09122500AAB793 /* LibraryViewController.swift in Sources */,
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
@@ -4733,7 +4715,6 @@
 				C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */,
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,
-				66C3C76B267A8858002B50B1 /* Toast.swift in Sources */,
 				C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */,
 				122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */,
 				C4E398601D22C409004E89BA /* TopTabsLayout.swift in Sources */,
@@ -4747,7 +4728,6 @@
 				D3C744CD1A687D6C004CE85D /* URIFixup.swift in Sources */,
 				E4A961181AC041C40069AD6F /* ReadabilityService.swift in Sources */,
 				D3BE7B261B054D4400641031 /* main.swift in Sources */,
-				66C3C76A267A8858002B50B1 /* DownloadToast.swift in Sources */,
 				EB8A0A77206ABCE000A9859A /* WebPagesForTesting.swift in Sources */,
 				C94D4099268BAADC003A6766 /* UIKitButton.swift in Sources */,
 				D3A9949C1A3686BD008AD1AC /* BrowserViewController.swift in Sources */,

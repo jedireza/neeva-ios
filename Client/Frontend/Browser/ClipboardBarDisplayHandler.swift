@@ -10,19 +10,14 @@ public enum ClipboardBarToastUX {
     static let ToastDelay = DispatchTimeInterval.milliseconds(4000)
 }
 
-protocol ClipboardBarDisplayHandlerDelegate: AnyObject {
-    func shouldDisplay(clipboardBar bar: ButtonToast)
-}
-
 class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
-    weak var bvc: (ClipboardBarDisplayHandlerDelegate & BrowserViewController)?
+    weak var bvc: BrowserViewController?
     weak var tabManager: TabManager?
     private var sessionStarted = true
     private var sessionRestored = false
     private var firstTabLoaded = false
     private var lastDisplayedURL: String?
     private weak var firstTab: Tab?
-    var clipboardToast: ButtonToast?
 
     init(tabManager: TabManager) {
         self.tabManager = tabManager
@@ -137,29 +132,11 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
 
             self.lastDisplayedURL = absoluteString
 
-            if !FeatureFlag[.useOldToast] {
-                let toastView = ToastViewManager.shared.makeToast(text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle, buttonAction: {
-                    self.bvc?.openURLInNewTabPreservingIncognitoState(url)
-                })
+            let toastView = ToastViewManager.shared.makeToast(text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle, buttonAction: {
+                self.bvc?.openURLInNewTabPreservingIncognitoState(url)
+            })
 
-                ToastViewManager.shared.enqueue(toast: toastView)
-            } else {
-                self.clipboardToast =
-                    ButtonToast(
-                        labelText: Strings.GoToCopiedLink,
-                        descriptionText: url.absoluteDisplayString,
-                        buttonText: Strings.GoButtonTitle,
-                        completion: { buttonPressed in
-                            if buttonPressed {
-                                self.bvc?.openURLInNewTabPreservingIncognitoState(url)
-                            }
-                })
-
-                if let toast = self.clipboardToast {
-                    self.bvc?.shouldDisplay(clipboardBar: toast)
-                }
-            }
-
+            ToastViewManager.shared.enqueue(toast: toastView)
         }
     }
 }

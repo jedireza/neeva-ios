@@ -156,10 +156,6 @@ private extension BrowserToTrayAnimator {
         tabCollectionViewSnapshot.alpha = 0
         tabTray.view.insertSubview(tabCollectionViewSnapshot, belowSubview: tabTray.toolbar)
 
-        if let toast = bvc.clipboardBarDisplayHandler?.clipboardToast {
-            toast.removeFromSuperview()
-        }
-
         container.addSubview(cell)
         cell.layoutIfNeeded()
         cell.title.transform = CGAffineTransform(translationX: 0, y: -cell.title.frame.size.height)
