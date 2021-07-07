@@ -3,6 +3,13 @@
 import SwiftUI
 import Shared
 import Storage
+import SDWebImageSwiftUI
+
+enum SuggestionViewUX {
+    static let ThumbnailSize: CGFloat = 36
+    static let ThumbnailCornerRadius: CGFloat = 4
+    static let TextLeadingPadding: CGFloat = 12
+}
 
 /// Renders a provided suggestion
 public struct SearchSuggestionView: View {
@@ -83,7 +90,7 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                 VStack(alignment: .leading) {
                     label()
                     secondaryLabel()
-                }.padding(.leading, config == .row ? 4 : 0)
+                }.padding(.leading, config == .row ? SuggestionViewUX.TextLeadingPadding : 0)
                 if case .row = config {
                     Spacer()
                     detail()
@@ -122,6 +129,15 @@ struct QuerySuggestionView: View {
         } icon: {
             if let activeType = model.activeLensBang?.type {
                 Symbol(activeType.defaultSymbol)
+            } else if let annotation = suggestion.annotation, let imageUrl = annotation.imageUrl {
+                WebImage(url: URL(string: imageUrl))
+                    .resizable()
+                    .placeholder {
+                        Color.tertiarySystemFill
+                    }.aspectRatio(contentMode: .fill)
+                    .frame(width: SuggestionViewUX.ThumbnailSize,
+                           height: SuggestionViewUX.ThumbnailSize)
+                    .cornerRadius(SuggestionViewUX.ThumbnailCornerRadius)
             } else {
                 switch suggestion.type {
                 case .searchHistory:
@@ -138,7 +154,12 @@ struct QuerySuggestionView: View {
             BoldSpanView(suggestion.suggestedQuery, unboldedSpans: suggestion.boldSpan)
                 .lineLimit(1)
         } secondaryLabel: {
-            EmptyView()
+            if let annotation = suggestion.annotation, let description = annotation.description {
+                Text(description)
+                    .foregroundColor(.secondaryLabel).font(.caption).lineLimit(1)
+            } else {
+                EmptyView()
+            }
         } detail: {
             if suggestion.type != .space {
                 Button(action: { setInput(suggestedQuery) }) {

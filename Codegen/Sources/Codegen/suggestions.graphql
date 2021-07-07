@@ -8,6 +8,10 @@ query Suggestions($query: String!) {
         endExclusive
       }
       source
+      annotation {
+        description
+        imageURL
+      }
     }
     urlSuggestion {
       icon {

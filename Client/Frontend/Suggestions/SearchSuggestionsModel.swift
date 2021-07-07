@@ -88,10 +88,18 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
     public override class func processData(_ data: SuggestionsQuery.Data) -> SuggestionsQueryResult {
         let querySuggestions = data.suggest?.querySuggestion ?? []
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
-        var navSuggestions: [SuggestionsQuery.Data.Suggest.UrlSuggestion] = []
-        // TODO: Rely on score to rank and use partition when we have multiple nav suggestions
-        if let index = urlSuggestions.firstIndex(where: { !($0.subtitle?.isEmpty ?? true)}) {
-            navSuggestions.append(urlSuggestions.remove(at: index))
+        // Move all nav suggestions out of url suggestions. Skip nav suggestions that has an annotation.
+        let navSuggestions = urlSuggestions.filter {
+            let hasSubtitle = !($0.subtitle?.isEmpty ?? true)
+
+            let noAnnotation = $0.sourceQueryIndex != nil
+                && $0.sourceQueryIndex! < querySuggestions.count
+                && querySuggestions[$0.sourceQueryIndex!]
+                .annotation?.description == nil
+            return hasSubtitle && noAnnotation
+        }
+        navSuggestions.forEach { navSuggest in
+            urlSuggestions.removeAll(where: { $0.suggestedUrl == navSuggest.suggestedUrl})
         }
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []

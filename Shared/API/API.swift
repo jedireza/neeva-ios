@@ -2989,6 +2989,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   case extensionUninstall
   case appRegistration
   case appOnboarding
+  case appLogin
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
@@ -2998,6 +2999,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case "ExtensionUninstall": self = .extensionUninstall
       case "AppRegistration": self = .appRegistration
       case "AppOnboarding": self = .appOnboarding
+      case "AppLogin": self = .appLogin
       default: self = .__unknown(rawValue)
     }
   }
@@ -3008,6 +3010,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case .extensionUninstall: return "ExtensionUninstall"
       case .appRegistration: return "AppRegistration"
       case .appOnboarding: return "AppOnboarding"
+      case .appLogin: return "AppLogin"
       case .__unknown(let value): return value
     }
   }
@@ -3018,6 +3021,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case (.extensionUninstall, .extensionUninstall): return true
       case (.appRegistration, .appRegistration): return true
       case (.appOnboarding, .appOnboarding): return true
+      case (.appLogin, .appLogin): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -3029,6 +3033,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       .extensionUninstall,
       .appRegistration,
       .appOnboarding,
+      .appLogin,
     ]
   }
 }
@@ -4985,6 +4990,11 @@ public final class SuggestionsQuery: GraphQLQuery {
             endExclusive
           }
           source
+          annotation {
+            __typename
+            description
+            imageURL
+          }
         }
         urlSuggestion {
           __typename
@@ -5028,7 +5038,7 @@ public final class SuggestionsQuery: GraphQLQuery {
 
   public let operationName: String = "Suggestions"
 
-  public let operationIdentifier: String? = "f6fc29fb786fdd85dc04be57f084f5127187318ffc891cc1654bbc4eafb1e128"
+  public let operationIdentifier: String? = "a9775411b4ec758a0f98463682e23d58e09601b23b89e26bde6173f516cd4826"
 
   public var query: String
 
@@ -5162,6 +5172,7 @@ public final class SuggestionsQuery: GraphQLQuery {
             GraphQLField("suggestedQuery", type: .nonNull(.scalar(String.self))),
             GraphQLField("boldSpan", type: .nonNull(.list(.nonNull(.object(BoldSpan.selections))))),
             GraphQLField("source", type: .nonNull(.scalar(QuerySuggestionSource.self))),
+            GraphQLField("annotation", type: .object(Annotation.selections)),
           ]
         }
 
@@ -5171,8 +5182,8 @@ public final class SuggestionsQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(type: QuerySuggestionType, suggestedQuery: String, boldSpan: [BoldSpan], source: QuerySuggestionSource) {
-          self.init(unsafeResultMap: ["__typename": "QuerySuggestion", "type": type, "suggestedQuery": suggestedQuery, "boldSpan": boldSpan.map { (value: BoldSpan) -> ResultMap in value.resultMap }, "source": source])
+        public init(type: QuerySuggestionType, suggestedQuery: String, boldSpan: [BoldSpan], source: QuerySuggestionSource, annotation: Annotation? = nil) {
+          self.init(unsafeResultMap: ["__typename": "QuerySuggestion", "type": type, "suggestedQuery": suggestedQuery, "boldSpan": boldSpan.map { (value: BoldSpan) -> ResultMap in value.resultMap }, "source": source, "annotation": annotation.flatMap { (value: Annotation) -> ResultMap in value.resultMap }])
         }
 
         public var __typename: String {
@@ -5217,6 +5228,15 @@ public final class SuggestionsQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "source")
+          }
+        }
+
+        public var annotation: Annotation? {
+          get {
+            return (resultMap["annotation"] as? ResultMap).flatMap { Annotation(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "annotation")
           }
         }
 
@@ -5265,6 +5285,55 @@ public final class SuggestionsQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "endExclusive")
+            }
+          }
+        }
+
+        public struct Annotation: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["Annotation"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("description", type: .scalar(String.self)),
+              GraphQLField("imageURL", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(description: String? = nil, imageUrl: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Annotation", "description": description, "imageURL": imageUrl])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var description: String? {
+            get {
+              return resultMap["description"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "description")
+            }
+          }
+
+          public var imageUrl: String? {
+            get {
+              return resultMap["imageURL"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "imageURL")
             }
           }
         }
