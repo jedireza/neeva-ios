@@ -20,6 +20,9 @@ fileprivate func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
     // DEPRECATED in favor of BrowserType and BrowserVersion cookies.
     httpCookieStore.setCookie(NeevaConstants.deviceTypeCookie)
 
+    // Set device name cookie
+    httpCookieStore.setCookie(NeevaConstants.deviceNameCookie)
+
     // Let the website know who we are. Needed as we send a Safari UA string.
     // Unfortunately, setting a customUserAgent is ignored by WebKit for
     // redirected requests. See https://github.com/neevaco/neeva/issues/40875

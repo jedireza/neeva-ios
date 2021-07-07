@@ -53,6 +53,8 @@ public struct NeevaConstants {
         UIDevice.current.userInterfaceIdiom == .pad ? "tablet" : "phone"
     }
 
+    public static var deviceNameValue: String = DeviceInfo.specificModelName
+
     public struct Header {
         public let name: String
         public let value: String
@@ -63,6 +65,7 @@ public struct NeevaConstants {
 
         /// Pass this header to all requests to Neeva from the iOS app.
         public static let deviceType = Header("X-Neeva-Device-Type", deviceTypeValue)
+        public static let deviceName = Header("X-Neeva-Device-Name", deviceNameValue)
     }
 
     /// This cookie is set on requests to identify the requester as the iOS app.
@@ -70,6 +73,17 @@ public struct NeevaConstants {
         HTTPCookie(properties: [
             .name: "DeviceType",
             .value: deviceTypeValue,
+            .domain: NeevaConstants.appHost,
+            .path: "/",
+            .expires: Date.distantFuture
+        ])!
+    }
+
+    /// This cookie is set on requests to identify the requester as the iOS app.
+    public static var deviceNameCookie: HTTPCookie {
+        HTTPCookie(properties: [
+            .name: "DeviceName",
+            .value: deviceNameValue,
             .domain: NeevaConstants.appHost,
             .path: "/",
             .expires: Date.distantFuture
