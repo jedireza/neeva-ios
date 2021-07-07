@@ -247,7 +247,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
 
         let isZeroQueryURL = InternalURL(item.url)?.isZeroQueryURL ?? false
         guard !isZeroQueryURL else {
-            cell.site = Site(url: item.url.absoluteString, title: Strings.NeevaHomePage)
+            cell.site = Site(url: item.url.absoluteString, title: Strings.ZeroQueryPage)
             return cell
         }
 

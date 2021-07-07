@@ -160,7 +160,7 @@ extension Strings {
     public static let RecentlyClosedTabsButtonTitle = MZLocalizedString("HistoryPanel.RecentlyClosedTabsButton.Title", value: "Recently Closed", comment: "Title for the Recently Closed button in the History Panel")
     public static let RecentlyClosedTabsPanelTitle = MZLocalizedString("RecentlyClosedTabsPanel.Title", value: "Recently Closed", comment: "Title for the Recently Closed Tabs Panel")
     public static let HistoryPanelClearHistoryButtonTitle = MZLocalizedString("HistoryPanel.ClearHistoryButtonTitle", value: "Clear Recent History…", comment: "Title for button in the history panel to clear recent history")
-    public static let NeevaHomePage = MZLocalizedString("Neeva.HomePage.Title", value: "Neeva Home Page", comment: "Title for Neeva about:home page in tab history list")
+    public static let ZeroQueryPage = MZLocalizedString("Neeva.ZeroQuery.Title", value: "New Tab", comment: "Title for about:home page in tab history list")
 }
 
 extension String {
