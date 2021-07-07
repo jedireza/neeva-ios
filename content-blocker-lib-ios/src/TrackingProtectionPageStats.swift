@@ -21,7 +21,7 @@ struct TPPageStats {
         if self.domains[blocklistName] == nil {
             self.domains[blocklistName] = [String]()
         }
-       self.domains[blocklistName]?.append(host);
+        self.domains[blocklistName]?.append(host);
     }
 
     func create(matchingBlocklist blocklistName: BlocklistCategory, host: String) -> TPPageStats {

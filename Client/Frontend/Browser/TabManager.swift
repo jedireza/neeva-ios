@@ -708,9 +708,18 @@ extension TabManager: WKNavigationDelegate {
 
     // Note the main frame JSContext (i.e. document, window) is not available yet.
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        if let tab = self[webView], let blocker = tab.contentBlocker {
-            blocker.clearPageStats()
+        // Save stats for the page we are leaving.
+        if let tab = self[webView], let blocker = tab.contentBlocker, let url = tab.url {
+            blocker.pageStatsCache[url] = blocker.stats
         }
+    }
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        // Clear stats for the page we are newly generating.
+        if navigationResponse.isForMainFrame, let tab = self[webView], let blocker = tab.contentBlocker, let url = navigationResponse.response.url {
+            blocker.pageStatsCache[url] = nil
+        }
+        decisionHandler(.allow)
     }
 
     // The main frame JSContext is available, and DOM parsing has begun.
@@ -718,8 +727,15 @@ extension TabManager: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = self[webView] else { return }
 
-        if let tpHelper = tab.contentBlocker, !tpHelper.isEnabled {
-            webView.evaluateJavascriptInDefaultContentWorld("window.__firefox__.TrackingProtectionStats.setEnabled(false, \(UserScriptManager.appIdToken))")
+        if let blocker = tab.contentBlocker {
+            // Initialize to the cached stats for this page. If the page is being fetched
+            // from WebKit's page cache, then this will pick up stats from when that page
+            // was previously loaded. If not, then the cached value will be empty.
+            blocker.stats = blocker.pageStatsCache[webView.url!] ?? TPPageStats()
+            if !blocker.isEnabled {
+                webView.evaluateJavascriptInDefaultContentWorld(
+                    "window.__firefox__.TrackingProtectionStats.setEnabled(false, \(UserScriptManager.appIdToken))")
+            }
         }
     }
 

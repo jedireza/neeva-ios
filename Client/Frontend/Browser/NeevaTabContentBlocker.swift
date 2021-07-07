@@ -35,6 +35,12 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
         }
     }
 
+    // A cache of page stats used to support showing stats for pages loaded
+    // out of WebKit's page cache. Note, this cache is stored on a per-Tab
+    // object rather than globally so that it will be naturally pruned as
+    // tabs are closed. And there is no need to persist this cache.
+    var pageStatsCache: [URL: TPPageStats] = [:]
+
     override var isEnabled: Bool {
         isUserEnabled ?? Defaults[.contentBlockingEnabled]
     }

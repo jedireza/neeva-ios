@@ -21,7 +21,7 @@ extension View {
     }
 }
 
-class TrackingStatsViewModel:ObservableObject {
+class TrackingStatsViewModel: ObservableObject {
     @Published var numTrackers = 0
     @Published var numDomains = 0
     @Published var hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
