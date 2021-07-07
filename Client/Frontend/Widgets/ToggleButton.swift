@@ -17,6 +17,10 @@ class ToggleButton: UIButton {
     var selectedBackgroundColor = UIColor.label
 
     func setSelected(_ selected: Bool, animated: Bool = true) {
+        guard isSelected != selected else {
+            return
+        }
+
         self.isSelected = selected
         pointerStyleProvider = selected ? { button, style, effect in
             // produce a lift effect clipped to the circular background
