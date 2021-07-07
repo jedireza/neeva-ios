@@ -137,7 +137,6 @@ class LegacyURLBarView: UIView {
         legacyCancelButton.setTitle(Strings.CancelString, for: .normal)
         legacyCancelButton.setTitleColor(.systemBlue, for: .normal)
         legacyCancelButton.accessibilityIdentifier = "urlBar-cancel"
-        legacyCancelButton.accessibilityLabel = Strings.BackTitle
         legacyCancelButton.addTarget(self, action: #selector(didClickCancel), for: .touchUpInside)
         legacyCancelButton.alpha = 0
         legacyCancelButton.isPointerInteractionEnabled = true

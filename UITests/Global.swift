@@ -346,14 +346,11 @@ class BrowserUtils {
 
     class func openNeevaMenu(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish()
-        let neevaMenuIdentifier: String
         if iPad() {
-            neevaMenuIdentifier = "URLBarView.neevaMenuButton"
+            tester.waitForView(withAccessibilityIdentifier: "URLBarView.neevaMenuButton").tap()
         } else {
-            neevaMenuIdentifier = "TabToolbar.neevaMenuButton"
+            tester.waitForView(withAccessibilityLabel: "Neeva Menu").tap()
         }
-        tester.waitForView(withAccessibilityIdentifier: neevaMenuIdentifier)
-        tester.tapView(withAccessibilityIdentifier: neevaMenuIdentifier)
         tester.waitForAnimationsToFinish()
     }
 
@@ -542,7 +539,7 @@ class PasscodeUtils {
 class HomePageUtils {
     static func navigateToHomePageSettings(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish()
-        tester.tapView(withAccessibilityIdentifier: "TabToolbar.menuButton")
+        tester.tapView(withAccessibilityLabel: "Neeva Menu")
         tester.tapView(withAccessibilityLabel: "Settings")
         tester.tapView(withAccessibilityIdentifier: "Homepage")
     }

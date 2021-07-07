@@ -59,8 +59,12 @@ enum TabToolbarButtons {
     struct AddToSpace: View {
         let action: () -> ()
 
+        @Environment(\.isIncognito) private var isIncognito
+        @EnvironmentObject var model: TabToolbarModel
+
         var body: some View {
             TabToolbarButton(label: Symbol(.bookmark, size: 20, weight: .medium, label: "Add To Space"), action: action)
+                .disabled(isIncognito || !model.isPage)
         }
     }
 
@@ -69,9 +73,11 @@ enum TabToolbarButtons {
         let buildMenu: () -> UIMenu?
 
         var body: some View {
+            // TODO: when dropping support for iOS 14, change this to a Menu view with a primaryAction
             UIKitButton(action: action) {
                 $0.setImage(Symbol.uiImage(.squareOnSquare, size: 20), for: .normal)
                 $0.setDynamicMenu(buildMenu)
+                $0.accessibilityLabel = "Show Tabs"
             }
         }
     }

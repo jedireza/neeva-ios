@@ -13,7 +13,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case iPadTopTabs = "Show tab strip on iPad"
     case inlineAccountSettings = "Inline Account Settings"
     case mixedSuggestions = "Mixed nav suggestions and query chips"
-    case newTabToolbar = "New Tab Toolbar"
+    case legacyTabToolbar = "Legacy Tab Toolbar"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case newURLBar = "New URL Bar"
     case newURLBarDebug = "New URL Bar: Debug Mode"

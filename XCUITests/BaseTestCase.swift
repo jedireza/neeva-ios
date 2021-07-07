@@ -135,7 +135,7 @@ class BaseTestCase: XCTestCase {
             if (XCUIDevice.shared.orientation == UIDeviceOrientation.landscapeLeft) {
                 waitForExistence(app.buttons["URLBarView.tabsButton"], timeout: 15)
             } else {
-                waitForExistence(app.buttons["TabToolbar.tabsButton"], timeout: 15)
+                waitForExistence(app.buttons["Show Tabs"], timeout: 15)
             }
         }
     }
@@ -175,7 +175,7 @@ class IphoneOnlyTestCase: BaseTestCase {
 
 extension BaseTestCase {
     func tabTrayButton(forApp app: XCUIApplication) -> XCUIElement {
-        return app.buttons["TopTabsViewController.tabsButton"].exists ? app.buttons["TopTabsViewController.tabsButton"] : app.buttons["TabToolbar.tabsButton"]
+        return app.buttons["TopTabsViewController.tabsButton"].exists ? app.buttons["TopTabsViewController.tabsButton"] : app.buttons["Show Tabs"]
     }
 }
 

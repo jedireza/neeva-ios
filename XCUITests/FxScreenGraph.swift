@@ -314,8 +314,8 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             screenState.tap(app.buttons["TopTabsViewController.tabsButton"], to: TabTray)
         } else {
             screenState.gesture(to: TabTray) {
-                if (app.buttons["TabToolbar.tabsButton"].exists) {
-                    app.buttons["TabToolbar.tabsButton"].tap()
+                if (app.buttons["Show Tabs"].exists) {
+                    app.buttons["Show Tabs"].tap()
                 } else {
                     app.buttons["URLBarView.tabsButton"].tap()
                 }
@@ -452,7 +452,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
                 if (XCUIDevice.shared.orientation == UIDeviceOrientation.landscapeLeft) {
                     app.buttons["URLBarView.tabsButton"].tap()
                 } else {
-                    app.buttons["TabToolbar.tabsButton"].tap()
+                    app.buttons["Show Tabs"].tap()
                 }
             }
         }
@@ -714,13 +714,13 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     }
 
     func makeToolBarAvailable(_ screenState: MMScreenStateNode<FxUserState>) {
-        screenState.tap(app.buttons["TabToolbar.neevaMenuButton"], to: NeevaMenu)
+        screenState.tap(app.buttons["Neeva Menu"], to: NeevaMenu)
         if isTablet {
             screenState.tap(app.buttons["TopTabsViewController.tabsButton"], to: TabTray)
         } else {
             screenState.gesture(to: TabTray) {
-                if (app.buttons["TabToolbar.tabsButton"].exists) {
-                    app.buttons["TabToolbar.tabsButton"].tap()
+                if (app.buttons["Show Tabs"].exists) {
+                    app.buttons["Show Tabs"].tap()
                 } else {
                     app.buttons["URLBarView.tabsButton"].tap()
                 }
@@ -731,7 +731,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     map.addScreenState(BrowserTab) { screenState in
         makeURLBarAvailable(screenState)
         screenState.tap(app.buttons["TabLocationView.shareButton"], to: ShareMenu)
-        screenState.tap(app.buttons["TabToolbar.neevaMenuButton"], to: NeevaMenu)
+        screenState.tap(app.buttons["Neeva Menu"], to: NeevaMenu)
 
         screenState.tap(app.buttons["TabLocationView.trackingProtectionButton"], to: TrackingProtectionContextMenuDetails)
 
@@ -746,7 +746,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             let reloadButton = app.buttons["TabLocationView.reloadButton"]
             screenState.press(reloadButton, to: ReloadLongPressMenu)
             screenState.tap(reloadButton, forAction: Action.ReloadURL, transitionTo: WebPageLoading) { _ in }
-            screenState.press(app.buttons["TabToolbar.tabsButton"], to: TabTrayLongPressMenu)
+            screenState.press(app.buttons["Show Tabs"], to: TabTrayLongPressMenu)
         } else {
             let reloadButton = app.buttons["TabLocationView.reloadButton"]
             screenState.press(reloadButton, to: ReloadLongPressMenu)
@@ -754,7 +754,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         }
         // For iPad there is no long press on tabs button
         if !isTablet {
-            let tabsButton = app.buttons["TabToolbar.tabsButton"]
+            let tabsButton = app.buttons["Show Tabs"]
             screenState.press(tabsButton, to: TabTrayLongPressMenu)
         }
 
@@ -762,8 +762,8 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             screenState.tap(app.buttons["TopTabsViewController.tabsButton"], to: TabTray)
         } else {
             screenState.gesture(to: TabTray) {
-                if (app.buttons["TabToolbar.tabsButton"].exists) {
-                    app.buttons["TabToolbar.tabsButton"].tap()
+                if (app.buttons["Show Tabs"].exists) {
+                    app.buttons["Show Tabs"].tap()
                 } else {
                     app.buttons["URLBarView.tabsButton"].tap()
                 }
@@ -856,7 +856,7 @@ extension MMNavigator where T == FxUserState {
         if isTablet {
             waitForExistence(app.buttons["TopTabsViewController.tabsButton"], timeout: 15)
         } else {
-            waitForExistence(app.buttons["TabToolbar.tabsButton"], timeout: 10)
+            waitForExistence(app.buttons["Show Tabs"], timeout: 10)
         }
         self.goto(TabTray)
         createNewTab()
@@ -878,7 +878,7 @@ extension MMNavigator where T == FxUserState {
             if isTablet {
                 waitForExistence(app.buttons["TopTabsViewController.tabsButton"], timeout: 5)
             } else {
-                waitForExistence(app.buttons["TabToolbar.tabsButton"], timeout: 5)
+                waitForExistence(app.buttons["Show Tabs"], timeout: 5)
             }
             self.goto(TabTray)
             self.goto(HomePanelsScreen)

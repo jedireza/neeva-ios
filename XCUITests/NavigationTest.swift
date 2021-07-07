@@ -25,8 +25,8 @@ class NavigationTest: BaseTestCase {
             XCTAssertFalse(app.buttons["Forward"].isEnabled)
             app.buttons["url"].tap()
         } else {
-            XCTAssertFalse(app.buttons["TabToolbar.backButton"].isEnabled)
-            XCTAssertFalse(app.buttons["TabToolbar.forwardButton"].isEnabled)
+            XCTAssertFalse(app.buttons["Back"].isEnabled)
+            XCTAssertFalse(app.buttons["Forward"].isEnabled)
         }
 
         // Once an url has been open, the back button is enabled but not the forward button
@@ -37,8 +37,8 @@ class NavigationTest: BaseTestCase {
             XCTAssertTrue(app.buttons["URLBarView.backButton"].isEnabled)
             XCTAssertFalse(app.buttons["Forward"].isEnabled)
         } else {
-            XCTAssertTrue(app.buttons["TabToolbar.backButton"].isEnabled)
-            XCTAssertFalse(app.buttons["TabToolbar.forwardButton"].isEnabled)
+            XCTAssertTrue(app.buttons["Back"].isEnabled)
+            XCTAssertFalse(app.buttons["Forward"].isEnabled)
         }
 
         // Once a second url is open, back button is enabled but not the forward one till we go back to url_1
@@ -51,20 +51,16 @@ class NavigationTest: BaseTestCase {
             // Go back to previous visited web site
             app.buttons["URLBarView.backButton"].tap()
         } else {
-            XCTAssertTrue(app.buttons["TabToolbar.backButton"].isEnabled)
-            XCTAssertFalse(app.buttons["TabToolbar.forwardButton"].isEnabled)
+            XCTAssertTrue(app.buttons["Back"].isEnabled)
+            XCTAssertFalse(app.buttons["Forward"].isEnabled)
             // Go back to previous visited web site
-            app.buttons["TabToolbar.backButton"].tap()
+            app.buttons["Back"].tap()
         }
         waitUntilPageLoad()
         waitForValueContains(app.buttons["url"], value: "localhost")
 
-        if iPad() {
-            app.buttons["Forward"].tap()
-        } else {
-            // Go forward to next visited web site
-            app.buttons["TabToolbar.forwardButton"].tap()
-        }
+        // Go forward to next visited web site
+        app.buttons["Forward"].tap()
         waitUntilPageLoad()
         waitForValueContains(app.buttons["url"], value: "localhost")
     }

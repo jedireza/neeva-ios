@@ -9,7 +9,6 @@ fileprivate enum TabToolbarUX {
 }
 
 struct TabToolbarView: View {
-    @ObservedObject var model: TabToolbarModel
     let onBack: () -> ()
     let onForward: () -> ()
     let onLongPressBackForward: () -> ()
@@ -17,6 +16,8 @@ struct TabToolbarView: View {
     let onSaveToSpace: () -> ()
     let onShowTabs: () -> ()
     let tabsMenu: () -> UIMenu?
+
+    @EnvironmentObject private var model: TabToolbarModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -34,6 +35,8 @@ struct TabToolbarView: View {
             }
             .padding(.top, 2)
             .background(Color.chrome.ignoresSafeArea())
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("TabToolbar")
         }.accentColor(.label)
     }
 }
@@ -41,7 +44,8 @@ struct TabToolbarView: View {
 struct TabToolbarView_Previews: PreviewProvider {
     static var previews: some View {
         let make = { (model: TabToolbarModel) in
-            TabToolbarView(model: model, onBack: {}, onForward: {}, onLongPressBackForward: {}, onNeevaMenu: {}, onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil })
+            TabToolbarView(onBack: {}, onForward: {}, onLongPressBackForward: {}, onNeevaMenu: {}, onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil })
+                .environmentObject(model)
         }
         VStack {
             Spacer()

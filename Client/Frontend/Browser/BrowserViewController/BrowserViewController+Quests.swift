@@ -44,16 +44,16 @@ extension BrowserViewController {
     }
 
     func showQuestNeevaMenuPrompt() {
-        if !TourManager.shared.hasActiveStep() {
-            return
-        }
+        guard TourManager.shared.hasActiveStep() else { return }
         var target: UIView
         
         scrollController.showToolbars(animated: true)
 
-        if !self.legacyURLBar.toolbarIsShowing {
-            guard case .legacy(let toolbar) = self.toolbar else { return }
-            target = toolbar.toolbarNeevaMenuButton
+        if !self.legacyURLBar.toolbarIsShowing, let toolbar = toolbar {
+            switch toolbar {
+            case .legacy(let toolbar): target = toolbar.toolbarNeevaMenuButton
+            case .modern(let host): target = host.view
+            }
         } else {
             target = self.legacyURLBar.neevaMenuButton
         }

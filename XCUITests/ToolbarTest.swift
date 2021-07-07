@@ -99,7 +99,7 @@ class ToolbarTests: BaseTestCase {
         // Workaround when testing on iPhone. If the orientation is in landscape on iPhone the tests will fail.
         if !iPad() {
             XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
-            waitForExistence(app.otherElements["Navigation Toolbar"])
+            waitForExistence(app.otherElements.matching(identifier: "TabToolbar").firstMatch)
         }
         navigator.openURL(website1["url"]!, waitForLoading: true)
         // Adding the waiter right after navigating to the webpage in order to make the test more stable

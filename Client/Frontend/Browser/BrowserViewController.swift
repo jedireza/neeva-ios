@@ -307,18 +307,18 @@ class BrowserViewController: UIViewController {
         toolbar = nil
 
         if showToolbar {
-            if FeatureFlag[.newTabToolbar] {
+            if FeatureFlag[.legacyTabToolbar] {
+                let toolbar = TabToolbar(model: toolbarModel)
+                footer.addSubview(toolbar)
+                toolbar.tabToolbarDelegate = self
+                self.toolbar = .legacy(toolbar)
+            } else {
                 let toolbar = TabToolbarHost(model: toolbarModel, delegate: self)
                 toolbar.willMove(toParent: self)
                 toolbar.view.setContentHuggingPriority(.required, for: .vertical)
                 footer.addSubview(toolbar.view)
                 addChild(toolbar)
                 self.toolbar = .modern(toolbar)
-            } else {
-                let toolbar = TabToolbar(model: toolbarModel)
-                footer.addSubview(toolbar)
-                toolbar.tabToolbarDelegate = self
-                self.toolbar = .legacy(toolbar)
             }
         }
 
@@ -746,7 +746,7 @@ class BrowserViewController: UIViewController {
         // Setup the bottom toolbar
         toolbar?.view.snp.remakeConstraints { make in
             make.edges.equalTo(self.footer)
-            if !FeatureFlag[.newTabToolbar] {
+            if FeatureFlag[.legacyTabToolbar] {
                 make.height.equalTo(UIConstants.BottomToolbarHeight)
             }
         }
