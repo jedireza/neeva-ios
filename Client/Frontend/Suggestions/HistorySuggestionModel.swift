@@ -12,6 +12,9 @@ private let log = Logger.browserLogger
 
 private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([^/]+)/", options: [])
 
+private let defaultRecencyDuration: UInt64 = 2 * OneDayInMilliseconds * 1000
+private let numSuggestionsToFetch: Int = 40
+
 /**
  * Shared data source for the SearchViewController and the URLBar domain completion.
  * Since both of these use the same SQL query, we can perform the query once and dispatch the results.
@@ -19,8 +22,10 @@ private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([
 class HistorySuggestionModel: ObservableObject {
     fileprivate let frecentHistory: FrecentHistory
 
+
     @Published private(set) var autocompleteSuggestion: String?
     @Published private(set) var sites: [Site]?
+    @Published private(set) var recentSites: [Site]?
 
     private var shouldSkipNextAutocomplete = false
 
@@ -72,7 +77,7 @@ class HistorySuggestionModel: ObservableObject {
                 return
             }
 
-            guard let deferredHistory = frecentHistory.getSites(matchingSearchQuery: query, limit: 100) as? CancellableDeferred else {
+            guard let deferredHistory = frecentHistory.getSites(matchingSearchQuery: query, limit: numSuggestionsToFetch) as? CancellableDeferred else {
                 assertionFailure("FrecentHistory query should be cancellable")
                 return
             }
@@ -93,8 +98,13 @@ class HistorySuggestionModel: ObservableObject {
                 let deferredHistorySites = (result.successValue?.asArray() ?? [])
                     .filter {!($0.url.hasPrefix(NeevaConstants.appSearchURL.absoluteString))}
 
-                // Load the data in the table view.
+                // Split the data to frequent visits from recent history and everything else
+                self.recentSites = deferredHistorySites
+                    .filter { $0.latestVisit != nil &&
+                        $0.latestVisit!.date > Date.nowMicroseconds() - defaultRecencyDuration }
                 self.sites = deferredHistorySites
+                    .filter { $0.latestVisit == nil ||
+                        $0.latestVisit!.date <= Date.nowMicroseconds() - defaultRecencyDuration }
 
                 // If we should skip the next autocomplete, reset
                 // the flag and bail out here.

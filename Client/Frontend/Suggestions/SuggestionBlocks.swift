@@ -100,6 +100,11 @@ struct NavSuggestionsList: View {
     var body: some View {
         SuggestionsDivider(height: isIncognito ?
                             SuggestionBlockUX.TopSpacing : SuggestionBlockUX.Spacing)
+        if let recentHistory = historyModel.recentSites, !recentHistory.isEmpty {
+            ForEach(recentHistory) { site in
+                HistorySuggestionView(site: site)
+            }
+        }
         ForEach(neevaModel.navSuggestions) { suggestion in
             SearchSuggestionView(suggestion)
         }.padding(.top, SuggestionBlockUX.BlockVerticalPadding)
