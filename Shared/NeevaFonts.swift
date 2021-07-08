@@ -35,11 +35,11 @@ extension Text {
     }
 }
 
-fileprivate struct Kern: View {
+public struct Kern: View {
     let style: FontStyle
     let content: Text
     @Environment(\.sizeCategory) private var sizeCategory
-    var body: some View {
+    public var body: some View {
         content.kerning(style.kerning(at: style.size(in: sizeCategory)))
     }
 }

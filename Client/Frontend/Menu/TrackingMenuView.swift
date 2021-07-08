@@ -32,16 +32,16 @@ class TrackingStatsViewModel: ObservableObject {
         }
     }
 
-    init(trackers: [TrackingEntity]) {
-        self.trackers = trackers
+    init(trackingData: TrackingData) {
+        self.numTrackers = trackingData.numTrackers
+        self.numDomains = trackingData.numDomains
+        self.trackers = trackingData.trackingEntities
         onDataUpdated()
     }
 
     func onDataUpdated() {
-        numTrackers = trackers.count
         let trackerDict = trackers.reduce(into: [:]) { $0[$1] = ($0[$1] ?? 0) + 1 }
             .sorted(by: {$0.1 > $1.1})
-        numDomains = trackerDict.count
 
         guard !trackerDict.isEmpty else {
             hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
@@ -101,7 +101,7 @@ struct HallOfShameView: View {
 
 struct TrackingMenuView: View {
     @StateObject var viewModel = TrackingStatsViewModel(
-        trackers: TrackingEntity.getTrackingEntityURLsForCurrentTab()
+        trackingData: TrackingEntity.getTrackingDataForCurrentTab()
     )
 
     @Default(.contentBlockingEnabled) private var isTrackingProtectionEnabled
@@ -143,6 +143,6 @@ struct TrackingMenuView: View {
 
 struct TrackingMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuView(viewModel: TrackingStatsViewModel(trackers: [.Amazon, .Amazon, .Adobe, .Adobe, .Criteo, .Google]))
+        TrackingMenuView(viewModel: TrackingStatsViewModel(trackingData: TrackingData(numTrackers: 10, numDomains: 5, trackingEntities: [.Amazon, .Amazon, .Adobe, .Adobe, .Criteo, .Google])))
     }
 }

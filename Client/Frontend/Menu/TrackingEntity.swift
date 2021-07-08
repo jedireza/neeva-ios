@@ -3,7 +3,13 @@
 import Foundation
 import Shared
 
-public enum TrackingEntity: String {
+struct TrackingData {
+    let numTrackers: Int
+    let numDomains: Int
+    let trackingEntities: [TrackingEntity]
+}
+
+enum TrackingEntity: String {
     case Google = "Google"
     case Facebook = "Facebook"
     case Twitter = "Twitter"
@@ -16,12 +22,30 @@ public enum TrackingEntity: String {
     case IAS = "IAS"
     case Pinterest = "Pinterest"
     case VerizonMedia = "VerizonMedia"
+    static var statsForTesting: TPPageStats? = nil
 
-    static func getTrackingEntityURLsForCurrentTab() -> [TrackingEntity] {
-        let domainsCollapsedAcrossCategories = BrowserViewController.foregroundBVC()
-            .tabManager.selectedTab?.contentBlocker?
-            .stats.domains.reduce(into: []) { $0.append(contentsOf: $1.value)} ?? [String]()
-        return domainsCollapsedAcrossCategories.map {(domain) -> TrackingEntity? in
+    static func getCurrentTrackingStats() -> TPPageStats? {
+        if statsForTesting != nil {
+            return statsForTesting
+        }
+
+        // TODO: Lose the dependency on BVC.
+        return BrowserViewController.foregroundBVC()
+            .tabManager.selectedTab?.contentBlocker?.stats
+    }
+
+    static func getTrackingDataForCurrentTab(
+        stats: TPPageStats? = getCurrentTrackingStats()) -> TrackingData {
+        let domainsCollapsedAcrossCategories = stats?
+            .domains.reduce(into: []) { array, element in
+                array.append(contentsOf: element.value)
+            } ?? [String]()
+        let numTrackers = domainsCollapsedAcrossCategories.count
+        let numDomains = domainsCollapsedAcrossCategories
+            .reduce(into: [String: Int]()) { dict, domain in
+                dict[domain] = (dict[domain] ?? 0) + 1
+            }.count
+        let trackingEntities = domainsCollapsedAcrossCategories.map {(domain) -> TrackingEntity? in
             for element in trackingEntityMap {
                 let url = URL(string: "https://" + domain)!
                 let baseDomain = url.baseDomain!
@@ -31,6 +55,9 @@ public enum TrackingEntity: String {
             }
             return nil
         }.compactMap {$0}
+        return TrackingData(numTrackers: numTrackers,
+                            numDomains: numDomains,
+                            trackingEntities: trackingEntities)
     }
 }
 
