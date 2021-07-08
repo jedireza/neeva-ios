@@ -428,7 +428,7 @@ extension SQLiteHistory: BrowserHistory {
     }
 
     public func addPinnedTopSite(_ site: Site) -> Success { // needs test
-        let now = Date.now()
+        let now = Date.nowMilliseconds()
         guard let guid = site.guid, let host = (site.url as String).asURL?.normalizedHost else {
             return deferMaybe(DatabaseError(description: "Invalid site \(site.url)"))
         }
@@ -505,8 +505,8 @@ extension SQLiteHistory: BrowserHistory {
         }
 
         return db.withConnection { conn -> Void in
-            let now = Date.now()
-
+            let now = Date.nowMilliseconds()
+            
             if self.updateSite(site, atTime: now, withConnection: conn) > 0 {
                 return
             }

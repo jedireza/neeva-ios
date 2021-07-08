@@ -24,7 +24,7 @@ extension SavedTab {
                 let forwardList = tab.webView?.backForwardList.forwardList ?? []
                 let urls = (backList + [currentItem] + forwardList).map { $0.url }
                 let currentPage = -forwardList.count
-                sessionData = SessionData(currentPage: currentPage, urls: urls, lastUsedTime: tab.lastExecutedTime ?? Date.now())
+                sessionData = SessionData(currentPage: currentPage, urls: urls, lastUsedTime: tab.lastExecutedTime ?? Date.nowMilliseconds())
             }
         }
 

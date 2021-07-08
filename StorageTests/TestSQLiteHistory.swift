@@ -1080,7 +1080,7 @@ class TestSQLiteHistory: XCTestCase {
         let insertDeferred = db.withConnection { connection -> Void in
             try connection.executeChange("PRAGMA foreign_keys = OFF")
             let insert = "INSERT OR REPLACE INTO history (guid, url, title, local_modified, is_deleted, should_upload, domain_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            let args: Args = [Bytes.generateGUID(), site.url, site.title, Date.now(), 0, 0, -1]
+            let args: Args = [Bytes.generateGUID(), site.url, site.title, Date.nowMilliseconds(), 0, 0, -1]
             try connection.executeChange(insert, withArgs: args)
         }
 
@@ -1162,7 +1162,7 @@ class TestSQLiteHistory: XCTestCase {
 
         XCTAssertFalse(history.hasSyncedHistory().value.successValue ?? true)
 
-        XCTAssertTrue(history.insertOrUpdatePlace(site, modified: Date.now()).value.isSuccess)
+        XCTAssertTrue(history.insertOrUpdatePlace(site, modified: Date.nowMilliseconds()).value.isSuccess)
 
         XCTAssertTrue(history.hasSyncedHistory().value.successValue ?? false)
     }
@@ -1551,11 +1551,11 @@ class TestSQLiteHistory: XCTestCase {
         let site1 = Site(url: "http://s\(1)ite\(1).com/foo", title: "A \(1)")
         site1.id = 1
         site1.guid = "abc\(1)def"
-        addVisitForSite(site1, intoHistory: history, from: .local, atTime: Date.now())
+        addVisitForSite(site1, intoHistory: history, from: .local, atTime: Date.nowMilliseconds())
         let site2 = Site(url: "http://s\(2)ite\(2).com/foo", title: "A \(2)")
         site2.id = 2
         site2.guid = "abc\(2)def"
-        addVisitForSite(site2, intoHistory: history, from: .local, atTime: Date.now())
+        addVisitForSite(site2, intoHistory: history, from: .local, atTime: Date.nowMilliseconds())
 
 
         let expectation = self.expectation(description: "First.")

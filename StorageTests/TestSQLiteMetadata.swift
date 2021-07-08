@@ -31,7 +31,7 @@ class TestSQLiteMetadata: XCTestCase {
 
         let page = PageMetadata(id: nil, siteURL: site, mediaURL: "http://image.com",
                                 title: "Test", description: "Test Description", type: nil, providerName: nil)
-        self.metadata.storeMetadata(page, forPageURL: site.asURL!, expireAt: Date.now() + 3000).succeeded()
+        self.metadata.storeMetadata(page, forPageURL: site.asURL!, expireAt: Date.nowMilliseconds() + 3000).succeeded()
         let results = metadataFromDB(self.db).value.successValue!
         XCTAssertEqual(results.count, 1)
         let metadata = results[0]!
@@ -49,7 +49,7 @@ class TestSQLiteMetadata: XCTestCase {
         let metadataA2 = PageMetadata(id: nil, siteURL: siteA, mediaURL: "http://image.com",
                                       title: "Second Visit", description: "A new description", type: nil, providerName: nil)
 
-        self.metadata.storeMetadata(metadataA1, forPageURL: siteA.asURL!, expireAt: Date.now() + 3000).succeeded()
+        self.metadata.storeMetadata(metadataA1, forPageURL: siteA.asURL!, expireAt: Date.nowMilliseconds() + 3000).succeeded()
 
         let initialResults = metadataFromDB(self.db).value.successValue!
         XCTAssertEqual(initialResults.count, 1)
@@ -60,8 +60,8 @@ class TestSQLiteMetadata: XCTestCase {
         XCTAssertEqual(initialA.description, "")
         XCTAssertNil(initialA.mediaURL)
 
-        self.metadata.storeMetadata(metadataB, forPageURL: siteB.asURL!, expireAt: Date.now() + 3000).succeeded()
-        self.metadata.storeMetadata(metadataA2, forPageURL: siteA.asURL!, expireAt: Date.now() + 3000).succeeded()
+        self.metadata.storeMetadata(metadataB, forPageURL: siteB.asURL!, expireAt: Date.nowMilliseconds() + 3000).succeeded()
+        self.metadata.storeMetadata(metadataA2, forPageURL: siteA.asURL!, expireAt: Date.nowMilliseconds() + 3000).succeeded()
 
         let results = metadataFromDB(self.db).value.successValue!
 
@@ -80,7 +80,7 @@ class TestSQLiteMetadata: XCTestCase {
     }
 
     func testExpirationPurging() {
-        let baseTime = Date.now()
+        let baseTime = Date.nowMilliseconds()
         let siteA = "http://test.com/site/A"
         let metadataA = PageMetadata(id: nil, siteURL: siteA, mediaURL: nil,
                                      title: "Test", description: "Test Description", type: nil, providerName: nil)

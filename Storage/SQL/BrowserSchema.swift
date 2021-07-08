@@ -1094,7 +1094,7 @@ open class BrowserSchema: Schema {
             // Only migrate bookmarks. The only folders are our roots, and we'll create those later.
             // There should be nothing else in the table, and no structure.
             // Our old bookmarks table didn't have creation date, so we use the current timestamp.
-            let modified = Date.now()
+            let modified = Date.nowMilliseconds()
             let status = 2 // "new"
 
             // We don't specify a title, expecting it to be generated on the fly, because we're smarter than Android.

@@ -14,7 +14,7 @@ open class MockRemoteClientsAndTabs: RemoteClientsAndTabs {
     public let clientsAndTabs: [ClientAndTabs]
 
     public init() {
-        let now = Date.now()
+        let now = Date.nowMilliseconds()
         let client1GUID = Bytes.generateGUID()
         let client2GUID = Bytes.generateGUID()
         let u11 = URL(string: "http://test.com/test1")!

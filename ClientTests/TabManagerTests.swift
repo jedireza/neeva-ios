@@ -268,7 +268,7 @@ class TabManagerTests: XCTestCase {
         func addTab(_ visit: Bool) -> Tab {
             let tab = manager.addTab()
             if visit {
-                tab.lastExecutedTime = Date.now()
+                tab.lastExecutedTime = Date.nowMilliseconds()
             }
             return tab
         }
@@ -448,7 +448,7 @@ class TabManagerTests: XCTestCase {
         func addTab(_ visit: Bool) -> Tab {
             let tab = manager.addTab()
             if visit {
-                tab.lastExecutedTime = Date.now()
+                tab.lastExecutedTime = Date.nowMilliseconds()
             }
             return tab
         }
@@ -490,7 +490,7 @@ class TabManagerTests: XCTestCase {
     func testUndoCloseTabsRemovesAutomaticallyCreatedNonPrivateTab() {
         let tab = manager.addTab()
         let tabToSave = Tab(bvc: BrowserViewController.foregroundBVC(), configuration: WKWebViewConfiguration())
-        tabToSave.sessionData = SessionData(currentPage: 0, urls: [URL(string: "url")!], lastUsedTime: Date.now())
+        tabToSave.sessionData = SessionData(currentPage: 0, urls: [URL(string: "url")!], lastUsedTime: Date.nowMilliseconds())
 
         manager.removeTabs([tab])
         manager.restoreAllClosedTabs()

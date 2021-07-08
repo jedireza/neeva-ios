@@ -364,7 +364,7 @@ extension SQLiteRemoteClientsAndTabs: RemoteDevices {
         return db.transaction { conn -> Void in
             try conn.executeChange("DELETE FROM remote_devices")
 
-            let now = Date.now()
+            let now = Date.nowMilliseconds()
 
             for device in remoteDevices {
                 let sql = """

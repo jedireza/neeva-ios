@@ -219,7 +219,7 @@ class TabManager: NSObject, ObservableObject {
         assert(tab === selectedTab, "Expected tab is selected")
 
         selectedTab?.createWebview()
-        selectedTab?.lastExecutedTime = Date.now()
+        selectedTab?.lastExecutedTime = Date.nowMilliseconds()
 
         delegates.forEach { $0.get()?.tabManager(self, didSelectedTabChange: tab, previous: previous, isRestoring: store.isRestoringTabs) }
         if let tab = previous {

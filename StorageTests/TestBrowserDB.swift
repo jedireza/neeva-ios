@@ -154,11 +154,11 @@ class TestBrowserDB: XCTestCase {
         var longQueryRuntimeDuration: Timestamp = 0
         var shortConcurrentQueryRuntimeDuration: Timestamp = 0
 
-        let longQueryStartTimestamp = Date.now()
+        let longQueryStartTimestamp = Date.nowMilliseconds()
         let longQueryResult = longQuery.bind { result -> Deferred<Maybe<[[String : Any]]>> in
             if let results = result.successValue?.asArray() {
                 isLongQueryDone = true
-                longQueryRuntimeDuration = Date.now() - longQueryStartTimestamp
+                longQueryRuntimeDuration = Date.nowMilliseconds() - longQueryStartTimestamp
                 XCTAssertTrue(isShortConcurrentQueryDone)
                 return deferMaybe(results)
             }
@@ -166,11 +166,11 @@ class TestBrowserDB: XCTestCase {
             return deferMaybe(DatabaseError(description: "Unable to execute long-running query"))
         }
 
-        let shortConcurrentQueryStartTimestamp = Date.now()
+        let shortConcurrentQueryStartTimestamp = Date.nowMilliseconds()
         let shortConcurrentQueryResult = shortConcurrentQuery.bind { result -> Deferred<Maybe<[[String : Any]]>> in
             if let results = result.successValue?.asArray() {
                 isShortConcurrentQueryDone = true
-                shortConcurrentQueryRuntimeDuration = Date.now() - shortConcurrentQueryStartTimestamp
+                shortConcurrentQueryRuntimeDuration = Date.nowMilliseconds() - shortConcurrentQueryStartTimestamp
                 XCTAssertFalse(isLongQueryDone)
                 return deferMaybe(results)
             }
