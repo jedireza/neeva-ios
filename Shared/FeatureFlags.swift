@@ -10,6 +10,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case cardGrid = "New Switcher UI"
     case cardStrip = "Carousel of cards instead of tab strip"
     case feedbackScreenshot = "Attach Screenshot to Feedback"
+    case groupsInSwitcher = "TabGroups and Spaces in Switcher UI"
     case iPadTopTabs = "Show tab strip on iPad"
     case inlineAccountSettings = "Inline Account Settings"
     case legacyTabToolbar = "Legacy Tab Toolbar"
