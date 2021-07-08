@@ -55,7 +55,8 @@ extension Suggestion: Identifiable {
 }
 
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
-public typealias SuggestionsQueryResult = ([Suggestion], [Suggestion], ActiveLensBangInfo?)
+public typealias SuggestionsQueryResult = (
+    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?)
 extension ActiveLensBangInfo: Equatable {
     static let previewBang = ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang)
     static let previewLens = ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens)
@@ -87,25 +88,34 @@ extension ActiveLensBangType {
 public class SuggestionsController: QueryController<SuggestionsQuery, SuggestionsQueryResult> {
     public override class func processData(_ data: SuggestionsQuery.Data) -> SuggestionsQueryResult {
         let querySuggestions = data.suggest?.querySuggestion ?? []
+        // Split queries into standard queries that doesnt have annotations and everything else.
+        let chipQuerySuggestions =
+            querySuggestions.filter { $0.type == .standard && $0.annotation?.description == nil }
+        var rowQuerySuggestions =
+            querySuggestions.filter { $0.type != .standard || $0.annotation?.description != nil }
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
         // Move all nav suggestions out of url suggestions. Skip nav suggestions that has an annotation.
-        let navSuggestions = urlSuggestions.filter {
-            let hasSubtitle = !($0.subtitle?.isEmpty ?? true)
+        var navSuggestions = urlSuggestions.filter { suggestion in
+            let hasSubtitle = !(suggestion.subtitle?.isEmpty ?? true)
 
-            let noAnnotation = $0.sourceQueryIndex != nil
-                && $0.sourceQueryIndex! < querySuggestions.count
-                && querySuggestions[$0.sourceQueryIndex!]
+            let noAnnotation = suggestion.sourceQueryIndex != nil
+                && suggestion.sourceQueryIndex! < querySuggestions.count
+                && querySuggestions[suggestion.sourceQueryIndex!]
                 .annotation?.description == nil
             return hasSubtitle && noAnnotation
         }
-        navSuggestions.forEach { navSuggest in
-            urlSuggestions.removeAll(where: { $0.suggestedUrl == navSuggest.suggestedUrl})
-        }
+        urlSuggestions.removeAll(where: { !($0.subtitle?.isEmpty ?? true)})
+        // Top suggestion is either the first memorized suggestion or the first query shown in rows.
+        let topSuggestions = navSuggestions.isEmpty ?
+            (rowQuerySuggestions.isEmpty ? [] :
+                [rowQuerySuggestions.removeFirst()].map(Suggestion.query))
+            : [navSuggestions.removeFirst()].map(Suggestion.url)
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
         return (
-            querySuggestions.map(Suggestion.query) + urlSuggestions.map(Suggestion.url)
-                + bangSuggestions.compactMap(Suggestion.init(bang:)) + lensSuggestions.compactMap(Suggestion.init(lens:)),
+            topSuggestions, chipQuerySuggestions.map(Suggestion.query),
+            rowQuerySuggestions.map(Suggestion.query) + bangSuggestions.compactMap(Suggestion.init(bang:))
+            + lensSuggestions.compactMap(Suggestion.init(lens:)), urlSuggestions.map(Suggestion.url),
             navSuggestions.map(Suggestion.url),
             data.suggest?.activeLensBangInfo
         )

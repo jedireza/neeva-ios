@@ -49,9 +49,9 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
 
             HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang, suggestions: []))
+                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang))
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens, suggestions: []))
+                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens))
             }.previewDisplayName("Lens/Bang")
 
             HStack(spacing: 0) {
@@ -80,7 +80,7 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
         .padding()
         .previewLayout(.sizeThatFits)
         .environmentObject(SearchQueryModel.shared)
-        .environmentObject(NeevaSuggestionModel(previewLensBang: nil, suggestions: []))
+        .environmentObject(NeevaSuggestionModel(previewLensBang: nil))
         .environmentObject(HistorySuggestionModel(previewSites: []))
     }
 }

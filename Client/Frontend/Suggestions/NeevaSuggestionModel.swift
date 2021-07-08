@@ -6,8 +6,11 @@ import Shared
 import Defaults
 
 class NeevaSuggestionModel: ObservableObject {
-    @Published var suggestions: [Suggestion] = []
-    @Published var rowSuggestions: [Suggestion] = []
+    @Published var topSuggestions: [Suggestion] = []
+    @Published var chipQuerySuggestions: [Suggestion] = []
+    @Published var rowQuerySuggestions: [Suggestion] = []
+    @Published var urlSuggestions: [Suggestion] = []
+    @Published var navSuggestions: [Suggestion] = []
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
     @Published var isIncognito: Bool // TODO: don’t duplicate this source of truth
@@ -17,9 +20,12 @@ class NeevaSuggestionModel: ObservableObject {
     }
 
     init(searchQueryForTesting: String = SearchQueryModel.shared.value, isIncognito: Bool = false,
-         previewLensBang: ActiveLensBangInfo?, suggestions: [Suggestion]) {
+         previewLensBang: ActiveLensBangInfo?, topSuggestions: [Suggestion] = [],
+         chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []) {
         self.isIncognito = isIncognito
-        self.suggestions = suggestions
+        self.topSuggestions = topSuggestions
+        self.chipQuerySuggestions = chipQuerySuggestions
+        self.rowQuerySuggestions = rowQuerySuggestions
         self.activeLensBang = previewLensBang
         self.searchQuery = searchQueryForTesting
     }
@@ -38,11 +44,19 @@ class NeevaSuggestionModel: ObservableObject {
         }
     }
 
+    var suggestions: [Suggestion] {
+        topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions + navSuggestions
+    }
+
     func reload() {
         suggestionQuery?.cancel()
 
         guard shouldShowSuggestions else {
-            suggestions = []
+            topSuggestions = []
+            chipQuerySuggestions = []
+            rowQuerySuggestions = []
+            urlSuggestions = []
+            navSuggestions = []
             activeLensBang = nil
             error = nil
             return
@@ -58,10 +72,14 @@ class NeevaSuggestionModel: ObservableObject {
                 if nsError.domain != NSURLErrorDomain || nsError.code != NSURLErrorCancelled {
                     self.error = error
                 }
-            case .success(let (suggestions, navSuggestions, lensOrBang)):
+            case .success(let (topSuggestions, chipQuerySuggestions,
+                               rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang)):
                 self.error = nil
-                self.suggestions = suggestions
-                self.rowSuggestions = navSuggestions
+                self.topSuggestions = topSuggestions
+                self.chipQuerySuggestions = chipQuerySuggestions
+                self.rowQuerySuggestions = rowQuerySuggestions
+                self.urlSuggestions = urlSuggestions
+                self.navSuggestions = navSuggestions
                 self.activeLensBang = lensOrBang
             }
             if self.suggestions.isEmpty {
@@ -73,13 +91,13 @@ class NeevaSuggestionModel: ObservableObject {
                    searchQuery.trimmingCharacters(in: .whitespaces) == type.sigil + shortcut {
                     switch lensOrBang.type {
                     case .lens:
-                        self.suggestions = [.lens(Suggestion.Lens(shortcut: shortcut, description: description))]
+                        self.rowQuerySuggestions = [.lens(Suggestion.Lens(shortcut: shortcut, description: description))]
                     case .bang:
-                        self.suggestions = [.bang(Suggestion.Bang(shortcut: shortcut, description: description, domain: lensOrBang.domain))]
+                        self.rowQuerySuggestions = [.bang(Suggestion.Bang(shortcut: shortcut, description: description, domain: lensOrBang.domain))]
                     default: fatalError("This should be impossible")
                     }
                 } else {
-                    self.suggestions = [
+                    self.chipQuerySuggestions = [
                         .query(
                             .init(
                                 type: .standard,

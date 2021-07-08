@@ -18,17 +18,18 @@ struct HistorySuggestionView: View {
                         size: SearchViewControllerUX.IconSize,
                         bordered: true)
                 .frame(
-                    width: SearchViewControllerUX.ImageSize,
-                    height: SearchViewControllerUX.ImageSize
+                    width: SearchViewControllerUX.IconSize,
+                    height: SearchViewControllerUX.IconSize
                 )
                 .cornerRadius(4)
         } label: {
             if let title = site.title, !title.isEmpty {
-                Text(title).foregroundColor(.primary).font(.caption).lineLimit(1)
+                Text(title).withFont(.bodyLarge).foregroundColor(.primary).lineLimit(1)
             }
         } secondaryLabel: {
             Text(URL(string: site.url)?.normalizedHostAndPathForDisplay ?? site.url)
-                .foregroundColor(.secondaryLabel).font(.caption).lineLimit(1)
+                .withFont(.bodySmall)
+                .foregroundColor(.secondaryLabel).lineLimit(1)
         } detail: {
             EmptyView()
         }

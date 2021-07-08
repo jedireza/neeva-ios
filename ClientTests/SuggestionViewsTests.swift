@@ -9,7 +9,11 @@ import SFSafeSymbols
 import Storage
 
 extension SuggestionsList: Inspectable { }
+extension Kern: Inspectable { }
 extension PlaceholderSuggestions: Inspectable { }
+extension QuerySuggestionsList: Inspectable { }
+extension TopSuggestionsList: Inspectable { }
+extension SuggestionChipView: Inspectable { }
 extension SearchSuggestionView: Inspectable { }
 extension QuerySuggestionView: Inspectable { }
 extension URLSuggestionView: Inspectable { }
@@ -17,7 +21,6 @@ extension HistorySuggestionView: Inspectable { }
 extension SuggestionView: Inspectable { }
 extension Symbol: Inspectable { }
 extension BoldSpanView: Inspectable { }
-extension NeevaSuggestionsList: Inspectable { }
 extension NavSuggestionsList: Inspectable { }
 
 class SuggestionViewsTests: XCTestCase {
@@ -49,7 +52,7 @@ class SuggestionViewsTests: XCTestCase {
 
     func testQuerySuggestion() throws {
         let model = NeevaSuggestionModel(previewLensBang: nil,
-                                         suggestions: [SuggestionViewsTests.sampleQuery])
+                                         chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
         let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
          let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
         XCTAssertNotNil(query)
@@ -59,13 +62,16 @@ class SuggestionViewsTests: XCTestCase {
         let image = try querySuggestion.inspect().find(ViewType.Image.self).actualImage()
         XCTAssertEqual(image,
                        Image(systemName: SFSymbol.magnifyingglass.rawValue).renderingMode(.template))
-        let label = try querySuggestion.inspect().find(BoldSpanView.self).text().string(locale: Locale(identifier: "en"))
+        let label = try querySuggestion.inspect()
+            .find(ViewType.VStack.self)
+            .find(ViewType.Text.self)
+            .string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva", label)
     }
 
     func testURLSuggestion() throws {
         let model = NeevaSuggestionModel(previewLensBang: nil,
-                                         suggestions: [SuggestionViewsTests.sampleURL])
+                                         topSuggestions: [SuggestionViewsTests.sampleURL])
         let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleURL)
         let url = try suggestionView.inspect().find(URLSuggestionView.self).actualView()
         XCTAssertNotNil(url)
@@ -73,13 +79,14 @@ class SuggestionViewsTests: XCTestCase {
                                     SuggestionViewsTests.sampleURLSuggestion).environmentObject(model)
         let hStack = try urlSuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
-        let label = try hStack.find(BoldSpanView.self).text().string(locale: Locale(identifier: "en"))
+        let label = try hStack.find(ViewType.VStack.self)
+            .find(ViewType.Text.self).string(locale: Locale(identifier: "en"))
         XCTAssertEqual("How was your Neeva onboarding?", label)
     }
 
     func testNavSuggestion() throws {
         let model = NeevaSuggestionModel(previewLensBang: nil,
-                                         suggestions: [SuggestionViewsTests.sampleNav])
+                                         topSuggestions: [SuggestionViewsTests.sampleNav])
         let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleNav)
         let nav = try suggestionView.inspect().find(URLSuggestionView.self).actualView()
         XCTAssertNotNil(nav)
@@ -87,9 +94,10 @@ class SuggestionViewsTests: XCTestCase {
                                     SuggestionViewsTests.sampleNavSuggestion).environmentObject(model)
         let hStack = try navSuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
-        let label = try hStack.vStack(1).text(0).string(locale: Locale(identifier: "en"))
+        let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
+        let label = try labels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva Search", label)
-        let secondaryLabel = try hStack.vStack(1).text(1).string(locale: Locale(identifier: "en"))
+        let secondaryLabel = try labels[1].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel)
     }
 
@@ -97,43 +105,45 @@ class SuggestionViewsTests: XCTestCase {
         let historySuggestion = HistorySuggestionView(site: SuggestionViewsTests.sampleSite)
         let hStack = try historySuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
-        let label = try hStack.vStack(1).text(0).string(locale: Locale(identifier: "en"))
+        let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
+        let label = try labels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva", label)
-        let secondaryLabel = try hStack.vStack(1).text(1).string(locale: Locale(identifier: "en"))
+        let secondaryLabel = try labels[1].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel)
     }
 
     func testSuggestionsList() throws {
         let neevaModel = NeevaSuggestionModel(previewLensBang: nil,
-                                              suggestions: [SuggestionViewsTests.sampleNav,
-                                                            SuggestionViewsTests.sampleQuery])
+                                              topSuggestions: [SuggestionViewsTests.sampleNav],
+                                              chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
         let suggestionList = SuggestionsList().environmentObject(historyModel)
             .environmentObject(neevaModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
         XCTAssertEqual(3, hStacks.count)
-        let label0 = try hStacks[0].vStack(1).text(0).string(locale: Locale(identifier: "en"))
+        let labels0 = try hStacks[0].vStack(1).findAll(ViewType.Text.self)
+        let label0 = try labels0[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva Search", label0)
-        let secondaryLabel0 = try hStacks[0].vStack(1).text(1).string(locale: Locale(identifier: "en"))
+        let secondaryLabel0 = try labels0[1].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel0)
         let label1 = try hStacks[1].vStack(1)
-            .find(BoldSpanView.self).text().string(locale: Locale(identifier: "en"))
+            .find(ViewType.Text.self).string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva", label1)
-        let label2 = try hStacks[2].vStack(1).text(0).string(locale: Locale(identifier: "en"))
+        let labels2 = try hStacks[2].vStack(1).findAll(ViewType.Text.self)
+        let label2 = try labels2[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva", label2)
-        let secondaryLabel2 = try hStacks[2].vStack(1).text(1).string(locale: Locale(identifier: "en"))
+        let secondaryLabel2 = try labels2[1].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel2)
     }
 
     func testSuggestionsListNoNeevaSuggestions() throws {
-        let neevaModel = NeevaSuggestionModel(searchQueryForTesting: "query", previewLensBang: nil,
-                                              suggestions: [])
+        let neevaModel = NeevaSuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
 
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
         let suggestionList = SuggestionsList().environmentObject(historyModel)
             .environmentObject(neevaModel)
-        let list = try suggestionList.inspect().find(ViewType.List.self)
+        let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
         XCTAssertNotNil(list)
 
         // We should be showing a placeholder with 1 actual suggestion, and 6 placeholders:
@@ -144,8 +154,7 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {
-        let neevaModel = NeevaSuggestionModel(isIncognito: true, previewLensBang: nil,
-                                              suggestions: [])
+        let neevaModel = NeevaSuggestionModel(isIncognito: true, previewLensBang: nil)
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
         let suggestionList = SuggestionsList().environmentObject(historyModel)
             .environmentObject(neevaModel)
@@ -154,9 +163,10 @@ class SuggestionViewsTests: XCTestCase {
 
         // We should not be showing placeholder suggestions
         XCTAssertEqual(1, hStacks.count)
-        let label0 = try hStacks[0].vStack(1).text(0).string(locale: Locale(identifier: "en"))
+        let labels = try hStacks[0].vStack(1).findAll(ViewType.Text.self)
+        let label0 = try labels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva", label0)
-        let secondaryLabel0 = try hStacks[0].vStack(1).text(1).string(locale: Locale(identifier: "en"))
+        let secondaryLabel0 = try labels[1].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel0)
     }
 }

@@ -7,8 +7,10 @@ import SDWebImageSwiftUI
 
 enum SuggestionViewUX {
     static let ThumbnailSize: CGFloat = 36
-    static let ThumbnailCornerRadius: CGFloat = 4
-    static let TextLeadingPadding: CGFloat = 12
+    static let CornerRadius: CGFloat = 4
+    static let Padding: CGFloat = 12
+    static let ChipPadding: CGFloat = 4
+    static let RowHeight: CGFloat = 58
 }
 
 /// Renders a provided suggestion
@@ -45,9 +47,13 @@ struct SuggestionSpec: ViewModifier {
         switch config {
         case .row:
             content
+                .frame(height: SuggestionViewUX.RowHeight)
+                .padding(.horizontal, SuggestionViewUX.Padding)
         case .chip:
             content.padding(6)
-                .background(Capsule().fill(Color.DefaultBackground).shadow(radius: 2))
+                .background(Color.DefaultBackground)
+                .clipShape(Capsule())
+                .overlay(Capsule().stroke(Color(UIColor.Browser.urlBarDivider), lineWidth: 1))
         }
     }
 }
@@ -84,21 +90,21 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
     var body: some View {
         Button(action: action) {
             HStack(spacing: 0) {
-                icon()
-                    .foregroundColor(.secondaryLabel)
-                    .frame(width: 32, alignment: .leading)
-                VStack(alignment: .leading) {
+                icon().foregroundColor(.secondaryLabel)
+                VStack(alignment: .leading, spacing: 0) {
                     label()
                     secondaryLabel()
-                }.padding(.leading, config == .row ? SuggestionViewUX.TextLeadingPadding : 0)
+                }.padding(.leading, config == .row ?
+                            SuggestionViewUX.Padding : SuggestionViewUX.ChipPadding)
                 if case .row = config {
-                    Spacer()
+                    Spacer(minLength: 0)
                     detail()
                         .foregroundColor(.secondaryLabel)
                         .font(.callout)
                 }
             }.apply(config: config)
-        }.accentColor(.primary).font(.subheadline)
+        }.accentColor(.primary)
+        .buttonStyle(TableCellButtonStyle())
     }
 }
 
@@ -109,6 +115,7 @@ struct QuerySuggestionView: View {
     @EnvironmentObject private var model: NeevaSuggestionModel
     @Environment(\.setSearchInput) private var setInput
     @Environment(\.onOpenURL) private var openURL
+    @Environment(\.suggestionConfig) private var config
 
     var suggestedQuery: String {
         if let lensOrBang = model.activeLensBang,
@@ -137,7 +144,7 @@ struct QuerySuggestionView: View {
                     }.aspectRatio(contentMode: .fill)
                     .frame(width: SuggestionViewUX.ThumbnailSize,
                            height: SuggestionViewUX.ThumbnailSize)
-                    .cornerRadius(SuggestionViewUX.ThumbnailCornerRadius)
+                    .cornerRadius(SuggestionViewUX.CornerRadius)
             } else {
                 switch suggestion.type {
                 case .searchHistory:
@@ -151,12 +158,13 @@ struct QuerySuggestionView: View {
                 }
             }
         } label: {
-            BoldSpanView(suggestion.suggestedQuery, unboldedSpans: suggestion.boldSpan)
+            Text(suggestion.suggestedQuery)
+                .withFont(.bodyLarge)
                 .lineLimit(1)
         } secondaryLabel: {
             if let annotation = suggestion.annotation, let description = annotation.description {
-                Text(description)
-                    .foregroundColor(.secondaryLabel).font(.caption).lineLimit(1)
+                Text(description).withFont(.bodySmall)
+                    .foregroundColor(.secondaryLabel).lineLimit(1)
             } else {
                 EmptyView()
             }
@@ -194,27 +202,27 @@ struct URLSuggestionView: View {
                             size: SearchViewControllerUX.IconSize,
                             bordered: true)
                     .frame(
-                        width: SearchViewControllerUX.ImageSize,
-                        height: SearchViewControllerUX.ImageSize
+                        width: SearchViewControllerUX.IconSize,
+                        height: SearchViewControllerUX.IconSize
                     )
-                    .cornerRadius(4)
+                    .cornerRadius(SuggestionViewUX.CornerRadius)
             } else {
                 Symbol(.questionmarkDiamondFill)
                     .foregroundColor(.red)
             }
         } label: {
             if let subtitle = suggestion.subtitle, !subtitle.isEmpty {
-                Text(subtitle).foregroundColor(.primary).font(.caption).lineLimit(1)
+                Text(subtitle).withFont(.bodyLarge).foregroundColor(.primary).lineLimit(1)
             } else if let title = suggestion.title {
-                BoldSpanView(title, unboldedSpans: suggestion.boldSpan).lineLimit(1)
+                Text(title).withFont(.bodyLarge).lineLimit(1)
             } else {
-                Text(suggestion.suggestedUrl).lineLimit(1)
+                Text(suggestion.suggestedUrl).withFont(.bodyLarge).lineLimit(1)
             }
         } secondaryLabel: {
             if !(suggestion.subtitle?.isEmpty ?? true), let title = suggestion.title,
                let url = suggestion.suggestedUrl {
                 Text(URL(string: url)?.normalizedHostAndPathForDisplay ?? title)
-                    .foregroundColor(.secondaryLabel).font(.caption).lineLimit(1)
+                    .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
             }
         } detail: {
             if let formatted = format(suggestion.timestamp, as: .full) {
@@ -329,15 +337,15 @@ struct SuggestionView_Previews: PreviewProvider {
                 QuerySuggestionView(suggestion: spaceQuery)
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(NeevaSuggestionModel(previewLensBang: nil, suggestions: []))
+            }.environmentObject(NeevaSuggestionModel(previewLensBang: nil))
             Section(header: Text("Query — Bang active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang), suggestions: []))
+            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
             Section(header: Text("Query — Lens active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens), suggestions: []))
+            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {
                 URLSuggestionView(suggestion: url)
                 BangSuggestionView(suggestion: bang)

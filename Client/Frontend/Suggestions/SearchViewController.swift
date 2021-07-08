@@ -19,8 +19,7 @@ protocol SearchViewControllerDelegate: AnyObject {
 extension Site: Swift.Identifiable {}
 
 enum SearchViewControllerUX {
-    static let ImageSize: CGFloat = 29
-    static let IconSize: CGFloat = 23
+    static let IconSize: CGFloat = 19
 }
 
 struct SuggestionsView: View {

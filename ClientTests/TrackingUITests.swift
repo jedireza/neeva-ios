@@ -10,7 +10,6 @@ extension TrackingMenuView: Inspectable { }
 extension TrackingMenuFirstRowElement: Inspectable { }
 extension HallOfShameElement: Inspectable { }
 extension HallOfShameView: Inspectable { }
-extension Kern: Inspectable { }
 extension Text: Inspectable { }
 
 class TrackingUITests: XCTestCase {

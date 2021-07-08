@@ -12,29 +12,31 @@ struct SuggestionsList: View {
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
-        List {
-            let suggestionList = NeevaSuggestionsList()
-
-            if let lensOrBang = neevaModel.activeLensBang,
-               let description = lensOrBang.description {
-                Section(header: Group {
-                    switch lensOrBang.type {
-                    case .bang:
-                        Text("Search on \(description)")
-                    default:
-                        Text(description)
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVStack(spacing: 0) {
+                if let lensOrBang = neevaModel.activeLensBang,
+                   let description = lensOrBang.description {
+                    Section(header: Group {
+                        switch lensOrBang.type {
+                        case .bang:
+                            Text("Search on \(description)")
+                        default:
+                            Text(description)
+                        }
+                    }.textCase(nil)) {
+                        QuerySuggestionsList()
                     }
-                }.textCase(nil)) {
-                    suggestionList
-                }
-            } else {
-                if neevaModel.suggestions.isEmpty && neevaModel.shouldShowSuggestions {
-                    PlaceholderSuggestions()
                 } else {
-                    suggestionList
+                    if neevaModel.suggestions.isEmpty && neevaModel.shouldShowSuggestions {
+                        PlaceholderSuggestions()
+                    } else {
+                        TopSuggestionsList()
+                        QuerySuggestionsList()
+                        UrlSuggestionsList()
+                    }
                 }
+                NavSuggestionsList()
             }
-            NavSuggestionsList()
         }
     }
 }
@@ -50,13 +52,16 @@ struct SuggestionsList_Previews: PreviewProvider {
         Group {
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: nil, suggestions: suggestions))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: nil,
+                                                        chipQuerySuggestions: suggestions))
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang, suggestions: suggestions))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang,
+                                                        rowQuerySuggestions: suggestions))
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens, suggestions: suggestions))
+                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens,
+                                                        rowQuerySuggestions: suggestions))
         }.previewLayout(.fixed(width: 375, height: 250))
     }
 }
