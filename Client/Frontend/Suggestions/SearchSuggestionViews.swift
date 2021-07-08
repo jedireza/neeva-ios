@@ -141,7 +141,7 @@ struct QuerySuggestionView: View {
                     .resizable()
                     .placeholder {
                         Color.tertiarySystemFill
-                    }.aspectRatio(contentMode: .fill)
+                    }.aspectRatio(contentMode: .fit)
                     .frame(width: SuggestionViewUX.ThumbnailSize,
                            height: SuggestionViewUX.ThumbnailSize)
                     .cornerRadius(SuggestionViewUX.CornerRadius)

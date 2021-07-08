@@ -94,16 +94,8 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         var rowQuerySuggestions =
             querySuggestions.filter { $0.type != .standard || $0.annotation?.description != nil }
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
-        // Move all nav suggestions out of url suggestions. Skip nav suggestions that has an annotation.
-        var navSuggestions = urlSuggestions.filter { suggestion in
-            let hasSubtitle = !(suggestion.subtitle?.isEmpty ?? true)
-
-            let noAnnotation = suggestion.sourceQueryIndex != nil
-                && suggestion.sourceQueryIndex! < querySuggestions.count
-                && querySuggestions[suggestion.sourceQueryIndex!]
-                .annotation?.description == nil
-            return hasSubtitle && noAnnotation
-        }
+        // Move all nav suggestions out of url suggestions.
+        var navSuggestions = urlSuggestions.filter { !($0.subtitle?.isEmpty ?? true) }
         urlSuggestions.removeAll(where: { !($0.subtitle?.isEmpty ?? true)})
         // Top suggestion is either the first memorized suggestion or the first query shown in rows.
         let topSuggestions = navSuggestions.isEmpty ?
