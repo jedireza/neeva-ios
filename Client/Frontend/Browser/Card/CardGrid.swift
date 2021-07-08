@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import SwiftUI
+import Shared
 
 enum SwitcherViews: String, CaseIterable {
     case spaces = "bookmark"
@@ -12,8 +13,8 @@ enum CardGridUX {
     static let PickerHeight: CGFloat = 50
     static let GridTopPadding: CGFloat = 20
     static let GridSpacing: CGFloat = 20
-    static let YStaticOffset: CGFloat = PickerHeight + PickerPadding * 2 + GridTopPadding
-        + 0.25 * CardUX.CardSize + CardUX.HeaderSize
+    static let YStaticOffset: CGFloat = (FeatureFlag[.groupsInSwitcher] ? PickerHeight : 0)
+        +  2 * PickerPadding + GridTopPadding + 0.25 * CardUX.CardSize + CardUX.HeaderSize
 }
 
 fileprivate struct CompletionForAnimation: AnimatableModifier {
@@ -81,6 +82,10 @@ struct CardGrid: View {
     @State var switcherState: SwitcherViews = .tabs
 
     var indexInsideTabGroupModel: Int? {
+        guard FeatureFlag[.groupsInSwitcher] else {
+            return nil
+        }
+
         let selectedTab = tabModel.manager.selectedTab!
         return tabGroupModel.allDetails
             .firstIndex(where: { $0.id == selectedTab.rootUUID })
@@ -88,12 +93,19 @@ struct CardGrid: View {
 
     var indexInsideTabModel: Int? {
         let selectedTab = tabModel.manager.selectedTab!
-        return tabModel.allDetailsWithExclusionList
-            .firstIndex(where: { $0.id == selectedTab.tabUUID })
+        if FeatureFlag[.groupsInSwitcher] {
+            return tabModel.allDetailsWithExclusionList
+                .firstIndex(where: { $0.id == selectedTab.tabUUID })
+        } else {
+            return tabModel.allDetails
+                .firstIndex(where: { $0.id == selectedTab.tabUUID })
+        }
     }
 
     var indexInGrid: Int {
-        indexInsideTabGroupModel ?? tabGroupModel.allDetails.count + indexInsideTabModel!
+        indexInsideTabGroupModel ??
+            (FeatureFlag[.groupsInSwitcher] ? tabGroupModel.allDetails.count : 0)
+            + indexInsideTabModel!
     }
 
     var xOffset: CGFloat {
@@ -112,26 +124,39 @@ struct CardGrid: View {
     var selectedThumbnail: some View {
         let selectedTab = tabModel.manager.selectedTab!
         var details: TabCardDetails? = nil
-        tabGroupModel.allDetails.forEach { groupDetail in
-            groupDetail.allDetails.forEach { tabDetail in
+
+        if FeatureFlag[.groupsInSwitcher] {
+            tabGroupModel.allDetails.forEach { groupDetail in
+                groupDetail.allDetails.forEach { tabDetail in
+                    if tabDetail.id == selectedTab.tabUUID {
+                        details = tabDetail
+                    }
+                }
+            }
+            tabModel.allDetailsWithExclusionList.forEach { tabDetail in
                 if tabDetail.id == selectedTab.tabUUID {
                     details = tabDetail
                 }
             }
-        }
-        tabModel.allDetailsWithExclusionList.forEach { tabDetail in
-            if tabDetail.id == selectedTab.tabUUID {
-                details = tabDetail
+            return details?.thumbnail
+        } else {
+            tabModel.allDetails.forEach { tabDetail in
+                if tabDetail.id == selectedTab.tabUUID {
+                    details = tabDetail
+                }
             }
+            return details?.thumbnail
         }
-        return details?.thumbnail
+
     }
 
     var body: some View {
         GeometryReader { geom in
             ZStack {
                 VStack(spacing: 0) {
-                    GridPicker(switcherState: $switcherState)
+                    if FeatureFlag[.groupsInSwitcher] {
+                        GridPicker(switcherState: $switcherState)
+                    }
                     CardsContainer(switcherState: $switcherState)
                     Spacer(minLength: 0)
                 }
@@ -234,14 +259,22 @@ struct TabCardsView: View {
 
     var body: some View {
         Group {
-            ForEach(tabGroupModel.allDetails, id: \.id) { details in
-                Card(details: details, config: .grid)
-                    .id(details.id)
+            if FeatureFlag[.groupsInSwitcher] {
+                ForEach(tabGroupModel.allDetails, id: \.id) { details in
+                    Card(details: details, config: .grid)
+                        .id(details.id)
+                }
+                ForEach(tabModel.allDetailsWithExclusionList, id: \.id) { details in
+                    Card(details: details, config: .grid)
+                        .id(details.id)
+                }
+            } else {
+                ForEach(tabModel.allDetails, id: \.id) { details in
+                    Card(details: details, config: .grid)
+                        .id(details.id)
+                }
             }
-            ForEach(tabModel.allDetailsWithExclusionList, id: \.id) { details in
-                Card(details: details, config: .grid)
-                    .id(details.id)
-            }
+
         }
     }
 }
