@@ -15,13 +15,15 @@ struct HistorySuggestionView: View {
             openURL(url)
         } icon: {
             FaviconView(url: url, icon: site.icon,
-                        size: SearchViewControllerUX.IconSize,
-                        bordered: true)
+                        size: SearchViewControllerUX.FaviconSize,
+                        bordered: false)
                 .frame(
                     width: SearchViewControllerUX.IconSize,
                     height: SearchViewControllerUX.IconSize
                 )
                 .cornerRadius(4)
+                .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
+                            .stroke(Color.quaternarySystemFill, lineWidth: 1))
         } label: {
             if let title = site.title, !title.isEmpty {
                 Text(title).withFont(.bodyLarge).foregroundColor(.primary).lineLimit(1)

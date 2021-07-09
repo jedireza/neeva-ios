@@ -9,7 +9,8 @@ enum SuggestionViewUX {
     static let ThumbnailSize: CGFloat = 36
     static let CornerRadius: CGFloat = 4
     static let Padding: CGFloat = 12
-    static let ChipPadding: CGFloat = 4
+    static let ChipPadding: CGFloat = 8
+    static let ChipInnerPadding: CGFloat = 10
     static let RowHeight: CGFloat = 58
 }
 
@@ -50,7 +51,7 @@ struct SuggestionSpec: ViewModifier {
                 .frame(height: SuggestionViewUX.RowHeight)
                 .padding(.horizontal, SuggestionViewUX.Padding)
         case .chip:
-            content.padding(6)
+            content.padding(SuggestionViewUX.ChipInnerPadding)
                 .background(Color.DefaultBackground)
                 .clipShape(Capsule())
                 .overlay(Capsule().stroke(Color(UIColor.Browser.urlBarDivider), lineWidth: 1))
@@ -90,7 +91,9 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
     var body: some View {
         Button(action: action) {
             HStack(spacing: 0) {
-                icon().foregroundColor(.secondaryLabel)
+                icon().foregroundColor(.tertiaryLabel)
+                    .frame(width: SearchViewControllerUX.IconSize,
+                           height: SearchViewControllerUX.IconSize)
                 VStack(alignment: .leading, spacing: 0) {
                     label()
                     secondaryLabel()
@@ -199,13 +202,15 @@ struct URLSuggestionView: View {
             } else if let subtitle = suggestion.subtitle, !subtitle.isEmpty,
                       let url = URL(string: suggestion.suggestedUrl) {
                 FaviconView(url: url,
-                            size: SearchViewControllerUX.IconSize,
-                            bordered: true)
+                            size: SearchViewControllerUX.FaviconSize,
+                            bordered: false)
                     .frame(
                         width: SearchViewControllerUX.IconSize,
                         height: SearchViewControllerUX.IconSize
                     )
                     .cornerRadius(SuggestionViewUX.CornerRadius)
+                    .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
+                                .stroke(Color.quaternarySystemFill, lineWidth: 1))
             } else {
                 Symbol(.questionmarkDiamondFill)
                     .foregroundColor(.red)

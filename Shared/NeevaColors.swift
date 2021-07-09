@@ -85,7 +85,7 @@ extension UIColor {
     public static let DefaultBackground = UIColor(named: "Background", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let DefaultTextAndTint = UIColor(named: "TextAndTint", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let MenuBackground = UIColor(named: "MenuBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let TabTrayBackground = UIColor(named: "TabTrayBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let TrayBackground = UIColor(named: "TrayBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 }
 
 extension Color {
@@ -163,6 +163,7 @@ extension Color {
         }
     }
     public static let DefaultBackground = Color(UIColor.DefaultBackground)
+    public static let TrayBackground = Color(UIColor.TrayBackground)
     public static let elevatedDarkBackground = Color(UIColor.elevatedDarkBackground)
     public static let textSelectionHighlight = Color(UIColor.textSelectionHighlight)
 

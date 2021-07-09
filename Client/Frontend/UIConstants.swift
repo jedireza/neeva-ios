@@ -116,7 +116,7 @@ extension UIColor {
         public static let tabsButton = UIColor.label
 
         // Custom color for the background of the tab grid
-        public static let background = UIColor.TabTrayBackground
+        public static let background = UIColor.TrayBackground
     }
 
     public struct TopTabs {
