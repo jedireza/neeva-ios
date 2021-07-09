@@ -4,6 +4,7 @@
 
 import Foundation
 import Shared
+import Defaults
 
 // An enum to route to a settings page.
 enum SettingsPage: String {
@@ -147,6 +148,12 @@ enum NavigationPath {
     
     private static func openUrlFromComponents(components: URLComponents) -> NavigationPath {
         let url = components.valueForQuery("url")?.asURL
+    
+        // If attempting to sign in, skip first run screen
+        if let url = url, NeevaConstants.isAppHost(url.host), url.path.starts(with: "/login") {
+            Defaults[.introSeen] = true
+        }
+        
         // Unless the `open-url` URL specifies a `private` parameter,
         // use the last browsing mode the user was in.
         let isPrivate = Bool(components.valueForQuery("private") ?? "") ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
