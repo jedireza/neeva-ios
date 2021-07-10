@@ -4,15 +4,14 @@
 
 import XCTest
 
-let firstWebsite = (url: path(forTestPage: "test-mozilla-org.html"), tabName: "Internet for people, not profit — Mozilla")
-let secondWebsite = (url: path(forTestPage: "test-mozilla-book.html"), tabName: "The Book of Mozilla")
-let exampleWebsite = (url: path(forTestPage: "test-example.html"), tabName: "Example Domain")
-let homeTabName = "Home"
-let websiteWithSearchField = "https://developer.mozilla.org/en-US/"
+fileprivate let firstWebsite = (url: path(forTestPage: "test-mozilla-org.html"), tabName: "Internet for people, not profit — Mozilla")
+fileprivate let secondWebsite = (url: path(forTestPage: "test-mozilla-book.html"), tabName: "The Book of Mozilla")
+fileprivate let exampleWebsite = (url: path(forTestPage: "test-example.html"), tabName: "Example Domain")
+fileprivate let homeTabName = "Home"
+fileprivate let websiteWithSearchField = "https://developer.mozilla.org/en-US/"
 
-let exampleDomainTitle = "Example Domain"
-let twitterTitle = "Twitter"
-
+fileprivate let exampleDomainTitle = "Example Domain"
+fileprivate let twitterTitle = "Twitter"
 
 class DragAndDropTests: BaseTestCase {
 /* Disble test suite since in theory it does not make sense with Chron tabs implementation

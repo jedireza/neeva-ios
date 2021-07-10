@@ -517,9 +517,6 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func removeTabsAndAddNormalTab(_ tabsToBeRemoved: [Tab], showToast: Bool) {
-        let isPrivate = selectedTab?.isPrivate ?? false
-        let tabsToBeRemoved = tabsToBeRemoved.filter { $0.isPrivate == isPrivate }
-
         addTabsToRecentlyClosed(tabsToBeRemoved, allowToast: showToast)
         removeTabs(tabsToBeRemoved)
 
@@ -545,7 +542,12 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
+        // Avoid remembering incognito tabs.
         let tabs = tabs.filter { !$0.isPrivate }
+        if tabs.isEmpty {
+            return
+        }
+
         let savedTabs = tabs.map { SavedTab(tab: $0, isSelected: selectedTab === $0, tabIndex: self.tabs.firstIndex(of: $0)) }
         recentlyClosedTabs.insert(savedTabs, at: 0)
 
