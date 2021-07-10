@@ -27,7 +27,7 @@ class TabMenu {
                 // wait for tabManager to switch to normal mode before closing private tabs
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: false)
-                    zeroQueryViewController?.model.isPrivate = tabManager.selectedTab!.isPrivate
+                    zeroQueryViewController?.model.isPrivate = false
                 }
             } else {
                 tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: false)
@@ -38,6 +38,12 @@ class TabMenu {
             }
         }
         closeAction.accessibilityLabel = "Confirm Close All Tabs"
+
+        if let popoverPresentationController = actionSheet.popoverPresentationController {
+            popoverPresentationController.sourceView = alertPresentViewController.view
+            popoverPresentationController.sourceRect = CGRect(x: alertPresentViewController.view.bounds.midX, y: alertPresentViewController.view.bounds.midY, width: 0, height: 0)
+            popoverPresentationController.permittedArrowDirections = []
+        }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         // add all actions to alert
@@ -73,7 +79,7 @@ class TabMenu {
 
     // MARK: Recently Closed Tabs
     func createRecentlyClosedTabsMenu() -> UIMenu {
-        let recentlyClosed = tabManager.recentlyClosedTabs.filter {
+        let recentlyClosed = tabManager.recentlyClosedTabs.joined().filter {
             !InternalURL.isValid(url: ($0.url ?? URL(string: "")))
         }
 

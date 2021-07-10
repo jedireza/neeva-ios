@@ -5,7 +5,6 @@
 import XCTest
 
 class DataManagementTests: BaseTestCase {
-
     func testWebSiteDataEnterFirstTime() {
         navigator.performAction(Action.AcceptClearAllWebsiteData)
         let expectedWebsiteDataEntries2 = app.tables.cells.count

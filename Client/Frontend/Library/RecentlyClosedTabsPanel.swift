@@ -70,8 +70,8 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
     }
 
     func loadData()  {
-        if let recentlyClosedTabs = tabManager?.recentlyClosedTabs, recentlyClosedTabs.count > 0 {
-            self.recentlyClosedTabs = recentlyClosedTabs
+        if let recentlyClosedTabs = tabManager?.recentlyClosedTabs.joined(), recentlyClosedTabs.count > 0 {
+            self.recentlyClosedTabs = Array(recentlyClosedTabs)
             self.tableView.reloadData()
         } else {
             navigationController?.popViewController(animated: true)

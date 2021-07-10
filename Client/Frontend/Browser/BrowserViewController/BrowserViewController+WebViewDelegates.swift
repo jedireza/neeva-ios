@@ -662,13 +662,6 @@ extension BrowserViewController: WKNavigationDelegate {
                 tab.provisionalTemporaryDocument = nil
             }
         }
-        
-        if isCmdClickForNewTab {
-            guard let url = webView.url, let isPrivate = self.tabManager.selectedTab?.isPrivate else { return }
-            zeroQueryPanelDidRequestToOpenInNewTab(url, isPrivate: isPrivate)
-            self.isCmdClickForNewTab = false
-            decisionHandler(.cancel)
-        }
 
         // If none of our helpers are responsible for handling this response,
         // just let the webview handle it as normal.

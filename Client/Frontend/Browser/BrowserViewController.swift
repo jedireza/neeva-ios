@@ -1074,10 +1074,12 @@ class BrowserViewController: UIViewController {
 
     func openBlankNewTab(focusLocationField: Bool, isPrivate: Bool = false, searchFor searchText: String? = nil) {
         popToBVC()
-        openURLInNewTab(nil, isPrivate: isPrivate)
-        let freshTab = tabManager.selectedTab
+
+        let newTab = tabManager.addTab(isPrivate: isPrivate)
+        tabManager.select(newTab)
+
         if focusLocationField {
-            focusLocationTextField(forTab: freshTab, setSearchText: searchText)
+            focusLocationTextField(forTab: newTab, setSearchText: searchText)
         }
 
         zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate

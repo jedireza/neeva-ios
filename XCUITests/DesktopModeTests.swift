@@ -142,6 +142,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     func testPrivateModeOnHasNoAffectOnNormalMode() {
         if skipPlatform { return }
 
+        navigator.nowAt(NewTabScreen)
         navigator.openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)

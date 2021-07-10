@@ -102,8 +102,9 @@ class TabManager: NSObject, ObservableObject {
 
     var selectedIndex: Int { return _selectedIndex }
 
-    // Enables undo of recently closed tabs
-    var recentlyClosedTabs = [SavedTab]()
+    // enables undo of recently closed tabs
+    /// supports closing/restoring a group of tabs or a single tab (alone in an array)
+    var recentlyClosedTabs = [[SavedTab]]()
 
     // groups tabs closed together in a certain amount of time into one Toast
     let toastGroupTimerInterval: TimeInterval = 1.5
@@ -546,7 +547,7 @@ class TabManager: NSObject, ObservableObject {
     func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
         let tabs = tabs.filter { !$0.isPrivate }
         let savedTabs = tabs.map { SavedTab(tab: $0, isSelected: selectedTab === $0, tabIndex: self.tabs.firstIndex(of: $0)) }
-        recentlyClosedTabs.append(contentsOf: savedTabs)
+        recentlyClosedTabs.insert(savedTabs, at: 0)
 
         if allowToast {
             closedTabsToShowToastFor.append(contentsOf: savedTabs)
@@ -592,17 +593,17 @@ class TabManager: NSObject, ObservableObject {
         delegates.forEach( { $0.get()?.tabManagerDidRestoreTabs(self) } )
 
         // remove restored tabs from recently closed
-        for tab in savedTabs {
-            if let index = recentlyClosedTabs.firstIndex(of: tab) {
-                recentlyClosedTabs.remove(at: index)
-            }
+        if let index = recentlyClosedTabs.firstIndex(of: savedTabs) {
+            recentlyClosedTabs.remove(at: index)
         }
+
+        closedTabsToShowToastFor.removeAll { savedTabs.contains($0) }
 
         return selectedSavedTab
     }
 
     func restoreAllClosedTabs() {
-        _ = restoreSavedTabs(recentlyClosedTabs)
+        _ = restoreSavedTabs(Array(recentlyClosedTabs.joined()))
     }
 
     func removeAll() {
@@ -624,7 +625,7 @@ class TabManager: NSObject, ObservableObject {
 
     func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {
         assert(Thread.isMainThread)
-        return recentlyClosedTabs.filter({ $0.url == url }).first
+        return recentlyClosedTabs.joined().filter({ $0.url == url }).first
     }
     
     func getTabForUUID(uuid: String) -> Tab? {

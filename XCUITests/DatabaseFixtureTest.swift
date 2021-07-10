@@ -49,6 +49,7 @@ class DatabaseFixtureTest: BaseTestCase {
                 XCTStorageMetric(), // to measure storage consuming
                 XCTMemoryMetric()]) {
                 // activity measurement here
+                navigator.goto(NeevaMenu)
                 navigator.goto(LibraryPanel_History)
             }
         }
