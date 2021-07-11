@@ -800,6 +800,9 @@ class BrowserViewController: UIViewController {
             addChild(zeroQueryViewController)
             view.addSubview(zeroQueryViewController.view)
             zeroQueryViewController.didMove(toParent: self)
+            if FeatureFlag[.cardGrid] {
+                cardGridViewController?.gridModel.hideWithNoAnimation()
+            }
         }
 
         // We have to run this animation, even if the view is already showing

@@ -79,16 +79,20 @@ class CardViewController: UIViewController {
         self.toolbarModel = SwitcherToolbarModel(tabManager: tabManager)
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = .clear
-        gridModel.updateVisibility = { isHidden in
+        gridModel.setVisibilityCallback(updateVisibility: { isHidden in
             self.view.isHidden = isHidden
             self.view.isUserInteractionEnabled = !isHidden
             if !isHidden {
                 self.parent?.view.bringSubviewToFront(self.view)
             }
-        }
-        gridModel.buildMenu = {
+        })
+        gridModel.buildCloseAllTabsMenu = {
             let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
             return tabMenu.createCloseAllTabsMenu()
+        }
+        gridModel.buildRecentlyClosedTabsMenu = {
+            let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
+            return tabMenu.createRecentlyClosedTabsMenu()
         }
         cardStripModel.onToggleVisible = { isVisible in
             self.view.superview?.layoutIfNeeded()
@@ -138,6 +142,13 @@ class CardViewController: UIViewController {
             return
         }
         gridModel.show()
+    }
+
+    func hideGridWithNoAnimation() {
+        guard config == .grid else {
+            return
+        }
+        gridModel.hideWithNoAnimation()
     }
 
 }

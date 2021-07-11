@@ -61,16 +61,34 @@ private extension View {
     }
 }
 
+enum AnimationThumbnailState {
+    case visibleForTrayShown
+    case hidden
+    case visibleForTrayHidden
+}
+
 class GridModel: ObservableObject {
     @Published var isHidden = true
-    @Published var showAnimationThumbnail = true
-    var updateVisibility: ((Bool) -> ())!
+    @Published var animationThumbnailState: AnimationThumbnailState = .visibleForTrayShown
+    private var updateVisibility: ((Bool) -> ())!
     var scrollOffset: CGFloat = CGFloat.zero
-    var buildMenu: (() -> UIMenu)!
+    var buildCloseAllTabsMenu: (() -> UIMenu)!
+    var buildRecentlyClosedTabsMenu: (() -> UIMenu)!
 
     func show() {
+        animationThumbnailState = .visibleForTrayShown
         isHidden = false
         updateVisibility(false)
+    }
+
+    func hideWithNoAnimation() {
+        updateVisibility(true)
+        isHidden = true
+        animationThumbnailState = .visibleForTrayShown
+    }
+
+    func setVisibilityCallback(updateVisibility: @escaping (Bool) -> ()) {
+        self.updateVisibility = updateVisibility
     }
 }
 
@@ -160,18 +178,19 @@ struct CardGrid: View {
                     CardsContainer(switcherState: $switcherState)
                     Spacer(minLength: 0)
                 }
-                if gridModel.showAnimationThumbnail {
+                if gridModel.animationThumbnailState != .hidden {
                     selectedThumbnail.runAfter(toggling: gridModel.isHidden, fromTrueToFalse: {
-                        gridModel.showAnimationThumbnail = false
+                        gridModel.animationThumbnailState = .hidden
                     }, fromFalseToTrue: {
-                        gridModel.updateVisibility(true)
+                        gridModel.hideWithNoAnimation()
                     }).frame(width: gridModel.isHidden ? geom.size.width : CardUX.CardSize,
                              height: gridModel.isHidden ? geom.size.height : CardUX.CardSize)
                     .cornerRadius(CardUX.CornerRadius).clipped()
                     .offset(x: gridModel.isHidden ? 0 : xOffset,
                             y: gridModel.isHidden ? 0: yOffset - geom.size.height / 2)
                     .animation(.spring()).onAppear {
-                        if !gridModel.isHidden {
+                        if !gridModel.isHidden
+                            && gridModel.animationThumbnailState == .visibleForTrayHidden {
                                 gridModel.isHidden.toggle()
                         }
                     }
@@ -203,9 +222,7 @@ struct CardsContainer: View {
                     if case .spaces = switcherState {
                         SpaceCardsView()
                             .environment(\.selectionCompletion) {
-                                gridModel.updateVisibility(true)
-                                gridModel.showAnimationThumbnail = true
-                                gridModel.isHidden = true
+                                gridModel.hideWithNoAnimation()
                                 switcherState = .tabs
                                 value.scrollTo(tabModel.manager.selectedTab?.tabUUID)
                             }
@@ -217,7 +234,7 @@ struct CardsContainer: View {
                                         tabModel.manager.selectedTab?.rootUUID :
                                         tabModel.manager.selectedTab?.tabUUID)
                             }
-                            gridModel.showAnimationThumbnail = true
+                            gridModel.animationThumbnailState = .visibleForTrayHidden
                         }
                     }
                 }.padding(.top, 20).onAppear {

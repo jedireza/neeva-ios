@@ -14,7 +14,7 @@ struct IncognitoButton: View {
         ToggleButtonView(action: {
             let shouldHide = toolbarModel.onToggleIncognito()
             if shouldHide {
-                gridModel.updateVisibility(true)
+                gridModel.hideWithNoAnimation()
             }
         }) {
                 $0.accessibilityLabel = .TabTrayToggleAccessibilityLabel
@@ -66,19 +66,26 @@ struct SwitcherToolbarView: View {
                 IncognitoButton()
                     .environmentObject(toolbarModel)
                 Spacer()
-                TabToolbarButton(label: Symbol(.plusApp, size: 20,
-                                               label: .TabTrayAddTabAccessibilityLabel)) {
+                UIKitButton(action:  {
                     toolbarModel.onNewTab()
-                    gridModel.updateVisibility(true)
-                }
+                    gridModel.hideWithNoAnimation()
+                }) {
+                    let symbol = UIImage(systemName: "plus.app",
+                                         withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+                    $0.setImage(symbol, for: .normal)
+                    $0.tintColor = UIColor.label
+                    $0.accessibilityIdentifier = "TabTrayController.addTabButton"
+                    $0.setDynamicMenu(gridModel.buildRecentlyClosedTabsMenu)
+                }.frame(width: 44, height: 44)
+                .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
                 Spacer()
-                UIKitButton(action:  { gridModel.showAnimationThumbnail = true }) {
+                UIKitButton(action:  { gridModel.animationThumbnailState = .visibleForTrayHidden }) {
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
                     let title = NSAttributedString(string: "Done",
                                                    attributes: [NSAttributedString.Key.font: font])
                     $0.setAttributedTitle(title, for: .normal)
                     $0.setTitleColor(.label, for: .normal)
-                    $0.setDynamicMenu(gridModel.buildMenu)
+                    $0.setDynamicMenu(gridModel.buildCloseAllTabsMenu)
                 }.frame(width: 44, height: 44)
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
                 .accessibilityIdentifier("TabTrayController.doneButton")
