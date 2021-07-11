@@ -86,12 +86,12 @@ enum NavigationPath {
         }
     }
 
-    static func handle(nav: NavigationPath, with bvc: BrowserViewController, tray: TabTrayControllerV1) {
+    static func handle(nav: NavigationPath, with bvc: BrowserViewController) {
         switch nav {
         case .deepLink(let link): NavigationPath.handleDeepLink(link, with: bvc)
         case .url(let url, let isPrivate): NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
         case .text(let text): NavigationPath.handleText(text: text, with: bvc)
-        case .closePrivateTabs: NavigationPath.handleClosePrivateTabs(with: bvc, tray: tray)
+        case .closePrivateTabs: NavigationPath.handleClosePrivateTabs(with: bvc)
         case .widgetUrl(webURL: let webURL, uuid: let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
         }
@@ -179,7 +179,7 @@ enum NavigationPath {
         return .widgetUrl(webURL: tab?.url, uuid: uuid)
     }
 
-    private static func handleClosePrivateTabs(with bvc: BrowserViewController, tray: TabTrayControllerV1) {
+    private static func handleClosePrivateTabs(with bvc: BrowserViewController) {
         bvc.tabManager.removeTabs(bvc.tabManager.privateTabs)
          guard let tab = mostRecentTab(inTabs: bvc.tabManager.normalTabs) else {
              bvc.tabManager.selectTab(bvc.tabManager.addTab())
