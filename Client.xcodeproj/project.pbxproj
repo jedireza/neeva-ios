@@ -244,8 +244,6 @@
 		7B42406E1CA04CAC009B5C28 /* Menu.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B42406D1CA04CAC009B5C28 /* Menu.xcassets */; };
 		7B4980A81CE363ED0017547C /* Settings.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B4980A71CE363ED0017547C /* Settings.xcassets */; };
 		7B604F991C494F74006EEEC3 /* KIF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F981C494F74006EEEC3 /* KIF.framework */; };
-		7B604F9B1C4950F2006EEEC3 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */; };
-		7B604F9D1C495143006EEEC3 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */; };
 		7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FA11C495268006EEEC3 /* SnapKit.framework */; };
 		7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */; };
 		7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8A47F51D01D3B400C07734 /* PassKit.framework */; };
@@ -331,6 +329,7 @@
 		C9086050266693340049C072 /* CapsuleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908604F266693340049C072 /* CapsuleTextField.swift */; };
 		C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860512666BEE30049C072 /* SpacerExtensions.swift */; };
 		C9299E382694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */; };
+		C92CB6C7269BB8A3006551FB /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = C92CB6C6269BB8A3006551FB /* SDWebImage */; };
 		C93EFEE226713AF7000396B5 /* ErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE126713AF7000396B5 /* ErrorConstants.swift */; };
 		C93EFEE5267150FD000396B5 /* TabLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE4267150FD000396B5 /* TabLocationView.swift */; };
 		C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */; };
@@ -427,7 +426,6 @@
 		C9DF56AC266A852D009A2E6C /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		C9DF56B1266A86CD009A2E6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9DF56AF266A86C4009A2E6C /* Assets.xcassets */; };
 		C9DF56B5266A87CC009A2E6C /* Fuzi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BA9A0221D2C208C00BD418C /* Fuzi.framework */; };
-		C9DF56B8266A87E8009A2E6C /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */; };
 		C9DF56BA266A8806009A2E6C /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B4988CD1E42B01800A12FDA /* SwiftyJSON.framework */; };
 		C9DF56BC266A8821009A2E6C /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */; };
 		C9DF56BE266A8839009A2E6C /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DABDA4AC20DA0FB800FBB0BD /* ObjcExceptionBridging.framework */; };
@@ -1177,7 +1175,6 @@
 		7B42406D1CA04CAC009B5C28 /* Menu.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Menu.xcassets; sourceTree = "<group>"; };
 		7B4980A71CE363ED0017547C /* Settings.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Settings.xcassets; sourceTree = "<group>"; };
 		7B604F981C494F74006EEEC3 /* KIF.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KIF.framework; path = Carthage/Build/iOS/KIF.framework; sourceTree = "<group>"; };
-		7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = Carthage/Build/iOS/SDWebImage.framework; sourceTree = "<group>"; };
 		7B604FA11C495268006EEEC3 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/iOS/XCGLogger.framework; sourceTree = "<group>"; };
 		7B8A47F51D01D3B400C07734 /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
@@ -1699,6 +1696,7 @@
 				C877037A25222F30006E38EB /* Shared.framework in Frameworks */,
 				C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */,
 				C8E18F1E222EDE4500E30E52 /* Accelerate.framework in Frameworks */,
+				C92CB6C7269BB8A3006551FB /* SDWebImage in Frameworks */,
 				E6231C051B90A472005ABB0D /* libxml2.2.tbd in Frameworks */,
 				EBCF403B221CBC5B00B38F28 /* SwiftProtobuf.framework in Frameworks */,
 				E6231C011B90A44F005ABB0D /* libz.tbd in Frameworks */,
@@ -1709,7 +1707,6 @@
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */,
-				7B604F9B1C4950F2006EEEC3 /* SDWebImage.framework in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
 				3B4988CE1E42B01800A12FDA /* SwiftyJSON.framework in Frameworks */,
 				7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */,
@@ -1778,7 +1775,6 @@
 				C9DF56BE266A8839009A2E6C /* ObjcExceptionBridging.framework in Frameworks */,
 				C9DF56C4266A89EA009A2E6C /* SDWebImageSwiftUI in Frameworks */,
 				C9DF56B5266A87CC009A2E6C /* Fuzi.framework in Frameworks */,
-				C9DF56B8266A87E8009A2E6C /* SDWebImage.framework in Frameworks */,
 				C9DF56AC266A852D009A2E6C /* libStorage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1819,7 +1815,6 @@
 				C877039625222FDC006E38EB /* Shared.framework in Frameworks */,
 				3BA9A0321D2C2C0500BD418C /* Fuzi.framework in Frameworks */,
 				0B75AEA91AC20FB20015E5DC /* ImageIO.framework in Frameworks */,
-				7B604F9D1C495143006EEEC3 /* SDWebImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2274,7 +2269,6 @@
 				7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */,
 				DABDA4AC20DA0FB800FBB0BD /* ObjcExceptionBridging.framework */,
 				7B604FA11C495268006EEEC3 /* SnapKit.framework */,
-				7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */,
 				7B604F981C494F74006EEEC3 /* KIF.framework */,
 				E4B334891BBF23F9004E2BFF /* AdSupport.framework */,
 				E4B334871BBF23F3004E2BFF /* iAd.framework */,
@@ -3645,6 +3639,7 @@
 			name = Client;
 			packageProductDependencies = (
 				4A88F979266373F9007C203D /* SDWebImageSwiftUI */,
+				C92CB6C6269BB8A3006551FB /* SDWebImage */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -3821,6 +3816,7 @@
 				C9D4565826558F400047267A /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				4A88F978266373F9007C203D /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */,
+				C92CB6C5269BB8A3006551FB /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -6096,6 +6092,14 @@
 				minimumVersion = 2.0.2;
 			};
 		};
+		C92CB6C5269BB8A3006551FB /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		C9D4564626558EDA0047267A /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apollographql/apollo-ios";
@@ -6164,6 +6168,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4A88F978266373F9007C203D /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		C92CB6C6269BB8A3006551FB /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C92CB6C5269BB8A3006551FB /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 		C9C18E2026559311004710CD /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;

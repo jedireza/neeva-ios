@@ -2,7 +2,7 @@
   "object": {
     "pins": [
       {
-        "package": "Apollo",
+        "package": "apollo-ios",
         "repositoryURL": "https://github.com/apollographql/apollo-ios",
         "state": {
           "branch": null,
@@ -47,21 +47,12 @@
         }
       },
       {
-        "package": "Reachability",
+        "package": "Reachability.swift",
         "repositoryURL": "https://github.com/ashleymills/Reachability.swift",
         "state": {
           "branch": null,
           "revision": "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
           "version": "5.1.0"
-        }
-      },
-      {
-        "package": "SDWebImage",
-        "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
-        "state": {
-          "branch": null,
-          "revision": "76dd4b49110b8624317fc128e7fa0d8a252018bc",
-          "version": "5.11.1"
         }
       },
       {
@@ -119,7 +110,7 @@
         }
       },
       {
-        "package": "Introspect",
+        "package": "SwiftUI-Introspect",
         "repositoryURL": "https://github.com/siteline/SwiftUI-Introspect",
         "state": {
           "branch": null,
