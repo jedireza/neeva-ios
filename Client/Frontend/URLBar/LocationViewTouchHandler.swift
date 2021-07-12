@@ -29,7 +29,6 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         var wrapper: LocationViewTouchHandler!
 
         private var touchCount = 0
-        // TODO(iOS 15): remove this since Paste & Go is available natively
         private var oldItems: [UIMenuItem]?
         private lazy var longPressGesture: UILongPressGestureRecognizer = {
             .init(target: self, action: #selector(didLongPress))
@@ -45,16 +44,14 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             self.wrapper = wrapper
 
             super.init(frame: .zero)
-            if #available(iOS 15, *) { } else {
-                NotificationCenter.default.publisher(for: UIMenuController.didHideMenuNotification)
-                    .sink { [weak self] _ in
-                        if let items = self?.oldItems {
-                            UIMenuController.shared.menuItems = items
-                            self?.oldItems = nil
-                        }
+            NotificationCenter.default.publisher(for: UIMenuController.didHideMenuNotification)
+                .sink { [weak self] _ in
+                    if let items = self?.oldItems {
+                        UIMenuController.shared.menuItems = items
+                        self?.oldItems = nil
                     }
-                    .store(in: &subscriptions)
-            }
+                }
+                .store(in: &subscriptions)
 
             longPressGesture.delegate = self
             tapGesture.delegate = self
@@ -140,12 +137,10 @@ struct LocationViewTouchHandler: UIViewRepresentable {
 
         @objc func didLongPress() {
             wrapper.isPressed = false
-            if #available(iOS 15, *) { } else {
-                oldItems = oldItems ?? UIMenuController.shared.menuItems
-                UIMenuController.shared.menuItems = [
-                    UIMenuItem(title: wrapper.pasteAndGoAction.name, action: #selector(pasteAndGo(_:))),
-                ]
-            }
+            oldItems = oldItems ?? UIMenuController.shared.menuItems
+            UIMenuController.shared.menuItems = [
+                UIMenuItem(title: wrapper.pasteAndGoAction.name, action: #selector(pasteAndGo(_:))),
+            ]
             becomeFirstResponder() // without this function call, the menu will not appear.
             UIMenuController.shared.showMenu(from: self, rect: frame.inset(by: UIEdgeInsets(top: 0, left: -wrapper.margins.leading, bottom: 0, right: -wrapper.margins.trailing)))
         }
