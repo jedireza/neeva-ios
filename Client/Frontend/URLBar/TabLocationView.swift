@@ -49,7 +49,7 @@ struct TabLocationView: View {
         }
     }
     private var pasteAndGoAction: Action {
-        Action("Paste & Go", icon: .docOnClipboardFill) {
+        Action("Paste and Go", icon: .docOnClipboardFill) {
             UIPasteboard.general.asyncString()
                 .uponQueue(.main) { ($0.successValue as? String).map(onSubmit) }
         }
