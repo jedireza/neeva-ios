@@ -1,18 +1,3 @@
-/* 'After 1 hour' interval item for selecting when to require passcode */
-"After 1 hour" = "After 1 hour";
-
-/* 'After 1 minute' interval item for selecting when to require passcode */
-"After 1 minute" = "After 1 minute";
-
-/* 'After 5 minutes' interval item for selecting when to require passcode */
-"After 5 minutes" = "After 5 minutes";
-
-/* 'After 10 minutes' interval item for selecting when to require passcode */
-"After 10 minutes" = "After 10 minutes";
-
-/* 'After 15 minutes' interval item for selecting when to require passcode */
-"After 15 minutes" = "After 15 minutes";
-
 /* Label used as a setting item and title of the following screen to change the current passcode */
 "Change Passcode" = "Change Passcode";
 
@@ -30,9 +15,6 @@
 
 /* Label for the Face ID/Passcode item in Settings */
 "Face ID & Passcode" = "Face ID & Passcode";
-
-/* 'Immediately' interval item for selecting when to require passcode */
-"Immediately" = "Immediately";
 
 /* Error message displayed when user enters incorrect passcode when trying to enter a protected section of the app with attempts remaining */
 "Incorrect passcode. Try again (Attempts remaining: %d)." = "Incorrect passcode. Try again (Attempts remaining: %d).";
