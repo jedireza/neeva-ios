@@ -100,6 +100,7 @@ struct ToastView: View {
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 16)
                     .foregroundColor(Color(ToastViewUX.ToastDefaultColor))
+                    .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.40), radius: 48, x: 0, y: 16)
                     .frame(minHeight: ToastViewUX.height)
 
                 HStack(spacing: 16) {
