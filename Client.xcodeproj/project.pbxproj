@@ -195,7 +195,6 @@
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
-		4A88F97A266373F9007C203D /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4A88F979266373F9007C203D /* SDWebImageSwiftUI */; };
 		4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
 		4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
@@ -242,8 +241,6 @@
 		7B42406E1CA04CAC009B5C28 /* Menu.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B42406D1CA04CAC009B5C28 /* Menu.xcassets */; };
 		7B4980A81CE363ED0017547C /* Settings.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B4980A71CE363ED0017547C /* Settings.xcassets */; };
 		7B604F991C494F74006EEEC3 /* KIF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F981C494F74006EEEC3 /* KIF.framework */; };
-		7B604F9B1C4950F2006EEEC3 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */; };
-		7B604F9D1C495143006EEEC3 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */; };
 		7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FA11C495268006EEEC3 /* SnapKit.framework */; };
 		7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */; };
 		7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8A47F51D01D3B400C07734 /* PassKit.framework */; };
@@ -352,6 +349,8 @@
 		C994645F2657052200613110 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994645E2657052200613110 /* FeatureFlags.swift */; };
 		C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9946460265706D500613110 /* FeatureFlagSettings.swift */; };
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
+		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9ACC462267A4408009AE182 /* HistorySuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
 		C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */; };
@@ -424,7 +423,6 @@
 		C9DF56AC266A852D009A2E6C /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		C9DF56B1266A86CD009A2E6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9DF56AF266A86C4009A2E6C /* Assets.xcassets */; };
 		C9DF56B5266A87CC009A2E6C /* Fuzi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BA9A0221D2C208C00BD418C /* Fuzi.framework */; };
-		C9DF56B8266A87E8009A2E6C /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */; };
 		C9DF56BA266A8806009A2E6C /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B4988CD1E42B01800A12FDA /* SwiftyJSON.framework */; };
 		C9DF56BC266A8821009A2E6C /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */; };
 		C9DF56BE266A8839009A2E6C /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DABDA4AC20DA0FB800FBB0BD /* ObjcExceptionBridging.framework */; };
@@ -433,7 +431,6 @@
 		C9DF56D1266A8DC5009A2E6C /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
 		C9DF56D2266A8DC5009A2E6C /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		C9DF56D3266A8DC5009A2E6C /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1389F2656CBE70018D87D /* nicons-500.ttf */; };
-		C9DF56D5266A8F96009A2E6C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C9DF56D4266A8F96009A2E6C /* SDWebImageSwiftUI */; };
 		C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C0265D555600651DCB /* MailAppSetting.swift */; };
 		C9E5F2B12673B4A000025A7F /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B02673B4A000025A7F /* NavigationController.swift */; };
 		C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B42673EF1D00025A7F /* Environment.swift */; };
@@ -1273,6 +1270,7 @@
 		C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsSection.swift; sourceTree = "<group>"; };
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 		C9946460265706D500613110 /* FeatureFlagSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettings.swift; sourceTree = "<group>"; };
+		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
 		C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySuggestionView.swift; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
 		C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuSettingsView.swift; sourceTree = "<group>"; };
@@ -1483,7 +1481,6 @@
 		E40FAB0B1A7ABB77009CB80D /* WebServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebServer.swift; sourceTree = "<group>"; };
 		E41A7D4A1A1BE04500245963 /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		E4424B3B1AC71FB400F44C38 /* FiraSans-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FiraSans-Book.ttf"; sourceTree = "<group>"; };
-		E46175F21EBB73A10021AE8A /* Sentry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sentry.framework; path = Carthage/Build/iOS/Sentry.framework; sourceTree = "<group>"; };
 		E47616C61AB74CA600E7DD25 /* ReaderModeBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModeBarView.swift; sourceTree = "<group>"; };
 		E4A960051ABB9C450069AD6F /* ReaderModeUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModeUtils.swift; sourceTree = "<group>"; };
 		E4A961171AC041C40069AD6F /* ReadabilityService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadabilityService.swift; sourceTree = "<group>"; };
@@ -1680,7 +1677,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A88F97A266373F9007C203D /* SDWebImageSwiftUI in Frameworks */,
 				F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */,
 				C877037A25222F30006E38EB /* Shared.framework in Frameworks */,
 				C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */,
@@ -1694,8 +1690,8 @@
 				0B8E0FF41A932BD500161DC3 /* ImageIO.framework in Frameworks */,
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
+				C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
 				7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */,
-				7B604F9B1C4950F2006EEEC3 /* SDWebImage.framework in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
 				3B4988CE1E42B01800A12FDA /* SwiftyJSON.framework in Frameworks */,
 				7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */,
@@ -1764,7 +1760,6 @@
 				C9DF56BE266A8839009A2E6C /* ObjcExceptionBridging.framework in Frameworks */,
 				C9DF56C4266A89EA009A2E6C /* SDWebImageSwiftUI in Frameworks */,
 				C9DF56B5266A87CC009A2E6C /* Fuzi.framework in Frameworks */,
-				C9DF56B8266A87E8009A2E6C /* SDWebImage.framework in Frameworks */,
 				C9DF56AC266A852D009A2E6C /* libStorage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1800,12 +1795,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9DF56D5266A8F96009A2E6C /* SDWebImageSwiftUI in Frameworks */,
 				F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */,
 				C877039625222FDC006E38EB /* Shared.framework in Frameworks */,
+				C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
 				3BA9A0321D2C2C0500BD418C /* Fuzi.framework in Frameworks */,
 				0B75AEA91AC20FB20015E5DC /* ImageIO.framework in Frameworks */,
-				7B604F9D1C495143006EEEC3 /* SDWebImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2240,34 +2234,34 @@
 		7B604FC11C496005006EEEC3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C8E18F1F222EDED000E30E52 /* SafariServices.framework */,
 				C8E18F1D222EDE4400E30E52 /* Accelerate.framework */,
-				EBCF403A221CBC5B00B38F28 /* SwiftProtobuf.framework */,
-				392E18021FEC4D7B00EBA79C /* MappaMundi.framework */,
-				E46175F21EBB73A10021AE8A /* Sentry.framework */,
-				3B4988CD1E42B01800A12FDA /* SwiftyJSON.framework */,
-				E6231C041B90A472005ABB0D /* libxml2.2.tbd */,
-				E6231C001B90A44F005ABB0D /* libz.tbd */,
+				E4B334891BBF23F9004E2BFF /* AdSupport.framework */,
 				D39FA16B1A83E17800EE869C /* CoreGraphics.framework */,
+				3BA9A0221D2C208C00BD418C /* Fuzi.framework */,
+				7BA4A9451C4CED780091D032 /* GCDWebServers.framework */,
+				E4B334871BBF23F3004E2BFF /* iAd.framework */,
 				0B8E0FF31A932BD500161DC3 /* ImageIO.framework */,
 				D36998881AD70A0A00650C6C /* IOKit.framework */,
-				3BA9A0221D2C208C00BD418C /* Fuzi.framework */,
-				7B8A47F51D01D3B400C07734 /* PassKit.framework */,
-				7BA4A94B1C4CF03B0091D032 /* SwiftKeychainWrapper.framework */,
-				7BA4A9491C4CEFC70091D032 /* OnePasswordExtension.framework */,
-				7BA4A9451C4CED780091D032 /* GCDWebServers.framework */,
-				7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */,
-				DABDA4AC20DA0FB800FBB0BD /* ObjcExceptionBridging.framework */,
-				7B604FA11C495268006EEEC3 /* SnapKit.framework */,
-				7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */,
 				7B604F981C494F74006EEEC3 /* KIF.framework */,
-				E4B334891BBF23F9004E2BFF /* AdSupport.framework */,
-				E4B334871BBF23F3004E2BFF /* iAd.framework */,
+				E6231C041B90A472005ABB0D /* libxml2.2.tbd */,
+				E6231C001B90A44F005ABB0D /* libz.tbd */,
+				392E18021FEC4D7B00EBA79C /* MappaMundi.framework */,
 				3905274B1C874D35007E0BB7 /* NotificationCenter.framework */,
-				DAD46F3324A1606C001B3967 /* WidgetKit.framework */,
+				DABDA4AC20DA0FB800FBB0BD /* ObjcExceptionBridging.framework */,
+				7BA4A9491C4CEFC70091D032 /* OnePasswordExtension.framework */,
+				7B8A47F51D01D3B400C07734 /* PassKit.framework */,
+				C8E18F1F222EDED000E30E52 /* SafariServices.framework */,
+				7B604F9A1C4950F2006EEEC3 /* SDWebImage.framework */,
+				C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */,
+				7B604FA11C495268006EEEC3 /* SnapKit.framework */,
+				7BA4A94B1C4CF03B0091D032 /* SwiftKeychainWrapper.framework */,
+				EBCF403A221CBC5B00B38F28 /* SwiftProtobuf.framework */,
 				DAD46F3524A1606C001B3967 /* SwiftUI.framework */,
 				66A6A6D42683E632005425D0 /* Intents.framework */,
 				66A6A6DF2683E633005425D0 /* IntentsUI.framework */,
+				3B4988CD1E42B01800A12FDA /* SwiftyJSON.framework */,
+				DAD46F3324A1606C001B3967 /* WidgetKit.framework */,
+				7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -3622,7 +3616,6 @@
 			);
 			name = Client;
 			packageProductDependencies = (
-				4A88F979266373F9007C203D /* SDWebImageSwiftUI */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -3667,7 +3660,6 @@
 			);
 			name = ShareTo;
 			packageProductDependencies = (
-				C9DF56D4266A8F96009A2E6C /* SDWebImageSwiftUI */,
 			);
 			productName = ShareToFirefox;
 			productReference = F84B22491A0920C600AAB793 /* ShareTo.appex */;
@@ -3797,7 +3789,6 @@
 				C9D4565226558F270047267A /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				C9D4565526558F360047267A /* XCRemoteSwiftPackageReference "Reachability" */,
 				C9D4565826558F400047267A /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
-				4A88F978266373F9007C203D /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
@@ -4086,6 +4077,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Fuzi.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftProtobuf.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/SDWebImageSwiftUI.framework",
 			);
 			name = "Copy Carthage Dependencies";
 			outputPaths = (
@@ -6060,14 +6052,6 @@
 				minimumVersion = 0.8.1;
 			};
 		};
-		4A88F978266373F9007C203D /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.2;
-			};
-		};
 		C9D4564626558EDA0047267A /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apollographql/apollo-ios";
@@ -6132,11 +6116,6 @@
 			package = 4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */;
 			productName = ViewInspector;
 		};
-		4A88F979266373F9007C203D /* SDWebImageSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4A88F978266373F9007C203D /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
-			productName = SDWebImageSwiftUI;
-		};
 		C9C18E2026559311004710CD /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C9D4564F26558F170047267A /* XCRemoteSwiftPackageReference "Defaults" */;
@@ -6168,11 +6147,6 @@
 			productName = Introspect;
 		};
 		C9DF56C3266A89EA009A2E6C /* SDWebImageSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C9DF56C2266A89EA009A2E6C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
-			productName = SDWebImageSwiftUI;
-		};
-		C9DF56D4266A8F96009A2E6C /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C9DF56C2266A89EA009A2E6C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
