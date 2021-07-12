@@ -7,4 +7,4 @@ echo 'SWIFT_TREAT_WARNINGS_AS_ERRORS=NO' >> /tmp/tmp.xcconfig
 echo 'GCC_TREAT_WARNINGS_AS_ERRORS=NO' >> /tmp/tmp.xcconfig
 export XCODE_XCCONFIG_FILE=/tmp/tmp.xcconfig
 
-carthage bootstrap --platform ios --color auto --cache-builds
+carthage bootstrap --platform ios --color auto --cache-builds --use-xcframeworks
