@@ -1332,6 +1332,9 @@
 		C9C18E6726559DCF004710CD /* FormatDateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatDateTime.swift; sourceTree = "<group>"; };
 		C9D49FFE265BDF2D00299FC2 /* schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
 		C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountInfoView.swift; sourceTree = "<group>"; };
+		C9DACFCB269CC22A00456020 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		C9DACFCC269CC22A00456020 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		C9DACFCD269CC22A00456020 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		C9DF5690266A83F4009A2E6C /* ShareToView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareToView.swift; sourceTree = "<group>"; };
 		C9DF5696266A84A4009A2E6C /* ShareTo Preview Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShareTo Preview Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9DF5698266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareTo_Preview_SupportApp.swift; sourceTree = "<group>"; };
@@ -1510,7 +1513,7 @@
 		E4E0BB171AFBC9E4008D6260 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E4E25CCA1CA99E7400D0F088 /* HexExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexExtensionsTests.swift; sourceTree = "<group>"; };
 		E4ECCDAD1AB131770005E717 /* FiraSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FiraSans-Medium.ttf"; sourceTree = "<group>"; };
-		E60961861B62B8A700DD640F /* Neeva.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Neeva.xcconfig; path = Configuration/Neeva.xcconfig; sourceTree = "<group>"; };
+		E60961861B62B8A700DD640F /* Neeva.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Neeva.xcconfig; sourceTree = "<group>"; };
 		E61453BD1B750A1700C3F9D7 /* RollingFileLoggerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RollingFileLoggerTests.swift; sourceTree = "<group>"; };
 		E6231C001B90A44F005ABB0D /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		E6231C041B90A472005ABB0D /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
@@ -1634,7 +1637,7 @@
 		F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaSearchProvider.swift; sourceTree = "<group>"; };
 		F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NeevaDev.entitlements; sourceTree = "<group>"; };
 		F0ACC19E25E8C2380024991B /* Neeva.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Neeva.entitlements; sourceTree = "<group>"; };
-		F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = NeevaDev.xcconfig; path = Configuration/NeevaDev.xcconfig; sourceTree = "<group>"; };
+		F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = NeevaDev.xcconfig; sourceTree = "<group>"; };
 		F35B8D2A1D6380EA008E3D61 /* SessionRestore.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = SessionRestore.html; sourceTree = "<group>"; };
 		F35B8D2C1D6383E9008E3D61 /* SessionRestoreHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionRestoreHelper.swift; sourceTree = "<group>"; };
 		F84B21BE1A090F8100AAB793 /* Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Client.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2897,10 +2900,13 @@
 		E60961841B62B7E100DD640F /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */,
+				C9DACFCB269CC22A00456020 /* Common.xcconfig */,
+				C9DACFCC269CC22A00456020 /* Debug.xcconfig */,
 				E60961861B62B8A700DD640F /* Neeva.xcconfig */,
+				F0ACC2AB25E8C7FB0024991B /* NeevaDev.xcconfig */,
+				C9DACFCD269CC22A00456020 /* Release.xcconfig */,
 			);
-			name = Configuration;
+			path = Configuration;
 			sourceTree = "<group>";
 		};
 		E65075551E37F714006961AC /* Utils */ = {
