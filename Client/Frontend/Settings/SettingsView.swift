@@ -46,7 +46,7 @@ struct SettingsView: View {
                     DebugSettingsSection()
                 }
             }
-            .listStyle(GroupedListStyle())
+            .applySettingsListStyle()
             .applyToggleStyle()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -77,7 +77,7 @@ struct SettingPreviewWrapper<Content: View>: View {
             List {
                 content()
             }
-            .listStyle(GroupedListStyle())
+            .applySettingsListStyle()
             .applyToggleStyle()
             .navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)

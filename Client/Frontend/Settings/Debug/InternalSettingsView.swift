@@ -74,7 +74,7 @@ struct InternalSettingsView: View {
         }
         .font(.system(.footnote, design: .monospaced))
         .minimumScaleFactor(0.75)
-        .listStyle(GroupedListStyle())
+        .applySettingsListStyle()
         .applyToggleStyle()
     }
 }

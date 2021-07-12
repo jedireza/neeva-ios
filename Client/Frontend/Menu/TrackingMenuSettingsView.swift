@@ -33,7 +33,7 @@ struct TrackingMenuSettingsView: View {
                     }
                 }
             }
-            .listStyle(GroupedListStyle())
+            .applySettingsListStyle()
             .applyToggleStyle()
         }.navigationViewStyle(StackNavigationViewStyle())
     }

@@ -100,7 +100,7 @@ struct WebsiteDataView: View {
                     }
                 }
             }
-            .listStyle(GroupedListStyle())
+            .applySettingsListStyle()
         }
         .navigationTitle("Website Data")
         .toolbar {

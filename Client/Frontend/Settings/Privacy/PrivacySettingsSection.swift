@@ -36,7 +36,7 @@ struct PrivacySettingsSection: View {
                     }
                     TrackingAttribution()
                 }
-                .listStyle(GroupedListStyle())
+                .applySettingsListStyle()
                 .applyToggleStyle()
                 .navigationTitle("Tracking Protection")
                 .onAppear {

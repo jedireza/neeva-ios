@@ -48,7 +48,7 @@ struct MailAppSetting: View {
                 }
             }
         }
-        .listStyle(GroupedListStyle())
+        .applySettingsListStyle()
         .navigationTitle("Mail App")
     }
 }

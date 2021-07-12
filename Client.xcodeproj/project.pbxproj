@@ -330,6 +330,7 @@
 		C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860512666BEE30049C072 /* SpacerExtensions.swift */; };
 		C9299E382694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */; };
 		C92CB6C7269BB8A3006551FB /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = C92CB6C6269BB8A3006551FB /* SDWebImage */; };
+		C92CB6C9269BBE6C006551FB /* iOS 15 Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CB6C8269BBE6C006551FB /* iOS 15 Shims.swift */; };
 		C93EFEE226713AF7000396B5 /* ErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE126713AF7000396B5 /* ErrorConstants.swift */; };
 		C93EFEE5267150FD000396B5 /* TabLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE4267150FD000396B5 /* TabLocationView.swift */; };
 		C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */; };
@@ -1256,6 +1257,7 @@
 		C908604F266693340049C072 /* CapsuleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleTextField.swift; sourceTree = "<group>"; };
 		C90860512666BEE30049C072 /* SpacerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerExtensions.swift; sourceTree = "<group>"; };
 		C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+LegacyURLBarDelegate.swift"; sourceTree = "<group>"; };
+		C92CB6C8269BBE6C006551FB /* iOS 15 Shims.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "iOS 15 Shims.swift"; sourceTree = "<group>"; };
 		C93EFEE126713AF7000396B5 /* ErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorConstants.swift; sourceTree = "<group>"; };
 		C93EFEE4267150FD000396B5 /* TabLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationView.swift; sourceTree = "<group>"; };
 		C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationAligner.swift; sourceTree = "<group>"; };
@@ -1951,6 +1953,7 @@
 				E65075501E37F6D1006961AC /* UIViewExtensions.swift */,
 				BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */,
 				BC264BC126746098001527B6 /* ViewExtensions.swift */,
+				C92CB6C8269BBE6C006551FB /* iOS 15 Shims.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4695,6 +4698,7 @@
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				C94D406A2684D442003A6766 /* NeevaSuggestionModel.swift in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
+				C92CB6C9269BBE6C006551FB /* iOS 15 Shims.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
 				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */,
 				C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */,

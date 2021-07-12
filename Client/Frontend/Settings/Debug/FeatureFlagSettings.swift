@@ -29,7 +29,7 @@ struct FeatureFlagSettingsView: View {
                 }
             }
         }
-        .listStyle(GroupedListStyle())
+        .applySettingsListStyle()
         .applyToggleStyle()
     }
 

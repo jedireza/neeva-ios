@@ -102,7 +102,7 @@ struct DefaultBrowserSetting_: View {
                 }
             }
         }
-        .listStyle(GroupedListStyle())
+        .applySettingsListStyle()
         .navigationTitle("Default Browser")
     }
 }
