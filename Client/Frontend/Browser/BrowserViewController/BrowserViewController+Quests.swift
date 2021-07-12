@@ -50,10 +50,8 @@ extension BrowserViewController {
         scrollController.showToolbars(animated: true)
 
         if !self.legacyURLBar.toolbarIsShowing, let toolbar = toolbar {
-            switch toolbar {
-            case .legacy(let toolbar): target = toolbar.toolbarNeevaMenuButton
-            case .modern(let host): target = host.view
-            }
+            // TODO(jed): open this prompt from SwiftUI once we have a full-height SwiftUI hierarchy
+            target = toolbar.view
         } else {
             target = self.legacyURLBar.neevaMenuButton
         }

@@ -77,24 +77,7 @@ class BrowserViewController: UIViewController {
     var readerModeCache: ReaderModeCache
     var statusBarOverlay: UIView = UIView()
     let toolbarModel = TabToolbarModel()
-    enum ToolbarType {
-        case legacy(TabToolbar)
-        case modern(TabToolbarHost)
-
-        var common: PrivateModeUI {
-            switch self {
-            case .legacy(let legacy): return legacy
-            case .modern(let modern): return modern
-            }
-        }
-        var view: UIView {
-            switch self {
-            case .legacy(let legacy): return legacy
-            case .modern(let modern): return modern.view
-            }
-        }
-    }
-    fileprivate(set) var toolbar: ToolbarType?
+    fileprivate(set) var toolbar: TabToolbarHost?
     var searchController: SearchViewController?
     var screenshotHelper: ScreenshotHelper!
     fileprivate var zeroQueryIsInline = false
@@ -293,33 +276,18 @@ class BrowserViewController: UIViewController {
         legacyURLBar.topTabsIsShowing = showTopTabs
         legacyURLBar.setShowToolbar(!showToolbar)
 
-        switch toolbar {
-        case .legacy(let toolbar):
-            toolbar.removeFromSuperview()
-            toolbar.tabToolbarDelegate = nil
-        case .modern(let host):
-            host.willMove(toParent: nil)
-            host.view.removeFromSuperview()
-            host.tabToolbarDelegate = nil
-        case nil:
-            break
-        }
+        toolbar?.willMove(toParent: nil)
+        toolbar?.view.removeFromSuperview()
+        toolbar?.tabToolbarDelegate = nil
         toolbar = nil
 
         if showToolbar {
-            if FeatureFlag[.legacyTabToolbar] {
-                let toolbar = TabToolbar(model: toolbarModel)
-                footer.addSubview(toolbar)
-                toolbar.tabToolbarDelegate = self
-                self.toolbar = .legacy(toolbar)
-            } else {
-                let toolbar = TabToolbarHost(model: toolbarModel, delegate: self)
-                toolbar.willMove(toParent: self)
-                toolbar.view.setContentHuggingPriority(.required, for: .vertical)
-                footer.addSubview(toolbar.view)
-                addChild(toolbar)
-                self.toolbar = .modern(toolbar)
-            }
+            let toolbar = TabToolbarHost(model: toolbarModel, delegate: self)
+            toolbar.willMove(toParent: self)
+            toolbar.view.setContentHuggingPriority(.required, for: .vertical)
+            footer.addSubview(toolbar.view)
+            addChild(toolbar)
+            self.toolbar = toolbar
         }
 
         if showTopTabs {
@@ -352,7 +320,7 @@ class BrowserViewController: UIViewController {
 
         if let tab = tabManager.selectedTab,
                let webView = tab.webView {
-            toolbar?.common.applyUIMode(isPrivate: tab.isPrivate)
+            toolbar?.applyUIMode(isPrivate: tab.isPrivate)
             updateURLBarDisplayURL(tab)
             toolbarModel.canGoBack = webView.canGoBack
             toolbarModel.canGoForward = webView.canGoForward
@@ -746,9 +714,6 @@ class BrowserViewController: UIViewController {
         // Setup the bottom toolbar
         toolbar?.view.snp.remakeConstraints { make in
             make.edges.equalTo(self.footer)
-            if FeatureFlag[.legacyTabToolbar] {
-                make.height.equalTo(UIConstants.BottomToolbarHeight)
-            }
         }
 
         footer.snp.remakeConstraints { make in
@@ -1660,7 +1625,7 @@ extension BrowserViewController: TabManagerDelegate {
             updateURLBarDisplayURL(tab)
 
             if previous == nil || tab.isPrivate != previous?.isPrivate {
-                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar?.common, legacyURLBar]
+                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar, legacyURLBar]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
 
