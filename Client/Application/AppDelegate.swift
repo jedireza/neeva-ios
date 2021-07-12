@@ -174,8 +174,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Override point for customization after application launch.
         var shouldPerformAdditionalDelegateHandling = true
 
-        UIScrollView.doBadSwizzleStuff()
-
         window!.makeKeyAndVisible()
 
         // Now roll logs.
