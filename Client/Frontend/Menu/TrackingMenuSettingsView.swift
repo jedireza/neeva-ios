@@ -28,7 +28,9 @@ struct TrackingMenuSettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {}
+                    Button(action: {}) {
+                        Text("Done").bold()
+                    }
                 }
             }
             .listStyle(GroupedListStyle())

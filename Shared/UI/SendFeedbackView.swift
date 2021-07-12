@@ -161,8 +161,9 @@ public struct SendFeedbackView: View {
                     if isSending {
                         ActivityIndicator()
                     } else {
-                        Button("Send", action: sendFeedbackHandler)
-                            .disabled(feedbackText.isEmpty)
+                        Button(action: sendFeedbackHandler) {
+                            Text("Send").bold()
+                        }.disabled(feedbackText.isEmpty)
                     }
                 }
             }
@@ -207,7 +208,9 @@ public struct SendFeedbackView: View {
             .navigationTitle("Edit URL")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { isActive = false }
+                    Button(action: { isActive = false }) {
+                        Text("Done").bold()
+                    }
                 }
             }
         }
