@@ -113,9 +113,9 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     }
 
     func checkIfShouldDisplayBar() {
-        guard Defaults[.showClipboardBar] else {
+        guard Defaults[.showClipboardBar], UIPasteboard.general.hasURLs else {
             // There's no point in doing any of this work unless the
-            // user has asked for it in settings.
+            // user has asked for it in settings, and there is a URL to look at.
             return
         }
         UIPasteboard.general.asyncURL().uponQueue(.main) { res in
