@@ -310,11 +310,8 @@
 		C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */; };
 		C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */; };
 		C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */; };
-		C8CC4F8725253E79003FDE1F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD46F3324A1606C001B3967 /* WidgetKit.framework */; };
 		C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */; };
 		C8DFFE492294AAB600296DB1 /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */; };
-		C8E18F1E222EDE4500E30E52 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E18F1D222EDE4400E30E52 /* Accelerate.framework */; };
-		C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E18F1F222EDED000E30E52 /* SafariServices.framework */; };
 		C8EB60C41F1FB12500F9B5B3 /* navigationDelegate.html in Resources */ = {isa = PBXBuildFile; fileRef = C8EB60C31F1FB12500F9B5B3 /* navigationDelegate.html */; };
 		C8EB60DC1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8EB60DB1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift */; };
 		C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */; };
@@ -412,6 +409,17 @@
 		C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6726559DCF004710CD /* FormatDateTime.swift */; };
 		C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */; };
 		C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
+		C9DACFD8269CC5E800456020 /* SwiftProtobuf.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = EBCF403A221CBC5B00B38F28 /* SwiftProtobuf.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFD9269CC5ED00456020 /* Fuzi.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 3BA9A0221D2C208C00BD418C /* Fuzi.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFDA269CC5F100456020 /* GCDWebServers.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7BA4A9451C4CED780091D032 /* GCDWebServers.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFDB269CC5F500456020 /* OnePasswordExtension.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7BA4A9491C4CEFC70091D032 /* OnePasswordExtension.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFDC269CC5FA00456020 /* ObjcExceptionBridging.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = DABDA4AC20DA0FB800FBB0BD /* ObjcExceptionBridging.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFDD269CC5FF00456020 /* SDWebImage.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F9A1C4950F2006EEEC3 /* SDWebImage.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFDE269CC60400456020 /* SnapKit.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FA11C495268006EEEC3 /* SnapKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFDF269CC60800456020 /* SwiftyJSON.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 3B4988CD1E42B01800A12FDA /* SwiftyJSON.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFE0269CC60C00456020 /* XCGLogger.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FBA1C495D8A006EEEC3 /* XCGLogger.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFE5269CC66700456020 /* SwiftKeychainWrapper.xcframework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7BA4A94B1C4CF03B0091D032 /* SwiftKeychainWrapper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C9DACFE6269CC6B700456020 /* SwiftKeychainWrapper.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7BA4A94B1C4CF03B0091D032 /* SwiftKeychainWrapper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C9DF5691266A83F4009A2E6C /* ShareToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5690266A83F4009A2E6C /* ShareToView.swift */; };
 		C9DF5699266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5698266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift */; };
 		C9DF56A0266A84A5009A2E6C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9DF569F266A84A5009A2E6C /* Preview Assets.xcassets */; };
@@ -585,7 +593,6 @@
 		E4A960061ABB9C450069AD6F /* ReaderModeUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A960051ABB9C450069AD6F /* ReaderModeUtils.swift */; };
 		E4A961181AC041C40069AD6F /* ReadabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A961171AC041C40069AD6F /* ReadabilityService.swift */; };
 		E4A961381AC06FA50069AD6F /* ReaderViewLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = E4A961371AC06FA50069AD6F /* ReaderViewLoading.html */; };
-		E4B3348A1BBF23F9004E2BFF /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4B334891BBF23F9004E2BFF /* AdSupport.framework */; };
 		E4B423BE1AB9FE6A007E66C8 /* ReaderModeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B423BD1AB9FE6A007E66C8 /* ReaderModeCache.swift */; };
 		E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B423DC1ABA0318007E66C8 /* ReaderModeHandlers.swift */; };
 		E4B7B7681A793CF20022C5E0 /* FiraSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4B7B7411A793CF20022C5E0 /* FiraSans-Bold.ttf */; };
@@ -903,12 +910,32 @@
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C9DACFE4269CC65F00456020 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C9DACFE5269CC66700456020 /* SwiftKeychainWrapper.xcframework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E6B09CD31C74EEDB00C63FA1 /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				C9DACFE6269CC6B700456020 /* SwiftKeychainWrapper.xcframework in Copy Frameworks */,
+				C9DACFE0269CC60C00456020 /* XCGLogger.xcframework in Copy Frameworks */,
+				C9DACFDF269CC60800456020 /* SwiftyJSON.xcframework in Copy Frameworks */,
+				C9DACFDE269CC60400456020 /* SnapKit.xcframework in Copy Frameworks */,
+				C9DACFDD269CC5FF00456020 /* SDWebImage.xcframework in Copy Frameworks */,
+				C9DACFDC269CC5FA00456020 /* ObjcExceptionBridging.xcframework in Copy Frameworks */,
+				C9DACFDB269CC5F500456020 /* OnePasswordExtension.xcframework in Copy Frameworks */,
+				C9DACFDA269CC5F100456020 /* GCDWebServers.xcframework in Copy Frameworks */,
+				C9DACFD9269CC5ED00456020 /* Fuzi.xcframework in Copy Frameworks */,
+				C9DACFD8269CC5E800456020 /* SwiftProtobuf.xcframework in Copy Frameworks */,
 				C87703D225223EA5006E38EB /* Shared.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -1666,8 +1693,8 @@
 				F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */,
 				C877037A25222F30006E38EB /* Shared.framework in Frameworks */,
 				E6231C051B90A472005ABB0D /* libxml2.2.tbd in Frameworks */,
-				EBCF403B221CBC5B00B38F28 /* SwiftProtobuf.xcframework in Frameworks */,
 				E6231C011B90A44F005ABB0D /* libz.tbd in Frameworks */,
+				EBCF403B221CBC5B00B38F28 /* SwiftProtobuf.xcframework in Frameworks */,
 				3BA9A0231D2C208C00BD418C /* Fuzi.xcframework in Frameworks */,
 				7BA4A9471C4CED900091D032 /* GCDWebServers.xcframework in Frameworks */,
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.xcframework in Frameworks */,
@@ -1712,7 +1739,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66A6A71F26840376005425D0 /* Intents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1779,7 +1805,6 @@
 				F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */,
 				C877039625222FDC006E38EB /* Shared.framework in Frameworks */,
 				3BA9A0321D2C2C0500BD418C /* Fuzi.xcframework in Frameworks */,
-				0B75AEA91AC20FB20015E5DC /* ImageIO.framework in Frameworks */,
 				7B604F9D1C495143006EEEC3 /* SDWebImage.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3356,6 +3381,7 @@
 				288A2D811AB8B3260023ABC3 /* Sources */,
 				288A2D821AB8B3260023ABC3 /* Frameworks */,
 				288A2D841AB8B3260023ABC3 /* Resources */,
+				C9DACFE4269CC65F00456020 /* CopyFiles */,
 			);
 			buildRules = (
 			);
