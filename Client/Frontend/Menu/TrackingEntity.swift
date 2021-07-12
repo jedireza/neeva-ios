@@ -30,8 +30,7 @@ enum TrackingEntity: String {
         }
 
         // TODO: Lose the dependency on BVC.
-        return BrowserViewController.foregroundBVC()
-            .tabManager.selectedTab?.contentBlocker?.stats
+        return BrowserViewController.foregroundBVC().tabManager.selectedTab?.contentBlocker?.stats
     }
 
     static func getTrackingDataForCurrentTab(

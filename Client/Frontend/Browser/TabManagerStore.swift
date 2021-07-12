@@ -9,16 +9,13 @@ import XCGLogger
 
 private let log = Logger.browserLogger
 class TabManagerStore {
+    static let shared = TabManagerStore(imageStore: DiskImageStore(files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots", quality: UIConstants.ScreenshotQuality))
+
     fileprivate var lockedForReading = false
     public let imageStore: DiskImageStore?
     fileprivate var fileManager = FileManager.default
     fileprivate let serialQueue = DispatchQueue(label: "tab-manager-write-queue")
     fileprivate var writeOperation = DispatchWorkItem {}
-
-    // Init this at startup with the tabs on disk, and then on each save, update the in-memory tab state.
-    fileprivate lazy var archivedStartupTabs = {
-        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabsStateArchivePath())
-    }()
 
     init(imageStore: DiskImageStore?, _ fileManager: FileManager = FileManager.default) {
         self.fileManager = fileManager
@@ -29,18 +26,28 @@ class TabManagerStore {
         return lockedForReading
     }
 
-    var hasTabsToRestoreAtStartup: Bool {
-        return archivedStartupTabs.0.count > 0
+    fileprivate func getBasePath() -> String? {
+        let profilePath: String?
+
+        if  AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest {
+            profilePath = (UIApplication.shared.delegate as? TestAppDelegate)?.dirForTestProfile
+        } else {
+            profilePath = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)?.appendingPathComponent("profile.profile").path
+        }
+
+        guard let path = profilePath else { return nil }
+        return path
     }
 
-    fileprivate func tabsStateArchivePath() -> String? {
-        let profilePath: String?
-        if  AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest {      profilePath = (UIApplication.shared.delegate as? TestAppDelegate)?.dirForTestProfile
-        } else {
-            profilePath = fileManager.containerURL( forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)?.appendingPathComponent("profile.profile").path
-        }
-        guard let path = profilePath else { return nil }
+    fileprivate func getLegacyTabSavePath() -> String? {
+        guard let path = getBasePath() else { return nil }
         return URL(fileURLWithPath: path).appendingPathComponent("tabsState.archive").path
+    }
+
+    fileprivate func tabSavePath(withId sceneId: String) -> String? {
+        guard let path = getBasePath() else { return nil }
+        let url = URL(fileURLWithPath: path).appendingPathComponent("tabsState.archive-\(sceneId)")
+        return url.path
     }
 
     fileprivate func prepareSavedTabs(fromTabs tabs: [Tab], selectedTab: Tab?) -> [SavedTab]? {
@@ -66,32 +73,36 @@ class TabManagerStore {
     // Async write of the tab state. In most cases, code doesn't care about performing an operation
     // after this completes. Deferred completion is called always, regardless of Data.write return value.
     // Write failures (i.e. due to read locks) are considered inconsequential, as preserveTabs will be called frequently.
-    @discardableResult func preserveTabs(_ tabs: [Tab], selectedTab: Tab?) -> Success {
+    @discardableResult func preserveTabs(_ tabs: [Tab], selectedTab: Tab?, for scene: UIScene) -> Success {
         assert(Thread.isMainThread)
-        print("preserve tabs!, existing tabs: \(tabs.count)")
-        guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab),
-            let path = tabsStateArchivePath() else {
-                clearArchive()
-                return succeed()
+
+        guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab), let path = tabSavePath(withId: scene.session.persistentIdentifier), let legacyPath = getLegacyTabSavePath() else {
+            clearArchive(for: scene)
+            return succeed()
         }
 
         writeOperation.cancel()
 
-        let tabStateData = NSMutableData()
-        let archiver = NSKeyedArchiver(forWritingWith: tabStateData)
+        // also save to legacy path for safety/widget
+        // TODO: Find better way to save data to widget without overriding data from other scenes
+        _ = saveTabsToPath(path: legacyPath, savedTabs: savedTabs)
+        return saveTabsToPath(path: path, savedTabs: savedTabs)
+    }
 
-        archiver.encode(savedTabs, forKey: "tabs")
-        archiver.finishEncoding()
-
+    func saveTabsToPath(path: String, savedTabs: [SavedTab]) -> Success {
         let simpleTabs = SimpleTab.convertToSimpleTabs(savedTabs)
-
         let result = Success()
+
         writeOperation = DispatchWorkItem {
-            let written = tabStateData.write(toFile: path, atomically: true)
-            
+            do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: savedTabs, requiringSecureCoding: false)
+                try data.write(to: URL(fileURLWithPath: path), options: .atomic)
+                print("Tabs succesfully saved")
+            } catch {
+                print("Tab failed to save:", error.localizedDescription)
+            }
+
             SimpleTab.saveSimpleTab(tabs: simpleTabs)
-            // Ignore write failure (could be restoring).
-            log.debug("PreserveTabs write ok: \(written), bytes: \(tabStateData.length)")
             result.fill(Maybe(success: ()))
         }
 
@@ -102,8 +113,8 @@ class TabManagerStore {
         return result
     }
 
-    func restoreStartupTabs(clearPrivateTabs: Bool, tabManager: TabManager) -> Tab? {
-        let selectedTab = restoreTabs(savedTabs: archivedStartupTabs.0, clearPrivateTabs: clearPrivateTabs, tabManager: tabManager)
+    func restoreStartupTabs(for scene: UIScene, clearPrivateTabs: Bool, tabManager: TabManager) -> Tab? {
+        let selectedTab = restoreTabs(savedTabs: getStartupTabs(for: scene), clearPrivateTabs: clearPrivateTabs, tabManager: tabManager)
         return selectedTab
     }
 
@@ -141,9 +152,33 @@ class TabManagerStore {
         return tabToSelect
     }
 
-    func clearArchive() {
-        if let path = tabsStateArchivePath() {
+    func clearArchive(for scene: UIScene?) {
+        var path: String?
+
+        if let scene = scene {
+            path = tabSavePath(withId: scene.session.persistentIdentifier)
+        } else {
+            path = getLegacyTabSavePath()
+        }
+
+        if let path = path {
             try? FileManager.default.removeItem(atPath: path)
+        }
+    }
+
+    func getStartupTabs(for scene: UIScene?) -> [SavedTab] {
+        let savedTabsWithOldPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: getLegacyTabSavePath()).0
+
+        guard let scene = scene else {
+            return savedTabsWithOldPath
+        }
+
+        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier)).0
+
+        if savedTabsWithNewPath.count > 0 {
+            return savedTabsWithNewPath
+        } else {
+            return savedTabsWithOldPath
         }
     }
 }
@@ -152,6 +187,6 @@ class TabManagerStore {
 extension TabManagerStore {
     func testTabCountOnDisk() -> Int {
         assert(AppConstants.IsRunningTest)
-        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabsStateArchivePath()).0.count
+        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: getLegacyTabSavePath()!)).0.count
     }
 }

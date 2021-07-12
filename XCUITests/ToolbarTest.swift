@@ -79,12 +79,12 @@ class ToolbarTests: BaseTestCase {
     }
 
     func testClearURLTextUsingBackspace() {
-        navigator.openURL(website1["url"]!)
+        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         waitForTabsButton()
-        waitForExistence(app.webViews.links["Mozilla"], timeout: 10)
+
         let valueMozilla = app.buttons["url"].value as! String
-        XCTAssertEqual(valueMozilla, website1["url"])
+        XCTAssertEqual(valueMozilla, path(forTestPage: "test-mozilla-book.html"))
 
         // Simulate pressing on backspace key should remove the text
         app.buttons["url"].tap()
@@ -96,15 +96,16 @@ class ToolbarTests: BaseTestCase {
 
     // Check that after scrolling on a page, the URL bar is hidden. Tapping one on the status bar will reveal the URL bar, tapping again on the status will scroll to the top
     func testRevealToolbarWhenTappingOnStatusbar() {
+        navigator.openURL(path(forTestPage: "test-mozilla-org.html"))
+        waitUntilPageLoad()
+        waitForTabsButton()
+
         // Workaround when testing on iPhone. If the orientation is in landscape on iPhone the tests will fail.
         if !iPad() {
             XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
             waitForExistence(app.otherElements.matching(identifier: "TabToolbar").firstMatch)
         }
-        navigator.openURL(website1["url"]!, waitForLoading: true)
-        // Adding the waiter right after navigating to the webpage in order to make the test more stable
-        waitUntilPageLoad()
-        waitForExistence(app.buttons["TabLocationView.shareButton"], timeout: 10)
+
         let shareButton = app.buttons["TabLocationView.shareButton"]
         let statusbarElement: XCUIElement = {
             if #available(iOS 13, *) {
@@ -113,7 +114,9 @@ class ToolbarTests: BaseTestCase {
                 return app.statusBars.children(matching: .other).element.children(matching: .other).element(boundBy: 0)
             }
         }()
+
         app.swipeUp()
+        waitForNoExistence(shareButton)
         XCTAssertFalse(shareButton.exists)
         statusbarElement.tap(force: true)
         XCTAssertTrue(shareButton.isHittable)

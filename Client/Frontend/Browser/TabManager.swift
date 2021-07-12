@@ -36,7 +36,7 @@ class WeakTabManagerDelegate {
 
 extension TabManager: TabEventHandler {
     func tab(_ tab: Tab, didLoadFavicon favicon: Favicon?, with: Data?) {
-        store.preserveTabs(tabs, selectedTab: selectedTab)
+        store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
     }
 
     func tabDidChangeContentBlocking(_ tab: Tab) {
@@ -49,6 +49,7 @@ class TabManager: NSObject, ObservableObject {
     fileprivate var delegates = [WeakTabManagerDelegate]()
     fileprivate let tabEventHandlers: [TabEventHandler]
     fileprivate let store: TabManagerStore
+    public var scene: UIScene
     fileprivate let profile: Profile
 
     let delaySelectingNewPopupTab: TimeInterval = 0.1
@@ -121,14 +122,14 @@ class TabManager: NSObject, ObservableObject {
         return tabs.filter { $0.isPrivate }
     }
 
-    init(profile: Profile, imageStore: DiskImageStore?) {
+    init(profile: Profile, scene: UIScene) {
         assert(Thread.isMainThread)
 
         self.profile = profile
         self.navDelegate = TabManagerNavDelegate()
         self.tabEventHandlers = TabEventHandlers.create()
-
-        self.store = TabManagerStore(imageStore: imageStore)
+        self.store = TabManagerStore.shared
+        self.scene = scene
         super.init()
 
         register(self, forTabEvents: .didLoadFavicon, .didChangeContentBlocking)
@@ -215,7 +216,7 @@ class TabManager: NSObject, ObservableObject {
             _selectedIndex = -1
         }
 
-        store.preserveTabs(tabs, selectedTab: selectedTab)
+        store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
 
         assert(tab === selectedTab, "Expected tab is selected")
 
@@ -255,7 +256,7 @@ class TabManager: NSObject, ObservableObject {
     }
     
     func preserveTabs() {
-        store.preserveTabs(tabs, selectedTab: selectedTab)
+        store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
     }
 
     //Called by other classes to signal that they are entering/exiting private mode
@@ -671,11 +672,11 @@ extension TabManager {
 
     @discardableResult func storeChanges() -> Success {
         saveTabs(toProfile: profile, normalTabs)
-        return store.preserveTabs(tabs, selectedTab: selectedTab)
+        return store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
     }
 
     func hasTabsToRestoreAtStartup() -> Bool {
-        return store.hasTabsToRestoreAtStartup
+        return store.getStartupTabs(for: scene).count > 0
     }
 
     func restoreTabs(_ forced: Bool = false) {
@@ -689,11 +690,11 @@ extension TabManager {
             }
         }
         
-        guard forced || count == 0, !AppConstants.IsRunningTest, !DebugSettingsBundleOptions.skipSessionRestore, store.hasTabsToRestoreAtStartup else {
+        guard forced || count == 0, !AppConstants.IsRunningTest, !DebugSettingsBundleOptions.skipSessionRestore, hasTabsToRestoreAtStartup() else {
             return
         }
 
-        var tabToSelect = store.restoreStartupTabs(clearPrivateTabs: Defaults[.closePrivateTabs], tabManager: self)
+        var tabToSelect = store.restoreStartupTabs(for: scene, clearPrivateTabs: Defaults[.closePrivateTabs], tabManager: self)
         let wasLastSessionPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
         if wasLastSessionPrivate, !(tabToSelect?.isPrivate ?? false) {
             tabToSelect = addTab(isPrivate: true)
@@ -864,6 +865,13 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
 
 // Helper functions for test cases
 extension TabManager {
+    convenience init(profile: Profile, imageStore: DiskImageStore?) {
+        assert(Thread.isMainThread)
+
+        let scene = SceneDelegate.getCurrentScene()
+        self.init(profile: profile, scene: scene)
+    }
+
     func testTabCountOnDisk() -> Int {
         assert(AppConstants.IsRunningTest)
         return store.testTabCountOnDisk()
@@ -871,12 +879,11 @@ extension TabManager {
 
     func testCountRestoredTabs() -> Int {
         assert(AppConstants.IsRunningTest)
-        _ = store.restoreStartupTabs(clearPrivateTabs: true, tabManager: self)
-        return count
+        return store.getStartupTabs(for: nil).count
     }
 
     func testClearArchive() {
         assert(AppConstants.IsRunningTest)
-        store.clearArchive()
+        store.clearArchive(for: nil)
     }
 }

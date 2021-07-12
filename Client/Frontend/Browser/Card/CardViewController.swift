@@ -74,8 +74,7 @@ class CardViewController: UIViewController {
         self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
         self.tabGroupCardModel = TabGroupCardModel(manager: tabGroupManager)
         self.spaceCardModel = SpaceCardModel()
-        self.sitesCardModel = SiteCardModel(urls: [],
-                                            profile: BrowserViewController.foregroundBVC().profile)
+        self.sitesCardModel = SiteCardModel(urls: [], profile: BrowserViewController.foregroundBVC().profile)
         self.toolbarModel = SwitcherToolbarModel(tabManager: tabManager)
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = .clear

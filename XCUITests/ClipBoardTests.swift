@@ -40,11 +40,13 @@ class ClipBoardTests: BaseTestCase {
         checkUrl()
         copyUrl()
         checkCopiedUrl()
-
-        navigator.createNewTab()
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
 
-        navigator.goto(URLBarOpen)
+        navigator.createNewTab()
+
+        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
+
+        app.buttons["url"].tap()
         app.textFields["address"].press(forDuration: 3)
         app.menuItems["Paste & Go"].tap()
 

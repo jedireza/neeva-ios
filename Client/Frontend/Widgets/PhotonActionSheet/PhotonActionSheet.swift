@@ -218,8 +218,7 @@ class PhotonActionSheet: UIViewController, UITableViewDelegate, UITableViewDataS
     }
 
     private func applyBackgroundBlur() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        if let screenshot = appDelegate.window?.screenshot() {
+        if let screenshot = UIApplication.shared.windows[0].screenshot() {
             let blurredImage = screenshot.applyBlur(withRadius: 5,
                                                     blurType: BOXFILTER,
                                                     tintColor: UIColor.black.withAlphaComponent(0.2),

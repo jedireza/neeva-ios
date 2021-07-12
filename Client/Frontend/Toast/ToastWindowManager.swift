@@ -9,12 +9,17 @@ class ToastWindowManager {
     /// Creates an overlayed window to display Toast in
     // Allows UI interaction without hiding Toast
     public func createWindow(with rootViewController: UIViewController) {
-        openWindow = UIWindow(frame: CGRect(x: 0, y: getY(), width: UIScreen.main.bounds.width, height: 70))
+        guard let window = SceneDelegate.getCurrentSceneDelegate().window, let windowScene = window.windowScene else {
+            return
+        }
+
+        openWindow = .init(windowScene: windowScene)
+        openWindow?.frame = CGRect(x: 0, y: getY(), width: window.bounds.width, height: 70)
         openWindow?.rootViewController = UIViewController()
         openWindow?.windowLevel = .alert + 1
         openWindow?.alpha = 0
         openWindow?.makeKeyAndVisible()
-
+        
         setWindowRootViewController(rootViewController)
     }
 

@@ -359,14 +359,13 @@ class LegacyURLBarView: UIView {
             let gURL = suggestion.hasPrefix("http") ? URL(string: suggestion)! : URL(string: "https://\(suggestion)")!
 
             let site = Site(url: gURL.absoluteString, title: "")
-
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate, let profile = appDelegate.profile {
-                profile.favicons.getFaviconImage(forSite: site).uponQueue(.main) { result in
-                    guard let image = result.successValue else {
-                        return
-                    }
-                    iconView.image = image.createScaled(PhotonActionSheetUX.FaviconSize)
+            
+            let profile = getAppDelegateProfile()
+            profile.favicons.getFaviconImage(forSite: site).uponQueue(.main) { result in
+                guard let image = result.successValue else {
+                    return
                 }
+                iconView.image = image.createScaled(PhotonActionSheetUX.FaviconSize)
             }
         } else {
             iconView.image = UIImage(named: "neevaMenuIcon")

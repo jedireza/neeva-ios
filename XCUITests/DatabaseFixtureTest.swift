@@ -17,6 +17,7 @@ class DatabaseFixtureTest: BaseTestCase {
     }
 
     func testHistoryDatabaseFixture() {
+        navigator.goto(HomePanelsScreen)
         navigator.goto(LibraryPanel_History)
 
         // History list has two cells that are for recently closed and synced devices that should not count as history items,
@@ -49,6 +50,7 @@ class DatabaseFixtureTest: BaseTestCase {
                 XCTStorageMetric(), // to measure storage consuming
                 XCTMemoryMetric()]) {
                 // activity measurement here
+
                 navigator.goto(NeevaMenu)
                 navigator.goto(LibraryPanel_History)
             }

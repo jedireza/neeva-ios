@@ -45,10 +45,11 @@ class SimulatedSwipeController:
         register(self, forTabEvents: .didChangeURL)
         tabManager.addDelegate(self)
 
+        let bvc = BrowserViewController.foregroundBVC()
         self.animator = SimulatedSwipeAnimator(
             swipeDirection: swipeDirection,
             animatingView: self.view,
-            webViewContainer: BrowserViewController.foregroundBVC().webViewContainer)
+            webViewContainer: bvc.webViewContainer)
         self.animator.delegate = self
 
         if swipeDirection == .forward {

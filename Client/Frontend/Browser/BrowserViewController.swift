@@ -2137,15 +2137,7 @@ extension BrowserViewController: TopTabsDelegate {
 
 extension BrowserViewController {
     public static func foregroundBVC() -> BrowserViewController {
-//        if #available(iOS 13.0, *) {
-//            for scene in UIApplication.shared.connectedScenes {
-//                if scene.activationState == .foregroundActive, let sceneDelegate = ((scene as? UIWindowScene)?.delegate as? UIWindowSceneDelegate) {
-//                    return sceneDelegate.window!!.rootViewController as! BrowserViewController
-//                }
-//            }
-//        }
-        
-        return (UIApplication.shared.delegate as! AppDelegate).browserViewController
+        SceneDelegate.getCurrentSceneDelegate().getBVC()
     }
 }
 

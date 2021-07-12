@@ -15,8 +15,9 @@ let requestDesktopSiteLabel = "Request Desktop Site"
 
 class NavigationTest: BaseTestCase {
     func testNavigation() {
-        navigator.goto(URLBarOpen)
         XCTAssert(app.buttons["url"].exists)
+        navigator.nowAt(NewTabScreen)
+        navigator.goto(URLBarOpen)
 
         // Check that the back and forward buttons are disabled
         if iPad() {
@@ -147,7 +148,10 @@ class NavigationTest: BaseTestCase {
 
     func testLongPressOnAddressBar() {
         //This test is for populated clipboard only so we need to make sure there's something in Pasteboard
+        XCTAssert(app.buttons["url"].exists)
+        navigator.nowAt(NewTabScreen)
         navigator.goto(URLBarOpen)
+        
         app.textFields["address"].typeText("www.google.com")
         // Tapping two times when the text is not selected will reveal the menu
         app.textFields["address"].tap()

@@ -95,7 +95,7 @@ struct ZeroQueryView: View {
                         IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(ZeroQueryUX.Padding)
                     } else {
                         if let promoCardType = viewModel.promoCard {
-                            PromoCard(type: promoCardType)
+                            PromoCard(type: promoCardType, viewWidth: geom.size.width)
                         }
 
                         ZeroQueryHeader(

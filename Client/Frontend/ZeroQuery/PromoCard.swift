@@ -60,11 +60,14 @@ enum PromoCardType {
 
 struct PromoCard: View {
     let type: PromoCardType
+    var viewWidth: CGFloat
 
-    var isTabletOrLandscape: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.orientation.isLandscape
-    }
+    @State var useHStack = true
 
+    // this number is from the Figma mock
+    let minimumButtonWidth: CGFloat = 250
+
+    @ViewBuilder
     var button: some View {
         Button(action: type.action) {
             HStack {
@@ -88,6 +91,7 @@ struct PromoCard: View {
             .lineSpacing(lineSpacing)
             .foregroundColor(.hex(0x131415))
             .padding(.vertical, lineSpacing)
+
     }
 
     @ViewBuilder
@@ -126,7 +130,8 @@ struct PromoCard: View {
 
     var body: some View {
         Group {
-            if isTabletOrLandscape {
+            // button takes up roughly 1/2.5 of the view width
+            if viewWidth/2.5 > minimumButtonWidth {
                 HStack {
                     label
                     Spacer()
@@ -154,8 +159,10 @@ struct PromoCard: View {
 struct PromoCard_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            PromoCard(type: .neevaSignIn(action: {}))
-            PromoCard(type: .defaultBrowser(action: {}, onClose: {}))
+            GeometryReader { geom in
+                PromoCard(type: .neevaSignIn(action: {}), viewWidth: geom.size.width)
+                PromoCard(type: .defaultBrowser(action: {}, onClose: {}), viewWidth: geom.size.width)
+            }
         }.previewLayout(.sizeThatFits)
     }
 }

@@ -18,7 +18,7 @@ class IncognitoAwareHostingController<Content: View>: UIHostingController<Incogn
         super.init(
             rootView: _Applicator(
                 content: rootView,
-                isIncognito: (UIApplication.shared.delegate as! AppDelegate).tabManager.selectedTab?.isPrivate ?? false
+                isIncognito: BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
             )
         )
     }

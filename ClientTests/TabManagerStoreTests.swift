@@ -24,8 +24,7 @@ class TabManagerStoreTests: XCTestCase {
         if UIDevice.current.userInterfaceIdiom == .pad {
             // BVC.viewWillAppear() calls restoreTabs() which interferes with these tests. (On iPhone, ClientTests never dismiss the intro screen, on iPad the intro is a popover on the BVC).
             // Wait for this to happen (UIView.window only gets assigned after viewWillAppear()), then begin testing.
-            let bvc = (UIApplication.shared.delegate as! AppDelegate).browserViewController
-            let predicate = XCTNSPredicateExpectation(predicate: NSPredicate(format: "view.window != nil"), object: bvc)
+            let predicate = XCTNSPredicateExpectation(predicate: NSPredicate(format: "view.window != nil"), object: BrowserViewController.foregroundBVC())
             wait(for: [predicate], timeout: 20)
         }
 
@@ -45,6 +44,7 @@ class TabManagerStoreTests: XCTestCase {
     }
 
     func testNoData() {
+        manager.testClearArchive()
         XCTAssertEqual(manager.testTabCountOnDisk(), 0, "Expected 0 tabs on disk")
         XCTAssertEqual(manager.testCountRestoredTabs(), 0)
     }

@@ -172,8 +172,6 @@ class HistoryTests: BaseTestCase {
 
         navigator.nowAt(NewTabScreen)
         navigator.goto(TabTray)
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-
         let numTabsOpen = userState.numTabs
         XCTAssertEqual(numTabsOpen, 1)
     }
@@ -217,6 +215,9 @@ class HistoryTests: BaseTestCase {
     
     private func navigateToExample() {
         navigator.openURL("example.com")
+        waitUntilPageLoad()
+
+        navigator.goto(NeevaMenu)
         navigator.goto(LibraryPanel_History)
         XCTAssertTrue(app.tables.cells.staticTexts["Example Domain"].exists)
     }
@@ -272,6 +273,7 @@ class HistoryTests: BaseTestCase {
         // Go to 'goolge.com' to create a recent history entry.
         navigateToExample()
         navigator.performAction(Action.ClearRecentHistory)
+        
         for option in clearRecentHistoryOptions {
             XCTAssertTrue(app.sheets.buttons[option].exists)
         }

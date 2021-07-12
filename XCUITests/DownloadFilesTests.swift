@@ -30,6 +30,7 @@ class DownloadFilesTests: BaseTestCase {
     }
 
     func testDownloadFilesAppMenuFirstTime() {
+        navigator.goto(HomePanelsScreen)
         navigator.goto(LibraryPanel_Downloads)
         XCTAssertTrue(app.tables["DownloadsTable"].exists)
         // Check that there is not any items and the default text shown is correct

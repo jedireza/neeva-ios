@@ -363,7 +363,7 @@ class BrowserUtils {
             tester.waitForAnimationsToFinish(withTimeout: 3)
 
             let view=tester.waitForView(withAccessibilityIdentifier: "Downloads")
-            view?.drag(from: CGPoint(x: 150, y: 80), to: CGPoint(x: 150, y: 530))
+            view?.drag(from: CGPoint(x: 150, y: 40), to: CGPoint(x: 150, y: 530))
         }
         tester.waitForAnimationsToFinish()
     }

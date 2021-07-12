@@ -13,10 +13,7 @@ import LocalAuthentication
 import CoreSpotlight
 import UserNotifications
 import Defaults
-
-#if canImport(BackgroundTasks)
- import BackgroundTasks
-#endif
+import BackgroundTasks
 
 private let log = Logger.browserLogger
 
@@ -25,18 +22,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         return nil
     }
 
-    var window: UIWindow?
-    var browserViewController: BrowserViewController!
-    var rootViewController: UIViewController!
-    weak var profile: Profile?
-    var tabManager: TabManager!
     var applicationCleanlyBackgrounded = true
     var shutdownWebServer: DispatchSourceTimer?
     var orientationLock = UIInterfaceOrientationMask.all
     weak var application: UIApplication?
     var launchOptions: [AnyHashable: Any]?
-
     var receivedURLs = [URL]()
+
+    var profile: Profile?
     var telemetry: TelemetryWrapper?
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -57,17 +50,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
         defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
 
+        let profile = createProfile()
+        self.profile = profile
+
+        // Set up a web server that serves us static content. Do this early so that it is ready when the UI is presented.
+        setUpWebServer(profile)
+        telemetry = TelemetryWrapper(profile: profile)
+
         // Hold references to willFinishLaunching parameters for delayed app launch
         self.application = application
         self.launchOptions = launchOptions
-
-        self.window = UIWindow(frame: UIScreen.main.bounds)
-        
 
         // If the 'Save logs to Files app on next launch' toggle
         // is turned on in the Settings app, copy over old logs.
         if DebugSettingsBundleOptions.saveLogsToDocuments {
             Logger.copyPreviousLogsToDocuments()
+        }
+
+        // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            profile.cleanupHistoryIfNeeded()
         }
 
         return startApplication(application, withLaunchOptions: launchOptions)
@@ -94,82 +96,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         let logDate = Date()
         // Create a new sync log file on cold app launch. Note that this doesn't roll old logs.
         Logger.syncLogger.newLogWithDate(logDate)
-
         Logger.browserLogger.newLogWithDate(logDate)
-
-        let profile = getProfile(application)
-
-        telemetry = TelemetryWrapper(profile: profile)
-
-        // Set up a web server that serves us static content. Do this early so that it is ready when the UI is presented.
-        setUpWebServer(profile)
-
-        let imageStore = DiskImageStore(files: profile.files, namespace: "TabManagerScreenshots", quality: UIConstants.ScreenshotQuality)
-
-        self.tabManager = TabManager(profile: profile, imageStore: imageStore)
-
-        // Add restoration class, the factory that will return the ViewController we
-        // will restore with.
-
-        setupRootViewController()
 
         SystemUtils.onFirstRun()
 
         log.info("startApplication end")
+
         return true
-    }
-
-    // TODO: Move to scene controller for iOS 13
-    private func setupRootViewController() {
-        browserViewController = BrowserViewController(profile: self.profile!, tabManager: self.tabManager)
-        browserViewController.edgesForExtendedLayout = []
-
-        browserViewController.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
-        browserViewController.restorationClass = AppDelegate.self
-
-        let navigationController = NavigationController(rootViewController: browserViewController)
-        navigationController.delegate = self
-        navigationController.edgesForExtendedLayout = UIRectEdge(rawValue: 0)
-        rootViewController = navigationController
-
-        self.window!.rootViewController = rootViewController
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {
-        // We have only five seconds here, so let's hope this doesn't take too long.
-        profile?._shutdown()
-
-        // Allow deinitializers to close our database connections.
-        profile = nil
-        tabManager = nil
-        browserViewController = nil
-        rootViewController = nil
-    }
-
-    /**
-     * We maintain a weak reference to the profile so that we can pause timed
-     * syncs when we're backgrounded.
-     *
-     * The long-lasting ref to the profile lives in BrowserViewController,
-     * which we set in application:willFinishLaunchingWithOptions:.
-     *
-     * If that ever disappears, we won't be able to grab the profile to stop
-     * syncing... but in that case the profile's deinit will take care of things.
-     */
-    func getProfile(_ application: UIApplication) -> Profile {
-        if let profile = self.profile {
-            return profile
-        }
-        let p = BrowserProfile(localName: "profile")
-        self.profile = p
-        return p
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         var shouldPerformAdditionalDelegateHandling = true
-
-        window!.makeKeyAndVisible()
 
         // Now roll logs.
         DispatchQueue.global(qos: DispatchQoS.background.qosClass).async {
@@ -214,6 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         DispatchQueue.main.async {
             NavigationPath.handle(nav: routerpath, with: BrowserViewController.foregroundBVC())
         }
+        
         return true
     }
 
@@ -298,19 +237,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             self.receivedURLs.removeAll()
             application.applicationIconBadgeNumber = 0
         }
+        
         // Create fx favicon cache directory
         FaviconFetcher.createWebImageCacheDirectory()
-        // update top sites widget
+
         updateTopSitesWidget()
-        
-        // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            self.profile?.cleanupHistoryIfNeeded()
-        }
     }
-    
+
     func applicationWillResignActive(_ application: UIApplication) {
-        // update top sites widget
         updateTopSitesWidget()
     }
 
@@ -339,46 +273,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
         singleShotTimer.resume()
         shutdownWebServer = singleShotTimer
-
-        tabManager.preserveTabs()
-    }
-    
-    private func updateTopSitesWidget() {
-        // Since we only need the topSites data in the archiver, let's write it
-        // only if iOS 14 is available.
-        if #available(iOS 14.0, *) {
-            guard let profile = profile else { return }
-            TopSitesHandler.writeWidgetKitTopSites(profile: profile)
-        }
     }
 
-    fileprivate func syncOnDidEnterBackground(application: UIApplication) {
-        guard let profile = self.profile else {
-            return
-        }
-
-        // Create an expiring background task. This allows plenty of time for db locks to be released
-        // async. Otherwise we are getting crashes due to db locks not released yet.
-        var taskId = UIBackgroundTaskIdentifier(rawValue: 0)
-        taskId = application.beginBackgroundTask(expirationHandler: {
-            print("Running out of background time, but we have a profile shutdown pending.")
-            self.shutdownProfileWhenNotActive(application)
-            application.endBackgroundTask(taskId)
-        })
-
-        profile._shutdown()
-        application.endBackgroundTask(taskId)
-    }
-
-    fileprivate func shutdownProfileWhenNotActive(_ application: UIApplication) {
-        // Only shutdown the profile if we are not in the foreground
-        guard application.applicationState != .active else {
-            return
-        }
-
+    func applicationWillTerminate(_ application: UIApplication) {
+        // We have only five seconds here, so let's hope this doesn't take too long?.
         profile?._shutdown()
     }
 
+    /**
+    * We maintain a weak reference to the profile so that we can pause timed
+    * syncs when we're backgrounded.
+    *
+    * The long-lasting ref to the profile lives in BrowserViewController,
+    * which we set in application:willFinishLaunchingWithOptions:.
+    *
+    * If that ever disappears, we won't be able to grab the profile to stop
+    * syncing... but in that case the profile's deinit will take care of things.
+    */
+    func createProfile() -> Profile {
+        return BrowserProfile(localName: "profile")
+    }
+
+    fileprivate func setUserAgent() {
+        let neevaUA = UserAgent.getUserAgent()
+
+        // Set the UA for WKWebView (via defaults), the favicon fetcher, and the image loader.
+        // This only needs to be done once per runtime. Note that we use defaults here that are
+        // readable from extensions, so they can just use the cached identifier.
+        SDWebImageDownloader.shared.setValue(neevaUA, forHTTPHeaderField: "User-Agent")
+
+        //SDWebImage is setting accept headers that report we support webp. We don't
+        SDWebImageDownloader.shared.setValue("image/*;q=0.8", forHTTPHeaderField: "Accept")
+
+        // Some sites will only serve HTML that points to .ico files.
+        // The FaviconFetcher is explicitly for getting high-res icons, so use the desktop user agent.
+        FaviconFetcher.userAgent = UserAgent.desktopUserAgent()
+    }
     fileprivate func setUpWebServer(_ profile: Profile) {
         let server = WebServer.sharedInstance
         guard !server.server.isRunning else { return }
@@ -409,20 +339,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
     }
 
-    fileprivate func setUserAgent() {
-        let neevaUA = UserAgent.getUserAgent()
-
-        // Set the UA for WKWebView (via defaults), the favicon fetcher, and the image loader.
-        // This only needs to be done once per runtime. Note that we use defaults here that are
-        // readable from extensions, so they can just use the cached identifier.
-
-        SDWebImageDownloader.shared.setValue(neevaUA, forHTTPHeaderField: "User-Agent")
-        //SDWebImage is setting accept headers that report we support webp. We don't
-        SDWebImageDownloader.shared.setValue("image/*;q=0.8", forHTTPHeaderField: "Accept")
-
-        // Some sites will only serve HTML that points to .ico files.
-        // The FaviconFetcher is explicitly for getting high-res icons, so use the desktop user agent.
-        FaviconFetcher.userAgent = UserAgent.desktopUserAgent()
+    private func updateTopSitesWidget() {
+        guard let profile = self.profile else { return }
+        TopSitesHandler.writeWidgetKitTopSites(profile: profile)
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
@@ -430,19 +349,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         completionHandler(handledShortCutItem)
     }
-}
 
-// MARK: - Root View Controller Animations
-extension AppDelegate: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        switch operation {
-        case .push:
-            return BrowserToTrayAnimator()
-        case .pop:
-            return TrayToBrowserAnimator()
-        default:
-            return nil
-        }
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options:UIScene.ConnectionOptions) -> UISceneConfiguration {
+        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+    
     }
 }
 
@@ -473,4 +386,8 @@ extension AppDelegate {
             UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
         }
     }
+}
+
+func getAppDelegateProfile() -> Profile {
+    return (UIApplication.shared.delegate as? AppDelegate)!.profile!
 }
