@@ -56,6 +56,8 @@ public class AddToSpaceRequest: ObservableObject {
     func addToNewSpace(spaceName: String) {
         guard spaceName.count > 0 else { return }
 
+        self.targetSpaceName = spaceName
+
         // Note: This creates a reference cycle between self and the mutation.
         // This means even if all other references are dropped to self, then
         // the mutation will attempt to run to completion.
@@ -67,7 +69,6 @@ public class AddToSpaceRequest: ObservableObject {
             case .success(let data):
                 self.addToExistingSpace(id: data.createSpace, name: spaceName)
             case .failure(let error):
-                self.targetSpaceName = spaceName
                 self.error = error
                 withAnimation {
                     self.state = .failed
@@ -80,6 +81,8 @@ public class AddToSpaceRequest: ObservableObject {
     }
 
     public func addToExistingSpace(id: String, name: String) {
+        self.targetSpaceName = name
+
         // Note: This creates a reference cycle between self and the mutation.
         // This means even if all other references are dropped to self, then
         // the mutation will attempt to run to completion.
@@ -95,7 +98,6 @@ public class AddToSpaceRequest: ObservableObject {
             )
         ).perform { result in
             self.cancellable = nil
-            self.targetSpaceName = name
             switch result {
             case .failure(let error):
                 self.error = error
@@ -116,6 +118,8 @@ public class AddToSpaceRequest: ObservableObject {
     }
 
     func deleteFromExistingSpace(id: String, name: String) {
+        self.targetSpaceName = name
+
         // Note: This creates a reference cycle between self and the mutation.
         // This means even if all other references are dropped to self, then
         // the mutation will attempt to run to completion.
@@ -123,7 +127,6 @@ public class AddToSpaceRequest: ObservableObject {
             input: DeleteSpaceResultByURLInput(spaceId: id, url: self.url.absoluteString)
         ).perform { result in
             self.cancellable = nil
-            self.targetSpaceName = name
             switch result {
             case .failure(let error):
                 self.error = error
