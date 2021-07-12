@@ -70,8 +70,6 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
 
     fileprivate let profile: Profile
 
-    static var userAgent: String?
-
     init(profile: Profile, historyModel: HistorySuggestionModel, neevaModel: NeevaSuggestionModel) {
         self.profile = profile
         self.historyModel = historyModel
