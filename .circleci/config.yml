@@ -1,10 +1,21 @@
 version: 2.1
 
 commands:
+  bootstrap:
+    steps:
+      - checkout
+      - carthage-bootstrap
+      - unset-clone-via-ssh
+  restore-build-cache:
+    steps:
+      - bootstrap
+      - restore_cache:
+          name: Restore build cache
+          key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
   carthage-bootstrap:
     steps:
       - run:
-          name: Determine XCode version
+          name: Determine Xcode version
           command: echo "$(xcodebuild -version)" >| xcode_version
       - restore_cache:
           name: Restore Carthage/ cache
@@ -44,6 +55,7 @@ commands:
       - run:
           name: Build Codegen
           command: xcodebuild build -scheme Codegen -workspace Neeva.xcworkspace -destination 'platform=macOS'
+
   test-client:
     steps:
       - run:
@@ -55,30 +67,69 @@ commands:
       - run:
           name: ClientTests
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing ClientTests
+  ui-tests:
+    steps:
       - run:
           name: UITests
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing UITests
+  xcui-tests:
+    steps:
       - run:
           name: XCUITests
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests
 
 jobs:
-  build_and_test_all:
+  build:
     # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
     # info on using Xcode 12.5.0 at this time.
     macos:
       xcode: "12.5.0"
     resource_class: m2.medium
     steps:
-      - checkout
-      - carthage-bootstrap
-      - unset-clone-via-ssh
+      - bootstrap
       - build-codegen
       - build-client
+      - save_cache:
+          name: Save build cache
+          key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/Library/Developer/Xcode/DerivedData
+  test-client:
+    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
+    # info on using Xcode 12.5.0 at this time.
+    macos:
+      xcode: "12.5.0"
+    resource_class: m2.medium
+    steps:
+      - restore-build-cache
       - test-client
+  ui-tests:
+    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
+    # info on using Xcode 12.5.0 at this time.
+    macos:
+      xcode: "12.5.0"
+    resource_class: m2.medium
+    steps:
+      - restore-build-cache
+      - ui-tests
+  xcui-tests:
+    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
+    # info on using Xcode 12.5.0 at this time.
+    macos:
+      xcode: "12.5.0"
+    resource_class: m2.medium
+    steps:
+      - restore-build-cache
+      - xcui-tests
 
 workflows:
   version: 2
   build:
     jobs:
-      - build_and_test_all
+      - build
+      - test-client:
+          requires: [build]
+      - ui-tests:
+          requires: [build]
+      - xcui-tests:
+          requires: [build]
