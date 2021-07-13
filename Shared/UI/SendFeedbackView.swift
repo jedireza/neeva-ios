@@ -50,7 +50,7 @@ public struct SendFeedbackView: View {
             Form {
                 Section(
                     header: HStack {
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 0) {
                             Text("Need help or want instant answers to FAQs?")
                                 .withFont(.bodyLarge)
                                 .foregroundColor(.label)
@@ -83,12 +83,14 @@ public struct SendFeedbackView: View {
                 if let screenshot = screenshot, FeatureFlag[.feedbackScreenshot] {
                     DecorativeSection {
                         Toggle(isOn: $shareScreenshot) {
-                            VStack(alignment: .leading) {
-                                Text("Share Screenshot").bold().withFont(.labelLarge)
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text("Share Screenshot")
+                                    .withFont(.labelLarge)
                                 Button(action: { screenshotSheet.present() }) {
                                     Text("View or edit").withFont(.labelMedium)
                                 }
-                                    .disabled(!shareScreenshot)
+                                .disabled(!shareScreenshot)
+                                .buttonStyle(BorderlessButtonStyle())
                             }
                         }
                         .padding(.vertical, 4)
@@ -102,19 +104,22 @@ public struct SendFeedbackView: View {
                 if let query = query, requestId != nil, NeevaFeatureFlags[.feedbackQuery] {
                     DecorativeSection {
                         Toggle(isOn: $shareQuery) {
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 0) {
                                 Text("Share My Search")
-                                    .bold()
+                                    .withFont(.labelLarge)
                                 Text("“\(query)”")
+                                    .withFont(.labelMedium)
                                     .foregroundColor(.secondaryLabel)
                                     .lineLimit(1)
                             }
                         }
+                        .padding(.vertical, 4)
+                        .padding(.leading, -4)
                     }
                 } else if let url = url {
                     DecorativeSection {
                         Toggle(isOn: $shareURL) {
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 0) {
                                 Text("Share URL").bold().withFont(.labelLarge)
                                 HStack {
                                     let displayURL: String = {
