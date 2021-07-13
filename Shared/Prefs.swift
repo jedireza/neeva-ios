@@ -25,6 +25,9 @@ extension Defaults.Keys {
     public static let recentlyClosedTabs = Defaults.Key<Data?>("profile.recentlyClosedTabs")
     public static let saveLogins = Defaults.BoolKey("profile.saveLogins")
 
+    // debug settings
+    public static let enableGeigerCounter = Defaults.BoolKey("profile.enableGeigerCounter")
+
     // caches
     public static let topSitesCacheIsValid = Defaults.BoolKey("profile.topSitesCacheIsValid")
     public static let topSitesCacheSize = Defaults.Key<Int32?>("profile.topSitesCacheSize")

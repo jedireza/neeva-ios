@@ -3,6 +3,7 @@
 import Shared
 import Storage
 import SDWebImage
+import Defaults
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -11,6 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var tabManager: TabManager!
     private var tabTrayController: TabTrayControllerV1!
     private var browserViewController: BrowserViewController!
+    private var geigerCounter: KMCGeigerCounter?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         self.scene = scene
@@ -21,6 +23,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
 
         setupRootViewController(scene)
+
+        if Defaults[.enableGeigerCounter] {
+            startGeigerCounter()
+        }
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -52,6 +58,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     public func getBVC() -> BrowserViewController {
         return browserViewController
+    }
+
+    public func startGeigerCounter() {
+        if let scene = self.scene as? UIWindowScene {
+            geigerCounter = KMCGeigerCounter(windowScene: scene)
+        }
+    }
+    public func stopGeigerCounter() {
+        geigerCounter?.disable()
+        geigerCounter = nil
     }
 
     // MARK: Get data from current scene

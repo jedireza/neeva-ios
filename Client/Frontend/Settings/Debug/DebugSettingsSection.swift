@@ -2,10 +2,12 @@
 
 import SwiftUI
 import Shared
+import Defaults
 
 struct DebugSettingsSection: View {
     @Environment(\.onOpenURL) var openURL
-    
+    @Default(.enableGeigerCounter) var enableGeigerCounter
+
     var body: some View {
         Group {
             SwiftUI.Section(header: Text("Debug — Neeva")) {
@@ -18,6 +20,14 @@ struct DebugSettingsSection: View {
             }
             DebugDBSettingsSection()
             DecorativeSection {
+                Toggle("Enable Geiger Counter", isOn: $enableGeigerCounter)
+                    .onChange(of: enableGeigerCounter) {
+                        if $0 {
+                            SceneDelegate.getCurrentSceneDelegate().startGeigerCounter()
+                        } else {
+                            SceneDelegate.getCurrentSceneDelegate().stopGeigerCounter()
+                        }
+                    }
                 Button("Force Crash App") {
                     Sentry.shared.crash()
                 }.accentColor(.red)

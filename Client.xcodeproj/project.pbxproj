@@ -416,6 +416,8 @@
 		C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6726559DCF004710CD /* FormatDateTime.swift */; };
 		C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */; };
 		C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
+		C9DACFEB269CEFE600456020 /* KMCGeigerCounterTick.aiff in Resources */ = {isa = PBXBuildFile; fileRef = C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */; };
+		C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */; };
 		C9DF5691266A83F4009A2E6C /* ShareToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5690266A83F4009A2E6C /* ShareToView.swift */; };
 		C9DF5699266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5698266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift */; };
 		C9DF56A0266A84A5009A2E6C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9DF569F266A84A5009A2E6C /* Preview Assets.xcassets */; };
@@ -1331,6 +1333,9 @@
 		C9C18E6726559DCF004710CD /* FormatDateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatDateTime.swift; sourceTree = "<group>"; };
 		C9D49FFE265BDF2D00299FC2 /* schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
 		C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountInfoView.swift; sourceTree = "<group>"; };
+		C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = KMCGeigerCounterTick.aiff; sourceTree = "<group>"; };
+		C9DACFE9269CEFE500456020 /* KMCGeigerCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMCGeigerCounter.h; sourceTree = "<group>"; };
+		C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMCGeigerCounter.m; sourceTree = "<group>"; };
 		C9DF5690266A83F4009A2E6C /* ShareToView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareToView.swift; sourceTree = "<group>"; };
 		C9DF5696266A84A4009A2E6C /* ShareTo Preview Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShareTo Preview Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9DF5698266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareTo_Preview_SupportApp.swift; sourceTree = "<group>"; };
@@ -1917,6 +1922,7 @@
 				288A2D7E1AB8B2AD0023ABC3 /* Result */,
 				0B1C05D41A798B1F004C78B0 /* UIImageViewAligned */,
 				7479B4ED1C5306A200DF000B /* Reachability-old.swift */,
+				C9DACFE7269CEFE500456020 /* KMCGeigerCounter */,
 			);
 			name = "Third-Party Source";
 			sourceTree = "<group>";
@@ -2468,6 +2474,17 @@
 				C9C18E6326559B9C004710CD /* LogConfig.swift */,
 			);
 			path = Logging;
+			sourceTree = "<group>";
+		};
+		C9DACFE7269CEFE500456020 /* KMCGeigerCounter */ = {
+			isa = PBXGroup;
+			children = (
+				C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */,
+				C9DACFE9269CEFE500456020 /* KMCGeigerCounter.h */,
+				C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */,
+			);
+			name = KMCGeigerCounter;
+			path = ThirdParty/KMCGeigerCounter/KMCGeigerCounter;
 			sourceTree = "<group>";
 		};
 		C9DF5697266A84A4009A2E6C /* Preview Support */ = {
@@ -4002,6 +4019,7 @@
 				E4B7B7781A793CF20022C5E0 /* FiraSans-Italic.ttf in Resources */,
 				0BA1E00E1B03FB0B007675AF /* NetError.html in Resources */,
 				23BEA768251A99ED00A014BF /* NewYorkMedium-BoldItalic.otf in Resources */,
+				C9DACFEB269CEFE600456020 /* KMCGeigerCounterTick.aiff in Resources */,
 				BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */,
 				E4A961381AC06FA50069AD6F /* ReaderViewLoading.html in Resources */,
 				E4ECCDAE1AB131770005E717 /* FiraSans-Medium.ttf in Resources */,
@@ -4666,6 +4684,7 @@
 				D88FDA9F1F4E2B9200FD9709 /* PhotonActionSheetProtocol.swift in Sources */,
 				E65075511E37F6D1006961AC /* NSURLExtensionsMailTo.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
+				C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */,
 				C94D406A2684D442003A6766 /* NeevaSuggestionModel.swift in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
