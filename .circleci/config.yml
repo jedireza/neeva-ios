@@ -79,12 +79,12 @@ commands:
     steps:
       - run:
           name: XCUITests
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
   xcui-tests-ipad:
     steps:
       - run:
           name: XCUITests - iPad
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
 
 jobs:
   build:
@@ -150,5 +150,7 @@ workflows:
           requires: [build]
       - xcui-tests:
           requires: [build]
+          context: ios-testing
       - xcui-tests-ipad:
           requires: [build]
+          context: ios-testing

@@ -107,6 +107,10 @@ class TestAppDelegate: AppDelegate {
     func resetApplication() {
         log.debug("Wiping everything for a clean start.")
 
+        // Clear login state
+        NeevaUserInfo.shared.deleteLoginCookie()
+        NeevaUserInfo.shared.clearCache()
+
         // Clear image cache
         SDImageCache.shared.clearDisk()
         SDImageCache.shared.clearMemory()
