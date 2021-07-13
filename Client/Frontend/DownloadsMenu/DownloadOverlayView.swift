@@ -17,7 +17,7 @@ struct DownloadMenuView: View {
         let content: () -> Content
         var body: some View {
             content()
-                .background(Color.background)
+                .background(Color.secondaryGroupedBackground)
                 .cornerRadius(12)
         }
     }

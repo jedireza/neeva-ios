@@ -31,7 +31,7 @@ struct LocationViewTrackingButton: View {
         }
         .presentAsPopover(
             isPresented: $showingPopover,
-            backgroundColor: .PopupMenu.background
+            backgroundColor: .systemGroupedBackground
         ) {
             TrackingMenuView()
         }

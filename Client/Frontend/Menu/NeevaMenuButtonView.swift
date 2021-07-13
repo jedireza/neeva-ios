@@ -60,7 +60,7 @@ public struct NeevaMenuButtonView: View {
             }.foregroundColor(isEnabled ? .label : .quaternaryLabel)
         }
         .buttonStyle(TableCellButtonStyle())
-        .background(Color(UIColor.PopupMenu.foreground))
+        .background(Color.secondaryGroupedBackground)
         .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }
 }

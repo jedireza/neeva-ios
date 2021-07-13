@@ -10,7 +10,7 @@ struct NeevaMenuRootView: View {
     var embeddedView: NeevaMenuView
 
     var body: some View {
-        let config = OverlaySheetConfig(showTitle: false, backgroundColor: UIColor.PopupMenu.background)
+        let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
         OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() } ) {
             self.embeddedView
                 .environment(\.isIncognito, isIncognito)

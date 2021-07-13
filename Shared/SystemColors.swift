@@ -21,5 +21,7 @@ extension Color {
 // MARK: System Backgrounds
 extension Color {
     public static let background = Color(UIColor.systemBackground)
+
     public static let groupedBackground = Color(UIColor.systemGroupedBackground)
+    public static let secondaryGroupedBackground = Color(UIColor.secondarySystemGroupedBackground)
 }

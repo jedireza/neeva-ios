@@ -832,6 +832,7 @@ class BrowserViewController: UIViewController {
         hideOverlaySheetViewController()
 
         addChild(overlaySheetViewController)
+        setOverrideTraitCollection(UITraitCollection(userInterfaceLevel: .elevated), forChild: overlaySheetViewController)
         view.addSubview(overlaySheetViewController.view)
         overlaySheetViewController.view.snp.makeConstraints { make in
             make.edges.equalTo(self.view)

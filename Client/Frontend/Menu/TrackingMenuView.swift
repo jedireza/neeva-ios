@@ -10,7 +10,7 @@ struct NeevaMenuPanelSpec: ViewModifier {
     func body(content: Content) -> some View {
         content.frame(maxWidth: .infinity, alignment: .leading)
             .padding(NeevaUIConstants.menuInnerPadding)
-            .background(Color(UIColor.PopupMenu.foreground))
+            .background(Color.secondaryGroupedBackground)
             .cornerRadius(NeevaUIConstants.menuCornerDefault)
     }
 }
@@ -137,7 +137,7 @@ struct TrackingMenuView: View {
             }
         }
         .padding(NeevaUIConstants.menuOuterPadding)
-        .background(Color(UIColor.PopupMenu.background)).fixedSize(horizontal: true, vertical: true)
+        .background(Color.groupedBackground).fixedSize(horizontal: true, vertical: true)
     }
 }
 

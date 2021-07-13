@@ -84,7 +84,6 @@ extension UIColor {
 
     public static let DefaultBackground = UIColor(named: "Background", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let DefaultTextAndTint = UIColor(named: "TextAndTint", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let MenuBackground = UIColor(named: "MenuBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let TrayBackground = UIColor(named: "TrayBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 }
 

@@ -186,11 +186,6 @@ extension UIColor {
         public static let readingListDimmed = UIColor.Photon.Grey40
         public static let downloadedFileIcon = UIColor.secondaryLabel
     }
-    
-    public struct PopupMenu {
-        public static let background = UIColor.MenuBackground
-        public static let foreground = UIColor.Browser.background
-    }
 }
 
 extension UIColor {

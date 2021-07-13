@@ -94,11 +94,11 @@ public struct NeevaMenuView: View {
                 .accessibilityIdentifier("NeevaMenu.Downloads")
             }
             .padding(0)
-            .background(Color(UIColor.PopupMenu.foreground))
+            .background(Color.secondaryGroupedBackground)
             .cornerRadius(NeevaUIConstants.menuCornerDefault)
         }
         .padding(self.noTopPadding ? [.leading, .trailing] : [.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
-        .background(Color(UIColor.PopupMenu.background))
+        .background(Color.groupedBackground)
         .onAppear(perform: viewDidAppear)
         .onDisappear(perform: viewDidDisappear)
     }
