@@ -30,16 +30,20 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
     @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
 
-    let size: CGFloat = CardUX.CardSize - 10
+    let size: CGFloat
     let spacing: CGFloat = 12
     let smallSpacing: CGFloat = 4
+
+    var contentSize: CGFloat {
+        size - 10
+    }
 
     var numItems: Int {
         model.allDetails.count
     }
 
     var itemSize: CGFloat {
-        (self.size - self.spacing) / 2
+        (contentSize - spacing) / 2
     }
 
     var smallItemSize: CGFloat {
@@ -63,7 +67,7 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     func itemFor( _ index: Int) -> some View {
         let item = model.allDetails[index]
         let blockSize = numItems < 5 ? itemSize : (index < 3 ? itemSize : smallItemSize)
-        return item.thumbnail.applyThumbnailGroupSpec(
+        return item.thumbnail(size: blockSize).applyThumbnailGroupSpec(
             size: blockSize, onSelect: index < 3 ? {
                 item.onSelect()
                 selectionCompletion()
@@ -95,7 +99,7 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
 fileprivate class PreviewThumbnailModel: ThumbnailModel {
     fileprivate struct ColorThumbnail: SelectableThumbnail {
         let color: Color
-        var thumbnail: Color {
+        func thumbnail(size: CGFloat) -> Color {
             color
         }
 
@@ -124,11 +128,11 @@ fileprivate class PreviewThumbnailModel: ThumbnailModel {
 struct CardGroupView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .red, num: 1))
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .blue, num: 3))
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .black, num: 4))
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .green, num: 5))
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .purple, num: 8))
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .red, num: 1), size: CardUX.DefaultCardSize)
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .blue, num: 3), size: CardUX.DefaultCardSize)
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .black, num: 4), size: CardUX.DefaultCardSize)
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .green, num: 5), size: CardUX.DefaultCardSize)
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .purple, num: 8), size: CardUX.DefaultCardSize)
         }
     }
 }

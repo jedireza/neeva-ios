@@ -14,7 +14,7 @@ enum CardGridUX {
     static let GridTopPadding: CGFloat = 20
     static let GridSpacing: CGFloat = 20
     static let YStaticOffset: CGFloat = (FeatureFlag[.groupsInSwitcher] ? PickerHeight : 0)
-        +  2 * PickerPadding + GridTopPadding + 0.25 * CardUX.CardSize + CardUX.HeaderSize
+        +  2 * PickerPadding + GridTopPadding + 0.25 * CardUX.DefaultCardSize + CardUX.HeaderSize
 }
 
 fileprivate struct CompletionForAnimation: AnimatableModifier {
@@ -98,6 +98,7 @@ struct CardGrid: View {
     @EnvironmentObject var gridModel: GridModel
 
     @State var switcherState: SwitcherViews = .tabs
+    @State var cardSize: CGFloat = CardUX.DefaultCardSize
 
     var indexInsideTabGroupModel: Int? {
         guard FeatureFlag[.groupsInSwitcher] else {
@@ -128,14 +129,14 @@ struct CardGrid: View {
 
     var xOffset: CGFloat {
         let offset = (indexInGrid % 2) == 0 ?
-            -CardGridUX.GridSpacing / 2 - CardUX.CardSize / 2 :
-            CardGridUX.GridSpacing / 2 + CardUX.CardSize / 2
+            -CardGridUX.GridSpacing / 2 - cardSize / 2 :
+            CardGridUX.GridSpacing / 2 + cardSize / 2
         return offset
     }
 
     var yOffset: CGFloat {
         let rows = floor(CGFloat(indexInGrid) / 2.0)
-        return  (CardUX.HeaderSize + CardUX.CardSize + CardGridUX.GridSpacing) * rows
+        return  (CardUX.HeaderSize + cardSize + CardGridUX.GridSpacing) * rows
             + CardGridUX.YStaticOffset + gridModel.scrollOffset
     }
 
@@ -156,14 +157,14 @@ struct CardGrid: View {
                     details = tabDetail
                 }
             }
-            return details?.thumbnail
+            return details?.thumbnail(size: cardSize)
         } else {
             tabModel.allDetails.forEach { tabDetail in
                 if tabDetail.id == selectedTab.tabUUID {
                     details = tabDetail
                 }
             }
-            return details?.thumbnail
+            return details?.thumbnail(size: cardSize)
         }
 
     }
@@ -175,26 +176,35 @@ struct CardGrid: View {
                     if FeatureFlag[.groupsInSwitcher] {
                         GridPicker(switcherState: $switcherState)
                     }
-                    CardsContainer(switcherState: $switcherState)
+                    CardsContainer(switcherState: $switcherState,
+                                   columns: Array(repeating:
+                                                    GridItem(.fixed(cardSize),
+                                                             spacing: CardGridUX.GridSpacing),
+                                                  count: 2)).environment(\.cardSize, cardSize)
                     Spacer(minLength: 0)
                 }
                 if gridModel.animationThumbnailState != .hidden {
-                    selectedThumbnail.runAfter(toggling: gridModel.isHidden, fromTrueToFalse: {
-                        gridModel.animationThumbnailState = .hidden
-                    }, fromFalseToTrue: {
-                        gridModel.hideWithNoAnimation()
-                    }).frame(width: gridModel.isHidden ? geom.size.width : CardUX.CardSize,
-                             height: gridModel.isHidden ? geom.size.height : CardUX.CardSize)
-                    .cornerRadius(CardUX.CornerRadius).clipped()
-                    .offset(x: gridModel.isHidden ? 0 : xOffset,
+                    selectedThumbnail
+                        .runAfter(toggling: gridModel.isHidden, fromTrueToFalse: {
+                            gridModel.animationThumbnailState = .hidden
+                        }, fromFalseToTrue: {
+                            gridModel.hideWithNoAnimation()
+                        }).frame(width: gridModel.isHidden ? geom.size.width : cardSize,
+                             height: gridModel.isHidden ? geom.size.height : cardSize)
+                        .cornerRadius(CardUX.CornerRadius).clipped()
+                        .offset(x: gridModel.isHidden ? 0 : xOffset,
                             y: gridModel.isHidden ? 0: yOffset - geom.size.height / 2)
-                    .animation(.spring()).onAppear {
-                        if !gridModel.isHidden
-                            && gridModel.animationThumbnailState == .visibleForTrayHidden {
-                                gridModel.isHidden.toggle()
+                        .animation(.spring()).onAppear {
+                            if !gridModel.isHidden
+                                && gridModel.animationThumbnailState == .visibleForTrayHidden {
+                                    gridModel.isHidden.toggle()
+                            }
                         }
-                    }
                 }
+            }.onChange(of: geom.size.width) { _ in
+                self.cardSize = (geom.size.width - 3 * CardGridUX.GridSpacing) / 2
+            }.onAppear {
+                self.cardSize = (geom.size.width - 3 * CardGridUX.GridSpacing) / 2
             }
         }
     }
@@ -204,10 +214,9 @@ struct CardsContainer: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var gridModel: GridModel
-    @Binding var switcherState: SwitcherViews
 
-    let columns = Array(repeating: GridItem(.fixed(CardUX.CardSize),
-                                            spacing: CardGridUX.GridSpacing), count: 2)
+    @Binding var switcherState: SwitcherViews
+    let columns: [GridItem]
 
     var indexInsideTabGroupModel: Int? {
         let selectedTab = tabModel.manager.selectedTab!

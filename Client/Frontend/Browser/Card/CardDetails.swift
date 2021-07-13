@@ -10,7 +10,7 @@ import Combine
 protocol SelectableThumbnail {
     associatedtype ThumbnailView: View
 
-    var thumbnail: ThumbnailView { get }
+    func thumbnail(size: CGFloat) -> ThumbnailView
     func onSelect()
 }
 
@@ -63,7 +63,7 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
         manager.get(for: id)?.displayTitle ?? ""
     }
 
-    @ViewBuilder var thumbnail: some View {
+    @ViewBuilder func thumbnail(size: CGFloat) -> some View {
         if let image = manager.get(for: id)?.image {
             Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)
         } else {
@@ -122,7 +122,8 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
 struct SpaceEntityThumbnail: SelectableThumbnail {
     let data: Data
     let selected: () -> ()
-    var thumbnail: some View {
+
+    func thumbnail(size: CGFloat) -> some View {
         Image(uiImage: UIImage(data: data)!).resizable()
             .aspectRatio(contentMode: .fill)
     }
@@ -145,9 +146,6 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
 
-    var thumbnail: some View {
-        ThumbnailGroupView(model: self)
-    }
 
     private init(id: String) {
         self.id = id
@@ -160,6 +158,11 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
 
     convenience init(space: Space) {
         self.init(id: space.id.id)
+    }
+
+
+    func thumbnail(size: CGFloat) -> some View {
+        ThumbnailGroupView(model: self, size: size)
     }
 
     func updateDetails() {
@@ -233,12 +236,6 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
     var id: String
     var closeButtonImage: UIImage?
 
-    var thumbnail: some View {
-        return WebImage(url:
-                            URL(string: manager.get(for: id)?.pageMetadata?.mediaURL ?? ""))
-            .resizable().aspectRatio(contentMode: .fill)
-    }
-
     init(url: URL, profile: Profile, fetcher: SiteFetcher) {
         self.id = url.absoluteString
         self.manager = fetcher
@@ -246,6 +243,12 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
                     self?.objectWillChange.send()
         }
         fetcher.load(url: url.absoluteString, profile: profile)
+    }
+
+    func thumbnail(size: CGFloat) -> some View {
+        return WebImage(url:
+                            URL(string: manager.get(for: id)?.pageMetadata?.mediaURL ?? ""))
+            .resizable().aspectRatio(contentMode: .fill)
     }
 
     func onSelect() {
@@ -270,15 +273,15 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     }
     @Published var allDetails: [TabCardDetails] = []
 
-    var thumbnail: some View {
-        return ThumbnailGroupView(model: self)
-    }
-
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
         self.id = tabGroup.id
         self.manager = tabGroupManager
         allDetails = manager.get(for: id)?.children
             .map({ TabCardDetails(tab: $0, manager: manager.tabManager) }) ?? []
+    }
+
+    func thumbnail(size: CGFloat) -> some View {
+        return ThumbnailGroupView(model: self, size: size)
     }
 
     func onSelect() {}

@@ -6,7 +6,7 @@ import SDWebImageSwiftUI
 import Shared
 
 enum CardUX {
-    static let CardSize : CGFloat = 160
+    static let DefaultCardSize : CGFloat = 160
     static let ShadowRadius : CGFloat = 2
     static let CornerRadius : CGFloat = 5
     static let ButtonSize : CGFloat = 28
@@ -33,6 +33,15 @@ struct BorderTreatment: ViewModifier {
 }
 
 extension EnvironmentValues {
+    private struct CardSizeKey: EnvironmentKey {
+        static var defaultValue: CGFloat = CardUX.DefaultCardSize
+    }
+
+    public var cardSize: CGFloat {
+        get { self[CardSizeKey] }
+        set { self[CardSizeKey] = newValue }
+    }
+
     private struct SelectionCompletionKey: EnvironmentKey {
         static var defaultValue: (() -> ())? = nil
     }
@@ -44,9 +53,11 @@ extension EnvironmentValues {
 }
 
 struct Card<Details>: View where Details: CardDetails {
-    @ObservedObject var details: Details
-    let config: CardConfig
     @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
+    @Environment(\.cardSize) var size: CGFloat
+    @ObservedObject var details: Details
+
+    let config: CardConfig
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -76,19 +87,19 @@ struct Card<Details>: View where Details: CardDetails {
                                 .padding(5)
                         })
                     }
-                }.frame(width: CardUX.CardSize, height: CardUX.ButtonSize)
+            }.frame(width: size, height: CardUX.ButtonSize)
                 .background(Color.DefaultBackground)
             Color(UIColor.Browser.urlBarDivider).frame(maxWidth: .infinity, maxHeight: 1)
-            if let thumbnail = details.thumbnail {
+            if let thumbnail = details.thumbnail(size: size) {
                 Button(action: {
                     details.onSelect()
                     selectionCompletion()
                 }, label: {
-                        thumbnail.frame(width: CardUX.CardSize, height: CardUX.CardSize).clipped()
+                    thumbnail.frame(width: size, height: size).clipped()
                        })
             } else {
                 Rectangle().foregroundColor(.label)
-                    .frame(width: CardUX.CardSize, height: CardUX.CardSize)
+                    .frame(width: size, height: size)
             }
         }.cornerRadius(CardUX.CornerRadius)
         .modifier(BorderTreatment(isSelected: details.isSelected))
