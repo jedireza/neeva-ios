@@ -249,7 +249,8 @@ public struct SendFeedbackView: View {
                 shareResults: shareResults,
                 requestId: (requestId?.isEmpty ?? true) ? nil : requestId,
                 geoLocationStatus: geoLocationStatus,
-                source: .app
+                source: .app,
+                screenshot: shareScreenshot && FeatureFlag[.feedbackScreenshot] ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
             )
         ).perform { result in
             isSending = false
@@ -271,7 +272,7 @@ public struct SendFeedbackView: View {
 
 extension UIImage {
     // https://stackoverflow.com/a/33675160/5244995
-    convenience init?(color: UIColor, width: CGFloat, height: CGFloat) {
+    fileprivate convenience init?(color: UIColor, width: CGFloat, height: CGFloat) {
         let rect = CGRect(origin: .zero, size: CGSize(width: width, height: height))
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0)
         color.setFill()
@@ -281,6 +282,13 @@ extension UIImage {
 
         guard let cgImage = image?.cgImage else { return nil }
         self.init(cgImage: cgImage)
+    }
+
+    // Reduce size and convert image to base64 string format
+    fileprivate func reduceAndConvertToBase64(maxSize: CGFloat) -> String? {
+        let resizedImage = self.resize(maxSize)
+        let imageData = resizedImage.pngData()
+        return imageData?.base64EncodedString()
     }
 }
 

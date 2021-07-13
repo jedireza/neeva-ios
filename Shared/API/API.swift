@@ -2923,8 +2923,9 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
   ///   - geoLocationStatus
   ///   - source
   ///   - inviteToken
-  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil) {
-    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken]
+  ///   - screenshot
+    public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil) {
+        graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot]
   }
 
   public var feedback: Swift.Optional<String?> {
@@ -2951,6 +2952,15 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "requestID")
+    }
+  }
+
+  public var screenshot: Swift.Optional<String?> {
+    get {
+      return graphQLMap["screenshot"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "screenshot")
     }
   }
 
