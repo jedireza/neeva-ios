@@ -29,6 +29,12 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         tabManager.selectedTab?.goForward()
     }
 
+    func tabToolbarDidPressAddNewTab() {
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        tabManager.selectTab(tabManager.addTab(nil, isPrivate: isPrivate))
+        focusLocationTextField(forTab: tabManager.selectedTab)
+    }
+
     func tabToolbarSpacesMenu() {
         guard let tab = tabManager.selectedTab else { return }
         guard let url = tab.canonicalURL?.displayURL else { return }
@@ -71,6 +77,8 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare)) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: false)
         }
+        newTab.accessibilityLabel = "New Tab"
+
         let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
             self.openBlankNewTab(focusLocationField: false, isPrivate: true)
         }

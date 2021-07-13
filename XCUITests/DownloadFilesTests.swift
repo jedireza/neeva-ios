@@ -29,15 +29,6 @@ class DownloadFilesTests: BaseTestCase {
         app.tables.cells.buttons["Delete"].tap()
     }
 
-    func testDownloadFilesAppMenuFirstTime() {
-        navigator.goto(HomePanelsScreen)
-        navigator.goto(LibraryPanel_Downloads)
-        XCTAssertTrue(app.tables["DownloadsTable"].exists)
-        // Check that there is not any items and the default text shown is correct
-        checkTheNumberOfDownloadedItems(items: 0)
-        XCTAssertTrue(app.staticTexts["Downloaded files will show up here."].exists)
-    }
-
     /* Disabled: Test depends on unreachable server.
     func testDownloadFileContextMenu() {
         navigator.openURL(testURL)
@@ -69,19 +60,6 @@ class DownloadFilesTests: BaseTestCase {
         XCTAssertTrue(app.tables.cells.staticTexts[testFileSize].exists)
     }
     */
-
-    func testDownloadBLOBFile() {
-        downloadBLOBFile()
-        
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
-
-        waitForExistence(app.tables["DownloadsTable"])
-        // There should be one item downloaded. It's name and size should be shown
-        checkTheNumberOfDownloadedItems(items: 1)
-        // We can only check for the BLOB file size since the name is generated
-        XCTAssertTrue(app.tables.cells.staticTexts[testBLOBFileSize].exists)
-    }
 
     /* Disabled: Test depends on unreachable server.
     func testDeleteDownloadedFile() {

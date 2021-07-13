@@ -44,7 +44,7 @@ class ToastDefaults: NSObject {
             download.cancel()
         }
         let completedContent = ToastStateContent(text: "Downloaded", buttonText: "open") {
-            BrowserViewController.foregroundBVC().showLibrary(panel: .downloads)
+            openDownloadsFolderInFilesApp()
         }
         let failedContent = ToastStateContent(text: "Download Failed")
 

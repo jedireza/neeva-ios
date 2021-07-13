@@ -67,6 +67,7 @@ struct TourPromptView: View {
                             .cornerRadius(30)
                             .frame(height: 40)
                             .padding(.horizontal, 6)
+                            .accessibility(identifier: "Tour.Button.Okay")
                         }
                     }
                     if onClose != nil {

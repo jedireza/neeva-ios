@@ -51,7 +51,6 @@ class DatabaseFixtureTest: BaseTestCase {
                 XCTMemoryMetric()]) {
                 // activity measurement here
 
-                navigator.goto(NeevaMenu)
                 navigator.goto(LibraryPanel_History)
             }
         }

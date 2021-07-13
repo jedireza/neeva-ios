@@ -463,12 +463,6 @@ extension TabTrayControllerV1: TabSelectionDelegate {
     }
 }
 
-extension TabTrayControllerV1: PresentingModalViewControllerDelegate {
-    func dismissPresentedModalViewController(_ modalViewController: UIViewController, animated: Bool) {
-        dismiss(animated: animated, completion: { self.collectionView.reloadData() })
-    }
-}
-
 extension TabTrayControllerV1: UIScrollViewAccessibilityDelegate {
     func accessibilityScrollStatus(for scrollView: UIScrollView) -> String? {
         guard var visibleCells = collectionView.visibleCells as? [TabCell] else { return nil }

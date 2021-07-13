@@ -47,9 +47,7 @@ class HistoryTests: KIFTestCase {
         
         tester().waitForView(withAccessibilityLabel: "Page 1")
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=2")
-
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=1")
-
 
         // Close History (and so Library) panel
         BrowserUtils.closeHistorySheet(tester())
@@ -91,7 +89,6 @@ class HistoryTests: KIFTestCase {
     }*/
 
     func testDeleteHistoryItemFromListWithMoreThan100Items() {
-
         for pageNo in 1...102 {
             BrowserUtils.addHistoryEntry("Page \(pageNo)", url: URL(string: "\(webRoot!)/numberedPage.html?page=\(pageNo)")!)
         }
@@ -105,31 +102,22 @@ class HistoryTests: KIFTestCase {
         tester().waitForView(withAccessibilityLabel: "Page 102")
 
         let firstIndexPath = IndexPath(row: 0, section: 1)
-        tester().waitForView(withAccessibilityIdentifier: "LibraryPanels.History")
-        
         let row = tester().waitForCell(at: firstIndexPath, inTableViewWithAccessibilityIdentifier: "History List")
         tester().waitForAnimationsToFinish()
-        tester().swipeView(withAccessibilityLabel: row?.accessibilityLabel, value: row?.accessibilityValue, in: KIFSwipeDirection.left)
-
-        if !BrowserUtils.iPad() {
-            // this one line is causing all UI tests to fail
-            // tester().tapView(withAccessibilityLabel: "Delete")
-        }
+        tester().longPressView(withAccessibilityLabel: row?.accessibilityLabel, value: row?.accessibilityValue, duration: 3)
 
         // The history list still exists
-       
         tester().waitForView(withAccessibilityIdentifier: "History List")
         tester().waitForView(withAccessibilityLabel: oldestUrl)
 
         // check that the deleted page does not exist
         tester().waitForAbsenceOfView(withAccessibilityLabel: row?.accessibilityLabel)
 
+        if tester().viewExistsWithLabel("Cancel") {
+            tester().tapView(withAccessibilityLabel: "Cancel")
+        }
+
         // Close History (and so Library) panel
         BrowserUtils.closeHistorySheet(tester())
-    }
-
-    override func tearDown() {
-        BrowserUtils.clearPrivateDataKIF(tester())
-        super.tearDown()
     }
 }

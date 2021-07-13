@@ -89,7 +89,7 @@ public struct NeevaMenuView: View {
                 Divider()
 
                 NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
-                    self.menuAction!(NeevaMenuButtonActions.downloads)
+                    openDownloadsFolderInFilesApp()
                 }
                 .accessibilityIdentifier("NeevaMenu.Downloads")
             }

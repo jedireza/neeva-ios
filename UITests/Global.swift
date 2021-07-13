@@ -300,11 +300,15 @@ class BrowserUtils {
 
     class func clearPrivateDataKIF(_ tester: KIFUITestActor) {
         openNeevaMenu(tester)
+        tester.waitForView(withAccessibilityIdentifier: "NeevaMenu.Settings")
         tester.tapView(withAccessibilityIdentifier: "NeevaMenu.Settings")
+        tester.waitForAnimationsToFinish()
         tester.accessibilityScroll(.down)
 
+        tester.waitForAnimationsToFinish()
         tester.tapView(withAccessibilityLabel: "Clear Browsing Data")
         tester.tapView(withAccessibilityLabel: "Clear Selected Data on This Device")
+        
         acceptClearPrivateData(tester)
         closeClearPrivateDataDialog(tester)
     }
@@ -346,25 +350,20 @@ class BrowserUtils {
 
     class func openNeevaMenu(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish()
-        if iPad() {
-            tester.waitForView(withAccessibilityIdentifier: "URLBarView.neevaMenuButton").tap()
-        } else {
-            tester.waitForView(withAccessibilityLabel: "Neeva Menu").tap()
-        }
+        tester.waitForView(withAccessibilityLabel: "Neeva Menu")
+        tester.tapView(withAccessibilityLabel: "Neeva Menu")
         tester.waitForAnimationsToFinish()
     }
 
     class func closeHistorySheet(_ tester: KIFUITestActor) {
-        if iPad() {
-            tester.tapView(withAccessibilityIdentifier: "TabToolbar.libraryButton")
-        } else {
-            // Workaround to be able to swipe the view and close the library panel
-            tester.tapView(withAccessibilityLabel: "Downloads")
-            tester.waitForAnimationsToFinish(withTimeout: 3)
-
-            let view=tester.waitForView(withAccessibilityIdentifier: "Downloads")
-            view?.drag(from: CGPoint(x: 150, y: 40), to: CGPoint(x: 150, y: 530))
+        if tester.viewExistsWithLabel("History Panel") {
+            let view = tester.waitForView(withAccessibilityIdentifier: "History Panel")
+            view?.drag(from: CGPoint(x: 150, y: 30), to: CGPoint(x: 150, y: 530))
+        } else if tester.viewExistsWithLabel("Done") {
+            tester.waitForTappableView(withAccessibilityLabel: "Done")
+            tester.tapView(withAccessibilityLabel: "Done")
         }
+
         tester.waitForAnimationsToFinish()
     }
 }

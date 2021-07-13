@@ -46,8 +46,7 @@ class BrowserViewController: UIViewController {
         controller.view.isUserInteractionEnabled = false
         return controller
     }()
-    var libraryViewController: LibraryViewController?
-    var libraryDrawerViewController: DrawerViewController?
+    var historyViewController: UINavigationController?
     var overlaySheetViewController: UIViewController?
     lazy var simulateForwardViewController: SimulatedSwipeController? = {
         guard FeatureFlag[.swipePlusPlus] else {
@@ -258,17 +257,6 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    fileprivate func constraintsForLibraryDrawerView(_ make: SnapKit.ConstraintMaker) {
-        guard libraryDrawerViewController?.view.superview != nil else { return }
-        if self.topTabsVisible {
-            make.top.equalTo(webViewContainer)
-        } else {
-            make.top.equalTo(view)
-        }
-
-        make.right.bottom.left.equalToSuperview()
-    }
-
     func updateToolbarStateForTraitCollection(_ newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator? = nil) {
         let showToolbar = shouldShowFooterForTraitCollection(newCollection)
         let showTopTabs = shouldShowTopTabsForTraitCollection(newCollection)
@@ -325,8 +313,6 @@ class BrowserViewController: UIViewController {
             toolbarModel.canGoBack = webView.canGoBack
             toolbarModel.canGoForward = webView.canGoForward
         }
-
-        libraryDrawerViewController?.view.snp.remakeConstraints(constraintsForLibraryDrawerView)
     }
 
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -823,25 +809,24 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func showLibrary(panel: LibraryPanelType? = nil) {
+    func showLibrary() {
         if let presentedViewController = self.presentedViewController {
             presentedViewController.dismiss(animated: true, completion: nil)
         }
 
-        let libraryViewController = self.libraryViewController ?? LibraryViewController(profile: profile)
-        libraryViewController.delegate = self
-        self.libraryViewController = libraryViewController
+        if let historyViewController = self.historyViewController {
+            present(historyViewController, animated: true, completion: nil)
+        } else {
+            let historyPanel = HistoryPanel(profile: profile)
+            historyPanel.delegate = self
+            historyPanel.accessibilityLabel = "History Panel"
 
-        if panel != nil {
-            libraryViewController.selectedPanel = panel
+            let navigationController = UINavigationController(rootViewController: historyPanel)
+            navigationController.modalPresentationStyle = .formSheet
+            self.historyViewController = navigationController
+            
+            present(navigationController, animated: true, completion: nil)
         }
-
-        let libraryDrawerViewController = self.libraryDrawerViewController ?? DrawerViewController(childViewController: libraryViewController)
-        self.libraryDrawerViewController = libraryDrawerViewController
-
-        addChild(libraryDrawerViewController)
-        view.addSubview(libraryDrawerViewController.view)
-        libraryDrawerViewController.view.snp.remakeConstraints(constraintsForLibraryDrawerView)
     }
 
     func showOverlaySheetViewController(_ overlaySheetViewController: UIViewController) {
@@ -1285,19 +1270,12 @@ extension BrowserViewController {
     }
 
     func urlBarDidEnterOverlayMode() {
-        libraryDrawerViewController?.close()
         showZeroQuery(inline: false)
     }
 
     func urlBarDidLeaveOverlayMode() {
         destroySearchController()
         updateInZeroQuery(tabManager.selectedTab?.url as URL?)
-    }
-}
-
-extension BrowserViewController: PresentingModalViewControllerDelegate {
-    func dismissPresentedModalViewController(_ modalViewController: UIViewController, animated: Bool) {
-        self.dismiss(animated: animated, completion: nil)
     }
 }
 
@@ -1528,11 +1506,11 @@ extension BrowserViewController: TabDelegate {
     }
 }
 
-extension BrowserViewController: LibraryPanelDelegate {
+extension BrowserViewController: HistoryPanelDelegate {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType) {
         guard let tab = tabManager.selectedTab else { return }
         finishEditingAndSubmit(url, visitType: visitType, forTab: tab)
-        libraryDrawerViewController?.close()
+        historyViewController?.dismiss(animated: true, completion: nil)
     }
 
     func libraryPanel(didSelectURLString url: String, visitType: VisitType) {
@@ -1556,7 +1534,7 @@ extension BrowserViewController: LibraryPanelDelegate {
 
 extension BrowserViewController: ZeroQueryPanelDelegate {
     func zeroQueryPanelDidRequestToOpenLibrary(panel: LibraryPanelType) {
-        showLibrary(panel: panel)
+        showLibrary()
         view.endEditing(true)
     }
 
@@ -1609,7 +1587,7 @@ extension BrowserViewController: SearchViewControllerDelegate {
 
 extension BrowserViewController: TabManagerDelegate {
     func tabManager(_ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?, isRestoring: Bool) {
-        libraryDrawerViewController?.close(immediately: true)
+        historyViewController?.dismiss(animated: false, completion: nil)
 
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
         // and having multiple views with the same label confuses tests.
@@ -2111,18 +2089,18 @@ extension BrowserViewController: JSPromptAlertControllerDelegate {
 
 extension BrowserViewController: TopTabsDelegate {
     func topTabsDidPressTabs() {
-        libraryDrawerViewController?.close(immediately: true)
+        historyViewController?.dismiss(animated: false, completion: nil)
         legacyURLBar.leaveOverlayMode(didCancel: true)
         self.urlBarDidPressTabs(legacyURLBar)
     }
 
     func topTabsDidPressNewTab(_ isPrivate: Bool) {
-        libraryDrawerViewController?.close(immediately: true)
+        historyViewController?.dismiss(animated: false, completion: nil)
         openBlankNewTab(focusLocationField: false, isPrivate: isPrivate)
     }
 
     func topTabsDidTogglePrivateMode() {
-        libraryDrawerViewController?.close(immediately: true)
+        historyViewController?.dismiss(animated: false, completion: nil)
         guard let _ = tabManager.selectedTab else {
             return
         }
@@ -2130,7 +2108,7 @@ extension BrowserViewController: TopTabsDelegate {
     }
 
     func topTabsDidChangeTab() {
-        libraryDrawerViewController?.close()
+        historyViewController?.dismiss(animated: true, completion: nil)
         legacyURLBar.leaveOverlayMode(didCancel: true)
     }
 }

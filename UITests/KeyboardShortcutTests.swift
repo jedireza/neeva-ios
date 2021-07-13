@@ -22,9 +22,17 @@ class KeyboardShortcutTests: KIFTestCase {
             tester.tapView(withAccessibilityLabel: "Cancel")
         }
 
-        tester.tapView(withAccessibilityLabel: "Show Tabs")
-        tester.tapView(withAccessibilityLabel: "Add Tab")
+        if tester.tryFindingView(withAccessibilityIdentifier: "Tour.Button.Okay") {
+            tester.tapView(withAccessibilityIdentifier: "Tour.Button.Okay")
+        }
 
+        tester.waitForView(withAccessibilityLabel: "Show Tabs")
+        tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 3)
+
+        tester.waitForView(withAccessibilityLabel: "New Tab")
+        tester.tapView(withAccessibilityLabel: "New Tab")
+
+        tester.waitForView(withAccessibilityIdentifier: "url")
         BrowserUtils.enterUrlAddressBar(tester, typeUrl: "www.neeva.com")
     }
 

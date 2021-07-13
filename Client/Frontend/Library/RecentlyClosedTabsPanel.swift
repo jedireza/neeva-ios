@@ -16,8 +16,8 @@ private enum RecentlyClosedPanelUX {
     static let IconBorderWidth: CGFloat = 0.5
 }
 
-class RecentlyClosedTabsPanel: UIViewController, LibraryPanel {
-    weak var libraryPanelDelegate: LibraryPanelDelegate?
+class RecentlyClosedTabsPanel: UIViewController {
+    weak var delegate: HistoryPanelDelegate?
     let profile: Profile
 
     fileprivate lazy var tableViewController = RecentlyClosedTabsPanelSiteTableViewController(profile: profile)
@@ -36,7 +36,7 @@ class RecentlyClosedTabsPanel: UIViewController, LibraryPanel {
 
         view.backgroundColor = UIColor.legacyTheme.tableView.headerBackground
 
-        tableViewController.libraryPanelDelegate = libraryPanelDelegate
+        tableViewController.delegate = delegate
         tableViewController.recentlyClosedTabsPanel = self
 
         self.addChild(tableViewController)
@@ -50,7 +50,7 @@ class RecentlyClosedTabsPanel: UIViewController, LibraryPanel {
 }
 
 class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
-    weak var libraryPanelDelegate: LibraryPanelDelegate?
+    weak var delegate: HistoryPanelDelegate?
     var recentlyClosedTabs: [SavedTab] = []
     weak var recentlyClosedTabsPanel: RecentlyClosedTabsPanel?
 

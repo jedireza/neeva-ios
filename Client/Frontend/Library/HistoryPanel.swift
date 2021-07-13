@@ -8,6 +8,12 @@ import Storage
 import XCGLogger
 import WebKit
 
+protocol HistoryPanelDelegate: AnyObject {
+    func libraryPanelDidRequestToOpenInNewTab(_ url: URL, _ savedTab: SavedTab?, isPrivate: Bool)
+    func libraryPanel(didSelectURL url: URL, visitType: VisitType)
+    func libraryPanel(didSelectURLString url: String, visitType: VisitType)
+}
+
 private enum HistoryPanelUX {
     static let WelcomeScreenItemWidth = 170
     static let IconSize = 23
@@ -23,7 +29,7 @@ private class FetchInProgressError: MaybeErrorType {
 }
 
 @objcMembers
-class HistoryPanel: SiteTableViewController, LibraryPanel {
+class HistoryPanel: SiteTableViewController {
     enum Section: Int {
         // Showing showing recently closed, and clearing recent history are action rows of this type.
         case additionalHistoryActions
@@ -72,7 +78,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
     let QueryLimitPerFetch = 100
 
-    var libraryPanelDelegate: LibraryPanelDelegate?
+    var delegate: HistoryPanelDelegate?
 
     var tabManager: TabManager!
 
@@ -114,6 +120,13 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         tabManager = BrowserViewController.foregroundBVC().tabManager
 
         updateEmptyPanelState()
+
+        navigationItem.title = .LibraryPanelHistoryAccessibilityLabel
+        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .done, primaryAction: UIAction { [weak self] _ in self?.dismiss(animated: true, completion: nil)
+        })
+        navigationItem.rightBarButtonItem?.accessibilityLabel = "Done"
+
+        self.accessibilityLabel = "History Panel"
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -228,7 +241,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
 
         let nextController = RecentlyClosedTabsPanel(profile: profile)
         nextController.title = Strings.RecentlyClosedTabsButtonTitle
-        nextController.libraryPanelDelegate = libraryPanelDelegate
+        nextController.delegate = delegate
         refreshControl?.endRefreshing()
         navigationController?.pushViewController(nextController, animated: true)
     }
@@ -273,6 +286,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
             BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.removeAll()
         }))
         let cancelAction = UIAlertAction(title: Strings.CancelString, style: .cancel)
+        cancelAction.accessibilityLabel = "Cancel"
         alert.addAction(cancelAction)
         present(alert, animated: true)
     }
@@ -433,8 +447,8 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         }
 
         if let site = siteForIndexPath(indexPath), let url = URL(string: site.url) {
-            if let libraryPanelDelegate = libraryPanelDelegate {
-                libraryPanelDelegate.libraryPanel(didSelectURL: url, visitType: VisitType.typed)
+            if let delegate = delegate {
+                delegate.libraryPanel(didSelectURL: url, visitType: VisitType.typed)
             }
             return
         }
@@ -510,7 +524,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
         welcomeLabel.snp.makeConstraints { make in
             make.centerX.equalTo(overlayView)
             // Sets proper top constraint for iPhone 6 in portait and for iPad.
-            make.centerY.equalTo(overlayView).offset(LibraryPanelUX.EmptyTabContentOffset).priority(100)
+            make.centerY.equalTo(overlayView).offset(-180).priority(100)
             // Sets proper top constraint for iPhone 4, 5 in portrait.
             make.top.greaterThanOrEqualTo(overlayView).offset(50)
             make.width.equalTo(HistoryPanelUX.WelcomeScreenItemWidth)
@@ -552,6 +566,7 @@ class HistoryPanel: SiteTableViewController, LibraryPanel {
                 image: UIImage(named: "action_delete")?.withRenderingMode(.alwaysTemplate), attributes: .destructive) { _ in
                 removeHistoryForURLAtIndexPath()
             }
+            removeAction.accessibilityLabel = Strings.DeleteFromHistoryContextMenuTitle
 
             return UIMenu(children: FeatureFlag[.pinToTopSites] ? [newTabAction, newIncognitoTabAction, pinTopSite, removeAction] : [newTabAction, newIncognitoTabAction, removeAction])
         }

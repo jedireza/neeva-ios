@@ -39,9 +39,6 @@ class HistoryTests: BaseTestCase {
     func testClearHistoryFromSettings() {
         // Browse to have an item in history list
         navigator.goto(HomePanelsScreen)
-        navigator.goto(LibraryPanel_History)
-        waitForExistence(app.tables.cells["HistoryPanel.recentlyClosedCell"], timeout: 5)
-        XCTAssertTrue(app.tables.cells.staticTexts[webpage["label"]!].exists)
 
         // Go to Clear Data
         navigator.performAction(Action.AcceptClearPrivateData)
@@ -85,6 +82,9 @@ class HistoryTests: BaseTestCase {
         // The Closed Tabs list should contain the info of the website just closed
         waitForExistence(app.tables["Recently Closed Tabs List"], timeout: 3)
         XCTAssertTrue(app.tables.cells.staticTexts[closedWebPageLabel].exists)
+        app.buttons["History Panel"].tap()
+        app.buttons["Done"].tap()
+        navigator.nowAt(NewTabScreen)
         navigator.goto(HomePanelsScreen)
 
         // This option should be enabled on private mode too
@@ -109,6 +109,10 @@ class HistoryTests: BaseTestCase {
         // Once the website is visited and closed it will appear in Recently Closed Tabs list
         waitForExistence(app.tables["Recently Closed Tabs List"])
         XCTAssertTrue(app.tables.cells.staticTexts[closedWebPageLabel].exists)
+        print(app.menus.buttons.debugDescription, app.navigationBars.buttons.debugDescription)
+        app.buttons["History Panel"].tap()
+        app.buttons["Done"].tap()
+        navigator.nowAt(NewTabScreen)
         navigator.goto(HomePanelsScreen)
 
         // Go to settings and clear private data
@@ -231,7 +235,10 @@ class HistoryTests: BaseTestCase {
         for entry in oldHistoryEntries {
             XCTAssertTrue(app.tables.cells.staticTexts[entry].exists)
         }
+
         // Go to 'goolge.com' to create a recent history entry.
+        app.buttons["Done"].tap()
+        navigator.nowAt(NewTabScreen)
         navigateToExample()
         navigator.performAction(Action.ClearRecentHistory)
         // Recent data will be removed after calling tapOnClearRecentHistoryOption(optionSelected: "Today").
@@ -244,6 +251,8 @@ class HistoryTests: BaseTestCase {
         
         // Begin Test for Today and Yesterday
         // Go to 'goolge.com' to create a recent history entry.
+        app.buttons["Done"].tap()
+        navigator.nowAt(NewTabScreen)
         navigateToExample()
         navigator.performAction(Action.ClearRecentHistory)
         // Tapping "Today and Yesterday" will remove recent data (from yesterday and today).
@@ -256,17 +265,17 @@ class HistoryTests: BaseTestCase {
         
         // Begin Test for Everything
         // Go to 'goolge.com' to create a recent history entry.
+        app.buttons["Done"].tap()
+        navigator.nowAt(NewTabScreen)
         navigateToExample()
         navigator.performAction(Action.ClearRecentHistory)
         // Tapping everything removes both current data and older data.
         tapOnClearRecentHistoryOption(optionSelected: "Everything")
         for entry in oldHistoryEntries {
             waitForNoExistence(app.tables.cells.staticTexts[entry], timeoutValue: 10)
-
-        XCTAssertFalse(app.tables.cells.staticTexts[entry].exists, "History not removed")
+            XCTAssertFalse(app.tables.cells.staticTexts[entry].exists, "History not removed")
         }
         XCTAssertFalse(app.tables.cells.staticTexts["Google"].exists)
-        
     }
     
     func testAllOptionsArePresent() {
