@@ -24,6 +24,16 @@ struct GeneralSettingsSection: View {
     @Default(.contextMenuShowLinkPreviews) var showLinkPreviews
 
     var body: some View {
+        NavigationLink(
+            "Default Browser",
+            destination:
+                DefaultBrowserOnboardingView(openSettings: {
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
+                })
+                .onAppear {
+                    ClientLogger.shared.logCounter(.SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+                }
+        )
         Toggle("Show Search Suggestions", isOn: $showSearchSuggestions)
         // have to pass the binding down otherwise this view is not updated
         // see: https://github.com/sindresorhus/Defaults/issues/59

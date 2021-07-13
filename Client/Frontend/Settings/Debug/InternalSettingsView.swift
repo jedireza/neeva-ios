@@ -5,7 +5,6 @@ import Shared
 import Defaults
 
 struct InternalSettingsView: View {
-    @Default(.sessionCount) var sessionCount
     @Default(.latestAppVersion) var latestAppVersion
     @Default(.searchInputPromptDismissed) var searchInputPromptDismissed
     @Default(.introSeen) var introSeen
@@ -24,7 +23,6 @@ struct InternalSettingsView: View {
     var body: some View {
         List {
             Section(header: Text("Implicit")) {
-                NumberField("sessionCount", number: $sessionCount)
                 OptionalStringField("latestAppVersion", text: $latestAppVersion)
                 Toggle("searchInputPromptDismissed", isOn: $searchInputPromptDismissed)
                 Toggle("introSeen", isOn: $introSeen)

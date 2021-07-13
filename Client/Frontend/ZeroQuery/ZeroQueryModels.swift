@@ -28,7 +28,7 @@ class ZeroQueryModel: ObservableObject {
         } else if !Defaults[.didDismissDefaultBrowserCard] {
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(.PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
-                BrowserViewController.foregroundBVC().presentDBOnboardingViewController(true)
+                BrowserViewController.foregroundBVC().presentDBOnboardingViewController()
 
                 // Set default browser onboarding did show to true so it will not show again after user clicks this button
                 Defaults[.didShowDefaultBrowserOnboarding] = true

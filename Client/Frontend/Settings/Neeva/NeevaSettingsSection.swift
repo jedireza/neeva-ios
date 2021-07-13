@@ -87,23 +87,6 @@ struct NeevaSettingsSection: View {
                 openURL(NeevaConstants.appSigninURL, false)
             }.frame(height: 60 - 12)
         }
-        NavigationLink("Default Browser", destination: DefaultBrowserSetting_().onAppear(perform: {
-            ClientLogger.shared.logCounter(.SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
-        }))
-    }
-}
-
-struct DefaultBrowserSetting_: View {
-    var body: some View {
-        List {
-            SwiftUI.Section(header: Text("Open links in Neeva automatically by making it your Default Browser App").font(.body).textCase(nil).padding(.vertical)) {
-                Button("Set as Default Browser") {
-                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
-                }
-            }
-        }
-        .listStyle(GroupedListStyle())
-        .navigationTitle("Default Browser")
     }
 }
 

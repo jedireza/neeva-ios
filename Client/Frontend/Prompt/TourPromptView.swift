@@ -3,7 +3,7 @@
 import SwiftUI
 import Shared
 
-fileprivate struct CloseButton: View {
+fileprivate struct TourPromptCloseButton: View {
     var onClose: (()-> Void)
 
     var body: some View {
@@ -72,7 +72,7 @@ struct TourPromptView: View {
                     }
                     if onClose != nil {
                         Spacer()
-                        CloseButton(onClose: onClose!)
+                        TourPromptCloseButton(onClose: onClose!)
                     }
                 }
             }

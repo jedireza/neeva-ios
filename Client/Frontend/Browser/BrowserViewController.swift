@@ -628,7 +628,6 @@ class BrowserViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         presentIntroViewController()
-        presentDBOnboardingViewController()
         presentUpdateViewController()
         screenshotHelper.viewIsVisible = true
         screenshotHelper.takePendingScreenshots(tabManager.tabs)
@@ -1739,24 +1738,11 @@ extension BrowserViewController {
     
     // Default browser onboarding
     func presentDBOnboardingViewController(_ force: Bool = false) {
-        let shouldShow = DefaultBrowserOnboardingViewModel.shouldShowDefaultBrowserOnboarding()
-        guard force || shouldShow else {
-            return
-        }
-        let dBOnboardingViewController = DefaultBrowserOnboardingViewController()
-        if topTabsVisible {
-            dBOnboardingViewController.preferredContentSize = CGSize(width: ViewControllerConsts.PreferredSize.DBOnboardingViewController.width, height: ViewControllerConsts.PreferredSize.DBOnboardingViewController.height)
-            dBOnboardingViewController.modalPresentationStyle = .formSheet
-        } else {
-            dBOnboardingViewController.modalPresentationStyle = .popover
-        }
-        dBOnboardingViewController.viewModel.goToSettings = {
-            self.zeroQueryViewController?.model.updateState()
-            dBOnboardingViewController.dismiss(animated: true) {
-                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
-            }
-        }
-        present(dBOnboardingViewController, animated: true, completion: nil)
+        let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: { [weak self] in
+            self?.zeroQueryViewController?.model.updateState()
+        })
+        onboardingVC.modalPresentationStyle = .formSheet
+        present(onboardingVC, animated: true, completion: nil)
     }
     
     @discardableResult func presentUpdateViewController(_ force: Bool = false, animated: Bool = true) -> Bool {
