@@ -42,6 +42,7 @@ class LegacyURLBarView: UIView {
     let model = URLBarModel()
     let historySuggestionModel: HistorySuggestionModel
     let neevaSuggestionModel: NeevaSuggestionModel
+    let gridModel: GridModel
     var subscriptions: Set<AnyCancellable> = []
 
     weak var delegate: LegacyURLBarDelegate?
@@ -95,7 +96,11 @@ class LegacyURLBarView: UIView {
     }()
 
     lazy var locationHost: TabLocationHost = {
-        TabLocationHost(model: model, historySuggestionModel: historySuggestionModel, neevaSuggestionModel: neevaSuggestionModel, delegate: self, urlBar: self)
+        TabLocationHost(model: model,
+                        historySuggestionModel: historySuggestionModel,
+                        neevaSuggestionModel: neevaSuggestionModel,
+                        gridModel: self.gridModel,
+                        delegate: self, urlBar: self)
     }()
 
     lazy var locationContainer: UIView = {
@@ -155,11 +160,12 @@ class LegacyURLBarView: UIView {
 
     var profile: Profile? = nil
     
-    init(profile: Profile, toolbarModel: TabToolbarModel) {
+    init(profile: Profile, toolbarModel: TabToolbarModel, gridModel: GridModel) {
         self.profile = profile
         self.historySuggestionModel = HistorySuggestionModel(profile: profile)
         self.neevaSuggestionModel = NeevaSuggestionModel(isIncognito: isPrivateMode)
         self.toolbarModel = toolbarModel
+        self.gridModel = gridModel
         super.init(frame: CGRect())
         commonInit()
     }

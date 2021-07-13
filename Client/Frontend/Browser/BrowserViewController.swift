@@ -37,7 +37,7 @@ class BrowserViewController: UIViewController {
         controller.didMove(toParent: self)
         return controller
     }()
-    lazy var cardGridViewController: CardViewController? = {
+    lazy var cardGridViewController: CardViewController = {
         let controller = CardViewController(tabManager: self.tabManager, config: .grid)
         addChild(controller)
         view.addSubview(controller.view)
@@ -419,7 +419,8 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        legacyURLBar = LegacyURLBarView(profile: profile, toolbarModel: toolbarModel)
+        legacyURLBar = LegacyURLBarView(profile: profile, toolbarModel: toolbarModel,
+                                        gridModel: FeatureFlag[.cardGrid] ? self.cardGridViewController.gridModel : GridModel())
         legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
         legacyURLBar.delegate = self
         legacyURLBar.tabToolbarDelegate = self
@@ -733,8 +734,8 @@ class BrowserViewController: UIViewController {
             }
         }
 
-        if FeatureFlag[.cardGrid], let grid = self.cardGridViewController {
-            grid.view.snp.makeConstraints {make in
+        if FeatureFlag[.cardGrid] {
+            cardGridViewController.view.snp.makeConstraints {make in
                 make.leading.trailing.bottom.equalToSuperview()
                 make.top.equalTo(legacyURLBar.snp.bottom)
             }
@@ -751,7 +752,7 @@ class BrowserViewController: UIViewController {
             view.addSubview(zeroQueryViewController.view)
             zeroQueryViewController.didMove(toParent: self)
             if FeatureFlag[.cardGrid] {
-                cardGridViewController?.gridModel.hideWithNoAnimation()
+                cardGridViewController.gridModel.hideWithNoAnimation()
             }
         }
 
@@ -1243,8 +1244,8 @@ class BrowserViewController: UIViewController {
 
         updateFindInPageVisibility(visible: false)
 
-        if FeatureFlag[.cardGrid], let grid = self.cardGridViewController {
-            grid.showGrid()
+        if FeatureFlag[.cardGrid] {
+            cardGridViewController.showGrid()
         } else {
             let tabTrayController = TabTrayControllerV1(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
             navigationController?.pushViewController(tabTrayController, animated: true)

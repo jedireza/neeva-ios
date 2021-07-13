@@ -22,10 +22,15 @@ struct LocationLabel: View {
 struct LocationLabelAndIcon: View {
     let url: URL?
     let isSecure: Bool
-    
+
+    @EnvironmentObject var gridModel: GridModel
+
     var body: some View {
-        if let url = url, let internalURL = InternalURL(url), internalURL.isZeroQueryURL {
-            TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(.secondaryLabel)
+        let placeholder = TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(.secondaryLabel)
+        if !gridModel.isHidden {
+            placeholder
+        } else if let url = url, let internalURL = InternalURL(url), internalURL.isZeroQueryURL {
+            placeholder
         } else if let query = neevaSearchEngine.queryForLocationBar(from: url) {
             Label { Text(query).withFont(.bodyLarge) } icon: { Symbol(.magnifyingglass) }
         } else if let scheme = url?.scheme, let host = url?.host, (scheme == "https" || scheme == "http") {
@@ -43,7 +48,7 @@ struct LocationLabelAndIcon: View {
         } else if let url = url {
             Text(url.absoluteString).withFont(.bodyLarge)
         } else {
-            TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(.secondaryLabel)
+            placeholder
         }
     }
 }

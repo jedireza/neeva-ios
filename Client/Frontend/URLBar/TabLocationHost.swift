@@ -7,6 +7,8 @@ struct TabLocationViewWrapper: View {
     let historyModel: HistorySuggestionModel
     let neevaModel: NeevaSuggestionModel
     let model: URLBarModel
+    let gridModel: GridModel
+
     let content: () -> TabLocationView
 
     var body: some View {
@@ -15,9 +17,11 @@ struct TabLocationViewWrapper: View {
             .environmentObject(neevaModel)
             .environmentObject(model)
             .environmentObject(SearchQueryModel.shared)
+            .environmentObject(gridModel)
             .ignoresSafeArea()
     }
 }
+
 class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
     private let model: URLBarModel
     private weak var delegate: LegacyTabLocationViewDelegate?
@@ -28,6 +32,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         model: URLBarModel,
         historySuggestionModel: HistorySuggestionModel,
         neevaSuggestionModel: NeevaSuggestionModel,
+        gridModel: GridModel,
         delegate: LegacyTabLocationViewDelegate,
         urlBar: LegacyURLBarView?
     ) {
@@ -35,7 +40,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         self.delegate = delegate
         super.init()
         setRootView {
-            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model) {
+            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model, gridModel: gridModel) {
                 TabLocationView(
                     onReload: { [weak delegate] in delegate?.tabLocationViewDidTapReload() },
                     onSubmit: { [weak urlBar] in urlBar?.delegate?.urlBar(didSubmitText: $0) },

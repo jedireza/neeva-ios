@@ -26,6 +26,7 @@ struct TabLocationView: View {
     let buildReloadMenu: () -> UIMenu?
 
     @EnvironmentObject private var model: URLBarModel
+    @EnvironmentObject private var gridModel: GridModel
     @State private var isPressed = false
     @Environment(\.isIncognito) private var isIncognito
     @Environment(\.colorScheme) private var colorScheme
@@ -91,18 +92,20 @@ struct TabLocationView: View {
                         )
                     }
                 } leading: {
-                    if model.url?.scheme == "https" || model.url?.scheme == "http" {
+                    if gridModel.isHidden && (model.url?.scheme == "https" || model.url?.scheme == "http") {
                         LocationViewTrackingButton()
                     }
                 } trailing: {
-                    Group {
-                        if model.readerMode != .active, let url = model.url, !InternalURL.isValid(url: url) {
-                            LocationViewReloadButton(buildMenu: buildReloadMenu, state: model.reloadButton, onTap: onReload)
-                        }
-                        if model.canShare, model.includeShareButtonInLocationView {
-                            LocationViewShareButton(url: model.url, onTap: onShare)
-                        }
-                    }.transition(.opacity)
+                    if gridModel.isHidden {
+                        Group {
+                            if model.readerMode != .active, let url = model.url, !InternalURL.isValid(url: url) {
+                                LocationViewReloadButton(buildMenu: buildReloadMenu, state: model.reloadButton, onTap: onReload)
+                            }
+                            if model.canShare, model.includeShareButtonInLocationView {
+                                LocationViewShareButton(url: model.url, onTap: onShare)
+                            }
+                        }.transition(.opacity)
+                    }
                 }.opacity(model.isEditing ? 0 : 1)
 
                 HStack(spacing: 0) {
