@@ -131,68 +131,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         return shouldPerformAdditionalDelegateHandling
     }
 
-    func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        guard let routerpath = NavigationPath(url: url) else {
-            return false
-        }
-
-        if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
-            Defaults[.appExtensionTelemetryOpenUrl] = nil
-            var object = TelemetryWrapper.EventObject.url
-            if case .text(_) = routerpath {
-                object = .searchText
-            }
-            TelemetryWrapper.recordEvent(category: .appExtensionAction, method: .applicationOpenUrl, object: object)
-        }
-
-        DispatchQueue.main.async {
-            NavigationPath.handle(nav: routerpath, with: BrowserViewController.foregroundBVC())
-        }
-        
-        return true
-    }
-
-    // handles universal links
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        if continueSiriIntent(application, continue: userActivity, restorationHandler: restorationHandler) {
-            return true
-        }
-
-        if checkForUniversalURL(application, continue: userActivity, restorationHandler: restorationHandler) {
-            return true
-        }
-
-        return false
-    }
-
-    func continueSiriIntent(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        if let intent = userActivity.interaction?.intent as? OpenURLIntent {
-            BrowserViewController.foregroundBVC().openURLInNewTab(intent.url)
-            return true
-        }
-
-        if let intent = userActivity.interaction?.intent as? SearchNeevaIntent,
-           let query = intent.text,
-           let url = neevaSearchEngine.searchURLForQuery(query) {
-            BrowserViewController.foregroundBVC().openURLInNewTab(url)
-            return true
-        }
-
-        return false
-    }
-
-    func checkForUniversalURL(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        // Get URL components from the incoming user activity.
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-            let incomingURL = userActivity.webpageURL else {
-            return false
-        }
-
-        BrowserViewController.foregroundBVC().openURLInNewTab(incomingURL)
-
-        return true
-    }
-
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.
     // Eventually we'll sync in response to notifications.
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -338,12 +276,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     private func updateTopSitesWidget() {
         guard let profile = self.profile else { return }
         TopSitesHandler.writeWidgetKitTopSites(profile: profile)
-    }
-
-    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(shortcutItem, withBrowserViewController: BrowserViewController.foregroundBVC())
-
-        completionHandler(handledShortCutItem)
     }
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options:UIScene.ConnectionOptions) -> UISceneConfiguration {
