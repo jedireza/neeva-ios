@@ -157,14 +157,14 @@ struct CardGrid: View {
                     details = tabDetail
                 }
             }
-            return details?.thumbnail(size: cardSize)
+            return details?.thumbnail
         } else {
             tabModel.allDetails.forEach { tabDetail in
                 if tabDetail.id == selectedTab.tabUUID {
                     details = tabDetail
                 }
             }
-            return details?.thumbnail(size: cardSize)
+            return details?.thumbnail
         }
 
     }
@@ -180,7 +180,7 @@ struct CardGrid: View {
                                    columns: Array(repeating:
                                                     GridItem(.fixed(cardSize),
                                                              spacing: CardGridUX.GridSpacing),
-                                                  count: 2)).environment(\.cardSize, cardSize)
+                                                  count: 2))
                     Spacer(minLength: 0)
                 }
                 if gridModel.animationThumbnailState != .hidden {

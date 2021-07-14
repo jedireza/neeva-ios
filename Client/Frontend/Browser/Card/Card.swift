@@ -33,15 +33,6 @@ struct BorderTreatment: ViewModifier {
 }
 
 extension EnvironmentValues {
-    private struct CardSizeKey: EnvironmentKey {
-        static var defaultValue: CGFloat = CardUX.DefaultCardSize
-    }
-
-    public var cardSize: CGFloat {
-        get { self[CardSizeKey] }
-        set { self[CardSizeKey] = newValue }
-    }
-
     private struct SelectionCompletionKey: EnvironmentKey {
         static var defaultValue: (() -> ())? = nil
     }
@@ -53,9 +44,9 @@ extension EnvironmentValues {
 }
 
 struct Card<Details>: View where Details: CardDetails {
-    @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
-    @Environment(\.cardSize) var size: CGFloat
     @ObservedObject var details: Details
+
+    @Environment(\.selectionCompletion) private var selectionCompletion
 
     let config: CardConfig
 
@@ -73,7 +64,7 @@ struct Card<Details>: View where Details: CardDetails {
                     if let title = details.title {
                         Text(title).withFont(.labelMedium)
                             .frame(maxWidth: .infinity,
-                                   alignment: details.favicon != nil ? .leading : .center)
+                                   alignment: details.favicon == nil ? .center : .leading)
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }
                     if let buttonImage = details.closeButtonImage {
@@ -87,23 +78,27 @@ struct Card<Details>: View where Details: CardDetails {
                                 .padding(5)
                         })
                     }
-            }.frame(width: size, height: CardUX.ButtonSize)
-                .background(Color.DefaultBackground)
-            Color(UIColor.Browser.urlBarDivider).frame(maxWidth: .infinity, maxHeight: 1)
-            if let thumbnail = details.thumbnail(size: size) {
-                Button(action: {
-                    details.onSelect()
-                    selectionCompletion()
-                }, label: {
-                    thumbnail.frame(width: size, height: size).clipped()
-                       })
-            } else {
-                Rectangle().foregroundColor(.label)
-                    .frame(width: size, height: size)
             }
-        }.cornerRadius(CardUX.CornerRadius)
+            .frame(height: CardUX.ButtonSize)
+            .background(Color.DefaultBackground)
+
+            Color(UIColor.Browser.urlBarDivider).frame(maxWidth: .infinity, maxHeight: 1)
+
+            Button(action: {
+                details.onSelect()
+                selectionCompletion()
+            }) {
+                if let thumbnail = details.thumbnail{
+                    thumbnail
+                } else {
+                    Color.label
+                }
+            }
+        }
+        .cornerRadius(CardUX.CornerRadius)
         .modifier(BorderTreatment(isSelected: details.isSelected))
         .onDrop(of: ["public.url", "public.text"], delegate: details)
+        .aspectRatio(1, contentMode: .fill)
     }
 }
 

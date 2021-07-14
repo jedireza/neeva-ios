@@ -4,25 +4,19 @@ import SwiftUI
 
 // MARK: ThumbnailGroup
 
-struct ThumbnailGroupSpec: ViewModifier {
-    let size: CGFloat
-    let onSelect: () -> ()
+fileprivate struct ThumbnailItem<Content: View>: View {
+    let content: Content
+    let action: () -> ()
 
-    func body(content: Content) -> some View {
-        Button(action: {
-            onSelect()
-        }, label: {
-            content.frame(width: size, height: size)
+    var body: some View {
+        Button(action: action) {
+            content
                 .cornerRadius(CardUX.CornerRadius)
-                .overlay(RoundedRectangle(cornerRadius: CardUX.CornerRadius)
-                            .stroke(Color.tertiaryLabel))
-        })
-    }
-}
-
-private extension View {
-    func applyThumbnailGroupSpec(size: CGFloat, onSelect: @escaping () -> ()) -> some View {
-        self.modifier(ThumbnailGroupSpec(size: size, onSelect: onSelect))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CardUX.CornerRadius)
+                        .stroke(Color.tertiaryLabel)
+                )
+        }
     }
 }
 
@@ -30,67 +24,32 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
     @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
 
-    let size: CGFloat
-    let spacing: CGFloat = 12
-    let smallSpacing: CGFloat = 4
-
-    var contentSize: CGFloat {
-        size - 10
-    }
-
-    var numItems: Int {
-        model.allDetails.count
-    }
-
-    var itemSize: CGFloat {
-        (contentSize - spacing) / 2
-    }
-
-    var smallItemSize: CGFloat {
-        (itemSize - smallSpacing) / 2
-    }
-
-
-    var columns: [GridItem] {
-        Array(repeating: GridItem(.fixed(itemSize),
-                                  spacing: spacing,
-                                  alignment: .top),
-              count: 2)
-    }
-
-    var smallColumns: [GridItem] {
-        Array(repeating: GridItem(.fixed(smallItemSize),
-                                  spacing: smallSpacing),
-              count: 2)
-    }
-
-    func itemFor( _ index: Int) -> some View {
-        let item = model.allDetails[index]
-        let blockSize = numItems < 5 ? itemSize : (index < 3 ? itemSize : smallItemSize)
-        return item.thumbnail(size: blockSize).applyThumbnailGroupSpec(
-            size: blockSize, onSelect: index < 3 ? {
-                item.onSelect()
-                selectionCompletion()
-            } : {})
-    }
+    private let spacing: CGFloat = 12
+    private let smallSpacing: CGFloat = 4
 
     var body: some View {
-        LazyVGrid(columns: columns, alignment: .center, spacing: spacing) {
-            ForEach((0..<numItems).prefix(3), id: \.self) { index in
-                itemFor(index)
+        GeometryReader { geom in
+            let size = (geom.size.width - spacing) / 2
+            if size < 0 {
+                (print(geom.size), Group {}).1
             }
-            if numItems == 4 {
-                itemFor(3)
-            } else if numItems > 4 {
-                LazyVGrid(columns: smallColumns,
-                          alignment: .center, spacing: 4) {
-                    ForEach((3..<numItems).prefix(4), id: \.self) { index in
-                        itemFor(index)
+            LazyVGrid(columns: .init(repeating: GridItem(.fixed(size), spacing: spacing, alignment: .topLeading), count: 2)) {
+                ForEach(model.allDetails.prefix(3)) { item in
+                    ThumbnailItem(content: item.thumbnail.frame(width: size, height: size)) {
+                        item.onSelect()
+                        selectionCompletion()
                     }
                 }
+//                if model.allDetails.count == 4, let last = model.allDetails.last {
+//                    ThumbnailItem(content: last.thumbnail) {
+//                        last.onSelect()
+//                        selectionCompletion()
+//                    }
+//                } else if model.allDetails.count > 4 {
+//                    // TODO
+//                }
             }
-        }.padding(10).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.white)
+        }.padding(10)
     }
 }
 
@@ -98,10 +57,9 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
 
 fileprivate class PreviewThumbnailModel: ThumbnailModel {
     fileprivate struct ColorThumbnail: SelectableThumbnail {
+        let id = UUID()
         let color: Color
-        func thumbnail(size: CGFloat) -> Color {
-            color
-        }
+        var thumbnail: Color { color }
 
         func onSelect() {}
     }
@@ -127,12 +85,13 @@ fileprivate class PreviewThumbnailModel: ThumbnailModel {
 
 struct CardGroupView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .red, num: 1), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .blue, num: 3), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .black, num: 4), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .green, num: 5), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .purple, num: 8), size: CardUX.DefaultCardSize)
+        ForEach(0..<3) { count in
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .purple, num: count))
+                .previewDisplayName("\(count)")
+                .aspectRatio(1, contentMode: .fit)
+                .previewLayout(
+                    .fixed(width: CardUX.DefaultCardSize, height: CardUX.DefaultCardSize)
+                )
         }
     }
 }

@@ -7,10 +7,9 @@ import SwiftUI
 import Shared
 import Combine
 
-protocol SelectableThumbnail {
+protocol SelectableThumbnail: Identifiable {
     associatedtype ThumbnailView: View
-
-    func thumbnail(size: CGFloat) -> ThumbnailView
+    var thumbnail: ThumbnailView { get }
     func onSelect()
 }
 
@@ -63,7 +62,7 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
         manager.get(for: id)?.displayTitle ?? ""
     }
 
-    @ViewBuilder func thumbnail(size: CGFloat) -> some View {
+    @ViewBuilder var thumbnail: some View {
         if let image = manager.get(for: id)?.image {
             Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)
         } else {
@@ -120,11 +119,13 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
 }
 
 struct SpaceEntityThumbnail: SelectableThumbnail {
+    let id: Int
     let data: Data
     let selected: () -> ()
 
-    func thumbnail(size: CGFloat) -> some View {
-        Image(uiImage: UIImage(data: data)!).resizable()
+    var thumbnail: some View {
+        Image(uiImage: UIImage(data: data)!)
+            .resizable()
             .aspectRatio(contentMode: .fill)
     }
 
@@ -161,13 +162,14 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     }
 
 
-    func thumbnail(size: CGFloat) -> some View {
-        ThumbnailGroupView(model: self, size: size)
+    var thumbnail: some View {
+        ThumbnailGroupView(model: self)
     }
 
     func updateDetails() {
-        allDetails = manager.get(for: id)?.contentThumbnails?.compactMap{ $0?.dataURIBody }
-            .map {SpaceEntityThumbnail(data: $0, selected: onSelect)} ?? []
+        allDetails = manager.get(for: id)?.contentThumbnails?.compactMap { $0?.dataURIBody }
+            .enumerated()
+            .map { SpaceEntityThumbnail(id: $0.offset, data: $0.element, selected: onSelect) } ?? []
     }
 
     func onSelect() {
@@ -245,10 +247,10 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
         fetcher.load(url: url.absoluteString, profile: profile)
     }
 
-    func thumbnail(size: CGFloat) -> some View {
-        return WebImage(url:
-                            URL(string: manager.get(for: id)?.pageMetadata?.mediaURL ?? ""))
-            .resizable().aspectRatio(contentMode: .fill)
+    var thumbnail: some View {
+        WebImage(url: URL(string: manager.get(for: id)?.pageMetadata?.mediaURL ?? ""))
+            .resizable()
+            .aspectRatio(contentMode: .fill)
     }
 
     func onSelect() {
@@ -280,8 +282,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             .map({ TabCardDetails(tab: $0, manager: manager.tabManager) }) ?? []
     }
 
-    func thumbnail(size: CGFloat) -> some View {
-        return ThumbnailGroupView(model: self, size: size)
+    var thumbnail: some View {
+        ThumbnailGroupView(model: self)
     }
 
     func onSelect() {}
