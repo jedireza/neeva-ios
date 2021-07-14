@@ -227,9 +227,9 @@ class LegacyURLBarView: UIView {
                     self.createLegacyLeftViewFavicon()
                 }
             }.store(in: &subscriptions)
-            historySuggestionModel.$autocompleteSuggestion.sink { [unowned self] suggestion in
-                legacyLocationTextField?.setAutocompleteSuggestion(suggestion)
-                createLegacyLeftViewFavicon(suggestion ?? "")
+            historySuggestionModel.$completion.sink { [unowned self] completion in
+                legacyLocationTextField?.setAutocompleteSuggestion(completion.map { SearchQueryModel.shared.value + $0 })
+                createLegacyLeftViewFavicon(completion ?? "")
             }.store(in: &subscriptions)
         }
     }

@@ -18,12 +18,12 @@ struct LocationTextFieldIcon: View {
 
     var body: some View {
         Group {
-            let suggestion = historyModel.autocompleteSuggestion
+            let completion = historyModel.completion.map { searchQuery.value + $0 }
             if let type = neevaModel.activeLensBang?.type {
                 Image(systemSymbol: type.defaultSymbol)
             } else if
-                let suggestion = suggestion,
-                let url = suggestion.contains("://") ? URL(string: suggestion) : URL(string: "https://\(suggestion)") {
+                let completion = completion,
+                let url = completion.contains("://") ? URL(string: completion) : URL(string: "https://\(completion)") {
                 FaviconView(url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false, defaultBackground: .clear)
                     .cornerRadius(4)
             } else if searchQuery.value.looksLikeAURL, let url = searchQuery.value.contains("://") ? URL(string: searchQuery.value) : URL(string: "https://\(searchQuery.value)")  {
@@ -56,10 +56,10 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
 
             HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(HistorySuggestionModel(previewSuggestion: "example.com"))
+                    .environmentObject(HistorySuggestionModel(previewCompletion: "example.com"))
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(HistorySuggestionModel(previewSuggestion: "apple.com"))
-            }.previewDisplayName("Domain autocomplete suggestion")
+                    .environmentObject(HistorySuggestionModel(previewCompletion: "apple.com"))
+            }.previewDisplayName("Domain completion")
 
             HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)

@@ -71,7 +71,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override var accessibilityValue: String? {
         get {
-            return (self.text ?? "") + (historyModel.autocompleteSuggestion ?? "")
+            return (self.text ?? "") + (historyModel.completion ?? "")
         }
         set(value) {
             super.accessibilityValue = value
@@ -91,14 +91,9 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
             self.binding = text
         }, for: .editingChanged)
 
-        subscription = historyModel.$autocompleteSuggestion.sink { [unowned self] suggestion in
+        subscription = historyModel.$completion.sink { [unowned self] completion in
             // TODO: unify this logic with LocationEditView
-            if let suggestion = suggestion,
-               isEditing && markedTextRange == nil,
-               let normalized = Optional(normalizeString(self.text ?? "")),
-               suggestion.hasPrefix(normalized),
-               normalized.count < suggestion.count,
-               !normalized.isEmpty {
+            if completion != nil, isEditing, markedTextRange == nil {
                 tintColor = defaultTint.withAlphaComponent(0)
             } else {
                 tintColor = defaultTint
@@ -127,7 +122,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         switch input {
         case UIKeyCommand.inputLeftArrow:
             TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-left-arrow"])
-            if historyModel.autocompleteSuggestion != nil {
+            if historyModel.completion != nil {
                 applyCompletion()
 
                 // Set the current position to the beginning of the text.
@@ -145,7 +140,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
             }
         case UIKeyCommand.inputRightArrow:
             TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-right-arrow"])
-            if historyModel.autocompleteSuggestion != nil {
+            if historyModel.completion != nil {
                 applyCompletion()
 
                 // Set the current position to the end of the text.
@@ -165,8 +160,8 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
             TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-cancel"])
             isActive = false
         case copyShortcutKey:
-            if let suggestion = historyModel.autocompleteSuggestion {
-                UIPasteboard.general.string = suggestion
+            if let text = text, let completion = historyModel.completion {
+                UIPasteboard.general.string = text + completion
             } else if let selectedTextRange = self.selectedTextRange {
                 UIPasteboard.general.string = self.text(in: selectedTextRange)
             }
@@ -175,16 +170,12 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         }
     }
 
-    fileprivate func normalizeString(_ string: String) -> String {
-        return string.lowercased().stringByTrimmingLeadingCharactersInSet(CharacterSet.whitespaces)
-    }
-
     /// Commits the completion by setting the text and removing the highlight.
     @discardableResult fileprivate func applyCompletion() -> Bool {
         tintColor = defaultTint
         // Clear the current completion, then set the text.
-        guard let suggestion = historyModel.autocompleteSuggestion, suggestion != text else { return false }
-        binding = suggestion
+        guard let completion = historyModel.completion else { return false }
+        binding += completion
         // Move the cursor to the end of the completion.
         selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
         return true
@@ -196,10 +187,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let interaction: LogConfig.Interaction = historyModel.autocompleteSuggestion == nil
+        let interaction: LogConfig.Interaction = historyModel.completion == nil
             ? .NoSuggestion : .AutocompleteSuggestion
         ClientLogger.shared.logCounter(interaction)
-        if let text = historyModel.autocompleteSuggestion ?? text {
+        if let text = accessibilityValue {
             if !text.trimmingCharacters(in: .whitespaces).isEmpty {
                 onSubmit(text)
                 return true
@@ -213,12 +204,12 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     override func setMarkedText(_ markedText: String?, selectedRange: NSRange) {
         // Clear the autocompletion if any provisionally inserted text has been
         // entered (e.g., a partial composition from a Japanese keyboard).
-        historyModel.clearSuggestion()
+        historyModel.clearCompletion()
         super.setMarkedText(markedText, selectedRange: selectedRange)
     }
 
     override func deleteBackward() {
-        if !historyModel.clearSuggestion() {
+        if !historyModel.clearCompletion() {
             if selectedTextRange != textRange(from: beginningOfDocument, to: beginningOfDocument) {
                 historyModel.skipNextAutocomplete()
             }

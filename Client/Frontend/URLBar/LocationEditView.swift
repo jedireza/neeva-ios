@@ -13,14 +13,11 @@ struct LocationEditView: View {
     var body: some View {
         ZStack(alignment: .leading) {
             if let query = searchQuery.value,
-               let suggestion = historyModel.autocompleteSuggestion,
-               suggestion != query,
-               let range = suggestion.range(of: query),
-               range.lowerBound == suggestion.startIndex {
+               let completion = historyModel.completion {
                 HStack(spacing: 0) {
                     Text(query)
                         .foregroundColor(.clear)
-                    Text(suggestion[range.upperBound...])
+                    Text(completion)
                         .padding(.vertical, 1)
                         .padding(.trailing, 3)
                         .background(Color.textSelectionHighlight.cornerRadius(2))

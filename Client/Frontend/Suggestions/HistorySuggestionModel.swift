@@ -22,17 +22,17 @@ private let numSuggestionsToFetch: Int = 40
 class HistorySuggestionModel: ObservableObject {
     fileprivate let frecentHistory: FrecentHistory
 
-
-    @Published private(set) var autocompleteSuggestion: String?
+    /// If `completion` is non-`nil`, `SearchQueryModel.shared.value + completion` is the suggested completion.
+    @Published private(set) var completion: String?
     @Published private(set) var sites: [Site]?
     @Published private(set) var recentSites: [Site]?
 
     private var shouldSkipNextAutocomplete = false
 
-    convenience init(previewSites: [Site]? = nil, previewSuggestion: String? = nil) {
+    convenience init(previewSites: [Site]? = nil, previewCompletion: String? = nil) {
         self.init(profile: BrowserProfile(localName: "profile"))
         self.sites = previewSites
-        self.autocompleteSuggestion = previewSuggestion
+        self.completion = previewCompletion
     }
 
     init(profile: Profile) {
@@ -40,9 +40,9 @@ class HistorySuggestionModel: ObservableObject {
         subscribe()
     }
 
-    @discardableResult func clearSuggestion() -> Bool {
-        let cleared = autocompleteSuggestion != nil
-        autocompleteSuggestion = nil
+    @discardableResult func clearCompletion() -> Bool {
+        let cleared = completion != nil
+        completion = nil
         return cleared
     }
 
@@ -72,7 +72,7 @@ class HistorySuggestionModel: ObservableObject {
 
             if query.isEmpty {
                 sites = []
-                autocompleteSuggestion = nil
+                completion = nil
                 shouldSkipNextAutocomplete = false
                 return
             }
@@ -115,25 +115,32 @@ class HistorySuggestionModel: ObservableObject {
 
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
-                    if let completion = self.completionForURL(site.url, from: query) {
-                        self.autocompleteSuggestion = completion
+                    if setCompletion(to: completionForURL(site.url, from: query), from: query) {
                         return
                     }
                 }
 
                 // If there are no search history matches, try matching one of the Alexa top domains.
                 for domain in self.topDomains {
-                    if let completion = self.completionForDomain(domain) {
-                        self.autocompleteSuggestion = completion
+                    if setCompletion(to: completionForDomain(domain, from: query), from: query) {
                         return
                     }
                 }
 
-                if self.autocompleteSuggestion != nil {
-                    self.autocompleteSuggestion = nil
+                if self.completion != nil {
+                    self.completion = nil
                 }
             }
         }
+    }
+
+    private func setCompletion(to completion: String?, from query: String) -> Bool {
+        if let completion = completion, completion != query {
+            precondition(completion.starts(with: query), "Expected completion '\(completion)' to start with '\(query)'")
+            self.completion = String(completion.dropFirst(query.count))
+            return true
+        }
+        return false
     }
 
     fileprivate func completionForURL(_ url: String, from query: String) -> String? {
@@ -146,7 +153,7 @@ class HistorySuggestionModel: ObservableObject {
 
         // If the pre-path component (including the scheme) starts with the query, just use it as is.
         var prePathURL = (url as NSString).substring(with: match.range(at: 0))
-        if prePathURL.hasPrefix(SearchQueryModel.shared.value) {
+        if prePathURL.hasPrefix(query) {
             // Trailing slashes in the autocompleteTextField cause issues with Swype keyboard. Bug 1194714
             if prePathURL.hasSuffix("/"), !query.hasSuffix("/") {
                 prePathURL.remove(at: prePathURL.index(before: prePathURL.endIndex))
@@ -159,15 +166,15 @@ class HistorySuggestionModel: ObservableObject {
         // For example, for http://en.m.wikipedia.org, domainWithDotPrefix will be ".en.m.wikipedia.org".
         // This allows us to use the "." as a separator, so we can match "en", "m", "wikipedia", and "org",
         let domain = (url as NSString).substring(with: match.range(at: 1))
-        return completionForDomain(domain)
+        return completionForDomain(domain, from: query)
     }
 
-    fileprivate func completionForDomain(_ domain: String) -> String? {
+    fileprivate func completionForDomain(_ domain: String, from query: String) -> String? {
         let domainWithDotPrefix: String = ".\(domain)"
-        if let range = domainWithDotPrefix.range(of: ".\(SearchQueryModel.shared.value)", options: .caseInsensitive, range: nil, locale: nil) {
+        if let range = domainWithDotPrefix.range(of: ".\(query)", options: .caseInsensitive, range: nil, locale: nil) {
+            let matchedDomain = String(domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])
             // We don't actually want to match the top-level domain ("com", "org", etc.) by itself, so
             // so make sure the result includes at least one ".".
-            let matchedDomain = String(domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])
             if matchedDomain.contains(".") {
                 return matchedDomain
             }
