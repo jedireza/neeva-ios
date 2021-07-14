@@ -14,6 +14,8 @@ protocol HistoryPanelDelegate: AnyObject {
     func libraryPanel(didSelectURLString url: String, visitType: VisitType)
 }
 
+
+
 private enum HistoryPanelUX {
     static let WelcomeScreenItemWidth = 170
     static let IconSize = 23
