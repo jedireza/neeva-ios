@@ -16,7 +16,7 @@ extension BrowserViewController {
             return
         }
 
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.legacyLocationView.urlLabel)
+        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.locationContainer)
         prompt.view.backgroundColor = UIColor.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 

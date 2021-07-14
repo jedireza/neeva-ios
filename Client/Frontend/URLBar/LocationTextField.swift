@@ -91,14 +91,15 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
             self.binding = text
         }, for: .editingChanged)
 
-        subscription = historyModel.$completion.sink { [unowned self] completion in
-            // TODO: unify this logic with LocationEditView
-            if completion != nil, isEditing, markedTextRange == nil {
-                tintColor = defaultTint.withAlphaComponent(0)
-            } else {
-                tintColor = defaultTint
+        subscription = historyModel.$completion
+            .removeDuplicates()
+            .sink { [unowned self] completion in
+                if completion != nil, isEditing, markedTextRange == nil {
+                    tintColor = defaultTint.withAlphaComponent(0)
+                } else {
+                    tintColor = defaultTint
+                }
             }
-        }
         tintColor = text.wrappedValue.isEmpty ? defaultTint : defaultTint.withAlphaComponent(0)
     }
 
@@ -219,7 +220,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         applyCompletion()
-//        super.touchesBegan(touches, with: event)
+        super.touchesBegan(touches, with: event)
     }
 }
 

@@ -17,7 +17,7 @@ class URLBarModel: ObservableObject {
     @Published var includeShareButtonInLocationView = true
 
     func setEditing(to value: Bool) {
-        withAnimation(TabLocationViewUX.animation) {
+        withAnimation(TabLocationViewUX.animation.delay(0.08)) {
             isEditing = value
         }
     }

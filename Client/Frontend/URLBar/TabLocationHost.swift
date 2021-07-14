@@ -56,7 +56,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
             .sink { [weak urlBar] change in
                 switch change {
                 case (false, true):
-                    urlBar?.enterOverlayMode(nil, pasted: false, search: false)
+                    urlBar?.enterOverlayMode(nil, pasted: false, search: false, updateModel: false)
                 case (true, false):
                     urlBar?.leaveOverlayMode()
                 default: break

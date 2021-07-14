@@ -60,7 +60,7 @@ struct TabLocationView: View {
         let backgroundColor: Color = isIncognito
             ? isPressed ? .elevatedDarkBackground : .black
             : isPressed ? .tertiarySystemFill : .systemFill
-        HStack {
+        HStack(spacing: 11) {
             ZStack {
                 Capsule().fill(backgroundColor)
 
@@ -131,7 +131,7 @@ struct TabLocationView: View {
                 Button {
                     model.setEditing(to: false)
                 } label: {
-                    Text("Cancel").withFont(.labelMedium)
+                    Text("Cancel").withFont(.bodyLarge)
                 }
                 .transition(.move(edge: .trailing))
                 .accentColor(.ui.adaptive.blue)

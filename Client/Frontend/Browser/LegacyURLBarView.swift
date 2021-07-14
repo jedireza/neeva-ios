@@ -512,9 +512,11 @@ class LegacyURLBarView: UIView {
         }
     }
 
-    func enterOverlayMode(_ locationText: String?, pasted: Bool, search: Bool) {
+    func enterOverlayMode(_ locationText: String?, pasted: Bool, search: Bool, updateModel: Bool = true) {
         if FeatureFlag[.newURLBar] {
-            model.setEditing(to: true)
+            if updateModel {
+                model.setEditing(to: true)
+            }
         } else {
             legacyLocationTextField?.isHidden = false
         }
