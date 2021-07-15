@@ -22,7 +22,7 @@ class NavigationTest: BaseTestCase {
         // Check that the back and forward buttons are disabled
         if iPad() {
             app.buttons["urlBar-cancel"].tap()
-            XCTAssertFalse(app.buttons["URLBarView.backButton"].isEnabled)
+            XCTAssertFalse(app.buttons["Back"].isEnabled)
             XCTAssertFalse(app.buttons["Forward"].isEnabled)
             app.buttons["url"].tap()
         } else {
@@ -34,29 +34,18 @@ class NavigationTest: BaseTestCase {
         navigator.openURL(path(forTestPage: "test-example.html"))
         waitUntilPageLoad()
         waitForValueContains(app.buttons["url"], value: "localhost")
-        if iPad() {
-            XCTAssertTrue(app.buttons["URLBarView.backButton"].isEnabled)
-            XCTAssertFalse(app.buttons["Forward"].isEnabled)
-        } else {
-            XCTAssertTrue(app.buttons["Back"].isEnabled)
-            XCTAssertFalse(app.buttons["Forward"].isEnabled)
-        }
+
+        XCTAssertTrue(app.buttons["Back"].isEnabled)
+        XCTAssertFalse(app.buttons["Forward"].isEnabled)
 
         // Once a second url is open, back button is enabled but not the forward one till we go back to url_1
         navigator.openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
         waitForValueContains(app.buttons["url"], value: "localhost")
-        if iPad() {
-            XCTAssertTrue(app.buttons["URLBarView.backButton"].isEnabled)
-            XCTAssertFalse(app.buttons["Forward"].isEnabled)
-            // Go back to previous visited web site
-            app.buttons["URLBarView.backButton"].tap()
-        } else {
-            XCTAssertTrue(app.buttons["Back"].isEnabled)
-            XCTAssertFalse(app.buttons["Forward"].isEnabled)
-            // Go back to previous visited web site
-            app.buttons["Back"].tap()
-        }
+
+        XCTAssertTrue(app.buttons["Back"].isEnabled)
+        XCTAssertFalse(app.buttons["Forward"].isEnabled)
+
         waitUntilPageLoad()
         waitForValueContains(app.buttons["url"], value: "localhost")
 
@@ -244,23 +233,6 @@ class NavigationTest: BaseTestCase {
         XCTAssertTrue(app.buttons["Copy"].exists, "The share menu is not shown")
     }
 
-    // Disable, no Cancel button now and no option to
-    // tap on PopoverDismissRegion
-    /*
-    func testCancelLongPressLinkMenu() {
-        navigator.openURL(website_2["url"]!)
-        app.webViews.links[website_2["link"]!].press(forDuration: 2)
-        
-        if iPad() {
-            // For iPad there is no Cancel, so we tap to dismiss the menu
-            app/*@START_MENU_TOKEN@*/.otherElements["PopoverDismissRegion"]/*[[".otherElements[\"dismiss popup\"]",".otherElements[\"PopoverDismissRegion\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-        } else {
-            app.buttons["Cancel"].tap()
-        }
-        waitForNoExistence(app.sheets[website_2["moreLinkLongPressInfo"]!])
-        XCTAssertEqual(app.buttons["url"].value! as? String, "www.example.com/", "After canceling the menu user is in a different website")
-    }*/
-
     // Smoketest
     /* Disabled: mechanism to read number of tabs does not work
     func testPopUpBlocker() {
@@ -364,12 +336,16 @@ class NavigationTest: BaseTestCase {
         navigator.openURL(path(forTestPage: "test-pdf.html"))
         waitUntilPageLoad()
 
+        waitForExistence( app.webViews.links["nineteen for me"])
         app.webViews.links["nineteen for me"].tap()
         waitUntilPageLoad()
 
         navigator.goto(ShareMenu)
         waitForExistence(app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"], timeout: 10)
-        app.navigationBars["UIActivityContentView"].buttons["Close"].tap()
+
+        print(app.buttons.debugDescription)
+        // Copy the text to dismiss the overlay sheet
+        app.buttons["Copy"].tap()
 
         waitForExistence(app.buttons["Back"], timeout: 5)
         app.buttons["Back"].tap()

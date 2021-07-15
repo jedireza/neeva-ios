@@ -17,8 +17,10 @@ class DatabaseFixtureTest: BaseTestCase {
     }
 
     func testHistoryDatabaseFixture() {
-        navigator.goto(HomePanelsScreen)
-        navigator.goto(LibraryPanel_History)
+        app.buttons["Neeva Menu"].tap()
+
+        waitForExistence(app.buttons["History"])
+        app.buttons["History"].tap()
 
         // History list has two cells that are for recently closed and synced devices that should not count as history items,
         // the actual max number is 100
@@ -49,9 +51,6 @@ class DatabaseFixtureTest: BaseTestCase {
                 XCTCPUMetric(), // to measure cpu cycles
                 XCTStorageMetric(), // to measure storage consuming
                 XCTMemoryMetric()]) {
-                // activity measurement here
-
-                navigator.goto(LibraryPanel_History)
             }
         }
     }

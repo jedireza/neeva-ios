@@ -55,7 +55,7 @@ open class LegacyTabToolbarHelper: NSObject {
         toolbar.forwardButton.isPointerInteractionEnabled = true
         
         toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
-        toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the tab toolbar Share button")
+        toolbar.shareButton.accessibilityLabel = "Share Menu"
         toolbar.shareButton.addAction(UIAction { _ in
             self.didPress(shareButton: toolbar.shareButton)
         }, for: .primaryActionTriggered)
@@ -77,7 +77,6 @@ open class LegacyTabToolbarHelper: NSObject {
         toolbar.addToSpacesButton.isPointerInteractionEnabled = true
 
         toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
-        toolbar.toolbarNeevaMenuButton.accessibilityIdentifier = "TabToolbar.neevaMenuButton"
         toolbar.toolbarNeevaMenuButton.accessibilityLabel = "Neeva Menu"
         toolbar.toolbarNeevaMenuButton.addTarget(self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
         toolbar.toolbarNeevaMenuButton.isPointerInteractionEnabled = true

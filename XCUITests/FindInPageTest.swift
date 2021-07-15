@@ -8,6 +8,7 @@ class FindInPageTests: BaseTestCase {
     private func openFindInPageFromMenu() {
         navigator.goto(BrowserTab)
         waitUntilPageLoad()
+        navigator.nowAt(NewTabScreen)
         navigator.goto(ShareMenu)
         navigator.goto(FindInPage)
 
@@ -18,16 +19,15 @@ class FindInPageTests: BaseTestCase {
 
     func testFindInLargeDoc() {
         navigator.openURL("http://localhost:\(serverPort)/test-fixture/find-in-page-test.html")
-        // Workaround until FxSGraph is fixed to allow the previos way with goto
-        navigator.nowAt(BrowserTab)
-
         waitForNoExistence(app.staticTexts["Fennec pasted from XCUITests-Runner"])
+
         navigator.goto(ShareMenu)
         navigator.goto(FindInPage)
 
         // Enter some text to start finding
         app.textFields["FindInPage.searchField"].typeText("Book")
         waitForExistence(app.textFields["Book"], timeout: 15)
+
         XCTAssertEqual(app.staticTexts["FindInPage.matchCount"].label, "1/500+", "The book word count does match")
     }
 

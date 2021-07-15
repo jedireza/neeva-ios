@@ -7,6 +7,7 @@ fileprivate let secondWebsite = (url: path(forTestPage: "test-mozilla-book.html"
 
 class TabMenuTests: BaseTestCase {
     func testCloseNormalTabFromTab() {
+        navigator.nowAt(NewTabScreen)
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
@@ -25,6 +26,7 @@ class TabMenuTests: BaseTestCase {
     }
 
     func testCloseAllNormalTabsFromTab() {
+        navigator.nowAt(NewTabScreen)
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
@@ -98,6 +100,7 @@ class TabMenuTests: BaseTestCase {
     }
 
     func testCloseAllNormalTabsFromSwitcher() {
+        navigator.nowAt(NewTabScreen)
         openTwoWebsites()
         navigator.goto(TabTray)
 

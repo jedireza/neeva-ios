@@ -39,7 +39,7 @@ class HistoryTests: KIFTestCase {
 
         // Check that both appear in the history home panel
         BrowserUtils.openNeevaMenu(tester())
-        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
+        tester().tapView(withAccessibilityLabel: "History")
 
         // Wait until the dialog shows up
         tester().waitForAnimationsToFinish()
@@ -97,8 +97,8 @@ class HistoryTests: KIFTestCase {
         tester().waitForAnimationsToFinish()
         BrowserUtils.openNeevaMenu(tester())
         tester().waitForAnimationsToFinish(withTimeout: 10)
-        tester().waitForView(withAccessibilityIdentifier: "NeevaMenu.History")
-        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
+        tester().waitForView(withAccessibilityLabel: "History")
+        tester().tapView(withAccessibilityLabel: "History")
         tester().waitForView(withAccessibilityLabel: "Page 102")
 
         let firstIndexPath = IndexPath(row: 0, section: 1)

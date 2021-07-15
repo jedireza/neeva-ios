@@ -17,6 +17,29 @@ class HistoryTests: BaseTestCase {
     
     let clearRecentHistoryOptions = ["The Last Hour", "Today", "Today and Yesterday", "Everything"]
 
+    func clearWebsiteData() {
+        app.buttons["Neeva Menu"].tap()
+
+        waitForExistence(app.buttons["Settings"])
+        app.buttons["Settings"].tap()
+
+        waitForExistence(app.cells["Clear Browsing Data"])
+        app.cells["Clear Browsing Data"].tap()
+        app.cells["Clear Selected Data on This Device"].tap()
+        app.buttons["Clear Data"].tap()
+
+        waitForNoExistence(app.buttons["Clear Data"])
+        app.buttons["Settings"].tap()
+        app.buttons["Done"].tap()
+    }
+
+    func goToHistory() {
+        app.buttons["Neeva Menu"].tap()
+
+        waitForExistence(app.buttons["History"])
+        app.buttons["History"].tap()
+    }
+
     override func setUp() {
         // Test name looks like: "[Class testFunc]", parse out the function name
         let parts = name.replacingOccurrences(of: "]", with: "").split(separator: " ")
@@ -30,28 +53,24 @@ class HistoryTests: BaseTestCase {
 
     func testEmptyHistoryListFirstTime() {
         // Go to History List from Top Sites and check it is empty
-        navigator.goto(HomePanelsScreen)
-        navigator.goto(LibraryPanel_History)
+        goToHistory()
+
         waitForExistence(app.tables.cells["HistoryPanel.recentlyClosedCell"])
         XCTAssertTrue(app.tables.cells["HistoryPanel.recentlyClosedCell"].exists)
     }
 
     func testClearHistoryFromSettings() {
-        // Browse to have an item in history list
-        navigator.goto(HomePanelsScreen)
-
         // Go to Clear Data
-        navigator.performAction(Action.AcceptClearPrivateData)
+        clearWebsiteData()
 
         // Back on History panel view check that there is not any item
-        navigator.goto(LibraryPanel_History)
-        waitForExistence(app.tables.cells["HistoryPanel.recentlyClosedCell"])
+        navigator.nowAt(NewTabScreen)
+        goToHistory()
         XCTAssertFalse(app.tables.cells.staticTexts[webpage["label"]!].exists)
     }
 
     func testClearPrivateDataButtonDisabled() {
         //Clear private data from settings and confirm
-        navigator.goto(HomePanelsScreen)
         navigator.goto(ClearPrivateDataSettings)
         app.tables.cells["Clear Selected Data on This Device"].tap()
         app.sheets.buttons["Clear Data"].tap()
@@ -85,7 +104,6 @@ class HistoryTests: BaseTestCase {
         app.buttons["History Panel"].tap()
         app.buttons["Done"].tap()
         navigator.nowAt(NewTabScreen)
-        navigator.goto(HomePanelsScreen)
 
         // This option should be enabled on private mode too
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
@@ -113,7 +131,6 @@ class HistoryTests: BaseTestCase {
         app.buttons["History Panel"].tap()
         app.buttons["Done"].tap()
         navigator.nowAt(NewTabScreen)
-        navigator.goto(HomePanelsScreen)
 
         // Go to settings and clear private data
         navigator.performAction(Action.AcceptClearPrivateData)
@@ -220,16 +237,12 @@ class HistoryTests: BaseTestCase {
     private func navigateToExample() {
         navigator.openURL("example.com")
         waitUntilPageLoad()
-
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_History)
-        XCTAssertTrue(app.tables.cells.staticTexts["Example Domain"].exists)
     }
     
     func testClearRecentHistory() {
-        navigator.goto(HomePanelsScreen)
-        navigator.goto(LibraryPanel_History)
-        navigator.performAction(Action.ClearRecentHistory)
+        goToHistory()
+        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
         tapOnClearRecentHistoryOption(optionSelected: "The Last Hour")
         // No data will be removed after Action.ClearRecentHistory since there is no recent history created.
         for entry in oldHistoryEntries {
@@ -240,7 +253,10 @@ class HistoryTests: BaseTestCase {
         app.buttons["Done"].tap()
         navigator.nowAt(NewTabScreen)
         navigateToExample()
-        navigator.performAction(Action.ClearRecentHistory)
+
+        goToHistory()
+        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
         // Recent data will be removed after calling tapOnClearRecentHistoryOption(optionSelected: "Today").
         // Older data will not be removed
         tapOnClearRecentHistoryOption(optionSelected: "Today")
@@ -254,7 +270,10 @@ class HistoryTests: BaseTestCase {
         app.buttons["Done"].tap()
         navigator.nowAt(NewTabScreen)
         navigateToExample()
-        navigator.performAction(Action.ClearRecentHistory)
+
+        goToHistory()
+        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
         // Tapping "Today and Yesterday" will remove recent data (from yesterday and today).
         // Older data will not be removed
         tapOnClearRecentHistoryOption(optionSelected: "Today and Yesterday")
@@ -268,7 +287,10 @@ class HistoryTests: BaseTestCase {
         app.buttons["Done"].tap()
         navigator.nowAt(NewTabScreen)
         navigateToExample()
-        navigator.performAction(Action.ClearRecentHistory)
+
+        goToHistory()
+        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
         // Tapping everything removes both current data and older data.
         tapOnClearRecentHistoryOption(optionSelected: "Everything")
         for entry in oldHistoryEntries {
@@ -281,7 +303,10 @@ class HistoryTests: BaseTestCase {
     func testAllOptionsArePresent() {
         // Go to 'goolge.com' to create a recent history entry.
         navigateToExample()
-        navigator.performAction(Action.ClearRecentHistory)
+
+        goToHistory()
+        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
         
         for option in clearRecentHistoryOptions {
             XCTAssertTrue(app.sheets.buttons[option].exists)
@@ -290,8 +315,9 @@ class HistoryTests: BaseTestCase {
 
     // Smoketest
     func testDeleteHistoryEntryBySwiping() {
+        navigator.nowAt(NewTabScreen)
         navigateToExample()
-        navigator.goto(LibraryPanel_History)
+        goToHistory()
         waitForExistence(app.cells.staticTexts["http://example.com/"], timeout: 10)
         app.cells.staticTexts["http://example.com/"].firstMatch.swipeLeft()
         waitForExistence(app.buttons["Delete"], timeout: 10)

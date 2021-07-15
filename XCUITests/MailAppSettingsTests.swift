@@ -6,11 +6,17 @@ import XCTest
 
 class MailAppSettingsTests: BaseTestCase {
     func testOpenMailAppSettings() {
-        navigator.goto(OpenWithSettings)
+        navigator.nowAt(NewTabScreen)
+        app.buttons["Neeva Menu"].tap()
+
+        waitForExistence(app.buttons["Settings"])
+        app.buttons["Settings"].tap()
+
+        waitForExistence( app.tables.cells["Mail App"])
+        app.tables.cells["Mail App"].tap()
 
         // Check that the list is shown with all elements disabled
         waitForExistence(app.tables.staticTexts["OPEN MAIL LINKS WITH"])
-        XCTAssertTrue(app.tables.staticTexts["OPEN MAIL LINKS WITH"].exists)
         XCTAssertFalse(app.tables.cells.buttons["Mail"].isSelected)
         XCTAssertFalse(app.tables.cells.buttons["Outlook"].isSelected)
         XCTAssertFalse(app.tables.cells.buttons["Airmail"].isSelected)
@@ -25,7 +31,6 @@ class MailAppSettingsTests: BaseTestCase {
         XCTAssertFalse(app.tables.cells.buttons["Airmail"].isSelected)
 
         // Check that user can go back from that setting
-        navigator.nowAt(OpenWithSettings)
-        navigator.back()
+        app.buttons["Settings"].tap()
     }
 }

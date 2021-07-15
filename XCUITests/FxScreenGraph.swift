@@ -310,17 +310,10 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
 
     map.addScreenState(NewTabScreen) { screenState in
         screenState.noop(to: HomePanelsScreen)
-        if isTablet {
-            screenState.tap(app.buttons["TopTabsViewController.tabsButton"], to: TabTray)
-        } else {
-            screenState.gesture(to: TabTray) {
-                if (app.buttons["Show Tabs"].exists) {
-                    app.buttons["Show Tabs"].tap()
-                } else {
-                    app.buttons["URLBarView.tabsButton"].tap()
-                }
-            }
+        screenState.gesture(to: TabTray) {
+            app.buttons["Show Tabs"].tap()
         }
+
         makeURLBarAvailable(screenState)
         screenState.tap(app.buttons["Neeva Menu"], to: NeevaMenu)
 
@@ -443,18 +436,8 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             }
         }
 
-        // Workaround to bug Bug 1417522
-        if isTablet {
-            screenState.tap(app.buttons["TopTabsViewController.tabsButton"], to: TabTray)
-        } else {
-            screenState.gesture(to: TabTray) {
-                // iPhone sim tabs button is called differently when in portrait or landscape
-                if (XCUIDevice.shared.orientation == UIDeviceOrientation.landscapeLeft) {
-                    app.buttons["URLBarView.tabsButton"].tap()
-                } else {
-                    app.buttons["Show Tabs"].tap()
-                }
-            }
+        screenState.gesture(to: TabTray) {
+            app.buttons["Show Tabs"].tap()
         }
         
         screenState.gesture(forAction: Action.OpenSearchBarFromSearchButton, transitionTo: URLBarOpen) {
@@ -675,6 +658,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
 
     map.addScreenState(TabTray) { screenState in
         screenState.tap(app.buttons["TabTrayController.addTabButton"], forAction: Action.OpenNewTabFromTabTray, transitionTo: NewTabScreen)
+
         screenState.tap(app.buttons["Private Mode"], forAction: Action.TogglePrivateMode) { userState in
             userState.isPrivate = !userState.isPrivate
         }
@@ -715,22 +699,14 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
 
     func makeToolBarAvailable(_ screenState: MMScreenStateNode<FxUserState>) {
         screenState.tap(app.buttons["Neeva Menu"], to: NeevaMenu)
-        if isTablet {
-            screenState.tap(app.buttons["TopTabsViewController.tabsButton"], to: TabTray)
-        } else {
-            screenState.gesture(to: TabTray) {
-                if (app.buttons["Show Tabs"].exists) {
-                    app.buttons["Show Tabs"].tap()
-                } else {
-                    app.buttons["URLBarView.tabsButton"].tap()
-                }
-            }
+        screenState.gesture(to: TabTray) {
+            app.buttons["Show Tabs"].tap()
         }
     }
 
     map.addScreenState(BrowserTab) { screenState in
         makeURLBarAvailable(screenState)
-        screenState.tap(app.buttons["TabLocationView.shareButton"], to: ShareMenu)
+        screenState.tap(app.buttons["Share Menu"], to: ShareMenu)
         screenState.tap(app.buttons["Neeva Menu"], to: NeevaMenu)
 
         screenState.tap(app.buttons["TabLocationView.trackingProtectionButton"], to: TrackingProtectionContextMenuDetails)
@@ -752,22 +728,15 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             screenState.press(reloadButton, to: ReloadLongPressMenu)
             screenState.tap(reloadButton, forAction: Action.ReloadURL, transitionTo: WebPageLoading) { _ in }
         }
+
         // For iPad there is no long press on tabs button
         if !isTablet {
             let tabsButton = app.buttons["Show Tabs"]
             screenState.press(tabsButton, to: TabTrayLongPressMenu)
         }
 
-        if isTablet {
-            screenState.tap(app.buttons["TopTabsViewController.tabsButton"], to: TabTray)
-        } else {
-            screenState.gesture(to: TabTray) {
-                if (app.buttons["Show Tabs"].exists) {
-                    app.buttons["Show Tabs"].tap()
-                } else {
-                    app.buttons["URLBarView.tabsButton"].tap()
-                }
-            }
+        screenState.gesture(to: TabTray) {
+            app.buttons["Show Tabs"].tap()
         }
 
         screenState.tap(app.buttons["TabTrayController.maskButton"], forAction: Action.TogglePrivateModeFromTabBarBrowserTab) { userState in
@@ -853,11 +822,7 @@ extension MMNavigator where T == FxUserState {
     // Opens a URL in a new tab.
     func openNewURL(urlString: String) {
         let app = XCUIApplication()
-        if isTablet {
-            waitForExistence(app.buttons["TopTabsViewController.tabsButton"], timeout: 15)
-        } else {
-            waitForExistence(app.buttons["Show Tabs"], timeout: 10)
-        }
+        waitForExistence(app.buttons["Show Tabs"], timeout: 10)
         self.goto(TabTray)
         createNewTab()
         self.openURL(urlString)
@@ -866,7 +831,7 @@ extension MMNavigator where T == FxUserState {
     // Add a new Tab from the New Tab option in Browser Tab Menu
     func createNewTab() {
         let app = XCUIApplication()
-        self.goto(TabTray)
+        app.buttons["Show Tabs"].tap()
         app.buttons["TabTrayController.addTabButton"].tap()
         self.nowAt(NewTabScreen)
     }

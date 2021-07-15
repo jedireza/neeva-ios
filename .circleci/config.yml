@@ -72,11 +72,19 @@ commands:
       - run:
           name: UITests
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing UITests
+      - run:
+          name: UITests
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing UITests
   xcui-tests:
     steps:
       - run:
           name: XCUITests
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests
+  xcui-tests-ipad:
+    steps:
+      - run:
+          name: XCUITests
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests
 
 jobs:
   build:
@@ -121,6 +129,15 @@ jobs:
     steps:
       - restore-build-cache
       - xcui-tests
+  xcui-tests-ipad:
+    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
+    # info on using Xcode 12.5.0 at this time.
+    macos:
+      xcode: "12.5.0"
+    resource_class: m2.medium
+    steps:
+      - restore-build-cache
+      - xcui-tests-ipad
 
 workflows:
   version: 2
@@ -132,4 +149,6 @@ workflows:
       - ui-tests:
           requires: [build]
       - xcui-tests:
+          requires: [build]
+      - xcui-tests-ipad:
           requires: [build]

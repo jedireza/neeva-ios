@@ -6,13 +6,6 @@ import XCTest
 
 class DataManagementTests: BaseTestCase {
     func testWebSiteDataEnterFirstTime() {
-        navigator.goto(HomePanelsScreen)
-        navigator.performAction(Action.AcceptClearAllWebsiteData)
-
-        // flakey - value changes every test
-        // let expectedWebsiteDataEntries2 = app.tables.cells.count
-        // XCTAssertEqual(expectedWebsiteDataEntries2, 2)
-
         navigator.openURL("example.com")
         navigator.goto(WebsiteDataSettings)
         XCTAssertTrue(app.tables.cells["example.com"].exists)

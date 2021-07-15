@@ -80,8 +80,7 @@ class LegacyURLBarView: UIView {
         neevaMenuButton.isAccessibilityElement = true
         neevaMenuButton.isHidden = false
         neevaMenuButton.imageView?.contentMode = .left
-        neevaMenuButton.accessibilityLabel = .TabLocationPageOptionsAccessibilityLabel
-        neevaMenuButton.accessibilityIdentifier = "URLBarView.neevaMenuButton"
+        neevaMenuButton.accessibilityLabel = "Neeva Menu"
         neevaMenuButton.addTarget(self, action: #selector(didClickNeevaMenu), for: UIControl.Event.touchUpInside)
         neevaMenuButton.showsMenuAsPrimaryAction = true
         return neevaMenuButton

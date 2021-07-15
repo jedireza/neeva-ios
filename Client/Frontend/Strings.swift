@@ -942,7 +942,7 @@ extension String {
     public static let TabLocationReaderModeAccessibilityLabel = MZLocalizedString("Reader View", comment: "Accessibility label for the Reader View button")
     public static let TabLocationReaderModeAddToReadingListAccessibilityLabel = MZLocalizedString("Add to Reading List", comment: "Accessibility label for action adding current page to reading list.")
     public static let TabLocationReloadAccessibilityLabel = MZLocalizedString("Reload page", comment: "Accessibility label for the reload button")
-    public static let TabLocationPageOptionsAccessibilityLabel = MZLocalizedString("Page Options Menu", comment: "Accessibility label for the Page Options menu button")
+    public static let TabLocationPageOptionsAccessibilityLabel = MZLocalizedString("Neeva Menu", comment: "Accessibility label for the Page Options menu button")
 }
 
 // TabPeekViewController

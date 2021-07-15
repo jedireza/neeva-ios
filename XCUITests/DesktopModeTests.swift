@@ -21,7 +21,7 @@ class DesktopModeTestsIpad: IpadOnlyTestCase {
         navigator.performAction(Action.ReloadURL)
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
-        navigator.performAction(Action.AcceptRemovingAllTabs)
+        closeAllTabs()
 
         // Covering scenario that when closing a tab and re-opening should preserve Mobile mode
         navigator.createNewTab()
