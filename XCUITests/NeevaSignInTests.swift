@@ -71,6 +71,7 @@ class NeevaSignInTests: BaseTestCase {
         app.buttons["Reload"].tap()
 
         waitUntilPageLoad()
+        print(app.webViews.firstMatch.debugDescription)
         waitForExistence(app.webViews.links["Sign In"], timeout: 3)
     }
 }
