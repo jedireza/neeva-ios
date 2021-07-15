@@ -28,11 +28,7 @@ struct PrivacySettingsSection: View {
                 "Tracking Protection",
                 destination: List {
                     Section(header: Text("Global Privacy Settings").padding(.top, 21)) {
-                        TrackingSettingsBlock(
-                            blockTrackingCookies: .constant(true),
-                            blockTrackingRequests: .constant(true),
-                            upgradeToHTTPS: .constant(true)
-                        )
+                        TrackingSettingsBlock()
                     }
                     TrackingAttribution()
                 }

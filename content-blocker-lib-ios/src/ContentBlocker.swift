@@ -71,18 +71,12 @@ enum BlockerStatus: String {
 }
 
 class ContentBlocker {
-    var safelistedDomains = SafelistedDomains()
     let ruleStore: WKContentRuleListStore = WKContentRuleListStore.default()
     var setupCompleted = false
 
     static let shared = ContentBlocker()
 
     private init() {
-        // Read the safelist at startup
-        if let list = readSafelistFile() {
-            safelistedDomains.domainSet = Set(list)
-        }
-
         TPStatsBlocklistChecker.shared.startup()
 
         removeOldListsByDateFromStore() {

@@ -93,7 +93,7 @@ struct TabLocationView: View {
                     }
                 } leading: {
                     if gridModel.isHidden && (model.url?.scheme == "https" || model.url?.scheme == "http") {
-                        LocationViewTrackingButton()
+                        LocationViewTrackingButton(currentDomain: model.url?.baseDomain ?? "")
                     }
                 } trailing: {
                     if gridModel.isHidden {

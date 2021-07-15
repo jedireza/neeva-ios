@@ -2,7 +2,7 @@
 
 import Shared
 
-struct ContentBlockingUtils {
+struct TrackingPreventionUtils {
     private static func readDomains() -> String? {
         if let filepath = Bundle.main.path(forResource: "trackerDomains", ofType: "json") {
             do {
@@ -29,23 +29,23 @@ struct ContentBlockingUtils {
         return regex
     }
 
-    private static func blockingRule(domains: [String], actionType: String) -> ContentBlockingRule {
+    private static func blockingRule(domains: [String], actionType: String) -> TrackingPreventionRule {
 
-        return ContentBlockingRule(
-            trigger: ContentBlockingTrigger(urlFilter: buildRegex(domains: domains), urlFilterIsCaseSensitive: false, ifDomain: nil, unlessDomain: nil, resourceType: nil, loadType: [ThirdParty]),
-            action: ContentBlockingAction (
+        return TrackingPreventionRule(
+            trigger: TrackingPreventionTrigger(urlFilter: buildRegex(domains: domains), urlFilterIsCaseSensitive: false, ifDomain: nil, unlessDomain: nil, resourceType: nil, loadType: [ThirdParty]),
+            action: TrackingPreventionAction (
                 type: actionType
             )
         )
     }
 
-    private static func blockingRules(domains: [String]) -> [ContentBlockingRule] {
-        var rules: [ContentBlockingRule] = []
+    private static func blockingRules(domains: [String]) -> [TrackingPreventionRule] {
+        var rules: [TrackingPreventionRule] = []
         var actionType: String?
 
-        if NeevaContentBlockingConfig.blockThirdPartyTrackingRequests.IsEnabled() {
+        if TrackingPreventionConfig.blockThirdPartyTrackingRequests {
             actionType = Block
-        } else if NeevaContentBlockingConfig.blockThirdPartyTrackingCookies.IsEnabled() {
+        } else if TrackingPreventionConfig.blockThirdPartyTrackingCookies {
             actionType = BlockCookies
         }
 
@@ -68,27 +68,27 @@ struct ContentBlockingUtils {
         return rules
     }
 
-    private static func upgradeAllToHTTPSRule() -> [ContentBlockingRule] {
-        var rules: [ContentBlockingRule] = []
+    private static func upgradeAllToHTTPSRule() -> [TrackingPreventionRule] {
+        var rules: [TrackingPreventionRule] = []
 
-        if NeevaContentBlockingConfig.upgradeAllToHTTPS.IsEnabled() {
-            rules.append(ContentBlockingRule(trigger: ContentBlockingTrigger(urlFilter: ".*"), action: ContentBlockingAction(type: MakeHTTPS)))
+        if TrackingPreventionConfig.upgradeAllToHTTPS {
+            rules.append(TrackingPreventionRule(trigger: TrackingPreventionTrigger(urlFilter: ".*"), action: TrackingPreventionAction(type: MakeHTTPS)))
         }
         return rules
     }
 
-    private static func unblockedRule(domains: [String]) -> ContentBlockingRule {
-        return ContentBlockingRule(
-            trigger: ContentBlockingTrigger(urlFilter: ".*", urlFilterIsCaseSensitive: false, ifDomain: domains, unlessDomain: nil, resourceType: nil, loadType: nil, ifTopUrl: nil),
-            action: ContentBlockingAction (
+    private static func unblockedRule(domains: [String]) -> TrackingPreventionRule {
+        return TrackingPreventionRule(
+            trigger: TrackingPreventionTrigger(urlFilter: ".*", urlFilterIsCaseSensitive: false, ifDomain: domains, unlessDomain: nil, resourceType: nil, loadType: nil, ifTopUrl: nil),
+            action: TrackingPreventionAction (
                 type: IgnorePreviousRules
             )
         )
     }
 
-    private static func unblockedRules() -> [ContentBlockingRule] {
-        var rules: [ContentBlockingRule] = []
-        let domains = NeevaContentBlockingConfig.PerSite.getUnblockedList()
+    private static func unblockedRules() -> [TrackingPreventionRule] {
+        var rules: [TrackingPreventionRule] = []
+        let domains = TrackingPreventionConfig.PerSite.unblockedDomains
 
         NSLog("unblockedRules domains:", domains.count, domains)
         var groupedPatterns: [String] = []
@@ -108,9 +108,9 @@ struct ContentBlockingUtils {
         return rules
     }
 
-    static func generateRules() -> [ContentBlockingRule]  {
+    static func generateRules() -> [TrackingPreventionRule]  {
         let domains = readDomains()
-        var rules: [ContentBlockingRule] = []
+        var rules: [TrackingPreventionRule] = []
         if domains != nil {
             do {
                 let domainsJson: [String] = try JSONDecoder().decode([String].self, from: domains!.data(using: .utf8)!)

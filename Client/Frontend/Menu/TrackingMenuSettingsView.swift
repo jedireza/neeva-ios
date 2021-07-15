@@ -2,25 +2,30 @@
 
 import SwiftUI
 import Shared
+import Defaults
 
 struct TrackingMenuSettingsView: View {
-    let host: String
+    @Default(.unblockedDomains) var unblockedDomains: Set<String>
+
+    @State var domainIsNotSafelisted: Bool = false {
+        didSet {
+            if domainIsNotSafelisted {
+                TrackingPreventionConfig.PerSite.disallowTrackersFor(domain)
+            } else {
+                TrackingPreventionConfig.PerSite.allowTrackersFor(domain)
+            }
+        }
+    }
+
+    let domain: String
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("On \(host)").padding(.top, 21)) {
-                    TrackingSettingsBlock(
-                        blockTrackingCookies: .constant(true),
-                        blockTrackingRequests: .constant(true),
-                        upgradeToHTTPS: .constant(true)
-                    )
+                Section(header: Text("On \(domain)").padding(.top, 21)) {
+                    Toggle("Tracking Prevention", isOn: $domainIsNotSafelisted)
                 }
                 Section(header: Text("Global Privacy Settings")) {
-                    TrackingSettingsBlock(
-                        blockTrackingCookies: .constant(true),
-                        blockTrackingRequests: .constant(true),
-                        upgradeToHTTPS: .constant(true)
-                    )
+                    TrackingSettingsBlock()
                 }
                 TrackingAttribution()
             }
@@ -33,7 +38,9 @@ struct TrackingMenuSettingsView: View {
             }
             .listStyle(GroupedListStyle())
             .applyToggleStyle()
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(StackNavigationViewStyle()).onAppear {
+            domainIsNotSafelisted = !unblockedDomains.contains(domain)
+        }
     }
 }
 
@@ -58,9 +65,9 @@ struct TrackingAttribution: View {
 }
 
 struct TrackingSettingsBlock: View {
-    @Binding var blockTrackingCookies: Bool
-    @Binding var blockTrackingRequests: Bool
-    @Binding var upgradeToHTTPS: Bool
+    @Default(.blockThirdPartyTrackingCookies) var blockTrackingCookies: Bool
+    @Default(.blockThirdPartyTrackingRequests) var blockTrackingRequests: Bool
+    @Default(.upgradeAllToHttps) var upgradeToHTTPS: Bool
 
     var body: some View {
         Toggle("Block tracking cookies", isOn: $blockTrackingCookies)
@@ -71,6 +78,6 @@ struct TrackingSettingsBlock: View {
 
 struct TrackingMenuSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuSettingsView(host: "cnn.com")
+        TrackingMenuSettingsView(domain: "cnn.com")
     }
 }

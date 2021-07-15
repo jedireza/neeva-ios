@@ -132,7 +132,7 @@ struct TrackingMenuView: View {
                 .buttonStyle(TableCellButtonStyle(padding: -NeevaUIConstants.menuInnerPadding))
                 .applyNeevaMenuPanelSpec()
                 .sheet(isPresented: $isShowingPopup) {
-                    TrackingMenuSettingsView(host: "example.com")
+                    TrackingMenuSettingsView(domain: "example.com")
                 }
             }
         }

@@ -174,10 +174,10 @@
 		4A1D05502669715B00D63333 /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054F2669715B00D63333 /* CardViewController.swift */; };
 		4A22DCFA26574AA4009BE9FC /* TrackingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */; };
 		4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */; };
-		4A255AB2265C48EC00422839 /* ContentBlockingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AAF265C48EB00422839 /* ContentBlockingUtils.swift */; };
-		4A255AB3265C48EC00422839 /* ContentBlockingRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */; };
+		4A255AB2265C48EC00422839 /* TrackingPreventionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */; };
+		4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB0265C48EB00422839 /* TrackingPreventionRules.swift */; };
 		4A255AB4265C48EC00422839 /* trackerDomains.json in Resources */ = {isa = PBXBuildFile; fileRef = 4A255AB1265C48EC00422839 /* trackerDomains.json */; };
-		4A255AB6265C4A2A00422839 /* ContentBlockingConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */; };
+		4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB5265C4A2A00422839 /* TrackingPreventionConfig.swift */; };
 		4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A360214268CF74500C56328 /* SuggestionBlocks.swift */; };
 		4A3D299126850CB60082F293 /* CardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3D299026850CB60082F293 /* CardGrid.swift */; };
 		4A3D2993268583710082F293 /* CardModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3D2992268583710082F293 /* CardModels.swift */; };
@@ -1096,10 +1096,10 @@
 		4A1D054F2669715B00D63333 /* CardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewController.swift; sourceTree = "<group>"; };
 		4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingEntity.swift; sourceTree = "<group>"; };
 		4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TrackingEntity.xcassets; sourceTree = "<group>"; };
-		4A255AAF265C48EB00422839 /* ContentBlockingUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingUtils.swift; sourceTree = "<group>"; };
-		4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingRules.swift; sourceTree = "<group>"; };
+		4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionUtils.swift; sourceTree = "<group>"; };
+		4A255AB0265C48EB00422839 /* TrackingPreventionRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionRules.swift; sourceTree = "<group>"; };
 		4A255AB1265C48EC00422839 /* trackerDomains.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = trackerDomains.json; sourceTree = "<group>"; };
-		4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentBlockingConfig.swift; sourceTree = "<group>"; };
+		4A255AB5265C4A2A00422839 /* TrackingPreventionConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionConfig.swift; sourceTree = "<group>"; };
 		4A360214268CF74500C56328 /* SuggestionBlocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBlocks.swift; sourceTree = "<group>"; };
 		4A3D299026850CB60082F293 /* CardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGrid.swift; sourceTree = "<group>"; };
 		4A3D2992268583710082F293 /* CardModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardModels.swift; sourceTree = "<group>"; };
@@ -3054,9 +3054,9 @@
 			isa = PBXGroup;
 			children = (
 				4A255AB1265C48EC00422839 /* trackerDomains.json */,
-				4A255AB5265C4A2A00422839 /* ContentBlockingConfig.swift */,
-				4A255AB0265C48EB00422839 /* ContentBlockingRules.swift */,
-				4A255AAF265C48EB00422839 /* ContentBlockingUtils.swift */,
+				4A255AB5265C4A2A00422839 /* TrackingPreventionConfig.swift */,
+				4A255AB0265C48EB00422839 /* TrackingPreventionRules.swift */,
+				4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */,
 				EBB894F5219398E500EB91A0 /* TrackingProtectionPageStats.swift */,
 				EBB894F7219398E500EB91A0 /* TabContentBlocker.swift */,
 				EBB894F8219398E500EB91A0 /* ContentBlocker.swift */,
@@ -4510,7 +4510,7 @@
 				C99646652655AA9A005FFE83 /* (null) in Sources */,
 				F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */,
 				D3B6923D1B9F9444004B87A4 /* FindInPageBar.swift in Sources */,
-				4A255AB2265C48EC00422839 /* ContentBlockingUtils.swift in Sources */,
+				4A255AB2265C48EC00422839 /* TrackingPreventionUtils.swift in Sources */,
 				4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */,
 				66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */,
 				C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */,
@@ -4571,7 +4571,7 @@
 				BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */,
 				665D146426964B7300E39BA9 /* LibraryPanelType.swift in Sources */,
 				E6D8D5E71B569D70009E5A58 /* BrowserTrayAnimators.swift in Sources */,
-				4A255AB3265C48EC00422839 /* ContentBlockingRules.swift in Sources */,
+				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
@@ -4646,7 +4646,7 @@
 				D3A9949C1A3686BD008AD1AC /* BrowserViewController.swift in Sources */,
 				59A681BDFC95A19F05E07223 /* SearchViewController.swift in Sources */,
 				C9BED4C12667FA91001D9C77 /* SuggestedSearchViews.swift in Sources */,
-				4A255AB6265C4A2A00422839 /* ContentBlockingConfig.swift in Sources */,
+				4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */,
 				4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */,
 				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,

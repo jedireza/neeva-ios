@@ -50,11 +50,13 @@ class TPStatsBlocklistChecker {
         }
 
         // Make a copy on the main thread
-        let safelistRegex = ContentBlocker.shared.safelistedDomains.domainRegex
+        let safelistRegex = TrackingPreventionConfig.PerSite.unblockedDomainsRegex
 
         DispatchQueue.global().async {
             // Return true in the Deferred if the domain could potentially be blocked
-            deferred.fill(blockLists.urlIsInList(url, mainDocumentURL: mainDocumentURL, safelistedDomains: safelistRegex))
+            deferred.fill(blockLists.urlIsInList(url,
+                                                 mainDocumentURL: mainDocumentURL,
+                                                 safelistedDomains: safelistRegex))
         }
         return deferred
     }

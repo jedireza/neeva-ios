@@ -9,7 +9,7 @@ import Foundation
 let FirstParty = "first-party"
 let ThirdParty = "third-party"
 
-struct ContentBlockingTrigger: Encodable {
+struct TrackingPreventionTrigger: Encodable {
     enum CodingKeys: String, CodingKey {
         case urlFilter = "url-filter"
         case urlFilterIsCaseSensitive = "url-filter-is-case-sensitive"
@@ -44,12 +44,12 @@ let IgnorePreviousRules = "ignore-previous-rules"
 let MakeHTTPS = "make-https"
 
 
-struct ContentBlockingAction: Encodable {
+struct TrackingPreventionAction: Encodable {
     var type: String
     var selector: String?
 }
 
-struct ContentBlockingRule: Encodable {
-    var trigger: ContentBlockingTrigger
-    var action: ContentBlockingAction
+struct TrackingPreventionRule: Encodable {
+    var trigger: TrackingPreventionTrigger
+    var action: TrackingPreventionAction
 }

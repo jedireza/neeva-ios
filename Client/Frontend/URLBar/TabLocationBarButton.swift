@@ -20,6 +20,7 @@ struct TabLocationBarButton<Label: View>: View {
 struct LocationViewTrackingButton: View {
     @State private var showingPopover = false
     @Environment(\.isIncognito) private var isIncognito
+    let currentDomain: String
 
     var body: some View {
         let label = isIncognito
@@ -94,8 +95,8 @@ struct LocationViewShareButton: View {
 struct TabLocationBarButton_Previews: PreviewProvider {
     static var previews: some View {
         HStack {
-            LocationViewTrackingButton()
-            LocationViewTrackingButton()
+            LocationViewTrackingButton(currentDomain: "neeva.com")
+            LocationViewTrackingButton(currentDomain: "neeva.com")
                 .environment(\.isIncognito, true)
         }.previewLayout(.sizeThatFits)
         HStack {
