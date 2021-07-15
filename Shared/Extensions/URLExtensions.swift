@@ -371,7 +371,7 @@ extension URL {
     public var decodeReaderModeURL: URL? {
         if self.isReaderModeURL || self.isSyncedReaderModeURL {
             if let components = URLComponents(url: self, resolvingAgainstBaseURL: false), let queryItems = components.queryItems {
-                if let queryItem = queryItems.find({ $0.name == "url"}), let value = queryItem.value {
+                if let queryItem = queryItems.first(where: { $0.name == "url"}), let value = queryItem.value {
                     return URL(string: value)
                 }
             }
@@ -455,7 +455,7 @@ public struct InternalURL {
             components.queryItems = []
         }
 
-        if var item = components.queryItems?.find({ Param.uuidkey.matches($0.name) }) {
+        if var item = components.queryItems?.first(where: { Param.uuidkey.matches($0.name) }) {
             item.value = InternalURL.uuid
         } else {
             components.queryItems?.append(URLQueryItem(name: Param.uuidkey.rawValue, value: InternalURL.uuid))

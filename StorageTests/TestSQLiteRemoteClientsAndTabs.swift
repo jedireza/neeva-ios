@@ -88,13 +88,13 @@ open class MockRemoteClientsAndTabs: RemoteClientsAndTabs {
     }
 
     public func getClient(guid: GUID) -> Deferred<Maybe<RemoteClient?>> {
-        return deferMaybe(self.clientsAndTabs.find { clientAndTabs in
+        return deferMaybe(self.clientsAndTabs.first { clientAndTabs in
             return clientAndTabs.client.guid == guid
         }?.client)
     }
 
     public func getClient(fxaDeviceId: GUID) -> Deferred<Maybe<RemoteClient?>> {
-        return deferMaybe(self.clientsAndTabs.find { clientAndTabs in
+        return deferMaybe(self.clientsAndTabs.first { clientAndTabs in
             return clientAndTabs.client.fxaDeviceId == fxaDeviceId
             }?.client)
     }

@@ -29,9 +29,7 @@ class ZeroQueryTests: XCTestCase {
         vc.hideURLFromTopSites(siteToDelete)
         let newSites = vc.defaultTopSites()
 
-        XCTAssertFalse(newSites.contains(siteToDelete, f: { (a, b) -> Bool in
-            return a.url == b.url
-        }))
+        XCTAssertNil(newSites.first { $0.url == siteToDelete.url })
     }
 
     func testDeletionOfAllDefaultSites() {

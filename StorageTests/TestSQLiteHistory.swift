@@ -1006,7 +1006,7 @@ class TestSQLiteHistory: XCTestCase {
             // Now check that we have no duplicate visits.
             >>> { history.getModifiedHistoryToUpload()
                 >>== { (places) -> Success in
-                    if let (_, visits) = places.find({$0.0.guid == siteR.guid!}) {
+                    if let (_, visits) = places.first(where: { $0.0.guid == siteR.guid!}) {
                         XCTAssertEqual(3, visits.count)
                     } else {
                         XCTFail("Couldn't find site R.")

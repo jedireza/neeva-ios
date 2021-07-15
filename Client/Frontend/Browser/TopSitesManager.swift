@@ -10,44 +10,51 @@ import WidgetKit
 import Defaults
 
 struct TopSitesHandler {
+    private static func siteKey(_ site: Site) -> String? {
+        site.url.asURL?.normalizedHost
+    }
+
     static func getTopSites(profile: Profile) -> Deferred<[Site]> {      
         let maxItems = UIDevice.current.userInterfaceIdiom == .pad ? 32 : 16
         return profile.history.getTopSitesWithLimit(maxItems).both(profile.history.getPinnedTopSites()).bindQueue(.main) { (topsites, pinnedSites) in
-            
+
             let deferred = Deferred<[Site]>()
-                        
+
             guard let mySites = topsites.successValue?.asArray(), let pinned = pinnedSites.successValue?.asArray() else {
                 return deferred
-            }
-            
-            // How sites are merged together. We compare against the url's base domain. example m.youtube.com is compared against `youtube.com`
-            let unionOnURL = { (site: Site) -> String in
-                return URL(string: site.url)?.normalizedHost ?? ""
             }
 
             // Fetch the default sites
             let defaultSites = defaultTopSites()
-            // create PinnedSite objects. used by the view layer to tell topsites apart
-            let pinnedSites: [Site] = pinned.map({ PinnedSite(site: $0) })
 
-            // Merge default topsites with a user's topsites.
-            let mergedSites = mySites.union(defaultSites, f: unionOnURL)
+            var mergedSites = mySites
+            var seenSites = Set(mergedSites.map(siteKey(_:)))
+            for site in defaultSites {
+                let key = siteKey(site)
+                if !seenSites.contains(key) {
+                    seenSites.insert(key)
+                    mergedSites.append(site)
+                }
+            }
 
-            // Merge pinnedSites with sites from the previous step
             let allSites: [Site]
             if FeatureFlag[.pinToTopSites] {
-                allSites = pinnedSites.union(mergedSites, f: unionOnURL)
+                // create PinnedSite objects. used by the view layer to tell topsites apart
+                let pinnedSites: [Site] = pinned.map(PinnedSite.init(site:))
+                let pinnedKeys = Set(pinnedSites.map(siteKey(_:)))
+                // no need to update pinnedKeys since mergedSites is already deduplicated
+                allSites = pinnedSites + mergedSites.filter { !pinnedKeys.contains(siteKey($0)) }
             } else {
                 allSites = mergedSites
             }
 
-            // Favour topsites from defaultSites as they have better favicons. But keep PinnedSites
+            // Favor top sites from defaultSites as they have better favicons. But keep PinnedSites.
             let newSites = allSites.map { site -> Site in
                 if let _ = site as? PinnedSite {
                     return site
                 }
-                let domain = URL(string: site.url)?.shortDisplayString
-                return defaultSites.find { $0.title.lowercased() == domain } ?? site
+                let domain = site.url.asURL?.shortDisplayString
+                return defaultSites.first { $0.title.lowercased() == domain } ?? site
             }
             
             deferred.fill(newSites)
