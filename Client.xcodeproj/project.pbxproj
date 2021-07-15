@@ -339,6 +339,7 @@
 		C94D4099268BAADC003A6766 /* UIKitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4098268BAADC003A6766 /* UIKitButton.swift */; };
 		C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D409C268CADD4003A6766 /* LocationEditView.swift */; };
 		C96004FA267BF5B500FBB0AD /* TabToolbarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96004F9267BF5B500FBB0AD /* TabToolbarModel.swift */; };
+		C9655DE926A08FA600925912 /* PressReportingButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */; };
 		C965BDD2268E71C500F02224 /* AppHostSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD1268E71C500F02224 /* AppHostSetting.swift */; };
 		C965BDD4268E720400F02224 /* DebugDBSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */; };
 		C965BDD6268E729000F02224 /* InternalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD5268E728F00F02224 /* InternalSettingsView.swift */; };
@@ -1260,6 +1261,7 @@
 		C94D4098268BAADC003A6766 /* UIKitButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitButton.swift; sourceTree = "<group>"; };
 		C94D409C268CADD4003A6766 /* LocationEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationEditView.swift; sourceTree = "<group>"; };
 		C96004F9267BF5B500FBB0AD /* TabToolbarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabToolbarModel.swift; sourceTree = "<group>"; };
+		C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressReportingButtonStyle.swift; sourceTree = "<group>"; };
 		C965BDD1268E71C500F02224 /* AppHostSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHostSetting.swift; sourceTree = "<group>"; };
 		C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDBSettingsSection.swift; sourceTree = "<group>"; };
 		C965BDD5268E728F00F02224 /* InternalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalSettingsView.swift; sourceTree = "<group>"; };
@@ -2632,6 +2634,7 @@
 				C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */,
 				C94D4098268BAADC003A6766 /* UIKitButton.swift */,
 				C9299E35268F9CF300758795 /* CloseButton.swift */,
+				C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -4623,6 +4626,7 @@
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,
 				C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */,
+				C9655DE926A08FA600925912 /* PressReportingButtonStyle.swift in Sources */,
 				122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */,
 				C4E398601D22C409004E89BA /* TopTabsLayout.swift in Sources */,
 				2816F0001B33E05400522243 /* UIConstants.swift in Sources */,

@@ -70,9 +70,7 @@ struct SwitcherToolbarView: View {
                     toolbarModel.onNewTab()
                     gridModel.hideWithNoAnimation()
                 }) {
-                    let symbol = UIImage(systemName: "plus.app",
-                                         withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
-                    $0.setImage(symbol, for: .normal)
+                    $0.setImage(Symbol.uiImage(.plusApp, size: 20), for: .normal)
                     $0.tintColor = UIColor.label
                     $0.accessibilityIdentifier = "TabTrayController.addTabButton"
                     $0.setDynamicMenu(gridModel.buildRecentlyClosedTabsMenu)
@@ -90,8 +88,9 @@ struct SwitcherToolbarView: View {
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
                 .accessibilityIdentifier("TabTrayController.doneButton")
             }.padding(.horizontal, 16)
-            Spacer()
-        }.background(Color.DefaultBackground)
-        .offset(y: gridModel.isHidden ? 90 : 0).animation(.easeOut)
+        }
+        .background(Color.DefaultBackground)
+        .offset(y: gridModel.isHidden ? 90 : 0)
+        .animation(.easeOut)
     }
 }

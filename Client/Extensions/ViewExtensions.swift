@@ -34,3 +34,12 @@ public extension View {
         self.modifier(ThrobbingHighlightBorder(highlight: highlight, staticColorMode: staticColorMode!))
     }
 }
+
+extension View {
+    func clipped(padding: CGFloat) -> some View {
+        self
+            .padding(padding)
+            .clipped()
+            .padding(-padding)
+    }
+}

@@ -67,7 +67,7 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     func itemFor( _ index: Int) -> some View {
         let item = model.allDetails[index]
         let blockSize = numItems < 5 ? itemSize : (index < 3 ? itemSize : smallItemSize)
-        return item.thumbnail(size: blockSize).applyThumbnailGroupSpec(
+        return item.thumbnail.applyThumbnailGroupSpec(
             size: blockSize, onSelect: index < 3 ? {
                 item.onSelect()
                 selectionCompletion()
@@ -99,9 +99,7 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
 fileprivate class PreviewThumbnailModel: ThumbnailModel {
     fileprivate struct ColorThumbnail: SelectableThumbnail {
         let color: Color
-        func thumbnail(size: CGFloat) -> Color {
-            color
-        }
+        var thumbnail: some View { color }
 
         func onSelect() {}
     }

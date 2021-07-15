@@ -127,7 +127,6 @@ class CardViewController: UIViewController {
         case .grid:
             cardGrid.snp.updateConstraints { make in
                 make.top.leading.trailing.equalToSuperview()
-                make.bottom.equalToSuperview().offset(-UIConstants.BottomToolbarHeight)
             }
             toolbar.snp.updateConstraints { make in
                 make.bottom.leading.trailing.equalToSuperview()

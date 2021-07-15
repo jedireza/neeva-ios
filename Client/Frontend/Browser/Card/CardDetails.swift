@@ -10,7 +10,7 @@ import Combine
 protocol SelectableThumbnail {
     associatedtype ThumbnailView: View
 
-    func thumbnail(size: CGFloat) -> ThumbnailView
+    var thumbnail: ThumbnailView { get }
     func onSelect()
 }
 
@@ -63,7 +63,7 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
         manager.get(for: id)?.displayTitle ?? ""
     }
 
-    @ViewBuilder func thumbnail(size: CGFloat) -> some View {
+    @ViewBuilder var thumbnail: some View {
         if let image = manager.get(for: id)?.image {
             Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)
         } else {
@@ -123,8 +123,9 @@ struct SpaceEntityThumbnail: SelectableThumbnail {
     let data: Data
     let selected: () -> ()
 
-    func thumbnail(size: CGFloat) -> some View {
-        Image(uiImage: UIImage(data: data)!).resizable()
+    var thumbnail: some View {
+        Image(uiImage: UIImage(data: data)!)
+            .resizable()
             .aspectRatio(contentMode: .fill)
     }
 
