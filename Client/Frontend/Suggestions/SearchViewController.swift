@@ -15,9 +15,6 @@ protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool)
 }
 
-// Storage declares its own Identifiable type
-extension Site: Swift.Identifiable {}
-
 enum SearchViewControllerUX {
     static let FaviconSize: CGFloat = 12
     static let IconSize: CGFloat = 20

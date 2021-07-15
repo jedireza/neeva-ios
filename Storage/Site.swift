@@ -5,14 +5,6 @@
 import UIKit
 import Shared
 
-public protocol Identifiable: Equatable {
-    var id: Int? { get set }
-}
-
-public func ==<T>(lhs: T, rhs: T) -> Bool where T: Identifiable {
-    return lhs.id == rhs.id
-}
-
 open class Favicon: Identifiable {
     open var id: Int?
 
