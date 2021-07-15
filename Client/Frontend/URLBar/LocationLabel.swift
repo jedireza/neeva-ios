@@ -7,8 +7,10 @@ struct LocationLabel: View {
     let url: URL?
     let isSecure: Bool
 
+    @EnvironmentObject private var gridModel: GridModel
+
     var body: some View {
-        LocationLabelAndIcon(url: url, isSecure: isSecure)
+        LocationLabelAndIcon(url: url, isSecure: isSecure, forcePlaceholder: !gridModel.isHidden)
             .lineLimit(1)
             .frame(height: TabLocationViewUX.height)
             .allowsHitTesting(false)
@@ -19,15 +21,15 @@ struct LocationLabel: View {
     }
 }
 
+/// This view is also used for drag&drop previews and so should not depend on the environment
 struct LocationLabelAndIcon: View {
     let url: URL?
     let isSecure: Bool
-
-    @EnvironmentObject var gridModel: GridModel
+    let forcePlaceholder: Bool
 
     var body: some View {
         let placeholder = TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(.secondaryLabel)
-        if !gridModel.isHidden {
+        if forcePlaceholder {
             placeholder
         } else if let url = url, let internalURL = InternalURL(url), internalURL.isZeroQueryURL {
             placeholder

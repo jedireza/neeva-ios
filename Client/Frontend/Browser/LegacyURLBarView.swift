@@ -46,6 +46,7 @@ class LegacyURLBarView: UIView {
     var subscriptions: Set<AnyCancellable> = []
 
     weak var delegate: LegacyURLBarDelegate?
+
     weak var tabToolbarDelegate: TabToolbarDelegate?
     var helper: LegacyTabToolbarHelper!
     let toolbarModel: TabToolbarModel
@@ -174,13 +175,13 @@ class LegacyURLBarView: UIView {
     }
 
     fileprivate func commonInit() {
-        if FeatureFlag[.newURLBar] {
-            locationContainer.addSubview(locationHost.view)
-        } else {
+        if FeatureFlag[.legacyURLBar] {
             locationContainer.addSubview(legacyLocationView)
+        } else {
+            locationContainer.addSubview(locationHost.view)
         }
 
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             addSubview(legacyCancelButton)
         }
         [line, tabsButton, neevaMenuButton, progressBar, addToSpacesButton,
@@ -198,7 +199,7 @@ class LegacyURLBarView: UIView {
         // Make sure we hide any views that shouldn't be showing in non-overlay mode.
         updateViewsForOverlayModeAndToolbarChanges()
 
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             // Create LocationTextField and update constraints to layout correctly before hiding it
             createLegacyLocationTextField()
             inOverlayMode = true
@@ -220,7 +221,7 @@ class LegacyURLBarView: UIView {
             }
         }.store(in: &subscriptions)
 
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             neevaSuggestionModel.$activeLensBang.sink { [unowned self] newLensBang in
                 if newLensBang != nil {
                     self.createLegacyLeftViewFavicon()
@@ -246,11 +247,11 @@ class LegacyURLBarView: UIView {
             make.left.right.equalTo(self)
         }
         
-        (FeatureFlag[.newURLBar] ? locationHost.view : legacyLocationView).snp.makeConstraints { make in
+        (FeatureFlag[.legacyURLBar] ? legacyLocationView : locationHost.view).snp.makeConstraints { make in
             make.edges.equalTo(self.locationContainer)
         }
 
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             legacyCancelButton.snp.makeConstraints { make in
                 make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
                 make.centerY.equalTo(self.locationContainer)
@@ -313,10 +314,10 @@ class LegacyURLBarView: UIView {
         self.locationContainer.snp.remakeConstraints { make in
             if inOverlayMode {
                 make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.LocationEdgePadding)
-                if FeatureFlag[.newURLBar] {
-                    make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
-                } else {
+                if FeatureFlag[.legacyURLBar] {
                     make.trailing.equalTo(self.legacyCancelButton.snp.leading).offset(-2 * LegacyURLBarViewUX.Padding)
+                } else {
+                    make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
                 }
             } else if self.toolbarIsShowing {
                 make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(LegacyURLBarViewUX.Padding)
@@ -332,7 +333,7 @@ class LegacyURLBarView: UIView {
                 make.top.equalTo(self).offset(UIConstants.TopToolbarPaddingTop)
             }
         }
-        if inOverlayMode, !FeatureFlag[.newURLBar] {
+        if inOverlayMode, FeatureFlag[.legacyURLBar] {
             self.legacyLocationTextField?.snp.remakeConstraints { make in
                 make.edges.equalTo(legacyLocationView).inset(
                     UIEdgeInsets(top: 0, left: LegacyURLBarViewUX.LocationOverlayLeftPadding,
@@ -428,11 +429,11 @@ class LegacyURLBarView: UIView {
     }
 
     override func becomeFirstResponder() -> Bool {
-        if FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
+            return self.legacyLocationTextField?.becomeFirstResponder() ?? false
+        } else {
             model.setEditing(to: true)
             return true
-        } else {
-            return self.legacyLocationTextField?.becomeFirstResponder() ?? false
         }
     }
 
@@ -451,16 +452,16 @@ class LegacyURLBarView: UIView {
         // the constraints to be calculated too early and there are constraint errors
         if !toolbarIsShowing {
             updateConstraintsIfNeeded()
-            if FeatureFlag[.newURLBar] {
-                model.includeShareButtonInLocationView = true
-            } else {
+            if FeatureFlag[.legacyURLBar] {
                 legacyLocationView.showShareButton = true
+            } else {
+                model.includeShareButtonInLocationView = true
             }
         } else {
-            if FeatureFlag[.newURLBar] {
-                model.includeShareButtonInLocationView = false
-            } else {
+            if FeatureFlag[.legacyURLBar] {
                 legacyLocationView.showShareButton = false
+            } else {
+                model.includeShareButtonInLocationView = false
             }
         }
         updateViewsForOverlayModeAndToolbarChanges()
@@ -491,12 +492,7 @@ class LegacyURLBarView: UIView {
     }
 
     func setLocation(_ location: String?, search: Bool) {
-        if FeatureFlag[.newURLBar] {
-            if let location = location {
-                SearchQueryModel.shared.value = location
-                model.setEditing(to: true)
-            }
-        } else {
+        if FeatureFlag[.legacyURLBar] {
             guard let text = location, !text.isEmpty else {
                 legacyLocationTextField?.text = location
                 return
@@ -508,16 +504,21 @@ class LegacyURLBarView: UIView {
             } else {
                 legacyLocationTextField?.setTextWithoutSearching(text)
             }
+        } else {
+            if let location = location {
+                SearchQueryModel.shared.value = location
+                model.setEditing(to: true)
+            }
         }
     }
 
     func enterOverlayMode(_ locationText: String?, pasted: Bool, search: Bool, updateModel: Bool = true) {
-        if FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
+            legacyLocationTextField?.isHidden = false
+        } else {
             if updateModel {
                 model.setEditing(to: true)
             }
-        } else {
-            legacyLocationTextField?.isHidden = false
         }
 
         // Show the overlay mode UI, which includes hiding the locationView and replacing it
@@ -526,7 +527,7 @@ class LegacyURLBarView: UIView {
 
         delegate?.urlBarDidEnterOverlayMode()
 
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             // Bug 1193755 Workaround - Calling becomeFirstResponder before the animation happens
             // won't take the initial frame of the label into consideration, which makes the label
             // look squished at the start of the animation and expand to be correct. As a workaround,
@@ -554,10 +555,10 @@ class LegacyURLBarView: UIView {
     }
 
     func leaveOverlayMode(didCancel cancel: Bool = false) {
-        if FeatureFlag[.newURLBar] {
-            model.setEditing(to: false)
-        } else {
+        if FeatureFlag[.legacyURLBar] {
             legacyLocationTextField?.resignFirstResponder()
+        } else {
+            model.setEditing(to: false)
         }
         animateToOverlayState(overlayMode: false, didCancel: cancel)
         delegate?.urlBarDidLeaveOverlayMode()
@@ -566,7 +567,7 @@ class LegacyURLBarView: UIView {
     func prepareOverlayAnimation() {
         // Make sure everything is showing during the transition (we'll hide it afterwards).
         bringSubviewToFront(self.locationContainer)
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             legacyCancelButton.isHidden = false
         }
         neevaMenuButton.isHidden = !toolbarIsShowing
@@ -582,7 +583,7 @@ class LegacyURLBarView: UIView {
     }
 
     func transitionToOverlay(_ didCancel: Bool = false) {
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             legacyLocationTextField?.leftView?.alpha = inOverlayMode ? 1 : 0
             legacyCancelButton.alpha = inOverlayMode ? 1 : 0
             legacyLocationView.contentView.alpha = inOverlayMode ? 0 : 1
@@ -600,12 +601,10 @@ class LegacyURLBarView: UIView {
     }
 
     func updateViewsForOverlayModeAndToolbarChanges() {
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             // This ensures these can't be selected as an accessibility element when in the overlay mode.
             legacyLocationView.overrideAccessibility(enabled: !inOverlayMode)
-        }
 
-        if !FeatureFlag[.newURLBar] {
             legacyCancelButton.isHidden = !inOverlayMode
         }
         neevaMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
@@ -626,7 +625,7 @@ class LegacyURLBarView: UIView {
 
         inOverlayMode = overlay
 
-        if !overlay, !FeatureFlag[.newURLBar] {
+        if !overlay, FeatureFlag[.legacyURLBar] {
             legacyLocationTextField?.isHidden = true
         }
 
@@ -665,11 +664,11 @@ extension LegacyURLBarView: LegacyTabToolbarProtocol {
     var access: [Any]? {
         get {
             if inOverlayMode {
-                if FeatureFlag[.newURLBar] {
-                    return [locationHost]
-                } else {
+                if FeatureFlag[.legacyURLBar] {
                     guard let locationTextField = legacyLocationTextField else { return nil }
                     return [locationTextField, legacyCancelButton]
+                } else {
+                    return [locationHost]
                 }
             } else {
                 if toolbarIsShowing {
@@ -786,12 +785,10 @@ extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
 
-        neevaSuggestionModel.isIncognito = isPrivate
-
-        if FeatureFlag[.newURLBar] {
-            locationHost.applyUIMode(isPrivate: isPrivate)
-        } else {
+        if FeatureFlag[.legacyURLBar] {
             legacyLocationView.applyUIMode(isPrivate: isPrivate)
+        } else {
+            locationHost.applyUIMode(isPrivate: isPrivate)
         }
         legacyLocationTextField?.applyUIMode(isPrivate: isPrivate)
 

@@ -99,7 +99,7 @@ class BaseTestCase: XCTestCase {
     func loadWebPage(_ url: String, waitForLoadToFinish: Bool = true, file: String = #file, line: UInt = #line) {
         let app = XCUIApplication()
         UIPasteboard.general.string = url
-        app.buttons["url"].press(forDuration: 2.0)
+        app.buttons["Address Bar"].press(forDuration: 2.0)
         app.tables["Context Menu"].cells["doc.on.clipboard"].firstMatch.tap()
 
         if waitForLoadToFinish {

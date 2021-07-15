@@ -325,25 +325,18 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     }
 
     map.addScreenState(URLBarLongPressMenu) { screenState in
-        let menu = app.tables["Context Menu"].firstMatch
-
         screenState.gesture(forAction: Action.LoadURLByPasting, Action.LoadURL) { userState in
             UIPasteboard.general.string = userState.url ?? defaultURL
-            menu.cells["doc.on.clipboard"].firstMatch.tap()
+            app.menuItems["Paste & Go"].tap()
         }
 
         screenState.gesture(forAction: Action.SetURLByPasting) { userState in
             UIPasteboard.general.string = userState.url ?? defaultURL
-            menu.cells["doc.on.clipboard.fill"].firstMatch.tap()
+            app.menuItems["Paste"].tap()
         }
 
         screenState.backAction = {
-            if isTablet {
-                // There is no Cancel option in iPad.
-                app.otherElements["PopoverDismissRegion"].tap()
-            } else {
-                app.buttons["PhotonMenu.close"].tap()
-            }
+            app.buttons["Address Bar"].tap()
         }
         screenState.dismissOnUse = true
     }
@@ -378,7 +371,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.gesture(forAction: Action.LoadURLByTyping) { userState in
             let url = userState.url ?? defaultURL
             // Workaround BB iOS13 be sure tap happens on url bar
-            app.buttons["url"].tap()
+            app.buttons["Address Bar"].tap()
             app.textFields.firstMatch.tap()
             app.textFields.firstMatch.typeText(url)
             app.textFields.firstMatch.typeText("\r")
@@ -388,7 +381,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             let url = userState.url ?? defaultURL
             // Workaround BB iOS13 be sure tap happens on url bar
             sleep(1)
-            app.buttons["url"].tap()
+            app.buttons["Address Bar"].tap()
             app.textFields.firstMatch.tap()
             app.textFields.firstMatch.typeText("\(url)")
         }
@@ -397,7 +390,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.noop(to: HomePanel_TopSites)
 
         screenState.backAction = {
-            app.buttons["urlBar-cancel"].tap()
+            app.buttons["Cancel"].tap()
         }
         screenState.dismissOnUse = true
     }
@@ -690,10 +683,10 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
     }
 
     func makeURLBarAvailable(_ screenState: MMScreenStateNode<FxUserState>) {
-        screenState.tap(app.buttons["url"], to: URLBarOpen)
+        screenState.tap(app.buttons["Address Bar"], to: URLBarOpen)
         screenState.gesture(to: URLBarLongPressMenu) {
             sleep(1)
-            app.buttons["url"].press(forDuration: 1.0)
+            app.buttons["Address Bar"].press(forDuration: 1.0)
         }
     }
 
@@ -706,10 +699,10 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
 
     map.addScreenState(BrowserTab) { screenState in
         makeURLBarAvailable(screenState)
-        screenState.tap(app.buttons["Share Menu"], to: ShareMenu)
+        screenState.tap(app.buttons["Share"], to: ShareMenu)
         screenState.tap(app.buttons["Neeva Menu"], to: NeevaMenu)
 
-        screenState.tap(app.buttons["TabLocationView.trackingProtectionButton"], to: TrackingProtectionContextMenuDetails)
+        screenState.tap(app.buttons["Tracking Protection"], to: TrackingProtectionContextMenuDetails)
 
         makeToolBarAvailable(screenState)
         let link = app.webViews.element(boundBy: 0).links.element(boundBy: 0)
@@ -719,12 +712,12 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.press(image, to: WebImageContextMenu)
         
         if !isTablet {
-            let reloadButton = app.buttons["TabLocationView.reloadButton"]
+            let reloadButton = app.buttons["Reload"]
             screenState.press(reloadButton, to: ReloadLongPressMenu)
             screenState.tap(reloadButton, forAction: Action.ReloadURL, transitionTo: WebPageLoading) { _ in }
             screenState.press(app.buttons["Show Tabs"], to: TabTrayLongPressMenu)
         } else {
-            let reloadButton = app.buttons["TabLocationView.reloadButton"]
+            let reloadButton = app.buttons["Reload"]
             screenState.press(reloadButton, to: ReloadLongPressMenu)
             screenState.tap(reloadButton, forAction: Action.ReloadURL, transitionTo: WebPageLoading) { _ in }
         }

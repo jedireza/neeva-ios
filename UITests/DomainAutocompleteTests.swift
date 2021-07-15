@@ -15,7 +15,7 @@ class DomainAutocompleteTests: KIFTestCase {
     func testAutocomplete() {
         BrowserUtils.addHistoryEntry("Foo bar baz", url: URL(string: "https://foo.bar.baz.org/dingbat")!)
         tester().waitForAnimationsToFinish(withTimeout: 3)
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         let textField = tester().waitForView(withAccessibilityLabel: "Address and Search") as! UITextField
 
         // Multiple subdomains.
@@ -46,7 +46,7 @@ class DomainAutocompleteTests: KIFTestCase {
     /* Disabled as this test depends on having a signed-in Neeva user since it generates a search navigation.
     func testAutocompleteAfterDeleteWithBackSpace() {
         tester().waitForAnimationsToFinish()
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         let textField = tester().waitForView(withAccessibilityLabel: "Address and Search") as! UITextField
         tester().enterText(intoCurrentFirstResponder: "facebook")
         tester().waitForAnimationsToFinish()
@@ -62,7 +62,7 @@ class DomainAutocompleteTests: KIFTestCase {
         tester().wait(forTimeInterval: 1)
 
         // Tap on the url to go back to the awesomebar results
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         tester().waitForAnimationsToFinish()
         let textField2 = tester().waitForView(withAccessibilityLabel: "Address and Search") as! UITextField
         // Facebook word appears highlighted and so it is shown as facebook\u{7F} when extracting the value to compare
@@ -73,7 +73,7 @@ class DomainAutocompleteTests: KIFTestCase {
     // Bug https://bugzilla.mozilla.org/show_bug.cgi?id=1541832 scenario 1
     func testAutocompleteOnechar() {
         tester().waitForAnimationsToFinish()
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         let textField = tester().waitForView(withAccessibilityLabel: "Address and Search") as! UITextField
         tester().enterText(intoCurrentFirstResponder: "f")
         tester().waitForAnimationsToFinish()
@@ -82,7 +82,7 @@ class DomainAutocompleteTests: KIFTestCase {
 
     // Bug https://bugzilla.mozilla.org/show_bug.cgi?id=1541832 scenario 2
     func testAutocompleteOneCharAfterRemovingPreviousTerm() {
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         let textField = tester().waitForView(withAccessibilityLabel: "Address and Search") as! UITextField
         tester().enterText(intoCurrentFirstResponder: "foo")
 
@@ -99,7 +99,7 @@ class DomainAutocompleteTests: KIFTestCase {
 
     // Bug https://bugzilla.mozilla.org/show_bug.cgi?id=1541832 scenario 3
     func testAutocompleteOneCharAfterRemovingWithClearButton() {
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         let textField = tester().waitForView(withAccessibilityLabel: "Address and Search") as! UITextField
         tester().enterText(intoCurrentFirstResponder: "foo")
         tester().tapView(withAccessibilityLabel: "Clear text")
@@ -109,7 +109,7 @@ class DomainAutocompleteTests: KIFTestCase {
 
     override func tearDown() {
         super.tearDown()
-        tester().tapView(withAccessibilityIdentifier: "urlBar-cancel")
+        tester().tapView(withAccessibilityLabel: "Cancel")
         BrowserUtils.resetToAboutHomeKIF(tester())
         BrowserUtils.clearPrivateDataKIF(tester())
     }

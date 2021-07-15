@@ -113,14 +113,14 @@ extension KIFUITestActor {
      * As a workaround, inject a KIFHelper class that iterates the document and finds
      * elements with the given textContent or title.
      */
-    func waitForWebViewElementWithAccessibilityLabel(_ text: String) {
-        run { error in
+    func waitForWebViewElementWithAccessibilityLabel(_ text: String, timeout: TimeInterval = KIFTestActor.defaultTimeout()) {
+        run({ error in
             if self.hasWebViewElementWithAccessibilityLabel(text) {
                 return KIFTestStepResult.success
             }
 
             return KIFTestStepResult.wait
-        }
+        }, timeout: timeout)
     }
 
     /**
@@ -247,11 +247,12 @@ class BrowserUtils {
     }
     
     class func enterUrlAddressBar(_ tester: KIFUITestActor, typeUrl: String) {
-        tester.tapView(withAccessibilityIdentifier: "url")
+        tester.tapView(withAccessibilityLabel: "Address Bar")
         tester.setText(typeUrl, intoViewWithAccessibilityIdentifier: "address")
 
         tester.tapView(withAccessibilityIdentifier: "address")
         tester.enterText(intoCurrentFirstResponder: "\n")
+        tester.waitForAbsenceOfView(withAccessibilityIdentifier: "address")
     }
     
     class func iPad() -> Bool {

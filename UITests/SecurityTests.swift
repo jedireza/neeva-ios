@@ -102,6 +102,7 @@ class SecurityTests: KIFTestCase {
     */
 
     // For blob URLs, just show "blob:" to the user (see bug 1446227)
+    /* disabled because we don’t have a way to test the label of the URL bar
     func testBlobUrlShownAsSchemeOnly() {
         let url = "\(webRoot!)/blobURL.html"
         // script that will load a blob url
@@ -111,7 +112,7 @@ class SecurityTests: KIFTestCase {
         XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://")) // webview internally has "blob:<rest of url>"
         let bvc = UIWindow.keyWindow!.rootViewController?.children[0] as! BrowserViewController
         XCTAssertEqual(bvc.legacyURLBar.legacyLocationView.urlLabel.text, "blob:") // only display "blob:"
-    }
+    }*/
 
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)
     func testNeevaSchemeBlockedOnWebpages() {

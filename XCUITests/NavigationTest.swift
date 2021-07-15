@@ -15,16 +15,16 @@ let requestDesktopSiteLabel = "Request Desktop Site"
 
 class NavigationTest: BaseTestCase {
     func testNavigation() {
-        XCTAssert(app.buttons["url"].exists)
+        XCTAssert(app.buttons["Address Bar"].exists)
         navigator.nowAt(NewTabScreen)
         navigator.goto(URLBarOpen)
 
         // Check that the back and forward buttons are disabled
         if iPad() {
-            app.buttons["urlBar-cancel"].tap()
+            app.buttons["Cancel"].tap()
             XCTAssertFalse(app.buttons["Back"].isEnabled)
             XCTAssertFalse(app.buttons["Forward"].isEnabled)
-            app.buttons["url"].tap()
+            app.buttons["Address Bar"].tap()
         } else {
             XCTAssertFalse(app.buttons["Back"].isEnabled)
             XCTAssertFalse(app.buttons["Forward"].isEnabled)
@@ -33,33 +33,31 @@ class NavigationTest: BaseTestCase {
         // Once an url has been open, the back button is enabled but not the forward button
         navigator.openURL(path(forTestPage: "test-example.html"))
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "localhost")
-
+        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
 
         // Once a second url is open, back button is enabled but not the forward one till we go back to url_1
         navigator.openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "localhost")
-
+        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
 
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "localhost")
+        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
 
         // Go forward to next visited web site
         app.buttons["Forward"].tap()
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "localhost")
+        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
     }
 
     /* Disabled: Test needs to be revised.
     func testScrollsToTopWithMultipleTabs() {
         navigator.goto(TabTray)
         navigator.openURL(website_1["url"]!)
-        waitForValueContains(app.buttons["url"], value: website_1["value"]!)
+        waitForValueContains(app.buttons["Address Bar"], value: website_1["value"]!)
         // Element at the TOP. TBChanged once the web page is correclty shown
         let topElement = app.links.staticTexts["Mozilla"].firstMatch
 
@@ -110,16 +108,14 @@ class NavigationTest: BaseTestCase {
         XCTAssertTrue(app.buttons["Copy Link"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Download Link"].exists, "The option is not shown")
     }
-    // Only testing Share and Copy Link, the other two options are already covered in other tests
     func testCopyLink() {
         longPressLinkOptions(optionSelected: "Copy Link")
         navigator.goto(NewTabScreen)
-        app.buttons["url"].press(forDuration: 2)
+        app.buttons["Address Bar"].press(forDuration: 2)
 
-        waitForExistence(app.tables["Context Menu"])
-        app.tables.cells["doc.on.clipboard"].tap()
+        app.menuItems["Paste & Go"].tap()
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: website_2["moreLinkLongPressInfo"]!)
+        waitForValueContains(app.buttons["Address Bar"], value: website_2["moreLinkLongPressInfo"]!)
     }
 
     func testCopyLinkPrivateMode() {
@@ -128,16 +124,16 @@ class NavigationTest: BaseTestCase {
 
         longPressLinkOptions(optionSelected: "Copy Link")
         navigator.goto(NewTabScreen)
-        app.buttons["url"].press(forDuration: 2)
+        app.buttons["Address Bar"].press(forDuration: 2)
 
-        app.tables.cells["doc.on.clipboard"].tap()
+        app.menuItems["Paste & Go"].tap()
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: website_2["moreLinkLongPressInfo"]!)
+        waitForValueContains(app.buttons["Address Bar"], value: website_2["moreLinkLongPressInfo"]!)
     }
 
     func testLongPressOnAddressBar() {
         //This test is for populated clipboard only so we need to make sure there's something in Pasteboard
-        XCTAssert(app.buttons["url"].exists)
+        XCTAssert(app.buttons["Address Bar"].exists)
         navigator.nowAt(NewTabScreen)
         navigator.goto(URLBarOpen)
         
@@ -169,9 +165,11 @@ class NavigationTest: BaseTestCase {
         
         app.textFields["address"].typeText("\n")
         waitUntilPageLoad()
-        app.buttons["url"].press(forDuration:3)
-        app.tables.cells["link"].tap()
-        app.buttons["url"].tap()
+        app.buttons["Address Bar"].press(forDuration:3)
+        app.menuItems["Copy"].tap()
+
+        app.buttons["Address Bar"].tap()
+        app.buttons["Address Bar"].tap()
         // Since the textField value appears all selected first time is clicked
         // this workaround is necessary
         app.textFields["address"].tap()
@@ -214,7 +212,7 @@ class NavigationTest: BaseTestCase {
         // Tap on the just downloaded link to check that the web page is loaded
         app.tables.cells.staticTexts["reserved.html"].tap()
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "reserved.html")
+        waitForValueContains(app.buttons["Address Bar"], value: "reserved.html")
     }
     */
 
@@ -245,7 +243,7 @@ class NavigationTest: BaseTestCase {
 
         // Check that there are no pop ups
         navigator.openURL(popUpTestUrl)
-        //waitForValueContains(app.buttons["url"], value: "blocker.html")
+        //waitForValueContains(app.buttons["Address Bar"], value: "blocker.html")
         waitUntilPageLoad()
         waitForExistence(app.webViews.staticTexts["Blocked Element"])
 
@@ -261,7 +259,7 @@ class NavigationTest: BaseTestCase {
         // Check that now pop ups are shown, two sites loaded
         navigator.openURL(popUpTestUrl)
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "example.com")
+        waitForValueContains(app.buttons["Address Bar"], value: "example.com")
         let numTabsAfter = app.buttons["Show Tabs"].value
         XCTAssertNotEqual("1", numTabsAfter as? String, "Several tabs are open")
     }
@@ -313,7 +311,7 @@ class NavigationTest: BaseTestCase {
     // Smoketest
     /* Disabled: does not pass, need to investigate why
     func testURLBar() {
-        let urlBar = app.buttons["url"]
+        let urlBar = app.buttons["Address Bar"]
         waitForExistence(urlBar, timeout: 5)
         urlBar.tap()
         

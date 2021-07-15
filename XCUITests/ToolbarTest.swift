@@ -24,7 +24,7 @@ class ToolbarTests: BaseTestCase {
      * Tests landscape page navigation enablement with the URL bar with tab switching.
      */
     func testLandscapeNavigationWithTabSwitch() {
-        XCTAssert(app.buttons["url"].exists)
+        XCTAssert(app.buttons["Address Bar"].exists)
 
         // Check that the back and forward buttons are disabled
         XCTAssertFalse(app.buttons["Back"].isEnabled)
@@ -34,15 +34,15 @@ class ToolbarTests: BaseTestCase {
         navigator.openURL(website1["url"]!)
         waitUntilPageLoad()
         waitForExistence(app.webViews.links["Mozilla"], timeout: 10)
-        let valueMozilla = app.buttons["url"].value as! String
+        let valueMozilla = app.buttons["Address Bar"].value as! String
         XCTAssertEqual(valueMozilla, website1["url"])
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
-        XCTAssertTrue(app.buttons["TabLocationView.reloadButton"].isEnabled)
+        XCTAssertTrue(app.buttons["Reload"].isEnabled)
 
         navigator.openURL(website2)
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: website2)
+        waitForValueContains(app.buttons["Address Bar"], value: website2)
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
 
@@ -85,11 +85,11 @@ class ToolbarTests: BaseTestCase {
         waitUntilPageLoad()
         waitForTabsButton()
 
-        let valueMozilla = app.buttons["url"].value as! String
+        let valueMozilla = app.buttons["Address Bar"].value as! String
         XCTAssertEqual(valueMozilla, path(forTestPage: "test-mozilla-book.html"))
 
         // Simulate pressing on backspace key should remove the text
-        app.buttons["url"].tap()
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("\u{8}")
 
         let value = app.textFields["address"].value
@@ -109,7 +109,7 @@ class ToolbarTests: BaseTestCase {
             waitForExistence(app.otherElements.matching(identifier: "TabToolbar").firstMatch)
         }
 
-        let shareButton = app.buttons["Share Menu"]
+        let shareButton = app.buttons["Share"]
         let statusbarElement: XCUIElement = {
             return XCUIApplication(bundleIdentifier: "com.apple.springboard").statusBars.firstMatch
         }()

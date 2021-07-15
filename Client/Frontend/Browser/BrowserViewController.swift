@@ -428,7 +428,7 @@ class BrowserViewController: UIViewController {
         urlBarTopTabsContainer.addSubview(legacyURLBar)
         urlBarTopTabsContainer.addSubview(topTabsContainer)
         view.addSubview(header)
-        if FeatureFlag[.newURLBar] {
+        if !FeatureFlag[.legacyURLBar] {
             addChild(legacyURLBar.locationHost)
             legacyURLBar.locationHost.didMove(toParent: self)
         }
@@ -901,7 +901,7 @@ class BrowserViewController: UIViewController {
     
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
         legacyURLBar.model.url = url
-        if !FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
             legacyURLBar.leaveOverlayMode()
         }
         legacyURLBar.model.setEditing(to: false)
@@ -912,10 +912,10 @@ class BrowserViewController: UIViewController {
     }
     
     override func accessibilityPerformEscape() -> Bool {
-        if FeatureFlag[.newURLBar], legacyURLBar.model.isEditing {
+        if !FeatureFlag[.legacyURLBar], legacyURLBar.model.isEditing {
             legacyURLBar.model.setEditing(to: false)
             return true
-        } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
+        } else if FeatureFlag[.legacyURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
             return true
         } else if let selectedTab = tabManager.selectedTab, selectedTab.canGoBack {
@@ -949,10 +949,10 @@ class BrowserViewController: UIViewController {
         legacyURLBar.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
 
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
-        if FeatureFlag[.newURLBar] {
-            legacyURLBar.model.canShare = isPage
-        } else {
+        if FeatureFlag[.legacyURLBar] {
             legacyURLBar.legacyLocationView.updateShareButton(isPage)
+        } else {
+            legacyURLBar.model.canShare = isPage
         }
         toolbarModel.isPage = isPage
     }
@@ -1017,7 +1017,7 @@ class BrowserViewController: UIViewController {
             // Check that the newly created tab is still selected.
             // This let's the user spam the Cmd+T button without lots of responder changes.
             guard tab == self.tabManager.selectedTab else { return }
-            if !FeatureFlag[.newURLBar] {
+            if FeatureFlag[.legacyURLBar] {
                 self.legacyURLBar.tabLocationViewDidTapLocation(self.legacyURLBar.legacyLocationView)
             }
             if let text = searchText {
@@ -1057,9 +1057,9 @@ class BrowserViewController: UIViewController {
         currentViewController.dismiss(animated: true, completion: nil)
         if currentViewController != self {
             _ = self.navigationController?.popViewController(animated: true)
-        } else if !FeatureFlag[.newURLBar], legacyURLBar.inOverlayMode {
+        } else if FeatureFlag[.legacyURLBar], legacyURLBar.inOverlayMode {
             legacyURLBar.didClickCancel()
-        } else if FeatureFlag[.newURLBar], legacyURLBar.model.isEditing {
+        } else if !FeatureFlag[.legacyURLBar], legacyURLBar.model.isEditing {
             legacyURLBar.model.setEditing(to: false)
         }
     }
@@ -1195,10 +1195,10 @@ class BrowserViewController: UIViewController {
             if tab === tabManager.selectedTab {
                 legacyURLBar.model.isSecure = webView.hasOnlySecureContent
                 let isPage = tab.url?.displayURL?.isWebPage() ?? false
-                if FeatureFlag[.newURLBar] {
-                    legacyURLBar.model.canShare = isPage
-                } else {
+                if FeatureFlag[.legacyURLBar] {
                     legacyURLBar.legacyLocationView.updateShareButton(isPage)
+                } else {
+                    legacyURLBar.model.canShare = isPage
                 }
             }
 
@@ -1549,7 +1549,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
 
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesn't correctly dismiss the zero query screen
-        guard !topTabsVisible, FeatureFlag[.newURLBar] ? !legacyURLBar.model.isEditing : !self.legacyURLBar.inOverlayMode else {
+        guard !topTabsVisible, FeatureFlag[.legacyURLBar] ? !self.legacyURLBar.inOverlayMode : !legacyURLBar.model.isEditing else {
             return
         }
 
@@ -1562,11 +1562,11 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 
     func zeroQueryPanel(didEnterQuery query: String) {
-        if FeatureFlag[.newURLBar] {
+        if FeatureFlag[.legacyURLBar] {
+            self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
+        } else {
             SearchQueryModel.shared.value = query
             legacyURLBar.model.setEditing(to: true)
-        } else {
-            self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
         }
     }
 }

@@ -29,7 +29,7 @@ class TrackingProtectionTests: BaseTestCase {
         waitUntilPageLoad()
 
         // Now there should not be any shield icon
-        waitForNoExistence(app.buttons["TabLocationView.trackingProtectionButton"])
+        waitForNoExistence(app.buttons["Tracking Protection"])
         waitForExistence(app.buttons["TabToolbar.neevaMenuButton"], timeout: 5)
         navigator.goto(BrowserTab)
 
@@ -39,7 +39,7 @@ class TrackingProtectionTests: BaseTestCase {
         waitUntilPageLoad()
 
         // Make sure TP is off also in PMB
-        waitForNoExistence(app.buttons["TabLocationView.trackingProtectionButton"])
+        waitForNoExistence(app.buttons["Tracking Protection"])
         waitForExistence(app.buttons["TabToolbar.neevaMenuButton"], timeout: 10)
         navigator.goto(SettingsScreen)
         // Enable TP again
@@ -53,7 +53,7 @@ class TrackingProtectionTests: BaseTestCase {
     }
 
     private func checkTrackingProtectionDisabledForSite() {
-        waitForNoExistence(app.buttons["TabLocationView.trackingProtectionButton"])
+        waitForNoExistence(app.buttons["Tracking Protection"])
     }
 
     private func checkTrackingProtectionEnabledForSite() {

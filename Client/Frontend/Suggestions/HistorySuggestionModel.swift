@@ -113,6 +113,8 @@ class HistorySuggestionModel: ObservableObject {
                     return
                 }
 
+                let query = query.stringByTrimmingLeadingCharactersInSet(.whitespaces)
+
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
                     if setCompletion(to: completionForURL(site.url, from: query), from: query) {
@@ -136,7 +138,7 @@ class HistorySuggestionModel: ObservableObject {
 
     private func setCompletion(to completion: String?, from query: String) -> Bool {
         if let completion = completion, completion != query {
-            precondition(completion.starts(with: query), "Expected completion '\(completion)' to start with '\(query)'")
+            precondition(completion.lowercased().starts(with: query.lowercased()), "Expected completion '\(completion)' to start with '\(query)'")
             self.completion = String(completion.dropFirst(query.count))
             return true
         }

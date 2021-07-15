@@ -111,7 +111,7 @@ class LegacyTabLocationView: UIView {
         shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)), for: .normal)
         shareButton.addTarget(self, action: #selector(tapShareButton), for: .touchUpInside)
         shareButton.accessibilityIdentifier = "TabLocationView.shareButton"
-        shareButton.accessibilityLabel = "Share Menu"
+        shareButton.accessibilityLabel = "Share"
         shareButton.isAccessibilityElement = true
         shareButton.tintColor = .black
         shareButton.imageView?.contentMode = .scaleAspectFit

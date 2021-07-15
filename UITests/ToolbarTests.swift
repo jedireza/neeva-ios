@@ -14,11 +14,12 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
     }
 
     func testURLEntry() {
-        let urlField = tester().waitForView(withAccessibilityIdentifier: "url")!
-        tester().tapView(withAccessibilityIdentifier: "url")
+        let urlHost = tester().waitForView(withAccessibilityLabel: "Address Bar")!
+        let urlField = { urlHost.accessibilityElement(withLabel: "Address Bar")! }
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         tester().enterText(intoCurrentFirstResponder: "foobar")
-        tester().tapView(withAccessibilityIdentifier: "urlBar-cancel")
-        XCTAssertNotEqual(urlField.accessibilityValue, "foobar", "Verify that the URL bar text clears on about:home")
+        tester().tapView(withAccessibilityLabel: "Cancel")
+        XCTAssertNotEqual(urlField().accessibilityValue, "foobar", "Verify that the URL bar text clears on about:home")
 
         // 127.0.0.1 doesn't cause http:// to be hidden. localhost does. Both will work.
         let localhostURL = webRoot.replacingOccurrences(of: "127.0.0.1", with: "localhost")
@@ -27,20 +28,20 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
 
         tester().waitForAnimationsToFinish()
-        XCTAssertEqual(urlField.accessibilityValue, url, "URL matches page URL")
+        XCTAssertEqual(urlField().accessibilityValue, url, "URL matches page URL")
 
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         tester().enterText(intoCurrentFirstResponder: "foobar")
-        tester().tapView(withAccessibilityIdentifier: "urlBar-cancel")
+        tester().tapView(withAccessibilityLabel: "Cancel")
         tester().waitForAnimationsToFinish()
-        XCTAssertEqual(urlField.accessibilityValue, url, "Verify that text reverts to page URL after entering text")
+        XCTAssertEqual(urlField().accessibilityValue, url, "Verify that text reverts to page URL after entering text")
 
-        tester().tapView(withAccessibilityIdentifier: "url")
+        tester().tapView(withAccessibilityLabel: "Address Bar")
         tester().enterText(intoCurrentFirstResponder: " ")
 
-        tester().tapView(withAccessibilityIdentifier: "urlBar-cancel")
+        tester().tapView(withAccessibilityLabel: "Cancel")
         tester().waitForAnimationsToFinish()
-        XCTAssertEqual(urlField.accessibilityValue, url, "Verify that text reverts to page URL after clearing text")
+        XCTAssertEqual(urlField().accessibilityValue, url, "Verify that text reverts to page URL after clearing text")
     }
 
     func testUserInfoRemovedFromURL() {
@@ -53,7 +54,7 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
 
         let urlWithoutUserInfo = "\(webRoot!)/numberedPage.html?page=1"
 
-        let urlField = tester().waitForView(withAccessibilityIdentifier: "url")!
+        let urlField = tester().waitForView(withAccessibilityLabel: "Address Bar")!.accessibilityElement(withLabel: "Address Bar")!
         XCTAssertEqual(urlField.accessibilityValue, urlWithoutUserInfo)
     }
 

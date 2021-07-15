@@ -78,6 +78,21 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         }
     }
 
+    override var accessibilityHint: String? {
+        get {
+            if historyModel.completion != nil {
+                let deleteLabel = "Press delete to remove autocomplete suggestion"
+                if let hint = super.accessibilityHint {
+                    return "\(hint), \(deleteLabel)"
+                } else {
+                    return deleteLabel
+                }
+            }
+            return super.accessibilityHint
+        }
+        set { super.accessibilityHint = newValue }
+    }
+
     init(text: Binding<String>, isActive: Binding<Bool>, onSubmit: @escaping (String) -> (), historyModel: HistorySuggestionModel) {
         self._binding = text
         self._isActive = isActive

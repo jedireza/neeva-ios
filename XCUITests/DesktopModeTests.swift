@@ -125,7 +125,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         navigator.openURL(path(forTestPage: "test-user-agent.html"))
         // Workaround to be sure the snackbar dissapers
-        app.buttons["TabLocationView.reloadButton"].tap()
+        app.buttons["Reload"].tap()
         navigator.goto(ShareMenu)
         navigator.goto(RequestMobileSite) // toggle off
         waitUntilPageLoad()
@@ -154,7 +154,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         navigator.openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         // Workaround
-        app.buttons["TabLocationView.reloadButton"].tap()
+        app.buttons["Reload"].tap()
         navigator.goto(ShareMenu)
         navigator.goto(RequestDesktopSite)
         waitUntilPageLoad()

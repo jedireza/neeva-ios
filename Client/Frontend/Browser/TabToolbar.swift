@@ -55,7 +55,7 @@ open class LegacyTabToolbarHelper: NSObject {
         toolbar.forwardButton.isPointerInteractionEnabled = true
         
         toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
-        toolbar.shareButton.accessibilityLabel = "Share Menu"
+        toolbar.shareButton.accessibilityLabel = "Share"
         toolbar.shareButton.addAction(UIAction { _ in
             self.didPress(shareButton: toolbar.shareButton)
         }, for: .primaryActionTriggered)

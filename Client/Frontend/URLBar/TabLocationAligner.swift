@@ -15,7 +15,7 @@ struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Traili
 
     init(
         transitionToEditing: Bool,
-        debug: Bool = FeatureFlag[.newURLBarDebug],
+        debug: Bool = FeatureFlag[.debugURLBar],
         @ViewBuilder label: @escaping () -> Label,
         @ViewBuilder labelOverlay: @escaping (EdgeInsets) -> LabelOverlay,
         @ViewBuilder leading: @escaping () -> Leading,

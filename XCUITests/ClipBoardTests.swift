@@ -9,7 +9,7 @@ class ClipBoardTests: BaseTestCase {
 
     //Check for test url in the browser
     func checkUrl() {
-        let urlField = app.buttons["url"]
+        let urlField = app.buttons["Address Bar"]
         waitForValueContains(urlField, value: "www.example")
     }
 
@@ -27,7 +27,7 @@ class ClipBoardTests: BaseTestCase {
     //Check copied url is same as in browser
     func checkCopiedUrl() {
         if let myString = UIPasteboard.general.string {
-            let value = app.buttons["url"].value as! String
+            let value = app.buttons["Address Bar"].value as! String
             XCTAssertNotNil(myString)
             XCTAssertEqual(myString, value, "Url matches with the UIPasteboard")
         }
@@ -46,7 +46,7 @@ class ClipBoardTests: BaseTestCase {
 
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
 
-        app.buttons["url"].tap()
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].press(forDuration: 3)
         app.menuItems["Paste & Go"].tap()
 
@@ -66,11 +66,11 @@ class ClipBoardTests: BaseTestCase {
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         navigator.createNewTab()
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
-        app.buttons["url"].press(forDuration: 3)
+        app.buttons["Address Bar"].press(forDuration: 3)
         waitForExistence(app.tables["Context Menu"])
         app.cells["doc.on.clipboard"].tap()
-        waitForExistence(app.buttons["url"])
-        waitForValueContains(app.buttons["url"], value: "www.example.com")
+        waitForExistence(app.buttons["Address Bar"])
+        waitForValueContains(app.buttons["Address Bar"], value: "www.example.com")
     }
     */
 }

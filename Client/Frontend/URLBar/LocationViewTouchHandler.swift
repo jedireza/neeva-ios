@@ -79,7 +79,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
 
         func dragInteraction(_ interaction: UIDragInteraction, previewForLifting item: UIDragItem, session: UIDragSession) -> UITargetedDragPreview? {
             let host = UIHostingController(
-                rootView: LocationLabelAndIcon(url: wrapper.url, isSecure: wrapper.isSecure)
+                rootView: LocationLabelAndIcon(url: wrapper.url, isSecure: wrapper.isSecure, forcePlaceholder: false)
                     .fixedSize()
                     .padding(.horizontal)
                     .frame(height: TabLocationViewUX.height)

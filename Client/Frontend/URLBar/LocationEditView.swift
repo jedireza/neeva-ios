@@ -22,7 +22,8 @@ struct LocationEditView: View {
                         .padding(.trailing, 3)
                         .background(Color.textSelectionHighlight.cornerRadius(2))
                         .padding(.vertical, -1)
-                }.animation(nil).transition(.identity)
+                }
+                .accessibilityHidden(true)
                 .font(.system(size: 16))
             }
             LocationTextField(text: $searchQuery.value, editing: $isEditing, onSubmit: onSubmit)

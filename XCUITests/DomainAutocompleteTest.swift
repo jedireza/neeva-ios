@@ -28,7 +28,7 @@ class DomainAutocompleteTest: BaseTestCase {
     }
 
     func testAutocomplete() {
-        app.buttons["url"].tap()
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("w")
 
         waitForValueContains(app.textFields["address"], value: website["value"]!)
@@ -44,7 +44,7 @@ class DomainAutocompleteTest: BaseTestCase {
     }
     // Test that deleting characters works correctly with autocomplete
     func testAutocompleteDeletingChars() {
-        app.buttons["url"].tap()
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("wik")
 
         // First delete the autocompleted part
@@ -134,7 +134,7 @@ class DomainAutocompleteTest: BaseTestCase {
     }
     // Test default domains.
     func testDefaultDomains() {
-        app.buttons["url"].tap()
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("a")
         waitForValueContains(app.textFields["address"], value: ".com")
         let value = app.textFields["address"].value
@@ -154,7 +154,7 @@ class DomainAutocompleteTest: BaseTestCase {
     }
     // Test mixed case autocompletion.
     func testMixedCaseAutocompletion() {
-        app.buttons["url"].tap()
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("MoZ")
         waitForValueContains(app.textFields["address"], value: ".org")
         let value = app.textFields["address"].value

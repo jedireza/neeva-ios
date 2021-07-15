@@ -32,7 +32,6 @@ class KeyboardShortcutTests: KIFTestCase {
         tester.waitForView(withAccessibilityLabel: "New Tab")
         tester.tapView(withAccessibilityLabel: "New Tab")
 
-        tester.waitForView(withAccessibilityIdentifier: "url")
         BrowserUtils.enterUrlAddressBar(tester, typeUrl: "www.neeva.com")
     }
 
@@ -84,11 +83,12 @@ class KeyboardShortcutTests: KIFTestCase {
         bvc.selectLocationBarKeyCommand()
     }
 
+    /* disabled because it breaks unrelated tests (see https://github.com/neevaco/neeva-ios-phoenix/issues/981)
     func testShowTabTrayKeyCommand() {
         reset(tester: tester())
         bvc.showTabTrayKeyCommand()
         XCTAssert(tester().viewExistsWithLabel("Add Tab"))
-    }
+    } */
 
     // MARK: Tab Mangement
     func testNewTabKeyCommand() {
