@@ -47,7 +47,7 @@ class NeevaSignInTests: BaseTestCase {
 
         waitUntilPageLoad()
         print(app.buttons["Address Bar"].value.debugDescription)
-        waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/")
+        waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/", timeout: 20.0)
         print(app.buttons["Address Bar"].value.debugDescription)
 
         waitForExistence(app.buttons["Got it!"])
