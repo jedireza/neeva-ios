@@ -32,7 +32,7 @@ class NeevaSignInTests: BaseTestCase {
         app.staticTexts["Sign in"].tap()
 
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "https://login.neeva.com/")
+        waitForValueContains(app.buttons["Address Bar"], value: "https://login.neeva.com/")
 
         // Password field should already be focused
         UIPasteboard.general.string = password
@@ -43,7 +43,7 @@ class NeevaSignInTests: BaseTestCase {
         app.buttons["Sign In"].tap()
 
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["url"], value: "https://neeva.com/")
+        waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/")
 
         waitForExistence(app.buttons["Got it!"], timeout: 3)
         app.buttons["Got it!"].tap()
@@ -71,7 +71,6 @@ class NeevaSignInTests: BaseTestCase {
         app.buttons["Reload"].tap()
 
         waitUntilPageLoad()
-        print(app.webViews.firstMatch.debugDescription)
         waitForExistence(app.webViews.links["Sign In"], timeout: 3)
     }
 }
