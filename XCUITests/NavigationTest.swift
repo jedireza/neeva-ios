@@ -43,6 +43,7 @@ class NavigationTest: BaseTestCase {
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
+        app.buttons["Back"].tap()
 
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")

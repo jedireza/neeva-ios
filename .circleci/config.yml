@@ -73,7 +73,7 @@ commands:
           name: UITests
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing UITests
       - run:
-          name: UITests
+          name: UITests - iPad
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing UITests
   xcui-tests:
     steps:
@@ -83,7 +83,7 @@ commands:
   xcui-tests-ipad:
     steps:
       - run:
-          name: XCUITests
+          name: XCUITests - iPad
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests
 
 jobs:
