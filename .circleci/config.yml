@@ -144,10 +144,10 @@ workflows:
   build:
     jobs:
       - build
-      - test-client:
-          requires: [build]
-      - ui-tests:
-          requires: [build]
+      #- test-client:
+      #    requires: [build]
+      #- ui-tests:
+      #    requires: [build]
       - xcui-tests:
           requires: [build]
           context: ios-testing
