@@ -43,9 +43,4 @@ open class Bytes {
     open class func dataFromBase64(_ b64: String) -> Data? {
         return b64.data(using: .ascii, allowLossyConversion: false)
     }
-
-    func fromHex(_ str: String) -> Data {
-       // TODO
-        return Data()
-    }
 }

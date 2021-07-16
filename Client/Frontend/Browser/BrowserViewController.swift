@@ -2061,7 +2061,11 @@ extension BrowserViewController: TabTrayDelegate {
     }
 
     func tabTrayDidTapLocationBar(_ tabTray: TabTrayControllerV1) {
-        legacyURLBar.tabLocationViewDidTapLocation(legacyURLBar.legacyLocationView)
+        if FeatureFlag[.legacyURLBar] {
+            legacyURLBar.tabLocationViewDidTapLocation(legacyURLBar.legacyLocationView)
+        } else {
+            legacyURLBar.model.setEditing(to: true)
+        }
     }
 
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController) {

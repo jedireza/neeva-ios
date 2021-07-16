@@ -7,6 +7,7 @@ import SnapKit
 import Storage
 import Shared
 import Defaults
+import SwiftUI
 
 public enum TabTrayControllerUX {
     static let CornerRadius = CGFloat(6.0)
@@ -26,6 +27,39 @@ protocol TabTrayDelegate: AnyObject {
     func tabTrayDidAddToReadingList(_ tab: Tab) -> ReadingListItem?
     func tabTrayDidTapLocationBar(_ tabTray: TabTrayControllerV1)
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController)
+}
+
+fileprivate struct FakeTabLocationView: View {
+    let action: () -> ()
+    let isIncognito: Bool
+
+    private struct Style: ButtonStyle {
+        @Environment(\.isIncognito) private var isIncognito
+
+        func makeBody(configuration: Configuration) -> some View {
+            ZStack {
+                let backgroundColor: Color = isIncognito
+                    ? configuration.isPressed ? .elevatedDarkBackground : .black
+                    : configuration.isPressed ? .tertiarySystemFill : .systemFill
+
+                Capsule().fill(backgroundColor)
+                configuration.label
+            }
+        }
+    }
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        Button(action: action) {
+            LocationLabel(url: nil, isSecure: false)
+                .environmentObject(GridModel())
+        }
+        .environment(\.isIncognito, isIncognito)
+        .frame(height: TabLocationViewUX.height)
+        .colorScheme(isIncognito ? .dark : colorScheme)
+        .buttonStyle(Style())
+    }
 }
 
 class TabTrayControllerV1: UIViewController {
@@ -59,13 +93,11 @@ class TabTrayControllerV1: UIViewController {
         return toolbar
     }()
 
-    lazy var locationView: LegacyTabLocationView = {
-        let locationView = LegacyTabLocationView(model: URLBarModel())
-        locationView.layer.cornerRadius = UIConstants.TextFieldHeight / 2
-        locationView.translatesAutoresizingMaskIntoConstraints = false
-        locationView.delegate = self
-        return locationView
-    }()
+    fileprivate lazy var locationViewController = UIHostingController(rootView: FakeTabLocationView(action: onTapLocation, isIncognito: tabDisplayManager.isPrivate))
+    private func onTapLocation() {
+        didTapToolbarAddTabButton()
+        delegate?.tabTrayDidTapLocationBar(self)
+    }
 
     var topBarHolder = UIView()
 
@@ -149,7 +181,9 @@ class TabTrayControllerV1: UIViewController {
         collectionView.dragDelegate = tabDisplayManager
         collectionView.dropDelegate = tabDisplayManager
 
-        topBarHolder.addSubview(locationView)
+        addChild(locationViewController)
+        topBarHolder.addSubview(locationViewController.view)
+        locationViewController.didMove(toParent: self)
         topBarHolder.addSubview(line)
         topBarHolder.backgroundColor = UIColor.Browser.background
         [webViewContainerBackdrop, collectionView, toolbar, topBarHolder].forEach { view.addSubview($0) }
@@ -174,9 +208,7 @@ class TabTrayControllerV1: UIViewController {
             toolbar.applyUIMode(isPrivate: true)
         }
 
-        locationView.model.url = nil
-        locationView.model.isSecure = false
-        locationView.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
+        locationViewController.rootView = .init(action: onTapLocation, isIncognito: tabDisplayManager.isPrivate)
 
         line.backgroundColor = UIColor.Browser.urlBarDivider
 
@@ -231,8 +263,7 @@ class TabTrayControllerV1: UIViewController {
         let centerAlign =
             UIDevice.current.userInterfaceIdiom == .pad ||
             (UIDevice.current.orientation != .portrait && UIDevice.current.orientation != .faceUp)
-        locationView.snp.remakeConstraints { make in
-            make.height.equalTo(UIConstants.TextFieldHeight)
+        locationViewController.view.snp.remakeConstraints { make in
             if centerAlign {
                 make.centerY.equalTo(topBarHolder)
             } else {
@@ -331,7 +362,7 @@ class TabTrayControllerV1: UIViewController {
         }
 
         toolbar.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
-        locationView.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
+        locationViewController.rootView = .init(action: onTapLocation, isIncognito: tabDisplayManager.isPrivate)
     }
 
     fileprivate func privateTabsAreEmpty() -> Bool {
@@ -1034,18 +1065,4 @@ class TabCell: UICollectionViewCell {
     @objc func close() {
         delegate?.tabCellDidClose(self)
     }
-}
-
-extension TabTrayControllerV1: LegacyTabLocationViewDelegate {
-    func tabLocationViewDidTapLocation(_ tabLocationView: LegacyTabLocationView) {
-        didTapToolbarAddTabButton()
-        delegate?.tabTrayDidTapLocationBar(self)
-    }
-    func tabLocationViewDidLongPressLocation(_ tabLocationView: LegacyTabLocationView) {}
-    func tabLocationViewDidTapReload() {}
-    func tabLocationViewDidTapShield(_ tabLocationView: LegacyTabLocationView, from: UIButton) {}
-    func tabLocationViewDidBeginDragInteraction(_ tabLocationView: LegacyTabLocationView) {}
-    func tabLocationViewDidTap(shareButton: UIView) {}
-    func tabLocationViewReloadMenu() -> UIMenu? { return nil }
-    func tabLocationViewLocationAccessibilityActions(_ tabLocationView: LegacyTabLocationView) -> [UIAccessibilityCustomAction]? { return nil }
 }
