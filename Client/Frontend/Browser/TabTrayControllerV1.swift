@@ -186,7 +186,11 @@ class TabTrayControllerV1: UIViewController {
         locationViewController.didMove(toParent: self)
         topBarHolder.addSubview(line)
         topBarHolder.backgroundColor = UIColor.Browser.background
-        [webViewContainerBackdrop, collectionView, toolbar, topBarHolder].forEach { view.addSubview($0) }
+        if UIConstants.enableBottomURLBar {
+            [webViewContainerBackdrop, collectionView, toolbar].forEach { view.addSubview($0) }
+        } else {
+            [webViewContainerBackdrop, collectionView, toolbar, topBarHolder].forEach { view.addSubview($0) }
+        }
         makeConstraints()
 
         // The statusBar needs a background color
@@ -246,11 +250,13 @@ class TabTrayControllerV1: UIViewController {
             make.height.equalTo(UIConstants.BottomToolbarHeight)
         }
 
-        topBarHolder.snp.makeConstraints { make in
-            make.leading.equalTo(view.snp.leading)
-            make.trailing.equalTo(view.snp.trailing)
-            make.height.equalTo(TabTrayControllerUX.TopBarHeight)
-            self.tabLayoutDelegate.topBarHeightConstraint = make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
+        if !UIConstants.enableBottomURLBar {
+            topBarHolder.snp.makeConstraints { make in
+                make.leading.equalTo(view.snp.leading)
+                make.trailing.equalTo(view.snp.trailing)
+                make.height.equalTo(TabTrayControllerUX.TopBarHeight)
+                self.tabLayoutDelegate.topBarHeightConstraint = make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
+            }
         }
 
         line.snp.makeConstraints { make in
@@ -263,14 +269,16 @@ class TabTrayControllerV1: UIViewController {
         let centerAlign =
             UIDevice.current.userInterfaceIdiom == .pad ||
             (UIDevice.current.orientation != .portrait && UIDevice.current.orientation != .faceUp)
-        locationViewController.view.snp.remakeConstraints { make in
-            if centerAlign {
-                make.centerY.equalTo(topBarHolder)
-            } else {
-                make.top.equalTo(topBarHolder).offset(UIConstants.TopToolbarPaddingTop)
+        if !UIConstants.enableBottomURLBar {
+            locationViewController.view.snp.remakeConstraints { make in
+                if centerAlign {
+                    make.centerY.equalTo(topBarHolder)
+                } else {
+                    make.top.equalTo(topBarHolder).offset(UIConstants.TopToolbarPaddingTop)
+                }
+                make.leading.equalTo(self.view.safeArea.leading).offset(8)
+                make.trailing.equalTo(self.view.safeArea.trailing).offset(-8)
             }
-            make.leading.equalTo(self.view.safeArea.leading).offset(8)
-            make.trailing.equalTo(self.view.safeArea.trailing).offset(-8)
         }
         super.updateViewConstraints()
     }

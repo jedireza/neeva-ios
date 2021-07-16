@@ -57,6 +57,10 @@ public struct UIConstants {
         let window = UIApplication.shared.windows[0]
         return window.safeAreaInsets
     }
+
+    static var enableBottomURLBar: Bool {
+        FeatureFlag[.bottomURLBar] && UIDevice.current.userInterfaceIdiom != .pad
+    }
 }
 
 extension UIColor {

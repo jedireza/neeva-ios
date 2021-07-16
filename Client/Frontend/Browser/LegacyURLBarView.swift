@@ -239,7 +239,8 @@ class LegacyURLBarView: UIView {
     fileprivate func setupConstraints() {
 
         line.snp.makeConstraints { make in
-            make.bottom.leading.trailing.equalTo(self)
+            (UIConstants.enableBottomURLBar ? make.top : make.bottom).equalTo(self)
+            make.leading.trailing.equalTo(self)
             make.height.equalTo(0.5)
         }
 
@@ -329,7 +330,7 @@ class LegacyURLBarView: UIView {
                 make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.LocationEdgePadding)
             }
             make.height.equalTo(LegacyURLBarViewUX.LocationHeight)
-            if self.toolbarIsShowing {
+            if self.toolbarIsShowing || UIConstants.enableBottomURLBar {
                 make.centerY.equalTo(self)
             } else {
                 make.top.equalTo(self).offset(UIConstants.TopToolbarPaddingTop)

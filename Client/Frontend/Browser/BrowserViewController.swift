@@ -491,9 +491,11 @@ class BrowserViewController: UIViewController {
             }
         }
 
-        header.snp.makeConstraints { make in
-            scrollController.headerTopConstraint = make.top.equalTo(self.view.safeArea.top).constraint
-            make.left.right.equalTo(self.view)
+        if !UIConstants.enableBottomURLBar {
+            header.snp.makeConstraints { make in
+                scrollController.headerTopConstraint = make.top.equalTo(self.view.safeArea.top).constraint
+                make.left.right.equalTo(self.view)
+            }
         }
 
         webViewContainerBackdrop.snp.makeConstraints { make in
@@ -669,13 +671,28 @@ class BrowserViewController: UIViewController {
     override func updateViewConstraints() {
         super.updateViewConstraints()
 
+        if UIConstants.enableBottomURLBar {
+            header.snp.remakeConstraints { make in
+                if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view), keyboardHeight > 0 {
+                    make.bottom.equalTo(self.view).offset(-keyboardHeight)
+                } else {
+                    make.bottom.equalTo(footer.snp.top)
+                }
+                make.left.right.equalTo(self.view)
+            }
+        }
+
         topTouchArea.snp.remakeConstraints { make in
             make.top.left.right.equalTo(self.view)
             make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
         }
 
         readerModeBar?.snp.remakeConstraints { make in
-            make.top.equalTo(self.header.snp.bottom)
+            if UIConstants.enableBottomURLBar {
+                make.top.equalTo(self.view.safeArea.top)
+            } else {
+                make.top.equalTo(self.header.snp.bottom)
+            }
             make.height.equalTo(UIConstants.ToolbarHeight)
             make.leading.trailing.equalTo(self.view)
         }
@@ -686,14 +703,22 @@ class BrowserViewController: UIViewController {
             if let readerModeBarBottom = readerModeBar?.snp.bottom {
                 make.top.equalTo(readerModeBarBottom)
             } else {
-                make.top.equalTo(self.header.snp.bottom)
+                if UIConstants.enableBottomURLBar {
+                    make.top.equalTo(self.view.safeArea.top)
+                } else {
+                    make.top.equalTo(self.header.snp.bottom)
+                }
             }
 
             let findInPageHeight = (findInPageBar == nil) ? 0 : UIConstants.ToolbarHeight
-            if let toolbar = self.toolbar {
-                make.bottom.equalTo(toolbar.view.snp.top).offset(-findInPageHeight)
+            if UIConstants.enableBottomURLBar {
+                make.bottom.equalTo(self.header.snp.top).offset(-findInPageHeight)
             } else {
-                make.bottom.equalTo(self.view).offset(-findInPageHeight)
+                if let toolbar = self.toolbar {
+                    make.bottom.equalTo(toolbar.view.snp.top).offset(-findInPageHeight)
+                } else {
+                    make.bottom.equalTo(self.view).offset(-findInPageHeight)
+                }
             }
         }
 
@@ -712,9 +737,15 @@ class BrowserViewController: UIViewController {
         // Remake constraints even if we're already showing the zero query controller.
         // The zero query controller may change sizes if we tap the URL bar while it's open.
         zeroQueryViewController?.view.snp.remakeConstraints { make in
-            make.top.equalTo(self.legacyURLBar.snp.bottom)
+            if UIConstants.enableBottomURLBar {
+                make.top.equalTo(self.view.safeArea.top)
+            } else {
+                make.top.equalTo(self.legacyURLBar.snp.bottom)
+            }
             make.left.right.equalTo(self.view)
-            if self.zeroQueryIsInline {
+            if UIConstants.enableBottomURLBar {
+                make.bottom.equalTo(self.header.snp.top)
+            } else if self.zeroQueryIsInline {
                 make.bottom.equalTo(self.toolbar?.view.snp.top ?? self.view.snp.bottom)
             } else {
                 make.bottom.equalTo(self.view.snp.bottom)
@@ -875,8 +906,14 @@ class BrowserViewController: UIViewController {
         addChild(searchController)
         view.addSubview(searchController.view)
         searchController.view.snp.makeConstraints { make in
-            make.top.equalTo(self.legacyURLBar.snp.bottom)
-            make.left.right.bottom.equalTo(self.view)
+            if UIConstants.enableBottomURLBar {
+                make.top.equalTo(self.view.safeArea.top)
+                make.bottom.equalTo(self.header.snp.top)
+            } else {
+                make.top.equalTo(self.legacyURLBar.snp.bottom)
+                make.bottom.equalTo(self.view)
+            }
+            make.left.right.equalTo(self.view)
         }
 
         zeroQueryViewController?.view?.isHidden = true

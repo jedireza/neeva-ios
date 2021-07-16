@@ -9,6 +9,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     // in alphabetical order to reduce merge conflicts.
     case cardGrid = "New Switcher UI"
     case cardStrip = "Carousel of cards instead of tab strip"
+    case bottomURLBar = "Bottom URL Bar"
     case debugURLBar = "URL Bar Debug Mode"
     case feedbackScreenshot = "Attach Screenshot to Feedback"
     case groupsInSwitcher = "TabGroups and Spaces in Switcher UI"

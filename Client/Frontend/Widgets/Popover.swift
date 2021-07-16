@@ -13,17 +13,19 @@ extension View {
     func presentAsPopover<Content: View>(
         isPresented: Binding<Bool>,
         backgroundColor: UIColor? = nil,
+        arrowDirections: UIPopoverArrowDirection? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         background(
             // negative padding to counteract system padding
-            Popover(isPresented: isPresented, content: content().padding(.vertical, -6.5), backgroundColor: backgroundColor)
+            Popover(isPresented: isPresented, arrowDirections: arrowDirections, content: content().padding(.vertical, -6.5), backgroundColor: backgroundColor)
         )
     }
 }
 
 fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
+    let arrowDirections: UIPopoverArrowDirection?
     let content: Content
     let backgroundColor: UIColor?
 
@@ -89,6 +91,9 @@ fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
             host.modalPresentationStyle = .popover
             host.popoverPresentationController?.delegate = host
             host.popoverPresentationController?.sourceView = vc.view
+            if let arrowDirections = arrowDirections {
+                host.popoverPresentationController?.permittedArrowDirections = arrowDirections
+            }
             vc.presentee = host
         }
 
