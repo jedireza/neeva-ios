@@ -26,6 +26,7 @@ struct TabLocationView: View {
     let buildReloadMenu: () -> UIMenu?
 
     @EnvironmentObject private var model: URLBarModel
+    @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
     @State private var isPressed = false
     @Environment(\.isIncognito) private var isIncognito
@@ -43,7 +44,7 @@ struct TabLocationView: View {
             UIPasteboard.general.asyncString()
                 .uponQueue(.main) {
                     if let query = $0.successValue as? String {
-                        SearchQueryModel.shared.value = query
+                        queryModel.value = query
                         model.setEditing(to: true)
                     }
                 }
@@ -79,10 +80,10 @@ struct TabLocationView: View {
                             background: backgroundColor,
                             onTap: {
                                 if let query = neevaSearchEngine.queryForLocationBar(from: model.url) {
-                                    SearchQueryModel.shared.value = query
+                                    queryModel.value = query
                                 } else {
                                     // TODO: Decode punycode hostname.
-                                    SearchQueryModel.shared.value = model.url?.absoluteString ?? ""
+                                    queryModel.value = model.url?.absoluteString ?? ""
                                 }
                                 model.setEditing(to: true)
                             },

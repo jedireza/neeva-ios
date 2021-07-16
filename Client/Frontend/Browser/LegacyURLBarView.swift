@@ -40,6 +40,7 @@ protocol LegacyURLBarDelegate: UIViewController {
 
 class LegacyURLBarView: UIView {
     let model = URLBarModel()
+    let queryModel = SearchQueryModel()
     let historySuggestionModel: HistorySuggestionModel
     let neevaSuggestionModel: NeevaSuggestionModel
     let gridModel: GridModel
@@ -99,6 +100,7 @@ class LegacyURLBarView: UIView {
         TabLocationHost(model: model,
                         historySuggestionModel: historySuggestionModel,
                         neevaSuggestionModel: neevaSuggestionModel,
+                        queryModel: queryModel,
                         gridModel: self.gridModel,
                         delegate: self, urlBar: self)
     }()
@@ -162,8 +164,8 @@ class LegacyURLBarView: UIView {
     
     init(profile: Profile, toolbarModel: TabToolbarModel, gridModel: GridModel) {
         self.profile = profile
-        self.historySuggestionModel = HistorySuggestionModel(profile: profile)
-        self.neevaSuggestionModel = NeevaSuggestionModel(isIncognito: isPrivateMode)
+        self.historySuggestionModel = HistorySuggestionModel(profile: profile, queryModel: self.queryModel)
+        self.neevaSuggestionModel = NeevaSuggestionModel(isIncognito: isPrivateMode, queryModel: self.queryModel)
         self.toolbarModel = toolbarModel
         self.gridModel = gridModel
         super.init(frame: CGRect())
@@ -228,7 +230,7 @@ class LegacyURLBarView: UIView {
                 }
             }.store(in: &subscriptions)
             historySuggestionModel.$completion.sink { [unowned self] completion in
-                legacyLocationTextField?.setAutocompleteSuggestion(completion.map { SearchQueryModel.shared.value + $0 })
+                legacyLocationTextField?.setAutocompleteSuggestion(completion.map { queryModel.value + $0 })
                 createLegacyLeftViewFavicon(completion ?? "")
             }.store(in: &subscriptions)
         }
@@ -506,7 +508,7 @@ class LegacyURLBarView: UIView {
             }
         } else {
             if let location = location {
-                SearchQueryModel.shared.value = location
+                queryModel.value = location
                 model.setEditing(to: true)
             }
         }
@@ -757,7 +759,7 @@ extension LegacyURLBarView: LegacyAutocompleteTextFieldDelegate {
     }
 
     func legacyAutocompleteTextField(_ autocompleteTextField: LegacyAutocompleteTextField, didEnterText text: String) {
-        SearchQueryModel.shared.value = text
+        queryModel.value = text
         delegate?.urlBar(didEnterText: text)
         if text.isEmpty  {
             createLegacyLeftViewFavicon()
@@ -765,7 +767,7 @@ extension LegacyURLBarView: LegacyAutocompleteTextFieldDelegate {
     }
 
     func legacyAutocompleteTextFieldShouldClear(_ autocompleteTextField: LegacyAutocompleteTextField) -> Bool {
-        SearchQueryModel.shared.value = ""
+        queryModel.value = ""
         delegate?.urlBar(didEnterText: "")
         return true
     }

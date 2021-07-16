@@ -7,6 +7,7 @@ struct TabLocationViewWrapper: View {
     let historyModel: HistorySuggestionModel
     let neevaModel: NeevaSuggestionModel
     let model: URLBarModel
+    let queryModel: SearchQueryModel
     let gridModel: GridModel
 
     let content: () -> TabLocationView
@@ -16,7 +17,7 @@ struct TabLocationViewWrapper: View {
             .environmentObject(historyModel)
             .environmentObject(neevaModel)
             .environmentObject(model)
-            .environmentObject(SearchQueryModel.shared)
+            .environmentObject(queryModel)
             .environmentObject(gridModel)
             .ignoresSafeArea()
     }
@@ -32,6 +33,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         model: URLBarModel,
         historySuggestionModel: HistorySuggestionModel,
         neevaSuggestionModel: NeevaSuggestionModel,
+        queryModel: SearchQueryModel,
         gridModel: GridModel,
         delegate: LegacyTabLocationViewDelegate,
         urlBar: LegacyURLBarView?
@@ -40,7 +42,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         self.delegate = delegate
         super.init()
         setRootView {
-            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model, gridModel: gridModel) {
+            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model, queryModel: queryModel, gridModel: gridModel) {
                 TabLocationView(
                     onReload: { [weak delegate] in delegate?.tabLocationViewDidTapReload() },
                     onSubmit: { [weak urlBar] in urlBar?.delegate?.urlBar(didSubmitText: $0) },
@@ -64,7 +66,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
             }
             .store(in: &subscriptions)
         model.$isEditing
-            .combineLatest(SearchQueryModel.shared.$value)
+            .combineLatest(queryModel.$value)
             .withPrevious()
             .sink { [weak urlBar] (prev, current) in
                 let (prevEditing, _) = prev

@@ -79,7 +79,7 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
         )
         .padding()
         .previewLayout(.sizeThatFits)
-        .environmentObject(SearchQueryModel.shared)
+        .environmentObject(SearchQueryModel(previewValue: ""))
         .environmentObject(NeevaSuggestionModel(previewLensBang: nil))
         .environmentObject(HistorySuggestionModel(previewSites: []))
     }

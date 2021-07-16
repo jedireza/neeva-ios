@@ -134,15 +134,8 @@ enum NavigationPath {
             // Widget Quick links - medium - close private tabs
             TelemetryWrapper.recordEvent(category: .action, method: .open, object: .mediumQuickActionClosePrivate)
             return .closePrivateTabs
-        } else if urlString.starts(with: "\(scheme)://widget-tabs-medium-open-url") {
-            // Widget Tabs Quick View - medium
-            TelemetryWrapper.recordEvent(category: .action, method: .open, object: .mediumTabsOpenUrl)
-            return .openWidgetUrl(components: components)
-        } else if urlString.starts(with: "\(scheme)://widget-tabs-large-open-url") {
-            // Widget Tabs Quick View - large
-            TelemetryWrapper.recordEvent(category: .action, method: .open, object: .largeTabsOpenUrl)
-            return .openWidgetUrl(components: components)
         }
+        
         return nil
     }
     
@@ -168,15 +161,6 @@ enum NavigationPath {
         let url = UIPasteboard.general.url
         let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
         return .url(webURL: url, isPrivate: isPrivate)
-    }
-    
-    private static func openWidgetUrl(components: URLComponents) -> NavigationPath {
-        let tabs = SimpleTab.getSimpleTabs()
-        guard let uuid = components.valueForQuery("uuid"), !tabs.isEmpty else {
-            return .url(webURL: nil, isPrivate: false)
-        }
-        let tab = tabs[uuid]
-        return .widgetUrl(webURL: tab?.url, uuid: uuid)
     }
 
     private static func handleClosePrivateTabs(with bvc: BrowserViewController) {

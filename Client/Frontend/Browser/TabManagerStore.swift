@@ -76,21 +76,17 @@ class TabManagerStore {
     @discardableResult func preserveTabs(_ tabs: [Tab], selectedTab: Tab?, for scene: UIScene) -> Success {
         assert(Thread.isMainThread)
 
-        guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab), let path = tabSavePath(withId: scene.session.persistentIdentifier), let legacyPath = getLegacyTabSavePath() else {
+        guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab), let path = tabSavePath(withId: scene.session.persistentIdentifier) else {
             clearArchive(for: scene)
             return succeed()
         }
 
         writeOperation.cancel()
 
-        // also save to legacy path for safety/widget
-        // TODO: Find better way to save data to widget without overriding data from other scenes
-        _ = saveTabsToPath(path: legacyPath, savedTabs: savedTabs)
         return saveTabsToPath(path: path, savedTabs: savedTabs)
     }
 
     func saveTabsToPath(path: String, savedTabs: [SavedTab]) -> Success {
-        let simpleTabs = SimpleTab.convertToSimpleTabs(savedTabs)
         let result = Success()
 
         writeOperation = DispatchWorkItem {
@@ -102,7 +98,6 @@ class TabManagerStore {
                 print("Tab failed to save:", error.localizedDescription)
             }
 
-            SimpleTab.saveSimpleTab(tabs: simpleTabs)
             result.fill(Maybe(success: ()))
         }
 
@@ -167,13 +162,13 @@ class TabManagerStore {
     }
 
     func getStartupTabs(for scene: UIScene?) -> [SavedTab] {
-        let savedTabsWithOldPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: getLegacyTabSavePath()).0
+        let savedTabsWithOldPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: getLegacyTabSavePath())
 
         guard let scene = scene else {
             return savedTabsWithOldPath
         }
 
-        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier)).0
+        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier))
 
         if savedTabsWithNewPath.count > 0 {
             return savedTabsWithNewPath
@@ -187,6 +182,6 @@ class TabManagerStore {
 extension TabManagerStore {
     func testTabCountOnDisk() -> Int {
         assert(AppConstants.IsRunningTest)
-        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: getLegacyTabSavePath()!)).0.count
+        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: getLegacyTabSavePath()!)).count
     }
 }

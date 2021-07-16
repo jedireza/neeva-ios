@@ -146,6 +146,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return getCurrentScene().session.persistentIdentifier
     }
 
+    static func getKeyWindow() -> UIWindow {
+        if let window = getCurrentSceneDelegate().window {
+            return window
+        }
+
+        fatalError("Window for current scene is nil")
+    }
+  
     public func getBVC() -> BrowserViewController {
         return browserViewController
     }

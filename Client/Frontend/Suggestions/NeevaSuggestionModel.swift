@@ -19,7 +19,7 @@ class NeevaSuggestionModel: ObservableObject {
         return !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL
     }
 
-    init(searchQueryForTesting: String = SearchQueryModel.shared.value, isIncognito: Bool = false,
+    init(searchQueryForTesting: String = "", isIncognito: Bool = false,
          previewLensBang: ActiveLensBangInfo?, topSuggestions: [Suggestion] = [],
          chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []) {
         self.isIncognito = isIncognito
@@ -30,15 +30,16 @@ class NeevaSuggestionModel: ObservableObject {
         self.searchQuery = searchQueryForTesting
     }
 
-    init(isIncognito: Bool) {
+    init(isIncognito: Bool, queryModel: SearchQueryModel) {
         self.isIncognito = isIncognito
-        subscription = SearchQueryModel.shared.$value.assign(to: \.searchQuery, on: self)
+        self.searchQuery = queryModel.value
+        self.subscription = queryModel.$value.assign(to: \.searchQuery, on: self)
     }
 
     private var subscription: AnyCancellable?
     fileprivate var suggestionQuery: Apollo.Cancellable?
 
-    private var searchQuery = SearchQueryModel.shared.value {
+    private var searchQuery: String {
         didSet {
             if searchQuery != oldValue { reload() }
         }

@@ -20,7 +20,8 @@ private let numSuggestionsToFetch: Int = 40
  * Since both of these use the same SQL query, we can perform the query once and dispatch the results.
  */
 class HistorySuggestionModel: ObservableObject {
-    fileprivate let frecentHistory: FrecentHistory
+    private let frecentHistory: FrecentHistory
+    private let queryModel: SearchQueryModel
 
     /// If `completion` is non-`nil`, `SearchQueryModel.shared.value + completion` is the suggested completion.
     @Published private(set) var completion: String?
@@ -29,14 +30,15 @@ class HistorySuggestionModel: ObservableObject {
 
     private var shouldSkipNextAutocomplete = false
 
-    convenience init(previewSites: [Site]? = nil, previewCompletion: String? = nil) {
-        self.init(profile: BrowserProfile(localName: "profile"))
+    convenience init(previewSites: [Site]? = nil, previewCompletion: String? = nil, queryModel: SearchQueryModel = SearchQueryModel(previewValue: "")) {
+        self.init(profile: BrowserProfile(localName: "profile"), queryModel: queryModel)
         self.sites = previewSites
         self.completion = previewCompletion
     }
 
-    init(profile: Profile) {
+    init(profile: Profile, queryModel: SearchQueryModel) {
         self.frecentHistory = profile.history.getFrecentHistory()
+        self.queryModel = queryModel
         subscribe()
     }
 
@@ -52,7 +54,7 @@ class HistorySuggestionModel: ObservableObject {
 
     func setQueryWithoutAutocomplete(_ query: String) {
         skipNextAutocomplete()
-        SearchQueryModel.shared.value = query
+        queryModel.value = query
     }
 
     fileprivate lazy var topDomains: [String] = {
@@ -67,7 +69,7 @@ class HistorySuggestionModel: ObservableObject {
     private var searchTextSubscription: AnyCancellable?
 
     private func subscribe() {
-        searchTextSubscription = SearchQueryModel.shared.$value.withPrevious().sink { [unowned self] oldQuery, query in
+        searchTextSubscription = queryModel.$value.withPrevious().sink { [unowned self] oldQuery, query in
             currentDeferredHistoryQuery?.cancel()
 
             if query.isEmpty {

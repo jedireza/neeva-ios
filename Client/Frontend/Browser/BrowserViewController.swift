@@ -1565,7 +1565,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
         if FeatureFlag[.legacyURLBar] {
             self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
         } else {
-            SearchQueryModel.shared.value = query
+            legacyURLBar.queryModel.value = query
             legacyURLBar.model.setEditing(to: true)
         }
     }

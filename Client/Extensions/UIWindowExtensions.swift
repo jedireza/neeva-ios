@@ -14,11 +14,4 @@ extension UIWindow {
             return UIApplication.shared.statusBarOrientation.isLandscape
         }
     }
-
-    static var keyWindow: UIWindow? {
-        return Array(UIApplication.shared.connectedScenes)
-                .compactMap { $0 as? UIWindowScene }
-                .flatMap { $0.windows }
-                .first(where: { $0.isKeyWindow })
-    }
 }

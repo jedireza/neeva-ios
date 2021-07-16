@@ -110,7 +110,7 @@ class SecurityTests: KIFTestCase {
         tester().wait(forTimeInterval: 1)
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
         XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://")) // webview internally has "blob:<rest of url>"
-        let bvc = UIWindow.keyWindow!.rootViewController?.children[0] as! BrowserViewController
+        let bvc = SceneDelegate.getKeyWindow().rootViewController?.children[0] as! BrowserViewController
         XCTAssertEqual(bvc.legacyURLBar.legacyLocationView.urlLabel.text, "blob:") // only display "blob:"
     }*/
 

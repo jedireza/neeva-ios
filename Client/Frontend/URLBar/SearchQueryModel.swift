@@ -3,13 +3,11 @@
 import Combine
 
 class SearchQueryModel: ObservableObject {
-    static let shared = SearchQueryModel()
+    @Published var value: String = ""
 
-    private init() {}
+    init() {}
 
     init(previewValue: String) {
         self.value = previewValue
     }
-
-    @Published var value: String = ""
 }
