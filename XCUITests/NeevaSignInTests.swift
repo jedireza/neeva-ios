@@ -13,6 +13,11 @@ class NeevaSignInTests: BaseTestCase {
         super.setUp()
     }
 
+    fileprivate func waitUntilPageLoad(withUrlContaining: String) {
+        waitUntilPageLoad()
+        waitForValueContains(app.buttons["Address Bar"], value: withUrlContaining, timeout: 20.0)
+    }
+
     func testSignInFromPromoCard() {
         XCTAssertNotNil(username)
         XCTAssertNotNil(password)
@@ -20,8 +25,7 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.buttons["Sign in or Join Neeva"])
         app.buttons["Sign in or Join Neeva"].tap()
 
-        waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/signin")
+        waitUntilPageLoad(withUrlContaining: "https://neeva.com/signin")
 
         let textField = app.textFields.firstMatch
         XCTAssertEqual("Please enter your email address", textField.placeholderValue)
@@ -34,8 +38,7 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.staticTexts["Sign in"])
         app.staticTexts["Sign in"].tap()
 
-        waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: "https://login.neeva.com/")
+        waitUntilPageLoad(withUrlContaining: "https://login.neeva.com/")
 
         // Password field should already be focused
         UIPasteboard.general.string = password
@@ -45,10 +48,7 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.buttons["Sign In"])
         app.buttons["Sign In"].tap()
 
-        waitUntilPageLoad()
-        print(app.buttons["Address Bar"].value.debugDescription)
-        waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/", timeout: 20.0)
-        print(app.buttons["Address Bar"].value.debugDescription)
+        waitUntilPageLoad(withUrlContaining: "https://neeva.com/")
 
         waitForExistence(app.buttons["Got it!"])
         app.buttons["Got it!"].tap()
@@ -71,11 +71,11 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.navigationBars.buttons["Done"])
         app.navigationBars.buttons["Done"].tap()
 
-        // Reloading should bounce user to the marketing site.
+        // Reload to ensure we are bounced to the marketing site.
         waitForExistence(app.buttons["Reload"])
         app.buttons["Reload"].tap()
 
-        waitUntilPageLoad()
+        waitUntilPageLoad(withUrlContaining: "https://neeva.com/")
         waitForExistence(app.webViews.links["Sign In"])
     }
 }
