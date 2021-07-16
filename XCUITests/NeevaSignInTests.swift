@@ -46,6 +46,8 @@ class NeevaSignInTests: BaseTestCase {
         print(app.buttons["Address Bar"].value.debugDescription)
         waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/")
         print(app.buttons["Address Bar"].value.debugDescription)
+        waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/")
+        print(app.buttons["Address Bar"].value.debugDescription)
 
         waitForExistence(app.buttons["Got it!"])
         app.buttons["Got it!"].tap()
