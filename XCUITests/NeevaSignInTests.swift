@@ -17,7 +17,7 @@ class NeevaSignInTests: BaseTestCase {
         XCTAssertNotNil(username)
         XCTAssertNotNil(password)
 
-        waitForExistence(app.buttons["Sign in or Join Neeva"], timeout: 3)
+        waitForExistence(app.buttons["Sign in or Join Neeva"])
         app.buttons["Sign in or Join Neeva"].tap()
 
         let textField = app.textFields.firstMatch
@@ -28,7 +28,7 @@ class NeevaSignInTests: BaseTestCase {
         textField.press(forDuration: 2)
         app.menus.firstMatch.menuItems["Paste"].tap()
 
-        waitForExistence(app.staticTexts["Sign in"], timeout: 3)
+        waitForExistence(app.staticTexts["Sign in"])
         app.staticTexts["Sign in"].tap()
 
         waitUntilPageLoad()
@@ -39,38 +39,40 @@ class NeevaSignInTests: BaseTestCase {
         app.secureTextFields.firstMatch.press(forDuration: 2)
         app.menus.firstMatch.menuItems["Paste"].tap()
 
-        waitForExistence(app.buttons["Sign In"], timeout: 3)
+        waitForExistence(app.buttons["Sign In"])
         app.buttons["Sign In"].tap()
 
         waitUntilPageLoad()
+        print(app.buttons["Address Bar"].value.debugDescription)
         waitForValueContains(app.buttons["Address Bar"], value: "https://neeva.com/")
+        print(app.buttons["Address Bar"].value.debugDescription)
 
-        waitForExistence(app.buttons["Got it!"], timeout: 3)
+        waitForExistence(app.buttons["Got it!"])
         app.buttons["Got it!"].tap()
 
         // Sign out
         navigator.goto(SettingsScreen)
 
-        waitForExistence(app.cells["Member, \(username!)"], timeout: 3)
+        waitForExistence(app.cells["Member, \(username!)"])
         app.cells["Member, \(username!)"].tap()
 
-        waitForExistence(app.buttons["Sign Out"], timeout: 3)
+        waitForExistence(app.buttons["Sign Out"])
         app.buttons["Sign Out"].tap()
 
-        waitForExistence(app.sheets.firstMatch.staticTexts["Sign out of Neeva?"], timeout: 3)
-        waitForExistence(app.sheets.firstMatch.buttons["Sign Out"], timeout: 3)
+        waitForExistence(app.sheets.firstMatch.staticTexts["Sign out of Neeva?"])
+        waitForExistence(app.sheets.firstMatch.buttons["Sign Out"])
         app.sheets.firstMatch.buttons["Sign Out"].tap()
 
-        waitForExistence(app.cells["Sign In or Join Neeva"], timeout: 3)
+        waitForExistence(app.cells["Sign In or Join Neeva"])
 
-        waitForExistence(app.navigationBars.buttons["Done"], timeout: 3)
+        waitForExistence(app.navigationBars.buttons["Done"])
         app.navigationBars.buttons["Done"].tap()
 
         // Reloading should bounce user to the marketing site.
-        waitForExistence(app.buttons["Reload"], timeout: 3)
+        waitForExistence(app.buttons["Reload"])
         app.buttons["Reload"].tap()
 
         waitUntilPageLoad()
-        waitForExistence(app.webViews.links["Sign In"], timeout: 3)
+        waitForExistence(app.webViews.links["Sign In"])
     }
 }
