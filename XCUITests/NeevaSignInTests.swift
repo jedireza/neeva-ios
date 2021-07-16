@@ -20,6 +20,8 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.buttons["Sign in or Join Neeva"])
         app.buttons["Sign in or Join Neeva"].tap()
 
+        waitUntilPageLoad()
+
         let textField = app.textFields.firstMatch
         XCTAssertEqual("Please enter your email address", textField.placeholderValue)
 
