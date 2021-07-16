@@ -335,6 +335,11 @@
 		C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D409C268CADD4003A6766 /* LocationEditView.swift */; };
 		C96004FA267BF5B500FBB0AD /* TabToolbarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96004F9267BF5B500FBB0AD /* TabToolbarModel.swift */; };
 		C9655DE926A08FA600925912 /* PressReportingButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */; };
+		C9655DEB26A09A2800925912 /* GridModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DEA26A09A2800925912 /* GridModel.swift */; };
+		C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DEC26A09A6900925912 /* CardsContainer.swift */; };
+		C9655DEF26A09A8600925912 /* CardListViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DEE26A09A8600925912 /* CardListViews.swift */; };
+		C9655DF126A09AC900925912 /* CompletionForAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DF026A09AC900925912 /* CompletionForAnimation.swift */; };
+		C9655DF326A09B4300925912 /* CardTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */; };
 		C965BDD2268E71C500F02224 /* AppHostSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD1268E71C500F02224 /* AppHostSetting.swift */; };
 		C965BDD4268E720400F02224 /* DebugDBSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */; };
 		C965BDD6268E729000F02224 /* InternalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD5268E728F00F02224 /* InternalSettingsView.swift */; };
@@ -1253,6 +1258,11 @@
 		C94D409C268CADD4003A6766 /* LocationEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationEditView.swift; sourceTree = "<group>"; };
 		C96004F9267BF5B500FBB0AD /* TabToolbarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabToolbarModel.swift; sourceTree = "<group>"; };
 		C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressReportingButtonStyle.swift; sourceTree = "<group>"; };
+		C9655DEA26A09A2800925912 /* GridModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridModel.swift; sourceTree = "<group>"; };
+		C9655DEC26A09A6900925912 /* CardsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsContainer.swift; sourceTree = "<group>"; };
+		C9655DEE26A09A8600925912 /* CardListViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardListViews.swift; sourceTree = "<group>"; };
+		C9655DF026A09AC900925912 /* CompletionForAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionForAnimation.swift; sourceTree = "<group>"; };
+		C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTransitionAnimator.swift; sourceTree = "<group>"; };
 		C965BDD1268E71C500F02224 /* AppHostSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHostSetting.swift; sourceTree = "<group>"; };
 		C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDBSettingsSection.swift; sourceTree = "<group>"; };
 		C965BDD5268E728F00F02224 /* InternalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalSettingsView.swift; sourceTree = "<group>"; };
@@ -2106,6 +2116,11 @@
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
 				4A3D2992268583710082F293 /* CardModels.swift */,
 				4A3D299026850CB60082F293 /* CardGrid.swift */,
+				C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */,
+				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
+				C9655DEE26A09A8600925912 /* CardListViews.swift */,
+				C9655DEC26A09A6900925912 /* CardsContainer.swift */,
+				C9655DEA26A09A2800925912 /* GridModel.swift */,
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A1D054F2669715B00D63333 /* CardViewController.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
@@ -4437,6 +4452,7 @@
 				C9BED4BB2667E3F8001D9C77 /* ZeroQueryModels.swift in Sources */,
 				BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */,
 				C9E5F2C22677D8BA00025A7F /* TabLocationHost.swift in Sources */,
+				C9655DF126A09AC900925912 /* CompletionForAnimation.swift in Sources */,
 				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
 				4A3D299126850CB60082F293 /* CardGrid.swift in Sources */,
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
@@ -4477,6 +4493,7 @@
 				D0C95E36200FDC5500E4E51C /* MetadataParserHelper.swift in Sources */,
 				C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */,
 				0BF1B7E31AC60DEA00A7B407 /* InsetButton.swift in Sources */,
+				C9655DF326A09B4300925912 /* CardTransitionAnimator.swift in Sources */,
 				D87F84AC20B891160091F2DA /* TabDisplayManager.swift in Sources */,
 				D0C95EF6201A55A800E4E51C /* BrowserViewController+UIDropInteractionDelegate.swift in Sources */,
 				D31CF65C1CC1959A001D0BD0 /* PrivilegedRequest.swift in Sources */,
@@ -4515,6 +4532,7 @@
 				C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */,
 				C9C18E0A26559007004710CD /* BoldSpanView.swift in Sources */,
 				BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */,
+				C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */,
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
 				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
@@ -4534,6 +4552,7 @@
 				4A88F97526630EFC007C203D /* CardDetails.swift in Sources */,
 				C9F49CBD266FDA9500F3408A /* SearchBar.swift in Sources */,
 				435D7CC5246209AA0043ACB9 /* IntroViewController.swift in Sources */,
+				C9655DEF26A09A8600925912 /* CardListViews.swift in Sources */,
 				A83E5AB71C1D993D0026D912 /* UIPasteboardExtensions.swift in Sources */,
 				D8EFFA0C1FF5B1FA001D3A09 /* NavigationRouter.swift in Sources */,
 				D0E55C4F1FB4FD23006DC274 /* FormPostHelper.swift in Sources */,
@@ -4638,6 +4657,7 @@
 				C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */,
 				C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */,
 				43A5643823CD1E1C00B6857D /* UpdateViewController.swift in Sources */,
+				C9655DEB26A09A2800925912 /* GridModel.swift in Sources */,
 				C9F49CBB266FD16000F3408A /* WebsiteDataView.swift in Sources */,
 				BC85E226264F407C0068092F /* TourPromptView.swift in Sources */,
 				E663D5781BB341C4001EF30E /* ToggleButton.swift in Sources */,
