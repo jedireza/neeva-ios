@@ -7,6 +7,7 @@ import Shared
 import SDWebImage
 import XCGLogger
 import Defaults
+import WebKit
 
 private let log = Logger.browserLogger
 
@@ -110,6 +111,21 @@ class TestAppDelegate: AppDelegate {
         // Clear login state
         NeevaUserInfo.shared.deleteLoginCookie()
         NeevaUserInfo.shared.clearCache()
+
+        // Clear WebKit's storage (grumble, why no `All` option?)
+        let webkitDataTypes = Set([
+            WKWebsiteDataTypeFetchCache,
+            WKWebsiteDataTypeDiskCache,
+            WKWebsiteDataTypeMemoryCache,
+            WKWebsiteDataTypeOfflineWebApplicationCache,
+            WKWebsiteDataTypeCookies,
+            WKWebsiteDataTypeSessionStorage,
+            WKWebsiteDataTypeLocalStorage,
+            WKWebsiteDataTypeWebSQLDatabases,
+            WKWebsiteDataTypeIndexedDBDatabases,
+            WKWebsiteDataTypeServiceWorkerRegistrations
+        ])
+        WKWebsiteDataStore.default().removeData(ofTypes: webkitDataTypes, modifiedSince: .distantPast, completionHandler: {})
 
         // Clear image cache
         SDImageCache.shared.clearDisk()
