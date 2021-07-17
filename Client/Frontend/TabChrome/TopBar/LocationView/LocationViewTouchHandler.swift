@@ -67,15 +67,16 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         var subscriptions: Set<AnyCancellable> = []
 
         // MARK: Drag & Drop
-
         func dragInteraction(
             _ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession
         ) -> [UIDragItem] {
             if let url = wrapper?.url, !InternalURL.isValid(url: url) {
                 return [UIDragItem(itemProvider: NSItemProvider(url: url))]
             }
+
             return []
         }
+        
         func dragInteraction(
             _ interaction: UIDragInteraction, itemsForAddingTo session: UIDragSession,
             withTouchAt point: CGPoint

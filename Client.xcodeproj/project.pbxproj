@@ -1989,6 +1989,7 @@
 				E65075501E37F6D1006961AC /* UIViewExtensions.swift */,
 				BC264BC126746098001527B6 /* ViewExtensions.swift */,
 				C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */,
+				663AFC4D26A25B2300E4C492 /* NSItemProvider.swift */,
 				663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */,
 			);
 			path = Extensions;
@@ -4855,6 +4856,7 @@
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
 				3BB50E201D627539004B33DF /* ZeroQueryContent.swift in Sources */,
+				3BB50E201D627539004B33DF /* ZeroQueryViewController.swift in Sources */,
 				663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */,
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
 				C9C18E0826559007004710CD /* SearchSuggestionViews.swift in Sources */,

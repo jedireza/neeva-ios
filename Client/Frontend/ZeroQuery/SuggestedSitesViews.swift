@@ -142,7 +142,7 @@ struct SuggestedSitesView: View {
                         if i > 0 {
                             Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
                         }
-
+                        
                         SuggestedSiteView(
                             site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
                         )
