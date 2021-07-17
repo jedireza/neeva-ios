@@ -82,8 +82,8 @@ class BaseTestCase: XCTestCase {
         waitFor(element, with: "exists != true", timeout: timeoutValue, file: file, line: line)
     }
 
-    func waitForValueContains(_ element: XCUIElement, value: String, file: String = #file, line: UInt = #line) {
-        waitFor(element, with: "value CONTAINS '\(value)'", file: file, line: line)
+    func waitForValueContains(_ element: XCUIElement, value: String, timeout: TimeInterval = 5.0, file: String = #file, line: UInt = #line) {
+        waitFor(element, with: "value CONTAINS '\(value)'", timeout: timeout, file: file, line: line)
     }
 
     private func waitFor(_ element: XCUIElement, with predicateString: String, description: String? = nil, timeout: TimeInterval = 5.0, file: String, line: UInt) {
