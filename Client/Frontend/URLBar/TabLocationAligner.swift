@@ -102,8 +102,7 @@ fileprivate struct LocationLabelAligner<Label: View>: View {
         label()
             .background(GeometryReader { textGeom in
                 (debug ? Color.yellow.opacity(0.25) : Color.clear)
-                    .onAppear { self.titleWidth = textGeom.size.width }
-                    .onChange(of: textGeom.size.width) { self.titleWidth = $0 }
+                    .useEffect(deps: textGeom.size.width) { self.titleWidth = $0 }
                     .overlay(Group {
                         if debug {
                             Color.orange.frame(width: 1, height: 10)

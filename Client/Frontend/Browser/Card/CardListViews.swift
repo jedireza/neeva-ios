@@ -19,7 +19,7 @@ struct SpaceCardsView: View {
 
     var body: some View {
         ForEach(spacesModel.allDetails, id: \.id) { details in
-            FittedCard(details: details, config: .grid)
+            FittedCard(details: details)
                 .modifier(HideSelectedForTransition(details: details))
                 .id(details.id)
         }
@@ -34,18 +34,18 @@ struct TabCardsView: View {
         Group {
             if FeatureFlag[.groupsInSwitcher] {
                 ForEach(tabGroupModel.allDetails, id: \.id) { details in
-                    FittedCard(details: details, config: .grid)
+                    FittedCard(details: details)
                         .modifier(HideSelectedForTransition(details: details))
                         .id(details.id)
                 }
                 ForEach(tabModel.allDetailsWithExclusionList, id: \.id) { details in
-                    FittedCard(details: details, config: .grid)
+                    FittedCard(details: details)
                         .modifier(HideSelectedForTransition(details: details))
                         .id(details.id)
                 }
             } else {
                 ForEach(tabModel.allDetails, id: \.id) { details in
-                    FittedCard(details: details, config: .grid)
+                    FittedCard(details: details)
                         .modifier(HideSelectedForTransition(details: details))
                         .id(details.id)
                 }

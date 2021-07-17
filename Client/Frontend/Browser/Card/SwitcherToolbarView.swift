@@ -90,7 +90,7 @@ struct SwitcherToolbarView: View {
             }.padding(.horizontal, 16)
         }
         .background(Color.DefaultBackground)
-        .offset(y: gridModel.isHidden ? 90 : 0)
+        .opacity(gridModel.isHidden ? 0 : 1)
         .animation(.easeOut)
     }
 }

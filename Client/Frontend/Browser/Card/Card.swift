@@ -6,17 +6,13 @@ import SDWebImageSwiftUI
 import Shared
 
 enum CardUX {
-    static let DefaultCardSize : CGFloat = 160
-    static let ShadowRadius : CGFloat = 2
-    static let CornerRadius : CGFloat = 5
-    static let ButtonSize : CGFloat = 28
-    static let FaviconSize : CGFloat = 18
-    static let HeaderSize : CGFloat = ButtonSize + 1
-}
-
-enum CardConfig {
-    case carousel
-    case grid
+    static let DefaultCardSize: CGFloat = 160
+    static let ShadowRadius: CGFloat = 2
+    static let CornerRadius: CGFloat = 5
+    static let ButtonSize: CGFloat = 28
+    static let FaviconSize: CGFloat = 18
+    static let HeaderSize: CGFloat = ButtonSize + 1
+    static let CardHeight: CGFloat = 174
 }
 
 struct BorderTreatment: ViewModifier {
@@ -54,27 +50,21 @@ extension EnvironmentValues {
 
 struct FittedCard<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
-    let config: CardConfig
 
     @Environment(\.cardSize) private var cardSize
 
     var body: some View {
-        Card(details: details, config: config)
-            .frame(width: cardSize, height: cardSize + CardUX.HeaderSize)
+        Card(details: details)
+            .frame(width: cardSize, height: CardUX.CardHeight)
     }
 }
 
 struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
-    let config: CardConfig
     var showsSelection = true
 
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> ()
-    @State private var isPressed = false {
-        didSet {
-            print("**** \(oldValue) -> \(isPressed)")
-        }
-    }
+    @State private var isPressed = false
 
     var body: some View {
         GeometryReader { geom in

@@ -38,17 +38,15 @@ struct CardsContainer: View {
                             gridModel.animationThumbnailState = .visibleForTrayHidden
                         }
                     }
-                }.padding(.top, 20).onAppear {
+                }
+                .padding(.top, 20)
+                .useEffect(deps: tabModel.selectedTabID) { _ in
                     value.scrollTo(
                         indexInsideTabGroupModel != nil ?
                             tabModel.manager.selectedTab?.rootUUID :
                             tabModel.selectedTabID)
-                }.onChange(of: tabModel.selectedTabID) { _ in
-                    value.scrollTo(
-                        indexInsideTabGroupModel != nil ?
-                            tabModel.manager.selectedTab?.rootUUID :
-                            tabModel.selectedTabID)
-                }.background(GeometryReader { proxy in
+                }
+                .background(GeometryReader { proxy in
                     Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self,
                                            value:  proxy.frame(in: .named("scroll")).minY)
                 })

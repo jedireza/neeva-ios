@@ -11,16 +11,17 @@ struct CardStrip<Model: CardModel>: View {
     let onLongPress: (String) -> ()
 
     var body: some View {
-            LazyHStack(spacing: 32) {
-                ForEach(model.allDetails.indices, id: \.self) { index in
-                    let details = model.allDetails[index]
-                    Card<Details>(details: details, config: .carousel)
-                        .environment(\.selectionCompletion) {}
-                        .onLongPressGesture {
-                            onLongPress(model.allDetails[index].id)
-                        }
-                }
-            }.padding().frame(height: 275)
+        LazyHStack(spacing: 32) {
+            ForEach(model.allDetails.indices, id: \.self) { index in
+                let details = model.allDetails[index]
+                Card(details: details)
+                    .aspectRatio(1, contentMode: .fit)
+                    .environment(\.selectionCompletion) {}
+                    .onLongPressGesture {
+                        onLongPress(model.allDetails[index].id)
+                    }
+            }
+        }.padding().frame(height: 275)
     }
 }
 

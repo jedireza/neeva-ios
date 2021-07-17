@@ -42,4 +42,21 @@ extension View {
             .clipped()
             .padding(-padding)
     }
+
+    /// Inspired by React’s `useEffect` hook, this modifier calls `perform(deps)` both `onAppear` and whenever `deps` changes.
+    func useEffect<T: Equatable>(deps: T, perform updater: @escaping (T) -> ()) -> some View {
+        self.onChange(of: deps, perform: updater)
+            .onAppear { updater(deps) }
+    }
+    /// Inspired by React’s `useEffect` hook, this modifier calls `perform(deps)` both `onAppear` and whenever `deps` changes.
+    func useEffect<T0: Equatable, T1: Equatable>(deps zero: T0, _ one: T1, perform updater: @escaping (T0, T1) -> ()) -> some View {
+        self.onChange(of: Pair(zero: zero, one: one)) { updater($0.zero, $0.one) }
+            .onAppear { updater(zero, one) }
+    }
+    // TODO: add conformances for larger tuples as necessary
 }
+
+fileprivate struct Pair<T0: Equatable, T1: Equatable>: Equatable {
+    let zero: T0, one: T1
+}
+

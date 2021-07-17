@@ -9,6 +9,7 @@ struct PressReportingButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         return configuration.label
+            .contentShape(Rectangle())
             .onChange(of: configuration.isPressed) { value in
                 withAnimation(.interactiveSpring()) {
                     isPressed = value

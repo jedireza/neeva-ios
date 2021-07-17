@@ -30,15 +30,15 @@ struct UrlToOpenModel {
 
 class BrowserViewController: UIViewController {
     var zeroQueryViewController: ZeroQueryViewController?
-    lazy var cardStripViewController: CardViewController? = {
-        let controller = CardViewController(tabManager: self.tabManager, config: .carousel)
+    lazy var cardStripViewController: CardStripViewController? = {
+        let controller = CardStripViewController(tabManager: self.tabManager)
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
         return controller
     }()
-    lazy var cardGridViewController: CardViewController = {
-        let controller = CardViewController(tabManager: self.tabManager, config: .grid)
+    lazy var cardGridViewController: CardGridViewController = {
+        let controller = CardGridViewController(tabManager: self.tabManager)
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)

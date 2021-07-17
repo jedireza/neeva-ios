@@ -15,8 +15,6 @@ enum CardGridUX {
     static let YStaticOffset: CGFloat =
         (FeatureFlag[.groupsInSwitcher] ? PickerHeight + 2 * PickerPadding : 0)
         + GridSpacing
-
-    static let columns = 2
 }
 
 struct CardGrid: View {
@@ -24,8 +22,10 @@ struct CardGrid: View {
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var gridModel: GridModel
 
-    @State var switcherState: SwitcherViews = .tabs
-    @State var cardSize: CGFloat = CardUX.DefaultCardSize
+    @State private var switcherState: SwitcherViews = .tabs
+    @State private var cardSize: CGFloat = CardUX.DefaultCardSize
+    @State private var columnCount = 2
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var indexInsideTabGroupModel: Int? {
         guard FeatureFlag[.groupsInSwitcher] else {
@@ -62,6 +62,34 @@ struct CardGrid: View {
         }
     }
 
+    @ViewBuilder func transitionAnimator(size: CGSize) -> some View {
+        if gridModel.animationThumbnailState != .hidden, let selectedCardDetails = selectedCardDetails {
+            CardTransitionAnimator(
+                selectedCardDetails: selectedCardDetails,
+                cardSize: cardSize,
+                offset: CGPoint(
+                    x: CardGridUX.GridSpacing +
+                        (CardGridUX.GridSpacing + cardSize) * CGFloat(indexInGrid % columnCount),
+                    y: (CardUX.CardHeight + CardGridUX.GridSpacing) * floor(CGFloat(indexInGrid) / CGFloat(columnCount))
+                        + CardGridUX.YStaticOffset + gridModel.scrollOffset
+                ),
+                containerSize: size
+            )
+        }
+    }
+
+    func updateCardSize(width: CGFloat, horizontalSizeClass: UserInterfaceSizeClass?) {
+        if width > 1000 {
+            columnCount = 4
+        } else {
+            switch horizontalSizeClass {
+            case .regular: columnCount = 3
+            default: columnCount = 2
+            }
+        }
+        self.cardSize = (width - CGFloat(columnCount + 1) * CardGridUX.GridSpacing) / CGFloat(columnCount)
+    }
+
     var body: some View {
         GeometryReader { geom in
             VStack(spacing: 0) {
@@ -72,30 +100,12 @@ struct CardGrid: View {
                                columns: Array(repeating:
                                                 GridItem(.fixed(cardSize),
                                                          spacing: CardGridUX.GridSpacing),
-                                              count: 2)).environment(\.cardSize, cardSize)
+                                              count: columnCount))
+                    .environment(\.cardSize, cardSize)
                 Spacer(minLength: 0)
-            }.overlay(Group {
-                if gridModel.animationThumbnailState != .hidden, let selectedCardDetails = selectedCardDetails {
-                    CardTransitionAnimator(
-                        selectedCardDetails: selectedCardDetails,
-                        cardSize: cardSize,
-                        offset: CGPoint(
-                            x: (indexInGrid % CardGridUX.columns) == 0 ?
-                                CardGridUX.GridSpacing :
-                                CardGridUX.GridSpacing * 2 + cardSize,
-                            y: (CardUX.HeaderSize + cardSize + CardGridUX.GridSpacing) * floor(CGFloat(indexInGrid) / CGFloat(CardGridUX.columns))
-                                + CardGridUX.YStaticOffset + gridModel.scrollOffset
-                        ),
-                        containerSize: geom.size
-                    )
-                }
-            }, alignment: .topLeading)
-            .onChange(of: geom.size.width) { _ in
-                self.cardSize = (geom.size.width - 3 * CardGridUX.GridSpacing) / 2
             }
-            .onAppear {
-                self.cardSize = (geom.size.width - 3 * CardGridUX.GridSpacing) / 2
-            }
+            .overlay(transitionAnimator(size: geom.size), alignment: .topLeading)
+            .useEffect(deps: geom.size.width, horizontalSizeClass, perform: updateCardSize)
             .clipped()
         }
     }

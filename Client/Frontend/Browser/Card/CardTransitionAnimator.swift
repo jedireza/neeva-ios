@@ -11,7 +11,7 @@ struct CardTransitionAnimator: View {
     @EnvironmentObject private var gridModel: GridModel
 
     var body: some View {
-        Card(details: selectedCardDetails, config: .grid, showsSelection: !gridModel.isHidden)
+        Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden)
             .runAfter(toggling: gridModel.isHidden, fromTrueToFalse: {
                 gridModel.animationThumbnailState = .hidden
             }, fromFalseToTrue: {
@@ -19,7 +19,7 @@ struct CardTransitionAnimator: View {
             })
             .frame(
                 width: gridModel.isHidden ? containerSize.width : cardSize,
-                height: gridModel.isHidden ? containerSize.height + CardUX.HeaderSize : cardSize  + CardUX.ButtonSize
+                height: gridModel.isHidden ? containerSize.height + CardUX.HeaderSize : CardUX.CardHeight
             )
             .clipped(padding: 2)
             .offset(
