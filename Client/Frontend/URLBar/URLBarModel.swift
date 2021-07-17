@@ -5,6 +5,11 @@ import Combine
 import SwiftUI
 
 class URLBarModel: ObservableObject {
+    enum ReloadButtonState: String {
+        case reload = "Reload"
+        case stop = "Stop"
+    }
+
     @Published var url: URL?
     /// `true` iff all assets on the page are secure (i.e. there is no mixed content)
     @Published var isSecure = false

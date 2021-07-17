@@ -42,7 +42,7 @@ struct LocationViewTrackingButton: View {
 
 struct LocationViewReloadButton: View {
     let buildMenu: () -> UIMenu?
-    let state: ReloadButtonState
+    let state: URLBarModel.ReloadButtonState
     let onTap: () -> ()
 
     var body: some View {

@@ -48,23 +48,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
         }
     }
 
-    func urlBarDidTapShield(_ urlBar: LegacyURLBarView, from button: UIButton) {
-        let host = PopOverTrackingMenuViewController(
-            delegate: self,
-            source: button)
-
-        // log tap shield
-        ClientLogger.shared.logCounter(.OpenShield, attributes: EnvironmentHelper.shared.getAttributes())
-
-        //Fix autolayout sizing
-        host.view.backgroundColor = UIColor.systemGroupedBackground
-        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 120))
-        present(
-            host,
-            animated: true,
-            completion: nil)
-    }
-
     func urlBarDidPressStop(_ urlBar: LegacyURLBarView) {
         tabManager.selectedTab?.stop()
     }
@@ -104,30 +87,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
         )
     }
 
-    func locationActionsForURLBar(_ urlBar: LegacyURLBarView) -> [AccessibleAction] {
-        if UIPasteboard.general.string != nil {
-            return [pasteGoAction, pasteAction, copyAddressAction]
-        } else {
-            return [copyAddressAction]
-        }
-    }
-
-    func urlBarDidLongPressLegacyLocation(_ urlBar: LegacyURLBarView) {
-        let urlActions = self.getLegacyLongPressLocationBarActions(with: urlBar, webViewContainer: self.webViewContainer)
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-        self.presentSheetWith(actions: [urlActions], on: self, from: urlBar)
-    }
-
-    func urlBarLocationAccessibilityActions(_ urlBar: LegacyURLBarView) -> [UIAccessibilityCustomAction]? {
-        return locationActionsForURLBar(urlBar).map { $0.accessibilityCustomAction }
-    }
-
-    func urlBar(_ urlBar: LegacyURLBarView, didRestoreText text: String) {
-        _urlBarUpdateSearchController(for: text)
-        legacyURLBar.historySuggestionModel.setQueryWithoutAutocomplete(text)
-    }
-
     func urlBar(didEnterText text: String) {
         _urlBarUpdateSearchController(for: text)
     }
@@ -161,10 +120,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
             print("Error handling URL entry: \"\(text)\".")
             assertionFailure("Couldn't generate search URL: \(text)")
         }
-    }
-
-    func urlBarDidBeginDragInteraction(_ urlBar: LegacyURLBarView) {
-        dismissVisibleMenus()
     }
 }
 

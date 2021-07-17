@@ -3,6 +3,12 @@
 import SwiftUI
 import Combine
 
+protocol LegacyTabLocationViewDelegate: AnyObject {
+    func tabLocationViewDidTapReload()
+    func tabLocationViewDidTap(shareButton: UIView)
+    func tabLocationViewReloadMenu() -> UIMenu?
+}
+
 struct TabLocationViewWrapper: View {
     let historyModel: HistorySuggestionModel
     let neevaModel: NeevaSuggestionModel
@@ -58,7 +64,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
             .sink { [weak urlBar] change in
                 switch change {
                 case (false, true):
-                    urlBar?.enterOverlayMode(nil, pasted: false, search: false, updateModel: false)
+                    urlBar?.enterOverlayMode()
                 case (true, false):
                     urlBar?.leaveOverlayMode()
                 default: break

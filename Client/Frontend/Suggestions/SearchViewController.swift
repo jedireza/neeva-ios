@@ -12,7 +12,6 @@ import Defaults
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didSelectURL url: URL)
     func searchViewController(_ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String)
-    func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool)
 }
 
 enum SearchViewControllerUX {

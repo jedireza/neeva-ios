@@ -90,32 +90,6 @@ class BrowserViewController: UIViewController {
     var displayedPopoverController: UIViewController?
     var updateDisplayedPopoverProperties: (() -> Void)?
 
-    // UIAccessibilityCustomAction subclass holding an AccessibleAction instance does not work, thus unable to generate AccessibleActions and UIAccessibilityCustomActions "on-demand" and need to make them "persistent" e.g. by being stored in BVC
-    // location label actions
-    // TODO(jed): remove with rest of legacy URL bar
-    lazy var pasteGoAction = AccessibleAction(name: Strings.PasteAndGoTitle) {
-        if let pasteboardContents = UIPasteboard.general.string {
-            self.urlBar(didSubmitText: pasteboardContents)
-            return true
-        }
-        return false
-    }
-    lazy var pasteAction = AccessibleAction(name: Strings.PasteTitle) {
-        if let pasteboardContents = UIPasteboard.general.string {
-            // Enter overlay mode and make the search controller appear.
-            self.legacyURLBar.enterOverlayMode(pasteboardContents, pasted: true, search: true)
-
-            return true
-        }
-        return false
-    }
-    lazy var copyAddressAction = AccessibleAction(name: Strings.CopyAddressTitle) {
-        if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? self.legacyURLBar.model.url {
-            UIPasteboard.general.url = url
-        }
-        return true
-    }
-
     fileprivate weak var tabTrayController: TabTrayControllerV1?
     let profile: Profile
     let tabManager: TabManager
@@ -428,10 +402,8 @@ class BrowserViewController: UIViewController {
         urlBarTopTabsContainer.addSubview(legacyURLBar)
         urlBarTopTabsContainer.addSubview(topTabsContainer)
         view.addSubview(header)
-        if !FeatureFlag[.legacyURLBar] {
-            addChild(legacyURLBar.locationHost)
-            legacyURLBar.locationHost.didMove(toParent: self)
-        }
+        addChild(legacyURLBar.locationHost)
+        legacyURLBar.locationHost.didMove(toParent: self)
 
         view.addSubview(alertStackView)
         footer = UIView()
@@ -463,7 +435,6 @@ class BrowserViewController: UIViewController {
         for tab in tabManager.tabs {
             // Update the `background-color` of any blank webviews.
             (tab.webView as? TabWebView)?.applyTheme()
-            legacyURLBar.legacyLocationView.tabDidChangeContentBlocking(tab)
         }
         tabManager.selectedTab?.applyTheme()
 
@@ -938,9 +909,6 @@ class BrowserViewController: UIViewController {
     
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
         legacyURLBar.model.url = url
-        if FeatureFlag[.legacyURLBar] {
-            legacyURLBar.leaveOverlayMode()
-        }
         legacyURLBar.model.setEditing(to: false)
 
         if let nav = tab.loadRequest(URLRequest(url: url)) {
@@ -949,11 +917,8 @@ class BrowserViewController: UIViewController {
     }
     
     override func accessibilityPerformEscape() -> Bool {
-        if !FeatureFlag[.legacyURLBar], legacyURLBar.model.isEditing {
+        if legacyURLBar.model.isEditing {
             legacyURLBar.model.setEditing(to: false)
-            return true
-        } else if FeatureFlag[.legacyURLBar], legacyURLBar.inOverlayMode {
-            legacyURLBar.didClickCancel()
             return true
         } else if let selectedTab = tabManager.selectedTab, selectedTab.canGoBack {
             selectedTab.goBack()
@@ -986,11 +951,7 @@ class BrowserViewController: UIViewController {
         legacyURLBar.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
 
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
-        if FeatureFlag[.legacyURLBar] {
-            legacyURLBar.legacyLocationView.updateShareButton(isPage)
-        } else {
-            legacyURLBar.model.canShare = isPage
-        }
+        legacyURLBar.model.canShare = isPage
         toolbarModel.isPage = isPage
     }
 
@@ -1048,29 +1009,24 @@ class BrowserViewController: UIViewController {
         self.openURLInNewTab(url, isPrivate: isPrivate)
     }
 
-    func focusLocationTextField(forTab tab: Tab?, setSearchText searchText: String? = nil) {
+    func focusLocationTextField(forTab tab: Tab?) {
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
             // Without a delay, the text field fails to become first responder
             // Check that the newly created tab is still selected.
             // This let's the user spam the Cmd+T button without lots of responder changes.
             guard tab == self.tabManager.selectedTab else { return }
-            if FeatureFlag[.legacyURLBar] {
-                self.legacyURLBar.tabLocationViewDidTapLocation(self.legacyURLBar.legacyLocationView)
-            }
-            if let text = searchText {
-                self.legacyURLBar.setLocation(text, search: true)
-            }
+            self.legacyURLBar.model.setEditing(to: true)
         }
     }
 
-    func openBlankNewTab(focusLocationField: Bool, isPrivate: Bool = false, searchFor searchText: String? = nil) {
+    func openBlankNewTab(focusLocationField: Bool, isPrivate: Bool = false) {
         popToBVC()
 
         let newTab = tabManager.addTab(isPrivate: isPrivate)
         tabManager.select(newTab)
 
         if focusLocationField {
-            focusLocationTextField(forTab: newTab, setSearchText: searchText)
+            focusLocationTextField(forTab: newTab)
         }
 
         zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
@@ -1094,9 +1050,7 @@ class BrowserViewController: UIViewController {
         currentViewController.dismiss(animated: true, completion: nil)
         if currentViewController != self {
             _ = self.navigationController?.popViewController(animated: true)
-        } else if FeatureFlag[.legacyURLBar], legacyURLBar.inOverlayMode {
-            legacyURLBar.didClickCancel()
-        } else if !FeatureFlag[.legacyURLBar], legacyURLBar.model.isEditing {
+        } else if legacyURLBar.model.isEditing {
             legacyURLBar.model.setEditing(to: false)
         }
     }
@@ -1231,12 +1185,7 @@ class BrowserViewController: UIViewController {
         if let url = webView.url {
             if tab === tabManager.selectedTab {
                 legacyURLBar.model.isSecure = webView.hasOnlySecureContent
-                let isPage = tab.url?.displayURL?.isWebPage() ?? false
-                if FeatureFlag[.legacyURLBar] {
-                    legacyURLBar.legacyLocationView.updateShareButton(isPage)
-                } else {
-                    legacyURLBar.model.canShare = isPage
-                }
+                legacyURLBar.model.canShare = tab.url?.displayURL?.isWebPage() ?? false
             }
 
             if (!InternalURL.isValid(url: url) || url.isReaderModeURL), !url.isFileURL {
@@ -1586,7 +1535,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
 
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesn't correctly dismiss the zero query screen
-        guard !topTabsVisible, FeatureFlag[.legacyURLBar] ? !self.legacyURLBar.inOverlayMode : !legacyURLBar.model.isEditing else {
+        guard !topTabsVisible, !legacyURLBar.model.isEditing else {
             return
         }
 
@@ -1599,12 +1548,8 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 
     func zeroQueryPanel(didEnterQuery query: String) {
-        if FeatureFlag[.legacyURLBar] {
-            self.legacyURLBar.enterOverlayMode(query, pasted: true, search: true)
-        } else {
-            legacyURLBar.queryModel.value = query
-            legacyURLBar.model.setEditing(to: true)
-        }
+        legacyURLBar.queryModel.value = query
+        legacyURLBar.model.setEditing(to: true)
     }
 }
 
@@ -1615,11 +1560,7 @@ extension BrowserViewController: SearchViewControllerDelegate {
     }
 
     func searchViewController(_ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String) {
-        self.legacyURLBar.setLocation(suggestion, search: true)
-    }
-
-    func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool) {
-        self.legacyURLBar.setLocation(text, search: search)
+        self.legacyURLBar.queryModel.value = suggestion
     }
 }
 
@@ -2098,11 +2039,7 @@ extension BrowserViewController: TabTrayDelegate {
     }
 
     func tabTrayDidTapLocationBar(_ tabTray: TabTrayControllerV1) {
-        if FeatureFlag[.legacyURLBar] {
-            legacyURLBar.tabLocationViewDidTapLocation(legacyURLBar.legacyLocationView)
-        } else {
-            legacyURLBar.model.setEditing(to: true)
-        }
+        legacyURLBar.model.setEditing(to: true)
     }
 
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController) {

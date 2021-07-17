@@ -38,7 +38,7 @@ extension BrowserViewController {
     @objc func selectLocationBarKeyCommand() {
         TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "select-location-bar"])
         scrollController.showToolbars(animated: true)
-        legacyURLBar.tabLocationViewDidTapLocation(legacyURLBar.legacyLocationView)
+        legacyURLBar.model.setEditing(to: true)
     }
 
     @objc func newTabKeyCommand() {

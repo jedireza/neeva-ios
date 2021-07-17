@@ -13,6 +13,10 @@ private enum UX {
     static let BackgroundSize = CGSize(width: 32, height: 32)
 }
 
+private let EllipsePointerStyleProvider: UIButton.PointerStyleProvider = { button, effect, style in
+    UIPointerStyle(effect: effect, shape: .path(UIBezierPath(ovalIn: button.bounds)))
+}
+
 class ToggleButton: UIButton {
     var selectedBackgroundColor = UIColor.label
 

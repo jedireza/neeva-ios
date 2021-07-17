@@ -33,15 +33,6 @@ struct LocationEditView: View {
 }
 
 struct LocationTextField_Previews: PreviewProvider {
-    struct Preview: View {
-        @State var text: String?
-        let activeLensBang: ActiveLensBangInfo?
-
-        var body: some View {
-            LocationEditView(isEditing: .constant(true), onSubmit: { _ in })
-                .environmentObject(HistorySuggestionModel(previewSites: []))
-        }
-    }
     static var previews: some View {
         Group {
             LocationEditView(isEditing: .constant(true), onSubmit: { _ in })

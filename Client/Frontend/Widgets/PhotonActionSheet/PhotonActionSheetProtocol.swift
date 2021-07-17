@@ -32,31 +32,4 @@ extension PhotonActionSheetProtocol {
         }
         viewController.present(sheet, animated: true, completion: nil)
     }
-
-    func getLegacyLongPressLocationBarActions(with urlBar: LegacyURLBarView, webViewContainer: UIView) -> [PhotonActionSheetItem] {
-        let pasteGoAction = PhotonActionSheetItem(title: Strings.PasteAndGoTitle, iconString: "doc.on.clipboard", iconType: .SystemImage, iconAlignment: .right) { _, _ in
-            if let pasteboardContents = UIPasteboard.general.string {
-                urlBar.delegate?.urlBar(didSubmitText: pasteboardContents)
-            }
-        }
-
-        let pasteAction = PhotonActionSheetItem(title: Strings.PasteTitle, iconString: "doc.on.clipboard.fill", iconType: .SystemImage, iconAlignment: .right) { _, _ in
-            if let pasteboardContents = UIPasteboard.general.string {
-                urlBar.enterOverlayMode(pasteboardContents, pasted: true, search: true)
-            }
-        }
-        let copyAddressAction = PhotonActionSheetItem(title: Strings.CopyAddressTitle, iconString: "link", iconType: .SystemImage, iconAlignment: .right) { _, _ in
-            if let url = self.tabManager.selectedTab?.canonicalURL?.displayURL ?? urlBar.model.url {
-                UIPasteboard.general.url = url
-
-                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
-                ToastViewManager.shared.enqueue(toast: toastView)
-            }
-        }
-        if UIPasteboard.general.string != nil {
-            return [pasteGoAction, pasteAction, copyAddressAction]
-        } else {
-            return [copyAddressAction]
-        }
-    }
 }
