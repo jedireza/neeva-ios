@@ -38,6 +38,10 @@ extension CardDetails {
         false
     }
 
+    func validateDrop(info: DropInfo) -> Bool {
+        return false
+    }
+
     func performDrop(info: DropInfo) -> Bool {
         return false
     }
@@ -144,12 +148,16 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         self.manager = manager
     }
 
-    public func performDrop(info: DropInfo) -> Bool {
-        guard info.hasItemsConforming(to: ["public.url"]) else {
+    func validateDrop(info: DropInfo) -> Bool {
+        return info.hasItemsConforming(to: [.url])
+    }
+
+    func performDrop(info: DropInfo) -> Bool {
+        guard validateDrop(info: info) else {
             return false
         }
 
-        let items = info.itemProviders(for: ["public.url"])
+        let items = info.itemProviders(for: [.url])
         for item in items {
             _ = item.loadObject(ofClass: URL.self) { url, _ in
                 if let url = url {
@@ -275,12 +283,18 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
 
     func onClose() {}
 
+    func validateDrop(info: DropInfo) -> Bool {
+        return info.hasItemsConforming(to: ["public.text", "public.url"])
+    }
+
     func performDrop(info: DropInfo) -> Bool {
-        guard info.hasItemsConforming(to: ["public.text", "public.url"]) else {
+        guard let bvc = bvc, validateDrop(info: info) else {
             return false
         }
 
         let items = info.itemProviders(for: ["public.url"])
+        let foundUrl = !items.isEmpty
+
         for item in items {
             _ = item.loadObject(ofClass: URL.self) { url, _ in
                 if let url = url, let space = self.manager.get(for: self.id) {

@@ -4,6 +4,7 @@
 
 import Foundation
 import Storage
+import Shared
 
 extension BrowserViewController: UIDropInteractionDelegate {
     func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool

@@ -20,6 +20,7 @@ extension EnvironmentValues {
         set { self[ColumnsKey] = newValue }
     }
 }
+
 struct CardsContainer: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro: Bool
 
