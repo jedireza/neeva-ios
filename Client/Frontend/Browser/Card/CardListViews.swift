@@ -92,16 +92,11 @@ struct TabCardsView: View {
                 FittedCard(details: details)
                     .onDrag {
                         dragging = details
-                        let provider = NSItemProvider()
-                        provider.registerObject(ofClass: DraggableTab.self, visibility: .ownProcess) { cb in
-                            cb(DraggableTab(id: details.id), nil)
-                            return nil
-                        }
-                        return provider
+                        return NSItemProvider(object: DraggableTab(id: details.id))
                     }
                     .modifier(CardAdjustments(details: details, isDragging: dragging?.id == details.id))
                     .onDrop(of: [DraggableTab.uti, .url, .text], delegate: DropDelegate(item: details, items: $tabModel.allDetails, dragging: $dragging))
-            }.animation(.interactiveSpring(), value: tabModel.allDetails.map(\.id))
+            }.animation(.interactiveSpring().delay(0.1), value: tabModel.allDetails.map(\.id))
         }
     }
 
@@ -121,8 +116,10 @@ struct TabCardsView: View {
                 let to = items.firstIndex { $0.id == item.id }
                 if let from = from, let to = to,
                    items[to].id != dragging.id {
-                    items.move(fromOffsets: IndexSet(integer: from),
-                        toOffset: to > from ? to + 1 : to)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(30)) {
+                        items.move(fromOffsets: IndexSet(integer: from),
+                            toOffset: to > from ? to + 1 : to)
+                    }
                 }
             }
         }
