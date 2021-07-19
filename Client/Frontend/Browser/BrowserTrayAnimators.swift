@@ -82,6 +82,7 @@ private extension TrayToBrowserAnimator {
             frameResizeClosure()
         }
 
+        let originalBgColor = UIApplication.shared.windows.first?.backgroundColor
         UIView.animate(withDuration: self.transitionDuration(using: transitionContext),
             delay: 0, usingSpringWithDamping: 1,
             initialSpringVelocity: 0,
@@ -105,6 +106,7 @@ private extension TrayToBrowserAnimator {
             bvc.legacyURLBar.isTransitioning = false
             tabTray.toolbar.isUserInteractionEnabled = true
             transitionContext.completeTransition(true)
+            UIApplication.shared.windows.first?.backgroundColor = originalBgColor
         })
     }
 }
@@ -188,6 +190,7 @@ private extension BrowserToTrayAnimator {
                 frameResizeClosure()
             }
 
+            let originalBgColor = UIApplication.shared.windows.first?.backgroundColor
             UIView.animate(withDuration: self.transitionDuration(using: transitionContext),
                 delay: 0, usingSpringWithDamping: 1,
                 initialSpringVelocity: 0,
@@ -221,6 +224,8 @@ private extension BrowserToTrayAnimator {
                 bvc.legacyURLBar.isTransitioning = false
                 tabTray.toolbar.isUserInteractionEnabled = true
                 transitionContext.completeTransition(true)
+                
+                UIApplication.shared.windows.first?.backgroundColor = originalBgColor
             })
         }
     }
