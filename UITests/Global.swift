@@ -247,11 +247,11 @@ class BrowserUtils {
     }
     
     class func enterUrlAddressBar(_ tester: KIFUITestActor, typeUrl: String) {
+        tester.waitForView(withAccessibilityLabel: "Address Bar")
         tester.tapView(withAccessibilityLabel: "Address Bar")
-        tester.setText(typeUrl, intoViewWithAccessibilityIdentifier: "address")
 
-        tester.tapView(withAccessibilityIdentifier: "address")
-        tester.enterText(intoCurrentFirstResponder: "\n")
+        tester.waitForView(withAccessibilityIdentifier: "address")
+        tester.enterText(typeUrl + "\n", intoViewWithAccessibilityIdentifier: "address")
         tester.waitForAbsenceOfView(withAccessibilityIdentifier: "address")
     }
     

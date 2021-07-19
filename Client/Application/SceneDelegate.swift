@@ -28,6 +28,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if Defaults[.enableGeigerCounter] {
             startGeigerCounter()
         }
+
+        DispatchQueue.main.async { [self] in
+            if let userActivity = connectionOptions.userActivities.first {
+                _ = continueSiriIntent(continue: userActivity)
+            }
+
+            if let urlContext = connectionOptions.urlContexts.first, let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false) {
+                BrowserViewController.foregroundBVC().openURLInNewTab(NavigationPath.maybeRewriteURL(urlContext.url, components))
+            }
+
+            if let shortcutItem = connectionOptions.shortcutItem {
+                handleShortcut(shortcutItem: shortcutItem)
+            }
+        }
     }
 
     private func setupRootViewController(_ scene: UIScene) {
@@ -115,6 +129,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     // MARK: - Shortcut
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        handleShortcut(shortcutItem: shortcutItem, completionHandler: completionHandler)
+    }
+
+    func handleShortcut(shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void = { _ in }) {
         let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(shortcutItem, withBrowserViewController: BrowserViewController.foregroundBVC())
         completionHandler(handledShortCutItem)
     }

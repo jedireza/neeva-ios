@@ -200,7 +200,7 @@ enum NavigationPath {
         }
     }
 
-    private static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
+    public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
         // Intercept and rewrite search queries incoming from e.g. SpotLight.
         //
         // Example of what components looks like:

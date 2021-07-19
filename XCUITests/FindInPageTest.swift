@@ -9,8 +9,8 @@ class FindInPageTests: BaseTestCase {
         navigator.goto(BrowserTab)
         waitUntilPageLoad()
         navigator.nowAt(NewTabScreen)
-        navigator.goto(ShareMenu)
-        navigator.goto(FindInPage)
+        app.buttons["Share"].tap()
+        app.buttons["Find on Page"].tap()
 
         waitForExistence(app.buttons["FindInPage.find_next"], timeout: 5)
         waitForExistence(app.buttons["FindInPage.find_previous"], timeout: 5)
