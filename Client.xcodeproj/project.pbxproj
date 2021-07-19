@@ -1989,7 +1989,6 @@
 				E65075501E37F6D1006961AC /* UIViewExtensions.swift */,
 				BC264BC126746098001527B6 /* ViewExtensions.swift */,
 				C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */,
-				663AFC4D26A25B2300E4C492 /* NSItemProvider.swift */,
 				663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */,
 			);
 			path = Extensions;
