@@ -76,7 +76,7 @@ class SuggestedSearchesModel: ObservableObject {
     }
 
     func reload(from profile: Profile) {
-        guard let deferredHistory = profile.history.getFrecentHistory().getSites(matchingSearchQuery: searchUrlForQuery, limit: 20) as? CancellableDeferred else {
+        guard let deferredHistory = profile.history.getFrecentHistory().getSites(matchingSearchQuery: searchUrlForQuery, limit: 100) as? CancellableDeferred else {
             assertionFailure("FrecentHistory query should be cancellable")
             return
         }
@@ -86,7 +86,11 @@ class SuggestedSearchesModel: ObservableObject {
                 return
             }
 
-            let deferredHistorySites = result.successValue?.asArray() ?? []
+            var deferredHistorySites = result.successValue?.asArray() ?? []
+            // TODO: https://github.com/neevaco/neeva-ios-phoenix/issues/1027
+            deferredHistorySites.sort { siteA, siteB in
+                return siteA.latestVisit?.date ?? 0 > siteB.latestVisit?.date ?? 0
+            }
             self.suggestedQueries = deferredHistorySites.compactMap { site in
                 if let query = neevaSearchEngine.queryForSearchURL(URL(string: site.url)) {
                     return (query, site)
