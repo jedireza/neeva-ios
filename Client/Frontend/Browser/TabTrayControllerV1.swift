@@ -10,13 +10,13 @@ import Defaults
 import SwiftUI
 
 public enum TabTrayControllerUX {
-    static let CornerRadius = CGFloat(6.0)
-    fileprivate static let TextBoxHeight = CGFloat(32.0)
+    static let CornerRadius: CGFloat = 6
+    fileprivate static let TextBoxHeight: CGFloat = 32
     fileprivate static let TopBarHeight = UIConstants.TopToolbarPaddingTop + UIConstants.TextFieldHeight + UIConstants.TopToolbarPaddingBottom
-    static let FaviconSize = CGFloat(20)
-    fileprivate static let Margin = CGFloat(15)
-    fileprivate static let CloseButtonSize = CGFloat(32)
-    fileprivate static let CloseButtonEdgeInset = CGFloat(7)
+    static let FaviconSize: CGFloat = 20
+    fileprivate static let Margin: CGFloat = 15
+    fileprivate static let CloseButtonSize: CGFloat = 32
+    fileprivate static let CloseButtonEdgeInset: CGFloat = 7
     fileprivate static let NumberOfColumnsWide = 3
     fileprivate static let CompactNumberOfColumnsThin = 2
 }
@@ -750,7 +750,7 @@ fileprivate class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayou
     }
 
     @objc func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth = floor((collectionView.bounds.width - TabTrayControllerUX.Margin * CGFloat(numberOfColumns + 1)) / CGFloat(numberOfColumns))
+        let cellWidth = floor((collectionView.bounds.width - TabTrayControllerUX.Margin * CGFloat(numberOfColumns + 1)) / numberOfColumns)
         return CGSize(width: cellWidth, height: self.cellHeightForCurrentDevice())
     }
 
@@ -921,7 +921,7 @@ class TabCell: UICollectionViewCell {
     weak var delegate: TabCellDelegate?
 
     // Changes depending on whether we're full-screen or not.
-    var margin = CGFloat(0)
+    var margin = CGFloat.zero
 
     override init(frame: CGRect) {
         super.init(frame: frame)

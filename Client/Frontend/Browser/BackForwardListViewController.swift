@@ -49,7 +49,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
     var tableHeight: CGFloat {
         get {
             assert(Thread.isMainThread, "tableHeight interacts with UIKit components - cannot call from background thread.")
-            return min(BackForwardViewUX.RowHeight * CGFloat(listData.count), self.view.frame.height/2)
+            return min(BackForwardViewUX.RowHeight * listData.count, self.view.frame.height/2)
         }
     }
 
@@ -164,7 +164,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
         super.viewWillTransition(to: size, with: coordinator)
         let correctHeight = {
             self.tableView.snp.updateConstraints { make in
-                make.height.equalTo(min(BackForwardViewUX.RowHeight * CGFloat(self.listData.count), size.height / 2))
+                make.height.equalTo(min(BackForwardViewUX.RowHeight * self.listData.count, size.height / 2))
             }
         }
         coordinator.animate(alongsideTransition: nil) { _ in

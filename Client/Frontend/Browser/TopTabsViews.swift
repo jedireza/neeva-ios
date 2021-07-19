@@ -257,8 +257,8 @@ class TopTabFader: UIView {
     internal override func layoutSubviews() {
         super.layoutSubviews()
 
-        let widthA = NSNumber(value: Float(CGFloat(8) / frame.width))
-        let widthB = NSNumber(value: Float(1 - CGFloat(8) / frame.width))
+        let widthA = NSNumber(value: Float(8 / frame.width))
+        let widthB = NSNumber(value: Float(1 - 8 / frame.width))
 
         hMaskLayer.locations = [0.00, widthA, widthB, 1.0]
         hMaskLayer.frame = CGRect(width: frame.width, height: frame.height)

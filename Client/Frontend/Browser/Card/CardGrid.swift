@@ -69,8 +69,8 @@ struct CardGrid: View {
                 cardSize: cardSize,
                 offset: CGPoint(
                     x: CardGridUX.GridSpacing +
-                        (CardGridUX.GridSpacing + cardSize) * CGFloat(indexInGrid % columnCount),
-                    y: (CardUX.CardHeight + CardGridUX.GridSpacing) * floor(CGFloat(indexInGrid) / CGFloat(columnCount))
+                        (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
+                    y: (CardUX.CardHeight + CardGridUX.GridSpacing) * floor(CGFloat(indexInGrid) / columnCount)
                         + CardGridUX.YStaticOffset + gridModel.scrollOffset
                 ),
                 containerSize: size
@@ -87,7 +87,7 @@ struct CardGrid: View {
             default: columnCount = 2
             }
         }
-        self.cardSize = (width - CGFloat(columnCount + 1) * CardGridUX.GridSpacing) / CGFloat(columnCount)
+        self.cardSize = (width - (columnCount + 1) * CardGridUX.GridSpacing) / columnCount
     }
 
     var body: some View {

@@ -334,6 +334,7 @@
 		C94D4099268BAADC003A6766 /* UIKitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4098268BAADC003A6766 /* UIKitButton.swift */; };
 		C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D409C268CADD4003A6766 /* LocationEditView.swift */; };
 		C96004FA267BF5B500FBB0AD /* TabToolbarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96004F9267BF5B500FBB0AD /* TabToolbarModel.swift */; };
+		C962778F26A21BC80078CDAF /* ArithmeticExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */; };
 		C9655DE926A08FA600925912 /* PressReportingButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */; };
 		C9655DEB26A09A2800925912 /* GridModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DEA26A09A2800925912 /* GridModel.swift */; };
 		C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DEC26A09A6900925912 /* CardsContainer.swift */; };
@@ -1251,6 +1252,7 @@
 		C94D4098268BAADC003A6766 /* UIKitButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitButton.swift; sourceTree = "<group>"; };
 		C94D409C268CADD4003A6766 /* LocationEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationEditView.swift; sourceTree = "<group>"; };
 		C96004F9267BF5B500FBB0AD /* TabToolbarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabToolbarModel.swift; sourceTree = "<group>"; };
+		C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArithmeticExtensions.swift; sourceTree = "<group>"; };
 		C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressReportingButtonStyle.swift; sourceTree = "<group>"; };
 		C9655DEA26A09A2800925912 /* GridModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridModel.swift; sourceTree = "<group>"; };
 		C9655DEC26A09A6900925912 /* CardsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsContainer.swift; sourceTree = "<group>"; };
@@ -1895,6 +1897,7 @@
 				E65075501E37F6D1006961AC /* UIViewExtensions.swift */,
 				BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */,
 				BC264BC126746098001527B6 /* ViewExtensions.swift */,
+				C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4580,6 +4583,7 @@
 				C965BDD4268E720400F02224 /* DebugDBSettingsSection.swift in Sources */,
 				EBE26B57220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift in Sources */,
 				E68AEDB01B18F81A00133D99 /* SwipeAnimator.swift in Sources */,
+				C962778F26A21BC80078CDAF /* ArithmeticExtensions.swift in Sources */,
 				EBB89504219398E500EB91A0 /* TrackingProtectionPageStats.swift in Sources */,
 				D31F95E91AC226CB005C9F3B /* ScreenshotHelper.swift in Sources */,
 				C965BDD2268E71C500F02224 /* AppHostSetting.swift in Sources */,

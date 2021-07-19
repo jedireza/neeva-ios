@@ -5,9 +5,9 @@
 import Foundation
 
 private enum PrintedPageUX {
-    static let PageInsets = CGFloat(36.0)
+    static let PageInsets: CGFloat = 36
     static let PageTextFont = DynamicFontHelper.defaultHelper.DefaultSmallFont
-    static let PageMarginScale = CGFloat(0.5)
+    static let PageMarginScale: CGFloat = 0.5
 }
 
 class TabPrintPageRenderer: UIPrintPageRenderer {

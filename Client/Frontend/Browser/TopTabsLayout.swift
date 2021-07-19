@@ -44,7 +44,7 @@ class TopTabsViewLayout: UICollectionViewFlowLayout {
     let SeparatorZIndex = -2 ///Prevent the header/footer from appearing above the Tabs
 
     override var collectionViewContentSize: CGSize {
-        let tabsWidth = ((CGFloat(collectionView!.numberOfItems(inSection: 0))) * (TopTabsUX.TabWidth + TopTabsUX.SeparatorWidth)) - TopTabsUX.SeparatorWidth
+        let tabsWidth = (collectionView!.numberOfItems(inSection: 0) * (TopTabsUX.TabWidth + TopTabsUX.SeparatorWidth)) - TopTabsUX.SeparatorWidth
         return CGSize(width: tabsWidth + (TopTabsUX.TopTabsBackgroundShadowWidth * 2), height: collectionView!.bounds.height)
     }
 
@@ -74,7 +74,7 @@ class TopTabsViewLayout: UICollectionViewFlowLayout {
         } else {
             // Compute the separator if it does not exist in the cache
             let separatorAttr = UICollectionViewLayoutAttributes(forDecorationViewOfKind: TopTabsSeparatorUX.Identifier, with: indexPath)
-            let x = TopTabsUX.TopTabsBackgroundShadowWidth + ((CGFloat(indexPath.row) * (TopTabsUX.TabWidth + TopTabsUX.SeparatorWidth)) - TopTabsUX.SeparatorWidth)
+            let x = TopTabsUX.TopTabsBackgroundShadowWidth + ((indexPath.row * (TopTabsUX.TabWidth + TopTabsUX.SeparatorWidth)) - TopTabsUX.SeparatorWidth)
             separatorAttr.frame = CGRect(x: x, y: separatorYOffset, width: TopTabsUX.SeparatorWidth, height: separatorSize)
             separatorAttr.zIndex = SeparatorZIndex
             return separatorAttr

@@ -12,7 +12,7 @@ struct DownloadMenuView: View {
     let onDownload: () -> ()
     let onDismiss: () -> ()
 
-    private let cellHeight = CGFloat(52)
+    private let cellHeight: CGFloat = 52
     private struct Cell<Content: View>: View {
         let content: () -> Content
         var body: some View {

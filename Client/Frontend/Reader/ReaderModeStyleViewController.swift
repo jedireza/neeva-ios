@@ -222,7 +222,7 @@ class ReaderModeStyleViewController: UIViewController {
                     make.left.equalTo(buttons[idx - 1].snp.right)
                 }
                 make.bottom.equalTo(row.snp.bottom)
-                make.width.equalTo(self.preferredContentSize.width / CGFloat(buttons.count))
+                make.width.equalTo(self.preferredContentSize.width / buttons.count)
             }
         }
     }
