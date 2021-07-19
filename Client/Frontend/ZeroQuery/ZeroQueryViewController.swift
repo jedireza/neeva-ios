@@ -190,30 +190,6 @@ extension ZeroQueryViewController: DataObserverDelegate {
     }
 }
 
-// TODO: remove this extension once pin/unpin is finalized
-extension ZeroQueryViewController {
-    func getContextMenuActions(for site: Site) -> [PhotonActionSheetItem]? {
-        let topSiteActions: [PhotonActionSheetItem]
-        if FeatureFlag[.pinToTopSites] {
-            let pinTopSite = PhotonActionSheetItem(title: Strings.PinTopsiteActionTitle, iconString: "action_pin", iconAlignment: .right, handler: { _, _ in
-                self.pinTopSite(site)
-            })
-            let removePinTopSite = PhotonActionSheetItem(title: Strings.RemovePinTopsiteActionTitle, iconString: "action_unpin", iconAlignment: .right, handler: { _, _ in
-                self.removePinTopSite(site)
-            })
-            if let _ = site as? PinnedSite {
-                topSiteActions = [removePinTopSite]
-            } else {
-                topSiteActions = [pinTopSite]
-            }
-        } else {
-            topSiteActions = []
-        }
-
-        return topSiteActions
-    }
-}
-
 extension ZeroQueryViewController: UIPopoverPresentationControllerDelegate {
 
     // Dismiss the popover if the device is being rotated.

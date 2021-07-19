@@ -8,9 +8,6 @@ protocol PrivateModeUI {
     func applyUIMode(isPrivate: Bool)
 }
 
-// Convenience reference to these normal mode colors which are used in a few color classes.
-fileprivate let defaultBackground = UIColor(light: .white, dark: .tertiarySystemBackground)
-
 extension UIColor {
     enum legacyTheme {
         enum tableView {
@@ -20,18 +17,9 @@ extension UIColor {
             static let disabledRowText = UIColor.Photon.Grey40
             static let separator = UIColor(light: .Photon.Grey30, dark: .Photon.Grey60)
             static let headerBackground = UIColor(light: .white, dark: .Photon.Grey80)
-            // Used for table headers in Settings and Photon menus
-            static let headerTextLight = UIColor(light: .Photon.Grey50, dark: .Photon.Grey30)
             // Used for table headers in home panel tables
             static let headerTextDark = UIColor(light: .Photon.Grey90, dark: .Photon.Grey30)
             static let selectedBackground = UIColor(light: .init(rgb: 0xd1d1d6), dark: .init(rgb: 0x2D2D2D))
-        }
-
-        enum actionMenu {
-            static let foreground = UIColor(light: .Photon.Grey80, dark: .Photon.White100)
-            static let iPhoneBackgroundBlurStyle = UIBlurEffect.Style.regular
-            static let iPhoneBackground = defaultBackground.withAlphaComponent(0.9)
-            static let closeButtonBackground = defaultBackground
         }
     }
 }

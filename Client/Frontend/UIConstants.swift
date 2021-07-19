@@ -182,13 +182,7 @@ extension UIColor {
 
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
-        public static let toolbarBackground = UIColor.DefaultBackground
-        public static let toolbarHighlight = UIColor.ui.adaptive.blue
-        public static let toolbarTint = UIColor.secondaryLabel
         public static let welcomeScreenText = UIColor.secondaryLabel
-        public static let readingListActive = UIColor.DefaultTextAndTint
-        public static let readingListDimmed = UIColor.Photon.Grey40
-        public static let downloadedFileIcon = UIColor.secondaryLabel
     }
 }
 

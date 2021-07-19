@@ -6,7 +6,7 @@ import Shared
 import Storage
 
 extension BrowserViewController {
-    func share(fileURL: URL, buttonView: UIView, presentableVC: PresentableVC) {
+    func share(fileURL: URL, buttonView: UIView, presentableVC: UIViewController & UIPopoverPresentationControllerDelegate) {
         let helper = ShareExtensionHelper(url: fileURL, tab: tabManager.selectedTab)
         let controller = helper.createActivityViewController { completed, activityType in
             print("Shared downloaded file: \(completed)")
@@ -21,7 +21,7 @@ extension BrowserViewController {
         presentableVC.present(controller, animated: true, completion: nil)
     }
 
-    func share(tab: Tab, from sourceView: UIView, presentableVC: PresentableVC) {
+    func share(tab: Tab, from sourceView: UIView, presentableVC: UIViewController & UIPopoverPresentationControllerDelegate) {
         guard let url = tab.canonicalURL?.displayURL else { return }
         let sourceRect = sourceView.convert(sourceView.bounds, to: UIScreen.main.coordinateSpace)
 

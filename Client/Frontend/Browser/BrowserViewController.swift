@@ -310,9 +310,6 @@ class BrowserViewController: UIViewController {
 
     func dismissVisibleMenus() {
         displayedPopoverController?.dismiss(animated: true)
-        if let _ = self.presentedViewController as? PhotonActionSheet {
-            self.presentedViewController?.dismiss(animated: true, completion: nil)
-        }
     }
 
     @objc func appDidEnterBackgroundNotification() {

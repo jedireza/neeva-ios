@@ -6,7 +6,7 @@ import Shared
 import SwiftUI
 import Defaults
 
-extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
+extension BrowserViewController: TabToolbarDelegate {
     func tabToolbarDidPressBack() {
         if simulateBackViewController?.goBack() ?? false {
             return
