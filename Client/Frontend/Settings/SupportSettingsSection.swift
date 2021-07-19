@@ -35,7 +35,7 @@ struct SupportSettingsSection: View {
 struct SupportSettingsSection_Previews: PreviewProvider {
     static var previews: some View {
         SettingPreviewWrapper {
-            SwiftUI.Section(header: Text("Support")) {
+            Section(header: Text("Support")) {
                 SupportSettingsSection()
             }
         }

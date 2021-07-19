@@ -99,13 +99,13 @@ struct AccountSettingsView: UIViewRepresentable {
 struct NeevaSettingsSection_Previews: PreviewProvider {
     static var previews: some View {
         SettingPreviewWrapper {
-            SwiftUI.Section(header: Text("Neeva — Logged in")) {
+            Section(header: Text("Neeva — Logged in")) {
                 NeevaSettingsSection(userInfo: NeevaUserInfo(previewDisplayName: "First Last", email: "name@example.com", pictureUrl: "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg", authProvider: .apple))
             }
-            SwiftUI.Section(header: Text("Neeva — Logged out")) {
+            Section(header: Text("Neeva — Logged out")) {
                 NeevaSettingsSection(userInfo: .previewLoggedOut)
             }
-            SwiftUI.Section(header: Text("Neeva — Fetching status")) {
+            Section(header: Text("Neeva — Fetching status")) {
                 NeevaSettingsSection(userInfo: .previewLoading)
             }
         }

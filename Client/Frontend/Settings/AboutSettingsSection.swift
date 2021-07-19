@@ -74,10 +74,10 @@ struct AboutSettingsSection_Previews: PreviewProvider {
     }
     static var previews: some View {
         SettingPreviewWrapper {
-            SwiftUI.Section(header: Text("About")) {
+            Section(header: Text("About")) {
                 Preview()
             }
-            SwiftUI.Section(header: Text("About — Debug enabled")) {
+            Section(header: Text("About — Debug enabled")) {
                 Preview(showDebugSettings: true)
             }
         }

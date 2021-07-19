@@ -52,7 +52,7 @@ struct PrivacySettingsSection: View {
 struct PrivacySettingsSection_Previews: PreviewProvider {
     static var previews: some View {
         SettingPreviewWrapper {
-            SwiftUI.Section(header: Text("Privacy")) {
+            Section(header: Text("Privacy")) {
                 PrivacySettingsSection()
             }
         }

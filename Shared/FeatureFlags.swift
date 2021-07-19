@@ -25,26 +25,14 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
 extension FeatureFlag {
     public static let defaultsKey = Defaults.Key<Set<String>>("neevaFeatureFlags", default: [], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
-    fileprivate static let prune: Void = {
+    fileprivate static let enabledFlags: Set<FeatureFlag> = {
         let names = Defaults[Self.defaultsKey]
         let flags = names.compactMap(FeatureFlag.init(rawValue:))
         Defaults[Self.defaultsKey] = Set(flags.map(\.rawValue))
+        return Set(flags)
     }()
 
     public static subscript(flag: FeatureFlag) -> Bool {
-        get {
-            Self.prune
-            if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
-                return true
-            }
-            return Defaults[Self.defaultsKey].contains(flag.rawValue)
-        }
-        set {
-            if newValue {
-                Defaults[Self.defaultsKey].insert(flag.rawValue)
-            } else {
-                Defaults[Self.defaultsKey].remove(flag.rawValue)
-            }
-        }
+        Self.enabledFlags.contains(flag)
     }
 }

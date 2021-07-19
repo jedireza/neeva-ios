@@ -10,16 +10,16 @@ struct DebugSettingsSection: View {
 
     var body: some View {
         Group {
-            SwiftUI.Section(header: Text("Debug — Neeva")) {
-                NavigationLink("Feature Flags", destination: FeatureFlagSettingsView().navigationTitle("Feature Flags"))
+            Section(header: Text("Debug — Neeva")) {
+                NavigationLink("Server Feature Flags", destination: NeevaFeatureFlagSettingsView().navigationTitle("Server Feature Flags"))
                 AppHostSetting()
                 NavigationLinkButton("Neeva Admin") {
                     openURL(NeevaConstants.appHomeURL / "admin")
                 }
-                NavigationLink("Internal Settings", destination: InternalSettingsView().navigationTitle("Internal Settings"))
             }
-            DebugDBSettingsSection()
-            DecorativeSection {
+            Section(header: Text("Debug — Local")) {
+                NavigationLink("Local Feature Flags", destination: FeatureFlagSettingsView().navigationTitle("Local Feature Flags"))
+                NavigationLink("Internal Settings", destination: InternalSettingsView().navigationTitle("Internal Settings"))
                 Toggle("Enable Geiger Counter", isOn: $enableGeigerCounter)
                     .onChange(of: enableGeigerCounter) {
                         if $0 {
@@ -28,6 +28,9 @@ struct DebugSettingsSection: View {
                             SceneDelegate.getCurrentSceneDelegate().stopGeigerCounter()
                         }
                     }
+            }
+            DebugDBSettingsSection()
+            DecorativeSection {
                 Button("Force Crash App") {
                     Sentry.shared.crash()
                 }.accentColor(.red)

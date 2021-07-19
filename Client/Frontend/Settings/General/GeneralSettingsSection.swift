@@ -67,7 +67,7 @@ struct GeneralSettingsSection: View {
 struct GeneralSettingsSection_Previews: PreviewProvider {
     static var previews: some View {
         SettingPreviewWrapper {
-            SwiftUI.Section(header: Text("General")) {
+            Section(header: Text("General")) {
                 GeneralSettingsSection()
             }
         }

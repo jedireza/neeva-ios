@@ -344,6 +344,7 @@
 		C965BDD2268E71C500F02224 /* AppHostSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD1268E71C500F02224 /* AppHostSetting.swift */; };
 		C965BDD4268E720400F02224 /* DebugDBSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */; };
 		C965BDD6268E729000F02224 /* InternalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD5268E728F00F02224 /* InternalSettingsView.swift */; };
+		C96AC26726A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96AC26626A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift */; };
 		C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */; };
 		C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */; };
 		C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */; };
@@ -351,7 +352,7 @@
 		C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E406026585C43003AC0E2 /* AboutSettingsSection.swift */; };
 		C98E406326585F01003AC0E2 /* DebugSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */; };
 		C994645F2657052200613110 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994645E2657052200613110 /* FeatureFlags.swift */; };
-		C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9946460265706D500613110 /* FeatureFlagSettings.swift */; };
+		C9946461265706D500613110 /* FeatureFlagSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9946460265706D500613110 /* FeatureFlagSettingsView.swift */; };
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
@@ -1262,6 +1263,7 @@
 		C965BDD1268E71C500F02224 /* AppHostSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHostSetting.swift; sourceTree = "<group>"; };
 		C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDBSettingsSection.swift; sourceTree = "<group>"; };
 		C965BDD5268E728F00F02224 /* InternalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalSettingsView.swift; sourceTree = "<group>"; };
+		C96AC26626A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaFeatureFlagSettingsView.swift; sourceTree = "<group>"; };
 		C98E40562658504C003AC0E2 /* NeevaSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaSettingsSection.swift; sourceTree = "<group>"; };
 		C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsSection.swift; sourceTree = "<group>"; };
 		C98E405C26585709003AC0E2 /* PrivacySettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsSection.swift; sourceTree = "<group>"; };
@@ -1269,7 +1271,7 @@
 		C98E406026585C43003AC0E2 /* AboutSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsSection.swift; sourceTree = "<group>"; };
 		C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsSection.swift; sourceTree = "<group>"; };
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
-		C9946460265706D500613110 /* FeatureFlagSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettings.swift; sourceTree = "<group>"; };
+		C9946460265706D500613110 /* FeatureFlagSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettingsView.swift; sourceTree = "<group>"; };
 		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
 		C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySuggestionView.swift; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
@@ -2330,8 +2332,9 @@
 				C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */,
 				C965BDD1268E71C500F02224 /* AppHostSetting.swift */,
 				C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */,
-				C9946460265706D500613110 /* FeatureFlagSettings.swift */,
+				C9946460265706D500613110 /* FeatureFlagSettingsView.swift */,
 				C965BDD5268E728F00F02224 /* InternalSettingsView.swift */,
+				C96AC26626A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -4374,7 +4377,7 @@
 			files = (
 				C9C18DEA26558FF3004710CD /* FrontViewController.swift in Sources */,
 				C9F8EB352680DA8A0042CFE7 /* TabToolbarHost.swift in Sources */,
-				C9946461265706D500613110 /* FeatureFlagSettings.swift in Sources */,
+				C9946461265706D500613110 /* FeatureFlagSettingsView.swift in Sources */,
 				D029A04920A62DB0001DB72F /* TemporaryDocument.swift in Sources */,
 				4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */,
 				C9E5F2C42677F0A600025A7F /* LocationLabel.swift in Sources */,
@@ -4627,6 +4630,7 @@
 				744ED5611DBFEB8D00A2B5BE /* MailtoLinkHandler.swift in Sources */,
 				4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */,
 				C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */,
+				C96AC26726A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift in Sources */,
 				C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */,
 				43A5643823CD1E1C00B6857D /* UpdateViewController.swift in Sources */,
 				C9655DEB26A09A2800925912 /* GridModel.swift in Sources */,

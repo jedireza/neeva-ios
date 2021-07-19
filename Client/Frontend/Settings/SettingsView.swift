@@ -25,21 +25,21 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             List {
-                SwiftUI.Section(header: Text("Neeva")) {
+                Section(header: Text("Neeva")) {
                     NeevaSettingsSection(userInfo: .shared)
                 }
-                SwiftUI.Section(header: Text("General")) {
+                Section(header: Text("General")) {
                     GeneralSettingsSection()
                 }
-                SwiftUI.Section(header: Text("Privacy")) {
+                Section(header: Text("Privacy")) {
                     PrivacySettingsSection()
                 }
-                SwiftUI.Section(header: Text("Support")) {
+                Section(header: Text("Support")) {
                     SupportSettingsSection(onDismiss: {
                         dismiss()
                     })
                 }
-                SwiftUI.Section(header: Text("About")) {
+                Section(header: Text("About")) {
                     AboutSettingsSection(showDebugSettings: $showDebugSettings)
                 }
                 if showDebugSettings {

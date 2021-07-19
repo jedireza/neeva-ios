@@ -24,7 +24,7 @@ struct MailAppSetting: View {
 
     var body: some View {
         List {
-            SwiftUI.Section(header: Text("Open mail links with")) {
+            Section(header: Text("Open mail links with")) {
                 ForEach(Self.mailProviderSource, id: \.scheme) { (name, scheme) in
                     let isSelected = scheme == mailToOption
                     let disabled = !Self.canOpenMailScheme(scheme)

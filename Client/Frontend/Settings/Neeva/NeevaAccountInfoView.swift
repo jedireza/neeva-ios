@@ -11,7 +11,7 @@ struct NeevaAccountInfoView: View {
 
     var body: some View {
         List {
-            SwiftUI.Section(header: Text("Signed in to Neeva with")) {
+            Section(header: Text("Signed in to Neeva with")) {
                 HStack {
                     (userInfo.authProvider?.icon ?? Image("placeholder-avatar"))
                         .resizable()
