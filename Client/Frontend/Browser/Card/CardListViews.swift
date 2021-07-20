@@ -100,16 +100,17 @@ struct TabCardsView: View {
         }
     }
 
-    private struct DropDelegate<Target: Identifiable & SwiftUI.DropDelegate>: SwiftUI.DropDelegate {
-        let item: Target
-        @Binding var items: [Target]
-        @Binding var dragging: Target?
+    private struct DropDelegate: SwiftUI.DropDelegate {
+        let item: TabCardDetails
+        @Binding var items: [TabCardDetails]
+        @Binding var dragging: TabCardDetails?
 
         func validateDrop(info: DropInfo) -> Bool {
             info.hasItemsConforming(to: [DraggableTab.uti]) || item.validateDrop(info: info)
         }
 
         func dropEntered(info: DropInfo) {
+            print("entered \(item.manager.get(for: item.id)!.displayTitle)")
             if let dragging = dragging,
                item.id != dragging.id {
                 let from = items.firstIndex { $0.id == dragging.id }
@@ -125,6 +126,7 @@ struct TabCardsView: View {
         }
 
         func dropUpdated(info: DropInfo) -> DropProposal? {
+//            print(info.location)
             return DropProposal(operation: .move)
         }
 
