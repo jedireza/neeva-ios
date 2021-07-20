@@ -11,4 +11,7 @@
 #import "Shared-Bridging-Header.h"
 #import "Storage-Bridging-Header.h"
 
+#import <WebKit/WebKit.h>
+#import "WKWebView+Zoom.h"
+
 #endif
