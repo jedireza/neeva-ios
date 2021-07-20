@@ -37,6 +37,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
     let historySuggestionModel: HistorySuggestionModel
     let neevaSuggestionModel: NeevaSuggestionModel
     let gridModel: GridModel
+    let trackingStatsViewModel: TrackingStatsViewModel
     var subscriptions: Set<AnyCancellable> = []
 
     weak var delegate: LegacyURLBarDelegate?
@@ -85,6 +86,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
                         neevaSuggestionModel: neevaSuggestionModel,
                         queryModel: queryModel,
                         gridModel: self.gridModel,
+                        trackingStatsModel: self.trackingStatsViewModel,
                         delegate: self, urlBar: self)
     }()
 
@@ -134,12 +136,14 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
 
     var profile: Profile? = nil
     
-    init(profile: Profile, toolbarModel: TabToolbarModel, gridModel: GridModel) {
+    init(profile: Profile, toolbarModel: TabToolbarModel,
+         gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel) {
         self.profile = profile
         self.historySuggestionModel = HistorySuggestionModel(profile: profile, queryModel: self.queryModel)
         self.neevaSuggestionModel = NeevaSuggestionModel(isIncognito: isPrivateMode, queryModel: self.queryModel)
         self.toolbarModel = toolbarModel
         self.gridModel = gridModel
+        self.trackingStatsViewModel = trackingStatsModel
         super.init(frame: CGRect())
         commonInit()
     }

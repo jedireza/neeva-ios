@@ -88,8 +88,7 @@ class TrackingUITests: XCTestCase {
     }
 
     func testTrackingUIFirstRow() throws {
-        TrackingEntity.statsForTesting = stats
-        let ui = TrackingMenuView()
+        let ui = TrackingMenuView(viewModel: TrackingStatsViewModel(trackingData: trackingData))
         let firstRowElements = try ui.inspect().findAll(TrackingMenuFirstRowElement.self)
         XCTAssertEqual(firstRowElements.count, 2)
 
@@ -100,8 +99,7 @@ class TrackingUITests: XCTestCase {
     }
 
     func testTrackingHallOfShame() throws {
-        TrackingEntity.statsForTesting = stats
-        let ui = TrackingMenuView()
+        let ui = TrackingMenuView(viewModel: TrackingStatsViewModel(trackingData: trackingData))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
         XCTAssertEqual(hallOfShameElements.count, 3)
 
@@ -118,8 +116,8 @@ class TrackingUITests: XCTestCase {
         domainsGoogle.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
         domainsAmazon.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
         domainsUnknownSource.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
-        TrackingEntity.statsForTesting = tempStats
-        let ui = TrackingMenuView()
+        let ui = TrackingMenuView(viewModel: TrackingStatsViewModel(
+                                    trackingData: TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
         XCTAssertEqual(hallOfShameElements.count, 2)
 

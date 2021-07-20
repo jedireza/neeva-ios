@@ -20,6 +20,8 @@ struct TabLocationBarButton<Label: View>: View {
 struct LocationViewTrackingButton: View {
     @State private var showingPopover = false
     @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var trackingStatsModel: TrackingStatsViewModel
+
     let currentDomain: String
 
     var body: some View {
@@ -35,7 +37,7 @@ struct LocationViewTrackingButton: View {
             backgroundColor: .systemGroupedBackground,
             arrowDirections: [.up, .down]
         ) {
-            TrackingMenuView()
+            TrackingMenuView(viewModel: trackingStatsModel)
         }
     }
 }

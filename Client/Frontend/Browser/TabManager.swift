@@ -8,6 +8,7 @@ import Storage
 import Shared
 import XCGLogger
 import Defaults
+import Combine
 
 private let log = Logger.browserLogger
 
@@ -72,6 +73,8 @@ class TabManager: NSObject, ObservableObject {
 
     @Published fileprivate(set) var tabs = [Tab]()
     fileprivate var _selectedIndex = -1
+
+    var selectedTabPublisher = PassthroughSubject<Tab?, Never>()
 
     fileprivate let navDelegate: TabManagerNavDelegate
 
@@ -224,6 +227,9 @@ class TabManager: NSObject, ObservableObject {
         selectedTab?.lastExecutedTime = Date.nowMilliseconds()
 
         delegates.forEach { $0.get()?.tabManager(self, didSelectedTabChange: tab, previous: previous, isRestoring: store.isRestoringTabs) }
+        if let tab = selectedTab {
+            selectedTabPublisher.send(tab)
+        }
         if let tab = previous {
             TabEvent.post(.didLoseFocus, for: tab)
         }

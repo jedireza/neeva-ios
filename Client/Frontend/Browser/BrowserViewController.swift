@@ -391,7 +391,8 @@ class BrowserViewController: UIViewController {
         view.addSubview(topTouchArea)
 
         legacyURLBar = LegacyURLBarView(profile: profile, toolbarModel: toolbarModel,
-                                        gridModel: FeatureFlag[.cardGrid] ? self.cardGridViewController.gridModel : GridModel())
+                                        gridModel: FeatureFlag[.cardGrid] ? self.cardGridViewController.gridModel : GridModel(),
+                                        trackingStatsModel: TrackingStatsViewModel(tabManager: tabManager))
         legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
         legacyURLBar.delegate = self
         legacyURLBar.tabToolbarDelegate = self

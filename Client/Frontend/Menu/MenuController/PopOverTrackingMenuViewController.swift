@@ -12,9 +12,8 @@ class PopOverTrackingMenuViewController: UIHostingController<TrackingMenuView>{
     }
     
     public init(delegate: BrowserViewController, source: UIView) {
-        let viewModel = TrackingStatsViewModel(
-            trackingData: TrackingEntity.getTrackingDataForCurrentTab())
-        super.init(rootView: TrackingMenuView(viewModel: viewModel))
+        super.init(rootView: TrackingMenuView(
+                    viewModel: TrackingStatsViewModel(tabManager: delegate.tabManager)))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
         

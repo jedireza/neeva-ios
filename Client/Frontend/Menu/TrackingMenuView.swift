@@ -5,6 +5,7 @@ import Storage
 import SFSafeSymbols
 import Shared
 import Defaults
+import Combine
 
 struct NeevaMenuPanelSpec: ViewModifier {
     func body(content: Content) -> some View {
@@ -26,13 +27,40 @@ class TrackingStatsViewModel: ObservableObject {
     @Published var numDomains = 0
     @Published var hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
 
+    private var selectedTab: Tab? = nil
+    private var subscriptions: Set<AnyCancellable> = []
+
     var trackers: [TrackingEntity] {
         didSet {
             onDataUpdated()
         }
     }
 
+    init(tabManager: TabManager) {
+        self.selectedTab = tabManager.selectedTab
+        let trackingData = TrackingEntity.getTrackingDataForCurrentTab(stats: selectedTab?.contentBlocker?.stats)
+        self.numTrackers = trackingData.numTrackers
+        self.numDomains = trackingData.numDomains
+        self.trackers = trackingData.trackingEntities
+        tabManager.selectedTabPublisher.assign(to: \.selectedTab, on: self).store(in: &subscriptions)
+        onDataUpdated()
+    }
+
+    // For usage with static data and testing only
     init(trackingData: TrackingData) {
+        self.numTrackers = trackingData.numTrackers
+        self.numDomains = trackingData.numDomains
+        self.trackers = trackingData.trackingEntities
+        onDataUpdated()
+    }
+
+    func refreshStats() {
+        guard let tab = selectedTab else {
+            return
+        }
+
+        let trackingData = TrackingEntity.getTrackingDataForCurrentTab(
+            stats: tab.contentBlocker?.stats)
         self.numTrackers = trackingData.numTrackers
         self.numDomains = trackingData.numDomains
         self.trackers = trackingData.trackingEntities
@@ -100,9 +128,7 @@ struct HallOfShameView: View {
 }
 
 struct TrackingMenuView: View {
-    @StateObject var viewModel = TrackingStatsViewModel(
-        trackingData: TrackingEntity.getTrackingDataForCurrentTab()
-    )
+    @ObservedObject var viewModel: TrackingStatsViewModel
 
     @Default(.contentBlockingEnabled) private var isTrackingProtectionEnabled
     @State private var isShowingPopup = false
@@ -138,11 +164,8 @@ struct TrackingMenuView: View {
         }
         .padding(NeevaUIConstants.menuOuterPadding)
         .background(Color.groupedBackground).fixedSize(horizontal: true, vertical: true)
-    }
-}
-
-struct TrackingMenuView_Previews: PreviewProvider {
-    static var previews: some View {
-        TrackingMenuView(viewModel: TrackingStatsViewModel(trackingData: TrackingData(numTrackers: 10, numDomains: 5, trackingEntities: [.Amazon, .Amazon, .Adobe, .Adobe, .Criteo, .Google])))
+        .onAppear {
+            self.viewModel.refreshStats()
+        }
     }
 }

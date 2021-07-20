@@ -22,19 +22,8 @@ enum TrackingEntity: String {
     case IAS = "IAS"
     case Pinterest = "Pinterest"
     case VerizonMedia = "VerizonMedia"
-    static var statsForTesting: TPPageStats? = nil
 
-    static func getCurrentTrackingStats() -> TPPageStats? {
-        if statsForTesting != nil {
-            return statsForTesting
-        }
-
-        // TODO: Lose the dependency on BVC.
-        return BrowserViewController.foregroundBVC().tabManager.selectedTab?.contentBlocker?.stats
-    }
-
-    static func getTrackingDataForCurrentTab(
-        stats: TPPageStats? = getCurrentTrackingStats()) -> TrackingData {
+    static func getTrackingDataForCurrentTab(stats: TPPageStats?) -> TrackingData {
         let domainsCollapsedAcrossCategories = stats?
             .domains.reduce(into: []) { array, element in
                 array.append(contentsOf: element.value)
