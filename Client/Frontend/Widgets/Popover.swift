@@ -7,9 +7,11 @@ extension View {
     /// Specifically, `.popover()` acts like `.sheet()` when `horizontalSizeClass` is `.compact`,
     /// whereas this modifier forces the presented content to always be displayed inside a popover.
     ///
-    /// NOTE: This does not block touches on SwiftUI views displayed behind the popover’s backdrop.
-    /// Once more of the UI is ported, to SwiftUI, this should probably use a `PreferenceKey` to
+    /// This does not block touches on SwiftUI views displayed behind the popover’s backdrop.
+    /// Once more of the UI is ported to SwiftUI, this should probably use a `PreferenceKey` to
     /// manually disable hit testing on the entire parent SwiftUI tree when a popover is presented.
+    ///
+    /// - Warning: ⚠️ Custom `@Environment` and `@EnvironmentObject` values are not carried into the content of the popover. You must manually specify them again in your content if you want them to be available.
     func presentAsPopover<Content: View>(
         isPresented: Binding<Bool>,
         backgroundColor: UIColor? = nil,
