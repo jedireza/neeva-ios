@@ -23,10 +23,10 @@ extension Defaults.Keys {
     public static let closePrivateTabs = Defaults.BoolKey("profile.settings.closePrivateTabs")
     public static let recentlyClosedTabs = Defaults.Key<Data?>("profile.recentlyClosedTabs")
     public static let saveLogins = Defaults.BoolKey("profile.saveLogins")
-    public static let upgradeAllToHttps = Defaults.BoolKey("tracking_protection.upgradeAllToHttps")
-    public static let blockThirdPartyTrackingCookies = Defaults.Key("tracking_protection.blockThirdPartyTrackingCookies", default: true)
-    public static let blockThirdPartyTrackingRequests = Defaults.Key("tracking_protection.blockThirdPartyTrackingRequests", default: true)
-    public static let unblockedDomains = Defaults.Key<Set<String>>("tracking_protection.unblockedDomains", default: Set<String>())
+    public static let upgradeAllToHttps = Defaults.BoolKey("profile.tracking_protection.upgradeAllToHttps")
+    public static let blockThirdPartyTrackingCookies = Defaults.Key("profile.tracking_protection.blockThirdPartyTrackingCookies", default: true)
+    public static let blockThirdPartyTrackingRequests = Defaults.Key("profile.tracking_protection.blockThirdPartyTrackingRequests", default: true)
+    public static let unblockedDomains = Defaults.Key<Set<String>>("profile.tracking_protection.unblockedDomains", default: Set<String>())
 
     // debug settings
     public static let enableGeigerCounter = Defaults.BoolKey("profile.enableGeigerCounter")

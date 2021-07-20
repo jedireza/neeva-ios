@@ -26,6 +26,23 @@ class TrackingStatsViewModel: ObservableObject {
     @Published var numTrackers = 0
     @Published var numDomains = 0
     @Published var hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
+    @Published var preventTrackersForCurrentPage: Bool {
+        didSet {
+            guard let domain = selectedTab?.currentURL()?.host else {
+                return
+            }
+
+            if (preventTrackersForCurrentPage) {
+                TrackingPreventionConfig.disallowTrackersFor(domain)
+            } else {
+                TrackingPreventionConfig.allowTrackersFor(domain)
+            }
+
+            selectedTab?.contentBlocker?.notifiedTabSetupRequired()
+            selectedTab?.reload()
+            refreshStats()
+        }
+    }
 
     private var selectedTab: Tab? = nil
     private var subscriptions: Set<AnyCancellable> = []
@@ -38,6 +55,8 @@ class TrackingStatsViewModel: ObservableObject {
 
     init(tabManager: TabManager) {
         self.selectedTab = tabManager.selectedTab
+        self.preventTrackersForCurrentPage =
+            !Defaults[.unblockedDomains].contains(selectedTab?.currentURL()?.host ?? "")
         let trackingData = TrackingEntity.getTrackingDataForCurrentTab(stats: selectedTab?.contentBlocker?.stats)
         self.numTrackers = trackingData.numTrackers
         self.numDomains = trackingData.numDomains
@@ -47,10 +66,11 @@ class TrackingStatsViewModel: ObservableObject {
     }
 
     // For usage with static data and testing only
-    init(trackingData: TrackingData) {
-        self.numTrackers = trackingData.numTrackers
-        self.numDomains = trackingData.numDomains
-        self.trackers = trackingData.trackingEntities
+    init(testingData: TrackingData) {
+        self.preventTrackersForCurrentPage = true
+        self.numTrackers = testingData.numTrackers
+        self.numDomains = testingData.numDomains
+        self.trackers = testingData.trackingEntities
         onDataUpdated()
     }
 
@@ -128,14 +148,13 @@ struct HallOfShameView: View {
 }
 
 struct TrackingMenuView: View {
-    @ObservedObject var viewModel: TrackingStatsViewModel
+    @EnvironmentObject var viewModel: TrackingStatsViewModel
 
-    @Default(.contentBlockingEnabled) private var isTrackingProtectionEnabled
     @State private var isShowingPopup = false
 
     var body: some View {
         VStack(alignment: .leading) {
-            if isTrackingProtectionEnabled {
+            if viewModel.preventTrackersForCurrentPage {
                 HStack {
                     TrackingMenuFirstRowElement(label: "Trackers", num: viewModel.numTrackers)
                     TrackingMenuFirstRowElement(label: "Domains", num: viewModel.numDomains)
@@ -144,8 +163,7 @@ struct TrackingMenuView: View {
                     HallOfShameView(hallOfShameDomains: viewModel.hallOfShameDomains)
                 }
             }
-
-            TrackingMenuProtectionRowButton(isTrackingProtectionEnabled: $isTrackingProtectionEnabled)
+            TrackingMenuProtectionRowButton(preventTrackers: $viewModel.preventTrackersForCurrentPage)
 
             if FeatureFlag[.newTrackingProtectionSettings] {
                 Button(action: { isShowingPopup = true }) {

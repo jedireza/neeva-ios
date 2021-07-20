@@ -6,10 +6,10 @@ import Defaults
 
 public struct TrackingMenuProtectionRowButton: View {
 
-    @Binding var isTrackingProtectionEnabled: Bool
+    @Binding var preventTrackers: Bool
 
     public var body: some View {
-        Toggle(isOn: $isTrackingProtectionEnabled) {
+        Toggle(isOn: $preventTrackers) {
             VStack(alignment: .leading) {
                 Text("Tracking Prevention")
                     .withFont(.bodyLarge)
@@ -26,7 +26,7 @@ public struct TrackingMenuProtectionRowButton: View {
 
 struct TrackingMenuProtectionRowButton_Previews: PreviewProvider {
     static var previews: some View {
-        TrackingMenuProtectionRowButton(isTrackingProtectionEnabled: .constant(true))
-        TrackingMenuProtectionRowButton(isTrackingProtectionEnabled: .constant(false))
+        TrackingMenuProtectionRowButton(preventTrackers: .constant(true))
+        TrackingMenuProtectionRowButton(preventTrackers: .constant(false))
     }
 }

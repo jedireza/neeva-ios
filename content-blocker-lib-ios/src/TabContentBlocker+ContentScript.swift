@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import WebKit
+import Defaults
 
 extension TabContentBlocker {
     func clearPageStats() {
@@ -19,7 +20,8 @@ extension TabContentBlocker {
         }
 
         // Reset the pageStats to make sure the trackingprotection shield icon knows that a page was safelisted
-        guard !ContentBlocker.shared.isSafelisted(url: mainDocumentUrl) else {
+        guard let domain = mainDocumentUrl.host,
+              !Defaults[.unblockedDomains].contains(domain) else {
             clearPageStats()
             return
         }

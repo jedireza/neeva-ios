@@ -5,12 +5,15 @@ import XCTest
 import ViewInspector
 import Shared
 import SwiftUI
+import Defaults
 
 extension TrackingMenuView: Inspectable { }
 extension TrackingMenuFirstRowElement: Inspectable { }
 extension HallOfShameElement: Inspectable { }
 extension HallOfShameView: Inspectable { }
+extension TrackingMenuProtectionRowButton: Inspectable { }
 extension Text: Inspectable { }
+extension Toggle: Inspectable { }
 
 class TrackingUITests: XCTestCase {
     let domainsGoogle = ["1emn.com",
@@ -53,7 +56,7 @@ class TrackingUITests: XCTestCase {
     }
 
     func testTrackingStatsViewModel() throws {
-        model = TrackingStatsViewModel(trackingData: trackingData)
+        model = TrackingStatsViewModel(testingData: trackingData)
         XCTAssertEqual(model.numTrackers,
                        (domainsOutbrain + domainsGoogle + domainsAmazon + domainsUnknownSource).count)
         XCTAssertEqual(model.numDomains, 16)
@@ -75,7 +78,7 @@ class TrackingUITests: XCTestCase {
         domainsUnknownSource.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
 
         let tempData = TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)
-        model = TrackingStatsViewModel(trackingData: tempData)
+        model = TrackingStatsViewModel(testingData: tempData)
         XCTAssertEqual(model.numTrackers,
                        (domainsGoogle + domainsAmazon + domainsUnknownSource).count)
         XCTAssertEqual(model.numDomains, 12)
@@ -88,7 +91,7 @@ class TrackingUITests: XCTestCase {
     }
 
     func testTrackingUIFirstRow() throws {
-        let ui = TrackingMenuView(viewModel: TrackingStatsViewModel(trackingData: trackingData))
+        let ui = TrackingMenuView().environmentObject(TrackingStatsViewModel(testingData: trackingData))
         let firstRowElements = try ui.inspect().findAll(TrackingMenuFirstRowElement.self)
         XCTAssertEqual(firstRowElements.count, 2)
 
@@ -99,7 +102,7 @@ class TrackingUITests: XCTestCase {
     }
 
     func testTrackingHallOfShame() throws {
-        let ui = TrackingMenuView(viewModel: TrackingStatsViewModel(trackingData: trackingData))
+        let ui = TrackingMenuView().environmentObject(TrackingStatsViewModel(testingData: trackingData))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
         XCTAssertEqual(hallOfShameElements.count, 3)
 
@@ -116,8 +119,8 @@ class TrackingUITests: XCTestCase {
         domainsGoogle.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
         domainsAmazon.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
         domainsUnknownSource.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
-        let ui = TrackingMenuView(viewModel: TrackingStatsViewModel(
-                                    trackingData: TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)))
+        let ui = TrackingMenuView().environmentObject(TrackingStatsViewModel(testingData:
+                                                        TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
         XCTAssertEqual(hallOfShameElements.count, 2)
 
@@ -125,5 +128,38 @@ class TrackingUITests: XCTestCase {
                         .string(locale: Locale(identifier: "en")), "15")
         XCTAssertEqual(try hallOfShameElements[1].find(Kern.self).text()
                         .string(locale: Locale(identifier: "en")), "8")
+    }
+
+    func testToggleInModel() throws {
+        let profile = TabManagerMockProfile()
+        let manager = TabManager(profile: profile, imageStore: nil)
+        let tab = manager.addTab()
+        manager.selectTab(tab)
+        tab.url = URL(string: "https://neeva.com")
+        model = TrackingStatsViewModel(tabManager: manager)
+        model.preventTrackersForCurrentPage = false
+        XCTAssertTrue(Defaults[.unblockedDomains].contains("neeva.com"))
+        model.preventTrackersForCurrentPage = true
+        XCTAssertFalse(Defaults[.unblockedDomains].contains("neeva.com"))
+    }
+
+    func testToggleInUI() throws {
+        let profile = TabManagerMockProfile()
+        let manager = TabManager(profile: profile, imageStore: nil)
+        let tab = manager.addTab()
+        manager.selectTab(tab)
+        tab.url = URL(string: "https://neeva.com")
+        model = TrackingStatsViewModel(tabManager: manager)
+        let ui = TrackingMenuView().environmentObject(model)
+        let rowButton = try ui.inspect().find(TrackingMenuProtectionRowButton.self).actualView()
+        XCTAssertNotNil(rowButton)
+        let toggle = try rowButton.inspect().toggle()
+        XCTAssertNotNil(toggle)
+        rowButton.preventTrackers = false
+        XCTAssertTrue(Defaults[.unblockedDomains].contains("neeva.com"))
+        XCTAssertFalse(try toggle.isOn())
+        rowButton.preventTrackers = true
+        XCTAssertFalse(Defaults[.unblockedDomains].contains("neeva.com"))
+        XCTAssertTrue(try toggle.isOn())
     }
 }

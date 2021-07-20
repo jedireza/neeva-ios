@@ -10,9 +10,9 @@ struct TrackingMenuSettingsView: View {
     @State var domainIsNotSafelisted: Bool = false {
         didSet {
             if domainIsNotSafelisted {
-                TrackingPreventionConfig.PerSite.disallowTrackersFor(domain)
+                TrackingPreventionConfig.disallowTrackersFor(domain)
             } else {
-                TrackingPreventionConfig.PerSite.allowTrackersFor(domain)
+                TrackingPreventionConfig.allowTrackersFor(domain)
             }
         }
     }

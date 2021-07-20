@@ -50,7 +50,7 @@ class TPStatsBlocklistChecker {
         }
 
         // Make a copy on the main thread
-        let safelistRegex = TrackingPreventionConfig.PerSite.unblockedDomainsRegex
+        let safelistRegex = TrackingPreventionConfig.unblockedDomainsRegex
 
         DispatchQueue.global().async {
             // Return true in the Deferred if the domain could potentially be blocked

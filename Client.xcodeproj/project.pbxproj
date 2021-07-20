@@ -705,7 +705,6 @@
 		EBF47E701F7979DF00899189 /* TelemetryWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF47E6F1F7979DF00899189 /* TelemetryWrapper.swift */; };
 		EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */; };
 		F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */; };
-		F0102C6326052F7100B5F884 /* PopOverTrackingMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */; };
 		F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */; };
 		F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */; };
 		F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */; };
@@ -1612,7 +1611,6 @@
 		EBF47E6F1F7979DF00899189 /* TelemetryWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryWrapper.swift; sourceTree = "<group>"; };
 		EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+FindInPage.swift"; sourceTree = "<group>"; };
 		F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuView.swift; sourceTree = "<group>"; };
-		F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverTrackingMenuViewController.swift; sourceTree = "<group>"; };
 		F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuProtectionRowButton.swift; sourceTree = "<group>"; };
 		F0405D0B25FFCA5100A0A3B2 /* NeevaMenuButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuButtonView.swift; sourceTree = "<group>"; };
 		F0405D0C25FFCA5100A0A3B2 /* NeevaMenuRowButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaMenuRowButtonView.swift; sourceTree = "<group>"; };
@@ -2263,7 +2261,6 @@
 			children = (
 				BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */,
 				F0405D3325FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift */,
-				F0102C6226052F7100B5F884 /* PopOverTrackingMenuViewController.swift */,
 			);
 			path = MenuController;
 			sourceTree = "<group>";
@@ -4568,7 +4565,6 @@
 				C9E5F2B12673B4A000025A7F /* NavigationController.swift in Sources */,
 				EBC4869D2195F58300CDA48D /* ErrorPageHelper.swift in Sources */,
 				E660BDD91BB06521009AC090 /* TabsButton.swift in Sources */,
-				F0102C6326052F7100B5F884 /* PopOverTrackingMenuViewController.swift in Sources */,
 				D5AF961B25D1FCAF006ACA6A /* WidgetIntents.intentdefinition in Sources */,
 				63306D3921103EAE00F25400 /* SavedTab.swift in Sources */,
 				C9BED4BD2667E453001D9C77 /* SuggestedSitesViews.swift in Sources */,

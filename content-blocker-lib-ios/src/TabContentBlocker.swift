@@ -29,24 +29,6 @@ class TabContentBlocker {
 
     func notifyContentBlockingChanged() {}
 
-    var status: BlockerStatus {
-        guard isEnabled else {
-            return .disabled
-        }
-        guard let url = tab?.currentURL() else {
-            return .noBlockedURLs
-        }
-
-        if ContentBlocker.shared.isSafelisted(url: url) {
-            return .safelisted
-        }
-        if stats.total == 0 {
-            return .noBlockedURLs
-        } else {
-            return .blocking
-        }
-    }
-
     var stats: TPPageStats = TPPageStats()
 
     init(tab: ContentBlockerTab) {

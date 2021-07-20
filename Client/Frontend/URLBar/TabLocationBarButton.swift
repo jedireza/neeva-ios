@@ -37,7 +37,7 @@ struct LocationViewTrackingButton: View {
             backgroundColor: .systemGroupedBackground,
             arrowDirections: [.up, .down]
         ) {
-            TrackingMenuView(viewModel: trackingStatsModel)
+            TrackingMenuView().environmentObject(trackingStatsModel)
         }
     }
 }

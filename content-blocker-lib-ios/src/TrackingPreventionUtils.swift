@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Shared
+import Defaults
 
 struct TrackingPreventionUtils {
     private static func readDomains() -> String? {
@@ -43,9 +44,9 @@ struct TrackingPreventionUtils {
         var rules: [TrackingPreventionRule] = []
         var actionType: String?
 
-        if TrackingPreventionConfig.blockThirdPartyTrackingRequests {
+        if Defaults[.blockThirdPartyTrackingRequests] {
             actionType = Block
-        } else if TrackingPreventionConfig.blockThirdPartyTrackingCookies {
+        } else if Defaults[.blockThirdPartyTrackingCookies] {
             actionType = BlockCookies
         }
 
@@ -71,7 +72,7 @@ struct TrackingPreventionUtils {
     private static func upgradeAllToHTTPSRule() -> [TrackingPreventionRule] {
         var rules: [TrackingPreventionRule] = []
 
-        if TrackingPreventionConfig.upgradeAllToHTTPS {
+        if Defaults[.upgradeAllToHttps] {
             rules.append(TrackingPreventionRule(trigger: TrackingPreventionTrigger(urlFilter: ".*"), action: TrackingPreventionAction(type: MakeHTTPS)))
         }
         return rules
@@ -88,7 +89,7 @@ struct TrackingPreventionUtils {
 
     private static func unblockedRules() -> [TrackingPreventionRule] {
         var rules: [TrackingPreventionRule] = []
-        let domains = TrackingPreventionConfig.PerSite.unblockedDomains
+        let domains = Defaults[.unblockedDomains]
 
         NSLog("unblockedRules domains:", domains.count, domains)
         var groupedPatterns: [String] = []

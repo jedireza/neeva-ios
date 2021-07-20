@@ -3,30 +3,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import WebKit
+import Defaults
 
 extension ContentBlocker {
     // Get the safelist domain array as a JSON fragment that can be inserted at the end of a blocklist.
     func safelistAsJSON() -> String {
-        if TrackingPreventionConfig.PerSite.unblockedDomains.isEmpty {
+        if Defaults[.unblockedDomains].isEmpty {
             return ""
         }
         // Note that * is added to the front of domains, so foo.com becomes *foo.com
-        let list = "'*" + TrackingPreventionConfig.PerSite.unblockedDomains.joined(separator: "','*") + "'"
+        let list = "'*" + Defaults[.unblockedDomains].joined(separator: "','*") + "'"
         return ", {'action': { 'type': 'ignore-previous-rules' }, 'trigger': { 'url-filter': '.*', 'if-domain': [\(list)] }}".replacingOccurrences(of: "'", with: "\"")
     }
 
-    func safelist(enable: Bool, url: URL, completion: (() -> Void)?) {
-        guard let domain = safelistableDomain(fromUrl: url) else { return }
-
-        if enable {
-            TrackingPreventionConfig.PerSite.allowTrackersFor(domain)
-        } else {
-            TrackingPreventionConfig.PerSite.disallowTrackersFor(domain)
-        }
-    }
-
     func clearSafelist(completion: (() -> Void)?) {
-        TrackingPreventionConfig.PerSite.unblockedDomains = Set<String>()
+        Defaults[.unblockedDomains] = Set<String>()
         completion?()
     }
 
@@ -43,6 +34,6 @@ extension ContentBlocker {
             return false
         }
 
-        return TrackingPreventionConfig.PerSite.trackersAllowedFor(domain)
+        return TrackingPreventionConfig.trackersAllowedFor(domain)
     }
 }
