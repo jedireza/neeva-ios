@@ -530,6 +530,12 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
+        // if user login via QR code, clean previous profile if any
+        if NeevaConstants.isQRLoginLandingPage(url) {
+            NeevaUserInfo.shared.deleteLoginCookie()
+            NeevaUserInfo.shared.clearCache()
+        }
+
         // This is the normal case, opening a http or https url, which we handle by loading them in this WKWebView. We
         // always allow this. Additionally, data URIs are also handled just like normal web pages.
 

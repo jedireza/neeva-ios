@@ -23,6 +23,10 @@ public struct NeevaConstants {
         return host == appHost
     }
 
+    public static func isQRLoginLandingPage(_ url: URL?) -> Bool {
+        return isAppHost(url?.host) && url?.path == "/p/qr-login-redirect"
+    }
+
     /// The URL form of `appHost`
     public static var appURL: URL { URL(string: "https://\(appHost)/")! }
     public static let appMarketingURL: URL = "https://neeva.com/"
