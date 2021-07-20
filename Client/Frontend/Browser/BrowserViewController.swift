@@ -1007,16 +1007,6 @@ class BrowserViewController: UIViewController {
         self.openURLInNewTab(url, isPrivate: isPrivate)
     }
 
-    func focusLocationTextField(forTab tab: Tab?) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-            // Without a delay, the text field fails to become first responder
-            // Check that the newly created tab is still selected.
-            // This let's the user spam the Cmd+T button without lots of responder changes.
-            guard tab == self.tabManager.selectedTab else { return }
-            self.legacyURLBar.model.setEditing(to: true)
-        }
-    }
-
     func openBlankNewTab(focusLocationField: Bool, isPrivate: Bool = false) {
         popToBVC()
 
@@ -1024,7 +1014,7 @@ class BrowserViewController: UIViewController {
         tabManager.select(newTab)
 
         if focusLocationField {
-            focusLocationTextField(forTab: newTab)
+            legacyURLBar.model.setEditing(to: true)
         }
 
         zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate

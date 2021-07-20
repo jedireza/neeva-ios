@@ -31,8 +31,7 @@ extension BrowserViewController: TabToolbarDelegate {
 
     func tabToolbarDidPressAddNewTab() {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        tabManager.selectTab(tabManager.addTab(nil, isPrivate: isPrivate))
-        focusLocationTextField(forTab: tabManager.selectedTab)
+        openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
     }
 
     func tabToolbarSpacesMenu() {
