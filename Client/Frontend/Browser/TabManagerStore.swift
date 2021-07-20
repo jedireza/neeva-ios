@@ -77,11 +77,9 @@ class TabManagerStore {
         assert(Thread.isMainThread)
 
         guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab), let path = tabSavePath(withId: scene.session.persistentIdentifier) else {
-            clearArchive(for: scene)
+            clearArchive(for: scene) 
             return succeed()
         }
-
-        writeOperation.cancel()
 
         return saveTabsToPath(path: path, savedTabs: savedTabs)
     }
@@ -182,6 +180,6 @@ class TabManagerStore {
 extension TabManagerStore {
     func testTabCountOnDisk() -> Int {
         assert(AppConstants.IsRunningTest)
-        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: getLegacyTabSavePath()!)).count
+        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: SceneDelegate.getCurrentSceneId())).count
     }
 }

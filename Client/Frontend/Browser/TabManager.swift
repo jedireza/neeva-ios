@@ -885,11 +885,11 @@ extension TabManager {
 
     func testCountRestoredTabs() -> Int {
         assert(AppConstants.IsRunningTest)
-        return store.getStartupTabs(for: nil).count
+        return store.getStartupTabs(for: SceneDelegate.getCurrentScene()).count
     }
 
     func testClearArchive() {
         assert(AppConstants.IsRunningTest)
-        store.clearArchive(for: nil)
+        store.clearArchive(for: SceneDelegate.getCurrentScene())
     }
 }

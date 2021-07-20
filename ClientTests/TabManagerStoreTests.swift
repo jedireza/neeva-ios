@@ -49,17 +49,13 @@ class TabManagerStoreTests: XCTestCase {
         XCTAssertEqual(manager.testCountRestoredTabs(), 0)
     }
 
-    /*  TODO(bug/261): Disabled due to flakiness.
     func testPrivateTabsAreArchived() {
         for _ in 0..<2 {
             addTabWithSessionData(isPrivate: true)
         }
-        let e = expectation(description: "saved")
-        manager.storeChanges().uponQueue(.main) {_ in
-            XCTAssertEqual(self.manager.testTabCountOnDisk(), 2)
-            e.fulfill()
+        waitForCondition {
+            self.manager.testTabCountOnDisk() == 2
         }
-        waitForExpectations(timeout: 2, handler: nil)
     }
 
     func testAddedTabsAreStored() {
@@ -67,36 +63,24 @@ class TabManagerStoreTests: XCTestCase {
         for _ in 0..<2 {
             addTabWithSessionData()
         }
-
-        var e = expectation(description: "saved")
-        manager.storeChanges().uponQueue(.main) { _ in
-            XCTAssertEqual(self.manager.testTabCountOnDisk(), 2)
-            e.fulfill()
+        waitForCondition {
+            self.manager.testTabCountOnDisk() == 2
         }
-        waitForExpectations(timeout: 2, handler: nil)
 
         // Add 2 more
         for _ in 0..<2 {
             addTabWithSessionData()
         }
-
-        e = expectation(description: "saved")
-        manager.storeChanges().uponQueue(.main) { _ in
-            XCTAssertEqual(self.manager.testTabCountOnDisk(), 4)
-            e.fulfill()
+        waitForCondition {
+            self.manager.testTabCountOnDisk() == 4
         }
-        waitForExpectations(timeout: 2, handler: nil)
 
         // Remove all tabs, and add just 1 tab
         manager.removeAll()
         addTabWithSessionData()
-
-        e = expectation(description: "saved")
-        manager.storeChanges().uponQueue(.main) {_ in
-            XCTAssertEqual(self.manager.testTabCountOnDisk(), 1)
-            e.fulfill()
+        waitForCondition {
+            self.manager.testTabCountOnDisk() == 1
         }
-        waitForExpectations(timeout: 2, handler: nil)
-    }*/
+    }
 }
 
