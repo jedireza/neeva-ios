@@ -39,7 +39,6 @@
 		0BA1E0301B051A07007675AF /* OfflineError.css in Resources */ = {isa = PBXBuildFile; fileRef = 0BA1E02F1B051A07007675AF /* OfflineError.css */; };
 		0BA8964B1A250E6500C1010C /* ProfileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA896491A250E6500C1010C /* ProfileTest.swift */; };
 		0BA8964C1A250E6500C1010C /* TestBookmarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA8964A1A250E6500C1010C /* TestBookmarks.swift */; };
-		0BB5B2881AC0A2B90052877D /* SnackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB5B2861AC0A2B90052877D /* SnackBar.swift */; };
 		0BB5B30B1AC0AD1F0052877D /* LoginsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB5B30A1AC0AD1F0052877D /* LoginsHelper.swift */; };
 		0BF0DB4A1E57B05E009172B0 /* LaunchArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075861E37F7AB006961AC /* LaunchArguments.swift */; };
 		0BF0DB941A8545800039F300 /* LegacyURLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF0DB931A8545800039F300 /* LegacyURLBarView.swift */; };
@@ -215,6 +214,10 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		66BB89D626A64CF9000C4BDF /* OverlaySheetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D526A64CF9000C4BDF /* OverlaySheetButton.swift */; };
+		66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */; };
+		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
+		66BEFDC926A7678200AA32EF /* OverlayGroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC826A7678200AA32EF /* OverlayGroupCell.swift */; };
 		66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C763267A8858002B50B1 /* ToastView.swift */; };
 		66C3C76D267A8858002B50B1 /* ToastWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C764267A8858002B50B1 /* ToastWindowManager.swift */; };
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
@@ -962,7 +965,6 @@
 		0BA1E02F1B051A07007675AF /* OfflineError.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = OfflineError.css; sourceTree = "<group>"; };
 		0BA896491A250E6500C1010C /* ProfileTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileTest.swift; sourceTree = "<group>"; };
 		0BA8964A1A250E6500C1010C /* TestBookmarks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBookmarks.swift; sourceTree = "<group>"; };
-		0BB5B2861AC0A2B90052877D /* SnackBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnackBar.swift; sourceTree = "<group>"; };
 		0BB5B30A1AC0AD1F0052877D /* LoginsHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LoginsHelper.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BF0DB931A8545800039F300 /* LegacyURLBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyURLBarView.swift; sourceTree = "<group>"; };
 		0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetButton.swift; sourceTree = "<group>"; };
@@ -1141,6 +1143,10 @@
 		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66BB89D526A64CF9000C4BDF /* OverlaySheetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySheetButton.swift; sourceTree = "<group>"; };
+		66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppViewController.swift; sourceTree = "<group>"; };
+		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
+		66BEFDC826A7678200AA32EF /* OverlayGroupCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayGroupCell.swift; sourceTree = "<group>"; };
 		66C3C763267A8858002B50B1 /* ToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		66C3C764267A8858002B50B1 /* ToastWindowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastWindowManager.swift; sourceTree = "<group>"; };
 		66C3C766267A8858002B50B1 /* ToastProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastProgressView.swift; sourceTree = "<group>"; };
@@ -2150,13 +2156,13 @@
 			path = SiriShortcuts;
 			sourceTree = "<group>";
 		};
-		661F4FB3269CAA570078238B /* DownloadsMenu */ = {
+		661F4FB3269CAA570078238B /* DownloadsMenuOverlay */ = {
 			isa = PBXGroup;
 			children = (
 				661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */,
 				661F4FB6269CACFD0078238B /* DownloadViewController.swift */,
 			);
-			path = DownloadsMenu;
+			path = DownloadsMenuOverlay;
 			sourceTree = "<group>";
 		};
 		668CA09726797E9800BA756F /* Toast */ = {
@@ -2201,6 +2207,25 @@
 				66A6A72326840376005425D0 /* Info.plist */,
 			);
 			path = ClientIntent;
+			sourceTree = "<group>";
+		};
+		66BB89D226A64BA4000C4BDF /* OverlaySheet */ = {
+			isa = PBXGroup;
+			children = (
+				C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */,
+				66BB89D526A64CF9000C4BDF /* OverlaySheetButton.swift */,
+				66BEFDC826A7678200AA32EF /* OverlayGroupCell.swift */,
+			);
+			path = OverlaySheet;
+			sourceTree = "<group>";
+		};
+		66BB89D726A64F83000C4BDF /* OpenInAppOverlay */ = {
+			isa = PBXGroup;
+			children = (
+				66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */,
+				66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */,
+			);
+			path = OpenInAppOverlay;
 			sourceTree = "<group>";
 		};
 		7B604FC11C496005006EEEC3 /* Frameworks */ = {
@@ -2626,12 +2651,12 @@
 		D38A1BEB1A9FA2CA00F6A386 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				661F4FB3269CAA570078238B /* DownloadsMenuOverlay */,
+				66BB89D726A64F83000C4BDF /* OpenInAppOverlay */,
 				C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */,
 				D863C8E31F68BFC20058D95F /* GradientProgressBar.swift */,
 				0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */,
-				C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */,
 				D38A1BEC1A9FA2CA00F6A386 /* SiteTableViewController.swift */,
-				0BB5B2861AC0A2B90052877D /* SnackBar.swift */,
 				E660BDD81BB06521009AC090 /* TabsButton.swift */,
 				C4E3984B1D21F2FD004E89BA /* TabTrayButtonExtensions.swift */,
 				E663D5771BB341C4001EF30E /* ToggleButton.swift */,
@@ -3231,20 +3256,20 @@
 			children = (
 				392ED7D51D0AEEEE009D9B62 /* Accessors */,
 				D3A994941A368691008AD1AC /* Browser */,
-				C9ACC46B267BA614009AE182 /* TabToolbar */,
 				23ED80FD25C899D700D0E9D5 /* DefaultBrowserOnboarding */,
-				661F4FB3269CAA570078238B /* DownloadsMenu */,
 				BC0E275B268059C500EAAE00 /* Feedback */,
 				EBC486972195F46A00CDA48D /* InternalSchemeHandler */,
 				E49943F31AE6879C00BF9DE4 /* Intro */,
 				D05434F3225FDA3400FDE4EF /* Library */,
 				7BC7B4571C903A6A0046E9D2 /* Menu */,
 				2C49854D206173C800893DAE /* photon-colors.swift */,
+				66BB89D226A64BA4000C4BDF /* OverlaySheet */,
 				BC85E224264F29660068092F /* Prompt */,
 				F84B21F51A0910F600AAB793 /* Reader */,
 				2F44FC551A9E83E200FD20CC /* Settings */,
 				D3972BF01C22412B00035B87 /* Share */,
 				C9C18DFC26559007004710CD /* Suggestions */,
+				C9ACC46B267BA614009AE182 /* TabToolbar */,
 				EB9A179720E69A7E00B12184 /* Theme */,
 				668CA09726797E9800BA756F /* Toast */,
 				2816EFFF1B33E05400522243 /* UIConstants.swift */,
@@ -4421,6 +4446,7 @@
 				C9E5F2CB2678F05E00025A7F /* Popover.swift in Sources */,
 				274A36C9239EB94000A21587 /* LibraryPanelButton.swift in Sources */,
 				435D660523D794B90046EFA2 /* UpdateViewModel.swift in Sources */,
+				66BB89D626A64CF9000C4BDF /* OverlaySheetButton.swift in Sources */,
 				D3B6923F1B9F9A58004B87A4 /* FindInPageHelper.swift in Sources */,
 				BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */,
 				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,
@@ -4437,6 +4463,7 @@
 				C45F44691D087DB600CB7EF0 /* TopTabsViewController.swift in Sources */,
 				C9F8EB372680E33B0042CFE7 /* TabToolbarButtons.swift in Sources */,
 				1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */,
+				66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */,
 				0BF0DB941A8545800039F300 /* LegacyURLBarView.swift in Sources */,
 				661F4FB5269CAAE00078238B /* DownloadOverlayView.swift in Sources */,
 				C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */,
@@ -4479,7 +4506,6 @@
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
 				4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */,
 				C9C18DDF26558FF3004710CD /* MutationController.swift in Sources */,
-				0BB5B2881AC0A2B90052877D /* SnackBar.swift in Sources */,
 				C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */,
 				EBC4869F2195F58300CDA48D /* SessionRestoreHandler.swift in Sources */,
 				F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */,
@@ -4567,6 +4593,7 @@
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
+				66BEFDC926A7678200AA32EF /* OverlayGroupCell.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
 				3BB50E201D627539004B33DF /* ZeroQueryViewController.swift in Sources */,
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
@@ -4637,6 +4664,7 @@
 				59A681BDFC95A19F05E07223 /* SearchViewController.swift in Sources */,
 				C9BED4C12667FA91001D9C77 /* SuggestedSearchViews.swift in Sources */,
 				4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */,
+				66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */,
 				4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */,
 				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,

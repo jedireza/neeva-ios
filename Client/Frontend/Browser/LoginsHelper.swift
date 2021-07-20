@@ -15,7 +15,6 @@ private let log = Logger.browserLogger
 class LoginsHelper: TabContentScript {
     fileprivate weak var tab: Tab?
     fileprivate let profile: Profile
-    fileprivate var snackBar: SnackBar?
 
     // Exposed for mocking purposes
     var logins: RustLogins {
@@ -182,24 +181,7 @@ class LoginsHelper: TabContentScript {
             promptMessage = String(format: Strings.SaveLoginPrompt, url)
         }
 
-        if let existingPrompt = self.snackBar {
-            tab?.removeSnackbar(existingPrompt)
-        }
-
-        snackBar = TimerSnackBar(text: promptMessage, img: UIImage(named: "key"))
-        let dontSave = SnackButton(title: Strings.LoginsHelperDontSaveButtonTitle, accessibilityIdentifier: "SaveLoginPrompt.dontSaveButton", bold: false) { bar in
-            self.tab?.removeSnackbar(bar)
-            self.snackBar = nil
-            return
-        }
-        let save = SnackButton(title: Strings.LoginsHelperSaveLoginButtonTitle, accessibilityIdentifier: "SaveLoginPrompt.saveLoginButton", bold: true) { bar in
-            self.tab?.removeSnackbar(bar)
-            self.snackBar = nil
-            _ = self.profile.logins.add(login: login)
-        }
-        snackBar?.addButton(dontSave)
-        snackBar?.addButton(save)
-        tab?.addSnackbar(snackBar!)
+        // TODO: Add prompt message to save the user's credentials back here
     }
 
     fileprivate func promptUpdateFromLogin(login old: LoginRecord, toLogin new: LoginRecord) {
@@ -217,23 +199,7 @@ class LoginsHelper: TabContentScript {
             formatted = String(format: Strings.UpdateLoginPrompt, new.hostname)
         }
 
-        if let existingPrompt = self.snackBar {
-            tab?.removeSnackbar(existingPrompt)
-        }
-
-        snackBar = TimerSnackBar(text: formatted, img: UIImage(named: "key"))
-        let dontSave = SnackButton(title: Strings.LoginsHelperDontUpdateButtonTitle, accessibilityIdentifier: "UpdateLoginPrompt.donttUpdateButton", bold: false) { bar in
-            self.tab?.removeSnackbar(bar)
-            self.snackBar = nil
-        }
-        let update = SnackButton(title: Strings.LoginsHelperUpdateButtonTitle, accessibilityIdentifier: "UpdateLoginPrompt.updateButton", bold: true) { bar in
-            self.tab?.removeSnackbar(bar)
-            self.snackBar = nil
-            _ = self.profile.logins.update(login: new)
-        }
-        snackBar?.addButton(dontSave)
-        snackBar?.addButton(update)
-        tab?.addSnackbar(snackBar!)
+        // TODO: Add prompt message to update the user's credentials back here
     }
 
     fileprivate func requestLogins(_ request: [String: Any], url: URL) {

@@ -31,6 +31,6 @@ class NavigationDelegateTests: KIFTestCase {
         tester().waitForWebViewElementWithAccessibilityLabel("link")
         tester().tapWebViewElementWithAccessibilityLabel("link")
         tester().wait(forTimeInterval: 2)
-        tester().tapView(withAccessibilityIdentifier: "CancelOpenInAppStore")
+        tester().tapView(withAccessibilityIdentifier: "CancelOpenInApp")
     }
 }

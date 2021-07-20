@@ -30,8 +30,6 @@ protocol TabContentScript {
 
 @objc
 protocol TabDelegate {
-    func tab(_ tab: Tab, didAddSnackbar bar: SnackBar)
-    func tab(_ tab: Tab, didRemoveSnackbar bar: SnackBar)
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String)
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String)
     @objc optional func tab(_ tab: Tab, didCreateWebView webView: WKWebView)
@@ -101,7 +99,6 @@ class Tab: NSObject {
     /// This set is cleared out when the tab is closed, ensuring that any subscriptions are invalidated.
     var webViewSubscriptions: Set<AnyCancellable> = []
     weak var urlDidChangeDelegate: URLChangeDelegate?     // TODO: generalize this.
-    var bars = [SnackBar]()
     var favicons = [Favicon]() {
         didSet {
             updateFaviconCache()
@@ -487,33 +484,6 @@ class Tab: NSObject {
         } else {
             webView?.alpha = 1.0
         }
-    }
-
-    func addSnackbar(_ bar: SnackBar) {
-        if bars.count > 2 { return } // maximum 3 snackbars allowed on a tab
-        bars.append(bar)
-        tabDelegate?.tab(self, didAddSnackbar: bar)
-    }
-
-    func removeSnackbar(_ bar: SnackBar) {
-        if let index = bars.firstIndex(of: bar) {
-            bars.remove(at: index)
-            tabDelegate?.tab(self, didRemoveSnackbar: bar)
-        }
-    }
-
-    func removeAllSnackbars() {
-        // Enumerate backwards here because we'll remove items from the list as we go.
-        bars.reversed().forEach { removeSnackbar($0) }
-    }
-
-    func expireSnackbars() {
-        // Enumerate backwards here because we may remove items from the list as we go.
-        bars.reversed().filter({ !$0.shouldPersist(self) }).forEach({ removeSnackbar($0) })
-    }
-
-    func expireSnackbars(withClass snackbarClass: String) {
-        bars.reversed().filter({ $0.snackbarClassIdentifier == snackbarClass }).forEach({ removeSnackbar($0) })
     }
 
     func setScreenshot(_ screenshot: UIImage?, revUUID: Bool = true) {

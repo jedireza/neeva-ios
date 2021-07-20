@@ -277,14 +277,6 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    func expireSnackbars() {
-        assert(Thread.isMainThread)
-
-        for tab in tabs {
-            tab.expireSnackbars()
-        }
-    }
-
     func addPopupForParentTab(bvc: BrowserViewController, parentTab: Tab, configuration: WKWebViewConfiguration) -> Tab {
         let popup = Tab(bvc: bvc, configuration: configuration, isPrivate: parentTab.isPrivate)
         configureTab(popup, request: nil, afterTab: parentTab, flushToDisk: true, zombie: false, isPopup: true)

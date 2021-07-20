@@ -1166,8 +1166,6 @@ class BrowserViewController: UIViewController {
     }
     
     func navigateInTab(tab: Tab, to navigation: WKNavigation? = nil, webViewStatus: WebViewUpdateStatus) {
-        tabManager.expireSnackbars()
-
         guard let webView = tab.webView else {
             print("Cannot navigate in tab without a webView")
             return
@@ -1433,47 +1431,6 @@ extension BrowserViewController: TabDelegate {
         webView.removeFromSuperview()
     }
 
-    fileprivate func findSnackbar(_ barToFind: SnackBar) -> Int? {
-        let bars = alertStackView.arrangedSubviews
-        for (index, bar) in bars.enumerated() where bar === barToFind {
-            return index
-        }
-        return nil
-    }
-
-    func showBar(_ bar: SnackBar, animated: Bool) {
-        view.layoutIfNeeded()
-        UIView.animate(withDuration: animated ? 0.25 : 0, animations: {
-            self.alertStackView.insertArrangedSubview(bar, at: 0)
-            self.view.layoutIfNeeded()
-        })
-    }
-
-    func removeBar(_ bar: SnackBar, animated: Bool) {
-        UIView.animate(withDuration: animated ? 0.25 : 0, animations: {
-            bar.removeFromSuperview()
-        })
-    }
-
-    func removeAllBars() {
-        alertStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-    }
-
-    func tab(_ tab: Tab, didAddSnackbar bar: SnackBar) {
-        // If the Tab that had a SnackBar added to it is not currently
-        // the selected Tab, do nothing right now. If/when the Tab gets
-        // selected later, we will show the SnackBar at that time.
-        guard tab == tabManager.selectedTab else {
-            return
-        }
-
-        showBar(bar, animated: true)
-    }
-
-    func tab(_ tab: Tab, didRemoveSnackbar bar: SnackBar) {
-        removeBar(bar, animated: true)
-    }
-
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String) {
         updateFindInPageVisibility(visible: true)
         findInPageBar?.text = selection
@@ -1623,13 +1580,6 @@ extension BrowserViewController: TabManagerDelegate {
                 // The web view can go gray if it was zombified due to memory pressure.
                 // When this happens, the URL is nil, so try restoring the page upon selection.
                 tab.reload()
-            }
-        }
-
-        removeAllBars()
-        if let bars = selected?.bars {
-            for bar in bars {
-                showBar(bar, animated: true)
             }
         }
 

@@ -12,16 +12,6 @@ struct DownloadMenuView: View {
     let onDownload: () -> ()
     let onDismiss: () -> ()
 
-    private let cellHeight: CGFloat = 52
-    private struct Cell<Content: View>: View {
-        let content: () -> Content
-        var body: some View {
-            content()
-                .background(Color.secondaryGroupedBackground)
-                .cornerRadius(12)
-        }
-    }
-
     public var body: some View {
         VStack(alignment: .leading, spacing: 26) {
             VStack(alignment: .leading, spacing: 4) {
@@ -37,29 +27,10 @@ struct DownloadMenuView: View {
             }
 
             VStack(alignment: .center, spacing: 12) {
-                Cell {
-                    Button(action: { onDownload() }) {
-                        HStack(alignment: .center) {
-                            Spacer()
-                            Text(fileSize != nil ? "Download (\(fileSize!))" : "Download")
-                            Spacer()
-                        }.frame(height: cellHeight)
-                    }
-                }
-
-                Cell {
-                    Button(action: { onDismiss() }) {
-                        HStack(alignment: .center) {
-                            Spacer()
-                            Text("Cancel").withFont(.labelLarge)
-                            Spacer()
-                        }.frame(height: cellHeight)
-                    }
-
-                }
+                OverlaySheetButton(fileSize != nil ? "Download (\(fileSize!))" : "Download", action: onDownload)
+                OverlaySheetButton("Cancel", action: onDismiss)
             }
             .foregroundColor(.ui.adaptive.blue)
-            .buttonStyle(TableCellButtonStyle())
         }.padding()
     }
 }

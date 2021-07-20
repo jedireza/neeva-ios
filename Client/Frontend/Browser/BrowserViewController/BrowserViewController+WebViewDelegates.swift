@@ -394,19 +394,14 @@ extension BrowserViewController: WKNavigationDelegate {
     }
 
     // Use for sms and mailto links, which do not show a confirmation before opening.
-    fileprivate func showSnackbar(forExternalUrl url: URL, tab: Tab, completion: @escaping (Bool) -> ()) {
-        let snackBar = TimerSnackBar(text: Strings.ExternalLinkGenericConfirmation + "\n\(url.absoluteString)", img: nil)
-        let ok = SnackButton(title: Strings.OKString, accessibilityIdentifier: "AppOpenExternal.button.ok") { bar in
-            tab.removeSnackbar(bar)
-            completion(true)
-        }
-        let cancel = SnackButton(title: Strings.CancelString, accessibilityIdentifier: "AppOpenExternal.button.cancel") { bar in
-            tab.removeSnackbar(bar)
-            completion(false)
-        }
-        snackBar.addButton(ok)
-        snackBar.addButton(cancel)
-        tab.addSnackbar(snackBar)
+    fileprivate func showOverlay(forExternalUrl url: URL, completion: @escaping (Bool) -> ()) {
+        tabManager.selectedTab?.stop()
+
+        showOverlaySheetViewController(OpenInAppViewController(url: url, onOpen: {
+            UIApplication.shared.open(url, options: [:])
+        }, onDismiss: {
+            self.hideOverlaySheetViewController()
+        }))
     }
 
     // This is the place where we decide what to do with a new navigation action. There are a number of special schemes
@@ -434,7 +429,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // gives us the exact same behaviour as Safari.
         if ["sms", "tel", "facetime", "facetime-audio"].contains(url.scheme) {
             if url.scheme == "sms" { // All the other types show a native prompt
-                showSnackbar(forExternalUrl: url, tab: tab) { isOk in
+                showOverlay(forExternalUrl: url) { isOk in
                     guard isOk else { return }
                     UIApplication.shared.open(url, options: [:])
                 }
@@ -472,25 +467,12 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if isStoreURL(url) {
             decisionHandler(.cancel)
-
-            // Make sure to wait longer than delaySelectingNewPopupTab to ensure selectedTab is correct
-            DispatchQueue.main.asyncAfter(deadline: .now() + tabManager.delaySelectingNewPopupTab + 0.1) {
-                guard let tab = self.tabManager.selectedTab else { return }
-                if tab.bars.isEmpty { // i.e. no snackbars are showing
-                    TimerSnackBar.showAppStoreConfirmationBar(forTab: tab, appStoreURL: url) { _ in
-                        // If a new window was opened for this URL (it will have no history), close it.
-                        if tab.historyList.isEmpty {
-                            self.tabManager.removeTabAndUpdateSelectedIndex(tab)
-                        }
-                    }
-                }
-            }
-            return
+            showOverlay(forExternalUrl: url) { _ in }
         }
 
         // Handles custom mailto URL schemes.
         if url.scheme == "mailto" {
-            showSnackbar(forExternalUrl: url, tab: tab) { isOk in
+            showOverlay(forExternalUrl: url) { isOk in
                 guard isOk else { return }
 
                 if let mailToMetadata = url.mailToMetadata(), let mailScheme = Defaults[.mailToOption], mailScheme != "mailto" {
@@ -577,7 +559,7 @@ extension BrowserViewController: WKNavigationDelegate {
         }
 
         if !(url.scheme?.contains("neeva") ?? true) {
-            showSnackbar(forExternalUrl: url, tab: tab) { isOk in
+            showOverlay(forExternalUrl: url) { isOk in
                 guard isOk else { return }
                 UIApplication.shared.open(url, options: [:]) { openedURL in
                     // Do not show error message for JS navigated links or redirect as it's not the result of a user action.
