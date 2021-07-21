@@ -16,8 +16,8 @@ class NeevaSignInTests: BaseTestCase {
 
         // These are set by our test environment on CircleCI. If you want to run the
         // tests manually, you will need to edit the Schema to define these variables.
-        XCTAssertNotEqual(username, "$(TEST_ACCOUNT_USERNAME)", "TEST_ACCOUNT_USERNAME environment variable not set!")
-        XCTAssertNotEqual(password, "$(TEST_ACCOUNT_PASSWORD)", "TEST_ACCOUNT_PASSWORD environment variable not set!")
+        XCTAssertNotEqual(username, "", "TEST_ACCOUNT_USERNAME environment variable not set!")
+        XCTAssertNotEqual(password, "", "TEST_ACCOUNT_PASSWORD environment variable not set!")
 
         super.setUp()
     }
