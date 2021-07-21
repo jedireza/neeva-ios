@@ -23,6 +23,7 @@ struct SuggestedSearchesView: View {
                     .frame(height: 37)
                     .padding(.horizontal, ZeroQueryUX.Padding)
                 }
+                .onDrag { NSItemProvider(url: URL(string: site.url)!) }
                 .buttonStyle(TableCellButtonStyle())
                 .overlay(
                     Button(action: { setSearchInput(query) }) {

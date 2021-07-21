@@ -117,6 +117,7 @@ struct SuggestedSitesView: View {
             LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing) {
                 ForEach(viewModel.sites, id: \.self) { suggestedSite in
                     SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
+                        .onDrag { NSItemProvider(url: URL(string: suggestedSite.url)!) }
                 }
             }
             .padding(.vertical, 10)
@@ -129,6 +130,7 @@ struct SuggestedSitesView: View {
                             Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
                         }
                         SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
+                            .onDrag { NSItemProvider(url: URL(string: suggestedSite.url)!) }
                     }
                 }
                 .frame(height: SuggestedSiteUX.BlockSize)

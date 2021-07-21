@@ -53,6 +53,7 @@ struct SuggestedSpaceView: View {
         }
         .padding(.horizontal, ZeroQueryUX.Padding)
         .padding(.vertical, ZeroQueryUX.Padding / 2)
+        .onDrag { NSItemProvider(url: space.url) }
     }
 }
 

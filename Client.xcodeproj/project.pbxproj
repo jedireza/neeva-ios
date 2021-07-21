@@ -202,6 +202,7 @@
 		661F4FB5269CAAE00078238B /* DownloadOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */; };
 		661F4FB7269CACFD0078238B /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F4FB6269CACFD0078238B /* DownloadViewController.swift */; };
 		662D8CD626939C3F0000364A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662D8CD526939C3F0000364A /* SceneDelegate.swift */; };
+		663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */; };
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
 		664825F0268FD106000E7F6A /* XCUIElementExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664825EF268FD106000E7F6A /* XCUIElementExtension.swift */; };
 		665D146426964B7300E39BA9 /* LibraryPanelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665D146326964B7300E39BA9 /* LibraryPanelType.swift */; };
@@ -1127,6 +1128,7 @@
 		661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOverlayView.swift; sourceTree = "<group>"; };
 		661F4FB6269CACFD0078238B /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		662D8CD526939C3F0000364A /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSItemProviderExtensions.swift; sourceTree = "<group>"; };
 		6643042F267C19D200674549 /* ToastDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastDefaults.swift; sourceTree = "<group>"; };
 		664825EF268FD106000E7F6A /* XCUIElementExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCUIElementExtension.swift; sourceTree = "<group>"; };
 		665D146326964B7300E39BA9 /* LibraryPanelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryPanelType.swift; sourceTree = "<group>"; };
@@ -1913,6 +1915,7 @@
 				BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */,
 				BC264BC126746098001527B6 /* ViewExtensions.swift */,
 				C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */,
+				663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4596,6 +4599,7 @@
 				66BEFDC926A7678200AA32EF /* OverlayGroupCell.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
 				3BB50E201D627539004B33DF /* ZeroQueryViewController.swift in Sources */,
+				663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */,
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
 				C9C18E0826559007004710CD /* SearchSuggestionViews.swift in Sources */,
 				E47616C71AB74CA600E7DD25 /* ReaderModeBarView.swift in Sources */,
