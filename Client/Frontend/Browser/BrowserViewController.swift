@@ -215,6 +215,11 @@ class BrowserViewController: UIViewController {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        self.updateViewConstraints()
+    }
+
     func shouldShowFooterForTraitCollection(_ previousTraitCollection: UITraitCollection) -> Bool {
         return previousTraitCollection.verticalSizeClass != .compact && previousTraitCollection.horizontalSizeClass != .regular
     }
@@ -735,9 +740,13 @@ class BrowserViewController: UIViewController {
         }
 
         if FeatureFlag[.cardGrid] {
-            cardGridViewController.view.snp.makeConstraints {make in
+            cardGridViewController.view.snp.remakeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview()
-                make.top.equalTo(legacyURLBar.snp.bottom)
+                if shouldShowFooterForTraitCollection(traitCollection) {
+                    make.top.equalTo(legacyURLBar.snp.bottom)
+                } else {
+                    make.top.equalToSuperview()
+                }
             }
         }
     }

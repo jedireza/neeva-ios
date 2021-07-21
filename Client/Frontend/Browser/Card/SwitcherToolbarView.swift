@@ -56,12 +56,14 @@ class SwitcherToolbarModel: ObservableObject {
 }
 
 struct SwitcherToolbarView: View {
+    let top: Bool
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
 
     var body: some View {
+        let divider = Color(UIColor.Browser.urlBarDivider).frame(height: 1).ignoresSafeArea()
         VStack(spacing: 0) {
-            Color(UIColor.Browser.urlBarDivider).frame(height: 1)
+            if !top { divider }
             HStack(spacing: 0) {
                 IncognitoButton()
                     .environmentObject(toolbarModel)
@@ -88,8 +90,10 @@ struct SwitcherToolbarView: View {
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
                 .accessibilityIdentifier("TabTrayController.doneButton")
             }.padding(.horizontal, 16)
+            .frame(height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)
+            if top { divider }
         }
-        .background(Color.DefaultBackground)
+        .background(Color.DefaultBackground.ignoresSafeArea())
         .opacity(gridModel.isHidden ? 0 : 1)
         .animation(.easeOut)
     }

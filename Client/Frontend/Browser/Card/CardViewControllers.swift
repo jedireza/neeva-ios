@@ -20,16 +20,12 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         let toolbarModel: SwitcherToolbarModel
 
         var body: some View {
-            VStack(spacing: 0) {
-                CardGrid()
-                    .background(Color(UIColor.TabTray.background).ignoresSafeArea())
-                SwitcherToolbarView()
-                    .environmentObject(toolbarModel)
-            }
-            .environmentObject(tabCardModel)
-            .environmentObject(spaceCardModel)
-            .environmentObject(tabGroupCardModel)
-            .environmentObject(gridModel)
+            CardGrid()
+                .environmentObject(toolbarModel)
+                .environmentObject(tabCardModel)
+                .environmentObject(spaceCardModel)
+                .environmentObject(tabGroupCardModel)
+                .environmentObject(gridModel)
         }
     }
 

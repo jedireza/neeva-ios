@@ -23,6 +23,7 @@ struct TabToolbarView: View {
         VStack(spacing: 0) {
             Color(UIColor(light: UIColor(rgb: 0xE5E5EA), dark: .tertiarySystemBackground))
                 .frame(height: 0.5)
+                .ignoresSafeArea()
             HStack(spacing: 0) {
                 TabToolbarButtons.BackForward(
                     model: model,

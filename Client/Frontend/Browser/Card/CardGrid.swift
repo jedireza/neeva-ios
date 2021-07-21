@@ -25,7 +25,13 @@ struct CardGrid: View {
     @State private var switcherState: SwitcherViews = .tabs
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
     @State private var columnCount = 2
+    @State private var geom: (size: CGSize, safeAreaInsets: EdgeInsets)?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    var topToolbar: Bool {
+        verticalSizeClass == .compact || horizontalSizeClass == .regular
+    }
 
     var indexInsideTabGroupModel: Int? {
         guard FeatureFlag[.groupsInSwitcher] else {
@@ -62,8 +68,10 @@ struct CardGrid: View {
         }
     }
 
-    @ViewBuilder func transitionAnimator(size: CGSize) -> some View {
-        if gridModel.animationThumbnailState != .hidden, let selectedCardDetails = selectedCardDetails {
+    @ViewBuilder var transitionAnimator: some View {
+        if gridModel.animationThumbnailState != .hidden || gridModel.isHidden,
+           let selectedCardDetails = selectedCardDetails,
+           let geom = geom {
             CardTransitionAnimator(
                 selectedCardDetails: selectedCardDetails,
                 cardSize: cardSize,
@@ -73,7 +81,9 @@ struct CardGrid: View {
                     y: (CardUX.CardHeight + CardGridUX.GridSpacing) * floor(CGFloat(indexInGrid) / columnCount)
                         + CardGridUX.YStaticOffset + gridModel.scrollOffset
                 ),
-                containerSize: size
+                containerSize: geom.size,
+                safeAreaInsets: geom.safeAreaInsets,
+                topToolbar: topToolbar
             )
         }
     }
@@ -93,21 +103,30 @@ struct CardGrid: View {
     var body: some View {
         GeometryReader { geom in
             VStack(spacing: 0) {
-                if FeatureFlag[.groupsInSwitcher] {
-                    GridPicker(switcherState: $switcherState)
+                if topToolbar {
+                    SwitcherToolbarView(top: true)
                 }
-                CardsContainer(switcherState: $switcherState,
-                               columns: Array(repeating:
-                                                GridItem(.fixed(cardSize),
-                                                         spacing: CardGridUX.GridSpacing),
-                                              count: columnCount))
-                    .environment(\.cardSize, cardSize)
-                Spacer(minLength: 0)
+                VStack(spacing: 0) {
+                    if FeatureFlag[.groupsInSwitcher] {
+                        GridPicker(switcherState: $switcherState)
+                    }
+                    CardsContainer(switcherState: $switcherState,
+                                   columns: Array(repeating:
+                                                    GridItem(.fixed(cardSize),
+                                                             spacing: CardGridUX.GridSpacing),
+                                                  count: columnCount))
+                        .environment(\.cardSize, cardSize)
+                    Spacer(minLength: 0)
+                }
+                .background(Color(UIColor.TabTray.background).ignoresSafeArea())
+                if !topToolbar {
+                    SwitcherToolbarView(top: false)
+                }
             }
-            .overlay(transitionAnimator(size: geom.size), alignment: .topLeading)
             .useEffect(deps: geom.size.width, horizontalSizeClass, perform: updateCardSize)
-            .clipped()
+            .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
         }
+        .overlay(transitionAnimator, alignment: .top)
     }
 }
 
