@@ -14,6 +14,11 @@ extension HallOfShameView: Inspectable { }
 extension TrackingMenuProtectionRowButton: Inspectable { }
 extension Text: Inspectable { }
 extension Toggle: Inspectable { }
+extension GroupedStack: Inspectable { }
+extension GroupedCell: Inspectable { } 
+extension GroupedCellButton: Inspectable { }
+extension GroupedCell.Decoration: Inspectable { }
+extension GroupedCell.ContentContainer: Inspectable { }
 
 class TrackingUITests: XCTestCase {
     let domainsGoogle = ["1emn.com",
@@ -63,12 +68,12 @@ class TrackingUITests: XCTestCase {
         XCTAssertEqual(model.trackers, expectedEntities)
 
         XCTAssertEqual(model.hallOfShameDomains.count, 3)
-        XCTAssertEqual(model.hallOfShameDomains[0].key, TrackingEntity.Google)
-        XCTAssertEqual(model.hallOfShameDomains[0].value, 15)
-        XCTAssertEqual(model.hallOfShameDomains[1].key, TrackingEntity.Amazon)
-        XCTAssertEqual(model.hallOfShameDomains[1].value, 8)
-        XCTAssertEqual(model.hallOfShameDomains[2].key, TrackingEntity.Outbrain)
-        XCTAssertEqual(model.hallOfShameDomains[2].value, 4)
+        XCTAssertEqual(model.hallOfShameDomains[0].domain, TrackingEntity.Google)
+        XCTAssertEqual(model.hallOfShameDomains[0].count, 15)
+        XCTAssertEqual(model.hallOfShameDomains[1].domain, TrackingEntity.Amazon)
+        XCTAssertEqual(model.hallOfShameDomains[1].count, 8)
+        XCTAssertEqual(model.hallOfShameDomains[2].domain, TrackingEntity.Outbrain)
+        XCTAssertEqual(model.hallOfShameDomains[2].count, 4)
     }
 
     func testTrackingStatsViewModelTwoEntities() throws {
@@ -84,10 +89,10 @@ class TrackingUITests: XCTestCase {
         XCTAssertEqual(model.numDomains, 12)
 
         XCTAssertEqual(model.hallOfShameDomains.count, 2)
-        XCTAssertEqual(model.hallOfShameDomains[0].key, TrackingEntity.Google)
-        XCTAssertEqual(model.hallOfShameDomains[0].value, 15)
-        XCTAssertEqual(model.hallOfShameDomains[1].key, TrackingEntity.Amazon)
-        XCTAssertEqual(model.hallOfShameDomains[1].value, 8)
+        XCTAssertEqual(model.hallOfShameDomains[0].domain, TrackingEntity.Google)
+        XCTAssertEqual(model.hallOfShameDomains[0].count, 15)
+        XCTAssertEqual(model.hallOfShameDomains[1].domain, TrackingEntity.Amazon)
+        XCTAssertEqual(model.hallOfShameDomains[1].count, 8)
     }
 
     func testTrackingUIFirstRow() throws {
@@ -153,7 +158,7 @@ class TrackingUITests: XCTestCase {
         let ui = TrackingMenuView().environmentObject(model)
         let rowButton = try ui.inspect().find(TrackingMenuProtectionRowButton.self).actualView()
         XCTAssertNotNil(rowButton)
-        let toggle = try rowButton.inspect().toggle()
+        let toggle = try rowButton.inspect().find(ViewType.Toggle.self)
         XCTAssertNotNil(toggle)
         rowButton.preventTrackers = false
         XCTAssertTrue(Defaults[.unblockedDomains].contains("neeva.com"))

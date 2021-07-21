@@ -33,9 +33,7 @@ public struct NeevaMenuRowButtonView: View {
     public var body: some View {
         Button(action: action) {
             HStack(spacing: 0) {
-                Text(label)
-                    .withFont(.bodyLarge)
-
+                Text(label).withFont(.bodyLarge)
                 Spacer()
 
                 Group {
@@ -46,9 +44,9 @@ public struct NeevaMenuRowButtonView: View {
                     }
                 }.frame(width: 24, height: 24)
             }
-            .padding(.leading, NeevaUIConstants.buttonInnerPadding)
-            .padding(.vertical, 14)
-            .padding(.trailing, 10)
+            .padding(.trailing, -6)
+            .padding(.horizontal, GroupedCellUX.horizontalPadding)
+            .frame(height: GroupedCellUX.minCellHeight)
         }
         .buttonStyle(TableCellButtonStyle())
     }

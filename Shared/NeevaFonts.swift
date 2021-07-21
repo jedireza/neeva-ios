@@ -17,21 +17,22 @@ public enum FontStyle {
 extension View {
     /// Note: this overload does not include kerning
     public func withFont(unkerned style: FontStyle, weight: UIFont.Weight? = nil) -> some View {
-        modifier(WithFont(style: style, weight: weight))
+        modifier(FontStyleModifier(style: style, weight: weight))
     }
 }
 
 extension Image {
     // removes the `unkerned` reminder since kerning is irrelevant for SF Symbols
     public func withFont(_ style: FontStyle, weight: UIFont.Weight? = nil) -> some View {
-        modifier(WithFont(style: style, weight: weight))
+        modifier(FontStyleModifier(style: style, weight: weight))
     }
 }
 
 extension Text {
-    public func withFont(_ style: FontStyle, weight: UIFont.Weight? = nil) -> some View {
+    public typealias WithFont = ModifiedContent<Kern, Shared.FontStyleModifier>
+    public func withFont(_ style: FontStyle, weight: UIFont.Weight? = nil) -> WithFont {
         Kern(style: style, content: self)
-            .modifier(WithFont(style: style, weight: weight))
+            .modifier(FontStyleModifier(style: style, weight: weight))
     }
 }
 
@@ -44,12 +45,12 @@ public struct Kern: View {
     }
 }
 
-fileprivate struct WithFont: ViewModifier {
-    let style: FontStyle
-    let weight: UIFont.Weight?
+public struct FontStyleModifier: ViewModifier {
+    fileprivate let style: FontStyle
+    fileprivate let weight: UIFont.Weight?
 
     @Environment(\.sizeCategory) private var sizeCategory
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         let size = style.size(in: sizeCategory)
         let font = UIFont.systemFont(ofSize: size, weight: weight ?? style.fontWeight)
         let lineHeight = (style.lineHeightMultiplier * size).rounded(.toNearestOrAwayFromZero)

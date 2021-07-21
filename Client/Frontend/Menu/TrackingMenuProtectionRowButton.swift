@@ -9,18 +9,20 @@ public struct TrackingMenuProtectionRowButton: View {
     @Binding var preventTrackers: Bool
 
     public var body: some View {
-        Toggle(isOn: $preventTrackers) {
-            VStack(alignment: .leading) {
-                Text("Tracking Prevention")
-                    .withFont(.bodyLarge)
-                Text("Website not working? Try disabling")
-                    .foregroundColor(.secondaryLabel)
-                    .font(.footnote)
+        GroupedCell {
+            Toggle(isOn: $preventTrackers) {
+                VStack(alignment: .leading) {
+                    Text("Tracking Prevention")
+                        .withFont(.bodyLarge)
+                    Text("Website not working? Try disabling")
+                        .foregroundColor(.secondaryLabel)
+                        .font(.footnote)
+                }
             }
+            .accessibilityIdentifier("TrackingMenu.TrackingMenuProtectionRow")
+            .padding(.vertical, 12)
+            .applyToggleStyle()
         }
-        .applyNeevaMenuPanelSpec()
-        .accessibilityIdentifier("TrackingMenu.TrackingMenuProtectionRow")
-        .applyToggleStyle()
     }
 }
 

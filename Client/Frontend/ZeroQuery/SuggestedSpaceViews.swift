@@ -24,6 +24,7 @@ struct SuggestedSpacesView: View {
                     ForEach(spaceStore.allSpaces.prefix(3)) { space in
                         Button(action: { openURL(space.url) }) {
                             SuggestedSpaceView(space: space)
+                                .foregroundColor(.primary)
                         }.buttonStyle(TableCellButtonStyle())
                     }
                 }.opacity({

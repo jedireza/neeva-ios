@@ -8,15 +8,6 @@ struct ZoomMenuView: View {
     @ObservedObject var model: ZoomMenuModel
     let onDismiss: () -> ()
 
-    private let cellHeight = CGFloat(52)
-    private struct Cell<Content: View>: View {
-        let content: () -> Content
-        var body: some View {
-            content()
-                .background(Color.background)
-                .cornerRadius(12)
-        }
-    }
     var body: some View {
         VStack(spacing: 0) {
             Button(action: onDismiss) {
@@ -24,12 +15,12 @@ struct ZoomMenuView: View {
                     .frame(maxHeight: .infinity)
             }.accessibilityHidden(true)
 
-            VStack(spacing: 12) {
-                Cell {
+            GroupedStack {
+                GroupedCell {
                     HStack {
                         Button(action: model.zoomOut) {
                             Symbol(.minus, style: .bodyLarge)
-                                .frame(width: cellHeight, height: cellHeight)
+                                .frame(width: GroupedCellUX.minCellHeight, height: GroupedCellUX.minCellHeight)
                                 .foregroundColor(model.canZoomOut ? .label : .tertiaryLabel)
                         }.disabled(!model.canZoomOut)
                         Spacer()
@@ -37,11 +28,12 @@ struct ZoomMenuView: View {
                         Spacer()
                         Button(action: model.zoomIn) {
                             Symbol(.plus, style: .bodyLarge)
-                                .frame(width: cellHeight, height: cellHeight)
+                                .frame(width: GroupedCellUX.minCellHeight, height: GroupedCellUX.minCellHeight)
                                 .foregroundColor(model.canZoomIn ? .label : .tertiaryLabel)
                         }.disabled(!model.canZoomIn)
-                    }.frame(height: cellHeight)
+                    }.padding(.horizontal, -GroupedCellUX.horizontalPadding)
                 }
+                .buttonStyle(TableCellButtonStyle())
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Page Zoom")
                 .accessibilityValue(model.label)
@@ -53,38 +45,17 @@ struct ZoomMenuView: View {
                     }
                 }
 
-                Cell {
-                    Button(action: { model.pageZoom = 1 }) {
-                        HStack {
-                            Spacer()
-                            Text("Reset").withFont(.bodyLarge)
-                            Spacer()
-                        }.frame(height: cellHeight)
-                    }.foregroundColor(.red)
-                }
-
-                Cell {
-                    Button(action: onDismiss) {
-                        HStack {
-                            Spacer()
-                            Text("Done").withFont(.labelLarge)
-                            Spacer()
-                        }.frame(height: cellHeight)
-                    }.foregroundColor(.ui.adaptive.blue)
-                }
+                GroupedCellButton("Reset") { model.pageZoom = 1 }
+                    .accentColor(.red)
+                GroupedCellButton("Done", style: .labelLarge, action: onDismiss)
             }
-            .buttonStyle(TableCellButtonStyle())
-            .padding(16)
+            .cornerRadius(GroupedCellUX.cornerRadius, corners: .top)
+            .ignoresSafeArea()
             .background(
-                Color.groupedBackground
-                    .cornerRadius(12, corners: .top)
-                    .ignoresSafeArea()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.black.opacity(0.12))
-                            .blur(radius: 16)
-                            .offset(y: 4)
-                    )
+                RoundedRectangle(cornerRadius: GroupedCellUX.cornerRadius)
+                    .fill(Color.black.opacity(0.12))
+                    .blur(radius: 16)
+                    .offset(y: 4)
             )
         }
     }

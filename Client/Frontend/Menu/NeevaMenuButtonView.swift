@@ -35,33 +35,18 @@ public struct NeevaMenuButtonView: View {
     }
     
     public var body: some View {
-        Button(action: action) {
-            HStack(spacing: 0) {
-                Spacer()
-
-                VStack(spacing: 0) {
-                    Group {
-                        if let nicon = self.nicon {
-                            Symbol(nicon, size: 20)
-                        } else if let symbol = self.symbol {
-                            Symbol(symbol, size: 20)
-                        }
-                    }
-
-                    Spacer()
-
-                    Text(label)
-                        .withFont(.bodyLarge)
+        GroupedCellButton(action: action) {
+            VStack(spacing: 4) {
+                if let nicon = self.nicon {
+                    Symbol(nicon, size: 20)
+                } else if let symbol = self.symbol {
+                    Symbol(symbol, size: 20)
                 }
-                .frame(height: 46)
-                .padding([.top, .bottom], NeevaUIConstants.buttonInnerPadding)
 
-                Spacer()
-            }.foregroundColor(isEnabled ? .label : .quaternaryLabel)
+                Text(label).withFont(.bodyLarge)
+            }.frame(height: 83)
         }
-        .buttonStyle(TableCellButtonStyle())
-        .background(Color.secondaryGroupedBackground)
-        .cornerRadius(NeevaUIConstants.menuCornerDefault)
+        .accentColor(isEnabled ? .label : .quaternaryLabel)
     }
 }
 

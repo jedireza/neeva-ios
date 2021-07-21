@@ -7,19 +7,19 @@ import Shared
 // half-height (or middle) position. The user can drag it to a fullscreen (or
 // top) position or can drag down to dismiss.
 
-private enum OverlaySheetUX {
-    // Number of points you have to drag the top bar to tigger an animation
-    // of the overlay sheet to a new position.
-    static let slideThreshold: CGFloat = 100
+enum OverlaySheetUX {
+    /// Number of points you have to drag the top bar to tigger an animation
+    /// of the overlay sheet to a new position.
+    fileprivate static let slideThreshold: CGFloat = 100
 
-    // Duration of slide animations.
-    static let animationDuration: Double = 0.2
+    /// Duration of slide animations.
+    fileprivate static let animationDuration: Double = 0.2
 
-    // Opacity of the backdrop when the overlay sheet is done animating open.
-    static let backdropMaxOpacity: Double = 0.2
+    /// Opacity of the backdrop when the overlay sheet is done animating open.
+    fileprivate static let backdropMaxOpacity: Double = 0.2
 
-    // Width of the sheet when in landscape mode.
-    static let landscapeModeWidth: CGFloat = 500
+    /// Width of the sheet when in landscape mode.
+    fileprivate static let landscapeModeWidth: CGFloat = 500
 }
 
 enum OverlaySheetPosition: LocalizedStringKey {

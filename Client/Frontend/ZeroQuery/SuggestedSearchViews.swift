@@ -39,7 +39,7 @@ struct SuggestedSearchesView: View {
                 )
             }
         }
-        .foregroundColor(Color(light: .ui.gray70, dark: .secondaryLabel))
+        .accentColor(Color(light: .ui.gray70, dark: .secondaryLabel))
         .padding(.top, 7)
     }
 }

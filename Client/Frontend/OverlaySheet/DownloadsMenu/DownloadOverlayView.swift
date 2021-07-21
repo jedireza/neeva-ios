@@ -13,25 +13,22 @@ struct DownloadMenuView: View {
     let onDismiss: () -> ()
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 26) {
+        GroupedStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(fileName)
                     .withFont(.bodyLarge)
                     .truncationMode(.middle)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.label)
 
                 Text(fileURL)
                     .withFont(.labelMedium)
                     .truncationMode(.head)
-                    .foregroundColor(.secondary)
-            }
+                    .foregroundColor(.secondaryLabel)
+            }.padding(.bottom, 14)
 
-            VStack(alignment: .center, spacing: 12) {
-                OverlaySheetButton(fileSize != nil ? "Download (\(fileSize!))" : "Download", action: onDownload)
-                OverlaySheetButton("Cancel", action: onDismiss)
-            }
-            .foregroundColor(.ui.adaptive.blue)
-        }.padding()
+            GroupedCellButton(fileSize != nil ? "Download (\(fileSize!))" : "Download", action: onDownload)
+            GroupedCellButton("Cancel", style: .labelLarge, action: onDismiss)
+        }
     }
 }
 

@@ -10,27 +10,24 @@ struct OpenInAppView: View {
     let onDismiss: () -> ()
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 26) {
+        GroupedStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Open link in external app?")
                     .withFont(.bodyLarge)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.label)
 
                 Text(url.absoluteString)
                     .withFont(.labelMedium)
                     .truncationMode(.middle)
-                    .foregroundColor(.secondary)
-            }
+                    .foregroundColor(.secondaryLabel)
+            }.padding(.bottom, 14)
 
-            VStack(alignment: .center, spacing: 12) {
-                OverlaySheetButton("Open", action: onOpen)
-                    .accessibilityIdentifier("ConfirmOpenInApp")
+            GroupedCellButton("Open", action: onOpen)
+                .accessibilityIdentifier("ConfirmOpenInApp")
 
-                OverlaySheetButton("Cancel", action: onDismiss)
-                    .accessibilityIdentifier("CancelOpenInApp")
-            }
-            .foregroundColor(.ui.adaptive.blue)
-        }.padding()
+            GroupedCellButton("Cancel", style: .labelLarge, action: onDismiss)
+                .accessibilityIdentifier("CancelOpenInApp")
+        }
     }
 }
 

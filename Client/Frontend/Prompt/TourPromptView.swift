@@ -76,7 +76,7 @@ struct TourPromptView: View {
                     }
                 }
             }
-            .padding([.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
+            .padding([.leading, .trailing, .top], 16)
         }
         .colorScheme(staticColorMode ? .light : colorScheme)
     }

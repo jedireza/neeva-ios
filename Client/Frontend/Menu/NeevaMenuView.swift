@@ -3,6 +3,10 @@
 import SwiftUI
 import Shared
 
+private enum NeevaMenuUX {
+    static let innerSectionPadding: CGFloat = 8
+}
+
 public struct NeevaMenuView: View {
     private let noTopPadding: Bool
     private let menuAction: ((NeevaMenuButtonActions) -> ())?
@@ -18,14 +22,16 @@ public struct NeevaMenuView: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: NeevaUIConstants.menuSectionPadding) {
-            VStack(spacing: NeevaUIConstants.menuInnerSectionPadding) {
-                HStack(spacing: NeevaUIConstants.menuInnerSectionPadding){
+        // TODO: when making significant updates, migrate to OverlayGroupedStack
+        VStack(alignment: .leading, spacing: GroupedCellUX.spacing) {
+            VStack(spacing: NeevaMenuUX.innerSectionPadding) {
+                HStack(spacing: NeevaMenuUX.innerSectionPadding){
                     NeevaMenuButtonView(label: "Home", nicon: .house) {
                         self.menuAction!(NeevaMenuButtonActions.home)
                     }
                     .accessibilityIdentifier("NeevaMenu.Home")
                     .disabled(isIncognito)
+
                     WithPopover(
                         showPopover: $openSpacesPrompt,
                         popoverSize: CGSize(width:290, height: 150),
@@ -42,10 +48,8 @@ public struct NeevaMenuView: View {
                         staticColorMode: true
                     )
                 }
-                .background(Color.clear)
-                .cornerRadius(NeevaUIConstants.menuCornerDefault)
 
-                HStack(spacing: NeevaUIConstants.menuInnerSectionPadding){
+                HStack(spacing: NeevaMenuUX.innerSectionPadding) {
                     WithPopover(
                         showPopover: $openSettingsPrompt,
                         popoverSize: CGSize(width:290, height: 180),
@@ -76,31 +80,29 @@ public struct NeevaMenuView: View {
                         staticColorMode: true
                     )
                 }
-                .background(Color.clear)
-                .cornerRadius(NeevaUIConstants.menuCornerDefault)
             }
 
-            VStack(spacing: 0) {
-                NeevaMenuRowButtonView(label: "History", symbol: .clock) {
-                    self.menuAction!(NeevaMenuButtonActions.history)
-                }
-                .accessibilityIdentifier("NeevaMenu.History")
+            GroupedCell.Decoration {
+                VStack(spacing: 0) {
+                    NeevaMenuRowButtonView(label: "History", symbol: .clock) {
+                        self.menuAction!(NeevaMenuButtonActions.history)
+                    }
+                    .accessibilityIdentifier("NeevaMenu.History")
 
-                Divider()
+                    Color.groupedBackground.frame(height: 1)
 
-                NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
-                    openDownloadsFolderInFilesApp()
+                    NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
+                        openDownloadsFolderInFilesApp()
+                    }
+                    .accessibilityIdentifier("NeevaMenu.Downloads")
                 }
-                .accessibilityIdentifier("NeevaMenu.Downloads")
             }
-            .padding(0)
-            .background(Color.secondaryGroupedBackground)
-            .cornerRadius(NeevaUIConstants.menuCornerDefault)
         }
-        .padding(self.noTopPadding ? [.leading, .trailing] : [.leading, .trailing, .top], NeevaUIConstants.menuOuterPadding)
+        .padding(self.noTopPadding ? [.leading, .trailing] : [.leading, .trailing, .top], 16)
         .background(Color.groupedBackground)
         .onAppear(perform: viewDidAppear)
         .onDisappear(perform: viewDidDisappear)
+        .accentColor(.label)
     }
 
     func onCloseTourPrompt() {

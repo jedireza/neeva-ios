@@ -7,25 +7,21 @@ import Shared
 import Defaults
 import Combine
 
-struct NeevaMenuPanelSpec: ViewModifier {
-    func body(content: Content) -> some View {
-        content.frame(maxWidth: .infinity, alignment: .leading)
-            .padding(NeevaUIConstants.menuInnerPadding)
-            .background(Color.secondaryGroupedBackground)
-            .cornerRadius(NeevaUIConstants.menuCornerDefault)
-    }
+private enum TrackingMenuUX {
+    static let hallOfShameElementSpacing: CGFloat = 8
+    static let hallOfShameRowSpacing: CGFloat = 60
+    static let hallOfShameElementFaviconSize: CGFloat = 25
 }
 
-extension View {
-    func applyNeevaMenuPanelSpec() -> some View {
-        self.modifier(NeevaMenuPanelSpec())
-    }
+struct HallOfShameDomain {
+    let domain: TrackingEntity
+    let count: Int
 }
 
 class TrackingStatsViewModel: ObservableObject {
     @Published var numTrackers = 0
     @Published var numDomains = 0
-    @Published var hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
+    @Published var hallOfShameDomains = [HallOfShameDomain]()
     @Published var preventTrackersForCurrentPage: Bool {
         didSet {
             guard let domain = selectedTab?.currentURL()?.host else {
@@ -88,14 +84,12 @@ class TrackingStatsViewModel: ObservableObject {
     }
 
     func onDataUpdated() {
-        let trackerDict = trackers.reduce(into: [:]) { $0[$1] = ($0[$1] ?? 0) + 1 }
-            .sorted(by: {$0.1 > $1.1})
-
-        guard !trackerDict.isEmpty else {
-            hallOfShameDomains = [Dictionary<TrackingEntity, Int>.Element]()
-            return
-        }
-        hallOfShameDomains = Array(trackerDict[0...min(trackerDict.count - 1, 2)])
+        hallOfShameDomains = trackers
+            .reduce(into: [:]) { dict, tracker in dict[tracker] = (dict[tracker] ?? 0) + 1 }
+            .map { HallOfShameDomain(domain: $0.key, count: $0.value )}
+            .sorted(by: { $0.count > $1.count })
+            .prefix(3)
+            .toArray()
     }
 }
 
@@ -104,46 +98,50 @@ struct TrackingMenuFirstRowElement: View {
     let num: Int
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(label).withFont(.headingMedium).foregroundColor(.secondaryLabel)
-            Text("\(num)").withFont(.displayMedium)
-        }.applyNeevaMenuPanelSpec()
-        .accessibilityLabel("\(num) \(label) blocked")
-        .accessibilityIdentifier("TrackingMenu.TrackingMenuFirstRowElement")
+        GroupedCell(alignment: .leading) {
+            VStack(alignment: .leading) {
+                Text(label).withFont(.headingMedium).foregroundColor(.secondaryLabel)
+                Text("\(num)").withFont(.displayMedium)
+            }
+            .padding(.bottom, 4)
+            .padding(.vertical, 10)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(num) \(label) blocked")
+            .accessibilityIdentifier("TrackingMenu.TrackingMenuFirstRowElement")
+        }
     }
 }
 
 struct HallOfShameElement: View {
-    let hallOfShameDomain: Dictionary<TrackingEntity, Int>.Element
+    let hallOfShameDomain: HallOfShameDomain
 
     var body: some View {
-        HStack(spacing: NeevaUIConstants.hallOfShameElementSpacing) {
-            Image(hallOfShameDomain.key.rawValue).resizable().cornerRadius(5)
-                .frame(width: NeevaUIConstants.hallOfShameElementFaviconSize,
-                       height: NeevaUIConstants.hallOfShameElementFaviconSize)
-            Text("\(hallOfShameDomain.value)").withFont(.displayMedium)
-        }.accessibilityLabel(
-            "\(hallOfShameDomain.value) trackers blocked from \(hallOfShameDomain.key.rawValue)")
+        HStack(spacing: TrackingMenuUX.hallOfShameElementSpacing) {
+            Image(hallOfShameDomain.domain.rawValue).resizable().cornerRadius(5)
+                .frame(width: TrackingMenuUX.hallOfShameElementFaviconSize,
+                       height: TrackingMenuUX.hallOfShameElementFaviconSize)
+            Text("\(hallOfShameDomain.count)").withFont(.displayMedium)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(hallOfShameDomain.count) trackers blocked from \(hallOfShameDomain.domain.rawValue)")
         .accessibilityIdentifier("TrackingMenu.HallOfShameElement")
     }
 }
 
 struct HallOfShameView: View {
-    let hallOfShameDomains: [Dictionary<TrackingEntity, Int>.Element]
+    let hallOfShameDomains: [HallOfShameDomain]
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Hall of Shame").withFont(.headingMedium).foregroundColor(.secondaryLabel)
-            HStack(spacing: NeevaUIConstants.hallOfShameRowSpacing) {
-                HallOfShameElement(hallOfShameDomain: hallOfShameDomains[0])
-                if hallOfShameDomains.count >= 2 {
-                    HallOfShameElement(hallOfShameDomain: hallOfShameDomains[1])
-                }
-                if hallOfShameDomains.count >= 3  {
-                    HallOfShameElement(hallOfShameDomain: hallOfShameDomains[2])
-                }
-            }
-        }.applyNeevaMenuPanelSpec()
+        GroupedCell(alignment: .leading) {
+            VStack(alignment: .leading) {
+                Text("Hall of Shame").withFont(.headingMedium).foregroundColor(.secondaryLabel)
+                HStack(spacing: TrackingMenuUX.hallOfShameRowSpacing) {
+                    ForEach(hallOfShameDomains, id: \.domain.rawValue) { hallOfShameDomain in
+                        HallOfShameElement(hallOfShameDomain: hallOfShameDomain)
+                    }
+                }.padding(.bottom, 4)
+            }.padding(.vertical, 14)
+        }
     }
 }
 
@@ -153,9 +151,9 @@ struct TrackingMenuView: View {
     @State private var isShowingPopup = false
 
     var body: some View {
-        VStack(alignment: .leading) {
+        GroupedStack {
             if viewModel.preventTrackersForCurrentPage {
-                HStack {
+                HStack(spacing: 8) {
                     TrackingMenuFirstRowElement(label: "Trackers", num: viewModel.numTrackers)
                     TrackingMenuFirstRowElement(label: "Domains", num: viewModel.numDomains)
                 }
@@ -163,25 +161,23 @@ struct TrackingMenuView: View {
                     HallOfShameView(hallOfShameDomains: viewModel.hallOfShameDomains)
                 }
             }
+
             TrackingMenuProtectionRowButton(preventTrackers: $viewModel.preventTrackersForCurrentPage)
 
             if FeatureFlag[.newTrackingProtectionSettings] {
-                Button(action: { isShowingPopup = true }) {
+                GroupedCellButton(action: { isShowingPopup = true }) {
                     HStack {
                         Text("Advanced Privacy Settings").withFont(.bodyLarge)
                         Spacer()
                         Symbol(.shieldLefthalfFill)
-                    }
+                    }.foregroundColor(.label)
                 }
-                .buttonStyle(TableCellButtonStyle(padding: -NeevaUIConstants.menuInnerPadding))
-                .applyNeevaMenuPanelSpec()
                 .sheet(isPresented: $isShowingPopup) {
                     TrackingMenuSettingsView(domain: "example.com")
                 }
             }
         }
-        .padding(NeevaUIConstants.menuOuterPadding)
-        .background(Color.groupedBackground).fixedSize(horizontal: true, vertical: true)
+        .fixedSize(horizontal: true, vertical: true)
         .onAppear {
             self.viewModel.refreshStats()
         }

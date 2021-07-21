@@ -106,7 +106,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                         .font(.callout)
                 }
             }.apply(config: config)
-        }.accentColor(.primary)
+        }
+        .accentColor(.primary)
         .buttonStyle(TableCellButtonStyle())
     }
 }

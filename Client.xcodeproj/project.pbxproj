@@ -215,10 +215,9 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		66BB89D626A64CF9000C4BDF /* OverlaySheetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D526A64CF9000C4BDF /* OverlaySheetButton.swift */; };
 		66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
-		66BEFDC926A7678200AA32EF /* OverlayGroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC826A7678200AA32EF /* OverlayGroupCell.swift */; };
+		66BEFDC926A7678200AA32EF /* GroupedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC826A7678200AA32EF /* GroupedCell.swift */; };
 		66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C763267A8858002B50B1 /* ToastView.swift */; };
 		66C3C76D267A8858002B50B1 /* ToastWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C764267A8858002B50B1 /* ToastWindowManager.swift */; };
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
@@ -1145,10 +1144,9 @@
 		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		66BB89D526A64CF9000C4BDF /* OverlaySheetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySheetButton.swift; sourceTree = "<group>"; };
 		66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppViewController.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
-		66BEFDC826A7678200AA32EF /* OverlayGroupCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayGroupCell.swift; sourceTree = "<group>"; };
+		66BEFDC826A7678200AA32EF /* GroupedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCell.swift; sourceTree = "<group>"; };
 		66C3C763267A8858002B50B1 /* ToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		66C3C764267A8858002B50B1 /* ToastWindowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastWindowManager.swift; sourceTree = "<group>"; };
 		66C3C766267A8858002B50B1 /* ToastProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastProgressView.swift; sourceTree = "<group>"; };
@@ -2159,13 +2157,13 @@
 			path = SiriShortcuts;
 			sourceTree = "<group>";
 		};
-		661F4FB3269CAA570078238B /* DownloadsMenuOverlay */ = {
+		661F4FB3269CAA570078238B /* DownloadsMenu */ = {
 			isa = PBXGroup;
 			children = (
 				661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */,
 				661F4FB6269CACFD0078238B /* DownloadViewController.swift */,
 			);
-			path = DownloadsMenuOverlay;
+			path = DownloadsMenu;
 			sourceTree = "<group>";
 		};
 		668CA09726797E9800BA756F /* Toast */ = {
@@ -2216,19 +2214,20 @@
 			isa = PBXGroup;
 			children = (
 				C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */,
-				66BB89D526A64CF9000C4BDF /* OverlaySheetButton.swift */,
-				66BEFDC826A7678200AA32EF /* OverlayGroupCell.swift */,
+				661F4FB3269CAA570078238B /* DownloadsMenu */,
+				66BB89D726A64F83000C4BDF /* OpenInApp */,
+				C9299E392695EA2100758795 /* Zoom */,
 			);
 			path = OverlaySheet;
 			sourceTree = "<group>";
 		};
-		66BB89D726A64F83000C4BDF /* OpenInAppOverlay */ = {
+		66BB89D726A64F83000C4BDF /* OpenInApp */ = {
 			isa = PBXGroup;
 			children = (
 				66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */,
 				66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */,
 			);
-			path = OpenInAppOverlay;
+			path = OpenInApp;
 			sourceTree = "<group>";
 		};
 		7B604FC11C496005006EEEC3 /* Frameworks */ = {
@@ -2654,8 +2653,7 @@
 		D38A1BEB1A9FA2CA00F6A386 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
-				661F4FB3269CAA570078238B /* DownloadsMenuOverlay */,
-				66BB89D726A64F83000C4BDF /* OpenInAppOverlay */,
+				66BEFDC826A7678200AA32EF /* GroupedCell.swift */,
 				C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */,
 				D863C8E31F68BFC20058D95F /* GradientProgressBar.swift */,
 				0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */,
@@ -3153,7 +3151,6 @@
 				E689C6FF1E0C716F008BAADB /* Entitlements */,
 				28EADE5C1AFC3A6D007FB2FB /* Extensions */,
 				F84B21F11A0910F600AAB793 /* Frontend */,
-				C9299E392695EA2100758795 /* Zoom */,
 				39A359BD1BFCCE7B006B9E87 /* Helpers */,
 				F84B22431A09165600AAB793 /* Info.plist */,
 				7B2142FC1E5E055000CDD3FC /* InfoPlist.strings */,
@@ -4449,7 +4446,6 @@
 				C9E5F2CB2678F05E00025A7F /* Popover.swift in Sources */,
 				274A36C9239EB94000A21587 /* LibraryPanelButton.swift in Sources */,
 				435D660523D794B90046EFA2 /* UpdateViewModel.swift in Sources */,
-				66BB89D626A64CF9000C4BDF /* OverlaySheetButton.swift in Sources */,
 				D3B6923F1B9F9A58004B87A4 /* FindInPageHelper.swift in Sources */,
 				BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */,
 				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,
@@ -4596,7 +4592,7 @@
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
-				66BEFDC926A7678200AA32EF /* OverlayGroupCell.swift in Sources */,
+				66BEFDC926A7678200AA32EF /* GroupedCell.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
 				3BB50E201D627539004B33DF /* ZeroQueryViewController.swift in Sources */,
 				663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */,
