@@ -14,7 +14,7 @@ protocol ContentBlockerTab: AnyObject {
     func currentWebView() -> WKWebView?
 }
 
-class TabContentBlocker {
+class TabContentBlocker: ObservableObject {
     weak var tab: ContentBlockerTab?
 
     var isEnabled: Bool {
@@ -29,7 +29,7 @@ class TabContentBlocker {
 
     func notifyContentBlockingChanged() {}
 
-    var stats: TPPageStats = TPPageStats()
+    @Published var stats: TPPageStats = TPPageStats()
 
     init(tab: ContentBlockerTab) {
         self.tab = tab

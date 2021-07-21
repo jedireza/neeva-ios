@@ -39,9 +39,16 @@ class TrackingStatsViewModel: ObservableObject {
             refreshStats()
         }
     }
+    var viewVisible: Bool = false
 
-    private var selectedTab: Tab? = nil
+    private var selectedTab: Tab? = nil {
+        didSet {
+            statsSubscription = nil
+        }
+    }
+
     private var subscriptions: Set<AnyCancellable> = []
+    private var statsSubscription: AnyCancellable? = nil
 
     var trackers: [TrackingEntity] {
         didSet {
@@ -81,6 +88,15 @@ class TrackingStatsViewModel: ObservableObject {
         self.numDomains = trackingData.numDomains
         self.trackers = trackingData.trackingEntities
         onDataUpdated()
+        statsSubscription = selectedTab?.contentBlocker?.$stats
+            .filter {[unowned self] _ in self.viewVisible}
+            .map {TrackingEntity.getTrackingDataForCurrentTab(stats: $0)}
+            .sink { [unowned self] data in
+                self.numTrackers = data.numTrackers
+                self.numDomains = data.numDomains
+                self.trackers = data.trackingEntities
+                self.onDataUpdated()
+            }
     }
 
     func onDataUpdated() {
@@ -179,7 +195,10 @@ struct TrackingMenuView: View {
         }
         .fixedSize(horizontal: true, vertical: true)
         .onAppear {
+            viewModel.viewVisible = true
             self.viewModel.refreshStats()
+        }.onDisappear {
+            viewModel.viewVisible = false
         }
     }
 }
