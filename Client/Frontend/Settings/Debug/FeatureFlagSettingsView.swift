@@ -26,22 +26,7 @@ struct FeatureFlagSettingsView: View {
             }
         }
         .listStyle(GroupedListStyle())
-        .overlay(Group {
-            if needsRestart {
-                HStack {
-                    Spacer()
-                    Text("Quit Neeva from the App Switcher and relaunch for feature flag changes to take effect")
-                        .withFont(.labelLarge)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                    Spacer()
-                }.background(
-                    Color.groupedBackground
-                        .overlay(Color.tertiarySystemFill)
-                        .ignoresSafeArea()
-                )
-            }
-        }, alignment: .bottom)
+        .overlay(DebugSettingsRestartPromptView(isVisible: needsRestart), alignment: .bottom)
         .applyToggleStyle()
     }
 }

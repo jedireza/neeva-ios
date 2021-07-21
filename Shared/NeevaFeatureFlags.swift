@@ -3,17 +3,16 @@
 import Foundation
 import Defaults
 
-// Neeva feature flags are server-driven values.
-//
-// These are fetched as part of the UserInfoQuery, but will remain static for
-// the lifetime of the app. This means reported flags may be potentially stale
-// until the app gets restarted.
-//
-// Clients should access feature flags using the `shared` instance of the class.
-// That will then initialize from Defaults the set of flag values.
-//
-// Server feature flags are typed w/ bool, int, float or string values.
-//
+/// Neeva feature flags are server-driven values.
+///
+/// These are fetched as part of the `UserInfoQuery`, but will remain static for
+/// the lifetime of the app. This means reported flags may be potentially stale
+/// until the app gets restarted.
+///
+/// Clients should access feature flags using the `shared` instance of the class.
+/// That will then initialize from `Defaults` the set of flag values.
+///
+/// Server feature flags are typed w/ bool, int, float or string values.
 public class NeevaFeatureFlags {
     private static let boolFlagsKey = Defaults.Key<[Int:Bool]>("neevaBoolFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
     private static let intFlagsKey = Defaults.Key<[Int:Int]>("neevaIntFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
@@ -80,8 +79,8 @@ public class NeevaFeatureFlags {
         }
     }
 
+    /// Initialize from stored data.
     init() {
-        // Initialize from stored data.
         boolFlags = Defaults[Self.boolFlagsKey]
         intFlags = Defaults[Self.intFlagsKey]
         floatFlags = Defaults[Self.floatFlagsKey]
@@ -159,38 +158,36 @@ public class NeevaFeatureFlags {
         }
     }
 
-    // Reset overrides to the default, server-provided values.
-
+    /// Reset overrides to the default, server-provided values.
     public static func reset(_ flag: BoolFlag) {
         Defaults[Self.boolFlagOverridesKey][flag.rawValue] = nil
     }
-
+    /// Reset overrides to the default, server-provided values.
     public static func reset(_ flag: IntFlag) {
         Defaults[Self.intFlagOverridesKey][flag.rawValue] = nil
     }
-
+    /// Reset overrides to the default, server-provided values.
     public static func reset(_ flag: FloatFlag) {
         Defaults[Self.floatFlagOverridesKey][flag.rawValue] = nil
     }
-
+    /// Reset overrides to the default, server-provided values.
     public static func reset(_ flag: StringFlag) {
         Defaults[Self.stringFlagOverridesKey][flag.rawValue] = nil
     }
 
-    // Returns true if the flag has been overriden.
-
+    /// Returns `true` if the flag has been overridden.
     public static func isOverridden(_ flag: BoolFlag) -> Bool {
         return Defaults[Self.boolFlagOverridesKey][flag.rawValue] != nil
     }
-
+    /// Returns `true` if the flag has been overridden.
     public static func isOverridden(_ flag: IntFlag) -> Bool {
         return Defaults[Self.intFlagOverridesKey][flag.rawValue] != nil
     }
-
+    /// Returns `true` if the flag has been overridden.
     public static func isOverridden(_ flag: FloatFlag) -> Bool {
         return Defaults[Self.floatFlagOverridesKey][flag.rawValue] != nil
     }
-
+    /// Returns `true` if the flag has been overridden.
     public static func isOverridden(_ flag: StringFlag) -> Bool {
         return Defaults[Self.stringFlagOverridesKey][flag.rawValue] != nil
     }

@@ -4,16 +4,19 @@ import SwiftUI
 import Shared
 
 struct NeevaFeatureFlagSettingsView: View {
+    @State var needsRestart = false
     var body: some View {
         List {
             // TODO: Add support for Int, Float and String flags.
             ForEach(NeevaFeatureFlags.BoolFlag.allCases, id: \.rawValue) { flag in
                 HStack {
                     Text(flag.name).font(.system(.body, design: .monospaced)).fixedSize()
-                    BoolFlagView(flag: flag)
+                    BoolFlagView(flag: flag, onChange: { needsRestart = true })
                 }
             }
-        }.listStyle(GroupedListStyle())
+        }
+        .listStyle(GroupedListStyle())
+        .overlay(DebugSettingsRestartPromptView(isVisible: needsRestart), alignment: .bottom)
     }
 }
 
@@ -21,12 +24,14 @@ fileprivate struct BoolFlagView: View {
     @State private var flagValue: Bool
     @State private var isOverridden: Bool
 
+    private let onChange: () -> ()
     private let flag: NeevaFeatureFlags.BoolFlag
 
-    init(flag: NeevaFeatureFlags.BoolFlag) {
+    init(flag: NeevaFeatureFlags.BoolFlag, onChange: @escaping () -> ()) {
         self.flag = flag
-        self.flagValue = NeevaFeatureFlags[flag]
-        self.isOverridden = NeevaFeatureFlags.isOverridden(flag)
+        self.onChange = onChange
+        self._flagValue = .init(initialValue: NeevaFeatureFlags[flag])
+        self._isOverridden = .init(initialValue: NeevaFeatureFlags.isOverridden(flag))
     }
 
     var body: some View {
@@ -71,6 +76,7 @@ fileprivate struct BoolFlagView: View {
     }
 
     func updateState() {
+        self.onChange()
         self.flagValue = NeevaFeatureFlags[flag]
         self.isOverridden = NeevaFeatureFlags.isOverridden(flag)
     }

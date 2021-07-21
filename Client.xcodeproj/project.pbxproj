@@ -373,6 +373,7 @@
 		C9AFE6E326582BCB000C5A03 /* OfflineError.html in Resources */ = {isa = PBXBuildFile; fileRef = C9AFE6E226582BCB000C5A03 /* OfflineError.html */; };
 		C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AFE6E626583F5A000C5A03 /* SettingsView.swift */; };
 		C9B2D28226612EF7005EF5AD /* NeevaAccountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */; };
+		C9B55A0F26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B55A0E26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift */; };
 		C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4B82667D5D3001D9C77 /* Roobert.swift */; };
 		C9BED4BB2667E3F8001D9C77 /* ZeroQueryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4BA2667E3F8001D9C77 /* ZeroQueryModels.swift */; };
 		C9BED4BD2667E453001D9C77 /* SuggestedSitesViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */; };
@@ -1297,6 +1298,7 @@
 		C9AFE6E226582BCB000C5A03 /* OfflineError.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = OfflineError.html; sourceTree = "<group>"; };
 		C9AFE6E626583F5A000C5A03 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountRow.swift; sourceTree = "<group>"; };
+		C9B55A0E26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsRestartPromptView.swift; sourceTree = "<group>"; };
 		C9BED4B82667D5D3001D9C77 /* Roobert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Roobert.swift; sourceTree = "<group>"; };
 		C9BED4BA2667E3F8001D9C77 /* ZeroQueryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModels.swift; sourceTree = "<group>"; };
 		C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedSitesViews.swift; sourceTree = "<group>"; };
@@ -2378,6 +2380,7 @@
 				C965BDD1268E71C500F02224 /* AppHostSetting.swift */,
 				C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */,
 				C9946460265706D500613110 /* FeatureFlagSettingsView.swift */,
+				C9B55A0E26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift */,
 				C965BDD5268E728F00F02224 /* InternalSettingsView.swift */,
 				C96AC26626A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift */,
 			);
@@ -4547,6 +4550,7 @@
 				BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */,
 				F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */,
 				C4EFEECF1CEBB6F2009762A4 /* BackForwardTableViewCell.swift in Sources */,
+				C9B55A0F26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift in Sources */,
 				2C49854E206173C800893DAE /* photon-colors.swift in Sources */,
 				4A1D054B26642BF400D63333 /* SimulatedSwipeController.swift in Sources */,
 				D0C95E0E200FD3B200E4E51C /* PrintHelper.swift in Sources */,
