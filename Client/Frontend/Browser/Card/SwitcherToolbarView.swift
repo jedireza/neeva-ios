@@ -17,20 +17,20 @@ struct IncognitoButton: View {
                 gridModel.hideWithNoAnimation()
             }
         }) {
-                $0.accessibilityLabel = .TabTrayToggleAccessibilityLabel
-                $0.accessibilityHint = .TabTrayToggleAccessibilityHint
-                let maskImage = UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
-                $0.setImage(maskImage, for: [])
-                $0.isPointerInteractionEnabled = true
-                $0.setSelected(toolbarModel.isIncognito)
+            $0.accessibilityLabel = .TabTrayToggleAccessibilityLabel
+            $0.accessibilityHint = .TabTrayToggleAccessibilityHint
+            let maskImage = UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
+            $0.setImage(maskImage, for: [])
+            $0.isPointerInteractionEnabled = true
+            $0.setSelected(toolbarModel.isIncognito)
 
-                $0.tintColor = toolbarModel.isIncognito ? onTint : offTint
-                $0.imageView?.tintColor = $0.tintColor
+            $0.tintColor = toolbarModel.isIncognito ? onTint : offTint
+            $0.imageView?.tintColor = $0.tintColor
 
-                $0.accessibilityValue = toolbarModel.isIncognito
-                    ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
-            }
-            .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
+            $0.accessibilityValue = toolbarModel.isIncognito
+                ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
+        }
+        .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
     }
 }
 
@@ -41,6 +41,9 @@ class SwitcherToolbarModel: ObservableObject {
     init(tabManager: TabManager) {
         self.tabManager = tabManager
         isIncognito = tabManager.selectedTab?.isPrivate ?? false
+        tabManager.selectedTabPublisher
+            .map { $0?.isPrivate ?? false }
+            .assign(to: &$isIncognito)
     }
 
     func onNewTab() {
@@ -48,10 +51,7 @@ class SwitcherToolbarModel: ObservableObject {
     }
 
     func onToggleIncognito() -> Bool {
-        let result = tabManager.switchPrivacyMode()
-        isIncognito = tabManager.selectedTab?.isPrivate ?? false
-        objectWillChange.send()
-        return result == .createdNewTab
+        tabManager.switchPrivacyMode() == .createdNewTab
     }
 }
 
@@ -66,7 +66,6 @@ struct SwitcherToolbarView: View {
             if !top { divider }
             HStack(spacing: 0) {
                 IncognitoButton()
-                    .environmentObject(toolbarModel)
                 Spacer()
                 UIKitButton(action:  {
                     toolbarModel.onNewTab()

@@ -42,17 +42,7 @@ protocol URLChangeDelegate {
 }
 
 class Tab: NSObject {
-    fileprivate var _isPrivate: Bool = false
-    internal fileprivate(set) var isPrivate: Bool {
-        get {
-            return _isPrivate
-        }
-        set {
-            if _isPrivate != newValue {
-                _isPrivate = newValue
-            }
-        }
-    }
+    let isPrivate: Bool
 
     // PageMetadata is derived from the page content itself, and as such lags behind the
     // rest of the tab.
@@ -178,8 +168,8 @@ class Tab: NSObject {
     init(bvc: BrowserViewController, configuration: WKWebViewConfiguration, isPrivate: Bool = false) {
         self.configuration = configuration
         self.browserViewController = bvc
-        super.init()
         self.isPrivate = isPrivate
+        super.init()
 
         debugTabCount += 1
 
