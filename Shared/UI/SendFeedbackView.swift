@@ -80,7 +80,7 @@ public struct SendFeedbackView: View {
                         }
                 }
 
-                if let screenshot = screenshot, FeatureFlag[.feedbackScreenshot] {
+                if let screenshot = screenshot, NeevaFeatureFlags[.feedbackScreenshot] {
                     DecorativeSection {
                         Toggle(isOn: $shareScreenshot) {
                             VStack(alignment: .leading, spacing: 0) {
@@ -250,7 +250,7 @@ public struct SendFeedbackView: View {
                 requestId: (requestId?.isEmpty ?? true) ? nil : requestId,
                 geoLocationStatus: geoLocationStatus,
                 source: .app,
-                screenshot: shareScreenshot && FeatureFlag[.feedbackScreenshot] ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
+                screenshot: shareScreenshot && NeevaFeatureFlags[.feedbackScreenshot] ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
             )
         ).perform { result in
             isSending = false

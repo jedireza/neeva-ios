@@ -49,7 +49,8 @@ fileprivate func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
         .browserQuests,
         .neevaMemory,
         .feedbackQuery,
-        .welcomeTours
+        .welcomeTours,
+        .feedbackScreenshot,
     ]
     let intFlags: [NeevaFeatureFlags.IntFlag] = [
     ]
