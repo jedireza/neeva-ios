@@ -6,35 +6,47 @@ import Storage
 struct HistorySuggestionView: View {
     let site: Site
 
+    @State var focused = false
     @Environment(\.onOpenURL) private var openURL
 
-    var body: some View {
-        let url = site.url.asURL!
-        SuggestionView {
-            ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
-            openURL(url)
-        } icon: {
-            FaviconView(url: url, icon: site.icon,
-                        size: SearchViewControllerUX.FaviconSize,
-                        bordered: false)
-                .frame(
-                    width: SearchViewControllerUX.IconSize,
-                    height: SearchViewControllerUX.IconSize
-                )
-                .cornerRadius(4)
-                .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
-                            .stroke(Color.quaternarySystemFill, lineWidth: 1))
-        } label: {
-            if let title = site.title, !title.isEmpty {
-                Text(title).withFont(.bodyLarge).foregroundColor(.primary).lineLimit(1)
-            }
-        } secondaryLabel: {
-            Text(URL(string: site.url)?.normalizedHostAndPathForDisplay ?? site.url)
-                .withFont(.bodySmall)
-                .foregroundColor(.secondaryLabel).lineLimit(1)
-        } detail: {
-            EmptyView()
+    @ViewBuilder
+    var icon: some View {
+        FaviconView(url: site.url.asURL!, icon: site.icon,
+                    size: SearchViewControllerUX.FaviconSize,
+                    bordered: false)
+            .frame(
+                width: SearchViewControllerUX.IconSize,
+                height: SearchViewControllerUX.IconSize
+            )
+            .cornerRadius(4)
+            .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
+                        .stroke(Color.quaternarySystemFill, lineWidth: 1))
+    }
+
+    @ViewBuilder
+    var label: some View {
+        let title = site.title
+        if !title.isEmpty {
+            Text(title).withFont(.bodyLarge).foregroundColor(.primary).lineLimit(1)
         }
+    }
+
+    @ViewBuilder
+    var secondaryLabel: some View {
+        Text(URL(string: site.url)?.normalizedHostAndPathForDisplay ?? site.url)
+            .withFont(.bodySmall)
+            .foregroundColor(.secondaryLabel).lineLimit(1)
+    }
+
+    var body: some View {
+        SuggestionView(action: {
+                ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
+                openURL(site.url.asURL!)
+            }, icon: icon,
+            label: label,
+            secondaryLabel: secondaryLabel,
+            detail: EmptyView(),
+            suggestion: nil)
     }
 }
 

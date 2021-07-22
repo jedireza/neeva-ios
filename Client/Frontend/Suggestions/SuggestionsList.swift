@@ -35,6 +35,7 @@ struct SuggestionsList: View {
                         UrlSuggestionsList()
                     }
                 }
+ 
                 NavSuggestionsList()
             }
         }

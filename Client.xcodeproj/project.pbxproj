@@ -2715,15 +2715,15 @@
 				D313BE971B2F5096009EF241 /* DomainAutocompleteTests.swift */,
 				D39FA1801A83E84900EE869C /* Global.swift */,
 				4F514FD31ACD8F2C0022D7EA /* HistoryTests.swift */,
+				66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */,
 				E6A92ADA1C52A8DA00743291 /* LoginInputTests.swift */,
+				DADC62D9226E3297003AFF8B /* ReopenLastTabTests.swift */,
 				C8EB60DB1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift */,
 				D3CFD3631CC5605B0064AB4A /* SecurityTests.swift */,
 				D3C3EB641B6FF44000388E9A /* SessionRestoreTests.swift */,
 				744B0FFD1B4F172E00100422 /* ToolbarTests.swift */,
 				D375A91F1AE71675001B30D5 /* ViewMemoryLeakTests.swift */,
 				D39FA1611A83E0EC00EE869C /* Supporting Files */,
-				DADC62D9226E3297003AFF8B /* ReopenLastTabTests.swift */,
-				66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */,
 			);
 			path = UITests;
 			sourceTree = "<group>";

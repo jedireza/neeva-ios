@@ -43,6 +43,7 @@ public enum SuggestionConfig {
 
 struct SuggestionSpec: ViewModifier {
     let config: SuggestionConfig
+    var focused: Bool
 
     func body(content: Content) -> some View {
         switch config {
@@ -50,9 +51,10 @@ struct SuggestionSpec: ViewModifier {
             content
                 .frame(height: SuggestionViewUX.RowHeight)
                 .padding(.horizontal, SuggestionViewUX.Padding)
+                .background(focused ? Color.selectedCell : .clear)
         case .chip:
             content.padding(SuggestionViewUX.ChipInnerPadding)
-                .background(Color.DefaultBackground)
+                .background(focused ? Color.selectedCell : Color.DefaultBackground)
                 .clipShape(Capsule())
                 .overlay(Capsule().stroke(Color(UIColor.Browser.urlBarDivider), lineWidth: 1))
         }
@@ -60,55 +62,57 @@ struct SuggestionSpec: ViewModifier {
 }
 
 private extension View {
-    func apply(config: SuggestionConfig) -> some View {
-        self.modifier(SuggestionSpec(config: config))
+    func apply(config: SuggestionConfig, focused: Bool) -> some View {
+        self.modifier(SuggestionSpec(config: config, focused: focused))
     }
 }
 
 struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
-    let action: () -> ()
-    let icon: () -> Icon
-    let label: () -> Label
-    let secondaryLabel: () -> SecondaryLabel
-    let detail: () -> Detail
+    let action: (() -> ())?
+    let icon: Icon
+    let label: Label
+    let secondaryLabel: SecondaryLabel
+    let detail: Detail
+    let suggestion: Suggestion?
 
+    @State var focused: Bool = false
+    @EnvironmentObject public var model: NeevaSuggestionModel
     @Environment(\.suggestionConfig) private var config
 
-    init(
-        action: @escaping () -> (),
-        @ViewBuilder icon: @escaping () -> Icon,
-        @ViewBuilder label: @escaping () -> Label,
-        @ViewBuilder secondaryLabel: @escaping () -> SecondaryLabel,
-        @ViewBuilder detail: @escaping () -> Detail
-    ) {
-        self.action = action
-        self.icon = icon
-        self.label = label
-        self.secondaryLabel = secondaryLabel
-        self.detail = detail
-    }
-
     var body: some View {
-        Button(action: action) {
+        Button {
+            if let suggestion = suggestion {
+                model.handleSuggestionSelected(suggestion)
+            }
+
+            action?()
+        } label: {
             HStack(spacing: 0) {
-                icon().foregroundColor(.tertiaryLabel)
+                icon.foregroundColor(.tertiaryLabel)
                     .frame(width: SearchViewControllerUX.IconSize,
                            height: SearchViewControllerUX.IconSize)
                 VStack(alignment: .leading, spacing: 0) {
-                    label()
-                    secondaryLabel()
+                    label
+                    secondaryLabel
                 }.padding(.leading, config == .row ?
                             SuggestionViewUX.Padding : SuggestionViewUX.ChipPadding)
                 if case .row = config {
                     Spacer(minLength: 0)
-                    detail()
+                    detail
                         .foregroundColor(.secondaryLabel)
                         .font(.callout)
                 }
-            }.apply(config: config)
+            }.apply(config: config, focused: focused)
         }
         .accentColor(.primary)
         .buttonStyle(TableCellButtonStyle())
+        .useEffect(deps: model.keyboardFocusedSuggestion) { _ in
+            if let suggestion = suggestion {
+                focused = model.isFocused(suggestion)
+            } else {
+                focused = false
+            }
+        }
     }
 }
 
@@ -116,9 +120,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
 struct QuerySuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.QuerySuggestion
 
-    @EnvironmentObject private var model: NeevaSuggestionModel
+    @EnvironmentObject public var model: NeevaSuggestionModel
     @Environment(\.setSearchInput) private var setInput
-    @Environment(\.onOpenURL) private var openURL
     @Environment(\.suggestionConfig) private var config
 
     var suggestedQuery: String {
@@ -131,55 +134,68 @@ struct QuerySuggestionView: View {
         }
     }
 
-    var body: some View {
-        SuggestionView {
-            let interaction: LogConfig.Interaction = model.activeLensBang != nil
-                ? .BangSuggestion : .QuerySuggestion
-            ClientLogger.shared.logCounter(interaction)
-            openURL(neevaSearchEngine.searchURLForQuery(suggestedQuery)!)
-        } icon: {
-            if let activeType = model.activeLensBang?.type {
-                Symbol(activeType.defaultSymbol)
-            } else if let annotation = suggestion.annotation, let imageUrl = annotation.imageUrl {
-                WebImage(url: URL(string: imageUrl))
-                    .resizable()
-                    .placeholder {
-                        Color.tertiarySystemFill
-                    }.aspectRatio(contentMode: .fit)
-                    .frame(width: SuggestionViewUX.ThumbnailSize,
-                           height: SuggestionViewUX.ThumbnailSize)
-                    .cornerRadius(SuggestionViewUX.CornerRadius)
-            } else {
-                switch suggestion.type {
-                case .searchHistory:
-                    Symbol(.clock)
-                case .space: // unused?
-                    SpaceIconView()
-                case .standard:
-                    Symbol(.magnifyingglass)
-                case .operator, .unknown, .__unknown(_): // seemingly unused
-                    Symbol(.questionmarkCircle).foregroundColor(.secondaryLabel)
-                }
-            }
-        } label: {
-            Text(suggestion.suggestedQuery)
-                .withFont(.bodyLarge)
-                .lineLimit(1)
-        } secondaryLabel: {
-            if let annotation = suggestion.annotation, let description = annotation.description {
-                Text(description).withFont(.bodySmall)
-                    .foregroundColor(.secondaryLabel).lineLimit(1)
-            } else {
-                EmptyView()
-            }
-        } detail: {
-            if suggestion.type != .space {
-                Button(action: { setInput(suggestedQuery) }) {
-                    Symbol(.arrowUpLeft)
-                        .foregroundColor(.tertiaryLabel)
-                }.buttonStyle(BorderlessButtonStyle())
+    @ViewBuilder
+    var icon: some View {
+        if let activeType = model.activeLensBang?.type {
+            Symbol(activeType.defaultSymbol)
+        } else if let annotation = suggestion.annotation, let imageUrl = annotation.imageUrl {
+            WebImage(url: URL(string: imageUrl))
+                .resizable()
+                .placeholder {
+                    Color.tertiarySystemFill
+                }.aspectRatio(contentMode: .fit)
+                .frame(width: SuggestionViewUX.ThumbnailSize,
+                       height: SuggestionViewUX.ThumbnailSize)
+                .cornerRadius(SuggestionViewUX.CornerRadius)
+        } else {
+            switch suggestion.type {
+            case .searchHistory:
+                Symbol(.clock)
+            case .space: // unused?
+                SpaceIconView()
+            case .standard:
+                Symbol(.magnifyingglass)
+            case .operator, .unknown, .__unknown(_): // seemingly unused
+                Symbol(.questionmarkCircle).foregroundColor(.secondaryLabel)
             }
         }
+    }
+
+    @ViewBuilder
+    var label: some View {
+        Text(suggestion.suggestedQuery)
+            .withFont(.bodyLarge)
+            .lineLimit(1)
+    }
+
+    @ViewBuilder
+    var secondaryLabel: some View {
+        if let annotation = suggestion.annotation, let description = annotation.description {
+            Text(description).withFont(.bodySmall)
+                .foregroundColor(.secondaryLabel).lineLimit(1)
+        } else {
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    var detail: some View {
+        if suggestion.type != .space {
+            Button(action: { setInput(suggestedQuery) }) {
+                Symbol(.arrowUpLeft)
+                    .foregroundColor(.tertiaryLabel)
+            }.buttonStyle(BorderlessButtonStyle())
+        }
+    }
+
+    var body: some View {
+        SuggestionView(action: nil,
+            icon: icon,
+            label: label,
+            secondaryLabel: secondaryLabel,
+            detail: detail,
+            suggestion: Suggestion.query(suggestion))
+            .environmentObject(model)
     }
 }
 
@@ -187,96 +203,100 @@ struct QuerySuggestionView: View {
 struct URLSuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion
 
-    @Environment(\.onOpenURL) private var openURL
+    @State var focused: Bool = false
+    @EnvironmentObject public var model: NeevaSuggestionModel
+
+    @ViewBuilder
+    var icon: some View {
+        if let labels = suggestion.icon.labels,
+           let image = Image(icons: labels) {
+            image
+        } else if let subtitle = suggestion.subtitle, !subtitle.isEmpty,
+                  let url = URL(string: suggestion.suggestedUrl) {
+            FaviconView(url: url,
+                        size: SearchViewControllerUX.FaviconSize,
+                        bordered: false)
+                .frame(
+                    width: SearchViewControllerUX.IconSize,
+                    height: SearchViewControllerUX.IconSize
+                )
+                .cornerRadius(SuggestionViewUX.CornerRadius)
+                .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
+                            .stroke(Color.quaternarySystemFill, lineWidth: 1))
+        } else {
+            Symbol(.questionmarkDiamondFill)
+                .foregroundColor(.red)
+        }
+    }
+
+    @ViewBuilder
+    var label: some View {
+        if let subtitle = suggestion.subtitle, !subtitle.isEmpty {
+            Text(subtitle).withFont(.bodyLarge).foregroundColor(.primary).lineLimit(1)
+        } else if let title = suggestion.title {
+            Text(title).withFont(.bodyLarge).lineLimit(1)
+        } else {
+            Text(suggestion.suggestedUrl).withFont(.bodyLarge).lineLimit(1)
+        }
+    }
+
+    @ViewBuilder
+    var secondaryLabel: some View {
+        if !(suggestion.subtitle?.isEmpty ?? true), let title = suggestion.title {
+            Text(URL(string: suggestion.suggestedUrl)?.normalizedHostAndPathForDisplay ?? title)
+                .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
+        }
+    }
+
+    @ViewBuilder
+    var detail: some View {
+        if let formatted = format(suggestion.timestamp, as: .full) {
+            Text(formatted)
+        }
+    }
 
     var body: some View {
-        SuggestionView {
-            let interaction: LogConfig.Interaction = suggestion.title?.isEmpty ?? false ?
-                .NavSuggestion : .URLSuggestion
-            ClientLogger.shared.logCounter(interaction)
-
-            openURL(URL(string: suggestion.suggestedUrl)!)
-        } icon: {
-            if let labels = suggestion.icon.labels,
-               let image = Image(icons: labels) {
-                image
-            } else if let subtitle = suggestion.subtitle, !subtitle.isEmpty,
-                      let url = URL(string: suggestion.suggestedUrl) {
-                FaviconView(url: url,
-                            size: SearchViewControllerUX.FaviconSize,
-                            bordered: false)
-                    .frame(
-                        width: SearchViewControllerUX.IconSize,
-                        height: SearchViewControllerUX.IconSize
-                    )
-                    .cornerRadius(SuggestionViewUX.CornerRadius)
-                    .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
-                                .stroke(Color.quaternarySystemFill, lineWidth: 1))
-            } else {
-                Symbol(.questionmarkDiamondFill)
-                    .foregroundColor(.red)
-            }
-        } label: {
-            if let subtitle = suggestion.subtitle, !subtitle.isEmpty {
-                Text(subtitle).withFont(.bodyLarge).foregroundColor(.primary).lineLimit(1)
-            } else if let title = suggestion.title {
-                Text(title).withFont(.bodyLarge).lineLimit(1)
-            } else {
-                Text(suggestion.suggestedUrl).withFont(.bodyLarge).lineLimit(1)
-            }
-        } secondaryLabel: {
-            if !(suggestion.subtitle?.isEmpty ?? true), let title = suggestion.title,
-               let url = suggestion.suggestedUrl {
-                Text(URL(string: url)?.normalizedHostAndPathForDisplay ?? title)
-                    .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
-            }
-        } detail: {
-            if let formatted = format(suggestion.timestamp, as: .full) {
-                Text(formatted)
-            }
-        }
+        SuggestionView(action: nil,
+            icon: icon,
+            label: label,
+            secondaryLabel: secondaryLabel,
+            detail: detail,
+            suggestion: Suggestion.url(suggestion))
+            .environmentObject(model)
     }
 }
 
 fileprivate struct BangSuggestionView: View {
     let suggestion: Suggestion.Bang
 
-    @Environment(\.setSearchInput) private var setInput
+    @State var focused: Bool = false
+    @EnvironmentObject public var model: NeevaSuggestionModel
 
     var body: some View {
-        let query = "!\(suggestion.shortcut)"
-        SuggestionView {
-            setInput(query + " ")
-        } icon: {
-            Symbol(ActiveLensBangType.bang.defaultSymbol)
-        } label: {
-            Text(query)
-        } secondaryLabel: {
-            EmptyView()
-        } detail: {
-            Text(suggestion.description)
-        }
+        SuggestionView(action: nil,
+            icon: Symbol(ActiveLensBangType.bang.defaultSymbol),
+            label: Text("!\(suggestion.shortcut)"),
+            secondaryLabel: EmptyView(),
+            detail: Text(suggestion.description),
+            suggestion: Suggestion.bang(suggestion))
+            .environmentObject(model)
     }
 }
 
 fileprivate struct LensSuggestionView: View {
     let suggestion: Suggestion.Lens
 
-    @Environment(\.setSearchInput) private var setInput
+    @State var focused: Bool = false
+    @EnvironmentObject public var model: NeevaSuggestionModel
 
     var body: some View {
-        let query = "@\(suggestion.shortcut)"
-        SuggestionView {
-            setInput(query + " ")
-        } icon: {
-            Symbol(ActiveLensBangType.lens.defaultSymbol)
-        } label: {
-            Text(query)
-        } secondaryLabel: {
-            EmptyView()
-        } detail: {
-            Text(suggestion.description)
-        }
+        SuggestionView(action: nil,
+            icon: Symbol(ActiveLensBangType.lens.defaultSymbol),
+            label: Text("@\(suggestion.shortcut)"),
+            secondaryLabel: EmptyView(),
+            detail: Text(suggestion.description),
+            suggestion: Suggestion.lens(suggestion))
+            .environmentObject(model)
     }
 }
 
@@ -349,8 +369,8 @@ struct SuggestionView_Previews: PreviewProvider {
                 QuerySuggestionView(suggestion: historyQuery)
             }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
             Section(header: Text("Query — Lens active").textCase(nil)) {
-                QuerySuggestionView(suggestion: query)
-                QuerySuggestionView(suggestion: historyQuery)
+                QuerySuggestionView( suggestion: query)
+                QuerySuggestionView( suggestion: historyQuery)
             }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {
                 URLSuggestionView(suggestion: url)

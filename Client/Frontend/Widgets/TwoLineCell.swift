@@ -17,11 +17,6 @@ class TwoLineTableViewCell: UITableViewCell {
 
     let _textLabel = UILabel()
     let _detailTextLabel = UILabel()
-    lazy var selectedView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.legacyTheme.tableView.selectedBackground
-        return view
-    }()
 
     // Override the default labels with our own to disable default UITableViewCell label behaviours like dynamic type
     override var textLabel: UILabel? {
@@ -42,7 +37,6 @@ class TwoLineTableViewCell: UITableViewCell {
 
         indentationWidth = 0
         layoutMargins = .zero
-        selectedBackgroundView = selectedView
 
         separatorInset = UIEdgeInsets(top: 0, left: TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin, bottom: 0, right: 0)
 
@@ -121,8 +115,8 @@ private class TwoLineCellHelper {
             self.container?.backgroundColor = UIColor.clear
         }
 
-        textLabel.textColor = UIColor.legacyTheme.tableView.rowText
-        detailTextLabel.textColor = UIColor.legacyTheme.tableView.rowDetailText
+        textLabel.textColor = UIColor.label
+        detailTextLabel.textColor = UIColor.secondaryLabel
     }
 
     func setupDynamicFonts() {

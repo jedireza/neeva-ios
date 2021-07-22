@@ -107,7 +107,7 @@ extension UIColor {
                 let color = UIColor(rgba: 0x64C7FF4C)
                 return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
             } else {
-                return (labelMode: UIColor.textSelectionHighlight, textFieldMode: nil)
+                return (labelMode: UIColor.TextSelectionHighlight, textFieldMode: nil)
             }
         }
 

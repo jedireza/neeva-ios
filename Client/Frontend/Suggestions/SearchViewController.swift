@@ -52,8 +52,8 @@ struct SuggestionsView: View {
             }
             .ignoresSafeArea(edges: [.bottom])
             .environment(\.onOpenURL, onOpenURL)
-            .environment(\.setSearchInput, setSearchInput)
             .environment(\.isIncognito, neevaModel.isIncognito)
+            .environment(\.setSearchInput, setSearchInput)
         }
     }
 }

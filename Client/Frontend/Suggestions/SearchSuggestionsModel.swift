@@ -39,7 +39,7 @@ public enum Suggestion {
     }
 }
 
-extension Suggestion: Identifiable {
+extension Suggestion: Identifiable, Equatable {
     public var id: String {
         switch self {
         case .query(let query):
@@ -51,6 +51,10 @@ extension Suggestion: Identifiable {
         case .lens(let lens):
             return "lens-\(lens.shortcut)"
         }
+    }
+
+    public static func == (lhs: Suggestion, rhs: Suggestion) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

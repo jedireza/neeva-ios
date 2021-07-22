@@ -4,6 +4,8 @@ import Combine
 import Apollo
 import Shared
 import Defaults
+import UIKit
+import Storage
 
 class NeevaSuggestionModel: ObservableObject {
     @Published var topSuggestions: [Suggestion] = []
@@ -14,6 +16,8 @@ class NeevaSuggestionModel: ObservableObject {
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
     @Published var isIncognito: Bool // TODO: don’t duplicate this source of truth
+    @Published var keyboardFocusedSuggestion: Suggestion?
+    private var keyboardFocusedSuggestionIndex = -1
 
     var shouldShowSuggestions: Bool {
         return !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL
@@ -51,6 +55,9 @@ class NeevaSuggestionModel: ObservableObject {
 
     func reload() {
         suggestionQuery?.cancel()
+
+        keyboardFocusedSuggestion = nil
+        keyboardFocusedSuggestionIndex = -1
 
         guard shouldShowSuggestions else {
             topSuggestions = []
@@ -111,5 +118,72 @@ class NeevaSuggestionModel: ObservableObject {
                 }
             }
         }
+    }
+
+    // MARK: - Searching
+    public func handleSuggestionSelected(_ suggestion: Suggestion) {
+        let bvc = BrowserViewController.foregroundBVC()
+        guard let tab = bvc.tabManager.selectedTab, let searchController = bvc.searchController else { return }
+
+        switch suggestion {
+        case .query(let suggestion):
+            let interaction: LogConfig.Interaction = activeLensBang != nil
+                ? .BangSuggestion : .QuerySuggestion
+            ClientLogger.shared.logCounter(interaction)
+
+            bvc.urlBar(didSubmitText: suggestion.suggestedQuery)
+        case .url(let suggestion):
+            let interaction: LogConfig.Interaction = suggestion.title?.isEmpty ?? false ?
+                .NavSuggestion : .URLSuggestion
+            ClientLogger.shared.logCounter(interaction)
+
+            bvc.finishEditingAndSubmit(URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: tab)
+        case .lens(let suggestion):
+            searchController.searchDelegate?.searchViewController(searchController, didAcceptSuggestion: suggestion.shortcut)
+        case .bang(let suggestion):
+            searchController.searchDelegate?.searchViewController(searchController, didAcceptSuggestion: suggestion.shortcut)
+        }
+    }
+
+    // MARK: - Keyboard Shortcut
+    public func handleKeyboardShortcut(input: String) {
+        switch input {
+        case UIKeyCommand.inputUpArrow:
+            moveFocus(amount: -1)
+        case UIKeyCommand.inputDownArrow:
+            moveFocus(amount: 1)
+        case "\r":
+            if let keyboardFocusedSuggestion = keyboardFocusedSuggestion {
+                handleSuggestionSelected(keyboardFocusedSuggestion)
+            }
+        default:
+            break
+        }
+    }
+
+    /// Moves the focusedKeyboardShortcut up/down by the input amount
+    private func moveFocus(amount: Int) {
+        let allSuggestions = topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions + navSuggestions
+        let allSuggestionsCount = allSuggestions.count
+
+        guard allSuggestionsCount > 0 else {
+            return
+        }
+
+        keyboardFocusedSuggestionIndex += amount
+
+        if keyboardFocusedSuggestionIndex >= allSuggestionsCount {
+            keyboardFocusedSuggestionIndex = 0
+            keyboardFocusedSuggestion = allSuggestions[0]
+        } else if keyboardFocusedSuggestionIndex < 0 {
+            keyboardFocusedSuggestionIndex = allSuggestions.count - 1
+            keyboardFocusedSuggestion = allSuggestions[allSuggestions.count - 1]
+        } else {
+            keyboardFocusedSuggestion = allSuggestions[keyboardFocusedSuggestionIndex]
+        }
+    }
+
+    public func isFocused(_ suggestion: Suggestion) -> Bool {
+        return suggestion == keyboardFocusedSuggestion
     }
 }

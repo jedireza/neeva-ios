@@ -119,15 +119,16 @@ extension BrowserViewController {
     }
 
     @objc func moveURLCompletionKeyCommand(sender: UIKeyCommand) {
-        guard self.searchController != nil else {
-            return
+        if let input = sender.input {
+            legacyURLBar.neevaSuggestionModel.handleKeyboardShortcut(input: input)
         }
     }
 
     override var keyCommands: [UIKeyCommand]? {
         let searchLocationCommands = [
-            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: [], action: #selector(moveURLCompletionKeyCommand(sender:))),
             UIKeyCommand(input: UIKeyCommand.inputUpArrow, modifierFlags: [], action: #selector(moveURLCompletionKeyCommand(sender:))),
+            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: [], action: #selector(moveURLCompletionKeyCommand(sender:))),
+            UIKeyCommand(input: "\r", modifierFlags: [], action: #selector(moveURLCompletionKeyCommand(sender:))),
         ]
         let overidesTextEditing = [
             UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: [.command, .shift], action: #selector(nextTabKeyCommand)),
