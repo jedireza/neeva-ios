@@ -129,6 +129,9 @@ extension ZeroQueryViewController: DataObserverDelegate {
             self.model.signInHandler = {
                 self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
+            self.model.referralPromoHandler = {
+                self.showSiteWithURLHandler(NeevaConstants.appReferralsURL)
+            }
             self.model.updateState()
 
             let maxItems = 8

@@ -63,6 +63,10 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
             case .feedback:
                 self.feedbackHandler(delegate, feedbackImage)
                 break
+            case .referralPromo:
+                self.rootView.onDismiss()
+                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.referralPromo)
+                break
             }
         }
         self.rootView = NeevaMenuRootView(onDismiss: onDismiss, isIncognito: isPrivate, embeddedView: embeddedView)

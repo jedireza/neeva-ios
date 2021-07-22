@@ -11,6 +11,7 @@ struct InternalSettingsView: View {
     @Default(.lastVersionNumber) var lastVersionNumber
     @Default(.didShowDefaultBrowserOnboarding) var didShowDefaultBrowserOnboarding
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
+    @Default(.didDismissReferralPromoCard) var didDismissReferralPromoCard
     @Default(.deletedSuggestedSites) var deletedSuggestedSites
     @Default(.recentlyClosedTabs) var recentlyClosedTabs
     @Default(.saveLogins) var saveLogins
@@ -29,6 +30,7 @@ struct InternalSettingsView: View {
                 OptionalStringField("lastVersionNumber", text: $lastVersionNumber)
                 Toggle("didShowDefaultBrowserOnboarding", isOn: $didShowDefaultBrowserOnboarding)
                 Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)
+                Toggle("didDismissReferralPromoCard", isOn: $didDismissReferralPromoCard)
             }
             Section(header: Text("User-generated")) {
                 HStack {

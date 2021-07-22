@@ -43,6 +43,8 @@ extension BrowserViewController: LegacyURLBarDelegate {
         case .spaces:
             switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
             break
+        case .referralPromo:
+            switchToTabForURLOrOpen(NeevaConstants.appReferralsURL)
         default:
             break
         }

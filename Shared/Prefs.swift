@@ -12,6 +12,8 @@ extension Defaults.Keys {
     public static let lastVersionNumber = Defaults.Key<String?>("profile.KeyLastVersionNumber")
     public static let didShowDefaultBrowserOnboarding = Defaults.BoolKey("didShowDefaultBrowserOnboarding")
     public static let didDismissDefaultBrowserCard = Defaults.BoolKey("profile.didDismissDefaultBrowserCard")
+    public static let didDismissReferralPromoCard =
+        Defaults.BoolKey("profile.didDismissReferralPromoCard")
 
     // explicit/implicit settings
     public static let mailToOption = Defaults.Key<String?>("profile.MailToOption")

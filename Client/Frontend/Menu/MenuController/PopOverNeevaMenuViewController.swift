@@ -92,6 +92,9 @@ class PopOverNeevaMenuViewController: UIHostingController<_NeevaMenuPopover> {
                     showFeedbackPanel(bvc: delegate, screenshot: feedbackImage)
                 }
                 break
+            case .referralPromo:
+                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.referralPromo)
+                break
             }
         }
         

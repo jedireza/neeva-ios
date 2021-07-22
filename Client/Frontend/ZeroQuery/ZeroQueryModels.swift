@@ -10,6 +10,7 @@ class ZeroQueryModel: ObservableObject {
     @Published var buttonClickHandler: () -> () = {}
 
     var signInHandler: () -> () = {}
+    var referralPromoHandler: () -> () = {}
 
     func updateState() {
         isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
@@ -20,7 +21,15 @@ class ZeroQueryModel: ObservableObject {
             Defaults[.didDismissDefaultBrowserCard] = true
         }
 
-        if !NeevaUserInfo.shared.hasLoginCookie() {
+        if NeevaFeatureFlags[.referralPromo] && !Defaults[.didDismissReferralPromoCard] {
+            promoCard = .referralPromo {
+                self.referralPromoHandler()
+            } onClose: {
+                ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                self.promoCard = nil
+                Defaults[.didDismissReferralPromoCard] = true
+            }
+        } else if !NeevaUserInfo.shared.hasLoginCookie() {
             promoCard = .neevaSignIn {
                 ClientLogger.shared.logCounter(.PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
                 self.signInHandler()

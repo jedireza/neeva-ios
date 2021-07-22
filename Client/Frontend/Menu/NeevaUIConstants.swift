@@ -9,6 +9,7 @@ public enum NeevaMenuButtonActions{
     case history
     case downloads
     case feedback
+    case referralPromo
 }
 
 public enum FirstRunButtonActions {

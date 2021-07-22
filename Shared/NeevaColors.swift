@@ -47,6 +47,7 @@ extension UIColor {
             public static let maya = UIColor(light: .brand.maya, dark: .brand.variant.maya)
             public static let polar = UIColor(light: .brand.polar, dark: .brand.variant.polar)
             public static let pistachio = UIColor(light: .brand.pistachio, dark: .brand.variant.pistachio)
+            public static let orange = UIColor(light: .brand.variant.orange, dark: .brand.orange)
         }
 
         public enum candidate {
@@ -131,6 +132,7 @@ extension Color {
             public static let maya = Color(UIColor.brand.adaptive.maya)
             public static let polar = Color(UIColor.brand.adaptive.polar)
             public static let pistachio = Color(UIColor.brand.adaptive.pistachio)
+            public static let orange = Color(UIColor.brand.adaptive.orange)
         }
 
         public enum candidate {

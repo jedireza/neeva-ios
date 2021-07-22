@@ -43,6 +43,7 @@ public class NeevaFeatureFlags {
         case feedbackQuery = 46831
         case welcomeTours = 46832
         case feedbackScreenshot = 48985
+        case referralPromo = 48988
 
         public var name: String {
             switch self {
@@ -53,6 +54,7 @@ public class NeevaFeatureFlags {
             case .feedbackQuery: return "ios.feedback_query"
             case .welcomeTours: return "ios.welcome_tours"
             case .feedbackScreenshot: return "ios.feedback_screenshot"
+            case .referralPromo: return "ios.referral_promo"
             }
         }
     }

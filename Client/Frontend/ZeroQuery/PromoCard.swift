@@ -13,6 +13,7 @@ struct PromoCardConfig {
 enum PromoCardType {
     case neevaSignIn(action: () -> ())
     case defaultBrowser(action: () -> (), onClose: () -> ())
+    case referralPromo(action: () -> (), onClose: () -> ())
 
     var action: () -> () {
         switch self {
@@ -20,15 +21,20 @@ enum PromoCardType {
             return action
         case .defaultBrowser(let action, _):
             return action
+        case .referralPromo(let action, _):
+            return action
         }
     }
 
-    var title: String {
+    @ViewBuilder
+    var title: some View {
         switch self {
         case .neevaSignIn:
-            return "Get safer, richer and better\nsearch when you sign in"
+            Text("Get safer, richer and better\nsearch when you sign in")
         case .defaultBrowser:
-            return "Browse in peace,\nalways"
+            Text("Browse in peace,\nalways")
+        case .referralPromo:
+            Text("Win ") + Text("$5000").fontWeight(.medium) + Text(" for inviting friends")
         }
     }
 
@@ -45,6 +51,11 @@ enum PromoCardType {
             }
         case .defaultBrowser:
             Text("Set as Default Browser")
+        case .referralPromo:
+            HStack(spacing: 8) {
+                Text("Tell me more")
+                Symbol(.arrowRight, weight: .semibold)
+            }
         }
     }
 
@@ -54,6 +65,17 @@ enum PromoCardType {
             return .brand.adaptive.polar
         case .defaultBrowser:
             return .brand.adaptive.pistachio
+        case .referralPromo:
+            return Color(light: .hex(0xFFEAD1), dark: .hex(0xF8C991))
+        }
+    }
+
+    var isCompact: Bool {
+        switch self {
+        case .referralPromo:
+            return true
+        default:
+            return false
         }
     }
 }
@@ -70,28 +92,37 @@ struct PromoCard: View {
     @ViewBuilder
     var button: some View {
         Button(action: type.action) {
-            HStack {
-                Spacer()
-                type.buttonLabel
-                Spacer()
+            if type.isCompact {
+                HStack {
+                    type.buttonLabel
+                    Spacer()
+                }
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(Color.brand.blue)
+            } else {
+                HStack {
+                    Spacer()
+                    type.buttonLabel
+                    Spacer()
+                }
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(.white)
+                .frame(height: 48)
+                .background(Capsule().fill(Color.brand.blue))
             }
-            .font(.system(size: 16, weight: .semibold))
-            .foregroundColor(.white)
-            .frame(height: 48)
-            .background(Capsule().fill(Color.brand.blue))
         }
     }
 
     @ViewBuilder
     var label: some View {
-        let size: CGFloat = 24
+        let size: CGFloat = type.isCompact ? 20 : 24
         let lineSpacing = 32 - size
-        Text(type.title)
+
+        type.title
             .font(.roobert(.regular, size: size))
             .lineSpacing(lineSpacing)
             .foregroundColor(.hex(0x131415))
-            .padding(.vertical, lineSpacing)
-
+            .padding(.vertical, type.isCompact ? 0 : lineSpacing)
     }
 
     @ViewBuilder
@@ -101,6 +132,11 @@ struct PromoCard: View {
                 Symbol(.xmark, weight: .semibold, label: "Dismiss")
                     .foregroundColor(Color.ui.gray70)
                     .padding()
+            }
+        } else if case .referralPromo(_, let onClose) = type {
+            Button(action: onClose) {
+                Symbol(.xmark, weight: .semibold, label: "Dismiss")
+                    .foregroundColor(Color.ui.gray70)
             }
         }
     }

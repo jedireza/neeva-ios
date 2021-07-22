@@ -9,6 +9,7 @@ public struct NeevaMenuRowButtonView: View {
     let nicon: Nicon?
     let symbol: SFSymbol?
     let action: () -> ()
+    let isPromo: Bool
 
     /// - Parameters:
     ///   - label: The text displayed on the button
@@ -18,6 +19,7 @@ public struct NeevaMenuRowButtonView: View {
         self.nicon = nicon
         self.symbol = nil
         self.action = action
+        self.isPromo = false
     }
 
     /// - Parameters:
@@ -28,14 +30,24 @@ public struct NeevaMenuRowButtonView: View {
         self.nicon = nil
         self.symbol = symbol
         self.action = action
+        self.isPromo = false
+    }
+
+    /// - Parameters:
+    ///   - label: The text displayed on the button
+    public init(label: String, isPromo: Bool, action: @escaping () -> ()) {
+        self.label = label
+        self.nicon = nil
+        self.symbol = nil
+        self.action = action
+        self.isPromo = isPromo
     }
 
     public var body: some View {
         Button(action: action) {
             HStack(spacing: 0) {
-                Text(label).withFont(.bodyLarge)
+                Text(label).withFont(isPromo ? .headingMedium : .bodyLarge)
                 Spacer()
-
                 Group {
                     if let nicon = self.nicon {
                         Symbol(nicon, size: 18)
