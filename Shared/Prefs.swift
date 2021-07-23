@@ -16,7 +16,6 @@ extension Defaults.Keys {
         Defaults.BoolKey("profile.didDismissReferralPromoCard")
 
     // explicit/implicit settings
-    public static let mailToOption = Defaults.Key<String?>("profile.MailToOption")
     public static let contextMenuShowLinkPreviews = Defaults.Key("profile.ContextMenuShowLinkPreviews", default: true)
     public static let showClipboardBar = Defaults.BoolKey("profile.showClipboardBar")
     public static let deletedSuggestedSites = Defaults.Key<[String]>("profile.topSites.deletedSuggestedSites", default: [])

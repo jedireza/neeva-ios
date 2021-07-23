@@ -9,7 +9,6 @@ import Defaults
 // An enum to route to a settings page.
 enum SettingsPage: String {
     case general = "general"
-    case mailto = "mailto"
     case clearPrivateData = "clear-private-data"
 }
 

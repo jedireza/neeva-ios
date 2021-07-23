@@ -282,14 +282,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 }
 
-extension AppDelegate: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        // Dismiss the view controller and start the app up
-        controller.dismiss(animated: true, completion: nil)
-        _ = startApplication(application!, withLaunchOptions: self.launchOptions)
-    }
-}
-
 // Orientation lock for views that use new modal presenter 
 extension AppDelegate {
     /// ref: https://stackoverflow.com/questions/28938660/

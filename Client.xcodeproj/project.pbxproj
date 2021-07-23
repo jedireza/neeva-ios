@@ -87,7 +87,6 @@
 		28E08C991AF44EF9009BA2FA /* SQLiteHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCAE2551ABB531100877008 /* SQLiteHistory.swift */; };
 		28E08C9A1AF44F00009BA2FA /* BrowserSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282915E51AF1A7920006EEB5 /* BrowserSchema.swift */; };
 		28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EADE381AFC3898007FB2FB /* UIImageViewExtensions.swift */; };
-		2C28F96C201B2D4C00ABA8A5 /* MailAppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C28F96B201B2D4C00ABA8A5 /* MailAppSettingsTests.swift */; };
 		2C2A91291FA2410D002E36BD /* HistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2A91281FA2410D002E36BD /* HistoryTests.swift */; };
 		2C32EA442100C4BF00A25912 /* TabTraySearchTabsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C32EA432100C4BF00A25912 /* TabTraySearchTabsTests.swift */; };
 		2C3406C81E719F00000FD889 /* SettingsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3406C71E719F00000FD889 /* SettingsTest.swift */; };
@@ -225,11 +224,8 @@
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
 		66DA9E49268E8EFB001EFF13 /* ToastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DA9E48268E8EFB001EFF13 /* ToastTests.swift */; };
 		744B0FFE1B4F172E00100422 /* ToolbarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744B0FFD1B4F172E00100422 /* ToolbarTests.swift */; };
-		744ED5611DBFEB8D00A2B5BE /* MailtoLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744ED5601DBFEB8D00A2B5BE /* MailtoLinkHandler.swift */; };
 		745DAB301CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745DAB2F1CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift */; };
 		7479B4EF1C5306A200DF000B /* Reachability-old.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7479B4ED1C5306A200DF000B /* Reachability-old.swift */; };
-		74821FFE1DB6D3AC00EEEA72 /* MailSchemes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 74821FFD1DB6D3AC00EEEA72 /* MailSchemes.plist */; };
-		7482205C1DBAB56300EEEA72 /* MailProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7482205B1DBAB56300EEEA72 /* MailProviders.swift */; };
 		74C027451B2A348C001B1E88 /* SessionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C027441B2A348C001B1E88 /* SessionData.swift */; };
 		7B10AA9F1E3A15020002DD08 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10AA9E1E3A15020002DD08 /* DataExtensions.swift */; };
 		7B10AABB1E3A1F650002DD08 /* URLRequestExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B10AABA1E3A1F650002DD08 /* URLRequestExtensions.swift */; };
@@ -446,7 +442,6 @@
 		C9DF56D1266A8DC5009A2E6C /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
 		C9DF56D2266A8DC5009A2E6C /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		C9DF56D3266A8DC5009A2E6C /* nicons-500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1389F2656CBE70018D87D /* nicons-500.ttf */; };
-		C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E448C0265D555600651DCB /* MailAppSetting.swift */; };
 		C9E5F2B12673B4A000025A7F /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B02673B4A000025A7F /* NavigationController.swift */; };
 		C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B42673EF1D00025A7F /* Environment.swift */; };
 		C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */; };
@@ -617,7 +612,6 @@
 		E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6327A631BF6438E008D12E0 /* DebugSettingsBundleOptions.swift */; };
 		E63F71881DB7FBE200A995C9 /* TestSQLiteMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */; };
 		E64ED8FA1BC55AE300DAF864 /* UIAlertControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64ED8F91BC55AE300DAF864 /* UIAlertControllerExtensions.swift */; };
-		E65075511E37F6D1006961AC /* NSURLExtensionsMailTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E650754F1E37F6D1006961AC /* NSURLExtensionsMailTo.swift */; };
 		E65075521E37F6D1006961AC /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075501E37F6D1006961AC /* UIViewExtensions.swift */; };
 		E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075531E37F6FC006961AC /* DynamicFontHelper.swift */; };
 		E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075561E37F714006961AC /* FaviconFetcher.swift */; };
@@ -1009,7 +1003,6 @@
 		28C4AB711AD42D4300D9ACE3 /* Clients.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clients.swift; sourceTree = "<group>"; };
 		28C8B7841C852535006D8318 /* BookmarksPanelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksPanelTests.swift; sourceTree = "<group>"; };
 		28EADE381AFC3898007FB2FB /* UIImageViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageViewExtensions.swift; sourceTree = "<group>"; };
-		2C28F96B201B2D4C00ABA8A5 /* MailAppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailAppSettingsTests.swift; sourceTree = "<group>"; };
 		2C2A91281FA2410D002E36BD /* HistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTests.swift; sourceTree = "<group>"; };
 		2C32EA432100C4BF00A25912 /* TabTraySearchTabsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabTraySearchTabsTests.swift; sourceTree = "<group>"; };
 		2C3406C71E719F00000FD889 /* SettingsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTest.swift; sourceTree = "<group>"; };
@@ -1156,11 +1149,8 @@
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutTests.swift; sourceTree = "<group>"; };
 		744B0FFD1B4F172E00100422 /* ToolbarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarTests.swift; sourceTree = "<group>"; };
-		744ED5601DBFEB8D00A2B5BE /* MailtoLinkHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailtoLinkHandler.swift; sourceTree = "<group>"; };
 		745DAB2F1CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentlyClosedTabsPanel.swift; sourceTree = "<group>"; };
 		7479B4ED1C5306A200DF000B /* Reachability-old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Reachability-old.swift"; path = "ThirdParty/Reachability-old.swift"; sourceTree = "<group>"; };
-		74821FFD1DB6D3AC00EEEA72 /* MailSchemes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MailSchemes.plist; sourceTree = "<group>"; };
-		7482205B1DBAB56300EEEA72 /* MailProviders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailProviders.swift; sourceTree = "<group>"; };
 		74C027441B2A348C001B1E88 /* SessionData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionData.swift; sourceTree = "<group>"; };
 		7B10AA9E1E3A15020002DD08 /* DataExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
 		7B10AABA1E3A1F650002DD08 /* URLRequestExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLRequestExtensions.swift; sourceTree = "<group>"; };
@@ -1356,7 +1346,6 @@
 		C9DF569F266A84A5009A2E6C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C9DF56A1266A84A5009A2E6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9DF56AF266A86C4009A2E6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C9E448C0265D555600651DCB /* MailAppSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailAppSetting.swift; sourceTree = "<group>"; };
 		C9E5F2B02673B4A000025A7F /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		C9E5F2B42673EF1D00025A7F /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeometryExtensions.swift; sourceTree = "<group>"; };
@@ -1525,7 +1514,6 @@
 		E6327A631BF6438E008D12E0 /* DebugSettingsBundleOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugSettingsBundleOptions.swift; sourceTree = "<group>"; };
 		E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestSQLiteMetadata.swift; sourceTree = "<group>"; };
 		E64ED8F91BC55AE300DAF864 /* UIAlertControllerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIAlertControllerExtensions.swift; sourceTree = "<group>"; };
-		E650754F1E37F6D1006961AC /* NSURLExtensionsMailTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLExtensionsMailTo.swift; sourceTree = "<group>"; };
 		E65075501E37F6D1006961AC /* UIViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		E65075531E37F6FC006961AC /* DynamicFontHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DynamicFontHelper.swift; path = Helpers/DynamicFontHelper.swift; sourceTree = "<group>"; };
 		E65075561E37F714006961AC /* FaviconFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaviconFetcher.swift; sourceTree = "<group>"; };
@@ -1904,7 +1892,6 @@
 				C9E5F2B92673F83800025A7F /* DispatchQueueExtensions.swift */,
 				C9E5F2B42673EF1D00025A7F /* Environment.swift */,
 				C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */,
-				E650754F1E37F6D1006961AC /* NSURLExtensionsMailTo.swift */,
 				C94D40672684CC35003A6766 /* PublisherExtensions.swift */,
 				D8D33A7C1FBD080300A20A28 /* SnapKitExtensions.swift */,
 				E64ED8F91BC55AE300DAF864 /* UIAlertControllerExtensions.swift */,
@@ -1926,7 +1913,7 @@
 				C98E406026585C43003AC0E2 /* AboutSettingsSection.swift */,
 				0B62EFD11AD63CD100ACB9CD /* Clearables.swift */,
 				C965BDD0268E71B400F02224 /* Debug */,
-				C9E448C2265D557300651DCB /* General */,
+				C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */,
 				C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */,
 				C9E448BF265D553F00651DCB /* Neeva */,
 				C9F49CBE266FEF4600F3408A /* Privacy */,
@@ -2082,7 +2069,6 @@
 				39C261CB2018DE20009D97BD /* FxScreenGraphTests.swift */,
 				2C2A91281FA2410D002E36BD /* HistoryTests.swift */,
 				3BFE4B0B1D342FB900DDF53F /* Info.plist */,
-				2C28F96B201B2D4C00ABA8A5 /* MailAppSettingsTests.swift */,
 				2CF449A41E7BFE2C00FD7595 /* NavigationTest.swift */,
 				C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */,
 				2C3406C71E719F00000FD889 /* SettingsTest.swift */,
@@ -2523,15 +2509,6 @@
 			path = Neeva;
 			sourceTree = "<group>";
 		};
-		C9E448C2265D557300651DCB /* General */ = {
-			isa = PBXGroup;
-			children = (
-				C98E405A2658547A003AC0E2 /* GeneralSettingsSection.swift */,
-				C9E448C0265D555600651DCB /* MailAppSetting.swift */,
-			);
-			path = General;
-			sourceTree = "<group>";
-		};
 		C9F49CBE266FEF4600F3408A /* Privacy */ = {
 			isa = PBXGroup;
 			children = (
@@ -2761,8 +2738,6 @@
 				0BF0DB931A8545800039F300 /* LegacyURLBarView.swift */,
 				D3C3696D1CC6B78800348A61 /* LocalRequestHelper.swift */,
 				0BB5B30A1AC0AD1F0052877D /* LoginsHelper.swift */,
-				7482205B1DBAB56300EEEA72 /* MailProviders.swift */,
-				744ED5601DBFEB8D00A2B5BE /* MailtoLinkHandler.swift */,
 				D0C95E35200FDC5400E4E51C /* MetadataParserHelper.swift */,
 				F072DD3725E935B4006C2665 /* NeevaSearchProvider.swift */,
 				EBB8950B2193994A00EB91A0 /* NeevaTabContentBlocker.swift */,
@@ -3158,7 +3133,6 @@
 				F84B22431A09165600AAB793 /* Info.plist */,
 				7B2142FC1E5E055000CDD3FC /* InfoPlist.strings */,
 				C9C18E6226559B9C004710CD /* Logging */,
-				74821FFD1DB6D3AC00EEEA72 /* MailSchemes.plist */,
 				E69DB0B91E97E301008A67E6 /* Telemetry */,
 				E65075551E37F714006961AC /* Utils */,
 			);
@@ -3964,7 +3938,6 @@
 				EBC9D38722D4D56F0011D881 /* disconnect-block-cookies-content.json in Resources */,
 				4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */,
 				D30684F11C84F12A002D8D82 /* SearchPlugins in Resources */,
-				74821FFE1DB6D3AC00EEEA72 /* MailSchemes.plist in Resources */,
 				EBC9D38822D4D56F0011D881 /* disconnect-block-cookies-social.json in Resources */,
 				D308EE561CBF0BF5006843F2 /* CertError.css in Resources */,
 				C8399D9122DE5E5200EFA5CA /* disconnect-block-advertising.json in Resources */,
@@ -4340,7 +4313,6 @@
 				3BF4B8E91D38497A00493393 /* BaseTestCase.swift in Sources */,
 				3D9CAA1C1EFCD655002434DD /* ClipBoardTests.swift in Sources */,
 				C850CD58269A00C40096F122 /* TabMenuTests.swift in Sources */,
-				2C28F96C201B2D4C00ABA8A5 /* MailAppSettingsTests.swift in Sources */,
 				664825F0268FD106000E7F6A /* XCUIElementExtension.swift in Sources */,
 				39EB469A1E26DDB4006346E8 /* FxScreenGraph.swift in Sources */,
 				2CC1B3F01E9B861400814EEC /* DomainAutocompleteTest.swift in Sources */,
@@ -4492,7 +4464,6 @@
 				C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */,
 				C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */,
 				0B62EFD21AD63CD100ACB9CD /* Clearables.swift in Sources */,
-				7482205C1DBAB56300EEEA72 /* MailProviders.swift in Sources */,
 				C40046FA1CF8E0B200B08303 /* BackForwardListAnimator.swift in Sources */,
 				C93EFEE5267150FD000396B5 /* TabLocationView.swift in Sources */,
 				DD31E0FB1B382B520077078A /* TabPrintPageRenderer.swift in Sources */,
@@ -4531,7 +4502,6 @@
 				4A255AB2265C48EC00422839 /* TrackingPreventionUtils.swift in Sources */,
 				4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */,
 				66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */,
-				C9E448C1265D555600651DCB /* MailAppSetting.swift in Sources */,
 				C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */,
 				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
@@ -4607,7 +4577,6 @@
 				C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */,
 				4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */,
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
-				E65075511E37F6D1006961AC /* NSURLExtensionsMailTo.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */,
 				C94D406A2684D442003A6766 /* NeevaSuggestionModel.swift in Sources */,
@@ -4681,7 +4650,6 @@
 				D3972BF31C22412B00035B87 /* ShareExtensionHelper.swift in Sources */,
 				6604922826843975002AC35D /* Intents.intentdefinition in Sources */,
 				F35B8D2D1D6383E9008E3D61 /* SessionRestoreHelper.swift in Sources */,
-				744ED5611DBFEB8D00A2B5BE /* MailtoLinkHandler.swift in Sources */,
 				4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */,
 				C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */,
 				C96AC26726A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift in Sources */,

@@ -395,7 +395,7 @@ extension BrowserViewController: WKNavigationDelegate {
         return false
     }
 
-    // Use for sms and mailto links, which do not show a confirmation before opening.
+    // Use for links, that do not show a confirmation before opening.
     fileprivate func showOverlay(forExternalUrl url: URL, completion: @escaping (Bool) -> ()) {
         tabManager.selectedTab?.stop()
 
@@ -427,17 +427,20 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        // First special case are some schemes that are about Calling. We prompt the user to confirm this action. This
-        // gives us the exact same behaviour as Safari.
-        if ["sms", "tel", "facetime", "facetime-audio"].contains(url.scheme) {
-            if url.scheme == "sms" { // All the other types show a native prompt
-                showOverlay(forExternalUrl: url) { isOk in
-                    guard isOk else { return }
-                    UIApplication.shared.open(url, options: [:])
-                }
-            } else {
+        // Prompt the user before redirecting to an external app.
+        if ["sms", "mailto"].contains(url.scheme) {
+            showOverlay(forExternalUrl: url) { isOk in
+                guard isOk else { return }
                 UIApplication.shared.open(url, options: [:])
             }
+
+            decisionHandler(.cancel)
+            return
+        }
+
+        // These schemes always show a system prompt, so we don’t need to show our own
+        if ["tel", "facetime", "facetime-audio"].contains(url.scheme) {
+            UIApplication.shared.open(url, options: [:])
 
             decisionHandler(.cancel)
             return
@@ -470,22 +473,6 @@ extension BrowserViewController: WKNavigationDelegate {
         if isStoreURL(url) {
             decisionHandler(.cancel)
             showOverlay(forExternalUrl: url) { _ in }
-        }
-
-        // Handles custom mailto URL schemes.
-        if url.scheme == "mailto" {
-            showOverlay(forExternalUrl: url) { isOk in
-                guard isOk else { return }
-
-                if let mailToMetadata = url.mailToMetadata(), let mailScheme = Defaults[.mailToOption], mailScheme != "mailto" {
-                    self.mailtoLinkHandler.launchMailClientForScheme(mailScheme, metadata: mailToMetadata, defaultMailtoURL: url)
-                } else {
-                    UIApplication.shared.open(url, options: [:])
-                }
-            }
-
-            decisionHandler(.cancel)
-            return
         }
 
         // https://blog.mozilla.org/security/2017/11/27/blocking-top-level-navigations-data-urls-firefox-59/
