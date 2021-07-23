@@ -29,12 +29,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             startGeigerCounter()
         }
 
+        self.scene(scene, openURLContexts: connectionOptions.urlContexts)
+
         DispatchQueue.main.async { [self] in
             if let userActivity = connectionOptions.userActivities.first {
                 _ = continueSiriIntent(continue: userActivity)
             }
-
-            self.scene(scene, openURLContexts: connectionOptions.urlContexts)
 
             if let shortcutItem = connectionOptions.shortcutItem {
                 handleShortcut(shortcutItem: shortcutItem)
