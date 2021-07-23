@@ -27,7 +27,7 @@ class KeyboardShortcutTests: KIFTestCase {
         }
 
         tester.waitForView(withAccessibilityLabel: "Show Tabs")
-        tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 3)
+        tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
 
         tester.waitForView(withAccessibilityLabel: "New Tab")
         tester.tapView(withAccessibilityLabel: "New Tab")

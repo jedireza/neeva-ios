@@ -11,7 +11,7 @@ class TabMenuTests: BaseTestCase {
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        app.buttons["Show Tabs"].press(forDuration: 3)
+        app.buttons["Show Tabs"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Close Tab"], timeout: 3)
         app.buttons["Close Tab"].tap()
@@ -30,7 +30,7 @@ class TabMenuTests: BaseTestCase {
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        app.buttons["Show Tabs"].press(forDuration: 3)
+        app.buttons["Show Tabs"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
         app.buttons["Close All Tabs"].tap()
@@ -55,7 +55,7 @@ class TabMenuTests: BaseTestCase {
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        app.buttons["Show Tabs"].press(forDuration: 3)
+        app.buttons["Show Tabs"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Close Tab"], timeout: 3)
         app.buttons["Close Tab"].tap()
@@ -76,8 +76,7 @@ class TabMenuTests: BaseTestCase {
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        app.buttons["Show Tabs"].press(forDuration: 3)
-
+        app.buttons["Show Tabs"].press(forDuration: 1)
         waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
         app.buttons["Close All Tabs"].tap()
 
@@ -105,7 +104,7 @@ class TabMenuTests: BaseTestCase {
         navigator.goto(TabTray)
 
         waitForExistence(app.buttons["Done"], timeout: 3)
-        app.buttons["Done"].press(forDuration: 3)
+        app.buttons["Done"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
         app.buttons["Close All Tabs"].tap()
@@ -131,7 +130,7 @@ class TabMenuTests: BaseTestCase {
         navigator.goto(TabTray)
 
         waitForExistence(app.buttons["Done"], timeout: 3)
-        app.buttons["Done"].press(forDuration: 3)
+        app.buttons["Done"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
         app.buttons["Close All Tabs"].tap()

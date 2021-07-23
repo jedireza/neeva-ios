@@ -47,7 +47,7 @@ class ClipBoardTests: BaseTestCase {
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
 
         app.buttons["Address Bar"].tap()
-        app.textFields["address"].press(forDuration: 3)
+        app.textFields["address"].press(forDuration: 1)
         app.menuItems["Paste & Go"].tap()
 
         // causing tests to fail in CirceCI works locally
@@ -66,7 +66,7 @@ class ClipBoardTests: BaseTestCase {
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         navigator.createNewTab()
         waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
-        app.buttons["Address Bar"].press(forDuration: 3)
+        app.buttons["Address Bar"].press(forDuration: 1)
         waitForExistence(app.tables["Context Menu"])
         app.cells["doc.on.clipboard"].tap()
         waitForExistence(app.buttons["Address Bar"])

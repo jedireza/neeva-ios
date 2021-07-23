@@ -54,7 +54,7 @@ class TabTraySearchTabsTests: BaseTestCase {
         navigator.openURL(firstURL)
         navigator.goto(TabTray)
         waitForExistence(app.textFields["Search Tabs"])
-        app.collectionViews.cells["Internet for people, not profit — Mozilla"].press(forDuration: 2, thenDragTo: app.textFields["Search Tabs"])
+        app.collectionViews.cells["Internet for people, not profit — Mozilla"].press(forDuration: 1, thenDragTo: app.textFields["Search Tabs"])
         waitForValueContains(app.textFields["Search Tabs"], value: "mozilla.org")
         let searchValue = app.textFields["Search Tabs"].value
         XCTAssertEqual(searchValue as! String, fullFirstURL)

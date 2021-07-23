@@ -456,7 +456,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             if isTablet {
                 app.buttons["TabToolbar.libraryButton"].tap()
             } else {
-                historyListElement.press(forDuration: 2, thenDragTo: app.buttons["LibraryPanels.History"])
+                historyListElement.press(forDuration: 1, thenDragTo: app.buttons["LibraryPanels.History"])
             }
         }
     }
@@ -468,7 +468,7 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
             if isTablet {
                 app.buttons["TabToolbar.libraryButton"].tap()
             } else {
-                downloadsElement.press(forDuration: 2, thenDragTo: app.buttons["LibraryPanels.Downloads"])
+                downloadsElement.press(forDuration: 1, thenDragTo: app.buttons["LibraryPanels.Downloads"])
             }
         }
     }

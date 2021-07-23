@@ -104,7 +104,7 @@ class DownloadFilesTests: BaseTestCase {
 
         waitForExistence(app.tables["DownloadsTable"])
         //Comenting out until share sheet can be managed with automated tests issue #5477
-        //app.tables.cells.staticTexts[testFileName].press(forDuration: 2)
+        //app.tables.cells.staticTexts[testFileName].press(forDuration: 1)
         //waitForExistence(app.otherElements["ActivityListView"])
         //if iPad() {
         //    app.otherElements["PopoverDismissRegion"].tap()

@@ -227,7 +227,7 @@ class BrowserUtils {
     }
 
     class func closeAllTabs(_ tester: KIFUITestActor) {
-        tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 3)
+        tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
         
         if tester.viewExistsWithLabel("Close All Tabs") {
             tester.tapView(withAccessibilityLabel: "Close All Tabs")

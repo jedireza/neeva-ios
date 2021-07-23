@@ -85,7 +85,7 @@ class NavigationTest: BaseTestCase {
     func testLongPressLinkOptions() {
         navigator.openURL(path(forTestPage: "test-example.html"))
         waitForExistence(app.webViews.links[website_2["link"]!], timeout: 30)
-        app.webViews.links[website_2["link"]!].press(forDuration: 2)
+        app.webViews.links[website_2["link"]!].press(forDuration: 1)
         waitForExistence(app.otherElements.collectionViews.element(boundBy: 0), timeout: 5)
 
         XCTAssertTrue(app.buttons["Open in New Tab"].exists, "The option is not shown")
@@ -102,7 +102,7 @@ class NavigationTest: BaseTestCase {
 
         navigator.openURL(path(forTestPage: "test-example.html"))
         waitForExistence(app.webViews.links[website_2["link"]!], timeout: 5)
-        app.webViews.links[website_2["link"]!].press(forDuration: 2)
+        app.webViews.links[website_2["link"]!].press(forDuration: 1)
         waitForExistence(app.collectionViews.staticTexts[website_2["moreLinkLongPressUrl"]!], timeout: 3)
         XCTAssertFalse(app.buttons["Open in New Tab"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Open in New Incognito Tab"].exists, "The option is not shown")
@@ -112,7 +112,7 @@ class NavigationTest: BaseTestCase {
     func testCopyLink() {
         longPressLinkOptions(optionSelected: "Copy Link")
         navigator.goto(NewTabScreen)
-        app.buttons["Address Bar"].press(forDuration: 2)
+        app.buttons["Address Bar"].press(forDuration: 1)
 
         app.menuItems["Paste & Go"].tap()
         waitUntilPageLoad()
@@ -125,7 +125,7 @@ class NavigationTest: BaseTestCase {
 
         longPressLinkOptions(optionSelected: "Copy Link")
         navigator.goto(NewTabScreen)
-        app.buttons["Address Bar"].press(forDuration: 2)
+        app.buttons["Address Bar"].press(forDuration: 1)
 
         app.menuItems["Paste & Go"].tap()
         waitUntilPageLoad()
@@ -166,7 +166,7 @@ class NavigationTest: BaseTestCase {
         
         app.textFields["address"].typeText("\n")
         waitUntilPageLoad()
-        app.buttons["Address Bar"].press(forDuration:3)
+        app.buttons["Address Bar"].press(forDuration: 1)
         app.menuItems["Copy"].tap()
 
         app.buttons["Address Bar"].tap()

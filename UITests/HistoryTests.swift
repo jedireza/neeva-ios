@@ -104,7 +104,7 @@ class HistoryTests: KIFTestCase {
         let firstIndexPath = IndexPath(row: 0, section: 1)
         let row = tester().waitForCell(at: firstIndexPath, inTableViewWithAccessibilityIdentifier: "History List")
         tester().waitForAnimationsToFinish()
-        tester().longPressView(withAccessibilityLabel: row?.accessibilityLabel, value: row?.accessibilityValue, duration: 3)
+        tester().longPressView(withAccessibilityLabel: row?.accessibilityLabel, value: row?.accessibilityValue, duration: 1)
 
         // The history list still exists
         tester().waitForView(withAccessibilityIdentifier: "History List")

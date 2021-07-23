@@ -153,7 +153,7 @@ class FindInPageTests: BaseTestCase {
         waitForExistence(app.webViews.staticTexts[textToFind])
         let stringToFind = app.webViews.staticTexts.matching(identifier: textToFind)
         let firstStringToFind = stringToFind.element(boundBy: 0)
-        firstStringToFind.press(forDuration: 3)
+        firstStringToFind.press(forDuration: 1)
         waitForExistence(app.menuItems["Copy"], timeout: 5)
         // Find in page is correctly launched, bar with text pre-filled and
         // the buttons to find next and previous

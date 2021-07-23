@@ -27,7 +27,7 @@ fileprivate extension BaseTestCase {
     }
 
     func dragAndDrop(dragElement: XCUIElement, dropOnElement: XCUIElement) {
-        dragElement.press(forDuration: 2, thenDragTo: dropOnElement)
+        dragElement.press(forDuration: 1, thenDragTo: dropOnElement)
     }
 
     func checkTabsOrder(dragAndDropTab: Bool, firstTab: String, secondTab: String) {

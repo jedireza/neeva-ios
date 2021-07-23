@@ -99,7 +99,7 @@ class BaseTestCase: XCTestCase {
     func loadWebPage(_ url: String, waitForLoadToFinish: Bool = true, file: String = #file, line: UInt = #line) {
         let app = XCUIApplication()
         UIPasteboard.general.string = url
-        app.buttons["Address Bar"].press(forDuration: 2.0)
+        app.buttons["Address Bar"].press(forDuration: 1)
         app.tables["Context Menu"].cells["doc.on.clipboard"].firstMatch.tap()
 
         if waitForLoadToFinish {
@@ -137,7 +137,7 @@ class BaseTestCase: XCTestCase {
     }
 
     public func closeAllTabs() {
-        app.buttons["Show Tabs"].press(forDuration: 3)
+        app.buttons["Show Tabs"].press(forDuration: 1)
 
         let closeAllTabButton = app.buttons["Close All Tabs"]
         if closeAllTabButton.exists {

@@ -85,7 +85,7 @@ class HistoryTests: BaseTestCase {
     private func showRecentlyClosedTabs() {
         navigator.nowAt(NewTabScreen)
         navigator.goto(TabTray)
-        app.buttons["Add Tab"].press(forDuration: 4)
+        app.buttons["Add Tab"].press(forDuration: 1)
     }
 
     func testRecentlyClosedOptionAvailable() {
