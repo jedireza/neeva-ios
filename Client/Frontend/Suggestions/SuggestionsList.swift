@@ -5,9 +5,8 @@ import Storage
 import Shared
 
 struct SuggestionsList: View {
-    static let placeholderSite = Site(url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
+    static let placeholderNavSuggestion = NavSuggestion(url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
 
-    @EnvironmentObject private var historyModel: HistorySuggestionModel
     @EnvironmentObject private var neevaModel: NeevaSuggestionModel
     @Environment(\.isIncognito) private var isIncognito
 

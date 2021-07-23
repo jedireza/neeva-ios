@@ -23,6 +23,7 @@ struct SuggestionsView: View {
     // not an ObservedObject because we pass it directly to .environmentObject without reading any mutable properties
     let historyModel: HistorySuggestionModel
     @ObservedObject var neevaModel: NeevaSuggestionModel
+    let navModel: NavSuggestionModel
     let getKeyboardHeight: () -> CGFloat
     let onOpenURL: (URL) -> ()
     let setSearchInput: (String) -> ()
@@ -46,6 +47,7 @@ struct SuggestionsView: View {
                     SuggestionsList()
                         .environmentObject(historyModel)
                         .environmentObject(neevaModel)
+                        .environmentObject(navModel)
                 }
                 Spacer()
                     .frame(height: getKeyboardHeight())
@@ -63,14 +65,15 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
 
     fileprivate let historyModel: HistorySuggestionModel
     fileprivate let neevaModel: NeevaSuggestionModel
-
+    fileprivate let navModel: NavSuggestionModel
     fileprivate let profile: Profile
 
     init(profile: Profile, historyModel: HistorySuggestionModel, neevaModel: NeevaSuggestionModel) {
         self.profile = profile
         self.historyModel = historyModel
         self.neevaModel = neevaModel
-        super.init(rootView: SuggestionsView(historyModel: historyModel, neevaModel: neevaModel, getKeyboardHeight: { 0 }, onOpenURL: { _ in }, setSearchInput: { _ in }))
+        self.navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
+        super.init(rootView: SuggestionsView(historyModel: historyModel, neevaModel: neevaModel, navModel: navModel, getKeyboardHeight: { 0 }, onOpenURL: { _ in }, setSearchInput: { _ in }))
         self.render()
     }
 
@@ -82,6 +85,7 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
         rootView = SuggestionsView(
             historyModel: historyModel,
             neevaModel: neevaModel,
+            navModel: navModel,
             getKeyboardHeight: { [weak self] in
                 if let view = self?.view, let currentState = KeyboardHelper.defaultHelper.currentState {
                     return currentState.intersectionHeightForView(view)

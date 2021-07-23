@@ -16,8 +16,8 @@ extension TopSuggestionsList: Inspectable { }
 extension SuggestionChipView: Inspectable { }
 extension SearchSuggestionView: Inspectable { }
 extension QuerySuggestionView: Inspectable { }
+extension NavSuggestionView: Inspectable { }
 extension URLSuggestionView: Inspectable { }
-extension HistorySuggestionView: Inspectable { }
 extension SuggestionView: Inspectable { }
 extension Symbol: Inspectable { }
 extension BoldSpanView: Inspectable { }
@@ -40,14 +40,15 @@ class SuggestionViewsTests: XCTestCase {
         boldSpan: [.init(startInclusive: 13, endExclusive: 29)]
     )
     static let sampleURL = Suggestion.url(sampleURLSuggestion)
-    static let sampleNavSuggestion = SuggestionsQuery.Data.Suggest.UrlSuggestion(
+    static let sampleNavUrlSuggestion = SuggestionsQuery.Data.Suggest.UrlSuggestion(
         icon: .init(labels: [""]),
         suggestedUrl: "https://neeva.com",
         title: "neeva.com",
         subtitle: "Neeva Search",
         boldSpan: [.init(startInclusive: 0, endExclusive: 0)]
     )
-    static let sampleNav = Suggestion.url(sampleNavSuggestion)
+    static let sampleNav = Suggestion.url(sampleNavUrlSuggestion)
+    static let sampleNavSuggestion = NavSuggestion(url: "https://neeva.com", title: "Neeva")
     static let sampleSite = Site(url: "https://neeva.com", title: "Neeva")
 
     func testQuerySuggestion() throws {
@@ -90,7 +91,7 @@ class SuggestionViewsTests: XCTestCase {
         let nav = try suggestionView.inspect().find(URLSuggestionView.self).actualView()
         XCTAssertNotNil(nav)
         let navSuggestion = URLSuggestionView(suggestion:
-                                    SuggestionViewsTests.sampleNavSuggestion).environmentObject(model)
+                                    SuggestionViewsTests.sampleNavUrlSuggestion).environmentObject(model)
         let hStack = try navSuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
         let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
@@ -103,7 +104,8 @@ class SuggestionViewsTests: XCTestCase {
     func testHistorySuggestion() throws {
         let neevaModel = NeevaSuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
-        let historySuggestion = SuggestionsList().environmentObject(neevaModel).environmentObject(historyModel)
+        let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
+        let historySuggestion = SuggestionsList().environmentObject(neevaModel).environmentObject(historyModel).environmentObject(navModel)
         let hStack = try historySuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
         let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
@@ -118,8 +120,10 @@ class SuggestionViewsTests: XCTestCase {
                                               topSuggestions: [SuggestionViewsTests.sampleNav],
                                               chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
+        let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
         let suggestionList = SuggestionsList().environmentObject(historyModel)
             .environmentObject(neevaModel)
+            .environmentObject(navModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
         XCTAssertEqual(3, hStacks.count)
@@ -142,23 +146,27 @@ class SuggestionViewsTests: XCTestCase {
         let neevaModel = NeevaSuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
 
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
+        let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
         let suggestionList = SuggestionsList().environmentObject(historyModel)
             .environmentObject(neevaModel)
+            .environmentObject(navModel)
         let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
         XCTAssertNotNil(list)
 
         // We should be showing a placeholder with 1 actual suggestion, and 6 placeholders:
         // 1 history suggestion and 5 query suggestions
         XCTAssertEqual(2, list.count)
-        XCTAssertEqual(2, list.findAll(HistorySuggestionView.self).count)
+        XCTAssertEqual(2, list.findAll(NavSuggestionView.self).count)
         XCTAssertEqual(0, list.findAll(QuerySuggestionView.self).count)
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {
         let neevaModel = NeevaSuggestionModel(isIncognito: true, previewLensBang: nil)
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
+        let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
         let suggestionList = SuggestionsList().environmentObject(historyModel)
             .environmentObject(neevaModel)
+            .environmentObject(navModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
 
@@ -169,5 +177,36 @@ class SuggestionViewsTests: XCTestCase {
         XCTAssertEqual("Neeva", label0)
         let secondaryLabel0 = try labels[1].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel0)
+    }
+
+    func testSuggestionsListWithDuplicateNavSuggestions() throws {
+        let navUrlSuggestion = SuggestionsQuery.Data.Suggest.UrlSuggestion(
+            icon: .init(labels: [""]),
+            suggestedUrl: "https://google.com/",
+            title: "google.com",
+            subtitle: "Google Search",
+            boldSpan: [.init(startInclusive: 0, endExclusive: 0)]
+        )
+        let suggestion = Suggestion.url(navUrlSuggestion)
+        let site = Site(url: "https://neeva.com/dup", title: "Neeva")
+        let duplicateSite1 = Site(url: "https://neeva.com/dup", title: "Neeva")
+        let duplicateSite2 = Site(url: "https://neeva.com/dup?q=abc", title: "Neeva")
+        let siteB = Site(url: "https://neeva.com/signin", title: "Neeva")
+
+        let neevaModel = NeevaSuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
+        neevaModel.navSuggestions = [SuggestionViewsTests.sampleNav, suggestion]
+        let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB])
+        let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
+        let suggestionList = SuggestionsList().environmentObject(historyModel)
+            .environmentObject(neevaModel)
+            .environmentObject(navModel)
+        let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
+        XCTAssertNotNil(list)
+
+        // We should be showing a placeholder with 1 actual suggestion, and 6 placeholders:
+        // 1 history suggestion and 5 query suggestions
+        XCTAssertEqual(2, list.count)
+        XCTAssertEqual(4, list.findAll(NavSuggestionView.self).count)
+        XCTAssertEqual(0, list.findAll(QuerySuggestionView.self).count)
     }
 }

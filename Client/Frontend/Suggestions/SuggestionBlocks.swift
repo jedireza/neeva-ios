@@ -102,26 +102,12 @@ struct UrlSuggestionsList: View {
 }
 
 struct NavSuggestionsList: View {
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
-    @EnvironmentObject private var historyModel: HistorySuggestionModel
+    @EnvironmentObject private var navModel: NavSuggestionModel
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
-        SuggestionsDivider(height: isIncognito ?
-                            SuggestionBlockUX.TopSpacing : SuggestionBlockUX.SeparatorSpacing)
-        if let recentHistory = historyModel.recentSites, !recentHistory.isEmpty {
-            ForEach(recentHistory) { site in
-                HistorySuggestionView(site: site)
-            }
-        }
-        ForEach(neevaModel.navSuggestions) { suggestion in
-            SearchSuggestionView(suggestion)
-                .environmentObject(neevaModel)
-        }.padding(.top, SuggestionBlockUX.BlockVerticalPadding)
-        if let history = historyModel.sites, !history.isEmpty {
-            ForEach(history) { site in
-                HistorySuggestionView(site: site)
-            }
+        ForEach(navModel.combinedSuggestions) { suggestion in
+            NavSuggestionView(suggestion: suggestion)
         }
     }
 }
@@ -139,7 +125,7 @@ struct PlaceholderSuggestions: View {
 
     var body: some View {
         SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
-        HistorySuggestionView(site: SuggestionsList.placeholderSite)
+        NavSuggestionView(suggestion: SuggestionsList.placeholderNavSuggestion)
             .redacted(reason: .placeholder)
             .disabled(true).padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
         SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
