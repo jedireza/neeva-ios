@@ -70,7 +70,31 @@ class BrowserViewController: UIViewController {
         return host
     }()
     var webViewContainer: UIView!
-    var legacyURLBar: LegacyURLBarView!
+    var urlBar: URLBarWrapper!
+    enum URLBarWrapper {
+        case legacy(LegacyURLBarView)
+        case modern(URLBarHost)
+
+        var shared: CommonURLBar {
+            switch self {
+            case .legacy(let urlBar): return urlBar
+            case .modern(let urlBar): return urlBar
+            }
+        }
+        var view: UIView {
+            switch self {
+            case .legacy(let urlBar): return urlBar
+            case .modern(let urlBar): return urlBar.view
+            }
+        }
+
+        var legacy: LegacyURLBarView? {
+            switch self {
+            case .legacy(let urlBar): return urlBar
+            case .modern: return nil
+            }
+        }
+    }
     var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
     var readerModeBar: ReaderModeBarView?
     var readerModeCache: ReaderModeCache
@@ -173,10 +197,11 @@ class BrowserViewController: UIViewController {
             }
 
             if self.isNeevaMenuSheetOpen {
-                if !(self.legacyURLBar.toolbarIsShowing && self.isPreviousOrientationLandscape) {
-                    if self.legacyURLBar.toolbarIsShowing {
+                if !(self.urlBar.shared.model.showToolbarItems && self.isPreviousOrientationLandscape) {
+                    if self.urlBar.shared.model.showToolbarItems {
                         self.hideNeevaMenuSheet()
-                        self.legacyURLBar.didClickNeevaMenu()
+                        // TODO: update for new url bar
+                        self.urlBar.legacy?.didClickNeevaMenu()
                     } else {
                         self.isRotateSwitchDismiss = true
                         self.popOverNeevaMenuViewController?.dismiss(animated: true, completion: nil)
@@ -202,12 +227,12 @@ class BrowserViewController: UIViewController {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        guard legacyURLBar != nil else {
+        guard urlBar != nil else {
             return .default
         }
         
         // top-tabs are always dark, so special-case this to light
-        if legacyURLBar.topTabsIsShowing {
+        if urlBar.legacy?.topTabsIsShowing ?? false {
             return .lightContent
         } else {
             return .default
@@ -238,9 +263,11 @@ class BrowserViewController: UIViewController {
     func updateToolbarStateForTraitCollection(_ newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator? = nil) {
         let showToolbar = shouldShowFooterForTraitCollection(newCollection)
         let showTopTabs = shouldShowTopTabsForTraitCollection(newCollection)
-        
-        legacyURLBar.topTabsIsShowing = showTopTabs
-        legacyURLBar.setShowToolbar(!showToolbar)
+
+        urlBar.shared.model.showToolbarItems = !showToolbar
+        if case .legacy(let urlBar) = self.urlBar {
+            urlBar.topTabsIsShowing = showTopTabs
+        }
 
         toolbar?.willMove(toParent: nil)
         toolbar?.view.removeFromSuperview()
@@ -306,7 +333,7 @@ class BrowserViewController: UIViewController {
         coordinator.animate(alongsideTransition: { context in
             self.scrollController.showToolbars(animated: false)
             if self.isViewLoaded {
-                self.statusBarOverlay.backgroundColor = self.shouldShowTopTabsForTraitCollection(self.traitCollection) ? UIColor.Photon.Grey80 : self.legacyURLBar.backgroundColor
+                self.statusBarOverlay.backgroundColor = self.shouldShowTopTabsForTraitCollection(self.traitCollection) ? UIColor.Photon.Grey80 : self.urlBar.legacy?.backgroundColor ?? .systemPink
                 self.setNeedsStatusBarAppearanceUpdate()
             }
             }, completion: nil)
@@ -343,7 +370,7 @@ class BrowserViewController: UIViewController {
         view.bringSubviewToFront(webViewContainerBackdrop)
         webViewContainerBackdrop.alpha = 1
         webViewContainer.alpha = 0
-        legacyURLBar.locationContainer.alpha = 0
+        urlBar?.legacy?.locationContainer.alpha = 0
         zeroQueryViewController?.view.alpha = 0
         topTabsViewController?.switchForegroundStatus(isInForeground: false)
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
@@ -355,7 +382,7 @@ class BrowserViewController: UIViewController {
         // as part of a private mode tab
         UIView.animate(withDuration: 0.2, delay: 0, options: UIView.AnimationOptions(), animations: {
             self.webViewContainer.alpha = 1
-            self.legacyURLBar.locationContainer.alpha = 1
+            self.urlBar?.legacy?.locationContainer.alpha = 1
             self.zeroQueryViewController?.view.alpha = 1
             self.topTabsViewController?.switchForegroundStatus(isInForeground: true)
             self.presentedViewController?.popoverPresentationController?.containerView?.alpha = 1
@@ -394,18 +421,30 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        legacyURLBar = LegacyURLBarView(profile: profile, toolbarModel: toolbarModel,
-                                        gridModel: FeatureFlag[.cardGrid] ? self.cardGridViewController.gridModel : GridModel(),
-                                        trackingStatsModel: TrackingStatsViewModel(tabManager: tabManager))
-        legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
-        legacyURLBar.delegate = self
-        legacyURLBar.tabToolbarDelegate = self
+        let gridModel = FeatureFlag[.cardGrid] ? self.cardGridViewController.gridModel : GridModel()
+        let trackingStatsModel = TrackingStatsViewModel(tabManager: tabManager)
+        if FeatureFlag[.newTopBar] {
+            let queryModel = SearchQueryModel()
+            let host = URLBarHost(historySuggestionModel: HistorySuggestionModel(profile: profile, queryModel: queryModel), neevaSuggestionModel: NeevaSuggestionModel(isIncognito: false, queryModel: queryModel), queryModel: queryModel, gridModel: gridModel, trackingStatsViewModel: trackingStatsModel, delegate: self)
+            addChild(host)
+            urlBarTopTabsContainer.addSubview(host.view)
+            host.didMove(toParent: self)
+            self.urlBar = .modern(host)
+        } else {
+            let legacyURLBar = LegacyURLBarView(profile: profile, toolbarModel: toolbarModel,
+                                                gridModel: gridModel,
+                                                trackingStatsModel: trackingStatsModel)
+            legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
+            legacyURLBar.delegate = self
+            legacyURLBar.tabToolbarDelegate = self
+            urlBarTopTabsContainer.addSubview(legacyURLBar)
+            self.urlBar = .legacy(legacyURLBar)
+            addChild(legacyURLBar.locationHost)
+            legacyURLBar.locationHost.didMove(toParent: self)
+        }
         header = urlBarTopTabsContainer
-        urlBarTopTabsContainer.addSubview(legacyURLBar)
         urlBarTopTabsContainer.addSubview(topTabsContainer)
         view.addSubview(header)
-        addChild(legacyURLBar.locationHost)
-        legacyURLBar.locationHost.didMove(toParent: self)
 
         view.addSubview(alertStackView)
         footer = UIView()
@@ -416,7 +455,7 @@ class BrowserViewController: UIViewController {
         clipboardBarDisplayHandler = ClipboardBarDisplayHandler(tabManager: tabManager)
         clipboardBarDisplayHandler?.bvc = self
 
-        scrollController.urlBar = legacyURLBar
+        scrollController.urlBar = urlBar
         scrollController.readerModeBar = readerModeBar
         scrollController.header = header
         scrollController.footer = footer
@@ -431,7 +470,7 @@ class BrowserViewController: UIViewController {
         let dropInteraction = UIDropInteraction(delegate: self)
         view.addInteraction(dropInteraction)
 
-        statusBarOverlay.backgroundColor = shouldShowTopTabsForTraitCollection(traitCollection) ? UIColor.Photon.Grey80 : legacyURLBar.backgroundColor
+        statusBarOverlay.backgroundColor = shouldShowTopTabsForTraitCollection(traitCollection) ? UIColor.Photon.Grey80 : urlBar?.legacy?.backgroundColor ?? .systemPink
         setNeedsStatusBarAppearanceUpdate()
 
         for tab in tabManager.tabs {
@@ -450,9 +489,9 @@ class BrowserViewController: UIViewController {
             make.top.equalTo(urlBarTopTabsContainer)
         }
 
-        legacyURLBar.snp.makeConstraints { make in
+        urlBar.view.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalTo(urlBarTopTabsContainer)
-            if legacyURLBar.toolbarIsShowing {
+            if urlBar.shared.model.showToolbarItems {
                 make.height.equalTo(UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
             } else {
                 make.height.equalTo(UIConstants.TopToolbarHeight)
@@ -632,7 +671,7 @@ class BrowserViewController: UIViewController {
 
     func resetBrowserChrome() {
         // animate and reset transform for tab chrome
-        legacyURLBar.updateAlphaForSubviews(1)
+        urlBar?.legacy?.updateAlphaForSubviews(1)
         footer.alpha = 1
 
         [header, footer, readerModeBar].forEach { view in
@@ -705,7 +744,7 @@ class BrowserViewController: UIViewController {
             make.leading.trailing.equalTo(self.view)
         }
 
-        legacyURLBar.setNeedsUpdateConstraints()
+        urlBar.view.setNeedsUpdateConstraints()
 
         // Remake constraints even if we're already showing the zero query controller.
         // The zero query controller may change sizes if we tap the URL bar while it's open.
@@ -713,7 +752,7 @@ class BrowserViewController: UIViewController {
             if UIConstants.enableBottomURLBar {
                 make.top.equalTo(self.view.safeArea.top)
             } else {
-                make.top.equalTo(self.legacyURLBar.snp.bottom)
+                make.top.equalTo(urlBar.view.snp.bottom)
             }
             make.left.right.equalTo(self.view)
             if UIConstants.enableBottomURLBar {
@@ -742,7 +781,7 @@ class BrowserViewController: UIViewController {
             cardGridViewController.view.snp.remakeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview()
                 if shouldShowFooterForTraitCollection(traitCollection) {
-                    make.top.equalTo(legacyURLBar.snp.bottom)
+                    make.top.equalTo(urlBar.view.snp.bottom)
                 } else {
                     make.top.equalToSuperview()
                 }
@@ -803,7 +842,7 @@ class BrowserViewController: UIViewController {
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
         let isZeroQueryURL = url.flatMap { InternalURL($0)?.isZeroQueryURL } ?? false
-        if !legacyURLBar.inOverlayMode {
+        if !urlBar.shared.model.isEditing {
             guard let url = url else {
                 hideZeroQuery()
                 return
@@ -868,7 +907,7 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        let searchController = SearchViewController(profile: profile, historyModel: legacyURLBar.historySuggestionModel, neevaModel: legacyURLBar.neevaSuggestionModel)
+        let searchController = SearchViewController(profile: profile, historyModel: urlBar.shared.historySuggestionModel, neevaModel: urlBar.shared.neevaSuggestionModel)
         searchController.searchDelegate = self
 
         self.searchController = searchController
@@ -888,7 +927,7 @@ class BrowserViewController: UIViewController {
                 make.top.equalTo(self.view.safeArea.top)
                 make.bottom.equalTo(self.header.snp.top)
             } else {
-                make.top.equalTo(self.legacyURLBar.snp.bottom)
+                make.top.equalTo(self.urlBar.view.snp.bottom)
                 make.bottom.equalTo(self.view)
             }
             make.left.right.equalTo(self.view)
@@ -915,8 +954,8 @@ class BrowserViewController: UIViewController {
     }
     
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
-        legacyURLBar.model.url = url
-        legacyURLBar.model.setEditing(to: false)
+        urlBar.shared.model.url = url
+        urlBar.shared.model.setEditing(to: false)
 
         if let nav = tab.loadRequest(URLRequest(url: url)) {
             self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
@@ -924,8 +963,8 @@ class BrowserViewController: UIViewController {
     }
     
     override func accessibilityPerformEscape() -> Bool {
-        if legacyURLBar.model.isEditing {
-            legacyURLBar.model.setEditing(to: false)
+        if urlBar.shared.model.isEditing {
+            urlBar.shared.model.setEditing(to: false)
             return true
         } else if let selectedTab = tabManager.selectedTab, selectedTab.canGoBack {
             selectedTab.goBack()
@@ -954,11 +993,11 @@ class BrowserViewController: UIViewController {
     /// Updates the URL bar text and button states.
     /// Call this whenever the page URL changes.
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
-        legacyURLBar.model.url = tab.url?.displayURL
-        legacyURLBar.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
+        urlBar.shared.model.url = tab.url?.displayURL
+        urlBar.shared.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
 
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
-        legacyURLBar.model.canShare = isPage
+        urlBar.shared.model.canShare = isPage
         toolbarModel.isPage = isPage
     }
 
@@ -1023,7 +1062,7 @@ class BrowserViewController: UIViewController {
         tabManager.select(newTab)
 
         if focusLocationField {
-            legacyURLBar.model.setEditing(to: true)
+            urlBar.shared.model.setEditing(to: true)
         }
 
         zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
@@ -1047,8 +1086,8 @@ class BrowserViewController: UIViewController {
         currentViewController.dismiss(animated: true, completion: nil)
         if currentViewController != self {
             _ = self.navigationController?.popViewController(animated: true)
-        } else if legacyURLBar.model.isEditing {
-            legacyURLBar.model.setEditing(to: false)
+        } else if urlBar.shared.model.isEditing {
+            urlBar.shared.model.setEditing(to: false)
         }
     }
 
@@ -1182,8 +1221,8 @@ class BrowserViewController: UIViewController {
 
         if let url = webView.url {
             if tab === tabManager.selectedTab {
-                legacyURLBar.model.isSecure = webView.hasOnlySecureContent
-                legacyURLBar.model.canShare = tab.url?.displayURL?.isWebPage() ?? false
+                urlBar.shared.model.isSecure = webView.hasOnlySecureContent
+                urlBar.shared.model.canShare = tab.url?.displayURL?.isWebPage() ?? false
             }
 
             if (!InternalURL.isValid(url: url) || url.isReaderModeURL), !url.isFileURL {
@@ -1312,9 +1351,9 @@ extension BrowserViewController: TabDelegate {
             .filter { _ in tab === tabManager.selectedTab }
             .sink { [self] estimatedProgress in
                 if let url = webView.url, !InternalURL.isValid(url: url) {
-                    legacyURLBar.updateProgressBar(Float(estimatedProgress))
+                    urlBar.shared.model.estimatedProgress = estimatedProgress
                 } else {
-                    legacyURLBar.hideProgressBar()
+                    urlBar.shared.model.estimatedProgress = nil
                 }
             }
             .store(in: &tab.webViewSubscriptions)
@@ -1492,7 +1531,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
 
         // If we are showing toptabs a user can just use the top tab bar
         // If in overlay mode switching doesn't correctly dismiss the zero query screen
-        guard !topTabsVisible, !legacyURLBar.model.isEditing else {
+        guard !topTabsVisible, !urlBar.shared.model.isEditing else {
             return
         }
 
@@ -1505,8 +1544,8 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 
     func zeroQueryPanel(didEnterQuery query: String) {
-        legacyURLBar.queryModel.value = query
-        legacyURLBar.model.setEditing(to: true)
+        urlBar.shared.queryModel.value = query
+        urlBar.shared.model.setEditing(to: true)
     }
 }
 
@@ -1517,7 +1556,7 @@ extension BrowserViewController: SearchViewControllerDelegate {
     }
 
     func searchViewController(_ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String) {
-        self.legacyURLBar.queryModel.value = suggestion
+        urlBar.shared.queryModel.value = suggestion
     }
 }
 
@@ -1539,7 +1578,7 @@ extension BrowserViewController: TabManagerDelegate {
             updateURLBarDisplayURL(tab)
 
             if previous == nil || tab.isPrivate != previous?.isPrivate {
-                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar, legacyURLBar]
+                let ui: [PrivateModeUI?] = [topTabsViewController, toolbar, urlBar.shared]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
 
@@ -1598,18 +1637,18 @@ extension BrowserViewController: TabManagerDelegate {
         toolbarModel.canGoForward = (simulateForwardViewController?.canGoForward() ?? false
                                                 || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
-            self.legacyURLBar.updateProgressBar(Float(selected?.estimatedProgress ?? 0))
+            urlBar.shared.model.estimatedProgress = selected?.estimatedProgress ?? 0
         }
 
         if let readerMode = selected?.getContentScript(name: ReaderMode.name()) as? ReaderMode {
-            legacyURLBar.model.readerMode = readerMode.state
+            urlBar.shared.model.readerMode = readerMode.state
             if readerMode.state == .active {
                 showReaderModeBar(animated: false)
             } else {
                 hideReaderModeBar(animated: false)
             }
         } else {
-            legacyURLBar.model.readerMode = .unavailable
+            urlBar.shared.model.readerMode = .unavailable
         }
 
         if topTabsVisible {
@@ -1989,7 +2028,7 @@ extension BrowserViewController: TabTrayDelegate {
     }
 
     func tabTrayDidTapLocationBar(_ tabTray: TabTrayControllerV1) {
-        legacyURLBar.model.setEditing(to: true)
+        urlBar.shared.model.setEditing(to: true)
     }
 
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController) {
@@ -2006,8 +2045,8 @@ extension BrowserViewController: JSPromptAlertControllerDelegate {
 extension BrowserViewController: TopTabsDelegate {
     func topTabsDidPressTabs() {
         historyViewController?.dismiss(animated: false, completion: nil)
-        legacyURLBar.leaveOverlayMode(didCancel: true)
-        self.urlBarDidPressTabs(legacyURLBar)
+        urlBar.legacy!.leaveOverlayMode(didCancel: true)
+        self.urlBarDidPressTabs(urlBar.legacy!)
     }
 
     func topTabsDidPressNewTab(_ isPrivate: Bool) {
@@ -2020,12 +2059,12 @@ extension BrowserViewController: TopTabsDelegate {
         guard let _ = tabManager.selectedTab else {
             return
         }
-        legacyURLBar.leaveOverlayMode()
+        urlBar.legacy!.leaveOverlayMode()
     }
 
     func topTabsDidChangeTab() {
         historyViewController?.dismiss(animated: true, completion: nil)
-        legacyURLBar.leaveOverlayMode(didCancel: true)
+        urlBar.legacy!.leaveOverlayMode(didCancel: true)
     }
 }
 

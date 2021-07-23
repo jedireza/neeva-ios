@@ -359,6 +359,8 @@
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
+		C9A241C9269C9EC0007156B3 /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241C8269C9EC0007156B3 /* URLBarView.swift */; };
+		C9A241CB269CA4AB007156B3 /* URLBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241CA269CA4AB007156B3 /* URLBarHost.swift */; };
 		C9ACC462267A4408009AE182 /* HistorySuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
 		C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */; };
@@ -1278,6 +1280,8 @@
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 		C9946460265706D500613110 /* FeatureFlagSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettingsView.swift; sourceTree = "<group>"; };
 		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
+		C9A241C8269C9EC0007156B3 /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
+		C9A241CA269CA4AB007156B3 /* URLBarHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarHost.swift; sourceTree = "<group>"; };
 		C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySuggestionView.swift; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
 		C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuSettingsView.swift; sourceTree = "<group>"; };
@@ -2341,7 +2345,7 @@
 			path = Zoom;
 			sourceTree = "<group>";
 		};
-		C93EFEE3267150ED000396B5 /* URLBar */ = {
+		C93EFEE3267150ED000396B5 /* TabLocationView */ = {
 			isa = PBXGroup;
 			children = (
 				C94D409C268CADD4003A6766 /* LocationEditView.swift */,
@@ -2356,7 +2360,7 @@
 				C93EFEE826716411000396B5 /* TabLocationBarButton.swift */,
 				C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */,
 			);
-			path = URLBar;
+			path = TabLocationView;
 			sourceTree = "<group>";
 		};
 		C965BDD0268E71B400F02224 /* Debug */ = {
@@ -2399,6 +2403,15 @@
 				C9BED4CA2669451B001D9C77 /* ViewControllerWrapper.swift */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		C9A241C7269C9E75007156B3 /* URLBar */ = {
+			isa = PBXGroup;
+			children = (
+				C9A241C8269C9EC0007156B3 /* URLBarView.swift */,
+				C9A241CA269CA4AB007156B3 /* URLBarHost.swift */,
+			);
+			path = URLBar;
 			sourceTree = "<group>";
 		};
 		C9ACC46B267BA614009AE182 /* TabToolbar */ = {
@@ -3251,7 +3264,8 @@
 				668CA09726797E9800BA756F /* Toast */,
 				2816EFFF1B33E05400522243 /* UIConstants.swift */,
 				43A5643423CD1E1B00B6857D /* Update */,
-				C93EFEE3267150ED000396B5 /* URLBar */,
+				C93EFEE3267150ED000396B5 /* TabLocationView */,
+				C9A241C7269C9E75007156B3 /* URLBar */,
 				D0FCF7EE1FE44E15004A7995 /* UserContent */,
 				D38A1BEB1A9FA2CA00F6A386 /* Widgets */,
 				F84B22211A09122500AAB793 /* ZeroQuery */,
@@ -4547,6 +4561,7 @@
 				E653422D1C5944F90039DD9E /* BrowserPrompts.swift in Sources */,
 				435222C125882E3800FCA5B6 /* WidgetKitTopSiteModel.swift in Sources */,
 				4A88F97526630EFC007C203D /* CardDetails.swift in Sources */,
+				C9A241C9269C9EC0007156B3 /* URLBarView.swift in Sources */,
 				C9F49CBD266FDA9500F3408A /* SearchBar.swift in Sources */,
 				435D7CC5246209AA0043ACB9 /* IntroViewController.swift in Sources */,
 				C9655DEF26A09A8600925912 /* CardListViews.swift in Sources */,
@@ -4579,6 +4594,7 @@
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */,
+				C9A241CB269CA4AB007156B3 /* URLBarHost.swift in Sources */,
 				C94D406A2684D442003A6766 /* NeevaSuggestionModel.swift in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,

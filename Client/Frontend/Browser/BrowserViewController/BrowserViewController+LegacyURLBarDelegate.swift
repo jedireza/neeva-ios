@@ -5,7 +5,7 @@ import Storage
 import SFSafeSymbols
 
 extension BrowserViewController: LegacyURLBarDelegate {
-    func urlBarDidPressReload(_ urlBar: LegacyURLBarView) {
+    func urlBarDidPressReload() {
         // log tap reload
         ClientLogger.shared.logCounter(.TapReload, attributes: EnvironmentHelper.shared.getAttributes())
 
@@ -50,7 +50,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
         }
     }
 
-    func urlBarDidPressStop(_ urlBar: LegacyURLBarView) {
+    func urlBarDidPressStop() {
         tabManager.selectedTab?.stop()
     }
 
@@ -58,7 +58,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
         showTabTray()
     }
 
-    func urlBarReloadMenu(_ urlBar: LegacyURLBarView) -> UIMenu? {
+    func urlBarReloadMenu() -> UIMenu? {
         guard
             let tab = tabManager.selectedTab,
             tab.webView?.url != nil,

@@ -33,7 +33,7 @@ class TabScrollingController: NSObject {
 
     weak var header: UIView?
     weak var footer: UIView?
-    weak var urlBar: LegacyURLBarView?
+    var urlBar: BrowserViewController.URLBarWrapper?
     weak var readerModeBar: ReaderModeBarView?
     weak var snackBars: UIView?
 
@@ -223,7 +223,7 @@ private extension TabScrollingController {
         footerBottomOffset = clamp(updatedOffset, min: 0, max: bottomScrollHeight)
 
         let alpha = 1 - abs(headerTopOffset / topScrollHeight)
-        urlBar?.updateAlphaForSubviews(alpha)
+        urlBar?.legacy?.updateAlphaForSubviews(alpha)
         readerModeBar?.updateAlphaForSubviews(alpha)
     }
 
@@ -255,7 +255,7 @@ private extension TabScrollingController {
             }
             self.headerTopOffset = headerOffset
             self.footerBottomOffset = footerOffset
-            self.urlBar?.updateAlphaForSubviews(alpha)
+            self.urlBar?.legacy?.updateAlphaForSubviews(alpha)
             self.readerModeBar?.updateAlphaForSubviews(alpha)
             self.header?.superview?.layoutIfNeeded()
         }

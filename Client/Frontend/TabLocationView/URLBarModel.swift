@@ -14,12 +14,16 @@ class URLBarModel: ObservableObject {
     /// `true` iff all assets on the page are secure (i.e. there is no mixed content)
     @Published var isSecure = false
 
+    @Published var showToolbarItems = false
+
     @Published private(set) var isEditing = false
 
     @Published var reloadButton = ReloadButtonState.reload
     @Published var readerMode = ReaderModeState.unavailable
     @Published var canShare = false
     @Published var includeShareButtonInLocationView = true
+
+    @Published var estimatedProgress: Double?
 
     func setEditing(to value: Bool) {
         withAnimation(TabLocationViewUX.animation.delay(0.08)) {

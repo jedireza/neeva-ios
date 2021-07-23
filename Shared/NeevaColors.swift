@@ -157,6 +157,7 @@ extension Color {
 
         public enum adaptive {
             public static let blue = Color(UIColor.ui.adaptive.blue)
+            public static let separator = Color(UIColor.ui.adaptive.separator)
         }
 
         public enum variant {

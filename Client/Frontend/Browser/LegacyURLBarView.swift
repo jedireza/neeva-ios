@@ -8,6 +8,15 @@ import Storage
 import SwiftUI
 import Combine
 
+protocol CommonURLBar: PrivateModeUI {
+    var model: URLBarModel { get }
+    var queryModel: SearchQueryModel { get }
+    var historySuggestionModel: HistorySuggestionModel { get }
+    var neevaSuggestionModel: NeevaSuggestionModel { get }
+    var gridModel: GridModel { get }
+    var trackingStatsViewModel: TrackingStatsViewModel { get }
+}
+
 private enum LegacyURLBarViewUX {
     static let LocationEdgePadding: CGFloat = 8
     static let Padding: CGFloat = 5.5
@@ -21,9 +30,9 @@ private enum LegacyURLBarViewUX {
 
 protocol LegacyURLBarDelegate: UIViewController {
     func urlBarDidPressTabs(_ urlBar: LegacyURLBarView)
-    func urlBarReloadMenu(_ urlBar: LegacyURLBarView) -> UIMenu?
-    func urlBarDidPressStop(_ urlBar: LegacyURLBarView)
-    func urlBarDidPressReload(_ urlBar: LegacyURLBarView)
+    func urlBarReloadMenu() -> UIMenu?
+    func urlBarDidPressStop()
+    func urlBarDidPressReload()
     func urlBarDidEnterOverlayMode()
     func urlBarDidLeaveOverlayMode()
     func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton)
@@ -31,7 +40,7 @@ protocol LegacyURLBarDelegate: UIViewController {
     func urlBar(didSubmitText text: String)
 }
 
-class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
+class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     let model = URLBarModel()
     let queryModel = SearchQueryModel()
     let historySuggestionModel: HistorySuggestionModel
@@ -181,6 +190,20 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
                 line.isHidden = false
             }
         }.store(in: &subscriptions)
+
+        model.$showToolbarItems
+            .sink { [unowned self] in self.setShowToolbar($0) }
+            .store(in: &subscriptions)
+
+        model.$estimatedProgress
+            .sink { [unowned self] estimatedProgress in
+                if let estimatedProgress = estimatedProgress {
+                    self.updateProgressBar(Float(estimatedProgress))
+                } else {
+                    self.hideProgressBar()
+                }
+            }
+            .store(in: &subscriptions)
     }
     
     fileprivate func setupConstraints() {
@@ -284,7 +307,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
     // Ideally we'd split this implementation in two, one URLBarView with a toolbar and one without
     // However, switching views dynamically at runtime is a difficult. For now, we just use one view
     // that can show in either mode.
-    func setShowToolbar(_ shouldShow: Bool) {
+    private func setShowToolbar(_ shouldShow: Bool) {
         toolbarIsShowing = shouldShow
         setNeedsUpdateConstraints()
         // when we transition from portrait to landscape, calling this here causes
@@ -310,14 +333,14 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
         }
     }
 
-    func updateProgressBar(_ progress: Float) {
+    private func updateProgressBar(_ progress: Float) {
         model.reloadButton = progress == 1 ? .reload : .stop
         progressBar.alpha = 1
         progressBar.isHidden = false
         progressBar.setProgress(progress, animated: !isTransitioning)
     }
 
-    func hideProgressBar() {
+    private func hideProgressBar() {
         progressBar.isHidden = true
         progressBar.setProgress(0, animated: false)
     }
@@ -394,15 +417,15 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol {
 
 extension LegacyURLBarView: LegacyTabLocationViewDelegate {
     func tabLocationViewReloadMenu() -> UIMenu? {
-        delegate?.urlBarReloadMenu(self)
+        delegate?.urlBarReloadMenu()
     }
 
     func tabLocationViewDidTapReload() {
         switch model.reloadButton {
         case .reload:
-            delegate?.urlBarDidPressReload(self)
+            delegate?.urlBarDidPressReload()
         case .stop:
-            delegate?.urlBarDidPressStop(self)
+            delegate?.urlBarDidPressStop()
         }
     }
 

@@ -141,7 +141,7 @@ struct TabLocationView: View {
     }
 }
 
-struct URLBarView_Previews: PreviewProvider {
+struct TabLocationView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             TabLocationView(onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })

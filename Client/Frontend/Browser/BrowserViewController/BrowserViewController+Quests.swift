@@ -16,7 +16,7 @@ extension BrowserViewController {
             return
         }
 
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.legacyURLBar.locationContainer)
+        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.urlBar.view)
         prompt.view.backgroundColor = UIColor.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
@@ -35,9 +35,10 @@ extension BrowserViewController {
     }
 
     func onStartQuestButtonClickHandler() {
-        if self.legacyURLBar.toolbarIsShowing {
+        if self.urlBar.shared.model.showToolbarItems {
             self.dismiss(animated: true)
-            self.legacyURLBar.didClickNeevaMenu()
+            // TODO: update for modern url bar
+            self.urlBar.legacy?.didClickNeevaMenu()
         } else {
             BrowserViewController.foregroundBVC().showNeevaMenuSheet()
         }
@@ -49,11 +50,12 @@ extension BrowserViewController {
         
         scrollController.showToolbars(animated: true)
 
-        if !self.legacyURLBar.toolbarIsShowing, let toolbar = toolbar {
+        if !self.urlBar.shared.model.showToolbarItems, let toolbar = toolbar {
             // TODO(jed): open this prompt from SwiftUI once we have a full-height SwiftUI hierarchy
             target = toolbar.view
         } else {
-            target = self.legacyURLBar.neevaMenuButton
+            // TODO: update for modern url bar
+            target = self.urlBar!.legacy!.neevaMenuButton
         }
 
         let content = TourPromptContent(title: "Get the most out of Neeva!", description: "Access your Neeva Home, Spaces, Settings, and more", buttonMessage: "Let's take a Look!", onButtonClick: onStartQuestButtonClickHandler, onClose: onCloseQuestHandler)

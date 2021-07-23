@@ -21,7 +21,7 @@ struct TabToolbarView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Color(UIColor(light: UIColor(rgb: 0xE5E5EA), dark: .tertiarySystemBackground))
+            Color.ui.adaptive.separator
                 .frame(height: 0.5)
                 .ignoresSafeArea()
             HStack(spacing: 0) {
