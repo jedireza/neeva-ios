@@ -14,6 +14,20 @@ enum SuggestionViewUX {
     static let RowHeight: CGFloat = 58
 }
 
+enum SuggestionState {
+    case normal
+    case focused
+
+    var color: Color {
+        switch self {
+        case .normal:
+            return .clear
+        case .focused:
+            return .selectedCell
+        }
+    }
+}
+
 /// Renders a provided suggestion
 public struct SearchSuggestionView: View {
     let suggestion: Suggestion
@@ -43,7 +57,7 @@ public enum SuggestionConfig {
 
 struct SuggestionSpec: ViewModifier {
     let config: SuggestionConfig
-    var focused: Bool
+    var suggestionState: SuggestionState
 
     func body(content: Content) -> some View {
         switch config {
@@ -51,19 +65,22 @@ struct SuggestionSpec: ViewModifier {
             content
                 .frame(height: SuggestionViewUX.RowHeight)
                 .padding(.horizontal, SuggestionViewUX.Padding)
-                .background(focused ? Color.selectedCell : .clear)
+                .background(suggestionState.color)
+                .hoverEffect()
         case .chip:
             content.padding(SuggestionViewUX.ChipInnerPadding)
-                .background(focused ? Color.selectedCell : Color.DefaultBackground)
-                .clipShape(Capsule())
+                .background(suggestionState.color)
                 .overlay(Capsule().stroke(Color(UIColor.Browser.urlBarDivider), lineWidth: 1))
+                .clipShape(Capsule())
+                .contentShape(Capsule())
+                .hoverEffect()
         }
     }
 }
 
 private extension View {
-    func apply(config: SuggestionConfig, focused: Bool) -> some View {
-        self.modifier(SuggestionSpec(config: config, focused: focused))
+    func apply(config: SuggestionConfig, suggestionState: SuggestionState) -> some View {
+        self.modifier(SuggestionSpec(config: config, suggestionState: suggestionState))
     }
 }
 
@@ -75,7 +92,7 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
     let detail: Detail
     let suggestion: Suggestion?
 
-    @State var focused: Bool = false
+    @State var suggestionState: SuggestionState = .normal
     @EnvironmentObject public var model: NeevaSuggestionModel
     @Environment(\.suggestionConfig) private var config
 
@@ -102,15 +119,15 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                         .foregroundColor(.secondaryLabel)
                         .font(.callout)
                 }
-            }.apply(config: config, focused: focused)
+            }.apply(config: config, suggestionState: suggestionState)
         }
         .accentColor(.primary)
         .buttonStyle(TableCellButtonStyle())
         .useEffect(deps: model.keyboardFocusedSuggestion) { _ in
-            if let suggestion = suggestion {
-                focused = model.isFocused(suggestion)
+            if let suggestion = suggestion, model.isFocused(suggestion) {
+                suggestionState = .focused
             } else {
-                focused = false
+                suggestionState = .normal
             }
         }
     }
