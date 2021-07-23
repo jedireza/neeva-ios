@@ -52,15 +52,6 @@ class TabCardModel: CardModel, TabEventHandler {
         onDataUpdated()
     }
 
-    func tab(_ tab: Tab, didChangeURL url: URL) {
-        guard let selectedTab = self.manager.selectedTab, selectedTab == tab else {
-            return
-        }
-
-        ScreenshotHelper().takeDelayedScreenshot(tab)
-        onDataUpdated()
-    }
-
     func onDataUpdated() {
         groupManager.updateTabGroups()
         let childTabs = groupManager.getAll()
