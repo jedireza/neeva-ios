@@ -85,7 +85,7 @@ public struct NeevaMenuView: View {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     if NeevaFeatureFlags[.referralPromo] {
-                        NeevaMenuRowButtonView(label: "Win $5000 for inviting friends", isPromo: true) {
+                        NeevaMenuRowButtonView(label: "Win $5k by inviting friends to join Neeva", isPromo: true) {
                             self.menuAction!(NeevaMenuButtonActions.referralPromo)
                         }
                         .accentColor(Color.brand.adaptive.orange)

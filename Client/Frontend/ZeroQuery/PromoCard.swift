@@ -34,7 +34,7 @@ enum PromoCardType {
         case .defaultBrowser:
             Text("Browse in peace,\nalways")
         case .referralPromo:
-            Text("Win ") + Text("$5000").fontWeight(.medium) + Text(" for inviting friends")
+            Text("Win ") + Text("$5000").fontWeight(.medium) + Text(" by inviting friends to join Neeva")
         }
     }
 
@@ -194,10 +194,9 @@ struct PromoCard: View {
 
 struct PromoCard_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
+        ForEach(Array([.neevaSignIn(action: {}), .defaultBrowser(action: {}, onClose: {}), .referralPromo(action: {}, onClose: {})].enumerated()), id: \.0) { (card: (Int, PromoCardType)) in
             GeometryReader { geom in
-                PromoCard(type: .neevaSignIn(action: {}), viewWidth: geom.size.width)
-                PromoCard(type: .defaultBrowser(action: {}, onClose: {}), viewWidth: geom.size.width)
+                PromoCard(type: card.1, viewWidth: geom.size.width)
             }
         }.previewLayout(.sizeThatFits)
     }
