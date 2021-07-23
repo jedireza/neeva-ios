@@ -400,6 +400,7 @@ extension BrowserViewController: WKNavigationDelegate {
         tabManager.selectedTab?.stop()
 
         showOverlaySheetViewController(OpenInAppViewController(url: url, onOpen: {
+            self.hideOverlaySheetViewController()
             UIApplication.shared.open(url, options: [:])
         }, onDismiss: {
             self.hideOverlaySheetViewController()
