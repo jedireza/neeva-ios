@@ -22,7 +22,7 @@ class NeevaSignInTests: BaseTestCase {
         super.setUp()
     }
 
-    fileprivate func waitUntilPageLoad(withUrlContaining: String) {
+    fileprivate func waitUntilPageLoad(withUrlContaining urlSubstring: String) {
         waitUntilPageLoad()
 
         // TODO(darin): Flakiness alert! Set an extra long timeout here as `waitForPageLoad()`
@@ -30,7 +30,10 @@ class NeevaSignInTests: BaseTestCase {
         // is perhaps an ordering issue between when we stop the progress bar from animating
         // and when the URL gets updated. That is worth investigating and resolving, so that
         // tests involving navigation can be more reliable.
-        waitForValueContains(app.buttons["Address Bar"], value: withUrlContaining, timeout: 30.0)
+        waitForValueContains(app.buttons["Address Bar"], value: urlSubstring, timeout: 60.0)
+
+        // Print out this value to help debug test flakiness.
+        print("Address Bar:", app.buttons["Address Bar"].value.debugDescription)
     }
 
     fileprivate func doSignIn() {
