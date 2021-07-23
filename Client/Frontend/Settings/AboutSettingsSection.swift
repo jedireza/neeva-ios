@@ -37,7 +37,7 @@ struct AboutSettingsSection: View {
             openURL(NeevaConstants.appTermsURL)
         }
 
-        NavigationLink("Stats", destination: SettingsStatsView())
+        NavigationLink("Stats", destination: SettingsStatsView().navigationTitle("Stats"))
     }
 }
 
