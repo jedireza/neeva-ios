@@ -36,6 +36,8 @@ struct AboutSettingsSection: View {
             ClientLogger.shared.logCounter(.ViewTerms, attributes: EnvironmentHelper.shared.getAttributes())
             openURL(NeevaConstants.appTermsURL)
         }
+
+        NavigationLink("Stats", destination: SettingsStatsView())
     }
 }
 

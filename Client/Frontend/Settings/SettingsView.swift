@@ -102,6 +102,7 @@ class SettingsViewController: UIHostingController<AnyView> {
                         bvc.presentIntroViewController(true)
                     }
                 }
+                .environmentObject(bvc.tabManager)
         )
     }
 

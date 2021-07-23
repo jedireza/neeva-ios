@@ -374,6 +374,7 @@
 		C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AFE6E626583F5A000C5A03 /* SettingsView.swift */; };
 		C9B2D28226612EF7005EF5AD /* NeevaAccountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */; };
 		C9B55A0F26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B55A0E26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift */; };
+		C9B55A1126A8A0D500C71F31 /* SettingsStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B55A1026A8A0D500C71F31 /* SettingsStatsView.swift */; };
 		C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4B82667D5D3001D9C77 /* Roobert.swift */; };
 		C9BED4BB2667E3F8001D9C77 /* ZeroQueryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4BA2667E3F8001D9C77 /* ZeroQueryModels.swift */; };
 		C9BED4BD2667E453001D9C77 /* SuggestedSitesViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */; };
@@ -1299,6 +1300,7 @@
 		C9AFE6E626583F5A000C5A03 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountRow.swift; sourceTree = "<group>"; };
 		C9B55A0E26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsRestartPromptView.swift; sourceTree = "<group>"; };
+		C9B55A1026A8A0D500C71F31 /* SettingsStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStatsView.swift; sourceTree = "<group>"; };
 		C9BED4B82667D5D3001D9C77 /* Roobert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Roobert.swift; sourceTree = "<group>"; };
 		C9BED4BA2667E3F8001D9C77 /* ZeroQueryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModels.swift; sourceTree = "<group>"; };
 		C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedSitesViews.swift; sourceTree = "<group>"; };
@@ -1933,6 +1935,7 @@
 				7B4980A71CE363ED0017547C /* Settings.xcassets */,
 				C9AFE6E626583F5A000C5A03 /* SettingsView.swift */,
 				C98E405E26585AB3003AC0E2 /* SupportSettingsSection.swift */,
+				C9B55A1026A8A0D500C71F31 /* SettingsStatsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -4562,6 +4565,7 @@
 				BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */,
 				C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */,
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
+				C9B55A1126A8A0D500C71F31 /* SettingsStatsView.swift in Sources */,
 				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,

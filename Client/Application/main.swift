@@ -5,6 +5,7 @@
 import Shared
 
 private var appDelegate: AppDelegate.Type
+let _startupTime = Date()
 
 if AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest {
     appDelegate = TestAppDelegate.self
