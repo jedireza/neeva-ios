@@ -171,7 +171,7 @@ class IphoneOnlyTestCase: BaseTestCase {
 
 extension BaseTestCase {
     func tabTrayButton(forApp app: XCUIApplication) -> XCUIElement {
-        return app.buttons["TopTabsViewController.tabsButton"].exists ? app.buttons["TopTabsViewController.tabsButton"] : app.buttons["Show Tabs"]
+        return app.buttons["Show Tabs"]
     }
 }
 

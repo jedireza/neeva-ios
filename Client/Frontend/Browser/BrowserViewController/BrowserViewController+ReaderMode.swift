@@ -54,7 +54,7 @@ extension BrowserViewController {
         if self.readerModeBar == nil {
             let readerModeBar = ReaderModeBarView(frame: CGRect.zero)
             readerModeBar.delegate = self
-            view.insertSubview(readerModeBar, belowSubview: header)
+            view.insertSubview(readerModeBar, belowSubview: urlBar.view)
             self.readerModeBar = readerModeBar
             scrollController.readerModeBar = self.readerModeBar
         }

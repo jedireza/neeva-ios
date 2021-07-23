@@ -65,7 +65,6 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     }
 
     var toolbarIsShowing = false
-    var topTabsIsShowing = false
 
     /// Overlay mode is the state where the lock/reader icons are hidden, the zero query panels are shown,
     /// and the Cancel button is visible (allowing the user to leave overlay mode). Overlay mode

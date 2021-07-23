@@ -185,7 +185,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
             if snappedToBottom {
                 verticalConstraints += [make.bottom.equalTo(self.view).offset(-bvc.footer.frame.height).constraint]
             } else {
-                verticalConstraints += [make.top.equalTo(self.view).offset(bvc.header.frame.height + (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0)).constraint]
+                verticalConstraints += [make.top.equalTo(self.view).offset(bvc.urlBar.view.frame.height + (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0)).constraint]
             }
         }
         shadow.snp.makeConstraints() { make in

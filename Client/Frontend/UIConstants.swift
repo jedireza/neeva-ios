@@ -123,63 +123,6 @@ extension UIColor {
         public static let background = UIColor.TrayBackground
     }
 
-    public struct TopTabs {
-        public static let background = UIColor.Photon.Grey80
-
-        public static let tabBackgroundSelected = UIColor() { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor.Photon.Grey80
-            default:
-                return UIColor.Photon.Grey10
-            }
-        }
-
-        public static let tabBackgroundUnselected = UIColor.Photon.Grey80
-
-        public static let tabForegroundSelected = UIColor() { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor.Photon.Grey10
-            default:
-                return UIColor.Photon.Grey90
-            }
-        }
-        public static let tabForegroundUnselected =  UIColor.Photon.Grey40
-
-        public static func tabSelectedIndicatorBar(_ isPrivate: Bool) -> UIColor {
-            return !isPrivate ? UIColor.Photon.Blue40 : UIColor.Defaults.SystemGray01
-        }
-
-        public static let buttonTint = UIColor.Photon.Grey40
-        public static let closeButtonSelectedTab = UIColor() { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor.Photon.Grey10
-            default:
-                return UIColor.Photon.Grey80
-            }
-        }
-
-        public static let closeButtonUnselectedTab = UIColor() { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor.Photon.Grey40
-            default:
-                return UIColor.Photon.Grey10
-            }
-        }
-
-        public static let separator = UIColor() { traits in
-            switch traits.userInterfaceStyle {
-            case .dark:
-                return UIColor.Photon.Grey50
-            default:
-                return UIColor.Photon.Grey70
-            }
-        }
-    }
-
     public struct HomePanel {
         public static let topSitesBackground = UIColor.systemBackground
         public static let welcomeScreenText = UIColor.secondaryLabel

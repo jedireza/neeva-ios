@@ -120,7 +120,7 @@ extension BrowserViewController {
 
     @objc func moveURLCompletionKeyCommand(sender: UIKeyCommand) {
         if let input = sender.input {
-            legacyURLBar.neevaSuggestionModel.handleKeyboardShortcut(input: input)
+            urlBar.shared.neevaSuggestionModel.handleKeyboardShortcut(input: input)
         }
     }
 

@@ -209,9 +209,6 @@ extension BrowserViewController: WKUIDelegate {
             let isPrivate = currentTab.isPrivate
             let addTab = { (rURL: URL, isPrivate: Bool) in
                 let tab = self.tabManager.addTab(URLRequest(url: rURL as URL), afterTab: currentTab, isPrivate: isPrivate)
-                guard !self.topTabsVisible else {
-                    return
-                }
                 var toastLabelText: String
                 
                 if isPrivate {

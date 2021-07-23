@@ -833,11 +833,7 @@ extension MMNavigator where T == FxUserState {
     func createSeveralTabsFromTabTray(numberTabs: Int) {
         let app = XCUIApplication()
         for _ in 1...numberTabs {
-            if isTablet {
-                waitForExistence(app.buttons["TopTabsViewController.tabsButton"], timeout: 5)
-            } else {
-                waitForExistence(app.buttons["Show Tabs"], timeout: 5)
-            }
+            waitForExistence(app.buttons["Show Tabs"], timeout: 5)
             self.goto(TabTray)
             self.goto(HomePanelsScreen)
         }

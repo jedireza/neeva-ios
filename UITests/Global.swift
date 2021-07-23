@@ -239,6 +239,7 @@ class BrowserUtils {
 
     class func dismissFirstRunUI(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish(withTimeout: 3)
+        tester.waitForAnimationsToFinish(withTimeout: 3)
         if (tester.viewExistsWithLabel("Skip to browser without Neeva search")) {
             tester.tapView(withAccessibilityLabel: "Skip to browser without Neeva search")
             tester.waitForAnimationsToFinish(withTimeout: 3)

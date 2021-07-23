@@ -60,15 +60,9 @@ class ReopenLastTabTests: KIFTestCase {
     }
     
     func openTabsController() {
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            EarlGrey
-                .selectElement(with: grey_accessibilityID("TopTabsViewController.tabsButton"))
-                .perform(grey_tap())
-        } else {
-            EarlGrey
-                .selectElement(with: grey_accessibilityID("TabToolbar.tabsButton"))
-                .perform(grey_tap())
-        }
+        EarlGrey
+            .selectElement(with: grey_accessibilityID("TabToolbar.tabsButton"))
+            .perform(grey_tap())
     }
     
     func closeAllTabs() {

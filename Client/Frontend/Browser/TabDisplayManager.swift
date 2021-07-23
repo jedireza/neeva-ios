@@ -34,10 +34,6 @@ protocol TabDisplayCompletionDelegate: AnyObject {
     func didSelectTabAtIndex(_ index: Int)
 }
 
-protocol TopTabCellDelegate: AnyObject {
-    func tabCellDidClose(_ cell: UICollectionViewCell)
-}
-
 protocol TabDisplayer: AnyObject {
     typealias TabCellIdentifer = String
     var tabCellIdentifer: TabCellIdentifer { get set }
@@ -143,20 +139,6 @@ class TabDisplayManager: NSObject {
         }
     }
 
-    // The collection is showing this Tab as selected
-    func indexOfCellDrawnAsPreviouslySelectedTab(currentlySelected: Tab) -> IndexPath? {
-        for i in 0..<collectionView.numberOfItems(inSection: 0) {
-            if let cell = collectionView.cellForItem(at: IndexPath(row: i, section: 0)) as? TopTabCell, cell.selectedTab {
-                if let tab = dataStore.at(i), tab != currentlySelected {
-                    return IndexPath(row: i, section: 0)
-                } else {
-                    return nil
-                }
-            }
-        }
-        return nil
-    }
-    
     func searchTabsAnimated() {
         let isUnchanged = (tabsToDisplay.count == dataStore.count) && tabsToDisplay.zip(dataStore).reduce(true) { $0 && $1.0 === $1.1 }
         if !tabsToDisplay.isEmpty && isUnchanged {
@@ -210,9 +192,7 @@ class TabDisplayManager: NSObject {
     }
 
     private func recordEventAndBreadcrumb(object: TelemetryWrapper.EventObject, method: TelemetryWrapper.EventMethod) {
-        let isTabTray = tabDisplayer as? TabTrayControllerV1 != nil
-        let eventValue = isTabTray ? TelemetryWrapper.EventValue.tabTray : TelemetryWrapper.EventValue.topTabs
-        TelemetryWrapper.recordEvent(category: .action, method: method, object: object, value: eventValue)
+        TelemetryWrapper.recordEvent(category: .action, method: method, object: object, value: .tabTray)
     }
 
     // When using 'Close All', hide all the tabs so they don't animate their deletion individually
@@ -251,9 +231,7 @@ extension TabDisplayManager: UICollectionViewDataSource {
     }
 
     @objc func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderFooter", for: indexPath) as? TopTabsHeaderFooter else { return UICollectionReusableView() }
-        view.arrangeLine(kind)
-        return view
+        return UICollectionReusableView()
     }
 }
 
@@ -358,8 +336,6 @@ extension TabDisplayManager: UICollectionViewDropDelegate {
 
 extension TabDisplayManager: TabEventHandler {
     private func updateCellFor(tab: Tab, selectedTabChanged: Bool) {
-        let selectedTab = tabManager.selectedTab
-
         updateWith(animationType: .updateTab) { [weak self] in
             guard let index = self?.dataStore.index(of: tab) else { return }
 
@@ -368,13 +344,6 @@ extension TabDisplayManager: TabEventHandler {
 
             if selectedTabChanged {
                 self?.tabDisplayer?.focusSelectedTab()
-
-                // Check if the selected tab has changed. This method avoids relying on the state of the "previous" selected tab,
-                // instead it iterates the displayed tabs to see which appears selected.
-                // See also `didSelectedTabChange` for more info on why this is a good approach.
-                if let selectedTab = selectedTab, let previousSelectedIndex = self?.indexOfCellDrawnAsPreviouslySelectedTab(currentlySelected: selectedTab) {
-                    items.append(previousSelectedIndex)
-                }
             }
 
             for item in items {
@@ -382,8 +351,6 @@ extension TabDisplayManager: TabEventHandler {
                     let isSelected = (item.row == index && tab == self?.tabManager.selectedTab)
                     if let tabCell = cell as? TabCell {
                         tabCell.configureWith(tab: tab, is: isSelected)
-                    } else if let tabCell = cell as? TopTabCell {
-                        tabCell.configureWith(tab: tab, isSelected: isSelected)
                     }
                 }
             }
@@ -492,9 +459,6 @@ extension TabDisplayManager: TabManagerDelegate {
     func tabManagerDidRestoreTabs(_ tabManager: TabManager) {
         cancelDragAndGestures()
         refreshStore()
-
-        // Need scrollToCurrentTab and not focusTab; these exact params needed to focus (without using async dispatch).
-        (tabDisplayer as? TopTabsViewController)?.scrollToCurrentTab(false, centerCell: true)
     }
 
     func tabManagerDidAddTabs(_ tabManager: TabManager) {
