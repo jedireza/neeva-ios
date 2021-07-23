@@ -10,7 +10,7 @@ struct LocationLabel: View {
     @EnvironmentObject private var gridModel: GridModel
 
     var body: some View {
-        LocationLabelAndIcon(url: url, isSecure: isSecure, forcePlaceholder: !gridModel.isHidden)
+        LocationLabelAndIcon(url: url, isSecure: isSecure, forcePlaceholder: !gridModel.isHidden || (NeevaConstants.isNeevaHome(url: url) && NeevaUserInfo.shared.hasLoginCookie()))
             .lineLimit(1)
             .frame(height: TabLocationViewUX.height)
             .allowsHitTesting(false)
