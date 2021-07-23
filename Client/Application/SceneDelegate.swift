@@ -34,9 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 _ = continueSiriIntent(continue: userActivity)
             }
 
-            if let urlContext = connectionOptions.urlContexts.first, let components = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false) {
-                BrowserViewController.foregroundBVC().openURLInNewTab(NavigationPath.maybeRewriteURL(urlContext.url, components))
-            }
+            self.scene(scene, openURLContexts: connectionOptions.urlContexts)
 
             if let shortcutItem = connectionOptions.shortcutItem {
                 handleShortcut(shortcutItem: shortcutItem)
@@ -89,7 +87,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         DispatchQueue.main.async {
-            NavigationPath.handle(nav: routerpath, with: BrowserViewController.foregroundBVC())
+            NavigationPath.handle(nav: routerpath, with: self.browserViewController)
         }
     }
 
@@ -101,14 +99,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func continueSiriIntent(continue userActivity: NSUserActivity) -> Bool {
         if let intent = userActivity.interaction?.intent as? OpenURLIntent {
-            BrowserViewController.foregroundBVC().openURLInNewTab(intent.url)
+            self.browserViewController.openURLInNewTab(intent.url)
             return true
         }
 
         if let intent = userActivity.interaction?.intent as? SearchNeevaIntent,
            let query = intent.text,
            let url = neevaSearchEngine.searchURLForQuery(query) {
-            BrowserViewController.foregroundBVC().openURLInNewTab(url)
+            self.browserViewController.openURLInNewTab(url)
             return true
         }
 
@@ -122,7 +120,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return false
         }
 
-        BrowserViewController.foregroundBVC().openURLInNewTab(incomingURL)
+        self.browserViewController.openURLInNewTab(incomingURL)
 
         return true
     }
