@@ -85,6 +85,17 @@ commands:
       - run:
           name: XCUITests - iPad
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+  build-app-clip:
+    steps:
+      - checkout
+      - run:
+          name: Build AppClip
+          command: xcodebuild build-for-testing -scheme AppClip -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
+  app-clip-tests:
+    steps:
+    - run:
+        name: AppClipTests
+        command: xcodebuild test-without-building -scheme AppClip -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing AppClipTests
 
 jobs:
   build:
@@ -111,6 +122,8 @@ jobs:
     steps:
       - restore-build-cache
       - test-client
+      - build-app-clip
+      - app-clip-tests
   ui-tests:
     # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
     # info on using Xcode 12.5.0 at this time.

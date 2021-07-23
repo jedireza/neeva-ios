@@ -10,5 +10,9 @@
 	<array>
 		<string>$(AppIdentifierPrefix)co.neeva.app.ios.browser</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.co.neeva.app.ios.browser.app-clip.login</string>
+	</array>
 </dict>
 </plist>

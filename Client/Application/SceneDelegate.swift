@@ -40,6 +40,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 handleShortcut(shortcutItem: shortcutItem)
             }
         }
+
+        // for testing retrieving data from App Clip
+        print("Retrieved App Clip data:", retreiveAppClipData() ?? "No Data")
     }
 
     private func setupRootViewController(_ scene: UIScene) {
@@ -184,6 +187,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     public func stopGeigerCounter() {
         geigerCounter?.disable()
         geigerCounter = nil
+    }
+
+    // MARK: - App Clip
+    func retreiveAppClipData() -> String? {
+        guard let appClipPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.co.neeva.app.ios.browser.app-clip.login")?.appendingPathComponent("AppClipValue") else {
+            return nil
+        }
+
+        do {
+            let data = try Data(contentsOf: appClipPath)
+            return try JSONDecoder().decode(String.self, from: data)
+        } catch {
+            print("Error retriving App Clip data:", error.localizedDescription)
+            return nil
+        }
     }
 }
 

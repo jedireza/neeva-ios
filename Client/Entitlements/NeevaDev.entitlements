@@ -11,6 +11,7 @@
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.co.neeva.app.ios.browser-dev</string>
+		<string>group.co.neeva.app.ios.browser.app-clip.login</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>

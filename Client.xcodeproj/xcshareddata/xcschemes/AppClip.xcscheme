@@ -73,7 +73,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCAppClipURL"
-            value = "https://m1.neeva.com/testValue?=&quot;Hello&quot;"
+            value = "https://m1.neeva.com/foo?testValue=bar"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
