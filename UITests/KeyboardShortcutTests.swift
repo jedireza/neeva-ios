@@ -64,11 +64,13 @@ class KeyboardShortcutTests: KIFTestCase {
         goBack()
     }
 
+    /* disabled because it fails randomly
+       https://github.com/neevaco/neeva-ios-phoenix/issues/1095
     func testGoForward() {
         reset(tester: tester())
         goBack()
         bvc.goForwardKeyCommand()
-    }
+    }*/
 
     // MARK: Find in Page
     func testFindInPageKeyCommand() {
