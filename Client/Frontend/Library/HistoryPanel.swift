@@ -330,6 +330,7 @@ class HistoryPanel: SiteTableViewController {
         cell.imageView?.tintColor = HistoryPanelUX.actionIconColor
         AdditionalHistoryActionRow.setStyle(enabled: hasRecentlyClosed, forCell: cell)
         cell.accessibilityIdentifier = "HistoryPanel.recentlyClosedCell"
+        cell.accessibilityLabel = "Recently Closed"
         return cell
     }
 

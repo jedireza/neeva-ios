@@ -31,7 +31,7 @@ class ToolbarTests: BaseTestCase {
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
 
         // Navigate to two pages and press back once so that all buttons are enabled in landscape mode.
-        navigator.openURL(website1["url"]!)
+        openURL(website1["url"]!)
         waitUntilPageLoad()
         waitForExistence(app.webViews.links["Mozilla"], timeout: 10)
         let valueMozilla = app.buttons["Address Bar"].value as! String
@@ -40,7 +40,7 @@ class ToolbarTests: BaseTestCase {
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
         XCTAssertTrue(app.buttons["Reload"].isEnabled)
 
-        navigator.openURL(website2)
+        openURL(website2)
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: website2)
         XCTAssertTrue(app.buttons["Back"].isEnabled)
@@ -55,7 +55,7 @@ class ToolbarTests: BaseTestCase {
 
         // Open new tab and then go back to previous tab to test navigation buttons.
         waitForTabsButton()
-        navigator.goto(TabTray)
+        goToTabTray()
         waitForExistence(app.cells.staticTexts[website1["label"]!])
         XCTAssertEqual(valueMozilla, website1["url"])
 
@@ -67,21 +67,19 @@ class ToolbarTests: BaseTestCase {
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertTrue(app.buttons["Forward"].isEnabled)
 
-        navigator.nowAt(BrowserTab)
         waitForTabsButton()
-        navigator.goto(TabTray)
+        goToTabTray()
 
         waitForExistence(app.cells.staticTexts[website1["label"]!])
         app.collectionViews.cells.element(boundBy: 0).buttons["closeTabButtonTabTray"].tap()
 
         // Go Back to other tab to see if all buttons are disabled.
-        navigator.nowAt(BrowserTab)
         XCTAssertFalse(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
     }
 
     func testClearURLTextUsingBackspace() {
-        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         waitForTabsButton()
 
@@ -98,8 +96,7 @@ class ToolbarTests: BaseTestCase {
 
     // Check that after scrolling on a page, the URL bar is hidden. Tapping one on the status bar will reveal the URL bar, tapping again on the status will scroll to the top
     func testRevealToolbarWhenTappingOnStatusbar() {
-        navigator.nowAt(NewTabScreen)
-        navigator.openURL(path(forTestPage: "test-mozilla-org.html"))
+        openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
         waitForTabsButton()
 

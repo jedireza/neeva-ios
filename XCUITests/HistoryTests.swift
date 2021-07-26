@@ -33,13 +33,6 @@ class HistoryTests: BaseTestCase {
         app.buttons["Done"].tap()
     }
 
-    func goToHistory() {
-        app.buttons["Neeva Menu"].tap()
-
-        waitForExistence(app.buttons["History"])
-        app.buttons["History"].tap()
-    }
-
     override func setUp() {
         // Test name looks like: "[Class testFunc]", parse out the function name
         let parts = name.replacingOccurrences(of: "]", with: "").split(separator: " ")
@@ -64,16 +57,13 @@ class HistoryTests: BaseTestCase {
         clearWebsiteData()
 
         // Back on History panel view check that there is not any item
-        navigator.nowAt(NewTabScreen)
         goToHistory()
         XCTAssertFalse(app.tables.cells.staticTexts[webpage["label"]!].exists)
     }
 
     func testClearPrivateDataButtonDisabled() {
         //Clear private data from settings and confirm
-        navigator.goto(ClearPrivateDataSettings)
-        app.tables.cells["Clear Selected Data on This Device"].tap()
-        app.sheets.buttons["Clear Data"].tap()
+        clearPrivateData()
         
         //Wait for OK pop-up to disappear after confirming
         waitForNoExistence(app.alerts.buttons["Clear Data"], timeoutValue:5)
@@ -83,46 +73,38 @@ class HistoryTests: BaseTestCase {
     }
 
     private func showRecentlyClosedTabs() {
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(TabTray)
+        goToTabTray()
         app.buttons["Add Tab"].press(forDuration: 1)
     }
 
     func testRecentlyClosedOptionAvailable() {
         // Now go back to default website close it and check whether the option is enabled
-        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
-
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(NeevaMenu)
-        navigator.goto(HistoryRecentlyClosed)
+        
+        goToRecentlyClosedPage()
 
         // The Closed Tabs list should contain the info of the website just closed
         waitForExistence(app.tables["Recently Closed Tabs List"], timeout: 3)
         XCTAssertTrue(app.tables.cells.staticTexts[closedWebPageLabel].exists)
         app.buttons["History Panel"].tap()
         app.buttons["Done"].tap()
-        navigator.nowAt(NewTabScreen)
 
         // This option should be enabled on private mode too
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(NeevaMenu)
+        toggleIncognito()
 
-        navigator.goto(HistoryRecentlyClosed)
+        goToRecentlyClosedPage()
         waitForExistence(app.tables["Recently Closed Tabs List"])
     }
 
     func testClearRecentlyClosedHistory() {
         // Open the default website
-        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
 
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(NeevaMenu)
-        navigator.goto(HistoryRecentlyClosed)
+        goToRecentlyClosedPage()
 
         // Once the website is visited and closed it will appear in Recently Closed Tabs list
         waitForExistence(app.tables["Recently Closed Tabs List"])
@@ -130,18 +112,16 @@ class HistoryTests: BaseTestCase {
         print(app.menus.buttons.debugDescription, app.navigationBars.buttons.debugDescription)
         app.buttons["History Panel"].tap()
         app.buttons["Done"].tap()
-        navigator.nowAt(NewTabScreen)
 
-        // Go to settings and clear private data
-        navigator.performAction(Action.AcceptClearPrivateData)
+        clearPrivateData()
 
         // Back on History panel view check that there is not any item
-        navigator.goto(HistoryRecentlyClosed)
+        goToRecentlyClosedPage()
         waitForNoExistence(app.tables["Recently Closed Tabs List"])
     }
 
     func testRecentlyClosedMenuAvailable() {
-        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
 
@@ -151,26 +131,23 @@ class HistoryTests: BaseTestCase {
 
     func testOpenInNewTabRecentlyClosedItemFromMenu() {
         // test the recently closed tab menu
-        navigator.openURL("neeva.com")
+        openURL("neeva.com")
         waitUntilPageLoad()
         closeAllTabs()
 
         showRecentlyClosedTabs()
         app.buttons["Ad-free, private search - Neeva"].tap()
 
-        let numTabsOpen = userState.numTabs
-        XCTAssertEqual(numTabsOpen, 1)
+        XCTAssertEqual(app.cells.count, 2)
     }
 
     func testOpenInNewTabRecentlyClosedItem() {
         // test the recently closed tab page
-        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
 
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(NeevaMenu)
-        navigator.goto(HistoryRecentlyClosed)
+        goToRecentlyClosedPage()
 
         waitForExistence(app.tables["Recently Closed Tabs List"])
         app.tables.cells.staticTexts[closedWebPageLabel].tap()
@@ -178,32 +155,26 @@ class HistoryTests: BaseTestCase {
 
     func testOpenInNewPrivateTabRecentlyClosedItem() {
         // Open the default website
-        navigator.openURL("neeva.com")
+        openURL("neeva.com")
         waitUntilPageLoad()
         closeAllTabs()
 
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(NeevaMenu)
-        navigator.goto(HistoryRecentlyClosed)
+        goToRecentlyClosedPage()
 
         waitForExistence(app.tables["Recently Closed Tabs List"])
         app.tables.cells.staticTexts["https://neeva.com"].press(forDuration: 1)
 
         app.buttons["Open in New Incognito Tab"].tap()
 
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(TabTray)
-        let numTabsOpen = userState.numTabs
-        XCTAssertEqual(numTabsOpen, 1)
+        XCTAssertEqual(getNumberOfTabs(), 1)
     }
 
     func testPrivateClosedSiteDoesNotAppearOnRecentlyClosedMenu() {
         waitForTabsButton()
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
+        toggleIncognito()
 
         // Open the default website
-        navigator.openURL("neeva.com")
+        openURL("neeva.com")
         waitUntilPageLoad()
         closeAllTabs()
 
@@ -213,18 +184,14 @@ class HistoryTests: BaseTestCase {
 
     func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
         waitForTabsButton()
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
+        toggleIncognito()
 
         // Open the default website
-        navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
 
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(NeevaMenu)
-        navigator.goto(HistoryRecentlyClosed)
-
+        goToRecentlyClosedPage()
         XCTAssertFalse(app.tables.cells.staticTexts[closedWebPageLabel].exists)
     }
     
@@ -235,7 +202,7 @@ class HistoryTests: BaseTestCase {
     }
     
     private func navigateToExample() {
-        navigator.openURL("example.com")
+        openURL("example.com")
         waitUntilPageLoad()
     }
 
@@ -317,7 +284,6 @@ class HistoryTests: BaseTestCase {
 
     // Smoketest
     func testDeleteHistoryEntryBySwiping() {
-        navigator.nowAt(NewTabScreen)
         navigateToExample()
         goToHistory()
         waitForExistence(app.cells.staticTexts["http://example.com/"], timeout: 10)

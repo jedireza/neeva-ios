@@ -16,8 +16,7 @@ let requestDesktopSiteLabel = "Request Desktop Site"
 class NavigationTest: BaseTestCase {
     func testNavigation() {
         XCTAssert(app.buttons["Address Bar"].exists)
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(URLBarOpen)
+        app.buttons["Address Bar"].tap()
 
         // Check that the back and forward buttons are disabled
         if iPad() {
@@ -31,14 +30,14 @@ class NavigationTest: BaseTestCase {
         }
 
         // Once an url has been open, the back button is enabled but not the forward button
-        navigator.openURL(path(forTestPage: "test-example.html"))
+        openURL(path(forTestPage: "test-example.html"))
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertFalse(app.buttons["Forward"].isEnabled)
 
         // Once a second url is open, back button is enabled but not the forward one till we go back to url_1
-        navigator.openURL(path(forTestPage: "test-mozilla-org.html"))
+        openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
         XCTAssertTrue(app.buttons["Back"].isEnabled)
@@ -83,7 +82,7 @@ class NavigationTest: BaseTestCase {
 
     // Smoketest
     func testLongPressLinkOptions() {
-        navigator.openURL(path(forTestPage: "test-example.html"))
+        openURL(path(forTestPage: "test-example.html"))
         waitForExistence(app.webViews.links[website_2["link"]!], timeout: 30)
         app.webViews.links[website_2["link"]!].press(forDuration: 1)
         waitForExistence(app.otherElements.collectionViews.element(boundBy: 0), timeout: 5)
@@ -97,10 +96,9 @@ class NavigationTest: BaseTestCase {
     }
 
     func testLongPressLinkOptionsPrivateMode() {
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
+        toggleIncognito()
 
-        navigator.openURL(path(forTestPage: "test-example.html"))
+        openURL(path(forTestPage: "test-example.html"))
         waitForExistence(app.webViews.links[website_2["link"]!], timeout: 5)
         app.webViews.links[website_2["link"]!].press(forDuration: 1)
         waitForExistence(app.collectionViews.staticTexts[website_2["moreLinkLongPressUrl"]!], timeout: 3)
@@ -109,9 +107,10 @@ class NavigationTest: BaseTestCase {
         XCTAssertTrue(app.buttons["Copy Link"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Download Link"].exists, "The option is not shown")
     }
+
     func testCopyLink() {
         longPressLinkOptions(optionSelected: "Copy Link")
-        navigator.goto(NewTabScreen)
+        // navigator.goto(NewTabScreen)
         app.buttons["Address Bar"].press(forDuration: 1)
 
         app.menuItems["Paste & Go"].tap()
@@ -120,11 +119,10 @@ class NavigationTest: BaseTestCase {
     }
 
     func testCopyLinkPrivateMode() {
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
+        toggleIncognito()
 
         longPressLinkOptions(optionSelected: "Copy Link")
-        navigator.goto(NewTabScreen)
+        // navigator.goto(NewTabScreen)
         app.buttons["Address Bar"].press(forDuration: 1)
 
         app.menuItems["Paste & Go"].tap()
@@ -135,8 +133,7 @@ class NavigationTest: BaseTestCase {
     func testLongPressOnAddressBar() {
         //This test is for populated clipboard only so we need to make sure there's something in Pasteboard
         XCTAssert(app.buttons["Address Bar"].exists)
-        navigator.nowAt(NewTabScreen)
-        navigator.goto(URLBarOpen)
+        app.buttons["Address Bar"].tap()
         
         app.textFields["address"].typeText("www.google.com")
         // Tapping two times when the text is not selected will reveal the menu
@@ -190,7 +187,7 @@ class NavigationTest: BaseTestCase {
     }
 
     private func longPressLinkOptions(optionSelected: String) {
-        navigator.openURL(path(forTestPage: "test-example.html"))
+        openURL(path(forTestPage: "test-example.html"))
         waitUntilPageLoad()
         app.webViews.links[website_2["link"]!].press(forDuration: 2)
         app.buttons[optionSelected].tap()
@@ -224,8 +221,8 @@ class NavigationTest: BaseTestCase {
     }
 
     func testShareLinkPrivateMode() {
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
+        waitForExistence(app.buttons["Show Tabs"])
+        toggleIncognito()
 
         longPressLinkOptions(optionSelected: "Share Link")
         waitForExistence(app.buttons["Copy"], timeout: 3)
@@ -268,7 +265,7 @@ class NavigationTest: BaseTestCase {
 
     // Smoketest
      func testSSL() {
-        navigator.openURL("https://expired.badssl.com/")
+        openURL("https://expired.badssl.com/")
         waitForExistence(app.buttons["Advanced"], timeout: 10)
         app.buttons["Advanced"].tap()
 
@@ -332,14 +329,14 @@ class NavigationTest: BaseTestCase {
     // in which the share menu was incorrectly reporting data about the PDF after
     // navigating back.
     func testShareMenuNavigatingBackFromPDF() {
-        navigator.openURL(path(forTestPage: "test-pdf.html"))
+        openURL(path(forTestPage: "test-pdf.html"))
         waitUntilPageLoad()
 
         waitForExistence( app.webViews.links["nineteen for me"])
         app.webViews.links["nineteen for me"].tap()
         waitUntilPageLoad()
 
-        navigator.goto(ShareMenu)
+        app.buttons["Share"].tap()
         waitForExistence(app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"], timeout: 10)
 
         print(app.buttons.debugDescription)
@@ -352,8 +349,7 @@ class NavigationTest: BaseTestCase {
 
         // Now confirm that we get a ShareMenu for the current page and not
         // the PDF again.
-        navigator.nowAt(BrowserTab)
-        navigator.goto(ShareMenu)
+        app.buttons["Share"].tap()
         waitForExistence(app.navigationBars["UIActivityContentView"].otherElements["localhost"], timeout: 10)
     }
  }

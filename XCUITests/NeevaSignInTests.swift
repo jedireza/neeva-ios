@@ -66,7 +66,7 @@ class NeevaSignInTests: BaseTestCase {
     }
 
     fileprivate func doSignOut() {
-        navigator.goto(SettingsScreen)
+        goToSettings()
 
         waitForExistence(app.cells["Member, \(username!)"])
         app.cells["Member, \(username!)"].tap()
@@ -102,13 +102,12 @@ class NeevaSignInTests: BaseTestCase {
     }
 
     func testSignInFromSettings() {
-        navigator.goto(SettingsScreen)
+        goToSettings()
 
         waitForExistence(app.cells["Sign In or Join Neeva"])
         app.cells["Sign In or Join Neeva"].tap()
 
         waitUntilPageLoad(withUrlContaining: "https://neeva.com/signin")
-        navigator.nowAt(BrowserTab)
 
         doSignIn()
         doSignOut()

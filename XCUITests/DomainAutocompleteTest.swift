@@ -89,9 +89,8 @@ class DomainAutocompleteTest: BaseTestCase {
     */
     // Non-matches.
     func testNoMatches() {
-        navigator.openURL("twitter.com/login")
-        waitUntilPageLoad()
-        navigator.goto(URLBarOpen)
+        openURL("twitter.com/login")
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("baz")
         let value = app.textFields["address"].value
         // Check there is not more text added, just what user typed

@@ -6,9 +6,10 @@ import XCTest
 
 class DataManagementTests: BaseTestCase {
     func testWebSiteDataEnterFirstTime() {
-        navigator.nowAt(NewTabScreen)
-        navigator.openURL("example.com")
-        navigator.goto(WebsiteDataSettings)
+        openURL("example.com")
+
+        goToClearData()
+        app.tables.cells["Website Data"].tap()
         XCTAssertTrue(app.tables.cells["example.com"].exists)
     }
     /* Disabled failing on BR

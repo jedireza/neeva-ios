@@ -115,7 +115,7 @@ class DownloadFilesTests: BaseTestCase {
     */
 
     private func downloadFile(fileName: String, numberOfDownloads: Int) {
-        navigator.openURL(testURL)
+        openURL(testURL)
         waitUntilPageLoad()
         for _ in 0..<numberOfDownloads {
             app.webViews.links["1 Mio file"].firstMatch.tap()
@@ -125,7 +125,7 @@ class DownloadFilesTests: BaseTestCase {
     }
 
     private func downloadBLOBFile() {
-        navigator.openURL(testBLOBURL)
+        openURL(testBLOBURL)
         waitUntilPageLoad()
         waitForExistence(app.webViews.links["Download Text"])
         app.webViews.links["Download Text"].press(forDuration: 1)

@@ -8,24 +8,22 @@ import XCTest
 class DesktopModeTestsIpad: IpadOnlyTestCase {
     func testLongPressReload() {
         if skipPlatform { return }
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
-        navigator.goto(ReloadLongPressMenu)
-        navigator.performAction(Action.RequestMobileSiteViaReloadMenu)
+        requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
         // Covering scenario that when reloading the page should preserve Desktop site
-        navigator.performAction(Action.ReloadURL)
+        app.buttons["Reload"].tap()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
         closeAllTabs()
 
         // Covering scenario that when closing a tab and re-opening should preserve Mobile mode
-        navigator.createNewTab()
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURLInNewTab(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
@@ -35,23 +33,18 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     func testClearPrivateData() {
         if skipPlatform { return }
 
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-        navigator.goto(ShareMenu)
-        navigator.goto(RequestDesktopSite)
+        requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
         // Go to Clear Data
-        navigator.nowAt(BrowserTab)
-        navigator.performAction(Action.AcceptClearPrivateData)
-        navigator.goto(BrowserTab)
+        clearPrivateData()
         
         // Tab #2
-        navigator.nowAt(BrowserTab)
-        navigator.performAction(Action.OpenNewTabLongPressTabsButton)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURLInNewTab(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
@@ -59,30 +52,23 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     func testSameHostInMultipleTabs() {
         if skipPlatform { return }
 
-        navigator.nowAt(NewTabScreen)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-        navigator.goto(ShareMenu)
-        navigator.goto(RequestDesktopSite)
+        requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
         // Tab #2
-        navigator.nowAt(BrowserTab)
-        navigator.performAction(Action.OpenNewTabLongPressTabsButton)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURLInNewTab(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
-        navigator.goto(ShareMenu)
-        navigator.goto(RequestMobileSite)
+        requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
         // Tab #3
-        navigator.nowAt(BrowserTab)
-        navigator.performAction(Action.OpenNewTabLongPressTabsButton)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURLInNewTab(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
@@ -92,18 +78,14 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     func testChangeModeInSameTab() {
         if skipPlatform { return }
 
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-        navigator.goto(ShareMenu)
-        navigator.goto(RequestDesktopSite)
+        requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
         
-        navigator.nowAt(BrowserTab)
-        navigator.goto(ShareMenu)
-        // Select Mobile site here, the identifier is the same but the Text is not
-        navigator.goto(RequestMobileSite)
+        requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }*/
@@ -144,26 +126,22 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     func testPrivateModeOnHasNoAffectOnNormalMode() {
         if skipPlatform { return }
 
-        navigator.nowAt(NewTabScreen)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
+        toggleIncognito()
+        openURL(path(forTestPage: "test-user-agent.html"))
 
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         // Workaround
         app.buttons["Reload"].tap()
-        navigator.goto(ShareMenu)
-        navigator.goto(RequestDesktopSite)
+        requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
-        navigator.nowAt(BrowserTab)
-        navigator.toggleOff(userState.isPrivate, withAction: Action.ToggleRegularMode)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        toggleIncognito()
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }

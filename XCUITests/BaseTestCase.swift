@@ -2,7 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import MappaMundi
 import XCTest
 
 let serverPort = Int.random(in: 1025..<65000)
@@ -12,9 +11,7 @@ func path(forTestPage page: String) -> String {
 }
 
 class BaseTestCase: XCTestCase {
-    var navigator: MMNavigator<FxUserState>!
     let app = XCUIApplication()
-    var userState: FxUserState!
 
     // leave empty for non-specific tests
     var specificForPlatform: UIUserInterfaceIdiom?
@@ -22,11 +19,6 @@ class BaseTestCase: XCTestCase {
     // These are used during setUp(). Change them prior to setUp() for the app to launch with different args,
     // or, use restart() to re-launch with custom args.
     var launchArguments = [LaunchArguments.ClearProfile, LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet, LaunchArguments.DeviceName, "\(LaunchArguments.ServerPort)\(serverPort)"]
-
-    func setUpScreenGraph() {
-        navigator = createScreenGraph(for: self, with: app).navigator()
-        userState = navigator.userState
-    }
 
     func setUpApp() {
         if !launchArguments.contains("FIREFOX_PERFORMANCE_TEST") {
@@ -41,7 +33,6 @@ class BaseTestCase: XCTestCase {
         super.setUp()
         continueAfterFailure = false
         setUpApp()
-        setUpScreenGraph()
     }
 
     override func tearDown() {
@@ -136,6 +127,40 @@ class BaseTestCase: XCTestCase {
         }
     }
 
+    public func openURL(_ url: String = "example.com") {
+        UIPasteboard.general.string = url
+
+        if app.textFields["address"].isHittable {
+            app.textFields["address"].press(forDuration: 2)
+        } else {
+            waitForExistence(app.buttons["Address Bar"])
+            app.buttons["Address Bar"].press(forDuration: 2)
+        }
+
+        waitForExistence(app.menuItems["Paste & Go"])
+        app.menuItems["Paste & Go"].tap()
+
+        waitForNoExistence(app.staticTexts["Neeva pasted from XCUITests-Runner"])
+
+        waitUntilPageLoad()
+        waitForTabsButton()
+    }
+
+    public func openURLInNewTab(_ url: String = "example.com") {
+        newTab()
+        openURL(url)
+    }
+
+    public func newTab() {
+        app.buttons["Show Tabs"].press(forDuration: 2)
+
+        if app.buttons["New Tab"].exists {
+            app.buttons["New Tab"].tap()
+        } else {
+            app.buttons["New Incognito Tab"].tap()
+        }
+    }
+
     public func closeAllTabs() {
         app.buttons["Show Tabs"].press(forDuration: 1)
 
@@ -148,6 +173,11 @@ class BaseTestCase: XCTestCase {
         } else {
             app.buttons["Close Tab"].tap()
         }
+    }
+
+    public func getNumberOfTabs() -> Int {
+        goToTabTray()
+        return app.cells.count
     }
 }
 

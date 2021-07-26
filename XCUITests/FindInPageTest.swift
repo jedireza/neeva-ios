@@ -5,12 +5,9 @@
 import XCTest
 
 class FindInPageTests: BaseTestCase {
-    private func openFindInPageFromMenu() {
-        navigator.goto(BrowserTab)
-        waitUntilPageLoad()
-        navigator.nowAt(NewTabScreen)
-        app.buttons["Share"].tap()
-        app.buttons["Find on Page"].tap()
+    private func openFindInPageFromMenu(_ url: String = "http://localhost:\(serverPort)/test-fixture/find-in-page-test.html") {
+        openURL(url)
+        goToFindOnPage()
 
         waitForExistence(app.buttons["FindInPage.find_next"], timeout: 5)
         waitForExistence(app.buttons["FindInPage.find_previous"], timeout: 5)
@@ -18,10 +15,7 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testFindInLargeDoc() {
-        navigator.openURL("http://localhost:\(serverPort)/test-fixture/find-in-page-test.html")
-
-        navigator.goto(ShareMenu)
-        navigator.goto(FindInPage)
+        openFindInPageFromMenu()
 
         // Enter some text to start finding
         app.textFields["FindInPage.searchField"].typeText("Book")
@@ -32,8 +26,7 @@ class FindInPageTests: BaseTestCase {
 
     // Smoketest
     func testFindFromMenu() {
-        userState.url = path(forTestPage: "test-mozilla-book.html")
-        openFindInPageFromMenu()
+        openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Enter some text to start finding
         app.textFields["FindInPage.searchField"].typeText("Book")
@@ -62,13 +55,13 @@ class FindInPageTests: BaseTestCase {
         XCTAssertTrue(app.staticTexts["1/6"].exists)
 
         // Tapping on close dismisses the search bar
-        navigator.goto(BrowserTab)
+        app.buttons["Done"].tap()
         waitForNoExistence(app.textFields["Book"])
     }
 
     func testFindInPageTwoWordsSearch() {
-        userState.url = path(forTestPage: "test-mozilla-book.html")
-        openFindInPageFromMenu()
+        openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
+
         // Enter some text to start finding
         app.textFields["FindInPage.searchField"].typeText("The Book of")
 
@@ -78,12 +71,7 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testFindInPageTwoWordsSearchLargeDoc() {
-        navigator.openURL("http://localhost:\(serverPort)/test-fixture/find-in-page-test.html")
-        // Workaround until FxSGraph is fixed to allow the previos way with goto
-        waitUntilPageLoad()
-        navigator.nowAt(BrowserTab)
-        navigator.goto(ShareMenu)
-        navigator.goto(FindInPage)
+        openFindInPageFromMenu()
 
         app.textFields["FindInPage.searchField"].typeText("The Book of")
         waitForExistence(app.textFields["The Book of"], timeout: 15)
@@ -91,8 +79,8 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testFindInPageResultsPageShowHideContent() {
-        userState.url = "lorem2.com"
-        openFindInPageFromMenu()
+        openFindInPageFromMenu("lorem2.com")
+
         // Enter some text to start finding
         app.textFields["FindInPage.searchField"].typeText("lorem")
 
@@ -102,8 +90,7 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testQueryWithNoMatches() {
-        userState.url = path(forTestPage: "test-mozilla-book.html")
-        openFindInPageFromMenu()
+        openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Try to find text which does not match and check that there are not results
         app.textFields["FindInPage.searchField"].typeText("foo")
@@ -112,8 +99,7 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testBarDissapearsWhenReloading() {
-        userState.url = path(forTestPage: "test-mozilla-book.html")
-        openFindInPageFromMenu()
+        openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Before reloading, it is necessary to hide the keyboard
         app.buttons["Address Bar"].tap()
@@ -125,15 +111,11 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testBarDissapearsWhenOpeningTabsTray() {
-        userState.url = path(forTestPage: "test-mozilla-book.html")
-        openFindInPageFromMenu()
+        openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Dismiss keyboard
         app.buttons["FindInPage.close"].tap()
-        navigator.nowAt(BrowserTab)
-
-        // Going to tab tray and back to the website hides the search field.
-        navigator.goto(TabTray)
+        app.buttons["Show Tabs"].tap()
 
         waitForExistence(app.cells.staticTexts["The Book of Mozilla"])
         app.cells.staticTexts["The Book of Mozilla"].tap()
@@ -143,17 +125,15 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testFindFromSelection() {
-        userState.url = path(forTestPage: "test-mozilla-book.html")
-        navigator.goto(BrowserTab)
         let textToFind = "from"
-
-        // Long press on the word to be found
-        waitUntilPageLoad()
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitForExistence(app.webViews.staticTexts[textToFind])
+
         let stringToFind = app.webViews.staticTexts.matching(identifier: textToFind)
         let firstStringToFind = stringToFind.element(boundBy: 0)
         firstStringToFind.press(forDuration: 1)
         waitForExistence(app.menuItems["Copy"], timeout: 5)
+
         // Find in page is correctly launched, bar with text pre-filled and
         // the buttons to find next and previous
         if (app.menuItems["Find in Page"].exists) {

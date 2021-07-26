@@ -11,7 +11,7 @@ class PrivateModeButton: ToggleButton, PrivateModeUI {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        accessibilityLabel = .TabTrayToggleAccessibilityLabel
+        accessibilityLabel = "Incognito Mode"
         accessibilityHint = .TabTrayToggleAccessibilityHint
         let maskImage = UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
         setImage(maskImage, for: [])

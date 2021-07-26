@@ -10,18 +10,18 @@ class ClipBoardTests: BaseTestCase {
     //Check for test url in the browser
     func checkUrl() {
         let urlField = app.buttons["Address Bar"]
-        waitForValueContains(urlField, value: "www.example")
+        waitForValueContains(urlField, value: "http://example.com/")
     }
 
     //Copy url from the browser
     func copyUrl() {
-        navigator.goto(URLBarOpen)
+        app.buttons["Address Bar"].tap()
         waitForExistence(app.textFields["address"])
         app.textFields["address"].tap()
+
         waitForExistence(app.menuItems["Copy"])
         app.menuItems["Copy"].tap()
         app.typeText("\r")
-        navigator.nowAt(BrowserTab)
     }
 
     //Check copied url is same as in browser
@@ -35,37 +35,17 @@ class ClipBoardTests: BaseTestCase {
 
     // This test is disabled in release, but can still run on master
     func testClipboard() {
-        navigator.openURL(url)
-        waitUntilPageLoad()
+        openURL("example.com")
         checkUrl()
         copyUrl()
         checkCopiedUrl()
 
-        navigator.createNewTab()
+        newTab()
 
         app.buttons["Address Bar"].tap()
         app.textFields["address"].press(forDuration: 1)
         app.menuItems["Paste & Go"].tap()
 
-        // causing tests to fail in CirceCI works locally
-        // TODO: Find out why CirceCI says URL does not match (even though it does)
-        // checkUrl()
+        checkUrl()
     }
-
-    // Smoketest
-    /* Disabled: Test needs to be updated.
-    func testClipboardPasteAndGo() {
-        navigator.openURL(url)
-        waitUntilPageLoad()
-        copyUrl()
-        checkCopiedUrl()
-
-        navigator.createNewTab()
-        app.buttons["Address Bar"].press(forDuration: 1)
-        waitForExistence(app.tables["Context Menu"])
-        app.cells["doc.on.clipboard"].tap()
-        waitForExistence(app.buttons["Address Bar"])
-        waitForValueContains(app.buttons["Address Bar"], value: "www.example.com")
-    }
-    */
 }

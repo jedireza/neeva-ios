@@ -16,14 +16,8 @@ fileprivate let twitterTitle = "Twitter"
 fileprivate extension BaseTestCase {
     func openTwoWebsites() {
         // Open two tabs
-        navigator.openURL(firstWebsite.url)
-        waitForTabsButton()
-        app.buttons["Show Tabs"].tap()
-        app.buttons["Add Tab"].tap()
-        navigator.nowAt(NewTabScreen)
-        navigator.openURL(secondWebsite.url)
-        waitUntilPageLoad()
-        waitForTabsButton()
+        openURL(firstWebsite.url)
+        openURLInNewTab(secondWebsite.url)
     }
 
     func dragAndDrop(dragElement: XCUIElement, dropOnElement: XCUIElement) {
@@ -112,9 +106,7 @@ class DragAndDropTestiPad: IpadOnlyTestCase {
     func testRearrangeTabsPrivateMode() {
         if skipPlatform { return }
 
-        app.buttons["Show Tabs"].tap()
-        app.buttons["Private Mode"].tap()
-
+        toggleIncognito()
         openTwoWebsites()
         app.buttons["Show Tabs"].tap()
 

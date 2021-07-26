@@ -7,7 +7,6 @@ fileprivate let secondWebsite = (url: path(forTestPage: "test-mozilla-book.html"
 
 class TabMenuTests: BaseTestCase {
     func testCloseNormalTabFromTab() {
-        navigator.nowAt(NewTabScreen)
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
@@ -16,17 +15,13 @@ class TabMenuTests: BaseTestCase {
         waitForExistence(app.buttons["Close Tab"], timeout: 3)
         app.buttons["Close Tab"].tap()
 
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-
-        navigator.goto(TabTray)
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        goToTabTray()
 
         XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(app.cells.firstMatch.label, firstWebsite.tabName, "Expected label of remaining tab is not correct")
     }
 
     func testCloseAllNormalTabsFromTab() {
-        navigator.nowAt(NewTabScreen)
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
@@ -38,20 +33,14 @@ class TabMenuTests: BaseTestCase {
         waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
         app.buttons["Confirm Close All Tabs"].tap()
 
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        navigator.nowAt(NewTabScreen)
-
-        navigator.goto(TabTray)
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        goToTabTray()
 
         XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
     }
 
     func testCloseIncognitoTabFromTab() {
-        navigator.performAction(Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
-
+        toggleIncognito()
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
@@ -60,19 +49,14 @@ class TabMenuTests: BaseTestCase {
         waitForExistence(app.buttons["Close Tab"], timeout: 3)
         app.buttons["Close Tab"].tap()
 
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-
-        navigator.goto(TabTray)
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        goToTabTray()
 
         XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(app.cells.firstMatch.label, firstWebsite.tabName, "Expected label of remaining tab is not correct")
     }
 
     func testCloseAllIncognitoTabsFromTab() {
-        navigator.performAction(Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
-
+        toggleIncognito()
         openTwoWebsites()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
@@ -84,26 +68,18 @@ class TabMenuTests: BaseTestCase {
         app.buttons["Confirm Close All Tabs"].tap()
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        navigator.nowAt(NewTabScreen)
+        toggleIncognito()
 
-        navigator.performAction(Action.TogglePrivateMode)
-
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        navigator.nowAt(NewTabScreen)
-
-        navigator.goto(TabTray)
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        goToTabTray()
 
         XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
     }
 
     func testCloseAllNormalTabsFromSwitcher() {
-        navigator.nowAt(NewTabScreen)
         openTwoWebsites()
-        navigator.goto(TabTray)
 
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        goToTabTray()
         app.buttons["Done"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
@@ -112,24 +88,17 @@ class TabMenuTests: BaseTestCase {
         waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
         app.buttons["Confirm Close All Tabs"].tap()
 
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        navigator.nowAt(NewTabScreen)
-
-        navigator.goto(TabTray)
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        goToTabTray()
 
         XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
     }
 
     func testCloseAllIncognitoTabsFromSwitcher() {
-        navigator.performAction(Action.TogglePrivateMode)
-        navigator.nowAt(NewTabScreen)
-
+        toggleIncognito()
         openTwoWebsites()
-        navigator.goto(TabTray)
 
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        goToTabTray()
         app.buttons["Done"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
@@ -139,15 +108,9 @@ class TabMenuTests: BaseTestCase {
         app.buttons["Confirm Close All Tabs"].tap()
 
         waitForExistence(app.buttons["Done"], timeout: 3)
-        navigator.nowAt(TabTray)
 
-        navigator.performAction(Action.TogglePrivateMode)
-
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        navigator.nowAt(NewTabScreen)
-
-        navigator.goto(TabTray)
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        toggleIncognito()
+        goToTabTray()
 
         XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
@@ -157,11 +120,10 @@ class TabMenuTests: BaseTestCase {
 fileprivate extension BaseTestCase {
     func openTwoWebsites() {
         // Open two tabs
-        navigator.openURL(firstWebsite.url)
+        openURL(firstWebsite.url)
         waitForTabsButton()
-        navigator.goto(TabTray)
-        navigator.openURL(secondWebsite.url)
-        waitUntilPageLoad()
+
+        openURLInNewTab(secondWebsite.url)
         waitForTabsButton()
     }
 }
