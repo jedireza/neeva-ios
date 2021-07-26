@@ -34,7 +34,8 @@ enum PromoCardType {
         case .defaultBrowser:
             Text("Browse in peace,\nalways")
         case .referralPromo:
-            Text("Win ") + Text("$5000").fontWeight(.medium) + Text(" by inviting friends to join Neeva")
+            (Text("Win ") + Text("$5000").fontWeight(.medium) + Text(" by inviting friends to join Neeva"))
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -164,10 +165,18 @@ struct PromoCard: View {
 
     }
 
+    var isHorizontal: Bool {
+        if case .referralPromo = type {
+            return false
+        }
+
+        // button takes up roughly 1/2.5 of the view width
+        return viewWidth/2.5 > minimumButtonWidth
+    }
+
     var body: some View {
         Group {
-            // button takes up roughly 1/2.5 of the view width
-            if viewWidth/2.5 > minimumButtonWidth {
+            if isHorizontal {
                 HStack {
                     label
                     Spacer()

@@ -85,7 +85,7 @@ public struct NeevaMenuView: View {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     if NeevaFeatureFlags[.referralPromo] {
-                        NeevaMenuRowButtonView(label: "Win $5k by inviting friends to join Neeva", isPromo: true) {
+                        NeevaMenuRowButtonView(label: "Win $5000 by inviting friends", isPromo: true) {
                             self.menuAction!(NeevaMenuButtonActions.referralPromo)
                         }
                         .accentColor(Color.brand.adaptive.orange)
@@ -153,7 +153,7 @@ public struct NeevaMenuView: View {
 
 struct NeevaMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuView(menuAction: nil)
+        NeevaMenuView(menuAction: nil).previewDevice("iPod touch (7th generation)").environment(\.sizeCategory, .extraExtraExtraLarge)
         NeevaMenuView(menuAction: nil).environment(\.isIncognito, true)
     }
 }

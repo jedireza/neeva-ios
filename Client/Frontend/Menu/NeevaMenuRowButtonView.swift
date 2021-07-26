@@ -46,7 +46,10 @@ public struct NeevaMenuRowButtonView: View {
     public var body: some View {
         Button(action: action) {
             HStack(spacing: 0) {
-                Text(label).withFont(isPromo ? .headingMedium : .bodyLarge)
+                Text(label)
+                    .withFont(isPromo ? .headingMedium : .bodyLarge)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.vertical, 10)
                 Spacer()
                 Group {
                     if let nicon = self.nicon {
@@ -58,7 +61,7 @@ public struct NeevaMenuRowButtonView: View {
             }
             .padding(.trailing, -6)
             .padding(.horizontal, GroupedCellUX.horizontalPadding)
-            .frame(height: GroupedCellUX.minCellHeight)
+            .frame(minHeight: GroupedCellUX.minCellHeight)
         }
         .buttonStyle(TableCellButtonStyle())
     }
@@ -67,5 +70,6 @@ public struct NeevaMenuRowButtonView: View {
 struct NeevaMenuRowButtonView_Previews: PreviewProvider {
     static var previews: some View {
         NeevaMenuRowButtonView(label: "Test", nicon: .gear) {}
+            .previewLayout(.sizeThatFits)
     }
 }
