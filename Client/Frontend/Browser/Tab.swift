@@ -295,7 +295,7 @@ class Tab: NSObject {
     deinit {
         debugTabCount -= 1
 
-        #if DEBUG
+        #if DEBUG___DISABLED
         guard let appDelegate = UIApplication.shared.bvc as? AppDelegate else { return }
         func checkTabCount(failures: Int) {
             // Need delay for pool to drain.

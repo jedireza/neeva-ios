@@ -75,16 +75,31 @@ commands:
       - run:
           name: UITests - iPad
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing UITests
+      - store_artifacts:
+          path: ui-test-screenshots
+          when: always
   xcui-tests:
     steps:
       - run:
           name: XCUITests
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests -resultBundlePath xcuitests.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+      - store-xcuitest-artifact
   xcui-tests-ipad:
     steps:
       - run:
           name: XCUITests - iPad
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests -resultBundlePath xcuitests.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+      - store-xcuitest-artifact
+
+  store-xcuitest-artifact:
+    steps:
+      - run:
+          name: Zip Test Results
+          command: zip -r xcuitests.xcresult.zip xcuitests.xcresult
+          when: always
+      - store_artifacts:
+          path: xcuitests.xcresult.zip
+          when: always
   build-app-clip:
     steps:
       - checkout

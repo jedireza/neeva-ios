@@ -40,11 +40,8 @@ class ClipBoardTests: BaseTestCase {
         checkUrl()
         copyUrl()
         checkCopiedUrl()
-        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
 
         navigator.createNewTab()
-
-        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
 
         app.buttons["Address Bar"].tap()
         app.textFields["address"].press(forDuration: 1)
@@ -63,9 +60,7 @@ class ClipBoardTests: BaseTestCase {
         copyUrl()
         checkCopiedUrl()
 
-        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         navigator.createNewTab()
-        waitForNoExistence(app.staticTexts["XCUITests-Runner pasted from Neeva"])
         app.buttons["Address Bar"].press(forDuration: 1)
         waitForExistence(app.tables["Context Menu"])
         app.cells["doc.on.clipboard"].tap()

@@ -136,7 +136,7 @@ struct ZeroQueryView: View {
     }
 }
 
-#if DEV
+#if DEBUG
 struct ZeroQueryView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {

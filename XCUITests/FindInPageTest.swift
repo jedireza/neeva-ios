@@ -19,7 +19,6 @@ class FindInPageTests: BaseTestCase {
 
     func testFindInLargeDoc() {
         navigator.openURL("http://localhost:\(serverPort)/test-fixture/find-in-page-test.html")
-        waitForNoExistence(app.staticTexts["Fennec pasted from XCUITests-Runner"])
 
         navigator.goto(ShareMenu)
         navigator.goto(FindInPage)

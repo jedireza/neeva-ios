@@ -246,7 +246,7 @@ public var isTablet: Bool {
     return UIDevice.current.userInterfaceIdiom == .pad
 }
 
-func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScreenGraph<FxUserState> {
+func createScreenGraph(for test: BaseTestCase, with app: XCUIApplication) -> MMScreenGraph<FxUserState> {
     let map = MMScreenGraph(for: test, with: FxUserState.self)
 
     let navigationControllerBackAction = {
@@ -328,11 +328,13 @@ func createScreenGraph(for test: XCTestCase, with app: XCUIApplication) -> MMScr
         screenState.gesture(forAction: Action.LoadURLByPasting, Action.LoadURL) { userState in
             UIPasteboard.general.string = userState.url ?? defaultURL
             app.menuItems["Paste & Go"].tap()
+            sleep(3) // wait for the paste bar to disappear
         }
 
         screenState.gesture(forAction: Action.SetURLByPasting) { userState in
             UIPasteboard.general.string = userState.url ?? defaultURL
             app.menuItems["Paste"].tap()
+            sleep(3) // wait for the paste bar to disappear
         }
 
         screenState.backAction = {

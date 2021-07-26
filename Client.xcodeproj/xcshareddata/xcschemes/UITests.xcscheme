@@ -5,22 +5,6 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "669ACD52269CED060038C89C"
-               BuildableName = "AppClip.app"
-               BlueprintName = "AppClip"
-               ReferencedContainer = "container:Client.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
@@ -32,9 +16,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "661519D126A9C3A6008E2725"
-               BuildableName = "AppClipTests.xctest"
-               BlueprintName = "AppClipTests"
+               BlueprintIdentifier = "D39FA15E1A83E0EC00EE869C"
+               BuildableName = "UITests.xctest"
+               BlueprintName = "UITests"
                ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -50,20 +34,10 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "669ACD52269CED060038C89C"
-            BuildableName = "AppClip.app"
-            BlueprintName = "AppClip"
-            ReferencedContainer = "container:Client.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "_XCAppClipURL"
-            value = "https://m1.neeva.com/foo?testValue=bar"
+            key = "KIF_SCREENSHOTS"
+            value = "$PROJECT_DIR/ui-test-screenshots"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
@@ -74,16 +48,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "669ACD52269CED060038C89C"
-            BuildableName = "AppClip.app"
-            BlueprintName = "AppClip"
-            ReferencedContainer = "container:Client.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

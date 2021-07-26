@@ -5,7 +5,7 @@
 import XCTest
 import MappaMundi
 
-class FxScreenGraphTests: XCTestCase {
+class FxScreenGraphTests: BaseTestCase {
     func testRenderDotFile() {
         // This will render to $HOME/Library/Caches/tools.mappamundi/graph.dot, falling back to $HOME/Library/Caches/graph.dot
         // Shell command:

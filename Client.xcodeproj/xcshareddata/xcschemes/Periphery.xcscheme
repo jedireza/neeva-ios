@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2FCAE2191ABB51F800877008"
-               BuildableName = "libStorage.a"
-               BlueprintName = "Storage"
+               BlueprintIdentifier = "C9F49CD426711C6000F3408A"
+               BuildableName = "Periphery"
+               BlueprintName = "Periphery"
                ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,26 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2FCAE2231ABB51F800877008"
-               BuildableName = "StorageTests.xctest"
-               BlueprintName = "StorageTests"
-               ReferencedContainer = "container:Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3B43E3CF1D95C48D00BBA9DB"
-               BuildableName = "StoragePerfTests.xctest"
-               BlueprintName = "StoragePerfTests"
-               ReferencedContainer = "container:Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -60,15 +40,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2FCAE2191ABB51F800877008"
-            BuildableName = "libStorage.a"
-            BlueprintName = "Storage"
-            ReferencedContainer = "container:Client.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -79,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2FCAE2191ABB51F800877008"
-            BuildableName = "libStorage.a"
-            BlueprintName = "Storage"
+            BlueprintIdentifier = "C9F49CD426711C6000F3408A"
+            BuildableName = "Periphery"
+            BlueprintName = "Periphery"
             ReferencedContainer = "container:Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

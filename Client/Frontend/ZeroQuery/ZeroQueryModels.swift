@@ -59,7 +59,7 @@ class SuggestedSitesViewModel: ObservableObject {
         self.sites = sites
     }
 
-    #if DEV
+    #if DEBUG
     static let preview = SuggestedSitesViewModel(
         sites: [
             .init(url: "https://amazon.com", title: "Amazon", id: 1),

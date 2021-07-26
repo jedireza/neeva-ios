@@ -142,7 +142,7 @@ struct SuggestedSitesView: View {
     }
 }
 
-#if DEV
+#if DEBUG
 struct SuggestedSitesViews_Previews: PreviewProvider {
     static var previews: some View {
         HStack {

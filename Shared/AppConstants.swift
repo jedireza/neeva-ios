@@ -33,11 +33,11 @@ public struct AppConstants {
 
     /// Build Channel.
     public static let BuildChannel: AppBuildChannel = {
-        #if MOZ_CHANNEL_RELEASE
+        #if NEEVA_CHANNEL_RELEASE
             return AppBuildChannel.release
-        #elseif MOZ_CHANNEL_BETA
+        #elseif NEEVA_CHANNEL_BETA
             return AppBuildChannel.beta
-        #elseif MOZ_CHANNEL_NEEVA
+        #elseif NEEVA_CHANNEL_DEV
             return AppBuildChannel.developer
         #endif
     }()
@@ -59,11 +59,11 @@ public struct AppConstants {
     /// Enables support for International Domain Names (IDN)
     /// Disabled because of https://bugzilla.mozilla.org/show_bug.cgi?id=1312294
     public static let MOZ_PUNYCODE: Bool = {
-        #if MOZ_CHANNEL_RELEASE
+        #if NEEVA_CHANNEL_RELEASE
             return false
-        #elseif MOZ_CHANNEL_BETA
+        #elseif NEEVA_CHANNEL_BETA
             return false
-        #elseif MOZ_CHANNEL_NEEVA
+        #elseif NEEVA_CHANNEL_DEV
             return false
         #else
             return true
@@ -81,11 +81,11 @@ public struct AppConstants {
     
     /// Put it behind a feature flag as the strings didn't land in time
     public static let MOZ_SHAKE_TO_RESTORE: Bool = {
-        #if MOZ_CHANNEL_RELEASE
+        #if NEEVA_CHANNEL_RELEASE
         return false
-        #elseif MOZ_CHANNEL_BETA
+        #elseif NEEVA_CHANNEL_BETA
         return true
-        #elseif MOZ_CHANNEL_NEEVA
+        #elseif NEEVA_CHANNEL_DEV
         return true
         #else
         return true
@@ -93,11 +93,11 @@ public struct AppConstants {
     }()
     
     public static let CHRONOLOGICAL_TABS: Bool = {
-        #if MOZ_CHANNEL_RELEASE
+        #if NEEVA_CHANNEL_RELEASE
         return false
-        #elseif MOZ_CHANNEL_BETA
+        #elseif NEEVA_CHANNEL_BETA
         return false
-        #elseif MOZ_CHANNEL_NEEVA
+        #elseif NEEVA_CHANNEL_DEV
         return false
         #else
         return false

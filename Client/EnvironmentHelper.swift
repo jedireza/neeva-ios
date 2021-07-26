@@ -7,7 +7,7 @@ public class EnvironmentHelper {
     public static let shared = EnvironmentHelper()
 
     public var env : ClientLogEnvironment {
-        #if DEV
+        #if DEBUG
             return ClientLogEnvironment(rawValue: "Dev")!
         #else
             return ClientLogEnvironment(rawValue: "Prod")!

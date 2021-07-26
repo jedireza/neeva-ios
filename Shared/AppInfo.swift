@@ -28,7 +28,7 @@ open class AppInfo {
     }
 
     public static var appVersionReportedToNeeva: String {
-        #if DEV
+        #if DEBUG
             appVersion + "-dev"
         #else
             appVersion

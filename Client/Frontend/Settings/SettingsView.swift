@@ -16,7 +16,7 @@ extension EnvironmentValues {
 struct SettingsView: View {
     let dismiss: () -> ()
 
-    #if DEV
+    #if DEBUG
     @State var showDebugSettings = true
     #else
     @State var showDebugSettings = false
