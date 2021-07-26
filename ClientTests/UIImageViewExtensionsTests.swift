@@ -41,7 +41,7 @@ class UIImageViewExtensionsTests: XCTestCase {
         }
 
         let favImageView = UIImageView()
-        favImageView.setImageAndBackground(forIcon: Favicon(url: "http://localhost:\(AppInfo.webserverPort)/favicon/icon"), website: URL(string: "http://localhost:\(AppInfo.webserverPort)")) {}
+        favImageView.setImageAndBackground(forIcon: Favicon(url: "http://localhost:\(AppInfo.webserverPort)/favicon/icon".asURL!), website: URL(string: "http://localhost:\(AppInfo.webserverPort)")) {}
 
         let expect = expectation(description: "UIImageView async load")
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
@@ -54,8 +54,8 @@ class UIImageViewExtensionsTests: XCTestCase {
     func testDefaultIcons() {
         let favImageView = UIImageView()
 
-        let gFavURL = "https://www.facebook.com/fav" //This will be fetched from tippy top sites
-        let gURL = URL(string: "http://www.facebook.com")!
+        let gFavURL: URL = "https://www.facebook.com/fav" //This will be fetched from tippy top sites
+        let gURL: URL = "http://www.facebook.com"
         let defaultItem = FaviconFetcher.bundledIcons[gURL.baseDomain!]!
         let correctImage = UIImage(contentsOfFile: defaultItem.filePath)!
 

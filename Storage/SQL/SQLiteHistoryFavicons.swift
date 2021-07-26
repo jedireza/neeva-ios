@@ -137,12 +137,12 @@ extension SQLiteHistory: Favicons {
 
         // Sigh.
         if let siteID = site.id {
-            let args: Args? = [siteID, icon.url]
+            let args: Args? = [siteID, icon.url.absoluteString]
             return doChange("\(insertOrIgnore) (?, \(iconSubselect))", args: args)
         }
 
         // The worst.
-        let args: Args? = [site.url, icon.url]
+        let args: Args? = [site.url, icon.url.absoluteString]
         return doChange("\(insertOrIgnore) (\(siteSubselect), \(iconSubselect))", args: args)
     }
 
@@ -249,8 +249,7 @@ extension SQLiteHistory: Favicons {
         getFaviconsForURL(site.url).upon { result in
             guard let favicons = result.successValue,
                 let favicon = favicons[0],
-                let faviconURLString = favicon?.url,
-                let faviconURL = URL(string: faviconURLString) else {
+                let faviconURL = favicon?.url else {
                 deferred.fill(Maybe(failure: FaviconLookupError(siteURL: site.url)))
                 return
             }
@@ -274,7 +273,7 @@ extension SQLiteHistory: Favicons {
 
             // Since we were able to scrape a favicon URL off the web page,
             // insert it into the DB to avoid having to scrape again later.
-            let favicon = Favicon(url: faviconURL.absoluteString)
+            let favicon = Favicon(url: faviconURL)
             self.favicons.insertOrUpdateFavicon(favicon).upon { result in
                 if let faviconID = result.successValue {
 

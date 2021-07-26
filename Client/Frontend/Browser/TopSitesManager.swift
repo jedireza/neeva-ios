@@ -69,7 +69,7 @@ struct TopSitesHandler {
             var widgetkitTopSites = [WidgetKitTopSiteModel]()
             result.forEach { site in
                 // Favicon icon url
-                let iconUrl = site.icon?.url ?? ""
+                let iconUrl = site.icon?.url.absoluteString ?? ""
                 let imageKey = site.tileURL.baseDomain ?? ""
                 widgetkitTopSites.append(WidgetKitTopSiteModel(title: site.title, faviconUrl: iconUrl, url: site.url, imageKey: imageKey))
                 // fetch favicons and cache them on disk

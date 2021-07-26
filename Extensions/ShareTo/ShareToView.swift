@@ -92,7 +92,7 @@ struct ItemDetailView: View {
 
     var body: some View {
         HStack(spacing: ShareToUX.padding) {
-            WebImage(url: item.favicon?.url.asURL)
+            WebImage(url: item.favicon?.url)
                 .resizable()
                 .background(Color.tertiarySystemFill)
                 .frame(width: 44, height: 44)

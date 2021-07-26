@@ -46,12 +46,12 @@ class FaviconHandler {
         }
 
         let onCompletedSiteFavicon: SDInternalCompletionBlock = { (img, data, _, _, _, url) -> Void in
-            guard let urlString = url?.absoluteString else {
+            guard let url = url else {
                 deferred.fill(Maybe(failure: FaviconError()))
                 return
             }
 
-            let favicon = Favicon(url: urlString, date: Date())
+            let favicon = Favicon(url: url, date: Date())
 
             guard let img = img else {
                 favicon.width = 0
@@ -68,7 +68,7 @@ class FaviconHandler {
         }
 
         let onCompletedPageFavicon: SDInternalCompletionBlock = { (img, data, _, _, _, url) -> Void in
-            guard let img = img, let urlString = url?.absoluteString else {
+            guard let img = img, let url = url else {
                 // If we failed to download a page-level icon, try getting the domain-level icon
                 // instead before ultimately failing.
                 let siteIconURL = currentURL.domainURL.appendingPathComponent("favicon.ico")
@@ -77,7 +77,7 @@ class FaviconHandler {
                 return
             }
 
-            let favicon = Favicon(url: urlString, date: Date())
+            let favicon = Favicon(url: url, date: Date())
             favicon.width = Int(img.size.width)
             favicon.height = Int(img.size.height)
 

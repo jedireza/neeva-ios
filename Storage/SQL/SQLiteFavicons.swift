@@ -12,15 +12,15 @@ open class SQLiteFavicons {
         self.db = db
     }
 
-    public func getFaviconIDQuery(url: String) -> (sql: String, args: Args?) {
+    public func getFaviconIDQuery(url: URL) -> (sql: String, args: Args?) {
         var args: Args = []
-        args.append(url)
+        args.append(url.absoluteString)
         return (sql: "SELECT id FROM favicons WHERE url = ? LIMIT 1", args: args)
     }
 
     public func getInsertFaviconQuery(favicon: Favicon) -> (sql: String, args: Args?) {
         var args: Args = []
-        args.append(favicon.url)
+        args.append(favicon.url.absoluteString)
         args.append(favicon.width)
         args.append(favicon.height)
         args.append(favicon.date)
@@ -32,7 +32,7 @@ open class SQLiteFavicons {
         args.append(favicon.width)
         args.append(favicon.height)
         args.append(favicon.date)
-        args.append(favicon.url)
+        args.append(favicon.url.absoluteString)
         return (sql: "UPDATE favicons SET width = ?, height = ?, date = ? WHERE url = ?", args: args)
     }
 

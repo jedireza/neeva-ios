@@ -81,14 +81,14 @@ extension FaviconFetcher {
                     continue //Skip the rest of the loop. But don't stop the loop
                 }
 
-                if let iconUrl = NSURL(string: href, relativeTo: url as URL), let absoluteString = iconUrl.absoluteString {
-                    let icon = Favicon(url: absoluteString)
+                if let iconUrl = URL(string: href, relativeTo: url) {
+                    let icon = Favicon(url: iconUrl)
                     icons = [icon]
                 }
 
                 // If we haven't got any options icons, then use the default at the root of the domain.
-                if let url = NSURL(string: "/favicon.ico", relativeTo: url as URL), icons.isEmpty, let absoluteString = url.absoluteString {
-                    let icon = Favicon(url: absoluteString)
+                if let url = URL(string: "/favicon.ico", relativeTo: url) {
+                    let icon = Favicon(url: url)
                     icons = [icon]
                 }
 
@@ -119,36 +119,34 @@ extension FaviconFetcher {
         let site = Site(url: siteUrl, title: "")
 
         var fav = Favicon(url: url)
-        if let url = url.asURL {
-            var fetch: SDWebImageOperation?
-            fetch = manager.loadImage(with: url,
-                options: .lowPriority,
-                progress: { (receivedSize, expectedSize, _) in
-                    if receivedSize > FaviconFetcher.MaximumFaviconSize || expectedSize > FaviconFetcher.MaximumFaviconSize {
-                        fetch?.cancel()
-                    }
-                },
-                completed: { (img, _, _, _, _, url) in
-                    guard let url = url else {
-                        deferred.fill(Maybe(failure: FaviconError()))
-                        return
-                    }
-                    fav = Favicon(url: url.absoluteString)
+        var fetch: SDWebImageOperation?
+        fetch = manager.loadImage(
+            with: url,
+            options: .lowPriority,
+            progress: { (receivedSize, expectedSize, _) in
+                if receivedSize > FaviconFetcher.MaximumFaviconSize || expectedSize > FaviconFetcher.MaximumFaviconSize {
+                    fetch?.cancel()
+                }
+            },
+            completed: { (img, _, _, _, _, url) in
+                guard let url = url else {
+                    deferred.fill(Maybe(failure: FaviconError()))
+                    return
+                }
+                fav = Favicon(url: url)
 
-                    if let img = img {
-                        fav.width = Int(img.size.width)
-                        fav.height = Int(img.size.height)
-                        profile.favicons.addFavicon(fav, forSite: site)
-                    } else {
-                        fav.width = 0
-                        fav.height = 0
-                    }
+                if let img = img {
+                    fav.width = Int(img.size.width)
+                    fav.height = Int(img.size.height)
+                    profile.favicons.addFavicon(fav, forSite: site)
+                } else {
+                    fav.width = 0
+                    fav.height = 0
+                }
 
-                    deferred.fill(Maybe(success: fav))
-            })
-        } else {
-            return deferMaybe(FaviconFetcherErrorType(description: "Invalid URL \(url)"))
-        }
+                deferred.fill(Maybe(success: fav))
+            }
+        )
 
         return deferred
     }
@@ -159,8 +157,8 @@ extension FaviconFetcher {
         FaviconFetcher.getForURL(url.domainURL, profile: profile).uponQueue(.main) { result in
             var iconURL: URL?
             
-            if let favicons = result.successValue, favicons.count > 0, let faviconImageURL =
-                favicons.first?.url.asURL {
+            if let favicons = result.successValue, favicons.count > 0,
+               let faviconImageURL = favicons.first?.url {
                 iconURL = faviconImageURL
             } else {
                 return deferred.fill(Maybe(failure: FaviconError()))

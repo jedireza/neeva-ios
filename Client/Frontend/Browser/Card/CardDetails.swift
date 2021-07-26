@@ -74,7 +74,7 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
     var favicon: WebImage? {
         if let item = manager.get(for: id) {
             if let favIcon = item.displayFavicon {
-                return WebImage(url: URL(string: favIcon.url))
+                return WebImage(url: favIcon.url)
             }
         }
         return nil

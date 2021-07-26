@@ -525,7 +525,7 @@ class Tab: NSObject {
     }
     
     func updateFaviconCache() {
-        guard let displayFavicon = displayFavicon?.url, let faviconUrl = URL(string: displayFavicon), let baseDomain = url?.baseDomain else {
+        guard let faviconUrl = displayFavicon?.url, let baseDomain = url?.baseDomain else {
             return
         }
 

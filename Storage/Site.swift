@@ -8,12 +8,12 @@ import Shared
 open class Favicon: Identifiable {
     open var id: Int?
 
-    public let url: String
+    public let url: URL
     public let date: Date
     open var width: Int?
     open var height: Int?
 
-    public init(url: String, date: Date = Date()) {
+    public init(url: URL, date: Date = Date()) {
         self.url = url
         self.date = date
     }

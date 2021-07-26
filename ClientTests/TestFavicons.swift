@@ -14,7 +14,7 @@ class TestFavicons: ProfileTest {
     fileprivate func addSite(_ favicons: Favicons, url: String, s: Bool = true) {
         let expectation = self.expectation(description: "Wait for history")
         let site = Site(url: url.asURL!, title: "")
-        let icon = Favicon(url: url + "/icon.png")
+        let icon = Favicon(url: (url + "/icon.png").asURL!)
         favicons.addFavicon(icon, forSite: site).upon {
             XCTAssertEqual($0.isSuccess, s, "Icon added \(url)")
             expectation.fulfill()

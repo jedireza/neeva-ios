@@ -324,7 +324,7 @@ private func createTransitionCellFromTab(_ tab: Tab?, withFrame frame: CGRect) -
     cell.titleText.text = tab?.displayTitle
 
     if let favIcon = tab?.displayFavicon {
-        cell.favicon.sd_setImage(with: URL(string: favIcon.url)!)
+        cell.favicon.sd_setImage(with: favIcon.url)
     } else {
         let defaultFavicon = UIImage(named: "defaultFavicon")
         if tab?.isPrivate ?? false {

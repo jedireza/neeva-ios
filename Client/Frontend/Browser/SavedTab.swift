@@ -13,7 +13,7 @@ class SavedTab: NSObject, NSCoding {
     var isPrivate: Bool
     var sessionData: SessionData?
     var screenshotUUID: UUID?
-    var faviconURL: String?
+    var faviconURL: URL?
     var UUID: String?
     var rootUUID: String?
     var parentUUID: String?
@@ -21,7 +21,7 @@ class SavedTab: NSObject, NSCoding {
 
     var jsonDictionary: [String: AnyObject] {
         let title: String = self.title ?? "null"
-        let faviconURL: String = self.faviconURL ?? "null"
+        let faviconURL: String = self.faviconURL?.absoluteString ?? "null"
         let uuid: String = self.screenshotUUID?.uuidString ?? "null"
         
         var json: [String: AnyObject] = [
@@ -44,7 +44,7 @@ class SavedTab: NSObject, NSCoding {
         return json
     }
 
-    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: String?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String, tabIndex: Int?) {
+    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: URL?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String, tabIndex: Int?) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
@@ -66,7 +66,7 @@ class SavedTab: NSObject, NSCoding {
         self.isSelected = coder.decodeBool(forKey: "isSelected")
         self.title = coder.decodeObject(forKey: "title") as? String
         self.isPrivate = coder.decodeBool(forKey: "isPrivate")
-        self.faviconURL = coder.decodeObject(forKey: "faviconURL") as? String
+        self.faviconURL = (coder.decodeObject(forKey: "faviconURL") as? String)?.asURL
         self.url = coder.decodeObject(forKey: "url") as? URL
         self.UUID = coder.decodeObject(forKey: "UUID") as? String
         self.rootUUID = coder.decodeObject(forKey: "rootUUID") as? String
