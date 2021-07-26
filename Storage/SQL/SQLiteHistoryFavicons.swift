@@ -53,8 +53,8 @@ private let topSitesIcons: [String : (color: UIColor, fileURL: URL)] = {
 }()
 
 class FaviconLookupError: MaybeErrorType {
-    let siteURL: String
-    init(siteURL: String) {
+    let siteURL: URL
+    init(siteURL: URL) {
         self.siteURL = siteURL
     }
     var description: String {
@@ -73,7 +73,7 @@ class FaviconDownloadError: MaybeErrorType {
 }
 
 extension SQLiteHistory: Favicons {
-    func getFaviconsForURL(_ url: String) -> Deferred<Maybe<Cursor<Favicon?>>> {
+    func getFaviconsForURL(_ url: URL) -> Deferred<Maybe<Cursor<Favicon?>>> {
         let sql = """
             SELECT iconID, iconURL, iconDate
             FROM (
@@ -130,7 +130,7 @@ extension SQLiteHistory: Favicons {
             }
 
             // Nearly easy.
-            let args: Args? = [site.url, iconID]
+            let args: Args? = [site.url.absoluteString, iconID]
             return doChange("\(insertOrIgnore) (\(siteSubselect), ?)", args: args)
 
         }
@@ -203,10 +203,6 @@ extension SQLiteHistory: Favicons {
     }
 
     fileprivate func getTopSitesFaviconImage(forSite site: Site) -> Deferred<Maybe<UIImage>> {
-        guard let url = URL(string: site.url) else {
-            return deferMaybe(FaviconLookupError(siteURL: site.url))
-        }
-
         func imageFor(icon: (color: UIColor, fileURL: URL)) -> Deferred<Maybe<UIImage>> {
             guard let image = UIImage(contentsOfFile: icon.fileURL.path) else {
                 return deferMaybe(FaviconLookupError(siteURL: site.url))
@@ -233,13 +229,13 @@ extension SQLiteHistory: Favicons {
             return deferMaybe(imageWithBackground)
         }
 
-        let domain = url.shortDisplayString
+        let domain = site.url.shortDisplayString
         if multiRegionTopSitesDomains.contains(domain), let icon = topSitesIcons[domain] {
             return imageFor(icon: icon)
         }
 
-        let urlWithoutScheme = url.absoluteDisplayString.remove("\(url.scheme ?? "")://")
-        if let baseDomain = url.baseDomain, let icon = topSitesIcons[baseDomain] ?? topSitesIcons[urlWithoutScheme] {
+        let urlWithoutScheme = site.url.absoluteDisplayString.remove("\(site.url.scheme ?? "")://")
+        if let baseDomain = site.url.baseDomain, let icon = topSitesIcons[baseDomain] ?? topSitesIcons[urlWithoutScheme] {
             return imageFor(icon: icon)
         }
 
@@ -267,13 +263,9 @@ extension SQLiteHistory: Favicons {
 
     // Retrieve's a site's favicon URL from the web.
     fileprivate func lookupFaviconURLFromWebPage(forSite site: Site) -> Deferred<Maybe<URL>> {
-        guard let url = URL(string: site.url) else {
-            return deferMaybe(FaviconLookupError(siteURL: site.url))
-        }
-
         let deferred = CancellableDeferred<Maybe<URL>>()
 
-        getFaviconURLsFromWebPage(url: url).upon { result in
+        getFaviconURLsFromWebPage(url: site.url).upon { result in
             guard let faviconURLs = result.successValue,
                 let faviconURL = faviconURLs.first else {
                 deferred.fill(Maybe(failure: FaviconLookupError(siteURL: site.url)))
@@ -289,7 +281,7 @@ extension SQLiteHistory: Favicons {
                     // Also, insert a row in `favicon_site_urls` so we can
                     // look up this favicon later without requiring history.
                     // This is primarily needed for bookmarks.
-                    _ = self.db.run("INSERT OR IGNORE INTO favicon_site_urls(site_url, faviconID) VALUES (?, ?)", withArgs: [site.url, faviconID])
+                    _ = self.db.run("INSERT OR IGNORE INTO favicon_site_urls(site_url, faviconID) VALUES (?, ?)", withArgs: [site.url.absoluteString, faviconID])
                 }
             }
 
@@ -309,7 +301,7 @@ extension SQLiteHistory: Favicons {
                 guard error == nil,
                     let data = data,
                     let document = try? HTMLDocument(data: data) else {
-                        deferred.fill(Maybe(failure: FaviconLookupError(siteURL: url.absoluteString)))
+                        deferred.fill(Maybe(failure: FaviconLookupError(siteURL: url)))
                         return
                 }
                 deferred.fill(Maybe(success: document))
@@ -323,7 +315,7 @@ extension SQLiteHistory: Favicons {
     fileprivate func getFaviconURLsFromWebPage(url: URL) -> Deferred<Maybe<[URL]>> {
         return getHTMLDocumentFromWebPage(url: url).bind { result in
             guard let document = result.successValue else {
-                return deferMaybe(FaviconLookupError(siteURL: url.absoluteString))
+                return deferMaybe(FaviconLookupError(siteURL: url))
             }
 
             // If we were redirected via a <meta> tag on the page to a different
@@ -363,7 +355,7 @@ extension SQLiteHistory: Favicons {
         let deferred = Deferred<Maybe<UIImage>>()
 
         DispatchQueue.main.async {
-            guard let url = URL(string: site.url), let character = url.baseDomain?.first else {
+            guard let character = site.url.baseDomain?.first else {
                 deferred.fill(Maybe(success: defaultFavicon))
                 return
             }
@@ -393,7 +385,7 @@ extension SQLiteHistory: Favicons {
             UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0.0)
             let rect = CGRect(origin: .zero, size: label.bounds.size)
             let context = UIGraphicsGetCurrentContext()!
-            context.setFillColor(generateBackgroundColor(forURL: url).cgColor)
+            context.setFillColor(generateBackgroundColor(forURL: site.url).cgColor)
             context.fill(rect)
             label.layer.render(in: context)
             image = UIGraphicsGetImageFromCurrentImageContext()!

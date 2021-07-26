@@ -64,7 +64,7 @@ class HistorySuggestionModel: ObservableObject {
 
     // `weak` usage here allows deferred queue to be the owner. The deferred is always filled and this set to nil,
     // this is defensive against any changes to queue (or cancellation) behaviour in future.
-    private weak var currentDeferredHistoryQuery: CancellableDeferred<Maybe<Cursor<Site>>>?
+    private weak var currentDeferredHistoryQuery: CancellableDeferred<Maybe<Cursor<Site?>>>?
 
     private var searchTextSubscription: AnyCancellable?
 
@@ -98,7 +98,8 @@ class HistorySuggestionModel: ObservableObject {
                 // Exclude Neeva search url suggestions from history suggest, since they should
                 // readily be coming as query suggestions.
                 let deferredHistorySites = (result.successValue?.asArray() ?? [])
-                    .filter {!($0.url.hasPrefix(NeevaConstants.appSearchURL.absoluteString))}
+                    .compactMap { $0 }
+                    .filter {!($0.url.absoluteString.hasPrefix(NeevaConstants.appSearchURL.absoluteString))}
 
                 // Split the data to frequent visits from recent history and everything else
                 self.recentSites = deferredHistorySites
@@ -147,16 +148,17 @@ class HistorySuggestionModel: ObservableObject {
         return false
     }
 
-    fileprivate func completionForURL(_ url: String, from query: String) -> String? {
+    fileprivate func completionForURL(_ url: URL, from query: String) -> String? {
+        let url = url.absoluteString as NSString
         // Extract the pre-path substring from the URL. This should be more efficient than parsing via
         // NSURL since we need to only look at the beginning of the string.
         // Note that we won't match non-HTTP(S) URLs.
-        guard let match = URLBeforePathRegex.firstMatch(in: url, options: [], range: NSRange(location: 0, length: url.count)) else {
+        guard let match = URLBeforePathRegex.firstMatch(in: url as String, options: [], range: NSRange(location: 0, length: url.length)) else {
             return nil
         }
 
         // If the pre-path component (including the scheme) starts with the query, just use it as is.
-        var prePathURL = (url as NSString).substring(with: match.range(at: 0))
+        var prePathURL = url.substring(with: match.range(at: 0))
         if prePathURL.hasPrefix(query) {
             // Trailing slashes in the autocompleteTextField cause issues with Swype keyboard. Bug 1194714
             if prePathURL.hasSuffix("/"), !query.hasSuffix("/") {

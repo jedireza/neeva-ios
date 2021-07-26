@@ -243,7 +243,7 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
         self.anyCancellable = fetcher.objectWillChange.sink { [weak self] (_) in
                     self?.objectWillChange.send()
         }
-        fetcher.load(url: url.absoluteString, profile: profile)
+        fetcher.load(url: url, profile: profile)
     }
 
     func thumbnail(size: CGFloat) -> some View {

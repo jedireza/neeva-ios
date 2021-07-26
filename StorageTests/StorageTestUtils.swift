@@ -28,7 +28,7 @@ func advanceMicrosecondTimestamp(_ timestamp: MicrosecondTimestamp, by: Int) -> 
 
 extension Site {
     func asPlace() -> Place {
-        return Place(guid: self.guid!, url: self.url, title: self.title)
+        return Place(guid: self.guid!, url: self.url.absoluteString, title: self.title)
     }
 }
 
@@ -39,7 +39,7 @@ enum VisitOrigin {
 
 func populateHistoryForFrecencyCalculations(_ history: SQLiteHistory, siteCount count: Int, visitPerSite: Int = 4) {
     for i in 0...count {
-        let site = Site(url: "http://s\(i)ite\(i).com/foo", title: "A \(i)")
+        let site = Site(url: "http://s\(i)ite\(i).com/foo".asURL!, title: "A \(i)")
         site.guid = "abc\(i)def"
 
         let baseMillis: UInt64 = baseInstantInMillis - 20000

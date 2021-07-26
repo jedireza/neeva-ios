@@ -95,13 +95,13 @@ class SuggestedSearchesModel: ObservableObject {
                 return
             }
 
-            var deferredHistorySites = result.successValue?.asArray() ?? []
+            var deferredHistorySites = result.successValue?.asArray().compactMap { $0 } ?? []
             // TODO: https://github.com/neevaco/neeva-ios-phoenix/issues/1027
             deferredHistorySites.sort { siteA, siteB in
                 return siteA.latestVisit?.date ?? 0 > siteB.latestVisit?.date ?? 0
             }
             self.suggestedQueries = deferredHistorySites.compactMap { site in
-                if let query = neevaSearchEngine.queryForSearchURL(URL(string: site.url)) {
+                if let query = neevaSearchEngine.queryForSearchURL(site.url) {
                     return (query, site)
                 } else {
                     return nil

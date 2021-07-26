@@ -11,7 +11,7 @@ import Defaults
 
 struct TopSitesHandler {
     private static func siteKey(_ site: Site) -> String? {
-        site.url.asURL?.normalizedHost
+        site.url.normalizedHost
     }
 
     static func getTopSites(profile: Profile) -> Deferred<[Site]> {      
@@ -20,7 +20,7 @@ struct TopSitesHandler {
 
             let deferred = Deferred<[Site]>()
 
-            guard let mySites = topsites.successValue?.asArray(), let pinned = pinnedSites.successValue?.asArray() else {
+            guard let mySites = topsites.successValue?.asArray().compactMap({ $0 }), let pinned = pinnedSites.successValue?.asArray().compactMap({ $0 }) else {
                 return deferred
             }
 
@@ -53,7 +53,7 @@ struct TopSitesHandler {
                 if let _ = site as? PinnedSite {
                     return site
                 }
-                let domain = site.url.asURL?.shortDisplayString
+                let domain = site.url.shortDisplayString
                 return defaultSites.first { $0.title.lowercased() == domain } ?? site
             }
             
@@ -70,9 +70,8 @@ struct TopSitesHandler {
             result.forEach { site in
                 // Favicon icon url
                 let iconUrl = site.icon?.url ?? ""
-                let webUrl = URL(string: site.url)
                 let imageKey = site.tileURL.baseDomain ?? ""
-                widgetkitTopSites.append(WidgetKitTopSiteModel(title: site.title, faviconUrl: iconUrl, url: webUrl!, imageKey: imageKey))
+                widgetkitTopSites.append(WidgetKitTopSiteModel(title: site.title, faviconUrl: iconUrl, url: site.url, imageKey: imageKey))
                 // fetch favicons and cache them on disk
                 FaviconFetcher.downloadFaviconAndCache(imageURL: !iconUrl.isEmpty ? URL(string: iconUrl) : nil, imageKey: imageKey )
             }
@@ -86,7 +85,7 @@ struct TopSitesHandler {
     static func defaultTopSites() -> [Site] {
         let suggested = SuggestedSites.asArray()
         let deleted = Defaults[.deletedSuggestedSites]
-        return suggested.filter { !deleted.contains($0.url) }
+        return suggested.filter { !deleted.contains($0.url.absoluteString) }
     }
 }
 

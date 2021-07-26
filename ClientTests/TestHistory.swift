@@ -9,13 +9,13 @@ import Storage
 import XCTest
 
 class TestHistory: ProfileTest {
-    fileprivate func addSite(_ history: BrowserHistory, url: String, title: String, s: Bool = true) {
+    fileprivate func addSite(_ history: BrowserHistory, url: URL, title: String, s: Bool = true) {
         let site = Site(url: url, title: title)
         let visit = SiteVisit(site: site, date: Date.nowMicroseconds())
         XCTAssertEqual(s, history.addLocalVisit(visit).value.isSuccess, "Site added: \(url).")
     }
 
-    fileprivate func innerCheckSites(_ history: BrowserHistory, callback: @escaping (_ cursor: Cursor<Site>) -> Void) {
+    fileprivate func innerCheckSites(_ history: BrowserHistory, callback: @escaping (_ cursor: Cursor<Site?>) -> Void) {
         // Retrieve the entry
         history.getSitesByLastVisit(limit: 100, offset: 0).upon {
             XCTAssertTrue($0.isSuccess)
@@ -30,9 +30,9 @@ class TestHistory: ProfileTest {
             XCTAssertEqual(cursor.count, urls.count, "Cursor has \(urls.count) entries.")
 
             for index in 0..<cursor.count {
-                let s = cursor[index]!
+                let s = cursor[index]!!
                 XCTAssertNotNil(s, "Cursor has a site for entry.")
-                let title = urls[s.url]
+                let title = urls[s.url.absoluteString]
                 XCTAssertNotNil(title, "Found right URL.")
                 XCTAssertEqual(s.title, title!, "Found right title.")
             }
@@ -94,7 +94,7 @@ class TestHistory: ProfileTest {
 
             self.measure({ () -> Void in
                 for _ in 0...self.NumCmds {
-                    self.addSite(h, url: "https://someurl\(j).com/", title: "title \(j)")
+                    self.addSite(h, url: "https://someurl\(j).com/".asURL!, title: "title \(j)")
                     j += 1
                 }
                 self.clear(h)
@@ -110,7 +110,7 @@ class TestHistory: ProfileTest {
 
             self.clear(h)
             for _ in 0...self.NumCmds {
-                self.addSite(h, url: "https://someurl\(j).com/", title: "title \(j)")
+                self.addSite(h, url: "https://someurl\(j).com/".asURL!, title: "title \(j)")
                 urls["https://someurl\(j).com/"] = "title \(j)"
                 j += 1
             }
@@ -176,7 +176,7 @@ class TestHistory: ProfileTest {
 
         switch cmd {
         case 0...1:
-            let url = "https://randomurl.com/\(arc4random() % 100)"
+            let url = "https://randomurl.com/\(arc4random() % 100)".asURL!
             let title = "title \(arc4random() % 100)"
             addSite(history, url: url, title: title)
             cb()

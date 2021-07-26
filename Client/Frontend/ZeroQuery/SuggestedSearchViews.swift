@@ -13,7 +13,7 @@ struct SuggestedSearchesView: View {
     var body: some View {
         VStack(spacing: 0) {
             ForEach(model.suggestedQueries.prefix(3), id: \.1) { query, site in
-                Button(action: { openURL(URL(string: site.url)!) }) {
+                Button(action: { openURL(site.url) }) {
                     HStack {
                         Symbol(.clock)
                         Text(query.trimmingCharacters(in: .whitespacesAndNewlines))
@@ -23,7 +23,7 @@ struct SuggestedSearchesView: View {
                     .frame(height: 37)
                     .padding(.horizontal, ZeroQueryUX.Padding)
                 }
-                .onDrag { NSItemProvider(url: URL(string: site.url)!) }
+                .onDrag { NSItemProvider(url: site.url) }
                 .buttonStyle(TableCellButtonStyle())
                 .overlay(
                     Button(action: { setSearchInput(query) }) {

@@ -7,7 +7,7 @@ import Shared
 
 open class SuggestedSite: Site {
     override open var tileURL: URL {
-        return URL(string: url as String) ?? .aboutBlank
+        url
     }
 
     let trackingId: Int
@@ -37,7 +37,7 @@ open class SuggestedSitesCursor: ArrayCursor<SuggestedSite> {
 }
 
 public struct SuggestedSiteData {
-    var url: String
+    var url: URL
     var bgColor: String
     var imageUrl: String
     var faviconUrl: String

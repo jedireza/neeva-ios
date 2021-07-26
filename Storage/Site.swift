@@ -26,23 +26,23 @@ open class Site {
     var guid: String?
 
     open var tileURL: URL {
-        return URL(string: url)?.domainURL ?? .aboutBlank
+        url.domainURL
     }
 
-    public let url: String
+    public let url: URL
     public let title: String
     open var metadata: PageMetadata?
      // Sites may have multiple favicons. We'll return the largest.
     open var icon: Favicon?
     open var latestVisit: Visit?
 
-    public init(url: String, title: String, id: Int? = nil) {
+    public init(url: URL, title: String, id: Int? = nil) {
         self.url = url
         self.title = title
         self.id = id
     }
 
-    public init(url: String, title: String, guid: String?) {
+    public init(url: URL, title: String, guid: String?) {
         self.url = url
         self.title = title
         self.guid = guid

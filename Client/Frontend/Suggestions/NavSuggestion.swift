@@ -4,12 +4,13 @@ import Shared
 import Storage
 
 public struct NavSuggestion {
-    let url: String
+    let url: URL
     let title: String?
     let subtitle: String?
 
-    init(suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion) {
-        url = suggestion.suggestedUrl
+    init?(suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion) {
+        guard let url = suggestion.suggestedUrl.asURL else { return nil }
+        self.url = url
         title = suggestion.title
         subtitle = suggestion.subtitle
     }
@@ -20,7 +21,7 @@ public struct NavSuggestion {
         subtitle = nil
     }
 
-    init(url: String, title: String) {
+    init(url: URL, title: String) {
         self.url = url
         self.title = title
         subtitle = nil
@@ -29,8 +30,7 @@ public struct NavSuggestion {
 
 extension NavSuggestion : Equatable {
     public static func == (lhs: NavSuggestion, rhs: NavSuggestion) -> Bool {
-        return URL(string: lhs.url)?.normalizedHostAndPathForDisplay ?? lhs.url ==
-            URL(string: rhs.url)?.normalizedHostAndPathForDisplay ?? rhs.url
+        lhs.url.normalizedHostAndPathForDisplay == rhs.url.normalizedHostAndPathForDisplay
     }
 }
 

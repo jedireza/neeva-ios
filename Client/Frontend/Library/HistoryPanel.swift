@@ -165,7 +165,7 @@ class HistoryPanel: SiteTableViewController {
         currentFetchOffset = 0
         fetchData().uponQueue(.main) { result in
             if let sites = result.successValue {
-                for site in sites {
+                for site in sites.compactMap({ $0 }) {
                     if let site = site, let latestVisit = site.latestVisit {
                         self.groupedSites.add(site, timestamp: TimeInterval.fromMicrosecondTimestamp(latestVisit.date))
                     }
@@ -182,7 +182,7 @@ class HistoryPanel: SiteTableViewController {
         }
     }
 
-    func fetchData() -> Deferred<Maybe<Cursor<Site>>> {
+    func fetchData() -> Deferred<Maybe<Cursor<Site?>>> {
         guard !isFetchInProgress else {
             return deferMaybe(FetchInProgressError())
         }
@@ -336,7 +336,7 @@ class HistoryPanel: SiteTableViewController {
 
     func configureSite(_ cell: UITableViewCell, for indexPath: IndexPath) -> UITableViewCell {
         if let site = siteForIndexPath(indexPath), let cell = cell as? TwoLineTableViewCell {
-            cell.setLines(site.title, detailText: site.url)
+            cell.setLines(site.title, detailText: site.url.absoluteString)
 
             cell.imageView?.layer.borderColor = HistoryPanelUX.IconBorderColor.cgColor
             cell.imageView?.layer.borderWidth = HistoryPanelUX.IconBorderWidth
@@ -447,9 +447,9 @@ class HistoryPanel: SiteTableViewController {
             return
         }
 
-        if let site = siteForIndexPath(indexPath), let url = URL(string: site.url) {
+        if let site = siteForIndexPath(indexPath) {
             if let delegate = delegate {
-                delegate.libraryPanel(didSelectURL: url, visitType: VisitType.typed)
+                delegate.libraryPanel(didSelectURL: site.url, visitType: VisitType.typed)
             }
             return
         }
@@ -538,21 +538,17 @@ class HistoryPanel: SiteTableViewController {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let currentTab = self.tabManager.selectedTab
 
-            guard let url = URL(string: site.url) else {
-                return nil
-            }
-
             let newTabAction = UIAction(
                 title: "Open in New tab",
                 image: UIImage(systemName: "plus.square")) { _ in
-                let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: currentTab, isPrivate: false)
+                let tab = self.tabManager.addTab(URLRequest(url: site.url), afterTab: currentTab, isPrivate: false)
                 openedTab(tab, false)
             }
 
             let newIncognitoTabAction = UIAction(
                 title: "Open in New Incognito Tab",
                 image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)) { _ in
-                let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: currentTab, isPrivate: true)
+                let tab = self.tabManager.addTab(URLRequest(url: site.url), afterTab: currentTab, isPrivate: true)
                 openedTab(tab, true)
             }
 
@@ -583,7 +579,7 @@ extension HistoryPanel: UITableViewDataSourcePrefetching {
         fetchData().uponQueue(.main) { result in
             if let sites = result.successValue {
                 let indexPaths: [IndexPath] = sites.compactMap({ site in
-                    guard let site = site, let latestVisit = site.latestVisit else {
+                    guard let site = site as? Site, let latestVisit = site.latestVisit else {
                         return nil
                     }
 

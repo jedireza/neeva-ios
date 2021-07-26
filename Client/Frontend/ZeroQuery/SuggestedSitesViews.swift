@@ -40,9 +40,9 @@ struct SuggestedSiteView: View {
     }
 
     var body: some View {
-        Button(action: { site.url.asURL.map(openURL) }) {
+        Button(action: { openURL(site.url) }) {
             VStack(spacing: 2) {
-                FaviconView(url: site.url.asURL!, icon: site.icon, size: SuggestedSiteUX.FaviconSize, bordered: false)
+                FaviconView(url: site.url, icon: site.icon, size: SuggestedSiteUX.FaviconSize, bordered: false)
                     .frame(width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize, alignment: .center)
                     .background(Color(light: .ui.gray97, dark: .systemFill))
                     .cornerRadius(SuggestedSiteUX.IconCornerRadius)
@@ -65,15 +65,15 @@ struct SuggestedSiteView: View {
             .accessibilityLabel(title)
             .accessibilityHint(hint)
             .contextMenu(ContextMenu(menuItems: {
-                Text(site.title.isEmpty ? site.url : site.title)
+                Text(site.title.isEmpty ? site.url.absoluteString : site.title)
                 Divider()
-                Button(action: { site.url.asURL.map { openInNewTab($0, false) } }) {
+                Button(action: { openInNewTab(site.url, false) }) {
                     Label("Open in New Tab", systemSymbol: .plusSquare)
                 }
-                Button(action: { site.url.asURL.map { openInNewTab($0, true) } }) {
+                Button(action: { openInNewTab(site.url, true) }) {
                     Label("Open in Incognito", image: "incognito")
                 }
-                Button(action: { site.url.asURL.map(shareURL) }) {
+                Button(action: { shareURL(site.url) }) {
                     Label("Share", systemSymbol: .squareAndArrowUp)
                 }
                 // TODO: make this red
@@ -117,7 +117,7 @@ struct SuggestedSitesView: View {
             LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing) {
                 ForEach(viewModel.sites, id: \.self) { suggestedSite in
                     SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                        .onDrag { NSItemProvider(url: URL(string: suggestedSite.url)!) }
+                        .onDrag { NSItemProvider(url: suggestedSite.url) }
                 }
             }
             .padding(.vertical, 10)
@@ -130,7 +130,7 @@ struct SuggestedSitesView: View {
                             Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
                         }
                         SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                            .onDrag { NSItemProvider(url: URL(string: suggestedSite.url)!) }
+                            .onDrag { NSItemProvider(url: suggestedSite.url) }
                     }
                 }
                 .frame(height: SuggestedSiteUX.BlockSize)

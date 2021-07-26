@@ -36,14 +36,6 @@ public func isIgnoredURL(_ url: URL) -> Bool {
     return false
 }
 
-public func isIgnoredURL(_ url: String) -> Bool {
-    if let url = URL(string: url) {
-        return isIgnoredURL(url)
-    }
-
-    return false
-}
-
 /*
 // Here's the Swift equivalent of the below.
 func simulatedFrecency(now: MicrosecondTimestamp, then: MicrosecondTimestamp, visitCount: Int) -> Double {
@@ -186,7 +178,7 @@ fileprivate struct SQLiteFrecentHistory: FrecentHistory {
         }
     }
 
-    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
+    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site?>>> {
         let factory = SQLiteHistory.iconHistoryColumnFactory
 
         let params = FrecencyQueryParams.urlCompletion(whereURLContains: filter ?? "", groupClause: "GROUP BY historyID ")
@@ -390,14 +382,14 @@ fileprivate struct SQLiteFrecentHistory: FrecentHistory {
 
 extension SQLiteHistory: BrowserHistory {
     public func removeSiteFromTopSites(_ site: Site) -> Success {
-        if let host = (site.url as String).asURL?.normalizedHost {
+        if let host = site.url.normalizedHost {
             return self.removeHostFromTopSites(host)
         }
         return deferMaybe(DatabaseError(description: "Invalid url for site \(site.url)"))
     }
 
     public func removeFromPinnedTopSites(_ site: Site) -> Success {
-        guard let host = (site.url as String).asURL?.normalizedHost else {
+        guard let host = site.url.normalizedHost else {
             return deferMaybe(DatabaseError(description: "Invalid url for site \(site.url)"))
         }
 
@@ -418,7 +410,7 @@ extension SQLiteHistory: BrowserHistory {
         return self.db.queryReturnsResults(sql, args: args)
     }
 
-    public func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site>>> {
+    public func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site?>>> {
         let sql = """
             SELECT * FROM pinned_top_sites LEFT OUTER JOIN view_favicons_widest ON
                 historyID = view_favicons_widest.siteID
@@ -429,11 +421,11 @@ extension SQLiteHistory: BrowserHistory {
 
     public func addPinnedTopSite(_ site: Site) -> Success { // needs test
         let now = Date.nowMilliseconds()
-        guard let guid = site.guid, let host = (site.url as String).asURL?.normalizedHost else {
+        guard let guid = site.guid, let host = site.url.normalizedHost else {
             return deferMaybe(DatabaseError(description: "Invalid site \(site.url)"))
         }
 
-        let args: Args = [site.url, now, site.title, site.id, guid, host]
+        let args: Args = [site.url.absoluteString, now, site.title, site.id, guid, host]
         let arglist = BrowserDB.varlist(args.count)
         // Prevent the pinned site from being used in topsite calculations
         // We dont have to worry about this when removing a pin because the assumption is that a user probably doesnt want it being recommended as a topsite either
@@ -446,11 +438,11 @@ extension SQLiteHistory: BrowserHistory {
         return db.run([("UPDATE domains SET showOnTopSites = 0 WHERE domain = ?", [host])])
     }
 
-    public func removeHistoryForURL(_ url: String) -> Success {
-        let visitArgs: Args = [url]
+    public func removeHistoryForURL(_ url: URL) -> Success {
+        let visitArgs: Args = [url.absoluteString]
         let deleteVisits = "DELETE FROM visits WHERE siteID = (SELECT id FROM history WHERE url = ?)"
 
-        let markArgs: Args = [Date.nowNumber(), url]
+        let markArgs: Args = [Date.nowNumber(), url.absoluteString]
         let markDeleted = "UPDATE history SET url = NULL, is_deleted = 1, title = '', should_upload = 1, local_modified = ? WHERE url = ?"
 
         return db.run([
@@ -500,7 +492,7 @@ extension SQLiteHistory: BrowserHistory {
 
     func recordVisitedSite(_ site: Site) -> Success {
         // Don't store visits to sites with about: protocols
-        if isIgnoredURL(site.url as String) {
+        if isIgnoredURL(site.url) {
             return deferMaybe(IgnoredSiteError())
         }
 
@@ -530,12 +522,12 @@ extension SQLiteHistory: BrowserHistory {
         //
         // Note that we will never match against a deleted item, because deleted items have no URL,
         // so we don't need to unset is_deleted here.
-        guard let host = (site.url as String).asURL?.normalizedHost else {
+        guard let host = site.url.normalizedHost else {
             return 0
         }
 
         let update = "UPDATE history SET title = ?, local_modified = ?, should_upload = 1, domain_id = (SELECT id FROM domains where domain = ?) WHERE url = ?"
-        let updateArgs: Args? = [site.title, time, host, site.url]
+        let updateArgs: Args? = [site.title, time, host, site.url.absoluteString]
         if Logger.logPII {
             log.debug("Setting title to \(site.title) for URL \(site.url)")
         }
@@ -549,7 +541,7 @@ extension SQLiteHistory: BrowserHistory {
     }
 
     fileprivate func insertSite(_ site: Site, atTime time: Timestamp, withConnection conn: SQLiteDBConnection) -> Int {
-        if let host = (site.url as String).asURL?.normalizedHost {
+        if let host = site.url.normalizedHost {
             do {
                 try conn.executeChange("INSERT OR IGNORE INTO domains (domain) VALUES (?)", withArgs: [host])
             } catch let error as NSError {
@@ -564,7 +556,7 @@ extension SQLiteHistory: BrowserHistory {
                 SELECT ?, ?, ?, ?, 0, 1, id FROM domains WHERE domain = ?
                 """
 
-            let insertArgs: Args? = [site.guid ?? Bytes.generateGUID(), site.url, site.title, time, host]
+            let insertArgs: Args? = [site.guid ?? Bytes.generateGUID(), site.url.absoluteString, site.title, time, host]
             do {
                 try conn.executeChange(insert, withArgs: insertArgs)
             } catch let error as NSError {
@@ -595,7 +587,7 @@ extension SQLiteHistory: BrowserHistory {
                 """
 
             let realDate = visit.date
-            let insertArgs: Args? = [visit.site.url, realDate, visit.type.rawValue]
+            let insertArgs: Args? = [visit.site.url.absoluteString, realDate, visit.type.rawValue]
 
             try conn.executeChange(insert, withArgs: insertArgs)
         }
@@ -610,7 +602,7 @@ extension SQLiteHistory: BrowserHistory {
         return SQLiteFrecentHistory(db: db)
     }
 
-    public func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site?>>> {
         return self.db.runQueryConcurrently(topSitesQuery, args: [limit], factory: SQLiteHistory.iconHistoryMetadataColumnFactory)
     }
 
@@ -637,7 +629,7 @@ extension SQLiteHistory: BrowserHistory {
         }
     }
 
-    public func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site?>>> {
         let sql = """
             SELECT
                 history.id AS historyID, history.url, title, guid, domain_id, domain,

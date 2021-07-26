@@ -21,8 +21,7 @@ class FaviconHandler {
 
         let deferred = Deferred<Maybe<(Favicon, Data?)>>()
         let manager = SDWebImageManager.shared
-        let url = currentURL.absoluteString
-        let site = Site(url: url, title: "")
+        let site = Site(url: currentURL, title: "")
         let options: SDWebImageOptions = tab.isPrivate ? [SDWebImageOptions.lowPriority, SDWebImageOptions.fromCacheOnly] : SDWebImageOptions.lowPriority
 
         var fetch: SDWebImageOperation?

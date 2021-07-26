@@ -16,7 +16,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
 
     fileprivate let BackForwardListCellIdentifier = "BackForwardListViewController"
     fileprivate var profile: Profile
-    fileprivate lazy var sites = [String: Site]()
+    fileprivate lazy var sites = [URL: Site]()
     fileprivate var currentRow = 0
     fileprivate var verticalConstraints: [Constraint] = []
 
@@ -234,11 +234,11 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: BackForwardListCellIdentifier, for: indexPath) as! BackForwardTableViewCell
         let item = listData[indexPath.item]
-        let urlString = { () -> String in
+        let url = { () -> URL in
             guard let url = InternalURL(item.url), let extracted = url.extractedUrlParam else {
-                return item.url.absoluteString
+                return item.url
             }
-            return extracted.absoluteString
+            return extracted
         }()
 
         cell.isCurrentTab = listData[indexPath.item] == self.currentItem
@@ -247,11 +247,11 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
 
         let isZeroQueryURL = InternalURL(item.url)?.isZeroQueryURL ?? false
         guard !isZeroQueryURL else {
-            cell.site = Site(url: item.url.absoluteString, title: Strings.ZeroQueryPage)
+            cell.site = Site(url: item.url, title: Strings.ZeroQueryPage)
             return cell
         }
 
-        cell.site = sites[urlString] ?? Site(url: urlString, title: item.title ?? "")
+        cell.site = sites[url] ?? Site(url: url, title: item.title ?? "")
         cell.setNeedsDisplay()
 
         return cell

@@ -13,19 +13,19 @@ import Shared
  */
 class MockableHistory: BrowserHistory, SyncableHistory, ResettableSyncStorage {
     func getFrecentHistory() -> FrecentHistory { fatalError() }
-    func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site>>> { fatalError() }
+    func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site?>>> { fatalError() }
     func addLocalVisit(_ visit: SiteVisit) -> Success { fatalError() }
     func clearHistory() -> Success { fatalError() }
     func removeHistoryFromDate(_ date: Date) -> Success { fatalError() }
-    func removeHistoryForURL(_ url: String) -> Success { fatalError() }
+    func removeHistoryForURL(_ url: URL) -> Success { fatalError() }
     func removeSiteFromTopSites(_ site: Site) -> Success { fatalError() }
     func removeHostFromTopSites(_ host: String) -> Success { fatalError() }
     func clearTopSitesCache() -> Success { fatalError() }
     func removeFromPinnedTopSites(_ site: Site) -> Success { fatalError() }
     func isPinnedTopSite(_ url: String) -> Deferred<Maybe<Bool>> { fatalError()}
     func addPinnedTopSite(_ site: Site) -> Success { fatalError() }
-    func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site>>> { fatalError() }
-    func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site>>> { fatalError() }
+    func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site?>>> { fatalError() }
+    func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site?>>> { fatalError() }
     func setTopSitesNeedsInvalidation() { fatalError() }
     func updateTopSitesCacheIfInvalidated() -> Deferred<Maybe<Bool>> { fatalError() }
     func setTopSitesCacheSize(_ size: Int32) { fatalError() }

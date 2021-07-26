@@ -12,21 +12,16 @@ struct NavSuggestionView: View {
 
     @ViewBuilder
     var icon: some View {
-        if let url = URL(string: suggestion.url) {
-            FaviconView(url: url,
-                        size: SearchViewControllerUX.FaviconSize,
-                        bordered: false)
-                .frame(
-                    width: SearchViewControllerUX.IconSize,
-                    height: SearchViewControllerUX.IconSize
-                )
-                .cornerRadius(SuggestionViewUX.CornerRadius)
-                .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
-                            .stroke(Color.quaternarySystemFill, lineWidth: 1))
-        } else {
-            Symbol(.questionmarkDiamondFill)
-                .foregroundColor(.red)
-        }
+        FaviconView(url: suggestion.url,
+                    size: SearchViewControllerUX.FaviconSize,
+                    bordered: false)
+            .frame(
+                width: SearchViewControllerUX.IconSize,
+                height: SearchViewControllerUX.IconSize
+            )
+            .cornerRadius(SuggestionViewUX.CornerRadius)
+            .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
+                        .stroke(Color.quaternarySystemFill, lineWidth: 1))
     }
 
     @ViewBuilder
@@ -39,7 +34,7 @@ struct NavSuggestionView: View {
     @ViewBuilder
     var secondaryLabel: some View {
         if let title = suggestion.title {
-            Text(URL(string: suggestion.url)?.normalizedHostAndPathForDisplay ?? title)
+            Text(suggestion.url.normalizedHostAndPathForDisplay)
                 .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
         }
     }
@@ -52,7 +47,7 @@ struct NavSuggestionView: View {
     var body: some View {
         SuggestionView(action: {
                 ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
-                openURL(suggestion.url.asURL!)
+                openURL(suggestion.url)
             }, icon: icon,
             label: label,
             secondaryLabel: secondaryLabel,

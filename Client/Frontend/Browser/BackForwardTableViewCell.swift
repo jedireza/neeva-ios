@@ -64,7 +64,7 @@ class BackForwardTableViewCell: UITableViewCell {
                 }
                 var title = s.title
                 if title.isEmpty {
-                    title = s.url
+                    title = s.url.absoluteString
                 }
                 label.text = title
                 setNeedsLayout()

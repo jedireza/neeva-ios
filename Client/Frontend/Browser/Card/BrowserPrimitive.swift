@@ -161,7 +161,7 @@ extension SpaceStore: AccessingManager {
 // MARK: Site: BrowserPrimitive
 extension Site: BrowserPrimitive {
     var primitiveUrl: URL? {
-        URL(string: url)
+        url
     }
 
     var displayTitle: String {
@@ -190,14 +190,14 @@ class SiteFetcher : AccessingManager, ObservableObject {
     var sites: [Site?] = [] {
         didSet {
             self.cache = self.sites.compactMap { $0 }.reduce(into: [:]) { dict, site in
-                dict[site!.url] = site
+                dict[site!.url.absoluteString] = site
             }
         }
     }
 
-    func load(url: String, profile: Profile) {
+    func load(url: URL, profile: Profile) {
         let sql = profile.metadata
-        sql.metadata(for: URL(string: url)!).uponQueue(.main) { val in
+        sql.metadata(for: url).uponQueue(.main) { val in
             guard let metadata = val.successValue?.asArray().first else {
                 return
             }
@@ -221,7 +221,7 @@ extension Tab: SelectingManager {
     typealias Item = Site
 
     func select(_ item: Site) {
-        loadRequest(URLRequest(url: URL(string: item.url)!))
+        loadRequest(URLRequest(url: item.url))
     }
 }
 

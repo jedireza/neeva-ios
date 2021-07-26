@@ -994,9 +994,9 @@ class TestSQLiteHistory: XCTestCase {
 
                     // Two local visits beat a single later remote visit and one later local visit.
                     // Two local visits beat three remote visits.
-                    XCTAssertEqual(siteL.guid!, sites[0]!.guid!)
-                    XCTAssertEqual(siteB.guid!, sites[1]!.guid!)
-                    XCTAssertEqual(siteR.guid!, sites[2]!.guid!)
+                    XCTAssertEqual(siteL.guid!, sites[0]!!.guid!)
+                    XCTAssertEqual(siteB.guid!, sites[1]!!.guid!)
+                    XCTAssertEqual(siteR.guid!, sites[2]!!.guid!)
                     return succeed()
             }
 
@@ -1065,7 +1065,7 @@ class TestSQLiteHistory: XCTestCase {
         let history = SQLiteHistory(db: db)
         let results = history.getSitesByLastVisit(limit: 10, offset: 0).value.successValue
         XCTAssertNotNil(results)
-        XCTAssertEqual(results![0]?.url, "http://www.example.com")
+        XCTAssertEqual(results![0]??.url.absoluteString, "http://www.example.com")
 
         db.forceClose()
     }
@@ -1080,7 +1080,7 @@ class TestSQLiteHistory: XCTestCase {
         let insertDeferred = db.withConnection { connection -> Void in
             try connection.executeChange("PRAGMA foreign_keys = OFF")
             let insert = "INSERT OR REPLACE INTO history (guid, url, title, local_modified, is_deleted, should_upload, domain_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            let args: Args = [Bytes.generateGUID(), site.url, site.title, Date.nowMilliseconds(), 0, 0, -1]
+            let args: Args = [Bytes.generateGUID(), site.url.absoluteString, site.title, Date.nowMilliseconds(), 0, 0, -1]
             try connection.executeChange(insert, withArgs: args)
         }
 
@@ -1092,7 +1092,7 @@ class TestSQLiteHistory: XCTestCase {
         // domain_id isn't normally exposed, so we manually query to get it.
         let resultsDeferred = db.withConnection { connection -> Cursor<Int?> in
             let sql = "SELECT domain_id FROM history WHERE url = ?"
-            let args: Args = [site.url]
+            let args: Args = [site.url.absoluteString]
             return connection.executeQuery(sql, factory: { $0[0] as? Int }, withArgs: args)
         }
 
@@ -1188,21 +1188,21 @@ class TestSQLiteHistory: XCTestCase {
             return succeed()
         }
 
-        func checkSitesByFrecency(_ f: @escaping (Cursor<Site>) -> Success) -> () -> Success {
+        func checkSitesByFrecency(_ f: @escaping (Cursor<Site?>) -> Success) -> () -> Success {
             return {
                 history.getFrecentHistory().getSites(matchingSearchQuery: nil, limit: 10)
                     >>== f
             }
         }
 
-        func checkSitesByDate(_ f: @escaping (Cursor<Site>) -> Success) -> () -> Success {
+        func checkSitesByDate(_ f: @escaping (Cursor<Site?>) -> Success) -> () -> Success {
             return {
                 history.getSitesByLastVisit(limit: 10, offset: 0)
                 >>== f
             }
         }
 
-        func checkSitesWithFilter(_ filter: String, f: @escaping (Cursor<Site>) -> Success) -> () -> Success {
+        func checkSitesWithFilter(_ filter: String, f: @escaping (Cursor<Site?>) -> Success) -> () -> Success {
             return {
                 history.getFrecentHistory().getSites(matchingSearchQuery: filter, limit: 10)
                 >>== f
@@ -1223,16 +1223,16 @@ class TestSQLiteHistory: XCTestCase {
             >>> { history.addLocalVisit(siteVisit1) }
             >>> checkSitesByFrecency { (sites: Cursor) -> Success in
                 XCTAssertEqual(1, sites.count)
-                XCTAssertEqual(site1.title, sites[0]!.title)
-                XCTAssertEqual(site1.url, sites[0]!.url)
+                XCTAssertEqual(site1.title, sites[0]!!.title)
+                XCTAssertEqual(site1.url, sites[0]!!.url)
                 sites.close()
                 return succeed()
             }
             >>> { history.addLocalVisit(siteVisit2) }
             >>> checkSitesByFrecency { (sites: Cursor) -> Success in
                 XCTAssertEqual(1, sites.count)
-                XCTAssertEqual(site1Changed.title, sites[0]!.title)
-                XCTAssertEqual(site1Changed.url, sites[0]!.url)
+                XCTAssertEqual(site1Changed.title, sites[0]!!.title)
+                XCTAssertEqual(site1Changed.url, sites[0]!!.url)
                 sites.close()
                 return succeed()
             }
@@ -1240,23 +1240,23 @@ class TestSQLiteHistory: XCTestCase {
             >>> checkSitesByFrecency { (sites: Cursor) -> Success in
                 XCTAssertEqual(2, sites.count)
                 // They're in order of frecency.
-                XCTAssertEqual(site1Changed.title, sites[0]!.title)
-                XCTAssertEqual(site2.title, sites[1]!.title)
+                XCTAssertEqual(site1Changed.title, sites[0]!!.title)
+                XCTAssertEqual(site2.title, sites[1]!!.title)
                 return succeed()
             }
-            >>> checkSitesByDate { (sites: Cursor<Site>) -> Success in
+            >>> checkSitesByDate { (sites: Cursor<Site?>) -> Success in
                 XCTAssertEqual(2, sites.count)
                 // They're in order of date last visited.
-                let first = sites[0]!
-                let second = sites[1]!
+                let first = sites[0]!!
+                let second = sites[1]!!
                 XCTAssertEqual(site2.title, first.title)
                 XCTAssertEqual(site1Changed.title, second.title)
                 XCTAssertTrue(siteVisit3.date == first.latestVisit!.date)
                 return succeed()
             }
-            >>> checkSitesWithFilter("two") { (sites: Cursor<Site>) -> Success in
+            >>> checkSitesWithFilter("two") { (sites: Cursor<Site?>) -> Success in
                 XCTAssertEqual(1, sites.count)
-                let first = sites[0]!
+                let first = sites[0]!!
                 XCTAssertEqual(site2.title, first.title)
                 return succeed()
             }
@@ -1268,17 +1268,17 @@ class TestSQLiteHistory: XCTestCase {
             >>> checkSitesByFrecency { (sites: Cursor) -> Success in
                     XCTAssertEqual(1, sites.count)
                     // They're in order of frecency.
-                    XCTAssertEqual(site1Changed.title, sites[0]!.title)
+                    XCTAssertEqual(site1Changed.title, sites[0]!!.title)
                     return succeed()
             }
             >>> { history.clearHistory() }
             >>>
             checkDeletedCount(0)
-            >>> checkSitesByDate { (sites: Cursor<Site>) -> Success in
+            >>> checkSitesByDate { (sites: Cursor<Site?>) -> Success in
                 XCTAssertEqual(0, sites.count)
                 return succeed()
             }
-            >>> checkSitesByFrecency { (sites: Cursor<Site>) -> Success in
+            >>> checkSitesByFrecency { (sites: Cursor<Site?>) -> Success in
                 XCTAssertEqual(0, sites.count)
                 return succeed()
             }
@@ -1358,7 +1358,7 @@ class TestSQLiteHistory: XCTestCase {
         populateHistoryForFrecencyCalculations(history, siteCount: 100)
 
         // Create a new site thats for an existing domain but a different URL.
-        let site = Site(url: "http://s\(5)ite\(5).com/foo-different-url", title: "A \(5) different url")
+        let site = Site(url: "http://s\(5)ite\(5).com/foo-different-url".asURL!, title: "A \(5) different url")
         site.guid = "abc\(5)defhi"
         history.insertOrUpdatePlace(site.asPlace(), modified: baseInstantInMillis - 20000).succeeded()
         // Don't give it any remote visits. But give it 100 local visits. This should be the new Topsite!
@@ -1379,7 +1379,7 @@ class TestSQLiteHistory: XCTestCase {
         func checkTopSitesReturnsResults() -> Success {
             return history.getTopSitesWithLimit(20) >>== { topSites in
                 XCTAssertEqual(topSites.count, 20)
-                XCTAssertEqual(topSites[0]!.guid, "abc\(5)defhi")
+                XCTAssertEqual(topSites[0]!!.guid, "abc\(5)defhi")
                 return succeed()
             }
         }
@@ -1403,7 +1403,7 @@ class TestSQLiteHistory: XCTestCase {
         // Lets create some history. This will create 100 sites that will have 21 local and 21 remote visits
         populateHistoryForFrecencyCalculations(history, siteCount: 100)
 
-        func createTopSite(url: String, guid: String) {
+        func createTopSite(url: URL, guid: String) {
             let site = Site(url: url, title: "Hi")
             site.guid = guid
             history.insertOrUpdatePlace(site.asPlace(), modified: baseInstantInMillis - 20000).succeeded()
@@ -1430,10 +1430,10 @@ class TestSQLiteHistory: XCTestCase {
 
         func checkTopSitesReturnsResults() -> Success {
             return history.getTopSitesWithLimit(20) >>== { topSites in
-                XCTAssertEqual(topSites[0]?.guid, "docsgoogle") // google docs should be the first topsite
+                XCTAssertEqual(topSites[0]??.guid, "docsgoogle") // google docs should be the first topsite
                 // make sure all other google guids are not in the topsites array
                 topSites.forEach {
-                    let guid: String = $0!.guid! // type checking is hard
+                    let guid: String = $0!!.guid! // type checking is hard
                     XCTAssertNil(["abcgoogle", "abcgoogle1", "abcgoogleza"].firstIndex(of: guid))
                 }
                 XCTAssertEqual(topSites.count, 20)
@@ -1462,7 +1462,7 @@ class TestSQLiteHistory: XCTestCase {
         populateHistoryForFrecencyCalculations(history, siteCount: 100)
 
         // Add extra visits to the 5th site to bubble it to the top of the top sites cache
-        let site = Site(url: "http://s\(5)ite\(5).com/foo", title: "A \(5)")
+        let site = Site(url: "http://s\(5)ite\(5).com/foo".asURL!, title: "A \(5)")
         site.guid = "abc\(5)def"
         for i in 0...20 {
             addVisitForSite(site, intoHistory: history, from: .local, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
@@ -1481,7 +1481,7 @@ class TestSQLiteHistory: XCTestCase {
         func checkTopSitesReturnsResults() -> Success {
             return history.getTopSitesWithLimit(20) >>== { topSites in
                 XCTAssertEqual(topSites.count, 20)
-                XCTAssertEqual(topSites[0]!.guid, "abc\(5)def")
+                XCTAssertEqual(topSites[0]!!.guid, "abc\(5)def")
                 return succeed()
             }
         }
@@ -1490,14 +1490,14 @@ class TestSQLiteHistory: XCTestCase {
             return history.repopulate(invalidateTopSites: true) >>> {
                 return history.getTopSitesWithLimit(20) >>== { topSites in
                     XCTAssertEqual(topSites.count, 20)
-                    XCTAssertEqual(topSites[0]!.guid, "abc\(5)def")
+                    XCTAssertEqual(topSites[0]!!.guid, "abc\(5)def")
                     return succeed()
                 }
             }
         }
 
         func addVisitsToZerothSite() -> Success {
-            let site = Site(url: "http://s\(0)ite\(0).com/foo", title: "A \(0)")
+            let site = Site(url: "http://s\(0)ite\(0).com/foo".asURL!, title: "A \(0)")
             site.guid = "abc\(0)def"
             for i in 0...20 {
                 addVisitForSite(site, intoHistory: history, from: .local, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
@@ -1515,8 +1515,8 @@ class TestSQLiteHistory: XCTestCase {
 
             return history.getTopSitesWithLimit(20) >>== { topSites in
                 XCTAssertEqual(topSites.count, 20)
-                XCTAssertEqual(topSites[0]!.guid, "abc\(5)def")
-                XCTAssertEqual(topSites[1]!.guid, "abc\(0)def")
+                XCTAssertEqual(topSites[0]!!.guid, "abc\(5)def")
+                XCTAssertEqual(topSites[1]!!.guid, "abc\(0)def")
                 return succeed()
             }
         }
@@ -1548,11 +1548,11 @@ class TestSQLiteHistory: XCTestCase {
         // make sure pinned sites dont exist
 
         // create pinned sites.
-        let site1 = Site(url: "http://s\(1)ite\(1).com/foo", title: "A \(1)")
+        let site1 = Site(url: "http://s\(1)ite\(1).com/foo".asURL!, title: "A \(1)")
         site1.id = 1
         site1.guid = "abc\(1)def"
         addVisitForSite(site1, intoHistory: history, from: .local, atTime: Date.nowMilliseconds())
-        let site2 = Site(url: "http://s\(2)ite\(2).com/foo", title: "A \(2)")
+        let site2 = Site(url: "http://s\(2)ite\(2).com/foo".asURL!, title: "A \(2)")
         site2.id = 2
         site2.guid = "abc\(2)def"
         addVisitForSite(site2, intoHistory: history, from: .local, atTime: Date.nowMilliseconds())
@@ -1574,8 +1574,8 @@ class TestSQLiteHistory: XCTestCase {
         func checkPinnedSites() -> Success {
             return history.getPinnedTopSites() >>== { pinnedSites in
                 XCTAssertEqual(pinnedSites.count, 2)
-                XCTAssertEqual(pinnedSites[0]!.url, site2.url)
-                XCTAssertEqual(pinnedSites[1]!.url, site1.url, "The older pinned site should be last")
+                XCTAssertEqual(pinnedSites[0]!!.url, site2.url)
+                XCTAssertEqual(pinnedSites[1]!!.url, site1.url, "The older pinned site should be last")
                 return succeed()
             }
         }
@@ -1584,7 +1584,7 @@ class TestSQLiteHistory: XCTestCase {
             return history.removeFromPinnedTopSites(site2) >>== {
                 return history.getPinnedTopSites() >>== { pinnedSites in
                     XCTAssertEqual(pinnedSites.count, 1, "There should only be one pinned site")
-                    XCTAssertEqual(pinnedSites[0]!.url, site1.url, "Site2 should be the only pin left")
+                    XCTAssertEqual(pinnedSites[0]!!.url, site1.url, "Site2 should be the only pin left")
                     return succeed()
                 }
             }
@@ -1594,7 +1594,7 @@ class TestSQLiteHistory: XCTestCase {
             return history.addPinnedTopSite(site1) >>== {
                 return history.getPinnedTopSites() >>== { pinnedSites in
                     XCTAssertEqual(pinnedSites.count, 1, "There should not be a dupe")
-                    XCTAssertEqual(pinnedSites[0]!.url, site1.url, "Site2 should be the only pin left")
+                    XCTAssertEqual(pinnedSites[0]!!.url, site1.url, "Site2 should be the only pin left")
                     return succeed()
                 }
             }

@@ -159,7 +159,7 @@ extension ZeroQueryViewController: DataObserverDelegate {
         guard let host = site.tileURL.normalizedHost else {
             return
         }
-        let url = site.tileURL.absoluteString
+        let url = site.tileURL
         // if the default top sites contains the siteurl. also wipe it from default suggested sites.
         if defaultTopSites().filter({$0.url == url}).isEmpty == false {
             deleteTileForSuggestedSite(url)
@@ -184,8 +184,8 @@ extension ZeroQueryViewController: DataObserverDelegate {
         }
     }
 
-    fileprivate func deleteTileForSuggestedSite(_ siteURL: String) {
-        Defaults[.deletedSuggestedSites].append(siteURL)
+    fileprivate func deleteTileForSuggestedSite(_ siteURL: URL) {
+        Defaults[.deletedSuggestedSites].append(siteURL.absoluteString)
     }
 
     func defaultTopSites() -> [Site] {

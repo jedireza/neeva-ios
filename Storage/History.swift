@@ -20,13 +20,13 @@ open class IgnoredSiteError: MaybeErrorType {
 public protocol BrowserHistory {
     @discardableResult func addLocalVisit(_ visit: SiteVisit) -> Success
     func clearHistory() -> Success
-    @discardableResult func removeHistoryForURL(_ url: String) -> Success
+    @discardableResult func removeHistoryForURL(_ url: URL) -> Success
     func removeHistoryFromDate(_ date: Date) -> Success
     func removeSiteFromTopSites(_ site: Site) -> Success
     func removeHostFromTopSites(_ host: String) -> Success
     func getFrecentHistory() -> FrecentHistory
-    func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site>>>
-    func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site>>>
+    func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site?>>>
+    func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site?>>>
     func setTopSitesNeedsInvalidation()
     func setTopSitesCacheSize(_ size: Int32)
     func clearTopSitesCache() -> Success
@@ -34,7 +34,7 @@ public protocol BrowserHistory {
     // Pinning top sites
     func removeFromPinnedTopSites(_ site: Site) -> Success
     func addPinnedTopSite(_ site: Site) -> Success
-    func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site>>>
+    func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site?>>>
     func isPinnedTopSite(_ url: String) -> Deferred<Maybe<Bool>>
 }
 
@@ -42,7 +42,7 @@ public protocol BrowserHistory {
  * An interface for fast repeated frecency queries.
  */
 public protocol FrecentHistory {
-    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site>>>
+    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site?>>>
     func updateTopSitesCacheQuery() -> (String, Args?)
 }
 

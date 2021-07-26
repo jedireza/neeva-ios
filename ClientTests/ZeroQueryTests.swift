@@ -50,11 +50,11 @@ fileprivate class MockTopSitesHistory: MockableHistory {
         mockTopSites = sites
     }
 
-    override func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
+    override func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site?>>> {
         return deferMaybe(ArrayCursor(data: mockTopSites))
     }
 
-    override func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site>>> {
+    override func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site?>>> {
         return deferMaybe(ArrayCursor(data: []))
     }
 

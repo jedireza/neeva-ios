@@ -9,11 +9,17 @@ import Shared
  * Factory methods for converting rows from SQLite into model objects
  */
 extension SQLiteHistory {
-    class func basicHistoryColumnFactory(_ row: SDRow) -> Site {
+    class func basicHistoryColumnFactory(_ row: SDRow) -> Site? {
         let id = row["historyID"] as? Int
-        let url = row["url"] as! String
-        let title = row["title"] as! String
-        let guid = row["guid"] as! String
+
+        guard
+            let url = row["url"] as? String,
+            let title = row["title"] as? String,
+            let guid = row["guid"] as? String,
+            let url = URL(string: url)
+        else {
+            return nil
+        }
 
         let site = Site(url: url, title: title)
         site.guid = guid
@@ -50,21 +56,21 @@ extension SQLiteHistory {
         return PageMetadata(id: row["metadata_id"] as? Int, siteURL: siteURL, mediaURL: row["media_url"] as? String, title: row["metadata_title"] as? String, description: row["description"] as? String, type: row["type"] as? String, providerName: row["provider_name"] as? String)
     }
 
-    class func iconHistoryColumnFactory(_ row: SDRow) -> Site {
+    class func iconHistoryColumnFactory(_ row: SDRow) -> Site? {
         let site = basicHistoryColumnFactory(row)
-        site.icon = iconColumnFactory(row)
+        site?.icon = iconColumnFactory(row)
         return site
     }
 
-    class func iconHistoryMetadataColumnFactory(_ row: SDRow) -> Site {
+    class func iconHistoryMetadataColumnFactory(_ row: SDRow) -> Site? {
         let site = iconHistoryColumnFactory(row)
-        site.metadata = pageMetadataColumnFactory(row)
+        site?.metadata = pageMetadataColumnFactory(row)
         return site
     }
 
-    class func basicHistoryMetadataColumnFactory(_ row: SDRow) -> Site {
+    class func basicHistoryMetadataColumnFactory(_ row: SDRow) -> Site? {
         let site = basicHistoryColumnFactory(row)
-        site.metadata = pageMetadataColumnFactory(row)
+        site?.metadata = pageMetadataColumnFactory(row)
         return site
     }
 }

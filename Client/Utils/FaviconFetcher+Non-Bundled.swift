@@ -116,7 +116,7 @@ extension FaviconFetcher {
         let deferred = Deferred<Maybe<Favicon>>()
         let url = icon.url
         let manager = SDWebImageManager.shared
-        let site = Site(url: siteUrl.absoluteString, title: "")
+        let site = Site(url: siteUrl, title: "")
 
         var fav = Favicon(url: url)
         if let url = url.asURL {
