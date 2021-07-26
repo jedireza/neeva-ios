@@ -12,6 +12,9 @@ struct SuggestedSearchesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            if model.suggestedQueries.isEmpty {
+                ZeroQueryPlaceholder(label: "Your searches go here")
+            }
             ForEach(model.suggestedQueries.prefix(3), id: \.1) { query, site in
                 Button(action: { openURL(site.url) }) {
                     HStack {

@@ -80,6 +80,20 @@ struct ZeroQueryHeader: View {
     }
 }
 
+struct ZeroQueryPlaceholder: View {
+    let label: String
+
+    var body: some View {
+        HStack {
+            Spacer()
+            Text(label)
+                .withFont(.bodyMedium)
+                .multilineTextAlignment(.center)
+            Spacer()
+        }.padding(.vertical, 12)
+    }
+}
+
 struct ZeroQueryView: View {
     @ObservedObject var viewModel: ZeroQueryModel
 

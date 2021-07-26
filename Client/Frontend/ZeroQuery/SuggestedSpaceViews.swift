@@ -5,12 +5,15 @@ import Shared
 
 struct SuggestedSpacesView: View {
     @ObservedObject var spaceStore = SpaceStore.shared
+    @ObservedObject var userInfo = NeevaUserInfo.shared
 
     @Environment(\.onOpenURL) var openURL
 
     var body: some View {
         VStack {
-            if case .refreshing = spaceStore.state, spaceStore.allSpaces.isEmpty {
+            if !userInfo.isUserLoggedIn {
+                ZeroQueryPlaceholder(label: "Your spaces go here")
+            } else if case .refreshing = spaceStore.state, spaceStore.allSpaces.isEmpty {
                 VStack(spacing: ZeroQueryUX.Padding) {
                     ForEach(0..<3) { _ in
                         LoadingSpaceListItem()
@@ -62,6 +65,8 @@ struct SuggestedSpaceViews_Previews: PreviewProvider {
     static var previews: some View {
         SuggestedSpaceView(space: .stackOverflow)
             .padding(.vertical, ZeroQueryUX.Padding / 2)
+            .previewLayout(.sizeThatFits)
+        SuggestedSpacesView(spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace]), userInfo: .previewLoggedOut)
             .previewLayout(.sizeThatFits)
         SuggestedSpacesView(spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace]))
             .previewLayout(.sizeThatFits)
