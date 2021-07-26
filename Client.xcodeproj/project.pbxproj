@@ -5078,7 +5078,10 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = AppClip/AppClipDev.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"AppClip/Preview Content\"";
+				DEVELOPMENT_TEAM = A9735M6NPH;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -5092,6 +5095,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(NEEVA_ROOT_BUNDLE_INDENTIFIER).Clip";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -5515,6 +5519,7 @@
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = WidgetKit/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser.WidgetKit;
 				PROVISIONING_PROFILE_SPECIFIER = "Neeva Browser WidgetKit";
 				SKIP_INSTALL = NO;
 			};
@@ -5771,6 +5776,7 @@
 				CODE_SIGN_ENTITLEMENTS = Extensions/Entitlements/NeevaDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = WidgetKit/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = "co.neeva.app.ios.browser-dev.WidgetKit";
 				SKIP_INSTALL = NO;
 			};
 			name = Debug;
