@@ -10,6 +10,7 @@ public enum Suggestion {
     case url(SuggestionsQuery.Data.Suggest.UrlSuggestion)
     case bang(Bang)
     case lens(Lens)
+    case navigation(NavSuggestion)
 
     public struct Bang {
         public let shortcut: String
@@ -50,6 +51,8 @@ extension Suggestion: Identifiable, Equatable {
             return "bang-\(bang.shortcut)"
         case .lens(let lens):
             return "lens-\(lens.shortcut)"
+        case .navigation(let nav):
+            return "nav-\(nav.url)"
         }
     }
 

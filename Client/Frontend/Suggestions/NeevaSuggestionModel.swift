@@ -17,6 +17,7 @@ class NeevaSuggestionModel: ObservableObject {
     @Published var error: Error?
     @Published var isIncognito: Bool // TODO: don’t duplicate this source of truth
     @Published var keyboardFocusedSuggestion: Suggestion?
+
     private var keyboardFocusedSuggestionIndex = -1
 
     var shouldShowSuggestions: Bool {
@@ -50,7 +51,9 @@ class NeevaSuggestionModel: ObservableObject {
     }
 
     var suggestions: [Suggestion] {
-        topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions + navSuggestions
+        let bvc = BrowserViewController.foregroundBVC()
+        let navSuggestionModel = bvc.searchController?.navModel
+        return topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions + navSuggestions + (navSuggestionModel?.combinedSuggestions ?? [])
     }
 
     func reload() {
@@ -142,6 +145,9 @@ class NeevaSuggestionModel: ObservableObject {
             searchController.searchDelegate?.searchViewController(searchController, didAcceptSuggestion: suggestion.shortcut)
         case .bang(let suggestion):
             searchController.searchDelegate?.searchViewController(searchController, didAcceptSuggestion: suggestion.shortcut)
+        case .navigation(let nav):
+            ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
+            bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: tab)
         }
     }
 
@@ -154,7 +160,12 @@ class NeevaSuggestionModel: ObservableObject {
             moveFocus(amount: 1)
         case "\r":
             if let keyboardFocusedSuggestion = keyboardFocusedSuggestion {
+                // searches for suggestion
                 handleSuggestionSelected(keyboardFocusedSuggestion)
+            } else {
+                // searches for text in address bar
+                let bvc = BrowserViewController.foregroundBVC()
+                bvc.urlBar(didSubmitText: bvc.urlBar.shared.queryModel.value + (bvc.urlBar.shared.historySuggestionModel.completion ?? ""))
             }
         default:
             break
@@ -163,7 +174,7 @@ class NeevaSuggestionModel: ObservableObject {
 
     /// Moves the focusedKeyboardShortcut up/down by the input amount
     private func moveFocus(amount: Int) {
-        let allSuggestions = topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions + navSuggestions
+        let allSuggestions = suggestions
         let allSuggestionsCount = allSuggestions.count
 
         guard allSuggestionsCount > 0 else {
@@ -173,13 +184,15 @@ class NeevaSuggestionModel: ObservableObject {
         keyboardFocusedSuggestionIndex += amount
 
         if keyboardFocusedSuggestionIndex >= allSuggestionsCount {
-            keyboardFocusedSuggestionIndex = 0
-            keyboardFocusedSuggestion = allSuggestions[0]
-        } else if keyboardFocusedSuggestionIndex < 0 {
+            keyboardFocusedSuggestionIndex = -1
+            keyboardFocusedSuggestion = nil
+        } else if keyboardFocusedSuggestionIndex < -1 {
             keyboardFocusedSuggestionIndex = allSuggestions.count - 1
             keyboardFocusedSuggestion = allSuggestions[allSuggestions.count - 1]
-        } else {
+        } else if keyboardFocusedSuggestionIndex > -1 {
             keyboardFocusedSuggestion = allSuggestions[keyboardFocusedSuggestionIndex]
+        } else {
+            keyboardFocusedSuggestion = nil
         }
     }
 

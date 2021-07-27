@@ -46,6 +46,8 @@ public struct SearchSuggestionView: View {
             BangSuggestionView(suggestion: suggestion)
         case .lens(let suggestion):
             LensSuggestionView(suggestion: suggestion)
+        case .navigation(let nav):
+            NavSuggestionView(suggestion: nav)
         }
     }
 }

@@ -116,9 +116,11 @@ class SuggestionViewsTests: XCTestCase {
         let historySuggestion = SuggestionsList().environmentObject(neevaModel).environmentObject(historyModel).environmentObject(navModel)
         let hStack = try historySuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
+
         let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
         let label = try labels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("PlaceholderLongTitleOneWord", label)
+
         let secondaryLabel = try labels[1].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel)
     }
