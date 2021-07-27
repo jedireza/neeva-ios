@@ -24,7 +24,7 @@ public extension Array where Element: Equatable {
 }
 
 public extension ArraySlice {
-    public func toArray() -> [Element] {
+    func toArray() -> [Element] {
         Array(self)
     }
 }

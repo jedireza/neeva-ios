@@ -6,36 +6,6 @@ import Foundation
 import Shared
 import Defaults
 
-// An enum to route to a settings page.
-enum SettingsPage: String {
-    case general = "general"
-    case clearPrivateData = "clear-private-data"
-}
-
-enum DefaultBrowserPath: String {
-    case systemSettings = "system-settings"
-}
-
-// Used by the App to navigate to different views.
-// To open a URL use /open-url or to open a blank tab use /open-url with no params
-enum DeepLink {
-    case settings(SettingsPage)
-    case defaultBrowser(DefaultBrowserPath)
-    init?(urlString: String) {
-        let paths = urlString.split(separator: "/")
-        guard let component = paths[safe: 0], let componentPath = paths[safe: 1] else {
-            return nil
-        }
-        if component == "settings", let link = SettingsPage(rawValue: String(componentPath)) {
-            self = .settings(link)
-        } else if component == "default-browser", let link = DefaultBrowserPath(rawValue: String(componentPath)) {
-            self = .defaultBrowser(link)
-        } else {
-            return nil
-        }
-    }
-}
-
 extension URLComponents {
     // Return the first query parameter that matches
     func valueForQuery(_ param: String) -> String? {
@@ -47,7 +17,6 @@ extension URLComponents {
 enum NavigationPath {
     case url(webURL: URL?, isPrivate: Bool)
     case widgetUrl(webURL: URL?, uuid: String)
-    case deepLink(DeepLink)
     case text(String)
     case closePrivateTabs
 
@@ -67,9 +36,7 @@ enum NavigationPath {
             return nil
         }
 
-        if urlString.starts(with: "\(scheme)://deep-link"), let deepURL = components.valueForQuery("url"), let link = DeepLink(urlString: deepURL.lowercased()) {
-            self = .deepLink(link)
-        } else if urlString.starts(with: "\(scheme)://open-url") {
+        if urlString.starts(with: "\(scheme)://open-url") {
             self = .openUrlFromComponents(components: components)
         } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(urlString: urlString, scheme: scheme, components: components) {
             self = widgetKitNavPath
@@ -87,27 +54,11 @@ enum NavigationPath {
 
     static func handle(nav: NavigationPath, with bvc: BrowserViewController) {
         switch nav {
-        case .deepLink(let link): NavigationPath.handleDeepLink(link, with: bvc)
         case .url(let url, let isPrivate): NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
         case .text(let text): NavigationPath.handleText(text: text, with: bvc)
         case .closePrivateTabs: NavigationPath.handleClosePrivateTabs(with: bvc)
         case .widgetUrl(webURL: let webURL, uuid: let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
-        }
-    }
-
-    private static func handleDeepLink(_ link: DeepLink, with bvc: BrowserViewController) {
-        switch link {
-        case .settings:
-            guard bvc.navigationController != nil else {
-                return
-            }
-
-            let controller = SettingsViewController(bvc: bvc)
-            bvc.present(controller, animated: true, completion: nil)
-
-        case .defaultBrowser(let path):
-            NavigationPath.handleDefaultBrowser(path: path)
         }
     }
 
@@ -192,13 +143,6 @@ enum NavigationPath {
         bvc.urlBar(didSubmitText: text)
     }
     
-    private static func handleDefaultBrowser(path: DefaultBrowserPath) {
-        switch path {
-        case .systemSettings:
-            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
-        }
-    }
-
     public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
         // Intercept and rewrite search queries incoming from e.g. SpotLight.
         //
@@ -275,21 +219,6 @@ func == (lhs: NavigationPath, rhs: NavigationPath) -> Bool {
     switch (lhs, rhs) {
     case let (.url(lhsURL, lhsPrivate), .url(rhsURL, rhsPrivate)):
         return lhsURL == rhsURL && lhsPrivate == rhsPrivate
-    case let (.deepLink(lhs), .deepLink(rhs)):
-        return lhs == rhs
-    default:
-        return false
-    }
-}
-
-extension DeepLink: Equatable {}
-
-func == (lhs: DeepLink, rhs: DeepLink) -> Bool {
-    switch (lhs, rhs) {
-    case let (.settings(lhs), .settings(rhs)):
-        return lhs == rhs
-    case let (.defaultBrowser(lhs), .defaultBrowser(rhs)):
-        return lhs == rhs
     default:
         return false
     }

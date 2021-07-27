@@ -32,7 +32,7 @@ struct NavSuggestionView: View {
 
     @ViewBuilder
     var secondaryLabel: some View {
-        if let title = suggestion.title {
+        if suggestion.title != nil {
             Text(suggestion.url.normalizedHostAndPathForDisplay)
                 .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
         }
