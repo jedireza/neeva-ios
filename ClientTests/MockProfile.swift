@@ -52,10 +52,10 @@ open class MockProfile: Client.Profile {
     // Read/Writeable properties for mocking
     public var recommendations: HistoryRecommendations
     public var files: FileAccessor
-    public var history: BrowserHistory & SyncableHistory & ResettableSyncStorage
+    public var history: BrowserHistory & ResettableSyncStorage
     public var logins: RustLogins
 
-    fileprivate var legacyPlaces: BrowserHistory & Favicons & SyncableHistory & ResettableSyncStorage & HistoryRecommendations
+    fileprivate var legacyPlaces: BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations
 
     public lazy var panelDataObservers: PanelDataObservers = {
         return MockPanelDataObservers(profile: self)

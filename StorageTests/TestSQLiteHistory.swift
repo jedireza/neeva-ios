@@ -949,76 +949,6 @@ class TestSQLiteHistory: XCTestCase {
         self.deleteDatabases()
     }
 
-    // Test that our visit partitioning for frecency is correct.
-    func testHistoryLocalAndRemoteVisits() {
-        let db = BrowserDB(filename: "testHistoryLocalAndRemoteVisits.db", schema: BrowserSchema(), files: files)
-        let history = SQLiteHistory(db: db)
-
-        let siteL = Site(url: "http://url1/", title: "title local only")
-        let siteR = Site(url: "http://url2/", title: "title remote only")
-        let siteB = Site(url: "http://url3/", title: "title local and remote")
-
-        siteL.guid = "locallocal12"
-        siteR.guid = "remoteremote"
-        siteB.guid = "bothbothboth"
-
-        let siteVisitL1 = SiteVisit(site: siteL, date: baseInstantInMicros + 1000, type: VisitType.link)
-        let siteVisitL2 = SiteVisit(site: siteL, date: baseInstantInMicros + 2000, type: VisitType.link)
-
-        let siteVisitR1 = SiteVisit(site: siteR, date: baseInstantInMicros + 1000, type: VisitType.link)
-        let siteVisitR2 = SiteVisit(site: siteR, date: baseInstantInMicros + 2000, type: VisitType.link)
-        let siteVisitR3 = SiteVisit(site: siteR, date: baseInstantInMicros + 3000, type: VisitType.link)
-
-        let siteVisitBL1 = SiteVisit(site: siteB, date: baseInstantInMicros + 4000, type: VisitType.link)
-        let siteVisitBR1 = SiteVisit(site: siteB, date: baseInstantInMicros + 5000, type: VisitType.link)
-
-        let deferred =
-        history.clearHistory()
-            >>> { history.addLocalVisit(siteVisitL1) }
-            >>> { history.addLocalVisit(siteVisitL2) }
-            >>> { history.addLocalVisit(siteVisitBL1) }
-            >>> { history.insertOrUpdatePlace(siteL.asPlace(), modified: baseInstantInMillis + 2) }
-            >>> { history.insertOrUpdatePlace(siteR.asPlace(), modified: baseInstantInMillis + 3) }
-            >>> { history.insertOrUpdatePlace(siteB.asPlace(), modified: baseInstantInMillis + 5) }
-
-            // Do this step twice, so we exercise the dupe-visit handling.
-            >>> { history.storeRemoteVisits([siteVisitR1, siteVisitR2, siteVisitR3], forGUID: siteR.guid!) }
-            >>> { history.storeRemoteVisits([siteVisitR1, siteVisitR2, siteVisitR3], forGUID: siteR.guid!) }
-
-            >>> { history.storeRemoteVisits([siteVisitBR1], forGUID: siteB.guid!) }
-
-            >>> {
-                history.getFrecentHistory().getSites(matchingSearchQuery: nil, limit: 3)
-                >>== { (sites: Cursor) -> Success in
-                    XCTAssertEqual(3, sites.count)
-
-                    // Two local visits beat a single later remote visit and one later local visit.
-                    // Two local visits beat three remote visits.
-                    XCTAssertEqual(siteL.guid!, sites[0]!!.guid!)
-                    XCTAssertEqual(siteB.guid!, sites[1]!!.guid!)
-                    XCTAssertEqual(siteR.guid!, sites[2]!!.guid!)
-                    return succeed()
-            }
-
-            // This marks everything as modified so we can fetch it.
-            >>> history.onRemovedAccount
-
-            // Now check that we have no duplicate visits.
-            >>> { history.getModifiedHistoryToUpload()
-                >>== { (places) -> Success in
-                    if let (_, visits) = places.first(where: { $0.0.guid == siteR.guid!}) {
-                        XCTAssertEqual(3, visits.count)
-                    } else {
-                        XCTFail("Couldn't find site R.")
-                    }
-                    return succeed()
-                }
-            }
-        }
-
-        XCTAssertTrue(deferred.value.isSuccess)
-    }
-
     func testUpgrades() {
         let sources: [(Int, Schema)] = [
             (6, BrowserSchemaV6()),
@@ -1108,7 +1038,6 @@ class TestSQLiteHistory: XCTestCase {
         let initialGuid = Bytes.generateGUID()
         let site11 = Site(url: "http://www.example.com/test1.1", title: "title one")
         let site12 = Site(url: "http://www.example.com/test1.2", title: "title two")
-        let site13 = Place(guid: initialGuid, url: "http://www.example.com/test1.3", title: "title three")
         let site3 = Site(url: "http://www.example2.com/test1", title: "title three")
         let expectation = self.expectation(description: "First.")
 
@@ -1125,16 +1054,8 @@ class TestSQLiteHistory: XCTestCase {
             return all([history.addLocalVisit(SiteVisit(site: site11, date: Date.nowMicroseconds(), type: VisitType.link)),
                         history.addLocalVisit(SiteVisit(site: site12, date: Date.nowMicroseconds(), type: VisitType.link)),
                         history.addLocalVisit(SiteVisit(site: site3, date: Date.nowMicroseconds(), type: VisitType.link))])
-        }).bind({ (results: [Maybe<()>]) in
-            return history.insertOrUpdatePlace(site13, modified: Date.nowMicroseconds())
-        }).bind({ guid -> Success in
-            XCTAssertEqual(guid.successValue!, initialGuid, "Guid is correct")
-            return db.run(updateTopSites)
-        }).bind({ success in
-            XCTAssertTrue(success.isSuccess, "update was successful")
-            return countTopSites()
-        }).bind({ (count: Maybe<Cursor<Int>>) -> Success in
-            XCTAssert(count.successValue![0] == 2, "2 sites returned")
+        }).bind({ success -> Success in
+            XCTAssertTrue(success.allSatisfy(\.isSuccess), "insert was successful")
             return history.removeSiteFromTopSites(site11)
         }).bind({ success -> Success in
             XCTAssertTrue(success.isSuccess, "Remove was successful")
@@ -1151,20 +1072,6 @@ class TestSQLiteHistory: XCTestCase {
         waitForExpectations(timeout: 10.0) { error in
             return
         }
-    }
-
-    func testHistoryIsSynced() {
-        let db = BrowserDB(filename: "historysynced.db", schema: BrowserSchema(), files: files)
-        let history = SQLiteHistory(db: db)
-
-        let initialGUID = Bytes.generateGUID()
-        let site = Place(guid: initialGUID, url: "http://www.example.com/test1.3", title: "title")
-
-        XCTAssertFalse(history.hasSyncedHistory().value.successValue ?? true)
-
-        XCTAssertTrue(history.insertOrUpdatePlace(site, modified: Date.nowMilliseconds()).value.isSuccess)
-
-        XCTAssertTrue(history.hasSyncedHistory().value.successValue ?? false)
     }
 
     // This is a very basic test. Adds an entry, retrieves it, updates it,
@@ -1209,16 +1116,6 @@ class TestSQLiteHistory: XCTestCase {
             }
         }
 
-        func checkDeletedCount(_ expected: Int) -> () -> Success {
-            return {
-                history.getDeletedHistoryToUpload()
-                >>== { guids in
-                    XCTAssertEqual(expected, guids.count)
-                    return succeed()
-                }
-            }
-        }
-
         history.clearHistory()
             >>> { history.addLocalVisit(siteVisit1) }
             >>> checkSitesByFrecency { (sites: Cursor) -> Success in
@@ -1260,11 +1157,7 @@ class TestSQLiteHistory: XCTestCase {
                 XCTAssertEqual(site2.title, first.title)
                 return succeed()
             }
-            >>>
-            checkDeletedCount(0)
             >>> { history.removeHistoryForURL("http://url2/") }
-            >>>
-            checkDeletedCount(1)
             >>> checkSitesByFrecency { (sites: Cursor) -> Success in
                     XCTAssertEqual(1, sites.count)
                     // They're in order of frecency.
@@ -1272,8 +1165,6 @@ class TestSQLiteHistory: XCTestCase {
                     return succeed()
             }
             >>> { history.clearHistory() }
-            >>>
-            checkDeletedCount(0)
             >>> checkSitesByDate { (sites: Cursor<Site?>) -> Success in
                 XCTAssertEqual(0, sites.count)
                 return succeed()
@@ -1309,16 +1200,10 @@ class TestSQLiteHistory: XCTestCase {
             let deferred = history.addLocalVisit(siteVisitL1)
                     >>> { history.addLocalVisit(siteVisitL2) }
                     >>> { history.addLocalVisit(siteVisitBL1) }
-                    >>> { history.insertOrUpdatePlace(siteL.asPlace(), modified: baseInstantInMillis + 2) }
-                    >>> { history.insertOrUpdatePlace(siteR.asPlace(), modified: baseInstantInMillis + 3) }
-                    >>> { history.insertOrUpdatePlace(siteB.asPlace(), modified: baseInstantInMillis + 5) }
 
             XCTAssert(deferred.value.isSuccess)
 
             history.removeHistoryFromDate(date).succeeded()
-            history.getDeletedHistoryToUpload() >>== { guids in
-                XCTAssertEqual(expectedDeletions, guids.count)
-            }
         }
 
         delete(date: Date(timeIntervalSinceNow: 0), expectedDeletions: 0)
@@ -1339,11 +1224,6 @@ class TestSQLiteHistory: XCTestCase {
 
         history.removeHistoryForURL("http://s0ite0.com/foo").succeeded()
         history.removeHistoryForURL("http://s1ite1.com/foo").succeeded()
-
-        let deletedResult = history.getDeletedHistoryToUpload().value
-        XCTAssertTrue(deletedResult.isSuccess)
-        let guids = deletedResult.successValue!
-        XCTAssertEqual(2, guids.count)
     }
 
     func testTopSitesFrecencyOrder() {
@@ -1360,10 +1240,9 @@ class TestSQLiteHistory: XCTestCase {
         // Create a new site thats for an existing domain but a different URL.
         let site = Site(url: "http://s\(5)ite\(5).com/foo-different-url".asURL!, title: "A \(5) different url")
         site.guid = "abc\(5)defhi"
-        history.insertOrUpdatePlace(site.asPlace(), modified: baseInstantInMillis - 20000).succeeded()
         // Don't give it any remote visits. But give it 100 local visits. This should be the new Topsite!
         for i in 0...100 {
-            addVisitForSite(site, intoHistory: history, from: .local, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
+            addVisitForSite(site, intoHistory: history, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
         }
 
         let expectation = self.expectation(description: "First.")
@@ -1406,10 +1285,9 @@ class TestSQLiteHistory: XCTestCase {
         func createTopSite(url: URL, guid: String) {
             let site = Site(url: url, title: "Hi")
             site.guid = guid
-            history.insertOrUpdatePlace(site.asPlace(), modified: baseInstantInMillis - 20000).succeeded()
             // Don't give it any remote visits. But give it 100 local visits. This should be the new Topsite!
             for i in 0...100 {
-                addVisitForSite(site, intoHistory: history, from: .local, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
+                addVisitForSite(site, intoHistory: history, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
             }
         }
 
@@ -1465,7 +1343,7 @@ class TestSQLiteHistory: XCTestCase {
         let site = Site(url: "http://s\(5)ite\(5).com/foo".asURL!, title: "A \(5)")
         site.guid = "abc\(5)def"
         for i in 0...20 {
-            addVisitForSite(site, intoHistory: history, from: .local, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
+            addVisitForSite(site, intoHistory: history, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
         }
 
         let expectation = self.expectation(description: "First.")
@@ -1500,7 +1378,7 @@ class TestSQLiteHistory: XCTestCase {
             let site = Site(url: "http://s\(0)ite\(0).com/foo".asURL!, title: "A \(0)")
             site.guid = "abc\(0)def"
             for i in 0...20 {
-                addVisitForSite(site, intoHistory: history, from: .local, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
+                addVisitForSite(site, intoHistory: history, atTime: advanceTimestamp(baseInstantInMicros, by: 1000000 * i))
             }
             return succeed()
         }
@@ -1551,11 +1429,11 @@ class TestSQLiteHistory: XCTestCase {
         let site1 = Site(url: "http://s\(1)ite\(1).com/foo".asURL!, title: "A \(1)")
         site1.id = 1
         site1.guid = "abc\(1)def"
-        addVisitForSite(site1, intoHistory: history, from: .local, atTime: Date.nowMilliseconds())
+        addVisitForSite(site1, intoHistory: history, atTime: Date.nowMilliseconds())
         let site2 = Site(url: "http://s\(2)ite\(2).com/foo".asURL!, title: "A \(2)")
         site2.id = 2
         site2.guid = "abc\(2)def"
-        addVisitForSite(site2, intoHistory: history, from: .local, atTime: Date.nowMilliseconds())
+        addVisitForSite(site2, intoHistory: history, atTime: Date.nowMilliseconds())
 
 
         let expectation = self.expectation(description: "First.")
@@ -1633,13 +1511,8 @@ class TestSQLiteHistoryTransactionUpdate: XCTestCase {
         let site = Site(url: "http://site/foo", title: "AA")
         site.guid = "abcdefghiabc"
 
-        history.insertOrUpdatePlace(site.asPlace(), modified: 1234567890).succeeded()
-
         let ts: MicrosecondTimestamp = baseInstantInMicros
         let local = SiteVisit(site: site, date: ts, type: VisitType.link)
         XCTAssertTrue(history.addLocalVisit(local).value.isSuccess)
-
-        // Doing it again is a no-op and will not fail.
-        history.insertOrUpdatePlace(site.asPlace(), modified: 1234567890).succeeded()
     }
 }

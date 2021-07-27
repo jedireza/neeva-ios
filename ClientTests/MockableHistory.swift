@@ -11,7 +11,7 @@ import Shared
  * with all of the methods set to fatalError. Use this class if you're looking to
  * mock out parts of the history API
  */
-class MockableHistory: BrowserHistory, SyncableHistory, ResettableSyncStorage {
+class MockableHistory: BrowserHistory, AccountRemovalDelegate, ResettableSyncStorage {
     func getFrecentHistory() -> FrecentHistory { fatalError() }
     func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site?>>> { fatalError() }
     func addLocalVisit(_ visit: SiteVisit) -> Success { fatalError() }
@@ -30,17 +30,6 @@ class MockableHistory: BrowserHistory, SyncableHistory, ResettableSyncStorage {
     func updateTopSitesCacheIfInvalidated() -> Deferred<Maybe<Bool>> { fatalError() }
     func setTopSitesCacheSize(_ size: Int32) { fatalError() }
     func onRemovedAccount() -> Success { fatalError() }
-    func ensurePlaceWithURL(_ url: String, hasGUID guid: GUID) -> Success { fatalError() }
-    func deleteByGUID(_ guid: GUID, deletedAt: Timestamp) -> Success { fatalError() }
-    func storeRemoteVisits(_ visits: [Visit], forGUID guid: GUID) -> Success { fatalError() }
-    func insertOrUpdatePlace(_ place: Place, modified: Timestamp) -> Deferred<Maybe<GUID>> { fatalError() }
-    func getModifiedHistoryToUpload() -> Deferred<Maybe<[(Place, [Visit])]>> { fatalError() }
-    func getDeletedHistoryToUpload() -> Deferred<Maybe<[GUID]>> { fatalError() }
-    func markAsSynchronized(_: [GUID], modified: Timestamp) -> Deferred<Maybe<Timestamp>> { fatalError() }
-    func markAsDeleted(_ guids: [GUID]) -> Success { fatalError() }
-    func doneApplyingRecordsAfterDownload() -> Success { fatalError() }
-    func doneUpdatingMetadataAfterUpload() -> Success { fatalError() }
-    func hasSyncedHistory() -> Deferred<Maybe<Bool>> { fatalError() }
     func resetClient() -> Success { fatalError() }
 }
 

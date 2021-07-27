@@ -50,7 +50,7 @@ class ProfileFileAccessor: FileAccessor {
 protocol Profile: AnyObject {
     var queue: TabQueue { get }
     var files: FileAccessor { get }
-    var history: BrowserHistory & SyncableHistory & ResettableSyncStorage { get }
+    var history: BrowserHistory & ResettableSyncStorage { get }
     var metadata: Metadata { get }
     var recommendations: HistoryRecommendations { get }
     var favicons: Favicons { get }
@@ -236,7 +236,7 @@ open class BrowserProfile: Profile {
      * Any other class that needs to access any one of these should ensure
      * that this is initialized first.
      */
-    fileprivate lazy var legacyPlaces: BrowserHistory & Favicons & SyncableHistory & ResettableSyncStorage & HistoryRecommendations  = {
+    fileprivate lazy var legacyPlaces: BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations  = {
         return SQLiteHistory(db: self.db)
     }()
 
@@ -244,7 +244,7 @@ open class BrowserProfile: Profile {
         return self.legacyPlaces
     }
 
-    var history: BrowserHistory & SyncableHistory & ResettableSyncStorage {
+    var history: BrowserHistory & ResettableSyncStorage {
         return self.legacyPlaces
     }
 
