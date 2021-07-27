@@ -163,14 +163,16 @@ class NavigationTest: BaseTestCase {
         
         app.textFields["address"].typeText("\n")
         waitUntilPageLoad()
+
         app.buttons["Address Bar"].press(forDuration: 1)
         app.menuItems["Copy"].tap()
 
+        waitForExistence(app.buttons["Address Bar"])
         app.buttons["Address Bar"].tap()
-        app.buttons["Address Bar"].tap()
-        // Since the textField value appears all selected first time is clicked
-        // this workaround is necessary
+
+        waitForExistence(app.textFields["address"])
         app.textFields["address"].tap()
+
         waitForExistence(app.menuItems["Copy"])
         if iPad() {
             XCTAssertTrue(app.menuItems["Copy"].exists)

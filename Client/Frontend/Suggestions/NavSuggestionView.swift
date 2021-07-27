@@ -7,8 +7,7 @@ import Storage
 struct NavSuggestionView: View {
     let suggestion: NavSuggestion
 
-    @State var focused = false
-    @Environment(\.onOpenURL) private var openURL
+    @EnvironmentObject public var model: NeevaSuggestionModel
 
     @ViewBuilder
     var icon: some View {
@@ -45,14 +44,13 @@ struct NavSuggestionView: View {
     }
 
     var body: some View {
-        SuggestionView(action: {
-                ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
-                openURL(suggestion.url)
-            }, icon: icon,
+        SuggestionView(action: nil,
+            icon: icon,
             label: label,
             secondaryLabel: secondaryLabel,
             detail: EmptyView(),
-            suggestion: nil)
+            suggestion: Suggestion.navigation(suggestion))
+            .environmentObject(model)
     }
 }
 

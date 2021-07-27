@@ -102,12 +102,14 @@ struct UrlSuggestionsList: View {
 }
 
 struct NavSuggestionsList: View {
+    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
     @EnvironmentObject private var navModel: NavSuggestionModel
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
-        ForEach(navModel.combinedSuggestions) { suggestion in
-            NavSuggestionView(suggestion: suggestion)
+        ForEach(neevaModel.navSuggestions + navModel.combinedSuggestions) { suggestion in
+            SearchSuggestionView(suggestion)
+                .environmentObject(neevaModel)
         }
     }
 }

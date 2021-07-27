@@ -65,7 +65,7 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
 
     fileprivate let historyModel: HistorySuggestionModel
     fileprivate let neevaModel: NeevaSuggestionModel
-    fileprivate let navModel: NavSuggestionModel
+    let navModel: NavSuggestionModel
     fileprivate let profile: Profile
 
     init(profile: Profile, historyModel: HistorySuggestionModel, neevaModel: NeevaSuggestionModel) {
