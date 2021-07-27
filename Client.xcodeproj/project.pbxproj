@@ -365,11 +365,6 @@
 		C9A241CB269CA4AB007156B3 /* URLBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241CA269CA4AB007156B3 /* URLBarHost.swift */; };
 		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
-		C9ACC462267A4408009AE182 /* HistorySuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */; };
-		C9A241C9269C9EC0007156B3 /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241C8269C9EC0007156B3 /* URLBarView.swift */; };
-		C9A241CB269CA4AB007156B3 /* URLBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241CA269CA4AB007156B3 /* URLBarHost.swift */; };
-		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
-		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
 		C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */; };
 		C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */; };
@@ -432,6 +427,7 @@
 		C9C18E6526559B9C004710CD /* LogConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6326559B9C004710CD /* LogConfig.swift */; };
 		C9C18E6626559B9C004710CD /* ClientLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6426559B9C004710CD /* ClientLogger.swift */; };
 		C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E6726559DCF004710CD /* FormatDateTime.swift */; };
+		C9C5CCC126B0982C00776929 /* PrivateZoomAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C5CCC026B0982C00776929 /* PrivateZoomAPITests.swift */; };
 		C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */; };
 		C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
 		C9DACFEB269CEFE600456020 /* KMCGeigerCounterTick.aiff in Resources */ = {isa = PBXBuildFile; fileRef = C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */; };
@@ -1302,10 +1298,6 @@
 		C9A241C8269C9EC0007156B3 /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
 		C9A241CA269CA4AB007156B3 /* URLBarHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarHost.swift; sourceTree = "<group>"; };
 		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
-		C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySuggestionView.swift; sourceTree = "<group>"; };
-		C9A241C8269C9EC0007156B3 /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
-		C9A241CA269CA4AB007156B3 /* URLBarHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarHost.swift; sourceTree = "<group>"; };
-		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
 		C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuSettingsView.swift; sourceTree = "<group>"; };
 		C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoAwareHostingController.swift; sourceTree = "<group>"; };
@@ -1362,6 +1354,7 @@
 		C9C18E6326559B9C004710CD /* LogConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogConfig.swift; sourceTree = "<group>"; };
 		C9C18E6426559B9C004710CD /* ClientLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientLogger.swift; sourceTree = "<group>"; };
 		C9C18E6726559DCF004710CD /* FormatDateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatDateTime.swift; sourceTree = "<group>"; };
+		C9C5CCC026B0982C00776929 /* PrivateZoomAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateZoomAPITests.swift; sourceTree = "<group>"; };
 		C9D49FFE265BDF2D00299FC2 /* schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
 		C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountInfoView.swift; sourceTree = "<group>"; };
 		C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = KMCGeigerCounterTick.aiff; sourceTree = "<group>"; };
@@ -3206,6 +3199,7 @@
 				4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */,
 				4A5B0F2026AF9610009D1336 /* CardTests.swift */,
 				D815A3A724A53F3200AAB221 /* TabToolbarHelperTests.swift */,
+				C9C5CCC026B0982C00776929 /* PrivateZoomAPITests.swift */,
 			);
 			path = ClientTests;
 			sourceTree = "<group>";
@@ -4768,6 +4762,7 @@
 				D815A3A824A53F3200AAB221 /* TabToolbarHelperTests.swift in Sources */,
 				A83E5B1E1C1DAAAA0026D912 /* UIPasteboardExtensions.swift in Sources */,
 				0BF42D4F1A7CD09600889E28 /* TestFavicons.swift in Sources */,
+				C9C5CCC126B0982C00776929 /* PrivateZoomAPITests.swift in Sources */,
 				7BBFEE741BB405D900A305AA /* TabManagerTests.swift in Sources */,
 				4A5B0F2126AF9610009D1336 /* CardTests.swift in Sources */,
 				39236E721FCC600200A38F1B /* TabEventHandlerTests.swift in Sources */,
