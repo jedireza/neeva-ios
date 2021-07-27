@@ -7,9 +7,11 @@ import Defaults
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     // IMPORTANT: when adding a new feature flag, make sure to keep this list
     // in alphabetical order to reduce merge conflicts.
+
+    case bottomURLBar = "Bottom URL Bar"
     case cardGrid = "New Switcher UI"
     case cardStrip = "Carousel of cards instead of tab strip"
-    case bottomURLBar = "Bottom URL Bar"
+    case clearZeroQuery = "Clear ZeroQuery field on open"
     case debugURLBar = "URL Bar Debug Mode"
     case groupsInSwitcher = "TabGroups and Spaces in Switcher UI"
     case inlineAccountSettings = "Inline Account Settings"
