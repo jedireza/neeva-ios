@@ -45,9 +45,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 handleShortcut(shortcutItem: shortcutItem)
             }
         }
-
-        // for testing retrieving data from App Clip
-        print("Retrieved App Clip data:", retreiveAppClipData() ?? "No Data")
     }
 
     private func setupRootViewController(_ scene: UIScene) {
@@ -71,6 +68,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         self.scene = scene
+
+        DispatchQueue.main.async {
+            if let signInToken = AppClipHelper.retreiveAppClipData() {
+                self.handleSignInToken(signInToken)
+            }
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -80,9 +83,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MARK: - URL managment
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
-        guard let url = URLContexts.first?.url, let routerpath = NavigationPath(url: url) else {
-            return
-        }
+        guard let url = URLContexts.first?.url,
+              let routerpath = NavigationPath(url: url),
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              let queryItems = components.queryItems else { return }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
@@ -95,7 +99,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         DispatchQueue.main.async {
-            NavigationPath.handle(nav: routerpath, with: self.browserViewController)
+            // This is in case the AppClip sign in URL ends up opening the app
+            // Will occur if the app is already installed
+            if let signInToken = queryItems.first(where: { $0.name == "token" })?.value {
+                self.handleSignInToken(signInToken)
+            } else {
+                NavigationPath.handle(nav: routerpath, with: self.browserViewController)
+            }
         }
     }
 
@@ -198,19 +208,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         geigerCounter = nil
     }
 
-    // MARK: - App Clip
-    func retreiveAppClipData() -> String? {
-        guard let appClipPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.co.neeva.app.ios.browser.app-clip.login")?.appendingPathComponent("AppClipValue") else {
-            return nil
-        }
-
-        do {
-            let data = try Data(contentsOf: appClipPath)
-            return try JSONDecoder().decode(String.self, from: data)
-        } catch {
-            print("Error retriving App Clip data:", error.localizedDescription)
-            return nil
-        }
+    // MARK: - Sign In
+    func handleSignInToken(_ signInToken: String) {
+        print(signInToken, "sign in token")
+        Defaults[.introSeen] = true
+        AppClipHelper.saveTokenToDevice(nil)
+        browserViewController.openURLInNewTab(URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
     }
 }
 

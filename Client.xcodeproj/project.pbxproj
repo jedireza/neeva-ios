@@ -205,6 +205,7 @@
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
 		664825F0268FD106000E7F6A /* XCUIElementExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664825EF268FD106000E7F6A /* XCUIElementExtension.swift */; };
 		667DB63A2698E3DF0054A222 /* KeyboardShortcutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */; };
+		669409BD26AF8D8B00FE635B /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		669ACD56269CED060038C89C /* AppClipApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669ACD55269CED060038C89C /* AppClipApp.swift */; };
 		669ACD58269CED060038C89C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669ACD57269CED060038C89C /* ContentView.swift */; };
 		669ACD5A269CED070038C89C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 669ACD59269CED070038C89C /* Assets.xcassets */; };
@@ -213,6 +214,7 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
 		66BEFDC926A7678200AA32EF /* GroupedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC826A7678200AA32EF /* GroupedCell.swift */; };
@@ -1149,6 +1151,7 @@
 		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66B9570D26AF827E004C6117 /* AppClipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipHelper.swift; sourceTree = "<group>"; };
 		66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppViewController.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
 		66BEFDC826A7678200AA32EF /* GroupedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCell.swift; sourceTree = "<group>"; };
@@ -2050,6 +2053,7 @@
 				39455F761FC83F430088A22C /* TabEventHandler.swift */,
 				39F819C51FD70F5D009E31E4 /* TabEventHandlers.swift */,
 				39A359E31BFCCE94006B9E87 /* UserActivityHandler.swift */,
+				66B9570D26AF827E004C6117 /* AppClipHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -4395,6 +4399,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				669ACD58269CED060038C89C /* ContentView.swift in Sources */,
+				669409BD26AF8D8B00FE635B /* AppClipHelper.swift in Sources */,
 				669ACD56269CED060038C89C /* AppClipApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4596,6 +4601,7 @@
 				C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */,
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
 				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
+				66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */,
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
 				67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */,
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,

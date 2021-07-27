@@ -4,7 +4,7 @@ import SwiftUI
 
 @main
 struct AppClipApp: App {
-    static let appClipSuiteName = "group.co.neeva.app.ios.browser.app-clip.login"
+    static let neevaAppStorePageURL = URL(string: "https://apps.apple.com/us/app/neeva-browser-search-engine/id1543288638")!
 
     var body: some Scene {
         WindowGroup {
@@ -16,23 +16,11 @@ struct AppClipApp: App {
     func handleUserActivity(_ userActivity: NSUserActivity) {
         guard let incomingURL = userActivity.webpageURL,
               let components = URLComponents(url: incomingURL, resolvingAgainstBaseURL: true),
-              let queryItems = components.queryItems else { return }
+              let queryItems = components.queryItems,
+              let signInToken = queryItems.first(where: { $0.name == "token" })?.value else { return }
 
-        guard let testValue = queryItems.first(where: { $0.name == "testValue" })?.value else { return }
-        AppClipApp.saveDataToDevice(data: testValue)
-    }
+        AppClipHelper.saveTokenToDevice(signInToken)
 
-    static func saveDataToDevice(data: String) {
-        guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appClipSuiteName)?.appendingPathComponent("AppClipValue") else {
-            return
-        }
-
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(data)
-            try data.write(to: containerURL)
-        } catch {
-            print("Whoops, an error occured: \(error)")
-        }
+        UIApplication.shared.open(AppClipApp.neevaAppStorePageURL, options: [:], completionHandler: nil)
     }
 }

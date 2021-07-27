@@ -15,21 +15,7 @@ class AppClipTest: XCTestCase {
     func testSaveRetrieveData() throws {
         let testValue = "testing"
 
-        AppClipApp.saveDataToDevice(data: testValue)
-        XCTAssertEqual(retreiveDataFromDevice(), testValue)
-    }
-
-    func retreiveDataFromDevice() -> String? {
-        guard let appClipPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppClipApp.appClipSuiteName)?.appendingPathComponent("AppClipValue") else {
-            return nil
-        }
-
-        do {
-            let data = try Data(contentsOf: appClipPath)
-            return try JSONDecoder().decode(String.self, from: data)
-        } catch {
-            print("Error retriving App Clip data:", error.localizedDescription)
-            return nil
-        }
+        AppClipHelper.saveTokenToDevice(testValue)
+        XCTAssertEqual(AppClipHelper.retreiveAppClipData(), testValue)
     }
 }

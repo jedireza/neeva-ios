@@ -15,13 +15,18 @@ struct ContentView: View {
             }
 
             Button(action: {
-                UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/neeva-browser-search-engine/id1543288638")!)
+                UIApplication.shared.open(URL(string: "neeva://finish-log-in")!)
             }, label: {
-                HStack {
-                    (Text("Download Now").underline().fontWeight(.semibold) +
-                        Text(" for a \nbetter search experience").foregroundColor(Color(UIColor.link))).multilineTextAlignment(.center)
+                (Text("You're logged in! ") +
+                    Text("Open Neeva").underline().fontWeight(.semibold) +
+                    Text(" for a \nbetter search experience").foregroundColor(Color(UIColor.link))).multilineTextAlignment(.center)
+            })
 
-                }
+            Button(action: {
+                UIApplication.shared.open(URL(string: "AppClipApp.neevaAppStorePageURL")!)
+            }, label: {
+                (Text("Don't have Neeva? ") +
+                    Text("Download the app now!").underline().fontWeight(.semibold)).multilineTextAlignment(.center)
             })
         }
     }

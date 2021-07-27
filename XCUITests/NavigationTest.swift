@@ -164,9 +164,6 @@ class NavigationTest: BaseTestCase {
         app.textFields["address"].typeText("\n")
         waitUntilPageLoad()
 
-        app.buttons["Address Bar"].press(forDuration: 1)
-        app.menuItems["Copy"].tap()
-
         waitForExistence(app.buttons["Address Bar"])
         app.buttons["Address Bar"].tap()
 
