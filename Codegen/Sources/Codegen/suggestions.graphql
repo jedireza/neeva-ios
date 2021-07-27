@@ -9,6 +9,7 @@ query Suggestions($query: String!) {
       }
       source
       annotation {
+        annotationType
         description
         imageURL
       }

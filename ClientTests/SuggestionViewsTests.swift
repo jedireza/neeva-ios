@@ -30,7 +30,15 @@ class SuggestionViewsTests: XCTestCase {
             boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
             source: .bing
         )
+    static let sampleCalculatorQuerySuggestion = SuggestionsQuery.Data.Suggest.QuerySuggestion(
+            type: .standard,
+            suggestedQuery: "5+5",
+            boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
+            source: .calculator,
+            annotation: .init(annotationType: "Calculator", description: "10")
+        )
     static let sampleQuery = Suggestion.query(sampleQuerySuggestion)
+    static let sampleCalculatorQuery = Suggestion.query(sampleCalculatorQuerySuggestion)
     static let sampleURLSuggestion = SuggestionsQuery.Data.Suggest.UrlSuggestion(
         icon: .init(labels: ["google-email", "email"]),
         suggestedUrl: "https://mail.google.com/mail/u/jed@neeva.co/#inbox/1766c8357ae540a5",
@@ -208,5 +216,25 @@ class SuggestionViewsTests: XCTestCase {
         XCTAssertEqual(2, list.count)
         XCTAssertEqual(4, list.findAll(NavSuggestionView.self).count)
         XCTAssertEqual(0, list.findAll(QuerySuggestionView.self).count)
+    }
+
+    func testSuggestionWithCalculatorSayt() throws {
+        let model = NeevaSuggestionModel(previewLensBang: nil,
+                                         rowQuerySuggestions: [SuggestionViewsTests.sampleCalculatorQuery])
+        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery).environmentObject(model)
+        let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
+        XCTAssertNotNil(query)
+        let querySuggestion =
+            QuerySuggestionView(suggestion: SuggestionViewsTests.sampleCalculatorQuerySuggestion).environmentObject(model)
+        let label = try querySuggestion.inspect()
+            .find(ViewType.VStack.self)
+            .find(ViewType.Text.self)
+            .string(locale: Locale(identifier: "en"))
+        let secondaryLabel = try querySuggestion.inspect()
+            .find(ViewType.VStack.self)
+            .find(ViewType.Text.self, skipFound: 1)
+            .string(locale: Locale(identifier: "en"))
+        XCTAssertEqual("10", label)
+        XCTAssertEqual("5+5 =", secondaryLabel)
     }
 }

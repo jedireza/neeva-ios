@@ -88,6 +88,16 @@ extension ActiveLensBangType {
     }
 }
 
+extension SuggestionsQuery.Data.Suggest.QuerySuggestion {
+    public func suggestedCalculatorQuery() -> String? {
+        if (AnnotationType(annotation: self.annotation) == .calculator) {
+            return self.suggestedQuery+" ="
+        } else {
+            return nil
+        }
+    }
+}
+
 /// Fetches query and URL suggestions for a given query
 public class SuggestionsController: QueryController<SuggestionsQuery, SuggestionsQueryResult> {
     public override class func processData(_ data: SuggestionsQuery.Data) -> SuggestionsQueryResult {

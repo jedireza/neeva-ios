@@ -222,6 +222,8 @@
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
+		66DA9E49268E8EFB001EFF13 /* ToastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DA9E48268E8EFB001EFF13 /* ToastTests.swift */; };
+		67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67292D3226AD2CF200DB1BFA /* AnnotationType.swift */; };
 		6751BA7A26A77195007FC7EA /* NavSuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BA7926A77195007FC7EA /* NavSuggestionModel.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
@@ -362,6 +364,10 @@
 		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9ACC462267A4408009AE182 /* HistorySuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */; };
+		C9A241C9269C9EC0007156B3 /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241C8269C9EC0007156B3 /* URLBarView.swift */; };
+		C9A241CB269CA4AB007156B3 /* URLBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241CA269CA4AB007156B3 /* URLBarHost.swift */; };
+		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
+		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
 		C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */; };
 		C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */; };
@@ -1158,6 +1164,7 @@
 		66C3C772267A8909002B50B1 /* TabMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenu.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutTests.swift; sourceTree = "<group>"; };
+		67292D3226AD2CF200DB1BFA /* AnnotationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationType.swift; sourceTree = "<group>"; };
 		6751BA7926A77195007FC7EA /* NavSuggestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionModel.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
@@ -1291,6 +1298,9 @@
 		C9A241CA269CA4AB007156B3 /* URLBarHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarHost.swift; sourceTree = "<group>"; };
 		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
 		C9ACC461267A4408009AE182 /* HistorySuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySuggestionView.swift; sourceTree = "<group>"; };
+		C9A241C8269C9EC0007156B3 /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
+		C9A241CA269CA4AB007156B3 /* URLBarHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarHost.swift; sourceTree = "<group>"; };
+		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
 		C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuSettingsView.swift; sourceTree = "<group>"; };
 		C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoAwareHostingController.swift; sourceTree = "<group>"; };
@@ -2457,6 +2467,7 @@
 				6751BA7926A77195007FC7EA /* NavSuggestionModel.swift */,
 				6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */,
 				6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */,
+				67292D3226AD2CF200DB1BFA /* AnnotationType.swift */,
 			);
 			path = Suggestions;
 			sourceTree = "<group>";
@@ -4592,6 +4603,7 @@
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
 				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
+				67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */,
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,
 				C9C18DDE26558FF3004710CD /* Action.swift in Sources */,
 				D34510881ACF415700EC27F0 /* HistorySuggestionModel.swift in Sources */,

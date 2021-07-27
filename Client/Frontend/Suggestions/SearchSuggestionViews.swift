@@ -153,7 +153,9 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var icon: some View {
-        if let activeType = model.activeLensBang?.type {
+        if AnnotationType(annotation: suggestion.annotation) == .calculator {
+            Image("calculator")
+        } else if let activeType = model.activeLensBang?.type {
             Symbol(activeType.defaultSymbol)
         } else if let annotation = suggestion.annotation, let imageUrl = annotation.imageUrl {
             WebImage(url: URL(string: imageUrl))
@@ -180,14 +182,24 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var label: some View {
-        Text(suggestion.suggestedQuery)
-            .withFont(.bodyLarge)
-            .lineLimit(1)
+        if AnnotationType(annotation: suggestion.annotation) == .calculator {
+            Text(suggestion.annotation?.description ?? "")
+                .withFont(.bodyLarge)
+                .lineLimit(1)
+        } else {
+            Text(suggestion.suggestedQuery)
+                .withFont(.bodyLarge)
+                .lineLimit(1)
+        }
     }
 
     @ViewBuilder
     var secondaryLabel: some View {
-        if let annotation = suggestion.annotation, let description = annotation.description {
+        if let suggestedCalculatorQuery = suggestion.suggestedCalculatorQuery(),
+           AnnotationType(annotation: suggestion.annotation) == .calculator {
+            Text(suggestedCalculatorQuery).withFont(.bodySmall)
+                .foregroundColor(.secondaryLabel).lineLimit(1)
+        } else if let annotation = suggestion.annotation, let description = annotation.description {
             Text(description).withFont(.bodySmall)
                 .foregroundColor(.secondaryLabel).lineLimit(1)
         } else {

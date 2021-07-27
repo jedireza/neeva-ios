@@ -2924,8 +2924,8 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
   ///   - source
   ///   - inviteToken
   ///   - screenshot
-    public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil) {
-        graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot]
+  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil) {
+    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot]
   }
 
   public var feedback: Swift.Optional<String?> {
@@ -2955,15 +2955,6 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
     }
   }
 
-  public var screenshot: Swift.Optional<String?> {
-    get {
-      return graphQLMap["screenshot"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "screenshot")
-    }
-  }
-
   public var geoLocationStatus: Swift.Optional<String?> {
     get {
       return graphQLMap["geoLocationStatus"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
@@ -2990,6 +2981,15 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "inviteToken")
     }
   }
+
+  public var screenshot: Swift.Optional<String?> {
+    get {
+      return graphQLMap["screenshot"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "screenshot")
+    }
+  }
 }
 
 /// Context in which user provided the feedback
@@ -3000,6 +3000,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   case appRegistration
   case appOnboarding
   case appLogin
+  case appAccountDeletion
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
@@ -3010,6 +3011,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case "AppRegistration": self = .appRegistration
       case "AppOnboarding": self = .appOnboarding
       case "AppLogin": self = .appLogin
+      case "AppAccountDeletion": self = .appAccountDeletion
       default: self = .__unknown(rawValue)
     }
   }
@@ -3021,6 +3023,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case .appRegistration: return "AppRegistration"
       case .appOnboarding: return "AppOnboarding"
       case .appLogin: return "AppLogin"
+      case .appAccountDeletion: return "AppAccountDeletion"
       case .__unknown(let value): return value
     }
   }
@@ -3032,6 +3035,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case (.appRegistration, .appRegistration): return true
       case (.appOnboarding, .appOnboarding): return true
       case (.appLogin, .appLogin): return true
+      case (.appAccountDeletion, .appAccountDeletion): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -3044,6 +3048,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       .appRegistration,
       .appOnboarding,
       .appLogin,
+      .appAccountDeletion,
     ]
   }
 }
@@ -3470,6 +3475,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
   case searchHistory
   case privateCorpus
   case elastic
+  case calculator
   case unknown
   case clipboard
   /// Auto generated constant for unknown enum values
@@ -3482,6 +3488,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case "SearchHistory": self = .searchHistory
       case "PrivateCorpus": self = .privateCorpus
       case "Elastic": self = .elastic
+      case "Calculator": self = .calculator
       case "Unknown": self = .unknown
       case "Clipboard": self = .clipboard
       default: self = .__unknown(rawValue)
@@ -3495,6 +3502,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case .searchHistory: return "SearchHistory"
       case .privateCorpus: return "PrivateCorpus"
       case .elastic: return "Elastic"
+      case .calculator: return "Calculator"
       case .unknown: return "Unknown"
       case .clipboard: return "Clipboard"
       case .__unknown(let value): return value
@@ -3508,6 +3516,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case (.searchHistory, .searchHistory): return true
       case (.privateCorpus, .privateCorpus): return true
       case (.elastic, .elastic): return true
+      case (.calculator, .calculator): return true
       case (.unknown, .unknown): return true
       case (.clipboard, .clipboard): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
@@ -3522,6 +3531,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       .searchHistory,
       .privateCorpus,
       .elastic,
+      .calculator,
       .unknown,
       .clipboard,
     ]
@@ -5002,6 +5012,7 @@ public final class SuggestionsQuery: GraphQLQuery {
           source
           annotation {
             __typename
+            annotationType
             description
             imageURL
           }
@@ -5048,7 +5059,7 @@ public final class SuggestionsQuery: GraphQLQuery {
 
   public let operationName: String = "Suggestions"
 
-  public let operationIdentifier: String? = "a9775411b4ec758a0f98463682e23d58e09601b23b89e26bde6173f516cd4826"
+  public let operationIdentifier: String? = "54419649575fe082c546a9e7ff787ad849b6d02b69927adba0751d162f25499a"
 
   public var query: String
 
@@ -5305,6 +5316,7 @@ public final class SuggestionsQuery: GraphQLQuery {
           public static var selections: [GraphQLSelection] {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("annotationType", type: .scalar(String.self)),
               GraphQLField("description", type: .scalar(String.self)),
               GraphQLField("imageURL", type: .scalar(String.self)),
             ]
@@ -5316,8 +5328,8 @@ public final class SuggestionsQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(description: String? = nil, imageUrl: String? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Annotation", "description": description, "imageURL": imageUrl])
+          public init(annotationType: String? = nil, description: String? = nil, imageUrl: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Annotation", "annotationType": annotationType, "description": description, "imageURL": imageUrl])
           }
 
           public var __typename: String {
@@ -5326,6 +5338,15 @@ public final class SuggestionsQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var annotationType: String? {
+            get {
+              return resultMap["annotationType"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "annotationType")
             }
           }
 
