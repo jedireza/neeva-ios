@@ -17,6 +17,7 @@ struct CardStrip<Model: CardModel>: View {
                 Card(details: details)
                     .aspectRatio(1, contentMode: .fit)
                     .environment(\.selectionCompletion) {}
+                    .environment(\.cardSize, CardUX.DefaultCardSize)
                     .onLongPressGesture {
                         onLongPress(model.allDetails[index].id)
                     }

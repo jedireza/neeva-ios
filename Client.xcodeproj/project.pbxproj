@@ -174,6 +174,7 @@
 		4A3D299A2689A0520082F293 /* SuggestionViewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3D29992689A0520082F293 /* SuggestionViewsTests.swift */; };
 		4A46E4E426730D790001687E /* CarouselProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A46E4E326730D790001687E /* CarouselProgressView.swift */; };
 		4A59B58AD11B5EE1F80BBDEB /* TestHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */; };
+		4A5B0F2126AF9610009D1336 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5B0F2026AF9610009D1336 /* CardTests.swift */; };
 		4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5CCE8226524B7F0063783D /* FaviconView.swift */; };
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
@@ -1107,6 +1108,7 @@
 		4A3D29992689A0520082F293 /* SuggestionViewsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionViewsTests.swift; sourceTree = "<group>"; };
 		4A46E4E326730D790001687E /* CarouselProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselProgressView.swift; sourceTree = "<group>"; };
 		4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHistory.swift; sourceTree = "<group>"; };
+		4A5B0F2026AF9610009D1336 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
 		4A5CCE8226524B7F0063783D /* FaviconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconView.swift; sourceTree = "<group>"; };
 		4A88F9722662AEAB007C203D /* CardStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStrip.swift; sourceTree = "<group>"; };
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
@@ -3200,6 +3202,7 @@
 				63306D442110BAF000F25400 /* TabManagerStoreTests.swift */,
 				E1D8BC7921FF7A0000B100BD /* TPStatsBlocklistsTests.swift */,
 				4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */,
+				4A5B0F2026AF9610009D1336 /* CardTests.swift */,
 				D815A3A724A53F3200AAB221 /* TabToolbarHelperTests.swift */,
 			);
 			path = ClientTests;
@@ -4764,6 +4767,7 @@
 				A83E5B1E1C1DAAAA0026D912 /* UIPasteboardExtensions.swift in Sources */,
 				0BF42D4F1A7CD09600889E28 /* TestFavicons.swift in Sources */,
 				7BBFEE741BB405D900A305AA /* TabManagerTests.swift in Sources */,
+				4A5B0F2126AF9610009D1336 /* CardTests.swift in Sources */,
 				39236E721FCC600200A38F1B /* TabEventHandlerTests.swift in Sources */,
 				0BA8964C1A250E6500C1010C /* TestBookmarks.swift in Sources */,
 				2F13E79B1AC0C02700D75081 /* StringExtensionsTests.swift in Sources */,

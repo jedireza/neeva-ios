@@ -162,8 +162,8 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     }
 
 
-    func thumbnail(size: CGFloat) -> some View {
-        ThumbnailGroupView(model: self, size: size)
+    var thumbnail: some View {
+        ThumbnailGroupView(model: self)
     }
 
     func updateDetails() {
@@ -281,8 +281,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             .map({ TabCardDetails(tab: $0, manager: manager.tabManager) }) ?? []
     }
 
-    func thumbnail(size: CGFloat) -> some View {
-        return ThumbnailGroupView(model: self, size: size)
+    var thumbnail: some View {
+        return ThumbnailGroupView(model: self)
     }
 
     func onSelect() {}

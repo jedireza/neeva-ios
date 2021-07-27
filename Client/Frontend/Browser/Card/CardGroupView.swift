@@ -29,8 +29,8 @@ private extension View {
 struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
     @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
+    @Environment(\.cardSize) private var size
 
-    let size: CGFloat
     let spacing: CGFloat = 12
     let smallSpacing: CGFloat = 4
 
@@ -126,11 +126,11 @@ fileprivate class PreviewThumbnailModel: ThumbnailModel {
 struct CardGroupView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .red, num: 1), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .blue, num: 3), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .black, num: 4), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .green, num: 5), size: CardUX.DefaultCardSize)
-            ThumbnailGroupView(model: PreviewThumbnailModel(color: .purple, num: 8), size: CardUX.DefaultCardSize)
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .red, num: 1))
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .blue, num: 3))
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .black, num: 4))
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .green, num: 5))
+            ThumbnailGroupView(model: PreviewThumbnailModel(color: .purple, num: 8))
         }
     }
 }
