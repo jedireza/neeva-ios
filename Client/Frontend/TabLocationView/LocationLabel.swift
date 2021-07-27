@@ -42,10 +42,22 @@ struct LocationLabelAndIcon: View {
                 Label {
                     host
                 } icon: {
-                    Symbol(.lockFill)
+                        Symbol(.lockFill)
                 }
             } else {
-                host
+                Label{ host
+                }icon:{
+                    if(errorToken == ErrorType.skippable){
+                        Symbol(.exclamationmarkTriangleFill)
+                    }
+                    else if(errorToken == ErrorType.nonskippable){
+                        Symbol(.lockSlashFill)
+                    }
+                    else{
+                        Symbol(.arrowDown)
+                    }
+                }
+                
             }
         } else if let url = url {
             Text(url.absoluteString).withFont(.bodyLarge)
@@ -53,6 +65,8 @@ struct LocationLabelAndIcon: View {
             placeholder
         }
     }
+    // Reset error token
+    errorToken = ErrorType.none
 }
 
 struct LocationLabel_Previews: PreviewProvider {

@@ -29,6 +29,14 @@ fileprivate let CertErrorCodes = [
     -9843: "SSL_ERROR_BAD_CERT_DOMAIN",
 ]
 
+public enum ErrorType{
+    case none
+    case offline
+    case skippable
+    case nonskippable
+}
+public var errorToken = ErrorType.none
+
 fileprivate func certFromErrorURL(_ url: URL) -> SecCertificate? {
     func getCert(_ url: URL) -> SecCertificate? {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -167,6 +175,7 @@ class ErrorPageHandler: InternalSchemeResponse {
             "error_title": errDescription,
             "short_description": errDomain,
             ]
+        errorToken = ErrorType.nonskippable
 
         let reloadAction = "<script>function reloader() { location.replace((new URL(location.href)).searchParams.get(\"url\")); }" +
                     "</script><button onclick='reloader()'>\(String.ErrorPageTryAgain)</button>"
@@ -177,6 +186,7 @@ class ErrorPageHandler: InternalSchemeResponse {
         if errCode == NSURLErrorNotConnectedToInternet
             || errCode == NSURLErrorNetworkConnectionLost {
             asset = Bundle.main.path(forResource: "OfflineError", ofType: "html")
+            errorToken = ErrorType.offline
             actions = reloadAction
         } else if errDomain == kCFErrorDomainCFNetwork as String {
             if let code = CFNetworkErrors(rawValue: Int32(errCode)) {
@@ -197,6 +207,7 @@ class ErrorPageHandler: InternalSchemeResponse {
             }
 
             asset = Bundle.main.path(forResource: "CertError", ofType: "html")
+            errorToken = ErrorType.skippable
             actions = "<button onclick='history.back()'>\(Strings.ErrorPagesGoBackButton)</button>"
             variables["error_title"] = Strings.ErrorPagesCertWarningTitle
             variables["cert_error"] = certError
