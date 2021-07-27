@@ -10,10 +10,10 @@ struct _NeevaMenuPopover: View {
     fileprivate let menuAction: ((NeevaMenuButtonActions) -> ())?
 
     var body: some View {
-        VerticalScrollViewIfNeeded(
-            embeddedView: NeevaMenuView(menuAction: menuAction),
-            thresholdHeight: 312 // TODO: Compute this value instead.
-        ).environment(\.isIncognito, isIncognito)
+        VerticalScrollViewIfNeeded {
+            NeevaMenuView(menuAction: menuAction)
+                .padding(.bottom, 16)
+        }.environment(\.isIncognito, isIncognito)
     }
 }
 
