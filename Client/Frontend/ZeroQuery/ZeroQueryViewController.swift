@@ -27,7 +27,7 @@ extension EnvironmentValues {
 protocol ZeroQueryPanelDelegate: AnyObject {
     func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
     func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType)
-    func zeroQueryPanelDidRequestToOpenLibrary(panel: LibraryPanelType)
+    func zeroQueryPanelDidRequestToOpenLibrary()
     func zeroQueryPanel(didEnterQuery query: String)
 }
 

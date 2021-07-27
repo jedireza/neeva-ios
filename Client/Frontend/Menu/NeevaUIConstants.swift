@@ -7,7 +7,6 @@ public enum NeevaMenuButtonActions{
     case spaces
     case settings
     case history
-    case downloads
     case feedback
     case referralPromo
 }

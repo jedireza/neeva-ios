@@ -64,7 +64,6 @@
 		23BEA768251A99ED00A014BF /* NewYorkMedium-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 23BEA765251A99E200A014BF /* NewYorkMedium-BoldItalic.otf */; };
 		23BEA769251A99ED00A014BF /* NewYorkMedium-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 23BEA763251A99E200A014BF /* NewYorkMedium-Regular.otf */; };
 		23BEA76A251A99ED00A014BF /* NewYorkMedium-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 23BEA764251A99E200A014BF /* NewYorkMedium-RegularItalic.otf */; };
-		274A36C9239EB94000A21587 /* LibraryPanelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274A36C8239EB94000A21587 /* LibraryPanelButton.swift */; };
 		2816F0001B33E05400522243 /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2816EFFF1B33E05400522243 /* UIConstants.swift */; };
 		281B029A1C037C1F005202C3 /* TestBrowserDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281B02991C037C1F005202C3 /* TestBrowserDB.swift */; };
 		281B2BEA1ADF4D90002917DC /* MockProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281B2BE91ADF4D90002917DC /* MockProfile.swift */; };
@@ -205,7 +204,6 @@
 		663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */; };
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
 		664825F0268FD106000E7F6A /* XCUIElementExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664825EF268FD106000E7F6A /* XCUIElementExtension.swift */; };
-		665D146426964B7300E39BA9 /* LibraryPanelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665D146326964B7300E39BA9 /* LibraryPanelType.swift */; };
 		667DB63A2698E3DF0054A222 /* KeyboardShortcutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */; };
 		669ACD56269CED060038C89C /* AppClipApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669ACD55269CED060038C89C /* AppClipApp.swift */; };
 		669ACD58269CED060038C89C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669ACD57269CED060038C89C /* ContentView.swift */; };
@@ -995,7 +993,6 @@
 		23BEA764251A99E200A014BF /* NewYorkMedium-RegularItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewYorkMedium-RegularItalic.otf"; sourceTree = "<group>"; };
 		23BEA765251A99E200A014BF /* NewYorkMedium-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewYorkMedium-BoldItalic.otf"; sourceTree = "<group>"; };
 		23BEA766251A99E300A014BF /* NewYorkMedium-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewYorkMedium-Bold.otf"; sourceTree = "<group>"; };
-		274A36C8239EB94000A21587 /* LibraryPanelButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryPanelButton.swift; sourceTree = "<group>"; };
 		2816EFFF1B33E05400522243 /* UIConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		281B02991C037C1F005202C3 /* TestBrowserDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBrowserDB.swift; sourceTree = "<group>"; };
 		281B2BE91ADF4D90002917DC /* MockProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MockProfile.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1139,7 +1136,6 @@
 		663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSItemProviderExtensions.swift; sourceTree = "<group>"; };
 		6643042F267C19D200674549 /* ToastDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastDefaults.swift; sourceTree = "<group>"; };
 		664825EF268FD106000E7F6A /* XCUIElementExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCUIElementExtension.swift; sourceTree = "<group>"; };
-		665D146326964B7300E39BA9 /* LibraryPanelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryPanelType.swift; sourceTree = "<group>"; };
 		669ACD53269CED060038C89C /* AppClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		669ACD55269CED060038C89C /* AppClipApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipApp.swift; sourceTree = "<group>"; };
 		669ACD57269CED060038C89C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -2580,10 +2576,8 @@
 			isa = PBXGroup;
 			children = (
 				F84B22261A09127C00AAB793 /* Library.xcassets */,
-				665D146326964B7300E39BA9 /* LibraryPanelType.swift */,
 				59A6825233896FC846499289 /* HistoryPanel.swift */,
 				745DAB2F1CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift */,
-				274A36C8239EB94000A21587 /* LibraryPanelButton.swift */,
 				F056681625E9509E0082BB61 /* AddToSpaceViewController.swift */,
 			);
 			path = Library;
@@ -4489,7 +4483,6 @@
 				C9C18E6626559B9C004710CD /* ClientLogger.swift in Sources */,
 				F072DD3825E935B4006C2665 /* NeevaSearchProvider.swift in Sources */,
 				C9E5F2CB2678F05E00025A7F /* Popover.swift in Sources */,
-				274A36C9239EB94000A21587 /* LibraryPanelButton.swift in Sources */,
 				435D660523D794B90046EFA2 /* UpdateViewModel.swift in Sources */,
 				D3B6923F1B9F9A58004B87A4 /* FindInPageHelper.swift in Sources */,
 				BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */,
@@ -4631,7 +4624,6 @@
 				BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */,
 				7BA0601B1C0F4DE200DFADB6 /* TabPeekViewController.swift in Sources */,
 				BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */,
-				665D146426964B7300E39BA9 /* LibraryPanelType.swift in Sources */,
 				E6D8D5E71B569D70009E5A58 /* BrowserTrayAnimators.swift in Sources */,
 				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,

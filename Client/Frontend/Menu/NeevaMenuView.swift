@@ -102,6 +102,7 @@ public struct NeevaMenuView: View {
                     Color.groupedBackground.frame(height: 1)
 
                     NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
+                        ClientLogger.shared.logCounter(.OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
                         openDownloadsFolderInFilesApp()
                     }
                     .accessibilityIdentifier("NeevaMenu.Downloads")

@@ -67,13 +67,8 @@ class PopOverNeevaMenuViewController: UIHostingController<_NeevaMenuPopover> {
                 break
             case .history:
                 ClientLogger.shared.logCounter(.OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.zeroQueryPanelDidRequestToOpenLibrary(panel: .history)
+                delegate.zeroQueryPanelDidRequestToOpenLibrary()
                 
-                break
-            case .downloads:
-                ClientLogger.shared.logCounter(.OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.zeroQueryPanelDidRequestToOpenLibrary(panel: .downloads)
-
                 break
             case .feedback:
                 ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())

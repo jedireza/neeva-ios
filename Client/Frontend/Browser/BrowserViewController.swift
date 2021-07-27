@@ -1463,7 +1463,7 @@ extension BrowserViewController: HistoryPanelDelegate {
 }
 
 extension BrowserViewController: ZeroQueryPanelDelegate {
-    func zeroQueryPanelDidRequestToOpenLibrary(panel: LibraryPanelType) {
+    func zeroQueryPanelDidRequestToOpenLibrary() {
         showLibrary()
         view.endEditing(true)
     }
