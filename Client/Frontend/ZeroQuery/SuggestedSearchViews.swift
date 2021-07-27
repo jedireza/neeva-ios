@@ -40,6 +40,7 @@ struct SuggestedSearchesView: View {
                     }.padding(.trailing, ZeroQueryUX.Padding),
                     alignment: .trailing
                 )
+                .contextMenu { ZeroQueryCommonContextMenuActions(siteURL: site.url) }
             }
         }
         .accentColor(Color(light: .ui.gray70, dark: .secondaryLabel))

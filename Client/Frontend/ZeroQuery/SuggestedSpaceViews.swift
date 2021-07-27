@@ -28,7 +28,9 @@ struct SuggestedSpacesView: View {
                         Button(action: { openURL(space.url) }) {
                             SuggestedSpaceView(space: space)
                                 .foregroundColor(.primary)
-                        }.buttonStyle(TableCellButtonStyle())
+                        }
+                        .buttonStyle(TableCellButtonStyle())
+                        .contextMenu { ZeroQueryCommonContextMenuActions(siteURL: space.url) }
                     }
                 }.opacity({
                     if case .refreshing = spaceStore.state {

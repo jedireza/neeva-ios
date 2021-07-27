@@ -64,26 +64,16 @@ struct SuggestedSiteView: View {
             .accessibilityElement(children: .combine)
             .accessibilityLabel(title)
             .accessibilityHint(hint)
-            .contextMenu(ContextMenu(menuItems: {
-                Text(site.title.isEmpty ? site.url.absoluteString : site.title)
-                Divider()
-                Button(action: { openInNewTab(site.url, false) }) {
-                    Label("Open in New Tab", systemSymbol: .plusSquare)
-                }
-                Button(action: { openInNewTab(site.url, true) }) {
-                    Label("Open in Incognito", image: "incognito")
-                }
-                Button(action: { shareURL(site.url) }) {
-                    Label("Share", systemSymbol: .squareAndArrowUp)
-                }
+            .contextMenu{
+                ZeroQueryCommonContextMenuActions(siteURL: site.url.absoluteURL)
                 // TODO: make this red
-                Button(action: { isDeleting = true }) {
+                Button(action: { isDeleting = true } ) {
                     Label("Remove", systemSymbol: .trash)
                 }.foregroundColor(.red)
                 if FeatureFlag[.pinToTopSites] {
                     Text("Pin/unpin not yet implemented")
                 }
-            }))
+            }
             .actionSheet(isPresented: $isDeleting) {
                 ActionSheet(title: Text("Permanently remove \(title) from Suggested Sites?"), buttons: [
                     .destructive(Text("Remove")) { zeroQueryHideTopSite(site) },
