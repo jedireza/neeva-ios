@@ -7,17 +7,26 @@ import SwiftUI
 // threshold height value. I.e., if the view needs to be larger than the
 // specified value, then a ScrollView will be inserted.
 public struct VerticalScrollViewIfNeeded<EmbeddedView>: View where EmbeddedView: View {
-    var embeddedView: EmbeddedView
-    let thresholdHeight: CGFloat
+    let embeddedView: () -> EmbeddedView
+
+    @State var viewHeight: CGFloat = 0
 
     public var body: some View {
-        GeometryReader { geometry in
-            if geometry.size.height < self.thresholdHeight {
+        GeometryReader { parentGeom in
+            let content = embeddedView()
+                .background(GeometryReader { contentGeom in
+                    Color.clear
+                        .allowsHitTesting(false)
+                        .useEffect(deps: contentGeom.size.height) {
+                            viewHeight = $0
+                        }
+                })
+            if parentGeom.size.height < viewHeight {
                 ScrollView {
-                    self.embeddedView
+                    content
                 }
             } else {
-                self.embeddedView
+                content
             }
         }
     }

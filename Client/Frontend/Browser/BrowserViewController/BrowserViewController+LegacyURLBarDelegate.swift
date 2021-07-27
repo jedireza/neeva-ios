@@ -28,7 +28,8 @@ extension BrowserViewController: LegacyURLBarDelegate {
 
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.systemGroupedBackground
-        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 315))
+        // TODO: Avoid hard coding the geometry here!
+        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 323))
         present(
             host,
             animated: true,
