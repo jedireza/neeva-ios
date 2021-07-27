@@ -6,6 +6,7 @@ import Shared
 import WebKit
 import UIKit
 import GCDWebServers
+import Defaults
 @testable import Client
 
 class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
@@ -40,10 +41,10 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         BrowserUtils.resetToAboutHomeKIF(tester())
         return urls
     }
-    /* Most likely got flaky after #639 and #427
+
     func testRemembersToggles() {
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.History], tester())
+        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.history], tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
 
@@ -51,13 +52,13 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         // Ensure the toggles match our settings.
         [
-            (BrowserUtils.Clearable.Cache, "0"),
-            (BrowserUtils.Clearable.Cookies, "0"),
-            (BrowserUtils.Clearable.OfflineData, "0"),
-            (BrowserUtils.Clearable.History, "1")
+            (BrowserUtils.Clearable.cache, "0"),
+            (BrowserUtils.Clearable.cookies, "0"),
+            (BrowserUtils.Clearable.downloads, "0"),
+            (BrowserUtils.Clearable.history, "1")
         ].forEach { clearable, switchValue in
             XCTAssertNotNil(tester()
-                .waitForView(withAccessibilityLabel: clearable.rawValue, value: switchValue, traits: UIAccessibilityTraits.none))
+                .waitForView(withAccessibilityLabel: clearable.label(), value: switchValue, traits: UIAccessibilityTraits.none))
         }
         BrowserUtils.closeClearPrivateDataDialog(tester())
     }
@@ -76,13 +77,14 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         BrowserUtils.closeHistorySheet(tester())
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.History], tester())
+        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.history], tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
 
         BrowserUtils.openNeevaMenu(tester())
 
         // Open History Panel
+        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
         tester().waitForAbsenceOfView(withAccessibilityLabel: url1)
         tester().waitForAbsenceOfView(withAccessibilityLabel: url2)
 
@@ -96,7 +98,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         let url1 = urls[0].url
         let url2 = urls[1].url
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.History]), tester())
+        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.history]), tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
         tester().waitForAnimationsToFinish()
@@ -111,7 +113,6 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         // Close History (and so Library) panel
         BrowserUtils.closeHistorySheet(tester())
     }
-     */
 
     // Disabled due to https://github.com/mozilla-mobile/firefox-ios/issues/7727
     /*func testClearsCookies() {
@@ -155,7 +156,6 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         XCTAssertEqual(cookies.sessionStorage, "null")
     }*/
 
-    /* flaky?
     func testClearsCache() {
         let cachedServer = CachedPageServer()
         let cacheRoot = cachedServer.start()
@@ -168,7 +168,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         // Verify that clearing non-cache items will keep the page in the cache.
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.Cache]), tester())
+        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.cache]), tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
         webView.reload()
@@ -176,12 +176,12 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         // Verify that clearing the cache will fire a new request.
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.Cache], tester())
+        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.cache], tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
         webView.reload()
         XCTAssertEqual(cachedServer.requests, requests + 1)
-    }*/
+    }
 
     fileprivate func setCookies(_ webView: WKWebView, cookie: String) {
         let expectation = self.expectation(description: "Set cookie")
@@ -209,22 +209,20 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         cookie = (items[0], items[1], items[2])
         return cookie
     }
-/* Most likely got flaky after #639 and #427
+
     func testClearsTrackingProtectionSafelist() {
         let wait = expectation(description: "wait for file write")
-        ContentBlocker.shared.safelist(enable: true, url: URL(string: "http://www.mozilla.com")!) {
+        TrackingPreventionConfig.updateAllowList(with: (URL(string: "http://www.mozilla.com")?.host)!, allowed: true) {
             wait.fulfill()
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: 30)
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.TrackingProtection], tester())
+        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.trackingProtection], tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
 
-        let data = ContentBlocker.shared.readSafelistFile()
-        XCTAssert(data == nil || data!.isEmpty)
+        XCTAssert(Defaults[.unblockedDomains].isEmpty)
     }
-*/
 }
 
 /// Server that keeps track of requests.

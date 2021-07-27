@@ -214,13 +214,22 @@ extension KIFUITestActor {
 class BrowserUtils {
     // Needs to be in sync with Client Clearables.
      enum Clearable: String {
-        case History = "Browsing History"
-        case Cache = "Cache"
-        case OfflineData = "Offline Website Data"
-        case Cookies = "Cookies"
-        case TrackingProtection = "Tracking Protection"
+        case history = "Browsing History"
+        case cache = "Cache"
+        case cookies = "Cookies"
+        case trackingProtection = "Tracking Protection"
+        case downloads = "Downloaded Files"
+
+        func label() -> String? {
+            switch self {
+            case .cookies:
+                return "Cookies, Clearing it will sign you out of most sites."
+            default:
+                return self.rawValue
+            }
+        }
     }
-    internal static let AllClearables = Set([Clearable.History, Clearable.Cache, Clearable.OfflineData, Clearable.Cookies, Clearable.TrackingProtection])
+    internal static let AllClearables = Set([Clearable.history, Clearable.cache, Clearable.cookies, Clearable.trackingProtection, Clearable.downloads])
 
     class func resetToAboutHomeKIF(_ tester: KIFUITestActor) {
         BrowserUtils.closeAllTabs(tester)
@@ -294,11 +303,11 @@ class BrowserUtils {
     }
 
     class func clearPrivateData(_ clearables: Set<Clearable>? = AllClearables, _ tester: KIFUITestActor) {
-            // Disable all items that we don't want to clear.
+        // Disable all items that we don't want to clear.
         tester.waitForAnimationsToFinish(withTimeout: 3)
-            for clearable in AllClearables {
-                tester.setOn(clearables!.contains(clearable), forSwitchWithAccessibilityLabel: clearable.rawValue)
-            }
+        for clearable in AllClearables {
+            tester.setOn(clearables!.contains(clearable), forSwitchWithAccessibilityLabel: clearable.label())
+        }
         tester.tapView(withAccessibilityLabel: "Clear Selected Data on This Device")
     }
 

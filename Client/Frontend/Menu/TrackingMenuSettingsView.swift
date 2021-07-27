@@ -9,11 +9,7 @@ struct TrackingMenuSettingsView: View {
 
     @State var domainIsNotSafelisted: Bool = false {
         didSet {
-            if domainIsNotSafelisted {
-                TrackingPreventionConfig.disallowTrackersFor(domain)
-            } else {
-                TrackingPreventionConfig.allowTrackersFor(domain)
-            }
+            TrackingPreventionConfig.updateAllowList(with: domain, allowed: !domainIsNotSafelisted)
         }
     }
 

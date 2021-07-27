@@ -10,11 +10,11 @@ struct TrackingPreventionConfig {
             .compactMap { wildcardContentBlockerDomainToRegex(domain: "*" + $0) }
     }
 
-    static func allowTrackersFor(_ domain: String) {
+    private static func allowTrackersFor(_ domain: String) {
         Defaults[.unblockedDomains].insert(domain)
     }
 
-    static func disallowTrackersFor(_ domain: String) {
+    private static func disallowTrackersFor(_ domain: String) {
         guard Defaults[.unblockedDomains].contains(domain) else {
             return
         }
@@ -24,5 +24,19 @@ struct TrackingPreventionConfig {
 
     static func trackersAllowedFor(_ domain: String) -> Bool {
         Defaults[.unblockedDomains].contains(domain)
+    }
+
+    static func updateAllowList(with domain: String, allowed: Bool, completion: (() -> ())? = nil) {
+        if allowed {
+            allowTrackersFor(domain)
+        } else {
+            disallowTrackersFor(domain)
+        }
+
+        ContentBlocker.shared.removeAllRulesInStore {
+            ContentBlocker.shared.compileListsNotInStore {
+                completion?()
+            }
+        }
     }
 }

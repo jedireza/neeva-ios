@@ -28,15 +28,12 @@ class TrackingStatsViewModel: ObservableObject {
                 return
             }
 
-            if (preventTrackersForCurrentPage) {
-                TrackingPreventionConfig.disallowTrackersFor(domain)
-            } else {
-                TrackingPreventionConfig.allowTrackersFor(domain)
+            TrackingPreventionConfig.updateAllowList(with: domain, allowed: !preventTrackersForCurrentPage) {
+                self.selectedTab?.contentBlocker?.notifiedTabSetupRequired()
+                self.selectedTab?.reload()
+                self.refreshStats()
             }
 
-            selectedTab?.contentBlocker?.notifiedTabSetupRequired()
-            selectedTab?.reload()
-            refreshStats()
         }
     }
     var viewVisible: Bool = false

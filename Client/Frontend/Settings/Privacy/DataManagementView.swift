@@ -77,7 +77,7 @@ struct DataManagementView: View {
                         } else {
                             clearDataTypes.remove(dataType)
                         }
-                    }){
+                    }) {
                         if let description = dataType.description {
                             DetailedSettingsLabel(title: dataType.rawValue, description: description)
                         } else {
