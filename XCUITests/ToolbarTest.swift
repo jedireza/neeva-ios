@@ -80,8 +80,6 @@ class ToolbarTests: BaseTestCase {
 
     func testClearURLTextUsingBackspace() {
         openURL(path(forTestPage: "test-mozilla-book.html"))
-        waitUntilPageLoad()
-        waitForTabsButton()
 
         let valueMozilla = app.buttons["Address Bar"].value as! String
         XCTAssertEqual(valueMozilla, path(forTestPage: "test-mozilla-book.html"))

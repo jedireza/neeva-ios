@@ -14,12 +14,6 @@ fileprivate let exampleDomainTitle = "Example Domain"
 fileprivate let twitterTitle = "Twitter"
 
 fileprivate extension BaseTestCase {
-    func openTwoWebsites() {
-        // Open two tabs
-        openURL(firstWebsite.url)
-        openURLInNewTab(secondWebsite.url)
-    }
-
     func dragAndDrop(dragElement: XCUIElement, dropOnElement: XCUIElement) {
         dragElement.press(forDuration: 1, thenDragTo: dropOnElement)
     }

@@ -113,7 +113,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
     }
 
     fileprivate func submitSearchText(_ text: String, forTab tab: Tab) {
-
         if let searchURL = neevaSearchEngine.searchURLForQuery(text) {
             // We couldn't find a matching search keyword, so do a search query.
             finishEditingAndSubmit(searchURL, visitType: VisitType.typed, forTab: tab)

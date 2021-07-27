@@ -117,13 +117,10 @@ class TabMenuTests: BaseTestCase {
     }
 }
 
-fileprivate extension BaseTestCase {
+extension BaseTestCase {
     func openTwoWebsites() {
         // Open two tabs
         openURL(firstWebsite.url)
-        waitForTabsButton()
-
         openURLInNewTab(secondWebsite.url)
-        waitForTabsButton()
     }
 }

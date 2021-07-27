@@ -61,6 +61,8 @@ public struct UIConstants {
     static var enableBottomURLBar: Bool {
         FeatureFlag[.bottomURLBar] && UIDevice.current.userInterfaceIdiom != .pad
     }
+
+    static let navigationAnimationDuration: TimeInterval = 0.2
 }
 
 extension UIColor {
@@ -93,7 +95,6 @@ extension UIColor {
         public static let selectedTint = UIColor.ui.adaptive.blue
         public static let disabledTint = UIColor.quaternaryLabel
     }
-
 
     public struct URLBar {
         // This text selection color is used in two ways:

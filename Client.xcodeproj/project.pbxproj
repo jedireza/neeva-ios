@@ -218,6 +218,7 @@
 		66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
 		66BEFDC926A7678200AA32EF /* GroupedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC826A7678200AA32EF /* GroupedCell.swift */; };
+		66BEFDC726A72E9400AA32EF /* LazyTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC626A72E9400AA32EF /* LazyTab.swift */; };
 		66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C763267A8858002B50B1 /* ToastView.swift */; };
 		66C3C76D267A8858002B50B1 /* ToastWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C764267A8858002B50B1 /* ToastWindowManager.swift */; };
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
@@ -1159,6 +1160,7 @@
 		66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppViewController.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
 		66BEFDC826A7678200AA32EF /* GroupedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCell.swift; sourceTree = "<group>"; };
+		66BEFDC626A72E9400AA32EF /* LazyTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyTab.swift; sourceTree = "<group>"; };
 		66C3C763267A8858002B50B1 /* ToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		66C3C764267A8858002B50B1 /* ToastWindowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastWindowManager.swift; sourceTree = "<group>"; };
 		66C3C766267A8858002B50B1 /* ToastProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastProgressView.swift; sourceTree = "<group>"; };

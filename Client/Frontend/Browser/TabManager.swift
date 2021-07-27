@@ -49,7 +49,7 @@ extension TabManager: TabEventHandler {
 class TabManager: NSObject, ObservableObject {
     fileprivate var delegates = [WeakTabManagerDelegate]()
     fileprivate let tabEventHandlers: [TabEventHandler]
-    fileprivate let store: TabManagerStore
+    public let store: TabManagerStore
     public var scene: UIScene
     fileprivate let profile: Profile
 
@@ -72,7 +72,6 @@ class TabManager: NSObject, ObservableObject {
     }
 
     @Published fileprivate(set) var tabs = [Tab]()
-    fileprivate var _selectedIndex = -1
 
     var selectedTabPublisher = PassthroughSubject<Tab?, Never>()
 
@@ -103,8 +102,6 @@ class TabManager: NSObject, ObservableObject {
     lazy fileprivate var privateConfiguration: WKWebViewConfiguration = {
         return TabManager.makeWebViewConfig(isPrivate: true)
     }()
-
-    var selectedIndex: Int { return _selectedIndex }
 
     // enables undo of recently closed tabs
     /// supports closing/restoring a group of tabs or a single tab (alone in an array)
@@ -154,14 +151,7 @@ class TabManager: NSObject, ObservableObject {
         return tabs.count
     }
 
-    var selectedTab: Tab? {
-        assert(Thread.isMainThread)
-        if !(0..<count ~= _selectedIndex) {
-            return nil
-        }
-
-        return tabs[_selectedIndex]
-    }
+    var selectedTab: Tab?
 
     subscript(index: Int) -> Tab? {
         assert(Thread.isMainThread)
@@ -209,16 +199,11 @@ class TabManager: NSObject, ObservableObject {
         let previous = previous ?? selectedTab
 
         // Make sure to wipe the private tabs if the user has the pref turned on
-        if Defaults[.closePrivateTabs], !(tab?.isPrivate ?? false) {
+        if Defaults[.closePrivateTabs], !(tab?.isPrivate ?? false), privateTabs.count > 0 {
             removeAllPrivateTabs()
         }
 
-        if let tab = tab {
-            _selectedIndex = tabs.firstIndex(of: tab) ?? -1
-        } else {
-            _selectedIndex = -1
-        }
-
+        selectedTab = tab
         store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
 
         assert(tab === selectedTab, "Expected tab is selected")
@@ -341,24 +326,11 @@ class TabManager: NSObject, ObservableObject {
         let fromIndex = tabs.firstIndex(of: currentTabs[visibleFromIndex]) ?? tabs.count - 1
         let toIndex = tabs.firstIndex(of: currentTabs[visibleToIndex]) ?? tabs.count - 1
 
-        let previouslySelectedTab = selectedTab
-
         tabs.insert(tabs.remove(at: fromIndex), at: toIndex)
-
-        if let previouslySelectedTab = previouslySelectedTab, let previousSelectedIndex = tabs.firstIndex(of: previouslySelectedTab) {
-            _selectedIndex = previousSelectedIndex
-        }
-
         storeChanges()
     }
 
-    func configureTab(_ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, atIndex: Int? = nil, afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false) {
-        assert(Thread.isMainThread)
-
-        // If network is not available webView(_:didCommit:) is not going to be called
-        // We should set request url in order to show url in url bar even no network
-        tab.url = request?.url
-        
+    func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil) {
         if let atIndex = atIndex, atIndex <= tabs.count {
             tabs.insert(tab, at: atIndex)
         } else if parent == nil || parent?.isPrivate != tab.isPrivate {
@@ -368,6 +340,7 @@ class TabManager: NSObject, ObservableObject {
             while insertIndex < tabs.count && tabs[insertIndex].isDescendentOf(parent) {
                 insertIndex += 1
             }
+
             tab.parent = parent
             tab.parentUUID = parent.tabUUID
             tab.rootUUID = parent.rootUUID
@@ -375,6 +348,16 @@ class TabManager: NSObject, ObservableObject {
         }
 
         delegates.forEach { $0.get()?.tabManager(self, didAddTab: tab, isRestoring: store.isRestoringTabs) }
+    }
+
+    func configureTab(_ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, atIndex: Int? = nil, afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false) {
+        assert(Thread.isMainThread)
+
+        // If network is not available webView(_:didCommit:) is not going to be called
+        // We should set request url in order to show url in url bar even no network
+        tab.url = request?.url
+
+        insertTab(tab, atIndex: atIndex, parent: parent)
 
         if let webView = webView {
             tab.restore(webView)
@@ -420,12 +403,12 @@ class TabManager: NSObject, ObservableObject {
         return result
     }
     
-    func removeTabAndUpdateSelectedIndex(_ tab: Tab, allowToast: Bool = false) {
+    func removeTabAndUpdateSelectedTab(_ tab: Tab, allowToast: Bool = false) {
         guard let index = tabs.firstIndex(where: { $0 === tab }) else { return }
         addTabsToRecentlyClosed([tab], allowToast: allowToast)
         removeTab(tab, flushToDisk: true, notify: true)
 
-        updateIndexAfterRemovalOf(tab, deletedIndex: index)
+        updateTabAfterRemovalOf(tab, deletedIndex: index)
 
         TelemetryWrapper.recordEvent(
             category: .action,
@@ -435,7 +418,7 @@ class TabManager: NSObject, ObservableObject {
         )
     }
 
-    private func updateIndexAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
+    private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
         let closedLastNormalTab = !tab.isPrivate && normalTabs.isEmpty
         let closedLastPrivateTab = tab.isPrivate && privateTabs.isEmpty
 
@@ -445,17 +428,14 @@ class TabManager: NSObject, ObservableObject {
             selectTab(addTab(), previous: tab)
         } else if closedLastPrivateTab {
             selectTab(mostRecentTab(inTabs: tabs) ?? tabs.last, previous: tab)
-        } else if deletedIndex == _selectedIndex {
+        } else if tab == selectedTab {
             if !selectParentTab(afterRemoving: tab) {
-                if let rightOrLeftTab = viableTabs[safe: _selectedIndex] ?? viableTabs[safe: _selectedIndex - 1] {
+                if let rightOrLeftTab = viableTabs[safe: deletedIndex] ?? viableTabs[safe: deletedIndex - 1] {
                     selectTab(rightOrLeftTab, previous: tab)
                 } else {
                     selectTab(mostRecentTab(inTabs: viableTabs) ?? viableTabs.last, previous: tab)
                 }
             }
-        } else if deletedIndex < _selectedIndex {
-            let selected = tabs[safe: _selectedIndex - 1]
-            selectTab(selected, previous: selected)
         }
     }
 
@@ -504,14 +484,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     private func removeAllPrivateTabs() {
-        // reset the selectedTabIndex if we are on a private tab because we will be removing it.
-        if selectedTab?.isPrivate ?? false {
-            _selectedIndex = -1
-        }
-
-        privateTabs.forEach { $0.close() }
-        tabs = normalTabs
-
+        removeTabs(privateTabs)
         privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 

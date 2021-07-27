@@ -188,7 +188,7 @@ class TabDisplayManager: NSObject {
         guard let index = collectionView.indexPath(for: cell)?.item, let tab = dataStore.at(index) else {
             return
         }
-        tabManager.removeTabAndUpdateSelectedIndex(tab, allowToast: true)
+        tabManager.removeTabAndUpdateSelectedTab(tab, allowToast: true)
     }
 
     private func recordEventAndBreadcrumb(object: TelemetryWrapper.EventObject, method: TelemetryWrapper.EventMethod) {

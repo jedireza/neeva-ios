@@ -178,7 +178,7 @@ class SimulatedSwipeController:
             return false
         }
 
-        tabManager.removeTabAndUpdateSelectedIndex(tab)
+        tabManager.removeTabAndUpdateSelectedTab(tab)
         return true
     }
 

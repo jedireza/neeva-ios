@@ -70,6 +70,7 @@ class BrowserViewController: UIViewController {
         return host
     }()
     var webViewContainer: UIView!
+
     var urlBar: URLBarWrapper!
     enum URLBarWrapper {
         case legacy(LegacyURLBarView)
@@ -95,6 +96,7 @@ class BrowserViewController: UIViewController {
             }
         }
     }
+
     var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
     var readerModeBar: ReaderModeBarView?
     var readerModeCache: ReaderModeCache
@@ -720,7 +722,7 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    fileprivate func showZeroQuery(inline: Bool) {
+    public func showZeroQuery(inline: Bool, openedFrom: ZeroQueryOpenedLocation? = nil, isLazyTab: Bool = false) {
         zeroQueryIsInline = inline
         if self.zeroQueryViewController == nil {
             let zeroQueryViewController = ZeroQueryViewController(profile: profile)
@@ -733,6 +735,14 @@ class BrowserViewController: UIViewController {
 
         if FeatureFlag[.cardGrid], !cardGridViewController.gridModel.isHidden {
             cardGridViewController.gridModel.hideWithNoAnimation()
+        }
+
+        if isLazyTab {
+            urlBar.shared.model.setEditing(to: true)
+            urlBar.shared.queryModel.value = ""
+
+            zeroQueryViewController?.openedFrom = openedFrom
+            zeroQueryViewController?.isLazyTab = true
         }
 
         // We have to run this animation, even if the view is already showing
@@ -885,12 +895,16 @@ class BrowserViewController: UIViewController {
     }
     
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
+        if zeroQueryViewController?.isLazyTab ?? false {
+            zeroQueryViewController?.createRealTab(url: url, tabManager: tabManager)
+        } else {
+            if let nav = tab.loadRequest(URLRequest(url: url)) {
+                self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
+            }
+        }
+
         urlBar.shared.model.url = url
         urlBar.shared.model.setEditing(to: false)
-
-        if let nav = tab.loadRequest(URLRequest(url: url)) {
-            self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
-        }
     }
     
     override func accessibilityPerformEscape() -> Bool {
@@ -996,6 +1010,10 @@ class BrowserViewController: UIViewController {
         }
 
         zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
+    }
+
+    func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab) {
+        showZeroQuery(inline: true, openedFrom: openedFrom, isLazyTab: true)
     }
 
     func openSearchNewTab(isPrivate: Bool = false, _ text: String) {

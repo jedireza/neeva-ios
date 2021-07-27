@@ -74,12 +74,12 @@ extension BrowserViewController: TabToolbarDelegate {
         let tabCount = self.tabManager.tabs.count
 
         let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare)) { _ in
-            self.openBlankNewTab(focusLocationField: false, isPrivate: false)
+            self.openLazyTab()
         }
         newTab.accessibilityLabel = "New Tab"
 
         let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
-            self.openBlankNewTab(focusLocationField: false, isPrivate: true)
+            self.openLazyTab()
         }
 
         var tabActions = [newTab]
@@ -90,7 +90,7 @@ extension BrowserViewController: TabToolbarDelegate {
             if tabCount > 0 || !tab.isURLStartingPage {
                 let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark), attributes: .destructive) { _ in
                     if let tab = self.tabManager.selectedTab {
-                        self.tabManager.removeTabAndUpdateSelectedIndex(tab)
+                        self.tabManager.removeTabAndUpdateSelectedTab(tab)
                         self.zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
                     }
                 }

@@ -33,7 +33,7 @@ extension TabTrayControllerV1 {
     @objc func didCloseTabKeyCommand() {
         TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "close-tab"])
         if let tab = tabManager.selectedTab {
-            tabManager.removeTabAndUpdateSelectedIndex(tab, allowToast: true)
+            tabManager.removeTabAndUpdateSelectedTab(tab, allowToast: true)
         }
     }
 

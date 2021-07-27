@@ -96,6 +96,10 @@ class KeyboardShortcutTests: KIFTestCase {
     func testNewTabKeyCommand() {
         reset(tester: tester())
         bvc.newTabKeyCommand()
+
+        // turn lazy tab into real tab by opening URL
+        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: "www.neeva.com")
+        
         XCTAssert(bvc.tabManager.tabs.count == 2)
     }
 
@@ -103,7 +107,9 @@ class KeyboardShortcutTests: KIFTestCase {
         reset(tester: tester())
         bvc.newPrivateTabKeyCommand()
 
-        XCTAssert(bvc.tabManager.tabs.count == 2)
+        // turn lazy tab into real tab by opening URL
+        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: "example.com")
+
         XCTAssert(bvc.tabManager.selectedTab?.isPrivate == true)
     }
 

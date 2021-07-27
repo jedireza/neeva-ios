@@ -24,7 +24,6 @@ class DesktopModeTestsIpad: IpadOnlyTestCase {
 
         // Covering scenario that when closing a tab and re-opening should preserve Mobile mode
         openURLInNewTab(path(forTestPage: "test-user-agent.html"))
-        waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 }
@@ -69,7 +68,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
 
         // Tab #3
         openURLInNewTab(path(forTestPage: "test-user-agent.html"))
-        waitUntilPageLoad()
+
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
     
@@ -143,6 +142,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         toggleIncognito()
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
+
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 

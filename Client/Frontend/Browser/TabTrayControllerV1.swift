@@ -381,6 +381,7 @@ class TabTrayControllerV1: UIViewController {
         if tabDisplayManager.isDragging {
             return
         }
+
         openNewTab()
     }
 
@@ -388,12 +389,11 @@ class TabTrayControllerV1: UIViewController {
         if tabDisplayManager.isDragging {
             return
         }
-        // We dismiss the tab tray once we are done. So no need to re-enable the toolbar
-        toolbar.isUserInteractionEnabled = false
 
-        tabDisplayManager.updateWith(animationType: .addTab) { [weak self] in
-            guard let me = self else { return }
-            me.tabManager.selectTab(me.tabManager.addTab(request, isPrivate: me.tabDisplayManager.isPrivate))
+        dismissTabTray()
+
+        DispatchQueue.main.async {
+            SceneDelegate.getCurrentSceneDelegate().getBVC().openLazyTab(openedFrom: .tabTray)
         }
     }
 }

@@ -43,15 +43,23 @@ extension BrowserViewController {
 
     @objc func newTabKeyCommand() {
         TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
+        openLazyTab()
     }
 
     @objc func newPrivateTabKeyCommand() {
         // NOTE: We cannot and should not distinguish between "new-tab" and "new-private-tab"
         // when recording telemetry for key commands.
         TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
-        openBlankNewTab(focusLocationField: true, isPrivate: true)
+
+        if !(tabManager.selectedTab?.isPrivate ?? false) {
+            _ = tabManager.switchPrivacyMode()
+        }
+
+        // wait for tabManager to switch to normal mode before closing private tabs
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
+            openLazyTab(openedFrom: .createdTab)
+            zeroQueryViewController?.model.isPrivate = true
+        }
     }
 
     @objc func closeTabKeyCommand() {
@@ -144,7 +152,7 @@ extension BrowserViewController {
             UIKeyCommand(title: Strings.FindTitle, action: #selector(findInPageKeyCommand), input: "f", modifierFlags: .command),
             UIKeyCommand(title: Strings.SelectLocationBarTitle, action: #selector(selectLocationBarKeyCommand), input: "l", modifierFlags: .command),
             UIKeyCommand(title: Strings.NewTabTitle, action: #selector(newTabKeyCommand), input: "t", modifierFlags: .command),
-            UIKeyCommand(title: Strings.NewIncognitoTabTitle, action: #selector(newPrivateTabKeyCommand), input: "p", modifierFlags: [.command, .shift]),
+            UIKeyCommand(title: Strings.NewIncognitoTabTitle, action: #selector(newPrivateTabKeyCommand), input: "p", modifierFlags: [.command]),
             UIKeyCommand(title: Strings.CloseTabTitle, action: #selector(closeTabKeyCommand), input: "w", modifierFlags: .command),
             UIKeyCommand(title: Strings.ShowNextTabTitle, action: #selector(nextTabKeyCommand), input: "\t", modifierFlags: .control),
             UIKeyCommand(title: Strings.ShowPreviousTabTitle, action: #selector(previousTabKeyCommand), input: "\t", modifierFlags: [.control, .shift]),

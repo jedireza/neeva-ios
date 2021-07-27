@@ -31,10 +31,20 @@ protocol ZeroQueryPanelDelegate: AnyObject {
     func zeroQueryPanel(didEnterQuery query: String)
 }
 
+enum ZeroQueryOpenedLocation {
+    case tabTray
+    case openTab
+    case createdTab
+}
+
 class ZeroQueryViewController: UIViewController {
     weak var delegate: ZeroQueryPanelDelegate?
+
     fileprivate let profile: Profile
     fileprivate let flowLayout = UICollectionViewFlowLayout()
+
+    var isLazyTab: Bool = false
+    var openedFrom: ZeroQueryOpenedLocation? = nil
 
     lazy var zeroQueryView: UIView = {
         let controller = UIHostingController(
@@ -116,8 +126,32 @@ class ZeroQueryViewController: UIViewController {
         let visitType = VisitType.bookmark
         delegate?.zeroQueryPanel(didSelectURL: url, visitType: visitType)
     }
-}
 
+    public func createRealTab(url: URL, tabManager: TabManager) {
+        tabManager.select(tabManager.addTab(URLRequest(url: url), isPrivate: model.isPrivate))
+        resetLazyTab()
+    }
+
+    public func closeLazyTab() {
+        let bvc = SceneDelegate.getCurrentSceneDelegate().getBVC()
+
+        switch openedFrom {
+        case .tabTray:
+            bvc.showTabTray()
+        case .createdTab:
+            bvc.tabManager.close(bvc.tabManager.selectedTab!)
+        default:
+            break
+        }
+        
+        resetLazyTab()
+    }
+
+    public func resetLazyTab() {
+        isLazyTab = false
+        openedFrom = nil
+    }
+}
 
 // MARK: - Data Management
 extension ZeroQueryViewController: DataObserverDelegate {

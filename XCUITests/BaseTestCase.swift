@@ -130,11 +130,10 @@ class BaseTestCase: XCTestCase {
     public func openURL(_ url: String = "example.com") {
         UIPasteboard.general.string = url
 
-        if app.textFields["address"].isHittable {
-            app.textFields["address"].press(forDuration: 2)
+        if app.buttons["Cancel"].exists {
+            app.textFields["address"].press(forDuration: 1)
         } else {
-            waitForExistence(app.buttons["Address Bar"])
-            app.buttons["Address Bar"].press(forDuration: 2)
+            app.buttons["Address Bar"].press(forDuration: 1)
         }
 
         waitForExistence(app.menuItems["Paste & Go"])
@@ -174,7 +173,7 @@ class BaseTestCase: XCTestCase {
             app.buttons["Close Tab"].tap()
         }
     }
-
+    
     public func getNumberOfTabs() -> Int {
         goToTabTray()
         return app.cells.count

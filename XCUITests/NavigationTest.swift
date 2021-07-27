@@ -135,7 +135,7 @@ class NavigationTest: BaseTestCase {
         XCTAssert(app.buttons["Address Bar"].exists)
         app.buttons["Address Bar"].tap()
         
-        app.textFields["address"].typeText("www.google.com")
+        app.textFields["address"].typeText("www.neeva.com")
         // Tapping two times when the text is not selected will reveal the menu
         app.textFields["address"].tap()
         waitForExistence(app.textFields["address"])
@@ -174,6 +174,7 @@ class NavigationTest: BaseTestCase {
         app.textFields["address"].tap()
 
         waitForExistence(app.menuItems["Copy"])
+
         if iPad() {
             XCTAssertTrue(app.menuItems["Copy"].exists)
             XCTAssertTrue(app.menuItems["Cut"].exists)

@@ -42,7 +42,6 @@ class ClipBoardTests: BaseTestCase {
 
         newTab()
 
-        app.buttons["Address Bar"].tap()
         app.textFields["address"].press(forDuration: 1)
         app.menuItems["Paste & Go"].tap()
 

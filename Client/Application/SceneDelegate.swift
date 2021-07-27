@@ -14,6 +14,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var browserViewController: BrowserViewController!
     private var geigerCounter: KMCGeigerCounter?
 
+    var selectedTabUUID: String? {
+        let tabManager  = SceneDelegate.getTabManager()
+        return tabManager.selectedTab?.tabUUID
+    }
+
     // MARK: - Scene state
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         self.scene = scene
@@ -71,7 +76,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         tabManager.preserveTabs()
     }
-
+    
     // MARK: - URL managment
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
@@ -172,9 +177,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         fatalError("Window for current scene is nil")
     }
-  
+
     public func getBVC() -> BrowserViewController {
         return browserViewController
+    }
+
+    static func getTabManager() -> TabManager {
+        return getCurrentSceneDelegate().tabManager
     }
 
     // MARK: - Geiger
