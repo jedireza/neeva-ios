@@ -100,7 +100,6 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if self.tableView(tableView, hasFullWidthSeparatorForRowAtIndexPath: indexPath) {
             cell.separatorInset = .zero
         }
-        cell.textLabel?.textColor = UIColor.legacyTheme.tableView.rowText
         return cell
     }
 

@@ -125,7 +125,7 @@ struct Card<Details>: View where Details: CardDetails {
     }
 
     private struct ActionsModifier: ViewModifier {
-        let close: (() -> ())?
+        let close: (() -> Void)?
 
         func body(content: Content) -> some View {
             if let close = close {
