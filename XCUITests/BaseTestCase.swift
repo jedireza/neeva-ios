@@ -106,26 +106,6 @@ class BaseTestCase: XCTestCase {
         }
     }
 
-    func loadWebPage(
-        _ url: String, waitForLoadToFinish: Bool = true, file: String = #file, line: UInt = #line
-    ) {
-        let app = XCUIApplication()
-        UIPasteboard.general.string = url
-        app.buttons["Address Bar"].press(forDuration: 1)
-        app.tables["Context Menu"].cells["doc.on.clipboard"].firstMatch.tap()
-
-        if waitForLoadToFinish {
-            let finishLoadingTimeout: TimeInterval = 30
-            let progressIndicator = app.progressIndicators.element(boundBy: 0)
-            waitFor(
-                progressIndicator,
-                with: "exists != true",
-                description: "Problem loading \(url)",
-                timeout: finishLoadingTimeout,
-                file: file, line: line)
-        }
-    }
-
     func iPad() -> Bool {
         if UIDevice.current.userInterfaceIdiom == .pad {
             return true

@@ -10,7 +10,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var scene: UIScene?
 
     private var tabManager: TabManager!
-    private var tabTrayController: TabTrayControllerV1!
     private var browserViewController: BrowserViewController!
     private var geigerCounter: KMCGeigerCounter?
 
@@ -55,7 +54,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         self.tabManager = TabManager(profile: profile, scene: scene)
         self.browserViewController = BrowserViewController(profile: profile, tabManager: tabManager)
-        self.tabTrayController = TabTrayControllerV1(tabManager: tabManager, profile: profile)
 
         browserViewController.edgesForExtendedLayout = []
         browserViewController.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
@@ -179,10 +177,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         fatalError("Scene Delegate doesn't exist or is nil")
-    }
-
-    static func getForegroundTabTrayController() -> TabTrayControllerV1? {
-        return getCurrentSceneDelegate().tabTrayController
     }
 
     static func getCurrentScene() -> UIScene {

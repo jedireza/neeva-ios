@@ -20,6 +20,7 @@ protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     var id: String { get }
     var closeButtonImage: UIImage? { get }
     var title: String { get }
+    var accessibilityLabel: String { get }
     var favicon: WebImage? { get }
     var isSelected: Bool { get }
 
@@ -101,6 +102,10 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
         self.manager.selectedTab?.tabUUID == id
     }
 
+    var accessibilityLabel: String {
+        "\(title), Tab"
+    }
+
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
     init(tab: Tab, manager: TabManager) {
@@ -155,6 +160,10 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
+
+    var accessibilityLabel: String {
+        "\(title), Space"
+    }
 
     private init(id: String) {
         self.id = id
@@ -246,6 +255,10 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
     var id: String
     var closeButtonImage: UIImage?
 
+    var accessibilityLabel: String {
+        "\(title), Link"
+    }
+
     init(url: URL, profile: Profile, fetcher: SiteFetcher) {
         self.id = url.absoluteString
         self.manager = fetcher
@@ -286,6 +299,10 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         manager.tabManager.selectedTab?.rootUUID == id
     }
     @Published var allDetails: [TabCardDetails] = []
+
+    var accessibilityLabel: String {
+        "\(title), Tab Group"
+    }
 
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
         self.id = tabGroup.id

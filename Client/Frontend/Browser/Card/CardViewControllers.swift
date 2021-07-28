@@ -68,6 +68,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         super.viewDidLoad()
 
         view.backgroundColor = .clear
+        view.accessibilityViewIsModal = true
     }
 
     func showGrid() {

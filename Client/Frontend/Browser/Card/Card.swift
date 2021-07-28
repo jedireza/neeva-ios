@@ -25,6 +25,7 @@ struct BorderTreatment: ViewModifier {
                 RoundedRectangle(cornerRadius: CardUX.CornerRadius)
                     .stroke(isSelected ? Color.ui.adaptive.blue : Color.clear, lineWidth: 3)
             )
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -82,14 +83,12 @@ struct Card<Details>: View where Details: CardDetails {
                             .cornerRadius(CardUX.CornerRadius)
                             .padding(5)
                     }
-                    if let title = details.title {
-                        Text(title).withFont(.labelMedium)
-                            .frame(
-                                maxWidth: .infinity,
-                                alignment: details.favicon != nil ? .leading : .center
-                            )
-                            .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
-                    }
+                    Text(details.title).withFont(.labelMedium)
+                        .frame(
+                            maxWidth: .infinity,
+                            alignment: details.favicon != nil ? .leading : .center
+                        )
+                        .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     if let buttonImage = details.closeButtonImage {
                         Button(action: details.onClose) {
                             Image(uiImage: buttonImage).resizable().renderingMode(.template)
@@ -115,9 +114,25 @@ struct Card<Details>: View where Details: CardDetails {
                 }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(details.accessibilityLabel)
+        .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
+        .accessibilityAddTraits(.isButton)
         .cornerRadius(CardUX.CornerRadius)
         .modifier(BorderTreatment(isSelected: showsSelection && details.isSelected))
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .scaleEffect(isPressed ? 0.95 : 1)
+    }
+
+    private struct ActionsModifier: ViewModifier {
+        let close: (() -> ())?
+
+        func body(content: Content) -> some View {
+            if let close = close {
+                content.accessibilityAction(named: "Close", close)
+            } else {
+                content
+            }
+        }
     }
 }
