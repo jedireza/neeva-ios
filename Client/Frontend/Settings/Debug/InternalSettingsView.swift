@@ -5,7 +5,6 @@ import Shared
 import SwiftUI
 
 struct InternalSettingsView: View {
-    @Default(.latestAppVersion) var latestAppVersion
     @Default(.searchInputPromptDismissed) var searchInputPromptDismissed
     @Default(.introSeen) var introSeen
     @Default(.lastVersionNumber) var lastVersionNumber
@@ -24,7 +23,6 @@ struct InternalSettingsView: View {
     var body: some View {
         List {
             Section(header: Text("Implicit")) {
-                OptionalStringField("latestAppVersion", text: $latestAppVersion)
                 Toggle("searchInputPromptDismissed", isOn: $searchInputPromptDismissed)
                 Toggle("introSeen", isOn: $introSeen)
                 OptionalStringField("lastVersionNumber", text: $lastVersionNumber)

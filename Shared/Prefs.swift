@@ -6,7 +6,6 @@ import Defaults
 // user-visible settings or in InternalSettingsView
 extension Defaults.Keys {
     // automatically recorded
-    public static let latestAppVersion = Defaults.Key<String?>("profile.latestAppVersion")
     public static let searchInputPromptDismissed = Defaults.BoolKey(
         "profile.SearchInputPromptDismissed")
     public static let introSeen = Defaults.BoolKey("profile.IntroViewControllerSeen")

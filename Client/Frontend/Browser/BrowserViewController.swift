@@ -615,7 +615,6 @@ class BrowserViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         presentIntroViewController()
-        presentUpdateViewController()
         screenshotHelper.viewIsVisible = true
         screenshotHelper.takePendingScreenshots(tabManager.tabs)
 
@@ -1746,58 +1745,12 @@ extension BrowserViewController {
     }
 
     // Default browser onboarding
-    func presentDBOnboardingViewController(_ force: Bool = false) {
+    func presentDBOnboardingViewController() {
         let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: { [weak self] in
             self?.zeroQueryViewController?.model.updateState()
         })
         onboardingVC.modalPresentationStyle = .formSheet
         present(onboardingVC, animated: true, completion: nil)
-    }
-
-    @discardableResult func presentUpdateViewController(
-        _ force: Bool = false, animated: Bool = true
-    ) -> Bool {
-        let cleanInstall = UpdateViewModel.isCleanInstall()
-        let coverSheetSupportedAppVersion = UpdateViewModel.coverSheetSupportedAppVersion
-        if force
-            || UpdateViewModel.shouldShowUpdateSheet(
-                isCleanInstall: cleanInstall, supportedAppVersions: coverSheetSupportedAppVersion)
-        {
-            let updateViewController = UpdateViewController()
-
-            updateViewController.viewModel.startBrowsing = {
-                updateViewController.dismiss(animated: true) {
-                    if self.navigationController?.viewControllers.count ?? 0 > 1 {
-                        _ = self.navigationController?.popToRootViewController(animated: true)
-                    }
-                }
-            }
-
-            if traitCollection.horizontalSizeClass == .regular
-                && traitCollection.verticalSizeClass == .regular
-            {
-                updateViewController.preferredContentSize = CGSize(
-                    width: ViewControllerConsts.PreferredSize.UpdateViewController.width,
-                    height: ViewControllerConsts.PreferredSize.UpdateViewController.height)
-                updateViewController.modalPresentationStyle = .formSheet
-            } else {
-                updateViewController.modalPresentationStyle = .fullScreen
-            }
-
-            // On iPad we present it modally in a controller
-            present(updateViewController, animated: animated) {
-                // On first run (and forced) open up the homepage in the background.
-                if let homePageURL = NewTabHomePageAccessors.getHomePage(),
-                    let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity()
-                {
-                    tab.loadRequest(URLRequest(url: homePageURL))
-                }
-            }
-
-            return true
-        }
-
-        return false
     }
 
     private func showProperIntroVC() {
