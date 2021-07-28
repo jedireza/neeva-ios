@@ -794,9 +794,9 @@ extension BrowserViewController: WKNavigationDelegate {
         _ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: Error
     ) {
-        if let tab = tabManager[webView] {
-            tab.provisionalTemporaryDocument = nil
-        }
+        guard let tab = tabManager[webView] else { return }
+
+        tab.provisionalTemporaryDocument = nil
 
         // Ignore the "Frame load interrupted" error that is triggered when we cancel a request
         // to open an external application and hand it over to UIApplication.openURL(). The result
@@ -812,18 +812,15 @@ extension BrowserViewController: WKNavigationDelegate {
         }
 
         if error.code == Int(CFNetworkErrors.cfurlErrorCancelled.rawValue) {
-            if let tab = tabManager[webView], tab === tabManager.selectedTab {
+            if tab === tabManager.selectedTab {
                 urlBar.shared.model.url = tab.url?.displayURL
+                // XXX if we are updating the URL, we should probably also update securityLevel right???
             }
             return
         }
 
         if let url = error.userInfo[NSURLErrorFailingURLErrorKey] as? URL {
-            if CertErrors.contains(error.code) {
-                urlBar.shared.model.hasCertError = true
-            } else {
-                urlBar.shared.model.hasCertError = false
-            }
+            tab.error = error
             ErrorPageHelper(certStore: profile.certStore).loadPage(
                 error, forUrl: url, inWebView: webView)
         }
@@ -896,6 +893,8 @@ extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = tabManager[webView] else { return }
         tab.url = webView.url
+
+        tab.error = nil
 
         // The document has changed. This metadata is now invalid.
         tab.pageMetadata = nil

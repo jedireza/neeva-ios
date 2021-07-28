@@ -1006,6 +1006,11 @@ class BrowserViewController: UIViewController {
         urlBar.shared.model.url = tab.url?.displayURL
         urlBar.shared.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
 
+        // Now we can look at `tab.error`
+        // And we can construct an enum from `hasOnlySecureContent` and `tab.error`
+        // And that enum can be set on the `urlBar.shared.model` and used for display purposes
+        //urlBar.shared.model.securityLevel = ...
+
         let isPage = tab.url?.displayURL?.isWebPage() ?? false
         urlBar.shared.model.canShare = isPage
         toolbarModel.isPage = isPage
@@ -1250,6 +1255,7 @@ class BrowserViewController: UIViewController {
         if let url = webView.url {
             if tab === tabManager.selectedTab {
                 urlBar.shared.model.isSecure = webView.hasOnlySecureContent
+                // XXX need to update securityLevel enum
                 urlBar.shared.model.canShare = tab.url?.displayURL?.isWebPage() ?? false
             }
 

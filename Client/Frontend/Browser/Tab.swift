@@ -110,6 +110,7 @@ class Tab: NSObject {
             }
         }
     }
+    var error: NSError?
     var isEditing: Bool = false
     var currentFaviconUrl: URL?
 
