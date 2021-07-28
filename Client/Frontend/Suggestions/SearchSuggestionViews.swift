@@ -163,17 +163,20 @@ struct QuerySuggestionView: View {
             Image("calculator")
         } else if let activeType = model.activeLensBang?.type {
             Symbol(activeType.defaultSymbol)
-        } else if let annotation = suggestion.annotation, let imageUrl = annotation.imageUrl {
+        } else if let annotation = suggestion.annotation, let imageUrl = annotation.imageUrl,
+            AnnotationType(annotation: suggestion.annotation) == .wikipedia
+        {
             WebImage(url: URL(string: imageUrl))
                 .resizable()
                 .placeholder {
                     Color.tertiarySystemFill
-                }.aspectRatio(contentMode: .fit)
+                }
+                .aspectRatio(contentMode: .fit)
+                .cornerRadius(SuggestionViewUX.CornerRadius)
                 .frame(
                     width: SuggestionViewUX.ThumbnailSize,
                     height: SuggestionViewUX.ThumbnailSize
                 )
-                .cornerRadius(SuggestionViewUX.CornerRadius)
         } else {
             switch suggestion.type {
             case .searchHistory:
@@ -194,6 +197,10 @@ struct QuerySuggestionView: View {
             Text(suggestion.annotation?.description ?? "")
                 .withFont(.bodyLarge)
                 .lineLimit(1)
+        } else if AnnotationType(annotation: suggestion.annotation) == .wikipedia {
+            Text(suggestion.suggestedQuery.capitalized)
+                .withFont(.bodyLarge)
+                .lineLimit(1)
         } else {
             Text(suggestion.suggestedQuery)
                 .withFont(.bodyLarge)
@@ -208,7 +215,9 @@ struct QuerySuggestionView: View {
         {
             Text(suggestedCalculatorQuery).withFont(.bodySmall)
                 .foregroundColor(.secondaryLabel).lineLimit(1)
-        } else if let annotation = suggestion.annotation, let description = annotation.description {
+        } else if let annotation = suggestion.annotation, let description = annotation.description,
+            AnnotationType(annotation: suggestion.annotation) == .wikipedia
+        {
             Text(description).withFont(.bodySmall)
                 .foregroundColor(.secondaryLabel).lineLimit(1)
         } else {
