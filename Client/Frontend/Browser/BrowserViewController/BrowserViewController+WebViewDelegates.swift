@@ -819,6 +819,11 @@ extension BrowserViewController: WKNavigationDelegate {
         }
 
         if let url = error.userInfo[NSURLErrorFailingURLErrorKey] as? URL {
+            if CertErrors.contains(error.code) {
+                urlBar.shared.model.hasCertError = true
+            } else {
+                urlBar.shared.model.hasCertError = false
+            }
             ErrorPageHelper(certStore: profile.certStore).loadPage(
                 error, forUrl: url, inWebView: webView)
         }

@@ -6,6 +6,7 @@ import SwiftUI
 struct LocationLabel: View {
     let url: URL?
     let isSecure: Bool
+    let hasCertError: Bool
 
     @EnvironmentObject private var gridModel: GridModel
 
@@ -13,7 +14,8 @@ struct LocationLabel: View {
         LocationLabelAndIcon(
             url: url, isSecure: isSecure,
             forcePlaceholder: !gridModel.isHidden
-                || (NeevaConstants.isNeevaHome(url: url) && NeevaUserInfo.shared.hasLoginCookie())
+                || (NeevaConstants.isNeevaHome(url: url) && NeevaUserInfo.shared.hasLoginCookie()),
+            hasCertError: hasCertError
         )
         .lineLimit(1)
         .frame(height: TabLocationViewUX.height)
@@ -30,6 +32,7 @@ struct LocationLabelAndIcon: View {
     let url: URL?
     let isSecure: Bool
     let forcePlaceholder: Bool
+    let hasCertError: Bool
 
     var body: some View {
         let placeholder = TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(
@@ -56,7 +59,15 @@ struct LocationLabelAndIcon: View {
                     Symbol(.lockFill)
                 }
             } else {
-                host
+                Label {
+                    host
+                } icon: {
+                    if hasCertError {
+                        Symbol(.exclamationmarkTriangleFill)
+                    } else {
+                        Symbol(.lockSlashFill)
+                    }
+                }
             }
         } else if let url = url {
             Text(url.absoluteString).withFont(.bodyLarge)
@@ -69,23 +80,29 @@ struct LocationLabelAndIcon: View {
 struct LocationLabel_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LocationLabel(url: nil, isSecure: false)
+            LocationLabel(url: nil, isSecure: false, hasCertError: false)
                 .previewDisplayName("Placeholder")
 
-            LocationLabel(url: "https://vviii.verylong.subdomain.neeva.com", isSecure: false)
-                .previewDisplayName("Insecure URL")
+            LocationLabel(
+                url: "https://vviii.verylong.subdomain.neeva.com", isSecure: false,
+                hasCertError: false
+            )
+            .previewDisplayName("Insecure URL")
 
-            LocationLabel(url: "https://neeva.com/asdf", isSecure: true)
+            LocationLabel(url: "https://neeva.com/asdf", isSecure: true, hasCertError: false)
                 .previewDisplayName("Secure URL")
 
             LocationLabel(
                 url: neevaSearchEngine.searchURLForQuery("a long search query with words"),
-                isSecure: true
+                isSecure: true,
+                hasCertError: false
             )
             .previewDisplayName("Search")
 
-            LocationLabel(url: "ftp://someftpsite.com/dir/file.txt", isSecure: false)
-                .previewDisplayName("Non-HTTP")
+            LocationLabel(
+                url: "ftp://someftpsite.com/dir/file.txt", isSecure: false, hasCertError: false
+            )
+            .previewDisplayName("Non-HTTP")
         }.padding(.horizontal).previewLayout(.sizeThatFits)
     }
 }

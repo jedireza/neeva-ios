@@ -67,10 +67,12 @@ struct TabLocationView: View {
                 Capsule().fill(backgroundColor)
 
                 TabLocationAligner(transitionToEditing: model.isEditing) {
-                    LocationLabel(url: model.url, isSecure: model.isSecure)
-                        .accessibilityAction(copyAction)
-                        .accessibilityAction(pasteAction)
-                        .accessibilityAction(pasteAndGoAction)
+                    LocationLabel(
+                        url: model.url, isSecure: model.isSecure, hasCertError: model.hasCertError
+                    )
+                    .accessibilityAction(copyAction)
+                    .accessibilityAction(pasteAction)
+                    .accessibilityAction(pasteAndGoAction)
                 } labelOverlay: { padding in
                     if !model.isEditing {
                         LocationViewTouchHandler(
@@ -92,7 +94,8 @@ struct TabLocationView: View {
                             },
                             copyAction: copyAction,
                             pasteAction: pasteAction,
-                            pasteAndGoAction: pasteAndGoAction
+                            pasteAndGoAction: pasteAndGoAction,
+                            hasCertError: model.hasCertError
                         )
                     }
                 } leading: {

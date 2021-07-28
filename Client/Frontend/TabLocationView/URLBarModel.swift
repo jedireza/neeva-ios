@@ -13,6 +13,7 @@ class URLBarModel: ObservableObject {
     @Published var url: URL?
     /// `true` iff all assets on the page are secure (i.e. there is no mixed content)
     @Published var isSecure = false
+    @Published var hasCertError = false
 
     @Published var showToolbarItems = false
 

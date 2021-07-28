@@ -14,6 +14,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
     let copyAction: Action
     let pasteAction: Action
     let pasteAndGoAction: Action
+    let hasCertError: Bool
 
     func makeUIView(context: Context) -> InteractionView {
         InteractionView(wrapper: self)
@@ -88,7 +89,8 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         ) -> UITargetedDragPreview? {
             let host = UIHostingController(
                 rootView: LocationLabelAndIcon(
-                    url: wrapper.url, isSecure: wrapper.isSecure, forcePlaceholder: false
+                    url: wrapper.url, isSecure: wrapper.isSecure, forcePlaceholder: false,
+                    hasCertError: false
                 )
                 .fixedSize()
                 .padding(.horizontal)
