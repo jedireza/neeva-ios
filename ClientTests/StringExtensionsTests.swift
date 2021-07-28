@@ -4,6 +4,7 @@
 
 import Foundation
 import XCTest
+
 @testable import Client
 
 class StringExtensionsTests: XCTestCase {
@@ -40,7 +41,9 @@ class StringExtensionsTests: XCTestCase {
     }
 
     func testPercentEscaping() {
-        func roundtripTest(_ input: String, _ expected: String, file: StaticString = #file, line: UInt = #line) {
+        func roundtripTest(
+            _ input: String, _ expected: String, file: StaticString = #file, line: UInt = #line
+        ) {
             let observed = input.escape()!
             XCTAssertEqual(observed, expected, "input is \(input)", file: file, line: line)
             let roundtrip = observed.unescape()
@@ -48,12 +51,14 @@ class StringExtensionsTests: XCTestCase {
         }
 
         roundtripTest("https://mozilla.com", "https://mozilla.com")
-        roundtripTest("http://www.cnn.com/2017/09/25/politics/north-korea-fm-us-bombers/index.html", "http://www.cnn.com/2017/09/25/politics/north-korea-fm-us-bombers/index.html")
+        roundtripTest(
+            "http://www.cnn.com/2017/09/25/politics/north-korea-fm-us-bombers/index.html",
+            "http://www.cnn.com/2017/09/25/politics/north-korea-fm-us-bombers/index.html")
         roundtripTest("http://mozilla.com/?a=foo&b=bar", "http://mozilla.com/%3Fa%3Dfoo%26b%3Dbar")
     }
 
     func testRemoveUnicodeFromFilename() {
-        let file = "foo-\u{200F}cod.jpg" // Unicode RTL-switch code, becomes "foo-gpj.doc"
+        let file = "foo-\u{200F}cod.jpg"  // Unicode RTL-switch code, becomes "foo-gpj.doc"
         let nounicode = "foo-cod.jpg"
         XCTAssert(file != nounicode)
         let strip = HTTPDownload.stripUnicode(fromFilename: file)

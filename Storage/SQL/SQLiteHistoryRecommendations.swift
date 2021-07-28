@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import XCGLogger
 
-fileprivate let log = Logger.syncLogger
+private let log = Logger.syncLogger
 
 extension SQLiteHistory: HistoryRecommendations {
     static let MaxHistoryRowCount: UInt = 200000
@@ -14,9 +14,12 @@ extension SQLiteHistory: HistoryRecommendations {
 
     public func cleanupHistoryIfNeeded() {
         DispatchQueue.global(qos: .background).async {
-            self.checkIfCleanupIsNeeded(maxHistoryRows: SQLiteHistory.MaxHistoryRowCount) >>== { doCleanup in
+            self.checkIfCleanupIsNeeded(maxHistoryRows: SQLiteHistory.MaxHistoryRowCount) >>== {
+                doCleanup in
                 if doCleanup {
-                    _ = self.db.run(self.cleanupOldHistory(numberOfRowsToPrune: SQLiteHistory.PruneHistoryRowCount))
+                    _ = self.db.run(
+                        self.cleanupOldHistory(
+                            numberOfRowsToPrune: SQLiteHistory.PruneHistoryRowCount))
                 }
             }
         }

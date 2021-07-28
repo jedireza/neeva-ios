@@ -30,7 +30,8 @@ public struct UIConstants {
     // Portrait mode on a phone:
     static let TopToolbarPaddingTop: CGFloat = 4
     static let TopToolbarPaddingBottom: CGFloat = 12
-    static let TopToolbarHeight: CGFloat = TextFieldHeight + TopToolbarPaddingTop + TopToolbarPaddingBottom
+    static let TopToolbarHeight: CGFloat =
+        TextFieldHeight + TopToolbarPaddingTop + TopToolbarPaddingBottom
 
     // Landscape and tablet mode:
     static let TopToolbarHeightWithToolbarButtonsShowing: CGFloat = TextFieldHeight + (9 * 2)
@@ -38,16 +39,15 @@ public struct UIConstants {
     // Bottom bar when in portrait mode on a phone:
     static var ToolbarHeight: CGFloat = 46
     static var BottomToolbarHeight: CGFloat {
-        get {
-            return ToolbarHeight + safeArea.bottom
-        }
+        return ToolbarHeight + safeArea.bottom
     }
 
     static let SystemBlueColor = UIColor.Photon.Blue40
 
     // Static fonts
     static let DefaultChromeSize: CGFloat = 16
-    static let DefaultChromeFont = UIFont.systemFont(ofSize: DefaultChromeSize, weight: UIFont.Weight.regular)
+    static let DefaultChromeFont = UIFont.systemFont(
+        ofSize: DefaultChromeSize, weight: UIFont.Weight.regular)
 
     /// JPEG compression quality for persisted screenshots. Must be between 0-1.
     static let ScreenshotQuality: Float = 0.3
@@ -67,12 +67,19 @@ public struct UIConstants {
 
 extension UIColor {
     public struct TextField {
-        public static func background(isPrivate: Bool) -> UIColor { return isPrivate ? .black : UIColor.systemFill }
-        public static func textAndTint(isPrivate: Bool) -> UIColor { return isPrivate ? .white : .label }
-        public static func disabledTextAndTint(isPrivate: Bool) -> UIColor { isPrivate ? UIColor(rgba: 0x3C3C4399) : .secondaryLabel }
+        public static func background(isPrivate: Bool) -> UIColor {
+            return isPrivate ? .black : UIColor.systemFill
+        }
+        public static func textAndTint(isPrivate: Bool) -> UIColor {
+            return isPrivate ? .white : .label
+        }
+        public static func disabledTextAndTint(isPrivate: Bool) -> UIColor {
+            isPrivate ? UIColor(rgba: 0x3C3C_4399) : .secondaryLabel
+        }
         public static func placeholder(isPrivate: Bool) -> UIColor {
             if isPrivate {
-                return .secondaryLabel.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
+                return .secondaryLabel.resolvedColor(
+                    with: UITraitCollection(userInterfaceStyle: .dark))
             } else {
                 return .secondaryLabel
             }
@@ -87,8 +94,12 @@ extension UIColor {
     }
 
     public struct LoadingBar {
-        public static func start(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.brand.adaptive.maya : UIColor.systemGray }
-        public static func end(_ isPrivate: Bool) -> UIColor { return !isPrivate ? UIColor.brand.adaptive.maya : UIColor.systemGray }
+        public static func start(_ isPrivate: Bool) -> UIColor {
+            return !isPrivate ? UIColor.brand.adaptive.maya : UIColor.systemGray
+        }
+        public static func end(_ isPrivate: Bool) -> UIColor {
+            return !isPrivate ? UIColor.brand.adaptive.maya : UIColor.systemGray
+        }
     }
 
     public struct ToolbarButton {
@@ -105,7 +116,7 @@ extension UIColor {
         public typealias TextSelectionHighlight = (labelMode: UIColor, textFieldMode: UIColor?)
         public static func textSelectionHighlight(_ isPrivate: Bool) -> TextSelectionHighlight {
             if isPrivate {
-                let color = UIColor(rgba: 0x64C7FF4C)
+                let color = UIColor(rgba: 0x64C7_FF4C)
                 return (labelMode: color.withAlphaComponent(0.25), textFieldMode: color)
             } else {
                 return (labelMode: UIColor.TextSelectionHighlight, textFieldMode: nil)

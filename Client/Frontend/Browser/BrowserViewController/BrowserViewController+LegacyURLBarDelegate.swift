@@ -1,18 +1,19 @@
 // Copyright Neeva. All rights reserved.
 
+import SFSafeSymbols
 import Shared
 import Storage
-import SFSafeSymbols
 
 extension BrowserViewController: LegacyURLBarDelegate {
     func urlBarDidPressReload() {
         // log tap reload
-        ClientLogger.shared.logCounter(.TapReload, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .TapReload, attributes: EnvironmentHelper.shared.getAttributes())
 
         tabManager.selectedTab?.reload()
     }
 
-    func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton){
+    func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton) {
         if TourManager.shared.userReachedStep(tapTarget: .neevaMenu) == .resumeAction {
             self.dismiss(animated: true, completion: nil)
         }
@@ -24,7 +25,8 @@ extension BrowserViewController: LegacyURLBarDelegate {
             feedbackImage: screenshot())
         self.popOverNeevaMenuViewController = host
         // log tap neeva menu
-        ClientLogger.shared.logCounter(.OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
 
         //Fix autolayout sizing
         host.view.backgroundColor = UIColor.systemGroupedBackground
@@ -37,7 +39,7 @@ extension BrowserViewController: LegacyURLBarDelegate {
     }
 
     func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions) {
-        switch(page){
+        switch page {
         case .home:
             switchToTabForURLOrOpen(NeevaConstants.appHomeURL)
             break
@@ -69,7 +71,9 @@ extension BrowserViewController: LegacyURLBarDelegate {
         let toggleActionTitle: String
         let iconName: SFSymbol
 
-        let willSwitchToMobile = UserAgent.isDesktop(ua: UserAgent.getUserAgent()) ? !tab.changedUserAgent : tab.changedUserAgent
+        let willSwitchToMobile =
+            UserAgent.isDesktop(ua: UserAgent.getUserAgent())
+            ? !tab.changedUserAgent : tab.changedUserAgent
         if willSwitchToMobile {
             toggleActionTitle = Strings.AppMenuViewMobileSiteTitleString
             let hasHomeButton = UIConstants.safeArea.bottom == 0
@@ -83,7 +87,9 @@ extension BrowserViewController: LegacyURLBarDelegate {
                 UIAction(title: toggleActionTitle, image: UIImage(systemSymbol: iconName)) { _ in
                     if let url = tab.url {
                         tab.toggleChangeUserAgent()
-                        Tab.ChangeUserAgent.updateDomainList(forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate)
+                        Tab.ChangeUserAgent.updateDomainList(
+                            forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate
+                        )
                     }
                 }
             ]
@@ -124,4 +130,3 @@ extension BrowserViewController: LegacyURLBarDelegate {
         }
     }
 }
-

@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
-import SwiftUI
 import Shared
+import SwiftUI
+import UIKit
 
 class ToastDefaults: NSObject {
     var toast: ToastView?
@@ -22,10 +22,13 @@ class ToastDefaults: NSObject {
                 toastText = "\(savedTabs.count) Tabs Closed"
             }
 
-            let toastContent = ToastViewContent(normalContent: ToastStateContent(text: toastText, buttonText: "restore", buttonAction: {
-                // restores last closed tab
-                _ = tabManager.restoreSavedTabs(savedTabs)
-            }))
+            let toastContent = ToastViewContent(
+                normalContent: ToastStateContent(
+                    text: toastText, buttonText: "restore",
+                    buttonAction: {
+                        // restores last closed tab
+                        _ = tabManager.restoreSavedTabs(savedTabs)
+                    }))
 
             let toastView = ToastViewManager.shared.makeToast(content: toastContent)
 
@@ -48,8 +51,12 @@ class ToastDefaults: NSObject {
         }
         let failedContent = ToastStateContent(text: "Download Failed")
 
-        let toastContent = ToastViewContent(normalContent: normalContent, completedContent: completedContent, failedContent: failedContent)
-        let toastView = ToastViewManager.shared.makeToast(content: toastContent, toastProgressViewModel: toastProgressViewModel, autoDismiss: false)
+        let toastContent = ToastViewContent(
+            normalContent: normalContent, completedContent: completedContent,
+            failedContent: failedContent)
+        let toastView = ToastViewManager.shared.makeToast(
+            content: toastContent, toastProgressViewModel: toastProgressViewModel,
+            autoDismiss: false)
 
         toast = toastView
         ToastViewManager.shared.enqueue(toast: toastView, at: .first)
@@ -99,12 +106,20 @@ class ToastDefaults: NSObject {
             }
         }
 
-        let normalContent = ToastStateContent(text: toastText, buttonText: "open space", buttonAction: buttonAction)
-        let completedContent = ToastStateContent(text: completedText, buttonText: "open space", buttonAction: buttonAction)
-        let failedContent = ToastStateContent(text: "Failed to save to \"\(spaceName)\"", buttonText: "try again", buttonAction: failedAction)
-        let toastContent = ToastViewContent(normalContent: normalContent, completedContent: completedContent, failedContent: failedContent)
+        let normalContent = ToastStateContent(
+            text: toastText, buttonText: "open space", buttonAction: buttonAction)
+        let completedContent = ToastStateContent(
+            text: completedText, buttonText: "open space", buttonAction: buttonAction)
+        let failedContent = ToastStateContent(
+            text: "Failed to save to \"\(spaceName)\"", buttonText: "try again",
+            buttonAction: failedAction)
+        let toastContent = ToastViewContent(
+            normalContent: normalContent, completedContent: completedContent,
+            failedContent: failedContent)
 
-        let toastView = ToastViewManager.shared.makeToast(content: toastContent, toastProgressViewModel: toastProgressViewModel, autoDismiss: false)
+        let toastView = ToastViewManager.shared.makeToast(
+            content: toastContent, toastProgressViewModel: toastProgressViewModel,
+            autoDismiss: false)
         toast = toastView
         ToastViewManager.shared.enqueue(toast: toastView)
     }

@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import WebKit
 import Combine
+import WebKit
 
 class ZoomMenuModel: ObservableObject {
     private let webView: WKWebView
@@ -11,55 +11,59 @@ class ZoomMenuModel: ObservableObject {
 
     init(webView: WKWebView) {
         self.webView = webView
-        self.subscription = webView
+        self.subscription =
+            webView
             .publisher(for: \.pageZoom, options: .new)
             .sink { [unowned self] _ in objectWillChange.send() }
 
         #if !USE_PRIVATE_WEB_VIEW_ZOOM_API
-        webView.evaluateJavaScript("document.body.style.webkitTextSizeAdjust") { amount, _ in
-            if let amount = amount as? String,
-               amount.hasSuffix("%"),
-               let percent = Double(amount.dropLast()) {
-                self._suppressUpdate = true
-                self.pageZoom = CGFloat(percent / 100)
+            webView.evaluateJavaScript("document.body.style.webkitTextSizeAdjust") { amount, _ in
+                if let amount = amount as? String,
+                    amount.hasSuffix("%"),
+                    let percent = Double(amount.dropLast())
+                {
+                    self._suppressUpdate = true
+                    self.pageZoom = CGFloat(percent / 100)
+                }
             }
-        }
         #endif
     }
 
     #if USE_PRIVATE_WEB_VIEW_ZOOM_API
-    private var observer: AnyCancellable?
-    /// Remove `-DUSE_PRIVATE_WEB_VIEW_ZOOM_API` from `Client/Configuration/Common.xcconfig` to switch to the `-webkit-text-size-adjust`-based zoom implementation
-    var pageZoom: CGFloat {
-        get {
-            webView.neeva_zoomAmount
-        }
-        set {
-            objectWillChange.send()
-            webView.neeva_zoomAmount = newValue
-            let originalOffset = webView.scrollView.contentOffset
-            let newOffset = CGPoint(x: originalOffset.x, y: originalOffset.y * newValue / pageZoom)
-            observer = webView.scrollView.publisher(for: \.contentOffset)
-                .sink { offset in
-                    if offset != originalOffset {
-                        self.webView.scrollView.contentOffset = newOffset
-                        self.observer = nil
+        private var observer: AnyCancellable?
+        /// Remove `-DUSE_PRIVATE_WEB_VIEW_ZOOM_API` from `Client/Configuration/Common.xcconfig` to switch to the `-webkit-text-size-adjust`-based zoom implementation
+        var pageZoom: CGFloat {
+            get {
+                webView.neeva_zoomAmount
+            }
+            set {
+                objectWillChange.send()
+                webView.neeva_zoomAmount = newValue
+                let originalOffset = webView.scrollView.contentOffset
+                let newOffset = CGPoint(
+                    x: originalOffset.x, y: originalOffset.y * newValue / pageZoom)
+                observer = webView.scrollView.publisher(for: \.contentOffset)
+                    .sink { offset in
+                        if offset != originalOffset {
+                            self.webView.scrollView.contentOffset = newOffset
+                            self.observer = nil
+                        }
                     }
-                }
-        }
-    }
-    #else
-    private var _suppressUpdate = false
-    var pageZoom: CGFloat = 1 {
-        didSet {
-            objectWillChange.send()
-            if _suppressUpdate {
-                _suppressUpdate = false
-            } else {
-                webView.evaluateJavaScript("document.body.style.webkitTextSizeAdjust = '\(pageZoom * 100)%'")
             }
         }
-    }
+    #else
+        private var _suppressUpdate = false
+        var pageZoom: CGFloat = 1 {
+            didSet {
+                objectWillChange.send()
+                if _suppressUpdate {
+                    _suppressUpdate = false
+                } else {
+                    webView.evaluateJavaScript(
+                        "document.body.style.webkitTextSizeAdjust = '\(pageZoom * 100)%'")
+                }
+            }
+        }
     #endif
 
     // observed from Safari on iOS 14.6 (18F72)

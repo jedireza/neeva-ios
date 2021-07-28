@@ -5,11 +5,9 @@
 import CoreFoundation
 import Network
 
-/**
- Assertion for checking that the call is being made on the main thread.
-
- - parameter message: Message to display in case of assertion.
- */
+/// Assertion for checking that the call is being made on the main thread.
+///
+/// - parameter message: Message to display in case of assertion.
 public func assertIsMainThread(_ message: String) {
     assert(Thread.isMainThread, message)
 }

@@ -2,15 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import MobileCoreServices
+import UIKit
 
 extension NSItemProvider {
     var isText: Bool { return hasItemConformingToTypeIdentifier(String(kUTTypeText)) }
     var isUrl: Bool { return hasItemConformingToTypeIdentifier(String(kUTTypeURL)) }
 
     func processText(completion: CompletionHandler?) {
-        loadItem(forTypeIdentifier: String(kUTTypeText), options: nil, completionHandler: completion)
+        loadItem(
+            forTypeIdentifier: String(kUTTypeText), options: nil, completionHandler: completion)
     }
 
     func processUrl(completion: CompletionHandler?) {
@@ -37,9 +38,13 @@ public struct ExtensionUtils {
     /// We can always extract a URL and sometimes a title. The favicon is currently just a placeholder, but
     /// future code can possibly interact with a web page to find a proper icon.
     /// If no URL is found, but a text provider *is*, then use the raw text as a fallback.
-    public static func extractSharedItem(fromExtensionContext extensionContext: NSExtensionContext?, completionHandler: @escaping (ExtractedShareItem?, Error?) -> Void) {
+    public static func extractSharedItem(
+        fromExtensionContext extensionContext: NSExtensionContext?,
+        completionHandler: @escaping (ExtractedShareItem?, Error?) -> Void
+    ) {
         guard let extensionContext = extensionContext,
-              let inputItems = extensionContext.inputItems as? [NSExtensionItem] else {
+            let inputItems = extensionContext.inputItems as? [NSExtensionItem]
+        else {
             completionHandler(nil, nil)
             return
         }
@@ -58,12 +63,17 @@ public struct ExtensionUtils {
                         }
 
                         guard let url = obj as? URL else {
-                            completionHandler(nil, NSError(domain: "co.neeva.app.ios.browser", code: 999, userInfo: ["Problem": "Non-URL result."]))
+                            completionHandler(
+                                nil,
+                                NSError(
+                                    domain: "co.neeva.app.ios.browser", code: 999,
+                                    userInfo: ["Problem": "Non-URL result."]))
                             return
                         }
 
                         let title = inputItem.attributedContentText?.string
-                        let extracted = ExtractedShareItem.shareItem(ShareItem(url: url.absoluteString, title: title, favicon: nil))
+                        let extracted = ExtractedShareItem.shareItem(
+                            ShareItem(url: url.absoluteString, title: title, favicon: nil))
                         completionHandler(extracted, nil)
                     }
 
@@ -98,7 +108,8 @@ public struct ExtensionUtils {
                 }
 
                 if let url = textToUrl(text) {
-                    let extracted = ExtractedShareItem.shareItem(ShareItem(url: url.absoluteString, title: nil, favicon: nil))
+                    let extracted = ExtractedShareItem.shareItem(
+                        ShareItem(url: url.absoluteString, title: nil, favicon: nil))
                     completionHandler(extracted, nil)
                     return
                 }

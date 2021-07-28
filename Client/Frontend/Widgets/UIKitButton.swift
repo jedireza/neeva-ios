@@ -4,18 +4,21 @@ import SwiftUI
 
 struct UIKitButton: UIViewRepresentable {
     let buttonType: UIButton.ButtonType
-    let customize: (UIButton) -> ()
-    let action: () -> ()
+    let customize: (UIButton) -> Void
+    let action: () -> Void
 
-    init(type: UIButton.ButtonType = .system, action: @escaping () -> (), customize: @escaping (UIButton) -> ()) {
+    init(
+        type: UIButton.ButtonType = .system, action: @escaping () -> Void,
+        customize: @escaping (UIButton) -> Void
+    ) {
         self.buttonType = type
         self.customize = customize
         self.action = action
     }
 
     class Coordinator {
-        var onTap: () -> ()
-        init(onTap: @escaping () -> ()) {
+        var onTap: () -> Void
+        init(onTap: @escaping () -> Void) {
             self.onTap = onTap
         }
 
@@ -30,7 +33,9 @@ struct UIKitButton: UIViewRepresentable {
 
     func makeUIView(context: Context) -> UIButton {
         let button = UIButton(type: buttonType)
-        button.addTarget(context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered)
+        button.addTarget(
+            context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered
+        )
         return button
     }
 
@@ -41,17 +46,17 @@ struct UIKitButton: UIViewRepresentable {
 }
 
 struct ToggleButtonView: UIViewRepresentable {
-    let customize: (ToggleButton) -> ()
-    let action: () -> ()
+    let customize: (ToggleButton) -> Void
+    let action: () -> Void
 
-    init(action: @escaping () -> (), customize: @escaping (ToggleButton) -> ()) {
+    init(action: @escaping () -> Void, customize: @escaping (ToggleButton) -> Void) {
         self.customize = customize
         self.action = action
     }
 
     class Coordinator {
-        var onTap: () -> ()
-        init(onTap: @escaping () -> ()) {
+        var onTap: () -> Void
+        init(onTap: @escaping () -> Void) {
             self.onTap = onTap
         }
 
@@ -66,7 +71,9 @@ struct ToggleButtonView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> ToggleButton {
         let button = ToggleButton()
-        button.addTarget(context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered)
+        button.addTarget(
+            context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered
+        )
         return button
     }
 

@@ -11,7 +11,9 @@ class FileAccessorTests: XCTestCase {
     fileprivate var files: FileAccessor!
 
     override func setUp() {
-        let docPath: NSString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
+        let docPath: NSString =
+            NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+            as NSString
         files = FileAccessor(rootPath: docPath.appendingPathComponent("filetest"))
 
         testDir = try! files.getAndEnsureDirectory()
@@ -52,7 +54,7 @@ class FileAccessorTests: XCTestCase {
 
         // Test directory creation and path.
         do {
-        XCTAssertFalse(files.exists("foo"), "Directory doesn't exist")
+            XCTAssertFalse(files.exists("foo"), "Directory doesn't exist")
             let path = try files.getAndEnsureDirectory("foo")
             var isDirectory = ObjCBool(false)
             FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)

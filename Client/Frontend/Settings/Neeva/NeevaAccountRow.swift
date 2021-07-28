@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct NeevaAccountRow: View {
     @ObservedObject var userInfo: NeevaUserInfo
@@ -10,7 +10,8 @@ struct NeevaAccountRow: View {
         HStack(spacing: 13) {
             Group {
                 if let data = userInfo.pictureData,
-                   let image = UIImage(data: data) {
+                    let image = UIImage(data: data)
+                {
                     Image(uiImage: image)
                         .resizable()
                 } else if let pictureUrl = userInfo.pictureUrl, !pictureUrl.isEmpty {
@@ -21,7 +22,7 @@ struct NeevaAccountRow: View {
                         .overlay(
                             Text(name)
                                 .accessibilityHidden(true)
-                                .font(.system(size: 35/2))
+                                .font(.system(size: 35 / 2))
                                 .foregroundColor(.white)
                         )
                 }
@@ -47,9 +48,20 @@ struct NeevaAccountRow: View {
 struct NeevaAccountRow_Previews: PreviewProvider {
     static var previews: some View {
         SettingPreviewWrapper {
-            NeevaAccountRow(userInfo: NeevaUserInfo(previewDisplayName: "First Last", email: "name@example.com", pictureUrl: "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg", authProvider: .apple))
-            NeevaAccountRow(userInfo: NeevaUserInfo(previewDisplayName: "Jane Doe", email: "name@example.com", pictureUrl: "invalid-url", authProvider: .apple))
-            NeevaAccountRow(userInfo: NeevaUserInfo(previewDisplayName: "No Icon", email: "name@example.com", pictureUrl: nil, authProvider: .apple))
+            NeevaAccountRow(
+                userInfo: NeevaUserInfo(
+                    previewDisplayName: "First Last", email: "name@example.com",
+                    pictureUrl:
+                        "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg",
+                    authProvider: .apple))
+            NeevaAccountRow(
+                userInfo: NeevaUserInfo(
+                    previewDisplayName: "Jane Doe", email: "name@example.com",
+                    pictureUrl: "invalid-url", authProvider: .apple))
+            NeevaAccountRow(
+                userInfo: NeevaUserInfo(
+                    previewDisplayName: "No Icon", email: "name@example.com", pictureUrl: nil,
+                    authProvider: .apple))
         }
     }
 }

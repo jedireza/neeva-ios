@@ -67,7 +67,9 @@ class ReadabilityOperation: Operation {
                 do {
                     try readerModeCache.put(url, readabilityResult)
                 } catch let error as NSError {
-                    print("Failed to store readability results in the cache: \(error.localizedDescription)")
+                    print(
+                        "Failed to store readability results in the cache: \(error.localizedDescription)"
+                    )
                     // TODO Fail
                 }
             case .error(_):
@@ -84,7 +86,10 @@ extension ReadabilityOperation: WKNavigationDelegate {
         semaphore.signal()
     }
 
-    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    func webView(
+        _ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
+        withError error: Error
+    ) {
         result = ReadabilityOperationResult.error(error as NSError)
         semaphore.signal()
     }
@@ -95,13 +100,18 @@ extension ReadabilityOperation: WKNavigationDelegate {
 }
 
 extension ReadabilityOperation: ReaderModeDelegate {
-    func readerMode(_ readerMode: ReaderMode, didChangeReaderModeState state: ReaderModeState, forTab tab: Tab) {
+    func readerMode(
+        _ readerMode: ReaderMode, didChangeReaderModeState state: ReaderModeState, forTab tab: Tab
+    ) {
     }
 
     func readerMode(_ readerMode: ReaderMode, didDisplayReaderizedContentForTab tab: Tab) {
     }
 
-    func readerMode(_ readerMode: ReaderMode, didParseReadabilityResult readabilityResult: ReadabilityResult, forTab tab: Tab) {
+    func readerMode(
+        _ readerMode: ReaderMode, didParseReadabilityResult readabilityResult: ReadabilityResult,
+        forTab tab: Tab
+    ) {
         guard tab == self.tab else {
             return
         }

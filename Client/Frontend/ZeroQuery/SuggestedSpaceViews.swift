@@ -1,7 +1,7 @@
 // Copyright © Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct SuggestedSpacesView: View {
     @ObservedObject var spaceStore = SpaceStore.shared
@@ -32,13 +32,14 @@ struct SuggestedSpacesView: View {
                         .buttonStyle(TableCellButtonStyle())
                         .contextMenu { ZeroQueryCommonContextMenuActions(siteURL: space.url) }
                     }
-                }.opacity({
-                    if case .refreshing = spaceStore.state {
-                        return 0.6
-                    } else {
-                        return 1
-                    }
-                }())
+                }.opacity(
+                    {
+                        if case .refreshing = spaceStore.state {
+                            return 0.6
+                        } else {
+                            return 1
+                        }
+                    }())
             }
         }
         .padding(.vertical, ZeroQueryUX.Padding / 2)
@@ -68,9 +69,14 @@ struct SuggestedSpaceViews_Previews: PreviewProvider {
         SuggestedSpaceView(space: .stackOverflow)
             .padding(.vertical, ZeroQueryUX.Padding / 2)
             .previewLayout(.sizeThatFits)
-        SuggestedSpacesView(spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace]), userInfo: .previewLoggedOut)
-            .previewLayout(.sizeThatFits)
-        SuggestedSpacesView(spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace]))
-            .previewLayout(.sizeThatFits)
+        SuggestedSpacesView(
+            spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace]),
+            userInfo: .previewLoggedOut
+        )
+        .previewLayout(.sizeThatFits)
+        SuggestedSpacesView(
+            spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace])
+        )
+        .previewLayout(.sizeThatFits)
     }
 }

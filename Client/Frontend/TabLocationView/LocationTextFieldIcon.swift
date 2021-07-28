@@ -1,10 +1,10 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
 import Storage
+import SwiftUI
 
-fileprivate enum LocationTextFieldIconUX {
+private enum LocationTextFieldIconUX {
     static let size: CGFloat = 16
     static let faviconSize: CGFloat = 14
 }
@@ -21,14 +21,24 @@ struct LocationTextFieldIcon: View {
             let completion = historyModel.completion.map { searchQuery.value + $0 }
             if let type = neevaModel.activeLensBang?.type {
                 Image(systemSymbol: type.defaultSymbol)
-            } else if
-                let completion = completion,
-                let url = completion.contains("://") ? URL(string: completion) : URL(string: "https://\(completion)") {
-                FaviconView(url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false, defaultBackground: .clear)
-                    .cornerRadius(4)
-            } else if searchQuery.value.looksLikeAURL, let url = searchQuery.value.contains("://") ? URL(string: searchQuery.value) : URL(string: "https://\(searchQuery.value)")  {
-                FaviconView(url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false, defaultBackground: .clear)
-                    .cornerRadius(4)
+            } else if let completion = completion,
+                let url = completion.contains("://")
+                    ? URL(string: completion) : URL(string: "https://\(completion)")
+            {
+                FaviconView(
+                    url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false,
+                    defaultBackground: .clear
+                )
+                .cornerRadius(4)
+            } else if searchQuery.value.looksLikeAURL,
+                let url = searchQuery.value.contains("://")
+                    ? URL(string: searchQuery.value) : URL(string: "https://\(searchQuery.value)")
+            {
+                FaviconView(
+                    url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false,
+                    defaultBackground: .clear
+                )
+                .cornerRadius(4)
             } else {
                 Image("neevaMenuIcon")
                     .resizable()

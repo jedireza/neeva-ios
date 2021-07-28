@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Apollo
+import SwiftUI
 
 /// This singleton class manages access to the Neeva GraphQL API
 public class GraphQLAPI {
@@ -38,7 +38,9 @@ public class GraphQLAPI {
     }
 
     /// Make the raw result of a GraphQL API call more useful
-    static func unwrap<Data>(result: Result<GraphQLResult<Data>, Swift.Error>) -> Result<Data, Swift.Error> {
+    static func unwrap<Data>(result: Result<GraphQLResult<Data>, Swift.Error>) -> Result<
+        Data, Swift.Error
+    > {
         switch result {
         case .success(let result):
             if let errors = result.errors, !errors.isEmpty {
@@ -46,7 +48,7 @@ public class GraphQLAPI {
             } else if let data = result.data {
                 return .success(data)
             } else {
-                return .failure(GraphQLError([ "message": "No data provided" ]))
+                return .failure(GraphQLError(["message": "No data provided"]))
             }
         case .failure(let error):
             return .failure(error)
@@ -59,20 +61,23 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
     override func constructRequest<Operation>(
         for operation: Operation, cachePolicy: CachePolicy,
         contextIdentifier: UUID? = nil
-    ) -> HTTPRequest<Operation> where Operation : GraphQLOperation {
-        let req = super.constructRequest(for: operation, cachePolicy: cachePolicy, contextIdentifier: contextIdentifier)
+    ) -> HTTPRequest<Operation> where Operation: GraphQLOperation {
+        let req = super.constructRequest(
+            for: operation, cachePolicy: cachePolicy, contextIdentifier: contextIdentifier)
         req.graphQLEndpoint = NeevaConstants.appURL / "graphql" / operation.operationName
 
         req.addHeader(name: "User-Agent", value: "NeevaBrowserIOS")
-        req.addHeader(name: NeevaConstants.Header.deviceType.name, value: NeevaConstants.Header.deviceType.value)
+        req.addHeader(
+            name: NeevaConstants.Header.deviceType.name,
+            value: NeevaConstants.Header.deviceType.value)
         req.addHeader(name: "X-Neeva-Client-ID", value: "co.neeva.app.ios.browser")
         req.addHeader(name: "X-Neeva-Client-Version", value: AppInfo.appVersionReportedToNeeva)
 
         if let cookie = NeevaUserInfo.shared.getLoginCookie() {
             assignCookie(cookie)
-        } else if
-            ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1",
-            let devTokenPath = Bundle.main.path(forResource: "dev-token", ofType: "txt") {
+        } else if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1",
+            let devTokenPath = Bundle.main.path(forResource: "dev-token", ofType: "txt")
+        {
             // if in an Xcode preview, use the cookie from `dev-token.txt`. See `README.md` for more details.
             // only works on the second try for some reason
             _ = try? String(contentsOf: URL(fileURLWithPath: devTokenPath))
@@ -97,7 +102,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
                 HTTPCookieStorage.shared.deleteCookie(loginCookie)
             }
         }
-   }
+    }
 }
 
 extension GraphQLQuery {
@@ -105,7 +110,7 @@ extension GraphQLQuery {
     @discardableResult
     public func fetch(
         on queue: DispatchQueue = DispatchQueue.main,
-        resultHandler: ((Result<Data, Swift.Error>) -> ())? = nil
+        resultHandler: ((Result<Data, Swift.Error>) -> Void)? = nil
     ) -> Cancellable {
         GraphQLAPI.shared.apollo.fetch(
             query: self,
@@ -122,7 +127,7 @@ extension GraphQLMutation {
     @discardableResult
     public func perform(
         on queue: DispatchQueue = .main,
-        resultHandler: ((Result<Data, Swift.Error>) -> ())? = nil
+        resultHandler: ((Result<Data, Swift.Error>) -> Void)? = nil
     ) -> Cancellable {
         GraphQLAPI.shared.apollo.perform(
             mutation: self,

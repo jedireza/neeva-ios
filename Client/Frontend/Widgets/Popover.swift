@@ -20,12 +20,14 @@ extension View {
     ) -> some View {
         background(
             // negative padding to counteract system padding
-            Popover(isPresented: isPresented, arrowDirections: arrowDirections, content: content().padding(.vertical, -6.5), backgroundColor: backgroundColor)
+            Popover(
+                isPresented: isPresented, arrowDirections: arrowDirections,
+                content: content().padding(.vertical, -6.5), backgroundColor: backgroundColor)
         )
     }
 }
 
-fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
+private struct Popover<Content: View>: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     let arrowDirections: UIPopoverArrowDirection?
     let content: Content
@@ -73,7 +75,9 @@ fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
 
         // Returning None here makes sure that the Popover is actually presented as a Popover and
         // not as a full-screen modal, which is the default on compact device classes.
-        func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        func adaptivePresentationStyle(
+            for controller: UIPresentationController, traitCollection: UITraitCollection
+        ) -> UIModalPresentationStyle {
             return .none
         }
     }
@@ -100,7 +104,8 @@ fileprivate struct Popover<Content: View>: UIViewControllerRepresentable {
         }
 
         if let presentee = vc.presentee {
-            presentee.preferredContentSize = presentee.sizeThatFits(in: presentee.view.intrinsicContentSize)
+            presentee.preferredContentSize = presentee.sizeThatFits(
+                in: presentee.view.intrinsicContentSize)
             presentee.view.backgroundColor = backgroundColor
         }
     }

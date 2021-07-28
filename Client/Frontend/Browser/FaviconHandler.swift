@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+import SDWebImage
 import Shared
 import Storage
-import SDWebImage
 
 class FaviconHandler {
     private let backgroundQueue = OperationQueue()
@@ -14,7 +14,8 @@ class FaviconHandler {
         register(self, forTabEvents: .didLoadPageMetadata, .pageMetadataNotAvailable)
     }
 
-    func loadFaviconURL(_ faviconURL: String, forTab tab: Tab) -> Deferred<Maybe<(Favicon, Data?)>> {
+    func loadFaviconURL(_ faviconURL: String, forTab tab: Tab) -> Deferred<Maybe<(Favicon, Data?)>>
+    {
         guard let iconURL = URL(string: faviconURL), let currentURL = tab.url else {
             return deferMaybe(FaviconError())
         }
@@ -22,12 +23,18 @@ class FaviconHandler {
         let deferred = Deferred<Maybe<(Favicon, Data?)>>()
         let manager = SDWebImageManager.shared
         let site = Site(url: currentURL, title: "")
-        let options: SDWebImageOptions = tab.isPrivate ? [SDWebImageOptions.lowPriority, SDWebImageOptions.fromCacheOnly] : SDWebImageOptions.lowPriority
+        let options: SDWebImageOptions =
+            tab.isPrivate
+            ? [SDWebImageOptions.lowPriority, SDWebImageOptions.fromCacheOnly]
+            : SDWebImageOptions.lowPriority
 
         var fetch: SDWebImageOperation?
 
-        let onProgress: SDWebImageDownloaderProgressBlock = { (receivedSize, expectedSize, _) -> Void in
-            if receivedSize > FaviconFetcher.MaximumFaviconSize || expectedSize > FaviconFetcher.MaximumFaviconSize {
+        let onProgress: SDWebImageDownloaderProgressBlock = {
+            (receivedSize, expectedSize, _) -> Void in
+            if receivedSize > FaviconFetcher.MaximumFaviconSize
+                || expectedSize > FaviconFetcher.MaximumFaviconSize
+            {
                 fetch?.cancel()
             }
         }
@@ -45,7 +52,8 @@ class FaviconHandler {
             }
         }
 
-        let onCompletedSiteFavicon: SDInternalCompletionBlock = { (img, data, _, _, _, url) -> Void in
+        let onCompletedSiteFavicon: SDInternalCompletionBlock = {
+            (img, data, _, _, _, url) -> Void in
             guard let url = url else {
                 deferred.fill(Maybe(failure: FaviconError()))
                 return
@@ -67,12 +75,15 @@ class FaviconHandler {
             onSuccess(favicon, data)
         }
 
-        let onCompletedPageFavicon: SDInternalCompletionBlock = { (img, data, _, _, _, url) -> Void in
+        let onCompletedPageFavicon: SDInternalCompletionBlock = {
+            (img, data, _, _, _, url) -> Void in
             guard let img = img, let url = url else {
                 // If we failed to download a page-level icon, try getting the domain-level icon
                 // instead before ultimately failing.
                 let siteIconURL = currentURL.domainURL.appendingPathComponent("favicon.ico")
-                fetch = manager.loadImage(with: siteIconURL, options: options, progress: onProgress, completed: onCompletedSiteFavicon)
+                fetch = manager.loadImage(
+                    with: siteIconURL, options: options, progress: onProgress,
+                    completed: onCompletedSiteFavicon)
 
                 return
             }
@@ -84,7 +95,9 @@ class FaviconHandler {
             onSuccess(favicon, data)
         }
 
-        fetch = manager.loadImage(with: iconURL, options: options, progress: onProgress, completed: onCompletedPageFavicon)
+        fetch = manager.loadImage(
+            with: iconURL, options: options, progress: onProgress, completed: onCompletedPageFavicon
+        )
         return deferred
     }
 }

@@ -1,13 +1,13 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
-import SwiftUI
 import Shared
+import SwiftUI
+import UIKit
 
 struct OpenInAppView: View {
     let url: URL
-    let onOpen: () -> ()
-    let onDismiss: () -> ()
+    let onOpen: () -> Void
+    let onDismiss: () -> Void
 
     public var body: some View {
         GroupedStack {

@@ -2,25 +2,29 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Foundation
 import Shared
-import UIKit
 import Storage
+import UIKit
 import WidgetKit
-import Defaults
 
 struct TopSitesHandler {
     private static func siteKey(_ site: Site) -> String? {
         site.url.normalizedHost
     }
 
-    static func getTopSites(profile: Profile) -> Deferred<[Site]> {      
+    static func getTopSites(profile: Profile) -> Deferred<[Site]> {
         let maxItems = UIDevice.current.userInterfaceIdiom == .pad ? 32 : 16
-        return profile.history.getTopSitesWithLimit(maxItems).both(profile.history.getPinnedTopSites()).bindQueue(.main) { (topsites, pinnedSites) in
+        return profile.history.getTopSitesWithLimit(maxItems).both(
+            profile.history.getPinnedTopSites()
+        ).bindQueue(.main) { (topsites, pinnedSites) in
 
             let deferred = Deferred<[Site]>()
 
-            guard let mySites = topsites.successValue?.asArray().compactMap({ $0 }), let pinned = pinnedSites.successValue?.asArray().compactMap({ $0 }) else {
+            guard let mySites = topsites.successValue?.asArray().compactMap({ $0 }),
+                let pinned = pinnedSites.successValue?.asArray().compactMap({ $0 })
+            else {
                 return deferred
             }
 
@@ -56,13 +60,13 @@ struct TopSitesHandler {
                 let domain = site.url.shortDisplayString
                 return defaultSites.first { $0.title.lowercased() == domain } ?? site
             }
-            
+
             deferred.fill(newSites)
-            
+
             return deferred
         }
     }
-    
+
     @available(iOS 14.0, *)
     static func writeWidgetKitTopSites(profile: Profile) {
         TopSitesHandler.getTopSites(profile: profile).uponQueue(.main) { result in
@@ -71,9 +75,12 @@ struct TopSitesHandler {
                 // Favicon icon url
                 let iconUrl = site.icon?.url.absoluteString ?? ""
                 let imageKey = site.tileURL.baseDomain ?? ""
-                widgetkitTopSites.append(WidgetKitTopSiteModel(title: site.title, faviconUrl: iconUrl, url: site.url, imageKey: imageKey))
+                widgetkitTopSites.append(
+                    WidgetKitTopSiteModel(
+                        title: site.title, faviconUrl: iconUrl, url: site.url, imageKey: imageKey))
                 // fetch favicons and cache them on disk
-                FaviconFetcher.downloadFaviconAndCache(imageURL: !iconUrl.isEmpty ? URL(string: iconUrl) : nil, imageKey: imageKey )
+                FaviconFetcher.downloadFaviconAndCache(
+                    imageURL: !iconUrl.isEmpty ? URL(string: iconUrl) : nil, imageKey: imageKey)
             }
             // save top sites for widgetkit use
             WidgetKitTopSiteModel.save(widgetKitTopSites: widgetkitTopSites)
@@ -81,7 +88,7 @@ struct TopSitesHandler {
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
-    
+
     static func defaultTopSites() -> [Site] {
         let suggested = SuggestedSites.asArray()
         let deleted = Defaults[.deletedSuggestedSites]

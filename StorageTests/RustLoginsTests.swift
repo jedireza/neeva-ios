@@ -2,23 +2,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import XCTest
 import Shared
+import XCTest
+
 @testable import Client
 @testable import Storage
 
 class RustLoginsTests: XCTestCase {
     var files: FileAccessor!
     var logins: RustLogins!
-    
+
     override func setUp() {
         files = MockFiles()
 
-        let databasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("testlogins.db").path
+        let databasePath = URL(
+            fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true
+        ).appendingPathComponent("testlogins.db").path
         try? files.remove("testlogins.db")
 
         let encryptionKey = Bytes.generateRandomBytes(256).base64EncodedString
-        let salt = RustLogins.setupPlaintextHeaderAndGetSalt(databasePath: databasePath, encryptionKey: encryptionKey)
+        let salt = RustLogins.setupPlaintextHeaderAndGetSalt(
+            databasePath: databasePath, encryptionKey: encryptionKey)
         logins = RustLogins(databasePath: databasePath, encryptionKey: encryptionKey, salt: salt)
         _ = logins.reopenIfClosed()
     }
@@ -28,7 +32,7 @@ class RustLoginsTests: XCTestCase {
             "hostname": "https://example.com",
             "formSubmitURL": "https://example.com",
             "username": "username",
-            "password": "password"
+            "password": "password",
         ])
         login.httpRealm = nil
         return logins.add(login: login)

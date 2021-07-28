@@ -1,13 +1,16 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
-class DefaultBrowserOnboardingViewController: UIHostingController<DefaultBrowserOnboardingViewController.Content> {
+class DefaultBrowserOnboardingViewController: UIHostingController<
+    DefaultBrowserOnboardingViewController.Content
+>
+{
     struct Content: View {
-        let openSettings: () -> ()
-        let onCancel: () -> ()
+        let openSettings: () -> Void
+        let onCancel: () -> Void
 
         var body: some View {
             VStack {
@@ -23,31 +26,34 @@ class DefaultBrowserOnboardingViewController: UIHostingController<DefaultBrowser
         }
     }
 
-    init(didOpenSettings: @escaping () -> ()) {
+    init(didOpenSettings: @escaping () -> Void) {
         super.init(rootView: Content(openSettings: {}, onCancel: {}))
         self.rootView = Content(
             openSettings: { [weak self] in
                 self?.dismiss(animated: true) {
-                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
+                    UIApplication.shared.open(
+                        URL(string: UIApplication.openSettingsURLString)!, options: [:])
                     didOpenSettings()
                 }
                 Defaults[.didDismissDefaultBrowserCard] = true  // Don't show default browser card if this button is tapped
-                TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .goToSettingsDefaultBrowserOnboarding)
+                TelemetryWrapper.recordEvent(
+                    category: .action, method: .tap, object: .goToSettingsDefaultBrowserOnboarding)
             },
             onCancel: { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
-                TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .dismissDefaultBrowserOnboarding)
+                TelemetryWrapper.recordEvent(
+                    category: .action, method: .tap, object: .dismissDefaultBrowserOnboarding)
             }
         )
     }
-    
+
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 struct DefaultBrowserOnboardingView: View {
-    let openSettings: () -> ()
+    let openSettings: () -> Void
 
     var body: some View {
         VStack {
@@ -58,12 +64,14 @@ struct DefaultBrowserOnboardingView: View {
                 .multilineTextAlignment(.center)
                 .padding(.bottom)
 
-            Text([
-                String.DefaultBrowserCardDescription,
-                String.DefaultBrowserOnboardingDescriptionStep1,
-                String.DefaultBrowserOnboardingDescriptionStep2,
-                String.DefaultBrowserOnboardingDescriptionStep3
-            ].joined(separator: "\n\n"))
+            Text(
+                [
+                    String.DefaultBrowserCardDescription,
+                    String.DefaultBrowserOnboardingDescriptionStep1,
+                    String.DefaultBrowserOnboardingDescriptionStep2,
+                    String.DefaultBrowserOnboardingDescriptionStep3,
+                ].joined(separator: "\n\n")
+            )
             .withFont(.bodyXLarge)
 
             Spacer().repeated(3)
@@ -73,7 +81,7 @@ struct DefaultBrowserOnboardingView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 350, height: 200)
-                    .clipped() // otherwise the image background blocks the close button
+                    .clipped()  // otherwise the image background blocks the close button
                     .overlay(
                         Text(String.DefaultBrowserOnboardingScreenshot)
                             .font(.system(size: 18))

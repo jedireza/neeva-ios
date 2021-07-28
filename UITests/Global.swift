@@ -4,10 +4,11 @@
 
 import Foundation
 import GCDWebServers
-import Storage
-import WebKit
-import SwiftKeychainWrapper
 import Shared
+import Storage
+import SwiftKeychainWrapper
+import WebKit
+
 @testable import Client
 
 let LabelAddressAndSearch = "Address and Search"
@@ -35,7 +36,10 @@ extension KIFUITestActor {
     func waitForViewWithAccessibilityHint(_ hint: String) -> UIView? {
         var view: UIView? = nil
         autoreleasepool {
-            wait(for: nil, view: &view, withElementMatching: NSPredicate(format: "accessibilityHint = %@", hint), tappable: false)
+            wait(
+                for: nil, view: &view,
+                withElementMatching: NSPredicate(format: "accessibilityHint = %@", hint),
+                tappable: false)
         }
         return view
     }
@@ -79,7 +83,9 @@ extension KIFUITestActor {
 
         run { _ in
             element = UIApplication.shared.accessibilityElement { element in
-                if let elementLabel = element?.value(forKey: "accessibilityLabel") as? NSAttributedString {
+                if let elementLabel = element?.value(forKey: "accessibilityLabel")
+                    as? NSAttributedString
+                {
                     return elementLabel.isEqual(to: label)
                 }
                 return false
@@ -113,14 +119,17 @@ extension KIFUITestActor {
      * As a workaround, inject a KIFHelper class that iterates the document and finds
      * elements with the given textContent or title.
      */
-    func waitForWebViewElementWithAccessibilityLabel(_ text: String, timeout: TimeInterval = KIFTestActor.defaultTimeout()) {
-        run({ error in
-            if self.hasWebViewElementWithAccessibilityLabel(text) {
-                return KIFTestStepResult.success
-            }
+    func waitForWebViewElementWithAccessibilityLabel(
+        _ text: String, timeout: TimeInterval = KIFTestActor.defaultTimeout()
+    ) {
+        run(
+            { error in
+                if self.hasWebViewElementWithAccessibilityLabel(text) {
+                    return KIFTestStepResult.success
+                }
 
-            return KIFTestStepResult.wait
-        }, timeout: timeout)
+                return KIFTestStepResult.wait
+            }, timeout: timeout)
     }
 
     /**
@@ -131,13 +140,20 @@ extension KIFUITestActor {
         var stepResult = KIFTestStepResult.wait
 
         let escaped = text.replacingOccurrences(of: "\"", with: "\\\"")
-        webView.evaluateJavascriptInDefaultContentWorld("KIFHelper.enterTextIntoInputWithName(\"\(escaped)\", \"\(inputName)\");") { success, _ in
-            stepResult = ((success as? Bool)!) ? KIFTestStepResult.success : KIFTestStepResult.failure
+        webView.evaluateJavascriptInDefaultContentWorld(
+            "KIFHelper.enterTextIntoInputWithName(\"\(escaped)\", \"\(inputName)\");"
+        ) { success, _ in
+            stepResult =
+                ((success as? Bool)!) ? KIFTestStepResult.success : KIFTestStepResult.failure
         }
 
         run { error in
             if stepResult == KIFTestStepResult.failure {
-                error?.pointee = NSError(domain: "KIFHelper", code: 0, userInfo: [NSLocalizedDescriptionKey: "Input element not found in webview: \(escaped)"])
+                error?.pointee = NSError(
+                    domain: "KIFHelper", code: 0,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "Input element not found in webview: \(escaped)"
+                    ])
             }
             return stepResult
         }
@@ -151,13 +167,21 @@ extension KIFUITestActor {
         var stepResult = KIFTestStepResult.wait
 
         let escaped = text.replacingOccurrences(of: "\"", with: "\\\"")
-        webView.evaluateJavascriptInDefaultContentWorld("KIFHelper.tapElementWithAccessibilityLabel(\"\(escaped)\")") { success, _ in
-            stepResult = ((success as? Bool)!) ? KIFTestStepResult.success : KIFTestStepResult.failure
+        webView.evaluateJavascriptInDefaultContentWorld(
+            "KIFHelper.tapElementWithAccessibilityLabel(\"\(escaped)\")"
+        ) { success, _ in
+            stepResult =
+                ((success as? Bool)!) ? KIFTestStepResult.success : KIFTestStepResult.failure
         }
 
         run { error in
             if stepResult == KIFTestStepResult.failure {
-                error?.pointee = NSError(domain: "KIFHelper", code: 0, userInfo: [NSLocalizedDescriptionKey: "Accessibility label not found in webview: \(escaped)"])
+                error?.pointee = NSError(
+                    domain: "KIFHelper", code: 0,
+                    userInfo: [
+                        NSLocalizedDescriptionKey:
+                            "Accessibility label not found in webview: \(escaped)"
+                    ])
             }
             return stepResult
         }
@@ -172,7 +196,9 @@ extension KIFUITestActor {
         var found = false
 
         let escaped = text.replacingOccurrences(of: "\"", with: "\\\"")
-        webView.evaluateJavascriptInDefaultContentWorld("KIFHelper.hasElementWithAccessibilityLabel(\"\(escaped)\")") { success, _ in
+        webView.evaluateJavascriptInDefaultContentWorld(
+            "KIFHelper.hasElementWithAccessibilityLabel(\"\(escaped)\")"
+        ) { success, _ in
             found = success as? Bool ?? false
             stepResult = KIFTestStepResult.success
         }
@@ -213,7 +239,7 @@ extension KIFUITestActor {
 
 class BrowserUtils {
     // Needs to be in sync with Client Clearables.
-     enum Clearable: String {
+    enum Clearable: String {
         case history = "Browsing History"
         case cache = "Cache"
         case cookies = "Cookies"
@@ -229,7 +255,10 @@ class BrowserUtils {
             }
         }
     }
-    internal static let AllClearables = Set([Clearable.history, Clearable.cache, Clearable.cookies, Clearable.trackingProtection, Clearable.downloads])
+    internal static let AllClearables = Set([
+        Clearable.history, Clearable.cache, Clearable.cookies, Clearable.trackingProtection,
+        Clearable.downloads,
+    ])
 
     class func resetToAboutHomeKIF(_ tester: KIFUITestActor) {
         BrowserUtils.closeAllTabs(tester)
@@ -237,7 +266,7 @@ class BrowserUtils {
 
     class func closeAllTabs(_ tester: KIFUITestActor) {
         tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
-        
+
         if tester.viewExistsWithLabel("Close All Tabs") {
             tester.tapView(withAccessibilityLabel: "Close All Tabs")
             tester.tapView(withAccessibilityLabel: "Confirm Close All Tabs")
@@ -249,23 +278,23 @@ class BrowserUtils {
     class func dismissFirstRunUI(_ tester: KIFUITestActor) {
         tester.waitForAnimationsToFinish(withTimeout: 3)
         tester.waitForAnimationsToFinish(withTimeout: 3)
-        if (tester.viewExistsWithLabel("Skip to browser without Neeva search")) {
+        if tester.viewExistsWithLabel("Skip to browser without Neeva search") {
             tester.tapView(withAccessibilityLabel: "Skip to browser without Neeva search")
             tester.waitForAnimationsToFinish(withTimeout: 3)
             //tester.tapView(withAccessibilityIdentifier: "startBrowsingButtonSyncView")
         }
     }
-    
+
     class func enterUrlAddressBar(_ tester: KIFUITestActor, typeUrl: String) {
         if !tester.viewExistsWithLabel("address") && tester.viewExistsWithLabel("Address Bar") {
             tester.tapView(withAccessibilityLabel: "Address Bar")
         }
-        
+
         tester.waitForView(withAccessibilityIdentifier: "address")
         tester.enterText(typeUrl + "\n", intoViewWithAccessibilityIdentifier: "address")
         tester.waitForAbsenceOfView(withAccessibilityIdentifier: "address")
     }
-    
+
     class func iPad() -> Bool {
         return UIDevice.current.userInterfaceIdiom == .pad
     }
@@ -275,13 +304,18 @@ class BrowserUtils {
         let info: [AnyHashable: Any] = [
             "url": url,
             "title": title,
-            "visitType": VisitType.link.rawValue]
+            "visitType": VisitType.link.rawValue,
+        ]
         NotificationCenter.default.post(name: .OnLocationChange, object: self, userInfo: info)
     }
 
     fileprivate class func clearHistoryItemAtIndex(_ index: IndexPath, tester: KIFUITestActor) {
-        if let row = tester.waitForCell(at: index, inTableViewWithAccessibilityIdentifier: "History List") {
-            tester.swipeView(withAccessibilityLabel: row.accessibilityLabel, value: row.accessibilityValue, in: KIFSwipeDirection.left)
+        if let row = tester.waitForCell(
+            at: index, inTableViewWithAccessibilityIdentifier: "History List")
+        {
+            tester.swipeView(
+                withAccessibilityLabel: row.accessibilityLabel, value: row.accessibilityValue,
+                in: KIFSwipeDirection.left)
             tester.tapView(withAccessibilityLabel: "Remove")
         }
     }
@@ -303,11 +337,14 @@ class BrowserUtils {
         tester.tapView(withAccessibilityLabel: "Clear Data")
     }
 
-    class func clearPrivateData(_ clearables: Set<Clearable>? = AllClearables, _ tester: KIFUITestActor) {
+    class func clearPrivateData(
+        _ clearables: Set<Clearable>? = AllClearables, _ tester: KIFUITestActor
+    ) {
         // Disable all items that we don't want to clear.
         tester.waitForAnimationsToFinish(withTimeout: 3)
         for clearable in AllClearables {
-            tester.setOn(clearables!.contains(clearable), forSwitchWithAccessibilityLabel: clearable.label())
+            tester.setOn(
+                clearables!.contains(clearable), forSwitchWithAccessibilityLabel: clearable.label())
         }
         tester.tapView(withAccessibilityLabel: "Clear Selected Data on This Device")
     }
@@ -322,7 +359,7 @@ class BrowserUtils {
         tester.waitForAnimationsToFinish()
         tester.tapView(withAccessibilityLabel: "Clear Browsing Data")
         tester.tapView(withAccessibilityLabel: "Clear Selected Data on This Device")
-        
+
         acceptClearPrivateData(tester)
         closeClearPrivateDataDialog(tester)
     }
@@ -331,10 +368,11 @@ class BrowserUtils {
         resetToAboutHomeKIF(tester)
         tester.tapView(withAccessibilityLabel: "History")
 
-        let historyTable = tester.waitForView(withAccessibilityIdentifier: "History List") as! UITableView
+        let historyTable =
+            tester.waitForView(withAccessibilityIdentifier: "History List") as! UITableView
         var index = 0
-        for _ in 0 ..< historyTable.numberOfSections {
-            for _ in 0 ..< historyTable.numberOfRows(inSection: 0) {
+        for _ in 0..<historyTable.numberOfSections {
+            for _ in 0..<historyTable.numberOfRows(inSection: 0) {
                 clearHistoryItemAtIndex(IndexPath(row: 0, section: 0), tester: tester)
                 if numberOfTests > -1 {
                     index += 1
@@ -347,19 +385,25 @@ class BrowserUtils {
         tester.tapView(withAccessibilityLabel: "Top sites")
     }
 
-    class func ensureAutocompletionResult(_ tester: KIFUITestActor, textField: UITextField, prefix: String, completion: String) {
+    class func ensureAutocompletionResult(
+        _ tester: KIFUITestActor, textField: UITextField, prefix: String, completion: String
+    ) {
         // searches are async (and debounced), so we have to wait for the results to appear.
         tester.waitForViewWithAccessibilityValue(prefix + completion)
 
-        let autocompleteFieldlabel = textField.subviews.first { $0.accessibilityIdentifier == "autocomplete" } as? UILabel
+        let autocompleteFieldlabel =
+            textField.subviews.first { $0.accessibilityIdentifier == "autocomplete" } as? UILabel
 
         if completion == "" {
-            XCTAssertTrue(autocompleteFieldlabel == nil, "The autocomplete was empty but the label still exists.")
+            XCTAssertTrue(
+                autocompleteFieldlabel == nil,
+                "The autocomplete was empty but the label still exists.")
             return
         }
 
         XCTAssertTrue(autocompleteFieldlabel != nil, "The autocomplete was not found")
-        XCTAssertEqual(completion, autocompleteFieldlabel!.text, "Expected prefix matches actual prefix")
+        XCTAssertEqual(
+            completion, autocompleteFieldlabel!.text, "Expected prefix matches actual prefix")
     }
 
     class func openNeevaMenu(_ tester: KIFUITestActor) {
@@ -393,26 +437,34 @@ class SimplePageServer {
     class func start() -> String {
         let webServer: GCDWebServer = GCDWebServer()
 
-        webServer.addHandler(forMethod: "GET", path: "/image.png", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse? in
+        webServer.addHandler(
+            forMethod: "GET", path: "/image.png", request: GCDWebServerRequest.self
+        ) { (request) -> GCDWebServerResponse? in
             let img = UIImage(named: "defaultFavicon")!.pngData()!
             return GCDWebServerDataResponse(data: img, contentType: "image/png")
         }
 
         for page in ["findPage", "noTitle", "readablePage", "JSPrompt", "blobURL", "neevaScheme"] {
-            webServer.addHandler(forMethod: "GET", path: "/\(page).html", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse? in
+            webServer.addHandler(
+                forMethod: "GET", path: "/\(page).html", request: GCDWebServerRequest.self
+            ) { (request) -> GCDWebServerResponse? in
                 return GCDWebServerDataResponse(html: self.getPageData(page))
             }
         }
 
         // we may create more than one of these but we need to give them uniquie accessibility ids in the tab manager so we'll pass in a page number
-        webServer.addHandler(forMethod: "GET", path: "/scrollablePage.html", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse? in
+        webServer.addHandler(
+            forMethod: "GET", path: "/scrollablePage.html", request: GCDWebServerRequest.self
+        ) { (request) -> GCDWebServerResponse? in
             var pageData = self.getPageData("scrollablePage")
             let page = Int((request.query?["page"] as! String))!
             pageData = pageData.replacingOccurrences(of: "{page}", with: page.description)
             return GCDWebServerDataResponse(html: pageData as String)
         }
 
-        webServer.addHandler(forMethod: "GET", path: "/numberedPage.html", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse? in
+        webServer.addHandler(
+            forMethod: "GET", path: "/numberedPage.html", request: GCDWebServerRequest.self
+        ) { (request) -> GCDWebServerResponse? in
             var pageData = self.getPageData("numberedPage")
 
             let page = Int((request.query?["page"] as! String))!
@@ -421,28 +473,39 @@ class SimplePageServer {
             return GCDWebServerDataResponse(html: pageData as String)
         }
 
-        webServer.addHandler(forMethod: "GET", path: "/readerContent.html", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse? in
+        webServer.addHandler(
+            forMethod: "GET", path: "/readerContent.html", request: GCDWebServerRequest.self
+        ) { (request) -> GCDWebServerResponse? in
             return GCDWebServerDataResponse(html: self.getPageData("readerContent"))
         }
 
-        webServer.addHandler(forMethod: "GET", path: "/loginForm.html", request: GCDWebServerRequest.self) { _ in
+        webServer.addHandler(
+            forMethod: "GET", path: "/loginForm.html", request: GCDWebServerRequest.self
+        ) { _ in
             return GCDWebServerDataResponse(html: self.getPageData("loginForm"))
         }
 
-        webServer.addHandler(forMethod: "GET", path: "/navigationDelegate.html", request: GCDWebServerRequest.self) { _ in
+        webServer.addHandler(
+            forMethod: "GET", path: "/navigationDelegate.html", request: GCDWebServerRequest.self
+        ) { _ in
             return GCDWebServerDataResponse(html: self.getPageData("navigationDelegate"))
         }
 
-        webServer.addHandler(forMethod: "GET", path: "/localhostLoad.html", request: GCDWebServerRequest.self) { _ in
+        webServer.addHandler(
+            forMethod: "GET", path: "/localhostLoad.html", request: GCDWebServerRequest.self
+        ) { _ in
             return GCDWebServerDataResponse(html: self.getPageData("localhostLoad"))
         }
 
-        webServer.addHandler(forMethod: "GET", path: "/auth.html", request: GCDWebServerRequest.self) { (request: GCDWebServerRequest?) in
+        webServer.addHandler(
+            forMethod: "GET", path: "/auth.html", request: GCDWebServerRequest.self
+        ) { (request: GCDWebServerRequest?) in
             // "user:pass", Base64-encoded.
             let expectedAuth = "Basic dXNlcjpwYXNz"
 
             let response: GCDWebServerDataResponse
-            if request?.headers["Authorization"] == expectedAuth && request?.query?["logout"] == nil {
+            if request?.headers["Authorization"] == expectedAuth && request?.query?["logout"] == nil
+            {
                 response = GCDWebServerDataResponse(html: "<html><body>logged in</body></html>")!
             } else {
                 // Request credentials if the user isn't logged in.
@@ -454,47 +517,53 @@ class SimplePageServer {
             return response
         }
 
-        func htmlForImageBlockingTest(imageURL: String) -> String{
+        func htmlForImageBlockingTest(imageURL: String) -> String {
             let html =
-            """
-            <html><head><script>
-                    function testImage(URL) {
-                        var tester = new Image();
-                        tester.onload = imageFound;
-                        tester.onerror = imageNotFound;
-                        tester.src = URL;
-                        document.body.appendChild(tester);
-                    }
+                """
+                <html><head><script>
+                        function testImage(URL) {
+                            var tester = new Image();
+                            tester.onload = imageFound;
+                            tester.onerror = imageNotFound;
+                            tester.src = URL;
+                            document.body.appendChild(tester);
+                        }
 
-                    function imageFound() {
-                        alert('image loaded.');
-                    }
+                        function imageFound() {
+                            alert('image loaded.');
+                        }
 
-                    function imageNotFound() {
-                        alert('image not loaded.');
-                    }
+                        function imageNotFound() {
+                            alert('image not loaded.');
+                        }
 
-                    window.onload = function(e) {
-                        // Disabling TP stats reporting using JS execution on the wkwebview happens async;
-                        // setTimeout(1 sec) is plenty of delay to ensure the JS has executed.
-                        setTimeout(() => { testImage('\(imageURL)'); }, 1000);
-                    }
-                </script></head>
-            <body>TEST IMAGE BLOCKING</body></html>
-            """
+                        window.onload = function(e) {
+                            // Disabling TP stats reporting using JS execution on the wkwebview happens async;
+                            // setTimeout(1 sec) is plenty of delay to ensure the JS has executed.
+                            setTimeout(() => { testImage('\(imageURL)'); }, 1000);
+                        }
+                    </script></head>
+                <body>TEST IMAGE BLOCKING</body></html>
+                """
             return html
         }
 
         // Add tracking protection check page
-        webServer.addHandler(forMethod: "GET", path: "/tracking-protection-test.html", request: GCDWebServerRequest.self) { (request: GCDWebServerRequest?) in
-            return GCDWebServerDataResponse(html: htmlForImageBlockingTest(imageURL: "http://ymail.com/favicon.ico"))
+        webServer.addHandler(
+            forMethod: "GET", path: "/tracking-protection-test.html",
+            request: GCDWebServerRequest.self
+        ) { (request: GCDWebServerRequest?) in
+            return GCDWebServerDataResponse(
+                html: htmlForImageBlockingTest(imageURL: "http://ymail.com/favicon.ico"))
         }
 
         // Add image blocking test page
-        webServer.addHandler(forMethod: "GET", path: "/hide-images-test.html", request: GCDWebServerRequest.self) { (request: GCDWebServerRequest?) in
-            return GCDWebServerDataResponse(html: htmlForImageBlockingTest(imageURL: "https://www.mozilla.com/favicon.ico"))
+        webServer.addHandler(
+            forMethod: "GET", path: "/hide-images-test.html", request: GCDWebServerRequest.self
+        ) { (request: GCDWebServerRequest?) in
+            return GCDWebServerDataResponse(
+                html: htmlForImageBlockingTest(imageURL: "https://www.mozilla.com/favicon.ico"))
         }
-
 
         if !webServer.start(withPort: 0, bonjourName: nil) {
             XCTFail("Can't start the GCDWebServer")
@@ -503,7 +572,8 @@ class SimplePageServer {
         // We use 127.0.0.1 explicitly here, rather than localhost, in order to avoid our
         // history exclusion code (Bug 1188626).
 
-        let webRoot = "http://\(useLocalhostInsteadOfIP ? "localhost" : "127.0.0.1"):\(webServer.port)"
+        let webRoot =
+            "http://\(useLocalhostInsteadOfIP ? "localhost" : "127.0.0.1"):\(webServer.port)"
         return webRoot
     }
 }

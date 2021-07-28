@@ -7,7 +7,9 @@ import Shared
 
 /// Interface for saving and retrieving metadata web content
 public protocol Metadata {
-    @discardableResult func storeMetadata(_ metadata: PageMetadata, forPageURL: URL, expireAt: UInt64) -> Success
+    @discardableResult func storeMetadata(
+        _ metadata: PageMetadata, forPageURL: URL, expireAt: UInt64
+    ) -> Success
     func deleteExpiredMetadata() -> Success
     func metadata(for url: URL) -> Deferred<Maybe<Cursor<PageMetadata?>>>
     func hasMetadata(for url: URL) -> Deferred<Maybe<Bool>>

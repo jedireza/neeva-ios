@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
 import SwiftUI
+import UIKit
 
 protocol ToastViewDelegate: AnyObject {
     func dismiss()
@@ -19,9 +19,8 @@ public enum ToastViewUX {
 struct ToastStateContent {
     var text: String?
     var buttonText: String?
-    var buttonAction: (() -> ())?
+    var buttonAction: (() -> Void)?
 }
-
 
 class ToastViewContent: ObservableObject {
     @Published var currentToastStateContent: ToastStateContent
@@ -45,7 +44,10 @@ class ToastViewContent: ObservableObject {
     var completedContent: ToastStateContent?
     var failedContent: ToastStateContent?
 
-    init(normalContent: ToastStateContent, completedContent: ToastStateContent? = nil, failedContent: ToastStateContent? = nil) {
+    init(
+        normalContent: ToastStateContent, completedContent: ToastStateContent? = nil,
+        failedContent: ToastStateContent? = nil
+    ) {
         self.currentToastStateContent = normalContent
 
         self.normalContent = normalContent
@@ -100,7 +102,10 @@ struct ToastView: View {
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 16)
                     .foregroundColor(Color(ToastViewUX.ToastDefaultColor))
-                    .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.40), radius: 48, x: 0, y: 16)
+                    .shadow(
+                        color: Color(red: 0, green: 0, blue: 0, opacity: 0.40), radius: 48, x: 0,
+                        y: 16
+                    )
                     .frame(minHeight: ToastViewUX.height)
 
                 HStack(spacing: 16) {
@@ -109,9 +114,11 @@ struct ToastView: View {
                             content.updateStatus(with: toastProgressViewModel.status)
 
                             if toastProgressViewModel.status == .success {
-                                Timer.scheduledTimer(withTimeInterval: displayTime, repeats: false, block: { _ in
-                                    viewDelegate?.dismiss()
-                                })
+                                Timer.scheduledTimer(
+                                    withTimeInterval: displayTime, repeats: false,
+                                    block: { _ in
+                                        viewDelegate?.dismiss()
+                                    })
                             }
                         }
                         .environmentObject(toastProgressViewModel)
@@ -126,18 +133,21 @@ struct ToastView: View {
                     if let buttonText = content.currentToastStateContent.buttonText {
                         Spacer()
 
-                        Button(action: {
-                            if let buttonAction = content.currentToastStateContent.buttonAction {
-                                buttonAction()
-                            }
+                        Button(
+                            action: {
+                                if let buttonAction = content.currentToastStateContent.buttonAction
+                                {
+                                    buttonAction()
+                                }
 
-                            viewDelegate?.dismiss()
-                        }, label: {
-                            Text(buttonText)
-                                .withFont(.labelLarge)
-                                .foregroundColor(Color.ui.aqua)
+                                viewDelegate?.dismiss()
+                            },
+                            label: {
+                                Text(buttonText)
+                                    .withFont(.labelLarge)
+                                    .foregroundColor(Color.ui.aqua)
 
-                        })
+                            })
                     }
                 }.padding(.horizontal, 16).colorScheme(.dark)
             }.frame(height: 53).padding(.horizontal)
@@ -146,7 +156,7 @@ struct ToastView: View {
         .gesture(drag)
         .opacity(Double(opacity))
         .animation(.interactiveSpring(), value: offset)
-        .onAppear() {
+        .onAppear {
             if let toastProgressViewModel = toastProgressViewModel {
                 content.updateStatus(with: toastProgressViewModel.status)
             }
@@ -156,6 +166,8 @@ struct ToastView: View {
 
 struct ToastView_Previews: PreviewProvider {
     static var previews: some View {
-        ToastView(content: ToastViewContent(normalContent: ToastStateContent(text: "Tab Closed", buttonText: "restore")))
+        ToastView(
+            content: ToastViewContent(
+                normalContent: ToastStateContent(text: "Tab Closed", buttonText: "restore")))
     }
 }

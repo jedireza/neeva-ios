@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct IncognitoButton: View {
     let offTint = UIColor.label
@@ -27,7 +27,8 @@ struct IncognitoButton: View {
             $0.tintColor = toolbarModel.isIncognito ? onTint : offTint
             $0.imageView?.tintColor = $0.tintColor
 
-            $0.accessibilityValue = toolbarModel.isIncognito
+            $0.accessibilityValue =
+                toolbarModel.isIncognito
                 ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
         }
         .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
@@ -67,7 +68,7 @@ struct SwitcherToolbarView: View {
             HStack(spacing: 0) {
                 IncognitoButton()
                 Spacer()
-                UIKitButton(action:  {
+                UIKitButton(action: {
                     toolbarModel.onNewTab()
                     gridModel.hideWithNoAnimation()
                 }) {
@@ -76,20 +77,22 @@ struct SwitcherToolbarView: View {
                     $0.accessibilityIdentifier = "TabTrayController.addTabButton"
                     $0.setDynamicMenu(gridModel.buildRecentlyClosedTabsMenu)
                 }.frame(width: 44, height: 44)
-                .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
+                    .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
                 Spacer()
-                UIKitButton(action:  { gridModel.animationThumbnailState = .visibleForTrayHidden }) {
+                UIKitButton(action: { gridModel.animationThumbnailState = .visibleForTrayHidden }) {
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-                    let title = NSAttributedString(string: "Done",
-                                                   attributes: [NSAttributedString.Key.font: font])
+                    let title = NSAttributedString(
+                        string: "Done",
+                        attributes: [NSAttributedString.Key.font: font])
                     $0.setAttributedTitle(title, for: .normal)
                     $0.setTitleColor(.label, for: .normal)
                     $0.setDynamicMenu(gridModel.buildCloseAllTabsMenu)
                 }.frame(width: 44, height: 44)
-                .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
-                .accessibilityIdentifier("TabTrayController.doneButton")
+                    .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
+                    .accessibilityIdentifier("TabTrayController.doneButton")
             }.padding(.horizontal, 16)
-            .frame(height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)
+                .frame(
+                    height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)
             if top { divider }
         }
         .background(Color.DefaultBackground.ignoresSafeArea())

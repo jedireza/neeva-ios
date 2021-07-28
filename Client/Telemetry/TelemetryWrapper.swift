@@ -13,14 +13,26 @@ class TelemetryWrapper {
 
     private var profile: Profile?
 
-    private func migratePathComponentInDocumentsDirectory(_ pathComponent: String, to destinationSearchPath: FileManager.SearchPathDirectory) {
-        guard let oldPath = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(pathComponent).path, FileManager.default.fileExists(atPath: oldPath) else {
+    private func migratePathComponentInDocumentsDirectory(
+        _ pathComponent: String, to destinationSearchPath: FileManager.SearchPathDirectory
+    ) {
+        guard
+            let oldPath = try? FileManager.default.url(
+                for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false
+            ).appendingPathComponent(pathComponent).path,
+            FileManager.default.fileExists(atPath: oldPath)
+        else {
             return
         }
 
         print("Migrating \(pathComponent) from ~/Documents to \(destinationSearchPath)")
-        guard let newPath = try? FileManager.default.url(for: destinationSearchPath, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(pathComponent).path else {
-            print("Unable to get destination path \(destinationSearchPath) to move \(pathComponent)")
+        guard
+            let newPath = try? FileManager.default.url(
+                for: destinationSearchPath, in: .userDomainMask, appropriateFor: nil, create: true
+            ).appendingPathComponent(pathComponent).path
+        else {
+            print(
+                "Unable to get destination path \(destinationSearchPath) to move \(pathComponent)")
             return
         }
 
@@ -29,7 +41,9 @@ class TelemetryWrapper {
 
             print("Migrated \(pathComponent) to \(destinationSearchPath) successfully")
         } catch let error as NSError {
-            print("Unable to move \(pathComponent) to \(destinationSearchPath): \(error.localizedDescription)")
+            print(
+                "Unable to move \(pathComponent) to \(destinationSearchPath): \(error.localizedDescription)"
+            )
         }
     }
 
@@ -38,8 +52,11 @@ class TelemetryWrapper {
     }
 
     @objc func uploadError(notification: NSNotification) {
-        guard !DeviceInfo.isSimulator(), let error = notification.userInfo?["error"] as? NSError else { return }
-        Sentry.shared.send(message: "Upload Error", tag: SentryTag.unifiedTelemetry, severity: .info, description: error.debugDescription)
+        guard !DeviceInfo.isSimulator(), let error = notification.userInfo?["error"] as? NSError
+        else { return }
+        Sentry.shared.send(
+            message: "Upload Error", tag: SentryTag.unifiedTelemetry, severity: .info,
+            description: error.debugDescription)
     }
 }
 
@@ -100,7 +117,8 @@ extension TelemetryWrapper {
         case url = "url"
         case searchText = "searchText"
         case whatsNew = "whats-new"
-        case dismissUpdateCoverSheetAndStartBrowsing = "dismissed-update-cover_sheet_and_start_browsing"
+        case dismissUpdateCoverSheetAndStartBrowsing =
+            "dismissed-update-cover_sheet_and_start_browsing"
         case dismissedUpdateCoverSheet = "dismissed-update-cover-sheet"
         case dismissedETPCoverSheet = "dismissed-etp-sheet"
         case dismissETPCoverSheetAndStartBrowsing = "dismissed-etp-cover-sheet-and-start-browsing"
@@ -166,7 +184,10 @@ extension TelemetryWrapper {
         case tabView = "tab-view"
     }
 
-    public static func recordEvent(category: EventCategory, method: EventMethod, object: EventObject, value: EventValue? = nil, extras: [String: Any]? = nil) {
+    public static func recordEvent(
+        category: EventCategory, method: EventMethod, object: EventObject, value: EventValue? = nil,
+        extras: [String: Any]? = nil
+    ) {
         // TODO: Decide to either implement this or switch to a different form of logging.
     }
 }

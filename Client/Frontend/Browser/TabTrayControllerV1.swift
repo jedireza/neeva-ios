@@ -2,17 +2,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
+import Defaults
+import Shared
 import SnapKit
 import Storage
-import Shared
-import Defaults
 import SwiftUI
+import UIKit
 
 public enum TabTrayControllerUX {
     static let CornerRadius: CGFloat = 6
     fileprivate static let TextBoxHeight: CGFloat = 32
-    fileprivate static let TopBarHeight = UIConstants.TopToolbarPaddingTop + UIConstants.TextFieldHeight + UIConstants.TopToolbarPaddingBottom
+    fileprivate static let TopBarHeight =
+        UIConstants.TopToolbarPaddingTop + UIConstants.TextFieldHeight
+        + UIConstants.TopToolbarPaddingBottom
     static let FaviconSize: CGFloat = 20
     fileprivate static let Margin: CGFloat = 15
     fileprivate static let CloseButtonSize: CGFloat = 32
@@ -29,8 +31,8 @@ protocol TabTrayDelegate: AnyObject {
     func tabTrayRequestsPresentationOf(_ viewController: UIViewController)
 }
 
-fileprivate struct FakeTabLocationView: View {
-    let action: () -> ()
+private struct FakeTabLocationView: View {
+    let action: () -> Void
     let isIncognito: Bool
 
     private struct Style: ButtonStyle {
@@ -38,7 +40,8 @@ fileprivate struct FakeTabLocationView: View {
 
         func makeBody(configuration: Configuration) -> some View {
             ZStack {
-                let backgroundColor: Color = isIncognito
+                let backgroundColor: Color =
+                    isIncognito
                     ? configuration.isPressed ? .elevatedDarkBackground : .black
                     : configuration.isPressed ? .tertiarySystemFill : .systemFill
 
@@ -76,13 +79,16 @@ class TabTrayControllerV1: UIViewController {
     let statusBarBG = UIView()
     lazy var toolbar: TrayToolbar = {
         let toolbar = TrayToolbar()
-        toolbar.maskButton.addTarget(self, action: #selector(didToggleToolbarIncognitoButton), for: .touchUpInside)
+        toolbar.maskButton.addTarget(
+            self, action: #selector(didToggleToolbarIncognitoButton), for: .touchUpInside)
 
         let menu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
-        toolbar.addTabButton.addTarget(self, action: #selector(didTapToolbarAddTabButton), for: .touchUpInside)
+        toolbar.addTabButton.addTarget(
+            self, action: #selector(didTapToolbarAddTabButton), for: .touchUpInside)
         toolbar.addTabButton.setDynamicMenu(menu.createRecentlyClosedTabsMenu)
 
-        toolbar.doneButton.addTarget(self, action: #selector(didTapToolbarDoneButton), for: .touchUpInside)
+        toolbar.doneButton.addTarget(
+            self, action: #selector(didTapToolbarDoneButton), for: .touchUpInside)
         toolbar.doneButton.menu = menu.createCloseAllTabsMenu()
         menu.tabsClosed = { isPrivate in
             if isPrivate {
@@ -93,7 +99,9 @@ class TabTrayControllerV1: UIViewController {
         return toolbar
     }()
 
-    fileprivate lazy var locationViewController = UIHostingController(rootView: FakeTabLocationView(action: onTapLocation, isIncognito: tabDisplayManager.isPrivate))
+    fileprivate lazy var locationViewController = UIHostingController(
+        rootView: FakeTabLocationView(
+            action: onTapLocation, isIncognito: tabDisplayManager.isPrivate))
     private func onTapLocation() {
         didTapToolbarAddTabButton()
         delegate?.tabTrayDidTapLocationBar(self)
@@ -106,7 +114,9 @@ class TabTrayControllerV1: UIViewController {
     fileprivate lazy var emptyPrivateTabsView = UIView()
 
     fileprivate lazy var tabLayoutDelegate: TabLayoutDelegate = {
-        let delegate = TabLayoutDelegate(profile: self.profile, traitCollection: self.traitCollection, scrollView: self.collectionView)
+        let delegate = TabLayoutDelegate(
+            profile: self.profile, traitCollection: self.traitCollection,
+            scrollView: self.collectionView)
         delegate.tabSelectionDelegate = self
         return delegate
     }()
@@ -122,12 +132,16 @@ class TabTrayControllerV1: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView = UICollectionView(
+            frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.register(TabCell.self, forCellWithReuseIdentifier: TabCell.Identifier)
-        tabDisplayManager = TabDisplayManager(collectionView: self.collectionView, tabManager: self.tabManager, tabDisplayer: self, reuseID: TabCell.Identifier)
+        tabDisplayManager = TabDisplayManager(
+            collectionView: self.collectionView, tabManager: self.tabManager, tabDisplayer: self,
+            reuseID: TabCell.Identifier)
         collectionView.dataSource = tabDisplayManager
         collectionView.delegate = tabLayoutDelegate
-        collectionView.contentInset = UIEdgeInsets(top: TabTrayControllerUX.TopBarHeight, left: 0, bottom: 0, right: 0)
+        collectionView.contentInset = UIEdgeInsets(
+            top: TabTrayControllerUX.TopBarHeight, left: 0, bottom: 0, right: 0)
 
         tabDisplayManager.tabDisplayCompletionDelegate = self
     }
@@ -137,19 +151,25 @@ class TabTrayControllerV1: UIViewController {
         self.view.layoutIfNeeded()
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(
+        to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator
+    ) {
         // When the app enters split screen mode we refresh the collection view layout to show the proper grid
         collectionView.collectionViewLayout.invalidateLayout()
     }
-    
+
     deinit {
         tabManager.removeDelegate(self.tabDisplayManager)
         tabManager.removeDelegate(self)
         tabDisplayManager = nil
     }
-    
+
     func focusTab() {
-        guard let currentTab = tabManager.selectedTab, let index = self.tabDisplayManager.dataStore.index(of: currentTab), let rect = self.collectionView.layoutAttributesForItem(at: IndexPath(item: index, section: 0))?.frame else {
+        guard let currentTab = tabManager.selectedTab,
+            let index = self.tabDisplayManager.dataStore.index(of: currentTab),
+            let rect = self.collectionView.layoutAttributesForItem(
+                at: IndexPath(item: index, section: 0))?.frame
+        else {
             return
         }
         self.collectionView.scrollRectToVisible(rect, animated: false)
@@ -163,12 +183,12 @@ class TabTrayControllerV1: UIViewController {
         guard notification.name == .DynamicFontChanged else { return }
     }
 
-// MARK: View Controller Callbacks
+    // MARK: View Controller Callbacks
     override func viewDidLoad() {
         super.viewDidLoad()
         tabManager.addDelegate(self)
         view.accessibilityLabel = .TabTrayViewAccessibilityLabel
-        
+
         webViewContainerBackdrop = UIView()
         webViewContainerBackdrop.backgroundColor = UIColor.Photon.Ink90
         webViewContainerBackdrop.alpha = 0
@@ -189,7 +209,9 @@ class TabTrayControllerV1: UIViewController {
         if UIConstants.enableBottomURLBar {
             [webViewContainerBackdrop, collectionView, toolbar].forEach { view.addSubview($0) }
         } else {
-            [webViewContainerBackdrop, collectionView, toolbar, topBarHolder].forEach { view.addSubview($0) }
+            [webViewContainerBackdrop, collectionView, toolbar, topBarHolder].forEach {
+                view.addSubview($0)
+            }
         }
         makeConstraints()
 
@@ -212,7 +234,8 @@ class TabTrayControllerV1: UIViewController {
             toolbar.applyUIMode(isPrivate: true)
         }
 
-        locationViewController.rootView = .init(action: onTapLocation, isIncognito: tabDisplayManager.isPrivate)
+        locationViewController.rootView = .init(
+            action: onTapLocation, isIncognito: tabDisplayManager.isPrivate)
 
         line.backgroundColor = UIColor.Browser.urlBarDivider
 
@@ -222,9 +245,14 @@ class TabTrayControllerV1: UIViewController {
 
         emptyPrivateTabsView.isHidden = !privateTabsAreEmpty()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActiveNotification), name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActiveNotification), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(dynamicFontChanged), name: .DynamicFontChanged, object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(appWillResignActiveNotification),
+            name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(appDidBecomeActiveNotification),
+            name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(dynamicFontChanged), name: .DynamicFontChanged, object: nil)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -237,7 +265,7 @@ class TabTrayControllerV1: UIViewController {
         webViewContainerBackdrop.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
         }
-        
+
         collectionView.snp.makeConstraints { make in
             make.left.equalTo(view.safeArea.left)
             make.right.equalTo(view.safeArea.right)
@@ -255,7 +283,8 @@ class TabTrayControllerV1: UIViewController {
                 make.leading.equalTo(view.snp.leading)
                 make.trailing.equalTo(view.snp.trailing)
                 make.height.equalTo(TabTrayControllerUX.TopBarHeight)
-                self.tabLayoutDelegate.topBarHeightConstraint = make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
+                self.tabLayoutDelegate.topBarHeightConstraint =
+                    make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top).constraint
             }
         }
 
@@ -267,8 +296,9 @@ class TabTrayControllerV1: UIViewController {
 
     override func updateViewConstraints() {
         let centerAlign =
-            UIDevice.current.userInterfaceIdiom == .pad ||
-            (UIDevice.current.orientation != .portrait && UIDevice.current.orientation != .faceUp)
+            UIDevice.current.userInterfaceIdiom == .pad
+            || (UIDevice.current.orientation != .portrait
+                && UIDevice.current.orientation != .faceUp)
         if !UIConstants.enableBottomURLBar {
             locationViewController.view.snp.remakeConstraints { make in
                 if centerAlign {
@@ -283,7 +313,9 @@ class TabTrayControllerV1: UIViewController {
         super.updateViewConstraints()
     }
 
-    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func willTransition(
+        to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator
+    ) {
         super.willTransition(to: newCollection, with: coordinator)
         view.setNeedsUpdateConstraints()
     }
@@ -308,7 +340,9 @@ class TabTrayControllerV1: UIViewController {
         }
         self.otherBrowsingModeOffset = newOffset
         let fromView: UIView
-        if !privateTabsAreEmpty(), let snapshot = collectionView.snapshotView(afterScreenUpdates: false) {
+        if !privateTabsAreEmpty(),
+            let snapshot = collectionView.snapshotView(afterScreenUpdates: false)
+        {
             snapshot.frame = collectionView.frame
             view.insertSubview(snapshot, aboveSubview: collectionView)
             fromView = snapshot
@@ -316,15 +350,18 @@ class TabTrayControllerV1: UIViewController {
             fromView = emptyPrivateTabsView
         }
 
-        if (tabDisplayManager.isPrivate) {
-            ClientLogger.shared.logCounter(.TurnOffIncognitoMode, attributes: EnvironmentHelper.shared.getAttributes())
+        if tabDisplayManager.isPrivate {
+            ClientLogger.shared.logCounter(
+                .TurnOffIncognitoMode, attributes: EnvironmentHelper.shared.getAttributes())
         } else {
-            ClientLogger.shared.logCounter(.TurnOnIncognitoMode, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .TurnOnIncognitoMode, attributes: EnvironmentHelper.shared.getAttributes())
         }
 
         tabManager.willSwitchTabMode(leavingPBM: tabDisplayManager.isPrivate)
-        
-        tabDisplayManager.togglePrivateMode(isOn: !tabDisplayManager.isPrivate, createTabOnEmptyPrivateMode: false)
+
+        tabDisplayManager.togglePrivateMode(
+            isOn: !tabDisplayManager.isPrivate, createTabOnEmptyPrivateMode: false)
 
         self.tabDisplayManager.refreshStore()
 
@@ -336,7 +373,9 @@ class TabTrayControllerV1: UIViewController {
         collectionView.layoutSubviews()
 
         let toView: UIView
-        if !privateTabsAreEmpty(), let newSnapshot = collectionView.snapshotView(afterScreenUpdates: !exitingPrivateMode) {
+        if !privateTabsAreEmpty(),
+            let newSnapshot = collectionView.snapshotView(afterScreenUpdates: !exitingPrivateMode)
+        {
             emptyPrivateTabsView.isHidden = true
             //when exiting private mode don't screenshot the collectionview (causes the UI to hang)
             newSnapshot.frame = collectionView.frame
@@ -350,12 +389,15 @@ class TabTrayControllerV1: UIViewController {
         toView.alpha = 0
         toView.transform = scaleDownTransform
 
-        UIView.animate(withDuration: 0.2, delay: 0, options: [], animations: { () -> Void in
-            fromView.transform = scaleDownTransform
-            fromView.alpha = 0
-            toView.transform = .identity
-            toView.alpha = 1
-        }) { finished in
+        UIView.animate(
+            withDuration: 0.2, delay: 0, options: [],
+            animations: { () -> Void in
+                fromView.transform = scaleDownTransform
+                fromView.alpha = 0
+                toView.transform = .identity
+                toView.alpha = 1
+            }
+        ) { finished in
             if fromView != self.emptyPrivateTabsView {
                 fromView.removeFromSuperview()
             }
@@ -370,7 +412,8 @@ class TabTrayControllerV1: UIViewController {
         }
 
         toolbar.applyUIMode(isPrivate: tabDisplayManager.isPrivate)
-        locationViewController.rootView = .init(action: onTapLocation, isIncognito: tabDisplayManager.isPrivate)
+        locationViewController.rootView = .init(
+            action: onTapLocation, isIncognito: tabDisplayManager.isPrivate)
     }
 
     fileprivate func privateTabsAreEmpty() -> Bool {
@@ -399,10 +442,13 @@ class TabTrayControllerV1: UIViewController {
 }
 
 extension TabTrayControllerV1: TabManagerDelegate {
-    func tabManager(_ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?, isRestoring: Bool) {}
+    func tabManager(
+        _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
+        isRestoring: Bool
+    ) {}
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {}
 
-    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) { }
+    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {}
 
     func tabManagerDidRestoreTabs(_ tabManager: TabManager) {
         self.emptyPrivateTabsView.isHidden = !self.privateTabsAreEmpty()
@@ -438,18 +484,21 @@ extension TabTrayControllerV1 {
 
         closeTabsTrayHelper()
     }
-    
+
     func closeTabsTrayHelper() {
         if self.tabDisplayManager.isPrivate {
             self.emptyPrivateTabsView.isHidden = !self.privateTabsAreEmpty()
             if !self.emptyPrivateTabsView.isHidden {
                 // Fade in the empty private tabs message. This slow fade allows time for the closing tab animations to complete.
                 self.emptyPrivateTabsView.alpha = 0
-                UIView.animate(withDuration: 0.5, animations: {
-                    self.emptyPrivateTabsView.alpha = 1
-                }, completion: nil)
+                UIView.animate(
+                    withDuration: 0.5,
+                    animations: {
+                        self.emptyPrivateTabsView.alpha = 1
+                    }, completion: nil)
             }
-        } else if self.tabManager.normalTabs.count == 1, let tab = self.tabManager.normalTabs.first {
+        } else if self.tabManager.normalTabs.count == 1, let tab = self.tabManager.normalTabs.first
+        {
             self.tabManager.selectTab(tab)
             self.dismissTabTray()
         }
@@ -483,10 +532,13 @@ extension TabTrayControllerV1 {
     @objc func appDidBecomeActiveNotification() {
         // Re-show any components that might have been hidden because they were being displayed
         // as part of a private mode tab
-        UIView.animate(withDuration: 0.2, animations: {
-            self.collectionView.alpha = 1
-            self.emptyPrivateTabsView.alpha = 1
-        }) { _ in
+        UIView.animate(
+            withDuration: 0.2,
+            animations: {
+                self.collectionView.alpha = 1
+                self.emptyPrivateTabsView.alpha = 1
+            }
+        ) { _ in
             self.webViewContainerBackdrop.alpha = 0
             self.view.sendSubviewToBack(self.webViewContainerBackdrop)
         }
@@ -506,7 +558,8 @@ extension TabTrayControllerV1: UIScrollViewAccessibilityDelegate {
     func accessibilityScrollStatus(for scrollView: UIScrollView) -> String? {
         guard var visibleCells = collectionView.visibleCells as? [TabCell] else { return nil }
         var bounds = collectionView.bounds
-        bounds = bounds.offsetBy(dx: collectionView.contentInset.left, dy: collectionView.contentInset.top)
+        bounds = bounds.offsetBy(
+            dx: collectionView.contentInset.left, dy: collectionView.contentInset.top)
         bounds.size.width -= collectionView.contentInset.left + collectionView.contentInset.right
         bounds.size.height -= collectionView.contentInset.top + collectionView.contentInset.bottom
         // visible cells do sometimes return also not visible cells when attempting to go past the last cell with VoiceOver right-flick gesture; so make sure we have only visible cells (yeah...)
@@ -527,20 +580,27 @@ extension TabTrayControllerV1: UIScrollViewAccessibilityDelegate {
 
         if firstTab == lastTab {
             let format: String = .TabTrayVisibleTabRangeAccessibilityHint
-            return String(format: format, NSNumber(value: firstTab as Int), NSNumber(value: tabCount as Int))
+            return String(
+                format: format, NSNumber(value: firstTab as Int), NSNumber(value: tabCount as Int))
         } else {
             let format: String = .TabTrayVisiblePartialRangeAccessibilityHint
-            return String(format: format, NSNumber(value: firstTab as Int), NSNumber(value: lastTab as Int), NSNumber(value: tabCount as Int))
+            return String(
+                format: format, NSNumber(value: firstTab as Int), NSNumber(value: lastTab as Int),
+                NSNumber(value: tabCount as Int))
         }
     }
 }
 
 extension TabTrayControllerV1: SwipeAnimatorDelegate {
     func swipeAnimator(_ animator: SwipeAnimator, viewWillExitContainerBounds: UIView) {
-        guard let tabCell = animator.animatingView as? TabCell, let indexPath = collectionView.indexPath(for: tabCell) else { return }
+        guard let tabCell = animator.animatingView as? TabCell,
+            let indexPath = collectionView.indexPath(for: tabCell)
+        else { return }
         if let tab = tabDisplayManager.dataStore.at(indexPath.item) {
             self.removeByButtonOrSwipe(tab: tab, cell: tabCell)
-            UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.TabTrayClosingTabAccessibilityMessage)
+            UIAccessibility.post(
+                notification: UIAccessibility.Notification.announcement,
+                argument: String.TabTrayClosingTabAccessibilityMessage)
         }
     }
 
@@ -552,7 +612,9 @@ extension TabTrayControllerV1: SwipeAnimatorDelegate {
 
 extension TabTrayControllerV1: TabCellDelegate {
     func tabCellDidClose(_ cell: TabCell) {
-        if let indexPath = collectionView.indexPath(for: cell), let tab = tabDisplayManager.dataStore.at(indexPath.item) {
+        if let indexPath = collectionView.indexPath(for: cell),
+            let tab = tabDisplayManager.dataStore.at(indexPath.item)
+        {
             removeByButtonOrSwipe(tab: tab, cell: cell)
         }
     }
@@ -560,14 +622,15 @@ extension TabTrayControllerV1: TabCellDelegate {
 
 extension TabTrayControllerV1: TabPeekDelegate {
 
-
     func tabPeekDidAddToReadingList(_ tab: Tab) -> ReadingListItem? {
         return delegate?.tabTrayDidAddToReadingList(tab)
     }
 
     func tabPeekDidCloseTab(_ tab: Tab) {
         if let index = tabDisplayManager.dataStore.index(of: tab),
-            let cell = self.collectionView?.cellForItem(at: IndexPath(item: index, section: 0)) as? TabCell {
+            let cell = self.collectionView?.cellForItem(at: IndexPath(item: index, section: 0))
+                as? TabCell
+        {
             cell.close()
         }
     }
@@ -579,25 +642,31 @@ extension TabTrayControllerV1: TabPeekDelegate {
 
 extension TabTrayControllerV1: UIViewControllerPreviewingDelegate {
 
-    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+    func previewingContext(
+        _ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint
+    ) -> UIViewController? {
 
         guard let collectionView = collectionView else { return nil }
         let convertedLocation = self.view.convert(location, to: collectionView)
 
         guard let indexPath = collectionView.indexPathForItem(at: convertedLocation),
-            let cell = collectionView.cellForItem(at: indexPath) else { return nil }
+            let cell = collectionView.cellForItem(at: indexPath)
+        else { return nil }
 
         guard let tab = tabDisplayManager.dataStore.at(indexPath.row) else {
             return nil
         }
         let tabVC = TabPeekViewController(tab: tab, delegate: self)
-    
+
         previewingContext.sourceRect = self.view.convert(cell.frame, from: collectionView)
 
         return tabVC
     }
 
-    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+    func previewingContext(
+        _ previewingContext: UIViewControllerPreviewing,
+        commit viewControllerToCommit: UIViewController
+    ) {
         guard let tpvc = viewControllerToCommit as? TabPeekViewController else { return }
         tabManager.selectTab(tpvc.tab)
         navigationController?.popViewController(animated: true)
@@ -636,12 +705,15 @@ extension TabTrayControllerV1 {
 
 extension TabTrayControllerV1 {
     @objc func didTapToolbarDoneButton(_ sender: UIButton) {
-        ClientLogger.shared.logCounter(.HideTabTray, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .HideTabTray, attributes: EnvironmentHelper.shared.getAttributes())
         dismissTabTray()
     }
 }
 
-fileprivate class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate {
+private class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayout,
+    UIGestureRecognizerDelegate
+{
     weak var tabSelectionDelegate: TabSelectionDelegate?
     var topBarHeightConstraint: Constraint?
     let scrollView: UIScrollView
@@ -656,7 +728,9 @@ fileprivate class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayou
     fileprivate var traitCollection: UITraitCollection
     fileprivate var numberOfColumns: Int {
         // iPhone 4-6+ portrait
-        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
+        if traitCollection.horizontalSizeClass == .compact
+            && traitCollection.verticalSizeClass == .regular
+        {
             return TabTrayControllerUX.CompactNumberOfColumnsThin
         } else {
             return TabTrayControllerUX.NumberOfColumnsWide
@@ -709,7 +783,8 @@ fileprivate class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayou
         }
         if checkRubberbandingForDelta(delta, for: scrollView) {
 
-            let offset = clamp(abs(scrollView.contentOffset.y), min: 0, max: TabTrayControllerUX.TopBarHeight)
+            let offset = clamp(
+                abs(scrollView.contentOffset.y), min: 0, max: TabTrayControllerUX.TopBarHeight)
             topBarHeightConstraint?.update(offset: offset)
             if scrollDirection == .down {
                 scrollView.contentInset = UIEdgeInsets(top: offset, left: 0, bottom: 0, right: 0)
@@ -721,7 +796,8 @@ fileprivate class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayou
 
     func showSearch() {
         topBarHeightConstraint?.update(offset: TabTrayControllerUX.TopBarHeight)
-        scrollView.contentInset = UIEdgeInsets(top: TabTrayControllerUX.TopBarHeight, left: 0, bottom: 0, right: 0)
+        scrollView.contentInset = UIEdgeInsets(
+            top: TabTrayControllerUX.TopBarHeight, left: 0, bottom: 0, right: 0)
     }
 
     func hideSearch() {
@@ -741,36 +817,59 @@ fileprivate class TabLayoutDelegate: NSObject, UICollectionViewDelegateFlowLayou
         }
     }
 
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
         return true
     }
 
-    @objc func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    @objc func collectionView(
+        _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+        minimumInteritemSpacingForSectionAt section: Int
+    ) -> CGFloat {
         return TabTrayControllerUX.Margin
     }
 
-    @objc func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth = floor((collectionView.bounds.width - TabTrayControllerUX.Margin * CGFloat(numberOfColumns + 1)) / numberOfColumns)
+    @objc func collectionView(
+        _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let cellWidth = floor(
+            (collectionView.bounds.width - TabTrayControllerUX.Margin * CGFloat(numberOfColumns + 1))
+                / numberOfColumns)
         return CGSize(width: cellWidth, height: self.cellHeightForCurrentDevice())
     }
 
-    @objc func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    @objc func collectionView(
+        _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
         return UIEdgeInsets(equalInset: TabTrayControllerUX.Margin)
     }
 
-    @objc func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    @objc func collectionView(
+        _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
         return TabTrayControllerUX.Margin
     }
 
-    @objc func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    @objc func collectionView(
+        _ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath
+    ) {
         tabSelectionDelegate?.didSelectTabAtIndex(indexPath.row)
     }
 }
 
-extension TabTrayControllerV1: UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
+extension TabTrayControllerV1: UIAdaptivePresentationControllerDelegate,
+    UIPopoverPresentationControllerDelegate
+{
     // Returning None here makes sure that the Popover is actually presented as a Popover and
     // not as a full-screen modal, which is the default on compact device classes.
-    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+    func adaptivePresentationStyle(
+        for controller: UIPresentationController, traitCollection: UITraitCollection
+    ) -> UIModalPresentationStyle {
         return .none
     }
 }
@@ -780,7 +879,8 @@ class TrayToolbar: UIView, PrivateModeUI {
     fileprivate let toolbarButtonSize = CGSize(width: 44, height: 44)
 
     lazy var addTabButton: UIButton = {
-        let symbol = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+        let symbol = UIImage(
+            systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
         let button = UIButton()
         button.setImage(symbol, for: .normal)
         button.accessibilityLabel = .TabTrayAddTabAccessibilityLabel
@@ -792,7 +892,8 @@ class TrayToolbar: UIView, PrivateModeUI {
     lazy var doneButton: UIButton = {
         let button = UIButton()
         let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        let title = NSAttributedString(string: "Done", attributes: [NSAttributedString.Key.font: font])
+        let title = NSAttributedString(
+            string: "Done", attributes: [NSAttributedString.Key.font: font])
         button.setAttributedTitle(title, for: .normal)
         button.accessibilityLabel = .TabTrayDoneAccessibilityLabel
         button.accessibilityIdentifier = "TabTrayController.doneButton"
@@ -933,7 +1034,9 @@ class TabCell: UICollectionViewCell {
         backgroundHolder.addSubview(self.screenshotView)
 
         self.accessibilityCustomActions = [
-            UIAccessibilityCustomAction(name: .TabTrayCloseAccessibilityCustomAction, target: self.animator, selector: #selector(SwipeAnimator.closeWithoutGesture))
+            UIAccessibilityCustomAction(
+                name: .TabTrayCloseAccessibilityCustomAction, target: self.animator,
+                selector: #selector(SwipeAnimator.closeWithoutGesture))
         ]
 
         backgroundHolder.addSubview(title)
@@ -948,7 +1051,8 @@ class TabCell: UICollectionViewCell {
 
         favicon.snp.makeConstraints { make in
             make.leading.equalTo(title.contentView).offset(6)
-            make.top.equalTo((TabTrayControllerUX.TextBoxHeight - TabTrayControllerUX.FaviconSize) / 2)
+            make.top.equalTo(
+                (TabTrayControllerUX.TextBoxHeight - TabTrayControllerUX.FaviconSize) / 2)
             make.size.equalTo(TabTrayControllerUX.FaviconSize)
         }
 
@@ -968,12 +1072,16 @@ class TabCell: UICollectionViewCell {
         // This creates a border around a tabcell. Using the shadow craetes a border _outside_ of the tab frame.
         layer.shadowColor = color.cgColor
         layer.shadowOpacity = 1
-        layer.shadowRadius = 0 // A 0 radius creates a solid border instead of a gradient blur
+        layer.shadowRadius = 0  // A 0 radius creates a solid border instead of a gradient blur
         layer.masksToBounds = false
         // create a frame that is "BorderWidth" size bigger than the cell
         layer.shadowOffset = CGSize(width: -width, height: -width)
-        let shadowPath = CGRect(width: layer.frame.width + (width * 2), height: layer.frame.height + (width * 2))
-        layer.shadowPath = UIBezierPath(roundedRect: shadowPath, cornerRadius: TabTrayControllerUX.CornerRadius+width).cgPath
+        let shadowPath = CGRect(
+            width: layer.frame.width + (width * 2), height: layer.frame.height + (width * 2))
+        layer.shadowPath =
+            UIBezierPath(
+                roundedRect: shadowPath, cornerRadius: TabTrayControllerUX.CornerRadius + width
+            ).cgPath
     }
 
     func updateTabBorder() {
@@ -1010,7 +1118,8 @@ class TabCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        backgroundHolder.frame = CGRect(x: margin, y: margin, width: frame.width, height: frame.height)
+        backgroundHolder.frame = CGRect(
+            x: margin, y: margin, width: frame.width, height: frame.height)
         screenshotView.frame = CGRect(size: backgroundHolder.frame.size)
 
         updateTabBorder()
@@ -1031,7 +1140,9 @@ class TabCell: UICollectionViewCell {
         accessibilityHint = .TabTraySwipeToCloseAccessibilityHint
 
         if let favIcon = tab.displayFavicon {
-            favicon.sd_setImage(with: favIcon.url, placeholderImage: UIImage(named: "defaultFavicon"), options: [], completed: nil)
+            favicon.sd_setImage(
+                with: favIcon.url, placeholderImage: UIImage(named: "defaultFavicon"), options: [],
+                completed: nil)
         } else {
             favicon.image = UIImage(named: "defaultFavicon")
             favicon.tintColor = .label

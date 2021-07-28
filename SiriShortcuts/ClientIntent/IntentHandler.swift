@@ -22,7 +22,9 @@ class OpenURLIntentHandler: NSObject, OpenURLIntentHandling {
 }
 
 class SearchNeevaIntentHandler: NSObject, SearchNeevaIntentHandling {
-    func resolveText(for intent: SearchNeevaIntent, with completion: @escaping (INStringResolutionResult) -> Void) {
+    func resolveText(
+        for intent: SearchNeevaIntent, with completion: @escaping (INStringResolutionResult) -> Void
+    ) {
         if let query = intent.text {
             completion(.success(with: query))
         } else {
@@ -30,7 +32,9 @@ class SearchNeevaIntentHandler: NSObject, SearchNeevaIntentHandling {
         }
     }
 
-    func handle(intent: SearchNeevaIntent, completion: @escaping (SearchNeevaIntentResponse) -> Void) {
+    func handle(
+        intent: SearchNeevaIntent, completion: @escaping (SearchNeevaIntentResponse) -> Void
+    ) {
         completion(SearchNeevaIntentResponse(code: .continueInApp, userActivity: nil))
     }
 }

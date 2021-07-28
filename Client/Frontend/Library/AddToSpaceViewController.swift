@@ -1,14 +1,14 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct AddToSpaceRootView: View {
     var overlaySheetModel = OverlaySheetModel()
 
     @StateObject var request: AddToSpaceRequest
-    var onDismiss: () -> ()
-    var onOpenURL: (URL) -> ()
+    var onDismiss: () -> Void
+    var onOpenURL: (URL) -> Void
 
     private var overlaySheetIsFixedHeight: Bool {
         switch request.mode {
@@ -21,18 +21,22 @@ struct AddToSpaceRootView: View {
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: true)
-        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() }) {
+        OverlaySheetView(
+            model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() }
+        ) {
             AddToSpaceView(
-                request: request, onDismiss: {
+                request: request,
+                onDismiss: {
                     // The user made a selection. Store that and run the animation to hide the
                     // sheet. When that completes, we'll run the provided onDismiss callback.
                     self.overlaySheetModel.hide()
-                })
-                .environment(\.onOpenURL, { self.onOpenURL($0) })
-                .overlaySheetTitle(title: request.mode.title)
-                .overlaySheetIsFixedHeight(isFixedHeight: self.overlaySheetIsFixedHeight)
+                }
+            )
+            .environment(\.onOpenURL, { self.onOpenURL($0) })
+            .overlaySheetTitle(title: request.mode.title)
+            .overlaySheetIsFixedHeight(isFixedHeight: self.overlaySheetIsFixedHeight)
         }
-        .onAppear() {
+        .onAppear {
             // It seems to be necessary to delay starting the animation until this point to
             // avoid a visual artifact.
             DispatchQueue.main.async {
@@ -43,8 +47,13 @@ struct AddToSpaceRootView: View {
 }
 
 class AddToSpaceViewController: UIHostingController<AddToSpaceRootView> {
-    init(request: AddToSpaceRequest, onDismiss: @escaping () -> (), onOpenURL: @escaping (URL) -> ()) {
-        super.init(rootView: AddToSpaceRootView(request: request, onDismiss: onDismiss, onOpenURL: onOpenURL))
+    init(
+        request: AddToSpaceRequest, onDismiss: @escaping () -> Void,
+        onOpenURL: @escaping (URL) -> Void
+    ) {
+        super.init(
+            rootView: AddToSpaceRootView(
+                request: request, onDismiss: onDismiss, onOpenURL: onOpenURL))
         self.view.accessibilityViewIsModal = true
     }
 

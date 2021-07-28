@@ -5,32 +5,30 @@
 import Foundation
 import SwiftyJSON
 
-public extension JSON {
-    func isStringOrNull() -> Bool {
-        return self.isString() ||
-               self.isNull()
+extension JSON {
+    public func isStringOrNull() -> Bool {
+        return self.isString() || self.isNull()
     }
 
-    func isError() -> Bool {
+    public func isError() -> Bool {
         return self.error != nil
     }
 
-    func isString() -> Bool {
+    public func isString() -> Bool {
         // SwiftyJSON doesn't link values to types; it's possible for `self.type == .string` but
         // `self.string` to return `nil`. Validate both.
-        return self.type == .string &&
-               self.string != nil
+        return self.type == .string && self.string != nil
     }
 
-    func isBool() -> Bool {
+    public func isBool() -> Bool {
         return self.type == .bool
     }
 
-    func isArray() -> Bool {
+    public func isArray() -> Bool {
         return self.type == .array
     }
 
-    func isDictionary() -> Bool {
+    public func isDictionary() -> Bool {
         return self.type == .dictionary
     }
 
@@ -40,26 +38,26 @@ public extension JSON {
     // myObj["foo"] = someOptional ?? NSNull()
     // ```
     // This is… easy to get wrong.
-    func isNull() -> Bool {
+    public func isNull() -> Bool {
         return self.type == .null
     }
 
-    func isInt() -> Bool {
+    public func isInt() -> Bool {
         return self.type == .number && self.int != nil
     }
 
-    func isNumber() -> Bool {
+    public func isNumber() -> Bool {
         return self.type == .number && self.number != nil
     }
 
-    func isDouble() -> Bool {
+    public func isDouble() -> Bool {
         return self.type == .number && self.double != nil
     }
 
     // SwiftyJSON pretty prints the string value by default. Since all of our
     // existing code required the string to not be pretty printed, this helper
     // can be used as a shorthand for non-pretty printed strings.
-    func stringify() -> String? {
+    public func stringify() -> String? {
         return self.rawString(.utf8, options: [])
     }
 }

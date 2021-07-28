@@ -16,7 +16,7 @@ class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController
     }
 
     @discardableResult static func getSpaces(
-        completion: @escaping (Result<[Space], Error>) -> ()
+        completion: @escaping (Result<[Space], Error>) -> Void
     ) -> Apollo.Cancellable {
         Self.perform(query: ListSpacesQuery(kind: .all), completion: completion)
     }
@@ -29,7 +29,10 @@ extension SpaceListController.Space: Identifiable {
 }
 
 /// Retrieves all URLs for a space
-class SpacesDataQueryController: QueryController<GetSpacesDataQuery, [SpacesDataQueryController.Space]> {
+class SpacesDataQueryController: QueryController<
+    GetSpacesDataQuery, [SpacesDataQueryController.Space]
+>
+{
     struct Space {
         var id: String
         var entities: [(URL, String?)]
@@ -70,7 +73,7 @@ class SpacesDataQueryController: QueryController<GetSpacesDataQuery, [SpacesData
 
     @discardableResult static func getSpacesData(
         spaceIds: [String],
-        completion: @escaping (Result<[Space], Error>) -> ()
+        completion: @escaping (Result<[Space], Error>) -> Void
     ) -> Apollo.Cancellable {
         Self.perform(query: GetSpacesDataQuery(ids: spaceIds), completion: completion)
     }

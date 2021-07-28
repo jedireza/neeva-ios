@@ -4,12 +4,14 @@
 
 import Foundation
 import Shared
-@testable import Storage
 import XCTest
+
+@testable import Storage
 
 class MockFiles: FileAccessor {
     init() {
-        let docPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let docPath = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true)[0]
         super.init(rootPath: (docPath as NSString).appendingPathComponent("testing"))
     }
 }
@@ -25,8 +27,9 @@ class TestSQLiteHistoryFrecencyPerf: XCTestCase {
 
         history.clearHistory().succeeded()
         populateHistoryForFrecencyCalculations(history, siteCount: count)
-        self.measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: true) {
-                history.getFrecentHistory().getSites(matchingSearchQuery: nil, limit: 10).succeeded()
+        self.measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: true)
+        {
+            history.getFrecentHistory().getSites(matchingSearchQuery: nil, limit: 10).succeeded()
             self.stopMeasuring()
         }
     }
@@ -71,7 +74,8 @@ class TestSQLiteHistoryTopSitesCachePref: XCTestCase {
         populateHistoryForFrecencyCalculations(history, siteCount: count)
 
         history.setTopSitesNeedsInvalidation()
-        self.measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: true) {
+        self.measureMetrics([XCTPerformanceMetric.wallClockTime], automaticallyStartMeasuring: true)
+        {
             history.repopulate(invalidateTopSites: true).succeeded()
             self.stopMeasuring()
         }

@@ -1,11 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
-import XCTest
-@testable import Client
-import ViewInspector
+import Defaults
 import Shared
 import SwiftUI
-import Defaults
+import ViewInspector
+import XCTest
+
+@testable import Client
 
 class CardTests: XCTestCase {
 
@@ -16,7 +17,8 @@ class CardTests: XCTestCase {
     var tabCardModel: TabCardModel!
     var tabGroupCardModel: TabGroupCardModel!
 
-    fileprivate let spyDidSelectedTabChange = "tabManager(_:didSelectedTabChange:previous:isRestoring:)"
+    fileprivate let spyDidSelectedTabChange =
+        "tabManager(_:didSelectedTabChange:previous:isRestoring:)"
     fileprivate let spyRestoredTabs = "tabManagerDidRestoreTabs(_:)"
     fileprivate let spyAddTab = "tabManager(_:didAddTab:isRestoring:)"
 
@@ -82,13 +84,19 @@ class CardTests: XCTestCase {
                 XCTAssertEqual(self.groupManager.tabGroups.count, 1)
                 XCTAssertEqual(self.tabGroupCardModel.allDetails.count, 1)
                 XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.id, tab1.rootUUID)
-                XCTAssertTrue(self.tabGroupCardModel.allDetails.first?.thumbnail is ThumbnailGroupView<TabGroupCardDetails>)
+                XCTAssertTrue(
+                    self.tabGroupCardModel.allDetails.first?.thumbnail
+                        is ThumbnailGroupView<TabGroupCardDetails>)
 
                 XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.count, 2)
-                XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.first?.id, tab1.tabUUID)
-                XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.last?.id, tab2.tabUUID)
+                XCTAssertEqual(
+                    self.tabGroupCardModel.allDetails.first?.allDetails.first?.id, tab1.tabUUID)
+                XCTAssertEqual(
+                    self.tabGroupCardModel.allDetails.first?.allDetails.last?.id, tab2.tabUUID)
 
-                let thumbnail = self.tabGroupCardModel.allDetails.first!.thumbnail as! ThumbnailGroupView<TabGroupCardDetails>
+                let thumbnail =
+                    self.tabGroupCardModel.allDetails.first!.thumbnail
+                    as! ThumbnailGroupView<TabGroupCardDetails>
                 XCTAssertEqual(thumbnail.numItems, 2)
 
                 let tab3 = self.manager.addTab(afterTab: tab1)
@@ -97,7 +105,8 @@ class CardTests: XCTestCase {
                     XCTAssertEqual(self.tabGroupCardModel.allDetails.count, 1)
 
                     XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.count, 3)
-                    XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.last?.id, tab3.tabUUID)
+                    XCTAssertEqual(
+                        self.tabGroupCardModel.allDetails.first?.allDetails.last?.id, tab3.tabUUID)
                     XCTAssertEqual(thumbnail.numItems, 3)
                 }
             }

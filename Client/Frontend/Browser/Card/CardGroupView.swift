@@ -6,29 +6,34 @@ import SwiftUI
 
 struct ThumbnailGroupSpec: ViewModifier {
     let size: CGFloat
-    let onSelect: () -> ()
+    let onSelect: () -> Void
 
     func body(content: Content) -> some View {
-        Button(action: {
-            onSelect()
-        }, label: {
-            content.frame(width: size, height: size)
-                .cornerRadius(CardUX.CornerRadius)
-                .overlay(RoundedRectangle(cornerRadius: CardUX.CornerRadius)
+        Button(
+            action: {
+                onSelect()
+            },
+            label: {
+                content.frame(width: size, height: size)
+                    .cornerRadius(CardUX.CornerRadius)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: CardUX.CornerRadius)
                             .stroke(Color.tertiaryLabel))
-        })
+            })
     }
 }
 
-private extension View {
-    func applyThumbnailGroupSpec(size: CGFloat, onSelect: @escaping () -> ()) -> some View {
+extension View {
+    fileprivate func applyThumbnailGroupSpec(size: CGFloat, onSelect: @escaping () -> Void)
+        -> some View
+    {
         self.modifier(ThumbnailGroupSpec(size: size, onSelect: onSelect))
     }
 }
 
 struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
-    @Environment(\.selectionCompletion) var selectionCompletion: () -> ()
+    @Environment(\.selectionCompletion) var selectionCompletion: () -> Void
     @Environment(\.cardSize) private var size
 
     let spacing: CGFloat = 12
@@ -50,28 +55,33 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
         (itemSize - smallSpacing) / 2
     }
 
-
     var columns: [GridItem] {
-        Array(repeating: GridItem(.fixed(itemSize),
-                                  spacing: spacing,
-                                  alignment: .top),
-              count: 2)
+        Array(
+            repeating: GridItem(
+                .fixed(itemSize),
+                spacing: spacing,
+                alignment: .top),
+            count: 2)
     }
 
     var smallColumns: [GridItem] {
-        Array(repeating: GridItem(.fixed(smallItemSize),
-                                  spacing: smallSpacing),
-              count: 2)
+        Array(
+            repeating: GridItem(
+                .fixed(smallItemSize),
+                spacing: smallSpacing),
+            count: 2)
     }
 
-    func itemFor( _ index: Int) -> some View {
+    func itemFor(_ index: Int) -> some View {
         let item = model.allDetails[index]
         let blockSize = numItems < 5 ? itemSize : (index < 3 ? itemSize : smallItemSize)
         return item.thumbnail.applyThumbnailGroupSpec(
-            size: blockSize, onSelect: index < 3 ? {
-                item.onSelect()
-                selectionCompletion()
-            } : {})
+            size: blockSize,
+            onSelect: index < 3
+                ? {
+                    item.onSelect()
+                    selectionCompletion()
+                } : {})
     }
 
     var body: some View {
@@ -82,21 +92,23 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
             if numItems == 4 {
                 itemFor(3)
             } else if numItems > 4 {
-                LazyVGrid(columns: smallColumns,
-                          alignment: .center, spacing: 4) {
+                LazyVGrid(
+                    columns: smallColumns,
+                    alignment: .center, spacing: 4
+                ) {
                     ForEach((3..<numItems).prefix(4), id: \.self) { index in
                         itemFor(index)
                     }
                 }
             }
         }.padding(10).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.white)
+            .background(Color.white)
     }
 }
 
 // MARK: ColorThumbnail for Preview
 
-fileprivate class PreviewThumbnailModel: ThumbnailModel {
+private class PreviewThumbnailModel: ThumbnailModel {
     fileprivate struct ColorThumbnail: SelectableThumbnail {
         let color: Color
         var thumbnail: some View { color }

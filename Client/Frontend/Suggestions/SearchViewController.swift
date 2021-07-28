@@ -2,16 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
+import Apollo
+import Defaults
 import Shared
 import Storage
 import SwiftUI
-import Apollo
-import Defaults
+import UIKit
 
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ searchViewController: SearchViewController, didSelectURL url: URL)
-    func searchViewController(_ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String)
+    func searchViewController(
+        _ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String)
 }
 
 enum SearchViewControllerUX {
@@ -25,8 +26,8 @@ struct SuggestionsView: View {
     @ObservedObject var neevaModel: NeevaSuggestionModel
     let navModel: NavSuggestionModel
     let getKeyboardHeight: () -> CGFloat
-    let onOpenURL: (URL) -> ()
-    let setSearchInput: (String) -> ()
+    let onOpenURL: (URL) -> Void
+    let setSearchInput: (String) -> Void
 
     var body: some View {
         GeometryReader { outerGeometry in
@@ -73,7 +74,10 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
         self.historyModel = historyModel
         self.neevaModel = neevaModel
         self.navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
-        super.init(rootView: SuggestionsView(historyModel: historyModel, neevaModel: neevaModel, navModel: navModel, getKeyboardHeight: { 0 }, onOpenURL: { _ in }, setSearchInput: { _ in }))
+        super.init(
+            rootView: SuggestionsView(
+                historyModel: historyModel, neevaModel: neevaModel, navModel: navModel,
+                getKeyboardHeight: { 0 }, onOpenURL: { _ in }, setSearchInput: { _ in }))
         self.render()
     }
 
@@ -87,7 +91,9 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
             neevaModel: neevaModel,
             navModel: navModel,
             getKeyboardHeight: { [weak self] in
-                if let view = self?.view, let currentState = KeyboardHelper.defaultHelper.currentState {
+                if let view = self?.view,
+                    let currentState = KeyboardHelper.defaultHelper.currentState
+                {
                     return currentState.intersectionHeightForView(view)
                 } else {
                     return 0
@@ -117,14 +123,20 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
         neevaModel.reload()
     }
 
-    func keyboardHelper(_ keyboardHelper: KeyboardHelper, keyboardWillShowWithState state: KeyboardState) {
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardWillShowWithState state: KeyboardState
+    ) {
         animateSearchEnginesWithKeyboard(state)
     }
 
-    func keyboardHelper(_ keyboardHelper: KeyboardHelper, keyboardDidShowWithState state: KeyboardState) {
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardDidShowWithState state: KeyboardState
+    ) {
     }
 
-    func keyboardHelper(_ keyboardHelper: KeyboardHelper, keyboardWillHideWithState state: KeyboardState) {
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardWillHideWithState state: KeyboardState
+    ) {
         animateSearchEnginesWithKeyboard(state)
     }
 
@@ -137,62 +149,61 @@ class SearchViewController: UIHostingController<SuggestionsView>, KeyboardHelper
 }
 
 extension SearchViewController {
-//    func handleKeyCommands(sender: UIKeyCommand) {
-//        let initialSection = SearchListSection.bookmarksAndHistory.rawValue
-//        guard let current = tableView.indexPathForSelectedRow else {
-//            let count = tableView(tableView, numberOfRowsInSection: initialSection)
-//            if sender.input == UIKeyCommand.inputDownArrow, count > 0 {
-//                let next = IndexPath(item: 0, section: initialSection)
-//                self.tableView(tableView, didHighlightRowAt: next)
-//                tableView.selectRow(at: next, animated: false, scrollPosition: .top)
-//            }
-//            return
-//        }
-//
-//        let nextSection: Int
-//        let nextItem: Int
-//        guard let input = sender.input else { return }
-//        switch input {
-//        case UIKeyCommand.inputUpArrow:
-//            // we're going down, we should check if we've reached the first item in this section.
-//            if current.item == 0 {
-//                // We have, so check if we can decrement the section.
-//                if current.section == initialSection {
-//                    // We've reached the first item in the first section.
-//                    searchDelegate?.searchViewController(self, didHighlightText: searchQuery, search: false)
-//                    return
-//                } else {
-//                    nextSection = current.section - 1
-//                    nextItem = tableView(tableView, numberOfRowsInSection: nextSection) - 1
-//                }
-//            } else {
-//                nextSection = current.section
-//                nextItem = current.item - 1
-//            }
-//        case UIKeyCommand.inputDownArrow:
-//            let currentSectionItemsCount = tableView(tableView, numberOfRowsInSection: current.section)
-//            if current.item == currentSectionItemsCount - 1 {
-//                if current.section == tableView.numberOfSections - 1 {
-//                    // We've reached the last item in the last section
-//                    return
-//                } else {
-//                    // We can go to the next section.
-//                    nextSection = current.section + 1
-//                    nextItem = 0
-//                }
-//            } else {
-//                nextSection = current.section
-//                nextItem = current.item + 1
-//            }
-//        default:
-//            return
-//        }
-//        guard nextItem >= 0 else {
-//            return
-//        }
-//        let next = IndexPath(item: nextItem, section: nextSection)
-//        self.tableView(tableView, didHighlightRowAt: next)
-//        tableView.selectRow(at: next, animated: false, scrollPosition: .middle)
-//    }
+    //    func handleKeyCommands(sender: UIKeyCommand) {
+    //        let initialSection = SearchListSection.bookmarksAndHistory.rawValue
+    //        guard let current = tableView.indexPathForSelectedRow else {
+    //            let count = tableView(tableView, numberOfRowsInSection: initialSection)
+    //            if sender.input == UIKeyCommand.inputDownArrow, count > 0 {
+    //                let next = IndexPath(item: 0, section: initialSection)
+    //                self.tableView(tableView, didHighlightRowAt: next)
+    //                tableView.selectRow(at: next, animated: false, scrollPosition: .top)
+    //            }
+    //            return
+    //        }
+    //
+    //        let nextSection: Int
+    //        let nextItem: Int
+    //        guard let input = sender.input else { return }
+    //        switch input {
+    //        case UIKeyCommand.inputUpArrow:
+    //            // we're going down, we should check if we've reached the first item in this section.
+    //            if current.item == 0 {
+    //                // We have, so check if we can decrement the section.
+    //                if current.section == initialSection {
+    //                    // We've reached the first item in the first section.
+    //                    searchDelegate?.searchViewController(self, didHighlightText: searchQuery, search: false)
+    //                    return
+    //                } else {
+    //                    nextSection = current.section - 1
+    //                    nextItem = tableView(tableView, numberOfRowsInSection: nextSection) - 1
+    //                }
+    //            } else {
+    //                nextSection = current.section
+    //                nextItem = current.item - 1
+    //            }
+    //        case UIKeyCommand.inputDownArrow:
+    //            let currentSectionItemsCount = tableView(tableView, numberOfRowsInSection: current.section)
+    //            if current.item == currentSectionItemsCount - 1 {
+    //                if current.section == tableView.numberOfSections - 1 {
+    //                    // We've reached the last item in the last section
+    //                    return
+    //                } else {
+    //                    // We can go to the next section.
+    //                    nextSection = current.section + 1
+    //                    nextItem = 0
+    //                }
+    //            } else {
+    //                nextSection = current.section
+    //                nextItem = current.item + 1
+    //            }
+    //        default:
+    //            return
+    //        }
+    //        guard nextItem >= 0 else {
+    //            return
+    //        }
+    //        let next = IndexPath(item: nextItem, section: nextSection)
+    //        self.tableView(tableView, didHighlightRowAt: next)
+    //        tableView.selectRow(at: next, animated: false, scrollPosition: .middle)
+    //    }
 }
-

@@ -9,7 +9,10 @@ import XCTest
 class SiteLoadTest: BaseTestCase {
     func testLoadSite() {
 
-        let site = ["http://www.forbes.com", "http://www.amazon.com", "http://theguardian.com", "http://www.reddit.com", "http://cnn.com"]
+        let site = [
+            "http://www.forbes.com", "http://www.amazon.com", "http://theguardian.com",
+            "http://www.reddit.com", "http://cnn.com",
+        ]
         let durationInHrs = 1
         let futureDate = Date().addingTimeInterval(TimeInterval(60 * 60 * durationInHrs))
         var counter = 0

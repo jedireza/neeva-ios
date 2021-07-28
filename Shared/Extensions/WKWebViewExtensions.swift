@@ -10,7 +10,7 @@ import WebKit
 private let USE_NEW_SANDBOX_APIS = false
 
 extension WKWebView {
-    
+
     /// This calls different WebKit evaluateJavaScript functions depending on iOS version
     ///  - If iOS14 or higher, evaluates Javascript in a .defaultClient sandboxed content world
     ///  - If below iOS14, evaluates Javascript without sandboxed environment
@@ -19,7 +19,8 @@ extension WKWebView {
     public func evaluateJavascriptInDefaultContentWorld(_ javascript: String) {
         #if compiler(>=5.3)
             if #available(iOS 14.0, *), USE_NEW_SANDBOX_APIS {
-                self.evaluateJavaScript(javascript, in: nil, in: .defaultClient, completionHandler: { _ in })
+                self.evaluateJavaScript(
+                    javascript, in: nil, in: .defaultClient, completionHandler: { _ in })
             } else {
                 self.evaluateJavaScript(javascript)
             }
@@ -27,14 +28,16 @@ extension WKWebView {
             self.evaluateJavaScript(javascript)
         #endif
     }
-    
+
     /// This calls different WebKit evaluateJavaScript functions depending on iOS version with a completion that passes a tuple with optional data or an optional error
     ///  - If iOS14 or higher, evaluates Javascript in a .defaultClient sandboxed content world
     ///  - If below iOS14, evaluates Javascript without sandboxed environment
     /// - Parameters:
     ///     - javascript: String representing javascript to be evaluated
     ///     - completion: Tuple containing optional data and an optional error
-    public func evaluateJavascriptInDefaultContentWorld(_ javascript: String,_ completion: @escaping ((Any?, Error?) -> Void)) {
+    public func evaluateJavascriptInDefaultContentWorld(
+        _ javascript: String, _ completion: @escaping ((Any?, Error?) -> Void)
+    ) {
         #if compiler(>=5.3)
             if #available(iOS 14.0, *), USE_NEW_SANDBOX_APIS {
                 self.evaluateJavaScript(javascript, in: nil, in: .defaultClient) { result in
@@ -46,12 +49,12 @@ extension WKWebView {
                     }
                 }
             } else {
-                self.evaluateJavaScript(javascript) { data, error  in
+                self.evaluateJavaScript(javascript) { data, error in
                     completion(data, error)
                 }
             }
         #else
-            self.evaluateJavaScript(javascript) { data, error  in
+            self.evaluateJavaScript(javascript) { data, error in
                 completion(data, error)
             }
         #endif
@@ -59,7 +62,8 @@ extension WKWebView {
 }
 
 extension WKUserContentController {
-    public func addInDefaultContentWorld(scriptMessageHandler: WKScriptMessageHandler, name: String) {
+    public func addInDefaultContentWorld(scriptMessageHandler: WKScriptMessageHandler, name: String)
+    {
         if #available(iOS 14.0, *), USE_NEW_SANDBOX_APIS {
             add(scriptMessageHandler, contentWorld: .defaultClient, name: name)
         } else {
@@ -69,11 +73,16 @@ extension WKUserContentController {
 }
 
 extension WKUserScript {
-    public class func createInDefaultContentWorld(source: String, injectionTime: WKUserScriptInjectionTime, forMainFrameOnly: Bool) -> WKUserScript {
+    public class func createInDefaultContentWorld(
+        source: String, injectionTime: WKUserScriptInjectionTime, forMainFrameOnly: Bool
+    ) -> WKUserScript {
         if #available(iOS 14.0, *), USE_NEW_SANDBOX_APIS {
-            return WKUserScript(source: source, injectionTime: injectionTime, forMainFrameOnly: forMainFrameOnly, in: .defaultClient)
+            return WKUserScript(
+                source: source, injectionTime: injectionTime, forMainFrameOnly: forMainFrameOnly,
+                in: .defaultClient)
         } else {
-            return WKUserScript(source: source, injectionTime: injectionTime, forMainFrameOnly: forMainFrameOnly)
+            return WKUserScript(
+                source: source, injectionTime: injectionTime, forMainFrameOnly: forMainFrameOnly)
         }
     }
 }

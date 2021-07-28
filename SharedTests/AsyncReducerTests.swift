@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import XCTest
+
 @testable import Shared
 
 private let timeoutPeriod: TimeInterval = 600
@@ -103,7 +104,9 @@ class AsyncReducerTests: XCTestCase {
 }
 
 extension AsyncReducerTests {
-    func happyCase(_ expectation: XCTestExpectation, combine: @escaping (Int, Int) -> Deferred<Maybe<Int>>) {
+    func happyCase(
+        _ expectation: XCTestExpectation, combine: @escaping (Int, Int) -> Deferred<Maybe<Int>>
+    ) {
         let reducer = AsyncReducer(initialValue: 0, combine: combine)
         reducer.terminal.upon { res in
             XCTAssert(res.isSuccess)
@@ -115,7 +118,9 @@ extension AsyncReducerTests {
         waitForExpectations(timeout: timeoutPeriod, handler: nil)
     }
 
-    func appendingCase(_ expectation: XCTestExpectation, combine: @escaping (Int, Int) -> Deferred<Maybe<Int>>) {
+    func appendingCase(
+        _ expectation: XCTestExpectation, combine: @escaping (Int, Int) -> Deferred<Maybe<Int>>
+    ) {
         let reducer = AsyncReducer(initialValue: 0, combine: combine)
         reducer.terminal.upon { res in
             XCTAssert(res.isSuccess)
@@ -145,11 +150,13 @@ class TestError: MaybeErrorType {
 }
 
 private let serialQueue = DispatchQueue(label: "co.neeva.test.serial", attributes: [])
-private let concurrentQueue = DispatchQueue(label: "co.neeva.test.concurrent", attributes: DispatchQueue.Attributes.concurrent)
+private let concurrentQueue = DispatchQueue(
+    label: "co.neeva.test.concurrent", attributes: DispatchQueue.Attributes.concurrent)
 
-func delay(_ delay: Double, closure:@escaping () -> Void) {
+func delay(_ delay: Double, closure: @escaping () -> Void) {
     concurrentQueue.asyncAfter(
-        deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
+        deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC)))
+            / Double(NSEC_PER_SEC), execute: closure)
 }
 
 private func simpleAdder(_ a: Int, b: Int) -> Deferred<Maybe<Int>> {
@@ -163,4 +170,3 @@ private func waitingFillingAdder(_ a: Int, b: Int) -> Deferred<Maybe<Int>> {
     }
     return deferred
 }
-

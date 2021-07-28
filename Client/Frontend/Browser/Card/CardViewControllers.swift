@@ -1,9 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
 import Foundation
-import SwiftUI
 import Shared
 import SnapKit
+import SwiftUI
 
 public enum CardControllerUX {
     static let BottomPadding: CGFloat = 50
@@ -107,13 +107,14 @@ class CardStripViewController: UIHostingController<CardStripViewController.Conte
             rootView: Content(
                 tabCardModel: tabCardModel,
                 spaceCardModel: SpaceCardModel(),
-                sitesCardModel: SiteCardModel(urls: [], profile: BrowserViewController.foregroundBVC().profile),
+                sitesCardModel: SiteCardModel(
+                    urls: [], profile: BrowserViewController.foregroundBVC().profile),
                 cardStripModel: cardStripModel
             )
         )
         cardStripModel.onToggleVisible = { isVisible in
             self.view.superview?.layoutIfNeeded()
-            
+
             if isVisible {
                 self.view.snp.makeConstraints { make in
                     self.leadingConstraint = make.leading.equalToSuperview().constraint
@@ -122,11 +123,13 @@ class CardStripViewController: UIHostingController<CardStripViewController.Conte
                 self.leadingConstraint?.update(
                     offset: UIScreen.main.bounds.width - CardControllerUX.HandleWidth)
             }
-            
-            UIView.animate(withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.85,
-                           initialSpringVelocity: 0.0, options: [], animations: {
-                            self.view.superview?.layoutIfNeeded()
-                           })
+
+            UIView.animate(
+                withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.85,
+                initialSpringVelocity: 0.0, options: [],
+                animations: {
+                    self.view.superview?.layoutIfNeeded()
+                })
         }
     }
 

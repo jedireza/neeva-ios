@@ -39,7 +39,10 @@ public struct RemoteClient: Equatable {
         self.fxaDeviceId = json["fxaDeviceId"].string
     }
 
-    public init(guid: GUID?, name: String, modified: Timestamp, type: String?, formfactor: String?, os: String?, version: String?, fxaDeviceId: String?) {
+    public init(
+        guid: GUID?, name: String, modified: Timestamp, type: String?, formfactor: String?,
+        os: String?, version: String?, fxaDeviceId: String?
+    ) {
         self.guid = guid
         self.name = name
         self.modified = modified
@@ -57,19 +60,15 @@ public struct RemoteClient: Equatable {
 }
 
 // TODO: should this really compare tabs?
-public func ==(lhs: RemoteClient, rhs: RemoteClient) -> Bool {
-    return lhs.guid == rhs.guid &&
-        lhs.name == rhs.name &&
-        lhs.modified == rhs.modified &&
-        lhs.type == rhs.type &&
-        lhs.formfactor == rhs.formfactor &&
-        lhs.os == rhs.os &&
-        lhs.version == rhs.version &&
-        lhs.fxaDeviceId == rhs.fxaDeviceId
+public func == (lhs: RemoteClient, rhs: RemoteClient) -> Bool {
+    return lhs.guid == rhs.guid && lhs.name == rhs.name && lhs.modified == rhs.modified
+        && lhs.type == rhs.type && lhs.formfactor == rhs.formfactor && lhs.os == rhs.os
+        && lhs.version == rhs.version && lhs.fxaDeviceId == rhs.fxaDeviceId
 }
 
 extension RemoteClient: CustomStringConvertible {
     public var description: String {
-        return "<RemoteClient GUID: \(guid ?? "nil"), name: \(name), modified: \(modified), type: \(type ?? "nil"), formfactor: \(formfactor ?? "nil"), OS: \(os ?? "nil"), version: \(version ?? "nil"), fxaDeviceId: \(fxaDeviceId ?? "nil")>"
+        return
+            "<RemoteClient GUID: \(guid ?? "nil"), name: \(name), modified: \(modified), type: \(type ?? "nil"), formfactor: \(formfactor ?? "nil"), OS: \(os ?? "nil"), version: \(version ?? "nil"), fxaDeviceId: \(fxaDeviceId ?? "nil")>"
     }
 }

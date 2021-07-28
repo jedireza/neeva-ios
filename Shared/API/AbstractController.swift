@@ -5,7 +5,7 @@ import SwiftUI
 /// Contains functionality used by both `QueryController` and `MutationController`
 open class AbstractController {
     var animation: Animation?
-    
+
     public init(animation: Animation? = nil) {
         self.animation = animation
     }

@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import Shared
 import Storage
+import UIKit
 import WebKit
 
 protocol TabPeekDelegate: AnyObject {
@@ -27,9 +27,7 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
 
     // Preview action items.
     override var previewActionItems: [UIPreviewActionItem] {
-        get {
-            return previewActions
-        }
+        return previewActions
     }
 
     lazy var previewActions: [UIPreviewActionItem] = {
@@ -40,18 +38,23 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
             // only add the copy URL action if we don't already have 3 items in our list
             // as we are only allowed 4 in total and we always want to display close tab
             if actions.count < 3 {
-                actions.append(UIPreviewAction(title: .TabPeekCopyUrl, style: .default) {[weak self] previewAction, viewController in
-                    guard let wself = self, let url = wself.tab?.canonicalURL else { return }
-                    UIPasteboard.general.url = url
+                actions.append(
+                    UIPreviewAction(title: .TabPeekCopyUrl, style: .default) {
+                        [weak self] previewAction, viewController in
+                        guard let wself = self, let url = wself.tab?.canonicalURL else { return }
+                        UIPasteboard.general.url = url
 
-                    let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
-                    ToastViewManager.shared.enqueue(toast: toastView)
-                })
+                        let toastView = ToastViewManager.shared.makeToast(
+                            text: Strings.AppMenuCopyURLConfirmMessage)
+                        ToastViewManager.shared.enqueue(toast: toastView)
+                    })
             }
         }
-        actions.append(UIPreviewAction(title: .TabPeekCloseTab, style: .destructive) { [weak self] previewAction, viewController in
-            guard let wself = self, let tab = wself.tab else { return }
-            wself.delegate?.tabPeekDidCloseTab(tab)
+        actions.append(
+            UIPreviewAction(title: .TabPeekCloseTab, style: .destructive) {
+                [weak self] previewAction, viewController in
+                guard let wself = self, let tab = wself.tab else { return }
+                wself.delegate?.tabPeekDidCloseTab(tab)
             })
 
         return actions
@@ -63,17 +66,23 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
 
         let urlIsTooLongToSave = self.tab?.urlIsTooLong ?? false
         if !self.ignoreURL && !urlIsTooLongToSave {
-            actions.append(UIAction(title: .TabPeekCopyUrl, image: UIImage(systemName: "link"), identifier: nil) {[weak self] _ in
-                guard let wself = self, let url = wself.tab?.canonicalURL else { return }
-                UIPasteboard.general.url = url
+            actions.append(
+                UIAction(
+                    title: .TabPeekCopyUrl, image: UIImage(systemName: "link"), identifier: nil
+                ) { [weak self] _ in
+                    guard let wself = self, let url = wself.tab?.canonicalURL else { return }
+                    UIPasteboard.general.url = url
 
-                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuCopyURLConfirmMessage)
-                ToastViewManager.shared.enqueue(toast: toastView)
-            })
+                    let toastView = ToastViewManager.shared.makeToast(
+                        text: Strings.AppMenuCopyURLConfirmMessage)
+                    ToastViewManager.shared.enqueue(toast: toastView)
+                })
         }
-        actions.append(UIAction(title: .TabPeekCloseTab, image: UIImage(systemName: "trash"), identifier: nil) { [weak self] _ in
-            guard let wself = self, let tab = wself.tab else { return }
-            wself.delegate?.tabPeekDidCloseTab(tab)
+        actions.append(
+            UIAction(title: .TabPeekCloseTab, image: UIImage(systemName: "trash"), identifier: nil)
+            { [weak self] _ in
+                guard let wself = self, let tab = wself.tab else { return }
+                wself.delegate?.tabPeekDidCloseTab(tab)
             })
 
         return UIMenu(title: "", children: actions)
@@ -98,7 +107,8 @@ class TabPeekViewController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let webViewAccessibilityLabel = tab?.webView?.accessibilityLabel {
-            previewAccessibilityLabel = String(format: .TabPeekPreviewAccessibilityLabel, webViewAccessibilityLabel)
+            previewAccessibilityLabel = String(
+                format: .TabPeekPreviewAccessibilityLabel, webViewAccessibilityLabel)
         }
         // if there is no screenshot, load the URL in a web page
         // otherwise just show the screenshot

@@ -5,9 +5,9 @@
 import Foundation
 import MobileCoreServices
 import PassKit
-import WebKit
 import QuickLook
 import Shared
+import WebKit
 
 struct MIMEType {
     static let Bitmap = "image/bmp"
@@ -26,14 +26,21 @@ struct MIMEType {
     static let USDZ = "model/vnd.usdz+zip"
     static let Reality = "model/vnd.reality"
 
-    private static let webViewViewableTypes: [String] = [MIMEType.Bitmap, MIMEType.GIF, MIMEType.JPEG, MIMEType.HTML, MIMEType.PDF, MIMEType.PlainText, MIMEType.PNG, MIMEType.WebP]
+    private static let webViewViewableTypes: [String] = [
+        MIMEType.Bitmap, MIMEType.GIF, MIMEType.JPEG, MIMEType.HTML, MIMEType.PDF,
+        MIMEType.PlainText, MIMEType.PNG, MIMEType.WebP,
+    ]
 
     static func canShowInWebView(_ mimeType: String) -> Bool {
         return webViewViewableTypes.contains(mimeType.lowercased())
     }
 
     static func mimeTypeFromFileExtension(_ fileExtension: String) -> String {
-        if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension as CFString, nil)?.takeRetainedValue(), let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+        if let uti = UTTypeCreatePreferredIdentifierForTag(
+            kUTTagClassFilenameExtension, fileExtension as CFString, nil)?.takeRetainedValue(),
+            let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?
+                .takeRetainedValue()
+        {
             return mimeType as String
         }
 
@@ -41,7 +48,11 @@ struct MIMEType {
     }
 
     static func fileExtensionFromMIMEType(_ mimeType: String) -> String? {
-        if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, mimeType as CFString, nil)?.takeRetainedValue(), let fileExtension = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassFilenameExtension)?.takeRetainedValue() {
+        if let uti = UTTypeCreatePreferredIdentifierForTag(
+            kUTTagClassMIMEType, mimeType as CFString, nil)?.takeRetainedValue(),
+            let fileExtension = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassFilenameExtension)?
+                .takeRetainedValue()
+        {
             return fileExtension as String
         }
         return nil
@@ -49,7 +60,9 @@ struct MIMEType {
 }
 
 protocol OpenInHelper {
-    init?(request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool, browserViewController: BrowserViewController)
+    init?(
+        request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool,
+        browserViewController: BrowserViewController)
     func open()
 }
 
@@ -60,11 +73,15 @@ class DownloadHelper: NSObject, OpenInHelper {
 
     static func requestDownload(url: URL, tab: Tab) {
         let safeUrl = url.absoluteString.replacingOccurrences(of: "'", with: "%27")
-        tab.webView?.evaluateJavascriptInDefaultContentWorld("window.__firefox__.download('\(safeUrl)', '\(UserScriptManager.appIdToken)')")
+        tab.webView?.evaluateJavascriptInDefaultContentWorld(
+            "window.__firefox__.download('\(safeUrl)', '\(UserScriptManager.appIdToken)')")
         TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .downloadLinkButton)
     }
-    
-    required init?(request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool, browserViewController: BrowserViewController) {
+
+    required init?(
+        request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool,
+        browserViewController: BrowserViewController
+    ) {
         guard let request = request else {
             return nil
         }
@@ -92,18 +109,27 @@ class DownloadHelper: NSObject, OpenInHelper {
             return
         }
 
-        guard let download = HTTPDownload(preflightResponse: preflightResponse, request: request) else {
+        guard let download = HTTPDownload(preflightResponse: preflightResponse, request: request)
+        else {
             return
         }
 
-        let expectedSize = download.totalBytesExpected != nil ? ByteCountFormatter.string(fromByteCount: download.totalBytesExpected!, countStyle: .file) : nil
-        browserViewController.showOverlaySheetViewController(DownloadViewController(fileName: download.filename, fileURL: host, fileSize: expectedSize, onDownload: {
-            self.browserViewController.downloadQueue.enqueue(download)
-            self.browserViewController.hideOverlaySheetViewController()
-            TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .downloadNowButton)
-        }, onDismiss: {
-            self.browserViewController.hideOverlaySheetViewController()
-        }))
+        let expectedSize =
+            download.totalBytesExpected != nil
+            ? ByteCountFormatter.string(
+                fromByteCount: download.totalBytesExpected!, countStyle: .file) : nil
+        browserViewController.showOverlaySheetViewController(
+            DownloadViewController(
+                fileName: download.filename, fileURL: host, fileSize: expectedSize,
+                onDownload: {
+                    self.browserViewController.downloadQueue.enqueue(download)
+                    self.browserViewController.hideOverlaySheetViewController()
+                    TelemetryWrapper.recordEvent(
+                        category: .action, method: .tap, object: .downloadNowButton)
+                },
+                onDismiss: {
+                    self.browserViewController.hideOverlaySheetViewController()
+                }))
     }
 }
 
@@ -112,9 +138,14 @@ class OpenPassBookHelper: NSObject, OpenInHelper {
 
     fileprivate let browserViewController: BrowserViewController
 
-    required init?(request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool, browserViewController: BrowserViewController) {
-        guard let mimeType = response.mimeType, mimeType == MIMEType.Passbook, PKAddPassesViewController.canAddPasses(),
-            let responseURL = response.url, !forceDownload else { return nil }
+    required init?(
+        request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool,
+        browserViewController: BrowserViewController
+    ) {
+        guard let mimeType = response.mimeType, mimeType == MIMEType.Passbook,
+            PKAddPassesViewController.canAddPasses(),
+            let responseURL = response.url, !forceDownload
+        else { return nil }
         self.url = responseURL
         self.browserViewController = browserViewController
         super.init()
@@ -135,10 +166,14 @@ class OpenPassBookHelper: NSObject, OpenInHelper {
                 }
             }
         } catch {
-            let alertController = UIAlertController(title: Strings.UnableToAddPassErrorTitle, message: Strings.UnableToAddPassErrorMessage, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: Strings.UnableToAddPassErrorDismiss, style: .cancel) { (action) in
+            let alertController = UIAlertController(
+                title: Strings.UnableToAddPassErrorTitle,
+                message: Strings.UnableToAddPassErrorMessage, preferredStyle: .alert)
+            alertController.addAction(
+                UIAlertAction(title: Strings.UnableToAddPassErrorDismiss, style: .cancel) {
+                    (action) in
                     // Do nothing.
-            })
+                })
             browserViewController.present(alertController, animated: true, completion: nil)
             return
         }
@@ -152,12 +187,16 @@ class OpenQLPreviewHelper: NSObject, OpenInHelper, QLPreviewControllerDataSource
 
     fileprivate let previewController: QLPreviewController
 
-    required init?(request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool, browserViewController: BrowserViewController) {
+    required init?(
+        request: URLRequest?, response: URLResponse, canShowInWebView: Bool, forceDownload: Bool,
+        browserViewController: BrowserViewController
+    ) {
         guard let mimeType = response.mimeType,
-                 (mimeType == MIMEType.USDZ || mimeType == MIMEType.Reality),
-                 let responseURL = response.url as NSURL?,
-                 !forceDownload,
-                 !canShowInWebView else { return nil }
+            mimeType == MIMEType.USDZ || mimeType == MIMEType.Reality,
+            let responseURL = response.url as NSURL?,
+            !forceDownload,
+            !canShowInWebView
+        else { return nil }
         self.url = responseURL
         self.browserViewController = browserViewController
         self.previewController = QLPreviewController()
@@ -167,7 +206,8 @@ class OpenQLPreviewHelper: NSObject, OpenInHelper, QLPreviewControllerDataSource
     func open() {
         self.previewController.dataSource = self
         ensureMainThread {
-            self.browserViewController.present(self.previewController, animated: true, completion: nil)
+            self.browserViewController.present(
+                self.previewController, animated: true, completion: nil)
         }
     }
 
@@ -175,7 +215,9 @@ class OpenQLPreviewHelper: NSObject, OpenInHelper, QLPreviewControllerDataSource
         return 1
     }
 
-    func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+    func previewController(_ controller: QLPreviewController, previewItemAt index: Int)
+        -> QLPreviewItem
+    {
         return self.url
     }
 }

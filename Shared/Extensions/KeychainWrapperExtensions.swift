@@ -3,22 +3,26 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import XCGLogger
 import SwiftKeychainWrapper
+import XCGLogger
 
 private let log = Logger.keychainLogger
 
-public extension KeychainWrapper {
-    static var sharedAppContainerKeychain: KeychainWrapper {
+extension KeychainWrapper {
+    public static var sharedAppContainerKeychain: KeychainWrapper {
         let baseBundleIdentifier = AppInfo.baseBundleIdentifier
-        let accessGroupPrefix = Bundle.main.object(forInfoDictionaryKey: "MozDevelopmentTeam") as! String
+        let accessGroupPrefix =
+            Bundle.main.object(forInfoDictionaryKey: "MozDevelopmentTeam") as! String
         let accessGroupIdentifier = AppInfo.keychainAccessGroupWithPrefix(accessGroupPrefix)
-        return KeychainWrapper(serviceName: baseBundleIdentifier, accessGroup: accessGroupIdentifier)
+        return KeychainWrapper(
+            serviceName: baseBundleIdentifier, accessGroup: accessGroupIdentifier)
     }
 }
 
-public extension KeychainWrapper {
-    func ensureStringItemAccessibility(_ accessibility: SwiftKeychainWrapper.KeychainItemAccessibility, forKey key: String) {
+extension KeychainWrapper {
+    public func ensureStringItemAccessibility(
+        _ accessibility: SwiftKeychainWrapper.KeychainItemAccessibility, forKey key: String
+    ) {
         if self.hasValue(forKey: key) {
             if self.accessibilityOfKey(key) != .afterFirstUnlock {
                 log.debug("updating item \(key) with \(accessibility)")
@@ -39,7 +43,9 @@ public extension KeychainWrapper {
         }
     }
 
-    func ensureObjectItemAccessibility(_ accessibility: SwiftKeychainWrapper.KeychainItemAccessibility, forKey key: String) {
+    public func ensureObjectItemAccessibility(
+        _ accessibility: SwiftKeychainWrapper.KeychainItemAccessibility, forKey key: String
+    ) {
         if self.hasValue(forKey: key) {
             if self.accessibilityOfKey(key) != .afterFirstUnlock {
                 log.debug("updating item \(key) with \(accessibility)")

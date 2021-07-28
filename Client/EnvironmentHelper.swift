@@ -6,7 +6,7 @@ import Shared
 public class EnvironmentHelper {
     public static let shared = EnvironmentHelper()
 
-    public var env : ClientLogEnvironment {
+    public var env: ClientLogEnvironment {
         #if DEBUG
             return ClientLogEnvironment(rawValue: "Dev")!
         #else
@@ -52,28 +52,42 @@ public class EnvironmentHelper {
 
     public func getAttributes() -> [ClientLogCounterAttribute] {
         // selected tab is private
-        let isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
-        let isPrivateMode = ClientLogCounterAttribute(key: LogConfig.Attribute.IsInPrivateMode, value: String(isPrivate))
+        let isPrivate =
+            BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+        let isPrivateMode = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.IsInPrivateMode, value: String(isPrivate))
 
         // number of normal tabs opened
-        let normalTabsOpened = ClientLogCounterAttribute(key: LogConfig.Attribute.NormalTabsOpened, value: String(BrowserViewController.foregroundBVC().tabManager.normalTabs.count))
+        let normalTabsOpened = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.NormalTabsOpened,
+            value: String(BrowserViewController.foregroundBVC().tabManager.normalTabs.count))
 
         // number of private tabs opened
-        let privateTabsOpened = ClientLogCounterAttribute(key: LogConfig.Attribute.PrivateTabsOpened, value: String(BrowserViewController.foregroundBVC().tabManager.privateTabs.count))
+        let privateTabsOpened = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.PrivateTabsOpened,
+            value: String(BrowserViewController.foregroundBVC().tabManager.privateTabs.count))
 
         // user theme setting
-        let deviceTheme = ClientLogCounterAttribute(key: LogConfig.Attribute.UserInterfaceStyle, value: self.themeStyle)
+        let deviceTheme = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.UserInterfaceStyle, value: self.themeStyle)
 
         // orientation
-        let deviceOrientation = ClientLogCounterAttribute(key: LogConfig.Attribute.DeviceOrientation, value: self.orientation)
+        let deviceOrientation = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.DeviceOrientation, value: self.orientation)
 
         // screensize
-        let deviceScreensSize = ClientLogCounterAttribute(key: LogConfig.Attribute.DeviceScreenSize, value: self.screenSize)
+        let deviceScreensSize = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.DeviceScreenSize, value: self.screenSize)
 
         // is user signed in
-        let isUserSignedIn = ClientLogCounterAttribute(key: LogConfig.Attribute.isUserSignedIn, value: String(NeevaUserInfo.shared.hasLoginCookie()))
+        let isUserSignedIn = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.isUserSignedIn,
+            value: String(NeevaUserInfo.shared.hasLoginCookie()))
 
-        let attributes = [isPrivateMode, normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation, deviceScreensSize, isUserSignedIn]
+        let attributes = [
+            isPrivateMode, normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
+            deviceScreensSize, isUserSignedIn,
+        ]
 
         return attributes
     }

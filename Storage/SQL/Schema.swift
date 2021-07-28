@@ -4,9 +4,7 @@
 
 import Foundation
 
-/**
- * Something that knows how to construct a database.
- */
+/// Something that knows how to construct a database.
 public protocol Schema {
     var name: String { get }
     var version: Int { get }

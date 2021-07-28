@@ -13,9 +13,11 @@ open class AppInfo {
             return bundle
         case "appex":
             // .../Client.app/PlugIns/SendTo.appex
-            return Bundle(url: bundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent())!
+            return Bundle(
+                url: bundle.bundleURL.deletingLastPathComponent().deletingLastPathComponent())!
         default:
-            fatalError("Unable to get application Bundle (Bundle.main.bundlePath=\(bundle.bundlePath))")
+            fatalError(
+                "Unable to get application Bundle (Bundle.main.bundlePath=\(bundle.bundlePath))")
         }
     }
 
@@ -67,7 +69,7 @@ open class AppInfo {
         let baseBundleIdentifier = bundle.bundleIdentifier!
         if packageType == "XPC!" {
             let components = baseBundleIdentifier.components(separatedBy: ".")
-            return components[0..<components.count-1].joined(separator: ".")
+            return components[0..<components.count - 1].joined(separator: ".")
         }
         return baseBundleIdentifier
     }

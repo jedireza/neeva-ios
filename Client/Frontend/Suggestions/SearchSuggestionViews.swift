@@ -1,9 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
+import SDWebImageSwiftUI
 import Shared
 import Storage
-import SDWebImageSwiftUI
+import SwiftUI
 
 enum SuggestionViewUX {
     static let ThumbnailSize: CGFloat = 36
@@ -80,14 +80,15 @@ struct SuggestionSpec: ViewModifier {
     }
 }
 
-private extension View {
-    func apply(config: SuggestionConfig, suggestionState: SuggestionState) -> some View {
+extension View {
+    fileprivate func apply(config: SuggestionConfig, suggestionState: SuggestionState) -> some View
+    {
         self.modifier(SuggestionSpec(config: config, suggestionState: suggestionState))
     }
 }
 
 struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
-    let action: (() -> ())?
+    let action: (() -> Void)?
     let icon: Icon
     let label: Label
     let secondaryLabel: SecondaryLabel
@@ -108,13 +109,15 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
         } label: {
             HStack(spacing: 0) {
                 icon.foregroundColor(.tertiaryLabel)
-                    .frame(width: SearchViewControllerUX.IconSize,
-                           height: SearchViewControllerUX.IconSize)
+                    .frame(
+                        width: SearchViewControllerUX.IconSize,
+                        height: SearchViewControllerUX.IconSize)
                 VStack(alignment: .leading, spacing: 0) {
                     label
                     secondaryLabel
-                }.padding(.leading, config == .row ?
-                            SuggestionViewUX.Padding : SuggestionViewUX.ChipPadding)
+                }.padding(
+                    .leading,
+                    config == .row ? SuggestionViewUX.Padding : SuggestionViewUX.ChipPadding)
                 if case .row = config {
                     Spacer(minLength: 0)
                     detail
@@ -145,8 +148,9 @@ struct QuerySuggestionView: View {
 
     var suggestedQuery: String {
         if let lensOrBang = model.activeLensBang,
-           let shortcut = lensOrBang.shortcut,
-           let sigil = lensOrBang.type?.sigil {
+            let shortcut = lensOrBang.shortcut,
+            let sigil = lensOrBang.type?.sigil
+        {
             return sigil + shortcut + " " + suggestion.suggestedQuery
         } else {
             return suggestion.suggestedQuery
@@ -165,18 +169,20 @@ struct QuerySuggestionView: View {
                 .placeholder {
                     Color.tertiarySystemFill
                 }.aspectRatio(contentMode: .fit)
-                .frame(width: SuggestionViewUX.ThumbnailSize,
-                       height: SuggestionViewUX.ThumbnailSize)
+                .frame(
+                    width: SuggestionViewUX.ThumbnailSize,
+                    height: SuggestionViewUX.ThumbnailSize
+                )
                 .cornerRadius(SuggestionViewUX.CornerRadius)
         } else {
             switch suggestion.type {
             case .searchHistory:
                 Symbol(.clock)
-            case .space: // unused?
+            case .space:  // unused?
                 SpaceIconView()
             case .standard:
                 Symbol(.magnifyingglass)
-            case .operator, .unknown, .__unknown(_): // seemingly unused
+            case .operator, .unknown, .__unknown(_):  // seemingly unused
                 Symbol(.questionmarkCircle).foregroundColor(.secondaryLabel)
             }
         }
@@ -198,7 +204,8 @@ struct QuerySuggestionView: View {
     @ViewBuilder
     var secondaryLabel: some View {
         if let suggestedCalculatorQuery = suggestion.suggestedCalculatorQuery(),
-           AnnotationType(annotation: suggestion.annotation) == .calculator {
+            AnnotationType(annotation: suggestion.annotation) == .calculator
+        {
             Text(suggestedCalculatorQuery).withFont(.bodySmall)
                 .foregroundColor(.secondaryLabel).lineLimit(1)
         } else if let annotation = suggestion.annotation, let description = annotation.description {
@@ -220,13 +227,15 @@ struct QuerySuggestionView: View {
     }
 
     var body: some View {
-        SuggestionView(action: nil,
+        SuggestionView(
+            action: nil,
             icon: icon,
             label: label,
             secondaryLabel: secondaryLabel,
             detail: detail,
-            suggestion: Suggestion.query(suggestion))
-            .environmentObject(model)
+            suggestion: Suggestion.query(suggestion)
+        )
+        .environmentObject(model)
     }
 }
 
@@ -240,20 +249,25 @@ struct URLSuggestionView: View {
     @ViewBuilder
     var icon: some View {
         if let labels = suggestion.icon.labels,
-           let image = Image(icons: labels) {
+            let image = Image(icons: labels)
+        {
             image
         } else if let subtitle = suggestion.subtitle, !subtitle.isEmpty,
-                  let url = URL(string: suggestion.suggestedUrl) {
-            FaviconView(url: url,
-                        size: SearchViewControllerUX.FaviconSize,
-                        bordered: false)
-                .frame(
-                    width: SearchViewControllerUX.IconSize,
-                    height: SearchViewControllerUX.IconSize
-                )
-                .cornerRadius(SuggestionViewUX.CornerRadius)
-                .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
-                            .stroke(Color.quaternarySystemFill, lineWidth: 1))
+            let url = URL(string: suggestion.suggestedUrl)
+        {
+            FaviconView(
+                url: url,
+                size: SearchViewControllerUX.FaviconSize,
+                bordered: false
+            )
+            .frame(
+                width: SearchViewControllerUX.IconSize,
+                height: SearchViewControllerUX.IconSize
+            )
+            .cornerRadius(SuggestionViewUX.CornerRadius)
+            .overlay(
+                RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
+                    .stroke(Color.quaternarySystemFill, lineWidth: 1))
         } else {
             Symbol(.questionmarkDiamondFill)
                 .foregroundColor(.red)
@@ -287,50 +301,55 @@ struct URLSuggestionView: View {
     }
 
     var body: some View {
-        SuggestionView(action: nil,
+        SuggestionView(
+            action: nil,
             icon: icon,
             label: label,
             secondaryLabel: secondaryLabel,
             detail: detail,
-            suggestion: Suggestion.url(suggestion))
-            .environmentObject(model)
+            suggestion: Suggestion.url(suggestion)
+        )
+        .environmentObject(model)
     }
 }
 
-fileprivate struct BangSuggestionView: View {
+private struct BangSuggestionView: View {
     let suggestion: Suggestion.Bang
 
     @State var focused: Bool = false
     @EnvironmentObject public var model: NeevaSuggestionModel
 
     var body: some View {
-        SuggestionView(action: nil,
+        SuggestionView(
+            action: nil,
             icon: Symbol(ActiveLensBangType.bang.defaultSymbol),
             label: Text("!\(suggestion.shortcut)"),
             secondaryLabel: EmptyView(),
             detail: Text(suggestion.description),
-            suggestion: Suggestion.bang(suggestion))
-            .environmentObject(model)
+            suggestion: Suggestion.bang(suggestion)
+        )
+        .environmentObject(model)
     }
 }
 
-fileprivate struct LensSuggestionView: View {
+private struct LensSuggestionView: View {
     let suggestion: Suggestion.Lens
 
     @State var focused: Bool = false
     @EnvironmentObject public var model: NeevaSuggestionModel
 
     var body: some View {
-        SuggestionView(action: nil,
+        SuggestionView(
+            action: nil,
             icon: Symbol(ActiveLensBangType.lens.defaultSymbol),
             label: Text("@\(suggestion.shortcut)"),
             secondaryLabel: EmptyView(),
             detail: Text(suggestion.description),
-            suggestion: Suggestion.lens(suggestion))
-            .environmentObject(model)
+            suggestion: Suggestion.lens(suggestion)
+        )
+        .environmentObject(model)
     }
 }
-
 
 struct SuggestionView_Previews: PreviewProvider {
     static let query =
@@ -344,7 +363,10 @@ struct SuggestionView_Previews: PreviewProvider {
         SuggestionsQuery.Data.Suggest.QuerySuggestion(
             type: .searchHistory,
             suggestedQuery: "swift set sysroot",
-            boldSpan: [.init(startInclusive: 6, endExclusive: 9), .init(startInclusive: 12, endExclusive: 15)],
+            boldSpan: [
+                .init(startInclusive: 6, endExclusive: 9),
+                .init(startInclusive: 12, endExclusive: 15),
+            ],
             source: .elastic
         )
     static let spaceQuery =
@@ -398,11 +420,17 @@ struct SuggestionView_Previews: PreviewProvider {
             Section(header: Text("Query — Bang active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
+            }.environmentObject(
+                NeevaSuggestionModel(
+                    previewLensBang: .init(
+                        domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
             Section(header: Text("Query — Lens active").textCase(nil)) {
-                QuerySuggestionView( suggestion: query)
-                QuerySuggestionView( suggestion: historyQuery)
-            }.environmentObject(NeevaSuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
+                QuerySuggestionView(suggestion: query)
+                QuerySuggestionView(suggestion: historyQuery)
+            }.environmentObject(
+                NeevaSuggestionModel(
+                    previewLensBang: .init(
+                        domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {
                 URLSuggestionView(suggestion: url)
                 BangSuggestionView(suggestion: bang)

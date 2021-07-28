@@ -1,36 +1,41 @@
 // Copyright Neeva. All rights reserved.
 
-import XCTest
-@testable import Client
-import ViewInspector
+import Defaults
 import Shared
 import SwiftUI
-import Defaults
+import ViewInspector
+import XCTest
 
-extension TrackingMenuView: Inspectable { }
-extension TrackingMenuFirstRowElement: Inspectable { }
-extension HallOfShameElement: Inspectable { }
-extension HallOfShameView: Inspectable { }
-extension TrackingMenuProtectionRowButton: Inspectable { }
-extension Text: Inspectable { }
-extension Toggle: Inspectable { }
-extension GroupedStack: Inspectable { }
-extension GroupedCell: Inspectable { } 
-extension GroupedCellButton: Inspectable { }
-extension GroupedCell.Decoration: Inspectable { }
-extension GroupedCell.ContentContainer: Inspectable { }
+@testable import Client
+
+extension TrackingMenuView: Inspectable {}
+extension TrackingMenuFirstRowElement: Inspectable {}
+extension HallOfShameElement: Inspectable {}
+extension HallOfShameView: Inspectable {}
+extension TrackingMenuProtectionRowButton: Inspectable {}
+extension Text: Inspectable {}
+extension Toggle: Inspectable {}
+extension GroupedStack: Inspectable {}
+extension GroupedCell: Inspectable {}
+extension GroupedCellButton: Inspectable {}
+extension GroupedCell.Decoration: Inspectable {}
+extension GroupedCell.ContentContainer: Inspectable {}
 
 class TrackingUITests: XCTestCase {
-    let domainsGoogle = ["1emn.com",
-                         "2mdn.net",
+    let domainsGoogle = [
+        "1emn.com",
+        "2mdn.net",
         "admeld.com", "admeld.com", "admeld.com", "admeld.com", "admeld.com",
         "admob.com", "admob.com", "admob.com", "admob.com", "admob.com", "admob.com", "admob.com",
-        "app-measurement.com"]
-    let domainsAmazon = ["alexa.com", "alexa.com", "alexa.com", "alexa.com",
+        "app-measurement.com",
+    ]
+    let domainsAmazon = [
+        "alexa.com", "alexa.com", "alexa.com", "alexa.com",
         "alexametrics.com",
         "amazon-adsystem.com",
         "assoc-amazon.com",
-        "assoc-amazon.jp"]
+        "assoc-amazon.jp",
+    ]
     let domainsOutbrain = ["ligatus.com", "outbrain.com", "veeseo.com", "zemanta.com"]
     let domainsUnknownSource = ["unknown.com", "random.com"]
 
@@ -42,28 +47,31 @@ class TrackingUITests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        domainsGoogle.forEach {stats = stats.create(matchingBlocklist: .neeva, host: $0)}
-        domainsAmazon.forEach {stats = stats.create(matchingBlocklist: .neeva, host: $0)}
-        domainsOutbrain.forEach {stats = stats.create(matchingBlocklist: .neeva, host: $0)}
-        domainsUnknownSource.forEach {stats = stats.create(matchingBlocklist: .neeva, host: $0)}
+        domainsGoogle.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsAmazon.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsOutbrain.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsUnknownSource.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
 
-        expectedEntities = Array.init(repeating: TrackingEntity.Google, count: domainsGoogle.count)
-        + Array.init(repeating: TrackingEntity.Amazon, count: domainsAmazon.count)
-        + Array.init(repeating: TrackingEntity.Outbrain, count: domainsOutbrain.count)
+        expectedEntities =
+            Array.init(repeating: TrackingEntity.Google, count: domainsGoogle.count)
+            + Array.init(repeating: TrackingEntity.Amazon, count: domainsAmazon.count)
+            + Array.init(repeating: TrackingEntity.Outbrain, count: domainsOutbrain.count)
         trackingData = TrackingEntity.getTrackingDataForCurrentTab(stats: stats)
     }
 
     func testTrackingEntity() throws {
-        XCTAssertEqual(trackingData.numTrackers,
-                       (domainsOutbrain + domainsGoogle + domainsAmazon + domainsUnknownSource).count)
+        XCTAssertEqual(
+            trackingData.numTrackers,
+            (domainsOutbrain + domainsGoogle + domainsAmazon + domainsUnknownSource).count)
         XCTAssertEqual(trackingData.numDomains, 16)
         XCTAssertEqual(trackingData.trackingEntities, expectedEntities)
     }
 
     func testTrackingStatsViewModel() throws {
         model = TrackingStatsViewModel(testingData: trackingData)
-        XCTAssertEqual(model.numTrackers,
-                       (domainsOutbrain + domainsGoogle + domainsAmazon + domainsUnknownSource).count)
+        XCTAssertEqual(
+            model.numTrackers,
+            (domainsOutbrain + domainsGoogle + domainsAmazon + domainsUnknownSource).count)
         XCTAssertEqual(model.numDomains, 16)
         XCTAssertEqual(model.trackers, expectedEntities)
 
@@ -78,14 +86,17 @@ class TrackingUITests: XCTestCase {
 
     func testTrackingStatsViewModelTwoEntities() throws {
         var tempStats = TPPageStats()
-        domainsGoogle.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
-        domainsAmazon.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
-        domainsUnknownSource.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
+        domainsGoogle.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsAmazon.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsUnknownSource.forEach {
+            tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)
+        }
 
         let tempData = TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)
         model = TrackingStatsViewModel(testingData: tempData)
-        XCTAssertEqual(model.numTrackers,
-                       (domainsGoogle + domainsAmazon + domainsUnknownSource).count)
+        XCTAssertEqual(
+            model.numTrackers,
+            (domainsGoogle + domainsAmazon + domainsUnknownSource).count)
         XCTAssertEqual(model.numDomains, 12)
 
         XCTAssertEqual(model.hallOfShameDomains.count, 2)
@@ -96,43 +107,56 @@ class TrackingUITests: XCTestCase {
     }
 
     func testTrackingUIFirstRow() throws {
-        let ui = TrackingMenuView().environmentObject(TrackingStatsViewModel(testingData: trackingData))
+        let ui = TrackingMenuView().environmentObject(
+            TrackingStatsViewModel(testingData: trackingData))
         let firstRowElements = try ui.inspect().findAll(TrackingMenuFirstRowElement.self)
         XCTAssertEqual(firstRowElements.count, 2)
 
-        XCTAssertEqual(try firstRowElements[0].findAll(Kern.self)[1].text()
-                        .string(locale: Locale(identifier: "en")), "29")
-        XCTAssertEqual(try firstRowElements[1].findAll(Kern.self)[1].text()
-                        .string(locale: Locale(identifier: "en")), "16")
+        XCTAssertEqual(
+            try firstRowElements[0].findAll(Kern.self)[1].text()
+                .string(locale: Locale(identifier: "en")), "29")
+        XCTAssertEqual(
+            try firstRowElements[1].findAll(Kern.self)[1].text()
+                .string(locale: Locale(identifier: "en")), "16")
     }
 
     func testTrackingHallOfShame() throws {
-        let ui = TrackingMenuView().environmentObject(TrackingStatsViewModel(testingData: trackingData))
+        let ui = TrackingMenuView().environmentObject(
+            TrackingStatsViewModel(testingData: trackingData))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
         XCTAssertEqual(hallOfShameElements.count, 3)
 
-        XCTAssertEqual(try hallOfShameElements[0].find(Kern.self).text()
-                        .string(locale: Locale(identifier: "en")), "15")
-        XCTAssertEqual(try hallOfShameElements[1].find(Kern.self).text()
-                        .string(locale: Locale(identifier: "en")), "8")
-        XCTAssertEqual(try hallOfShameElements[2].find(Kern.self).text()
-                        .string(locale: Locale(identifier: "en")), "4")
+        XCTAssertEqual(
+            try hallOfShameElements[0].find(Kern.self).text()
+                .string(locale: Locale(identifier: "en")), "15")
+        XCTAssertEqual(
+            try hallOfShameElements[1].find(Kern.self).text()
+                .string(locale: Locale(identifier: "en")), "8")
+        XCTAssertEqual(
+            try hallOfShameElements[2].find(Kern.self).text()
+                .string(locale: Locale(identifier: "en")), "4")
     }
 
     func testTrackingHallOfShameTwoEntities() throws {
         var tempStats = TPPageStats()
-        domainsGoogle.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
-        domainsAmazon.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
-        domainsUnknownSource.forEach {tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)}
-        let ui = TrackingMenuView().environmentObject(TrackingStatsViewModel(testingData:
-                                                        TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)))
+        domainsGoogle.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsAmazon.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsUnknownSource.forEach {
+            tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)
+        }
+        let ui = TrackingMenuView().environmentObject(
+            TrackingStatsViewModel(
+                testingData:
+                    TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
         XCTAssertEqual(hallOfShameElements.count, 2)
 
-        XCTAssertEqual(try hallOfShameElements[0].find(Kern.self).text()
-                        .string(locale: Locale(identifier: "en")), "15")
-        XCTAssertEqual(try hallOfShameElements[1].find(Kern.self).text()
-                        .string(locale: Locale(identifier: "en")), "8")
+        XCTAssertEqual(
+            try hallOfShameElements[0].find(Kern.self).text()
+                .string(locale: Locale(identifier: "en")), "15")
+        XCTAssertEqual(
+            try hallOfShameElements[1].find(Kern.self).text()
+                .string(locale: Locale(identifier: "en")), "8")
     }
 
     func testToggleInModel() throws {

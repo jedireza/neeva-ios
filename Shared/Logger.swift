@@ -8,27 +8,33 @@ import XCGLogger
 public struct Logger {}
 
 // MARK: - Singleton Logger Instances
-public extension Logger {
-    static let logPII = false
+extension Logger {
+    public static let logPII = false
 
     /// Logger used for recording happenings with Sync, Accounts, Providers, Storage, and Profiles
-    static let syncLogger = RollingFileLogger(filenameRoot: "sync", logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
+    public static let syncLogger = RollingFileLogger(
+        filenameRoot: "sync",
+        logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
 
     /// Logger used for recording frontend/browser happenings
-    static let browserLogger = RollingFileLogger(filenameRoot: "browser", logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
+    public static let browserLogger = RollingFileLogger(
+        filenameRoot: "browser",
+        logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
 
     /// Logger used for recording interactions with the keychain
-    static let keychainLogger: XCGLogger = Logger.fileLoggerWithName("keychain")
+    public static let keychainLogger: XCGLogger = Logger.fileLoggerWithName("keychain")
 
     /// Logger used for logging database errors such as corruption
-    static let corruptLogger: RollingFileLogger = {
-        let logger = RollingFileLogger(filenameRoot: "corruptLogger", logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
+    public static let corruptLogger: RollingFileLogger = {
+        let logger = RollingFileLogger(
+            filenameRoot: "corruptLogger",
+            logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
         logger.newLogWithDate(Date())
         return logger
     }()
 
     /// Save logs to `~/Documents` folder. If this is `true`, the flag is reset in `UserDefaults` so it does not persist to the next launch.
-    static let saveLogsToDocuments: Bool = {
+    public static let saveLogsToDocuments: Bool = {
         let value = UserDefaults.standard.bool(forKey: "SettingsBundleSaveLogsToDocuments")
         if value {
             UserDefaults.standard.set(false, forKey: "SettingsBundleSaveLogsToDocuments")
@@ -36,15 +42,21 @@ public extension Logger {
         return value
     }()
 
-    static func copyPreviousLogsToDocuments() {
+    public static func copyPreviousLogsToDocuments() {
         if let defaultLogDirectoryPath = logFileDirectoryPath(inDocuments: false),
             let documentsLogDirectoryPath = logFileDirectoryPath(inDocuments: true),
-            let previousLogFiles = try? FileManager.default.contentsOfDirectory(atPath: defaultLogDirectoryPath) {
-            let defaultLogDirectoryURL = URL(fileURLWithPath: defaultLogDirectoryPath, isDirectory: true)
-            let documentsLogDirectoryURL = URL(fileURLWithPath: documentsLogDirectoryPath, isDirectory: true)
+            let previousLogFiles = try? FileManager.default.contentsOfDirectory(
+                atPath: defaultLogDirectoryPath)
+        {
+            let defaultLogDirectoryURL = URL(
+                fileURLWithPath: defaultLogDirectoryPath, isDirectory: true)
+            let documentsLogDirectoryURL = URL(
+                fileURLWithPath: documentsLogDirectoryPath, isDirectory: true)
             for previousLogFile in previousLogFiles {
-                let previousLogFileURL = defaultLogDirectoryURL.appendingPathComponent(previousLogFile)
-                let targetLogFileURL = documentsLogDirectoryURL.appendingPathComponent(previousLogFile)
+                let previousLogFileURL = defaultLogDirectoryURL.appendingPathComponent(
+                    previousLogFile)
+                let targetLogFileURL = documentsLogDirectoryURL.appendingPathComponent(
+                    previousLogFile)
                 try? FileManager.default.copyItem(at: previousLogFileURL, to: targetLogFileURL)
             }
         }
@@ -55,13 +67,17 @@ public extension Logger {
 
     :returns: Directory path where log files are stored
     */
-    static func logFileDirectoryPath(inDocuments: Bool) -> String? {
-        let searchPathDirectory: FileManager.SearchPathDirectory = inDocuments ? .documentDirectory : .cachesDirectory
-        if let targetDirectory = NSSearchPathForDirectoriesInDomains(searchPathDirectory, .userDomainMask, true).first {
+    public static func logFileDirectoryPath(inDocuments: Bool) -> String? {
+        let searchPathDirectory: FileManager.SearchPathDirectory =
+            inDocuments ? .documentDirectory : .cachesDirectory
+        if let targetDirectory = NSSearchPathForDirectoriesInDomains(
+            searchPathDirectory, .userDomainMask, true
+        ).first {
             let logsDirectory = "\(targetDirectory)/Logs"
             if !FileManager.default.fileExists(atPath: logsDirectory) {
                 do {
-                    try FileManager.default.createDirectory(atPath: logsDirectory, withIntermediateDirectories: true, attributes: nil)
+                    try FileManager.default.createDirectory(
+                        atPath: logsDirectory, withIntermediateDirectories: true, attributes: nil)
                     return logsDirectory
                 } catch _ as NSError {
                     return nil
@@ -95,4 +111,3 @@ public extension Logger {
         return URL(string: "\(logDir)/\(name).log")
     }
 }
-

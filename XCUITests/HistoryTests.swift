@@ -4,17 +4,25 @@
 
 import XCTest
 
-let webpage = ["url": "www.mozilla.org", "label": "Internet for people, not profit — Mozilla", "value": "mozilla.org"]
-let oldHistoryEntries: [String] = ["Internet for people, not profit — Mozilla", "Twitter", "Home - YouTube"]
+let webpage = [
+    "url": "www.mozilla.org", "label": "Internet for people, not profit — Mozilla",
+    "value": "mozilla.org",
+]
+let oldHistoryEntries: [String] = [
+    "Internet for people, not profit — Mozilla", "Twitter", "Home - YouTube",
+]
 // This is part of the info the user will see in recent closed tabs once the default visited website (https://www.mozilla.org/en-US/book/) is closed
 let closedWebPageLabel = "localhost:\(serverPort)/test-fixture/test-mozilla-book.html"
 
 class HistoryTests: BaseTestCase {
-    let testWithDB = ["testOpenHistoryFromBrowserContextMenuOptions", "testClearHistoryFromSettings", "testClearRecentHistory"]
+    let testWithDB = [
+        "testOpenHistoryFromBrowserContextMenuOptions", "testClearHistoryFromSettings",
+        "testClearRecentHistory",
+    ]
 
     // This DDBB contains those 4 websites listed in the name
     let historyDB = "browserYoutubeTwitterMozillaExample.db"
-    
+
     let clearRecentHistoryOptions = ["The Last Hour", "Today", "Today and Yesterday", "Everything"]
 
     func clearWebsiteData() {
@@ -39,7 +47,10 @@ class HistoryTests: BaseTestCase {
         let key = String(parts[1])
         if testWithDB.contains(key) {
             // for the current test name, add the db fixture used
-            launchArguments = [LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + historyDB]
+            launchArguments = [
+                LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
+                LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + historyDB,
+            ]
         }
         super.setUp()
     }
@@ -64,10 +75,10 @@ class HistoryTests: BaseTestCase {
     func testClearPrivateDataButtonDisabled() {
         //Clear private data from settings and confirm
         clearPrivateData()
-        
+
         //Wait for OK pop-up to disappear after confirming
-        waitForNoExistence(app.alerts.buttons["Clear Data"], timeoutValue:5)
-        
+        waitForNoExistence(app.alerts.buttons["Clear Data"], timeoutValue: 5)
+
         //Assert that the button has been replaced with a success message
         XCTAssertFalse(app.tables.cells["Clear Selected Data on This Device"].exists)
     }
@@ -82,7 +93,7 @@ class HistoryTests: BaseTestCase {
         openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
-        
+
         goToRecentlyClosedPage()
 
         // The Closed Tabs list should contain the info of the website just closed
@@ -194,13 +205,13 @@ class HistoryTests: BaseTestCase {
         goToRecentlyClosedPage()
         XCTAssertFalse(app.tables.cells.staticTexts[closedWebPageLabel].exists)
     }
-    
+
     // Private function created to select desired option from the "Clear Recent History" list
     // We used this aproch to avoid code duplication
     private func tapOnClearRecentHistoryOption(optionSelected: String) {
         app.sheets.buttons[optionSelected].tap()
     }
-    
+
     private func navigateToExample() {
         openURL("example.com")
         waitUntilPageLoad()
@@ -232,7 +243,7 @@ class HistoryTests: BaseTestCase {
             XCTAssertTrue(app.tables.cells.staticTexts[entry].exists)
         }
         XCTAssertFalse(app.tables.cells.staticTexts["Google"].exists)
-        
+
         // Begin Test for Today and Yesterday
         // Go to 'goolge.com' to create a recent history entry.
         app.buttons["Done"].tap()
@@ -249,7 +260,7 @@ class HistoryTests: BaseTestCase {
             XCTAssertTrue(app.tables.cells.staticTexts[entry].exists)
         }
         XCTAssertFalse(app.tables.cells.staticTexts["Google"].exists)
-        
+
         // Begin Test for Everything
         // Go to 'goolge.com' to create a recent history entry.
         app.buttons["Done"].tap()
@@ -268,15 +279,19 @@ class HistoryTests: BaseTestCase {
         XCTAssertFalse(app.tables.cells.staticTexts["Google"].exists)
     }
     */
-    
+
     func testAllOptionsArePresent() {
         // Go to 'goolge.com' to create a recent history entry.
         navigateToExample()
 
         goToHistory()
-        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
-        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
-        
+        waitForExistence(
+            app.tables["History List"].cells.element(
+                matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(
+            matching: .cell, identifier: "HistoryPanel.clearHistory"
+        ).tap()
+
         for option in clearRecentHistoryOptions {
             XCTAssertTrue(app.sheets.buttons[option].exists)
         }

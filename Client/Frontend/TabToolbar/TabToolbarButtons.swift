@@ -1,12 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import SFSafeSymbols
+import Shared
+import SwiftUI
 
 struct TabToolbarButton<Content: View>: View {
     let label: Content
-    let action: () -> ()
+    let action: () -> Void
 
     @Environment(\.isEnabled) private var isEnabled
 
@@ -24,22 +24,30 @@ enum TabToolbarButtons {
     struct BackForward: View {
         @ObservedObject var model: TabToolbarModel
 
-        let onBack: () -> ()
-        let onForward: () -> ()
-        let onLongPress: () -> ()
+        let onBack: () -> Void
+        let onForward: () -> Void
+        let onLongPress: () -> Void
 
         var body: some View {
             Group {
-                TabToolbarButton(label: Symbol(.arrowBackward, size: 20, label: .TabToolbarBackAccessibilityLabel), action: onBack)
-                    .disabled(!model.canGoBack)
-                TabToolbarButton(label: Symbol(.arrowForward, size: 20, label: .TabToolbarForwardAccessibilityLabel), action: onForward)
-                    .disabled(!model.canGoForward)
+                TabToolbarButton(
+                    label: Symbol(
+                        .arrowBackward, size: 20, label: .TabToolbarBackAccessibilityLabel),
+                    action: onBack
+                )
+                .disabled(!model.canGoBack)
+                TabToolbarButton(
+                    label: Symbol(
+                        .arrowForward, size: 20, label: .TabToolbarForwardAccessibilityLabel),
+                    action: onForward
+                )
+                .disabled(!model.canGoForward)
             }.simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
         }
     }
 
     struct NeevaMenu: View {
-        let action: () -> ()
+        let action: () -> Void
 
         @Environment(\.isIncognito) private var isIncognito
 
@@ -57,19 +65,22 @@ enum TabToolbarButtons {
     }
 
     struct AddToSpace: View {
-        let action: () -> ()
+        let action: () -> Void
 
         @Environment(\.isIncognito) private var isIncognito
         @EnvironmentObject var model: TabToolbarModel
 
         var body: some View {
-            TabToolbarButton(label: Symbol(.bookmark, size: 20, weight: .medium, label: "Add To Space"), action: action)
-                .disabled(isIncognito || !model.isPage)
+            TabToolbarButton(
+                label: Symbol(.bookmark, size: 20, weight: .medium, label: "Add To Space"),
+                action: action
+            )
+            .disabled(isIncognito || !model.isPage)
         }
     }
 
     struct ShowTabs: View {
-        let action: () -> ()
+        let action: () -> Void
         let buildMenu: () -> UIMenu?
 
         var body: some View {

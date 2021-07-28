@@ -3,13 +3,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-@testable import Storage
-@testable import Client
 import XCTest
+
+@testable import Client
+@testable import Storage
 
 class MockFiles: FileAccessor {
     init() {
-        let docPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let docPath = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true)[0]
         super.init(rootPath: (docPath as NSString).appendingPathComponent("testing"))
     }
 }

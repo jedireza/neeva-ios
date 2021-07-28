@@ -5,7 +5,9 @@
 import XCTest
 
 class FindInPageTests: BaseTestCase {
-    private func openFindInPageFromMenu(_ url: String = "http://localhost:\(serverPort)/test-fixture/find-in-page-test.html") {
+    private func openFindInPageFromMenu(
+        _ url: String = "http://localhost:\(serverPort)/test-fixture/find-in-page-test.html"
+    ) {
         openURL(url)
         goToFindOnPage()
 
@@ -21,7 +23,9 @@ class FindInPageTests: BaseTestCase {
         app.textFields["FindInPage.searchField"].typeText("Book")
         waitForExistence(app.textFields["Book"], timeout: 15)
 
-        XCTAssertEqual(app.staticTexts["FindInPage.matchCount"].label, "1/500+", "The book word count does match")
+        XCTAssertEqual(
+            app.staticTexts["FindInPage.matchCount"].label, "1/500+",
+            "The book word count does match")
     }
 
     // Smoketest
@@ -75,7 +79,9 @@ class FindInPageTests: BaseTestCase {
 
         app.textFields["FindInPage.searchField"].typeText("The Book of")
         waitForExistence(app.textFields["The Book of"], timeout: 15)
-        XCTAssertEqual(app.staticTexts["FindInPage.matchCount"].label, "1/500+", "The book word count does match")
+        XCTAssertEqual(
+            app.staticTexts["FindInPage.matchCount"].label, "1/500+",
+            "The book word count does match")
     }
 
     func testFindInPageResultsPageShowHideContent() {
@@ -136,7 +142,7 @@ class FindInPageTests: BaseTestCase {
 
         // Find in page is correctly launched, bar with text pre-filled and
         // the buttons to find next and previous
-        if (app.menuItems["Find in Page"].exists) {
+        if app.menuItems["Find in Page"].exists {
             app.menuItems["Find in Page"].tap()
         } else {
             app.menuItems["show.next.items.menu.button"].tap()
@@ -144,7 +150,9 @@ class FindInPageTests: BaseTestCase {
             app.menuItems["Find in Page"].tap()
         }
         waitForExistence(app.textFields[textToFind])
-        XCTAssertTrue(app.textFields[textToFind].exists, "The bar does not appear with the text selected to be found")
+        XCTAssertTrue(
+            app.textFields[textToFind].exists,
+            "The bar does not appear with the text selected to be found")
         XCTAssertTrue(app.buttons["FindInPage.find_previous"].exists, "Find previous button exists")
         XCTAssertTrue(app.buttons["FindInPage.find_next"].exists, "Find next button exists")
     }

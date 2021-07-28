@@ -31,9 +31,9 @@ struct CardsContainer: View {
                         TabCardsView().environment(\.selectionCompletion) {
                             withAnimation {
                                 value.scrollTo(
-                                    indexInsideTabGroupModel != nil ?
-                                        tabModel.manager.selectedTab?.rootUUID :
-                                        tabModel.manager.selectedTab?.tabUUID)
+                                    indexInsideTabGroupModel != nil
+                                        ? tabModel.manager.selectedTab?.rootUUID
+                                        : tabModel.manager.selectedTab?.tabUUID)
                             }
                             gridModel.animationThumbnailState = .visibleForTrayHidden
                         }
@@ -42,18 +42,19 @@ struct CardsContainer: View {
                 .padding(.top, 20)
                 .useEffect(deps: tabModel.selectedTabID) { _ in
                     value.scrollTo(
-                        indexInsideTabGroupModel != nil ?
-                            tabModel.manager.selectedTab?.rootUUID :
-                            tabModel.selectedTabID)
+                        indexInsideTabGroupModel != nil
+                            ? tabModel.manager.selectedTab?.rootUUID : tabModel.selectedTabID)
                 }
-                .background(GeometryReader { proxy in
-                    Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self,
-                                           value:  proxy.frame(in: .named("scroll")).minY)
-                })
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear.preference(
+                            key: ScrollViewOffsetPreferenceKey.self,
+                            value: proxy.frame(in: .named("scroll")).minY)
+                    })
             }
         }.coordinateSpace(name: "scroll")
-        .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
-            gridModel.scrollOffset = scrollOffset
-        }
+            .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
+                gridModel.scrollOffset = scrollOffset
+            }
     }
 }

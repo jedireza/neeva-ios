@@ -1,25 +1,27 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 extension EnvironmentValues {
     private struct PresentIntroKey: EnvironmentKey {
-        static var defaultValue = { () -> () in fatalError("Specify an environment value for \\.settingsPresentIntroViewController") }
+        static var defaultValue = { () -> Void in
+            fatalError("Specify an environment value for \\.settingsPresentIntroViewController")
+        }
     }
-    public var settingsPresentIntroViewController: () -> () {
+    public var settingsPresentIntroViewController: () -> Void {
         get { self[PresentIntroKey] }
         set { self[PresentIntroKey] = newValue }
     }
 }
 
 struct SettingsView: View {
-    let dismiss: () -> ()
+    let dismiss: () -> Void
 
     #if DEBUG
-    @State var showDebugSettings = true
+        @State var showDebugSettings = true
     #else
-    @State var showDebugSettings = false
+        @State var showDebugSettings = false
     #endif
 
     var body: some View {
@@ -56,7 +58,7 @@ struct SettingsView: View {
                 }
             }
         }.navigationViewStyle(StackNavigationViewStyle())
-        .onDisappear(perform: viewDidDisappear)
+            .onDisappear(perform: viewDidDisappear)
     }
 
     private func viewDidDisappear() {

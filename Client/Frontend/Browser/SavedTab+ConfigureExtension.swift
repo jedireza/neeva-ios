@@ -3,15 +3,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import WebKit
-import Storage
 import Shared
+import Storage
+import WebKit
 
 // This cannot be easily imported into extension targets, so we break it out here.
 extension SavedTab {
     convenience init(tab: Tab, isSelected: Bool, tabIndex: Int?) {
         assert(Thread.isMainThread)
-        
+
         var sessionData = tab.sessionData
         if sessionData == nil {
             let currentItem: WKBackForwardListItem! = tab.webView?.backForwardList.currentItem
@@ -24,13 +24,20 @@ extension SavedTab {
                 let forwardList = tab.webView?.backForwardList.forwardList ?? []
                 let urls = (backList + [currentItem] + forwardList).map { $0.url }
                 let currentPage = -forwardList.count
-                sessionData = SessionData(currentPage: currentPage, urls: urls, lastUsedTime: tab.lastExecutedTime ?? Date.nowMilliseconds())
+                sessionData = SessionData(
+                    currentPage: currentPage, urls: urls,
+                    lastUsedTime: tab.lastExecutedTime ?? Date.nowMilliseconds())
             }
         }
 
-        self.init(screenshotUUID: tab.screenshotUUID, isSelected: isSelected, title: tab.title ?? tab.lastTitle, isPrivate: tab.isPrivate, faviconURL: tab.displayFavicon?.url, url: tab.url, sessionData: sessionData, uuid: tab.tabUUID, rootUUID: tab.rootUUID, parentUUID: tab.parentUUID ?? "", tabIndex: tabIndex)
+        self.init(
+            screenshotUUID: tab.screenshotUUID, isSelected: isSelected,
+            title: tab.title ?? tab.lastTitle, isPrivate: tab.isPrivate,
+            faviconURL: tab.displayFavicon?.url, url: tab.url, sessionData: sessionData,
+            uuid: tab.tabUUID, rootUUID: tab.rootUUID, parentUUID: tab.parentUUID ?? "",
+            tabIndex: tabIndex)
     }
-    
+
     func configureSavedTabUsing(_ tab: Tab, imageStore: DiskImageStore? = nil) -> Tab {
         // Since this is a restored tab, reset the URL to be loaded as that will be handled by the SessionRestoreHandler
         tab.url = nil
@@ -42,7 +49,8 @@ extension SavedTab {
         }
 
         if let screenshotUUID = screenshotUUID,
-            let imageStore = imageStore {
+            let imageStore = imageStore
+        {
             tab.screenshotUUID = screenshotUUID
             imageStore.get(screenshotUUID.uuidString) >>== { screenshot in
                 if tab.screenshotUUID == screenshotUUID {
@@ -55,7 +63,7 @@ extension SavedTab {
         tab.lastTitle = title
         tab.tabUUID = UUID ?? ""
         tab.rootUUID = rootUUID ?? ""
-        
+
         return tab
     }
 }

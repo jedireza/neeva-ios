@@ -4,9 +4,7 @@
 
 import Foundation
 
-/**
- * Status results for a Cursor
- */
+/// Status results for a Cursor
 public enum CursorStatus {
     case success
     case failure
@@ -22,12 +20,10 @@ public protocol TypedCursor: Sequence {
     func asArray() -> [T]
 }
 
-/**
- * Provides a generic method of returning some data and status information about a request.
- */
+/// Provides a generic method of returning some data and status information about a request.
 open class Cursor<T>: TypedCursor {
     open var count: Int {
-        get { return 0 }
+        return 0
     }
 
     // Extra status information
@@ -64,7 +60,7 @@ open class Cursor<T>: TypedCursor {
 
     open func makeIterator() -> AnyIterator<T?> {
         var nextIndex = 0
-        return AnyIterator() {
+        return AnyIterator {
             if nextIndex >= self.count || self.status != CursorStatus.success {
                 return nil
             }
@@ -89,7 +85,7 @@ open class Cursor<T>: TypedCursor {
 /*
  * A cursor implementation that wraps an array.
  */
-open class ArrayCursor<T> : Cursor<T> {
+open class ArrayCursor<T>: Cursor<T> {
     fileprivate var data: [T]
 
     open override var count: Int {

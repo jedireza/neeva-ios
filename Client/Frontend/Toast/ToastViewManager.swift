@@ -1,9 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
-import SwiftUI
-import SnapKit
 import Shared
+import SnapKit
+import SwiftUI
+import UIKit
 
 enum ToastQueueLocation {
     case first
@@ -22,13 +22,26 @@ class ToastViewManager {
     private var currentToastIsDragging = false
 
     /// Creates Toast that can then be displayed
-    public func makeToast(text: String, buttonText: String? = nil, toastProgressViewModel: ToastProgressViewModel? = nil, displayTime: Double = 4.5, autoDismiss: Bool = true, buttonAction: (() -> ())? = nil) -> ToastView {
-        let content = ToastViewContent(normalContent: ToastStateContent(text: text, buttonText: buttonText, buttonAction: buttonAction))
-        return ToastView(displayTime: displayTime, autoDismiss: autoDismiss, content: content, toastProgressViewModel: toastProgressViewModel)
+    public func makeToast(
+        text: String, buttonText: String? = nil,
+        toastProgressViewModel: ToastProgressViewModel? = nil, displayTime: Double = 4.5,
+        autoDismiss: Bool = true, buttonAction: (() -> Void)? = nil
+    ) -> ToastView {
+        let content = ToastViewContent(
+            normalContent: ToastStateContent(
+                text: text, buttonText: buttonText, buttonAction: buttonAction))
+        return ToastView(
+            displayTime: displayTime, autoDismiss: autoDismiss, content: content,
+            toastProgressViewModel: toastProgressViewModel)
     }
 
-    public func makeToast(content: ToastViewContent, toastProgressViewModel: ToastProgressViewModel? = nil, displayTime: Double = 4.5, autoDismiss: Bool = true) -> ToastView {
-        return ToastView(displayTime: displayTime, autoDismiss: autoDismiss, content: content, toastProgressViewModel: toastProgressViewModel)
+    public func makeToast(
+        content: ToastViewContent, toastProgressViewModel: ToastProgressViewModel? = nil,
+        displayTime: Double = 4.5, autoDismiss: Bool = true
+    ) -> ToastView {
+        return ToastView(
+            displayTime: displayTime, autoDismiss: autoDismiss, content: content,
+            toastProgressViewModel: toastProgressViewModel)
     }
 
     /// Adds Toast view to queue of Toasts to be displayed in linear order
@@ -76,7 +89,9 @@ class ToastViewManager {
         toastWindowManager.createWindow(with: toastViewHostingController)
 
         // add timer if Toast should auto dismiss or if download completed by the time the Toast is displayed
-        if let toastProgressViewModel = toast.toastProgressViewModel, toastProgressViewModel.status != .inProgress {
+        if let toastProgressViewModel = toast.toastProgressViewModel,
+            toastProgressViewModel.status != .inProgress
+        {
             startToastDismissTimer(for: toast)
         } else if toast.autoDismiss {
             startToastDismissTimer(for: toast)
@@ -84,13 +99,15 @@ class ToastViewManager {
     }
 
     private func startToastDismissTimer(for toast: ToastView) {
-        currentToastTimer = Timer.scheduledTimer(withTimeInterval: toast.displayTime, repeats: false, block: { _ in
-            self.dismissCurrentToast()
-        })
+        currentToastTimer = Timer.scheduledTimer(
+            withTimeInterval: toast.displayTime, repeats: false,
+            block: { _ in
+                self.dismissCurrentToast()
+            })
     }
 
     public func dismissCurrentToast(moveToNext: Bool = true, overrideDrag: Bool = false) {
-        guard (!currentToastIsDragging || overrideDrag) else {
+        guard !currentToastIsDragging || overrideDrag else {
             return
         }
 

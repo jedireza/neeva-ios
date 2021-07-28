@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 struct AppHostSetting: View {
     @Default(.neevaHost) var appHost
@@ -11,14 +11,16 @@ struct AppHostSetting: View {
         HStack {
             Text("appHost")
                 .font(.system(.body, design: .monospaced))
-            + Text(": ")
-            + Text(NeevaConstants.appHost)
+                + Text(": ")
+                + Text(NeevaConstants.appHost)
                 .font(.system(.body, design: .monospaced))
 
             Spacer()
 
             Button(action: {
-                let alert = UIAlertController(title: "Enter custom Neeva server", message: "Default is neeva.com", preferredStyle: .alert)
+                let alert = UIAlertController(
+                    title: "Enter custom Neeva server", message: "Default is neeva.com",
+                    preferredStyle: .alert)
                 let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
                     appHost = alert.textFields!.first!.text!
                 }
@@ -31,15 +33,18 @@ struct AppHostSetting: View {
                     tf.clearButtonMode = .always
                     tf.returnKeyType = .done
 
-                    tf.addAction(UIAction { _ in
-                        saveAction.isEnabled = tf.hasText
-                    }, for: .editingChanged)
+                    tf.addAction(
+                        UIAction { _ in
+                            saveAction.isEnabled = tf.hasText
+                        }, for: .editingChanged)
 
-                    tf.addAction(UIAction { _ in
-                        saveAction.accessibilityActivate()
-                    }, for: .primaryActionTriggered)
+                    tf.addAction(
+                        UIAction { _ in
+                            saveAction.accessibilityActivate()
+                        }, for: .primaryActionTriggered)
                 }
-                UIApplication.shared.frontViewController.present(alert, animated: true, completion: nil)
+                UIApplication.shared.frontViewController.present(
+                    alert, animated: true, completion: nil)
             }) {
                 Text("Change")
             }

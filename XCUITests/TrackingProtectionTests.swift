@@ -4,8 +4,10 @@
 
 import XCTest
 
-let standardBlockedElementsString = "Neeva blocks cross-site trackers, social trackers, cryptominers, and fingerprinters."
-let strictBlockedElementsString = "Neeva blocks cross-site trackers, social trackers, cryptominers, fingerprinters, and tracking content."
+let standardBlockedElementsString =
+    "Neeva blocks cross-site trackers, social trackers, cryptominers, and fingerprinters."
+let strictBlockedElementsString =
+    "Neeva blocks cross-site trackers, social trackers, cryptominers, fingerprinters, and tracking content."
 let disabledStrictTPString = "No trackers known to Neeva were detected on this page."
 
 let websiteWithBlockedElements = "twitter.com"

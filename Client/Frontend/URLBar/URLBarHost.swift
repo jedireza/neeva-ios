@@ -46,7 +46,11 @@ class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURL
         self.trackingStatsViewModel = trackingStatsViewModel
         super.init()
         setRootView { [model] in
-            Content(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model, queryModel: queryModel, gridModel: gridModel, trackingStatsViewModel: trackingStatsViewModel) {
+            Content(
+                historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel,
+                model: model, queryModel: queryModel, gridModel: gridModel,
+                trackingStatsViewModel: trackingStatsViewModel
+            ) {
                 URLBarView(
                     onReload: { [weak delegate] in
                         switch model.reloadButton {

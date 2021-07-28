@@ -78,7 +78,11 @@ public class Sentry {
         return !enabled || (AppConstants.BuildChannel == .release && severity != .fatal)
     }
 
-    public func send(message: String, tag: SentryTag = .general, severity: SentrySeverity = .info, extra: [String: Any]? = nil, description: String? = nil, completion: SentryRequestFinished? = nil) {
+    public func send(
+        message: String, tag: SentryTag = .general, severity: SentrySeverity = .info,
+        extra: [String: Any]? = nil, description: String? = nil,
+        completion: SentryRequestFinished? = nil
+    ) {
         // Build the dictionary
         var extraEvents: [String: Any] = [:]
         if let paramEvents = extra {
@@ -99,7 +103,11 @@ public class Sentry {
         completion?(nil)
     }
 
-    public func sendWithStacktrace(message: String, tag: SentryTag = .general, severity: SentrySeverity = .info, extra: [String: Any]? = nil, description: String? = nil, completion: SentryRequestFinished? = nil) {
+    public func sendWithStacktrace(
+        message: String, tag: SentryTag = .general, severity: SentrySeverity = .info,
+        extra: [String: Any]? = nil, description: String? = nil,
+        completion: SentryRequestFinished? = nil
+    ) {
         var extraEvents: [String: Any] = [:]
         if let paramEvents = extra {
             extraEvents.merge(with: paramEvents)

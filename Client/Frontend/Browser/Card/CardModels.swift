@@ -1,12 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Storage
-import Shared
 import Combine
+import Shared
+import Storage
+import SwiftUI
 
 protocol ThumbnailModel: ObservableObject {
-    associatedtype Thumbnail : SelectableThumbnail
+    associatedtype Thumbnail: SelectableThumbnail
     var allDetails: [Thumbnail] { get set }
 }
 
@@ -21,7 +21,7 @@ protocol CardModel: ThumbnailModel {
 }
 
 class TabCardModel: CardModel, TabEventHandler {
-    var onViewUpdate: () -> () = {}
+    var onViewUpdate: () -> Void = {}
     var manager: TabManager
     var groupManager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
@@ -57,9 +57,9 @@ class TabCardModel: CardModel, TabEventHandler {
         let childTabs = groupManager.getAll()
             .reduce(into: [Tab]()) { $0.append(contentsOf: $1.children) }
         allDetails = manager.getAll()
-            .map {TabCardDetails(tab: $0, manager: manager)}
+            .map { TabCardDetails(tab: $0, manager: manager) }
         allDetailsWithExclusionList = manager.getAll().filter { !childTabs.contains($0) }
-            .map {TabCardDetails(tab: $0, manager: manager)}
+            .map { TabCardDetails(tab: $0, manager: manager) }
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
     }
@@ -73,18 +73,17 @@ class SpaceCardModel: CardModel {
         }
     }
     @Published var allDetailsWithExclusionList: [SpaceCardDetails] = []
-    var onViewUpdate: () -> () = {}
+    var onViewUpdate: () -> Void = {}
     var anyCancellable: AnyCancellable? = nil
 
     init() {
         manager.refresh()
         self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
-            self?.allDetails = self?.manager.getAll().map {SpaceCardDetails(space: $0)} ?? []
+            self?.allDetails = self?.manager.getAll().map { SpaceCardDetails(space: $0) } ?? []
             self?.onViewUpdate()
             self?.objectWillChange.send()
         }
     }
-
 
     func onDataUpdated() {}
 }
@@ -123,7 +122,7 @@ class SiteCardModel: CardModel {
 }
 
 class TabGroupCardModel: CardModel {
-    var onViewUpdate: () -> () = {}
+    var onViewUpdate: () -> Void = {}
     var manager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
 
@@ -133,7 +132,6 @@ class TabGroupCardModel: CardModel {
         }
     }
     var allDetailsWithExclusionList: [TabGroupCardDetails] = []
-
 
     init(manager: TabGroupManager) {
         self.manager = manager
@@ -147,9 +145,11 @@ class TabGroupCardModel: CardModel {
     func onDataUpdated() {
         onViewUpdate()
         allDetails = manager.getAll()
-            .map { TabGroupCardDetails(
-                tabGroup: $0,
-                tabGroupManager: manager) }
+            .map {
+                TabGroupCardDetails(
+                    tabGroup: $0,
+                    tabGroupManager: manager)
+            }
         objectWillChange.send()
     }
 }

@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Foundation
 import Shared
-import Defaults
 
 public let ActivityStreamTopSiteCacheSize: Int32 = 32
 
@@ -41,13 +41,18 @@ class ActivityStreamDataObserver: DataObserver {
     let invalidationTime: UInt64
     weak var delegate: DataObserverDelegate?
 
-    fileprivate let events: [Notification.Name] = [.ProfileDidFinishSyncing, .PrivateDataClearedHistory]
+    fileprivate let events: [Notification.Name] = [
+        .ProfileDidFinishSyncing, .PrivateDataClearedHistory,
+    ]
 
     init(profile: Profile) {
         self.profile = profile
         self.profile.history.setTopSitesCacheSize(ActivityStreamTopSiteCacheSize)
         self.invalidationTime = OneMinuteInMilliseconds * 15
-        events.forEach { NotificationCenter.default.addObserver(self, selector: #selector(self.notificationReceived), name: $0, object: nil) }
+        events.forEach {
+            NotificationCenter.default.addObserver(
+                self, selector: #selector(self.notificationReceived), name: $0, object: nil)
+        }
     }
 
     /*
@@ -73,15 +78,17 @@ class ActivityStreamDataObserver: DataObserver {
         }
 
         self.delegate?.willInvalidateDataSources(forceTopSites: topSites)
-        self.profile.recommendations.repopulate(invalidateTopSites: shouldInvalidateTopSites).uponQueue(.main) { _ in
-            self.delegate?.didInvalidateDataSources(refresh: topSites, topSitesRefreshed: shouldInvalidateTopSites)
-        }
+        self.profile.recommendations.repopulate(invalidateTopSites: shouldInvalidateTopSites)
+            .uponQueue(.main) { _ in
+                self.delegate?.didInvalidateDataSources(
+                    refresh: topSites, topSitesRefreshed: shouldInvalidateTopSites)
+            }
     }
 
     @objc func notificationReceived(_ notification: Notification) {
         switch notification.name {
         case .ProfileDidFinishSyncing, .PrivateDataClearedHistory:
-             refreshIfNeeded(forceTopSites: true)
+            refreshIfNeeded(forceTopSites: true)
         default:
             log.warning("Received unexpected notification \(notification.name)")
         }

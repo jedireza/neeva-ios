@@ -7,7 +7,8 @@ import SwiftUI
 import UIKit
 
 var scheme: String {
-    guard let string = Bundle.main.object(forInfoDictionaryKey: "MozInternalURLScheme") as? String else {
+    guard let string = Bundle.main.object(forInfoDictionaryKey: "MozInternalURLScheme") as? String
+    else {
         return "neeva"
     }
     return string

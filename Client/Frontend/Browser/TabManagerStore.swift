@@ -3,13 +3,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Storage
 import Shared
+import Storage
 import XCGLogger
 
 private let log = Logger.browserLogger
 class TabManagerStore {
-    static let shared = TabManagerStore(imageStore: DiskImageStore(files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots", quality: UIConstants.ScreenshotQuality))
+    static let shared = TabManagerStore(
+        imageStore: DiskImageStore(
+            files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots",
+            quality: UIConstants.ScreenshotQuality))
 
     fileprivate var lockedForReading = false
     public let imageStore: DiskImageStore?
@@ -29,10 +32,13 @@ class TabManagerStore {
     fileprivate func getBasePath() -> String? {
         let profilePath: String?
 
-        if  AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest {
+        if AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest {
             profilePath = (UIApplication.shared.delegate as? TestAppDelegate)?.dirForTestProfile
         } else {
-            profilePath = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)?.appendingPathComponent("profile.profile").path
+            profilePath =
+                fileManager.containerURL(
+                    forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)?
+                .appendingPathComponent("profile.profile").path
         }
 
         guard let path = profilePath else { return nil }
@@ -57,9 +63,10 @@ class TabManagerStore {
             tab.tabUUID = tab.tabUUID.isEmpty ? UUID().uuidString : tab.tabUUID
             let savedTab = SavedTab(tab: tab, isSelected: tab == selectedTab, tabIndex: nil)
             savedTabs.append(savedTab)
-            
+
             if let screenshot = tab.screenshot,
-                let screenshotUUID = tab.screenshotUUID {
+                let screenshotUUID = tab.screenshotUUID
+            {
                 savedUUIDs.insert(screenshotUUID.uuidString)
 
                 imageStore?.put(screenshotUUID.uuidString, image: screenshot)
@@ -73,11 +80,15 @@ class TabManagerStore {
     // Async write of the tab state. In most cases, code doesn't care about performing an operation
     // after this completes. Deferred completion is called always, regardless of Data.write return value.
     // Write failures (i.e. due to read locks) are considered inconsequential, as preserveTabs will be called frequently.
-    @discardableResult func preserveTabs(_ tabs: [Tab], selectedTab: Tab?, for scene: UIScene) -> Success {
+    @discardableResult func preserveTabs(_ tabs: [Tab], selectedTab: Tab?, for scene: UIScene)
+        -> Success
+    {
         assert(Thread.isMainThread)
 
-        guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab), let path = tabSavePath(withId: scene.session.persistentIdentifier) else {
-            clearArchive(for: scene) 
+        guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab),
+            let path = tabSavePath(withId: scene.session.persistentIdentifier)
+        else {
+            clearArchive(for: scene)
             return succeed()
         }
 
@@ -89,7 +100,8 @@ class TabManagerStore {
 
         writeOperation = DispatchWorkItem {
             do {
-                let data = try NSKeyedArchiver.archivedData(withRootObject: savedTabs, requiringSecureCoding: false)
+                let data = try NSKeyedArchiver.archivedData(
+                    withRootObject: savedTabs, requiringSecureCoding: false)
                 try data.write(to: URL(fileURLWithPath: path), options: .atomic)
                 print("Tabs succesfully saved")
             } catch {
@@ -106,12 +118,17 @@ class TabManagerStore {
         return result
     }
 
-    func restoreStartupTabs(for scene: UIScene, clearPrivateTabs: Bool, tabManager: TabManager) -> Tab? {
-        let selectedTab = restoreTabs(savedTabs: getStartupTabs(for: scene), clearPrivateTabs: clearPrivateTabs, tabManager: tabManager)
+    func restoreStartupTabs(for scene: UIScene, clearPrivateTabs: Bool, tabManager: TabManager)
+        -> Tab?
+    {
+        let selectedTab = restoreTabs(
+            savedTabs: getStartupTabs(for: scene), clearPrivateTabs: clearPrivateTabs,
+            tabManager: tabManager)
         return selectedTab
     }
 
-    func restoreTabs(savedTabs: [SavedTab], clearPrivateTabs: Bool, tabManager: TabManager) -> Tab? {
+    func restoreTabs(savedTabs: [SavedTab], clearPrivateTabs: Bool, tabManager: TabManager) -> Tab?
+    {
         assertIsMainThread("Restoration is a main-only operation")
         guard !lockedForReading, savedTabs.count > 0 else { return nil }
 
@@ -130,7 +147,8 @@ class TabManagerStore {
         var tabToSelect: Tab?
         for savedTab in savedTabs {
             // Provide an empty request to prevent a new tab from loading the home screen
-            var tab = tabManager.addTab(flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
+            var tab = tabManager.addTab(
+                flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: imageStore)
 
             if savedTab.isSelected {
@@ -160,13 +178,15 @@ class TabManagerStore {
     }
 
     func getStartupTabs(for scene: UIScene?) -> [SavedTab] {
-        let savedTabsWithOldPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: getLegacyTabSavePath())
+        let savedTabsWithOldPath = SiteArchiver.tabsToRestore(
+            tabsStateArchivePath: getLegacyTabSavePath())
 
         guard let scene = scene else {
             return savedTabsWithOldPath
         }
 
-        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier))
+        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(
+            tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier))
 
         if savedTabsWithNewPath.count > 0 {
             return savedTabsWithNewPath
@@ -180,6 +200,8 @@ class TabManagerStore {
 extension TabManagerStore {
     func testTabCountOnDisk() -> Int {
         assert(AppConstants.IsRunningTest)
-        return SiteArchiver.tabsToRestore(tabsStateArchivePath: tabSavePath(withId: SceneDelegate.getCurrentSceneId())).count
+        return SiteArchiver.tabsToRestore(
+            tabsStateArchivePath: tabSavePath(withId: SceneDelegate.getCurrentSceneId())
+        ).count
     }
 }

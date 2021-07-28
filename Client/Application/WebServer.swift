@@ -38,39 +38,50 @@ class WebServer {
             try server.start(options: [
                 GCDWebServerOption_Port: AppInfo.webserverPort,
                 GCDWebServerOption_BindToLocalhost: true,
-                GCDWebServerOption_AutomaticallySuspendInBackground: false, // done by the app in AppDelegate
+                GCDWebServerOption_AutomaticallySuspendInBackground: false,  // done by the app in AppDelegate
                 GCDWebServerOption_AuthenticationMethod: GCDWebServerAuthenticationMethod_Basic,
-                GCDWebServerOption_AuthenticationAccounts: [sessionToken: ""]
+                GCDWebServerOption_AuthenticationAccounts: [sessionToken: ""],
             ])
         }
         return server.isRunning
     }
 
     /// Convenience method to register a dynamic handler. Will be mounted at $base/$module/$resource
-    func registerHandlerForMethod(_ method: String, module: String, resource: String, handler: @escaping (_ request: GCDWebServerRequest?) -> GCDWebServerResponse?) {
+    func registerHandlerForMethod(
+        _ method: String, module: String, resource: String,
+        handler: @escaping (_ request: GCDWebServerRequest?) -> GCDWebServerResponse?
+    ) {
         // Prevent serving content if the requested host isn't a safelisted local host.
-        let wrappedHandler = {(request: GCDWebServerRequest?) -> GCDWebServerResponse? in
+        let wrappedHandler = { (request: GCDWebServerRequest?) -> GCDWebServerResponse? in
             guard let request = request, InternalURL.isValid(url: request.url) else {
                 return GCDWebServerResponse(statusCode: 403)
             }
 
             return handler(request)
         }
-        server.addHandler(forMethod: method, path: "/\(module)/\(resource)", request: GCDWebServerRequest.self, processBlock: wrappedHandler)
+        server.addHandler(
+            forMethod: method, path: "/\(module)/\(resource)", request: GCDWebServerRequest.self,
+            processBlock: wrappedHandler)
     }
 
     /// Convenience method to register a resource in the main bundle. Will be mounted at $base/$module/$resource
     func registerMainBundleResource(_ resource: String, module: String) {
         if let path = Bundle.main.path(forResource: resource, ofType: nil) {
-            server.addGETHandler(forPath: "/\(module)/\(resource)", filePath: path, isAttachment: false, cacheAge: UInt.max, allowRangeRequests: true)
+            server.addGETHandler(
+                forPath: "/\(module)/\(resource)", filePath: path, isAttachment: false,
+                cacheAge: UInt.max, allowRangeRequests: true)
         }
     }
 
     /// Convenience method to register all resources in the main bundle of a specific type. Will be mounted at $base/$module/$resource
     func registerMainBundleResourcesOfType(_ type: String, module: String) {
-        for path: String in Bundle.paths(forResourcesOfType: type, inDirectory: Bundle.main.bundlePath) {
+        for path: String in Bundle.paths(
+            forResourcesOfType: type, inDirectory: Bundle.main.bundlePath)
+        {
             if let resource = NSURL(string: path)?.lastPathComponent {
-                server.addGETHandler(forPath: "/\(module)/\(resource)", filePath: path as String, isAttachment: false, cacheAge: UInt.max, allowRangeRequests: true)
+                server.addGETHandler(
+                    forPath: "/\(module)/\(resource)", filePath: path as String,
+                    isAttachment: false, cacheAge: UInt.max, allowRangeRequests: true)
             } else {
                 log.warning("Unable to locate resource at path: '\(path)'")
             }

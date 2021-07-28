@@ -1,11 +1,11 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct NavigationLinkButton<Label: View>: View {
     let label: () -> Label
-    let action: () -> ()
+    let action: () -> Void
     let style: Style
 
     enum Style {
@@ -26,7 +26,10 @@ struct NavigationLinkButton<Label: View>: View {
         }
     }
 
-    init(action: @escaping () -> (), style: Style = .link, @ViewBuilder label: @escaping () -> Label) {
+    init(
+        action: @escaping () -> Void, style: Style = .link,
+        @ViewBuilder label: @escaping () -> Label
+    ) {
         self.label = label
         self.action = action
         self.style = style
@@ -44,13 +47,13 @@ struct NavigationLinkButton<Label: View>: View {
         if style == .link {
             button.accessibilityAddTraits(.isLink)
         } else {
-            button  
+            button
         }
     }
 }
 
 extension NavigationLinkButton where Label == Text {
-    init(_ title: String, style: Style = .link, action: @escaping () -> ()) {
+    init(_ title: String, style: Style = .link, action: @escaping () -> Void) {
         self.label = { Text(title) }
         self.action = action
         self.style = style

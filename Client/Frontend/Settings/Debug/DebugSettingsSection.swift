@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 struct DebugSettingsSection: View {
     @Environment(\.onOpenURL) var openURL
@@ -11,15 +11,22 @@ struct DebugSettingsSection: View {
     var body: some View {
         Group {
             Section(header: Text("Debug — Neeva")) {
-                NavigationLink("Server Feature Flags", destination: NeevaFeatureFlagSettingsView().navigationTitle("Server Feature Flags"))
+                NavigationLink(
+                    "Server Feature Flags",
+                    destination: NeevaFeatureFlagSettingsView().navigationTitle(
+                        "Server Feature Flags"))
                 AppHostSetting()
                 NavigationLinkButton("Neeva Admin") {
                     openURL(NeevaConstants.appHomeURL / "admin")
                 }
             }
             Section(header: Text("Debug — Local")) {
-                NavigationLink("Local Feature Flags", destination: FeatureFlagSettingsView().navigationTitle("Local Feature Flags"))
-                NavigationLink("Internal Settings", destination: InternalSettingsView().navigationTitle("Internal Settings"))
+                NavigationLink(
+                    "Local Feature Flags",
+                    destination: FeatureFlagSettingsView().navigationTitle("Local Feature Flags"))
+                NavigationLink(
+                    "Internal Settings",
+                    destination: InternalSettingsView().navigationTitle("Internal Settings"))
                 Toggle("Enable Geiger Counter", isOn: $enableGeigerCounter)
                     .onChange(of: enableGeigerCounter) {
                         if $0 {

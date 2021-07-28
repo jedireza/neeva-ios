@@ -1,10 +1,10 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
 import Apollo
+import Foundation
 import Shared
 
-enum AnnotationType : String {
+enum AnnotationType: String {
     case unknown = ""
     case calculator = "Calculator"
     case wikipedia = "Wikipedia"
@@ -14,8 +14,9 @@ enum AnnotationType : String {
 extension AnnotationType {
     init?(annotation: Shared.SuggestionsQuery.Data.Suggest.QuerySuggestion.Annotation?) {
         if let annotation = annotation,
-           let annotationType = annotation.annotationType {
-            self.init(rawValue:annotationType)
+            let annotationType = annotation.annotationType
+        {
+            self.init(rawValue: annotationType)
         } else {
             return nil
         }

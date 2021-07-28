@@ -2,13 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@testable import Client
 import Shared
 import Storage
 import UIKit
 import WebKit
-
 import XCTest
+
+@testable import Client
 
 class TabManagerStoreTests: XCTestCase {
     let profile = TabManagerMockProfile()
@@ -24,7 +24,9 @@ class TabManagerStoreTests: XCTestCase {
         if UIDevice.current.userInterfaceIdiom == .pad {
             // BVC.viewWillAppear() calls restoreTabs() which interferes with these tests. (On iPhone, ClientTests never dismiss the intro screen, on iPad the intro is a popover on the BVC).
             // Wait for this to happen (UIView.window only gets assigned after viewWillAppear()), then begin testing.
-            let predicate = XCTNSPredicateExpectation(predicate: NSPredicate(format: "view.window != nil"), object: BrowserViewController.foregroundBVC())
+            let predicate = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "view.window != nil"),
+                object: BrowserViewController.foregroundBVC())
             wait(for: [predicate], timeout: 20)
         }
 
@@ -37,10 +39,14 @@ class TabManagerStoreTests: XCTestCase {
 
     // Without session data, a Tab can't become a SavedTab and get archived
     func addTabWithSessionData(isPrivate: Bool = false) {
-        let tab = Tab(bvc: BrowserViewController.foregroundBVC(), configuration: configuration, isPrivate: isPrivate)
+        let tab = Tab(
+            bvc: BrowserViewController.foregroundBVC(), configuration: configuration,
+            isPrivate: isPrivate)
         tab.url = URL(string: "http://yahoo.com")!
-        manager.configureTab(tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false)
-        tab.sessionData = SessionData(currentPage: 0, urls: [tab.url!], lastUsedTime: Date.nowMilliseconds())
+        manager.configureTab(
+            tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false)
+        tab.sessionData = SessionData(
+            currentPage: 0, urls: [tab.url!], lastUsedTime: Date.nowMilliseconds())
     }
 
     func testNoData() {
@@ -83,4 +89,3 @@ class TabManagerStoreTests: XCTestCase {
         }
     }
 }
-

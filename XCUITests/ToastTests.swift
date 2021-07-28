@@ -3,11 +3,14 @@
 import XCTest
 
 class ToastTests: BaseTestCase {
-    let testWithDB = ["testOpenHistoryFromBrowserContextMenuOptions", "testClearHistoryFromSettings", "testClearRecentHistory"]
+    let testWithDB = [
+        "testOpenHistoryFromBrowserContextMenuOptions", "testClearHistoryFromSettings",
+        "testClearRecentHistory",
+    ]
 
     // This DB contains those 4 websites listed in the name
     let historyDB = "browserYoutubeTwitterMozillaExample.db"
-    
+
     let clearRecentHistoryOptions = ["The Last Hour", "Today", "Today and Yesterday", "Everything"]
 
     override func setUp() {
@@ -16,7 +19,10 @@ class ToastTests: BaseTestCase {
         let key = String(parts[1])
         if testWithDB.contains(key) {
             // for the current test name, add the db fixture used
-            launchArguments = [LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + historyDB]
+            launchArguments = [
+                LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
+                LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + historyDB,
+            ]
         }
         super.setUp()
     }

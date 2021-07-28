@@ -2,23 +2,22 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import Foundation
 import Shared
 import Storage
 import XCGLogger
-import Combine
 
 private let log = Logger.browserLogger
 
-private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([^/]+)/", options: [])
+private let URLBeforePathRegex = try! NSRegularExpression(
+    pattern: "^https?://([^/]+)/", options: [])
 
 private let defaultRecencyDuration: UInt64 = 2 * OneDayInMilliseconds * 1000
 private let numSuggestionsToFetch: Int = 40
 
-/**
- * Shared data source for the SearchViewController and the URLBar domain completion.
- * Since both of these use the same SQL query, we can perform the query once and dispatch the results.
- */
+/// Shared data source for the SearchViewController and the URLBar domain completion.
+/// Since both of these use the same SQL query, we can perform the query once and dispatch the results.
 class HistorySuggestionModel: ObservableObject {
     private let frecentHistory: FrecentHistory
     private let queryModel: SearchQueryModel
@@ -30,7 +29,10 @@ class HistorySuggestionModel: ObservableObject {
 
     private var shouldSkipNextAutocomplete = false
 
-    convenience init(previewSites: [Site]? = nil, previewCompletion: String? = nil, queryModel: SearchQueryModel = SearchQueryModel(previewValue: "")) {
+    convenience init(
+        previewSites: [Site]? = nil, previewCompletion: String? = nil,
+        queryModel: SearchQueryModel = SearchQueryModel(previewValue: "")
+    ) {
         self.init(profile: BrowserProfile(localName: "profile"), queryModel: queryModel)
         self.sites = previewSites
         self.completion = previewCompletion
@@ -69,7 +71,8 @@ class HistorySuggestionModel: ObservableObject {
     private var searchTextSubscription: AnyCancellable?
 
     private func subscribe() {
-        searchTextSubscription = queryModel.$value.withPrevious().sink { [unowned self] oldQuery, query in
+        searchTextSubscription = queryModel.$value.withPrevious().sink {
+            [unowned self] oldQuery, query in
             currentDeferredHistoryQuery?.cancel()
 
             if query.isEmpty {
@@ -79,7 +82,11 @@ class HistorySuggestionModel: ObservableObject {
                 return
             }
 
-            guard let deferredHistory = frecentHistory.getSites(matchingSearchQuery: query, limit: numSuggestionsToFetch) as? CancellableDeferred else {
+            guard
+                let deferredHistory = frecentHistory.getSites(
+                    matchingSearchQuery: query, limit: numSuggestionsToFetch)
+                    as? CancellableDeferred
+            else {
                 assertionFailure("FrecentHistory query should be cancellable")
                 return
             }
@@ -99,15 +106,26 @@ class HistorySuggestionModel: ObservableObject {
                 // readily be coming as query suggestions.
                 let deferredHistorySites = (result.successValue?.asArray() ?? [])
                     .compactMap { $0 }
-                    .filter {!($0.url.absoluteString.hasPrefix(NeevaConstants.appSearchURL.absoluteString))}
+                    .filter {
+                        !($0.url.absoluteString.hasPrefix(
+                            NeevaConstants.appSearchURL.absoluteString))
+                    }
 
                 // Split the data to frequent visits from recent history and everything else
-                self.recentSites = deferredHistorySites
-                    .filter { $0.latestVisit != nil &&
-                        $0.latestVisit!.date > Date.nowMicroseconds() - defaultRecencyDuration }
-                self.sites = deferredHistorySites
-                    .filter { $0.latestVisit == nil ||
-                        $0.latestVisit!.date <= Date.nowMicroseconds() - defaultRecencyDuration }
+                self.recentSites =
+                    deferredHistorySites
+                    .filter {
+                        $0.latestVisit != nil
+                            && $0.latestVisit!.date > Date.nowMicroseconds()
+                                - defaultRecencyDuration
+                    }
+                self.sites =
+                    deferredHistorySites
+                    .filter {
+                        $0.latestVisit == nil
+                            || $0.latestVisit!.date <= Date.nowMicroseconds()
+                                - defaultRecencyDuration
+                    }
 
                 // If we should skip the next autocomplete, reset
                 // the flag and bail out here.
@@ -141,7 +159,9 @@ class HistorySuggestionModel: ObservableObject {
 
     private func setCompletion(to completion: String?, from query: String) -> Bool {
         if let completion = completion, completion != query {
-            precondition(completion.lowercased().starts(with: query.lowercased()), "Expected completion '\(completion)' to start with '\(query)'")
+            precondition(
+                completion.lowercased().starts(with: query.lowercased()),
+                "Expected completion '\(completion)' to start with '\(query)'")
             self.completion = String(completion.dropFirst(query.count))
             return true
         }
@@ -153,7 +173,10 @@ class HistorySuggestionModel: ObservableObject {
         // Extract the pre-path substring from the URL. This should be more efficient than parsing via
         // NSURL since we need to only look at the beginning of the string.
         // Note that we won't match non-HTTP(S) URLs.
-        guard let match = URLBeforePathRegex.firstMatch(in: url as String, options: [], range: NSRange(location: 0, length: url.length)) else {
+        guard
+            let match = URLBeforePathRegex.firstMatch(
+                in: url as String, options: [], range: NSRange(location: 0, length: url.length))
+        else {
             return nil
         }
 
@@ -177,8 +200,11 @@ class HistorySuggestionModel: ObservableObject {
 
     fileprivate func completionForDomain(_ domain: String, from query: String) -> String? {
         let domainWithDotPrefix: String = ".\(domain)"
-        if let range = domainWithDotPrefix.range(of: ".\(query)", options: .caseInsensitive, range: nil, locale: nil) {
-            let matchedDomain = String(domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])
+        if let range = domainWithDotPrefix.range(
+            of: ".\(query)", options: .caseInsensitive, range: nil, locale: nil)
+        {
+            let matchedDomain = String(
+                domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])
             // We don't actually want to match the top-level domain ("com", "org", etc.) by itself, so
             // so make sure the result includes at least one ".".
             if matchedDomain.contains(".") {

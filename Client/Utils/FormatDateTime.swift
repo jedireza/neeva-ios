@@ -15,24 +15,24 @@ public enum DateTimeVisualSpec {
 // Note: These convenience APIs are handy but make incorrect assumptions.
 //       They’re good enough for formatting dates to display to the user, but
 //       do not take into account things like leap seconds or DST.
-fileprivate extension TimeInterval {
-    static func minutes(_ n: Double) -> Self { n * 60 }
-    static func hours(_ n: Double) -> Self { .minutes(n * 60) }
-    static func days(_ n: Double) -> Self { .hours(n * 24) }
+extension TimeInterval {
+    fileprivate static func minutes(_ n: Double) -> Self { n * 60 }
+    fileprivate static func hours(_ n: Double) -> Self { .minutes(n * 60) }
+    fileprivate static func days(_ n: Double) -> Self { .hours(n * 24) }
 
-    var seconds: Int { Int(self) }
-    var minutes: Int { seconds / 60 }
-    var hours: Int { minutes / 60 }
-    var days: Int { hours / 24 }
+    fileprivate var seconds: Int { Int(self) }
+    fileprivate var minutes: Int { seconds / 60 }
+    fileprivate var hours: Int { minutes / 60 }
+    fileprivate var days: Int { hours / 24 }
 }
 
-fileprivate func formatter(for format: String) -> (Date) -> String {
+private func formatter(for format: String) -> (Date) -> String {
     let df = DateFormatter()
     df.dateFormat = format
     return df.string(from:)
 }
 
-fileprivate struct DateFormatters {
+private struct DateFormatters {
     static let compactSameYear = formatter(for: "MMM d")
     static let compactDifferentYear = formatter(for: "d MMM y")
 
@@ -50,12 +50,12 @@ fileprivate struct DateFormatters {
     }()
 }
 
-fileprivate let calendar = Calendar(identifier: .gregorian)
-fileprivate extension Date {
-    var gregorianYear: Int { calendar.component(.year, from: self) }
-    var dayOfGregorianYear: Int { calendar.ordinality(of: .day, in: .year, for: self)! }
+private let calendar = Calendar(identifier: .gregorian)
+extension Date {
+    fileprivate var gregorianYear: Int { calendar.component(.year, from: self) }
+    fileprivate var dayOfGregorianYear: Int { calendar.ordinality(of: .day, in: .year, for: self)! }
 }
-fileprivate func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
+private func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
     calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date1)
         == calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date2)
 }
@@ -65,9 +65,12 @@ fileprivate func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
 ///   - string: The ISO8601-formatted string to parse
 ///   - visualSpec: The type of output to display
 ///   - now: The time to compare relative dates to
-public func format(_ string: String?, as visualSpec: DateTimeVisualSpec = .default, from now: Date = Date()) -> String? {
+public func format(
+    _ string: String?, as visualSpec: DateTimeVisualSpec = .default, from now: Date = Date()
+) -> String? {
     if let string = string,
-       let date = dateParser.date(from: string) {
+        let date = dateParser.date(from: string)
+    {
         return format(date, as: visualSpec, from: now)
     } else {
         return nil
@@ -80,7 +83,9 @@ public func format(_ string: String?, as visualSpec: DateTimeVisualSpec = .defau
 ///   - time: The `Date` object to format
 ///   - visualSpec: The type of output to display
 ///   - now: The time to compare relative dates to
-public func format(_ time: Date, as visualSpec: DateTimeVisualSpec = .default, from now: Date = Date()) -> String {
+public func format(
+    _ time: Date, as visualSpec: DateTimeVisualSpec = .default, from now: Date = Date()
+) -> String {
     switch visualSpec {
     case .compact:
         if time < now {
@@ -91,7 +96,7 @@ public func format(_ time: Date, as visualSpec: DateTimeVisualSpec = .default, f
             } else if time > (now - .days(1)) {
                 return "\(time.distance(to: now).hours)h"
             } else if time.gregorianYear == now.gregorianYear {
-                    return DateFormatters.compactSameYear(time)
+                return DateFormatters.compactSameYear(time)
             } else {
                 return DateFormatters.compactDifferentYear(time)
             }

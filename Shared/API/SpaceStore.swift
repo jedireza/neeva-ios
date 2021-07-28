@@ -20,7 +20,10 @@ public class Space: Hashable, Identifiable {
     public let isPublic: Bool
     public let userACL: SpaceACLLevel
 
-    init(id: SpaceID, name: String, lastModifiedTs: String, thumbnail: String?, resultCount: Int, isDefaultSpace: Bool, isShared: Bool, isPublic: Bool, userACL: SpaceACLLevel) {
+    init(
+        id: SpaceID, name: String, lastModifiedTs: String, thumbnail: String?, resultCount: Int,
+        isDefaultSpace: Bool, isShared: Bool, isPublic: Bool, userACL: SpaceACLLevel
+    ) {
         self.id = id
         self.name = name
         self.lastModifiedTs = lastModifiedTs
@@ -72,12 +75,11 @@ public class SpaceStore: ObservableObject {
     /// The current set of spaces.
     @Published public private(set) var allSpaces: [Space] = []
     /// The current set of editable spaces.
-    public var editableSpaces: [Space]  {
+    public var editableSpaces: [Space] {
         allSpaces.filter { $0.userACL >= .edit }
     }
 
     private var disableRefresh = false
-
 
     private var urlToSpacesMap: [URL: [Space]] = [:]
 
@@ -97,7 +99,7 @@ public class SpaceStore: ObservableObject {
         if disableRefresh { return }
 
         state = .refreshing
-        SpaceListController.getSpaces() { result in
+        SpaceListController.getSpaces { result in
             switch result {
             case .success(let spaces):
                 self.onUpdateSpaces(spaces)
@@ -110,7 +112,8 @@ public class SpaceStore: ObservableObject {
     }
 
     private func onUpdateSpaces(_ spaces: [SpaceListController.Space]) {
-        let oldSpaceMap: [SpaceID: Space] = Dictionary(uniqueKeysWithValues: allSpaces.map { ($0.id, $0) })
+        let oldSpaceMap: [SpaceID: Space] = Dictionary(
+            uniqueKeysWithValues: allSpaces.map { ($0.id, $0) })
 
         // Clear to avoid holding stale data. Will be rebuilt below.
         urlToSpacesMap = [:]
@@ -121,10 +124,11 @@ public class SpaceStore: ObservableObject {
         // Build the set of spaces:
         for space in spaces {
             if let pageId = space.pageMetadata?.pageId,
-               let space = space.space,
-               let name = space.name,
-               let lastModifiedTs = space.lastModifiedTs,
-               let userAcl = space.userAcl?.acl {
+                let space = space.space,
+                let name = space.name,
+                let lastModifiedTs = space.lastModifiedTs,
+                let userAcl = space.userAcl?.acl
+            {
                 let spaceId = SpaceID(value: pageId)
                 let newSpace = Space(
                     id: spaceId,
@@ -133,7 +137,9 @@ public class SpaceStore: ObservableObject {
                     thumbnail: space.thumbnail ?? nil,
                     resultCount: space.resultCount ?? 0,
                     isDefaultSpace: space.isDefaultSpace ?? false,
-                    isShared: !(space.acl?.map(\.userId).filter { $0 != NeevaUserInfo.shared.id }.isEmpty ?? true),
+                    isShared:
+                        !(space.acl?.map(\.userId).filter { $0 != NeevaUserInfo.shared.id }.isEmpty
+                        ?? true),
                     isPublic: space.hasPublicAcl ?? false,
                     userACL: userAcl
                 )
@@ -143,12 +149,14 @@ public class SpaceStore: ObservableObject {
                 /// from the current value, then we'll just refetch the URLs for the space.
                 /// Otherwise, we can use our cached data.
                 if let oldSpace = oldSpaceMap[spaceId],
-                   let contentURLs = oldSpace.contentURLs,
-                   let contentThumbnails = oldSpace.contentThumbnails,
-                   space.lastModifiedTs == oldSpace.lastModifiedTs {
-                    self.onUpdateSpaceURLs(space: newSpace,
-                                           urls: contentURLs,
-                                           thumbnails: contentThumbnails)
+                    let contentURLs = oldSpace.contentURLs,
+                    let contentThumbnails = oldSpace.contentThumbnails,
+                    space.lastModifiedTs == oldSpace.lastModifiedTs
+                {
+                    self.onUpdateSpaceURLs(
+                        space: newSpace,
+                        urls: contentURLs,
+                        thumbnails: contentThumbnails)
                 } else {
                     spacesToFetch.append(newSpace)
                 }
@@ -159,7 +167,8 @@ public class SpaceStore: ObservableObject {
         self.allSpaces = allSpaces
 
         if spacesToFetch.count > 0 {
-            SpacesDataQueryController.getSpacesData(spaceIds: spacesToFetch.map(\.id.value)) { result in
+            SpacesDataQueryController.getSpacesData(spaceIds: spacesToFetch.map(\.id.value)) {
+                result in
                 switch result {
                 case .success(let spaces):
                     for space in spaces {
@@ -170,8 +179,9 @@ public class SpaceStore: ObservableObject {
 
                         self.onUpdateSpaceURLs(
                             space: spacesToFetch.first { $0.id.value == space.id }!,
-                            urls: Set(space.entities.reduce(into: [URL]()) {$0.append($1.0)}),
-                            thumbnails: Set(space.entities.reduce(into: [String?]()) {$0.append($1.1)}))
+                            urls: Set(space.entities.reduce(into: [URL]()) { $0.append($1.0) }),
+                            thumbnails: Set(
+                                space.entities.reduce(into: [String?]()) { $0.append($1.1) }))
                     }
                     self.state = .ready
                 case .failure(let error):

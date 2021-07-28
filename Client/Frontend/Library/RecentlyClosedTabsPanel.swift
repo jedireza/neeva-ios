@@ -2,10 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
-
 import Shared
 import Storage
+import UIKit
 import XCGLogger
 
 private let log = Logger.browserLogger
@@ -20,7 +19,8 @@ class RecentlyClosedTabsPanel: UIViewController {
     weak var delegate: HistoryPanelDelegate?
     let profile: Profile
 
-    fileprivate lazy var tableViewController = RecentlyClosedTabsPanelSiteTableViewController(profile: profile)
+    fileprivate lazy var tableViewController = RecentlyClosedTabsPanelSiteTableViewController(
+        profile: profile)
 
     init(profile: Profile) {
         self.profile = profile
@@ -69,8 +69,10 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         loadData()
     }
 
-    func loadData()  {
-        if let recentlyClosedTabs = tabManager?.recentlyClosedTabs.joined(), recentlyClosedTabs.count > 0 {
+    func loadData() {
+        if let recentlyClosedTabs = tabManager?.recentlyClosedTabs.joined(),
+            recentlyClosedTabs.count > 0
+        {
             self.recentlyClosedTabs = Array(recentlyClosedTabs)
             self.tableView.reloadData()
         } else {
@@ -78,7 +80,9 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
+        -> UITableViewCell
+    {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         guard let twoLineCell = cell as? TwoLineTableViewCell else {
             return cell
@@ -93,7 +97,8 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         cell.imageView?.layer.borderWidth = RecentlyClosedPanelUX.IconBorderWidth
         cell.imageView?.contentMode = .center
         cell.imageView?.setImageAndBackground(forIcon: site, website: displayURL) { [weak cell] in
-            cell?.imageView?.image = cell?.imageView?.image?.createScaled(RecentlyClosedPanelUX.IconSize)
+            cell?.imageView?.image = cell?.imageView?.image?.createScaled(
+                RecentlyClosedPanelUX.IconSize)
         }
 
         return cell
@@ -106,17 +111,26 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         navigationController?.popViewController(animated: true)
     }
 
-    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+    func tableView(
+        _ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
         let index = indexPath.row
         let savedTab = recentlyClosedTabs[index]
 
         return tabMenu.createOpenTabMenu(savedTab) { (tab, isPrivate) in
             self.loadData()
 
-            let toastLabelText: String = isPrivate ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText : Strings.ContextMenuButtonToastNewTabOpenedLabelText
-            let toastView = ToastViewManager.shared.makeToast(text: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
-                self.tabManager?.selectTab(tab)
-            })
+            let toastLabelText: String =
+                isPrivate
+                ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
+                : Strings.ContextMenuButtonToastNewTabOpenedLabelText
+            let toastView = ToastViewManager.shared.makeToast(
+                text: toastLabelText,
+                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                buttonAction: {
+                    self.tabManager?.selectTab(tab)
+                })
 
             ToastViewManager.shared.enqueue(toast: toastView)
         }

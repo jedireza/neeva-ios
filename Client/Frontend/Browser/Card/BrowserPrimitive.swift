@@ -1,11 +1,11 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
-import Storage
-import SDWebImageSwiftUI
-import SwiftUI
-import Shared
 import Combine
+import Foundation
+import SDWebImageSwiftUI
+import Shared
+import Storage
+import SwiftUI
 
 /// The intention for a browser primitive is to represent any metadata or entity tied to a url with a card in a heterogenous UI. Tabs are
 /// the canonical browser primitive, but Spaces, a single entry in a Space, a History entry, a product in a web page can be a browser
@@ -43,7 +43,7 @@ protocol Selectable {
 }
 
 protocol AccessingManagerProvider {
-    associatedtype Manager : AccessingManager
+    associatedtype Manager: AccessingManager
     var manager: Manager { get set }
 }
 
@@ -54,7 +54,7 @@ protocol AccessingManager {
 }
 
 protocol ClosingManagerProvider {
-    associatedtype Manager : ClosingManager
+    associatedtype Manager: ClosingManager
     var manager: Manager { get set }
 }
 
@@ -64,7 +64,7 @@ protocol ClosingManager {
 }
 
 protocol SelectingManagerProvider {
-    associatedtype Manager : SelectingManager
+    associatedtype Manager: SelectingManager
     var manager: Manager { get set }
 }
 
@@ -116,7 +116,7 @@ extension TabManager: ClosingManager, SelectingManager, AccessingManager {
 
     func getAll() -> [Tab] {
         let isPrivate = selectedTab?.isPrivate ?? false
-        return tabs.filter{$0.isPrivate == isPrivate}
+        return tabs.filter { $0.isPrivate == isPrivate }
     }
 }
 
@@ -181,9 +181,7 @@ extension Site: BrowserPrimitive {
     }
 }
 
-
-
-class SiteFetcher : AccessingManager, ObservableObject {
+class SiteFetcher: AccessingManager, ObservableObject {
     typealias Item = Site
 
     @Published var cache: [String: Site] = [:]
@@ -276,7 +274,7 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
         tabGroups = tabManager.getAll()
             .reduce(into: [String: [Tab]]()) { dict, tab in
                 dict[tab.rootUUID, default: []].append(tab)
-            }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) {dict, element in
+            }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) { dict, element in
                 dict[element.key] = TabGroup(children: element.value, id: element.key)
             }
         objectWillChange.send()
@@ -294,4 +292,3 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
         item.children.forEach { tabManager.close($0) }
     }
 }
-

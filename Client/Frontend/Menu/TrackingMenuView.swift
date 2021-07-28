@@ -1,11 +1,11 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Storage
+import Combine
+import Defaults
 import SFSafeSymbols
 import Shared
-import Defaults
-import Combine
+import Storage
+import SwiftUI
 
 private enum TrackingMenuUX {
     static let hallOfShameElementSpacing: CGFloat = 8
@@ -28,7 +28,9 @@ class TrackingStatsViewModel: ObservableObject {
                 return
             }
 
-            TrackingPreventionConfig.updateAllowList(with: domain, allowed: !preventTrackersForCurrentPage) {
+            TrackingPreventionConfig.updateAllowList(
+                with: domain, allowed: !preventTrackersForCurrentPage
+            ) {
                 self.selectedTab?.contentBlocker?.notifiedTabSetupRequired()
                 self.selectedTab?.reload()
                 self.refreshStats()
@@ -57,11 +59,13 @@ class TrackingStatsViewModel: ObservableObject {
         self.selectedTab = tabManager.selectedTab
         self.preventTrackersForCurrentPage =
             !Defaults[.unblockedDomains].contains(selectedTab?.currentURL()?.host ?? "")
-        let trackingData = TrackingEntity.getTrackingDataForCurrentTab(stats: selectedTab?.contentBlocker?.stats)
+        let trackingData = TrackingEntity.getTrackingDataForCurrentTab(
+            stats: selectedTab?.contentBlocker?.stats)
         self.numTrackers = trackingData.numTrackers
         self.numDomains = trackingData.numDomains
         self.trackers = trackingData.trackingEntities
-        tabManager.selectedTabPublisher.assign(to: \.selectedTab, on: self).store(in: &subscriptions)
+        tabManager.selectedTabPublisher.assign(to: \.selectedTab, on: self).store(
+            in: &subscriptions)
         onDataUpdated()
     }
 
@@ -86,8 +90,8 @@ class TrackingStatsViewModel: ObservableObject {
         self.trackers = trackingData.trackingEntities
         onDataUpdated()
         statsSubscription = selectedTab?.contentBlocker?.$stats
-            .filter {[unowned self] _ in self.viewVisible}
-            .map {TrackingEntity.getTrackingDataForCurrentTab(stats: $0)}
+            .filter { [unowned self] _ in self.viewVisible }
+            .map { TrackingEntity.getTrackingDataForCurrentTab(stats: $0) }
             .sink { [unowned self] data in
                 self.numTrackers = data.numTrackers
                 self.numDomains = data.numDomains
@@ -97,9 +101,10 @@ class TrackingStatsViewModel: ObservableObject {
     }
 
     func onDataUpdated() {
-        hallOfShameDomains = trackers
+        hallOfShameDomains =
+            trackers
             .reduce(into: [:]) { dict, tracker in dict[tracker] = (dict[tracker] ?? 0) + 1 }
-            .map { HallOfShameDomain(domain: $0.key, count: $0.value )}
+            .map { HallOfShameDomain(domain: $0.key, count: $0.value) }
             .sorted(by: { $0.count > $1.count })
             .prefix(3)
             .toArray()
@@ -131,12 +136,15 @@ struct HallOfShameElement: View {
     var body: some View {
         HStack(spacing: TrackingMenuUX.hallOfShameElementSpacing) {
             Image(hallOfShameDomain.domain.rawValue).resizable().cornerRadius(5)
-                .frame(width: TrackingMenuUX.hallOfShameElementFaviconSize,
-                       height: TrackingMenuUX.hallOfShameElementFaviconSize)
+                .frame(
+                    width: TrackingMenuUX.hallOfShameElementFaviconSize,
+                    height: TrackingMenuUX.hallOfShameElementFaviconSize)
             Text("\(hallOfShameDomain.count)").withFont(.displayMedium)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(hallOfShameDomain.count) trackers blocked from \(hallOfShameDomain.domain.rawValue)")
+        .accessibilityLabel(
+            "\(hallOfShameDomain.count) trackers blocked from \(hallOfShameDomain.domain.rawValue)"
+        )
         .accessibilityIdentifier("TrackingMenu.HallOfShameElement")
     }
 }
@@ -175,7 +183,8 @@ struct TrackingMenuView: View {
                 }
             }
 
-            TrackingMenuProtectionRowButton(preventTrackers: $viewModel.preventTrackersForCurrentPage)
+            TrackingMenuProtectionRowButton(
+                preventTrackers: $viewModel.preventTrackersForCurrentPage)
 
             if FeatureFlag[.newTrackingProtectionSettings] {
                 GroupedCellButton(action: { isShowingPopup = true }) {

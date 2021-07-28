@@ -2,11 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Shared
-import WebKit
-import UIKit
-import GCDWebServers
 import Defaults
+import GCDWebServers
+import Shared
+import UIKit
+import WebKit
+
 @testable import Client
 
 class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
@@ -23,7 +24,9 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         BrowserUtils.resetToAboutHomeKIF(tester())
     }
 
-    func visitSites(noOfSites: Int) -> [(title: String, domain: String, dispDomain: String, url: String)] {
+    func visitSites(noOfSites: Int) -> [(
+        title: String, domain: String, dispDomain: String, url: String
+    )] {
         var urls: [(title: String, domain: String, dispDomain: String, url: String)] = []
         for pageNo in 1...noOfSites {
             let url = "\(webRoot!)/numberedPage.html?page=\(pageNo)"
@@ -34,8 +37,9 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
             let dom = URL(string: url)!.normalizedHost!
             let index = dom.index(dom.startIndex, offsetBy: 7)
             let dispDom = dom.substring(to: index)  // On IPhone, it only displays first 8 chars
-            let tuple: (title: String, domain: String, dispDomain: String, url: String)
-            = ("Page \(pageNo)", dom, dispDom, url)
+            let tuple: (title: String, domain: String, dispDomain: String, url: String) = (
+                "Page \(pageNo)", dom, dispDom, url
+            )
             urls.append(tuple)
         }
         BrowserUtils.resetToAboutHomeKIF(tester())
@@ -55,10 +59,13 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
             (BrowserUtils.Clearable.cache, "0"),
             (BrowserUtils.Clearable.cookies, "0"),
             (BrowserUtils.Clearable.downloads, "0"),
-            (BrowserUtils.Clearable.history, "1")
+            (BrowserUtils.Clearable.history, "1"),
         ].forEach { clearable, switchValue in
-            XCTAssertNotNil(tester()
-                .waitForView(withAccessibilityLabel: clearable.label(), value: switchValue, traits: UIAccessibilityTraits.none))
+            XCTAssertNotNil(
+                tester()
+                    .waitForView(
+                        withAccessibilityLabel: clearable.label(), value: switchValue,
+                        traits: UIAccessibilityTraits.none))
         }
         BrowserUtils.closeClearPrivateDataDialog(tester())
     }
@@ -98,7 +105,8 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         let url1 = urls[0].url
         let url2 = urls[1].url
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.history]), tester())
+        BrowserUtils.clearPrivateData(
+            BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.history]), tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
         tester().waitForAnimationsToFinish()
@@ -168,7 +176,8 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         // Verify that clearing non-cache items will keep the page in the cache.
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.cache]), tester())
+        BrowserUtils.clearPrivateData(
+            BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.cache]), tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
         webView.reload()
@@ -185,18 +194,24 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
     fileprivate func setCookies(_ webView: WKWebView, cookie: String) {
         let expectation = self.expectation(description: "Set cookie")
-        webView.evaluateJavascriptInDefaultContentWorld("document.cookie = \"\(cookie)\"; localStorage.cookie = \"\(cookie)\"; sessionStorage.cookie = \"\(cookie)\";") { result, _ in
+        webView.evaluateJavascriptInDefaultContentWorld(
+            "document.cookie = \"\(cookie)\"; localStorage.cookie = \"\(cookie)\"; sessionStorage.cookie = \"\(cookie)\";"
+        ) { result, _ in
             expectation.fulfill()
         }
         waitForExpectations(timeout: 10, handler: nil)
     }
 
-    fileprivate func getCookies(_ webView: WKWebView) -> (cookie: String, localStorage: String?, sessionStorage: String?) {
+    fileprivate func getCookies(_ webView: WKWebView) -> (
+        cookie: String, localStorage: String?, sessionStorage: String?
+    ) {
         var cookie: (String, String?, String?)!
         var value: String!
         let expectation = self.expectation(description: "Got cookie")
 
-        webView.evaluateJavascriptInDefaultContentWorld("JSON.stringify([document.cookie, localStorage.cookie, sessionStorage.cookie])") { result, _ in
+        webView.evaluateJavascriptInDefaultContentWorld(
+            "JSON.stringify([document.cookie, localStorage.cookie, sessionStorage.cookie])"
+        ) { result, _ in
             value = result as! String
             expectation.fulfill()
         }
@@ -212,7 +227,9 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
     func testClearsTrackingProtectionSafelist() {
         let wait = expectation(description: "wait for file write")
-        TrackingPreventionConfig.updateAllowList(with: (URL(string: "http://www.mozilla.com")?.host)!, allowed: true) {
+        TrackingPreventionConfig.updateAllowList(
+            with: (URL(string: "http://www.mozilla.com")?.host)!, allowed: true
+        ) {
             wait.fulfill()
         }
         waitForExpectations(timeout: 30)
@@ -231,9 +248,12 @@ private class CachedPageServer {
 
     func start() -> String {
         let webServer = GCDWebServer()
-        webServer.addHandler(forMethod: "GET", path: "/cachedPage.html", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse? in
+        webServer.addHandler(
+            forMethod: "GET", path: "/cachedPage.html", request: GCDWebServerRequest.self
+        ) { (request) -> GCDWebServerResponse? in
             self.requests += 1
-            return GCDWebServerDataResponse(html: "<html><head><title>Cached page</title></head><body>Cache test</body></html>")
+            return GCDWebServerDataResponse(
+                html: "<html><head><title>Cached page</title></head><body>Cache test</body></html>")
         }
 
         webServer.start(withPort: 0, bonjourName: nil)

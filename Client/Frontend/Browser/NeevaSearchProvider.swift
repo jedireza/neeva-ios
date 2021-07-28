@@ -8,4 +8,3 @@ let neevaSearchEngine = OpenSearchEngine(
     image: UIImage(named: "splash")!,
     isCustomEngine: false
 )
-

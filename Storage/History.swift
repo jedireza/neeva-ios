@@ -32,17 +32,13 @@ public protocol BrowserHistory {
     func isPinnedTopSite(_ url: String) -> Deferred<Maybe<Bool>>
 }
 
-/**
- * An interface for fast repeated frecency queries.
- */
+/// An interface for fast repeated frecency queries.
 public protocol FrecentHistory {
     func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site?>>>
     func updateTopSitesCacheQuery() -> (String, Args?)
 }
 
-/**
- * An interface for accessing recommendation content from Storage
- */
+/// An interface for accessing recommendation content from Storage
 public protocol HistoryRecommendations {
     func cleanupHistoryIfNeeded()
     func repopulate(invalidateTopSites shouldInvalidateTopSites: Bool) -> Success

@@ -6,7 +6,9 @@ import Foundation
 import Network
 import SwiftyJSON
 
-public func makeURLSession(userAgent: String, configuration: URLSessionConfiguration, timeout: TimeInterval? = nil) -> URLSession {
+public func makeURLSession(
+    userAgent: String, configuration: URLSessionConfiguration, timeout: TimeInterval? = nil
+) -> URLSession {
     configuration.httpAdditionalHeaders = ["User-Agent": userAgent]
     if let t = timeout {
         configuration.timeoutIntervalForRequest = t
@@ -15,7 +17,9 @@ public func makeURLSession(userAgent: String, configuration: URLSessionConfigura
 }
 
 // Used to help replace Alamofire's response.validate()
-public func validatedHTTPResponse(_ response: URLResponse?, contentType: String? = nil, statusCode: Range<Int>?  = nil) -> HTTPURLResponse? {
+public func validatedHTTPResponse(
+    _ response: URLResponse?, contentType: String? = nil, statusCode: Range<Int>? = nil
+) -> HTTPURLResponse? {
     if let response = response as? HTTPURLResponse {
         if let range = statusCode {
             return range.contains(response.statusCode) ? response : nil
@@ -33,13 +37,13 @@ public func validatedHTTPResponse(_ response: URLResponse?, contentType: String?
 
 public enum HTTPMethod: String {
     case options = "OPTIONS"
-    case get     = "GET"
-    case head    = "HEAD"
-    case post    = "POST"
-    case put     = "PUT"
-    case patch   = "PATCH"
-    case delete  = "DELETE"
-    case trace   = "TRACE"
+    case get = "GET"
+    case head = "HEAD"
+    case post = "POST"
+    case put = "PUT"
+    case patch = "PATCH"
+    case delete = "DELETE"
+    case trace = "TRACE"
     case connect = "CONNECT"
 }
 
@@ -60,6 +64,6 @@ public func jsonResponse(fromData data: Data?) throws -> JSON {
         }
         return json
     } catch {
-        throw(JSONSerializeError.parseError)
+        throw (JSONSerializeError.parseError)
     }
 }

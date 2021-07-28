@@ -4,7 +4,11 @@
 
 import XCTest
 
-let PDF_website = ["url": "http://www.pdf995.com/samples/pdf.pdf", "pdfValue": "www.pdf995.com", "urlValue": "www.pdf995.com/", "bookmarkLabel": "http://www.pdf995.com/samples/pdf.pdf", "longUrlValue": "http://www.pdf995.com/"]
+let PDF_website = [
+    "url": "http://www.pdf995.com/samples/pdf.pdf", "pdfValue": "www.pdf995.com",
+    "urlValue": "www.pdf995.com/", "bookmarkLabel": "http://www.pdf995.com/samples/pdf.pdf",
+    "longUrlValue": "http://www.pdf995.com/",
+]
 
 class BrowsingPDFTests: BaseTestCase {
     func testOpenPDFViewer() {
@@ -20,8 +24,8 @@ class BrowsingPDFTests: BaseTestCase {
         var i = 0
         repeat {
             webView.swipeDown()
-            i = i+1
-        } while (app.staticTexts["1 of 5"].exists == false && i < 10)
+            i = i + 1
+        } while app.staticTexts["1 of 5"].exists == false && i < 10
 
         waitForExistence(app.staticTexts["1 of 5"])
     }

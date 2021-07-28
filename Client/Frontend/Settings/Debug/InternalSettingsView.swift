@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 struct InternalSettingsView: View {
     @Default(.latestAppVersion) var latestAppVersion
@@ -36,9 +36,11 @@ struct InternalSettingsView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("deletedSuggestedSites")
-                        Text("\(deletedSuggestedSites.count) site\(deletedSuggestedSites.count == 1 ? "" : "s")")
-                            .foregroundColor(.secondaryLabel)
-                            .font(.caption)
+                        Text(
+                            "\(deletedSuggestedSites.count) site\(deletedSuggestedSites.count == 1 ? "" : "s")"
+                        )
+                        .foregroundColor(.secondaryLabel)
+                        .font(.caption)
                     }
                     Spacer()
                     Button("Clear") { deletedSuggestedSites = [] }
@@ -54,7 +56,8 @@ struct InternalSettingsView: View {
                 Toggle("saveLogins", isOn: $saveLogins)
                     .disabled(!saveLogins)
 
-                OptionalBooleanField("appExtensionTelemetryOpenUrl", value: $appExtensionTelemetryOpenUrl)
+                OptionalBooleanField(
+                    "appExtensionTelemetryOpenUrl", value: $appExtensionTelemetryOpenUrl)
             }
 
             Section(header: Text("Top Sites Cache")) {
@@ -79,7 +82,7 @@ struct InternalSettingsView: View {
     }
 }
 
-fileprivate struct OptionalBooleanField: View {
+private struct OptionalBooleanField: View {
     init(_ title: String, value: Binding<Bool?>) {
         self.title = title
         self._value = value
@@ -93,21 +96,27 @@ fileprivate struct OptionalBooleanField: View {
             Text(title)
             Spacer()
             Menu {
-                Button { value = true } label: {
+                Button {
+                    value = true
+                } label: {
                     if value == true {
                         Label("true", systemSymbol: .checkmark)
                     } else {
                         Text("true")
                     }
                 }
-                Button { value = false } label: {
+                Button {
+                    value = false
+                } label: {
                     if value == false {
                         Label("false", systemSymbol: .checkmark)
                     } else {
                         Text("false")
                     }
                 }
-                Button { value = nil } label: {
+                Button {
+                    value = nil
+                } label: {
                     if value == nil {
                         Label("nil", systemSymbol: .checkmark)
                     } else {
@@ -124,7 +133,7 @@ fileprivate struct OptionalBooleanField: View {
     }
 }
 
-fileprivate struct OptionalNumberField<Number: FixedWidthInteger>: View {
+private struct OptionalNumberField<Number: FixedWidthInteger>: View {
     init(_ title: String, number: Binding<Number?>) {
         self.title = title
         self._number = number
@@ -153,7 +162,7 @@ fileprivate struct OptionalNumberField<Number: FixedWidthInteger>: View {
     }
 }
 
-fileprivate struct NumberField<Number: FixedWidthInteger>: View {
+private struct NumberField<Number: FixedWidthInteger>: View {
     init(_ title: String, number: Binding<Number>) {
         self.title = title
         self._number = number
@@ -179,7 +188,7 @@ fileprivate struct NumberField<Number: FixedWidthInteger>: View {
     }
 }
 
-fileprivate struct OptionalStringField: View {
+private struct OptionalStringField: View {
     init(_ title: String, text: Binding<String?>) {
         self.title = title
         self._text = text
@@ -202,7 +211,7 @@ fileprivate struct OptionalStringField: View {
     }
 }
 
-fileprivate struct OptionalDataKeyView: View {
+private struct OptionalDataKeyView: View {
     init(_ name: String, data: Binding<Data?>) {
         self.name = name
         self._data = data

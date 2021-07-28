@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import SFSafeSymbols
+import Shared
+import SwiftUI
 
 /// An action that’s able to be represented both as a button/menu item
 /// and an accessibility action for VoiceOver users.
@@ -12,29 +12,29 @@ public struct Action: Identifiable {
     /// The SF Symbol name of the icon displayed next to the name
     let icon: SFSymbol
     /// A function that performs the action
-    let handler: () -> ()
+    let handler: () -> Void
 
     public var id: String { name }
 
     /// The standard “Edit” action
-    static func edit(handler: @escaping () -> ()) -> Action {
+    static func edit(handler: @escaping () -> Void) -> Action {
         Action("Edit", icon: .pencil, handler: handler)
     }
     /// The standard “Edit” action
-    static func edit(condition: Bool, handler: @escaping () -> ()) -> Action? {
+    static func edit(condition: Bool, handler: @escaping () -> Void) -> Action? {
         Action("Edit", icon: .pencil, condition: condition, handler: handler)
     }
 
     /// The standard “Delete” action
-    static func delete(handler: @escaping () -> ()) -> Action {
+    static func delete(handler: @escaping () -> Void) -> Action {
         Action("Delete", icon: .trash, handler: handler)
     }
     /// The standard “Delete” action
-    static func delete(condition: Bool = true, handler: @escaping () -> ()) -> Action? {
+    static func delete(condition: Bool = true, handler: @escaping () -> Void) -> Action? {
         Action("Delete", icon: .trash, condition: condition, handler: handler)
     }
 
-    init(_ name: String, icon: SFSymbol, handler: @escaping () -> ()) {
+    init(_ name: String, icon: SFSymbol, handler: @escaping () -> Void) {
         self.name = name
         self.icon = icon
         self.handler = handler
@@ -45,7 +45,7 @@ public struct Action: Identifiable {
     ///   - icon: the SF Symbol icon
     ///   - condition: convenience for actions which are only available in some cases
     ///   - handler: the function to call when the action is activated
-    init?(_ name: String, icon: SFSymbol, condition: Bool, handler: @escaping () -> ()) {
+    init?(_ name: String, icon: SFSymbol, condition: Bool, handler: @escaping () -> Void) {
         if condition {
             self.name = name
             self.icon = icon

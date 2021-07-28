@@ -9,15 +9,18 @@ import Shared
 struct SiteArchiver {
     static func tabsToRestore(tabsStateArchivePath: String?) -> [SavedTab] {
         guard let tabStateArchivePath = tabsStateArchivePath,
-              FileManager.default.fileExists(atPath: tabStateArchivePath),
-              let tabData = try? Data(contentsOf: URL(fileURLWithPath: tabStateArchivePath)) else {
+            FileManager.default.fileExists(atPath: tabStateArchivePath),
+            let tabData = try? Data(contentsOf: URL(fileURLWithPath: tabStateArchivePath))
+        else {
             print(tabsStateArchivePath ?? "", "path doesn't exist")
             return [SavedTab]()
         }
 
         // modern swift way of restoring tabs
         do {
-            if let savedTabs = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(tabData) as? [SavedTab], savedTabs.count > 0 {
+            if let savedTabs = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(tabData)
+                as? [SavedTab], savedTabs.count > 0
+            {
                 return savedTabs
             }
         } catch {
@@ -34,7 +37,9 @@ struct SiteArchiver {
         unarchiver.decodingFailurePolicy = .setErrorAndReturn
 
         guard let oldRestoredTabs = unarchiver.decodeObject(forKey: "tabs") as? [SavedTab] else {
-            Sentry.shared.send( message: "Failed to restore tabs", tag: .tabManager, severity: .error, description: "\(unarchiver.error ??? "nil")")
+            Sentry.shared.send(
+                message: "Failed to restore tabs", tag: .tabManager, severity: .error,
+                description: "\(unarchiver.error ??? "nil")")
             return [SavedTab]()
         }
 

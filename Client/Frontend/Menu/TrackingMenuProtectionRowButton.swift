@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 public struct TrackingMenuProtectionRowButton: View {
 

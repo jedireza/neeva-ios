@@ -1,42 +1,43 @@
 // Copyright Neeva. All rights reserved.
 
-import XCTest
-@testable import Client
-import ViewInspector
-import Shared
-import SwiftUI
 import SFSafeSymbols
+import Shared
 import Storage
+import SwiftUI
+import ViewInspector
+import XCTest
 
-extension SuggestionsList: Inspectable { }
-extension Kern: Inspectable { }
-extension PlaceholderSuggestions: Inspectable { }
-extension QuerySuggestionsList: Inspectable { }
-extension TopSuggestionsList: Inspectable { }
-extension SuggestionChipView: Inspectable { }
-extension SearchSuggestionView: Inspectable { }
-extension QuerySuggestionView: Inspectable { }
-extension NavSuggestionView: Inspectable { }
-extension URLSuggestionView: Inspectable { }
-extension SuggestionView: Inspectable { }
-extension Symbol: Inspectable { }
-extension BoldSpanView: Inspectable { }
-extension NavSuggestionsList: Inspectable { }
+@testable import Client
+
+extension SuggestionsList: Inspectable {}
+extension Kern: Inspectable {}
+extension PlaceholderSuggestions: Inspectable {}
+extension QuerySuggestionsList: Inspectable {}
+extension TopSuggestionsList: Inspectable {}
+extension SuggestionChipView: Inspectable {}
+extension SearchSuggestionView: Inspectable {}
+extension QuerySuggestionView: Inspectable {}
+extension NavSuggestionView: Inspectable {}
+extension URLSuggestionView: Inspectable {}
+extension SuggestionView: Inspectable {}
+extension Symbol: Inspectable {}
+extension BoldSpanView: Inspectable {}
+extension NavSuggestionsList: Inspectable {}
 
 class SuggestionViewsTests: XCTestCase {
     static let sampleQuerySuggestion = SuggestionsQuery.Data.Suggest.QuerySuggestion(
-            type: .standard,
-            suggestedQuery: "neeva",
-            boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
-            source: .bing
-        )
+        type: .standard,
+        suggestedQuery: "neeva",
+        boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
+        source: .bing
+    )
     static let sampleCalculatorQuerySuggestion = SuggestionsQuery.Data.Suggest.QuerySuggestion(
-            type: .standard,
-            suggestedQuery: "5+5",
-            boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
-            source: .calculator,
-            annotation: .init(annotationType: "Calculator", description: "10")
-        )
+        type: .standard,
+        suggestedQuery: "5+5",
+        boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
+        source: .calculator,
+        annotation: .init(annotationType: "Calculator", description: "10")
+    )
     static let sampleQuery = Suggestion.query(sampleQuerySuggestion)
     static let sampleCalculatorQuery = Suggestion.query(sampleCalculatorQuerySuggestion)
     static let sampleURLSuggestion = SuggestionsQuery.Data.Suggest.UrlSuggestion(
@@ -60,16 +61,20 @@ class SuggestionViewsTests: XCTestCase {
     static let sampleSite = Site(url: "https://neeva.com", title: "Neeva")
 
     func testQuerySuggestion() throws {
-        let model = NeevaSuggestionModel(previewLensBang: nil,
-                                         chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
-        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery).environmentObject(model)
+        let model = NeevaSuggestionModel(
+            previewLensBang: nil,
+            chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
+        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
+            .environmentObject(model)
         let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
         XCTAssertNotNil(query)
         let querySuggestion =
-            QuerySuggestionView(suggestion: SuggestionViewsTests.sampleQuerySuggestion).environmentObject(model)
+            QuerySuggestionView(suggestion: SuggestionViewsTests.sampleQuerySuggestion)
+            .environmentObject(model)
         let image = try querySuggestion.inspect().find(ViewType.Image.self).actualImage()
-        XCTAssertEqual(image,
-                       Image(systemName: SFSymbol.magnifyingglass.rawValue).renderingMode(.template))
+        XCTAssertEqual(
+            image,
+            Image(systemName: SFSymbol.magnifyingglass.rawValue).renderingMode(.template))
         let label = try querySuggestion.inspect()
             .find(ViewType.VStack.self)
             .find(ViewType.Text.self)
@@ -78,9 +83,11 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testURLSuggestion() {
-        let model = NeevaSuggestionModel(previewLensBang: nil, topSuggestions: [SuggestionViewsTests.sampleURL])
-        let urlSuggestion = URLSuggestionView(suggestion: SuggestionViewsTests.sampleURLSuggestion).environmentObject(model)
-        
+        let model = NeevaSuggestionModel(
+            previewLensBang: nil, topSuggestions: [SuggestionViewsTests.sampleURL])
+        let urlSuggestion = URLSuggestionView(suggestion: SuggestionViewsTests.sampleURLSuggestion)
+            .environmentObject(model)
+
         do {
             // Test keeps crashing Thread 1: EXC_BAD_ACCESS
             // let hStack = try urlSuggestion.inspect().find(ViewType.HStack.self) <-- Crashes
@@ -93,13 +100,17 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testNavSuggestion() throws {
-        let model = NeevaSuggestionModel(previewLensBang: nil,
-                                         topSuggestions: [SuggestionViewsTests.sampleNav])
-        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleNav).environmentObject(model)
+        let model = NeevaSuggestionModel(
+            previewLensBang: nil,
+            topSuggestions: [SuggestionViewsTests.sampleNav])
+        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleNav).environmentObject(
+            model)
         let nav = try suggestionView.inspect().find(URLSuggestionView.self).actualView()
         XCTAssertNotNil(nav)
-        let navSuggestion = URLSuggestionView(suggestion:
-                                    SuggestionViewsTests.sampleNavUrlSuggestion).environmentObject(model)
+        let navSuggestion = URLSuggestionView(
+            suggestion:
+                SuggestionViewsTests.sampleNavUrlSuggestion
+        ).environmentObject(model)
         let hStack = try navSuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
         let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
@@ -113,7 +124,9 @@ class SuggestionViewsTests: XCTestCase {
         let neevaModel = NeevaSuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
         let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
-        let historySuggestion = SuggestionsList().environmentObject(neevaModel).environmentObject(historyModel).environmentObject(navModel)
+        let historySuggestion = SuggestionsList().environmentObject(neevaModel).environmentObject(
+            historyModel
+        ).environmentObject(navModel)
         let hStack = try historySuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
 
@@ -126,9 +139,10 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testSuggestionsList() throws {
-        let neevaModel = NeevaSuggestionModel(previewLensBang: nil,
-                                              topSuggestions: [SuggestionViewsTests.sampleNav],
-                                              chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
+        let neevaModel = NeevaSuggestionModel(
+            previewLensBang: nil,
+            topSuggestions: [SuggestionViewsTests.sampleNav],
+            chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
         let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite])
         let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
         let suggestionList = SuggestionsList().environmentObject(historyModel)
@@ -205,7 +219,9 @@ class SuggestionViewsTests: XCTestCase {
 
         let neevaModel = NeevaSuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
         neevaModel.navSuggestions = [SuggestionViewsTests.sampleNav, suggestion]
-        let historyModel = HistorySuggestionModel(previewSites: [SuggestionViewsTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB])
+        let historyModel = HistorySuggestionModel(previewSites: [
+            SuggestionViewsTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB,
+        ])
         let navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
         let suggestionList = SuggestionsList().environmentObject(historyModel)
             .environmentObject(neevaModel)
@@ -221,13 +237,16 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testSuggestionWithCalculatorSayt() throws {
-        let model = NeevaSuggestionModel(previewLensBang: nil,
-                                         rowQuerySuggestions: [SuggestionViewsTests.sampleCalculatorQuery])
-        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery).environmentObject(model)
+        let model = NeevaSuggestionModel(
+            previewLensBang: nil,
+            rowQuerySuggestions: [SuggestionViewsTests.sampleCalculatorQuery])
+        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
+            .environmentObject(model)
         let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
         XCTAssertNotNil(query)
         let querySuggestion =
-            QuerySuggestionView(suggestion: SuggestionViewsTests.sampleCalculatorQuerySuggestion).environmentObject(model)
+            QuerySuggestionView(suggestion: SuggestionViewsTests.sampleCalculatorQuerySuggestion)
+            .environmentObject(model)
         let label = try querySuggestion.inspect()
             .find(ViewType.VStack.self)
             .find(ViewType.Text.self)

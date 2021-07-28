@@ -21,7 +21,9 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
             TabToolbarView(
                 onBack: { [weak delegate] in delegate?.tabToolbarDidPressBack() },
                 onForward: { [weak delegate] in delegate?.tabToolbarDidPressForward() },
-                onLongPressBackForward: { [weak delegate] in delegate?.tabToolbarDidLongPressBackForward() },
+                onLongPressBackForward: { [weak delegate] in
+                    delegate?.tabToolbarDidLongPressBackForward()
+                },
                 onNeevaMenu: { BrowserViewController.foregroundBVC().showNeevaMenuSheet() },
                 onSaveToSpace: { [weak delegate] in delegate?.tabToolbarSpacesMenu() },
                 onShowTabs: { [weak delegate] in delegate?.tabToolbarDidPressTabs() },
@@ -43,10 +45,14 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
         // behavior of SwiftUI. Instead, we remove any keyboard-related observers from the view, which handles the keyboard avoidance behavior.
         // See https://steipete.com/posts/disabling-keyboard-avoidance-in-swiftui-uihostingcontroller/ for reference.
         let view = self.view!
-        NotificationCenter.default.removeObserver(view, name: UIApplication.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(view, name: UIApplication.keyboardDidShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(view, name: UIApplication.keyboardWillHideNotification, object: nil)
-        NotificationCenter.default.removeObserver(view, name: UIApplication.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(
+            view, name: UIApplication.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(
+            view, name: UIApplication.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(
+            view, name: UIApplication.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(
+            view, name: UIApplication.keyboardDidHideNotification, object: nil)
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

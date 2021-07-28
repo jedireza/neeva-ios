@@ -16,17 +16,19 @@ struct ThrobbingHighlightBorder: ViewModifier {
                     .stroke(highlight, lineWidth: 4)
                     .opacity(Double(2 - (isAtMaxScale ? 1.5 : 1.0)))
                     .scaleEffect(isAtMaxScale ? 1.05 : 1.0)
-                    .onAppear() {
-                        withAnimation(self.animation, {
-                            self.isAtMaxScale.toggle()
-                        })
+                    .onAppear {
+                        withAnimation(
+                            self.animation,
+                            {
+                                self.isAtMaxScale.toggle()
+                            })
                     }
             )
     }
 }
 
-public extension View {
-    func throbbingHighlightBorderStyle(highlight: Color) -> some View {
+extension View {
+    public func throbbingHighlightBorderStyle(highlight: Color) -> some View {
         self.modifier(ThrobbingHighlightBorder(highlight: highlight))
     }
 }

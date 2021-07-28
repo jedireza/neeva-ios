@@ -3,9 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Storage
-
 import Shared
+import Storage
 import XCGLogger
 
 enum ShortcutType: String {
@@ -38,15 +37,22 @@ class QuickActions: NSObject {
     var launchedShortcutItem: UIApplicationShortcutItem?
 
     // MARK: Administering Quick Actions
-    func addDynamicApplicationShortcutItemOfType(_ type: ShortcutType, fromShareItem shareItem: ShareItem, toApplication application: UIApplication) {
-            var userData = [QuickActions.TabURLKey: shareItem.url]
-            if let title = shareItem.title {
-                userData[QuickActions.TabTitleKey] = title
-            }
-        QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(type, withUserData: userData, toApplication: application)
+    func addDynamicApplicationShortcutItemOfType(
+        _ type: ShortcutType, fromShareItem shareItem: ShareItem,
+        toApplication application: UIApplication
+    ) {
+        var userData = [QuickActions.TabURLKey: shareItem.url]
+        if let title = shareItem.title {
+            userData[QuickActions.TabTitleKey] = title
+        }
+        QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(
+            type, withUserData: userData, toApplication: application)
     }
 
-    @discardableResult func addDynamicApplicationShortcutItemOfType(_ type: ShortcutType, withUserData userData: [String: String] = [String: String](), toApplication application: UIApplication) -> Bool {
+    @discardableResult func addDynamicApplicationShortcutItemOfType(
+        _ type: ShortcutType, withUserData userData: [String: String] = [String: String](),
+        toApplication application: UIApplication
+    ) -> Bool {
         // add the quick actions version so that it is always in the user info
         var userData: [String: String] = userData
         userData[QuickActions.QuickActionsVersionKey] = QuickActions.QuickActionsVersion
@@ -57,28 +63,38 @@ class QuickActions: NSObject {
         return true
     }
 
-    func removeDynamicApplicationShortcutItemOfType(_ type: ShortcutType, fromApplication application: UIApplication) {
+    func removeDynamicApplicationShortcutItemOfType(
+        _ type: ShortcutType, fromApplication application: UIApplication
+    ) {
         guard var dynamicShortcutItems = application.shortcutItems,
-            let index = (dynamicShortcutItems.firstIndex { $0.type == type.type }) else { return }
+            let index = (dynamicShortcutItems.firstIndex { $0.type == type.type })
+        else { return }
 
         dynamicShortcutItems.remove(at: index)
         application.shortcutItems = dynamicShortcutItems
     }
 
     // MARK: Handling Quick Actions
-    @discardableResult func handleShortCutItem(_ shortcutItem: UIApplicationShortcutItem, withBrowserViewController bvc: BrowserViewController ) -> Bool {
+    @discardableResult func handleShortCutItem(
+        _ shortcutItem: UIApplicationShortcutItem,
+        withBrowserViewController bvc: BrowserViewController
+    ) -> Bool {
 
         // Verify that the provided `shortcutItem`'s `type` is one handled by the application.
         guard let shortCutType = ShortcutType(fullType: shortcutItem.type) else { return false }
 
         DispatchQueue.main.async {
-            self.handleShortCutItemOfType(shortCutType, userData: shortcutItem.userInfo, browserViewController: bvc)
+            self.handleShortCutItemOfType(
+                shortCutType, userData: shortcutItem.userInfo, browserViewController: bvc)
         }
 
         return true
     }
 
-    fileprivate func handleShortCutItemOfType(_ type: ShortcutType, userData: [String: NSSecureCoding]?, browserViewController: BrowserViewController) {
+    fileprivate func handleShortCutItemOfType(
+        _ type: ShortcutType, userData: [String: NSSecureCoding]?,
+        browserViewController: BrowserViewController
+    ) {
         switch type {
         case .newTab:
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: false)
@@ -86,8 +102,10 @@ class QuickActions: NSObject {
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: true)
         }
     }
-    
-    fileprivate func handleOpenNewTab(withBrowserViewController bvc: BrowserViewController, isPrivate: Bool) {
+
+    fileprivate func handleOpenNewTab(
+        withBrowserViewController bvc: BrowserViewController, isPrivate: Bool
+    ) {
         bvc.openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
     }
 }

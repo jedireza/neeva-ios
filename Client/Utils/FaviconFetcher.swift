@@ -2,11 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Shared
-import XCGLogger
-import SDWebImage
 import Fuzi
+import SDWebImage
+import Shared
 import SwiftyJSON
+import XCGLogger
 
 private let log = Logger.browserLogger
 
@@ -24,9 +24,10 @@ class FaviconFetcherErrorType: MaybeErrorType {
  * look at the extension.
  */
 open class FaviconFetcher: NSObject, XMLParserDelegate {
-    internal let queue = DispatchQueue(label: "FaviconFetcher", attributes: DispatchQueue.Attributes.concurrent)
-    
-    static let MaximumFaviconSize = 1 * 1024 * 1024 // 1 MiB file size limit
+    internal let queue = DispatchQueue(
+        label: "FaviconFetcher", attributes: DispatchQueue.Attributes.concurrent)
+
+    static let MaximumFaviconSize = 1 * 1024 * 1024  // 1 MiB file size limit
 
     public static var userAgent: String = ""
 
@@ -56,7 +57,9 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         return nil
     }
 
-    lazy internal var urlSession: URLSession = makeURLSession(userAgent: FaviconFetcher.userAgent, configuration: URLSessionConfiguration.default, timeout: 5)
+    lazy internal var urlSession: URLSession = makeURLSession(
+        userAgent: FaviconFetcher.userAgent, configuration: URLSessionConfiguration.default,
+        timeout: 5)
 
     private struct BundledIcon: Codable {
         var title: String
@@ -68,7 +71,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
 
     // Default favicons and background colors provided via mozilla/tippy-top-sites
     private class func getBundledIcons() -> [String: BundledIconType] {
-        
+
         // Alows us to access bundle from extensions
         // Also found in `SentryIntegration`. Taken from: https://stackoverflow.com/questions/26189060/get-the-main-app-bundle-from-within-extension
         var bundle = Bundle.main
@@ -79,7 +82,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
                 bundle = otherBundle
             }
         }
-        
+
         let filePath = bundle.path(forResource: "top_sites", ofType: "json")
         let file = try! Data(contentsOf: URL(fileURLWithPath: filePath!))
         let decoder = JSONDecoder()
@@ -102,7 +105,10 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
                 if color == "#fff" || color == "#FFF" {
                     icons[url] = (UIColor.clear, filePath)
                 } else {
-                    icons[url] = (UIColor(colorString: color.replacingOccurrences(of: "#", with: "")), filePath)
+                    icons[url] = (
+                        UIColor(colorString: color.replacingOccurrences(of: "#", with: "")),
+                        filePath
+                    )
                 }
             }
         }
@@ -158,9 +164,11 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
 
         return UIColor(colorString: colorHex)
     }
-    
+
     class func downloadFaviconAndCache(imageURL: URL?, imageKey: String) {
-        guard let imageURL = imageURL, !imageURL.absoluteString.starts(with: "internal://"), !imageKey.isEmpty else { return }
+        guard let imageURL = imageURL, !imageURL.absoluteString.starts(with: "internal://"),
+            !imageKey.isEmpty
+        else { return }
         // cache found, don't download
         guard !checkImageCache(imageKey: imageKey) else { return }
         // no cache found, download image
@@ -168,8 +176,11 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
             guard err == nil else { return }
             do {
                 // save image to disk cache
-                if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)    {
-                    let imageKeyDirectoryUrl = container.appendingPathComponent("Library/Caches/fxfavicon/\(imageKey)")
+                if let container = FileManager.default.containerURL(
+                    forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)
+                {
+                    let imageKeyDirectoryUrl = container.appendingPathComponent(
+                        "Library/Caches/fxfavicon/\(imageKey)")
                     try data?.write(to: imageKeyDirectoryUrl)
                 }
             } catch let err as NSError {
@@ -177,50 +188,64 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
             }
         }
     }
-    
+
     class func checkImageCache(imageKey: String) -> Bool {
         let fileManager = FileManager.default
-        guard let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier) else {
+        guard
+            let container = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)
+        else {
             return false
         }
-        let imageKeyDirectoryUrl = container.appendingPathComponent("Library/Caches/fxfavicon/\(imageKey)")
+        let imageKeyDirectoryUrl = container.appendingPathComponent(
+            "Library/Caches/fxfavicon/\(imageKey)")
         return fileManager.fileExists(atPath: imageKeyDirectoryUrl.path)
     }
-    
+
     class func createWebImageCacheDirectory() {
         // check existence of cache directory
         let fileManager = FileManager.default
         do {
-           if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier) {
-            let directoryPath = container.appendingPathComponent("Library/Caches/fxfavicon")
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: directoryPath.path, isDirectory: &isDir) {
-                if !isDir.boolValue {
-                    // file exists and is not a directory
-                    // remove this file and create a directory
-                    try fileManager.removeItem(at: directoryPath)
+            if let container = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)
+            {
+                let directoryPath = container.appendingPathComponent("Library/Caches/fxfavicon")
+                var isDir: ObjCBool = false
+                if fileManager.fileExists(atPath: directoryPath.path, isDirectory: &isDir) {
+                    if !isDir.boolValue {
+                        // file exists and is not a directory
+                        // remove this file and create a directory
+                        try fileManager.removeItem(at: directoryPath)
+                        // create directory to save favicons
+                        try fileManager.createDirectory(
+                            at: directoryPath, withIntermediateDirectories: false, attributes: nil)
+                    }
+                } else {
+                    // directory does not exist
                     // create directory to save favicons
-                    try fileManager.createDirectory(at: directoryPath, withIntermediateDirectories: false, attributes: nil)
+                    try fileManager.createDirectory(
+                        at: directoryPath, withIntermediateDirectories: false, attributes: nil)
                 }
-            } else {
-                // directory does not exist
-                // create directory to save favicons
-                try fileManager.createDirectory(at: directoryPath, withIntermediateDirectories: false, attributes: nil)
             }
-          }
         } catch let error as NSError {
-            Sentry.shared.send(message: "Favicon cache directory creation failed", tag: .general, severity: .error, description: error.description)
+            Sentry.shared.send(
+                message: "Favicon cache directory creation failed", tag: .general, severity: .error,
+                description: error.description)
         }
     }
-        
+
     class func getFaviconFromDiskCache(imageKey: String) -> UIImage? {
         guard checkImageCache(imageKey: imageKey) else { return nil }
         // image cache found now we retrive image
         let fileManager = FileManager.default
-        guard let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier) else {
+        guard
+            let container = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)
+        else {
             return nil
         }
-        let imageKeyDirectoryUrl = container.appendingPathComponent("Library/Caches/fxfavicon/\(imageKey)")
+        let imageKeyDirectoryUrl = container.appendingPathComponent(
+            "Library/Caches/fxfavicon/\(imageKey)")
         guard let data = fileManager.contents(atPath: imageKeyDirectoryUrl.path) else { return nil }
         return UIImage(data: data)
     }

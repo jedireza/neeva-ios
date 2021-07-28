@@ -3,11 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
-@testable import Storage
-@testable import Client
 import UIKit
-
 import XCTest
+
+@testable import Client
+@testable import Storage
 
 class DiskImageStoreTests: XCTestCase {
     var files: FileAccessor!
@@ -27,7 +27,7 @@ class DiskImageStoreTests: XCTestCase {
         let redImage = makeImageWithColor(UIColor.red, size: CGSize(width: 100, height: 100))
         let blueImage = makeImageWithColor(UIColor.blue, size: CGSize(width: 17, height: 17))
 
-        [(key: "blue", image: blueImage), (key: "red", image: redImage)].forEach() { (key, image) in
+        [(key: "blue", image: blueImage), (key: "red", image: redImage)].forEach { (key, image) in
             XCTAssertNil(getImage(key), "\(key) key is nil")
             success = putImage(key, image: image)
             XCTAssert(success, "\(key) image added to store")

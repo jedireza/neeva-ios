@@ -4,19 +4,20 @@
 
 // This code is loosely based on https://github.com/Antol/APAutocompleteTextField
 
-import SwiftUI
-import Shared
 import Combine
+import Shared
+import SwiftUI
 
 struct LocationTextField: UIViewRepresentable {
     @Binding var text: String
     @Binding var editing: Bool
-    let onSubmit: (String) -> ()
+    let onSubmit: (String) -> Void
 
     @EnvironmentObject private var historyModel: HistorySuggestionModel
 
     func makeUIView(context: Context) -> AutocompleteTextField {
-        let tf = AutocompleteTextField(text: $text, isActive: $editing, onSubmit: onSubmit, historyModel: historyModel)
+        let tf = AutocompleteTextField(
+            text: $text, isActive: $editing, onSubmit: onSubmit, historyModel: historyModel)
 
         tf.font = UIFont.systemFont(ofSize: 16)
         tf.backgroundColor = .clear
@@ -33,8 +34,9 @@ struct LocationTextField: UIViewRepresentable {
         tf.accessibilityLabel = .URLBarLocationAccessibilityLabel
         tf.enablesReturnKeyAutomatically = true
         tf.attributedPlaceholder =
-            NSAttributedString(string: .TabLocationURLPlaceholder, attributes: [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
-
+            NSAttributedString(
+                string: .TabLocationURLPlaceholder,
+                attributes: [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel])
 
         tf.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
@@ -59,7 +61,7 @@ struct LocationTextField: UIViewRepresentable {
 }
 
 class AutocompleteTextField: UITextField, UITextFieldDelegate {
-    var onSubmit: (String) -> ()
+    var onSubmit: (String) -> Void
 
     @Binding private var binding: String
     @Binding private var isActive: Bool
@@ -93,7 +95,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         set { super.accessibilityHint = newValue }
     }
 
-    init(text: Binding<String>, isActive: Binding<Bool>, onSubmit: @escaping (String) -> (), historyModel: HistorySuggestionModel) {
+    init(
+        text: Binding<String>, isActive: Binding<Bool>, onSubmit: @escaping (String) -> Void,
+        historyModel: HistorySuggestionModel
+    ) {
         self._binding = text
         self._isActive = isActive
         self.onSubmit = onSubmit
@@ -101,10 +106,11 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         super.init(frame: .zero)
         super.delegate = self
 
-        self.addAction(UIAction { [weak self] _ in
-            guard let self = self, let text = self.text else { return }
-            self.binding = text
-        }, for: .editingChanged)
+        self.addAction(
+            UIAction { [weak self] _ in
+                guard let self = self, let text = self.text else { return }
+                self.binding = text
+            }, for: .editingChanged)
 
         subscription = historyModel.$completion
             .removeDuplicates()
@@ -124,10 +130,18 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override var keyCommands: [UIKeyCommand]? {
         return [
-            UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: [], action: #selector(self.handleKeyCommand(sender:))),
-            UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: [], action: #selector(self.handleKeyCommand(sender:))),
-            UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(self.handleKeyCommand(sender:))),
-            UIKeyCommand(input: copyShortcutKey, modifierFlags: .command, action: #selector(self.handleKeyCommand(sender:)))
+            UIKeyCommand(
+                input: UIKeyCommand.inputLeftArrow, modifierFlags: [],
+                action: #selector(self.handleKeyCommand(sender:))),
+            UIKeyCommand(
+                input: UIKeyCommand.inputRightArrow, modifierFlags: [],
+                action: #selector(self.handleKeyCommand(sender:))),
+            UIKeyCommand(
+                input: UIKeyCommand.inputEscape, modifierFlags: [],
+                action: #selector(self.handleKeyCommand(sender:))),
+            UIKeyCommand(
+                input: copyShortcutKey, modifierFlags: .command,
+                action: #selector(self.handleKeyCommand(sender:))),
         ]
     }
 
@@ -137,7 +151,9 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         }
         switch input {
         case UIKeyCommand.inputLeftArrow:
-            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-left-arrow"])
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .press, object: .keyCommand,
+                extras: ["action": "autocomplete-left-arrow"])
             if historyModel.completion != nil {
                 applyCompletion()
 
@@ -155,7 +171,9 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
             }
         case UIKeyCommand.inputRightArrow:
-            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-right-arrow"])
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .press, object: .keyCommand,
+                extras: ["action": "autocomplete-right-arrow"])
             if historyModel.completion != nil {
                 applyCompletion()
 
@@ -173,7 +191,9 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
             }
         case UIKeyCommand.inputEscape:
-            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "autocomplete-cancel"])
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .press, object: .keyCommand,
+                extras: ["action": "autocomplete-cancel"])
             isActive = false
         case copyShortcutKey:
             if let text = text, let completion = historyModel.completion {
@@ -203,7 +223,8 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let interaction: LogConfig.Interaction = historyModel.completion == nil
+        let interaction: LogConfig.Interaction =
+            historyModel.completion == nil
             ? .NoSuggestion : .AutocompleteSuggestion
         ClientLogger.shared.logCounter(interaction)
         if let text = accessibilityValue {

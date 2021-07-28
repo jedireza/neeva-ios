@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 private enum NeevaMenuUX {
     static let innerSectionPadding: CGFloat = 8
@@ -9,14 +9,14 @@ private enum NeevaMenuUX {
 
 public struct NeevaMenuView: View {
     private let noTopPadding: Bool
-    private let menuAction: ((NeevaMenuButtonActions) -> ())?
+    private let menuAction: ((NeevaMenuButtonActions) -> Void)?
 
     @State private var openSpacesPrompt = false
     @State private var openFeedbackPrompt = false
     @State private var openSettingsPrompt = false
     @Environment(\.isIncognito) private var isIncognito
 
-    public init(noTopPadding: Bool = false, menuAction: ((NeevaMenuButtonActions) -> ())?) {
+    public init(noTopPadding: Bool = false, menuAction: ((NeevaMenuButtonActions) -> Void)?) {
         self.noTopPadding = noTopPadding
         self.menuAction = menuAction
     }
@@ -25,7 +25,7 @@ public struct NeevaMenuView: View {
         // TODO: when making significant updates, migrate to OverlayGroupedStack
         VStack(alignment: .leading, spacing: GroupedCellUX.spacing) {
             VStack(spacing: NeevaMenuUX.innerSectionPadding) {
-                HStack(spacing: NeevaMenuUX.innerSectionPadding){
+                HStack(spacing: NeevaMenuUX.innerSectionPadding) {
                     NeevaMenuButtonView(label: "Home", nicon: .house) {
                         self.menuAction!(NeevaMenuButtonActions.home)
                     }
@@ -34,7 +34,7 @@ public struct NeevaMenuView: View {
 
                     WithPopover(
                         showPopover: $openSpacesPrompt,
-                        popoverSize: CGSize(width:290, height: 150),
+                        popoverSize: CGSize(width: 290, height: 150),
                         content: {
                             NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
                                 self.menuAction!(NeevaMenuButtonActions.spaces)
@@ -43,7 +43,11 @@ public struct NeevaMenuView: View {
                             .disabled(isIncognito)
                         },
                         popoverContent: {
-                            TourPromptView(title: "Want to be organized?", description: "Save web pages, images, and videos to a curated Space for easy access later", onClose: onCloseTourPrompt, staticColorMode: true)
+                            TourPromptView(
+                                title: "Want to be organized?",
+                                description:
+                                    "Save web pages, images, and videos to a curated Space for easy access later",
+                                onClose: onCloseTourPrompt, staticColorMode: true)
                         },
                         staticColorMode: true
                     )
@@ -52,22 +56,26 @@ public struct NeevaMenuView: View {
                 HStack(spacing: NeevaMenuUX.innerSectionPadding) {
                     WithPopover(
                         showPopover: $openSettingsPrompt,
-                        popoverSize: CGSize(width:290, height: 180),
+                        popoverSize: CGSize(width: 290, height: 180),
                         content: {
-                            NeevaMenuButtonView(label: "Settings", nicon: .gear)  {
+                            NeevaMenuButtonView(label: "Settings", nicon: .gear) {
                                 self.menuAction!(NeevaMenuButtonActions.settings)
                             }
                             .accessibilityIdentifier("NeevaMenu.Settings")
                         },
                         popoverContent: {
-                            TourPromptView(title: "Want to search personal documents?", description: "Search information in your email, online files and folders, and calendar!", onClose: onCloseTourPrompt, staticColorMode: true)
+                            TourPromptView(
+                                title: "Want to search personal documents?",
+                                description:
+                                    "Search information in your email, online files and folders, and calendar!",
+                                onClose: onCloseTourPrompt, staticColorMode: true)
                         },
                         staticColorMode: true
                     )
 
                     WithPopover(
                         showPopover: $openFeedbackPrompt,
-                        popoverSize: CGSize(width:290, height: 120),
+                        popoverSize: CGSize(width: 290, height: 120),
                         content: {
                             NeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft) {
                                 self.menuAction!(NeevaMenuButtonActions.feedback)
@@ -75,7 +83,10 @@ public struct NeevaMenuView: View {
                             .accessibilityIdentifier("NeevaMenu.Feedback")
                         },
                         popoverContent: {
-                            TourPromptView(title: "Have feedback?", description: "We'd love to hear your thoughts!", onClose: onCloseTourPrompt, staticColorMode: true)
+                            TourPromptView(
+                                title: "Have feedback?",
+                                description: "We'd love to hear your thoughts!",
+                                onClose: onCloseTourPrompt, staticColorMode: true)
                         },
                         staticColorMode: true
                     )
@@ -85,7 +96,9 @@ public struct NeevaMenuView: View {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     if NeevaFeatureFlags[.referralPromo] {
-                        NeevaMenuRowButtonView(label: "Win $5000 by inviting friends", isPromo: true) {
+                        NeevaMenuRowButtonView(
+                            label: "Win $5000 by inviting friends", isPromo: true
+                        ) {
                             self.menuAction!(NeevaMenuButtonActions.referralPromo)
                         }
                         .accentColor(Color.brand.adaptive.orange)
@@ -102,7 +115,8 @@ public struct NeevaMenuView: View {
                     Color.groupedBackground.frame(height: 1)
 
                     NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
-                        ClientLogger.shared.logCounter(.OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
+                        ClientLogger.shared.logCounter(
+                            .OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
                         openDownloadsFolderInFilesApp()
                     }
                     .accessibilityIdentifier("NeevaMenu.Downloads")
@@ -122,7 +136,8 @@ public struct NeevaMenuView: View {
         openSettingsPrompt = false
 
         if TourManager.shared.hasActiveStep() {
-            TourManager.shared.responseMessage(for: TourManager.shared.getActiveStepName(), exit: true)
+            TourManager.shared.responseMessage(
+                for: TourManager.shared.getActiveStepName(), exit: true)
         }
     }
 
@@ -154,7 +169,8 @@ public struct NeevaMenuView: View {
 
 struct NeevaMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuView(menuAction: nil).previewDevice("iPod touch (7th generation)").environment(\.sizeCategory, .extraExtraExtraLarge)
+        NeevaMenuView(menuAction: nil).previewDevice("iPod touch (7th generation)").environment(
+            \.sizeCategory, .extraExtraExtraLarge)
         NeevaMenuView(menuAction: nil).environment(\.isIncognito, true)
     }
 }

@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Shared
 import SDWebImage
+import Shared
 import Storage
 import SwiftUI
 
@@ -15,7 +15,9 @@ class HomeUIView: UIView {
 
     lazy var collectionView: UIView = {
         let home = NeevaHome(incognito: false)
-        let controller = UIHostingController(rootView: home.environmentObject(delegate?.viewModel ?? SuggestedSitesViewModel(sites: [Site]())))
+        let controller = UIHostingController(
+            rootView: home.environmentObject(
+                delegate?.viewModel ?? SuggestedSitesViewModel(sites: [Site]())))
         controller.view.backgroundColor = UIColor.clear
         return controller.view
     }()
@@ -69,8 +71,11 @@ class HomeViewDelegate: NSObject {
         }
         // On iPad
         // The number of items in a row is equal to the number of highlights in a row * 2
-        var numItems = Int(NeevaHomeUX.numberOfItemsPerRowForSizeClassIpad[traits.horizontalSizeClass])
-        if UIApplication.shared.statusBarOrientation.isPortrait || (traits.horizontalSizeClass == .compact && isLandscape) {
+        var numItems = Int(
+            NeevaHomeUX.numberOfItemsPerRowForSizeClassIpad[traits.horizontalSizeClass])
+        if UIApplication.shared.statusBarOrientation.isPortrait
+            || (traits.horizontalSizeClass == .compact && isLandscape)
+        {
             numItems = numItems - 1
         }
         return numItems * 2

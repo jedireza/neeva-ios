@@ -1,20 +1,18 @@
 // Copyright © Neeva. All rights reserved.
 
-import SwiftUI
 import Introspect
+import SwiftUI
 
-/**
- * # Why do we need `ViewControllerWrapper`?
- *
- * SwiftUI allows you to use `UIViewControllerRepresentable` to embed an arbitrary subclass of `UIViewController`
- * in a SwiftUI view hierarchy. However, this is suboptimal when used with a modifier like `sheet(isPresented:)` for a couple of reasons:
- * 1. SwiftUI will size the view controller to keep it inside the safe area, which we don’t actually want since the view controllers are
- *   perfectly capable of handling that themselves. This also leaves blank space at the bottom of the screen, which looks bad.
- * 2. The presented view controller doesn’t know that it’s being modally presented. This means that some things won’t work properly,
- *   such as swiping down to dismiss an `INUIEditVoiceShortcutViewController`.
- *
- * To solve these problems, we use a little magic to directly present the view controller on top of the current `UIViewController`.
- */
+/// # Why do we need `ViewControllerWrapper`?
+///
+/// SwiftUI allows you to use `UIViewControllerRepresentable` to embed an arbitrary subclass of `UIViewController`
+/// in a SwiftUI view hierarchy. However, this is suboptimal when used with a modifier like `sheet(isPresented:)` for a couple of reasons:
+/// 1. SwiftUI will size the view controller to keep it inside the safe area, which we don’t actually want since the view controllers are
+///   perfectly capable of handling that themselves. This also leaves blank space at the bottom of the screen, which looks bad.
+/// 2. The presented view controller doesn’t know that it’s being modally presented. This means that some things won’t work properly,
+///   such as swiping down to dismiss an `INUIEditVoiceShortcutViewController`.
+///
+/// To solve these problems, we use a little magic to directly present the view controller on top of the current `UIViewController`.
 
 // this is used to obscure the current presentation status from other code
 // since we don’t have a way to know whether the modal has been manually dismissed
@@ -43,7 +41,9 @@ extension View {
     ///         MyViewControllerWrapper(...)
     ///     }
     /// ```
-    public func modal<Content: ViewControllerWrapper>(state: Binding<ModalState>, content: () -> Content) -> some View {
+    public func modal<Content: ViewControllerWrapper>(
+        state: Binding<ModalState>, content: () -> Content
+    ) -> some View {
         overlay(ViewControllerWrapper_Presenter(state: state, wrapper: content()))
     }
 }
@@ -53,7 +53,7 @@ extension View {
 /// We need this protocol because we don’t have access to `UIViewControllerRepresentableContext`’s initializers
 /// and because we don’t have access to `transaction` and `environment`.
 public protocol ViewControllerWrapper {
-    associatedtype ViewController : UIViewController
+    associatedtype ViewController: UIViewController
     associatedtype Coordinator = Void
 
     typealias Context = ViewControllerWrapperContext<Self>
@@ -86,7 +86,7 @@ public struct ViewControllerWrapperContext<Wrapper: ViewControllerWrapper> {
 // MARK: - Internals
 
 /// I found that `introspectViewController` could not find a view controller, but this produced good results.
-fileprivate func findViewController(in responder: UIResponder) -> UIViewController? {
+private func findViewController(in responder: UIResponder) -> UIViewController? {
     if let vc = responder as? UIViewController {
         return vc
     } else if let next = responder.next {
@@ -134,7 +134,8 @@ public struct ViewControllerWrapper_Presenter<Wrapper: ViewControllerWrapper>: V
 
             if state.desiredAction == .present && self.presentee == nil {
                 let coordinator = wrapper.makeCoordinator()
-                let presentee = wrapper.makeUIViewController(context: .init(coordinator: coordinator))
+                let presentee = wrapper.makeUIViewController(
+                    context: .init(coordinator: coordinator))
                 vc.present(presentee, animated: true, completion: nil)
                 self.presentee = (presentee, coordinator)
                 // reset the state to `nil` so that this code will be run if the view controller

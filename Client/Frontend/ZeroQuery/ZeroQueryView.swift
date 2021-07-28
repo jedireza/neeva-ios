@@ -1,9 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Storage
-import Shared
 import Defaults
+import Shared
+import Storage
+import SwiftUI
 
 public struct ZeroQueryUX {
     fileprivate static let ToggleButtonSize: CGFloat = 32
@@ -11,7 +11,7 @@ public struct ZeroQueryUX {
     static let Padding: CGFloat = 16
 }
 
-fileprivate enum TriState: Int, Codable {
+private enum TriState: Int, Codable {
     case hidden
     case compact
     case expanded
@@ -46,14 +46,17 @@ fileprivate enum TriState: Int, Codable {
 }
 
 extension Defaults.Keys {
-    fileprivate static let expandSuggestedSites = Defaults.Key<TriState>("profile.home.suggestedSites.expanded", default: .compact)
-    fileprivate static let expandSearches = Defaults.Key<Bool>("profile.home.searches.expanded", default: true)
-    fileprivate static let expandSpaces = Defaults.Key<Bool>("profile.home.spaces.expanded", default: true)
+    fileprivate static let expandSuggestedSites = Defaults.Key<TriState>(
+        "profile.home.suggestedSites.expanded", default: .compact)
+    fileprivate static let expandSearches = Defaults.Key<Bool>(
+        "profile.home.searches.expanded", default: true)
+    fileprivate static let expandSpaces = Defaults.Key<Bool>(
+        "profile.home.spaces.expanded", default: true)
 }
 
 struct ZeroQueryHeader: View {
     let title: String
-    let action: () -> ()
+    let action: () -> Void
     let label: String
     let icon: Nicon
 
@@ -68,7 +71,10 @@ struct ZeroQueryHeader: View {
             Spacer()
             Button(action: action) {
                 Symbol(icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
-                    .frame(width: ZeroQueryUX.ToggleButtonSize, height: ZeroQueryUX.ToggleButtonSize, alignment: .center)
+                    .frame(
+                        width: ZeroQueryUX.ToggleButtonSize, height: ZeroQueryUX.ToggleButtonSize,
+                        alignment: .center
+                    )
                     .background(Color(light: .ui.gray98, dark: .systemFill)).clipShape(Circle())
             }
         }
@@ -106,7 +112,8 @@ struct ZeroQueryView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     if viewModel.isPrivate {
-                        IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0)).padding(ZeroQueryUX.Padding)
+                        IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0))
+                            .padding(ZeroQueryUX.Padding)
                     } else {
                         if let promoCardType = viewModel.promoCard {
                             PromoCard(type: promoCardType, viewWidth: geom.size.width)
@@ -151,22 +158,22 @@ struct ZeroQueryView: View {
 }
 
 #if DEBUG
-struct ZeroQueryView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            ZeroQueryView(viewModel: ZeroQueryModel())
-                .navigationBarTitleDisplayMode(.inline)
-        }
-        .environmentObject(SuggestedSitesViewModel.preview)
-        .environmentObject(
-            SuggestedSearchesModel(
-                suggestedQueries: [
-                    ("lebron james", .init(url: "https://neeva.com", title: "", guid: "1")),
-                    ("neeva", .init(url: "https://neeva.com", title: "", guid: "2")),
-                    ("knives out", .init(url: "https://neeva.com", title: "", guid: "3")),
-                ]
+    struct ZeroQueryView_Previews: PreviewProvider {
+        static var previews: some View {
+            NavigationView {
+                ZeroQueryView(viewModel: ZeroQueryModel())
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .environmentObject(SuggestedSitesViewModel.preview)
+            .environmentObject(
+                SuggestedSearchesModel(
+                    suggestedQueries: [
+                        ("lebron james", .init(url: "https://neeva.com", title: "", guid: "1")),
+                        ("neeva", .init(url: "https://neeva.com", title: "", guid: "2")),
+                        ("knives out", .init(url: "https://neeva.com", title: "", guid: "3")),
+                    ]
+                )
             )
-        )
+        }
     }
-}
 #endif

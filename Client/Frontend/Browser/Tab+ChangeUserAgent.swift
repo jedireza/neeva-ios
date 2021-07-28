@@ -10,14 +10,16 @@ extension Tab {
         private static let file: URL = {
             let root = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             return root.appendingPathComponent("changed-ua-set-of-hosts.xcarchive")
-        } ()
+        }()
 
         private static var baseDomainList: Set<String> = {
-            if let hosts = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSSet.self, from: Data(contentsOf: ChangeUserAgent.file)) as? Set<String> {
+            if let hosts = try? NSKeyedUnarchiver.unarchivedObject(
+                ofClass: NSSet.self, from: Data(contentsOf: ChangeUserAgent.file)) as? Set<String>
+            {
                 return hosts
             }
             return Set<String>()
-        } ()
+        }()
 
         static func clear() {
             try? FileManager.default.removeItem(at: Tab.ChangeUserAgent.file)
@@ -53,7 +55,8 @@ extension Tab {
 
             // At this point, saving to disk takes place.
             do {
-                let data = try NSKeyedArchiver.archivedData(withRootObject: baseDomainList, requiringSecureCoding: false)
+                let data = try NSKeyedArchiver.archivedData(
+                    withRootObject: baseDomainList, requiringSecureCoding: false)
                 try data.write(to: ChangeUserAgent.file)
             } catch {
                 print("Couldn't write file: \(error)")

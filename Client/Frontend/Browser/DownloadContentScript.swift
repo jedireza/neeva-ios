@@ -37,12 +37,16 @@ class DownloadContentScript: TabContentScript {
             return false
         }
         blobUrlForDownload = URL(string: safeUrl)
-        tab.webView?.evaluateJavaScript("window.__firefox__.download('\(safeUrl)', '\(UserScriptManager.appIdToken)')")
+        tab.webView?.evaluateJavaScript(
+            "window.__firefox__.download('\(safeUrl)', '\(UserScriptManager.appIdToken)')")
         TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .downloadLinkButton)
         return true
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceiveScriptMessage message: WKScriptMessage
+    ) {
         guard let browserViewController = tab?.browserViewController,
             let dictionary = message.body as? [String: Any?],
             let _url = dictionary["url"] as? String,
@@ -50,7 +54,8 @@ class DownloadContentScript: TabContentScript {
             let mimeType = dictionary["mimeType"] as? String,
             let size = dictionary["size"] as? Int64,
             let base64String = dictionary["base64String"] as? String,
-            let data = Bytes.decodeBase64(base64String) else {
+            let data = Bytes.decodeBase64(base64String)
+        else {
             return
         }
         defer {

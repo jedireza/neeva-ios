@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
 import Apollo
+import Foundation
 import Shared
 
 enum ClientLoggerStatus {
@@ -21,7 +21,9 @@ public class ClientLogger {
         self.status = .enabled
     }
 
-    public func logCounter(_ path: LogConfig.Interaction, attributes: [ClientLogCounterAttribute] = []) {
+    public func logCounter(
+        _ path: LogConfig.Interaction, attributes: [ClientLogCounterAttribute] = []
+    ) {
         if self.status != ClientLoggerStatus.enabled {
             return
         }
@@ -35,7 +37,10 @@ public class ClientLogger {
             return
         }
 
-        let clientLogBase = ClientLogBase(id: "co.neeva.app.ios.browser", version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String, environment: self.env)
+        let clientLogBase = ClientLogBase(
+            id: "co.neeva.app.ios.browser",
+            version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
+                as! String, environment: self.env)
         let clientLogCounter = ClientLogCounter(path: path.rawValue, attributes: attributes)
         let clientLog = ClientLog(counter: clientLogCounter)
         LogMutation(

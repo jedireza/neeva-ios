@@ -1,12 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 struct TabLocationBarButton<Label: View>: View {
     let label: Label
-    let action: () -> ()
+    let action: () -> Void
 
     var body: some View {
         Button(action: action) {
@@ -25,11 +25,13 @@ struct LocationViewTrackingButton: View {
     let currentDomain: String
 
     var body: some View {
-        let label = isIncognito
+        let label =
+            isIncognito
             ? Image("incognito", label: Text("Tracking Protection, Incognito"))
             : Image("tracking-protection", label: Text("Tracking Protection"))
         TabLocationBarButton(label: label.renderingMode(.template)) {
-            ClientLogger.shared.logCounter(.OpenShield, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .OpenShield, attributes: EnvironmentHelper.shared.getAttributes())
             showingPopover = true
         }
         .presentAsPopover(
@@ -45,14 +47,16 @@ struct LocationViewTrackingButton: View {
 struct LocationViewReloadButton: View {
     let buildMenu: () -> UIMenu?
     let state: URLBarModel.ReloadButtonState
-    let onTap: () -> ()
+    let onTap: () -> Void
 
     var body: some View {
         // TODO: when dropping support for iOS 14, change this to a Menu view with a primaryAction
         UIKitButton(action: onTap) {
             $0.tintColor = .label
             $0.setImage(Symbol.uiImage(state == .reload ? .arrowClockwise : .xmark), for: .normal)
-            $0.accessibilityLabel = state == .reload ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel
+            $0.accessibilityLabel =
+                state == .reload
+                ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel
             $0.setDynamicMenu(buildMenu)
         }
         .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
@@ -61,7 +65,7 @@ struct LocationViewReloadButton: View {
 
 struct LocationViewShareButton: View {
     let url: URL?
-    let onTap: (UIView) -> ()
+    let onTap: (UIView) -> Void
 
     @State private var shareTargetView: UIView?
 
@@ -103,7 +107,10 @@ struct TabLocationBarButton_Previews: PreviewProvider {
                 .environment(\.isIncognito, true)
         }.previewLayout(.sizeThatFits)
         HStack {
-            LocationViewReloadButton(buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) }, state: .reload) {}
+            LocationViewReloadButton(
+                buildMenu: { UIMenu(children: [UIAction(title: "Hello, world!") { _ in }]) },
+                state: .reload
+            ) {}
             LocationViewReloadButton(buildMenu: { nil }, state: .stop) {}
         }.previewLayout(.sizeThatFits)
         HStack {
@@ -112,4 +119,3 @@ struct TabLocationBarButton_Previews: PreviewProvider {
         }.previewLayout(.sizeThatFits)
     }
 }
-

@@ -12,14 +12,14 @@ public struct ErrorViewBackgroundPreferenceKey: PreferenceKey {
 /// A view that displays an `Error`
 public struct ErrorView: View {
     let error: Error
-    let tryAgain: (() -> ())?
+    let tryAgain: (() -> Void)?
     let viewName: String
 
     /// - Parameters:
     ///   - error: The error to display.
     ///   - in: Pass `self` to provide the name of your view in any feedback the user sends from this screen.
     ///   - tryAgain: If provided, a “Reload” button will be displayed. Tapping the button will call this closure.
-    public init<T: View>(_ error: Error, in _: T, tryAgain: (() -> ())? = nil) {
+    public init<T: View>(_ error: Error, in _: T, tryAgain: (() -> Void)? = nil) {
         self.error = error
         self.tryAgain = tryAgain
         self.viewName = "\(T.self)"
@@ -29,7 +29,7 @@ public struct ErrorView: View {
     ///   - error: The error to display.
     ///   - viewName: The name of the view to include in any feedback the user sends from this screen.
     ///   - tryAgain: If provided, a “Reload” button will be displayed. Tapping the button will call this closure.
-    public init(_ error: Error, viewName: String, tryAgain: (() -> ())? = nil) {
+    public init(_ error: Error, viewName: String, tryAgain: (() -> Void)? = nil) {
         self.error = error
         self.tryAgain = tryAgain
         self.viewName = viewName
@@ -76,7 +76,7 @@ public struct ErrorView: View {
 }
 
 /// Displays a generic “Error” screen. Used as a fallback if we don’t have special display for the error message.
-fileprivate struct GenericErrorView: View {
+private struct GenericErrorView: View {
     let viewName: String
     let error: Error
     let gqlErrors: [String]?
@@ -93,8 +93,8 @@ fileprivate struct GenericErrorView: View {
     var body: some View {
         VStack(spacing: 20) {
             Label("Error", systemImage: "exclamationmark.octagon.fill")
-            .font(Font.title.bold())
-            .foregroundColor(.red)
+                .font(Font.title.bold())
+                .foregroundColor(.red)
             GroupBox {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 15) {
@@ -113,14 +113,17 @@ fileprivate struct GenericErrorView: View {
             Button(action: { sendingFeedback = true }) {
                 Label("Send Feedback", systemSymbol: .bubbleLeftFill)
             }.sheet(isPresented: $sendingFeedback) {
-                SendFeedbackView(screenshot: nil, url: nil, initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)").font(.body)
+                SendFeedbackView(
+                    screenshot: nil, url: nil,
+                    initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)"
+                ).font(.body)
             }
         }
     }
 }
 
 /// Prompts the user to log into Neeva
-fileprivate struct LoginView: View {
+private struct LoginView: View {
     @Environment(\.onOpenURL) var onOpenURL
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -190,8 +193,8 @@ fileprivate struct LoginView: View {
 }
 
 /// Displayed when the device is offline
-fileprivate struct OfflineView: View {
-    let tryAgain: (() -> ())?
+private struct OfflineView: View {
+    let tryAgain: (() -> Void)?
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -234,30 +237,48 @@ fileprivate struct OfflineView: View {
     }
 }
 
-
 struct ErrorView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack(alignment: .top) {
             Image("mock-large", bundle: .main)
                 .ignoresSafeArea()
-            ErrorView(GraphQLAPI.Error([.init(["message": "login required to access this field"])]), viewName: "\(Self.self)")
-                .padding(.top, 106)
+            ErrorView(
+                GraphQLAPI.Error([.init(["message": "login required to access this field"])]),
+                viewName: "\(Self.self)"
+            )
+            .padding(.top, 106)
         }
         .previewDevice("iPhone X")
 
         ZStack(alignment: .bottom) {
             Image("mock", bundle: .main)
-            ErrorView(GraphQLAPI.Error([.init(["message": "login required to access this field"])]), viewName: "\(Self.self)")
-                .frame(height: 435-52-34)
-                .padding(.bottom, 34)
+            ErrorView(
+                GraphQLAPI.Error([.init(["message": "login required to access this field"])]),
+                viewName: "\(Self.self)"
+            )
+            .frame(height: 435 - 52 - 34)
+            .padding(.bottom, 34)
         }
         .previewDevice("iPhone X")
         .previewLayout(.fixed(width: 375, height: 435))
 
-        ErrorView(GraphQLAPI.Error([.init(["message": "login required to access this field"])]), viewName: "\(Self.self)", tryAgain: {})
-        ErrorView(GraphQLAPI.Error(Array(repeating: .init(["message": "failed to reticulate the splines"]), count: 10)), viewName: "\(Self.self)")
-        ErrorView(GraphQLAPI.Error([.init(["message": "failed to reticulate the splines"]), .init(["message": "the server room is on fire"])]), viewName: "\(Self.self)")
-        ErrorView(GraphQLAPI.Error([.init(["message": "failed to reticulate the splines"]), .init(["message": "the server room is on fire"])]), viewName: "\(Self.self)", tryAgain: {})
+        ErrorView(
+            GraphQLAPI.Error([.init(["message": "login required to access this field"])]),
+            viewName: "\(Self.self)", tryAgain: {})
+        ErrorView(
+            GraphQLAPI.Error(
+                Array(repeating: .init(["message": "failed to reticulate the splines"]), count: 10)),
+            viewName: "\(Self.self)")
+        ErrorView(
+            GraphQLAPI.Error([
+                .init(["message": "failed to reticulate the splines"]),
+                .init(["message": "the server room is on fire"]),
+            ]), viewName: "\(Self.self)")
+        ErrorView(
+            GraphQLAPI.Error([
+                .init(["message": "failed to reticulate the splines"]),
+                .init(["message": "the server room is on fire"]),
+            ]), viewName: "\(Self.self)", tryAgain: {})
         OfflineView(tryAgain: nil)
         OfflineView(tryAgain: {})
     }

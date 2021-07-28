@@ -1,22 +1,24 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct NeevaMenuRootView: View {
     @StateObject var overlaySheetModel = OverlaySheetModel()
-    let onDismiss: () -> ()
+    let onDismiss: () -> Void
     let isIncognito: Bool
     var embeddedView: NeevaMenuView
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() } ) {
+        OverlaySheetView(
+            model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() }
+        ) {
             self.embeddedView
                 .environment(\.isIncognito, isIncognito)
                 .overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
         }
-        .onAppear() {
+        .onAppear {
             DispatchQueue.main.async {
                 self.overlaySheetModel.show()
             }
@@ -27,20 +29,27 @@ struct NeevaMenuRootView: View {
 class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
     var delegate: BrowserViewController?
 
-    public init(delegate: BrowserViewController, onDismiss: @escaping () -> (), isPrivate: Bool, feedbackImage: UIImage?){
-        super.init(rootView: NeevaMenuRootView(onDismiss: onDismiss, isIncognito: isPrivate, embeddedView: NeevaMenuView(noTopPadding: true, menuAction: nil) ))
+    public init(
+        delegate: BrowserViewController, onDismiss: @escaping () -> Void, isPrivate: Bool,
+        feedbackImage: UIImage?
+    ) {
+        super.init(
+            rootView: NeevaMenuRootView(
+                onDismiss: onDismiss, isIncognito: isPrivate,
+                embeddedView: NeevaMenuView(noTopPadding: true, menuAction: nil)))
 
         self.delegate = delegate
         delegate.isNeevaMenuSheetOpen = true
         self.view.accessibilityViewIsModal = true
-        
+
         //Build callbacks for each button action
         let embeddedView = NeevaMenuView(noTopPadding: true) { result in
             delegate.isNeevaMenuSheetOpen = false
             switch result {
             case .home:
                 self.rootView.onDismiss()
-                ClientLogger.shared.logCounter(.OpenHome, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .OpenHome, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.home)
                 break
             case .spaces:
@@ -51,7 +60,8 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
                 break
             case .history:
                 self.rootView.onDismiss()
-                ClientLogger.shared.logCounter(.OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
                 delegate.zeroQueryPanelDidRequestToOpenLibrary()
 
                 break
@@ -64,7 +74,8 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
                 break
             }
         }
-        self.rootView = NeevaMenuRootView(onDismiss: onDismiss, isIncognito: isPrivate, embeddedView: embeddedView)
+        self.rootView = NeevaMenuRootView(
+            onDismiss: onDismiss, isIncognito: isPrivate, embeddedView: embeddedView)
     }
 
     private func spacesHandler(_ delegate: BrowserViewController) {
@@ -72,7 +83,8 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
         // after navigating to spaces page. User will still see the Neeva
         // menu sheet open
         self.rootView.onDismiss()
-        ClientLogger.shared.logCounter(.OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
 
         // if user started a tour, trigger navigation on webui side
         // to prevent page refresh, which will lost the states
@@ -82,13 +94,14 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
     }
 
     private func settingsHandler(_ delegate: BrowserViewController) {
-        ClientLogger.shared.logCounter(.OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
         TourManager.shared.userReachedStep(tapTarget: .settingMenu)
 
         // Without this dismiss, when user click on settings menu, if there is
         // a quest prompt display on top of it, settings panel would not
         // show up
-        self.dismiss( animated: true, completion: nil )
+        self.dismiss(animated: true, completion: nil)
 
         let controller = SettingsViewController(bvc: delegate)
 
@@ -105,7 +118,8 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
     }
 
     private func feedbackHandler(_ delegate: BrowserViewController, _ feedbackImage: UIImage?) {
-        ClientLogger.shared.logCounter(.OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
         TourManager.shared.userReachedStep(tapTarget: .feedbackMenu)
 
         // Without this rootView.onDismiss, Neeva menu sheet would not hide
@@ -129,4 +143,3 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
         view.backgroundColor = .clear
     }
 }
-

@@ -2,7 +2,7 @@
 
 import Foundation
 
-public enum NeevaMenuButtonActions{
+public enum NeevaMenuButtonActions {
     case home
     case spaces
     case settings

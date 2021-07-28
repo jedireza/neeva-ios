@@ -1,14 +1,14 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Storage
-import Shared
 import Combine
+import Shared
+import Storage
+import SwiftUI
 
 struct CardStrip<Model: CardModel>: View {
     typealias Details = Model.Details
     @ObservedObject var model: Model
-    let onLongPress: (String) -> ()
+    let onLongPress: (String) -> Void
 
     var body: some View {
         LazyHStack(spacing: 32) {
@@ -36,7 +36,7 @@ struct CardStripButtonSpec: ViewModifier {
 }
 
 class CardStripModel: ObservableObject {
-    var onToggleVisible: ((Bool)->())!
+    var onToggleVisible: ((Bool) -> Void)!
     var isVisible: Bool = false
 
     func toggleVisible() {
@@ -63,7 +63,7 @@ struct TabsAndSpacesView: View {
                                 showingSites.toggle()
                             }
                         }.modifier(CardStripButtonSpec())
-                        CardStrip(model: self.sitesModel, onLongPress: {_ in })
+                        CardStrip(model: self.sitesModel, onLongPress: { _ in })
                     }
                 }
             } else {
@@ -75,25 +75,28 @@ struct TabsAndSpacesView: View {
                                 cardStripModel.toggleVisible()
                             }
                         }.modifier(CardStripButtonSpec())
-                        .onTapGesture {
-                            cardStripModel.toggleVisible()
-                        }
+                            .onTapGesture {
+                                cardStripModel.toggleVisible()
+                            }
                         if showingSpaces {
-                            CardStrip(model: spaceModel, onLongPress: {_ in })
+                            CardStrip(model: spaceModel, onLongPress: { _ in })
                         }
-                        CardStrip(model: tabModel, onLongPress: { id in
-                            showingSites = true
-                            let urls: [URL] = (tabModel.manager.get(for: id)?.backList?.map {
-                                $0.url
-                            })!
-                            self.sitesModel.refresh(urls: urls)
-                        })
+                        CardStrip(
+                            model: tabModel,
+                            onLongPress: { id in
+                                showingSites = true
+                                let urls: [URL] =
+                                    (tabModel.manager.get(for: id)?.backList?.map {
+                                        $0.url
+                                    })!
+                                self.sitesModel.refresh(urls: urls)
+                            })
                     }
                 }
             }
         }.onAppear {
             tabModel.onDataUpdated()
-        }.frame(maxWidth:.infinity)
+        }.frame(maxWidth: .infinity)
     }
 }
 
@@ -102,37 +105,42 @@ struct ToggleSpacesButton: View {
     @Binding var showingSpaces: Bool
 
     var body: some View {
-        Button(action: {
-            spaceModel.onDataUpdated()
-            withAnimation {
-                showingSpaces.toggle()
-            }
-        }, label: {
-            Symbol(.bookmark, size: 18, weight: .semibold, label: "Show Spaces")
-                .foregroundColor(
-                    Color(showingSpaces ? UIColor.Browser.background : UIColor.label))
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 44, height: 44)
-                .background(Color(showingSpaces ?
-                                    UIColor.label : UIColor.Browser.background))
-                .clipShape(Circle()).animation(.spring())
-        })
+        Button(
+            action: {
+                spaceModel.onDataUpdated()
+                withAnimation {
+                    showingSpaces.toggle()
+                }
+            },
+            label: {
+                Symbol(.bookmark, size: 18, weight: .semibold, label: "Show Spaces")
+                    .foregroundColor(
+                        Color(showingSpaces ? UIColor.Browser.background : UIColor.label)
+                    )
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 44, height: 44)
+                    .background(Color(showingSpaces ? UIColor.label : UIColor.Browser.background))
+                    .clipShape(Circle()).animation(.spring())
+            })
     }
 }
 
 struct DismissButton: View {
-    var onDismiss: () -> ()
+    var onDismiss: () -> Void
 
     var body: some View {
-        Button(action: {
-            onDismiss()
-        }, label: {
-            Symbol(.xmark, size: 18, weight: .semibold, label: "Dismiss View")
-                .foregroundColor(
-                    Color(UIColor.label))
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 44, height: 44)
-                .animation(.spring())
-        })
+        Button(
+            action: {
+                onDismiss()
+            },
+            label: {
+                Symbol(.xmark, size: 18, weight: .semibold, label: "Dismiss View")
+                    .foregroundColor(
+                        Color(UIColor.label)
+                    )
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 44, height: 44)
+                    .animation(.spring())
+            })
     }
 }

@@ -1,11 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
 import Foundation
+
 @testable import Client
 
 class KeyboardShortcutTests: KIFTestCase {
     var bvc: BrowserViewController!
-    
+
     override func setUp() {
         BrowserUtils.dismissFirstRunUI(tester())
         bvc = BrowserViewController.foregroundBVC()
@@ -99,7 +100,7 @@ class KeyboardShortcutTests: KIFTestCase {
 
         // turn lazy tab into real tab by opening URL
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: "www.neeva.com")
-        
+
         XCTAssert(bvc.tabManager.tabs.count == 2)
     }
 

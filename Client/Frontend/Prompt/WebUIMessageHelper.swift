@@ -1,7 +1,7 @@
 import Foundation
-import WebKit
-import SwiftUI
 import Shared
+import SwiftUI
+import WebKit
 
 let messageHandlerName = "webui"
 
@@ -13,16 +13,19 @@ class WebUIMessageHelper: TabContentScript {
         self.tab = tab
         self.webView = webView
     }
-    
+
     static func name() -> String {
         return messageHandlerName
     }
-    
+
     func scriptMessageHandlerName() -> String? {
         return messageHandlerName
     }
-    
-    func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceiveScriptMessage message: WKScriptMessage
+    ) {
         let showBrowserQuests = NeevaFeatureFlags[.browserQuests]
 
         let frameOrigin = message.frameInfo.securityOrigin
@@ -31,18 +34,19 @@ class WebUIMessageHelper: TabContentScript {
         }
 
         guard let result = message.body as? [String: Any],
-              let id = result["id"] as? String,
-              let stepName = result["name"] as? String,
-              let tourStep = TourStep(rawValue: stepName)
+            let id = result["id"] as? String,
+            let stepName = result["name"] as? String,
+            let tourStep = TourStep(rawValue: stepName)
         else { return }
-
 
         switch tourStep {
         case .promptSpaceInNeevaMenu, .promptFeedbackInNeevaMenu, .promptSettingsInNeevaMenu:
-            TourManager.shared.setActiveStep(id: id, stepName: tourStep, webView: self.webView! as WKWebView)
+            TourManager.shared.setActiveStep(
+                id: id, stepName: tourStep, webView: self.webView! as WKWebView)
             BrowserViewController.foregroundBVC().showQuestNeevaMenuPrompt()
         case .openFeedbackPanelWithInputFieldHighlight:
-            TourManager.shared.setActiveStep(id: id, stepName: tourStep, webView: self.webView! as WKWebView)
+            TourManager.shared.setActiveStep(
+                id: id, stepName: tourStep, webView: self.webView! as WKWebView)
             showFeedbackPanel(bvc: BrowserViewController.foregroundBVC())
         default:
             break

@@ -1,14 +1,14 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import QuickLook
+import SwiftUI
 
 /// Ask the user for feedback
 public struct SendFeedbackView: View {
     let requestId: String?
     let geoLocationStatus: String?
     let initialText: String
-    let onDismiss: (() -> ())?
+    let onDismiss: (() -> Void)?
     let screenshot: UIImage?
     let query: String?
 
@@ -19,7 +19,10 @@ public struct SendFeedbackView: View {
     ///   - requestId: A request ID to send along with the user-provided feedback
     ///   - geoLocationStatus: passed along to the API
     ///   - initialText: Text to pre-fill the feedback input with. If non-empty, the user can submit feedback without entering any additional text.
-    public init(screenshot: UIImage?, url: URL?, onDismiss: (() -> ())? = nil, requestId: String? = nil, query: String? = nil, geoLocationStatus: String? = nil, initialText: String = "") {
+    public init(
+        screenshot: UIImage?, url: URL?, onDismiss: (() -> Void)? = nil, requestId: String? = nil,
+        query: String? = nil, geoLocationStatus: String? = nil, initialText: String = ""
+    ) {
         self.screenshot = screenshot
         self._url = .init(initialValue: url)
         self.requestId = requestId
@@ -43,7 +46,6 @@ public struct SendFeedbackView: View {
     @State var screenshotSheet = ModalState()
     @State var editedScreenshot: UIImage
     @State var shareQuery = true
-
 
     public var body: some View {
         NavigationView {
@@ -71,13 +73,17 @@ public struct SendFeedbackView: View {
                     .padding(.bottom, 18)
                     .textCase(nil)
                 ) {
-                    MultilineTextField("Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!", text: $feedbackText)
-                        .if(shouldHighlightTextInput()) { view in
-                            view
-                            .overlay(RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.brand.blue, lineWidth: 4)
-                                        .padding(.horizontal, -10))
-                        }
+                    MultilineTextField(
+                        "Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!",
+                        text: $feedbackText
+                    )
+                    .if(shouldHighlightTextInput()) { view in
+                        view
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.brand.blue, lineWidth: 4)
+                                    .padding(.horizontal, -10))
+                    }
                 }
 
                 if let screenshot = screenshot, NeevaFeatureFlags[.feedbackScreenshot] {
@@ -125,7 +131,11 @@ public struct SendFeedbackView: View {
                                     let displayURL: String = {
                                         let display = url.absoluteDisplayString
                                         if display.hasPrefix("https://") {
-                                            return String(display[display.index(display.startIndex, offsetBy: "https://".count)...])
+                                            return String(
+                                                display[
+                                                    display.index(
+                                                        display.startIndex,
+                                                        offsetBy: "https://".count)...])
                                         }
                                         return display
                                     }()
@@ -135,15 +145,15 @@ public struct SendFeedbackView: View {
                                     Button(action: { isEditingURL = true }) {
                                         Text("edit").withFont(.labelMedium)
                                     }
-                                        .background(
-                                            NavigationLink(
-                                                destination: EditURLView($url, isActive: $isEditingURL),
-                                                isActive: $isEditingURL
-                                            ) { EmptyView() }
-                                            .hidden()
-                                        )
-                                        .disabled(!shareURL)
-                                        .padding(.trailing, 8)
+                                    .background(
+                                        NavigationLink(
+                                            destination: EditURLView($url, isActive: $isEditingURL),
+                                            isActive: $isEditingURL
+                                        ) { EmptyView() }
+                                        .hidden()
+                                    )
+                                    .disabled(!shareURL)
+                                    .padding(.trailing, 8)
                                 }
                             }
                         }
@@ -160,7 +170,8 @@ public struct SendFeedbackView: View {
                     Text("Send Feedback").font(.headline)
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
+                    Button(
+                        "Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if isSending {
@@ -228,14 +239,17 @@ public struct SendFeedbackView: View {
     }
 
     private func shouldHighlightTextInput() -> Bool {
-        return TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu) || TourManager.shared.isCurrentStep(with: .openFeedbackPanelWithInputFieldHighlight)
+        return TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu)
+            || TourManager.shared.isCurrentStep(with: .openFeedbackPanelWithInputFieldHighlight)
     }
 
     private func sendFeedbackHandler() {
         isSending = true
         let feedbackText: String
 
-        if let url = url, shareURL, (query == nil || requestId == nil || !NeevaFeatureFlags[.feedbackQuery]) {
+        if let url = url, shareURL,
+            query == nil || requestId == nil || !NeevaFeatureFlags[.feedbackQuery]
+        {
             feedbackText = self.feedbackText + "\n\nCurrent URL: \(url.absoluteString)"
         } else {
             feedbackText = self.feedbackText
@@ -250,7 +264,8 @@ public struct SendFeedbackView: View {
                 requestId: (requestId?.isEmpty ?? true) ? nil : requestId,
                 geoLocationStatus: geoLocationStatus,
                 source: .app,
-                screenshot: shareScreenshot && NeevaFeatureFlags[.feedbackScreenshot] ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
+                screenshot: shareScreenshot && NeevaFeatureFlags[.feedbackScreenshot]
+                    ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
             )
         ).perform { result in
             isSending = false
@@ -295,9 +310,15 @@ extension UIImage {
 struct SendFeedbackView_Previews: PreviewProvider {
     static var previews: some View {
         // iPhone 12 screen size
-        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 390, height: 844)!, url: "https://neeva.com/search?q=abcdef+ghijklmnop")
+        SendFeedbackView(
+            screenshot: UIImage(color: .systemRed, width: 390, height: 844)!,
+            url: "https://neeva.com/search?q=abcdef+ghijklmnop")
         // iPhone 8 screen size
-        SendFeedbackView(screenshot: UIImage(color: .systemRed, width: 375, height: 667)!, url: NeevaConstants.appURL)
-        SendFeedbackView(screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!, url: NeevaConstants.appURL)
+        SendFeedbackView(
+            screenshot: UIImage(color: .systemRed, width: 375, height: 667)!,
+            url: NeevaConstants.appURL)
+        SendFeedbackView(
+            screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!,
+            url: NeevaConstants.appURL)
     }
 }

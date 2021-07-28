@@ -2,9 +2,9 @@
 
 import Foundation
 
-public extension String {
+extension String {
     /// If this string represents a `data:` URL containing base64-encoded data, this returns the decoded data.
-    var dataURIBody: Data? {
+    public var dataURIBody: Data? {
         guard starts(with: "data:") else { return nil }
         guard let payloadStart = range(of: ",")?.upperBound else { return nil }
         let payload = String(self[payloadStart..<self.endIndex])

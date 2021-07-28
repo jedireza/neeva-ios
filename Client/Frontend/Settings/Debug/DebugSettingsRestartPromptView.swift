@@ -8,11 +8,13 @@ struct DebugSettingsRestartPromptView: View {
         if isVisible {
             HStack {
                 Spacer()
-                Text("Quit Neeva from the App Switcher and relaunch for feature flag changes to take effect")
-                    .withFont(.labelLarge)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .foregroundColor(.white)
+                Text(
+                    "Quit Neeva from the App Switcher and relaunch for feature flag changes to take effect"
+                )
+                .withFont(.labelLarge)
+                .multilineTextAlignment(.center)
+                .padding()
+                .foregroundColor(.white)
                 Spacer()
             }.background(
                 Color.orange

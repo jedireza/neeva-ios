@@ -8,10 +8,12 @@ let website = ["url": "www.wikipedia.org", "value": "wikipedia.org"]
 
 let websiteExample = ["url": "www.example.com", "value": "www.example.com"]
 
-
 class DomainAutocompleteTest: BaseTestCase {
 
-    let testWithDB = ["testAutocomplete","testAutocompleteDeletingChars","testDeleteEntireString","testNoMatches","testMixedCaseAutocompletion", "testDeletingCharsUpdateTheResults"]
+    let testWithDB = [
+        "testAutocomplete", "testAutocompleteDeletingChars", "testDeleteEntireString",
+        "testNoMatches", "testMixedCaseAutocompletion", "testDeletingCharsUpdateTheResults",
+    ]
 
     // This DB contains 3 entries mozilla.com/github.com/git.es
     let historyDB = "browserAutocomplete.db"
@@ -22,7 +24,10 @@ class DomainAutocompleteTest: BaseTestCase {
         let key = String(parts[1])
         if testWithDB.contains(key) {
             // for the current test name, add the db fixture used
-            launchArguments = [LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + historyDB]
+            launchArguments = [
+                LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
+                LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + historyDB,
+            ]
         }
         super.setUp()
     }

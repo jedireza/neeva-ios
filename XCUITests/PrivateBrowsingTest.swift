@@ -134,7 +134,7 @@ class PrivateBrowsingTest: BaseTestCase {
             XCTAssertTrue(app.webViews.staticTexts["DB_CREATED_PAGE"].exists)
             XCTAssertTrue(app.webViews.staticTexts["DB_CREATED_WORKER"].exists)
         }
-        
+
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         checkIndexedDBIsCreated()
 
@@ -151,7 +151,9 @@ class PrivateBrowsingTest: BaseTestCase {
 
         let numPrivTabsFirstTime = userState.numTabs
         // With the chron tab implementation there is one tab by default
-        XCTAssertEqual(numPrivTabsFirstTime, 1, "The number of tabs is not correct, there should not be any private tab yet")
+        XCTAssertEqual(
+            numPrivTabsFirstTime, 1,
+            "The number of tabs is not correct, there should not be any private tab yet")
 
         // If a private tab is open Private Browsing screen is not shown anymore
         navigator.goto(BrowserTab)
@@ -165,25 +167,32 @@ class PrivateBrowsingTest: BaseTestCase {
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
 
         waitForNoExistence(app.staticTexts["Private Browsing"])
-        XCTAssertFalse(app.staticTexts["Private Browsing"].exists, "Private Browsing screen is shown")
+        XCTAssertFalse(
+            app.staticTexts["Private Browsing"].exists, "Private Browsing screen is shown")
         navigator.nowAt(TabTray)
         let numPrivTabsOpen = userState.numTabs
-        XCTAssertEqual(numPrivTabsOpen, 2, "The number of tabs is not correct, there should be two private tab")
+        XCTAssertEqual(
+            numPrivTabsOpen, 2, "The number of tabs is not correct, there should be two private tab"
+        )
     }
 }
 
-fileprivate extension BaseTestCase {
-    func checkOpenTabsBeforeClosingPrivateMode() {
+extension BaseTestCase {
+    fileprivate func checkOpenTabsBeforeClosingPrivateMode() {
         let numPrivTabs = app.tables.cells.count
-        XCTAssertEqual(numPrivTabs, 2, "The number of tabs is not correct, the private tab should not have been closed")
+        XCTAssertEqual(
+            numPrivTabs, 2,
+            "The number of tabs is not correct, the private tab should not have been closed")
     }
 
-    func checkOpenTabsAfterClosingPrivateMode() {
+    fileprivate func checkOpenTabsAfterClosingPrivateMode() {
         let numPrivTabsAfterClosing = userState.numTabs
-        XCTAssertEqual(numPrivTabsAfterClosing, 1, "The number of tabs is not correct, the private tab should have been closed")
+        XCTAssertEqual(
+            numPrivTabsAfterClosing, 1,
+            "The number of tabs is not correct, the private tab should have been closed")
     }
 
-    func enableClosePrivateBrowsingOptionWhenLeaving() {
+    fileprivate func enableClosePrivateBrowsingOptionWhenLeaving() {
         navigator.goto(SettingsScreen)
         let settingsTableView = app.tables["AppSettingsTableViewController.tableView"]
 
@@ -205,7 +214,8 @@ class PrivateBrowsingTestIpad: IpadOnlyTestCase {
         waitForExistence(app.buttons["TabToolbar.menuButton"], timeout: 5)
         enableClosePrivateBrowsingOptionWhenLeaving()
         // Leave PM by tapping on PM shourt cut
-        navigator.toggleOff(userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarHomePanel)
+        navigator.toggleOff(
+            userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarHomePanel)
         waitForTabsButton()
         navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
         checkOpenTabsAfterClosingPrivateMode()
@@ -214,17 +224,20 @@ class PrivateBrowsingTestIpad: IpadOnlyTestCase {
     func testiPadDirectAccessPrivateMode() {
         if skipPlatform { return }
         waitForTabsButton()
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarHomePanel)
+        navigator.toggleOn(
+            userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarHomePanel)
 
         // A Tab opens directly in HomePanels view
-        XCTAssertFalse(app.staticTexts["Private Browsing"].exists, "Private Browsing screen is not shown")
+        XCTAssertFalse(
+            app.staticTexts["Private Browsing"].exists, "Private Browsing screen is not shown")
 
         // Open website and check it does not appear under history once going back to regular mode
         navigator.openURL("http://example.com")
         waitUntilPageLoad()
         // This action to enable private mode is defined on HomePanel Screen that is why we need to open a new tab and be sure we are on that screen to use the correct action
         navigator.goto(NewTabScreen)
-        navigator.toggleOff(userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarHomePanel)
+        navigator.toggleOff(
+            userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarHomePanel)
         navigator.goto(LibraryPanel_History)
         waitForExistence(app.tables["History List"])
         // History without counting Clear Recent History, Recently Closed
@@ -236,14 +249,17 @@ class PrivateBrowsingTestIpad: IpadOnlyTestCase {
         if skipPlatform { return }
         navigator.openURL("www.mozilla.org")
         waitForTabsButton()
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarBrowserTab)
+        navigator.toggleOn(
+            userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarBrowserTab)
 
         // A Tab opens directly in HomePanels view
-        XCTAssertFalse(app.staticTexts["Private Browsing"].exists, "Private Browsing screen is not shown")
+        XCTAssertFalse(
+            app.staticTexts["Private Browsing"].exists, "Private Browsing screen is not shown")
 
         // Open website and check it does not appear under history once going back to regular mode
         navigator.openURL("http://example.com")
-        navigator.toggleOff(userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarBrowserTab)
+        navigator.toggleOff(
+            userState.isPrivate, withAction: Action.TogglePrivateModeFromTabBarBrowserTab)
         navigator.goto(LibraryPanel_History)
         waitForExistence(app.tables["History List"])
         // History without counting Clear Recent History, Recently Closed

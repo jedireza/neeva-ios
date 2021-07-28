@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 // This file provides an overlay bottom sheet implementation that starts in a
 // half-height (or middle) position. The user can drag it to a fullscreen (or
@@ -131,7 +131,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 Capsule()
                     .fill(Color.tertiaryLabel)
                     .frame(width: 32, height: 4)
-                    .padding(15).background(Color.clear) // make the selectable area larger
+                    .padding(15).background(Color.clear)  // make the selectable area larger
                     .accessibilityElement()
                     .accessibilityLabel("Pop-up controller")
                     .accessibilityValue(model.position.rawValue)
@@ -195,7 +195,9 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                         .modifier(ViewHeightKey())
                         .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
                         .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) { self.title = $0 }
-                        .onPreferenceChange(OverlaySheetIsFixedHeightPreferenceKey.self) { self.isFixedHeight = $0 }
+                        .onPreferenceChange(OverlaySheetIsFixedHeightPreferenceKey.self) {
+                            self.isFixedHeight = $0
+                        }
                     if isFixedHeight {
                         Spacer()
                     }
@@ -236,7 +238,10 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     Color.black
                         .opacity(self.model.backdropOpacity)
                         .ignoresSafeArea()
-                        .modifier(DismissalObserverModifier(backdropOpacity: self.model.backdropOpacity, position: self.model.position, onDismiss: self.onDismiss))
+                        .modifier(
+                            DismissalObserverModifier(
+                                backdropOpacity: self.model.backdropOpacity,
+                                position: self.model.position, onDismiss: self.onDismiss))
                 }
                 .buttonStyle(HighlightlessButtonStyle())
                 .accessibilityHint("Dismiss pop-up window")
@@ -249,8 +254,11 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     Spacer(minLength: 0)
                     self.sheet
                         // Constrain to full width in portrait mode.
-                        .frame(minWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth,
-                               maxWidth: isPortraitMode(outerGeometry) ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth)
+                        .frame(
+                            minWidth: isPortraitMode(outerGeometry)
+                                ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth,
+                            maxWidth: isPortraitMode(outerGeometry)
+                                ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth)
                     Spacer(minLength: 0)
                 }
             }
@@ -271,11 +279,13 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     // applied smoothly.
     private func onDragEnded(_ value: DragGesture.Value) {
         self.model.deltaHeight += value.translation.height
-        var newPosition = self.model.position;
+        var newPosition = self.model.position
         if self.model.deltaHeight > OverlaySheetUX.slideThreshold {
             // Middle position only makes sense when the keyboard is hidden, and if
             // the delta is too large, then we just want to dismiss the sheet.
-            if self.model.position == .top && !keyboardIsVisible && self.model.deltaHeight < 4*OverlaySheetUX.slideThreshold {
+            if self.model.position == .top && !keyboardIsVisible
+                && self.model.deltaHeight < 4 * OverlaySheetUX.slideThreshold
+            {
                 newPosition = .middle
             } else {
                 self.model.hide()
@@ -345,14 +355,15 @@ extension View {
     }
 }
 
-fileprivate struct DismissalObserverModifier: AnimatableModifier {
+private struct DismissalObserverModifier: AnimatableModifier {
     var backdropOpacity: Double
     let position: OverlaySheetPosition
-    let onDismiss: () -> ()
+    let onDismiss: () -> Void
 
     var animatableData: Double {
         get { backdropOpacity }
-        set { backdropOpacity = newValue
+        set {
+            backdropOpacity = newValue
             if position == .dismissed && backdropOpacity == 0.0 {
                 // Run after the call stack has unwound as |onDismiss| may tear down
                 // the overlay sheet, which could cause issues for SwiftUI processing.

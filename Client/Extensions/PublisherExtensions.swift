@@ -17,8 +17,8 @@ extension Publisher {
     }
 
     /// Runs the provided listener each time this publisher publishes.
-    func forEach(_ listener: @escaping () -> ()) -> Publishers.Filter<Self> {
-        filter { _ in 
+    func forEach(_ listener: @escaping () -> Void) -> Publishers.Filter<Self> {
+        filter { _ in
             listener()
             return true
         }

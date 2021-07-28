@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Combine
 import Shared
+import SwiftUI
 
 struct LocationViewTouchHandler: UIViewRepresentable {
     let margins: EdgeInsets
@@ -10,7 +10,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
     let url: URL?
     let isSecure: Bool
     let background: Color
-    let onTap: () -> ()
+    let onTap: () -> Void
     let copyAction: Action
     let pasteAction: Action
     let pasteAndGoAction: Action
@@ -66,36 +66,53 @@ struct LocationViewTouchHandler: UIViewRepresentable {
 
         // MARK: Drag & Drop
 
-        func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
+        func dragInteraction(
+            _ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession
+        ) -> [UIDragItem] {
             if let url = wrapper.url, !InternalURL.isValid(url: url) {
                 TelemetryWrapper.recordEvent(category: .action, method: .drag, object: .locationBar)
                 return [UIDragItem(itemProvider: NSItemProvider(url: url))]
             }
             return []
         }
-        func dragInteraction(_ interaction: UIDragInteraction, itemsForAddingTo session: UIDragSession, withTouchAt point: CGPoint) -> [UIDragItem] {
+        func dragInteraction(
+            _ interaction: UIDragInteraction, itemsForAddingTo session: UIDragSession,
+            withTouchAt point: CGPoint
+        ) -> [UIDragItem] {
             dragInteraction(interaction, itemsForBeginning: session)
         }
 
-        func dragInteraction(_ interaction: UIDragInteraction, previewForLifting item: UIDragItem, session: UIDragSession) -> UITargetedDragPreview? {
+        func dragInteraction(
+            _ interaction: UIDragInteraction, previewForLifting item: UIDragItem,
+            session: UIDragSession
+        ) -> UITargetedDragPreview? {
             let host = UIHostingController(
-                rootView: LocationLabelAndIcon(url: wrapper.url, isSecure: wrapper.isSecure, forcePlaceholder: false)
-                    .fixedSize()
-                    .padding(.horizontal)
-                    .frame(height: TabLocationViewUX.height)
-                    .background(wrapper.background)
+                rootView: LocationLabelAndIcon(
+                    url: wrapper.url, isSecure: wrapper.isSecure, forcePlaceholder: false
+                )
+                .fixedSize()
+                .padding(.horizontal)
+                .frame(height: TabLocationViewUX.height)
+                .background(wrapper.background)
             )
             host.view.sizeToFit()
             session.localContext = host
             let params = UIPreviewParameters()
             params.backgroundColor = UIColor(wrapper.background)
-            params.visiblePath = UIBezierPath(roundedRect: host.view.bounds, cornerRadius: host.view.bounds.height / 2)
-            return UITargetedDragPreview(view: host.view, parameters: params, target: UIDragPreviewTarget(container: self, center: session.location(in: self)))
+            params.visiblePath = UIBezierPath(
+                roundedRect: host.view.bounds, cornerRadius: host.view.bounds.height / 2)
+            return UITargetedDragPreview(
+                view: host.view, parameters: params,
+                target: UIDragPreviewTarget(container: self, center: session.location(in: self)))
         }
-        func dragInteraction(_ interaction: UIDragInteraction, previewForCancelling item: UIDragItem, withDefault defaultPreview: UITargetedDragPreview) -> UITargetedDragPreview? {
+        func dragInteraction(
+            _ interaction: UIDragInteraction, previewForCancelling item: UIDragItem,
+            withDefault defaultPreview: UITargetedDragPreview
+        ) -> UITargetedDragPreview? {
             var center = self.center
             center.x -= (wrapper.margins.leading - wrapper.margins.trailing)
-            return defaultPreview.retargetedPreview(with: UIDragPreviewTarget(container: self, center: center))
+            return defaultPreview.retargetedPreview(
+                with: UIDragPreviewTarget(container: self, center: center))
         }
 
         // MARK: isPressed & Tap
@@ -130,7 +147,9 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             }
         }
 
-        func gestureRecognizer(_: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith _: UIGestureRecognizer) -> Bool {
+        func gestureRecognizer(
+            _: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith _: UIGestureRecognizer
+        ) -> Bool {
             true
         }
 
@@ -140,10 +159,15 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             wrapper.isPressed = false
             oldItems = oldItems ?? UIMenuController.shared.menuItems
             UIMenuController.shared.menuItems = [
-                UIMenuItem(title: wrapper.pasteAndGoAction.name, action: #selector(pasteAndGo(_:))),
+                UIMenuItem(title: wrapper.pasteAndGoAction.name, action: #selector(pasteAndGo(_:)))
             ]
-            becomeFirstResponder() // without this function call, the menu will not appear.
-            UIMenuController.shared.showMenu(from: self, rect: frame.inset(by: UIEdgeInsets(top: 0, left: -wrapper.margins.leading, bottom: 0, right: -wrapper.margins.trailing)))
+            becomeFirstResponder()  // without this function call, the menu will not appear.
+            UIMenuController.shared.showMenu(
+                from: self,
+                rect: frame.inset(
+                    by: UIEdgeInsets(
+                        top: 0, left: -wrapper.margins.leading, bottom: 0,
+                        right: -wrapper.margins.trailing)))
         }
 
         override func copy(_: Any?) {
@@ -167,7 +191,9 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         override var canBecomeFirstResponder: Bool { true }
 
         override func canPerformAction(_ action: Selector, withSender _: Any?) -> Bool {
-            action == #selector(copy(_:)) || (UIPasteboard.general.hasStrings && (action == #selector(paste(_:)) || action == #selector(pasteAndGo(_:))))
+            action == #selector(copy(_:))
+                || (UIPasteboard.general.hasStrings
+                    && (action == #selector(paste(_:)) || action == #selector(pasteAndGo(_:))))
         }
 
         // MARK: -

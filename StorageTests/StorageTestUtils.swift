@@ -6,10 +6,10 @@
 
 import Foundation
 import Shared
-@testable import Storage
-@testable import Client
 import XCTest
 
+@testable import Client
+@testable import Storage
 
 let threeMonthsInMillis: UInt64 = 3 * 30 * 24 * 60 * 60 * 1000
 let threeMonthsInMicros: UInt64 = UInt64(threeMonthsInMillis) * UInt64(1000)
@@ -22,30 +22,36 @@ func advanceTimestamp(_ timestamp: Timestamp, by: Int) -> Timestamp {
     return timestamp + UInt64(by)
 }
 
-func advanceMicrosecondTimestamp(_ timestamp: MicrosecondTimestamp, by: Int) -> MicrosecondTimestamp {
+func advanceMicrosecondTimestamp(_ timestamp: MicrosecondTimestamp, by: Int) -> MicrosecondTimestamp
+{
     return timestamp + UInt64(by)
 }
 
-func populateHistoryForFrecencyCalculations(_ history: SQLiteHistory, siteCount count: Int, visitPerSite: Int = 4) {
+func populateHistoryForFrecencyCalculations(
+    _ history: SQLiteHistory, siteCount count: Int, visitPerSite: Int = 4
+) {
     for i in 0...count {
         let site = Site(url: "http://s\(i)ite\(i).com/foo".asURL!, title: "A \(i)")
         site.guid = "abc\(i)def"
 
         for j in 0..<visitPerSite {
-            let visitTime = advanceMicrosecondTimestamp(baseInstantInMicros, by: (1000000 * i) + (1000 * j))
+            let visitTime = advanceMicrosecondTimestamp(
+                baseInstantInMicros, by: (1_000_000 * i) + (1000 * j))
             addVisitForSite(site, intoHistory: history, atTime: visitTime)
         }
     }
 }
 
-func addVisitForSite(_ site: Site, intoHistory history: SQLiteHistory, atTime: MicrosecondTimestamp) {
+func addVisitForSite(_ site: Site, intoHistory history: SQLiteHistory, atTime: MicrosecondTimestamp)
+{
     let visit = SiteVisit(site: site, date: atTime, type: VisitType.link)
     history.addLocalVisit(visit).succeeded()
 }
 
 extension BrowserDB {
     func assertQueryReturns(_ query: String, int: Int) {
-        XCTAssertEqual(int, self.runQuery(query, args: nil, factory: IntFactory).value.successValue![0])
+        XCTAssertEqual(
+            int, self.runQuery(query, args: nil, factory: IntFactory).value.successValue![0])
     }
 }
 
@@ -55,7 +61,8 @@ extension BrowserDB {
             return row[0] as! GUID
         }
 
-        guard let cursor = self.runQuery(sql, args: nil, factory: guidFactory).value.successValue else {
+        guard let cursor = self.runQuery(sql, args: nil, factory: guidFactory).value.successValue
+        else {
             XCTFail("Unable to get cursor.")
             return []
         }
@@ -67,13 +74,17 @@ extension BrowserDB {
         let factory: (SDRow) -> (GUID, Int) = {
             return ($0["child"] as! GUID, $0["idx"] as! Int)
         }
-        let cursor = self.runQuery("SELECT child, idx FROM \(table) WHERE parent = ?", args: args, factory: factory).value.successValue!
-        return cursor.reduce([:], { (dict, pair) in
-            var dict = dict
-            if let (k, v) = pair {
-                dict[k] = v
-            }
-            return dict
-        })
+        let cursor = self.runQuery(
+            "SELECT child, idx FROM \(table) WHERE parent = ?", args: args, factory: factory
+        ).value.successValue!
+        return cursor.reduce(
+            [:],
+            { (dict, pair) in
+                var dict = dict
+                if let (k, v) = pair {
+                    dict[k] = v
+                }
+                return dict
+            })
     }
 }

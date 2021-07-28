@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 import WebKit
 
 struct AboutSettingsSection: View {
@@ -16,7 +16,9 @@ struct AboutSettingsSection: View {
                 Label("Copy Version information", systemSymbol: .docOnDoc)
             }
             Button(action: { showDebugSettings.toggle() }) {
-                Label("Toggle Debug Settings", systemSymbol: showDebugSettings ? .checkmarkSquare : .square)
+                Label(
+                    "Toggle Debug Settings",
+                    systemSymbol: showDebugSettings ? .checkmarkSquare : .square)
             }
         } label: {
             HStack {
@@ -33,7 +35,8 @@ struct AboutSettingsSection: View {
         )
 
         NavigationLinkButton("Terms") {
-            ClientLogger.shared.logCounter(.ViewTerms, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .ViewTerms, attributes: EnvironmentHelper.shared.getAttributes())
             openURL(NeevaConstants.appTermsURL)
         }
     }
@@ -53,7 +56,8 @@ struct LicensesView: UIViewRepresentable {
         // This is not shown full-screen, use mobile UA
         webView.customUserAgent = UserAgent.mobileUserAgent()
 
-        ClientLogger.shared.logCounter(.ViewLicenses, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .ViewLicenses, attributes: EnvironmentHelper.shared.getAttributes())
 
         if let url = URL(string: "\(InternalURL.baseUrl)/\(AboutLicenseHandler.path)") {
             webView.load(PrivilegedRequest(url: url) as URLRequest)

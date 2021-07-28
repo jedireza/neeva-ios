@@ -14,7 +14,7 @@ class DownloadFilesTests: BaseTestCase {
 
         let list = app.tables["DownloadsTable"].cells.count
         if list != 0 {
-            for _ in 0...list-1 {
+            for _ in 0...list - 1 {
                 waitForExistence(app.tables["DownloadsTable"].cells.element(boundBy: 0))
                 app.tables["DownloadsTable"].cells.element(boundBy: 0).swipeLeft()
                 waitForExistence(app.tables.cells.buttons["Delete"])
@@ -45,7 +45,7 @@ class DownloadFilesTests: BaseTestCase {
         checkTheNumberOfDownloadedItems(items: 0)
     }
     */
-    
+
     // Smoketest
     /* Disabled: Test depends on unreachable server.
     func testDownloadFile() {

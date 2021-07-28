@@ -23,9 +23,14 @@ struct CapsuleTextField<Icon: View>: View {
                 icon.foregroundColor(.secondaryLabel)
             }
             ZStack(alignment: .leading) {
-                if text.isEmpty { Text(placeholder).withFont(.bodyMedium).foregroundColor(.secondaryLabel).accessibilityHidden(true) }
-                TextField("", text: $text, onEditingChanged: { isEditing = $0 }).accessibilityLabel(placeholder)
-                    .withFont(unkerned: .bodyMedium)
+                if text.isEmpty {
+                    Text(placeholder).withFont(.bodyMedium).foregroundColor(.secondaryLabel)
+                        .accessibilityHidden(true)
+                }
+                TextField("", text: $text, onEditingChanged: { isEditing = $0 }).accessibilityLabel(
+                    placeholder
+                )
+                .withFont(unkerned: .bodyMedium)
             }
             if isEditing && !text.isEmpty {
                 Button(action: { text = "" }) {
@@ -56,7 +61,8 @@ struct PlaceholderField_Previews: PreviewProvider {
             CapsuleTextField("Placeholder", text: .constant(""))
             CapsuleTextField("Placeholder", text: .constant("Hello, world!"))
             CapsuleTextField("Placeholder", text: .constant(""), icon: Symbol(.starFill))
-            CapsuleTextField("Placeholder", text: .constant("Hello, world!"), icon: Symbol(.starFill))
+            CapsuleTextField(
+                "Placeholder", text: .constant("Hello, world!"), icon: Symbol(.starFill))
         }.padding().previewLayout(.sizeThatFits)
     }
 }

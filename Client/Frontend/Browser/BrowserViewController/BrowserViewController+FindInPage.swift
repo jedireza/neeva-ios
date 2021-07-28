@@ -62,15 +62,20 @@ extension BrowserViewController: FindInPageBarDelegate, FindInPageHelperDelegate
 
     fileprivate func find(_ text: String, function: String) {
         guard let webView = tabManager.selectedTab?.webView else { return }
-        let escaped = text.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        let escaped = text.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(
+            of: "\"", with: "\\\"")
         webView.evaluateJavascriptInDefaultContentWorld("__firefox__.\(function)(\"\(escaped)\")")
     }
 
-    func findInPageHelper(_ findInPageHelper: FindInPageHelper, didUpdateCurrentResult currentResult: Int) {
+    func findInPageHelper(
+        _ findInPageHelper: FindInPageHelper, didUpdateCurrentResult currentResult: Int
+    ) {
         findInPageBar?.currentResult = currentResult
     }
 
-    func findInPageHelper(_ findInPageHelper: FindInPageHelper, didUpdateTotalResults totalResults: Int) {
+    func findInPageHelper(
+        _ findInPageHelper: FindInPageHelper, didUpdateTotalResults totalResults: Int
+    ) {
         findInPageBar?.totalResults = totalResults
     }
 }

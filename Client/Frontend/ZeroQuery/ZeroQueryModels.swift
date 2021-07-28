@@ -1,16 +1,16 @@
 // Copyright Neeva. All rights reserved.
 
-import Storage
 import Defaults
 import Shared
+import Storage
 
 class ZeroQueryModel: ObservableObject {
     @Published var isPrivate: Bool = false
     @Published var promoCard: PromoCardType? = nil
-    @Published var buttonClickHandler: () -> () = {}
+    @Published var buttonClickHandler: () -> Void = {}
 
-    var signInHandler: () -> () = {}
-    var referralPromoHandler: () -> () = {}
+    var signInHandler: () -> Void = {}
+    var referralPromoHandler: () -> Void = {}
 
     func updateState() {
         isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
@@ -25,24 +25,28 @@ class ZeroQueryModel: ObservableObject {
             promoCard = .referralPromo {
                 self.referralPromoHandler()
             } onClose: {
-                ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
                 self.promoCard = nil
                 Defaults[.didDismissReferralPromoCard] = true
             }
         } else if !NeevaUserInfo.shared.hasLoginCookie() {
             promoCard = .neevaSignIn {
-                ClientLogger.shared.logCounter(.PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
                 self.signInHandler()
             }
         } else if !Defaults[.didDismissDefaultBrowserCard] {
             promoCard = .defaultBrowser {
-                ClientLogger.shared.logCounter(.PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
                 BrowserViewController.foregroundBVC().presentDBOnboardingViewController()
 
                 // Set default browser onboarding did show to true so it will not show again after user clicks this button
                 Defaults[.didShowDefaultBrowserOnboarding] = true
             } onClose: {
-                ClientLogger.shared.logCounter(.CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
                 self.promoCard = nil
                 Defaults[.didDismissDefaultBrowserCard] = true
             }
@@ -60,16 +64,16 @@ class SuggestedSitesViewModel: ObservableObject {
     }
 
     #if DEBUG
-    static let preview = SuggestedSitesViewModel(
-        sites: [
-            .init(url: "https://amazon.com", title: "Amazon", id: 1),
-            .init(url: "https://youtube.com", title: "YouTube", id: 2),
-            .init(url: "https://twitter.com", title: "Twitter", id: 3),
-            .init(url: "https://facebook.com", title: "Facebook", id: 4),
-            .init(url: "https://facebook.com", title: "Facebook", id: 5),
-            .init(url: "https://twitter.com", title: "Twitter", id: 6),
-        ]
-    )
+        static let preview = SuggestedSitesViewModel(
+            sites: [
+                .init(url: "https://amazon.com", title: "Amazon", id: 1),
+                .init(url: "https://youtube.com", title: "YouTube", id: 2),
+                .init(url: "https://twitter.com", title: "Twitter", id: 3),
+                .init(url: "https://facebook.com", title: "Facebook", id: 4),
+                .init(url: "https://facebook.com", title: "Facebook", id: 5),
+                .init(url: "https://twitter.com", title: "Twitter", id: 6),
+            ]
+        )
     #endif
 }
 
@@ -85,7 +89,10 @@ class SuggestedSearchesModel: ObservableObject {
     }
 
     func reload(from profile: Profile) {
-        guard let deferredHistory = profile.history.getFrecentHistory().getSites(matchingSearchQuery: searchUrlForQuery, limit: 100) as? CancellableDeferred else {
+        guard
+            let deferredHistory = profile.history.getFrecentHistory().getSites(
+                matchingSearchQuery: searchUrlForQuery, limit: 100) as? CancellableDeferred
+        else {
             assertionFailure("FrecentHistory query should be cancellable")
             return
         }
@@ -108,7 +115,6 @@ class SuggestedSearchesModel: ObservableObject {
                 }
             }
         }
-
 
     }
 }

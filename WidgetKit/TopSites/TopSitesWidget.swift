@@ -2,14 +2,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import SwiftUI
 import WidgetKit
-import Combine
 
 struct TopSitesWidget: Widget {
     private let kind: String = "Top Sites"
 
-     var body: some WidgetConfiguration {
+    var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: TopSitesProvider()) { entry in
             TopSitesView(entry: entry)
         }
@@ -21,14 +21,18 @@ struct TopSitesWidget: Widget {
 
 struct TopSitesView: View {
     let entry: TopSitesEntry
-    
+
     @ViewBuilder
     func topSitesItem(_ site: WidgetKitTopSiteModel) -> some View {
         let url = site.url
-        
-        Link(destination: linkToContainingApp("?url=\(url)", query: "widget-medium-topsites-open-url")) {
-            if (entry.favicons[site.imageKey] != nil) {
-                (entry.favicons[site.imageKey])!.resizable().frame(width: 60, height: 60).mask(maskShape)
+
+        Link(
+            destination: linkToContainingApp(
+                "?url=\(url)", query: "widget-medium-topsites-open-url")
+        ) {
+            if entry.favicons[site.imageKey] != nil {
+                (entry.favicons[site.imageKey])!.resizable().frame(width: 60, height: 60).mask(
+                    maskShape)
             } else {
                 Rectangle()
                     .fill(Color(UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 0.3)))
@@ -36,18 +40,18 @@ struct TopSitesView: View {
             }
         }
     }
-    
+
     var maskShape: RoundedRectangle {
         RoundedRectangle(cornerRadius: 5)
     }
-    
+
     var emptySquare: some View {
         maskShape
             .fill(Color(UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 0.3)))
             .frame(width: 60, height: 60)
             .background(Color.clear).frame(maxWidth: .infinity)
     }
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -64,7 +68,7 @@ struct TopSitesView: View {
                     ForEach(entry.sites[0...entry.sites.count - 1], id: \.url) { tab in
                         topSitesItem(tab).frame(maxWidth: .infinity)
                     }
-                    
+
                     ForEach(0..<(4 - entry.sites.count), id: \.self) { _ in
                         emptySquare
                     }
@@ -83,7 +87,7 @@ struct TopSitesView: View {
                             topSitesItem(tab).frame(maxWidth: .infinity)
                         }
                     }
-                    
+
                     ForEach(0..<(min(4, 8 - entry.sites.count)), id: \.self) { _ in
                         emptySquare
                     }
@@ -93,7 +97,7 @@ struct TopSitesView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background((Color(UIColor(red: 0.11, green: 0.11, blue: 0.13, alpha: 1.00))))
     }
-    
+
     private func linkToContainingApp(_ urlSuffix: String = "", query: String) -> URL {
         let urlString = "\(scheme)://\(query)\(urlSuffix)"
         return URL(string: urlString)!

@@ -5,19 +5,23 @@
 extension Notification.Name {
     public static let DataLoginDidChange = Notification.Name("DataLoginDidChange")
 
-    public static let RegisterForPushNotifications = Notification.Name("RegisterForPushNotifications")
+    public static let RegisterForPushNotifications = Notification.Name(
+        "RegisterForPushNotifications")
 
     public static let PrivateDataClearedHistory = Notification.Name("PrivateDataClearedHistory")
-    public static let PrivateDataClearedDownloadedFiles = Notification.Name("PrivateDataClearedDownloadedFiles")
+    public static let PrivateDataClearedDownloadedFiles = Notification.Name(
+        "PrivateDataClearedDownloadedFiles")
 
     // Fired when the user finishes navigating to a page and the location has changed
     public static let OnLocationChange = Notification.Name("OnLocationChange")
-  
+
     // MARK: Notification UserInfo Keys
-    public static let UserInfoKeyHasSyncableAccount = Notification.Name("UserInfoKeyHasSyncableAccount")
+    public static let UserInfoKeyHasSyncableAccount = Notification.Name(
+        "UserInfoKeyHasSyncableAccount")
 
     // Fired when the login synchronizer has finished applying remote changes
-    public static let DataRemoteLoginChangesWereApplied = Notification.Name("DataRemoteLoginChangesWereApplied")
+    public static let DataRemoteLoginChangesWereApplied = Notification.Name(
+        "DataRemoteLoginChangesWereApplied")
 
     // Fired when a the page metadata extraction script has completed and is being passed back to the native client
     public static let OnPageMetadataFetched = Notification.Name("OnPageMetadataFetched")

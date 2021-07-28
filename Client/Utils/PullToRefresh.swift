@@ -3,23 +3,25 @@
 // Inspired by SwiftUIRefresh:
 // https://github.com/siteline/SwiftUIRefresh/blob/fa8fac7b5eb5c729983a8bef65f094b5e0d12014/Sources/PullToRefresh.swift
 
-import SwiftUI
-import Introspect
 import Apollo
 import Combine
+import Introspect
 import Shared
+import SwiftUI
 
 extension View {
     /// Add a refresh control to the nearest `List`.
     /// - Parameter controller: the `QueryController` to refresh when the refresh control is activated
-    func refreshControl<Query, Data>(refreshing controller: QueryController<Query, Data>) -> some View {
+    func refreshControl<Query, Data>(refreshing controller: QueryController<Query, Data>)
+        -> some View
+    {
         StorageView(content: self, controller: controller)
     }
 }
 
-fileprivate let refreshActionID = UIAction.Identifier("co.neeva.refreshControl.action")
+private let refreshActionID = UIAction.Identifier("co.neeva.refreshControl.action")
 
-fileprivate struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
+private struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
     let content: Content
     let controller: QueryController<Query, Data>
 
@@ -30,17 +32,19 @@ fileprivate struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
         content.introspectTableView { tableView in
             if tableView.refreshControl == nil {
                 tableView.refreshControl = UIRefreshControl()
-                tableView.refreshControl!.addAction(UIAction(title: "Refresh", identifier: refreshActionID) { _ in
-                    tableView.refreshControl!.beginRefreshing()
-                    controller.reload()
-                }, for: .valueChanged)
+                tableView.refreshControl!.addAction(
+                    UIAction(title: "Refresh", identifier: refreshActionID) { _ in
+                        tableView.refreshControl!.beginRefreshing()
+                        controller.reload()
+                    }, for: .valueChanged)
 
                 controller.$state
                     .receive(on: RunLoop.main)
                     .sink { state in
                         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
                             if let rc = tableView.refreshControl,
-                               rc.isRefreshing != state.isRunning {
+                                rc.isRefreshing != state.isRunning
+                            {
                                 if state.isRunning {
                                     rc.beginRefreshing()
                                 } else {
@@ -53,4 +57,3 @@ fileprivate struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
         }
     }
 }
-

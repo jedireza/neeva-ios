@@ -1,10 +1,10 @@
 // Copyright Neeva. All rights reserved.
 
+import Apollo
 import Foundation
 import Reachability
-import WebKit
 import SwiftUI
-import Apollo
+import WebKit
 
 public class NeevaUserInfo: ObservableObject {
 
@@ -28,7 +28,10 @@ public class NeevaUserInfo: ObservableObject {
     private let reachability = try! Reachability()
     private var connection: Reachability.Connection?
 
-    public init(previewDisplayName displayName: String?, email: String?, pictureUrl: String?, authProvider: SSOProvider?) {
+    public init(
+        previewDisplayName displayName: String?, email: String?, pictureUrl: String?,
+        authProvider: SSOProvider?
+    ) {
         self.displayName = displayName
         self.email = email
         self.pictureUrl = pictureUrl
@@ -71,36 +74,42 @@ public class NeevaUserInfo: ObservableObject {
 
         isLoading = true
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500), execute: {
-        UserInfoQuery().fetch { result in
-            self.isLoading = false
-            switch result {
-            case .success(let data):
-                if let user = data.user {
-                    self.saveUserInfoToDefaults(userInfo: user)
-                    self.fetchUserPicture()
-                    self.isUserLoggedIn = true
-                    NeevaFeatureFlags.update(featureFlags: user.featureFlags)
-                    /// Once we've fetched UserInfo sucessfuly, we don't need to keep monitoring connectivity anymore.
-                    self.reachability.stopNotifier()
-                }
-            case .failure(let error):
-                if let errors = (error as? GraphQLAPI.Error)?.errors {
-                    let messages = errors.filter({ $0.message != nil }).map({ $0.message! })
-                    let errorMsg = "Error fetching UserInfo: \(messages.joined(separator: "\n"))"
-                    print(errorMsg)
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + .milliseconds(500),
+            execute: {
+                UserInfoQuery().fetch { result in
+                    self.isLoading = false
+                    switch result {
+                    case .success(let data):
+                        if let user = data.user {
+                            self.saveUserInfoToDefaults(userInfo: user)
+                            self.fetchUserPicture()
+                            self.isUserLoggedIn = true
+                            NeevaFeatureFlags.update(featureFlags: user.featureFlags)
+                            /// Once we've fetched UserInfo sucessfuly, we don't need to keep monitoring connectivity anymore.
+                            self.reachability.stopNotifier()
+                        }
+                    case .failure(let error):
+                        if let errors = (error as? GraphQLAPI.Error)?.errors {
+                            let messages = errors.filter({ $0.message != nil }).map({ $0.message! })
+                            let errorMsg =
+                                "Error fetching UserInfo: \(messages.joined(separator: "\n"))"
+                            print(errorMsg)
 
-                    if errorMsg.range(of: "login required", options: .caseInsensitive) != nil {
-                        self.isUserLoggedIn = false
-                        self.clearUserInfoCache()
+                            if errorMsg.range(of: "login required", options: .caseInsensitive)
+                                != nil
+                            {
+                                self.isUserLoggedIn = false
+                                self.clearUserInfoCache()
+                            }
+                        } else {
+                            print("Error fetching UserInfo: \(error)")
+                        }
+
+                        self.loadUserInfoFromDefaults()
                     }
-                } else {
-                    print("Error fetching UserInfo: \(error)")
                 }
-
-                self.loadUserInfoFromDefaults()
-            }
-        }})
+            })
     }
 
     public func didLogOut() {
@@ -109,14 +118,16 @@ public class NeevaUserInfo: ObservableObject {
         fetch()
     }
 
-    public func clearCache(){
+    public func clearCache() {
         self.clearUserInfoCache()
     }
 
     public func updateKeychainTokenAndFetchUserInfo() {
         let cookieStore = WKWebsiteDataStore.default().httpCookieStore
         cookieStore.getAllCookies { cookies in
-            if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
+            if let authCookie = cookies.first(where: {
+                NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
+            }) {
 
                 // check if token has changed, when different, save new token
                 // and fetch user info
@@ -127,7 +138,8 @@ public class NeevaUserInfo: ObservableObject {
                     self.fetchUserPicture()
                     self.reachability.stopNotifier()
                 } else {
-                    try? NeevaConstants.keychain.set(authCookie.value, key: NeevaConstants.loginKeychainKey)
+                    try? NeevaConstants.keychain.set(
+                        authCookie.value, key: NeevaConstants.loginKeychainKey)
                     self.fetch()
                 }
             }
@@ -138,10 +150,10 @@ public class NeevaUserInfo: ObservableObject {
         return try? NeevaConstants.keychain.getString(NeevaConstants.loginKeychainKey)
     }
 
-    public func hasLoginCookie() -> Bool{
+    public func hasLoginCookie() -> Bool {
         let token = getLoginCookie()
-        if (token != nil) {
-           return true
+        if token != nil {
+            return true
         }
         return false
     }
@@ -149,15 +161,18 @@ public class NeevaUserInfo: ObservableObject {
     public func deleteLoginCookie() {
         let cookieStore = WKWebsiteDataStore.default().httpCookieStore
         cookieStore.getAllCookies { cookies in
-            if let authCookie = cookies.first(where: { NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure }) {
+            if let authCookie = cookies.first(where: {
+                NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
+            }) {
                 cookieStore.delete(authCookie)
             }
         }
         try? NeevaConstants.keychain.remove(NeevaConstants.loginKeychainKey)
     }
 
-    public func loadUserInfoFromDefaults() -> Void {
-        let userInfoDict = defaults.object(forKey: UserInfoKey) as? [String:String] ?? [String:String]()
+    public func loadUserInfoFromDefaults() {
+        let userInfoDict =
+            defaults.object(forKey: UserInfoKey) as? [String: String] ?? [String: String]()
 
         self.id = userInfoDict["userId"]
         self.displayName = userInfoDict["userDisplayName"]
@@ -173,7 +188,9 @@ public class NeevaUserInfo: ObservableObject {
 
         let dataTask = URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data, error == nil else {
-                print("Error fetching UserPicture: \(String(describing: error?.localizedDescription))")
+                print(
+                    "Error fetching UserPicture: \(String(describing: error?.localizedDescription))"
+                )
                 return
             }
 
@@ -194,8 +211,12 @@ public class NeevaUserInfo: ObservableObject {
         return false
     }
 
-    private func saveUserInfoToDefaults(userInfo: UserInfoQuery.Data.User) -> Void {
-        let userInfoDict = [ "userDisplayName": userInfo.profile.displayName, "userEmail": userInfo.profile.email, "userPictureUrl": userInfo.profile.pictureUrl, "userAuthProvider": userInfo.authProvider, "userId": userInfo.id ]
+    private func saveUserInfoToDefaults(userInfo: UserInfoQuery.Data.User) {
+        let userInfoDict = [
+            "userDisplayName": userInfo.profile.displayName, "userEmail": userInfo.profile.email,
+            "userPictureUrl": userInfo.profile.pictureUrl,
+            "userAuthProvider": userInfo.authProvider, "userId": userInfo.id,
+        ]
         defaults.set(userInfoDict, forKey: UserInfoKey)
 
         displayName = userInfo.profile.displayName
@@ -204,7 +225,7 @@ public class NeevaUserInfo: ObservableObject {
         authProvider = userInfo.authProvider.flatMap(SSOProvider.init(rawValue:))
     }
 
-    private func clearUserInfoCache() -> Void {
+    private func clearUserInfoCache() {
         displayName = nil
         email = nil
         pictureUrl = nil

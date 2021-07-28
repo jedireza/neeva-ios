@@ -23,13 +23,17 @@ class FocusHelper: TabContentScript {
         return "focusHelper"
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceiveScriptMessage message: WKScriptMessage
+    ) {
         guard let data = message.body as? [String: String] else {
             return log.error("FocusHelper.js sent wrong type of message")
         }
 
         guard let _ = data["elementType"],
-            let eventType = data["eventType"] else {
+            let eventType = data["eventType"]
+        else {
             return log.error("FocusHelper.js sent wrong keys for message")
         }
 

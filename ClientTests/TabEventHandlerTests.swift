@@ -2,18 +2,20 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Foundation
-@testable import Client
-import WebKit
-import GCDWebServers
-import XCTest
-import Shared
 import Defaults
+import Foundation
+import GCDWebServers
+import Shared
+import WebKit
+import XCTest
+
+@testable import Client
 
 class TabEventHandlerTests: XCTestCase {
 
     func testEventDelivery() {
-        let tab = Tab(bvc: BrowserViewController.foregroundBVC(), configuration: WKWebViewConfiguration())
+        let tab = Tab(
+            bvc: BrowserViewController.foregroundBVC(), configuration: WKWebViewConfiguration())
         let handler = DummyHandler()
 
         XCTAssertNil(handler.isFocused)
@@ -25,18 +27,19 @@ class TabEventHandlerTests: XCTestCase {
         XCTAssertFalse(handler.isFocused!)
     }
 
-
     func testBlankPopupURL() {
         // Hide intro so it is easier to see the test running and debug it
         Defaults[.introSeen] = true
 
         let webServer = GCDWebServer()
-        webServer.addHandler(forMethod: "GET", path: "/blankpopup", request: GCDWebServerRequest.self) { (request) -> GCDWebServerResponse in
+        webServer.addHandler(
+            forMethod: "GET", path: "/blankpopup", request: GCDWebServerRequest.self
+        ) { (request) -> GCDWebServerResponse in
             let page = """
-                <html>
-                <body onload="window.open('')">open about:blank popup</body>
-                </html>
-            """
+                    <html>
+                    <body onload="window.open('')">open about:blank popup</body>
+                    </html>
+                """
             return GCDWebServerDataResponse(html: page)!
         }
 
@@ -46,9 +49,10 @@ class TabEventHandlerTests: XCTestCase {
         let webServerBase = "http://localhost:\(webServer.port)"
 
         Defaults[.blockPopups] = false
-        BrowserViewController.foregroundBVC().tabManager.addTab(URLRequest(url: URL(string: "\(webServerBase)/blankpopup")!))
+        BrowserViewController.foregroundBVC().tabManager.addTab(
+            URLRequest(url: URL(string: "\(webServerBase)/blankpopup")!))
 
-        let exists = NSPredicate() { obj,_ in
+        let exists = NSPredicate { obj, _ in
             let tabManager = obj as! TabManager
             return tabManager.tabs.count > 2
         }
@@ -63,14 +67,13 @@ class TabEventHandlerTests: XCTestCase {
     }
 }
 
-
 class DummyHandler: TabEventHandler {
     // This is not how this should be written in production — the handler shouldn't be keeping track
     // of individual tab state.
     var isFocused: Bool? = nil
 
     init() {
-         register(self, forTabEvents: .didGainFocus, .didLoseFocus)
+        register(self, forTabEvents: .didGainFocus, .didLoseFocus)
     }
 
     func tabDidGainFocus(_ tab: Tab) {

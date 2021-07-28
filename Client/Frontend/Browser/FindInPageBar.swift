@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import Shared
+import UIKit
 
 protocol FindInPageBarDelegate: AnyObject {
     func findInPage(_ findInPage: FindInPageBar, didTextChange text: String)
@@ -112,7 +112,8 @@ class FindInPageBar: UIView {
         addSubview(topBorder)
 
         searchText.snp.makeConstraints { make in
-            make.leading.top.bottom.equalTo(self).inset(UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0))
+            make.leading.top.bottom.equalTo(self).inset(
+                UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0))
         }
         searchText.setContentHuggingPriority(.defaultLow, for: .horizontal)
         searchText.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
@@ -166,7 +167,8 @@ class FindInPageBar: UIView {
     }
 
     @objc fileprivate func didTextChange(_ sender: UITextField) {
-        matchCountView.isHidden = searchText.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true
+        matchCountView.isHidden =
+            searchText.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true
         delegate?.findInPage(self, didTextChange: searchText.text ?? "")
     }
 
@@ -177,7 +179,10 @@ class FindInPageBar: UIView {
 
 extension FindInPageBar: UITextFieldDelegate {
     // Keyboard with a .search returnKeyType doesn't dismiss when return pressed. Handle this manually.
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField, shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         if string == "\n" {
             textField.resignFirstResponder()
             return false

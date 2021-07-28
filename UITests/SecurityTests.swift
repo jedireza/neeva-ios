@@ -4,6 +4,7 @@
 
 import Foundation
 import WebKit
+
 @testable import Client
 
 class SecurityTests: KIFTestCase {

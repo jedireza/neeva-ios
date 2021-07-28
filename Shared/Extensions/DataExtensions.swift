@@ -4,14 +4,14 @@
 
 import Foundation
 
-public extension Data {
-    mutating func appendBytes(fromData data: Data) {
+extension Data {
+    public mutating func appendBytes(fromData data: Data) {
         var bytes = [UInt8](repeating: 0, count: data.count)
         data.copyBytes(to: &bytes, count: data.count)
         self.append(bytes, count: bytes.count)
     }
 
-    func getBytes() -> [UInt8] {
+    public func getBytes() -> [UInt8] {
         var bytes = [UInt8](repeating: 0, count: self.count)
         self.copyBytes(to: &bytes, count: self.count)
         return bytes

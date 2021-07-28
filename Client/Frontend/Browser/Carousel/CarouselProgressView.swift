@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Storage
 import Shared
+import Storage
+import SwiftUI
 
 class CarouselProgressModel: ObservableObject {
     @Published var urls: [URL]
@@ -14,7 +14,7 @@ class CarouselProgressModel: ObservableObject {
     }
 }
 
-fileprivate struct CarouselProgressUX {
+private struct CarouselProgressUX {
     static let SelectedSize: CGFloat = 18
     static let RegularSize: CGFloat = 12
     static let Padding: CGFloat = 4
@@ -29,26 +29,41 @@ struct CarouselProgressView: View {
     var body: some View {
         HStack(alignment: .center) {
             ForEach(Array(model.urls.enumerated()), id: \.0) { i, url in
-                let size: CGFloat = i == model.index ?
-                    CarouselProgressUX.SelectedSize : CarouselProgressUX.RegularSize
-                FaviconView(url: url,
-                            size: size, bordered: false)
-                    .frame(width: size, height: size).clipShape(Circle())
-                    .shadow(radius: 2).animation(model.index == -1 ? nil : .spring())
+                let size: CGFloat =
+                    i == model.index
+                    ? CarouselProgressUX.SelectedSize : CarouselProgressUX.RegularSize
+                FaviconView(
+                    url: url,
+                    size: size, bordered: false
+                )
+                .frame(width: size, height: size).clipShape(Circle())
+                .shadow(radius: 2).animation(model.index == -1 ? nil : .spring())
             }
         }.padding(CarouselProgressUX.Padding)
-        .frame(minHeight: CarouselProgressUX.MinHeight)
-        .background(LinearGradient(
-                        gradient: Gradient(colors:[Color.brand.pistachio,
-                                                   Color.brand.blue,
-                                                   Color.brand.pistachio]),
-                        startPoint: .leading, endPoint: .trailing))
-        .clipShape(Capsule()).shadow(radius: 3).padding()
+            .frame(minHeight: CarouselProgressUX.MinHeight)
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.brand.pistachio,
+                        Color.brand.blue,
+                        Color.brand.pistachio,
+                    ]),
+                    startPoint: .leading, endPoint: .trailing)
+            )
+            .clipShape(Capsule()).shadow(radius: 3).padding()
     }
 }
 
 struct CarouselProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        CarouselProgressView(model: CarouselProgressModel(urls: ["http://facebook.com", "http://facebook.com", "http://google.com", "http://facebook.com", "http://theverge.com", "http://facebook.com", "http://google.com", "http://facebook.com", "http://facebook.com", "http://facebook.com", "http://linkedin.com", "http://facebook.com", "http://google.com", "http://facebook.com", "http://hp.com"], index: 0))
+        CarouselProgressView(
+            model: CarouselProgressModel(
+                urls: [
+                    "http://facebook.com", "http://facebook.com", "http://google.com",
+                    "http://facebook.com", "http://theverge.com", "http://facebook.com",
+                    "http://google.com", "http://facebook.com", "http://facebook.com",
+                    "http://facebook.com", "http://linkedin.com", "http://facebook.com",
+                    "http://google.com", "http://facebook.com", "http://hp.com",
+                ], index: 0))
     }
 }

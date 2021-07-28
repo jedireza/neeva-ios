@@ -3,10 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Storage
-@testable import Client
 import KIF
+import Storage
 
+@testable import Client
 
 class TrackingProtectionTests: KIFTestCase, TabEventHandler {
     private var webRoot: String!
@@ -37,32 +37,31 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         wait(for: [setup], timeout: 5)
 
         let clear = self.expectation(description: "clearing")
-        ContentBlocker.shared.clearSafelist() { clear.fulfill() }
+        ContentBlocker.shared.clearSafelist { clear.fulfill() }
         waitForExpectations(timeout: 2, handler: nil)
 
         register(self, forTabEvents: .didChangeContentBlocking)
     }
-    
+
     func checkIfImageLoaded(url: String, shouldBlockImage: Bool) {
         tester().waitForAnimationsToFinish(withTimeout: 3)
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
 
         tester().waitForAnimationsToFinish(withTimeout: 3)
 
-            if shouldBlockImage {
-                tester().waitForView(withAccessibilityLabel: "image not loaded.")
-            } else {
-                tester().waitForView(withAccessibilityLabel: "image loaded.")
+        if shouldBlockImage {
+            tester().waitForView(withAccessibilityLabel: "image not loaded.")
+        } else {
+            tester().waitForView(withAccessibilityLabel: "image loaded.")
 
-            }
-        tester().tapView(withAccessibilityLabel: "OK")
         }
+        tester().tapView(withAccessibilityLabel: "OK")
+    }
 
-    
     func tabDidChangeContentBlocking(_ tab: Tab) {
         stats = tab.contentBlocker!.stats
 
-        if (stats.total == 0) {
+        if stats.total == 0 {
             statsZero?.fulfill()
             statsZero = nil
         } else {
@@ -114,7 +113,8 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         // Lets enable Strict mode to block the image this is fixed:
         // https://github.com/mozilla-mobile/firefox-ios/pull/5274#issuecomment-516111508
 
-        tester().tapView(withAccessibilityIdentifier: "Settings.TrackingProtectionOption.BlockListStrict")
+        tester().tapView(
+            withAccessibilityIdentifier: "Settings.TrackingProtectionOption.BlockListStrict")
 
         // Accept the warning alert when Strict mode is enabled
         tester().waitForAnimationsToFinish(withTimeout: 3)
@@ -148,7 +148,8 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
     */
 
     func disableStrictTP() {
-        tester().tapView(withAccessibilityIdentifier: "Settings.TrackingProtectionOption.BlockListBasic")
+        tester().tapView(
+            withAccessibilityIdentifier: "Settings.TrackingProtectionOption.BlockListBasic")
     }
 
     /* Disabled as this test is hanging.

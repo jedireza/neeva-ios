@@ -1,12 +1,13 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
 import Defaults
+import Foundation
 import KeychainAccess
 import UIKit
 
 extension Defaults.Keys {
-    public static let neevaHost = Defaults.Key<String>("neevaHost", default: "neeva.com", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    public static let neevaHost = Defaults.Key<String>(
+        "neevaHost", default: "neeva.com", suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 }
 
 public struct NeevaConstants {
@@ -75,7 +76,7 @@ public struct NeevaConstants {
             .value: deviceTypeValue,
             .domain: NeevaConstants.appHost,
             .path: "/",
-            .expires: Date.distantFuture
+            .expires: Date.distantFuture,
         ])!
     }
 
@@ -86,7 +87,7 @@ public struct NeevaConstants {
             .value: deviceNameValue,
             .domain: NeevaConstants.appHost,
             .path: "/",
-            .expires: Date.distantFuture
+            .expires: Date.distantFuture,
         ])!
     }
 
@@ -97,7 +98,7 @@ public struct NeevaConstants {
             .value: "neeva-ios",
             .domain: NeevaConstants.appHost,
             .path: "/",
-            .expires: Date.distantFuture
+            .expires: Date.distantFuture,
         ])!
     }
 
@@ -108,7 +109,7 @@ public struct NeevaConstants {
             .value: AppInfo.appVersionReportedToNeeva,
             .domain: NeevaConstants.appHost,
             .path: "/",
-            .expires: Date.distantFuture
+            .expires: Date.distantFuture,
         ])!
     }
 
@@ -123,7 +124,7 @@ public struct NeevaConstants {
             .secure: true,
             .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
             // ! potentially undocumented API
-            .init("HttpOnly"): true
+            .init("HttpOnly"): true,
         ])!
     }
 
@@ -146,4 +147,4 @@ public struct NeevaConstants {
     }
 }
 
-fileprivate class BundleHookClass {}
+private class BundleHookClass {}

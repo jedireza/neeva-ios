@@ -19,7 +19,8 @@ extension UIViewController {
     /// - Parameters:
     ///   - swiftUIView: The SwiftUI `View` to add as a child.
     ///   - view: The `UIView` instance to which the view should be added.
-    func addSubSwiftUIView<Content>(_ swiftUIView: Content, to containerView: UIView) where Content : View {
+    func addSubSwiftUIView<Content>(_ swiftUIView: Content, to containerView: UIView)
+    where Content: View {
         let hostingController = UIHostingController(rootView: swiftUIView)
         hostingController.view.backgroundColor = .clear
 
@@ -35,7 +36,7 @@ extension UIViewController {
             hostingController.view.topAnchor.constraint(equalTo: containerView.topAnchor),
             hostingController.view.leftAnchor.constraint(equalTo: containerView.leftAnchor),
             hostingController.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            hostingController.view.rightAnchor.constraint(equalTo: containerView.rightAnchor)
+            hostingController.view.rightAnchor.constraint(equalTo: containerView.rightAnchor),
         ]
 
         NSLayoutConstraint.activate(constraints)

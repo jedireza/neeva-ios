@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import SFSafeSymbols
+import SwiftUI
 
 // This file provides conveniences for using Neeva Icons (aka Nicons).
 
@@ -44,7 +44,7 @@ public enum Nicon: Character {
     case bookmark = "\u{10025E}"
     /// 􀉟
     case bookmarkFill = "\u{10025F}"
-    
+
     case bookmarkOnBookmark = "\u{101010}"
     /// 􀌪
     case bubbleLeft = "\u{10032A}"
@@ -84,13 +84,19 @@ public struct Symbol: View {
     public static let defaultSize: CGFloat = 16
 
     // since this comes first, Neeva custom icons take priority over SF Symbols with the same name
-    public init(_ nicon: Nicon, size: CGFloat = Symbol.defaultSize, weight: NiconFont = .regular, relativeTo: Font.TextStyle = .body, label: String? = nil) {
+    public init(
+        _ nicon: Nicon, size: CGFloat = Symbol.defaultSize, weight: NiconFont = .regular,
+        relativeTo: Font.TextStyle = .body, label: String? = nil
+    ) {
         self.icon = .neeva(nicon, Font.custom(weight.rawValue, size: size, relativeTo: relativeTo))
         self.label = label
     }
 
     @_disfavoredOverload
-    public init(_ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize, weight: Font.Weight = .medium, label: String? = nil) {
+    public init(
+        _ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize, weight: Font.Weight = .medium,
+        label: String? = nil
+    ) {
         self.icon = .sfSymbol(symbol, .system(size, weight))
         self.label = label
     }
@@ -126,7 +132,13 @@ public struct Symbol: View {
 }
 
 extension Symbol {
-    public static func uiImage(_ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize, weight: UIImage.SymbolWeight = .medium) -> UIImage {
-        UIImage(systemSymbol: symbol, withConfiguration: UIImage.SymbolConfiguration(pointSize: size, weight: weight, scale: .medium))
+    public static func uiImage(
+        _ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize,
+        weight: UIImage.SymbolWeight = .medium
+    ) -> UIImage {
+        UIImage(
+            systemSymbol: symbol,
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: size, weight: weight, scale: .medium))
     }
 }

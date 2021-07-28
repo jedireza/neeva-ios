@@ -28,13 +28,13 @@ public struct NavSuggestion {
     }
 }
 
-extension NavSuggestion : Equatable {
+extension NavSuggestion: Equatable {
     public static func == (lhs: NavSuggestion, rhs: NavSuggestion) -> Bool {
         lhs.url.normalizedHostAndPathForDisplay == rhs.url.normalizedHostAndPathForDisplay
     }
 }
 
-extension NavSuggestion : Identifiable {
+extension NavSuggestion: Identifiable {
     public var id: String {
         return "nav-\(url)"
     }

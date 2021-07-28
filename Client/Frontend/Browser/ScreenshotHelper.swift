@@ -6,9 +6,7 @@ import Foundation
 import Shared
 import WebKit
 
-/**
- * Handles screenshots for a given tab, including pages with non-webview content.
- */
+/// Handles screenshots for a given tab, including pages with non-webview content.
 class ScreenshotHelper {
     var viewIsVisible = false
 
@@ -21,7 +19,7 @@ class ScreenshotHelper {
     init() {
         self.controller = BrowserViewController.foregroundBVC()
     }
-    
+
     /// Takes a screenshot of the WebView to be displayed on the tab view page
     /**
      If taking a screenshot of the zero query page, uses our custom screenshot `UIView` extension function
@@ -29,17 +27,20 @@ class ScreenshotHelper {
      */
     func takeScreenshot(_ tab: Tab) {
         guard let webView = tab.webView, let url = tab.url else {
-            Sentry.shared.send(message: "Tab Snapshot Error", tag: .tabManager, severity: .debug, description: "Tab webView or url is nil")
+            Sentry.shared.send(
+                message: "Tab Snapshot Error", tag: .tabManager, severity: .debug,
+                description: "Tab webView or url is nil")
             return
         }
 
         //Handle zero query page snapshots, can not use Apple API snapshot function for this
         if InternalURL(url)?.isZeroQueryURL ?? false {
             if let zeroQueryVC = controller?.zeroQueryViewController {
-                let screenshot = zeroQueryVC.view.screenshot(quality: UIConstants.ActiveScreenshotQuality)
+                let screenshot = zeroQueryVC.view.screenshot(
+                    quality: UIConstants.ActiveScreenshotQuality)
                 tab.setScreenshot(screenshot)
             }
-        //Handle webview screenshots
+            //Handle webview screenshots
         } else {
             let configuration = WKSnapshotConfiguration()
             //This is for a bug in certain iOS 13 versions, snapshots cannot be taken correctly without this boolean being set
@@ -53,9 +54,13 @@ class ScreenshotHelper {
                         self.controller?.cardStripViewController?.tabCardModel.onDataUpdated()
                     }
                 } else if let error = error {
-                    Sentry.shared.send(message: "Tab snapshot error", tag: .tabManager, severity: .debug, description: error.localizedDescription)
+                    Sentry.shared.send(
+                        message: "Tab snapshot error", tag: .tabManager, severity: .debug,
+                        description: error.localizedDescription)
                 } else {
-                    Sentry.shared.send(message: "Tab snapshot error", tag: .tabManager, severity: .debug, description: "No error description")
+                    Sentry.shared.send(
+                        message: "Tab snapshot error", tag: .tabManager, severity: .debug,
+                        description: "No error description")
                 }
             }
         }

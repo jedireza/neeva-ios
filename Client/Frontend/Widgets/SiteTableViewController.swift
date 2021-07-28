@@ -2,16 +2,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import Storage
+import UIKit
 
 private enum SiteTableViewControllerUX {
     static let RowHeight: CGFloat = 44
 }
 
-/**
- * Provides base shared functionality for site rows and headers.
- */
+/// Provides base shared functionality for site rows and headers.
 @objcMembers
 class SiteTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     fileprivate let CellIdentifier = "CellIdentifier"
@@ -27,9 +25,12 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
     init(profile: Profile) {
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
-        navigationController?.navigationBar.barTintColor = UIColor.legacyTheme.tableView.headerBackground
+        navigationController?.navigationBar.barTintColor =
+            UIColor.legacyTheme.tableView.headerBackground
         navigationController?.navigationBar.tintColor = .ui.adaptive.blue
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.legacyTheme.tableView.headerTextDark]
+        navigationController?.navigationBar.titleTextAttributes = [
+            .foregroundColor: UIColor.legacyTheme.tableView.headerTextDark
+        ]
 
         tableView.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
         tableView.separatorColor = UIColor.legacyTheme.tableView.separator
@@ -75,7 +76,9 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         reloadData()
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(
+        to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator
+    ) {
         super.viewWillTransition(to: size, with: coordinator)
         tableView.setEditing(false, animated: false)
     }
@@ -105,7 +108,9 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return UITableView.automaticDimension
     }
 
-    func tableView(_ tableView: UITableView, hasFullWidthSeparatorForRowAtIndexPath indexPath: IndexPath) -> Bool {
+    func tableView(
+        _ tableView: UITableView, hasFullWidthSeparatorForRowAtIndexPath indexPath: IndexPath
+    ) -> Bool {
         return false
     }
 }

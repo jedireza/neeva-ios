@@ -2,10 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Foundation
 import Shared
 import XCGLogger
-import Defaults
 
 private let log = Logger.syncLogger
 public let TopSiteCacheSize: Int32 = 16
@@ -51,7 +51,7 @@ func simulatedFrecency(now: MicrosecondTimestamp, then: MicrosecondTimestamp, vi
 func getRemoteFrecencySQL() -> String {
     let visitCountExpression = "remoteVisitCount"
     let now = Date.nowMicroseconds()
-    let microsecondsPerDay = 86_400_000_000.0      // 1000 * 1000 * 60 * 60 * 24
+    let microsecondsPerDay = 86_400_000_000.0  // 1000 * 1000 * 60 * 60 * 24
     let ageDays = "((\(now) - remoteVisitDate) / \(microsecondsPerDay))"
 
     return "\(visitCountExpression) * max(1, 100 * 110 / (\(ageDays) * \(ageDays) + 110))"
@@ -60,16 +60,18 @@ func getRemoteFrecencySQL() -> String {
 func getLocalFrecencySQL() -> String {
     let visitCountExpression = "((2 + localVisitCount) * (2 + localVisitCount))"
     let now = Date.nowMicroseconds()
-    let microsecondsPerDay = 86_400_000_000.0      // 1000 * 1000 * 60 * 60 * 24
+    let microsecondsPerDay = 86_400_000_000.0  // 1000 * 1000 * 60 * 60 * 24
     let ageDays = "((\(now) - localVisitDate) / \(microsecondsPerDay))"
 
     return "\(visitCountExpression) * max(2, 100 * 225 / (\(ageDays) * \(ageDays) + 225))"
 }
 
-fileprivate func escapeFTSSearchString(_ search: String) -> String {
+private func escapeFTSSearchString(_ search: String) -> String {
     // Remove double-quotes, split search string on whitespace
     // and remove any empty strings
-    let words = search.replacingOccurrences(of: "\"", with: "").components(separatedBy: .whitespaces).filter({ !$0.isEmpty })
+    let words = search.replacingOccurrences(of: "\"", with: "").components(
+        separatedBy: .whitespaces
+    ).filter({ !$0.isEmpty })
 
     // If there's only one word, ensure it is longer than 2
     // characters. Otherwise, form a different type of search
@@ -87,15 +89,17 @@ fileprivate func escapeFTSSearchString(_ search: String) -> String {
             let httpPrefix = "url: \"^http://"
             let httpsPrefix = "url: \"^https://"
 
-            return [titlePrefix,
-                    httpPrefix,
-                    httpsPrefix,
-                    httpPrefix + "www.",
-                    httpsPrefix + "www.",
-                    httpPrefix + "m.",
-                    httpsPrefix + "m."]
-                .map({ "\($0)\(word)*\"" })
-                .joined(separator: " OR ")
+            return [
+                titlePrefix,
+                httpPrefix,
+                httpsPrefix,
+                httpPrefix + "www.",
+                httpsPrefix + "www.",
+                httpPrefix + "m.",
+                httpsPrefix + "m.",
+            ]
+            .map({ "\($0)\(word)*\"" })
+            .joined(separator: " OR ")
         }
     }
 
@@ -120,9 +124,7 @@ extension SDRow {
     }
 }
 
-/**
- * The sqlite-backed implementation of the history protocol.
- */
+/// The sqlite-backed implementation of the history protocol.
 open class SQLiteHistory {
     let db: BrowserDB
     let favicons: SQLiteFavicons
@@ -138,25 +140,25 @@ open class SQLiteHistory {
     public func getSites(forURLs urls: [String]) -> Deferred<Maybe<Cursor<Site?>>> {
         let inExpression = urls.joined(separator: "\",\"")
         let sql = """
-        SELECT history.id AS historyID, history.url AS url, title, guid, iconID, iconURL, iconDate, iconType, iconWidth
-        FROM view_favicons_widest, history
-        WHERE history.id = siteID AND history.url IN (\"\(inExpression)\")
-        """
+            SELECT history.id AS historyID, history.url AS url, title, guid, iconID, iconURL, iconDate, iconType, iconWidth
+            FROM view_favicons_widest, history
+            WHERE history.id = siteID AND history.url IN (\"\(inExpression)\")
+            """
 
         let args: Args = []
-        return db.runQueryConcurrently(sql, args: args, factory: SQLiteHistory.iconHistoryColumnFactory)
+        return db.runQueryConcurrently(
+            sql, args: args, factory: SQLiteHistory.iconHistoryColumnFactory)
     }
 }
 
-private let topSitesQuery = "SELECT cached_top_sites.*, page_metadata.provider_name FROM cached_top_sites LEFT OUTER JOIN page_metadata ON cached_top_sites.url = page_metadata.site_url ORDER BY frecencies DESC LIMIT (?)"
+private let topSitesQuery =
+    "SELECT cached_top_sites.*, page_metadata.provider_name FROM cached_top_sites LEFT OUTER JOIN page_metadata ON cached_top_sites.url = page_metadata.site_url ORDER BY frecencies DESC LIMIT (?)"
 
-/**
- * The init for this will perform the heaviest part of the frecency query
- * and create a temporary table that can be queried quickly. Currently this accounts for
- * >75% of the query time.
- * The scope/lifetime of this object is important as the data is 'frozen' until a new instance is created.
- */
-fileprivate struct SQLiteFrecentHistory: FrecentHistory {
+/// The init for this will perform the heaviest part of the frecency query
+/// and create a temporary table that can be queried quickly. Currently this accounts for
+/// >75% of the query time.
+/// The scope/lifetime of this object is important as the data is 'frozen' until a new instance is created.
+private struct SQLiteFrecentHistory: FrecentHistory {
     private let db: BrowserDB
 
     init(db: BrowserDB) {
@@ -178,10 +180,12 @@ fileprivate struct SQLiteFrecentHistory: FrecentHistory {
         }
     }
 
-    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site?>>> {
+    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site?>>>
+    {
         let factory = SQLiteHistory.iconHistoryColumnFactory
 
-        let params = FrecencyQueryParams.urlCompletion(whereURLContains: filter ?? "", groupClause: "GROUP BY historyID ")
+        let params = FrecencyQueryParams.urlCompletion(
+            whereURLContains: filter ?? "", groupClause: "GROUP BY historyID ")
         let (query, args) = getFrecencyQuery(limit: limit, params: params)
 
         return db.runQueryConcurrently(query, args: args, factory: factory)
@@ -206,7 +210,8 @@ fileprivate struct SQLiteFrecentHistory: FrecentHistory {
     }
 
     private func topSiteClauses() -> (String, String) {
-        let whereData = "(domains.showOnTopSites IS 1) AND (domains.domain NOT LIKE 'r.%') AND (domains.domain NOT LIKE 'google.%') "
+        let whereData =
+            "(domains.showOnTopSites IS 1) AND (domains.domain NOT LIKE 'r.%') AND (domains.domain NOT LIKE 'google.%') "
         let groupBy = "GROUP BY domain_id "
         return (whereData, groupBy)
     }
@@ -234,7 +239,7 @@ fileprivate struct SQLiteFrecentHistory: FrecentHistory {
 
         let localFrecencySQL = getLocalFrecencySQL()
         let remoteFrecencySQL = getRemoteFrecencySQL()
-        let sixMonthsInMicroseconds: UInt64 = 15_724_800_000_000      // 182 * 1000 * 1000 * 60 * 60 * 24
+        let sixMonthsInMicroseconds: UInt64 = 15_724_800_000_000  // 182 * 1000 * 1000 * 60 * 60 * 24
         let sixMonthsAgo = Date.nowMicroseconds() - sixMonthsInMicroseconds
 
         let args: Args
@@ -402,10 +407,10 @@ extension SQLiteHistory: BrowserHistory {
 
     public func isPinnedTopSite(_ url: String) -> Deferred<Maybe<Bool>> {
         let sql = """
-        SELECT * FROM pinned_top_sites
-        WHERE url = ?
-        LIMIT 1
-        """
+            SELECT * FROM pinned_top_sites
+            WHERE url = ?
+            LIMIT 1
+            """
         let args: Args = [url]
         return self.db.queryReturnsResults(sql, args: args)
     }
@@ -416,10 +421,11 @@ extension SQLiteHistory: BrowserHistory {
                 historyID = view_favicons_widest.siteID
             ORDER BY pinDate DESC
             """
-        return db.runQueryConcurrently(sql, args: [], factory: SQLiteHistory.iconHistoryMetadataColumnFactory)
+        return db.runQueryConcurrently(
+            sql, args: [], factory: SQLiteHistory.iconHistoryMetadataColumnFactory)
     }
 
-    public func addPinnedTopSite(_ site: Site) -> Success { // needs test
+    public func addPinnedTopSite(_ site: Site) -> Success {  // needs test
         let now = Date.nowMilliseconds()
         guard let guid = site.guid, let host = site.url.normalizedHost else {
             return deferMaybe(DatabaseError(description: "Invalid site \(site.url)"))
@@ -430,7 +436,12 @@ extension SQLiteHistory: BrowserHistory {
         // Prevent the pinned site from being used in topsite calculations
         // We dont have to worry about this when removing a pin because the assumption is that a user probably doesnt want it being recommended as a topsite either
         return self.removeHostFromTopSites(host) >>== {
-            return self.db.run([("INSERT OR REPLACE INTO pinned_top_sites (url, pinDate, title, historyID, guid, domain) VALUES \(arglist)", args)])
+            return self.db.run([
+                (
+                    "INSERT OR REPLACE INTO pinned_top_sites (url, pinDate, title, historyID, guid, domain) VALUES \(arglist)",
+                    args
+                )
+            ])
         }
     }
 
@@ -440,16 +451,18 @@ extension SQLiteHistory: BrowserHistory {
 
     public func removeHistoryForURL(_ url: URL) -> Success {
         let visitArgs: Args = [url.absoluteString]
-        let deleteVisits = "DELETE FROM visits WHERE siteID = (SELECT id FROM history WHERE url = ?)"
+        let deleteVisits =
+            "DELETE FROM visits WHERE siteID = (SELECT id FROM history WHERE url = ?)"
 
         let markArgs: Args = [Date.nowNumber(), url.absoluteString]
-        let markDeleted = "UPDATE history SET url = NULL, is_deleted = 1, title = '', should_upload = 1, local_modified = ? WHERE url = ?"
+        let markDeleted =
+            "UPDATE history SET url = NULL, is_deleted = 1, title = '', should_upload = 1, local_modified = ? WHERE url = ?"
 
         return db.run([
             (sql: deleteVisits, args: visitArgs),
             (sql: markDeleted, args: markArgs),
             favicons.getCleanupFaviconsQuery(),
-            favicons.getCleanupFaviconSiteURLsQuery()
+            favicons.getCleanupFaviconSiteURLsQuery(),
         ])
     }
 
@@ -457,10 +470,10 @@ extension SQLiteHistory: BrowserHistory {
         let visitTimestamp = date.toMicrosecondTimestamp()
 
         let historyRemoval = """
-            WITH deletionIds as (SELECT history.id from history INNER JOIN visits on history.id = visits.siteID WHERE visits.date > ?)
-            UPDATE history SET url = NULL, is_deleted=1, title = '', should_upload = 1, local_modified = ?
-            WHERE history.id in deletionIds
-        """
+                WITH deletionIds as (SELECT history.id from history INNER JOIN visits on history.id = visits.siteID WHERE visits.date > ?)
+                UPDATE history SET url = NULL, is_deleted=1, title = '', should_upload = 1, local_modified = ?
+                WHERE history.id in deletionIds
+            """
         let historyRemovalArgs: Args = [visitTimestamp, Date.nowNumber()]
 
         let visitRemoval = "DELETE FROM visits WHERE visits.date > ?"
@@ -470,7 +483,7 @@ extension SQLiteHistory: BrowserHistory {
             (sql: historyRemoval, args: historyRemovalArgs),
             (sql: visitRemoval, args: visitRemovalArgs),
             favicons.getCleanupFaviconsQuery(),
-            favicons.getCleanupFaviconSiteURLsQuery()
+            favicons.getCleanupFaviconSiteURLsQuery(),
         ])
     }
 
@@ -485,7 +498,7 @@ extension SQLiteHistory: BrowserHistory {
             ("DELETE FROM page_metadata", nil),
             ("DELETE FROM favicon_site_urls", nil),
             ("DELETE FROM favicons", nil),
-            ])
+        ])
             // We've probably deleted a lot of stuff. Vacuum now to recover the space.
             >>> effect({ self.db.vacuum() })
     }
@@ -498,7 +511,7 @@ extension SQLiteHistory: BrowserHistory {
 
         return db.withConnection { conn -> Void in
             let now = Date.nowMilliseconds()
-            
+
             if self.updateSite(site, atTime: now, withConnection: conn) > 0 {
                 return
             }
@@ -508,13 +521,16 @@ extension SQLiteHistory: BrowserHistory {
                 return
             }
 
-            let err = DatabaseError(description: "Unable to update or insert site; Invalid key returned")
+            let err = DatabaseError(
+                description: "Unable to update or insert site; Invalid key returned")
             log.error("recordVisitedSite encountered an error: \(err.localizedDescription)")
             throw err
         }
     }
 
-    func updateSite(_ site: Site, atTime time: Timestamp, withConnection conn: SQLiteDBConnection) -> Int {
+    func updateSite(_ site: Site, atTime time: Timestamp, withConnection conn: SQLiteDBConnection)
+        -> Int
+    {
         // We know we're adding a new visit, so we'll need to upload this record.
         // If we ever switch to per-visit change flags, this should turn into a CASE statement like
         //   CASE WHEN title IS ? THEN max(should_upload, 1) ELSE should_upload END
@@ -526,7 +542,8 @@ extension SQLiteHistory: BrowserHistory {
             return 0
         }
 
-        let update = "UPDATE history SET title = ?, local_modified = ?, should_upload = 1, domain_id = (SELECT id FROM domains where domain = ?) WHERE url = ?"
+        let update =
+            "UPDATE history SET title = ?, local_modified = ?, should_upload = 1, domain_id = (SELECT id FROM domains where domain = ?) WHERE url = ?"
         let updateArgs: Args? = [site.title, time, host, site.url.absoluteString]
         if Logger.logPII {
             log.debug("Setting title to \(site.title) for URL \(site.url)")
@@ -540,10 +557,13 @@ extension SQLiteHistory: BrowserHistory {
         }
     }
 
-    fileprivate func insertSite(_ site: Site, atTime time: Timestamp, withConnection conn: SQLiteDBConnection) -> Int {
+    fileprivate func insertSite(
+        _ site: Site, atTime time: Timestamp, withConnection conn: SQLiteDBConnection
+    ) -> Int {
         if let host = site.url.normalizedHost {
             do {
-                try conn.executeChange("INSERT OR IGNORE INTO domains (domain) VALUES (?)", withArgs: [host])
+                try conn.executeChange(
+                    "INSERT OR IGNORE INTO domains (domain) VALUES (?)", withArgs: [host])
             } catch let error as NSError {
                 log.warning("Domain insertion failed with \(error.localizedDescription)")
                 return 0
@@ -556,7 +576,9 @@ extension SQLiteHistory: BrowserHistory {
                 SELECT ?, ?, ?, ?, 0, 1, id FROM domains WHERE domain = ?
                 """
 
-            let insertArgs: Args? = [site.guid ?? Bytes.generateGUID(), site.url.absoluteString, site.title, time, host]
+            let insertArgs: Args? = [
+                site.guid ?? Bytes.generateGUID(), site.url.absoluteString, site.title, time, host,
+            ]
             do {
                 try conn.executeChange(insert, withArgs: insertArgs)
             } catch let error as NSError {
@@ -595,7 +617,7 @@ extension SQLiteHistory: BrowserHistory {
 
     public func addLocalVisit(_ visit: SiteVisit) -> Success {
         return recordVisitedSite(visit.site)
-         >>> { self.addLocalVisitForExistingSite(visit) }
+            >>> { self.addLocalVisitForExistingSite(visit) }
     }
 
     public func getFrecentHistory() -> FrecentHistory {
@@ -603,7 +625,8 @@ extension SQLiteHistory: BrowserHistory {
     }
 
     public func getTopSitesWithLimit(_ limit: Int) -> Deferred<Maybe<Cursor<Site?>>> {
-        return self.db.runQueryConcurrently(topSitesQuery, args: [limit], factory: SQLiteHistory.iconHistoryMetadataColumnFactory)
+        return self.db.runQueryConcurrently(
+            topSitesQuery, args: [limit], factory: SQLiteHistory.iconHistoryMetadataColumnFactory)
     }
 
     public func setTopSitesNeedsInvalidation() {
@@ -655,7 +678,8 @@ extension SQLiteHistory: BrowserHistory {
             ORDER BY latestVisits.latestVisitDate DESC
             """
 
-        return db.runQueryConcurrently(sql, args: nil, factory: SQLiteHistory.iconHistoryColumnFactory)
+        return db.runQueryConcurrently(
+            sql, args: nil, factory: SQLiteHistory.iconHistoryColumnFactory)
     }
 }
 
@@ -665,7 +689,8 @@ extension SQLiteHistory {
     // without syncing, the presence of matching rows directly indicates that a deletion
     // would be synced to the server.
     public func hasSyncedHistory() -> Deferred<Maybe<Bool>> {
-        return self.db.queryReturnsResults("SELECT 1 FROM history WHERE server_modified IS NOT NULL LIMIT 1")
+        return self.db.queryReturnsResults(
+            "SELECT 1 FROM history WHERE server_modified IS NOT NULL LIMIT 1")
     }
 }
 

@@ -15,17 +15,19 @@ extension View {
     ///   - isModal: whether to prevent swiping to dismiss
     ///   - onDismissalAttempt: called if `isModal` is true and the user attempts to swipe to dismiss.
     ///   You can use this, for example, to present an action sheet that prompts them to confirm discarding changes.
-    public func presentation(isModal: Bool, onDismissalAttempt: (()->())? = nil) -> some View {
+    public func presentation(isModal: Bool, onDismissalAttempt: (() -> Void)? = nil) -> some View {
         GeometryReader { geom in
-            ModalView(view: self.padding(geom.safeAreaInsets), isModal: isModal, onDismissalAttempt: onDismissalAttempt)
+            ModalView(
+                view: self.padding(geom.safeAreaInsets), isModal: isModal,
+                onDismissalAttempt: onDismissalAttempt)
         }.edgesIgnoringSafeArea(.all)
     }
 }
 
-fileprivate struct ModalView<T: View>: UIViewControllerRepresentable {
+private struct ModalView<T: View>: UIViewControllerRepresentable {
     let view: T
     let isModal: Bool
-    let onDismissalAttempt: (()->())?
+    let onDismissalAttempt: (() -> Void)?
 
     func makeUIViewController(context: Context) -> UIHostingController<T> {
         UIHostingController(rootView: view)
@@ -48,11 +50,15 @@ fileprivate struct ModalView<T: View>: UIViewControllerRepresentable {
             self.modalView = modalView
         }
 
-        func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        func presentationControllerShouldDismiss(_ presentationController: UIPresentationController)
+            -> Bool
+        {
             !modalView.isModal
         }
 
-        func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        func presentationControllerDidAttemptToDismiss(
+            _ presentationController: UIPresentationController
+        ) {
             modalView.onDismissalAttempt?()
         }
     }

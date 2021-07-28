@@ -1,16 +1,16 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct IntroFirstRunView: View {
     var buttonAction: (FirstRunButtonActions) -> Void
     let smallSizeScreen: CGFloat = 375.0
 
     var body: some View {
-        VStack() {
+        VStack {
             Spacer()
-            VStack(alignment: .leading){
+            VStack(alignment: .leading) {
                 Image("neeva-letter-logo")
                 VStack(alignment: .leading) {
                     Text("Ad-free,")
@@ -18,7 +18,9 @@ struct IntroFirstRunView: View {
                     Text("that puts you")
                     Text("first.")
                 }
-                .font(.roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48))
+                .font(
+                    .roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48)
+                )
                 .foregroundColor(Color.ui.gray20)
                 .padding(.top, 40)
             }

@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 enum GroupedCellUX {
     static let minCellHeight: CGFloat = 52
@@ -57,10 +57,13 @@ struct GroupedCell<Content: View>: View {
 /// and adds all of the same styling that `GroupedCell` adds.
 struct GroupedCellButton<Label: View>: View {
     let alignment: GroupedCellAlignment
-    let action: () -> ()
+    let action: () -> Void
     let label: () -> Label
 
-    init(alignment: GroupedCellAlignment = .center, action: @escaping () -> (), @ViewBuilder label: @escaping () -> Label) {
+    init(
+        alignment: GroupedCellAlignment = .center, action: @escaping () -> Void,
+        @ViewBuilder label: @escaping () -> Label
+    ) {
         self.alignment = alignment
         self.action = action
         self.label = label
@@ -76,7 +79,10 @@ struct GroupedCellButton<Label: View>: View {
 }
 
 extension GroupedCellButton where Label == Text.WithFont {
-    init<S: StringProtocol>(_ label: S, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil, action: @escaping () -> ()) {
+    init<S: StringProtocol>(
+        _ label: S, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil,
+        action: @escaping () -> Void
+    ) {
         self.label = { Text(label).withFont(style, weight: weight) }
         self.alignment = .center
         self.action = action

@@ -35,10 +35,12 @@ class Download: NSObject {
     func resume() {}
 
     fileprivate func uniqueDownloadPathForFilename(_ filename: String) throws -> URL {
-        let downloadsPath = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let downloadsPath = try FileManager.default.url(
+            for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
         let basePath = downloadsPath.appendingPathComponent(filename)
         let fileExtension = basePath.pathExtension
-        let filenameWithoutExtension = fileExtension.count > 0 ? String(filename.dropLast(fileExtension.count + 1)) : filename
+        let filenameWithoutExtension =
+            fileExtension.count > 0 ? String(filename.dropLast(fileExtension.count + 1)) : filename
 
         var proposedPath = basePath
         var count = 0
@@ -47,7 +49,8 @@ class Download: NSObject {
             count += 1
 
             let proposedFilenameWithoutExtension = "\(filenameWithoutExtension) (\(count))"
-            proposedPath = downloadsPath.appendingPathComponent(proposedFilenameWithoutExtension).appendingPathExtension(fileExtension)
+            proposedPath = downloadsPath.appendingPathComponent(proposedFilenameWithoutExtension)
+                .appendingPathExtension(fileExtension)
         }
 
         return proposedPath
@@ -71,14 +74,14 @@ class HTTPDownload: Download {
     public static func stripUnicode(fromFilename string: String) -> String {
         let allowed = CharacterSet.alphanumerics.union(CharacterSet.punctuationCharacters)
         return string.components(separatedBy: allowed.inverted).joined()
-     }
+    }
 
     init?(preflightResponse: URLResponse, request: URLRequest) {
         self.preflightResponse = preflightResponse
         self.request = request
-        
+
         // Verify scheme is a secure http or https scheme before moving forward with HTTPDownload initialization
-        guard let scheme = request.url?.scheme, (scheme == "http" || scheme == "https") else {
+        guard let scheme = request.url?.scheme, scheme == "http" || scheme == "https" else {
             return nil
         }
 
@@ -92,7 +95,9 @@ class HTTPDownload: Download {
             self.mimeType = mimeType
         }
 
-        self.totalBytesExpected = preflightResponse.expectedContentLength > 0 ? preflightResponse.expectedContentLength : nil
+        self.totalBytesExpected =
+            preflightResponse.expectedContentLength > 0
+            ? preflightResponse.expectedContentLength : nil
 
         self.session = URLSession(configuration: .default, delegate: self, delegateQueue: .main)
         self.task = session?.downloadTask(with: request)
@@ -120,26 +125,34 @@ class HTTPDownload: Download {
 }
 
 extension HTTPDownload: URLSessionTaskDelegate, URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
+    {
         // Don't bubble up cancellation as an error if the
         // error is `.cancelled` and we have resume data.
         if let urlError = error as? URLError,
             urlError.code == .cancelled,
-            resumeData != nil {
+            resumeData != nil
+        {
             return
         }
 
         delegate?.download(self, didCompleteWithError: error)
     }
 
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+    func urlSession(
+        _ session: URLSession, downloadTask: URLSessionDownloadTask,
+        didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64
+    ) {
         bytesDownloaded = totalBytesWritten
         totalBytesExpected = totalBytesExpectedToWrite
 
         delegate?.download(self, didDownloadBytes: bytesWritten)
     }
 
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    func urlSession(
+        _ session: URLSession, downloadTask: URLSessionDownloadTask,
+        didFinishDownloadingTo location: URL
+    ) {
         do {
             let destination = try uniqueDownloadPathForFilename(filename)
             try FileManager.default.moveItem(at: location, to: destination)
@@ -184,8 +197,11 @@ class BlobDownload: Download {
 
 protocol DownloadQueueDelegate {
     func downloadQueue(_ downloadQueue: DownloadQueue, didStartDownload download: Download)
-    func downloadQueue(_ downloadQueue: DownloadQueue, didDownloadCombinedBytes combinedBytesDownloaded: Int64, combinedTotalBytesExpected: Int64?)
-    func downloadQueue(_ downloadQueue: DownloadQueue, download: Download, didFinishDownloadingTo location: URL)
+    func downloadQueue(
+        _ downloadQueue: DownloadQueue, didDownloadCombinedBytes combinedBytesDownloaded: Int64,
+        combinedTotalBytesExpected: Int64?)
+    func downloadQueue(
+        _ downloadQueue: DownloadQueue, download: Download, didFinishDownloadingTo location: URL)
     func downloadQueue(_ downloadQueue: DownloadQueue, didCompleteWithError error: Error?)
 }
 
@@ -262,7 +278,9 @@ extension DownloadQueue: DownloadDelegate {
 
     func download(_ download: Download, didDownloadBytes bytesDownloaded: Int64) {
         combinedBytesDownloaded += bytesDownloaded
-        delegate?.downloadQueue(self, didDownloadCombinedBytes: combinedBytesDownloaded, combinedTotalBytesExpected: combinedTotalBytesExpected)
+        delegate?.downloadQueue(
+            self, didDownloadCombinedBytes: combinedBytesDownloaded,
+            combinedTotalBytesExpected: combinedTotalBytesExpected)
     }
 
     func download(_ download: Download, didFinishDownloadingTo location: URL) {
@@ -282,7 +300,11 @@ extension DownloadQueue: DownloadDelegate {
 }
 
 func openDownloadsFolderInFilesApp() {
-    guard let documentPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .allDomainsMask, true).first, let documentURL = URL(string: "shareddocuments://" + documentPath) else {
+    guard
+        let documentPath = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .allDomainsMask, true
+        ).first, let documentURL = URL(string: "shareddocuments://" + documentPath)
+    else {
         return
     }
 

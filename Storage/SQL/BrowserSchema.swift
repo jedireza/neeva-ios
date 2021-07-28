@@ -35,20 +35,20 @@ enum BookmarkNodeType: Int32 {
     // are not supported
 }
 
-let _TableBookmarks = "bookmarks"                                      // Removed in v12. Kept for migration.
-let TableBookmarksMirror = "bookmarksMirror"                           // Added in v9.
-let TableBookmarksMirrorStructure = "bookmarksMirrorStructure"         // Added in v10.
+let _TableBookmarks = "bookmarks"  // Removed in v12. Kept for migration.
+let TableBookmarksMirror = "bookmarksMirror"  // Added in v9.
+let TableBookmarksMirrorStructure = "bookmarksMirrorStructure"  // Added in v10.
 
-let TableBookmarksBuffer = "bookmarksBuffer"                           // Added in v12. bookmarksMirror is renamed to bookmarksBuffer.
-let TableBookmarksBufferStructure = "bookmarksBufferStructure"         // Added in v12.
-let TableBookmarksLocal = "bookmarksLocal"                             // Added in v12. Supersedes 'bookmarks'.
-let TableBookmarksLocalStructure = "bookmarksLocalStructure"           // Added in v12.
+let TableBookmarksBuffer = "bookmarksBuffer"  // Added in v12. bookmarksMirror is renamed to bookmarksBuffer.
+let TableBookmarksBufferStructure = "bookmarksBufferStructure"  // Added in v12.
+let TableBookmarksLocal = "bookmarksLocal"  // Added in v12. Supersedes 'bookmarks'.
+let TableBookmarksLocalStructure = "bookmarksLocalStructure"  // Added in v12.
 
-let TablePendingBookmarksDeletions = "pending_deletions"               // Added in v28.
+let TablePendingBookmarksDeletions = "pending_deletions"  // Added in v28.
 
 let TableFavicons = "favicons"
 let TableHistory = "history"
-let TableHistoryFTS = "history_fts"                                    // Added in v35.
+let TableHistoryFTS = "history_fts"  // Added in v35.
 let TableCachedTopSites = "cached_top_sites"
 let TablePinnedTopSites = "pinned_top_sites"
 let TableDomains = "domains"
@@ -63,7 +63,7 @@ let TableActivityStreamBlocklist = "activity_stream_blocklist"
 let TablePageMetadata = "page_metadata"
 let TableHighlights = "highlights"
 
-let TableRemoteDevices = "remote_devices" // Added in v29.
+let TableRemoteDevices = "remote_devices"  // Added in v29.
 let TableFaviconSiteURLs = "favicon_site_urls"
 
 let MatViewAwesomebarBookmarksWithFavicons = "matview_awesomebar_bookmarks_with_favicons"
@@ -83,19 +83,19 @@ let ViewHistoryIDsWithWidestFavicons = "view_history_id_favicon"
 let ViewIconForURL = "view_icon_for_url"
 
 let IndexHistoryShouldUpload = "idx_history_should_upload"
-let IndexVisitsSiteIDDate = "idx_visits_siteID_date"                   // Removed in v6.
-let IndexVisitsSiteIDIsLocalDate = "idx_visits_siteID_is_local_date"   // Added in v6.
-let IndexBookmarksMirrorStructureParentIdx = "idx_bookmarksMirrorStructure_parent_idx"   // Added in v10.
-let IndexBookmarksLocalStructureParentIdx = "idx_bookmarksLocalStructure_parent_idx"     // Added in v12.
-let IndexBookmarksBufferStructureParentIdx = "idx_bookmarksBufferStructure_parent_idx"   // Added in v12.
-let IndexBookmarksMirrorStructureChild = "idx_bookmarksMirrorStructure_child"            // Added in v14.
-let IndexPageMetadataCacheKey = "idx_page_metadata_cache_key_uniqueindex" // Added in v19
-let IndexPageMetadataSiteURL = "idx_page_metadata_site_url_uniqueindex" // Added in v21
+let IndexVisitsSiteIDDate = "idx_visits_siteID_date"  // Removed in v6.
+let IndexVisitsSiteIDIsLocalDate = "idx_visits_siteID_is_local_date"  // Added in v6.
+let IndexBookmarksMirrorStructureParentIdx = "idx_bookmarksMirrorStructure_parent_idx"  // Added in v10.
+let IndexBookmarksLocalStructureParentIdx = "idx_bookmarksLocalStructure_parent_idx"  // Added in v12.
+let IndexBookmarksBufferStructureParentIdx = "idx_bookmarksBufferStructure_parent_idx"  // Added in v12.
+let IndexBookmarksMirrorStructureChild = "idx_bookmarksMirrorStructure_child"  // Added in v14.
+let IndexPageMetadataCacheKey = "idx_page_metadata_cache_key_uniqueindex"  // Added in v19
+let IndexPageMetadataSiteURL = "idx_page_metadata_site_url_uniqueindex"  // Added in v21
 
-let TriggerHistoryBeforeUpdate = "t_history_beforeupdate" // Added in v35
-let TriggerHistoryBeforeDelete = "t_history_beforedelete" // Added in v35
-let TriggerHistoryAfterUpdate = "t_history_afterupdate" // Added in v35
-let TriggerHistoryAfterInsert = "t_history_afterinsert" // Added in v35
+let TriggerHistoryBeforeUpdate = "t_history_beforeupdate"  // Added in v35
+let TriggerHistoryBeforeDelete = "t_history_beforedelete"  // Added in v35
+let TriggerHistoryAfterUpdate = "t_history_afterupdate"  // Added in v35
+let TriggerHistoryAfterInsert = "t_history_afterinsert"  // Added in v35
 
 private let AllTables: [String] = [
     TableDomains,
@@ -163,16 +163,15 @@ private let AllTriggers: [String] = [
     TriggerHistoryAfterInsert,
 ]
 
-private let AllTablesIndicesTriggersAndViews: [String] = AllViews + AllTriggers + AllIndices + AllTables
+private let AllTablesIndicesTriggersAndViews: [String] =
+    AllViews + AllTriggers + AllIndices + AllTables
 
 private let log = Logger.syncLogger
 
-/**
- * The monolithic class that manages the inter-related history etc. tables.
- * We rely on SQLiteHistory having initialized the favicon table first.
- */
+/// The monolithic class that manages the inter-related history etc. tables.
+/// We rely on SQLiteHistory having initialized the favicon table first.
 open class BrowserSchema: Schema {
-    static let DefaultVersion = 40    // Issue #4776.
+    static let DefaultVersion = 40  // Issue #4776.
 
     public var name: String { return "BROWSER" }
     public var version: Int { return BrowserSchema.DefaultVersion }
@@ -183,7 +182,7 @@ open class BrowserSchema: Schema {
     public init() {
         let v = sqlite3_libversion_number()
         self.sqliteVersion = v
-        self.supportsPartialIndices = v >= 3008000          // 3.8.0.
+        self.supportsPartialIndices = v >= 3_008_000  // 3.8.0.
         let ver = String(cString: sqlite3_libversion())
         log.info("SQLite version: \(ver) (\(v)).")
     }
@@ -235,9 +234,9 @@ open class BrowserSchema: Schema {
     }
 
     func prepopulateRootFolders(_ db: SQLiteDBConnection) -> Bool {
-        let type = 2 // "folder"
+        let type = 2  // "folder"
         let now = Date.nowNumber()
-        let status = 2 // "new"
+        let status = 2  // "new"
 
         let localArgs: Args = [
             0, BookmarkRoots.RootGUID, type, now, BookmarkRoots.RootGUID, status, now,
@@ -270,12 +269,13 @@ open class BrowserSchema: Schema {
         // via titleForSpecialGUID, if necessary.
 
         let local =
-            "INSERT INTO bookmarksLocal (id, guid, type, date_added, parentid, title, parentName, sync_status, local_modified) VALUES " +
-            Array(repeating: "(?, ?, ?, ?, ?, '', '', ?, ?)", count: rootChildren.count + 1).joined(separator: ", ")
+            "INSERT INTO bookmarksLocal (id, guid, type, date_added, parentid, title, parentName, sync_status, local_modified) VALUES "
+            + Array(repeating: "(?, ?, ?, ?, ?, '', '', ?, ?)", count: rootChildren.count + 1)
+            .joined(separator: ", ")
 
         let structure =
-            "INSERT INTO bookmarksLocalStructure (parent, child, idx) VALUES " +
-            Array(repeating: "(?, ?, ?)", count: rootChildren.count).joined(separator: ", ")
+            "INSERT INTO bookmarksLocalStructure (parent, child, idx) VALUES "
+            + Array(repeating: "(?, ?, ?)", count: rootChildren.count).joined(separator: ", ")
 
         return self.run(db, queries: [(local, localArgs), (structure, structureArgs)])
     }
@@ -454,7 +454,9 @@ open class BrowserSchema: Schema {
         , sync_status TINYINT NOT NULL
         """
 
-    func getBookmarksTableCreationStringForTable(_ table: String, withAdditionalColumns: String="") -> String {
+    func getBookmarksTableCreationStringForTable(
+        _ table: String, withAdditionalColumns: String = ""
+    ) -> String {
         // The stupid absence of naming conventions here is thanks to pre-Sync Weave. Sorry.
         // For now we have the simplest possible schema: everything in one.
         let sql = """
@@ -498,7 +500,9 @@ open class BrowserSchema: Schema {
      * We need to explicitly store what's provided by the server, because we can't rely on
      * referenced child nodes to exist yet!
      */
-    func getBookmarksStructureTableCreationStringForTable(_ table: String, referencingMirror mirror: String) -> String {
+    func getBookmarksStructureTableCreationStringForTable(
+        _ table: String, referencingMirror mirror: String
+    ) -> String {
         let sql = """
             CREATE TABLE IF NOT EXISTS \(table) (
                 parent TEXT NOT NULL REFERENCES \(mirror)(guid) ON DELETE CASCADE,
@@ -864,12 +868,19 @@ open class BrowserSchema: Schema {
         // Locally we track faviconID.
         // Local changes end up in the mirror, so we track it there too.
         // The buffer and the mirror additionally track some server metadata.
-        let bookmarksLocal = getBookmarksTableCreationStringForTable(TableBookmarksLocal, withAdditionalColumns: self.localColumns + self.iconColumns)
-        let bookmarksLocalStructure = getBookmarksStructureTableCreationStringForTable(TableBookmarksLocalStructure, referencingMirror: TableBookmarksLocal)
-        let bookmarksBuffer = getBookmarksTableCreationStringForTable(TableBookmarksBuffer, withAdditionalColumns: self.serverColumns)
-        let bookmarksBufferStructure = getBookmarksStructureTableCreationStringForTable(TableBookmarksBufferStructure, referencingMirror: TableBookmarksBuffer)
-        let bookmarksMirror = getBookmarksTableCreationStringForTable(TableBookmarksMirror, withAdditionalColumns: self.serverColumns + self.mirrorColumns + self.iconColumns)
-        let bookmarksMirrorStructure = getBookmarksStructureTableCreationStringForTable(TableBookmarksMirrorStructure, referencingMirror: TableBookmarksMirror)
+        let bookmarksLocal = getBookmarksTableCreationStringForTable(
+            TableBookmarksLocal, withAdditionalColumns: self.localColumns + self.iconColumns)
+        let bookmarksLocalStructure = getBookmarksStructureTableCreationStringForTable(
+            TableBookmarksLocalStructure, referencingMirror: TableBookmarksLocal)
+        let bookmarksBuffer = getBookmarksTableCreationStringForTable(
+            TableBookmarksBuffer, withAdditionalColumns: self.serverColumns)
+        let bookmarksBufferStructure = getBookmarksStructureTableCreationStringForTable(
+            TableBookmarksBufferStructure, referencingMirror: TableBookmarksBuffer)
+        let bookmarksMirror = getBookmarksTableCreationStringForTable(
+            TableBookmarksMirror,
+            withAdditionalColumns: self.serverColumns + self.mirrorColumns + self.iconColumns)
+        let bookmarksMirrorStructure = getBookmarksStructureTableCreationStringForTable(
+            TableBookmarksMirrorStructure, referencingMirror: TableBookmarksMirror)
 
         let indexLocalStructureParentIdx = """
             CREATE INDEX IF NOT EXISTS idx_bookmarksLocalStructure_parent_idx
@@ -949,12 +960,13 @@ open class BrowserSchema: Schema {
             awesomebarBookmarksWithIconsView,
         ]
 
-        assert(queries.count == AllTablesIndicesTriggersAndViews.count, "Did you forget to add your table, index, trigger, or view to the list?")
+        assert(
+            queries.count == AllTablesIndicesTriggersAndViews.count,
+            "Did you forget to add your table, index, trigger, or view to the list?")
 
         log.debug("Creating \(queries.count) tables, views, triggers, and indices.")
 
-        return self.run(db, queries: queries) &&
-               self.prepopulateRootFolders(db)
+        return self.run(db, queries: queries) && self.prepopulateRootFolders(db)
     }
 
     public func update(_ db: SQLiteDBConnection, from: Int) -> Bool {
@@ -1008,17 +1020,21 @@ open class BrowserSchema: Schema {
         }
 
         if from < 6 && to >= 6 {
-            if !self.run(db, queries: [
-                "DROP INDEX IF EXISTS idx_visits_siteID_date",
-                "CREATE INDEX IF NOT EXISTS idx_visits_siteID_is_local_date ON visits (siteID, is_local, date)",
-                self.domainsTableCreate,
-                "ALTER TABLE history ADD COLUMN domain_id INTEGER REFERENCES domains(id) ON DELETE CASCADE",
-            ]) {
+            if !self.run(
+                db,
+                queries: [
+                    "DROP INDEX IF EXISTS idx_visits_siteID_date",
+                    "CREATE INDEX IF NOT EXISTS idx_visits_siteID_is_local_date ON visits (siteID, is_local, date)",
+                    self.domainsTableCreate,
+                    "ALTER TABLE history ADD COLUMN domain_id INTEGER REFERENCES domains(id) ON DELETE CASCADE",
+                ])
+            {
                 return false
             }
 
-            let urls = db.executeQuery("SELECT DISTINCT url FROM history WHERE url IS NOT NULL",
-                                       factory: { $0["url"] as! String })
+            let urls = db.executeQuery(
+                "SELECT DISTINCT url FROM history WHERE url IS NOT NULL",
+                factory: { $0["url"] as! String })
             if !fillDomainNamesFromCursor(urls, db: db) {
                 return false
             }
@@ -1036,7 +1052,11 @@ open class BrowserSchema: Schema {
         }
 
         if from < 10 && to >= 10 {
-            if !self.run(db, sql: getBookmarksStructureTableCreationStringForTable(TableBookmarksMirrorStructure, referencingMirror: TableBookmarksMirror)) {
+            if !self.run(
+                db,
+                sql: getBookmarksStructureTableCreationStringForTable(
+                    TableBookmarksMirrorStructure, referencingMirror: TableBookmarksMirror))
+            {
                 return false
             }
 
@@ -1057,10 +1077,15 @@ open class BrowserSchema: Schema {
         }
 
         if from < 12 && to >= 12 {
-            let bookmarksLocal = getBookmarksTableCreationStringForTable(TableBookmarksLocal, withAdditionalColumns: self.localColumns + self.iconColumns)
-            let bookmarksLocalStructure = getBookmarksStructureTableCreationStringForTable(TableBookmarksLocalStructure, referencingMirror: TableBookmarksLocal)
-            let bookmarksMirror = getBookmarksTableCreationStringForTable(TableBookmarksMirror, withAdditionalColumns: self.serverColumns + self.mirrorColumns + self.iconColumns)
-            let bookmarksMirrorStructure = getBookmarksStructureTableCreationStringForTable(TableBookmarksMirrorStructure, referencingMirror: TableBookmarksMirror)
+            let bookmarksLocal = getBookmarksTableCreationStringForTable(
+                TableBookmarksLocal, withAdditionalColumns: self.localColumns + self.iconColumns)
+            let bookmarksLocalStructure = getBookmarksStructureTableCreationStringForTable(
+                TableBookmarksLocalStructure, referencingMirror: TableBookmarksLocal)
+            let bookmarksMirror = getBookmarksTableCreationStringForTable(
+                TableBookmarksMirror,
+                withAdditionalColumns: self.serverColumns + self.mirrorColumns + self.iconColumns)
+            let bookmarksMirrorStructure = getBookmarksStructureTableCreationStringForTable(
+                TableBookmarksMirrorStructure, referencingMirror: TableBookmarksMirror)
 
             let indexLocalStructureParentIdx = """
                 CREATE INDEX IF NOT EXISTS idx_bookmarksLocalStructure_parent_idx
@@ -1095,7 +1120,7 @@ open class BrowserSchema: Schema {
             // There should be nothing else in the table, and no structure.
             // Our old bookmarks table didn't have creation date, so we use the current timestamp.
             let modified = Date.nowMilliseconds()
-            let status = 2 // "new"
+            let status = 2  // "new"
 
             // We don't specify a title, expecting it to be generated on the fly, because we're smarter than Android.
             // We also don't migrate the 'id' column; we'll generate new ones that won't conflict with our roots.
@@ -1140,9 +1165,9 @@ open class BrowserSchema: Schema {
                 (indexMirrorStructureParentIdx, nil),
             ]
 
-            if !self.run(db, queries: prep) ||
-               !self.prepopulateRootFolders(db) ||
-               !self.run(db, queries: migrate) {
+            if !self.run(db, queries: prep) || !self.prepopulateRootFolders(db)
+                || !self.run(db, queries: migrate)
+            {
                 return false
             }
             // TODO: trigger a sync?
@@ -1155,31 +1180,43 @@ open class BrowserSchema: Schema {
                 ON bookmarksMirrorStructure (child)
                 """
 
-            if !self.run(db, queries: [
-                self.bufferBookmarksStructureView,
-                self.localBookmarksStructureView,
-                indexMirrorStructureChild]) {
+            if !self.run(
+                db,
+                queries: [
+                    self.bufferBookmarksStructureView,
+                    self.localBookmarksStructureView,
+                    indexMirrorStructureChild,
+                ])
+            {
                 return false
             }
         }
 
         if from == 14 && to >= 15 {
             // We screwed up some of the views. Recreate them.
-            if !self.run(db, queries: [
-                "DROP VIEW IF EXISTS view_bookmarksBufferStructure_on_mirror",
-                "DROP VIEW IF EXISTS view_bookmarksLocalStructure_on_mirror",
-                self.bufferBookmarksStructureView,
-                self.localBookmarksStructureView]) {
+            if !self.run(
+                db,
+                queries: [
+                    "DROP VIEW IF EXISTS view_bookmarksBufferStructure_on_mirror",
+                    "DROP VIEW IF EXISTS view_bookmarksLocalStructure_on_mirror",
+                    self.bufferBookmarksStructureView,
+                    self.localBookmarksStructureView,
+                ])
+            {
                 return false
             }
         }
 
         if from < 16 && to >= 16 {
-            if !self.run(db, queries: [
-                oldAllBookmarksView,         // Replaced in v30. The new one is not compatible here.
-                historyVisitsView,
-                awesomebarBookmarksView,     // … but this depends on ViewAllBookmarks.
-                awesomebarBookmarksWithIconsView]) {
+            if !self.run(
+                db,
+                queries: [
+                    oldAllBookmarksView,  // Replaced in v30. The new one is not compatible here.
+                    historyVisitsView,
+                    awesomebarBookmarksView,  // … but this depends on ViewAllBookmarks.
+                    awesomebarBookmarksWithIconsView,
+                ])
+            {
                 return false
             }
         }
@@ -1195,18 +1232,26 @@ open class BrowserSchema: Schema {
         // }
 
         if from < 18 && to >= 18 {
-            if !self.run(db, queries: [
-                // Adds the Activity Stream blocklist table
-                activityStreamBlocklistCreate]) {
+            if !self.run(
+                db,
+                queries: [
+                    // Adds the Activity Stream blocklist table
+                    activityStreamBlocklistCreate
+                ])
+            {
                 return false
             }
         }
 
         if from < 19 && to >= 19 {
-            if !self.run(db, queries: [
-                // Adds tables/indicies for metadata content
-                pageMetadataCreate,
-                indexPageMetadataCacheKeyCreate]) {
+            if !self.run(
+                db,
+                queries: [
+                    // Adds tables/indicies for metadata content
+                    pageMetadataCreate,
+                    indexPageMetadataCacheKeyCreate,
+                ])
+            {
                 return false
             }
         }
@@ -1221,10 +1266,14 @@ open class BrowserSchema: Schema {
         // }
 
         if from < 21 && to >= 21 {
-            if !self.run(db, queries: [
-                "DROP VIEW IF EXISTS view_history_visits",
-                self.historyVisitsView,
-                indexPageMetadataSiteURLCreate]) {
+            if !self.run(
+                db,
+                queries: [
+                    "DROP VIEW IF EXISTS view_history_visits",
+                    self.historyVisitsView,
+                    indexPageMetadataSiteURLCreate,
+                ])
+            {
                 return false
             }
         }
@@ -1271,40 +1320,52 @@ open class BrowserSchema: Schema {
         // }
 
         if from < 26 && to >= 26 {
-            if !self.run(db, queries: [
-                // The old pin table was never released so we can safely drop
-                "DROP TABLE IF EXISTS pinned_top_sites",
-                pinnedTopSitesTableCreate
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    // The old pin table was never released so we can safely drop
+                    "DROP TABLE IF EXISTS pinned_top_sites",
+                    pinnedTopSitesTableCreate,
+                ])
+            {
                 return false
             }
         }
 
         if from < 27 && to >= 27 {
-            if !self.run(db, queries: [
-                "DROP TABLE IF EXISTS page_metadata",
-                "DROP TABLE IF EXISTS highlights",
-                pageMetadataCreate,
-                indexPageMetadataCacheKeyCreate,
-                indexPageMetadataSiteURLCreate,
-                highlightsCreate
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    "DROP TABLE IF EXISTS page_metadata",
+                    "DROP TABLE IF EXISTS highlights",
+                    pageMetadataCreate,
+                    indexPageMetadataCacheKeyCreate,
+                    indexPageMetadataSiteURLCreate,
+                    highlightsCreate,
+                ])
+            {
                 return false
             }
         }
 
         if from < 28 && to >= 28 {
-            if !self.run(db, queries: [
-                self.pendingBookmarksDeletions
-            ]) {
+            if !self.run(
+                db,
+                queries: [
+                    self.pendingBookmarksDeletions
+                ])
+            {
                 return false
             }
         }
 
         if from < 29 && to >= 29 {
-            if !self.run(db, queries: [
-                self.remoteDevices
-            ]) {
+            if !self.run(
+                db,
+                queries: [
+                    self.remoteDevices
+                ])
+            {
                 return false
             }
         }
@@ -1312,10 +1373,13 @@ open class BrowserSchema: Schema {
         if from < 30 && to >= 30 {
             // We changed this view as a follow-up to the above in order to exclude buffer
             // deletions from the bookmarked set.
-            if !self.run(db, queries: [
-                "DROP VIEW IF EXISTS view_all_bookmarks",
-                allBookmarksView
-            ]) {
+            if !self.run(
+                db,
+                queries: [
+                    "DROP VIEW IF EXISTS view_all_bookmarks",
+                    allBookmarksView,
+                ])
+            {
                 return false
             }
         }
@@ -1325,11 +1389,14 @@ open class BrowserSchema: Schema {
         // Here we create them if they don't already exist to handle
         // cases where we are creating a brand new DB.
         if from < 31 && to >= 31 {
-            if !self.run(db, queries: [
-                syncCommandsTableCreate,
-                clientsTableCreate,
-                tabsTableCreate
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    syncCommandsTableCreate,
+                    clientsTableCreate,
+                    tabsTableCreate,
+                ])
+            {
                 return false
             }
         }
@@ -1341,12 +1408,12 @@ open class BrowserSchema: Schema {
                 queries.append(contentsOf: [
                     "ALTER TABLE bookmarksLocal ADD date_added INTEGER",
                     "ALTER TABLE bookmarksMirror ADD date_added INTEGER",
-                    "ALTER TABLE bookmarksBuffer ADD date_added INTEGER"
+                    "ALTER TABLE bookmarksBuffer ADD date_added INTEGER",
                 ])
             }
             queries.append(contentsOf: [
                 "UPDATE bookmarksLocal SET date_added = local_modified",
-                "UPDATE bookmarksMirror SET date_added = server_modified"
+                "UPDATE bookmarksMirror SET date_added = server_modified",
             ])
             if !self.run(db, queries: queries) {
                 return false
@@ -1354,14 +1421,17 @@ open class BrowserSchema: Schema {
         }
 
         if from < 33 && to >= 33 {
-            if !self.run(db, queries: [
-                "DROP VIEW IF EXISTS view_bookmarksBuffer_on_mirror",
-                "DROP VIEW IF EXISTS view_bookmarksBuffer_with_deletions_on_mirror",
-                "DROP VIEW IF EXISTS view_bookmarksLocal_on_mirror",
-                self.bufferBookmarksView,
-                self.bufferBookmarksWithDeletionsView,
-                self.localBookmarksView
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    "DROP VIEW IF EXISTS view_bookmarksBuffer_on_mirror",
+                    "DROP VIEW IF EXISTS view_bookmarksBuffer_with_deletions_on_mirror",
+                    "DROP VIEW IF EXISTS view_bookmarksLocal_on_mirror",
+                    self.bufferBookmarksView,
+                    self.bufferBookmarksWithDeletionsView,
+                    self.localBookmarksView,
+                ])
+            {
                 return false
             }
         }
@@ -1374,12 +1444,15 @@ open class BrowserSchema: Schema {
             // Hard-code values here both for simplicity and to make
             // migrations predictable.
             // We don't need to worry about description: we never wrote it.
-            if !self.run(db, queries: [
-                "DELETE FROM history WHERE is_deleted = 0 AND length(url) > 65536",
-                "DELETE FROM page_metadata WHERE length(site_url) > 65536",
-                "DELETE FROM bookmarksLocal WHERE is_deleted = 0 AND length(bmkUri) > 65536",
-                "UPDATE bookmarksLocal SET title = substr(title, 1, 4096) WHERE is_deleted = 0 AND length(title) > 4096",
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    "DELETE FROM history WHERE is_deleted = 0 AND length(url) > 65536",
+                    "DELETE FROM page_metadata WHERE length(site_url) > 65536",
+                    "DELETE FROM bookmarksLocal WHERE is_deleted = 0 AND length(bmkUri) > 65536",
+                    "UPDATE bookmarksLocal SET title = substr(title, 1, 4096) WHERE is_deleted = 0 AND length(title) > 4096",
+                ])
+            {
                 return false
             }
         }
@@ -1388,22 +1461,28 @@ open class BrowserSchema: Schema {
             // Create a full-text search index from the `history` table and
             // triggers for keeping the FTS index in-sync with INSERTs, UPDATEs,
             // and DELETEs to the `history` table.
-            if !self.run(db, queries: [
-                historyFTSCreate,
-                historyBeforeUpdateTrigger,
-                historyBeforeDeleteTrigger,
-                historyAfterUpdateTrigger,
-                historyAfterInsertTrigger,
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    historyFTSCreate,
+                    historyBeforeUpdateTrigger,
+                    historyBeforeDeleteTrigger,
+                    historyAfterUpdateTrigger,
+                    historyAfterInsertTrigger,
+                ])
+            {
                 return false
             }
         }
 
         if from < 36 && to >= 36 {
             // Rebuild the FTS index for the `history_fts` table.
-            if !self.run(db, queries: [
-                historyFTSRebuild,
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    historyFTSRebuild
+                ])
+            {
                 return false
             }
         }
@@ -1413,9 +1492,12 @@ open class BrowserSchema: Schema {
             // Otherwise, this column would already have been created during
             // v29.
             if from > 29 {
-                if !self.run(db, queries: [
-                    "ALTER TABLE remote_devices ADD availableCommands TEXT",
-                    ]) {
+                if !self.run(
+                    db,
+                    queries: [
+                        "ALTER TABLE remote_devices ADD availableCommands TEXT"
+                    ])
+                {
                     return false
                 }
             }
@@ -1423,29 +1505,38 @@ open class BrowserSchema: Schema {
 
         if from < 38 && to >= 38 {
             // Create the "materialized view" table `matview_awesomebar_bookmarks_with_favicons`.
-            if !self.run(db, queries: [
-                awesomebarBookmarksWithFaviconsCreate,
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    awesomebarBookmarksWithFaviconsCreate
+                ])
+            {
                 return false
             }
         }
 
         if from < 39 && to >= 39 {
             // Create indices on the bookmarks tables for the `keyword` column.
-            if !self.run(db, queries: [
-                "CREATE INDEX IF NOT EXISTS idx_bookmarksBuffer_keyword ON bookmarksBuffer (keyword)",
-                "CREATE INDEX IF NOT EXISTS idx_bookmarksLocal_keyword ON bookmarksLocal (keyword)",
-                "CREATE INDEX IF NOT EXISTS idx_bookmarksMirror_keyword ON bookmarksMirror (keyword)",
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    "CREATE INDEX IF NOT EXISTS idx_bookmarksBuffer_keyword ON bookmarksBuffer (keyword)",
+                    "CREATE INDEX IF NOT EXISTS idx_bookmarksLocal_keyword ON bookmarksLocal (keyword)",
+                    "CREATE INDEX IF NOT EXISTS idx_bookmarksMirror_keyword ON bookmarksMirror (keyword)",
+                ])
+            {
                 return false
             }
         }
 
         if from < 40 && to >= 40 {
             // Create indices on the bookmarks tables for the `keyword` column.
-            if !self.run(db, queries: [
-                faviconSiteURLsCreate,
-                ]) {
+            if !self.run(
+                db,
+                queries: [
+                    faviconSiteURLsCreate
+                ])
+            {
                 return false
             }
         }
@@ -1463,7 +1554,9 @@ open class BrowserSchema: Schema {
 
         // Query for the existence of the `tableList` table to determine if we are
         // migrating from an older DB version or if this is just a brand new DB.
-        let sqliteMasterCursor = db.executeQueryUnsafe("SELECT count(*) AS number FROM sqlite_master WHERE type = 'table' AND name = 'tableList'", factory: IntFactory, withArgs: [] as Args)
+        let sqliteMasterCursor = db.executeQueryUnsafe(
+            "SELECT count(*) AS number FROM sqlite_master WHERE type = 'table' AND name = 'tableList'",
+            factory: IntFactory, withArgs: [] as Args)
 
         let tableListTableExists = sqliteMasterCursor[0] == 1
         sqliteMasterCursor.close()
@@ -1484,7 +1577,9 @@ open class BrowserSchema: Schema {
 
         // Get the *previous* schema version (prior to v31) specified in `tableList`
         // before dropping it.
-        let previousVersionCursor = db.executeQueryUnsafe("SELECT version FROM tableList WHERE name = 'BROWSER'", factory: IntFactory, withArgs: [] as Args)
+        let previousVersionCursor = db.executeQueryUnsafe(
+            "SELECT version FROM tableList WHERE name = 'BROWSER'", factory: IntFactory,
+            withArgs: [] as Args)
 
         let previousVersion = previousVersionCursor[0] ?? 0
         previousVersionCursor.close()
@@ -1498,7 +1593,9 @@ open class BrowserSchema: Schema {
         do {
             try db.executeChange(sql)
         } catch let err as NSError {
-            Sentry.shared.sendWithStacktrace(message: "Error dropping tableList table", tag: SentryTag.browserDB, severity: .error, description: "\(err.localizedDescription)")
+            Sentry.shared.sendWithStacktrace(
+                message: "Error dropping tableList table", tag: SentryTag.browserDB,
+                severity: .error, description: "\(err.localizedDescription)")
             return false
         }
 
@@ -1507,7 +1604,9 @@ open class BrowserSchema: Schema {
         do {
             try db.setVersion(previousVersion)
         } catch let err as NSError {
-            Sentry.shared.sendWithStacktrace(message: "Error setting database version", tag: SentryTag.browserDB, severity: .error, description: "\(err.localizedDescription)")
+            Sentry.shared.sendWithStacktrace(
+                message: "Error setting database version", tag: SentryTag.browserDB,
+                severity: .error, description: "\(err.localizedDescription)")
             return false
         }
 
@@ -1521,10 +1620,14 @@ open class BrowserSchema: Schema {
     // is already at v31 or it does not exist yet at all, this will return `.skipped`.
     // Otherwise, if the `clients` table migration is needed and an error was encountered, we
     // return `.failure`.
-    fileprivate func migrateClientsTableFromSchemaTableIfNeeded(_ db: SQLiteDBConnection) -> SchemaUpgradeResult {
+    fileprivate func migrateClientsTableFromSchemaTableIfNeeded(_ db: SQLiteDBConnection)
+        -> SchemaUpgradeResult
+    {
         // Query for the existence of the `clients` table to determine if we are
         // migrating from an older DB version or if this is just a brand new DB.
-        let sqliteMasterCursor = db.executeQueryUnsafe("SELECT count(*) AS number FROM sqlite_master WHERE type = 'table' AND name = 'clients'", factory: IntFactory, withArgs: [] as Args)
+        let sqliteMasterCursor = db.executeQueryUnsafe(
+            "SELECT count(*) AS number FROM sqlite_master WHERE type = 'table' AND name = 'clients'",
+            factory: IntFactory, withArgs: [] as Args)
 
         let clientsTableExists = sqliteMasterCursor[0] == 1
         sqliteMasterCursor.close()
@@ -1534,7 +1637,9 @@ open class BrowserSchema: Schema {
         }
 
         // Check if intermediate migrations are necessary for the 'clients' table.
-        let previousVersionCursor = db.executeQueryUnsafe("SELECT version FROM tableList WHERE name = 'clients'", factory: IntFactory, withArgs: [] as Args)
+        let previousVersionCursor = db.executeQueryUnsafe(
+            "SELECT version FROM tableList WHERE name = 'clients'", factory: IntFactory,
+            withArgs: [] as Args)
 
         let previousClientsTableVersion = previousVersionCursor[0] ?? 0
         previousVersionCursor.close()
@@ -1550,9 +1655,15 @@ open class BrowserSchema: Schema {
             do {
                 try db.executeChange(sql)
             } catch let err as NSError {
-                log.error("Error altering clients table: \(err.localizedDescription); SQL was \(sql)")
-                let extra = ["table": "clients", "errorDescription": "\(err.localizedDescription)", "sql": "\(sql)"]
-                Sentry.shared.sendWithStacktrace(message: "Error altering table", tag: SentryTag.browserDB, severity: .error, extra: extra)
+                log.error(
+                    "Error altering clients table: \(err.localizedDescription); SQL was \(sql)")
+                let extra = [
+                    "table": "clients", "errorDescription": "\(err.localizedDescription)",
+                    "sql": "\(sql)",
+                ]
+                Sentry.shared.sendWithStacktrace(
+                    message: "Error altering table", tag: SentryTag.browserDB, severity: .error,
+                    extra: extra)
                 return .failure
             }
         }
@@ -1562,9 +1673,15 @@ open class BrowserSchema: Schema {
             do {
                 try db.executeChange(sql)
             } catch let err as NSError {
-                log.error("Error altering clients table: \(err.localizedDescription); SQL was \(sql)")
-                let extra = ["table": "clients", "errorDescription": "\(err.localizedDescription)", "sql": "\(sql)"]
-                Sentry.shared.sendWithStacktrace(message: "Error altering table", tag: SentryTag.browserDB, severity: .error, extra: extra)
+                log.error(
+                    "Error altering clients table: \(err.localizedDescription); SQL was \(sql)")
+                let extra = [
+                    "table": "clients", "errorDescription": "\(err.localizedDescription)",
+                    "sql": "\(sql)",
+                ]
+                Sentry.shared.sendWithStacktrace(
+                    message: "Error altering table", tag: SentryTag.browserDB, severity: .error,
+                    extra: extra)
                 return .failure
             }
         }
@@ -1572,7 +1689,9 @@ open class BrowserSchema: Schema {
         return .success
     }
 
-    fileprivate func fillDomainNamesFromCursor(_ cursor: Cursor<String>, db: SQLiteDBConnection) -> Bool {
+    fileprivate func fillDomainNamesFromCursor(_ cursor: Cursor<String>, db: SQLiteDBConnection)
+        -> Bool
+    {
         if cursor.count == 0 {
             return true
         }
@@ -1589,18 +1708,22 @@ open class BrowserSchema: Schema {
         cursor.close()
 
         let tmpTable = "tmp_hostnames"
-        let table = "CREATE TEMP TABLE \(tmpTable) (url TEXT NOT NULL UNIQUE, domain TEXT NOT NULL, domain_id INT)"
+        let table =
+            "CREATE TEMP TABLE \(tmpTable) (url TEXT NOT NULL UNIQUE, domain TEXT NOT NULL, domain_id INT)"
         if !self.run(db, sql: table, args: nil) {
-            log.error("Can't create temporary table. Unable to migrate domain names. Top Sites is likely to be broken.")
+            log.error(
+                "Can't create temporary table. Unable to migrate domain names. Top Sites is likely to be broken."
+            )
             return false
         }
 
         // Now insert these into the temporary table. Chunk by an even number, for obvious reasons.
-        let chunks = chunk(pairs, by: BrowserDB.MaxVariableNumber - (BrowserDB.MaxVariableNumber % 2))
+        let chunks = chunk(
+            pairs, by: BrowserDB.MaxVariableNumber - (BrowserDB.MaxVariableNumber % 2))
         for chunk in chunks {
             let ins =
-                "INSERT INTO \(tmpTable) (url, domain) VALUES " +
-                Array<String>(repeating: "(?, ?)", count: chunk.count / 2).joined(separator: ", ")
+                "INSERT INTO \(tmpTable) (url, domain) VALUES "
+                + [String](repeating: "(?, ?)", count: chunk.count / 2).joined(separator: ", ")
             if !self.run(db, sql: ins, args: Array(chunk)) {
                 log.error("Couldn't insert domains into temporary table. Aborting migration.")
                 return false
@@ -1608,22 +1731,30 @@ open class BrowserSchema: Schema {
         }
 
         // Now make those into domains.
-        let domains = "INSERT OR IGNORE INTO domains (domain) SELECT DISTINCT domain FROM \(tmpTable)"
+        let domains =
+            "INSERT OR IGNORE INTO domains (domain) SELECT DISTINCT domain FROM \(tmpTable)"
 
         // … and fill that temporary column.
-        let domainIDs = "UPDATE \(tmpTable) SET domain_id = (SELECT id FROM domains WHERE domains.domain = \(tmpTable).domain)"
+        let domainIDs =
+            "UPDATE \(tmpTable) SET domain_id = (SELECT id FROM domains WHERE domains.domain = \(tmpTable).domain)"
 
         // Update the history table from the temporary table.
-        let updateHistory = "UPDATE history SET domain_id = (SELECT domain_id FROM \(tmpTable) WHERE \(tmpTable).url = history.url)"
+        let updateHistory =
+            "UPDATE history SET domain_id = (SELECT domain_id FROM \(tmpTable) WHERE \(tmpTable).url = history.url)"
 
         // Clean up.
         let dropTemp = "DROP TABLE \(tmpTable)"
 
         // Now run these.
-        if !self.run(db, queries: [domains,
-                                   domainIDs,
-                                   updateHistory,
-                                   dropTemp]) {
+        if !self.run(
+            db,
+            queries: [
+                domains,
+                domainIDs,
+                updateHistory,
+                dropTemp,
+            ])
+        {
             log.error("Unable to migrate domains.")
             return false
         }
@@ -1634,7 +1765,7 @@ open class BrowserSchema: Schema {
     public func drop(_ db: SQLiteDBConnection) -> Bool {
         log.debug("Dropping all browser tables.")
         let additional = [
-            "DROP TABLE IF EXISTS faviconSites" // We renamed it to match naming convention.
+            "DROP TABLE IF EXISTS faviconSites"  // We renamed it to match naming convention.
         ]
 
         let views = AllViews.map { "DROP VIEW IF EXISTS \($0)" }

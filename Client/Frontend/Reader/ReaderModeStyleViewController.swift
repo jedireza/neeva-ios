@@ -2,18 +2,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
-import Shared
 import Defaults
+import Shared
+import UIKit
 
 private enum ReaderModeStyleViewControllerUX {
     static let RowHeight = 50.0
-    
+
     static let SeparatorLineThickness = 1.0
 
     static let Width = 270.0
     static let Height = 4.0 * RowHeight + 3.0 * SeparatorLineThickness
-    
+
     static let ThemeTitleColorLight = UIColor.Photon.Grey70
     static let ThemeTitleColorDark = UIColor.Photon.White100
     static let ThemeTitleColorSepia = UIColor.Photon.Grey70
@@ -28,11 +28,12 @@ private enum ReaderModeStyleViewControllerUX {
 
 // MARK: -
 
-protocol ReaderModeStyleViewControllerDelegate {    
-    // isUsingUserDefinedColor should be false by default unless we need to override the default color 
-    func readerModeStyleViewController(_ readerModeStyleViewController: ReaderModeStyleViewController, 
-                                       didConfigureStyle style: ReaderModeStyle,
-                                       isUsingUserDefinedColor: Bool)
+protocol ReaderModeStyleViewControllerDelegate {
+    // isUsingUserDefinedColor should be false by default unless we need to override the default color
+    func readerModeStyleViewController(
+        _ readerModeStyleViewController: ReaderModeStyleViewController,
+        didConfigureStyle style: ReaderModeStyle,
+        isUsingUserDefinedColor: Bool)
 }
 
 // MARK: -
@@ -46,18 +47,20 @@ class ReaderModeStyleViewController: UIViewController {
     fileprivate var fontSizeButtons: [FontSizeButton]!
     fileprivate var themeButtons: [ThemeButton]!
     fileprivate var separatorLines = [UIView(), UIView(), UIView()]
-    
+
     fileprivate var fontTypeRow: UIView!
     fileprivate var fontSizeRow: UIView!
     fileprivate var brightnessRow: UIView!
-    
+
     // Keeps user-defined reader color until reader mode is closed or reloaded
     fileprivate var isUsingUserDefinedColor = false
-    
+
     override func viewDidLoad() {
         // Our preferred content size has a fixed width and height based on the rows + padding
         super.viewDidLoad()
-        preferredContentSize = CGSize(width: ReaderModeStyleViewControllerUX.Width, height: ReaderModeStyleViewControllerUX.Height)
+        preferredContentSize = CGSize(
+            width: ReaderModeStyleViewControllerUX.Width,
+            height: ReaderModeStyleViewControllerUX.Height)
         popoverPresentationController?.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
 
         // Font type row
@@ -73,14 +76,14 @@ class ReaderModeStyleViewController: UIViewController {
 
         fontTypeButtons = [
             FontTypeButton(fontType: ReaderModeFontType.sansSerif),
-            FontTypeButton(fontType: ReaderModeFontType.serif)
+            FontTypeButton(fontType: ReaderModeFontType.serif),
         ]
 
         setupButtons(fontTypeButtons, inRow: fontTypeRow, action: #selector(changeFontType))
 
         view.addSubview(separatorLines[0])
         makeSeparatorView(fromView: separatorLines[0], topConstraint: fontTypeRow)
-        
+
         // Font size row
 
         fontSizeRow = UIView()
@@ -103,14 +106,14 @@ class ReaderModeStyleViewController: UIViewController {
         fontSizeButtons = [
             FontSizeButton(fontSizeAction: FontSizeAction.smaller),
             FontSizeButton(fontSizeAction: FontSizeAction.reset),
-            FontSizeButton(fontSizeAction: FontSizeAction.bigger)
+            FontSizeButton(fontSizeAction: FontSizeAction.bigger),
         ]
 
         setupButtons(fontSizeButtons, inRow: fontSizeRow, action: #selector(changeFontSize))
 
         view.addSubview(separatorLines[1])
         makeSeparatorView(fromView: separatorLines[1], topConstraint: fontSizeRow)
-        
+
         // Theme row
 
         let themeRow = UIView()
@@ -125,14 +128,14 @@ class ReaderModeStyleViewController: UIViewController {
         themeButtons = [
             ThemeButton(theme: ReaderModeTheme.light),
             ThemeButton(theme: ReaderModeTheme.sepia),
-            ThemeButton(theme: ReaderModeTheme.dark)
+            ThemeButton(theme: ReaderModeTheme.dark),
         ]
 
         setupButtons(themeButtons, inRow: themeRow, action: #selector(changeTheme))
-        
+
         view.addSubview(separatorLines[2])
         makeSeparatorView(fromView: separatorLines[2], topConstraint: themeRow)
-        
+
         // Brightness row
 
         brightnessRow = UIView()
@@ -160,7 +163,8 @@ class ReaderModeStyleViewController: UIViewController {
 
         brightnessMinImageView.snp.makeConstraints { (make) -> Void in
             make.centerY.equalTo(slider)
-            make.right.equalTo(slider.snp.left).offset(-ReaderModeStyleViewControllerUX.BrightnessIconOffset)
+            make.right.equalTo(slider.snp.left).offset(
+                -ReaderModeStyleViewControllerUX.BrightnessIconOffset)
         }
 
         let brightnessMaxImageView = UIImageView(image: UIImage(named: "brightnessMax"))
@@ -168,14 +172,15 @@ class ReaderModeStyleViewController: UIViewController {
 
         brightnessMaxImageView.snp.makeConstraints { (make) -> Void in
             make.centerY.equalTo(slider)
-            make.left.equalTo(slider.snp.right).offset(ReaderModeStyleViewControllerUX.BrightnessIconOffset)
+            make.left.equalTo(slider.snp.right).offset(
+                ReaderModeStyleViewControllerUX.BrightnessIconOffset)
         }
 
         selectFontType(readerModeStyle.fontType)
         updateFontSizeButtons()
         selectTheme(readerModeStyle.theme)
         slider.value = Float(UIScreen.main.brightness)
-        
+
         fontTypeRow.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
         fontSizeRow.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
         brightnessRow.backgroundColor = UIColor.legacyTheme.tableView.rowBackground
@@ -192,10 +197,10 @@ class ReaderModeStyleViewController: UIViewController {
             line.backgroundColor = UIColor.legacyTheme.tableView.separator
         }
     }
-    
-    func applyTheme(contentScript: TabContentScript) {        
+
+    func applyTheme(contentScript: TabContentScript) {
         guard let readerMode = contentScript as? ReaderMode else { return }
-        
+
         var style = Defaults[.readerModeStyle]
         style.ensurePreferredColorThemeIfNeeded()
         readerMode.style = style
@@ -208,7 +213,7 @@ class ReaderModeStyleViewController: UIViewController {
             make.height.equalTo(ReaderModeStyleViewControllerUX.SeparatorLineThickness)
         }
     }
-    
+
     /// Setup constraints for a row of buttons. Left to right. They are all given the same width.
     fileprivate func setupButtons(_ buttons: [UIButton], inRow row: UIView, action: Selector) {
         for (idx, button) in buttons.enumerated() {
@@ -229,16 +234,17 @@ class ReaderModeStyleViewController: UIViewController {
 
     @objc func changeFontType(_ button: FontTypeButton) {
         selectFontType(button.fontType)
-        delegate?.readerModeStyleViewController(self, 
-                                                didConfigureStyle: readerModeStyle, 
-                                                isUsingUserDefinedColor: isUsingUserDefinedColor)
+        delegate?.readerModeStyleViewController(
+            self,
+            didConfigureStyle: readerModeStyle,
+            isUsingUserDefinedColor: isUsingUserDefinedColor)
     }
 
     fileprivate func selectFontType(_ fontType: ReaderModeFontType) {
         readerModeStyle.fontType = fontType
         for button in fontTypeButtons {
             button.isSelected = button.fontType.isSameFamily(fontType)
-            
+
         }
         for button in themeButtons {
             button.fontType = fontType
@@ -257,9 +263,10 @@ class ReaderModeStyleViewController: UIViewController {
         }
         updateFontSizeButtons()
 
-        delegate?.readerModeStyleViewController(self, 
-                                                didConfigureStyle: readerModeStyle, 
-                                                isUsingUserDefinedColor: isUsingUserDefinedColor)
+        delegate?.readerModeStyleViewController(
+            self,
+            didConfigureStyle: readerModeStyle,
+            isUsingUserDefinedColor: isUsingUserDefinedColor)
     }
 
     fileprivate func updateFontSizeButtons() {
@@ -280,9 +287,10 @@ class ReaderModeStyleViewController: UIViewController {
     @objc func changeTheme(_ button: ThemeButton) {
         selectTheme(button.theme)
         isUsingUserDefinedColor = true
-        delegate?.readerModeStyleViewController(self, 
-                                                didConfigureStyle: readerModeStyle, 
-                                                isUsingUserDefinedColor: true)
+        delegate?.readerModeStyleViewController(
+            self,
+            didConfigureStyle: readerModeStyle,
+            isUsingUserDefinedColor: true)
     }
 
     fileprivate func selectTheme(_ theme: ReaderModeTheme) {
@@ -305,14 +313,17 @@ class FontTypeButton: UIButton {
         accessibilityHint = .ReaderModeStyleFontTypeAccessibilityLabel
         switch fontType {
         case .sansSerif,
-             .sansSerifBold:
+            .sansSerifBold:
             setTitle(.ReaderModeStyleSansSerifFontType, for: [])
-            let f = UIFont(name: "FiraSans-Book", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
+            let f = UIFont(
+                name: "FiraSans-Book", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
             titleLabel?.font = f
         case .serif,
-             .serifBold:
+            .serifBold:
             setTitle(.ReaderModeStyleSerifFontType, for: [])
-            let f = UIFont(name: "NewYorkMedium-Regular", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
+            let f = UIFont(
+                name: "NewYorkMedium-Regular",
+                size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
             titleLabel?.font = f
         }
     }
@@ -345,7 +356,8 @@ class FontSizeButton: UIButton {
         }
 
         // TODO Does this need to change with the selected font type? Not sure if makes sense for just +/-
-        titleLabel?.font = UIFont(name: "FiraSans-Light", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
+        titleLabel?.font = UIFont(
+            name: "FiraSans-Light", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
     }
 }
 
@@ -367,11 +379,14 @@ class FontSizeLabel: UILabel {
         didSet {
             switch fontType {
             case .sansSerif,
-                 .sansSerifBold:
-                font = UIFont(name: "FiraSans-Book", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
+                .sansSerifBold:
+                font = UIFont(
+                    name: "FiraSans-Book", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
             case .serif,
-                 .serifBold:
-                font = UIFont(name: "NewYorkMedium-Regular", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
+                .serifBold:
+                font = UIFont(
+                    name: "NewYorkMedium-Regular",
+                    size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
             }
         }
     }
@@ -410,11 +425,15 @@ class ThemeButton: UIButton {
         didSet {
             switch fontType {
             case .sansSerif,
-                 .sansSerifBold:
-                titleLabel?.font = UIFont(name: "FiraSans-Book", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
+                .sansSerifBold:
+                titleLabel?.font = UIFont(
+                    name: "FiraSans-Book",
+                    size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
             case .serif,
-                 .serifBold:
-                titleLabel?.font = UIFont(name: "NewYorkMedium-Regular", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
+                .serifBold:
+                titleLabel?.font = UIFont(
+                    name: "NewYorkMedium-Regular",
+                    size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
             }
         }
     }

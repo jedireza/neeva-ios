@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
 import Defaults
+import Foundation
 
 /// Neeva feature flags are server-driven values.
 ///
@@ -14,15 +14,27 @@ import Defaults
 ///
 /// Server feature flags are typed w/ bool, int, float or string values.
 public class NeevaFeatureFlags {
-    private static let boolFlagsKey = Defaults.Key<[Int:Bool]>("neevaBoolFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let intFlagsKey = Defaults.Key<[Int:Int]>("neevaIntFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let floatFlagsKey = Defaults.Key<[Int:Double]>("neevaFloatFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let stringFlagsKey = Defaults.Key<[Int:String]>("neevaStringFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let boolFlagsKey = Defaults.Key<[Int: Bool]>(
+        "neevaBoolFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let intFlagsKey = Defaults.Key<[Int: Int]>(
+        "neevaIntFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let floatFlagsKey = Defaults.Key<[Int: Double]>(
+        "neevaFloatFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let stringFlagsKey = Defaults.Key<[Int: String]>(
+        "neevaStringFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
-    private static let boolFlagOverridesKey = Defaults.Key<[Int:Bool]>("neevaBoolFlagOverrides", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let intFlagOverridesKey = Defaults.Key<[Int:Int]>("neevaIntFlagOverrides", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let floatFlagOverridesKey = Defaults.Key<[Int:Double]>("neevaFloatFlagOverrides", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let stringFlagOverridesKey = Defaults.Key<[Int:String]>("neevaStringFlagOverrides", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let boolFlagOverridesKey = Defaults.Key<[Int: Bool]>(
+        "neevaBoolFlagOverrides", default: [:],
+        suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let intFlagOverridesKey = Defaults.Key<[Int: Int]>(
+        "neevaIntFlagOverrides", default: [:],
+        suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let floatFlagOverridesKey = Defaults.Key<[Int: Double]>(
+        "neevaFloatFlagOverrides", default: [:],
+        suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    private static let stringFlagOverridesKey = Defaults.Key<[Int: String]>(
+        "neevaStringFlagOverrides", default: [:],
+        suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
     public static var shared = NeevaFeatureFlags()
 
@@ -130,7 +142,8 @@ public class NeevaFeatureFlags {
 
     public static subscript(flag: BoolFlag) -> Bool {
         get {
-            return Defaults[Self.boolFlagOverridesKey][flag.rawValue] ?? shared.boolFlags[flag.rawValue] ?? false
+            return Defaults[Self.boolFlagOverridesKey][flag.rawValue]
+                ?? shared.boolFlags[flag.rawValue] ?? false
         }
         set(newValue) {
             Defaults[Self.boolFlagOverridesKey][flag.rawValue] = newValue
@@ -139,7 +152,8 @@ public class NeevaFeatureFlags {
 
     public static subscript(flag: IntFlag) -> Int {
         get {
-            return Defaults[Self.intFlagOverridesKey][flag.rawValue] ?? shared.intFlags[flag.rawValue] ?? 0
+            return Defaults[Self.intFlagOverridesKey][flag.rawValue]
+                ?? shared.intFlags[flag.rawValue] ?? 0
         }
         set(newValue) {
             Defaults[Self.intFlagOverridesKey][flag.rawValue] = newValue
@@ -148,7 +162,8 @@ public class NeevaFeatureFlags {
 
     public static subscript(flag: FloatFlag) -> Double {
         get {
-            return Defaults[Self.floatFlagOverridesKey][flag.rawValue] ?? shared.floatFlags[flag.rawValue] ?? 0.0
+            return Defaults[Self.floatFlagOverridesKey][flag.rawValue]
+                ?? shared.floatFlags[flag.rawValue] ?? 0.0
         }
         set(newValue) {
             Defaults[Self.floatFlagOverridesKey][flag.rawValue] = newValue
@@ -157,7 +172,8 @@ public class NeevaFeatureFlags {
 
     public static subscript(flag: StringFlag) -> String {
         get {
-            return Defaults[Self.stringFlagOverridesKey][flag.rawValue] ?? shared.stringFlags[flag.rawValue] ?? ""
+            return Defaults[Self.stringFlagOverridesKey][flag.rawValue]
+                ?? shared.stringFlags[flag.rawValue] ?? ""
         }
         set(newValue) {
             Defaults[Self.stringFlagOverridesKey][flag.rawValue] = newValue

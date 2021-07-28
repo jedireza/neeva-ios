@@ -19,7 +19,8 @@ extension UIColor {
             static let headerBackground = UIColor(light: .white, dark: .Photon.Grey80)
             // Used for table headers in home panel tables
             static let headerTextDark = UIColor(light: .Photon.Grey90, dark: .Photon.Grey30)
-            static let selectedBackground = UIColor(light: .init(rgb: 0xd1d1d6), dark: .init(rgb: 0x2D2D2D))
+            static let selectedBackground = UIColor(
+                light: .init(rgb: 0xd1d1d6), dark: .init(rgb: 0x2D2D2D))
         }
     }
 }

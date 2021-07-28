@@ -1,15 +1,15 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
 import Shared
 import Storage
+import UIKit
 
 class TabMenu {
     var tabManager: TabManager
     var zeroQueryViewController: ZeroQueryViewController?
     var alertPresentViewController: UIViewController?
 
-    var tabsClosed: ((Bool) -> ())?
+    var tabsClosed: ((Bool) -> Void)?
 
     // MARK: Close All Tabs
     func showConfirmCloseAllTabs(numberOfTabs: Int) {
@@ -18,9 +18,14 @@ class TabMenu {
             return
         }
 
-        let actionSheet = UIAlertController(title: nil, message: "Are you sure you want to close all open \(isPrivate ? "private " : "")tabs?", preferredStyle: .actionSheet)
-        
-        let closeAction = UIAlertAction(title: "Close \(numberOfTabs) \(isPrivate ? "Private " : "")Tabs", style: .destructive) { [self] _ in
+        let actionSheet = UIAlertController(
+            title: nil,
+            message: "Are you sure you want to close all open \(isPrivate ? "private " : "")tabs?",
+            preferredStyle: .actionSheet)
+
+        let closeAction = UIAlertAction(
+            title: "Close \(numberOfTabs) \(isPrivate ? "Private " : "")Tabs", style: .destructive
+        ) { [self] _ in
             if isPrivate {
                 _ = tabManager.switchPrivacyMode()
 
@@ -41,7 +46,9 @@ class TabMenu {
 
         if let popoverPresentationController = actionSheet.popoverPresentationController {
             popoverPresentationController.sourceView = alertPresentViewController.view
-            popoverPresentationController.sourceRect = CGRect(x: alertPresentViewController.view.bounds.midX, y: alertPresentViewController.view.bounds.midY, width: 0, height: 0)
+            popoverPresentationController.sourceRect = CGRect(
+                x: alertPresentViewController.view.bounds.midX,
+                y: alertPresentViewController.view.bounds.midY, width: 0, height: 0)
             popoverPresentationController.permittedArrowDirections = []
         }
 
@@ -54,7 +61,9 @@ class TabMenu {
     }
 
     func createCloseAllTabsAction() -> UIAction {
-        let action = UIAction(title: "Close All Tabs", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+        let action = UIAction(
+            title: "Close All Tabs", image: UIImage(systemName: "trash"), attributes: .destructive
+        ) { _ in
             // make sure the user really wants to close all tabs
             self.showConfirmCloseAllTabs(numberOfTabs: self.getTabCountForCurrentType())
         }
@@ -85,7 +94,9 @@ class TabMenu {
 
         var actions = [UIAction]()
         for tab in recentlyClosed {
-            let action = UIAction(title: tab.title ?? "Untitled", discoverabilityTitle: tab.url?.absoluteString) { _ in
+            let action = UIAction(
+                title: tab.title ?? "Untitled", discoverabilityTitle: tab.url?.absoluteString
+            ) { _ in
                 _ = self.tabManager.restoreSavedTabs([tab])
             }
             action.accessibilityLabel = tab.title ?? "Untitled"
@@ -96,19 +107,24 @@ class TabMenu {
     }
 
     // MARK: Open Tab
-    func createOpenTabMenu(_ tab: SavedTab, openedTab: @escaping (Tab?, Bool) -> Void) -> UIContextMenuConfiguration {
+    func createOpenTabMenu(_ tab: SavedTab, openedTab: @escaping (Tab?, Bool) -> Void)
+        -> UIContextMenuConfiguration
+    {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let newTabAction = UIAction(
                 title: "Open in New tab",
-                image: UIImage(systemName: "plus.square")) { _ in
+                image: UIImage(systemName: "plus.square")
+            ) { _ in
                 let tab = self.tabManager.restoreSavedTabs([tab], shouldSelectTab: false)
                 openedTab(tab, false)
             }
 
             let newIncognitoTabAction = UIAction(
                 title: "Open in New Incognito Tab",
-                image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)) { _ in
-                let tab = self.tabManager.restoreSavedTabs([tab], isPrivate: true, shouldSelectTab: true)
+                image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
+            ) { _ in
+                let tab = self.tabManager.restoreSavedTabs(
+                    [tab], isPrivate: true, shouldSelectTab: true)
                 openedTab(tab, true)
             }
 
@@ -117,7 +133,10 @@ class TabMenu {
     }
 
     // MARK: Initialization
-    init(tabManager: TabManager, zeroQueryViewController: ZeroQueryViewController? = nil, alertPresentViewController: UIViewController? = nil) {
+    init(
+        tabManager: TabManager, zeroQueryViewController: ZeroQueryViewController? = nil,
+        alertPresentViewController: UIViewController? = nil
+    ) {
         self.tabManager = tabManager
         self.zeroQueryViewController = zeroQueryViewController
         self.alertPresentViewController = alertPresentViewController

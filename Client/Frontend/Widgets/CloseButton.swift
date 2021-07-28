@@ -3,15 +3,15 @@
 import SwiftUI
 
 struct CloseButton: View {
-    let action: () -> ()
+    let action: () -> Void
     var body: some View {
         _CloseButton(action: action)
             .frame(width: 44, height: 44)
     }
 }
 
-fileprivate struct _CloseButton: UIViewRepresentable {
-    let action: () -> ()
+private struct _CloseButton: UIViewRepresentable {
+    let action: () -> Void
     private static let actionID = UIAction.Identifier("CloseButton.action")
     class View: UIView {
         var button: UIButton!
@@ -31,9 +31,10 @@ fileprivate struct _CloseButton: UIViewRepresentable {
     }
     func updateUIView(_ view: View, context: Context) {
         view.button.removeAction(identifiedBy: Self.actionID, for: .primaryActionTriggered)
-        view.button.addAction(UIAction(identifier: Self.actionID) { _ in
-            action()
-        }, for: .primaryActionTriggered)
+        view.button.addAction(
+            UIAction(identifier: Self.actionID) { _ in
+                action()
+            }, for: .primaryActionTriggered)
     }
     static func dismantleUIView(_ view: View, coordinator: ()) {
         view.button.removeAction(identifiedBy: Self.actionID, for: .primaryActionTriggered)

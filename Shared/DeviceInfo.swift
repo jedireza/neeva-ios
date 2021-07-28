@@ -2,12 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import Defaults
+import UIKit
 
 open class DeviceInfo {
     // List of device names that don't support advanced visual settings
-    static let lowGraphicsQualityModels = ["iPad", "iPad1,1", "iPhone1,1", "iPhone1,2", "iPhone2,1", "iPhone3,1", "iPhone3,2", "iPhone3,3", "iPod1,1", "iPod2,1", "iPod2,2", "iPod3,1", "iPod4,1", "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4", "iPad3,1", "iPad3,2", "iPad3,3"]
+    static let lowGraphicsQualityModels = [
+        "iPad", "iPad1,1", "iPhone1,1", "iPhone1,2", "iPhone2,1", "iPhone3,1", "iPhone3,2",
+        "iPhone3,3", "iPod1,1", "iPod2,1", "iPod2,2", "iPod3,1", "iPod4,1", "iPad2,1", "iPad2,2",
+        "iPad2,3", "iPad2,4", "iPad3,1", "iPad3,2", "iPad3,3",
+    ]
 
     public static var specificModelName: String {
         var systemInfo = utsname()
@@ -33,9 +37,9 @@ open class DeviceInfo {
             return String(format: .DeviceInfoClientNameDescription, AppInfo.displayName, "iOS")
         }
 
-        return String(format: .DeviceInfoClientNameDescription, AppInfo.displayName, UIDevice.current.name)
+        return String(
+            format: .DeviceInfoClientNameDescription, AppInfo.displayName, UIDevice.current.name)
     }
-
 
     private static let clientIdentifierKey = Defaults.Key<String?>("profile.clientIdentifier")
     open class func clientIdentifier() -> String {
@@ -77,6 +81,8 @@ open class DeviceInfo {
     // Reports portrait screen size regardless of the current orientation.
     open class func screenSizeOrientationIndependent() -> CGSize {
         let screenSize = UIScreen.main.bounds.size
-        return CGSize(width: min(screenSize.width, screenSize.height), height: max(screenSize.width, screenSize.height))
+        return CGSize(
+            width: min(screenSize.width, screenSize.height),
+            height: max(screenSize.width, screenSize.height))
     }
 }

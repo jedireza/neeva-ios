@@ -3,18 +3,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import UIKit
-import SnapKit
 import Shared
+import SnapKit
+import UIKit
 
 class IntroViewController: UIViewController {
     private lazy var welcomeCard = UIView()
-    
+
     // Closure delegate
     var didFinishClosure: ((IntroViewController) -> Void)?
-    var visitHomePage: (()->Void)?
-    var visitSigninPage: (()->Void)?
-    
+    var visitHomePage: (() -> Void)?
+    var visitSigninPage: (() -> Void)?
+
     // MARK: Initializer
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -23,17 +23,17 @@ class IntroViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         initialViewSetup()
     }
-    
+
     // MARK: View setup
     private func initialViewSetup() {
         setupIntroView()
     }
-    
+
     private func setupWelcomeCard() {
         // Constraints
         welcomeCard.snp.makeConstraints { make in
@@ -41,22 +41,25 @@ class IntroViewController: UIViewController {
         }
     }
 
-    private func buttonAction(_ option: FirstRunButtonActions){
+    private func buttonAction(_ option: FirstRunButtonActions) {
         switch option {
         case FirstRunButtonActions.signin:
-            ClientLogger.shared.logCounter(.FirstRunSignin, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .FirstRunSignin, attributes: EnvironmentHelper.shared.getAttributes())
             self.didFinishClosure?(self)
             self.visitSigninPage?()
         case FirstRunButtonActions.signup:
-            ClientLogger.shared.logCounter(.FirstRunSignUp, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .FirstRunSignUp, attributes: EnvironmentHelper.shared.getAttributes())
             self.didFinishClosure?(self)
             self.visitHomePage?()
         case FirstRunButtonActions.skipToBrowser:
-            ClientLogger.shared.logCounter(.FirstRunSkipToBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .FirstRunSkipToBrowser, attributes: EnvironmentHelper.shared.getAttributes())
             self.didFinishClosure?(self)
         }
     }
-    
+
     //onboarding intro view
     private func setupIntroView() {
         // Initialize

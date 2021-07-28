@@ -1,12 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 import WebKit
 
 struct ZoomMenuView: View {
     @ObservedObject var model: ZoomMenuModel
-    let onDismiss: () -> ()
+    let onDismiss: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,7 +20,10 @@ struct ZoomMenuView: View {
                     HStack {
                         Button(action: model.zoomOut) {
                             Symbol(.minus, style: .bodyLarge)
-                                .frame(width: GroupedCellUX.minCellHeight, height: GroupedCellUX.minCellHeight)
+                                .frame(
+                                    width: GroupedCellUX.minCellHeight,
+                                    height: GroupedCellUX.minCellHeight
+                                )
                                 .foregroundColor(model.canZoomOut ? .label : .tertiaryLabel)
                         }.disabled(!model.canZoomOut)
                         Spacer()
@@ -28,7 +31,10 @@ struct ZoomMenuView: View {
                         Spacer()
                         Button(action: model.zoomIn) {
                             Symbol(.plus, style: .bodyLarge)
-                                .frame(width: GroupedCellUX.minCellHeight, height: GroupedCellUX.minCellHeight)
+                                .frame(
+                                    width: GroupedCellUX.minCellHeight,
+                                    height: GroupedCellUX.minCellHeight
+                                )
                                 .foregroundColor(model.canZoomIn ? .label : .tertiaryLabel)
                         }.disabled(!model.canZoomIn)
                     }.padding(.horizontal, -GroupedCellUX.horizontalPadding)

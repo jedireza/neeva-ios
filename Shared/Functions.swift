@@ -7,7 +7,7 @@ import SwiftyJSON
 precedencegroup PipelinePrecedence {
     associativity: left
 }
-infix operator |> : PipelinePrecedence
+infix operator |>: PipelinePrecedence
 
 public func |> <T, U>(x: T, f: (T) -> U) -> U {
     return f(x)
@@ -49,18 +49,18 @@ public func curry<A, B, C, D, E>(_ f: @escaping (A, B, C, D) -> E) -> (A, B, C) 
 // Function composition.
 infix operator •
 
-public func •<T, U, V>(f: @escaping (T) -> U, g: @escaping (U) -> V) -> (T) -> V {
+public func • <T, U, V>(f: @escaping (T) -> U, g: @escaping (U) -> V) -> (T) -> V {
     return { t in
         return g(f(t))
     }
 }
-public func •<T, V>(f: @escaping (T) -> Void, g: @escaping () -> V) -> (T) -> V {
+public func • <T, V>(f: @escaping (T) -> Void, g: @escaping () -> V) -> (T) -> V {
     return { t in
         f(t)
         return g()
     }
 }
-public func •<V>(f: @escaping () -> Void, g: @escaping () -> V) -> () -> V {
+public func • <V>(f: @escaping () -> Void, g: @escaping () -> V) -> () -> V {
     return {
         f()
         return g()
@@ -83,16 +83,14 @@ public func optArrayEqual<T: Equatable>(_ lhs: [T]?, rhs: [T]?) -> Bool {
     }
 }
 
-/**
- * Given an array, return an array of slices of size `by` (possibly excepting the last slice).
- *
- * If `by` is longer than the input, returns a single chunk.
- * If `by` is less than 1, acts as if `by` is 1.
- * If the length of the array isn't a multiple of `by`, the final slice will
- * be smaller than `by`, but never empty.
- *
- * If the input array is empty, returns an empty array.
- */
+/// Given an array, return an array of slices of size `by` (possibly excepting the last slice).
+///
+/// If `by` is longer than the input, returns a single chunk.
+/// If `by` is less than 1, acts as if `by` is 1.
+/// If the length of the array isn't a multiple of `by`, the final slice will
+/// be smaller than `by`, but never empty.
+///
+/// If the input array is empty, returns an empty array.
 
 public func chunk<T>(_ arr: [T], by: Int) -> [ArraySlice<T>] {
     var result = [ArraySlice<T>]()
@@ -108,7 +106,8 @@ public func chunk<T>(_ arr: [T], by: Int) -> [ArraySlice<T>] {
     return result
 }
 
-public func chunkCollection<E, X, T: Collection>(_ items: T, by: Int, f: ([E]) -> [X]) -> [X] where T.Iterator.Element == E {
+public func chunkCollection<E, X, T: Collection>(_ items: T, by: Int, f: ([E]) -> [X]) -> [X]
+where T.Iterator.Element == E {
     assert(by >= 0)
     let max = by > 0 ? by : 1
     var i = 0
@@ -133,11 +132,13 @@ public func chunkCollection<E, X, T: Collection>(_ items: T, by: Int, f: ([E]) -
     return results
 }
 
-public extension Sequence {
+extension Sequence {
     // [T] -> (T -> K) -> [K: [T]]
     // As opposed to `groupWith` (to follow Haskell's naming), which would be
     // [T] -> (T -> K) -> [[T]]
-    func groupBy<Key, Value>(_ selector: (Self.Iterator.Element) -> Key, transformer: (Self.Iterator.Element) -> Value) -> [Key: [Value]] {
+    public func groupBy<Key, Value>(
+        _ selector: (Self.Iterator.Element) -> Key, transformer: (Self.Iterator.Element) -> Value
+    ) -> [Key: [Value]] {
         var acc: [Key: [Value]] = [:]
         for x in self {
             let k = selector(x)
@@ -148,7 +149,7 @@ public extension Sequence {
         return acc
     }
 
-    func zip<S: Sequence>(_ elems: S) -> [(Self.Iterator.Element, S.Iterator.Element)] {
+    public func zip<S: Sequence>(_ elems: S) -> [(Self.Iterator.Element, S.Iterator.Element)] {
         var rights = elems.makeIterator()
         return self.compactMap { lhs in
             guard let rhs = rights.next() else {
@@ -172,16 +173,12 @@ public func optDictionaryEqual<K, V: Equatable>(_ lhs: [K: V]?, rhs: [K: V]?) ->
     }
 }
 
-/**
- * Return members of `a` that aren't nil, changing the type of the sequence accordingly.
- */
+/// Return members of `a` that aren't nil, changing the type of the sequence accordingly.
 public func optFilter<T>(_ a: [T?]) -> [T] {
     return a.compactMap { $0 }
 }
 
-/**
- * Return a new map with only key-value pairs that have a non-nil value.
- */
+/// Return a new map with only key-value pairs that have a non-nil value.
 public func optFilter<K, V>(_ source: [K: V?]) -> [K: V] {
     var m = [K: V]()
     for (k, v) in source {
@@ -192,9 +189,7 @@ public func optFilter<K, V>(_ source: [K: V?]) -> [K: V] {
     return m
 }
 
-/**
- * Map a function over the values of a map.
- */
+/// Map a function over the values of a map.
 public func mapValues<K, T, U>(_ source: [K: T], f: ((T) -> U)) -> [K: U] {
     var m = [K: U]()
     for (k, v) in source {
@@ -212,19 +207,17 @@ public func findOneValue<K, V>(_ map: [K: V], f: (V) -> Bool) -> V? {
     return nil
 }
 
-/**
- * Take a JSON array, returning the String elements as an array.
- * It's usually convenient for this to accept an optional.
- */
+/// Take a JSON array, returning the String elements as an array.
+/// It's usually convenient for this to accept an optional.
 public func jsonsToStrings(_ arr: [JSON]?) -> [String]? {
     return arr?.compactMap { $0.stringValue }
 }
 
 // Encapsulate a callback in a way that we can use it with NSTimer.
 private class Callback {
-    private let handler:() -> Void
+    private let handler: () -> Void
 
-    init(handler:@escaping () -> Void) {
+    init(handler: @escaping () -> Void) {
         self.handler = handler
     }
 
@@ -234,11 +227,10 @@ private class Callback {
     }
 }
 
-/**
- * Taken from http://stackoverflow.com/questions/27116684/how-can-i-debounce-a-method-call
- * Allows creating a block that will fire after a delay. Resets the timer if called again before the delay expires.
- **/
-public func debounce(_ delay: TimeInterval, action:@escaping () -> Void) -> () -> Void {
+/// Taken from http://stackoverflow.com/questions/27116684/how-can-i-debounce-a-method-call
+/// Allows creating a block that will fire after a delay. Resets the timer if called again before the delay expires.
+
+public func debounce(_ delay: TimeInterval, action: @escaping () -> Void) -> () -> Void {
     let callback = Callback(handler: action)
     var timer: Timer?
 
@@ -247,7 +239,9 @@ public func debounce(_ delay: TimeInterval, action:@escaping () -> Void) -> () -
         if let timer = timer {
             timer.invalidate()
         }
-        timer = Timer(timeInterval: delay, target: callback, selector: #selector(Callback.go), userInfo: nil, repeats: false)
+        timer = Timer(
+            timeInterval: delay, target: callback, selector: #selector(Callback.go), userInfo: nil,
+            repeats: false)
         RunLoop.current.add(timer!, forMode: RunLoop.Mode.default)
     }
 }

@@ -1,11 +1,12 @@
-import Foundation
 import ApolloCodegenLib
+import Foundation
 
 let parentFolderOfScriptFile = FileFinder.findParentFolder()
-let sourceRootURL = parentFolderOfScriptFile
-    .deletingLastPathComponent() // Result: Sources folder
-    .deletingLastPathComponent() // Result: Codegen folder
-    .deletingLastPathComponent() // Result: neeva-ios-phoenix source root folder
+let sourceRootURL =
+    parentFolderOfScriptFile
+    .deletingLastPathComponent()  // Result: Sources folder
+    .deletingLastPathComponent()  // Result: Codegen folder
+    .deletingLastPathComponent()  // Result: neeva-ios-phoenix source root folder
 
 func / (dir: URL, folderName: String) -> URL {
     dir.apollo.childFolderURL(folderName: folderName)

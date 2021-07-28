@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
 import Defaults
+import Foundation
 
 /// Usage: add a `case` to this enum, then reference `FeatureFlag[.myFeature]` to check for that feature’s status.
 public enum FeatureFlag: String, CaseIterable, RawRepresentable {
@@ -23,7 +23,8 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
 }
 
 extension FeatureFlag {
-    public static let defaultsKey = Defaults.Key<Set<String>>("neevaFeatureFlags", default: [], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
+    public static let defaultsKey = Defaults.Key<Set<String>>(
+        "neevaFeatureFlags", default: [], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
     fileprivate static let enabledFlags: Set<FeatureFlag> = {
         let names = Defaults[Self.defaultsKey]

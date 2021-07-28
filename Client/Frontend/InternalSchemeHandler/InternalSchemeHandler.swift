@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import WebKit
 import Shared
+import WebKit
 
 enum InternalPageSchemeHandlerError: Error {
     case badURL
@@ -19,7 +19,8 @@ protocol InternalSchemeResponse {
 class InternalSchemeHandler: NSObject, WKURLSchemeHandler {
 
     static func response(forUrl url: URL) -> URLResponse {
-        return URLResponse(url: url, mimeType: "text/html", expectedContentLength: -1, textEncodingName: "utf-8")
+        return URLResponse(
+            url: url, mimeType: "text/html", expectedContentLength: -1, textEncodingName: "utf-8")
     }
 
     // Responders are looked up based on the path component, for instance responder["about/license"] is used for 'internal://local/about/license'
@@ -42,8 +43,12 @@ class InternalSchemeHandler: NSObject, WKURLSchemeHandler {
         // Handle resources from internal pages. For example 'internal://local/errorpage-resource/CertError.css'.
         if allowedInternalResources.contains(where: { url.path == $0 }) {
             let path = url.lastPathComponent
-            if let res = Bundle.main.url(forResource: path, withExtension: nil), let data = try? Data(contentsOf: res) {
-                urlSchemeTask.didReceive(URLResponse(url: url, mimeType: nil, expectedContentLength: -1, textEncodingName: nil))
+            if let res = Bundle.main.url(forResource: path, withExtension: nil),
+                let data = try? Data(contentsOf: res)
+            {
+                urlSchemeTask.didReceive(
+                    URLResponse(
+                        url: url, mimeType: nil, expectedContentLength: -1, textEncodingName: nil))
                 urlSchemeTask.didReceive(data)
                 urlSchemeTask.didFinish()
                 return true
@@ -62,7 +67,10 @@ class InternalSchemeHandler: NSObject, WKURLSchemeHandler {
         let path = url.path.starts(with: "/") ? String(url.path.dropFirst()) : url.path
 
         // For non-main doc URL, try load it as a resource
-        if !urlSchemeTask.request.isPrivileged, urlSchemeTask.request.mainDocumentURL != urlSchemeTask.request.url, downloadResource(urlSchemeTask: urlSchemeTask) {
+        if !urlSchemeTask.request.isPrivileged,
+            urlSchemeTask.request.mainDocumentURL != urlSchemeTask.request.url,
+            downloadResource(urlSchemeTask: urlSchemeTask)
+        {
             return
         }
 

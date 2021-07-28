@@ -7,8 +7,8 @@ import UIKit
 // https://medium.com/@BeauNouvelle/adding-a-closure-to-uibarbuttonitem-24dfc217fe72
 extension UIBarButtonItem {
     private class UIBarButtonItemClosureWrapper: NSObject {
-        let closure: (UIBarButtonItem) -> ()
-        init(_ closure: @escaping (UIBarButtonItem) -> ()) {
+        let closure: (UIBarButtonItem) -> Void
+        init(_ closure: @escaping (UIBarButtonItem) -> Void) {
             self.closure = closure
         }
     }
@@ -17,25 +17,39 @@ extension UIBarButtonItem {
         static var targetClosure = "targetClosure"
     }
 
-    private var targetClosure: ((UIBarButtonItem) -> ())? {
+    private var targetClosure: ((UIBarButtonItem) -> Void)? {
         get {
-            guard let closureWrapper = objc_getAssociatedObject(self, &AssociatedKeys.targetClosure) as? UIBarButtonItemClosureWrapper else { return nil }
+            guard
+                let closureWrapper = objc_getAssociatedObject(self, &AssociatedKeys.targetClosure)
+                    as? UIBarButtonItemClosureWrapper
+            else { return nil }
             return closureWrapper.closure
         }
         set(newValue) {
             guard let newValue = newValue else { return }
-            objc_setAssociatedObject(self, &AssociatedKeys.targetClosure, UIBarButtonItemClosureWrapper(newValue), objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(
+                self, &AssociatedKeys.targetClosure, UIBarButtonItemClosureWrapper(newValue),
+                objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
-    public convenience init(title: String?, style: UIBarButtonItem.Style, closure: @escaping (UIBarButtonItem) -> ()) {
-        self.init(title: title, style: style, target: nil, action: #selector(UIBarButtonItem.closureAction))
+    public convenience init(
+        title: String?, style: UIBarButtonItem.Style, closure: @escaping (UIBarButtonItem) -> Void
+    ) {
+        self.init(
+            title: title, style: style, target: nil,
+            action: #selector(UIBarButtonItem.closureAction))
         self.target = self
         targetClosure = closure
     }
 
-    public convenience init(barButtonSystemItem systemItem: UIBarButtonItem.SystemItem, closure: @escaping (UIBarButtonItem) -> ()) {
-        self.init(barButtonSystemItem: systemItem, target: nil, action: #selector(UIBarButtonItem.closureAction))
+    public convenience init(
+        barButtonSystemItem systemItem: UIBarButtonItem.SystemItem,
+        closure: @escaping (UIBarButtonItem) -> Void
+    ) {
+        self.init(
+            barButtonSystemItem: systemItem, target: nil,
+            action: #selector(UIBarButtonItem.closureAction))
         self.target = self
         targetClosure = closure
     }

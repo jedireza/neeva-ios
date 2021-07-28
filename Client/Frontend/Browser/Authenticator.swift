@@ -11,7 +11,10 @@ private let log = Logger.browserLogger
 class Authenticator {
     fileprivate static let MaxAuthenticationAttempts = 3
 
-    static func handleAuthRequest(_ viewController: UIViewController, challenge: URLAuthenticationChallenge, loginsHelper: LoginsHelper?) -> Deferred<Maybe<LoginRecord>> {
+    static func handleAuthRequest(
+        _ viewController: UIViewController, challenge: URLAuthenticationChallenge,
+        loginsHelper: LoginsHelper?
+    ) -> Deferred<Maybe<LoginRecord>> {
         // If there have already been too many login attempts, we'll just fail.
         if challenge.previousFailureCount >= Authenticator.MaxAuthenticationAttempts {
             return deferMaybe(LoginRecordError(description: "Too many attempts to open site"))
@@ -23,7 +26,9 @@ class Authenticator {
         if let proposed = credential {
             if !(proposed.user?.isEmpty ?? true) {
                 if challenge.previousFailureCount == 0 {
-                    return deferMaybe(LoginRecord(credentials: proposed, protectionSpace: challenge.protectionSpace))
+                    return deferMaybe(
+                        LoginRecord(
+                            credentials: proposed, protectionSpace: challenge.protectionSpace))
                 }
             } else {
                 credential = nil
@@ -32,25 +37,39 @@ class Authenticator {
 
         // If we have some credentials, we'll show a prompt with them.
         if let credential = credential {
-            return promptForUsernamePassword(viewController, credentials: credential, protectionSpace: challenge.protectionSpace, loginsHelper: loginsHelper)
+            return promptForUsernamePassword(
+                viewController, credentials: credential, protectionSpace: challenge.protectionSpace,
+                loginsHelper: loginsHelper)
         }
 
         // Otherwise, try to look them up and show the prompt.
         if let loginsHelper = loginsHelper {
-            return findMatchingCredentialsForChallenge(challenge, fromLoginsProvider: loginsHelper.logins).bindQueue(.main) { result in
+            return findMatchingCredentialsForChallenge(
+                challenge, fromLoginsProvider: loginsHelper.logins
+            ).bindQueue(.main) { result in
                 guard let credentials = result.successValue else {
-                    return deferMaybe(result.failureValue ?? LoginRecordError(description: "Unknown error when finding credentials"))
+                    return deferMaybe(
+                        result.failureValue
+                            ?? LoginRecordError(
+                                description: "Unknown error when finding credentials"))
                 }
-                return self.promptForUsernamePassword(viewController, credentials: credentials, protectionSpace: challenge.protectionSpace, loginsHelper: loginsHelper)
+                return self.promptForUsernamePassword(
+                    viewController, credentials: credentials,
+                    protectionSpace: challenge.protectionSpace, loginsHelper: loginsHelper)
             }
         }
 
         // No credentials, so show an empty prompt.
-        return self.promptForUsernamePassword(viewController, credentials: nil, protectionSpace: challenge.protectionSpace, loginsHelper: nil)
+        return self.promptForUsernamePassword(
+            viewController, credentials: nil, protectionSpace: challenge.protectionSpace,
+            loginsHelper: nil)
     }
 
-    static func findMatchingCredentialsForChallenge(_ challenge: URLAuthenticationChallenge, fromLoginsProvider loginsProvider: RustLogins) -> Deferred<Maybe<URLCredential?>> {
-        return loginsProvider.getLoginsForProtectionSpace(challenge.protectionSpace) >>== { cursor in
+    static func findMatchingCredentialsForChallenge(
+        _ challenge: URLAuthenticationChallenge, fromLoginsProvider loginsProvider: RustLogins
+    ) -> Deferred<Maybe<URLCredential?>> {
+        return loginsProvider.getLoginsForProtectionSpace(challenge.protectionSpace) >>== {
+            cursor in
             guard cursor.count >= 1 else {
                 return deferMaybe(nil)
             }
@@ -64,7 +83,11 @@ class Authenticator {
             // It is possible that we might have duplicate entries since we match against host and scheme://host.
             // This is a side effect of https://bugzilla.mozilla.org/show_bug.cgi?id=1238103.
             if logins.count > 1 {
-                credentials = logins.first(where: { ($0.protectionSpace.protocol == challenge.protectionSpace.protocol) && !$0.hasMalformedHostname })?.credentials
+                credentials =
+                    logins.first(where: {
+                        ($0.protectionSpace.protocol == challenge.protectionSpace.protocol)
+                            && !$0.hasMalformedHostname
+                    })?.credentials
 
                 let malformedGUIDs: [GUID] = logins.compactMap { login in
                     if login.hasMalformedHostname {
@@ -72,16 +95,21 @@ class Authenticator {
                     }
                     return nil
                 }
-                loginsProvider.delete(ids: malformedGUIDs).upon { _ in log.debug("Removed malformed logins.") }
+                loginsProvider.delete(ids: malformedGUIDs).upon { _ in
+                    log.debug("Removed malformed logins.")
+                }
             }
 
             // Found a single entry but the schemes don't match. This is a result of a schemeless entry that we
             // saved in a previous iteration of the app so we need to migrate it. We only care about the
             // the username/password so we can rewrite the scheme to be correct.
-            else if logins.count == 1 && logins[0].protectionSpace.`protocol` != challenge.protectionSpace.`protocol` {
+            else if logins.count == 1
+                && logins[0].protectionSpace.`protocol` != challenge.protectionSpace.`protocol`
+            {
                 let login = logins[0]
                 credentials = login.credentials
-                let new = LoginRecord(credentials: login.credentials, protectionSpace: challenge.protectionSpace)
+                let new = LoginRecord(
+                    credentials: login.credentials, protectionSpace: challenge.protectionSpace)
                 new.id = login.id
                 return loginsProvider.update(login: new)
                     >>> { deferMaybe(credentials) }
@@ -96,10 +124,15 @@ class Authenticator {
         }
     }
 
-    fileprivate static func promptForUsernamePassword(_ viewController: UIViewController, credentials: URLCredential?, protectionSpace: URLProtectionSpace, loginsHelper: LoginsHelper?) -> Deferred<Maybe<LoginRecord>> {
+    fileprivate static func promptForUsernamePassword(
+        _ viewController: UIViewController, credentials: URLCredential?,
+        protectionSpace: URLProtectionSpace, loginsHelper: LoginsHelper?
+    ) -> Deferred<Maybe<LoginRecord>> {
         if protectionSpace.host.isEmpty {
             print("Unable to show a password prompt without a hostname")
-            return deferMaybe(LoginRecordError(description: "Unable to show a password prompt without a hostname"))
+            return deferMaybe(
+                LoginRecordError(description: "Unable to show a password prompt without a hostname")
+            )
         }
 
         let deferred = Deferred<Maybe<LoginRecord>>()
@@ -107,7 +140,9 @@ class Authenticator {
         let title: String = .AuthenticatorPromptTitle
         if !(protectionSpace.realm?.isEmpty ?? true) {
             let msg: String = .AuthenticatorPromptRealmMessage
-            let formatted = NSString(format: msg as NSString, protectionSpace.host, protectionSpace.realm ?? "") as String
+            let formatted =
+                NSString(format: msg as NSString, protectionSpace.host, protectionSpace.realm ?? "")
+                as String
             alert = AlertController(title: title, message: formatted, preferredStyle: .alert)
         } else {
             let msg: String = .AuthenticatorPromptEmptyRealmMessage
@@ -116,18 +151,27 @@ class Authenticator {
         }
 
         // Add a button to log in.
-        let action = UIAlertAction(title: .AuthenticatorLogin,
-            style: .default) { (action) -> Void in
-                guard let user = alert.textFields?[0].text, let pass = alert.textFields?[1].text else { deferred.fill(Maybe(failure: LoginRecordError(description: "Username and Password required"))); return }
+        let action = UIAlertAction(
+            title: .AuthenticatorLogin,
+            style: .default
+        ) { (action) -> Void in
+            guard let user = alert.textFields?[0].text, let pass = alert.textFields?[1].text else {
+                deferred.fill(
+                    Maybe(failure: LoginRecordError(description: "Username and Password required")))
+                return
+            }
 
-                let login = LoginRecord(credentials: URLCredential(user: user, password: pass, persistence: .forSession), protectionSpace: protectionSpace)
-                deferred.fill(Maybe(success: login))
-                loginsHelper?.setCredentials(login)
+            let login = LoginRecord(
+                credentials: URLCredential(user: user, password: pass, persistence: .forSession),
+                protectionSpace: protectionSpace)
+            deferred.fill(Maybe(success: login))
+            loginsHelper?.setCredentials(login)
         }
         alert.addAction(action, accessibilityIdentifier: "authenticationAlert.loginRequired")
 
         // Add a cancel button.
-        let cancel = UIAlertAction(title: .AuthenticatorCancel, style: .cancel) { (action) -> Void in
+        let cancel = UIAlertAction(title: .AuthenticatorCancel, style: .cancel) {
+            (action) -> Void in
             deferred.fill(Maybe(failure: LoginRecordError(description: "Save password cancelled")))
         }
         alert.addAction(cancel, accessibilityIdentifier: "authenticationAlert.cancel")

@@ -15,9 +15,7 @@ private class DiskImageStoreErrorType: MaybeErrorType {
     }
 }
 
-/**
- * Disk-backed key-value image store.
- */
+/// Disk-backed key-value image store.
 open class DiskImageStore {
     fileprivate let files: FileAccessor
     fileprivate let filesDir: String
@@ -49,7 +47,8 @@ open class DiskImageStore {
 
             let imagePath = URL(fileURLWithPath: self.filesDir).appendingPathComponent(key)
             if let data = try? Data(contentsOf: imagePath),
-                   let image = UIImage.imageFromDataThreadSafe(data) {
+                let image = UIImage.imageFromDataThreadSafe(data)
+            {
                 return deferMaybe(image)
             }
 
@@ -91,7 +90,8 @@ open class DiskImageStore {
                 do {
                     try FileManager.default.removeItem(at: url)
                 } catch {
-                    log.warning("Failed to remove DiskImageStore item at \(url.absoluteString): \(error)")
+                    log.warning(
+                        "Failed to remove DiskImageStore item at \(url.absoluteString): \(error)")
                 }
             }
 

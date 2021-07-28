@@ -45,8 +45,10 @@ class SimulatedSwipeAnimator: NSObject {
         return CGPoint(x: animatingView.frame.width / 2, y: animatingView.frame.height / 2)
     }
 
-    init(swipeDirection: SwipeDirection, animatingView: UIView, webViewContainer: UIView,
-         params: SimulateForwardAnimationParameters = DefaultParameters) {
+    init(
+        swipeDirection: SwipeDirection, animatingView: UIView, webViewContainer: UIView,
+        params: SimulateForwardAnimationParameters = DefaultParameters
+    ) {
         self.animatingView = animatingView
         self.webViewContainer = webViewContainer
         self.params = params
@@ -72,42 +74,52 @@ extension SimulatedSwipeAnimator {
         }
 
         if canceledSwipe {
-            UIView.animate(withDuration: params.cancelAnimationDuration, animations: {
-                self.webViewContainer?.transform = .identity
-                self.animatingView?.transform = .identity
-            }, completion: { _ in })
+            UIView.animate(
+                withDuration: params.cancelAnimationDuration,
+                animations: {
+                    self.webViewContainer?.transform = .identity
+                    self.animatingView?.transform = .identity
+                }, completion: { _ in })
         } else {
             self.webViewContainer?.transform = .identity
-            UIView.animate(withDuration: params.recenterAnimationDuration, animations: {
-                self.animatingView?.alpha = 0
-            }, completion: { finished in
-                if finished {
-                    self.animatingView?.transform = .identity
-                    self.animatingView?.alpha = 1
-                }
-            })
+            UIView.animate(
+                withDuration: params.recenterAnimationDuration,
+                animations: {
+                    self.animatingView?.alpha = 0
+                },
+                completion: { finished in
+                    if finished {
+                        self.animatingView?.transform = .identity
+                        self.animatingView?.alpha = 1
+                    }
+                })
         }
     }
 
     fileprivate func animateAwayWithVelocity(_ velocity: CGPoint, speed: CGFloat) {
         guard let animatingView = self.animatingView,
-              let webViewContainer = self.webViewContainer else {
+            let webViewContainer = self.webViewContainer
+        else {
             return
         }
 
         // Calculate the edge to calculate distance from
-        let translation = (-animatingView.frame.width + SwipeUX.EdgeWidth)
+        let translation =
+            (-animatingView.frame.width + SwipeUX.EdgeWidth)
             * (swipeDirection == .back ? -1 : 1)
         let timeStep = TimeInterval(abs(translation) / speed)
         self.delegate?.simulateForwardAnimatorStartedSwipe(self)
-        UIView.animate(withDuration: timeStep, animations: {
-            animatingView.transform = self.transformForTranslation(translation)
-            webViewContainer.transform = self.transformForTranslation(translation / 2)
-        }, completion: { finished in
-            if finished {
-                self.animateBackToCenter(canceledSwipe: false)
-            }
-        })
+        UIView.animate(
+            withDuration: timeStep,
+            animations: {
+                animatingView.transform = self.transformForTranslation(translation)
+                webViewContainer.transform = self.transformForTranslation(translation / 2)
+            },
+            completion: { finished in
+                if finished {
+                    self.animateBackToCenter(canceledSwipe: false)
+                }
+            })
     }
 
     fileprivate func transformForTranslation(_ translation: CGFloat) -> CGAffineTransform {

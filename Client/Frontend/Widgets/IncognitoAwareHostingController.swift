@@ -4,7 +4,10 @@ import SwiftUI
 
 /// A `UIHostingController` subclass that automatically provides an appropriate value
 /// for `EnvironmentValues.isIncognito` to the view it hosts.
-class IncognitoAwareHostingController<Content: View>: UIHostingController<IncognitoAwareHostingController._Applicator<Content>>, PrivateModeUI {
+class IncognitoAwareHostingController<Content: View>: UIHostingController<
+    IncognitoAwareHostingController._Applicator<Content>
+>, PrivateModeUI
+{
     /// Initializes this hosting controller.
     ///
     /// In your initializer, provide an initial view by calling this initializer like so:
@@ -18,7 +21,8 @@ class IncognitoAwareHostingController<Content: View>: UIHostingController<Incogn
         super.init(
             rootView: _Applicator(
                 content: rootView,
-                isIncognito: BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+                isIncognito: BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate
+                    ?? false
             )
         )
     }

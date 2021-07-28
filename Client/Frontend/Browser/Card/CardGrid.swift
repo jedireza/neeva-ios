@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 enum SwitcherViews: String, CaseIterable {
     case spaces = "bookmark"
@@ -52,8 +52,8 @@ struct CardGrid: View {
     }
 
     var indexInGrid: Int {
-        indexInsideTabGroupModel ??
-            (FeatureFlag[.groupsInSwitcher] ? tabGroupModel.allDetails.count : 0)
+        indexInsideTabGroupModel
+            ?? (FeatureFlag[.groupsInSwitcher] ? tabGroupModel.allDetails.count : 0)
             + indexInsideTabModel!
     }
 
@@ -70,15 +70,17 @@ struct CardGrid: View {
 
     @ViewBuilder var transitionAnimator: some View {
         if gridModel.animationThumbnailState != .hidden || gridModel.isHidden,
-           let selectedCardDetails = selectedCardDetails,
-           let geom = geom {
+            let selectedCardDetails = selectedCardDetails,
+            let geom = geom
+        {
             CardTransitionAnimator(
                 selectedCardDetails: selectedCardDetails,
                 cardSize: cardSize,
                 offset: CGPoint(
-                    x: CardGridUX.GridSpacing +
-                        (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
-                    y: (CardUX.CardHeight + CardGridUX.GridSpacing) * floor(CGFloat(indexInGrid) / columnCount)
+                    x: CardGridUX.GridSpacing
+                        + (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
+                    y: (CardUX.CardHeight + CardGridUX.GridSpacing)
+                        * floor(CGFloat(indexInGrid) / columnCount)
                         + CardGridUX.YStaticOffset + gridModel.scrollOffset
                 ),
                 containerSize: geom.size,
@@ -110,12 +112,16 @@ struct CardGrid: View {
                     if FeatureFlag[.groupsInSwitcher] {
                         GridPicker(switcherState: $switcherState)
                     }
-                    CardsContainer(switcherState: $switcherState,
-                                   columns: Array(repeating:
-                                                    GridItem(.fixed(cardSize),
-                                                             spacing: CardGridUX.GridSpacing),
-                                                  count: columnCount))
-                        .environment(\.cardSize, cardSize)
+                    CardsContainer(
+                        switcherState: $switcherState,
+                        columns: Array(
+                            repeating:
+                                GridItem(
+                                    .fixed(cardSize),
+                                    spacing: CardGridUX.GridSpacing),
+                            count: columnCount)
+                    )
+                    .environment(\.cardSize, cardSize)
                     Spacer(minLength: 0)
                 }
                 .background(Color(UIColor.TabTray.background).ignoresSafeArea())

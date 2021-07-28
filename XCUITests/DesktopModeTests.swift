@@ -41,7 +41,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
 
         // Go to Clear Data
         clearPrivateData()
-        
+
         // Tab #2
         openURLInNewTab(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
@@ -71,7 +71,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
 
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
-    
+
     // Smoketest
     /* https://github.com/neevaco/neeva-ios-phoenix/issues/1091
     func testChangeModeInSameTab() {
@@ -83,7 +83,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
-        
+
         requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)

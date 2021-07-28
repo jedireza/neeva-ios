@@ -17,9 +17,12 @@ public protocol ReadingList {
     func getAvailableRecords() -> Deferred<Maybe<[ReadingListItem]>>
     @discardableResult func deleteRecord(_ record: ReadingListItem) -> Success
     func deleteAllRecords() -> Success
-    @discardableResult func createRecordWithURL(_ url: String, title: String, addedBy: String) -> Deferred<Maybe<ReadingListItem>>
+    @discardableResult func createRecordWithURL(_ url: String, title: String, addedBy: String)
+        -> Deferred<Maybe<ReadingListItem>>
     func getRecordWithURL(_ url: String) -> Deferred<Maybe<ReadingListItem>>
-    @discardableResult func updateRecord(_ record: ReadingListItem, unread: Bool) -> Deferred<Maybe<ReadingListItem>>
+    @discardableResult func updateRecord(_ record: ReadingListItem, unread: Bool) -> Deferred<
+        Maybe<ReadingListItem>
+    >
 }
 
 public struct ReadingListItem: Equatable {
@@ -33,7 +36,10 @@ public struct ReadingListItem: Equatable {
     public let favorite: Bool
 
     /// Initializer for when a record is loaded from a database row
-    public init(id: Int, lastModified: Timestamp, url: String, title: String, addedBy: String, unread: Bool = true, archived: Bool = false, favorite: Bool = false) {
+    public init(
+        id: Int, lastModified: Timestamp, url: String, title: String, addedBy: String,
+        unread: Bool = true, archived: Bool = false, favorite: Bool = false
+    ) {
         self.id = id
         self.lastModified = lastModified
         self.url = url
@@ -45,7 +51,7 @@ public struct ReadingListItem: Equatable {
     }
 }
 
-public func ==(lhs: ReadingListItem, rhs: ReadingListItem) -> Bool {
+public func == (lhs: ReadingListItem, rhs: ReadingListItem) -> Bool {
     return lhs.id == rhs.id
         && lhs.lastModified == rhs.lastModified
         && lhs.url == rhs.url
@@ -55,4 +61,3 @@ public func ==(lhs: ReadingListItem, rhs: ReadingListItem) -> Bool {
         && lhs.archived == rhs.archived
         && lhs.favorite == rhs.favorite
 }
-

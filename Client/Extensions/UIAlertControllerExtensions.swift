@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import Shared
+import UIKit
 
 typealias UIAlertActionCallback = (UIAlertAction) -> Void
 
@@ -18,7 +18,9 @@ extension UIAlertController {
 
     - returns: UIAlertController for asking the user to restore tabs after a crash
     */
-    class func restoreTabsAlert(okayCallback: @escaping UIAlertActionCallback, noCallback: @escaping UIAlertActionCallback) -> UIAlertController {
+    class func restoreTabsAlert(
+        okayCallback: @escaping UIAlertActionCallback, noCallback: @escaping UIAlertActionCallback
+    ) -> UIAlertController {
         let alert = UIAlertController(
             title: .RestoreTabsAlertTitle,
             message: .RestoreTabsAlertMessage,

@@ -1,9 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
+import SDWebImage
 import Shared
 import Storage
-import SDWebImage
-import Defaults
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -15,14 +15,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var geigerCounter: KMCGeigerCounter?
 
     var selectedTabUUID: String? {
-        let tabManager  = SceneDelegate.getTabManager()
+        let tabManager = SceneDelegate.getTabManager()
         return tabManager.selectedTab?.tabUUID
     }
 
     // MARK: - Scene state
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(
+        _ scene: UIScene, willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
         self.scene = scene
-        
+
         guard let scene = (scene as? UIWindowScene) else { return }
 
         window = .init(windowScene: scene)
@@ -79,14 +82,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         tabManager.preserveTabs()
     }
-    
+
     // MARK: - URL managment
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-              let routerpath = NavigationPath(url: url),
-              let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-              let queryItems = components.queryItems else { return }
+            let routerpath = NavigationPath(url: url),
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+            let queryItems = components.queryItems
+        else { return }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
@@ -95,7 +99,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 object = .searchText
             }
 
-            TelemetryWrapper.recordEvent(category: .appExtensionAction, method: .applicationOpenUrl, object: object)
+            TelemetryWrapper.recordEvent(
+                category: .appExtensionAction, method: .applicationOpenUrl, object: object)
         }
 
         DispatchQueue.main.async {
@@ -122,8 +127,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         if let intent = userActivity.interaction?.intent as? SearchNeevaIntent,
-           let query = intent.text,
-           let url = neevaSearchEngine.searchURLForQuery(query) {
+            let query = intent.text,
+            let url = neevaSearchEngine.searchURLForQuery(query)
+        {
             self.browserViewController.openURLInNewTab(url)
             return true
         }
@@ -134,7 +140,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func checkForUniversalURL(continue userActivity: NSUserActivity) -> Bool {
         // Get URL components from the incoming user activity.
         guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-            let incomingURL = userActivity.webpageURL else {
+            let incomingURL = userActivity.webpageURL
+        else {
             return false
         }
 
@@ -144,19 +151,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     // MARK: - Shortcut
-    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+    func windowScene(
+        _ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
         handleShortcut(shortcutItem: shortcutItem, completionHandler: completionHandler)
     }
 
-    func handleShortcut(shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void = { _ in }) {
-        let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(shortcutItem, withBrowserViewController: BrowserViewController.foregroundBVC())
+    func handleShortcut(
+        shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void = { _ in }
+    ) {
+        let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(
+            shortcutItem, withBrowserViewController: BrowserViewController.foregroundBVC())
         completionHandler(handledShortCutItem)
     }
 
     // MARK: - Get data from current scene
     static func getCurrentSceneDelegate() -> SceneDelegate {
         for scene in UIApplication.shared.connectedScenes {
-            if scene.activationState == .foregroundActive || UIApplication.shared.connectedScenes.count == 1, let sceneDelegate = ((scene as? UIWindowScene)?.delegate as? SceneDelegate) {
+            if scene.activationState == .foregroundActive
+                || UIApplication.shared.connectedScenes.count == 1,
+                let sceneDelegate = ((scene as? UIWindowScene)?.delegate as? SceneDelegate)
+            {
                 return sceneDelegate
             }
         }
@@ -213,13 +230,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print(signInToken, "sign in token")
         Defaults[.introSeen] = true
         AppClipHelper.saveTokenToDevice(nil)
-        browserViewController.openURLInNewTab(URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
+        browserViewController.openURLInNewTab(
+            URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
     }
 }
 
 // MARK: - Root View Controller Animations
 extension SceneDelegate: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        animationControllerFor operation: UINavigationController.Operation,
+        from fromVC: UIViewController, to toVC: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
         switch operation {
         case .push:
             return BrowserToTrayAnimator()

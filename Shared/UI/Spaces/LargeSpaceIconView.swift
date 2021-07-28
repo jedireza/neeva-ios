@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-fileprivate struct Metrics {
+private struct Metrics {
     static let size: CGFloat = 36
     static let cornerRadius: CGFloat = 4
     static let starSize: CGFloat = 24
@@ -20,7 +20,7 @@ public struct LargeSpaceIconView: View {
     struct EmptyIcon<Content: View>: View {
         let background: Color
         let content: () -> Content
-        init(background: Color,  @ViewBuilder _ content: @escaping () -> Content) {
+        init(background: Color, @ViewBuilder _ content: @escaping () -> Content) {
             self.background = background
             self.content = content
         }
@@ -39,9 +39,9 @@ public struct LargeSpaceIconView: View {
                     .frame(height: 24)
                     .foregroundColor(.hex(0xFF8852))
             }
-        } else if
-            let thumbnail = space.thumbnail?.dataURIBody,
-            let image = UIImage(data: thumbnail) {
+        } else if let thumbnail = space.thumbnail?.dataURIBody,
+            let image = UIImage(data: thumbnail)
+        {
             Image(uiImage: image)
                 .resizable()
                 .aspectRatio(contentMode: .fill)

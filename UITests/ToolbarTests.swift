@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import WebKit
 import UIKit
+import WebKit
 
 class ToolbarTests: KIFTestCase, UITextFieldDelegate {
     fileprivate var webRoot: String!
@@ -19,7 +19,9 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
         tester().tapView(withAccessibilityLabel: "Address Bar")
         tester().enterText(intoCurrentFirstResponder: "foobar")
         tester().tapView(withAccessibilityLabel: "Cancel")
-        XCTAssertNotEqual(urlField().accessibilityValue, "foobar", "Verify that the URL bar text clears on about:home")
+        XCTAssertNotEqual(
+            urlField().accessibilityValue, "foobar",
+            "Verify that the URL bar text clears on about:home")
 
         // 127.0.0.1 doesn't cause http:// to be hidden. localhost does. Both will work.
         let localhostURL = webRoot.replacingOccurrences(of: "127.0.0.1", with: "localhost")
@@ -34,18 +36,23 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
         tester().enterText(intoCurrentFirstResponder: "foobar")
         tester().tapView(withAccessibilityLabel: "Cancel")
         tester().waitForAnimationsToFinish()
-        XCTAssertEqual(urlField().accessibilityValue, url, "Verify that text reverts to page URL after entering text")
+        XCTAssertEqual(
+            urlField().accessibilityValue, url,
+            "Verify that text reverts to page URL after entering text")
 
         tester().tapView(withAccessibilityLabel: "Address Bar")
         tester().enterText(intoCurrentFirstResponder: " ")
 
         tester().tapView(withAccessibilityLabel: "Cancel")
         tester().waitForAnimationsToFinish()
-        XCTAssertEqual(urlField().accessibilityValue, url, "Verify that text reverts to page URL after clearing text")
+        XCTAssertEqual(
+            urlField().accessibilityValue, url,
+            "Verify that text reverts to page URL after clearing text")
     }
 
     func testUserInfoRemovedFromURL() {
-        let hostWithUsername = webRoot.replacingOccurrences(of: "127.0.0.1", with: "username:password@127.0.0.1")
+        let hostWithUsername = webRoot.replacingOccurrences(
+            of: "127.0.0.1", with: "username:password@127.0.0.1")
         let urlWithUserInfo = "\(hostWithUsername)/numberedPage.html?page=1"
 
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: urlWithUserInfo)
@@ -54,7 +61,8 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
 
         let urlWithoutUserInfo = "\(webRoot!)/numberedPage.html?page=1"
 
-        let urlField = tester().waitForView(withAccessibilityLabel: "Address Bar")!.accessibilityElement(withLabel: "Address Bar")!
+        let urlField = tester().waitForView(withAccessibilityLabel: "Address Bar")!
+            .accessibilityElement(withLabel: "Address Bar")!
         XCTAssertEqual(urlField.accessibilityValue, urlWithoutUserInfo)
     }
 

@@ -11,12 +11,12 @@ class AuthenticationTests: KIFTestCase {
         super.setUp()
         webRoot = SimplePageServer.start()
         BrowserUtils.dismissFirstRunUI(tester())
-	}
+    }
 
     override func tearDown() {
         BrowserUtils.resetToAboutHomeKIF(tester())
         BrowserUtils.clearPrivateDataKIF(tester())
-		super.tearDown()
+        super.tearDown()
     }
 
     /**
@@ -80,13 +80,17 @@ class AuthenticationTests: KIFTestCase {
         tester().tapView(withAccessibilityLabel: "Cancel")
     }
 
-    fileprivate func enterCredentials(usernameValue: String, passwordValue: String, username: String, password: String) {
+    fileprivate func enterCredentials(
+        usernameValue: String, passwordValue: String, username: String, password: String
+    ) {
 
         // In case of IPad, Earl Grey complains that UI Loop has not been finished for password field, reverting.
-        let usernameField = tester().waitForViewWithAccessibilityValue(usernameValue) as! UITextField
-        let passwordField = tester().waitForViewWithAccessibilityValue(passwordValue) as! UITextField
+        let usernameField =
+            tester().waitForViewWithAccessibilityValue(usernameValue) as! UITextField
+        let passwordField =
+            tester().waitForViewWithAccessibilityValue(passwordValue) as! UITextField
         usernameField.text = username
         passwordField.text = password
         tester().tapView(withAccessibilityLabel: "Log in")
-	}
+    }
 }

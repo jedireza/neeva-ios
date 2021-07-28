@@ -1,91 +1,153 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
 import SwiftUI
+import UIKit
 
 extension UIColor {
     public enum brand {
-        public static let blue = UIColor(named: "Brand/Blue", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let seafoam = UIColor(named: "Brand/Seafoam", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let polar = UIColor(named: "Brand/Polar", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let pistachio = UIColor(named: "Brand/Pistachio", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let offwhite = UIColor(named: "Brand/Offwhite", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let red = UIColor(named: "Brand/Red", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let orange = UIColor(named: "Brand/Orange", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let peach = UIColor(named: "Brand/Peach", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let yellow = UIColor(named: "Brand/Yellow", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let pink = UIColor(named: "Brand/Pink", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let green = UIColor(named: "Brand/Green", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let mint = UIColor(named: "Brand/Mint", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let maya = UIColor(named: "Brand/Maya", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gold = UIColor(named: "Brand/Gold", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let purple = UIColor(named: "Brand/Purple", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let blue = UIColor(
+            named: "Brand/Blue", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let seafoam = UIColor(
+            named: "Brand/Seafoam", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let polar = UIColor(
+            named: "Brand/Polar", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let pistachio = UIColor(
+            named: "Brand/Pistachio", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let offwhite = UIColor(
+            named: "Brand/Offwhite", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let red = UIColor(
+            named: "Brand/Red", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let orange = UIColor(
+            named: "Brand/Orange", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let peach = UIColor(
+            named: "Brand/Peach", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let yellow = UIColor(
+            named: "Brand/Yellow", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let pink = UIColor(
+            named: "Brand/Pink", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let green = UIColor(
+            named: "Brand/Green", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let mint = UIColor(
+            named: "Brand/Mint", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let maya = UIColor(
+            named: "Brand/Maya", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gold = UIColor(
+            named: "Brand/Gold", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let purple = UIColor(
+            named: "Brand/Purple", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 
-        public static let charcoal = UIColor(named: "Brand/Charcoal", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let white = UIColor(named: "Brand/White", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let beige = UIColor(named: "Brand/Beige", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let charcoal = UIColor(
+            named: "Brand/Charcoal", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let white = UIColor(
+            named: "Brand/White", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let beige = UIColor(
+            named: "Brand/Beige", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 
         public enum variant {
-            public static let blue = UIColor(named: "Brand/Blue Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let seafoam = UIColor(named: "Brand/Seafoam Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let polar = UIColor(named: "Brand/Polar Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let pistachio = UIColor(named: "Brand/Pistachio Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let offwhite = UIColor(named: "Brand/Offwhite Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let red = UIColor(named: "Brand/Red Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let orange = UIColor(named: "Brand/Orange Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let peach = UIColor(named: "Brand/Peach Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let yellow = UIColor(named: "Brand/Yellow Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let pink = UIColor(named: "Brand/Pink Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let green = UIColor(named: "Brand/Green Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let mint = UIColor(named: "Brand/Mint Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let maya = UIColor(named: "Brand/Maya Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let gold = UIColor(named: "Brand/Gold Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let purple = UIColor(named: "Brand/Purple Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let blue = UIColor(
+                named: "Brand/Blue Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let seafoam = UIColor(
+                named: "Brand/Seafoam Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil
+            )!
+            public static let polar = UIColor(
+                named: "Brand/Polar Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let pistachio = UIColor(
+                named: "Brand/Pistachio Variant", in: NeevaConstants.sharedBundle,
+                compatibleWith: nil)!
+            public static let offwhite = UIColor(
+                named: "Brand/Offwhite Variant", in: NeevaConstants.sharedBundle,
+                compatibleWith: nil)!
+            public static let red = UIColor(
+                named: "Brand/Red Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let orange = UIColor(
+                named: "Brand/Orange Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let peach = UIColor(
+                named: "Brand/Peach Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let yellow = UIColor(
+                named: "Brand/Yellow Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let pink = UIColor(
+                named: "Brand/Pink Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let green = UIColor(
+                named: "Brand/Green Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let mint = UIColor(
+                named: "Brand/Mint Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let maya = UIColor(
+                named: "Brand/Maya Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let gold = UIColor(
+                named: "Brand/Gold Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let purple = UIColor(
+                named: "Brand/Purple Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         }
 
         public enum adaptive {
             public static let maya = UIColor(light: .brand.maya, dark: .brand.variant.maya)
             public static let polar = UIColor(light: .brand.polar, dark: .brand.variant.polar)
-            public static let pistachio = UIColor(light: .brand.pistachio, dark: .brand.variant.pistachio)
+            public static let pistachio = UIColor(
+                light: .brand.pistachio, dark: .brand.variant.pistachio)
             public static let orange = UIColor(light: .brand.variant.orange, dark: .brand.orange)
         }
 
         public enum candidate {
-            public static let pistachio = UIColor(named: "Brand/Pistachio Candidate", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let blueUI = UIColor(named: "Brand/Blue UI Candidate", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let pistachio = UIColor(
+                named: "Brand/Pistachio Candidate", in: NeevaConstants.sharedBundle,
+                compatibleWith: nil)!
+            public static let blueUI = UIColor(
+                named: "Brand/Blue UI Candidate", in: NeevaConstants.sharedBundle,
+                compatibleWith: nil)!
         }
     }
 
     public enum ui {
-        public static let aqua = UIColor(named: "UI/Aqua", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let backdrop = UIColor(named: "UI/Backdrop", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray10 = UIColor(named: "UI/Gray 10", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray20 = UIColor(named: "UI/Gray 20", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray30 = UIColor(named: "UI/Gray 30", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray50 = UIColor(named: "UI/Gray 50", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray60 = UIColor(named: "UI/Gray 60", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray70 = UIColor(named: "UI/Gray 70", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray80 = UIColor(named: "UI/Gray 80", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray96 = UIColor(named: "UI/Gray 96", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray97 = UIColor(named: "UI/Gray 97", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-        public static let gray98 = UIColor(named: "UI/Gray 98", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let aqua = UIColor(
+            named: "UI/Aqua", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let backdrop = UIColor(
+            named: "UI/Backdrop", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray10 = UIColor(
+            named: "UI/Gray 10", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray20 = UIColor(
+            named: "UI/Gray 20", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray30 = UIColor(
+            named: "UI/Gray 30", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray50 = UIColor(
+            named: "UI/Gray 50", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray60 = UIColor(
+            named: "UI/Gray 60", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray70 = UIColor(
+            named: "UI/Gray 70", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray80 = UIColor(
+            named: "UI/Gray 80", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray96 = UIColor(
+            named: "UI/Gray 96", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray97 = UIColor(
+            named: "UI/Gray 97", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray98 = UIColor(
+            named: "UI/Gray 98", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 
         public enum adaptive {
-            public static let blue = UIColor(named: "UI/Blue", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-            public static let separator = UIColor(named: "UI/Separator", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let blue = UIColor(
+                named: "UI/Blue", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let separator = UIColor(
+                named: "UI/Separator", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         }
 
         public enum variant {
-            public static let aqua = UIColor(named: "UI/Aqua Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+            public static let aqua = UIColor(
+                named: "UI/Aqua Variant", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         }
     }
 
-    public static let DefaultBackground = UIColor(named: "Background", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let DefaultTextAndTint = UIColor(named: "TextAndTint", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let ElevatedDarkBackground = UIColor(named: "DarkElevated", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let SelectedCell = UIColor(named: "SelectedCell", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let TrayBackground = UIColor(named: "TrayBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
-    public static let TextSelectionHighlight = UIColor(named: "TextSelectionHighlight", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let DefaultBackground = UIColor(
+        named: "Background", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let DefaultTextAndTint = UIColor(
+        named: "TextAndTint", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let ElevatedDarkBackground = UIColor(
+        named: "DarkElevated", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let SelectedCell = UIColor(
+        named: "SelectedCell", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let TrayBackground = UIColor(
+        named: "TrayBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let TextSelectionHighlight = UIColor(
+        named: "TextSelectionHighlight", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 }
 
 extension Color {
@@ -172,5 +234,6 @@ extension Color {
     public static let selectedCell = Color(UIColor.SelectedCell)
 
     public static let spaceIconBackground = Color.brand.variant.polar
-    public static let chrome = Color(UIColor(light: .systemBackground, dark: .tertiarySystemBackground))
+    public static let chrome = Color(
+        UIColor(light: .systemBackground, dark: .tertiarySystemBackground))
 }

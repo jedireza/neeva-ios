@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Defaults
 import Shared
+import SwiftUI
 
 struct PrivacySettingsSection: View {
     @Default(.closePrivateTabs) var closePrivateTabs
@@ -14,7 +14,8 @@ struct PrivacySettingsSection: View {
             "Clear Browsing Data",
             destination: DataManagementView()
                 .onAppear {
-                    ClientLogger.shared.logCounter(.ViewDataManagement, attributes: EnvironmentHelper.shared.getAttributes())
+                    ClientLogger.shared.logCounter(
+                        .ViewDataManagement, attributes: EnvironmentHelper.shared.getAttributes())
                 }
         )
         Toggle(isOn: $closePrivateTabs) {
@@ -36,14 +37,17 @@ struct PrivacySettingsSection: View {
                 .applyToggleStyle()
                 .navigationTitle("Tracking Protection")
                 .onAppear {
-                    ClientLogger.shared.logCounter(.ViewTrackingProtection, attributes: EnvironmentHelper.shared.getAttributes())
+                    ClientLogger.shared.logCounter(
+                        .ViewTrackingProtection,
+                        attributes: EnvironmentHelper.shared.getAttributes())
                 }
             )
         } else {
             Toggle("Tracking Protection", isOn: $contentBlockingEnabled)
         }
         NavigationLinkButton("Privacy Policy") {
-            ClientLogger.shared.logCounter(.ViewPrivacyPolicy, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .ViewPrivacyPolicy, attributes: EnvironmentHelper.shared.getAttributes())
             openURL(NeevaConstants.appPrivacyURL)
         }
     }

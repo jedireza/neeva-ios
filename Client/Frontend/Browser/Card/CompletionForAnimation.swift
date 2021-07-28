@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-fileprivate struct CompletionForAnimation: AnimatableModifier {
+private struct CompletionForAnimation: AnimatableModifier {
     var targetValue: Double
 
     var animatableData: Double {
@@ -11,11 +11,13 @@ fileprivate struct CompletionForAnimation: AnimatableModifier {
         }
     }
 
-    var afterTrueToFalse: () -> ()
-    var afterFalseToTrue: () -> ()
+    var afterTrueToFalse: () -> Void
+    var afterFalseToTrue: () -> Void
 
-    init(toggleValue: Bool,
-         afterTrueToFalse: @escaping () -> (), afterFalseToTrue: @escaping () -> ()) {
+    init(
+        toggleValue: Bool,
+        afterTrueToFalse: @escaping () -> Void, afterFalseToTrue: @escaping () -> Void
+    ) {
         self.afterTrueToFalse = afterTrueToFalse
         self.afterFalseToTrue = afterFalseToTrue
 
@@ -24,7 +26,7 @@ fileprivate struct CompletionForAnimation: AnimatableModifier {
     }
 
     func maybeRunCompletion() {
-        if (animatableData == targetValue) {
+        if animatableData == targetValue {
             DispatchQueue.main.async {
                 targetValue == 1 ? self.afterFalseToTrue() : self.afterTrueToFalse()
             }
@@ -37,11 +39,15 @@ fileprivate struct CompletionForAnimation: AnimatableModifier {
 }
 
 extension View {
-    func runAfter(toggling: Bool,
-                  fromTrueToFalse: @escaping () -> () = {},
-                  fromFalseToTrue: @escaping () -> () = {}) -> some View {
-        self.modifier(CompletionForAnimation(toggleValue: toggling,
-                                             afterTrueToFalse: fromTrueToFalse,
-                                             afterFalseToTrue: fromFalseToTrue))
+    func runAfter(
+        toggling: Bool,
+        fromTrueToFalse: @escaping () -> Void = {},
+        fromFalseToTrue: @escaping () -> Void = {}
+    ) -> some View {
+        self.modifier(
+            CompletionForAnimation(
+                toggleValue: toggling,
+                afterTrueToFalse: fromTrueToFalse,
+                afterFalseToTrue: fromFalseToTrue))
     }
 }

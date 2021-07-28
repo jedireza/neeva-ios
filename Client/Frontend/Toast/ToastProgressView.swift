@@ -1,14 +1,14 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import SFSafeSymbols
+import SwiftUI
 
 enum ToastProgressStatus {
     case inProgress
     case success
     case failed
 
-    var icon: SFSymbol{
+    var icon: SFSymbol {
         switch self {
         case .inProgress:
             return .circle
@@ -26,7 +26,7 @@ class ToastProgressViewModel: ObservableObject {
 
 struct ToastProgressView: View {
     var backgroundColor: Color = Color(ToastViewUX.ToastDefaultColor)
-    var stateDidChange: ((ToastProgressStatus) -> ())?
+    var stateDidChange: ((ToastProgressStatus) -> Void)?
 
     @EnvironmentObject var toastProgressViewModel: ToastProgressViewModel
 

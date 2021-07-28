@@ -2,8 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@testable import Shared
 import XCTest
+
+@testable import Shared
 
 // Trivial test for using Deferred.
 
@@ -92,7 +93,6 @@ class DeferredTests: XCTestCase {
         myclass = nil
         waitForExpectations(timeout: 3, handler: nil)
     }
-
 
     func testFailAccumulate() {
         let leak = self.expectation(description: "deinit")

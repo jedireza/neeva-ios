@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import SDWebImage
+import UIKit
 
 private let imageLock = NSLock()
 
@@ -50,7 +50,7 @@ extension UIImage {
     public static func templateImageNamed(_ name: String) -> UIImage? {
         return UIImage(named: name)?.withRenderingMode(.alwaysTemplate)
     }
-    
+
     public static func originalImageNamed(_ name: String) -> UIImage? {
         return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
     }
@@ -74,7 +74,7 @@ extension UIImage {
         // adjust for device pixel density
         let maxSizePixels = maxSize / UIScreen.main.scale
         // work out aspect ratio
-        let aspectRatio =  size.width / size.height
+        let aspectRatio = size.width / size.height
         // variables for storing calculated data
         var width: CGFloat
         var height: CGFloat
@@ -89,7 +89,8 @@ extension UIImage {
             width = maxSizePixels * aspectRatio
         }
         // create an image renderer of the correct size
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: .default())
+        let renderer = UIGraphicsImageRenderer(
+            size: CGSize(width: width, height: height), format: .default())
         // render the image
         newImage = renderer.image { _ in
             self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))

@@ -2,8 +2,8 @@
 
 import SwiftUI
 
-fileprivate extension Font.Weight {
-    var roobertName: String {
+extension Font.Weight {
+    fileprivate var roobertName: String {
         switch self {
         case .light, .ultraLight, .thin:
             return "Roobert-Light"
@@ -28,7 +28,9 @@ extension Font {
     static func roobert(_ weight: Font.Weight = .regular, size: CGFloat) -> Self {
         custom(weight.roobertName, size: size)
     }
-    static func roobert(_ weight: Font.Weight = .regular, size: CGFloat, relativeTo textStyle: TextStyle) -> Self {
+    static func roobert(
+        _ weight: Font.Weight = .regular, size: CGFloat, relativeTo textStyle: TextStyle
+    ) -> Self {
         custom(weight.roobertName, size: size, relativeTo: textStyle)
     }
     static func roobert(_ weight: Font.Weight = .regular, fixedSize size: CGFloat) -> Self {

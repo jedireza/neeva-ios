@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 struct FeatureFlagSettingsView: View {
     @State var needsRestart = false
@@ -12,17 +12,19 @@ struct FeatureFlagSettingsView: View {
     var body: some View {
         List {
             ForEach(FeatureFlag.allCases.map(\.rawValue), id: \.self) { flag in
-                Toggle(flag, isOn: Binding(
-                    get: { currentFeatureFlags.contains(flag) },
-                    set: { isOn in
-                        needsRestart = true
-                        if isOn {
-                            currentFeatureFlags.insert(flag)
-                        } else {
-                            currentFeatureFlags.remove(flag)
+                Toggle(
+                    flag,
+                    isOn: Binding(
+                        get: { currentFeatureFlags.contains(flag) },
+                        set: { isOn in
+                            needsRestart = true
+                            if isOn {
+                                currentFeatureFlags.insert(flag)
+                            } else {
+                                currentFeatureFlags.remove(flag)
+                            }
                         }
-                    }
-                ))
+                    ))
             }
         }
         .listStyle(GroupedListStyle())

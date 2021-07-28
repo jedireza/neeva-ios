@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Foundation
 import Shared
-import Defaults
 
 extension URLComponents {
     // Return the first query parameter that matches
@@ -26,8 +26,11 @@ enum NavigationPath {
             return nil
         }
 
-        guard let urlTypes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [AnyObject],
-            let urlSchemes = urlTypes.first?["CFBundleURLSchemes"] as? [String] else {
+        guard
+            let urlTypes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes")
+                as? [AnyObject],
+            let urlSchemes = urlTypes.first?["CFBundleURLSchemes"] as? [String]
+        else {
             // Something very strange has happened
             return nil
         }
@@ -38,15 +41,18 @@ enum NavigationPath {
 
         if urlString.starts(with: "\(scheme)://open-url") {
             self = .openUrlFromComponents(components: components)
-        } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(urlString: urlString, scheme: scheme, components: components) {
+        } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(
+            urlString: urlString, scheme: scheme, components: components)
+        {
             self = widgetKitNavPath
         } else if urlString.starts(with: "\(scheme)://open-text") {
             let text = components.valueForQuery("text")
             self = .text(text ?? "")
-        } else if urlString.starts(with: "http:") ||  urlString.starts(with: "https:") {
+        } else if urlString.starts(with: "http:") || urlString.starts(with: "https:") {
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-            self = .url(webURL: NavigationPath.maybeRewriteURL(url, components), isPrivate: isPrivate)
+            self = .url(
+                webURL: NavigationPath.maybeRewriteURL(url, components), isPrivate: isPrivate)
         } else {
             return nil
         }
@@ -54,55 +60,74 @@ enum NavigationPath {
 
     static func handle(nav: NavigationPath, with bvc: BrowserViewController) {
         switch nav {
-        case .url(let url, let isPrivate): NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
-        case .text(let text): NavigationPath.handleText(text: text, with: bvc)
-        case .closePrivateTabs: NavigationPath.handleClosePrivateTabs(with: bvc)
-        case .widgetUrl(webURL: let webURL, uuid: let uuid):
+        case .url(let url, let isPrivate):
+            NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
+        case .text(let text):
+            NavigationPath.handleText(text: text, with: bvc)
+        case .closePrivateTabs:
+            NavigationPath.handleClosePrivateTabs(with: bvc)
+        case .widgetUrl(let webURL, let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
         }
     }
 
-    private static func handleWidgetKitQuery(urlString: String, scheme: String, components: URLComponents) -> NavigationPath? {
+    private static func handleWidgetKitQuery(
+        urlString: String, scheme: String, components: URLComponents
+    ) -> NavigationPath? {
         if urlString.starts(with: "\(scheme)://widget-medium-topsites-open-url") {
             // Widget Top sites - open url
-            TelemetryWrapper.recordEvent(category: .action, method: .open, object: .mediumTopSitesWidget)
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .open, object: .mediumTopSitesWidget)
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-url") {
             // Widget Quick links - small - open url private or regular
-            TelemetryWrapper.recordEvent(category: .action, method: .open, object: .smallQuickActionSearch)
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .open, object: .smallQuickActionSearch)
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-url") {
             // Widget Quick Actions - medium - open url private or regular
-            let isPrivate = Bool(components.valueForQuery("private") ?? "") ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-            TelemetryWrapper.recordEvent(category: .action, method: .open, object: isPrivate ? .mediumQuickActionPrivateSearch : .mediumQuickActionSearch)
+            let isPrivate =
+                Bool(components.valueForQuery("private") ?? "")
+                ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .open,
+                object: isPrivate ? .mediumQuickActionPrivateSearch : .mediumQuickActionSearch)
             return .openUrlFromComponents(components: components)
-        } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-copied") || urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-copied") {
+        } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-copied")
+            || urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-copied")
+        {
             // Widget Quick links - medium - open copied url
-            TelemetryWrapper.recordEvent(category: .action, method: .open, object: .mediumQuickActionCopiedLink)
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .open, object: .mediumQuickActionCopiedLink)
             return .openCopiedUrl()
-        } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-close-private-tabs") || urlString.starts(with: "\(scheme)://widget-medium-quicklink-close-private-tabs"){
+        } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-close-private-tabs")
+            || urlString.starts(with: "\(scheme)://widget-medium-quicklink-close-private-tabs")
+        {
             // Widget Quick links - medium - close private tabs
-            TelemetryWrapper.recordEvent(category: .action, method: .open, object: .mediumQuickActionClosePrivate)
+            TelemetryWrapper.recordEvent(
+                category: .action, method: .open, object: .mediumQuickActionClosePrivate)
             return .closePrivateTabs
         }
-        
+
         return nil
     }
-    
+
     private static func openUrlFromComponents(components: URLComponents) -> NavigationPath {
         let url = components.valueForQuery("url")?.asURL
-    
+
         // If attempting to sign in, skip first run screen
         if let url = url, NeevaConstants.isAppHost(url.host), url.path.starts(with: "/login") {
             Defaults[.introSeen] = true
         }
-        
+
         // Unless the `open-url` URL specifies a `private` parameter,
         // use the last browsing mode the user was in.
-        let isPrivate = Bool(components.valueForQuery("private") ?? "") ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
+        let isPrivate =
+            Bool(components.valueForQuery("private") ?? "")
+            ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
         return .url(webURL: url, isPrivate: isPrivate)
     }
-    
+
     private static func openCopiedUrl() -> NavigationPath {
         if !UIPasteboard.general.hasURLs {
             let searchText = UIPasteboard.general.string ?? ""
@@ -115,11 +140,11 @@ enum NavigationPath {
 
     private static func handleClosePrivateTabs(with bvc: BrowserViewController) {
         bvc.tabManager.removeTabs(bvc.tabManager.privateTabs)
-         guard let tab = mostRecentTab(inTabs: bvc.tabManager.normalTabs) else {
-             bvc.tabManager.selectTab(bvc.tabManager.addTab())
-             return
-         }
-         bvc.tabManager.selectTab(tab)
+        guard let tab = mostRecentTab(inTabs: bvc.tabManager.normalTabs) else {
+            bvc.tabManager.selectTab(bvc.tabManager.addTab())
+            return
+        }
+        bvc.tabManager.selectTab(tab)
     }
 
     private static func handleURL(url: URL?, isPrivate: Bool, with bvc: BrowserViewController) {
@@ -129,7 +154,7 @@ enum NavigationPath {
             bvc.openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
         }
     }
-    
+
     private static func handleWidgetURL(url: URL?, uuid: String, with bvc: BrowserViewController) {
         if let newURL = url {
             bvc.switchToTabForWidgetURLOrOpen(newURL, uuid: uuid, isPrivate: false)
@@ -142,7 +167,7 @@ enum NavigationPath {
         bvc.openBlankNewTab(focusLocationField: false)
         bvc.urlBar(didSubmitText: text)
     }
-    
+
     public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
         // Intercept and rewrite search queries incoming from e.g. SpotLight.
         //
@@ -172,10 +197,10 @@ enum NavigationPath {
         //        ▿ value : Optional<String>
         //          - some : "safari"
         //
-        
+
         // search query value
         var value: String?
-        
+
         if let host = components.host, let queryItems = components.queryItems {
             switch host {
             case "www.google.com", "www.bing.com", "www.ecosia.org", "search.yahoo.com":
@@ -204,7 +229,7 @@ enum NavigationPath {
                 return url
             }
         }
-        
+
         if let value = value, let newURL = neevaSearchEngine.searchURLForQuery(value) {
             return newURL
         } else {

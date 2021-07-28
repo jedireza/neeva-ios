@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 // IMPORTANT!: Please take into consideration when adding new imports to
 // this file that it is utilized by external components besides the core
 // application (i.e. App Extensions). Introducing new dependencies here
@@ -9,9 +10,8 @@
 // increased startup times which may lead to termination by the OS.
 import Shared
 import Storage
-import XCGLogger
 import SwiftKeychainWrapper
-import Defaults
+import XCGLogger
 
 // Import these dependencies ONLY for the main `Client` application target.
 #if MOZ_TARGET_CLIENT
@@ -33,20 +33,24 @@ class ProfileFileAccessor: FileAccessor {
         // Bug 1147262: First option is for device, second is for simulator.
         var rootPath: String
         let sharedContainerIdentifier = AppInfo.sharedContainerIdentifier
-        if let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: sharedContainerIdentifier) {
+        if let url = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: sharedContainerIdentifier)
+        {
             rootPath = url.path
         } else {
-            log.error("Unable to find the shared container. Defaulting profile location to ~/Documents instead.")
-            rootPath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+            log.error(
+                "Unable to find the shared container. Defaulting profile location to ~/Documents instead."
+            )
+            rootPath =
+                (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
         }
 
-        super.init(rootPath: URL(fileURLWithPath: rootPath).appendingPathComponent(profileDirName).path)
+        super.init(
+            rootPath: URL(fileURLWithPath: rootPath).appendingPathComponent(profileDirName).path)
     }
 }
 
-/**
- * A Profile manages access to the user's data.
- */
+/// A Profile manages access to the user's data.
 protocol Profile: AnyObject {
     var queue: TabQueue { get }
     var files: FileAccessor { get }
@@ -139,7 +143,8 @@ open class BrowserProfile: Profile {
 
         // Set up our database handles.
         self.db = BrowserDB(filename: "browser.db", schema: BrowserSchema(), files: files)
-        self.readingListDB = BrowserDB(filename: "ReadingList.db", schema: ReadingListSchema(), files: files)
+        self.readingListDB = BrowserDB(
+            filename: "ReadingList.db", schema: ReadingListSchema(), files: files)
 
         if isNewProfile {
             log.info("New profile. Removing old Keychain/Prefs data.")
@@ -154,8 +159,11 @@ open class BrowserProfile: Profile {
 
         let notificationCenter = NotificationCenter.default
 
-        notificationCenter.addObserver(self, selector: #selector(onLocationChange), name: .OnLocationChange, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(onPageMetadataFetched), name: .OnPageMetadataFetched, object: nil)
+        notificationCenter.addObserver(
+            self, selector: #selector(onLocationChange), name: .OnLocationChange, object: nil)
+        notificationCenter.addObserver(
+            self, selector: #selector(onPageMetadataFetched), name: .OnPageMetadataFetched,
+            object: nil)
 
         // Always start by needing invalidation.
         // This is the same as self.history.setTopSitesNeedsInvalidation, but without the
@@ -182,9 +190,10 @@ open class BrowserProfile: Profile {
     @objc
     func onLocationChange(notification: NSNotification) {
         if let v = notification.userInfo!["visitType"] as? Int,
-           let visitType = VisitType(rawValue: v),
-           let url = notification.userInfo!["url"] as? URL, !isIgnoredURL(url),
-           let title = notification.userInfo!["title"] as? NSString {
+            let visitType = VisitType(rawValue: v),
+            let url = notification.userInfo!["url"] as? URL, !isIgnoredURL(url),
+            let title = notification.userInfo!["title"] as? NSString
+        {
             // Only record local vists if the change notification originated from a non-private tab
             if !(notification.userInfo!["isPrivate"] as? Bool ?? false) {
                 // We don't record a visit if no type was specified -- that means "ignore me".
@@ -207,12 +216,15 @@ open class BrowserProfile: Profile {
             return
         }
         guard let pageURL = notification.userInfo?["tabURL"] as? URL,
-              let pageMetadata = notification.userInfo?["pageMetadata"] as? PageMetadata else {
+            let pageMetadata = notification.userInfo?["pageMetadata"] as? PageMetadata
+        else {
             log.debug("Metadata notification doesn't contain any metadata!")
             return
         }
-        let defaultMetadataTTL: UInt64 = 3 * 24 * 60 * 60 * 1000 // 3 days for the metadata to live
-        self.metadata.storeMetadata(pageMetadata, forPageURL: pageURL, expireAt: defaultMetadataTTL + Date.nowMilliseconds())
+        let defaultMetadataTTL: UInt64 = 3 * 24 * 60 * 60 * 1000  // 3 days for the metadata to live
+        self.metadata.storeMetadata(
+            pageMetadata, forPageURL: pageURL, expireAt: defaultMetadataTTL + Date.nowMilliseconds()
+        )
     }
 
     deinit {
@@ -236,9 +248,10 @@ open class BrowserProfile: Profile {
      * Any other class that needs to access any one of these should ensure
      * that this is initialized first.
      */
-    fileprivate lazy var legacyPlaces: BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations  = {
-        return SQLiteHistory(db: self.db)
-    }()
+    fileprivate lazy var legacyPlaces:
+        BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations = {
+            return SQLiteHistory(db: self.db)
+        }()
 
     var favicons: Favicons {
         return self.legacyPlaces
@@ -264,15 +277,16 @@ open class BrowserProfile: Profile {
         return SQLiteReadingList(db: self.readingListDB)
     }()
 
-    lazy var remoteClientsAndTabs: RemoteClientsAndTabs & ResettableSyncStorage & AccountRemovalDelegate & RemoteDevices = {
-        return SQLiteRemoteClientsAndTabs(db: self.db)
-    }()
+    lazy var remoteClientsAndTabs:
+        RemoteClientsAndTabs & ResettableSyncStorage & AccountRemovalDelegate & RemoteDevices = {
+            return SQLiteRemoteClientsAndTabs(db: self.db)
+        }()
 
     lazy var certStore: CertStore = {
         return CertStore()
     }()
 
-    public func getCachedClients()-> Deferred<Maybe<[RemoteClient]>> {
+    public func getCachedClients() -> Deferred<Maybe<[RemoteClient]>> {
         return self.remoteClientsAndTabs.getClients()
     }
 
@@ -289,13 +303,16 @@ open class BrowserProfile: Profile {
     }
 
     lazy var logins: RustLogins = {
-        let databasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("logins.db").path
+        let databasePath = URL(
+            fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true
+        ).appendingPathComponent("logins.db").path
 
         let salt: String
         if let val = keychain.string(forKey: loginsSaltKeychainKey) {
             salt = val
         } else {
-            salt = RustLogins.setupPlaintextHeaderAndGetSalt(databasePath: databasePath, encryptionKey: loginsKey)
+            salt = RustLogins.setupPlaintextHeaderAndGetSalt(
+                databasePath: databasePath, encryptionKey: loginsKey)
             keychain.set(salt, forKey: loginsSaltKeychainKey, withAccessibility: .afterFirstUnlock)
         }
 

@@ -25,11 +25,14 @@ class SiriShortcuts {
         activity.title = Strings.SettingsSiriOpenURL
         activity.isEligibleForPrediction = true
         activity.suggestedInvocationPhrase = Strings.SettingsSiriOpenURL
-        activity.persistentIdentifier = NSUserActivityPersistentIdentifier(activityType.openURL.rawValue)
+        activity.persistentIdentifier = NSUserActivityPersistentIdentifier(
+            activityType.openURL.rawValue)
         return activity
     }()
 
-    static func displayAddToSiri(for activityType: activityType, in viewController: UIViewController) {
+    static func displayAddToSiri(
+        for activityType: activityType, in viewController: UIViewController
+    ) {
         guard let activity = SiriShortcuts().getActivity(for: activityType) else {
             return
         }
@@ -40,20 +43,23 @@ class SiriShortcuts {
         viewController.present(addViewController, animated: true, completion: nil)
     }
 
-    static func displayEditSiri(for shortcut: INVoiceShortcut, in viewController: UIViewController) {
+    static func displayEditSiri(for shortcut: INVoiceShortcut, in viewController: UIViewController)
+    {
         let editViewController = INUIEditVoiceShortcutViewController(voiceShortcut: shortcut)
         editViewController.modalPresentationStyle = .formSheet
         editViewController.delegate = viewController as? INUIEditVoiceShortcutViewControllerDelegate
         viewController.present(editViewController, animated: true, completion: nil)
     }
 
-    static func manageSiri(for activityType: SiriShortcuts.activityType, in viewController: UIViewController) {
+    static func manageSiri(
+        for activityType: SiriShortcuts.activityType, in viewController: UIViewController
+    ) {
         INVoiceShortcutCenter.shared.getAllVoiceShortcuts { (voiceShortcuts, error) in
             DispatchQueue.main.async {
                 guard let voiceShortcuts = voiceShortcuts else { return }
                 let foundShortcut = voiceShortcuts.filter { (attempt) in
                     attempt.shortcut.userActivity?.activityType == activityType.rawValue
-                    }.first
+                }.first
                 if let foundShortcut = foundShortcut {
                     self.displayEditSiri(for: foundShortcut, in: viewController)
                 } else {
@@ -82,7 +88,9 @@ class SiriShortcutManager: ObservableObject {
     func reload() {
         INVoiceShortcutCenter.shared.getAllVoiceShortcuts { (voiceShortcuts, error) in
             DispatchQueue.main.async {
-                if let foundShortcut = voiceShortcuts?.first(where: { $0.shortcut.userActivity?.activityType == self.activityType.rawValue }) {
+                if let foundShortcut = voiceShortcuts?.first(where: {
+                    $0.shortcut.userActivity?.activityType == self.activityType.rawValue
+                }) {
                     self.shortcut = .found(foundShortcut)
                 } else {
                     self.shortcut = .notFound

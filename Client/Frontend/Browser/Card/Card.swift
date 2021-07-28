@@ -1,9 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
 import Foundation
-import SwiftUI
 import SDWebImageSwiftUI
 import Shared
+import SwiftUI
 
 enum CardUX {
     static let DefaultCardSize: CGFloat = 160
@@ -39,11 +39,15 @@ extension EnvironmentValues {
     }
 
     private struct SelectionCompletionKey: EnvironmentKey {
-        static var defaultValue: (() -> ())? = nil
+        static var defaultValue: (() -> Void)? = nil
     }
 
-    public var selectionCompletion: () -> () {
-        get { self[SelectionCompletionKey] ?? { fatalError(".environment(\\.selectionCompletion) must be specified") } }
+    public var selectionCompletion: () -> Void {
+        get {
+            self[SelectionCompletionKey] ?? {
+                fatalError(".environment(\\.selectionCompletion) must be specified")
+            }
+        }
         set { self[SelectionCompletionKey] = newValue }
     }
 }
@@ -63,7 +67,7 @@ struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
     var showsSelection = true
 
-    @Environment(\.selectionCompletion) private var selectionCompletion: () -> ()
+    @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @State private var isPressed = false
 
     var body: some View {
@@ -80,8 +84,10 @@ struct Card<Details>: View where Details: CardDetails {
                     }
                     if let title = details.title {
                         Text(title).withFont(.labelMedium)
-                            .frame(maxWidth: .infinity,
-                                   alignment: details.favicon != nil ? .leading : .center)
+                            .frame(
+                                maxWidth: .infinity,
+                                alignment: details.favicon != nil ? .leading : .center
+                            )
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }
                     if let buttonImage = details.closeButtonImage {
@@ -115,4 +121,3 @@ struct Card<Details>: View where Details: CardDetails {
         .scaleEffect(isPressed ? 0.95 : 1)
     }
 }
-

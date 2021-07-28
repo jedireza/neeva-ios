@@ -1,11 +1,11 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
-import Storage
-import SDWebImageSwiftUI
-import SwiftUI
-import Shared
 import Combine
+import Foundation
+import SDWebImageSwiftUI
+import Shared
+import Storage
+import SwiftUI
 
 protocol SelectableThumbnail {
     associatedtype ThumbnailView: View
@@ -17,7 +17,7 @@ protocol SelectableThumbnail {
 protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     associatedtype Item: BrowserPrimitive
 
-    var id:String { get }
+    var id: String { get }
     var closeButtonImage: UIImage? { get }
     var title: String { get }
     var favicon: WebImage? { get }
@@ -36,7 +36,11 @@ extension CardDetails {
     }
 }
 
-extension CardDetails where Item: Selectable, Self: SelectingManagerProvider, Self.Manager.Item == Item, Manager: AccessingManager {
+extension CardDetails
+where
+    Item: Selectable, Self: SelectingManagerProvider, Self.Manager.Item == Item,
+    Manager: AccessingManager
+{
 
     func onSelect() {
         if let item = manager.get(for: id) {
@@ -45,7 +49,11 @@ extension CardDetails where Item: Selectable, Self: SelectingManagerProvider, Se
     }
 }
 
-extension CardDetails where Item: Closeable, Self: ClosingManagerProvider, Self.Manager.Item == Item, Manager: AccessingManager {
+extension CardDetails
+where
+    Item: Closeable, Self: ClosingManagerProvider, Self.Manager.Item == Item,
+    Manager: AccessingManager
+{
 
     var closeButtonImage: UIImage? {
         UIImage(systemName: "xmark")
@@ -82,7 +90,8 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
 }
 
 class TabCardDetails: CardDetails, AccessingManagerProvider,
-                      ClosingManagerProvider, SelectingManagerProvider {
+    ClosingManagerProvider, SelectingManagerProvider
+{
     typealias Item = Tab
     typealias Manager = TabManager
 
@@ -121,7 +130,7 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
 
 struct SpaceEntityThumbnail: SelectableThumbnail {
     let data: Data
-    let selected: () -> ()
+    let selected: () -> Void
 
     var thumbnail: some View {
         Image(uiImage: UIImage(data: data)!)
@@ -135,7 +144,7 @@ struct SpaceEntityThumbnail: SelectableThumbnail {
 }
 
 class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
-    static let Spacing : CGFloat = 5
+    static let Spacing: CGFloat = 5
 
     typealias Item = Space
     typealias Manager = SpaceStore
@@ -146,7 +155,6 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
-
 
     private init(id: String) {
         self.id = id
@@ -161,14 +169,14 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         self.init(id: space.id.id)
     }
 
-
     var thumbnail: some View {
         ThumbnailGroupView(model: self)
     }
 
     func updateDetails() {
-        allDetails = manager.get(for: id)?.contentThumbnails?.compactMap{ $0?.dataURIBody }
-            .map {SpaceEntityThumbnail(data: $0, selected: onSelect)} ?? []
+        allDetails =
+            manager.get(for: id)?.contentThumbnails?.compactMap { $0?.dataURIBody }
+            .map { SpaceEntityThumbnail(data: $0, selected: onSelect) } ?? []
     }
 
     func onSelect() {
@@ -179,7 +187,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         BrowserViewController.foregroundBVC().openURLInNewTab(url)
     }
 
-    func onClose() { }
+    func onClose() {}
 
     func performDrop(info: DropInfo) -> Bool {
         guard info.hasItemsConforming(to: ["public.text", "public.url"]) else {
@@ -195,7 +203,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                         let request = AddToSpaceRequest(
                             title: "Link from \(url.baseDomain ?? "page")",
                             description: "", url: url)
-                        request.addToExistingSpace(id:space.id.id, name: space.name)
+                        request.addToExistingSpace(id: space.id.id, name: space.name)
 
                         ToastDefaults().showToastForSpace(request: request)
                     }
@@ -213,10 +221,11 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                 if let text = text, let space = self.manager.get(for: self.id) {
                     DispatchQueue.main.async {
                         let bvc = BrowserViewController.foregroundBVC()
-                        let request = AddToSpaceRequest(title: "Selected snippets",
-                                                        description: text,
-                                                        url: (bvc.tabManager.selectedTab?.url)!)
-                        request.addToExistingSpace(id:space.id.id, name: space.name)
+                        let request = AddToSpaceRequest(
+                            title: "Selected snippets",
+                            description: text,
+                            url: (bvc.tabManager.selectedTab?.url)!)
+                        request.addToExistingSpace(id: space.id.id, name: space.name)
 
                         ToastDefaults().showToastForSpace(request: request)
                     }
@@ -241,15 +250,17 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
         self.id = url.absoluteString
         self.manager = fetcher
         self.anyCancellable = fetcher.objectWillChange.sink { [weak self] (_) in
-                    self?.objectWillChange.send()
+            self?.objectWillChange.send()
         }
         fetcher.load(url: url, profile: profile)
     }
 
     func thumbnail(size: CGFloat) -> some View {
-        return WebImage(url:
-                            URL(string: manager.get(for: id)?.pageMetadata?.mediaURL ?? ""))
-            .resizable().aspectRatio(contentMode: .fill)
+        return WebImage(
+            url:
+                URL(string: manager.get(for: id)?.pageMetadata?.mediaURL ?? "")
+        )
+        .resizable().aspectRatio(contentMode: .fill)
     }
 
     func onSelect() {
@@ -263,7 +274,9 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
     func onClose() {}
 }
 
-class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManagerProvider, ThumbnailModel {
+class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManagerProvider,
+    ThumbnailModel
+{
     typealias Item = TabGroup
     typealias Manager = TabGroupManager
 
@@ -277,7 +290,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
         self.id = tabGroup.id
         self.manager = tabGroupManager
-        allDetails = manager.get(for: id)?.children
+        allDetails =
+            manager.get(for: id)?.children
             .map({ TabCardDetails(tab: $0, manager: manager.tabManager) }) ?? []
     }
 
@@ -287,5 +301,3 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
 
     func onSelect() {}
 }
-
-

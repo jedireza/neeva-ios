@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Shared
 import SwiftUI
-import Defaults
 
 extension BrowserViewController: TabToolbarDelegate {
     func tabToolbarDidPressBack() {
@@ -39,10 +39,11 @@ extension BrowserViewController: TabToolbarDelegate {
         guard let url = tab.canonicalURL?.displayURL else { return }
         showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
     }
-    
+
     func tabToolbarDidPressTabs() {
         showTabTray()
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .tabToolbar, value: .tabView)
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .tabToolbar, value: .tabView)
     }
 
     func tabToolbarTabsMenu() -> UIMenu? {
@@ -50,7 +51,9 @@ extension BrowserViewController: TabToolbarDelegate {
             return nil
         }
 
-        let count = tabManager.selectedTab?.isPrivate ?? false ? tabManager.normalTabs.count : tabManager.privateTabs.count
+        let count =
+            tabManager.selectedTab?.isPrivate ?? false
+            ? tabManager.normalTabs.count : tabManager.privateTabs.count
 
         let icon: UIImage?
         if count <= 50 {
@@ -67,18 +70,24 @@ extension BrowserViewController: TabToolbarDelegate {
         }
         let incognitoActions = [
             tabManager.selectedTab?.isPrivate ?? false
-                ? UIAction(title: Strings.normalBrowsingModeTitle, image: icon, handler: switchPrivacyMode)
-                : UIAction(title: Strings.incognitoBrowsingModeTitle, image: icon, handler: switchPrivacyMode)
+                ? UIAction(
+                    title: Strings.normalBrowsingModeTitle, image: icon, handler: switchPrivacyMode)
+                : UIAction(
+                    title: Strings.incognitoBrowsingModeTitle, image: icon,
+                    handler: switchPrivacyMode)
         ]
 
         let tabCount = self.tabManager.tabs.count
 
-        let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare)) { _ in
+        let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare))
+        { _ in
             self.openLazyTab()
         }
         newTab.accessibilityLabel = "New Tab"
 
-        let newIncognitoTab = UIAction(title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")) { _ in
+        let newIncognitoTab = UIAction(
+            title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")
+        ) { _ in
             self.openLazyTab()
         }
 
@@ -88,10 +97,14 @@ extension BrowserViewController: TabToolbarDelegate {
             tabActions = tab.isPrivate ? [newIncognitoTab] : [newTab]
 
             if tabCount > 0 || !tab.isURLStartingPage {
-                let closeTab = UIAction(title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark), attributes: .destructive) { _ in
+                let closeTab = UIAction(
+                    title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark),
+                    attributes: .destructive
+                ) { _ in
                     if let tab = self.tabManager.selectedTab {
                         self.tabManager.removeTabAndUpdateSelectedTab(tab)
-                        self.zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
+                        self.zeroQueryViewController?.model.isPrivate =
+                            self.tabManager.selectedTab!.isPrivate
                     }
                 }
                 closeTab.accessibilityIdentifier = "Close Tab Action"
@@ -100,7 +113,9 @@ extension BrowserViewController: TabToolbarDelegate {
         }
 
         if tabCount > 1 {
-            tabActions.append(TabMenu(tabManager: tabManager, alertPresentViewController: self).createCloseAllTabsAction())
+            tabActions.append(
+                TabMenu(tabManager: tabManager, alertPresentViewController: self)
+                    .createCloseAllTabsAction())
         }
 
         return UIMenu(sections: [incognitoActions, tabActions])
@@ -108,7 +123,8 @@ extension BrowserViewController: TabToolbarDelegate {
 
     func showBackForwardList() {
         if let backForwardList = tabManager.selectedTab?.webView?.backForwardList {
-            let backForwardViewController = BackForwardListViewController(profile: profile, backForwardList: backForwardList)
+            let backForwardViewController = BackForwardListViewController(
+                profile: profile, backForwardList: backForwardList)
             backForwardViewController.tabManager = tabManager
             backForwardViewController.bvc = self
             backForwardViewController.modalPresentationStyle = .overCurrentContext

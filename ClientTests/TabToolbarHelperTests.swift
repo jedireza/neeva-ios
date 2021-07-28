@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@testable import Client
-
 import XCTest
+
+@testable import Client
 
 class TabToolbarHelperTests: XCTestCase {
     var subject: LegacyTabToolbarHelper!
@@ -43,33 +43,33 @@ class MockTabToolbar: LegacyTabToolbarProtocol {
 
     var tabToolbarDelegate: TabToolbarDelegate? {
         get { return nil }
-        set { }
+        set {}
     }
 
     var _tabsButton = MockTabsButton()
     var tabsButton: TabsButton {
-        get { _tabsButton }
+        _tabsButton
     }
 
     var _forwardButton = MockToolbarButton()
-    var forwardButton: ToolbarButton { get { _forwardButton } }
+    var forwardButton: ToolbarButton { _forwardButton }
 
     var _backButton = MockToolbarButton()
-    var backButton: ToolbarButton { get { _backButton } }
+    var backButton: ToolbarButton { _backButton }
 
     var _addToSpacesButton = MockToolbarButton()
-    var addToSpacesButton: ToolbarButton { get { _addToSpacesButton } }
+    var addToSpacesButton: ToolbarButton { _addToSpacesButton }
 
     var _shareButton = MockToolbarButton()
-    var shareButton: ToolbarButton { get { _shareButton } }
+    var shareButton: ToolbarButton { _shareButton }
 
     var _toolbarNeevaMenuButton = MockToolbarButton()
-    var toolbarNeevaMenuButton: ToolbarButton { get { _toolbarNeevaMenuButton} }
+    var toolbarNeevaMenuButton: ToolbarButton { _toolbarNeevaMenuButton }
 
     var _multiStateButton = MockToolbarButton()
-    var multiStateButton: ToolbarButton { get { _multiStateButton } }
+    var multiStateButton: ToolbarButton { _multiStateButton }
     var actionButtons: [ToolbarButton] {
-        get { return [] }
+        return []
     }
 
     func updateBackStatus(_ canGoBack: Bool) {

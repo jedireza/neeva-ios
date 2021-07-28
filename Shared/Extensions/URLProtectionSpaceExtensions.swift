@@ -17,7 +17,8 @@ extension URLProtectionSpace {
             port = 0
         }
 
-        return URLProtectionSpace(host: host, port: port, protocol: scheme, realm: nil, authenticationMethod: nil)
+        return URLProtectionSpace(
+            host: host, port: port, protocol: scheme, realm: nil, authenticationMethod: nil)
     }
 
     public func urlString() -> String {

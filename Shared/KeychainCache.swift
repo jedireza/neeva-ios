@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import XCGLogger
 import SwiftKeychainWrapper
 import SwiftyJSON
+import XCGLogger
 
 private let log = Logger.keychainLogger
 
@@ -29,16 +29,22 @@ open class KeychainCache<T: JSONLiteralConvertible> {
         self.value = value
     }
 
-    open class func fromBranch(_ branch: String, withLabel label: String?, withDefault defaultValue: T? = nil, factory: (JSON) -> T?) -> KeychainCache<T> {
+    open class func fromBranch(
+        _ branch: String, withLabel label: String?, withDefault defaultValue: T? = nil,
+        factory: (JSON) -> T?
+    ) -> KeychainCache<T> {
         if let l = label {
             let key = "\(branch).\(l)"
-            KeychainWrapper.sharedAppContainerKeychain.ensureStringItemAccessibility(.afterFirstUnlock, forKey: key)
+            KeychainWrapper.sharedAppContainerKeychain.ensureStringItemAccessibility(
+                .afterFirstUnlock, forKey: key)
             if let s = KeychainWrapper.sharedAppContainerKeychain.string(forKey: key) {
                 if let t = factory(JSON(parseJSON: s)) {
                     log.info("Read \(branch) from Keychain with label \(branch).\(l).")
                     return KeychainCache(branch: branch, label: l, value: t)
                 } else {
-                    log.warning("Found \(branch) in Keychain with label \(branch).\(l), but could not parse it.")
+                    log.warning(
+                        "Found \(branch) in Keychain with label \(branch).\(l), but could not parse it."
+                    )
                 }
             } else {
                 log.warning("Did not find \(branch) in Keychain with label \(branch).\(l).")
@@ -56,8 +62,10 @@ open class KeychainCache<T: JSONLiteralConvertible> {
         log.info("Storing \(self.branch) in Keychain with label \(self.branch).\(self.label).")
         // TODO: PII logging.
         if let value = value,
-            let jsonString = value.asJSON().stringify() {
-            KeychainWrapper.sharedAppContainerKeychain.set(jsonString, forKey: "\(branch).\(label)", withAccessibility: .afterFirstUnlock)
+            let jsonString = value.asJSON().stringify()
+        {
+            KeychainWrapper.sharedAppContainerKeychain.set(
+                jsonString, forKey: "\(branch).\(label)", withAccessibility: .afterFirstUnlock)
         } else {
             KeychainWrapper.sharedAppContainerKeychain.removeObject(forKey: "\(branch).\(label)")
         }

@@ -48,7 +48,7 @@ public class TourManager {
     public var subStepIdx: Int = 0
     private var webView: WKWebView? = nil
 
-    public func setActiveStep(id: String, stepName: TourStep, webView: WKWebView?){
+    public func setActiveStep(id: String, stepName: TourStep, webView: WKWebView?) {
         self.activeStep = Step(id: id, stepName: stepName)
         self.webView = webView
     }
@@ -108,7 +108,9 @@ public class TourManager {
     public func responseMessage(for activeStepName: TourStep, exit: Bool = false) {
         if isCurrentStep(with: activeStepName) {
             let data = exit ? "exit" : "received"
-            self.webView?.evaluateJavaScript("window.__neevaNativeBridge.messaging.reply('\(getActiveStepID())', {'name':{ 'data': '\(data)' }})") { (_, error) in
+            self.webView?.evaluateJavaScript(
+                "window.__neevaNativeBridge.messaging.reply('\(getActiveStepID())', {'name':{ 'data': '\(data)' }})"
+            ) { (_, error) in
                 if error != nil {
                     print("evaluateJavaScript Error : \(String(describing: error))")
                 }
@@ -123,7 +125,9 @@ public class TourManager {
         }
     }
 
-    @discardableResult public func userReachedStep(step stepName: TourStep? = nil, tapTarget tap: TapTarget? = nil) -> NextAction {
+    @discardableResult public func userReachedStep(
+        step stepName: TourStep? = nil, tapTarget tap: TapTarget? = nil
+    ) -> NextAction {
         if !hasActiveStep() {
             return .resumeAction
         }
@@ -135,7 +139,7 @@ public class TourManager {
                 return .resumeAction
             }
         }
-        
+
         if let currentStep = stepName, isCurrentStep(with: currentStep) {
             responseMessage(for: currentStep)
             return .stopAction

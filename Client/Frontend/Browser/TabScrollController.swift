@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import SnapKit
+import UIKit
 
 private let ToolbarBaseAnimationDuration: CGFloat = 0.2
 
@@ -138,7 +138,9 @@ class TabScrollingController: NSObject {
         guard let scrollView = scrollView else {
             return
         }
-        if self.isZoomedOut && roundNum(scrollView.zoomScale) != roundNum(scrollView.minimumZoomScale) {
+        if self.isZoomedOut
+            && roundNum(scrollView.zoomScale) != roundNum(scrollView.minimumZoomScale)
+        {
             scrollView.zoomScale = scrollView.minimumZoomScale
         }
     }
@@ -154,17 +156,19 @@ class TabScrollingController: NSObject {
 
 }
 
-private extension TabScrollingController {
-    func tabIsLoading() -> Bool {
+extension TabScrollingController {
+    fileprivate func tabIsLoading() -> Bool {
         return tab?.loading ?? true
     }
 
-    func isBouncingAtBottom() -> Bool {
+    fileprivate func isBouncingAtBottom() -> Bool {
         guard let scrollView = scrollView else { return false }
-        return scrollView.contentOffset.y > (scrollView.contentSize.height - scrollView.frame.size.height) && scrollView.contentSize.height > scrollView.frame.size.height
+        return scrollView.contentOffset.y
+            > (scrollView.contentSize.height - scrollView.frame.size.height)
+            && scrollView.contentSize.height > scrollView.frame.size.height
     }
 
-    @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
+    @objc fileprivate func handlePan(_ gesture: UIPanGestureRecognizer) {
         if tabIsLoading() {
             return
         }
@@ -181,7 +185,8 @@ private extension TabScrollingController {
 
             lastContentOffset = translation.y
             if checkRubberbandingForDelta(delta) && checkScrollHeightIsLargeEnoughForScrolling() {
-                let bottomIsNotRubberbanding = contentOffset.y + scrollViewHeight < contentSize.height
+                let bottomIsNotRubberbanding =
+                    contentOffset.y + scrollViewHeight < contentSize.height
                 let topIsRubberbanding = contentOffset.y <= 0
                 if (toolbarState != .collapsed || topIsRubberbanding) && bottomIsNotRubberbanding {
                     scrollWithDelta(delta)
@@ -202,13 +207,13 @@ private extension TabScrollingController {
         }
     }
 
-    func checkRubberbandingForDelta(_ delta: CGFloat) -> Bool {
-        return !((delta < 0 && contentOffset.y + scrollViewHeight > contentSize.height &&
-                scrollViewHeight < contentSize.height) ||
-                contentOffset.y < delta)
+    fileprivate func checkRubberbandingForDelta(_ delta: CGFloat) -> Bool {
+        return
+            !((delta < 0 && contentOffset.y + scrollViewHeight > contentSize.height
+            && scrollViewHeight < contentSize.height) || contentOffset.y < delta)
     }
 
-    func scrollWithDelta(_ delta: CGFloat) {
+    fileprivate func scrollWithDelta(_ delta: CGFloat) {
         if scrollViewHeight >= contentSize.height {
             return
         }
@@ -227,11 +232,11 @@ private extension TabScrollingController {
         readerModeBar?.updateAlphaForSubviews(alpha)
     }
 
-    func isHeaderDisplayedForGivenOffset(_ offset: CGFloat) -> Bool {
+    fileprivate func isHeaderDisplayedForGivenOffset(_ offset: CGFloat) -> Bool {
         return offset > -topScrollHeight && offset < 0
     }
 
-    func clamp(_ y: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
+    fileprivate func clamp(_ y: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
         if y >= max {
             return max
         } else if y <= min {
@@ -240,7 +245,10 @@ private extension TabScrollingController {
         return y
     }
 
-    func animateToolbarsWithOffsets(_ animated: Bool, duration: TimeInterval, headerOffset: CGFloat, footerOffset: CGFloat, alpha: CGFloat, completion: ((_ finished: Bool) -> Void)?) {
+    fileprivate func animateToolbarsWithOffsets(
+        _ animated: Bool, duration: TimeInterval, headerOffset: CGFloat, footerOffset: CGFloat,
+        alpha: CGFloat, completion: ((_ finished: Bool) -> Void)?
+    ) {
         guard let scrollView = scrollView else { return }
         let initialContentOffset = scrollView.contentOffset
 
@@ -251,7 +259,8 @@ private extension TabScrollingController {
 
         let animation: () -> Void = {
             if isShownFromHidden {
-                scrollView.contentOffset = CGPoint(x: initialContentOffset.x, y: initialContentOffset.y + self.topScrollHeight)
+                scrollView.contentOffset = CGPoint(
+                    x: initialContentOffset.x, y: initialContentOffset.y + self.topScrollHeight)
             }
             self.headerTopOffset = headerOffset
             self.footerBottomOffset = footerOffset
@@ -261,21 +270,26 @@ private extension TabScrollingController {
         }
 
         if animated {
-            UIView.animate(withDuration: duration, delay: 0, options: .allowUserInteraction, animations: animation, completion: completion)
+            UIView.animate(
+                withDuration: duration, delay: 0, options: .allowUserInteraction,
+                animations: animation, completion: completion)
         } else {
             animation()
             completion?(true)
         }
     }
 
-    func checkScrollHeightIsLargeEnoughForScrolling() -> Bool {
-        return (UIScreen.main.bounds.size.height + 2 * UIConstants.ToolbarHeight) < scrollView?.contentSize.height ?? 0
+    fileprivate func checkScrollHeightIsLargeEnoughForScrolling() -> Bool {
+        return (UIScreen.main.bounds.size.height + 2 * UIConstants.ToolbarHeight)
+            < scrollView?.contentSize.height ?? 0
     }
 }
 
 extension TabScrollingController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
-                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
         return true
     }
 }
@@ -286,7 +300,9 @@ extension TabScrollingController: UIScrollViewDelegate {
             return
         }
 
-        if (decelerate || (toolbarState == .animating && !decelerate)) && checkScrollHeightIsLargeEnoughForScrolling() {
+        if (decelerate || (toolbarState == .animating && !decelerate))
+            && checkScrollHeightIsLargeEnoughForScrolling()
+        {
             if scrollDirection == .up {
                 showToolbars(animated: true)
             } else if scrollDirection == .down {
@@ -305,7 +321,9 @@ extension TabScrollingController: UIScrollViewDelegate {
         // In that case ALWAYS reset to the minimum zoom level if the previous state was zoomed out (isZoomedOut=true)
         if isZoomedOut {
             scrollView.zoomScale = scrollView.minimumZoomScale
-        } else if roundNum(scrollView.zoomScale) > roundNum(self.lastZoomedScale) && self.lastZoomedScale != 0 {
+        } else if roundNum(scrollView.zoomScale) > roundNum(self.lastZoomedScale)
+            && self.lastZoomedScale != 0
+        {
             //When we have manually zoomed in we want to preserve that scale.
             //But sometimes when we rotate a larger zoomScale is appled. In that case apply the lastZoomedScale
             scrollView.zoomScale = self.lastZoomedScale
@@ -316,7 +334,9 @@ extension TabScrollingController: UIScrollViewDelegate {
         self.isUserZoom = true
     }
 
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    func scrollViewDidEndZooming(
+        _ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat
+    ) {
         self.isUserZoom = false
     }
 

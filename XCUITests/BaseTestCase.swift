@@ -18,7 +18,11 @@ class BaseTestCase: XCTestCase {
 
     // These are used during setUp(). Change them prior to setUp() for the app to launch with different args,
     // or, use restart() to re-launch with custom args.
-    var launchArguments = [LaunchArguments.ClearProfile, LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet, LaunchArguments.DeviceName, "\(LaunchArguments.ServerPort)\(serverPort)"]
+    var launchArguments = [
+        LaunchArguments.ClearProfile, LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
+        LaunchArguments.SkipETPCoverSheet, LaunchArguments.DeviceName,
+        "\(LaunchArguments.ServerPort)\(serverPort)",
+    ]
 
     func setUpApp() {
         if !launchArguments.contains("FIREFOX_PERFORMANCE_TEST") {
@@ -65,29 +69,46 @@ class BaseTestCase: XCTestCase {
         }
     }
 
-    func waitForExistence(_ element: XCUIElement, timeout: TimeInterval = 5.0, file: String = #file, line: UInt = #line) {
+    func waitForExistence(
+        _ element: XCUIElement, timeout: TimeInterval = 5.0, file: String = #file,
+        line: UInt = #line
+    ) {
         waitFor(element, with: "exists == true", timeout: timeout, file: file, line: line)
     }
 
-    func waitForNoExistence(_ element: XCUIElement, timeoutValue: TimeInterval = 5.0, file: String = #file, line: UInt = #line) {
+    func waitForNoExistence(
+        _ element: XCUIElement, timeoutValue: TimeInterval = 5.0, file: String = #file,
+        line: UInt = #line
+    ) {
         waitFor(element, with: "exists != true", timeout: timeoutValue, file: file, line: line)
     }
 
-    func waitForValueContains(_ element: XCUIElement, value: String, timeout: TimeInterval = 5.0, file: String = #file, line: UInt = #line) {
-        waitFor(element, with: "value CONTAINS '\(value)'", timeout: timeout, file: file, line: line)
+    func waitForValueContains(
+        _ element: XCUIElement, value: String, timeout: TimeInterval = 5.0, file: String = #file,
+        line: UInt = #line
+    ) {
+        waitFor(
+            element, with: "value CONTAINS '\(value)'", timeout: timeout, file: file, line: line)
     }
 
-    private func waitFor(_ element: XCUIElement, with predicateString: String, description: String? = nil, timeout: TimeInterval = 5.0, file: String, line: UInt) {
+    private func waitFor(
+        _ element: XCUIElement, with predicateString: String, description: String? = nil,
+        timeout: TimeInterval = 5.0, file: String, line: UInt
+    ) {
         let predicate = NSPredicate(format: predicateString)
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: element)
         let result = XCTWaiter().wait(for: [expectation], timeout: timeout)
         if result != .completed {
-            let message = description ?? "Expect predicate \(predicateString) for \(element.description)"
-            self.recordFailure(withDescription: message, inFile: file, atLine: Int(line), expected: false)
+            let message =
+                description ?? "Expect predicate \(predicateString) for \(element.description)"
+            self.recordFailure(
+                withDescription: message, inFile: file, atLine: Int(line), expected: false)
         }
     }
 
-    func loadWebPage(_ url: String, waitForLoadToFinish: Bool = true, file: String = #file, line: UInt = #line) {
+    func loadWebPage(
+        _ url: String, waitForLoadToFinish: Bool = true, file: String = #file, line: UInt = #line
+    ) {
         let app = XCUIApplication()
         UIPasteboard.general.string = url
         app.buttons["Address Bar"].press(forDuration: 1)
@@ -96,11 +117,12 @@ class BaseTestCase: XCTestCase {
         if waitForLoadToFinish {
             let finishLoadingTimeout: TimeInterval = 30
             let progressIndicator = app.progressIndicators.element(boundBy: 0)
-            waitFor(progressIndicator,
-                    with: "exists != true",
-                    description: "Problem loading \(url)",
-                    timeout: finishLoadingTimeout,
-                    file: file, line: line)
+            waitFor(
+                progressIndicator,
+                with: "exists != true",
+                description: "Problem loading \(url)",
+                timeout: finishLoadingTimeout,
+                file: file, line: line)
         }
     }
 
@@ -120,7 +142,7 @@ class BaseTestCase: XCTestCase {
 
     func waitForTabsButton() {
         // iPhone sim tabs button is called differently when in portrait or landscape
-        if (XCUIDevice.shared.orientation == UIDeviceOrientation.landscapeLeft) {
+        if XCUIDevice.shared.orientation == UIDeviceOrientation.landscapeLeft {
             waitForExistence(app.buttons["URLBarView.tabsButton"], timeout: 15)
         } else {
             waitForExistence(app.buttons["Show Tabs"], timeout: 15)
@@ -173,7 +195,7 @@ class BaseTestCase: XCTestCase {
             app.buttons["Close Tab"].tap()
         }
     }
-    
+
     public func getNumberOfTabs() -> Int {
         goToTabTray()
         return app.cells.count

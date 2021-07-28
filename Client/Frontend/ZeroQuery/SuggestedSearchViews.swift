@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Storage
 import Shared
+import Storage
+import SwiftUI
 
 struct SuggestedSearchesView: View {
     @EnvironmentObject var model: SuggestedSearchesModel
@@ -63,8 +63,11 @@ struct SuggestedSearchesView_Previews: PreviewProvider {
                         suggestedQueries: [
                             ("lebron james", .init(url: "https://neeva.com", title: "", id: 1)),
                             ("neeva", .init(url: "https://neeva.com", title: "", id: 2)),
-//                            ("knives out", .init(url: "https://neeva.com", title: "", id: 3)),
-                            ("    transition: all 0.25s;\n", .init(url: "https://neeva.com", title: "", id: 4))
+                            //                            ("knives out", .init(url: "https://neeva.com", title: "", id: 3)),
+                            (
+                                "    transition: all 0.25s;\n",
+                                .init(url: "https://neeva.com", title: "", id: 4)
+                            ),
                         ]
                     )
                 )

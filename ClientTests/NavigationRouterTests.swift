@@ -3,16 +3,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-@testable import Client
 import WebKit
-
 import XCTest
+
+@testable import Client
 
 class NavigationRouterTests: XCTestCase {
 
     var appScheme: String {
         let urlTypes = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as! [AnyObject]
-        let urlType = urlTypes.first as! [String : AnyObject]
+        let urlType = urlTypes.first as! [String: AnyObject]
         let urlSchemes = urlType["CFBundleURLSchemes"] as! [String]
         return urlSchemes.first!
     }
@@ -21,7 +21,8 @@ class NavigationRouterTests: XCTestCase {
         let url = "http://google.com?a=1&b=2&c=foo%20bar".escape()!
         let appURL = "\(appScheme)://open-url?url=\(url)"
         let navItem = NavigationPath(url: URL(string: appURL)!)!
-        XCTAssertEqual(navItem, NavigationPath.url(webURL: URL(string: url.unescape()!)!, isPrivate: false))
+        XCTAssertEqual(
+            navItem, NavigationPath.url(webURL: URL(string: url.unescape()!)!, isPrivate: false))
 
         let emptyNav = NavigationPath(url: URL(string: "\(appScheme)://open-url?private=true")!)
         XCTAssertEqual(emptyNav, NavigationPath.url(webURL: nil, isPrivate: true))

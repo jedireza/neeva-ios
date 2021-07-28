@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Storage
 import Shared
+import Storage
 
 /*
  * A class that adheres to all the requirements for a profile's history property
@@ -22,14 +22,15 @@ class MockableHistory: BrowserHistory, AccountRemovalDelegate, ResettableSyncSto
     func removeHostFromTopSites(_ host: String) -> Success { fatalError() }
     func clearTopSitesCache() -> Success { fatalError() }
     func removeFromPinnedTopSites(_ site: Site) -> Success { fatalError() }
-    func isPinnedTopSite(_ url: String) -> Deferred<Maybe<Bool>> { fatalError()}
+    func isPinnedTopSite(_ url: String) -> Deferred<Maybe<Bool>> { fatalError() }
     func addPinnedTopSite(_ site: Site) -> Success { fatalError() }
     func getPinnedTopSites() -> Deferred<Maybe<Cursor<Site?>>> { fatalError() }
-    func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site?>>> { fatalError() }
+    func getSitesByLastVisit(limit: Int, offset: Int) -> Deferred<Maybe<Cursor<Site?>>> {
+        fatalError()
+    }
     func setTopSitesNeedsInvalidation() { fatalError() }
     func updateTopSitesCacheIfInvalidated() -> Deferred<Maybe<Bool>> { fatalError() }
     func setTopSitesCacheSize(_ size: Int32) { fatalError() }
     func onRemovedAccount() -> Success { fatalError() }
     func resetClient() -> Success { fatalError() }
 }
-

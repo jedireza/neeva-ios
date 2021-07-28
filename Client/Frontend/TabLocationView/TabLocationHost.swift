@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 protocol LegacyTabLocationViewDelegate: AnyObject {
     func tabLocationViewDidTapReload()
@@ -51,11 +51,16 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         self.delegate = delegate
         super.init()
         setRootView {
-            TabLocationViewWrapper(historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel, model: model, queryModel: queryModel, gridModel: gridModel, trackingStatsModel: trackingStatsModel) {
+            TabLocationViewWrapper(
+                historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel,
+                model: model, queryModel: queryModel, gridModel: gridModel,
+                trackingStatsModel: trackingStatsModel
+            ) {
                 TabLocationView(
                     onReload: { [weak delegate] in delegate?.tabLocationViewDidTapReload() },
                     onSubmit: { [weak urlBar] in urlBar?.delegate?.urlBar(didSubmitText: $0) },
-                    onShare: { [weak delegate] in delegate?.tabLocationViewDidTap(shareButton: $0) },
+                    onShare: { [weak delegate] in delegate?.tabLocationViewDidTap(shareButton: $0)
+                    },
                     buildReloadMenu: { [weak delegate] in delegate?.tabLocationViewReloadMenu() }
                 )
             }

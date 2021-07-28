@@ -141,8 +141,8 @@ extension FontStyle {
             case .extraLarge: return 50
             case .extraExtraLarge: return 52
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 54
             @unknown default: return size(in: .large)
             }
@@ -155,8 +155,8 @@ extension FontStyle {
             case .extraLarge: return 42
             case .extraExtraLarge: return 44
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 46
             @unknown default: return size(in: .large)
             }
@@ -169,8 +169,8 @@ extension FontStyle {
             case .extraLarge: return 26
             case .extraExtraLarge: return 28
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 30
             @unknown default: return size(in: .large)
             }
@@ -185,8 +185,8 @@ extension FontStyle {
             case .extraLarge: return 22
             case .extraExtraLarge: return 24
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 26
             @unknown default: return size(in: .large)
             }
@@ -199,8 +199,8 @@ extension FontStyle {
             case .extraLarge: return 20
             case .extraExtraLarge: return 22
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 24
             @unknown default: return size(in: .large)
             }
@@ -213,8 +213,8 @@ extension FontStyle {
             case .extraLarge: return 18
             case .extraExtraLarge: return 20
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 22
             @unknown default: return size(in: .large)
             }
@@ -227,8 +227,8 @@ extension FontStyle {
             case .extraLarge: return 15
             case .extraExtraLarge: return 17
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 19
             @unknown default: return size(in: .large)
             }
@@ -241,8 +241,8 @@ extension FontStyle {
             case .extraLarge: return 12
             case .extraExtraLarge: return 14
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 16
             @unknown default: return size(in: .large)
             }
@@ -257,8 +257,8 @@ extension FontStyle {
             case .extraLarge: return 20
             case .extraExtraLarge: return 22
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 24
             @unknown default: return size(in: .large)
             }
@@ -271,8 +271,8 @@ extension FontStyle {
             case .extraLarge: return 18
             case .extraExtraLarge: return 20
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 22
             @unknown default: return size(in: .large)
             }
@@ -285,8 +285,8 @@ extension FontStyle {
             case .extraLarge: return 16
             case .extraExtraLarge: return 18
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 20
             @unknown default: return size(in: .large)
             }
@@ -299,8 +299,8 @@ extension FontStyle {
             case .extraLarge: return 15
             case .extraExtraLarge: return 17
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 19
             @unknown default: return size(in: .large)
             }
@@ -313,8 +313,8 @@ extension FontStyle {
             case .extraLarge: return 14
             case .extraExtraLarge: return 16
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 18
             @unknown default: return size(in: .large)
             }
@@ -329,8 +329,8 @@ extension FontStyle {
             case .extraLarge: return 18
             case .extraExtraLarge: return 20
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 22
             @unknown default: return size(in: .large)
             }
@@ -343,8 +343,8 @@ extension FontStyle {
             case .extraLarge: return 16
             case .extraExtraLarge: return 18
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 20
             @unknown default: return size(in: .large)
             }
@@ -357,8 +357,8 @@ extension FontStyle {
             case .extraLarge: return 14
             case .extraExtraLarge: return 16
             case .extraExtraExtraLarge,
-                 .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
-                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
                 return 18
             @unknown default: return size(in: .large)
             }

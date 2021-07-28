@@ -44,7 +44,7 @@ class HistoryTests: KIFTestCase {
         // Wait until the dialog shows up
         tester().waitForAnimationsToFinish()
         tester().waitForView(withAccessibilityLabel: "Page 2")
-        
+
         tester().waitForView(withAccessibilityLabel: "Page 1")
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=2")
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=1")
@@ -65,7 +65,7 @@ class HistoryTests: KIFTestCase {
 
         EarlGrey.selectElement(with: grey_accessibilityLabel(urls[0]))
             .perform(grey_longPress())
-        
+
         tester().tapView(withAccessibilityLabel: "Delete from History")
 
         // The second history entry still exists
@@ -90,7 +90,8 @@ class HistoryTests: KIFTestCase {
 
     func testDeleteHistoryItemFromListWithMoreThan100Items() {
         for pageNo in 1...102 {
-            BrowserUtils.addHistoryEntry("Page \(pageNo)", url: URL(string: "\(webRoot!)/numberedPage.html?page=\(pageNo)")!)
+            BrowserUtils.addHistoryEntry(
+                "Page \(pageNo)", url: URL(string: "\(webRoot!)/numberedPage.html?page=\(pageNo)")!)
         }
         tester().wait(forTimeInterval: 2)
         let oldestUrl = "\(webRoot!)/numberedPage.html?page=\(101)"
@@ -102,9 +103,12 @@ class HistoryTests: KIFTestCase {
         tester().waitForView(withAccessibilityLabel: "Page 102")
 
         let firstIndexPath = IndexPath(row: 0, section: 1)
-        let row = tester().waitForCell(at: firstIndexPath, inTableViewWithAccessibilityIdentifier: "History List")
+        let row = tester().waitForCell(
+            at: firstIndexPath, inTableViewWithAccessibilityIdentifier: "History List")
         tester().waitForAnimationsToFinish()
-        tester().longPressView(withAccessibilityLabel: row?.accessibilityLabel, value: row?.accessibilityValue, duration: 1)
+        tester().longPressView(
+            withAccessibilityLabel: row?.accessibilityLabel, value: row?.accessibilityValue,
+            duration: 1)
 
         // The history list still exists
         tester().waitForView(withAccessibilityIdentifier: "History List")

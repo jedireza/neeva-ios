@@ -5,13 +5,20 @@
 import XCTest
 
 let defaultTopSite = ["topSiteLabel": "Wikipedia", "bookmarkLabel": "Wikipedia"]
-let newTopSite = ["url": "www.mozilla.org", "topSiteLabel": "mozilla", "bookmarkLabel": "Internet for people, not profit — Mozilla"]
+let newTopSite = [
+    "url": "www.mozilla.org", "topSiteLabel": "mozilla",
+    "bookmarkLabel": "Internet for people, not profit — Mozilla",
+]
 let allDefaultTopSites = ["Facebook", "Youtube", "Amazon", "Wikipedia"]
 
 class ActivityStreamTest: BaseTestCase {
     let TopSiteCellgroup = XCUIApplication().cells["TopSitesCell"]
 
-    let testWithDB = ["testActivityStreamPages","testTopSitesAdd", "testTopSitesOpenInNewTab", "testTopSitesOpenInNewPrivateTab", "testTopSitesBookmarkNewTopSite", "testTopSitesShareNewTopSite", "testContextMenuInLandscape"]
+    let testWithDB = [
+        "testActivityStreamPages", "testTopSitesAdd", "testTopSitesOpenInNewTab",
+        "testTopSitesOpenInNewPrivateTab", "testTopSitesBookmarkNewTopSite",
+        "testTopSitesShareNewTopSite", "testContextMenuInLandscape",
+    ]
 
     // Using the DDDBBs created for these tests containing enough entries for the tests that used them listed above
     let pagesVisitediPad = "browserActivityStreamPagesiPad.db"
@@ -24,9 +31,17 @@ class ActivityStreamTest: BaseTestCase {
         if testWithDB.contains(key) {
             // for the current test name, add the db fixture used
             if iPad() {
-                launchArguments = [LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + pagesVisitediPad]
+                launchArguments = [
+                    LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
+                    LaunchArguments.SkipETPCoverSheet,
+                    LaunchArguments.LoadDatabasePrefix + pagesVisitediPad,
+                ]
             } else {
-                launchArguments = [LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + pagesVisitediPhone]
+                launchArguments = [
+                    LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
+                    LaunchArguments.SkipETPCoverSheet,
+                    LaunchArguments.LoadDatabasePrefix + pagesVisitediPhone,
+                ]
             }
         }
         super.setUp()
@@ -159,22 +174,27 @@ class ActivityStreamTest: BaseTestCase {
 
     func testTopSitesShiftAfterRemovingOne() {
         // Check top site in first and second cell
-        let topSiteFirstCell = app.collectionViews.cells.collectionViews.cells.element(boundBy: 0).label
-        let topSiteSecondCell = app.collectionViews.cells.collectionViews.cells.element(boundBy: 1).label
+        let topSiteFirstCell = app.collectionViews.cells.collectionViews.cells.element(boundBy: 0)
+            .label
+        let topSiteSecondCell = app.collectionViews.cells.collectionViews.cells.element(boundBy: 1)
+            .label
 
         XCTAssertTrue(topSiteFirstCell == allDefaultTopSites[0])
         XCTAssertTrue(topSiteSecondCell == allDefaultTopSites[1])
 
         // Remove facebook top sites, first cell
         waitForExistence(app.cells["TopSitesCell"].cells.element(boundBy: 0), timeout: 3)
-        app.cells["TopSitesCell"].cells.element(boundBy: 0).press(forDuration:1)
+        app.cells["TopSitesCell"].cells.element(boundBy: 0).press(forDuration: 1)
         selectOptionFromContextMenu(option: "Remove")
 
         // Check top site in first cell now
         waitForExistence(app.collectionViews.cells.collectionViews.cells.element(boundBy: 0))
         let topSiteCells = TopSiteCellgroup.cells
-        let topSiteFirstCellAfter = app.collectionViews.cells.collectionViews.cells.element(boundBy: 0).label
-        XCTAssertTrue(topSiteFirstCellAfter == topSiteCells["Youtube"].label, "First top site does not match")
+        let topSiteFirstCellAfter = app.collectionViews.cells.collectionViews.cells.element(
+            boundBy: 0
+        ).label
+        XCTAssertTrue(
+            topSiteFirstCellAfter == topSiteCells["Youtube"].label, "First top site does not match")
     }
 
     func testTopSitesOpenInNewTab() {
@@ -198,7 +218,7 @@ class ActivityStreamTest: BaseTestCase {
     func testTopSitesOpenInNewTabDefaultTopSite() {
         // Open one of the sites from Topsites and wait until page is loaded
         waitForExistence(app.cells["TopSitesCell"].cells.element(boundBy: 3), timeout: 3)
-        app.cells["TopSitesCell"].cells.element(boundBy: 3).press(forDuration:1)
+        app.cells["TopSitesCell"].cells.element(boundBy: 3).press(forDuration: 1)
         selectOptionFromContextMenu(option: "Open in New Tab")
         // Check that two tabs are open and one of them is the default top site one
         // Needed for BB to work after iOS 13.3 update
@@ -216,7 +236,7 @@ class ActivityStreamTest: BaseTestCase {
         navigator.goto(HomePanelsScreen)
         // Long tap on apple top site, second cell
         waitForExistence(app.cells["TopSitesCell"].cells["Apple"], timeout: 3)
-        app.cells["TopSitesCell"].cells["Apple"].press(forDuration:1)
+        app.cells["TopSitesCell"].cells["Apple"].press(forDuration: 1)
         app.tables["Context Menu"].cells["Open in New Private Tab"].tap()
 
         XCTAssert(TopSiteCellgroup.exists)
@@ -245,7 +265,7 @@ class ActivityStreamTest: BaseTestCase {
         // Open one of the sites from Topsites and wait until page is loaded
         // Long tap on apple top site, second cell
         waitForExistence(app.cells["TopSitesCell"].cells.element(boundBy: 3), timeout: 3)
-        app.cells["TopSitesCell"].cells.element(boundBy: 3).press(forDuration:1)
+        app.cells["TopSitesCell"].cells.element(boundBy: 3).press(forDuration: 1)
         selectOptionFromContextMenu(option: "Open in New Private Tab")
 
         // Check that two tabs are open and one of them is the default top site one
@@ -352,7 +372,8 @@ class ActivityStreamTest: BaseTestCase {
         waitForExistence(app.cells["TopSitesCell"])
         XCTAssertTrue(app.cells["TopSitesCell"].exists)
         let numberOfTopSites = TopSiteCellgroup.cells.matching(identifier: "TopSite").count
-        XCTAssertEqual(numberOfTopSites, numberOfExpectedTopSites, "The number of Top Sites is not correct")
+        XCTAssertEqual(
+            numberOfTopSites, numberOfExpectedTopSites, "The number of Top Sites is not correct")
     }
 
     func testContextMenuInLandscape() {

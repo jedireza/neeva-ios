@@ -43,18 +43,16 @@ WKNavigationTypeFormResubmitted,
 WKNavigationTypeOther = -1,
 */
 
-/**
- * SiteVisit is a sop to the existing API, which expects to be able to go
- * backwards from a visit to a site, and preserve the ID of the database row.
- * Visit is the model of what lives on the wire: just a date and a type.
- * Ultimately we'll end up with something similar to ClientAndTabs: the tabs
- * don't need to know about the client, and visits don't need to know about
- * the site, because they're bound together.
- *
- * (Furthermore, we probably shouldn't ever need something like SiteVisit
- * to reach the UI: we care about "last visited", "visit count", or just
- * "places ordered by frecency" — we don't care about lists of visits.)
- */
+/// SiteVisit is a sop to the existing API, which expects to be able to go
+/// backwards from a visit to a site, and preserve the ID of the database row.
+/// Visit is the model of what lives on the wire: just a date and a type.
+/// Ultimately we'll end up with something similar to ClientAndTabs: the tabs
+/// don't need to know about the client, and visits don't need to know about
+/// the site, because they're bound together.
+///
+/// (Furthermore, we probably shouldn't ever need something like SiteVisit
+/// to reach the UI: we care about "last visited", "visit count", or just
+/// "places ordered by frecency" — we don't care about lists of visits.)
 
 open class Visit: Hashable {
     public let date: MicrosecondTimestamp
@@ -73,8 +71,9 @@ open class Visit: Hashable {
     open class func fromJSON(_ json: [String: Any]) -> Visit? {
         if let type = json["type"] as? Int,
             let typeEnum = VisitType(rawValue: type),
-            let date = json["date"] as? Int64, date >= 0 {
-                return Visit(date: MicrosecondTimestamp(date), type: typeEnum)
+            let date = json["date"] as? Int64, date >= 0
+        {
+            return Visit(date: MicrosecondTimestamp(date), type: typeEnum)
         }
         return nil
     }
@@ -86,9 +85,8 @@ open class Visit: Hashable {
     }
 }
 
-public func ==(lhs: Visit, rhs: Visit) -> Bool {
-    return lhs.date == rhs.date &&
-           lhs.type == rhs.type
+public func == (lhs: Visit, rhs: Visit) -> Bool {
+    return lhs.date == rhs.date && lhs.type == rhs.type
 }
 
 open class SiteVisit: Visit {
@@ -108,7 +106,7 @@ open class SiteVisit: Visit {
     }
 }
 
-public func ==(lhs: SiteVisit, rhs: SiteVisit) -> Bool {
+public func == (lhs: SiteVisit, rhs: SiteVisit) -> Bool {
     if let lhsID = lhs.id, let rhsID = rhs.id {
         if lhsID != rhsID {
             return false
@@ -120,6 +118,5 @@ public func ==(lhs: SiteVisit, rhs: SiteVisit) -> Bool {
     }
 
     // TODO: compare Site.
-    return lhs.date == rhs.date &&
-           lhs.type == rhs.type
+    return lhs.date == rhs.date && lhs.type == rhs.type
 }

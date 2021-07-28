@@ -2,12 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import WebKit
-import Shared
 import Defaults
+import Shared
+import WebKit
 
 extension Defaults.Keys {
-    static let contentBlockingEnabled = Defaults.Key<Bool>("profile.prefkey.trackingprotection.normalbrowsing", default: true)
+    static let contentBlockingEnabled = Defaults.Key<Bool>(
+        "profile.prefkey.trackingprotection.normalbrowsing", default: true)
 }
 
 enum BlockingStrength: String, Codable {
@@ -18,9 +19,7 @@ enum BlockingStrength: String, Codable {
     static let allOptions: [BlockingStrength] = [.basic, .strict]
 }
 
-/**
- Neeva-specific implementation of tab content blocking.
- */
+/// Neeva-specific implementation of tab content blocking.
 class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
     class func name() -> String {
         return "TrackingProtectionStats"
@@ -53,7 +52,8 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
     func setupForTab() {
         guard let tab = tab else { return }
         let rules = BlocklistFileName.listsForMode(strength: .basic)
-        ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules)
+        ContentBlocker.shared.setupTrackingProtection(
+            forTab: tab, isEnabled: isEnabled, rules: rules)
     }
 
     @objc override func notifiedTabSetupRequired() {

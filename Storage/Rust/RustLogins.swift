@@ -127,19 +127,20 @@ public class LoginRecord {
         )
     }
 
-    init(id: String,
-         password: String,
-         hostname: String,
-         username: String,
-         formSubmitURL: String?,
-         httpRealm: String?,
-         timesUsed: Int?,
-         timeLastUsed: Int64?,
-         timeCreated: Int64?,
-         timePasswordChanged: Int64?,
-         usernameField: String,
-         passwordField: String)
-    {
+    init(
+        id: String,
+        password: String,
+        hostname: String,
+        username: String,
+        formSubmitURL: String?,
+        httpRealm: String?,
+        timesUsed: Int?,
+        timeLastUsed: Int64?,
+        timeCreated: Int64?,
+        timePasswordChanged: Int64?,
+        usernameField: String,
+        passwordField: String
+    ) {
         self.id = id
         self.password = password
         self.hostname = hostname
@@ -155,14 +156,16 @@ public class LoginRecord {
     }
 
     public convenience init(fromJSONString json: String) throws {
-        let dict = try JSONSerialization.jsonObject(with: json.data(using: .utf8)!,
-                                                    options: [])
+        let dict = try JSONSerialization.jsonObject(
+            with: json.data(using: .utf8)!,
+            options: [])
         self.init(fromJSONDict: dict as? [String: Any] ?? [String: Any]())
     }
 
     public static func fromJSONArray(_ jsonArray: String) throws -> [LoginRecord] {
-        if let arr = try JSONSerialization.jsonObject(with: jsonArray.data(using: .utf8)!,
-                                                      options: []) as? [[String: Any]]
+        if let arr = try JSONSerialization.jsonObject(
+            with: jsonArray.data(using: .utf8)!,
+            options: []) as? [[String: Any]]
         {
             return arr.map { (dict) -> LoginRecord in
                 LoginRecord(fromJSONDict: dict)
@@ -172,8 +175,8 @@ public class LoginRecord {
     }
 }
 
-public extension LoginRecord {
-    convenience init(credentials: URLCredential, protectionSpace: URLProtectionSpace) {
+extension LoginRecord {
+    public convenience init(credentials: URLCredential, protectionSpace: URLProtectionSpace) {
         let hostname: String
         if let _ = protectionSpace.`protocol` {
             hostname = protectionSpace.urlString()
@@ -189,19 +192,19 @@ public extension LoginRecord {
             "hostname": hostname,
             "httpRealm": httpRealm as Any,
             "username": username ?? "",
-            "password": password ?? ""
+            "password": password ?? "",
         ])
     }
 
-    var credentials: URLCredential {
+    public var credentials: URLCredential {
         return URLCredential(user: username, password: password, persistence: .forSession)
     }
 
-    var protectionSpace: URLProtectionSpace {
+    public var protectionSpace: URLProtectionSpace {
         return URLProtectionSpace.fromOrigin(hostname)
     }
 
-    var hasMalformedHostname: Bool {
+    public var hasMalformedHostname: Bool {
         let hostnameURL = hostname.asURL
         guard let _ = hostnameURL?.host else {
             return true
@@ -210,27 +213,33 @@ public extension LoginRecord {
         return false
     }
 
-    var isValid: Maybe<()> {
+    public var isValid: Maybe<()> {
         // Referenced from https://mxr.mozilla.org/mozilla-central/source/toolkit/components/passwordmgr/nsLoginManager.js?rev=f76692f0fcf8&mark=280-281#271
 
         // Logins with empty hostnames are not valid.
         if hostname.isEmpty {
-            return Maybe(failure: LoginRecordError(description: "Can't add a login with an empty hostname."))
+            return Maybe(
+                failure: LoginRecordError(description: "Can't add a login with an empty hostname."))
         }
 
         // Logins with empty passwords are not valid.
         if password.isEmpty {
-            return Maybe(failure: LoginRecordError(description: "Can't add a login with an empty password."))
+            return Maybe(
+                failure: LoginRecordError(description: "Can't add a login with an empty password."))
         }
 
         // Logins with both a formSubmitURL and httpRealm are not valid.
         if let _ = formSubmitURL, let _ = httpRealm {
-            return Maybe(failure: LoginRecordError(description: "Can't add a login with both a httpRealm and formSubmitURL."))
+            return Maybe(
+                failure: LoginRecordError(
+                    description: "Can't add a login with both a httpRealm and formSubmitURL."))
         }
 
         // Login must have at least a formSubmitURL or httpRealm.
         if (formSubmitURL == nil) && (httpRealm == nil) {
-            return Maybe(failure: LoginRecordError(description: "Can't add a login without a httpRealm or formSubmitURL."))
+            return Maybe(
+                failure: LoginRecordError(
+                    description: "Can't add a login without a httpRealm or formSubmitURL."))
         }
 
         // All good.
@@ -268,7 +277,9 @@ public class RustLogins {
 
     // Migrate and return the salt, or create a new salt
     // Also, in the event of an error, returns a new salt.
-    public static func setupPlaintextHeaderAndGetSalt(databasePath: String, encryptionKey: String) -> String {
+    public static func setupPlaintextHeaderAndGetSalt(databasePath: String, encryptionKey: String)
+        -> String
+    {
         let saltOf32Chars = UUID().uuidString.replacingOccurrences(of: "-", with: "")
         return saltOf32Chars
     }
@@ -312,7 +323,7 @@ public class RustLogins {
         return error
     }
 
-    public func sync(/*unlockInfo: SyncUnlockInfo*/) -> Success {
+    public func sync( /*unlockInfo: SyncUnlockInfo*/) -> Success {
         let deferred = Success()
         deferred.fill(Maybe(success: ()))
         return deferred
@@ -346,7 +357,9 @@ public class RustLogins {
         })
     }
 
-    public func getLoginsForProtectionSpace(_ protectionSpace: URLProtectionSpace, withUsername username: String? = nil) -> Deferred<Maybe<Cursor<LoginRecord>>> {
+    public func getLoginsForProtectionSpace(
+        _ protectionSpace: URLProtectionSpace, withUsername username: String? = nil
+    ) -> Deferred<Maybe<Cursor<LoginRecord>>> {
         return list().bind({ result in
             if let error = result.failureValue {
                 return deferMaybe(error)
@@ -359,15 +372,14 @@ public class RustLogins {
             let filteredRecords: [LoginRecord]
             if let username = username {
                 filteredRecords = records.filter({
-                    $0.username == username && (
-                        $0.hostname == protectionSpace.urlString() ||
-                        $0.hostname == protectionSpace.host
-                    )
+                    $0.username == username
+                        && ($0.hostname == protectionSpace.urlString()
+                            || $0.hostname == protectionSpace.host)
                 })
             } else {
                 filteredRecords = records.filter({
-                    $0.hostname == protectionSpace.urlString() ||
-                    $0.hostname == protectionSpace.host
+                    $0.hostname == protectionSpace.urlString()
+                        || $0.hostname == protectionSpace.host
                 })
             }
             return deferMaybe(ArrayCursor(data: filteredRecords))

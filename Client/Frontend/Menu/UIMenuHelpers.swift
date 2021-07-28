@@ -11,18 +11,19 @@ extension UIMenu {
     }
 }
 
-fileprivate let menuActionID = UIAction.Identifier("MenuAction")
+private let menuActionID = UIAction.Identifier("MenuAction")
 
 extension UIButton {
     func setDynamicMenu(_ builder: @escaping () -> UIMenu?) {
         self.menu = UIMenu(children: [])
-        self.addAction(UIAction(identifier: menuActionID) { [weak self] _ in
-            if let menu = builder() {
-                self?.menu = menu
-            } else {
-                self?.menu = nil
-            }
-        }, for: .menuActionTriggered)
+        self.addAction(
+            UIAction(identifier: menuActionID) { [weak self] _ in
+                if let menu = builder() {
+                    self?.menu = menu
+                } else {
+                    self?.menu = nil
+                }
+            }, for: .menuActionTriggered)
     }
     func removeDynamicMenu() {
         self.menu = nil

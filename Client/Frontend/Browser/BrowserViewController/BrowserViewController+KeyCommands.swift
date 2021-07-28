@@ -8,48 +8,58 @@ import Shared
 extension BrowserViewController {
 
     @objc func reloadTabKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "reload"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand, extras: ["action": "reload"])
         if let tab = tabManager.selectedTab, zeroQueryViewController == nil {
             tab.reload()
         }
     }
 
     @objc func goBackKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "go-back"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand, extras: ["action": "go-back"])
         if let tab = tabManager.selectedTab, tab.canGoBack, zeroQueryViewController == nil {
             tab.goBack()
         }
     }
 
     @objc func goForwardKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "go-forward"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand, extras: ["action": "go-forward"]
+        )
         if let tab = tabManager.selectedTab, tab.canGoForward {
             tab.goForward()
         }
     }
 
     @objc func findInPageKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "find-in-page"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand,
+            extras: ["action": "find-in-page"])
         if let tab = tabManager.selectedTab, zeroQueryViewController == nil {
             self.tab(tab, didSelectFindInPageForSelection: "")
         }
     }
 
     @objc func selectLocationBarKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "select-location-bar"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand,
+            extras: ["action": "select-location-bar"])
         scrollController.showToolbars(animated: true)
         urlBar.shared.model.setEditing(to: true)
     }
 
     @objc func newTabKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
         openLazyTab()
     }
 
     @objc func newPrivateTabKeyCommand() {
         // NOTE: We cannot and should not distinguish between "new-tab" and "new-private-tab"
         // when recording telemetry for key commands.
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
 
         if !(tabManager.selectedTab?.isPrivate ?? false) {
             _ = tabManager.switchPrivacyMode()
@@ -63,7 +73,8 @@ extension BrowserViewController {
     }
 
     @objc func closeTabKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "close-tab"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand, extras: ["action": "close-tab"])
 
         guard let currentTab = tabManager.selectedTab else {
             return
@@ -73,7 +84,8 @@ extension BrowserViewController {
     }
 
     @objc func nextTabKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "next-tab"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand, extras: ["action": "next-tab"])
         guard let currentTab = tabManager.selectedTab else {
             return
         }
@@ -87,7 +99,9 @@ extension BrowserViewController {
     }
 
     @objc func previousTabKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "previous-tab"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand,
+            extras: ["action": "previous-tab"])
         guard let currentTab = tabManager.selectedTab else {
             return
         }
@@ -101,12 +115,16 @@ extension BrowserViewController {
     }
 
     @objc func restoreTabKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "restore-tabs"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand,
+            extras: ["action": "restore-tabs"])
         _ = tabManager.restoreSavedTabs(tabManager.recentlyClosedTabs[0])
     }
 
     @objc func closeAllTabsCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "close-all-tabs"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand,
+            extras: ["action": "close-all-tabs"])
 
         if tabManager.selectedTab?.isPrivate ?? false {
             _ = tabManager.switchPrivacyMode()
@@ -122,7 +140,9 @@ extension BrowserViewController {
     }
 
     @objc func showTabTrayKeyCommand() {
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .keyCommand, extras: ["action": "show-tab-tray"])
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .keyCommand,
+            extras: ["action": "show-tab-tray"])
         showTabTray()
     }
 
@@ -134,38 +154,84 @@ extension BrowserViewController {
 
     override var keyCommands: [UIKeyCommand]? {
         let searchLocationCommands = [
-            UIKeyCommand(input: UIKeyCommand.inputUpArrow, modifierFlags: [], action: #selector(moveURLCompletionKeyCommand(sender:))),
-            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: [], action: #selector(moveURLCompletionKeyCommand(sender:))),
-            UIKeyCommand(input: "\r", modifierFlags: [], action: #selector(moveURLCompletionKeyCommand(sender:))),
+            UIKeyCommand(
+                input: UIKeyCommand.inputUpArrow, modifierFlags: [],
+                action: #selector(moveURLCompletionKeyCommand(sender:))),
+            UIKeyCommand(
+                input: UIKeyCommand.inputDownArrow, modifierFlags: [],
+                action: #selector(moveURLCompletionKeyCommand(sender:))),
+            UIKeyCommand(
+                input: "\r", modifierFlags: [],
+                action: #selector(moveURLCompletionKeyCommand(sender:))),
         ]
         let overidesTextEditing = [
-            UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: [.command, .shift], action: #selector(nextTabKeyCommand)),
-            UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: [.command, .shift], action: #selector(previousTabKeyCommand)),
-            UIKeyCommand(input: UIKeyCommand.inputLeftArrow, modifierFlags: .command, action: #selector(goBackKeyCommand)),
-            UIKeyCommand(input: UIKeyCommand.inputRightArrow, modifierFlags: .command, action: #selector(goForwardKeyCommand)),
+            UIKeyCommand(
+                input: UIKeyCommand.inputRightArrow, modifierFlags: [.command, .shift],
+                action: #selector(nextTabKeyCommand)),
+            UIKeyCommand(
+                input: UIKeyCommand.inputLeftArrow, modifierFlags: [.command, .shift],
+                action: #selector(previousTabKeyCommand)),
+            UIKeyCommand(
+                input: UIKeyCommand.inputLeftArrow, modifierFlags: .command,
+                action: #selector(goBackKeyCommand)),
+            UIKeyCommand(
+                input: UIKeyCommand.inputRightArrow, modifierFlags: .command,
+                action: #selector(goForwardKeyCommand)),
         ]
         let tabNavigation = [
-            UIKeyCommand(title: Strings.ReloadPageTitle, action: #selector(reloadTabKeyCommand), input: "r", modifierFlags: .command),
-            UIKeyCommand(title: Strings.BackTitle, action: #selector(goBackKeyCommand), input: "[", modifierFlags: .command),
-            UIKeyCommand(title: Strings.ForwardTitle, action: #selector(goForwardKeyCommand), input: "]", modifierFlags: .command),
+            UIKeyCommand(
+                title: Strings.ReloadPageTitle, action: #selector(reloadTabKeyCommand), input: "r",
+                modifierFlags: .command),
+            UIKeyCommand(
+                title: Strings.BackTitle, action: #selector(goBackKeyCommand), input: "[",
+                modifierFlags: .command),
+            UIKeyCommand(
+                title: Strings.ForwardTitle, action: #selector(goForwardKeyCommand), input: "]",
+                modifierFlags: .command),
 
-            UIKeyCommand(title: Strings.FindTitle, action: #selector(findInPageKeyCommand), input: "f", modifierFlags: .command),
-            UIKeyCommand(title: Strings.SelectLocationBarTitle, action: #selector(selectLocationBarKeyCommand), input: "l", modifierFlags: .command),
-            UIKeyCommand(title: Strings.NewTabTitle, action: #selector(newTabKeyCommand), input: "t", modifierFlags: .command),
-            UIKeyCommand(title: Strings.NewIncognitoTabTitle, action: #selector(newPrivateTabKeyCommand), input: "p", modifierFlags: [.command]),
-            UIKeyCommand(title: Strings.CloseTabTitle, action: #selector(closeTabKeyCommand), input: "w", modifierFlags: .command),
-            UIKeyCommand(title: Strings.ShowNextTabTitle, action: #selector(nextTabKeyCommand), input: "\t", modifierFlags: .control),
-            UIKeyCommand(title: Strings.ShowPreviousTabTitle, action: #selector(previousTabKeyCommand), input: "\t", modifierFlags: [.control, .shift]),
+            UIKeyCommand(
+                title: Strings.FindTitle, action: #selector(findInPageKeyCommand), input: "f",
+                modifierFlags: .command),
+            UIKeyCommand(
+                title: Strings.SelectLocationBarTitle,
+                action: #selector(selectLocationBarKeyCommand), input: "l", modifierFlags: .command),
+            UIKeyCommand(
+                title: Strings.NewTabTitle, action: #selector(newTabKeyCommand), input: "t",
+                modifierFlags: .command),
+            UIKeyCommand(
+                title: Strings.NewIncognitoTabTitle, action: #selector(newPrivateTabKeyCommand),
+                input: "p", modifierFlags: [.command]),
+            UIKeyCommand(
+                title: Strings.CloseTabTitle, action: #selector(closeTabKeyCommand), input: "w",
+                modifierFlags: .command),
+            UIKeyCommand(
+                title: Strings.ShowNextTabTitle, action: #selector(nextTabKeyCommand), input: "\t",
+                modifierFlags: .control),
+            UIKeyCommand(
+                title: Strings.ShowPreviousTabTitle, action: #selector(previousTabKeyCommand),
+                input: "\t", modifierFlags: [.control, .shift]),
 
-            UIKeyCommand(title: Strings.RestoreLastClosedTabsTitle, action: #selector(restoreTabKeyCommand), input: "t", modifierFlags: [.shift, .command]),
-            UIKeyCommand(title: Strings.CloseAllTabsTitle, action: #selector(closeAllTabsCommand), input: "w", modifierFlags: [.shift, .command]),
+            UIKeyCommand(
+                title: Strings.RestoreLastClosedTabsTitle, action: #selector(restoreTabKeyCommand),
+                input: "t", modifierFlags: [.shift, .command]),
+            UIKeyCommand(
+                title: Strings.CloseAllTabsTitle, action: #selector(closeAllTabsCommand),
+                input: "w", modifierFlags: [.shift, .command]),
 
             // Switch tab to match Safari on iOS.
-            UIKeyCommand(input: "]", modifierFlags: [.command, .shift], action: #selector(nextTabKeyCommand)),
-            UIKeyCommand(input: "[", modifierFlags: [.command, .shift], action: #selector(previousTabKeyCommand)),
+            UIKeyCommand(
+                input: "]", modifierFlags: [.command, .shift], action: #selector(nextTabKeyCommand)),
+            UIKeyCommand(
+                input: "[", modifierFlags: [.command, .shift],
+                action: #selector(previousTabKeyCommand)),
 
-            UIKeyCommand(input: "\\", modifierFlags: [.command, .shift], action: #selector(showTabTrayKeyCommand)), // Safari on macOS
-            UIKeyCommand(title: Strings.ShowTabTrayFromTabKeyCodeTitle, action: #selector(showTabTrayKeyCommand), input: "\t", modifierFlags: [.command, .alternate])
+            UIKeyCommand(
+                input: "\\", modifierFlags: [.command, .shift],
+                action: #selector(showTabTrayKeyCommand)),  // Safari on macOS
+            UIKeyCommand(
+                title: Strings.ShowTabTrayFromTabKeyCodeTitle,
+                action: #selector(showTabTrayKeyCommand), input: "\t",
+                modifierFlags: [.command, .alternate]),
         ]
 
         let isEditingText = tabManager.selectedTab?.isEditing ?? false

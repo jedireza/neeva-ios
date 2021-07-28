@@ -26,17 +26,22 @@ extension SQLiteMetadata: Metadata {
     /// - parameter expireAt: Expiration/TTL interval for when this metadata should expire at.
     ///
     /// - returns: Deferred on success
-    public func storeMetadata(_ metadata: PageMetadata, forPageURL pageURL: URL,
-                              expireAt: UInt64) -> Success {
+    public func storeMetadata(
+        _ metadata: PageMetadata, forPageURL pageURL: URL,
+        expireAt: UInt64
+    ) -> Success {
         guard let cacheKey = pageURL.displayURL?.absoluteString else {
             return succeed()
         }
 
         // Replace any matching cache_key entries if they exist
-        let selectUniqueCacheKey = "coalesce((SELECT cache_key FROM page_metadata WHERE cache_key = ?), ?)"
-        let args: Args = [cacheKey, cacheKey, metadata.siteURL, metadata.mediaURL, metadata.title,
-                          metadata.type, metadata.description, metadata.providerName,
-                          expireAt]
+        let selectUniqueCacheKey =
+            "coalesce((SELECT cache_key FROM page_metadata WHERE cache_key = ?), ?)"
+        let args: Args = [
+            cacheKey, cacheKey, metadata.siteURL, metadata.mediaURL, metadata.title,
+            metadata.type, metadata.description, metadata.providerName,
+            expireAt,
+        ]
 
         let insert = """
             INSERT OR REPLACE INTO page_metadata (
@@ -51,31 +56,33 @@ extension SQLiteMetadata: Metadata {
     ///
     /// - returns: Deferred on success
     public func deleteExpiredMetadata() -> Success {
-        let sql = "DELETE FROM page_metadata WHERE expired_at <= (CAST(strftime('%s', 'now') AS LONG)*1000)"
+        let sql =
+            "DELETE FROM page_metadata WHERE expired_at <= (CAST(strftime('%s', 'now') AS LONG)*1000)"
         return self.db.run(sql)
     }
 
     public func metadata(for url: URL) -> Deferred<Maybe<Cursor<PageMetadata?>>> {
         let cacheKey = url.displayURL?.absoluteString
         let sql = """
-        SELECT site_url AS url, media_url, title AS metadata_title, type, description, provider_name
-        FROM page_metadata
-        WHERE cache_key = ?
-        ORDER BY expired_at DESC
-        LIMIT 1
-        """
+            SELECT site_url AS url, media_url, title AS metadata_title, type, description, provider_name
+            FROM page_metadata
+            WHERE cache_key = ?
+            ORDER BY expired_at DESC
+            LIMIT 1
+            """
         let args: Args = [cacheKey]
-        return db.runQueryConcurrently(sql, args: args, factory: SQLiteHistory.pageMetadataColumnFactory)
+        return db.runQueryConcurrently(
+            sql, args: args, factory: SQLiteHistory.pageMetadataColumnFactory)
     }
 
     public func hasMetadata(for url: URL) -> Deferred<Maybe<Bool>> {
         let cacheKey = url.displayURL?.absoluteString
         let sql = """
-        SELECT *
-        FROM page_metadata
-        WHERE cache_key = ?
-        LIMIT 1
-        """
+            SELECT *
+            FROM page_metadata
+            WHERE cache_key = ?
+            LIMIT 1
+            """
         let args: Args = [cacheKey]
         return self.db.queryReturnsResults(sql, args: args)
     }

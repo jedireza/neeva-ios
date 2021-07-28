@@ -48,7 +48,6 @@ struct SpaceIconView_Previews: PreviewProvider {
     }
 }
 
-
 // extracted from `icon-library.ts`
 let iconMapping = [
     "gsuite-app": "google",

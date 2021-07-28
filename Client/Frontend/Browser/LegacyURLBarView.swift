@@ -2,11 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import Shared
 import SnapKit
 import Storage
 import SwiftUI
-import Combine
 
 protocol CommonURLBar: PrivateModeUI {
     var model: URLBarModel { get }
@@ -83,19 +83,21 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         neevaMenuButton.isHidden = false
         neevaMenuButton.imageView?.contentMode = .left
         neevaMenuButton.accessibilityLabel = "Neeva Menu"
-        neevaMenuButton.addTarget(self, action: #selector(didClickNeevaMenu), for: UIControl.Event.touchUpInside)
+        neevaMenuButton.addTarget(
+            self, action: #selector(didClickNeevaMenu), for: UIControl.Event.touchUpInside)
         neevaMenuButton.showsMenuAsPrimaryAction = true
         return neevaMenuButton
     }()
 
     lazy var locationHost: TabLocationHost = {
-        TabLocationHost(model: model,
-                        historySuggestionModel: historySuggestionModel,
-                        neevaSuggestionModel: neevaSuggestionModel,
-                        queryModel: queryModel,
-                        gridModel: self.gridModel,
-                        trackingStatsModel: self.trackingStatsViewModel,
-                        delegate: self, urlBar: self)
+        TabLocationHost(
+            model: model,
+            historySuggestionModel: historySuggestionModel,
+            neevaSuggestionModel: neevaSuggestionModel,
+            queryModel: queryModel,
+            gridModel: self.gridModel,
+            trackingStatsModel: self.trackingStatsViewModel,
+            delegate: self, urlBar: self)
     }()
 
     lazy var locationContainer: UIView = {
@@ -108,14 +110,16 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     let line = UIView()
 
     lazy var newTabButton: UIButton = {
-        let symbol = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+        let symbol = UIImage(
+            systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
         let newTabButton = UIButton()
         newTabButton.setImage(symbol, for: .normal)
         newTabButton.accessibilityIdentifier = "URLBarView.newTabButton"
         newTabButton.tintColor = UIColor.label
-        newTabButton.addAction(UIAction { _ in
-            BrowserViewController.foregroundBVC().openURLInNewTab(nil)
-        }, for: .primaryActionTriggered)
+        newTabButton.addAction(
+            UIAction { _ in
+                BrowserViewController.foregroundBVC().openURLInNewTab(nil)
+            }, for: .primaryActionTriggered)
         newTabButton.isPointerInteractionEnabled = true
         return newTabButton
     }()
@@ -140,15 +144,21 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
 
     var toolbarNeevaMenuButton = ToolbarButton()
 
-    lazy var actionButtons: [ToolbarButton] = [self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton]
+    lazy var actionButtons: [ToolbarButton] = [
+        self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton,
+    ]
 
     var profile: Profile? = nil
-    
-    init(profile: Profile, toolbarModel: TabToolbarModel,
-         gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel) {
+
+    init(
+        profile: Profile, toolbarModel: TabToolbarModel,
+        gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel
+    ) {
         self.profile = profile
-        self.historySuggestionModel = HistorySuggestionModel(profile: profile, queryModel: self.queryModel)
-        self.neevaSuggestionModel = NeevaSuggestionModel(isIncognito: isPrivateMode, queryModel: self.queryModel)
+        self.historySuggestionModel = HistorySuggestionModel(
+            profile: profile, queryModel: self.queryModel)
+        self.neevaSuggestionModel = NeevaSuggestionModel(
+            isIncognito: isPrivateMode, queryModel: self.queryModel)
         self.toolbarModel = toolbarModel
         self.gridModel = gridModel
         self.trackingStatsViewModel = trackingStatsModel
@@ -163,8 +173,10 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     fileprivate func commonInit() {
         locationContainer.addSubview(locationHost.view)
 
-        [line, tabsButton, neevaMenuButton, progressBar, addToSpacesButton,
-         forwardButton, backButton, shareButton, locationContainer].forEach {
+        [
+            line, tabsButton, neevaMenuButton, progressBar, addToSpacesButton,
+            forwardButton, backButton, shareButton, locationContainer,
+        ].forEach {
             addSubview($0)
         }
         if FeatureFlag[.cardStrip] {
@@ -204,7 +216,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
             }
             .store(in: &subscriptions)
     }
-    
+
     fileprivate func setupConstraints() {
 
         line.snp.makeConstraints { make in
@@ -218,29 +230,33 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
             make.height.equalTo(LegacyURLBarViewUX.ProgressBarHeight)
             make.left.right.equalTo(self)
         }
-        
+
         locationHost.view.snp.makeConstraints { make in
             make.edges.equalTo(self.locationContainer)
         }
 
         backButton.snp.makeConstraints { make in
             if FeatureFlag[.cardStrip] {
-                make.leading.equalTo(self.newTabButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
+                make.leading.equalTo(self.newTabButton.snp.trailing).offset(
+                    LegacyURLBarViewUX.ButtonPadding)
             } else {
-                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.ToolbarEdgePaddding)
+                make.leading.equalTo(self.safeArea.leading).offset(
+                    LegacyURLBarViewUX.ToolbarEdgePaddding)
             }
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         forwardButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.backButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.backButton.snp.trailing).offset(
+                LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         neevaMenuButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.forwardButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.forwardButton.snp.trailing).offset(
+                LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
@@ -251,24 +267,28 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         }
 
         addToSpacesButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.shareButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.shareButton.snp.trailing).offset(
+                LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
         }
 
         if FeatureFlag[.cardStrip] {
             newTabButton.snp.makeConstraints { make in
-                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.ToolbarEdgePaddding)
+                make.leading.equalTo(self.safeArea.leading).offset(
+                    LegacyURLBarViewUX.ToolbarEdgePaddding)
                 make.centerY.equalTo(self.locationContainer)
                 make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
             }
         }
 
         tabsButton.snp.makeConstraints { make in
-            make.leading.equalTo(self.addToSpacesButton.snp.trailing).offset(LegacyURLBarViewUX.ButtonPadding)
+            make.leading.equalTo(self.addToSpacesButton.snp.trailing).offset(
+                LegacyURLBarViewUX.ButtonPadding)
             make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(LegacyURLBarViewUX.ButtonSize)
-            make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.ToolbarEdgePaddding)
+            make.trailing.equalTo(self.safeArea.trailing).offset(
+                -LegacyURLBarViewUX.ToolbarEdgePaddding)
         }
     }
 
@@ -276,14 +296,22 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         super.updateConstraints()
         self.locationContainer.snp.remakeConstraints { make in
             if inOverlayMode {
-                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.LocationEdgePadding)
-                make.trailing.equalTo(self.safeArea.trailing).offset(toolbarIsShowing ? -LegacyURLBarViewUX.ToolbarEdgePaddding : -LegacyURLBarViewUX.LocationEdgePadding)
+                make.leading.equalTo(self.safeArea.leading).offset(
+                    LegacyURLBarViewUX.LocationEdgePadding)
+                make.trailing.equalTo(self.safeArea.trailing).offset(
+                    toolbarIsShowing
+                        ? -LegacyURLBarViewUX.ToolbarEdgePaddding
+                        : -LegacyURLBarViewUX.LocationEdgePadding)
             } else if self.toolbarIsShowing {
-                make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(LegacyURLBarViewUX.Padding)
-                make.trailing.equalTo(self.shareButton.snp.leading).offset(-LegacyURLBarViewUX.Padding)
+                make.leading.equalTo(self.neevaMenuButton.snp.trailing).offset(
+                    LegacyURLBarViewUX.Padding)
+                make.trailing.equalTo(self.shareButton.snp.leading).offset(
+                    -LegacyURLBarViewUX.Padding)
             } else {
-                make.leading.equalTo(self.safeArea.leading).offset(LegacyURLBarViewUX.LocationEdgePadding)
-                make.trailing.equalTo(self.safeArea.trailing).offset(-LegacyURLBarViewUX.LocationEdgePadding)
+                make.leading.equalTo(self.safeArea.leading).offset(
+                    LegacyURLBarViewUX.LocationEdgePadding)
+                make.trailing.equalTo(self.safeArea.trailing).offset(
+                    -LegacyURLBarViewUX.LocationEdgePadding)
             }
             make.height.equalTo(LegacyURLBarViewUX.LocationHeight)
             if self.toolbarIsShowing || UIConstants.enableBottomURLBar {
@@ -404,13 +432,17 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
 
         inOverlayMode = overlay
 
-        UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0.0, options: [], animations: {
-            self.transitionToOverlay(cancel)
-            self.updateConstraints()
-            self.layoutIfNeeded()
-        }, completion: { _ in
-            self.updateViewsForOverlayModeAndToolbarChanges()
-        })
+        UIView.animate(
+            withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0.0,
+            options: [],
+            animations: {
+                self.transitionToOverlay(cancel)
+                self.updateConstraints()
+                self.layoutIfNeeded()
+            },
+            completion: { _ in
+                self.updateViewsForOverlayModeAndToolbarChanges()
+            })
     }
 }
 
@@ -440,7 +472,8 @@ extension LegacyURLBarView: PrivateModeUI {
         locationHost.applyUIMode(isPrivate: isPrivate)
 
         if isPrivate {
-            neevaMenuButton.setImage(neevaMenuIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
+            neevaMenuButton.setImage(
+                neevaMenuIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
         } else {
             neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
         }
@@ -450,7 +483,9 @@ extension LegacyURLBarView: PrivateModeUI {
         backgroundColor = UIColor.Browser.background
         line.backgroundColor = UIColor.Browser.urlBarDivider
 
-        progressBar.setGradientColors(startColor: UIColor.LoadingBar.start(isPrivateMode), endColor: UIColor.LoadingBar.end(isPrivateMode))
+        progressBar.setGradientColors(
+            startColor: UIColor.LoadingBar.start(isPrivateMode),
+            endColor: UIColor.LoadingBar.end(isPrivateMode))
     }
 }
 

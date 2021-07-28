@@ -25,10 +25,14 @@ public struct KeychainKey {
 }
 
 public struct AppConstants {
-    public static let IsRunningTest = NSClassFromString("XCTestCase") != nil || ProcessInfo.processInfo.arguments.contains(LaunchArguments.Test)
+    public static let IsRunningTest =
+        NSClassFromString("XCTestCase") != nil
+        || ProcessInfo.processInfo.arguments.contains(LaunchArguments.Test)
 
-    public static let IsRunningPerfTest = NSClassFromString("XCTestCase") != nil || ProcessInfo.processInfo.arguments.contains(LaunchArguments.PerformanceTest)
-    
+    public static let IsRunningPerfTest =
+        NSClassFromString("XCTestCase") != nil
+        || ProcessInfo.processInfo.arguments.contains(LaunchArguments.PerformanceTest)
+
     public static let FxAiOSClientId = "1b1a3e44c54fbb58"
 
     /// Build Channel.
@@ -78,29 +82,29 @@ public struct AppConstants {
 
     /// The maximum length of a bookmark description stored by Neeva. Shared with Places on desktop.
     public static let DB_DESCRIPTION_LENGTH_MAX = 1024
-    
+
     /// Put it behind a feature flag as the strings didn't land in time
     public static let MOZ_SHAKE_TO_RESTORE: Bool = {
         #if NEEVA_CHANNEL_RELEASE
-        return false
+            return false
         #elseif NEEVA_CHANNEL_BETA
-        return true
+            return true
         #elseif NEEVA_CHANNEL_DEV
-        return true
+            return true
         #else
-        return true
+            return true
         #endif
     }()
-    
+
     public static let CHRONOLOGICAL_TABS: Bool = {
         #if NEEVA_CHANNEL_RELEASE
-        return false
+            return false
         #elseif NEEVA_CHANNEL_BETA
-        return false
+            return false
         #elseif NEEVA_CHANNEL_DEV
-        return false
+            return false
         #else
-        return false
+            return false
         #endif
     }()
 

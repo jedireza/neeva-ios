@@ -4,9 +4,7 @@
 
 import Shared
 
-/**
- * Used to bridge the NSErrors we get here into something that Result is happy with.
- */
+/// Used to bridge the NSErrors we get here into something that Result is happy with.
 open class DatabaseError: MaybeErrorType {
     let err: NSError?
 
@@ -15,7 +13,8 @@ open class DatabaseError: MaybeErrorType {
     }
 
     public init(description: String) {
-        self.err = NSError(domain: NeevaErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: description])
+        self.err = NSError(
+            domain: NeevaErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: description])
     }
 
     public init(err: NSError?) {

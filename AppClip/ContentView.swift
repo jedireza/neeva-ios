@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     var body: some View {
@@ -14,20 +14,26 @@ struct ContentView: View {
                     .fontWeight(.bold)
             }
 
-            Button(action: {
-                UIApplication.shared.open(URL(string: "neeva://finish-log-in")!)
-            }, label: {
-                (Text("You're logged in! ") +
-                    Text("Open Neeva").underline().fontWeight(.semibold) +
-                    Text(" for a \nbetter search experience").foregroundColor(Color(UIColor.link))).multilineTextAlignment(.center)
-            })
+            Button(
+                action: {
+                    UIApplication.shared.open(URL(string: "neeva://finish-log-in")!)
+                },
+                label: {
+                    (Text("You're logged in! ")
+                        + Text("Open Neeva").underline().fontWeight(.semibold)
+                        + Text(" for a \nbetter search experience").foregroundColor(
+                            Color(UIColor.link))).multilineTextAlignment(.center)
+                })
 
-            Button(action: {
-                UIApplication.shared.open(URL(string: "AppClipApp.neevaAppStorePageURL")!)
-            }, label: {
-                (Text("Don't have Neeva? ") +
-                    Text("Download the app now!").underline().fontWeight(.semibold)).multilineTextAlignment(.center)
-            })
+            Button(
+                action: {
+                    UIApplication.shared.open(URL(string: "AppClipApp.neevaAppStorePageURL")!)
+                },
+                label: {
+                    (Text("Don't have Neeva? ")
+                        + Text("Download the app now!").underline().fontWeight(.semibold))
+                        .multilineTextAlignment(.center)
+                })
         }
     }
 }

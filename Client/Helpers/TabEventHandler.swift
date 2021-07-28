@@ -5,42 +5,39 @@
 import Foundation
 import Storage
 
-/**
- * A handler can be a plain old swift object. It does not need to extend any
- * other object, but can.
- *
- * ```
- * class HandoffHandler {
- *     init() {
- *         register(self, forTabEvents: .didLoadFavicon, .didLoadPageMetadata)
- *     }
- * }
- * ```
- *
- * Handlers can implement any or all `TabEventHandler` methods. If you
- * implement a method, you should probably `registerFor` the event above.
- *
- * ```
- * extension HandoffHandler: TabEventHandler {
- *     func tab(_ tab: Tab, didLoadPageMetadata metadata: PageMetadata) {
- *         print("\(tab) has \(pageMetadata)")
- *     }
- *
- *     func tab(_ tab: Tab, didLoadFavicon favicon: Favicon) {
- *         print("\(tab) has \(favicon)")
- *     }
- * }
- * ```
- *
- * Tab events should probably be only posted from one place, to avoid cycles.
- *
- * ```
- * TabEvent.post(.didLoadPageMetadata(aPageMetadata), for: tab)
- * ```
- *
- * In this manner, we are able to use the notification center and have type safety.
- *
- */
+/// A handler can be a plain old swift object. It does not need to extend any
+/// other object, but can.
+///
+/// ```
+/// class HandoffHandler {
+///     init() {
+///         register(self, forTabEvents: .didLoadFavicon, .didLoadPageMetadata)
+///     }
+/// }
+/// ```
+///
+/// Handlers can implement any or all `TabEventHandler` methods. If you
+/// implement a method, you should probably `registerFor` the event above.
+///
+/// ```
+/// extension HandoffHandler: TabEventHandler {
+///     func tab(_ tab: Tab, didLoadPageMetadata metadata: PageMetadata) {
+///         print("\(tab) has \(pageMetadata)")
+///     }
+///
+///     func tab(_ tab: Tab, didLoadFavicon favicon: Favicon) {
+///         print("\(tab) has \(favicon)")
+///     }
+/// }
+/// ```
+///
+/// Tab events should probably be only posted from one place, to avoid cycles.
+///
+/// ```
+/// TabEvent.post(.didLoadPageMetadata(aPageMetadata), for: tab)
+/// ```
+///
+/// In this manner, we are able to use the notification center and have type safety.
 // As we want more events we add more here.
 // Each event needs:
 // 1. a method in the TabEventHandler.
@@ -100,7 +97,7 @@ enum TabEvent {
     case didChangeContentBlocking
 
     var label: TabEventLabel {
-        let str = "\(self)".components(separatedBy: "(")[0] // Will grab just the name from 'didChangeURL(...)'
+        let str = "\(self)".components(separatedBy: "(")[0]  // Will grab just the name from 'didChangeURL(...)'
         guard let result = TabEventLabel(rawValue: str) else {
             fatalError("Bad tab event label.")
         }
@@ -177,8 +174,9 @@ extension TabEventHandler {
         wrapper.observers = events.map { [weak self] eventType in
             center.addObserver(forName: eventType.name, object: nil, queue: .main) { notification in
                 guard let tab = notification.object as? Tab,
-                    let event = notification.userInfo?["payload"] as? TabEvent else {
-                        return
+                    let event = notification.userInfo?["payload"] as? TabEvent
+                else {
+                    return
                 }
 
                 if let me = self {
@@ -187,6 +185,8 @@ extension TabEventHandler {
             }
         }
 
-        objc_setAssociatedObject(observer, &AssociatedKeys.key, wrapper, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(
+            observer, &AssociatedKeys.key, wrapper,
+            objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }

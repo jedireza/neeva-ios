@@ -15,10 +15,12 @@ public enum NSFileManagerExtensionsErrorCodes: Int {
     case errorEnumeratingDirectory = 2
 }
 
-public extension FileManager {
+extension FileManager {
 
     private func directoryEnumerator(for url: URL) throws -> FileManager.DirectoryEnumerator {
-        let prefetchedProperties: [URLResourceKey] = [.isRegularFileKey, .fileAllocatedSizeKey, .totalFileAllocatedSizeKey]
+        let prefetchedProperties: [URLResourceKey] = [
+            .isRegularFileKey, .fileAllocatedSizeKey, .totalFileAllocatedSizeKey,
+        ]
 
         // If we run into an issue getting an enumerator for the given URL, capture the error and bail out later.
         var enumeratorError: NSError?
@@ -27,10 +29,13 @@ public extension FileManager {
             return false
         }
 
-        guard let directoryEnumerator = FileManager.default.enumerator(at: url,
-            includingPropertiesForKeys: prefetchedProperties,
-            options: [],
-            errorHandler: errorHandler) else {
+        guard
+            let directoryEnumerator = FileManager.default.enumerator(
+                at: url,
+                includingPropertiesForKeys: prefetchedProperties,
+                options: [],
+                errorHandler: errorHandler)
+        else {
             throw errorWithCode(.enumeratorFailure)
         }
 
@@ -55,7 +60,9 @@ public extension FileManager {
         return itemURL.allocatedFileSize()
     }
 
-    func allocatedSizeOfDirectoryAtURL(_ url: URL, forFilesPrefixedWith prefix: String, isLargerThanBytes threshold: Int64) throws -> Bool {
+    public func allocatedSizeOfDirectoryAtURL(
+        _ url: URL, forFilesPrefixedWith prefix: String, isLargerThanBytes threshold: Int64
+    ) throws -> Bool {
         let enumerator = try directoryEnumerator(for: url)
         var acc: Int64 = 0
         for item in enumerator {
@@ -75,7 +82,9 @@ public extension FileManager {
 
      - throws: Error reading/operating on disk.
      */
-    func getAllocatedSizeOfDirectoryAtURL(_ url: URL, forFilesPrefixedWith prefix: String) throws -> Int64 {
+    public func getAllocatedSizeOfDirectoryAtURL(_ url: URL, forFilesPrefixedWith prefix: String)
+        throws -> Int64
+    {
         let enumerator = try directoryEnumerator(for: url)
         return try enumerator.reduce(0) {
             let size = try self.size(for: $1 as AnyObject, withPrefix: prefix)
@@ -83,18 +92,22 @@ public extension FileManager {
         }
     }
 
-    func contentsOfDirectoryAtPath(_ path: String, withFilenamePrefix prefix: String) throws -> [String] {
+    public func contentsOfDirectoryAtPath(_ path: String, withFilenamePrefix prefix: String) throws
+        -> [String]
+    {
         return try FileManager.default.contentsOfDirectory(atPath: path)
             .filter { $0.hasPrefix("\(prefix).") }
             .sorted { $0 < $1 }
     }
 
-    func removeItemInDirectory(_ directory: String, named: String) throws {
+    public func removeItemInDirectory(_ directory: String, named: String) throws {
         let file = URL(fileURLWithPath: directory).appendingPathComponent(named).path
         try self.removeItem(atPath: file)
     }
 
-    private func errorWithCode(_ code: NSFileManagerExtensionsErrorCodes, underlyingError error: NSError? = nil) -> NSError {
+    private func errorWithCode(
+        _ code: NSFileManagerExtensionsErrorCodes, underlyingError error: NSError? = nil
+    ) -> NSError {
         var userInfo = [String: AnyObject]()
         if let _ = error {
             userInfo[NSUnderlyingErrorKey] = error

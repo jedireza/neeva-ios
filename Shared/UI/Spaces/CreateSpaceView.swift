@@ -3,7 +3,7 @@
 import Introspect
 import SwiftUI
 
-fileprivate struct SaveButtonStyle: ButtonStyle {
+private struct SaveButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         Capsule()
             .fill(configuration.isPressed ? Color(hex: 0x3254CE) : Color.ui.adaptive.blue)
@@ -17,13 +17,13 @@ fileprivate struct SaveButtonStyle: ButtonStyle {
 
 struct CreateSpaceView: View {
     @State private var spaceName = ""
-    let onDismiss: (String) -> ()
+    let onDismiss: (String) -> Void
 
-    public init(onDismiss: @escaping (String) -> ()) {
+    public init(onDismiss: @escaping (String) -> Void) {
         self.onDismiss = onDismiss
     }
 
-    var body: some View{
+    var body: some View {
         VStack(spacing: 20) {
             CapsuleTextField("Space name", text: $spaceName)
 
@@ -36,13 +36,13 @@ struct CreateSpaceView: View {
             .buttonStyle(SaveButtonStyle())
             .padding(.bottom, 11)
         }.padding(16)
-        // Focus the text field automatically when loading this view. Unfortunately,
-        // SwiftUI provides no way to do this, so we have to resort to using Introspect.
-        // See https://github.com/siteline/SwiftUI-Introspect/issues/99 for why this is
-        // here instead of right below the TextField() instantiation above.
-        .introspectTextField { textField in
-            textField.becomeFirstResponder()
-        }
+            // Focus the text field automatically when loading this view. Unfortunately,
+            // SwiftUI provides no way to do this, so we have to resort to using Introspect.
+            // See https://github.com/siteline/SwiftUI-Introspect/issues/99 for why this is
+            // here instead of right below the TextField() instantiation above.
+            .introspectTextField { textField in
+                textField.becomeFirstResponder()
+            }
     }
 }
 struct CreateSpaceView_Previews: PreviewProvider {
@@ -54,5 +54,3 @@ struct CreateSpaceView_Previews: PreviewProvider {
         }.previewLayout(.sizeThatFits)
     }
 }
-
-

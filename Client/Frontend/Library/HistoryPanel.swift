@@ -2,11 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import Shared
 import Storage
-import XCGLogger
+import UIKit
 import WebKit
+import XCGLogger
 
 protocol HistoryPanelDelegate: AnyObject {
     func libraryPanelDidRequestToOpenInNewTab(_ url: URL, _ savedTab: SavedTab?, isPrivate: Bool)
@@ -19,7 +19,7 @@ private enum HistoryPanelUX {
     static let IconSize = 23
     static let IconBorderColor = UIColor.Photon.Grey30
     static let IconBorderWidth: CGFloat = 0.5
-    static let actionIconColor = UIColor.Photon.Grey40 // Works for light and dark theme.
+    static let actionIconColor = UIColor.Photon.Grey40  // Works for light and dark theme.
 }
 
 private class FetchInProgressError: MaybeErrorType {
@@ -101,10 +101,13 @@ class HistoryPanel: SiteTableViewController {
     override init(profile: Profile) {
         super.init(profile: profile)
 
-        [ Notification.Name.PrivateDataClearedHistory,
-          Notification.Name.DynamicFontChanged,
-          Notification.Name.DatabaseWasReopened ].forEach {
-            NotificationCenter.default.addObserver(self, selector: #selector(onNotificationReceived), name: $0, object: nil)
+        [
+            Notification.Name.PrivateDataClearedHistory,
+            Notification.Name.DynamicFontChanged,
+            Notification.Name.DatabaseWasReopened,
+        ].forEach {
+            NotificationCenter.default.addObserver(
+                self, selector: #selector(onNotificationReceived), name: $0, object: nil)
         }
     }
 
@@ -122,8 +125,11 @@ class HistoryPanel: SiteTableViewController {
         updateEmptyPanelState()
 
         navigationItem.title = .LibraryPanelHistoryAccessibilityLabel
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .done, primaryAction: UIAction { [weak self] _ in self?.dismiss(animated: true, completion: nil)
-        })
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            systemItem: .done,
+            primaryAction: UIAction { [weak self] _ in
+                self?.dismiss(animated: true, completion: nil)
+            })
         navigationItem.rightBarButtonItem?.accessibilityLabel = "Done"
 
         self.accessibilityLabel = "History Panel"
@@ -167,7 +173,9 @@ class HistoryPanel: SiteTableViewController {
             if let sites = result.successValue {
                 for site in sites.compactMap({ $0 }) {
                     if let site = site, let latestVisit = site.latestVisit {
-                        self.groupedSites.add(site, timestamp: TimeInterval.fromMicrosecondTimestamp(latestVisit.date))
+                        self.groupedSites.add(
+                            site, timestamp: TimeInterval.fromMicrosecondTimestamp(latestVisit.date)
+                        )
                     }
                 }
 
@@ -175,7 +183,8 @@ class HistoryPanel: SiteTableViewController {
                 self.updateEmptyPanelState()
 
                 if let cell = self.clearHistoryCell {
-                    AdditionalHistoryActionRow.setStyle(enabled: !self.groupedSites.isEmpty, forCell: cell)
+                    AdditionalHistoryActionRow.setStyle(
+                        enabled: !self.groupedSites.isEmpty, forCell: cell)
                 }
 
             }
@@ -189,16 +198,17 @@ class HistoryPanel: SiteTableViewController {
 
         isFetchInProgress = true
 
-        return profile.history.getSitesByLastVisit(limit: QueryLimitPerFetch, offset: currentFetchOffset) >>== { result in
-            // Force 100ms delay between resolution of the last batch of results
-            // and the next time `fetchData()` can be called.
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-                self.currentFetchOffset += self.QueryLimitPerFetch
-                self.isFetchInProgress = false
-            }
+        return profile.history.getSitesByLastVisit(
+            limit: QueryLimitPerFetch, offset: currentFetchOffset) >>== { result in
+                // Force 100ms delay between resolution of the last batch of results
+                // and the next time `fetchData()` can be called.
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    self.currentFetchOffset += self.QueryLimitPerFetch
+                    self.isFetchInProgress = false
+                }
 
-            return deferMaybe(result)
-        }
+                return deferMaybe(result)
+            }
     }
 
     // MARK: - Actions
@@ -220,7 +230,8 @@ class HistoryPanel: SiteTableViewController {
             self.updateEmptyPanelState()
 
             if let cell = self.clearHistoryCell {
-                AdditionalHistoryActionRow.setStyle(enabled: !self.groupedSites.isEmpty, forCell: cell)
+                AdditionalHistoryActionRow.setStyle(
+                    enabled: !self.groupedSites.isEmpty, forCell: cell)
             }
         }
     }
@@ -228,7 +239,8 @@ class HistoryPanel: SiteTableViewController {
     func pinToTopSites(_ site: Site) {
         profile.history.addPinnedTopSite(site).uponQueue(.main) { result in
             if result.isSuccess {
-                let toastView = ToastViewManager.shared.makeToast(text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
+                let toastView = ToastViewManager.shared.makeToast(
+                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
                 ToastViewManager.shared.enqueue(toast: toastView)
             }
         }
@@ -250,7 +262,8 @@ class HistoryPanel: SiteTableViewController {
         func remove(hoursAgo: Int) {
             if let date = Calendar.current.date(byAdding: .hour, value: -hoursAgo, to: Date()) {
                 let types = WKWebsiteDataStore.allWebsiteDataTypes()
-                WKWebsiteDataStore.default().removeData(ofTypes: types, modifiedSince: date, completionHandler: {})
+                WKWebsiteDataStore.default().removeData(
+                    ofTypes: types, modifiedSince: date, completionHandler: {})
 
                 self.profile.history.removeHistoryFromDate(date).uponQueue(.main) { _ in
                     self.reloadData()
@@ -258,33 +271,41 @@ class HistoryPanel: SiteTableViewController {
             }
         }
 
-        let alert = UIAlertController(title: Strings.ClearHistoryMenuTitle, message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(
+            title: Strings.ClearHistoryMenuTitle, message: nil, preferredStyle: .actionSheet)
 
         // This will run on the iPad-only, and sets the alert to be centered with no arrow.
         if let popoverController = alert.popoverPresentationController {
             popoverController.sourceView = view
-            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.sourceRect = CGRect(
+                x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
             popoverController.permittedArrowDirections = []
         }
 
-        [(Strings.ClearHistoryMenuOptionTheLastHour, 1),
-         (Strings.ClearHistoryMenuOptionToday, 24),
-         (Strings.ClearHistoryMenuOptionTodayAndYesterday, 48)].forEach {
+        [
+            (Strings.ClearHistoryMenuOptionTheLastHour, 1),
+            (Strings.ClearHistoryMenuOptionToday, 24),
+            (Strings.ClearHistoryMenuOptionTodayAndYesterday, 48),
+        ].forEach {
             (name, time) in
             let action = UIAlertAction(title: name, style: .destructive) { _ in
                 remove(hoursAgo: time)
             }
             alert.addAction(action)
         }
-        alert.addAction(UIAlertAction(title: Strings.ClearHistoryMenuOptionEverything, style: .destructive, handler: { _ in
-            let types = WKWebsiteDataStore.allWebsiteDataTypes()
-            WKWebsiteDataStore.default().removeData(ofTypes: types, modifiedSince: .distantPast, completionHandler: {})
-            self.profile.history.clearHistory().uponQueue(.main) { _ in
-                self.reloadData()
-            }
+        alert.addAction(
+            UIAlertAction(
+                title: Strings.ClearHistoryMenuOptionEverything, style: .destructive,
+                handler: { _ in
+                    let types = WKWebsiteDataStore.allWebsiteDataTypes()
+                    WKWebsiteDataStore.default().removeData(
+                        ofTypes: types, modifiedSince: .distantPast, completionHandler: {})
+                    self.profile.history.clearHistory().uponQueue(.main) { _ in
+                        self.reloadData()
+                    }
 
-            BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.removeAll()
-        }))
+                    BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.removeAll()
+                }))
         let cancelAction = UIAlertAction(title: Strings.CancelString, style: .cancel)
         cancelAction.accessibilityLabel = "Cancel"
         alert.addAction(cancelAction)
@@ -303,7 +324,8 @@ class HistoryPanel: SiteTableViewController {
         return sitesInSection[safe: indexPath.row]
     }
 
-    func configureClearHistory(_ cell: UITableViewCell, for indexPath: IndexPath) -> UITableViewCell {
+    func configureClearHistory(_ cell: UITableViewCell, for indexPath: IndexPath) -> UITableViewCell
+    {
         clearHistoryCell = cell
         cell.textLabel?.text = Strings.HistoryPanelClearHistoryButtonTitle
         cell.detailTextLabel?.text = ""
@@ -322,7 +344,9 @@ class HistoryPanel: SiteTableViewController {
         return cell
     }
 
-    func configureRecentlyClosed(_ cell: UITableViewCell, for indexPath: IndexPath) -> UITableViewCell {
+    func configureRecentlyClosed(_ cell: UITableViewCell, for indexPath: IndexPath)
+        -> UITableViewCell
+    {
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = Strings.RecentlyClosedTabsButtonTitle
         cell.detailTextLabel?.text = ""
@@ -341,8 +365,10 @@ class HistoryPanel: SiteTableViewController {
             cell.imageView?.layer.borderColor = HistoryPanelUX.IconBorderColor.cgColor
             cell.imageView?.layer.borderWidth = HistoryPanelUX.IconBorderWidth
             cell.imageView?.contentMode = .center
-            cell.imageView?.setImageAndBackground(forIcon: site.icon, website: site.tileURL) { [weak cell] in
-                cell?.imageView?.image = cell?.imageView?.image?.createScaled(CGSize(width: HistoryPanelUX.IconSize, height: HistoryPanelUX.IconSize))
+            cell.imageView?.setImageAndBackground(forIcon: site.icon, website: site.tileURL) {
+                [weak cell] in
+                cell?.imageView?.image = cell?.imageView?.image?.createScaled(
+                    CGSize(width: HistoryPanelUX.IconSize, height: HistoryPanelUX.IconSize))
             }
         }
         return cell
@@ -407,7 +433,9 @@ class HistoryPanel: SiteTableViewController {
         return Section(rawValue: section)?.title
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
+        -> UITableViewCell
+    {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.accessoryType = .none
 
@@ -456,34 +484,54 @@ class HistoryPanel: SiteTableViewController {
         print("Error: No site or no URL when selecting row.")
     }
 
-    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+    func tableView(
+        _ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
         guard let site = siteForIndexPath(indexPath) else { return nil }
 
-        return createHistoryLinkMenu(for: site,
-                                            pinToTopSites: { self.pinToTopSites(site) },
-                                            removeHistoryForURLAtIndexPath: { self.removeHistoryForURLAtIndexPath(indexPath: indexPath) }) { tab, isPrivate in
-            let toastLabelText: String = isPrivate ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText : Strings.ContextMenuButtonToastNewTabOpenedLabelText
-            let toastView = ToastViewManager.shared.makeToast(text: toastLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, buttonAction: {
-                self.tabManager.selectTab(tab)
-            })
+        return createHistoryLinkMenu(
+            for: site,
+            pinToTopSites: { self.pinToTopSites(site) },
+            removeHistoryForURLAtIndexPath: {
+                self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
+            }
+        ) { tab, isPrivate in
+            let toastLabelText: String =
+                isPrivate
+                ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
+                : Strings.ContextMenuButtonToastNewTabOpenedLabelText
+            let toastView = ToastViewManager.shared.makeToast(
+                text: toastLabelText,
+                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                buttonAction: {
+                    self.tabManager.selectTab(tab)
+                })
 
             ToastViewManager.shared.enqueue(toast: toastView)
         }
     }
 
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(
+        _ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
         // Intentionally blank. Required to use UITableViewRowActions
     }
 
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath)
+        -> [UITableViewRowAction]?
+    {
         if indexPath.section == Section.additionalHistoryActions.rawValue {
             return []
         }
         let title: String = .HistoryPanelDelete
 
-        let delete = UITableViewRowAction(style: .default, title: title, handler: { (action, indexPath) in
-            self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
-        })
+        let delete = UITableViewRowAction(
+            style: .default, title: title,
+            handler: { (action, indexPath) in
+                self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
+            })
         return [delete]
     }
 
@@ -533,39 +581,52 @@ class HistoryPanel: SiteTableViewController {
         return overlayView
     }
 
-    func createHistoryLinkMenu(for site: Site, pinToTopSites: @escaping () -> Void,
-                              removeHistoryForURLAtIndexPath: @escaping () -> Void, openedTab: @escaping (Tab?, Bool) -> Void) -> UIContextMenuConfiguration? {
+    func createHistoryLinkMenu(
+        for site: Site, pinToTopSites: @escaping () -> Void,
+        removeHistoryForURLAtIndexPath: @escaping () -> Void,
+        openedTab: @escaping (Tab?, Bool) -> Void
+    ) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let currentTab = self.tabManager.selectedTab
 
             let newTabAction = UIAction(
                 title: "Open in New tab",
-                image: UIImage(systemName: "plus.square")) { _ in
-                let tab = self.tabManager.addTab(URLRequest(url: site.url), afterTab: currentTab, isPrivate: false)
+                image: UIImage(systemName: "plus.square")
+            ) { _ in
+                let tab = self.tabManager.addTab(
+                    URLRequest(url: site.url), afterTab: currentTab, isPrivate: false)
                 openedTab(tab, false)
             }
 
             let newIncognitoTabAction = UIAction(
                 title: "Open in New Incognito Tab",
-                image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)) { _ in
-                let tab = self.tabManager.addTab(URLRequest(url: site.url), afterTab: currentTab, isPrivate: true)
+                image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
+            ) { _ in
+                let tab = self.tabManager.addTab(
+                    URLRequest(url: site.url), afterTab: currentTab, isPrivate: true)
                 openedTab(tab, true)
             }
 
             let pinTopSite = UIAction(
                 title: Strings.PinTopsiteActionTitle,
-                image: UIImage(named: "action_pin")?.withRenderingMode(.alwaysTemplate)) { _ in
+                image: UIImage(named: "action_pin")?.withRenderingMode(.alwaysTemplate)
+            ) { _ in
                 pinToTopSites()
             }
 
             let removeAction = UIAction(
                 title: Strings.DeleteFromHistoryContextMenuTitle,
-                image: UIImage(named: "action_delete")?.withRenderingMode(.alwaysTemplate), attributes: .destructive) { _ in
+                image: UIImage(named: "action_delete")?.withRenderingMode(.alwaysTemplate),
+                attributes: .destructive
+            ) { _ in
                 removeHistoryForURLAtIndexPath()
             }
             removeAction.accessibilityLabel = Strings.DeleteFromHistoryContextMenuTitle
 
-            return UIMenu(children: FeatureFlag[.pinToTopSites] ? [newTabAction, newIncognitoTabAction, pinTopSite, removeAction] : [newTabAction, newIncognitoTabAction, removeAction])
+            return UIMenu(
+                children: FeatureFlag[.pinToTopSites]
+                    ? [newTabAction, newIncognitoTabAction, pinTopSite, removeAction]
+                    : [newTabAction, newIncognitoTabAction, removeAction])
         }
     }
 }
@@ -583,7 +644,8 @@ extension HistoryPanel: UITableViewDataSourcePrefetching {
                         return nil
                     }
 
-                    let indexPath = self.groupedSites.add(site, timestamp: TimeInterval.fromMicrosecondTimestamp(latestVisit.date))
+                    let indexPath = self.groupedSites.add(
+                        site, timestamp: TimeInterval.fromMicrosecondTimestamp(latestVisit.date))
                     return IndexPath(row: indexPath.row, section: indexPath.section + 1)
                 })
 

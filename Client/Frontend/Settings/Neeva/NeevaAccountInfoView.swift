@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct NeevaAccountInfoView: View {
     @ObservedObject var userInfo: NeevaUserInfo
@@ -27,22 +27,27 @@ struct NeevaAccountInfoView: View {
                     .padding(.vertical, 5)
                 }
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel("\(userInfo.authProvider?.displayName ?? "Unknown"), \(userInfo.email ?? "")")
+                .accessibilityLabel(
+                    "\(userInfo.authProvider?.displayName ?? "Unknown"), \(userInfo.email ?? "")")
 
                 Button("Sign Out") { signingOut = true }
                     .actionSheet(isPresented: $signingOut) {
-                        ActionSheet(title: Text("Sign out of Neeva?"), buttons: [
-                            .destructive(Text("Sign Out")) {
-                                ClientLogger.shared.logCounter(.SettingSignout, attributes: EnvironmentHelper.shared.getAttributes())
-                                if userInfo.hasLoginCookie() {
-                                    userInfo.clearCache()
-                                    userInfo.deleteLoginCookie()
-                                    userInfo.didLogOut()
-                                    isPresented = false
-                                }
-                            },
-                            .cancel()
-                        ])
+                        ActionSheet(
+                            title: Text("Sign out of Neeva?"),
+                            buttons: [
+                                .destructive(Text("Sign Out")) {
+                                    ClientLogger.shared.logCounter(
+                                        .SettingSignout,
+                                        attributes: EnvironmentHelper.shared.getAttributes())
+                                    if userInfo.hasLoginCookie() {
+                                        userInfo.clearCache()
+                                        userInfo.deleteLoginCookie()
+                                        userInfo.didLogOut()
+                                        isPresented = false
+                                    }
+                                },
+                                .cancel(),
+                            ])
                     }
             }
         }
@@ -54,7 +59,12 @@ struct NeevaAccountInfoView: View {
 struct NeevaAccountInfoView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(SSOProvider.allCases, id: \.self) { authProvider in
-            NeevaAccountInfoView(userInfo: NeevaUserInfo(previewDisplayName: "First Last", email: "name@example.com", pictureUrl: "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg", authProvider: authProvider), isPresented: .constant(true))
+            NeevaAccountInfoView(
+                userInfo: NeevaUserInfo(
+                    previewDisplayName: "First Last", email: "name@example.com",
+                    pictureUrl:
+                        "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg",
+                    authProvider: authProvider), isPresented: .constant(true))
         }.previewLayout(.fixed(width: 375, height: 150))
     }
 }

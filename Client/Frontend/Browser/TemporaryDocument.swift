@@ -27,7 +27,8 @@ class TemporaryDocument: NSObject {
 
         super.init()
 
-        self.session = URLSession(configuration: .default, delegate: self, delegateQueue: temporaryDocumentOperationQueue)
+        self.session = URLSession(
+            configuration: .default, delegate: self, delegateQueue: temporaryDocumentOperationQueue)
     }
 
     deinit {
@@ -59,7 +60,8 @@ class TemporaryDocument: NSObject {
 }
 
 extension TemporaryDocument: URLSessionTaskDelegate, URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
+    {
         // If we encounter an error downloading the temp file, just return with the
         // original remote URL so it can still be shared as a web URL.
         if error != nil, let remoteURL = request.url {
@@ -68,11 +70,16 @@ extension TemporaryDocument: URLSessionTaskDelegate, URLSessionDownloadDelegate 
         }
     }
 
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("TempDocs")
+    func urlSession(
+        _ session: URLSession, downloadTask: URLSessionDownloadTask,
+        didFinishDownloadingTo location: URL
+    ) {
+        let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(
+            "TempDocs")
         let url = tempDirectory.appendingPathComponent(filename)
 
-        try? FileManager.default.createDirectory(at: tempDirectory, withIntermediateDirectories: true, attributes: nil)
+        try? FileManager.default.createDirectory(
+            at: tempDirectory, withIntermediateDirectories: true, attributes: nil)
         try? FileManager.default.removeItem(at: url)
 
         do {

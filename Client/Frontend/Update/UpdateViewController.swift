@@ -3,9 +3,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import UIKit
-import SnapKit
 import Shared
+import SnapKit
+import UIKit
 
 // Update view UX constants
 public enum UpdateViewControllerUX {
@@ -14,28 +14,28 @@ public enum UpdateViewControllerUX {
         static let paddingRight = 20
         fileprivate static let height = 20
     }
-     
+
     fileprivate struct ImageView {
         static let paddingTop = 50
         static let paddingLeft = 18
         static let height = 70
     }
-    
+
     fileprivate struct TitleLabel {
         static let paddingTop = 15
         static let paddingLeft = 18
         static let height = 40
     }
-    
+
     fileprivate struct MidTableView {
         static let cellIdentifier = "UpdatedCoverSheetTableViewCellIdentifier"
         static let paddingTop = 20
         static let paddingBottom = -10
     }
-    
+
     public struct StartBrowsingButton {
         static let colour = UIColor.Photon.Blue50
-        static let cornerRadius:CGFloat = 10
+        static let cornerRadius: CGFloat = 10
         fileprivate static let font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         fileprivate static let height = 46
         fileprivate static let edgeInset = 18
@@ -43,7 +43,7 @@ public enum UpdateViewControllerUX {
 }
 
 /* The layout for update view controller.
-    
+
  |----------------|
  |            Done|
  |Image           | (Top View)
@@ -62,16 +62,18 @@ public enum UpdateViewControllerUX {
  |                |
  |    [Button]    | (Bottom View)
  |----------------|
- 
+
  */
 
 class UpdateViewController: UIViewController {
-    // Public constants 
-    let viewModel:UpdateViewModel = UpdateViewModel()
+    // Public constants
+    let viewModel: UpdateViewModel = UpdateViewModel()
     // Private vars
     private lazy var updatesTableView: UITableView = {
         let tableView = UITableView(frame: CGRect.zero, style: .grouped)
-        tableView.register(UpdateCoverSheetTableViewCell.self, forCellReuseIdentifier: UpdateViewControllerUX.MidTableView.cellIdentifier)
+        tableView.register(
+            UpdateCoverSheetTableViewCell.self,
+            forCellReuseIdentifier: UpdateViewControllerUX.MidTableView.cellIdentifier)
         tableView.separatorStyle = .none
         tableView.sectionHeaderHeight = 0
         tableView.sectionFooterHeight = 0
@@ -108,15 +110,15 @@ class UpdateViewController: UIViewController {
         button.backgroundColor = UpdateViewControllerUX.StartBrowsingButton.colour
         return button
     }()
-    
+
     init() {
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         initialViewSetup()
@@ -124,7 +126,7 @@ class UpdateViewController: UIViewController {
         setupMidView()
         setupBottomView()
     }
-    
+
     private func initialViewSetup() {
         // Initialize
         self.view.addSubview(doneButton)
@@ -133,19 +135,20 @@ class UpdateViewController: UIViewController {
         self.view.addSubview(startBrowsingButton)
         self.view.addSubview(updatesTableView)
     }
-    
+
     private func setupTopView() {
         // Done button target setup
         doneButton.addTarget(self, action: #selector(dismissAnimated), for: .touchUpInside)
-        
+
         // Done button constraints setup
         // This button is located at top right hence top, right and height
         doneButton.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.topMargin).offset(UpdateViewControllerUX.DoneButton.paddingTop)
+            make.top.equalTo(view.snp.topMargin).offset(
+                UpdateViewControllerUX.DoneButton.paddingTop)
             make.right.equalToSuperview().inset(UpdateViewControllerUX.DoneButton.paddingRight)
             make.height.equalTo(UpdateViewControllerUX.DoneButton.height)
         }
-        
+
         // The top imageview constraints setup
         // This imageview is located at the top left of the view hence top, left, height, width
         titleImageView.snp.makeConstraints { make in
@@ -153,17 +156,18 @@ class UpdateViewController: UIViewController {
             make.top.equalTo(view.snp.topMargin).inset(UpdateViewControllerUX.ImageView.paddingTop)
             make.height.width.equalTo(UpdateViewControllerUX.ImageView.height)
         }
-        
+
         // Top title label constraints setup
         // This is the bigger tittle that is located right below the top image hence left, right, height and top (relating to imageview)
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleImageView.snp.bottom).offset(UpdateViewControllerUX.TitleLabel.paddingTop)
+            make.top.equalTo(titleImageView.snp.bottom).offset(
+                UpdateViewControllerUX.TitleLabel.paddingTop)
             make.left.equalToSuperview().inset(UpdateViewControllerUX.TitleLabel.paddingLeft)
             make.right.equalToSuperview()
             make.height.equalTo(UpdateViewControllerUX.TitleLabel.height)
         }
     }
-    
+
     private func setupMidView() {
         // Mid tableview setup
         // Mid tableview hosts the items for updated cover sheet
@@ -172,38 +176,44 @@ class UpdateViewController: UIViewController {
         // Mid tableview constraints
         // The tableview sits b/w top and bottom view hence top, bottom constraints with equal width of the superview
         self.updatesTableView.snp.makeConstraints({ make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(UpdateViewControllerUX.MidTableView.paddingTop)
-            make.bottom.equalTo(startBrowsingButton.snp.top).offset(UpdateViewControllerUX.MidTableView.paddingBottom)
+            make.top.equalTo(titleLabel.snp.bottom).offset(
+                UpdateViewControllerUX.MidTableView.paddingTop)
+            make.bottom.equalTo(startBrowsingButton.snp.top).offset(
+                UpdateViewControllerUX.MidTableView.paddingBottom)
             make.width.equalToSuperview()
             make.centerX.equalToSuperview()
         })
     }
-    
+
     private func setupBottomView() {
         // Bottom start browsing target setup
         startBrowsingButton.addTarget(self, action: #selector(startBrowsing), for: .touchUpInside)
-        
+
         // Bottom start button constraints
         // Bottom start button sits at the bottom of the screen with some padding on left and right hence left, right, bottom, height
         startBrowsingButton.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(UpdateViewControllerUX.StartBrowsingButton.edgeInset)
+            make.left.right.equalToSuperview().inset(
+                UpdateViewControllerUX.StartBrowsingButton.edgeInset)
             let h = view.frame.height
             // On large iPhone screens, bump this up from the bottom
-            let offset: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 20 : (h > 800 ? 60 : 20)
+            let offset: CGFloat =
+                UIDevice.current.userInterfaceIdiom == .pad ? 20 : (h > 800 ? 60 : 20)
             make.bottom.equalToSuperview().inset(offset)
             make.height.equalTo(UpdateViewControllerUX.StartBrowsingButton.height)
         }
     }
-    
+
     // Button Actions
     @objc private func dismissAnimated() {
         self.dismiss(animated: true, completion: nil)
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .dismissedUpdateCoverSheet)
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .dismissedUpdateCoverSheet)
     }
-    
+
     @objc private func startBrowsing() {
         viewModel.startBrowsing?()
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .dismissUpdateCoverSheetAndStartBrowsing)
+        TelemetryWrapper.recordEvent(
+            category: .action, method: .press, object: .dismissUpdateCoverSheetAndStartBrowsing)
     }
 }
 
@@ -211,17 +221,20 @@ extension UpdateViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.updates.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: UpdateViewControllerUX.MidTableView.cellIdentifier, for: indexPath) as? UpdateCoverSheetTableViewCell
+        let cell =
+            tableView.dequeueReusableCell(
+                withIdentifier: UpdateViewControllerUX.MidTableView.cellIdentifier, for: indexPath)
+            as? UpdateCoverSheetTableViewCell
         let currentLastItem = viewModel.updates[indexPath.row]
         cell?.updateCoverSheetCellDescriptionLabel.text = currentLastItem.updateText
         cell?.updateCoverSheetCellImageView.image = currentLastItem.updateImage

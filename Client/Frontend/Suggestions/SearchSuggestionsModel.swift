@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import Shared
 import SFSafeSymbols
+import Shared
 
 /// A type that wraps both query and URL suggestions
 public enum Suggestion {
@@ -63,13 +63,17 @@ extension Suggestion: Identifiable, Equatable {
 
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
 public typealias SuggestionsQueryResult = (
-    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?)
+    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?
+)
 extension ActiveLensBangInfo: Equatable {
-    static let previewBang = ActiveLensBangInfo(domain: "google.com", shortcut: "g", description: "Google", type: .bang)
-    static let previewLens = ActiveLensBangInfo(shortcut: "my", description: "Search my connections", type: .lens)
+    static let previewBang = ActiveLensBangInfo(
+        domain: "google.com", shortcut: "g", description: "Google", type: .bang)
+    static let previewLens = ActiveLensBangInfo(
+        shortcut: "my", description: "Search my connections", type: .lens)
 
     public static func == (lhs: ActiveLensBangInfo, rhs: ActiveLensBangInfo) -> Bool {
-        lhs.description == rhs.description && lhs.domain == rhs.domain && lhs.shortcut == rhs.shortcut && lhs.type == rhs.type
+        lhs.description == rhs.description && lhs.domain == rhs.domain
+            && lhs.shortcut == rhs.shortcut && lhs.type == rhs.type
     }
 }
 
@@ -93,8 +97,8 @@ extension ActiveLensBangType {
 
 extension SuggestionsQuery.Data.Suggest.QuerySuggestion {
     public func suggestedCalculatorQuery() -> String? {
-        if (AnnotationType(annotation: self.annotation) == .calculator) {
-            return self.suggestedQuery+" ="
+        if AnnotationType(annotation: self.annotation) == .calculator {
+            return self.suggestedQuery + " ="
         } else {
             return nil
         }
@@ -103,7 +107,8 @@ extension SuggestionsQuery.Data.Suggest.QuerySuggestion {
 
 /// Fetches query and URL suggestions for a given query
 public class SuggestionsController: QueryController<SuggestionsQuery, SuggestionsQueryResult> {
-    public override class func processData(_ data: SuggestionsQuery.Data) -> SuggestionsQueryResult {
+    public override class func processData(_ data: SuggestionsQuery.Data) -> SuggestionsQueryResult
+    {
         let querySuggestions = data.suggest?.querySuggestion ?? []
         // Split queries into standard queries that doesnt have annotations and everything else.
         let chipQuerySuggestions =
@@ -113,18 +118,21 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
         // Move all nav suggestions out of url suggestions.
         var navSuggestions = urlSuggestions.filter { !($0.subtitle?.isEmpty ?? true) }
-        urlSuggestions.removeAll(where: { !($0.subtitle?.isEmpty ?? true)})
+        urlSuggestions.removeAll(where: { !($0.subtitle?.isEmpty ?? true) })
         // Top suggestion is either the first memorized suggestion or the first query shown in rows.
-        let topSuggestions = navSuggestions.isEmpty ?
-            (rowQuerySuggestions.isEmpty ? [] :
-                [rowQuerySuggestions.removeFirst()].map(Suggestion.query))
+        let topSuggestions =
+            navSuggestions.isEmpty
+            ? (rowQuerySuggestions.isEmpty
+                ? [] : [rowQuerySuggestions.removeFirst()].map(Suggestion.query))
             : [navSuggestions.removeFirst()].map(Suggestion.url)
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
         return (
             topSuggestions, chipQuerySuggestions.map(Suggestion.query),
-            rowQuerySuggestions.map(Suggestion.query) + bangSuggestions.compactMap(Suggestion.init(bang:))
-            + lensSuggestions.compactMap(Suggestion.init(lens:)), urlSuggestions.map(Suggestion.url),
+            rowQuerySuggestions.map(Suggestion.query)
+                + bangSuggestions.compactMap(Suggestion.init(bang:))
+                + lensSuggestions.compactMap(Suggestion.init(lens:)),
+            urlSuggestions.map(Suggestion.url),
             navSuggestions.map(Suggestion.url),
             data.suggest?.activeLensBangInfo
         )
@@ -132,7 +140,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
 
     @discardableResult public static func getSuggestions(
         for query: String,
-        completion: @escaping (Result<SuggestionsQueryResult, Error>) -> ()
+        completion: @escaping (Result<SuggestionsQueryResult, Error>) -> Void
     ) -> Apollo.Cancellable {
         Self.perform(query: SuggestionsQuery(query: query), completion: completion)
     }

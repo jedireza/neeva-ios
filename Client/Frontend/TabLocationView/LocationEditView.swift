@@ -1,11 +1,11 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct LocationEditView: View {
     @Binding var isEditing: Bool
-    let onSubmit: (String) -> ()
+    let onSubmit: (String) -> Void
 
     @EnvironmentObject private var searchQuery: SearchQueryModel
     @EnvironmentObject private var historyModel: HistorySuggestionModel
@@ -13,7 +13,8 @@ struct LocationEditView: View {
     var body: some View {
         ZStack(alignment: .leading) {
             if let query = searchQuery.value,
-               let completion = historyModel.completion {
+                let completion = historyModel.completion
+            {
                 HStack(spacing: 0) {
                     Text(query)
                         .foregroundColor(.clear)

@@ -20,18 +20,23 @@ struct ThrobbingHighlightBorder: ViewModifier {
                     .opacity(Double(2 - (isAtMaxScale ? 1.5 : 1.0)))
                     .scaleEffect(isAtMaxScale ? 1.05 : 1.0)
                     .colorScheme(staticColorMode ? .light : colorScheme)
-                    .onAppear() {
-                        withAnimation(self.animation, {
-                            self.isAtMaxScale.toggle()
-                        })
+                    .onAppear {
+                        withAnimation(
+                            self.animation,
+                            {
+                                self.isAtMaxScale.toggle()
+                            })
                     }
             )
     }
 }
 
-public extension View {
-    func throbbingHighlightBorderStyle(highlight: Color, staticColorMode: Bool? = false) -> some View {
-        self.modifier(ThrobbingHighlightBorder(highlight: highlight, staticColorMode: staticColorMode!))
+extension View {
+    public func throbbingHighlightBorderStyle(highlight: Color, staticColorMode: Bool? = false)
+        -> some View
+    {
+        self.modifier(
+            ThrobbingHighlightBorder(highlight: highlight, staticColorMode: staticColorMode!))
     }
 }
 
@@ -44,19 +49,20 @@ extension View {
     }
 
     /// Inspired by React’s `useEffect` hook, this modifier calls `perform(deps)` both `onAppear` and whenever `deps` changes.
-    func useEffect<T: Equatable>(deps: T, perform updater: @escaping (T) -> ()) -> some View {
+    func useEffect<T: Equatable>(deps: T, perform updater: @escaping (T) -> Void) -> some View {
         self.onChange(of: deps, perform: updater)
             .onAppear { updater(deps) }
     }
     /// Inspired by React’s `useEffect` hook, this modifier calls `perform(deps)` both `onAppear` and whenever `deps` changes.
-    func useEffect<T0: Equatable, T1: Equatable>(deps zero: T0, _ one: T1, perform updater: @escaping (T0, T1) -> ()) -> some View {
+    func useEffect<T0: Equatable, T1: Equatable>(
+        deps zero: T0, _ one: T1, perform updater: @escaping (T0, T1) -> Void
+    ) -> some View {
         self.onChange(of: Pair(zero: zero, one: one)) { updater($0.zero, $0.one) }
             .onAppear { updater(zero, one) }
     }
     // TODO: add conformances for larger tuples as necessary
 }
 
-fileprivate struct Pair<T0: Equatable, T1: Equatable>: Equatable {
+private struct Pair<T0: Equatable, T1: Equatable>: Equatable {
     let zero: T0, one: T1
 }
-

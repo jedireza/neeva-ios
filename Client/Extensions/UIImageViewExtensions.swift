@@ -2,10 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
-import Storage
 import SDWebImage
 import Shared
+import Storage
+import UIKit
 
 extension UIColor {
     var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
@@ -18,9 +18,13 @@ extension UIColor {
     }
 }
 
-public extension UIImageView {
+extension UIImageView {
 
-    func setImageAndBackground(forIcon icon: Favicon?, website: URL?, defaultBackground: UIColor = .init(light: .white, dark: .clear), completion: @escaping () -> Void) {
+    public func setImageAndBackground(
+        forIcon icon: Favicon?, website: URL?,
+        defaultBackground: UIColor = .init(light: .white, dark: .clear),
+        completion: @escaping () -> Void
+    ) {
         func finish(bgColor: UIColor?) {
             if let bgColor = bgColor {
                 // If the background color is clear, we may decide to set our own background based on the theme.
@@ -31,17 +35,20 @@ public extension UIImageView {
         }
 
         backgroundColor = nil
-        sd_setImage(with: nil) // cancels any pending SDWebImage operations.
+        sd_setImage(with: nil)  // cancels any pending SDWebImage operations.
 
         if let url = website, let bundledIcon = FaviconFetcher.getBundledIcon(forUrl: url) {
             self.image = UIImage(contentsOfFile: bundledIcon.filePath)
             finish(bgColor: bundledIcon.bgcolor)
-        } else if let image = FaviconFetcher.getFaviconFromDiskCache(imageKey: website?.baseDomain ?? ""){
+        } else if let image = FaviconFetcher.getFaviconFromDiskCache(
+            imageKey: website?.baseDomain ?? "")
+        {
             self.image = image
             finish(bgColor: .systemBackground)
         } else {
             let defaults = fallbackFavicon(forUrl: website)
-            self.sd_setImage(with: icon?.url, placeholderImage: defaults.image, options: []) {(img, err, _, _) in
+            self.sd_setImage(with: icon?.url, placeholderImage: defaults.image, options: []) {
+                (img, err, _, _) in
                 guard err == nil else {
                     finish(bgColor: defaults.color)
                     return
@@ -51,7 +58,7 @@ public extension UIImageView {
         }
     }
 
-    func setFavicon(forSite site: Site, completion: @escaping () -> Void ) {
+    public func setFavicon(forSite site: Site, completion: @escaping () -> Void) {
         setImageAndBackground(forIcon: site.icon, website: site.tileURL, completion: completion)
     }
 
@@ -62,8 +69,8 @@ public extension UIImageView {
             return (FaviconFetcher.defaultFavicon, .clear)
         }
     }
-    
-    func setImageColor(color: UIColor) {
+
+    public func setImageColor(color: UIColor) {
         let templateImage = self.image?.withRenderingMode(.alwaysTemplate)
         self.image = templateImage
         self.tintColor = color

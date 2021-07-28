@@ -5,19 +5,19 @@
 import Foundation
 import UIKit
 
-public extension String {
-    var looksLikeAURL: Bool {
+extension String {
+    public var looksLikeAURL: Bool {
         // The assumption here is that if the user is typing in a forward slash and there are no spaces
         // involved, it's going to be a URL. If we type a space, any url would be invalid.
         // See https://bugzilla.mozilla.org/show_bug.cgi?id=1192155 for additional details.
         self.contains("/") && !self.contains(" ")
     }
 
-    func capitalizingFirstLetter() -> String {
-            return prefix(1).capitalized + dropFirst()
+    public func capitalizingFirstLetter() -> String {
+        return prefix(1).capitalized + dropFirst()
     }
 
-    func escape() -> String? {
+    public func escape() -> String? {
         // We can't guaruntee that strings have a valid string encoding, as this is an entry point for tainted data,
         // we should be very careful about forcefully dereferencing optional types.
         // https://stackoverflow.com/questions/33558933/why-is-the-return-value-of-string-addingpercentencoding-optional#33558934
@@ -26,7 +26,7 @@ public extension String {
         return self.addingPercentEncoding(withAllowedCharacters: allowedEscapes)
     }
 
-    func unescape() -> String? {
+    public func unescape() -> String? {
         return self.removingPercentEncoding
     }
 
@@ -40,9 +40,9 @@ public extension String {
 
     :returns: A String with `maxLength` characters or less
     */
-    func ellipsize(maxLength: Int) -> String {
+    public func ellipsize(maxLength: Int) -> String {
         if (maxLength >= 2) && (self.count > maxLength) {
-            let index1 = self.index(self.startIndex, offsetBy: (maxLength + 1) / 2) // `+ 1` has the same effect as an int ceil
+            let index1 = self.index(self.startIndex, offsetBy: (maxLength + 1) / 2)  // `+ 1` has the same effect as an int ceil
             let index2 = self.index(self.endIndex, offsetBy: maxLength / -2)
 
             return String(self[..<index1]) + "…\u{2060}" + String(self[index2...])
@@ -54,18 +54,17 @@ public extension String {
         return self.replacingOccurrences(of: "|", with: "%7C")
     }
 
-    var asURL: URL? {
+    public var asURL: URL? {
         // Neeva and NSURL disagree about the valid contents of a URL.
         // Let's escape | for them.
         // We'd love to use one of the more sophisticated CFURL* or NSString.* functions, but
         // none seem to be quite suitable.
-        return URL(string: self) ??
-               URL(string: self.stringWithAdditionalEscaping)
+        return URL(string: self) ?? URL(string: self.stringWithAdditionalEscaping)
     }
 
     /// Returns a new string made by removing the leading String characters contained
     /// in a given character set.
-    func stringByTrimmingLeadingCharactersInSet(_ set: CharacterSet) -> String {
+    public func stringByTrimmingLeadingCharactersInSet(_ set: CharacterSet) -> String {
         var trimmed = self
         while trimmed.rangeOfCharacter(from: set)?.lowerBound == trimmed.startIndex {
             trimmed.remove(at: trimmed.startIndex)
@@ -75,7 +74,7 @@ public extension String {
 
     /// Adds a newline at the closest space from the middle of a string.
     /// Example turning "Mark as Read" into "Mark as\n Read"
-    func stringSplitWithNewline() -> String {
+    public func stringSplitWithNewline() -> String {
         let mid = self.count / 2
 
         let arr: [Int] = self.indices.compactMap {
@@ -93,25 +92,28 @@ public extension String {
         return newString
     }
 
-    static func contentsOfFileWithResourceName(_ name: String, ofType type: String, fromBundle bundle: Bundle, encoding: String.Encoding, error: NSErrorPointer) -> String? {
+    public static func contentsOfFileWithResourceName(
+        _ name: String, ofType type: String, fromBundle bundle: Bundle, encoding: String.Encoding,
+        error: NSErrorPointer
+    ) -> String? {
         return bundle.path(forResource: name, ofType: type).flatMap {
             try? String(contentsOfFile: $0, encoding: encoding)
         }
     }
 
-    func remove(_ string: String?) -> String {
+    public func remove(_ string: String?) -> String {
         return self.replacingOccurrences(of: string ?? "", with: "")
     }
 
-    func replaceFirstOccurrence(of original: String, with replacement: String) -> String {
+    public func replaceFirstOccurrence(of original: String, with replacement: String) -> String {
         guard let range = self.range(of: original) else {
             return self
         }
 
         return self.replacingCharacters(in: range, with: replacement)
     }
-    
-    func isEmptyOrWhitespace() -> Bool {
+
+    public func isEmptyOrWhitespace() -> Bool {
         // Check empty string
         if self.isEmpty {
             return true
@@ -119,15 +121,18 @@ public extension String {
         // Trim and check empty string
         return (self.trimmingCharacters(in: .whitespaces) == "")
     }
-    
+
     /// Handles logic to make part of string bold
     /// - Parameters:
     ///     - boldString: the portion of the string that should be bold. Current string must already include this string.
     ///     - font: font for entire string, part of string will be converted to bold version of this font
-    func attributedText(boldString: String, font: UIFont) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString(string: self,
-                                                     attributes: [NSAttributedString.Key.font: font])
-        let boldFontAttribute: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: font.pointSize)]
+    public func attributedText(boldString: String, font: UIFont) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString(
+            string: self,
+            attributes: [NSAttributedString.Key.font: font])
+        let boldFontAttribute: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: font.pointSize)
+        ]
         let range = (self as NSString).range(of: boldString)
         attributedString.addAttributes(boldFontAttribute, range: range)
         return attributedString

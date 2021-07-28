@@ -9,7 +9,9 @@ class ToastWindowManager {
     /// Creates an overlayed window to display Toast in
     // Allows UI interaction without hiding Toast
     public func createWindow(with rootViewController: UIViewController) {
-        guard let window = SceneDelegate.getCurrentSceneDelegate().window, let windowScene = window.windowScene else {
+        guard let window = SceneDelegate.getCurrentSceneDelegate().window,
+            let windowScene = window.windowScene
+        else {
             return
         }
 
@@ -19,7 +21,7 @@ class ToastWindowManager {
         openWindow?.windowLevel = .alert + 1
         openWindow?.alpha = 0
         openWindow?.makeKeyAndVisible()
-        
+
         setWindowRootViewController(rootViewController)
     }
 
@@ -40,13 +42,15 @@ class ToastWindowManager {
             self.openWindow?.alpha = 0
         }
 
-        openWindow?.rootViewController?.dismiss(animated: true, completion: { [self] in
-            openWindow?.isHidden = true
+        openWindow?.rootViewController?.dismiss(
+            animated: true,
+            completion: { [self] in
+                openWindow?.isHidden = true
 
-            // setting to nil removes UIWindow from stack
-            // (removes all references, ARC takes care of the rest)
-            openWindow = nil
-        })
+                // setting to nil removes UIWindow from stack
+                // (removes all references, ARC takes care of the rest)
+                openWindow = nil
+            })
     }
 
     private func getY() -> CGFloat {
@@ -54,6 +58,7 @@ class ToastWindowManager {
         let safeArea = UIApplication.shared.windows.first?.safeAreaInsets
         let padding: CGFloat = 45
 
-        return height - (safeArea?.top ?? 0) - UIConstants.BottomToolbarHeight - padding - ToastViewUX.threshold
+        return height - (safeArea?.top ?? 0) - UIConstants.BottomToolbarHeight - padding
+            - ToastViewUX.threshold
     }
 }

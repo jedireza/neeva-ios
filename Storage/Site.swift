@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import Shared
+import UIKit
 
 open class Favicon: Identifiable {
     open var id: Int?
@@ -32,7 +32,7 @@ open class Site {
     public let url: URL
     public let title: String
     open var metadata: PageMetadata?
-     // Sites may have multiple favicons. We'll return the largest.
+    // Sites may have multiple favicons. We'll return the largest.
     open var icon: Favicon?
     open var latestVisit: Visit?
 

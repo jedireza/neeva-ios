@@ -2,14 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Foundation
 import Shared
-import WebKit
 import SwiftyJSON
-import Defaults
+import WebKit
 
 extension Defaults.Keys {
-    static let readerModeStyle = Defaults.Key<ReaderModeStyle>("profile.readermode.style", default: ReaderModeStyle(theme: .light, fontType: .sansSerif, fontSize: ReaderModeFontSize.defaultSize))
+    static let readerModeStyle = Defaults.Key<ReaderModeStyle>(
+        "profile.readermode.style",
+        default: ReaderModeStyle(
+            theme: .light, fontType: .sansSerif, fontSize: ReaderModeFontSize.defaultSize))
 }
 
 enum ReaderModeMessageType: String {
@@ -44,8 +47,8 @@ enum ReaderModeTheme: String, Codable {
         // Theme: Dark - app-wide dark overrides all
         if appWideTheme == .dark {
             return .dark
-        // Theme: Sepia - special case for when the theme is sepia.
-        // For this we only check the them supplied and not the app wide theme
+            // Theme: Sepia - special case for when the theme is sepia.
+            // For this we only check the them supplied and not the app wide theme
         } else if readerTheme == .sepia {
             return .sepia
         }
@@ -65,25 +68,25 @@ enum ReaderModeFontType: String, Codable {
     case serifBold = "serif-bold"
     case sansSerif = "sans-serif"
     case sansSerifBold = "sans-serif-bold"
-    
+
     init(type: String) {
         let font = ReaderModeFontType(rawValue: type)
         let isBoldFontEnabled = UIAccessibility.isBoldTextEnabled
-        
+
         switch font {
         case .serif,
-             .serifBold:
+            .serifBold:
             self = isBoldFontEnabled ? .serifBold : .serif
         case .sansSerif,
-             .sansSerifBold:
+            .sansSerifBold:
             self = isBoldFontEnabled ? .sansSerifBold : .sansSerif
         case .none:
             self = .sansSerif
-        } 
+        }
     }
-    
-    func isSameFamily(_ font: ReaderModeFontType) -> Bool {        
-        return !FontFamily.families.filter { $0.contains(font) && $0.contains(self) }.isEmpty        
+
+    func isSameFamily(_ font: ReaderModeFontType) -> Bool {
+        return !FontFamily.families.filter { $0.contains(font) && $0.contains(self) }.isEmpty
     }
 }
 
@@ -155,7 +158,9 @@ struct ReaderModeStyle: Codable {
 
     /// Encode the style to a JSON dictionary that can be passed to ReaderMode.js
     func encode() -> String {
-        return JSON(["theme": theme.rawValue, "fontType": fontType.rawValue, "fontSize": fontSize.rawValue]).stringify() ?? ""
+        return JSON([
+            "theme": theme.rawValue, "fontType": fontType.rawValue, "fontSize": fontSize.rawValue,
+        ]).stringify() ?? ""
     }
 
     init(theme: ReaderModeTheme, fontType: ReaderModeFontType, fontSize: ReaderModeFontSize) {
@@ -223,7 +228,9 @@ struct ReadabilityResult {
 
     /// Encode to a dictionary, which can then for example be json encoded
     func encode() -> [String: Any] {
-        return ["domain": domain, "url": url, "content": content, "title": title, "credits": credits]
+        return [
+            "domain": domain, "url": url, "content": content, "title": title, "credits": credits,
+        ]
     }
 
     /// Encode to a JSON encoded string
@@ -235,9 +242,12 @@ struct ReadabilityResult {
 
 /// Delegate that contains callbacks that we have added on top of the built-in WKWebViewDelegate
 protocol ReaderModeDelegate {
-    func readerMode(_ readerMode: ReaderMode, didChangeReaderModeState state: ReaderModeState, forTab tab: Tab)
+    func readerMode(
+        _ readerMode: ReaderMode, didChangeReaderModeState state: ReaderModeState, forTab tab: Tab)
     func readerMode(_ readerMode: ReaderMode, didDisplayReaderizedContentForTab tab: Tab)
-    func readerMode(_ readerMode: ReaderMode, didParseReadabilityResult readabilityResult: ReadabilityResult, forTab tab: Tab)
+    func readerMode(
+        _ readerMode: ReaderMode, didParseReadabilityResult readabilityResult: ReadabilityResult,
+        forTab tab: Tab)
 }
 
 let ReaderModeNamespace = "window.__firefox__.reader"
@@ -262,10 +272,10 @@ class ReaderMode: TabContentScript {
 
     fileprivate func handleReaderPageEvent(_ readerPageEvent: ReaderPageEvent) {
         switch readerPageEvent {
-            case .pageShow:
-                if let tab = tab {
-                    delegate?.readerMode(self, didDisplayReaderizedContentForTab: tab)
-                }
+        case .pageShow:
+            if let tab = tab {
+                delegate?.readerMode(self, didDisplayReaderizedContentForTab: tab)
+            }
         }
     }
 
@@ -284,29 +294,38 @@ class ReaderMode: TabContentScript {
         delegate?.readerMode(self, didParseReadabilityResult: readabilityResult, forTab: tab)
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        guard let msg = message.body as? [String: Any], let type = msg["Type"] as? String, let messageType = ReaderModeMessageType(rawValue: type) else { return }
-        
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceiveScriptMessage message: WKScriptMessage
+    ) {
+        guard let msg = message.body as? [String: Any], let type = msg["Type"] as? String,
+            let messageType = ReaderModeMessageType(rawValue: type)
+        else { return }
+
         switch messageType {
-            case .pageEvent:
-                if let readerPageEvent = ReaderPageEvent(rawValue: msg["Value"] as? String ?? "Invalid") {
-                    handleReaderPageEvent(readerPageEvent)
-                }
-            case .stateChange:
-                if let readerModeState = ReaderModeState(rawValue: msg["Value"] as? String ?? "Invalid") {
-                    handleReaderModeStateChange(readerModeState)
-                }
-            case .contentParsed:
-                if let readabilityResult = ReadabilityResult(object: msg["Value"] as AnyObject?) {
-                    handleReaderContentParsed(readabilityResult)
-                }
+        case .pageEvent:
+            if let readerPageEvent = ReaderPageEvent(rawValue: msg["Value"] as? String ?? "Invalid")
+            {
+                handleReaderPageEvent(readerPageEvent)
+            }
+        case .stateChange:
+            if let readerModeState = ReaderModeState(rawValue: msg["Value"] as? String ?? "Invalid")
+            {
+                handleReaderModeStateChange(readerModeState)
+            }
+        case .contentParsed:
+            if let readabilityResult = ReadabilityResult(object: msg["Value"] as AnyObject?) {
+                handleReaderContentParsed(readabilityResult)
+            }
         }
     }
 
     var style: ReaderModeStyle = Defaults.Keys.readerModeStyle.defaultValue {
         didSet {
             if state == ReaderModeState.active {
-                tab?.webView?.evaluateJavascriptInDefaultContentWorld("\(ReaderModeNamespace).setStyle(\(style.encode()))") { object, error in
+                tab?.webView?.evaluateJavascriptInDefaultContentWorld(
+                    "\(ReaderModeNamespace).setStyle(\(style.encode()))"
+                ) { object, error in
                     return
                 }
             }

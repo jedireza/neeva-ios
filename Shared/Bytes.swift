@@ -6,9 +6,7 @@ import Foundation
 
 public typealias GUID = String
 
-/**
- * Utilities for futzing with bytes and such.
- */
+/// Utilities for futzing with bytes and such.
 open class Bytes {
     open class func generateRandomBytes(_ len: UInt) -> Data {
         let len = Int(len)
@@ -17,7 +15,7 @@ open class Bytes {
             guard let p = p.bindMemory(to: UInt8.self).baseAddress else {
                 fatalError("Random byte generation failed.")
             }
-            if (SecRandomCopyBytes(kSecRandomDefault, len, p) != errSecSuccess) {
+            if SecRandomCopyBytes(kSecRandomDefault, len, p) != errSecSuccess {
                 fatalError("Random byte generation failed.")
             }
         }

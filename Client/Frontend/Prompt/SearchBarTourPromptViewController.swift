@@ -1,15 +1,19 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 class SearchBarTourPromptViewController: UIHostingController<TourPromptView> {
 
     var delegate: BrowserViewController?
 
-    public init(delegate:BrowserViewController, source: UIView) {
-        super.init(rootView: TourPromptView(title: "Search with Neeva!", description: "Search right from the address bar, anywhere, anytime", buttonMessage: "Got it!"))
+    public init(delegate: BrowserViewController, source: UIView) {
+        super.init(
+            rootView: TourPromptView(
+                title: "Search with Neeva!",
+                description: "Search right from the address bar, anywhere, anytime",
+                buttonMessage: "Got it!"))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
         self.rootView.onConfirm = self.onDismiss

@@ -122,10 +122,9 @@ class TopTabsTest: BaseTestCase {
             app.buttons["TopTabsViewController.tabsButton"].tap()
             waitForExistence(app.buttons["TabTrayController.addTabButton"], timeout: 10)
             app.buttons["TabTrayController.addTabButton"].tap()
-        }
-        else {
+        } else {
             navigator.performAction(Action.OpenNewTabFromTabTray)
-            waitForExistence(app.buttons["TabToolbar.tabsButton"],timeout: 5)
+            waitForExistence(app.buttons["TabToolbar.tabsButton"], timeout: 5)
         }
 
         checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 2)
@@ -154,10 +153,9 @@ class TopTabsTest: BaseTestCase {
             app.buttons["TopTabsViewController.tabsButton"].tap()
             waitForExistence(app.buttons["TabTrayController.addTabButton"], timeout: 10)
             app.buttons["TabTrayController.addTabButton"].tap()
-        }
-        else {
+        } else {
             navigator.performAction(Action.OpenNewTabFromTabTray)
-            waitForExistence(app.buttons["TabToolbar.tabsButton"],timeout: 5)
+            waitForExistence(app.buttons["TabToolbar.tabsButton"], timeout: 5)
         }
 
         checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 2)
@@ -165,9 +163,10 @@ class TopTabsTest: BaseTestCase {
         // Close all tabs, undo it and check that the number of tabs is correct
         navigator.performAction(Action.AcceptRemovingAllTabs)
         waitForExistence(app.staticTexts["You are incognito"], timeout: 10)
-        XCTAssertTrue(app.staticTexts["You are incognito"].exists, "Incognito welcome screen is not shown")
+        XCTAssertTrue(
+            app.staticTexts["You are incognito"].exists, "Incognito welcome screen is not shown")
         // New behaviour on v14, there is no Undo in Private mode
-        waitForExistence(app.staticTexts["You are incognito"], timeout:10)
+        waitForExistence(app.staticTexts["You are incognito"], timeout: 10)
     }
 
     func testCloseAllTabs() {
@@ -206,9 +205,10 @@ class TopTabsTest: BaseTestCase {
         checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: 2)
 
         navigator.performAction(Action.AcceptRemovingAllTabs)
-        XCTAssertTrue(app.staticTexts["You are incognito"].exists, "Incognito welcome screen is not shown")
+        XCTAssertTrue(
+            app.staticTexts["You are incognito"].exists, "Incognito welcome screen is not shown")
     }
-    
+
     // Smoketest
     /* Disabled as we don't show a button to add tabs in landscape mode
     func testOpenNewTabLandscape() {
@@ -266,14 +266,15 @@ class TopTabsTest: BaseTestCase {
     }
 }
 
-fileprivate extension BaseTestCase {
-    func checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: Int) {
+extension BaseTestCase {
+    fileprivate func checkNumberOfTabsExpectedToBeOpen(expectedNumberOfTabsOpen: Int) {
         navigator.goto(TabTray)
         let numTabsOpen = userState.numTabs
-        XCTAssertEqual(numTabsOpen, expectedNumberOfTabsOpen, "The number of tabs open is not correct")
+        XCTAssertEqual(
+            numTabsOpen, expectedNumberOfTabsOpen, "The number of tabs open is not correct")
     }
 
-    func closeTabTrayView(goBackToBrowserTab: String) {
+    fileprivate func closeTabTrayView(goBackToBrowserTab: String) {
         app.cells.staticTexts[goBackToBrowserTab].firstMatch.tap()
         navigator.nowAt(BrowserTab)
     }
@@ -392,11 +393,11 @@ class TopTabsTestIphone: IphoneOnlyTestCase {
     }
 }
 
-    // Tests to check if Tab Counter is updating correctly after opening three tabs by tapping on '+' button and closing the tabs by tapping 'x' button
+// Tests to check if Tab Counter is updating correctly after opening three tabs by tapping on '+' button and closing the tabs by tapping 'x' button
 class TopTabsTestIpad: IpadOnlyTestCase {
 
-    func testUpdateTabCounter(){
-        if skipPlatform {return}
+    func testUpdateTabCounter() {
+        if skipPlatform { return }
         // Open three tabs by tapping on '+' button
         app.buttons["TopTabsViewController.newTabButton"].tap()
         app.buttons["TopTabsViewController.newTabButton"].tap()
@@ -404,18 +405,22 @@ class TopTabsTestIpad: IpadOnlyTestCase {
         let numTab = app.buttons["Show Tabs"].value as? String
         XCTAssertEqual("3", numTab)
         // Remove one tab by tapping on 'x' button
-        app.collectionViews["Top Tabs View"].children(matching: .cell).matching(identifier: "Home").element(boundBy: 1).buttons["Remove page — Home"].tap()
+        app.collectionViews["Top Tabs View"].children(matching: .cell).matching(identifier: "Home")
+            .element(boundBy: 1).buttons["Remove page — Home"].tap()
         waitForExistence(app.buttons["Show Tabs"])
         let numTabAfterRemovingThirdTab = app.buttons["Show Tabs"].value as? String
         XCTAssertEqual("2", numTabAfterRemovingThirdTab)
-        app.collectionViews["Top Tabs View"].children(matching: .cell).element(boundBy: 1).buttons["Remove page — Home"].tap()
+        app.collectionViews["Top Tabs View"].children(matching: .cell).element(boundBy: 1).buttons[
+            "Remove page — Home"
+        ].tap()
         waitForExistence(app.buttons["Show Tabs"])
         let numTabAfterRemovingSecondTab = app.buttons["Show Tabs"].value as? String
         XCTAssertEqual("1", numTabAfterRemovingSecondTab)
     }
 
     func cellIsSelectedTab(index: Int, url: String, title: String) {
-        XCTAssertEqual(app.collectionViews["Top Tabs View"].cells.element(boundBy: index).label, title)
+        XCTAssertEqual(
+            app.collectionViews["Top Tabs View"].cells.element(boundBy: index).label, title)
         waitForValueContains(app.buttons["url"], value: url)
     }
 
@@ -445,7 +450,8 @@ class TopTabsTestIpad: IpadOnlyTestCase {
         app.collectionViews["Top Tabs View"].cells.element(boundBy: lastCell).swipeRight()
         app.collectionViews["Top Tabs View"].cells[urlLabel].buttons.element(boundBy: 0).tap()
         // Confirm the view did not scroll to the selected cell
-        XCTAssertEqual(app.collectionViews["Top Tabs View"].cells.element(boundBy: lastCell).label, "Home")
+        XCTAssertEqual(
+            app.collectionViews["Top Tabs View"].cells.element(boundBy: lastCell).label, "Home")
         // Confirm the url bar still has selected cell value
         waitForValueContains(app.buttons["url"], value: urlValueLongExample)
     }

@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 struct TrackingMenuSettingsView: View {
     @Default(.unblockedDomains) var unblockedDomains: Set<String>
@@ -45,18 +45,18 @@ struct TrackingAttribution: View {
     var body: some View {
         EmptyView()
         // TODO: re-enable this with correct attribution
-//        Section(header: Group {
-//            Button(action: { openURL(URL(string: "https://easylist.to/pages/about.html")!) }) {
-//                Label {
-//                    Text("Tracking rules courtesy The EasyList Authors")
-//                } icon: {
-//                    Symbol(.ccBy, size: 13, relativeTo: .footnote)
-//                }
-//            }
-//            .font(.footnote)
-//            .accentColor(.secondaryLabel)
-//            .textCase(nil)
-//        }) {}
+        //        Section(header: Group {
+        //            Button(action: { openURL(URL(string: "https://easylist.to/pages/about.html")!) }) {
+        //                Label {
+        //                    Text("Tracking rules courtesy The EasyList Authors")
+        //                } icon: {
+        //                    Symbol(.ccBy, size: 13, relativeTo: .footnote)
+        //                }
+        //            }
+        //            .font(.footnote)
+        //            .accentColor(.secondaryLabel)
+        //            .textCase(nil)
+        //        }) {}
     }
 }
 

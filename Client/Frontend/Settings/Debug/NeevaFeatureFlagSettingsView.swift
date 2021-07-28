@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct NeevaFeatureFlagSettingsView: View {
     @State var needsRestart = false
@@ -20,14 +20,14 @@ struct NeevaFeatureFlagSettingsView: View {
     }
 }
 
-fileprivate struct BoolFlagView: View {
+private struct BoolFlagView: View {
     @State private var flagValue: Bool
     @State private var isOverridden: Bool
 
-    private let onChange: () -> ()
+    private let onChange: () -> Void
     private let flag: NeevaFeatureFlags.BoolFlag
 
-    init(flag: NeevaFeatureFlags.BoolFlag, onChange: @escaping () -> ()) {
+    init(flag: NeevaFeatureFlags.BoolFlag, onChange: @escaping () -> Void) {
         self.flag = flag
         self.onChange = onChange
         self._flagValue = .init(initialValue: NeevaFeatureFlags[flag])
@@ -68,7 +68,7 @@ fileprivate struct BoolFlagView: View {
             }
         } label: {
             HStack {
-                Spacer() // fix layout issues
+                Spacer()  // fix layout issues
                 Text(String(flagValue)).fontWeight(isOverridden ? .bold : .regular)
                 Symbol(.chevronDown)
             }

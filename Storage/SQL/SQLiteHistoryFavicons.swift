@@ -5,15 +5,17 @@
 import Foundation
 import Fuzi
 import SDWebImage
-import SwiftyJSON
 import Shared
+import SwiftyJSON
 import XCGLogger
 
 private let log = Logger.syncLogger
 
 // Set up for downloading web content for parsing.
 // NOTE: We use the desktop UA to try and get hi-res icons.
-private var urlSession: URLSession = makeURLSession(userAgent: UserAgent.desktopUserAgent(), configuration: URLSessionConfiguration.default, timeout: 5)
+private var urlSession: URLSession = makeURLSession(
+    userAgent: UserAgent.desktopUserAgent(), configuration: URLSessionConfiguration.default,
+    timeout: 5)
 
 // If all else fails, this is the default "default" icon.
 private var defaultFavicon: UIImage = {
@@ -28,15 +30,16 @@ private var defaultFaviconImageCache = [String: UIImage]()
 // region-specific TLDs. This helps us resolve them.
 private let multiRegionTopSitesDomains = ["craigslist", "google", "amazon"]
 
-private let topSitesIcons: [String : (color: UIColor, fileURL: URL)] = {
-    var icons: [String : (color: UIColor, fileURL: URL)] = [:]
+private let topSitesIcons: [String: (color: UIColor, fileURL: URL)] = {
+    var icons: [String: (color: UIColor, fileURL: URL)] = [:]
 
     let filePath = Bundle.main.path(forResource: "top_sites", ofType: "json")
     let file = try! Data(contentsOf: URL(fileURLWithPath: filePath!))
     JSON(file).forEach({
         guard let domain = $0.1["domain"].string,
             let color = $0.1["background_color"].string?.lowercased(),
-            let path = $0.1["image_url"].string?.replacingOccurrences(of: ".png", with: "") else {
+            let path = $0.1["image_url"].string?.replacingOccurrences(of: ".png", with: "")
+        else {
             return
         }
 
@@ -44,7 +47,9 @@ private let topSitesIcons: [String : (color: UIColor, fileURL: URL)] = {
             if color == "#fff" {
                 icons[domain] = (UIColor.clear, fileURL)
             } else {
-                icons[domain] = (UIColor(colorString: color.replacingOccurrences(of: "#", with: "")), fileURL)
+                icons[domain] = (
+                    UIColor(colorString: color.replacingOccurrences(of: "#", with: "")), fileURL
+                )
             }
         }
     })
@@ -110,7 +115,9 @@ extension SQLiteHistory: Favicons {
 
                 guard let faviconID = id else {
                     let err = DatabaseError(description: "Error adding favicon. ID = 0")
-                    log.error("addFavicon(_:, forSite:) encountered an error: \(err.localizedDescription)")
+                    log.error(
+                        "addFavicon(_:, forSite:) encountered an error: \(err.localizedDescription)"
+                    )
                     throw err
                 }
 
@@ -160,7 +167,8 @@ extension SQLiteHistory: Favicons {
                                 return self.generateDefaultFaviconImage(forSite: site)
                             }
                             // Try to get the favicon from the URL scraped from the web page.
-                            return self.downloadFaviconImage(faviconURL: faviconURL).bind { result in
+                            return self.downloadFaviconImage(faviconURL: faviconURL).bind {
+                                result in
                                 // If the favicon could not be downloaded, use the generated "default" favicon.
                                 guard let image = result.successValue else {
                                     return self.generateDefaultFaviconImage(forSite: site)
@@ -191,11 +199,14 @@ extension SQLiteHistory: Favicons {
     fileprivate func downloadFaviconImage(faviconURL: URL) -> Deferred<Maybe<UIImage>> {
         let deferred = CancellableDeferred<Maybe<UIImage>>()
 
-        SDWebImageManager.shared.loadImage(with: faviconURL, options: .continueInBackground, progress: nil) { (image, _, _, _, _, _) in
+        SDWebImageManager.shared.loadImage(
+            with: faviconURL, options: .continueInBackground, progress: nil
+        ) { (image, _, _, _, _, _) in
             if let image = image {
                 deferred.fill(Maybe(success: image))
             } else {
-                deferred.fill(Maybe(failure: FaviconDownloadError(faviconURL: faviconURL.absoluteString)))
+                deferred.fill(
+                    Maybe(failure: FaviconDownloadError(faviconURL: faviconURL.absoluteString)))
             }
         }
 
@@ -212,7 +223,8 @@ extension SQLiteHistory: Favicons {
             defer { UIGraphicsEndImageContext() }
 
             guard let context = UIGraphicsGetCurrentContext(),
-                let cgImage = image.cgImage else {
+                let cgImage = image.cgImage
+            else {
                 return deferMaybe(image)
             }
 
@@ -235,7 +247,9 @@ extension SQLiteHistory: Favicons {
         }
 
         let urlWithoutScheme = site.url.absoluteDisplayString.remove("\(site.url.scheme ?? "")://")
-        if let baseDomain = site.url.baseDomain, let icon = topSitesIcons[baseDomain] ?? topSitesIcons[urlWithoutScheme] {
+        if let baseDomain = site.url.baseDomain,
+            let icon = topSitesIcons[baseDomain] ?? topSitesIcons[urlWithoutScheme]
+        {
             return imageFor(icon: icon)
         }
 
@@ -249,7 +263,8 @@ extension SQLiteHistory: Favicons {
         getFaviconsForURL(site.url).upon { result in
             guard let favicons = result.successValue,
                 let favicon = favicons[0],
-                let faviconURL = favicon?.url else {
+                let faviconURL = favicon?.url
+            else {
                 deferred.fill(Maybe(failure: FaviconLookupError(siteURL: site.url)))
                 return
             }
@@ -266,7 +281,8 @@ extension SQLiteHistory: Favicons {
 
         getFaviconURLsFromWebPage(url: site.url).upon { result in
             guard let faviconURLs = result.successValue,
-                let faviconURL = faviconURLs.first else {
+                let faviconURL = faviconURLs.first
+            else {
                 deferred.fill(Maybe(failure: FaviconLookupError(siteURL: site.url)))
                 return
             }
@@ -280,7 +296,9 @@ extension SQLiteHistory: Favicons {
                     // Also, insert a row in `favicon_site_urls` so we can
                     // look up this favicon later without requiring history.
                     // This is primarily needed for bookmarks.
-                    _ = self.db.run("INSERT OR IGNORE INTO favicon_site_urls(site_url, faviconID) VALUES (?, ?)", withArgs: [site.url.absoluteString, faviconID])
+                    _ = self.db.run(
+                        "INSERT OR IGNORE INTO favicon_site_urls(site_url, faviconID) VALUES (?, ?)",
+                        withArgs: [site.url.absoluteString, faviconID])
                 }
             }
 
@@ -294,14 +312,15 @@ extension SQLiteHistory: Favicons {
     fileprivate func getHTMLDocumentFromWebPage(url: URL) -> Deferred<Maybe<HTMLDocument>> {
         let deferred = CancellableDeferred<Maybe<HTMLDocument>>()
 
-        // getHTMLDocumentFromWebPage can be called from getFaviconURLsFromWebPage, and that function is off-main. 
+        // getHTMLDocumentFromWebPage can be called from getFaviconURLsFromWebPage, and that function is off-main.
         DispatchQueue.main.async {
             urlSession.dataTask(with: url) { (data, response, error) in
                 guard error == nil,
                     let data = data,
-                    let document = try? HTMLDocument(data: data) else {
-                        deferred.fill(Maybe(failure: FaviconLookupError(siteURL: url)))
-                        return
+                    let document = try? HTMLDocument(data: data)
+                else {
+                    deferred.fill(Maybe(failure: FaviconLookupError(siteURL: url)))
+                    return
                 }
                 deferred.fill(Maybe(success: document))
             }.resume()
@@ -324,7 +343,8 @@ extension SQLiteHistory: Favicons {
                     let content = meta["content"],
                     let index = content.range(of: "URL="),
                     let reloadURL = URL(string: String(content[index.upperBound...])),
-                    reloadURL != url {
+                    reloadURL != url
+                {
                     return self.getFaviconURLsFromWebPage(url: reloadURL)
                 }
             }

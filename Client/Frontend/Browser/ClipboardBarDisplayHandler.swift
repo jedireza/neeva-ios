@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Foundation
 import Shared
-import Defaults
 
 public enum ClipboardBarToastUX {
     static let ToastDelay = DispatchTimeInterval.milliseconds(4000)
@@ -24,22 +24,30 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
 
         super.init()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(UIPasteboardChanged), name: UIPasteboard.changedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appWillEnterForegroundNotification), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(UIPasteboardChanged), name: UIPasteboard.changedNotification,
+            object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(appWillEnterForegroundNotification),
+            name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 
     @objc private func UIPasteboardChanged() {
         // UIPasteboardChanged gets triggered when calling UIPasteboard.general.
-        NotificationCenter.default.removeObserver(self, name: UIPasteboard.changedNotification, object: nil)
+        NotificationCenter.default.removeObserver(
+            self, name: UIPasteboard.changedNotification, object: nil)
 
         UIPasteboard.general.asyncURL().uponQueue(.main) { res in
             defer {
-                NotificationCenter.default.addObserver(self, selector: #selector(self.UIPasteboardChanged), name: UIPasteboard.changedNotification, object: nil)
+                NotificationCenter.default.addObserver(
+                    self, selector: #selector(self.UIPasteboardChanged),
+                    name: UIPasteboard.changedNotification, object: nil)
             }
 
             guard let copiedURL: URL? = res.successValue,
-                let url = copiedURL else {
-                    return
+                let url = copiedURL
+            else {
+                return
             }
             self.lastDisplayedURL = url.absoluteString
         }
@@ -63,7 +71,8 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     func didRestoreSession() {
         guard !sessionRestored else { return }
         if let tabManager = self.tabManager,
-            let firstTab = tabManager.selectedTab {
+            let firstTab = tabManager.selectedTab
+        {
             observeURLForFirstTab(firstTab: firstTab)
         } else {
             firstTabLoaded = true
@@ -77,7 +86,9 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
         // Ugly hack to ensure we wait until we're finished restoring the session on the first tab
         // before checking if we should display the clipboard bar.
         guard sessionRestored,
-            !url.absoluteString.hasPrefix("\(WebServer.sharedInstance.base)/about/sessionrestore?history=") else {
+            !url.absoluteString.hasPrefix(
+                "\(WebServer.sharedInstance.base)/about/sessionrestore?history=")
+        else {
             return
         }
 
@@ -87,11 +98,9 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     }
 
     private func shouldDisplayBar(_ copiedURL: String) -> Bool {
-        if !sessionStarted ||
-            !sessionRestored ||
-            !firstTabLoaded ||
-            isClipboardURLAlreadyDisplayed(copiedURL) ||
-            !Defaults[.introSeen] {
+        if !sessionStarted || !sessionRestored || !firstTabLoaded
+            || isClipboardURLAlreadyDisplayed(copiedURL) || !Defaults[.introSeen]
+        {
             return false
         }
         sessionStarted = false
@@ -106,7 +115,8 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
         }
 
         if let url = URL(string: clipboardURL),
-            let _ = tabManager?.getTabFor(url) {
+            let _ = tabManager?.getTabFor(url)
+        {
             return true
         }
         return false
@@ -120,7 +130,8 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
         }
         UIPasteboard.general.asyncURL().uponQueue(.main) { res in
             guard let copiedURL: URL? = res.successValue,
-                let url = copiedURL else {
+                let url = copiedURL
+            else {
                 return
             }
 
@@ -132,9 +143,11 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
 
             self.lastDisplayedURL = absoluteString
 
-            let toastView = ToastViewManager.shared.makeToast(text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle, buttonAction: {
-                self.bvc?.openURLInNewTabPreservingIncognitoState(url)
-            })
+            let toastView = ToastViewManager.shared.makeToast(
+                text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle,
+                buttonAction: {
+                    self.bvc?.openURLInNewTabPreservingIncognitoState(url)
+                })
 
             ToastViewManager.shared.enqueue(toast: toastView)
         }

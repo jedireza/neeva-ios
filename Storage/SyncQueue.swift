@@ -36,10 +36,12 @@ public struct SyncCommand: Equatable {
     /**
      * Sent displayURI commands include the sender client GUID.
      */
-    public static func displayURIFromShareItem(_ shareItem: ShareItem, asClient sender: GUID) -> SyncCommand {
+    public static func displayURIFromShareItem(_ shareItem: ShareItem, asClient sender: GUID)
+        -> SyncCommand
+    {
         let jsonObj: [String: Any] = [
             "command": "displayURI",
-            "args": [shareItem.url, sender, shareItem.title ?? ""]
+            "args": [shareItem.url, sender, shareItem.title ?? ""],
         ]
         return SyncCommand(value: JSON(jsonObj).stringify()!)
     }
@@ -49,7 +51,7 @@ public struct SyncCommand: Equatable {
     }
 }
 
-public func ==(lhs: SyncCommand, rhs: SyncCommand) -> Bool {
+public func == (lhs: SyncCommand, rhs: SyncCommand) -> Bool {
     return lhs.value == rhs.value
 }
 
@@ -59,6 +61,10 @@ public protocol SyncCommands {
 
     func getCommands() -> Deferred<Maybe<[GUID: [SyncCommand]]>>
 
-    func insertCommand(_ command: SyncCommand, forClients clients: [RemoteClient]) -> Deferred<Maybe<Int>>
-    func insertCommands(_ commands: [SyncCommand], forClients clients: [RemoteClient]) -> Deferred<Maybe<Int>>
+    func insertCommand(_ command: SyncCommand, forClients clients: [RemoteClient]) -> Deferred<
+        Maybe<Int>
+    >
+    func insertCommands(_ commands: [SyncCommand], forClients clients: [RemoteClient]) -> Deferred<
+        Maybe<Int>
+    >
 }

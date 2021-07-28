@@ -11,11 +11,11 @@ import UIKit
 struct MultilineTextField: View {
     private let placeholder: String
     private let onCommit: (() -> Void)?
-    private let customize: (UITextView) -> ()
+    private let customize: (UITextView) -> Void
 
     @Binding private var text: String
     private var internalText: Binding<String> {
-        Binding<String>(get: { self.text } ) {
+        Binding<String>(get: { self.text }) {
             self.text = $0
             self.showingPlaceholder = $0.isEmpty
         }
@@ -30,7 +30,10 @@ struct MultilineTextField: View {
     ///   - text: a binding to the content of the text field
     ///   - onCommit: if non-nil, the user will not be able to manually enter multiple lines (although text can still wrap)
     ///     and pressing the return key will cause `onCommit` to be called.
-    init (_ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil, customize: @escaping (UITextView) -> () = { _ in }) {
+    init(
+        _ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil,
+        customize: @escaping (UITextView) -> Void = { _ in }
+    ) {
         self.placeholder = placeholder
         self.onCommit = onCommit
         self.customize = customize
@@ -39,11 +42,14 @@ struct MultilineTextField: View {
     }
 
     var body: some View {
-        UITextViewWrapper(text: self.internalText, calculatedHeight: $dynamicHeight, isEnabled: isEnabled, onDone: onCommit, customize: customize)
-            .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
-            .background(placeholderView, alignment: .topLeading)
-            .padding(.horizontal, -10)
-            .accessibilityHint(placeholder)
+        UITextViewWrapper(
+            text: self.internalText, calculatedHeight: $dynamicHeight, isEnabled: isEnabled,
+            onDone: onCommit, customize: customize
+        )
+        .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
+        .background(placeholderView, alignment: .topLeading)
+        .padding(.horizontal, -10)
+        .accessibilityHint(placeholder)
     }
 
     var placeholderView: some View {
@@ -59,14 +65,14 @@ struct MultilineTextField: View {
     }
 }
 
-fileprivate struct UITextViewWrapper: UIViewRepresentable {
+private struct UITextViewWrapper: UIViewRepresentable {
     typealias UIViewType = UITextView
 
     @Binding var text: String
     @Binding var calculatedHeight: CGFloat
     let isEnabled: Bool
     let onDone: (() -> Void)?
-    let customize: (UITextView) -> ()
+    let customize: (UITextView) -> Void
 
     func makeUIView(context: UIViewRepresentableContext<UITextViewWrapper>) -> UITextView {
         let textField = UITextView()
@@ -88,7 +94,8 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
         return textField
     }
 
-    func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<UITextViewWrapper>) {
+    func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<UITextViewWrapper>)
+    {
         if uiView.text != self.text {
             uiView.text = self.text
         }
@@ -97,10 +104,11 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
     }
 
     fileprivate static func recalculateHeight(view: UIView, result: Binding<CGFloat>) {
-        let newSize = view.sizeThatFits(CGSize(width: view.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
+        let newSize = view.sizeThatFits(
+            CGSize(width: view.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
         if result.wrappedValue != newSize.height {
             DispatchQueue.main.async {
-                result.wrappedValue = max(100, newSize.height) // !! must be called asynchronously
+                result.wrappedValue = max(100, newSize.height)  // !! must be called asynchronously
             }
         }
     }
@@ -125,7 +133,9 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
             UITextViewWrapper.recalculateHeight(view: uiView, result: calculatedHeight)
         }
 
-        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        func textView(
+            _ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String
+        ) -> Bool {
             if let onDone = self.onDone, text == "\n" {
                 textView.resignFirstResponder()
                 onDone()

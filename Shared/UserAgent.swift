@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import WebKit
 import UIKit
+import WebKit
 
 open class UserAgent {
     public static let uaBitSafari = "Safari/605.1.15"
@@ -24,7 +24,8 @@ open class UserAgent {
         } else {
             versionStr = "dev"
         }
-        return "\(prefix)/\(versionStr) (\(DeviceInfo.deviceModel()); iPhone OS \(UIDevice.current.systemVersion)) (\(AppInfo.displayName))"
+        return
+            "\(prefix)/\(versionStr) (\(DeviceInfo.deviceModel()); iPhone OS \(UIDevice.current.systemVersion)) (\(AppInfo.displayName))"
     }
 
     public static func isDesktop(ua: String) -> Bool {
@@ -32,7 +33,8 @@ open class UserAgent {
     }
 
     public static func desktopUserAgent() -> String {
-        return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15"
+        return
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15"
     }
 
     public static func mobileUserAgent() -> String {
@@ -86,7 +88,10 @@ public struct UserAgentBuilder {
     fileprivate var platformDetails = ""
     fileprivate var extensions = ""
 
-    init(product: String, systemInfo: String, platform: String, platformDetails: String, extensions: String) {
+    init(
+        product: String, systemInfo: String, platform: String, platformDetails: String,
+        extensions: String
+    ) {
         self.product = product
         self.systemInfo = systemInfo
         self.platform = platform
@@ -99,19 +104,30 @@ public struct UserAgentBuilder {
         return removeEmptyComponentsAndJoin(uaItems: userAgentItems)
     }
 
-    public func clone(product: String? = nil, systemInfo: String? = nil, platform: String? = nil, platformDetails: String? = nil, extensions: String? = nil) -> String {
-        let userAgentItems = [product ?? self.product, systemInfo ?? self.systemInfo, platform ?? self.platform, platformDetails ?? self.platformDetails, extensions ?? self.extensions]
+    public func clone(
+        product: String? = nil, systemInfo: String? = nil, platform: String? = nil,
+        platformDetails: String? = nil, extensions: String? = nil
+    ) -> String {
+        let userAgentItems = [
+            product ?? self.product, systemInfo ?? self.systemInfo, platform ?? self.platform,
+            platformDetails ?? self.platformDetails, extensions ?? self.extensions,
+        ]
         return removeEmptyComponentsAndJoin(uaItems: userAgentItems)
     }
 
     /// Helper method to remove the empty components from user agent string that contain only whitespaces or are just empty
     private func removeEmptyComponentsAndJoin(uaItems: [String]) -> String {
-        return uaItems.filter{ !$0.isEmptyOrWhitespace() }.joined(separator: " ")
+        return uaItems.filter { !$0.isEmptyOrWhitespace() }.joined(separator: " ")
     }
 
     private static func makeMobileUserAgent(identifier: String) -> UserAgentBuilder {
         let afterCPU = UIDevice.current.userInterfaceIdiom == .phone ? " iPhone" : ""
-        return UserAgentBuilder(product: UserAgent.product, systemInfo: "(\(UIDevice.current.model); CPU\(afterCPU) OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)", platform: UserAgent.platform, platformDetails: UserAgent.platformDetails, extensions: "\(identifier) \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
+        return UserAgentBuilder(
+            product: UserAgent.product,
+            systemInfo:
+                "(\(UIDevice.current.model); CPU\(afterCPU) OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)",
+            platform: UserAgent.platform, platformDetails: UserAgent.platformDetails,
+            extensions: "\(identifier) \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
     }
 
     public static func defaultMobileUserAgent() -> UserAgentBuilder {
@@ -123,6 +139,9 @@ public struct UserAgentBuilder {
     }
 
     public static func defaultDesktopUserAgent() -> UserAgentBuilder {
-        return UserAgentBuilder(product: UserAgent.product, systemInfo: "(Macintosh; Intel Mac OS X 10.15)", platform: UserAgent.platform, platformDetails: UserAgent.platformDetails, extensions: "Version/\(UIDevice.current.systemVersion) \(UserAgent.uaBitSafari)")
+        return UserAgentBuilder(
+            product: UserAgent.product, systemInfo: "(Macintosh; Intel Mac OS X 10.15)",
+            platform: UserAgent.platform, platformDetails: UserAgent.platformDetails,
+            extensions: "Version/\(UIDevice.current.systemVersion) \(UserAgent.uaBitSafari)")
     }
 }

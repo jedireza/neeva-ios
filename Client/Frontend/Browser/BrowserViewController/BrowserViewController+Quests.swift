@@ -5,9 +5,9 @@
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 
-import SwiftUI
 import Defaults
 import Shared
+import SwiftUI
 
 extension BrowserViewController {
     func showSearchBarTourPrompt() {
@@ -28,7 +28,7 @@ extension BrowserViewController {
             present(prompt, animated: true, completion: nil)
         }
     }
-    
+
     func onCloseQuestHandler() {
         self.dismiss(animated: true, completion: nil)
         TourManager.shared.responseMessage(for: TourManager.shared.getActiveStepName(), exit: true)
@@ -47,7 +47,7 @@ extension BrowserViewController {
     func showQuestNeevaMenuPrompt() {
         guard TourManager.shared.hasActiveStep() else { return }
         var target: UIView
-        
+
         scrollController.showToolbars(animated: true)
 
         if !self.urlBar.shared.model.showToolbarItems, let toolbar = toolbar {
@@ -58,7 +58,11 @@ extension BrowserViewController {
             target = self.urlBar!.legacy!.neevaMenuButton
         }
 
-        let content = TourPromptContent(title: "Get the most out of Neeva!", description: "Access your Neeva Home, Spaces, Settings, and more", buttonMessage: "Let's take a Look!", onButtonClick: onStartQuestButtonClickHandler, onClose: onCloseQuestHandler)
+        let content = TourPromptContent(
+            title: "Get the most out of Neeva!",
+            description: "Access your Neeva Home, Spaces, Settings, and more",
+            buttonMessage: "Let's take a Look!", onButtonClick: onStartQuestButtonClickHandler,
+            onClose: onCloseQuestHandler)
 
         let prompt = TourPromptViewController(delegate: self, source: target, content: content)
 

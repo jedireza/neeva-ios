@@ -2,20 +2,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import Foundation
 import Shared
 import Storage
 import XCGLogger
-import Combine
 
 private let log = Logger.browserLogger
 
-private let URLBeforePathRegex = try! NSRegularExpression(pattern: "^https?://([^/]+)/", options: [])
+private let URLBeforePathRegex = try! NSRegularExpression(
+    pattern: "^https?://([^/]+)/", options: [])
 
-/**
- * Shared data source for the SearchViewController and the URLBar domain completion.
- * Since both of these use the same SQL query, we can perform the query once and dispatch the results.
- */
+/// Shared data source for the SearchViewController and the URLBar domain completion.
+/// Since both of these use the same SQL query, we can perform the query once and dispatch the results.
 class HistorySuggestionModel: ObservableObject {
     fileprivate let frecentHistory: FrecentHistory
 
@@ -46,7 +45,8 @@ class HistorySuggestionModel: ObservableObject {
     private var searchTextSubscription: AnyCancellable?
 
     private func subscribe() {
-        searchTextSubscription = SearchTextModel.shared.$query.withPrevious().sink { [unowned self] oldQuery, query in
+        searchTextSubscription = SearchTextModel.shared.$query.withPrevious().sink {
+            [unowned self] oldQuery, query in
             currentDeferredHistoryQuery?.cancel()
 
             guard let query = query else {
@@ -60,7 +60,10 @@ class HistorySuggestionModel: ObservableObject {
                 return
             }
 
-            guard let deferredHistory = frecentHistory.getSites(matchingSearchQuery: query, limit: 100) as? CancellableDeferred else {
+            guard
+                let deferredHistory = frecentHistory.getSites(
+                    matchingSearchQuery: query, limit: 100) as? CancellableDeferred
+            else {
                 assertionFailure("FrecentHistory query should be cancellable")
                 return
             }
@@ -79,7 +82,7 @@ class HistorySuggestionModel: ObservableObject {
                 // Exclude Neeva search url suggestions from history suggest, since they should
                 // readily be coming as query suggestions.
                 let deferredHistorySites = (result.successValue?.asArray() ?? [])
-                    .filter {!($0.url.hasPrefix(NeevaConstants.appSearchURL.absoluteString))}
+                    .filter { !($0.url.hasPrefix(NeevaConstants.appSearchURL.absoluteString)) }
 
                 // Load the data in the table view.
                 self.sites = deferredHistorySites
@@ -127,7 +130,10 @@ class HistorySuggestionModel: ObservableObject {
         // Extract the pre-path substring from the URL. This should be more efficient than parsing via
         // NSURL since we need to only look at the beginning of the string.
         // Note that we won't match non-HTTP(S) URLs.
-        guard let match = URLBeforePathRegex.firstMatch(in: url, options: [], range: NSRange(location: 0, length: url.count)) else {
+        guard
+            let match = URLBeforePathRegex.firstMatch(
+                in: url, options: [], range: NSRange(location: 0, length: url.count))
+        else {
             return nil
         }
 
@@ -151,10 +157,14 @@ class HistorySuggestionModel: ObservableObject {
 
     fileprivate func completionForDomain(_ domain: String) -> String? {
         let domainWithDotPrefix: String = ".\(domain)"
-        if let range = domainWithDotPrefix.range(of: ".\(SearchTextModel.shared.query ?? "")", options: .caseInsensitive, range: nil, locale: nil) {
+        if let range = domainWithDotPrefix.range(
+            of: ".\(SearchTextModel.shared.query ?? "")", options: .caseInsensitive, range: nil,
+            locale: nil)
+        {
             // We don't actually want to match the top-level domain ("com", "org", etc.) by itself, so
             // so make sure the result includes at least one ".".
-            let matchedDomain = String(domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])
+            let matchedDomain = String(
+                domainWithDotPrefix[domainWithDotPrefix.index(range.lowerBound, offsetBy: 1)...])
             if matchedDomain.contains(".") {
                 return matchedDomain
             }

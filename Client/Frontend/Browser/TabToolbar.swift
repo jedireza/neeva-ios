@@ -2,10 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
-import SnapKit
-import Shared
 import Combine
+import Shared
+import SnapKit
+import UIKit
 
 protocol LegacyTabToolbarProtocol: AnyObject {
     var tabToolbarDelegate: TabToolbarDelegate? { get set }
@@ -40,25 +40,33 @@ open class LegacyTabToolbarHelper: NSObject {
 
         let configuration = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
 
-        toolbar.backButton.setImage(UIImage(systemName: "arrow.left", withConfiguration: configuration), for: .normal)
+        toolbar.backButton.setImage(
+            UIImage(systemName: "arrow.left", withConfiguration: configuration), for: .normal)
         toolbar.backButton.accessibilityLabel = .TabToolbarBackAccessibilityLabel
-        let longPressGestureBackButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressBackForward))
+        let longPressGestureBackButton = UILongPressGestureRecognizer(
+            target: self, action: #selector(didLongPressBackForward))
         toolbar.backButton.addGestureRecognizer(longPressGestureBackButton)
         toolbar.backButton.addTarget(self, action: #selector(didClickBack), for: .touchUpInside)
         toolbar.backButton.isPointerInteractionEnabled = true
 
-        toolbar.forwardButton.setImage(UIImage(systemName: "arrow.right", withConfiguration: configuration), for: .normal)
+        toolbar.forwardButton.setImage(
+            UIImage(systemName: "arrow.right", withConfiguration: configuration), for: .normal)
         toolbar.forwardButton.accessibilityLabel = .TabToolbarForwardAccessibilityLabel
-        let longPressGestureForwardButton = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressBackForward))
+        let longPressGestureForwardButton = UILongPressGestureRecognizer(
+            target: self, action: #selector(didLongPressBackForward))
         toolbar.forwardButton.addGestureRecognizer(longPressGestureForwardButton)
-        toolbar.forwardButton.addTarget(self, action: #selector(didClickForward), for: .touchUpInside)
+        toolbar.forwardButton.addTarget(
+            self, action: #selector(didClickForward), for: .touchUpInside)
         toolbar.forwardButton.isPointerInteractionEnabled = true
-        
-        toolbar.shareButton.setImage(UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration), for: .normal)
+
+        toolbar.shareButton.setImage(
+            UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration),
+            for: .normal)
         toolbar.shareButton.accessibilityLabel = "Share"
-        toolbar.shareButton.addAction(UIAction { _ in
-            self.didPress(shareButton: toolbar.shareButton)
-        }, for: .primaryActionTriggered)
+        toolbar.shareButton.addAction(
+            UIAction { _ in
+                self.didPress(shareButton: toolbar.shareButton)
+            }, for: .primaryActionTriggered)
         toolbar.shareButton.isPointerInteractionEnabled = true
 
         toolbar.tabsButton.accessibilityLabel = .TabTrayButtonShowTabsAccessibilityLabel
@@ -67,27 +75,32 @@ open class LegacyTabToolbarHelper: NSObject {
             toolbar.tabToolbarDelegate?.tabToolbarTabsMenu()
         }
         toolbar.tabsButton.isPointerInteractionEnabled = true
-        
-        toolbar.addToSpacesButton.titleLabel?.font = UIFont(name: NiconFont.medium.rawValue, size: 19.17);
+
+        toolbar.addToSpacesButton.titleLabel?.font = UIFont(
+            name: NiconFont.medium.rawValue, size: 19.17)
         toolbar.addToSpacesButton.setTitle(String(Nicon.bookmark.rawValue), for: .normal)
         toolbar.addToSpacesButton.contentMode = .center
         toolbar.addToSpacesButton.accessibilityLabel = "Add To Space"
         toolbar.addToSpacesButton.accessibilityIdentifier = "TabToolbar.addToSpacesButton"
-        toolbar.addToSpacesButton.addTarget(self, action: #selector(didClickSpaces), for: .touchUpInside)
+        toolbar.addToSpacesButton.addTarget(
+            self, action: #selector(didClickSpaces), for: .touchUpInside)
         toolbar.addToSpacesButton.isPointerInteractionEnabled = true
 
-        toolbar.toolbarNeevaMenuButton.setImage(UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
+        toolbar.toolbarNeevaMenuButton.setImage(
+            UIImage.originalImageNamed("neevaMenuIcon"), for: .normal)
         toolbar.toolbarNeevaMenuButton.accessibilityLabel = "Neeva Menu"
-        toolbar.toolbarNeevaMenuButton.addTarget(self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
+        toolbar.toolbarNeevaMenuButton.addTarget(
+            self, action: #selector(didPressToolbarNeevaMenu), for: .touchUpInside)
         toolbar.toolbarNeevaMenuButton.isPointerInteractionEnabled = true
     }
 
-    func didPressToolbarNeevaMenu () {
+    func didPressToolbarNeevaMenu() {
         BrowserViewController.foregroundBVC().showNeevaMenuSheet()
     }
 
     func didPress(shareButton: UIView) {
-        ClientLogger.shared.logCounter(.ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
         guard
             let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
             let tab = bvc.tabManager.selectedTab,
@@ -101,12 +114,14 @@ open class LegacyTabToolbarHelper: NSObject {
     }
 
     func didClickSpaces() {
-        ClientLogger.shared.logCounter(.SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu()
     }
 
     func didClickBack() {
-        ClientLogger.shared.logCounter(.ClickBack, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .ClickBack, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarDidPressBack()
     }
 
@@ -117,12 +132,14 @@ open class LegacyTabToolbarHelper: NSObject {
     }
 
     func didClickTabs() {
-        ClientLogger.shared.logCounter(.ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarDidPressTabs()
     }
 
     func didClickForward() {
-        ClientLogger.shared.logCounter(.ClickForward, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .ClickForward, attributes: EnvironmentHelper.shared.getAttributes())
         toolbar.tabToolbarDelegate?.tabToolbarDidPressForward()
     }
 

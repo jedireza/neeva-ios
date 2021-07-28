@@ -26,13 +26,19 @@ class ToggleButton: UIButton {
         }
 
         self.isSelected = selected
-        pointerStyleProvider = selected ? { button, style, effect in
-            // produce a lift effect clipped to the circular background
-            let path = UIBezierPath(ovalIn: self.backgroundView.frame.insetBy(dx: UX.ExpandDelta + 1, dy: UX.ExpandDelta + 1))
-            let params = UIPreviewParameters()
-            params.visiblePath = path
-            return UIPointerStyle(effect: .lift(UITargetedPreview(view: style.preview.view, parameters: params)), shape: .path(path))
-        } : EllipsePointerStyleProvider
+        pointerStyleProvider =
+            selected
+            ? { button, style, effect in
+                // produce a lift effect clipped to the circular background
+                let path = UIBezierPath(
+                    ovalIn: self.backgroundView.frame.insetBy(
+                        dx: UX.ExpandDelta + 1, dy: UX.ExpandDelta + 1))
+                let params = UIPreviewParameters()
+                params.visiblePath = path
+                return UIPointerStyle(
+                    effect: .lift(UITargetedPreview(view: style.preview.view, parameters: params)),
+                    shape: .path(path))
+            } : EllipsePointerStyleProvider
         if animated {
             animateSelection(selected)
         }
@@ -67,11 +73,12 @@ class ToggleButton: UIButton {
             let endPath = CGMutablePath()
             endPath.addEllipse(in: endFrame)
 
-            animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+            animation.timingFunction = CAMediaTimingFunction(
+                name: CAMediaTimingFunctionName.easeOut)
             animation.values = [
                 startPath,
                 largerPath,
-                endPath
+                endPath,
             ]
             animation.duration = UX.ShowDuration
             self.maskShapeLayer.path = endPath
@@ -84,7 +91,8 @@ class ToggleButton: UIButton {
             let fromPath = CGMutablePath()
             fromPath.addEllipse(in: endFrame)
             animation.fromValue = fromPath
-            animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            animation.timingFunction = CAMediaTimingFunction(
+                name: CAMediaTimingFunctionName.easeInEaseOut)
 
             let toPath = CGMutablePath()
             toPath.addEllipse(in: CGRect(origin: self.maskShapeLayer.bounds.center, size: .zero))
@@ -129,7 +137,8 @@ class ToggleButton: UIButton {
 
         // Make the gradient larger than normal to allow the mask transition to show when it blows up
         // a little larger than the resting size
-        backgroundLayer.bounds = backgroundView.frame.insetBy(dx: -UX.ExpandDelta, dy: -UX.ExpandDelta)
+        backgroundLayer.bounds = backgroundView.frame.insetBy(
+            dx: -UX.ExpandDelta, dy: -UX.ExpandDelta)
         maskShapeLayer.bounds = backgroundView.frame
         backgroundLayer.position = CGPoint(x: zeroFrame.midX, y: zeroFrame.midY)
         maskShapeLayer.position = CGPoint(x: zeroFrame.midX, y: zeroFrame.midY)

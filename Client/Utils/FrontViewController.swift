@@ -11,12 +11,14 @@ extension UIViewController {
 }
 extension UITabBarController {
     override var frontViewController: UIViewController {
-        presentedViewController?.frontViewController ?? selectedViewController?.frontViewController ?? self
+        presentedViewController?.frontViewController ?? selectedViewController?.frontViewController
+            ?? self
     }
 }
 extension UINavigationController {
     override var frontViewController: UIViewController {
-        presentedViewController?.frontViewController ?? topViewController?.frontViewController ?? self
+        presentedViewController?.frontViewController ?? topViewController?.frontViewController
+            ?? self
     }
 }
 extension UIApplication {

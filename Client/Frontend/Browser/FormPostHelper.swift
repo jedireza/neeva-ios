@@ -19,8 +19,9 @@ struct FormPostData {
             let enctype = messageBodyDict["enctype"],
             let requestBodyString = messageBodyDict["requestBody"],
             let action = URL(string: actionString),
-            let requestBody = requestBodyString.data(using: .utf8) else {
-                return nil
+            let requestBody = requestBodyString.data(using: .utf8)
+        else {
+            return nil
         }
 
         self.action = action
@@ -36,7 +37,8 @@ struct FormPostData {
 
         if self.action == request.url,
             self.method == request.httpMethod,
-            self.enctype == headers["Content-Type"] {
+            self.enctype == headers["Content-Type"]
+        {
             return true
         }
 
@@ -69,7 +71,10 @@ class FormPostHelper: TabContentScript {
         return "formPostHelper"
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceiveScriptMessage message: WKScriptMessage
+    ) {
         guard let formPostData = FormPostData(messageBody: message.body) else {
             print("Unable to parse FormPostData from script message body.")
             return
@@ -79,17 +84,23 @@ class FormPostHelper: TabContentScript {
     }
 
     func urlRequestForNavigationAction(_ navigationAction: WKNavigationAction) -> URLRequest {
-        guard let formPostData = blankTargetFormPosts.first(where: { $0.matchesNavigationAction(navigationAction) }) else {
+        guard
+            let formPostData = blankTargetFormPosts.first(where: {
+                $0.matchesNavigationAction(navigationAction)
+            })
+        else {
             return navigationAction.request
         }
 
-        let request = formPostData.urlRequestWithHeaders(navigationAction.request.allHTTPHeaderFields)
+        let request = formPostData.urlRequestWithHeaders(
+            navigationAction.request.allHTTPHeaderFields)
 
-        if let index = blankTargetFormPosts.firstIndex(where: { $0.matchesNavigationAction(navigationAction) }) {
+        if let index = blankTargetFormPosts.firstIndex(where: {
+            $0.matchesNavigationAction(navigationAction)
+        }) {
             blankTargetFormPosts.remove(at: index)
         }
 
         return request
     }
 }
-

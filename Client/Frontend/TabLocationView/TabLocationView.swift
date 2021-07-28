@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 import UniformTypeIdentifiers
 
 enum TabLocationViewUX {
@@ -20,9 +20,9 @@ struct OffsetModifier: ViewModifier {
 }
 
 struct TabLocationView: View {
-    let onReload: () -> ()
-    let onSubmit: (String) -> ()
-    let onShare: (UIView) -> ()
+    let onReload: () -> Void
+    let onSubmit: (String) -> Void
+    let onShare: (UIView) -> Void
     let buildReloadMenu: () -> UIMenu?
 
     @EnvironmentObject private var model: URLBarModel
@@ -58,7 +58,8 @@ struct TabLocationView: View {
     }
 
     var body: some View {
-        let backgroundColor: Color = isIncognito
+        let backgroundColor: Color =
+            isIncognito
             ? isPressed ? .elevatedDarkBackground : .black
             : isPressed ? .tertiarySystemFill : .systemFill
         HStack(spacing: 11) {
@@ -79,7 +80,9 @@ struct TabLocationView: View {
                             isSecure: model.isSecure,
                             background: backgroundColor,
                             onTap: {
-                                if let query = neevaSearchEngine.queryForLocationBar(from: model.url) {
+                                if let query = neevaSearchEngine.queryForLocationBar(
+                                    from: model.url)
+                                {
                                     queryModel.value = query
                                 } else {
                                     // TODO: Decode punycode hostname.
@@ -93,14 +96,20 @@ struct TabLocationView: View {
                         )
                     }
                 } leading: {
-                    if gridModel.isHidden && (model.url?.scheme == "https" || model.url?.scheme == "http") {
+                    if gridModel.isHidden
+                        && (model.url?.scheme == "https" || model.url?.scheme == "http")
+                    {
                         LocationViewTrackingButton(currentDomain: model.url?.baseDomain ?? "")
                     }
                 } trailing: {
                     if gridModel.isHidden {
                         Group {
-                            if model.readerMode != .active, let url = model.url, !InternalURL.isValid(url: url) {
-                                LocationViewReloadButton(buildMenu: buildReloadMenu, state: model.reloadButton, onTap: onReload)
+                            if model.readerMode != .active, let url = model.url,
+                                !InternalURL.isValid(url: url)
+                            {
+                                LocationViewReloadButton(
+                                    buildMenu: buildReloadMenu, state: model.reloadButton,
+                                    onTap: onReload)
                             }
                             if model.canShare, model.includeShareButtonInLocationView {
                                 LocationViewShareButton(url: model.url, onTap: onShare)
@@ -113,10 +122,18 @@ struct TabLocationView: View {
                     if model.isEditing {
                         LocationTextFieldIcon(currentUrl: model.url)
                             .transition(.opacity)
-                        LocationEditView(isEditing: Binding(get: { model.isEditing }, set: model.setEditing(to:)), onSubmit: onSubmit)
-                            // force the view to be recreated each time edit mode is entered
-                            .id(token)
-                            .transition(.modifier(active: OffsetModifier(x: TabLocationViewUX.textFieldOffset), identity: OffsetModifier(x: 0)).combined(with: .opacity))
+                        LocationEditView(
+                            isEditing: Binding(
+                                get: { model.isEditing }, set: model.setEditing(to:)),
+                            onSubmit: onSubmit
+                        )
+                        // force the view to be recreated each time edit mode is entered
+                        .id(token)
+                        .transition(
+                            .modifier(
+                                active: OffsetModifier(x: TabLocationViewUX.textFieldOffset),
+                                identity: OffsetModifier(x: 0)
+                            ).combined(with: .opacity))
                     }
                 }
             }
@@ -130,7 +147,8 @@ struct TabLocationView: View {
 
             if model.isEditing {
                 Button {
-                    SceneDelegate.getCurrentSceneDelegate().getBVC().zeroQueryViewController?.closeLazyTab()
+                    SceneDelegate.getCurrentSceneDelegate().getBVC().zeroQueryViewController?
+                        .closeLazyTab()
                     model.setEditing(to: false)
                 } label: {
                     Text("Cancel").withFont(.bodyLarge)
@@ -145,24 +163,44 @@ struct TabLocationView: View {
 struct TabLocationView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TabLocationView(onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })
-                .environmentObject(URLBarModel(previewURL: nil, isSecure: true))
-                .previewDisplayName("Placeholder")
+            TabLocationView(
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
+            )
+            .environmentObject(URLBarModel(previewURL: nil, isSecure: true))
+            .previewDisplayName("Placeholder")
 
-            TabLocationView(onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })
-                .environmentObject(URLBarModel(previewURL: "http://vviii.verylong.verylong.subdomain.neeva.com", isSecure: true))
-                .previewDisplayName("Long domain")
-            TabLocationView(onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })
-                .environment(\.isIncognito, true)
-                .environmentObject(URLBarModel(previewURL: "https://neeva.com/asdf", isSecure: false))
-                .previewDisplayName("Incognito")
-            TabLocationView(onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })
-                .environmentObject(URLBarModel(previewURL: neevaSearchEngine.searchURLForQuery("a long search query with words"), isSecure: true))
-                .previewDisplayName("Search")
-            TabLocationView(onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })
-                .environment(\.isIncognito, true)
-                .environmentObject(URLBarModel(previewURL: "ftp://someftpsite.com/dir/file.txt", isSecure: false))
-                .previewDisplayName("Non-HTTP")
+            TabLocationView(
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
+            )
+            .environmentObject(
+                URLBarModel(
+                    previewURL: "http://vviii.verylong.verylong.subdomain.neeva.com", isSecure: true
+                )
+            )
+            .previewDisplayName("Long domain")
+            TabLocationView(
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
+            )
+            .environment(\.isIncognito, true)
+            .environmentObject(URLBarModel(previewURL: "https://neeva.com/asdf", isSecure: false))
+            .previewDisplayName("Incognito")
+            TabLocationView(
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
+            )
+            .environmentObject(
+                URLBarModel(
+                    previewURL: neevaSearchEngine.searchURLForQuery(
+                        "a long search query with words"), isSecure: true)
+            )
+            .previewDisplayName("Search")
+            TabLocationView(
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
+            )
+            .environment(\.isIncognito, true)
+            .environmentObject(
+                URLBarModel(previewURL: "ftp://someftpsite.com/dir/file.txt", isSecure: false)
+            )
+            .previewDisplayName("Non-HTTP")
         }
         .padding()
         .previewLayout(.sizeThatFits)

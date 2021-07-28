@@ -19,15 +19,16 @@ public struct ClientAndTabs: Equatable, CustomStringConvertible {
             return client.modified
         }
 
-        return tabs.reduce(Timestamp(0), { m, tab in
-            return max(m, tab.lastUsed)
-        })
+        return tabs.reduce(
+            Timestamp(0),
+            { m, tab in
+                return max(m, tab.lastUsed)
+            })
     }
 }
 
-public func ==(lhs: ClientAndTabs, rhs: ClientAndTabs) -> Bool {
-    return (lhs.client == rhs.client) &&
-           (lhs.tabs == rhs.tabs)
+public func == (lhs: ClientAndTabs, rhs: ClientAndTabs) -> Bool {
+    return (lhs.client == rhs.client) && (lhs.tabs == rhs.tabs)
 }
 
 public protocol RemoteClientsAndTabs: SyncCommands {
@@ -45,8 +46,10 @@ public protocol RemoteClientsAndTabs: SyncCommands {
     func insertOrUpdateClients(_ clients: [RemoteClient]) -> Deferred<Maybe<Int>>
 
     // Returns number of tabs inserted.
-    func insertOrUpdateTabs(_ tabs: [RemoteTab]) -> Deferred<Maybe<Int>> // Insert into the local client.
-    func insertOrUpdateTabsForClientGUID(_ clientGUID: String?, tabs: [RemoteTab]) -> Deferred<Maybe<Int>>
+    func insertOrUpdateTabs(_ tabs: [RemoteTab]) -> Deferred<Maybe<Int>>  // Insert into the local client.
+    func insertOrUpdateTabsForClientGUID(_ clientGUID: String?, tabs: [RemoteTab]) -> Deferred<
+        Maybe<Int>
+    >
 
     func deleteClient(guid: GUID) -> Success
 }
@@ -71,7 +74,10 @@ public struct RemoteTab: Equatable {
         return url.host != nil
     }
 
-    public init(clientGUID: String?, URL: Foundation.URL, title: String, history: [Foundation.URL], lastUsed: Timestamp, icon: Foundation.URL?) {
+    public init(
+        clientGUID: String?, URL: Foundation.URL, title: String, history: [Foundation.URL],
+        lastUsed: Timestamp, icon: Foundation.URL?
+    ) {
         self.clientGUID = clientGUID
         self.URL = URL
         self.title = title
@@ -81,21 +87,20 @@ public struct RemoteTab: Equatable {
     }
 
     public func withClientGUID(_ clientGUID: String?) -> RemoteTab {
-        return RemoteTab(clientGUID: clientGUID, URL: URL, title: title, history: history, lastUsed: lastUsed, icon: icon)
+        return RemoteTab(
+            clientGUID: clientGUID, URL: URL, title: title, history: history, lastUsed: lastUsed,
+            icon: icon)
     }
 }
 
-public func ==(lhs: RemoteTab, rhs: RemoteTab) -> Bool {
-    return lhs.clientGUID == rhs.clientGUID &&
-        lhs.URL == rhs.URL &&
-        lhs.title == rhs.title &&
-        lhs.history == rhs.history &&
-        lhs.lastUsed == rhs.lastUsed &&
-        lhs.icon == rhs.icon
+public func == (lhs: RemoteTab, rhs: RemoteTab) -> Bool {
+    return lhs.clientGUID == rhs.clientGUID && lhs.URL == rhs.URL && lhs.title == rhs.title
+        && lhs.history == rhs.history && lhs.lastUsed == rhs.lastUsed && lhs.icon == rhs.icon
 }
 
 extension RemoteTab: CustomStringConvertible {
     public var description: String {
-        return "<RemoteTab clientGUID: \(clientGUID ?? "nil"), URL: \(URL), title: \(title), lastUsed: \(lastUsed)>"
+        return
+            "<RemoteTab clientGUID: \(clientGUID ?? "nil"), URL: \(URL), title: \(title), lastUsed: \(lastUsed)>"
     }
 }

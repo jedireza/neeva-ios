@@ -10,11 +10,16 @@ extension BrowserViewController: DownloadQueueDelegate {
         ToastDefaults().showToastForDownload(download: download)
     }
 
-    func downloadQueue(_ downloadQueue: DownloadQueue, didDownloadCombinedBytes combinedBytesDownloaded: Int64, combinedTotalBytesExpected: Int64?) {
-       
+    func downloadQueue(
+        _ downloadQueue: DownloadQueue, didDownloadCombinedBytes combinedBytesDownloaded: Int64,
+        combinedTotalBytesExpected: Int64?
+    ) {
+
     }
 
-    func downloadQueue(_ downloadQueue: DownloadQueue, download: Download, didFinishDownloadingTo location: URL) {
+    func downloadQueue(
+        _ downloadQueue: DownloadQueue, download: Download, didFinishDownloadingTo location: URL
+    ) {
         print("didFinishDownloadingTo(): \(location)")
     }
 

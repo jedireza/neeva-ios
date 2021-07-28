@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import XCGLogger
 import Shared
+import XCGLogger
 
 private let log = Logger.syncLogger
 
@@ -22,7 +22,10 @@ open class BrowserDB {
     public init(filename: String, schema: Schema, files: FileAccessor) {
         log.debug("Initializing BrowserDB: \(filename).")
 
-        self.databasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory())).appendingPathComponent(filename).path
+        self.databasePath =
+            URL(fileURLWithPath: (try! files.getAndEnsureDirectory())).appendingPathComponent(
+                filename
+            ).path
 
         self.db = SwiftData(filename: self.databasePath, schema: schema, files: files)
     }
@@ -30,9 +33,11 @@ open class BrowserDB {
     // Returns the SQLite version for debug purposes.
     public func sqliteVersion() -> Deferred<Maybe<String>> {
         return withConnection { connection -> String in
-            let result = connection.executeQueryUnsafe("SELECT sqlite_version()", factory: { row -> String in
-                return row[0] as? String ?? ""
-            }, withArgs: nil)
+            let result = connection.executeQueryUnsafe(
+                "SELECT sqlite_version()",
+                factory: { row -> String in
+                    return row[0] as? String ?? ""
+                }, withArgs: nil)
             return result.asArray().first ?? ""
         }
     }
@@ -40,9 +45,11 @@ open class BrowserDB {
     // Returns the SQLite compile_options for debug purposes.
     public func sqliteCompileOptions() -> Deferred<Maybe<[String]>> {
         return withConnection { connection -> [String] in
-            let result = connection.executeQueryUnsafe("PRAGMA compile_options", factory: { row -> String in
-                return row[0] as? String ?? ""
-            }, withArgs: nil)
+            let result = connection.executeQueryUnsafe(
+                "PRAGMA compile_options",
+                factory: { row -> String in
+                    return row[0] as? String ?? ""
+                }, withArgs: nil)
             return result.asArray().filter({ !$0.isEmpty })
         }
     }
@@ -50,9 +57,11 @@ open class BrowserDB {
     // Returns the SQLite secure_delete setting for debug purposes.
     public func sqliteSecureDelete() -> Deferred<Maybe<Int>> {
         return withConnection { connection -> Int in
-            let result = connection.executeQueryUnsafe("PRAGMA secure_delete", factory: { row -> Int in
-                return row[0] as? Int ?? 0
-            }, withArgs: nil)
+            let result = connection.executeQueryUnsafe(
+                "PRAGMA secure_delete",
+                factory: { row -> Int in
+                    return row[0] as? Int ?? 0
+                }, withArgs: nil)
             return result.asArray().first ?? 0
         }
     }
@@ -72,11 +81,16 @@ open class BrowserDB {
      * The supported mechanism for a read-only query against a WAL-using SQLite database is to use PRAGMA query_only,
      * but this isn't all that useful for us, because we have a mixed read/write workload.
      */
-    @discardableResult func withConnection<T>(flags: SwiftData.Flags = .readWriteCreate, _ callback: @escaping (_ connection: SQLiteDBConnection) throws -> T) -> Deferred<Maybe<T>> {
+    @discardableResult func withConnection<T>(
+        flags: SwiftData.Flags = .readWriteCreate,
+        _ callback: @escaping (_ connection: SQLiteDBConnection) throws -> T
+    ) -> Deferred<Maybe<T>> {
         return db.withConnection(flags, callback)
     }
 
-    func transaction<T>(_ callback: @escaping (_ connection: SQLiteDBConnection) throws -> T) -> Deferred<Maybe<T>> {
+    func transaction<T>(_ callback: @escaping (_ connection: SQLiteDBConnection) throws -> T)
+        -> Deferred<Maybe<T>>
+    {
         return db.transaction(callback)
     }
 
@@ -125,7 +139,9 @@ open class BrowserDB {
      * A failure anywhere in the sequence will cause immediate return of failure, but
      * will not roll back — use a transaction if you need one.
      */
-    func bulkInsert(_ table: String, op: InsertOperation, columns: [String], values: [Args]) -> Success {
+    func bulkInsert(_ table: String, op: InsertOperation, columns: [String], values: [Args])
+        -> Success
+    {
         // Note that there's a limit to how many ?s can be in a single query!
         // So here we execute 999 / (columns * rows) insertions per query.
         // Note that we can't use variables for the column names, so those don't affect the count.
@@ -145,7 +161,8 @@ open class BrowserDB {
         let varString = BrowserDB.varlist(variablesPerRow)
 
         let insertChunk: ([Args]) -> Success = { vals -> Success in
-            let valuesString = Array(repeating: varString, count: vals.count).joined(separator: ", ")
+            let valuesString = Array(repeating: varString, count: vals.count).joined(
+                separator: ", ")
             let args: Args = vals.flatMap { $0 }
             return self.run(queryStart + valuesString, withArgs: args)
         }
@@ -208,19 +225,26 @@ open class BrowserDB {
         }
     }
 
-    public func runQuery<T>(_ sql: String, args: Args?, factory: @escaping (SDRow) -> T) -> Deferred<Maybe<Cursor<T>>> {
+    public func runQuery<T>(_ sql: String, args: Args?, factory: @escaping (SDRow) -> T)
+        -> Deferred<Maybe<Cursor<T>>>
+    {
         return withConnection { connection -> Cursor<T> in
             connection.executeQuery(sql, factory: factory, withArgs: args)
         }
     }
 
-    public func runQueryConcurrently<T>(_ sql: String, args: Args?, factory: @escaping (SDRow) -> T) -> Deferred<Maybe<Cursor<T>>> {
+    public func runQueryConcurrently<T>(_ sql: String, args: Args?, factory: @escaping (SDRow) -> T)
+        -> Deferred<Maybe<Cursor<T>>>
+    {
         return withConnection(flags: .readOnly) { connection -> Cursor<T> in
             connection.executeQuery(sql, factory: factory, withArgs: args)
         }
     }
 
-    func runQueryUnsafe<T, U>(_ sql: String, args: Args?, factory: @escaping (SDRow) -> T, block: @escaping (Cursor<T>) throws -> U) -> Deferred<Maybe<U>> {
+    func runQueryUnsafe<T, U>(
+        _ sql: String, args: Args?, factory: @escaping (SDRow) -> T,
+        block: @escaping (Cursor<T>) throws -> U
+    ) -> Deferred<Maybe<U>> {
         return withConnection { connection -> U in
             let cursor = connection.executeQueryUnsafe(sql, factory: factory, withArgs: args)
             defer { cursor.close() }
@@ -230,11 +254,11 @@ open class BrowserDB {
 
     func queryReturnsResults(_ sql: String, args: Args? = nil) -> Deferred<Maybe<Bool>> {
         return runQuery(sql, args: args, factory: { _ in true })
-         >>== { deferMaybe($0[0] ?? false) }
+            >>== { deferMaybe($0[0] ?? false) }
     }
 
     func queryReturnsNoResults(_ sql: String, args: Args? = nil) -> Deferred<Maybe<Bool>> {
         return runQuery(sql, args: nil, factory: { _ in false })
-          >>== { deferMaybe($0[0] ?? true) }
+            >>== { deferMaybe($0[0] ?? true) }
     }
 }

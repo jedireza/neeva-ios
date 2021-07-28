@@ -4,15 +4,15 @@
 
 import Foundation
 
-public extension Collection {
+extension Collection {
     /// Returns the element at the specified index iff it is within bounds, otherwise nil.
-    subscript(safe index: Index) -> Element? {
+    public subscript(safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
     }
 }
 
-public extension Array where Element: Equatable {
-    func removeDuplicates() -> [Element] {
+extension Array where Element: Equatable {
+    public func removeDuplicates() -> [Element] {
         var result = [Element]()
         for value in self {
             if !result.contains(value) {
@@ -23,8 +23,8 @@ public extension Array where Element: Equatable {
     }
 }
 
-public extension ArraySlice {
-    func toArray() -> [Element] {
+extension ArraySlice {
+    public func toArray() -> [Element] {
         Array(self)
     }
 }

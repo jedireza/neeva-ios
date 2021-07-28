@@ -1,15 +1,18 @@
+import Shared
 // Copyright © Neeva. All rights reserved.
 import SwiftUI
-import Shared
 
 struct TourPromptContent {
     let title: String
     let description: String
     let buttonMessage: String?
-    let onButtonClick: (()-> Void)?
-    let onClose: (()-> Void)?
+    let onButtonClick: (() -> Void)?
+    let onClose: (() -> Void)?
 
-    init(title: String, description: String, buttonMessage: String? = nil, onButtonClick: (()->Void)? = nil, onClose: (()->Void)? = nil) {
+    init(
+        title: String, description: String, buttonMessage: String? = nil,
+        onButtonClick: (() -> Void)? = nil, onClose: (() -> Void)? = nil
+    ) {
         self.title = title
         self.description = description
         self.buttonMessage = buttonMessage
@@ -22,8 +25,12 @@ class TourPromptViewController: UIHostingController<TourPromptView> {
 
     var delegate: BrowserViewController?
 
-    public init(delegate:BrowserViewController, source: UIView, content: TourPromptContent) {
-        super.init(rootView: TourPromptView(title: content.title, description: content.description, buttonMessage: content.buttonMessage ?? "", onConfirm: content.onButtonClick ?? nil, onClose: content.onClose ?? nil, staticColorMode: true))
+    public init(delegate: BrowserViewController, source: UIView, content: TourPromptContent) {
+        super.init(
+            rootView: TourPromptView(
+                title: content.title, description: content.description,
+                buttonMessage: content.buttonMessage ?? "", onConfirm: content.onButtonClick ?? nil,
+                onClose: content.onClose ?? nil, staticColorMode: true))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
         if content.onButtonClick == nil {

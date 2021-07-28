@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import SnapKit
 import Shared
+import SnapKit
 
 class TabsButton: UIButton {
     override var transform: CGAffineTransform {
@@ -21,7 +21,9 @@ class TabsButton: UIButton {
     }()
 
     fileprivate lazy var doubleSquareImageView: UIImageView = {
-        let doubleSquareIcon = UIImage(systemName: "square.on.square", withConfiguration: UIImage.SymbolConfiguration(pointSize: 21, weight: .medium))
+        let doubleSquareIcon = UIImage(
+            systemName: "square.on.square",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 21, weight: .medium))
         let imageView = UIImageView(image: doubleSquareIcon)
         imageView.tintColor = UIColor.Photon.Grey80
         imageView.frame = CGRect(x: 0, y: 0, width: 26, height: 24)
@@ -56,6 +58,4 @@ class TabsButton: UIButton {
         sendActions(for: .touchUpInside)
     }
 
-
 }
-

@@ -13,8 +13,6 @@ private let SuggestedSite4: String = "foo bar baz"
 private let SuggestedSite5: String = "foo bar baz qux"
 private let SuggestedSite6: String = "foobar bit perfect"
 
-
-
 class SearchTests: BaseTestCase {
     private func typeOnSearchBar(text: String) {
         waitForExistence(app.textFields.firstMatch, timeout: 10)
@@ -27,7 +25,9 @@ class SearchTests: BaseTestCase {
         navigator.goto(SearchSettings)
         app.tables.switches["Show Search Suggestions"].tap()
         app.navigationBars["Search"].buttons["Settings"].tap()
-        app.navigationBars["Settings"].buttons["AppSettingsTableViewController.navigationItem.leftBarButtonItem"].tap()
+        app.navigationBars["Settings"].buttons[
+            "AppSettingsTableViewController.navigationItem.leftBarButtonItem"
+        ].tap()
     }
 
     func testPromptPresence() {
@@ -127,7 +127,7 @@ class SearchTests: BaseTestCase {
             }
         }
     }
-    
+
     func testCopyPasteComplete() {
         // Copy, Paste and Go to url
         navigator.goto(URLBarOpen)
@@ -195,12 +195,12 @@ class SearchTests: BaseTestCase {
         waitForExistence(app.buttons["url"], timeout: 20)
         waitForValueContains(app.buttons["url"], value: "google")
     }
-    
+
     func testSearchIconOnAboutHome() {
         waitForTabsButton()
         navigator.performAction(Action.OpenNewTabFromTabTray)
         waitForTabsButton()
-        
+
         // Search icon is displayed.
         waitForExistence(app.buttons["TabToolbar.multiStateButton"])
 
@@ -211,7 +211,7 @@ class SearchTests: BaseTestCase {
         let addressBar = app.textFields["address"]
         XCTAssertTrue(addressBar.value(forKey: "hasKeyboardFocus") as? Bool ?? false)
         XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
-    
+
         app.textFields["address"].typeText("www.google.com\n")
         waitUntilPageLoad()
 

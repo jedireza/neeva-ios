@@ -2,31 +2,31 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@testable import Client
 import Foundation
 import Shared
 import Storage
 import SwiftKeychainWrapper
-
 import XCTest
+
+@testable import Client
 
 /*
  * A base test type for tests that need a profile.
  */
 
 class ProfileTest: XCTestCase {
-    
+
     var profile: MockProfile?
-    
+
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        
-        // Setup mock profile 
+
+        // Setup mock profile
         profile = MockProfile(databasePrefix: "profile-test")
     }
-    
-   func withTestProfile(_ callback: (_ profile: Client.Profile) -> Void) {
+
+    func withTestProfile(_ callback: (_ profile: Client.Profile) -> Void) {
         guard let mockProfile = profile else {
             return
         }

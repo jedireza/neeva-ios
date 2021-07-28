@@ -1,13 +1,13 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Apollo
+import SwiftUI
 
 public class AddToSpaceRequest: ObservableObject {
     var cancellable: Apollo.Cancellable? = nil
 
     public let title: String
-    public let description: String? // meta description
+    public let description: String?  // meta description
     public let url: URL
 
     public enum Mode {
@@ -155,9 +155,9 @@ public struct AddToSpaceView: View {
     @State private var searchTerm = ""
     @State private var backgroundColor: Color? = nil
 
-    let onDismiss: () -> ()
+    let onDismiss: () -> Void
 
-    public init(request: AddToSpaceRequest, onDismiss: @escaping () -> () = {}) {
+    public init(request: AddToSpaceRequest, onDismiss: @escaping () -> Void = {}) {
         self.request = request
         self.onDismiss = onDismiss
     }
@@ -210,7 +210,7 @@ public struct AddToSpaceView: View {
     public var body: some View {
         Group {
             if request.mode == .saveToNewSpace {
-                CreateSpaceView() {
+                CreateSpaceView {
                     request.addToNewSpace(spaceName: $0)
                     onDismiss()
                 }
@@ -218,7 +218,8 @@ public struct AddToSpaceView: View {
                 GeometryReader { geom in
                     let sv = ScrollView {
                         VStack(spacing: 0) {
-                            if case .failed(_) = spaceStore.state {} else {
+                            if case .failed(_) = spaceStore.state {
+                            } else {
                                 searchHeader
                             }
                             switch spaceStore.state {
@@ -238,7 +239,9 @@ public struct AddToSpaceView: View {
                             }
                         }
                     }
-                    .onPreferenceChange(ErrorViewBackgroundPreferenceKey.self) { self.backgroundColor = $0 }
+                    .onPreferenceChange(ErrorViewBackgroundPreferenceKey.self) {
+                        self.backgroundColor = $0
+                    }
                     if let bg = backgroundColor {
                         sv.background(bg.ignoresSafeArea())
                     } else {
@@ -252,6 +255,9 @@ public struct AddToSpaceView: View {
 
 struct AddToSpaceView_Previews: PreviewProvider {
     static var previews: some View {
-        AddToSpaceView(request: AddToSpaceRequest(title: "Hello, world!", description: "<h1>Testing!</h1>", url: "https://google.com"), onDismiss: { print("Done") })
+        AddToSpaceView(
+            request: AddToSpaceRequest(
+                title: "Hello, world!", description: "<h1>Testing!</h1>", url: "https://google.com"),
+            onDismiss: { print("Done") })
     }
 }

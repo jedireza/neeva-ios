@@ -17,45 +17,54 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
 
     var body: some View {
         content()
-        .if(showPopover) { view in
-            view
-            .background(
-                Wrapper(showPopover: $showPopover, popoverSize: popoverSize, popoverContent: popoverContent, staticColorMode: staticColorMode)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            )
-        }
+            .if(showPopover) { view in
+                view
+                    .background(
+                        Wrapper(
+                            showPopover: $showPopover, popoverSize: popoverSize,
+                            popoverContent: popoverContent, staticColorMode: staticColorMode
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    )
+            }
     }
 
-    struct Wrapper<PopoverContent: View> : UIViewControllerRepresentable {
+    struct Wrapper<PopoverContent: View>: UIViewControllerRepresentable {
 
         @Binding var showPopover: Bool
         let popoverSize: CGSize?
         let popoverContent: () -> PopoverContent
         let staticColorMode: Bool?
 
-        func makeUIViewController(context: UIViewControllerRepresentableContext<Wrapper<PopoverContent>>) -> WrapperViewController<PopoverContent> {
+        func makeUIViewController(
+            context: UIViewControllerRepresentableContext<Wrapper<PopoverContent>>
+        ) -> WrapperViewController<PopoverContent> {
             return WrapperViewController(
                 popoverSize: popoverSize,
                 popoverContent: popoverContent,
-                staticColorMode: self.staticColorMode) {
+                staticColorMode: self.staticColorMode
+            ) {
                 self.showPopover = false
             }
         }
 
-        func updateUIViewController(_ uiViewController: WrapperViewController<PopoverContent>,
-                                    context: UIViewControllerRepresentableContext<Wrapper<PopoverContent>>) {
+        func updateUIViewController(
+            _ uiViewController: WrapperViewController<PopoverContent>,
+            context: UIViewControllerRepresentableContext<Wrapper<PopoverContent>>
+        ) {
             uiViewController.updateSize(popoverSize)
 
             if showPopover {
                 uiViewController.showPopover()
-            }
-            else {
+            } else {
                 uiViewController.hidePopover()
             }
         }
     }
 
-    class WrapperViewController<PopoverContent: View>: UIViewController, UIPopoverPresentationControllerDelegate {
+    class WrapperViewController<PopoverContent: View>: UIViewController,
+        UIPopoverPresentationControllerDelegate
+    {
 
         var popoverSize: CGSize?
         let popoverContent: () -> PopoverContent
@@ -64,10 +73,12 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
         var popoverVC: UIViewController?
 
         required init?(coder: NSCoder) { fatalError("") }
-        init(popoverSize: CGSize?,
-             popoverContent: @escaping () -> PopoverContent,
-             staticColorMode:Bool? = false,
-             onDismiss: @escaping() -> Void) {
+        init(
+            popoverSize: CGSize?,
+            popoverContent: @escaping () -> PopoverContent,
+            staticColorMode: Bool? = false,
+            onDismiss: @escaping () -> Void
+        ) {
             self.popoverSize = popoverSize
             self.popoverContent = popoverContent
             self.onDismiss = onDismiss
@@ -84,7 +95,9 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             let vc = UIHostingController(rootView: popoverContent())
             if let size = popoverSize { vc.preferredContentSize = size }
             vc.modalPresentationStyle = UIModalPresentationStyle.popover
-            vc.view.backgroundColor = self.staticColorMode! ? UIColor.Tour.Background.lightVariant : UIColor.Tour.Background
+            vc.view.backgroundColor =
+                self.staticColorMode!
+                ? UIColor.Tour.Background.lightVariant : UIColor.Tour.Background
             if let popover = vc.popoverPresentationController {
                 popover.sourceView = view
                 popover.delegate = self
@@ -93,7 +106,8 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
 
             // when in landscape mode, menu is shown using PopOverNeevaMenuViewController
             // delay tour popover being shown to prevent view is not in the window hierarchy complain
-            let delay = BrowserViewController.foregroundBVC().urlBar.shared.model.showToolbarItems ? 0.5 : 0
+            let delay =
+                BrowserViewController.foregroundBVC().urlBar.shared.model.showToolbarItems ? 0.5 : 0
 
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 self.present(vc, animated: true, completion: nil)
@@ -118,7 +132,9 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             }
         }
 
-        func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        func adaptivePresentationStyle(for controller: UIPresentationController)
+            -> UIModalPresentationStyle
+        {
             return .none
         }
     }

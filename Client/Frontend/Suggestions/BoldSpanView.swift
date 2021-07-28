@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 /// A range in a string.
 /// The offsets represent indexes into the UTF-16 representation of the string
@@ -26,7 +26,8 @@ struct BoldSpanView: View {
     ///   - text: the text to highlight
     ///   - boldSpans: the spans to render in boldface
     init(_ text: String, unboldedSpans: [BoldSpan]) {
-        textSpans = BoldSpanView.generateTextSpans(text: text, unboldedSpans: BoldSpanView.getValidSpans(unboldedSpans, in: text))
+        textSpans = BoldSpanView.generateTextSpans(
+            text: text, unboldedSpans: BoldSpanView.getValidSpans(unboldedSpans, in: text))
     }
 
     var body: some View {
@@ -55,7 +56,9 @@ struct BoldSpanView: View {
                 validSpans.append(span)
             } else {
                 // TODO: log bad input from the server
-                print("WARNING: ignoring invalid bold span [\(span.startInclusive), \(span.endExclusive)]")
+                print(
+                    "WARNING: ignoring invalid bold span [\(span.startInclusive), \(span.endExclusive)]"
+                )
             }
         }
         return validSpans
@@ -67,11 +70,11 @@ struct BoldSpanView: View {
         for unboldedSpan in unboldedSpans {
             let unBoldStart = String.Index(utf16Offset: unboldedSpan.startInclusive, in: text)
             let unBoldEndExclusive = String.Index(utf16Offset: unboldedSpan.endExclusive, in: text)
-            
+
             if textStart < unBoldStart {
                 spans.append(TextSpan(text: text[textStart..<unBoldStart], bolded: true))
             }
-            
+
             spans.append(TextSpan(text: text[unBoldStart..<unBoldEndExclusive], bolded: false))
             textStart = unBoldEndExclusive
         }
@@ -94,7 +97,10 @@ struct BoldSpanView_Previews: PreviewProvider {
     static var previews: some View {
         BoldSpanView(
             "How was your Neeva onboarding?",
-            unboldedSpans: [SuggestionsQuery.Data.Suggest.QuerySuggestion.BoldSpan(startInclusive: 13, endExclusive: 29)]
+            unboldedSpans: [
+                SuggestionsQuery.Data.Suggest.QuerySuggestion.BoldSpan(
+                    startInclusive: 13, endExclusive: 29)
+            ]
         )
     }
 }

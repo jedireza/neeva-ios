@@ -14,7 +14,7 @@ extension View {
     }
 }
 
-fileprivate struct SearchBar: UIViewControllerRepresentable {
+private struct SearchBar: UIViewControllerRepresentable {
     let placeholder: String
     @Binding var text: String?
 
@@ -27,7 +27,9 @@ fileprivate struct SearchBar: UIViewControllerRepresentable {
         vc.placeholder = placeholder
     }
 
-    class ViewController: UIViewController, UISearchControllerDelegate, UISearchBarDelegate, UISearchResultsUpdating {
+    class ViewController: UIViewController, UISearchControllerDelegate, UISearchBarDelegate,
+        UISearchResultsUpdating
+    {
 
         var text: Binding<String?>
         var placeholder: String {
@@ -73,7 +75,8 @@ fileprivate struct SearchBar: UIViewControllerRepresentable {
         // UISearchResultsUpdating
         func updateSearchResults(for searchController: UISearchController) {
             if let newText = searchController.searchBar.text,
-               text.wrappedValue != newText {
+                text.wrappedValue != newText
+            {
                 text.wrappedValue = newText
             }
         }

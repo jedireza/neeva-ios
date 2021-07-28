@@ -130,7 +130,13 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
     /// adjust the opacity of the gradients based on current scroll position. Rapidly fade them in and out at the edges of the scrollable content area
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         leadingGradient.opacity = Float(max(0, min(1, scrollView.contentOffset.x / 10)))
-        trailingGradient.opacity = Float(max(0, min(1, (scrollView.contentSize.width - (scrollView.contentOffset.x + scrollView.bounds.width)) / 10)))
+        trailingGradient.opacity = Float(
+            max(
+                0,
+                min(
+                    1,
+                    (scrollView.contentSize.width
+                        - (scrollView.contentOffset.x + scrollView.bounds.width)) / 10)))
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

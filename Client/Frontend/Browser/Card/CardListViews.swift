@@ -1,9 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
-fileprivate struct HideSelectedForTransition<Details: CardDetails>: ViewModifier {
+private struct HideSelectedForTransition<Details: CardDetails>: ViewModifier {
     let details: Details
 
     @EnvironmentObject private var gridModel: GridModel

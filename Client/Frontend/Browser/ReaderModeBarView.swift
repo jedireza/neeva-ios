@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
-import SnapKit
 import Shared
+import SnapKit
+import UIKit
 import XCGLogger
 
 private let log = Logger.browserLogger
@@ -32,7 +32,8 @@ enum ReaderModeBarButtonType {
 }
 
 protocol ReaderModeBarViewDelegate {
-    func readerModeBar(_ readerModeBar: ReaderModeBarView, didSelectButton buttonType: ReaderModeBarButtonType)
+    func readerModeBar(
+        _ readerModeBar: ReaderModeBarView, didSelectButton buttonType: ReaderModeBarButtonType)
 }
 
 class ReaderModeBarView: UIView {
@@ -92,4 +93,3 @@ class ReaderModeBarView: UIView {
         delegate?.readerModeBar(self, didSelectButton: .settings)
     }
 }
-

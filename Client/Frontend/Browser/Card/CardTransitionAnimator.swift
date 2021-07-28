@@ -22,13 +22,19 @@ struct CardTransitionAnimator: View {
 
     var body: some View {
         let maxWidth = containerSize.width + safeAreaInsets.leading + safeAreaInsets.trailing
-        let maxHeight = containerSize.height + safeAreaInsets.bottom - transitionBottomPadding - transitionTopPadding
+        let maxHeight =
+            containerSize.height + safeAreaInsets.bottom - transitionBottomPadding
+            - transitionTopPadding
         Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden)
-            .runAfter(toggling: gridModel.isHidden, fromTrueToFalse: {
-                gridModel.animationThumbnailState = .hidden
-            }, fromFalseToTrue: {
-                gridModel.hideWithNoAnimation()
-            })
+            .runAfter(
+                toggling: gridModel.isHidden,
+                fromTrueToFalse: {
+                    gridModel.animationThumbnailState = .hidden
+                },
+                fromFalseToTrue: {
+                    gridModel.hideWithNoAnimation()
+                }
+            )
             .frame(
                 width: gridModel.isHidden ? maxWidth : cardSize,
                 height: gridModel.isHidden ? maxHeight + CardUX.HeaderSize : CardUX.CardHeight
@@ -40,8 +46,9 @@ struct CardTransitionAnimator: View {
             .animation(.interpolatingSpring(stiffness: 425, damping: 30))
             .onAppear {
                 if !gridModel.isHidden
-                    && gridModel.animationThumbnailState == .visibleForTrayHidden {
-                        gridModel.isHidden.toggle()
+                    && gridModel.animationThumbnailState == .visibleForTrayHidden
+                {
+                    gridModel.isHidden.toggle()
                 }
             }
             .frame(width: maxWidth, height: maxHeight, alignment: .topLeading)

@@ -1,22 +1,26 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
 import SwiftUI
+import UIKit
 
 struct DownloadRootView: View {
     var overlaySheetModel = OverlaySheetModel()
     let fileName: String
     let fileURL: String
     let fileSize: String?
-    
-    let onDownload: () -> ()
-    let onDismiss: () -> ()
+
+    let onDownload: () -> Void
+    let onDismiss: () -> Void
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { onDismiss() }) {
-            DownloadMenuView(fileName: fileName, fileURL: fileURL, fileSize: fileSize, onDownload: { onDownload() }, onDismiss: { onDismiss() })
-                .overlaySheetIsFixedHeight(isFixedHeight: true)
+        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { onDismiss() })
+        {
+            DownloadMenuView(
+                fileName: fileName, fileURL: fileURL, fileSize: fileSize,
+                onDownload: { onDownload() }, onDismiss: { onDismiss() }
+            )
+            .overlaySheetIsFixedHeight(isFixedHeight: true)
         }
         .onAppear {
             // It seems to be necessary to delay starting the animation until this point to
@@ -29,8 +33,14 @@ struct DownloadRootView: View {
 }
 
 class DownloadViewController: UIHostingController<DownloadRootView> {
-    init(fileName: String, fileURL: String, fileSize: String?, onDownload: @escaping () -> (), onDismiss: @escaping () -> ()) {
-        super.init(rootView: DownloadRootView(fileName: fileName, fileURL: fileURL, fileSize: fileSize, onDownload: onDownload, onDismiss: onDismiss))
+    init(
+        fileName: String, fileURL: String, fileSize: String?, onDownload: @escaping () -> Void,
+        onDismiss: @escaping () -> Void
+    ) {
+        super.init(
+            rootView: DownloadRootView(
+                fileName: fileName, fileURL: fileURL, fileSize: fileSize, onDownload: onDownload,
+                onDismiss: onDismiss))
         self.view.accessibilityViewIsModal = true
     }
 

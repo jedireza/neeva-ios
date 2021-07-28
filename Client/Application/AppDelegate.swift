@@ -2,23 +2,25 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Shared
-import Storage
 import AVFoundation
-import XCGLogger
+import BackgroundTasks
+import CoreSpotlight
+import Defaults
+import LocalAuthentication
 import MessageUI
 import SDWebImage
+import Shared
+import Storage
 import SwiftKeychainWrapper
-import LocalAuthentication
-import CoreSpotlight
 import UserNotifications
-import Defaults
-import BackgroundTasks
+import XCGLogger
 
 private let log = Logger.browserLogger
 
 class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestoration {
-    public static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
+    public static func viewController(
+        withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder
+    ) -> UIViewController? {
         return nil
     }
 
@@ -32,7 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     var profile: Profile?
     var telemetry: TelemetryWrapper?
 
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         //
         // Determine if the application cleanly exited last time it was used. We default to true in
         // case we have never done this before. Then check if the "ApplicationCleanlyBackgrounded" user
@@ -46,7 +51,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         let defaults = UserDefaults()
         if defaults.object(forKey: "ApplicationCleanlyBackgrounded") != nil {
-            self.applicationCleanlyBackgrounded = defaults.bool(forKey: "ApplicationCleanlyBackgrounded")
+            self.applicationCleanlyBackgrounded = defaults.bool(
+                forKey: "ApplicationCleanlyBackgrounded")
         }
         defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
 
@@ -75,7 +81,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         return startApplication(application, withLaunchOptions: launchOptions)
     }
 
-    func startApplication(_ application: UIApplication, withLaunchOptions launchOptions: [AnyHashable: Any]?) -> Bool {
+    func startApplication(
+        _ application: UIApplication, withLaunchOptions launchOptions: [AnyHashable: Any]?
+    ) -> Bool {
         log.info("startApplication begin")
 
         // Need to get "settings.sendUsageData" this way so that Sentry can be initialized
@@ -105,7 +113,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         return true
     }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         // Override point for customization after application launch.
         var shouldPerformAdditionalDelegateHandling = true
 
@@ -116,7 +127,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
 
         // If a shortcut was launched, display its information and take the appropriate action
-        if let shortcutItem = launchOptions?[UIApplication.LaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {
+        if let shortcutItem = launchOptions?[UIApplication.LaunchOptionsKey.shortcutItem]
+            as? UIApplicationShortcutItem
+        {
 
             QuickActions.sharedInstance.launchedShortcutItem = shortcutItem
             // This will block "performActionForShortcutItem:completionHandler" from being called.
@@ -139,9 +152,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         let defaults = UserDefaults()
         defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
-        
+
         BrowserViewController.foregroundBVC().zeroQueryViewController?.reloadAll()
-        
+
         // Resume file downloads.
         // TODO: iOS 13 needs to iterate all the BVCs.
         BrowserViewController.foregroundBVC().downloadQueue.resumeAll()
@@ -151,7 +164,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         if let shortcut = quickActions.launchedShortcutItem {
             // dispatch asynchronously so that BVC is all set up for handling new tabs
             // when we try and open them
-            quickActions.handleShortCutItem(shortcut, withBrowserViewController: BrowserViewController.foregroundBVC())
+            quickActions.handleShortCutItem(
+                shortcut, withBrowserViewController: BrowserViewController.foregroundBVC())
             quickActions.launchedShortcutItem = nil
         }
 
@@ -166,7 +180,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             self.receivedURLs.removeAll()
             application.applicationIconBadgeNumber = 0
         }
-        
+
         // Create fx favicon cache directory
         FaviconFetcher.createWebImageCacheDirectory()
 
@@ -245,10 +259,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         ReaderModeHandlers.register(server, profile: profile)
 
         let responders: [(String, InternalSchemeResponse)] =
-            [ (AboutHomeHandler.path, AboutHomeHandler()),
-              (AboutLicenseHandler.path, AboutLicenseHandler()),
-              (SessionRestoreHandler.path, SessionRestoreHandler()),
-              (ErrorPageHandler.path, ErrorPageHandler())]
+            [
+                (AboutHomeHandler.path, AboutHomeHandler()),
+                (AboutLicenseHandler.path, AboutLicenseHandler()),
+                (SessionRestoreHandler.path, SessionRestoreHandler()),
+                (ErrorPageHandler.path, ErrorPageHandler()),
+            ]
         responders.forEach { (path, responder) in
             InternalSchemeHandler.responders[path] = responder
         }
@@ -273,22 +289,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         TopSitesHandler.writeWidgetKitTopSites(profile: profile)
     }
 
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options:UIScene.ConnectionOptions) -> UISceneConfiguration {
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        return UISceneConfiguration(
+            name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-    
+    func application(
+        _ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>
+    ) {
+
     }
 }
 
-// Orientation lock for views that use new modal presenter 
+// Orientation lock for views that use new modal presenter
 extension AppDelegate {
     /// ref: https://stackoverflow.com/questions/28938660/
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+    func application(
+        _ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?
+    ) -> UIInterfaceOrientationMask {
         return self.orientationLock
     }
-    
+
     struct AppUtility {
         static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
             if let delegate = UIApplication.shared.delegate as? AppDelegate {
@@ -296,7 +321,10 @@ extension AppDelegate {
             }
         }
 
-        static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
+        static func lockOrientation(
+            _ orientation: UIInterfaceOrientationMask,
+            andRotateTo rotateOrientation: UIInterfaceOrientation
+        ) {
             self.lockOrientation(orientation)
             UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
         }

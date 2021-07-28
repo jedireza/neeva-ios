@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
 import Combine
+import Foundation
 import SwiftUI
 
 class URLBarModel: ObservableObject {

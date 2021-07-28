@@ -1,11 +1,11 @@
 // Copyright Neeva. All rights reserved.
 
-import Combine
 import Apollo
-import Shared
+import Combine
 import Defaults
-import UIKit
+import Shared
 import Storage
+import UIKit
 
 class NeevaSuggestionModel: ObservableObject {
     @Published var topSuggestions: [Suggestion] = []
@@ -15,18 +15,21 @@ class NeevaSuggestionModel: ObservableObject {
     @Published var navSuggestions: [Suggestion] = []
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
-    @Published var isIncognito: Bool // TODO: don’t duplicate this source of truth
+    @Published var isIncognito: Bool  // TODO: don’t duplicate this source of truth
     @Published var keyboardFocusedSuggestion: Suggestion?
 
     private var keyboardFocusedSuggestionIndex = -1
 
     var shouldShowSuggestions: Bool {
-        return !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL
+        return !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions]
+            && !searchQuery.looksLikeAURL
     }
 
-    init(searchQueryForTesting: String = "", isIncognito: Bool = false,
-         previewLensBang: ActiveLensBangInfo?, topSuggestions: [Suggestion] = [],
-         chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []) {
+    init(
+        searchQueryForTesting: String = "", isIncognito: Bool = false,
+        previewLensBang: ActiveLensBangInfo?, topSuggestions: [Suggestion] = [],
+        chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []
+    ) {
         self.isIncognito = isIncognito
         self.topSuggestions = topSuggestions
         self.chipQuerySuggestions = chipQuerySuggestions
@@ -53,7 +56,8 @@ class NeevaSuggestionModel: ObservableObject {
     var suggestions: [Suggestion] {
         let bvc = BrowserViewController.foregroundBVC()
         let navSuggestionModel = bvc.searchController?.navModel
-        return topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions + navSuggestions + (navSuggestionModel?.combinedSuggestions ?? [])
+        return topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
+            + navSuggestions + (navSuggestionModel?.combinedSuggestions ?? [])
     }
 
     func reload() {
@@ -83,8 +87,11 @@ class NeevaSuggestionModel: ObservableObject {
                 if nsError.domain != NSURLErrorDomain || nsError.code != NSURLErrorCancelled {
                     self.error = error
                 }
-            case .success(let (topSuggestions, chipQuerySuggestions,
-                               rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang)):
+            case .success(
+                let (
+                    topSuggestions, chipQuerySuggestions,
+                    rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang
+                )):
                 self.error = nil
                 self.topSuggestions = topSuggestions
                 self.chipQuerySuggestions = chipQuerySuggestions
@@ -95,16 +102,24 @@ class NeevaSuggestionModel: ObservableObject {
             }
             if self.suggestions.isEmpty {
                 if let lensOrBang = self.activeLensBang,
-                   let shortcut = lensOrBang.shortcut,
-                   let description = lensOrBang.description,
-                   let type = lensOrBang.type,
-                   type == .lens || type == .bang,
-                   searchQuery.trimmingCharacters(in: .whitespaces) == type.sigil + shortcut {
+                    let shortcut = lensOrBang.shortcut,
+                    let description = lensOrBang.description,
+                    let type = lensOrBang.type,
+                    type == .lens || type == .bang,
+                    searchQuery.trimmingCharacters(in: .whitespaces) == type.sigil + shortcut
+                {
                     switch lensOrBang.type {
                     case .lens:
-                        self.rowQuerySuggestions = [.lens(Suggestion.Lens(shortcut: shortcut, description: description))]
+                        self.rowQuerySuggestions = [
+                            .lens(Suggestion.Lens(shortcut: shortcut, description: description))
+                        ]
                     case .bang:
-                        self.rowQuerySuggestions = [.bang(Suggestion.Bang(shortcut: shortcut, description: description, domain: lensOrBang.domain))]
+                        self.rowQuerySuggestions = [
+                            .bang(
+                                Suggestion.Bang(
+                                    shortcut: shortcut, description: description,
+                                    domain: lensOrBang.domain))
+                        ]
                     default: fatalError("This should be impossible")
                     }
                 } else {
@@ -113,7 +128,9 @@ class NeevaSuggestionModel: ObservableObject {
                             .init(
                                 type: .standard,
                                 suggestedQuery: searchQuery,
-                                boldSpan: [.init(startInclusive: 0, endExclusive: searchQuery.count)],
+                                boldSpan: [
+                                    .init(startInclusive: 0, endExclusive: searchQuery.count)
+                                ],
                                 source: .unknown
                             )
                         )
@@ -126,25 +143,30 @@ class NeevaSuggestionModel: ObservableObject {
     // MARK: - Searching
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let bvc = BrowserViewController.foregroundBVC()
-        guard let tab = bvc.tabManager.selectedTab, let searchController = bvc.searchController else { return }
+        guard let tab = bvc.tabManager.selectedTab, let searchController = bvc.searchController
+        else { return }
 
         switch suggestion {
         case .query(let suggestion):
-            let interaction: LogConfig.Interaction = activeLensBang != nil
+            let interaction: LogConfig.Interaction =
+                activeLensBang != nil
                 ? .BangSuggestion : .QuerySuggestion
             ClientLogger.shared.logCounter(interaction)
 
             bvc.urlBar(didSubmitText: suggestion.suggestedQuery)
         case .url(let suggestion):
-            let interaction: LogConfig.Interaction = suggestion.title?.isEmpty ?? false ?
-                .NavSuggestion : .URLSuggestion
+            let interaction: LogConfig.Interaction =
+                suggestion.title?.isEmpty ?? false ? .NavSuggestion : .URLSuggestion
             ClientLogger.shared.logCounter(interaction)
 
-            bvc.finishEditingAndSubmit(URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: tab)
+            bvc.finishEditingAndSubmit(
+                URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: tab)
         case .lens(let suggestion):
-            searchController.searchDelegate?.searchViewController(searchController, didAcceptSuggestion: suggestion.shortcut)
+            searchController.searchDelegate?.searchViewController(
+                searchController, didAcceptSuggestion: suggestion.shortcut)
         case .bang(let suggestion):
-            searchController.searchDelegate?.searchViewController(searchController, didAcceptSuggestion: suggestion.shortcut)
+            searchController.searchDelegate?.searchViewController(
+                searchController, didAcceptSuggestion: suggestion.shortcut)
         case .navigation(let nav):
             ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
             bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: tab)
@@ -165,7 +187,9 @@ class NeevaSuggestionModel: ObservableObject {
             } else {
                 // searches for text in address bar
                 let bvc = BrowserViewController.foregroundBVC()
-                bvc.urlBar(didSubmitText: bvc.urlBar.shared.queryModel.value + (bvc.urlBar.shared.historySuggestionModel.completion ?? ""))
+                bvc.urlBar(
+                    didSubmitText: bvc.urlBar.shared.queryModel.value
+                        + (bvc.urlBar.shared.historySuggestionModel.completion ?? ""))
             }
         default:
             break

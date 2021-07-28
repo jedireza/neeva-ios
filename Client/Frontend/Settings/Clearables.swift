@@ -2,11 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import CoreSpotlight
 import Foundation
+import SDWebImage
 import Shared
 import WebKit
-import SDWebImage
-import CoreSpotlight
 
 private let log = Logger.browserLogger
 
@@ -53,8 +53,13 @@ class CacheClearable: Clearable {
     var label: String { .ClearableCache }
 
     func clear() -> Success {
-        let dataTypes = Set([WKWebsiteDataTypeFetchCache, WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache, WKWebsiteDataTypeOfflineWebApplicationCache, WKWebsiteDataTypeServiceWorkerRegistrations])
-        WKWebsiteDataStore.default().removeData(ofTypes: dataTypes, modifiedSince: .distantPast, completionHandler: {})
+        let dataTypes = Set([
+            WKWebsiteDataTypeFetchCache, WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache,
+            WKWebsiteDataTypeOfflineWebApplicationCache,
+            WKWebsiteDataTypeServiceWorkerRegistrations,
+        ])
+        WKWebsiteDataStore.default().removeData(
+            ofTypes: dataTypes, modifiedSince: .distantPast, completionHandler: {})
 
         MemoryReaderModeCache.sharedInstance.clear()
         DiskReaderModeCache.sharedInstance.clear()
@@ -74,8 +79,13 @@ class CookiesClearable: Clearable {
     var label: String { .ClearableCookies }
 
     func clear() -> Success {
-        let dataTypes = Set([WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage, WKWebsiteDataTypeSessionStorage, WKWebsiteDataTypeWebSQLDatabases, WKWebsiteDataTypeIndexedDBDatabases])
-        WKWebsiteDataStore.default().removeData(ofTypes: dataTypes, modifiedSince: .distantPast, completionHandler: {})
+        let dataTypes = Set([
+            WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage,
+            WKWebsiteDataTypeSessionStorage, WKWebsiteDataTypeWebSQLDatabases,
+            WKWebsiteDataTypeIndexedDBDatabases,
+        ])
+        WKWebsiteDataStore.default().removeData(
+            ofTypes: dataTypes, modifiedSince: .distantPast, completionHandler: {})
 
         log.debug("CookiesClearable succeeded.")
         return succeed()
@@ -90,7 +100,7 @@ class TrackingProtectionClearable: Clearable {
 
     func clear() -> Success {
         let result = Success()
-        ContentBlocker.shared.clearSafelist() {
+        ContentBlocker.shared.clearSafelist {
             result.fill(Maybe(success: ()))
         }
         return result
@@ -102,8 +112,14 @@ class DownloadedFilesClearable: Clearable {
     var label: String { .ClearableDownloads }
 
     func clear() -> Success {
-        if let downloadsPath = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false),
-            let files = try? FileManager.default.contentsOfDirectory(at: downloadsPath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsPackageDescendants, .skipsSubdirectoryDescendants]) {
+        if let downloadsPath = try? FileManager.default.url(
+            for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false),
+            let files = try? FileManager.default.contentsOfDirectory(
+                at: downloadsPath, includingPropertiesForKeys: nil,
+                options: [
+                    .skipsHiddenFiles, .skipsPackageDescendants, .skipsSubdirectoryDescendants,
+                ])
+        {
             for file in files {
                 try? FileManager.default.removeItem(at: file)
             }

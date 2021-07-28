@@ -1,18 +1,22 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct DebugDBSettingsSection: View {
     var body: some View {
         Section(header: Text("Debug — Databases")) {
             Button("Copy Databases to App Container") {
-                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+                let documentsPath = NSSearchPathForDirectoriesInDomains(
+                    .documentDirectory, .userDomainMask, true)[0]
                 do {
                     let log = Logger.syncLogger
-                    try BrowserViewController.foregroundBVC().profile.files.copyMatching(fromRelativeDirectory: "", toAbsoluteDirectory: documentsPath) { file in
+                    try BrowserViewController.foregroundBVC().profile.files.copyMatching(
+                        fromRelativeDirectory: "", toAbsoluteDirectory: documentsPath
+                    ) { file in
                         log.debug("Matcher: \(file)")
-                        return file.hasPrefix("browser.") || file.hasPrefix("logins.") || file.hasPrefix("metadata.")
+                        return file.hasPrefix("browser.") || file.hasPrefix("logins.")
+                            || file.hasPrefix("metadata.")
                     }
                 } catch {
                     print("Couldn't export browser data: \(error).")
@@ -22,7 +26,8 @@ struct DebugDBSettingsSection: View {
                 Logger.copyPreviousLogsToDocuments()
             }
             Button("Delete Exported Databases") {
-                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+                let documentsPath = NSSearchPathForDirectoriesInDomains(
+                    .documentDirectory, .userDomainMask, true)[0]
                 let fileManager = FileManager.default
                 do {
                     let files = try fileManager.contentsOfDirectory(atPath: documentsPath)

@@ -2,11 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@testable import Client
 import Foundation
 import Shared
 import Storage
 import XCTest
+
+@testable import Client
 
 open class MockTabQueue: TabQueue {
     open func addToQueue(_ tab: ShareItem) -> Success {
@@ -43,7 +44,8 @@ open class MockActivityStreamDataObserver: DataObserver {
 
 class MockFiles: FileAccessor {
     init() {
-        let docPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let docPath = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true)[0]
         super.init(rootPath: (docPath as NSString).appendingPathComponent("testing"))
     }
 }
@@ -55,7 +57,8 @@ open class MockProfile: Client.Profile {
     public var history: BrowserHistory & ResettableSyncStorage
     public var logins: RustLogins
 
-    fileprivate var legacyPlaces: BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations
+    fileprivate var legacyPlaces:
+        BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations
 
     public lazy var panelDataObservers: PanelDataObservers = {
         return MockPanelDataObservers(profile: self)
@@ -68,14 +71,19 @@ open class MockProfile: Client.Profile {
 
     init(databasePrefix: String = "mock") {
         files = MockFiles()
-        let loginsDatabasePath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("\(databasePrefix)_logins.db").path
+        let loginsDatabasePath = URL(
+            fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true
+        ).appendingPathComponent("\(databasePrefix)_logins.db").path
         try? files.remove("\(databasePrefix)_logins.db")
         let encryptionKey = "AAAAAAAA"
-        let salt = RustLogins.setupPlaintextHeaderAndGetSalt(databasePath: loginsDatabasePath, encryptionKey: encryptionKey)
-        logins = RustLogins(databasePath: loginsDatabasePath, encryptionKey: encryptionKey, salt: salt)
+        let salt = RustLogins.setupPlaintextHeaderAndGetSalt(
+            databasePath: loginsDatabasePath, encryptionKey: encryptionKey)
+        logins = RustLogins(
+            databasePath: loginsDatabasePath, encryptionKey: encryptionKey, salt: salt)
         _ = logins.reopenIfClosed()
         db = BrowserDB(filename: "\(databasePrefix).db", schema: BrowserSchema(), files: files)
-        readingListDB = BrowserDB(filename: "\(databasePrefix)_ReadingList.db", schema: ReadingListSchema(), files: files)
+        readingListDB = BrowserDB(
+            filename: "\(databasePrefix)_ReadingList.db", schema: ReadingListSchema(), files: files)
         legacyPlaces = SQLiteHistory(db: self.db)
         recommendations = legacyPlaces
         history = legacyPlaces
@@ -168,6 +176,6 @@ open class MockProfile: Client.Profile {
     public func sendItem(_ item: ShareItem, toDevices devices: [RemoteDevice]) -> Success {
         return succeed()
     }
-    
+
     public func sendQueuedSyncEvents() {}
 }

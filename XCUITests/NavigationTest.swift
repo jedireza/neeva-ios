@@ -4,8 +4,13 @@
 
 import XCTest
 
-let website_1 = ["url": "www.neeva.com", "label": "Ad free, private search — Neeva", "value": "neeva.com"]
-let website_2 = ["url": "www.example.com", "label": "Example", "value": "example", "link": "More information...", "moreLinkLongPressUrl": "http://www.iana.org/domains/example", "moreLinkLongPressInfo": "iana"]
+let website_1 = [
+    "url": "www.neeva.com", "label": "Ad free, private search — Neeva", "value": "neeva.com",
+]
+let website_2 = [
+    "url": "www.example.com", "label": "Example", "value": "example", "link": "More information...",
+    "moreLinkLongPressUrl": "http://www.iana.org/domains/example", "moreLinkLongPressInfo": "iana",
+]
 let urlAddons = "addons.mozilla.org"
 let urlGoogle = "www.google.com"
 let popUpTestUrl = path(forTestPage: "test-popup-blocker.html")
@@ -101,7 +106,8 @@ class NavigationTest: BaseTestCase {
         openURL(path(forTestPage: "test-example.html"))
         waitForExistence(app.webViews.links[website_2["link"]!], timeout: 5)
         app.webViews.links[website_2["link"]!].press(forDuration: 1)
-        waitForExistence(app.collectionViews.staticTexts[website_2["moreLinkLongPressUrl"]!], timeout: 3)
+        waitForExistence(
+            app.collectionViews.staticTexts[website_2["moreLinkLongPressUrl"]!], timeout: 3)
         XCTAssertFalse(app.buttons["Open in New Tab"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Open in New Incognito Tab"].exists, "The option is not shown")
         XCTAssertTrue(app.buttons["Copy Link"].exists, "The option is not shown")
@@ -134,7 +140,7 @@ class NavigationTest: BaseTestCase {
         //This test is for populated clipboard only so we need to make sure there's something in Pasteboard
         XCTAssert(app.buttons["Address Bar"].exists)
         app.buttons["Address Bar"].tap()
-        
+
         app.textFields["address"].typeText("www.neeva.com")
         // Tapping two times when the text is not selected will reveal the menu
         app.textFields["address"].tap()
@@ -143,7 +149,7 @@ class NavigationTest: BaseTestCase {
         waitForExistence(app.menuItems["Select All"])
         XCTAssertTrue(app.menuItems["Select All"].exists)
         XCTAssertTrue(app.menuItems["Select"].exists)
-        
+
         //Tap on Select All option and make sure Copy, Cut, Paste, and Look Up are shown
         app.menuItems["Select All"].tap()
         waitForExistence(app.menuItems["Copy"])
@@ -160,7 +166,7 @@ class NavigationTest: BaseTestCase {
             XCTAssertTrue(app.menuItems["Look Up"].exists)
             XCTAssertTrue(app.menuItems["Paste"].exists)
         }
-        
+
         app.textFields["address"].typeText("\n")
         waitUntilPageLoad()
 
@@ -264,7 +270,7 @@ class NavigationTest: BaseTestCase {
     */
 
     // Smoketest
-     func testSSL() {
+    func testSSL() {
         openURL("https://expired.badssl.com/")
         waitForExistence(app.buttons["Advanced"], timeout: 10)
         app.buttons["Advanced"].tap()
@@ -312,7 +318,7 @@ class NavigationTest: BaseTestCase {
         let urlBar = app.buttons["Address Bar"]
         waitForExistence(urlBar, timeout: 5)
         urlBar.tap()
-        
+
         let addressBar = app.textFields["address"]
         XCTAssertTrue(addressBar.value(forKey: "hasKeyboardFocus") as? Bool ?? false)
         XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
@@ -332,12 +338,14 @@ class NavigationTest: BaseTestCase {
         openURL(path(forTestPage: "test-pdf.html"))
         waitUntilPageLoad()
 
-        waitForExistence( app.webViews.links["nineteen for me"])
+        waitForExistence(app.webViews.links["nineteen for me"])
         app.webViews.links["nineteen for me"].tap()
         waitUntilPageLoad()
 
         app.buttons["Share"].tap()
-        waitForExistence(app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"], timeout: 10)
+        waitForExistence(
+            app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"],
+            timeout: 10)
 
         print(app.buttons.debugDescription)
         // Copy the text to dismiss the overlay sheet
@@ -350,6 +358,7 @@ class NavigationTest: BaseTestCase {
         // Now confirm that we get a ShareMenu for the current page and not
         // the PDF again.
         app.buttons["Share"].tap()
-        waitForExistence(app.navigationBars["UIActivityContentView"].otherElements["localhost"], timeout: 10)
+        waitForExistence(
+            app.navigationBars["UIActivityContentView"].otherElements["localhost"], timeout: 10)
     }
- }
+}

@@ -1,18 +1,19 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
 import SwiftUI
+import UIKit
 
 struct OpenInAppRootView: View {
     var overlaySheetModel = OverlaySheetModel()
 
     let url: URL
-    let onOpen: () -> ()
-    let onDismiss: () -> ()
+    let onOpen: () -> Void
+    let onDismiss: () -> Void
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { onDismiss() }) {
+        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { onDismiss() })
+        {
             OpenInAppView(url: url, onOpen: onOpen, onDismiss: onDismiss)
                 .overlaySheetIsFixedHeight(isFixedHeight: true)
         }
@@ -27,7 +28,7 @@ struct OpenInAppRootView: View {
 }
 
 class OpenInAppViewController: UIHostingController<OpenInAppRootView> {
-    init(url: URL, onOpen: @escaping () -> (), onDismiss: @escaping () -> ()) {
+    init(url: URL, onOpen: @escaping () -> Void, onDismiss: @escaping () -> Void) {
         super.init(rootView: OpenInAppRootView(url: url, onOpen: onOpen, onDismiss: onDismiss))
         self.view.accessibilityViewIsModal = true
     }
@@ -41,6 +42,6 @@ class OpenInAppViewController: UIHostingController<OpenInAppRootView> {
         // By default, a UIHostingController opens as an opaque layer, so we override
         // that behavior here.
         view.backgroundColor = .clear
-        
+
     }
 }

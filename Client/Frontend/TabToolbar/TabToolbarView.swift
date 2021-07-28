@@ -1,20 +1,20 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import SFSafeSymbols
+import Shared
+import SwiftUI
 
-fileprivate enum TabToolbarUX {
+private enum TabToolbarUX {
     static let buttonSize: CGFloat = 44
 }
 
 struct TabToolbarView: View {
-    let onBack: () -> ()
-    let onForward: () -> ()
-    let onLongPressBackForward: () -> ()
-    let onNeevaMenu: () -> ()
-    let onSaveToSpace: () -> ()
-    let onShowTabs: () -> ()
+    let onBack: () -> Void
+    let onForward: () -> Void
+    let onLongPressBackForward: () -> Void
+    let onNeevaMenu: () -> Void
+    let onSaveToSpace: () -> Void
+    let onShowTabs: () -> Void
     let tabsMenu: () -> UIMenu?
 
     @EnvironmentObject private var model: TabToolbarModel
@@ -45,8 +45,11 @@ struct TabToolbarView: View {
 struct TabToolbarView_Previews: PreviewProvider {
     static var previews: some View {
         let make = { (model: TabToolbarModel) in
-            TabToolbarView(onBack: {}, onForward: {}, onLongPressBackForward: {}, onNeevaMenu: {}, onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil })
-                .environmentObject(model)
+            TabToolbarView(
+                onBack: {}, onForward: {}, onLongPressBackForward: {}, onNeevaMenu: {},
+                onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil }
+            )
+            .environmentObject(model)
         }
         VStack {
             Spacer()

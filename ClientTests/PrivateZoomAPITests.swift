@@ -1,7 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import XCTest
 import WebKit
+import XCTest
+
 @testable import Client
 
 class PrivateZoomAPITests: XCTestCase {

@@ -1,12 +1,13 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import SwiftUI
 import Combine
 import Shared
+import SwiftUI
 
 /// An abstract class that provides useful tools for executing mutations inside of a view.
-public class MutationController<Mutation, Container>: AbstractController, ObservableObject where Mutation: GraphQLMutation {
+public class MutationController<Mutation, Container>: AbstractController, ObservableObject
+where Mutation: GraphQLMutation {
     /// This contains the currently running mutation.
     @Published public private(set) var cancellable: Apollo.Cancellable?
 
@@ -14,13 +15,16 @@ public class MutationController<Mutation, Container>: AbstractController, Observ
     public var isRunning: Bool { cancellable != nil }
 
     private var onUpdate: Updater<Container>
-    private var onSuccess: () -> ()
+    private var onSuccess: () -> Void
 
     /// - Parameters:
     ///   - animation: the animation to wrap around the `onUpdate` and `onSuccess` calls.
     ///   - onUpdate: see `SpaceLoaderView`
     ///   - onSuccess: called when the mutation is successful.
-    public init(animation: Animation? = nil, onUpdate: @escaping Updater<Container>, onSuccess: @escaping () -> () = {}) {
+    public init(
+        animation: Animation? = nil, onUpdate: @escaping Updater<Container>,
+        onSuccess: @escaping () -> Void = {}
+    ) {
         self.onUpdate = onUpdate
         self.onSuccess = onSuccess
         super.init(animation: animation)
@@ -50,7 +54,9 @@ public class MutationController<Mutation, Container>: AbstractController, Observ
     ///   - optimisticResult: the data object to update
     ///   - result: the output of the mutation
     ///   - mutation: the mutation request object
-    public func update(_ optimisticResult: inout Container, from result: Mutation.Data, after mutation: Mutation) {
+    public func update(
+        _ optimisticResult: inout Container, from result: Mutation.Data, after mutation: Mutation
+    ) {
         fatalError("\(self).\(#function) not implemented")
     }
 }

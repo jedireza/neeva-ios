@@ -13,7 +13,8 @@ class PinToTopSitesActivity: UIActivity {
     }
 
     override var activityTitle: String? {
-        return isPinned == false ? Strings.PinToTopSitesTitleActivity : Strings.UnpinFromTopSitesTitleActivity
+        return isPinned == false
+            ? Strings.PinToTopSitesTitleActivity : Strings.UnpinFromTopSitesTitleActivity
     }
 
     override var activityImage: UIImage? {

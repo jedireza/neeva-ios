@@ -3,20 +3,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-
 import Shared
 
 /// PR: https://github.com/mozilla-mobile/firefox-ios/pull/4387
 /// Commit: https://github.com/mozilla-mobile/firefox-ios/commit/8b1450fbeb87f1f559a2f8e42971c715dc96bcaf
 /// InternalURL helps  encapsulate all internal scheme logic for urls rather than using URL extension. Extensions to built-in classes should be more minimal that what was being done previously.
-/// This migration was required mainly for above PR which is related to a PI request that reduces security risk. Also, this particular method helps in cleaning up / migrating old localhost:6571 URLs to internal: SessionData urls 
+/// This migration was required mainly for above PR which is related to a PI request that reduces security risk. Also, this particular method helps in cleaning up / migrating old localhost:6571 URLs to internal: SessionData urls
 private func migrate(urls: [URL]) -> [URL] {
     return urls.compactMap { url in
         var url = url
         let port = AppInfo.webserverPort
-        [("http://localhost:\(port)/errors/error.html?url=", "\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)?url=")
+        [
+            (
+                "http://localhost:\(port)/errors/error.html?url=",
+                "\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)?url="
+            )
             // TODO: handle reader pages ("http://localhost:6571/reader-mode/page?url=", "\(InternalScheme.url)/\(ReaderModeHandler.path)?url=")
-            ].forEach {
+        ].forEach {
             oldItem, newItem in
             if url.absoluteString.hasPrefix(oldItem) {
                 var urlStr = url.absoluteString.replacingOccurrences(of: oldItem, with: newItem)
@@ -24,13 +27,17 @@ private func migrate(urls: [URL]) -> [URL] {
                 if comp.count > 2 {
                     // get the last instance of incorrectly nested urls
                     urlStr = newItem + (comp.last ?? "")
-                    assertionFailure("SessionData urls have nested internal links, investigate: [\(url.absoluteString)]")
+                    assertionFailure(
+                        "SessionData urls have nested internal links, investigate: [\(url.absoluteString)]"
+                    )
                 }
                 url = URL(string: urlStr) ?? url
             }
         }
 
-        if let internalUrl = InternalURL(url), internalUrl.isAuthorized, let stripped = URL(string: internalUrl.stripAuthorization) {
+        if let internalUrl = InternalURL(url), internalUrl.isAuthorized,
+            let stripped = URL(string: internalUrl.stripAuthorization)
+        {
             return stripped
         }
 
@@ -47,7 +54,7 @@ class SessionData: NSObject, NSCoding {
         return [
             "currentPage": String(self.currentPage),
             "lastUsedTime": String(self.lastUsedTime),
-            "urls": urls.map { $0.absoluteString }
+            "urls": urls.map { $0.absoluteString },
         ]
     }
 

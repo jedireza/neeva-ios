@@ -1,11 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
-import Storage
 import Shared
+import Storage
+import SwiftUI
 
 struct SuggestionsList: View {
-    static let placeholderNavSuggestion = NavSuggestion(url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
+    static let placeholderNavSuggestion = NavSuggestion(
+        url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
 
     @EnvironmentObject private var neevaModel: NeevaSuggestionModel
     @Environment(\.isIncognito) private var isIncognito
@@ -14,15 +15,18 @@ struct SuggestionsList: View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 0) {
                 if let lensOrBang = neevaModel.activeLensBang,
-                   let description = lensOrBang.description {
-                    Section(header: Group {
-                        switch lensOrBang.type {
-                        case .bang:
-                            Text("Search on \(description)")
-                        default:
-                            Text(description)
-                        }
-                    }.textCase(nil)) {
+                    let description = lensOrBang.description
+                {
+                    Section(
+                        header: Group {
+                            switch lensOrBang.type {
+                            case .bang:
+                                Text("Search on \(description)")
+                            default:
+                                Text(description)
+                            }
+                        }.textCase(nil)
+                    ) {
                         QuerySuggestionsList()
                     }
                 } else {
@@ -34,7 +38,7 @@ struct SuggestionsList: View {
                         UrlSuggestionsList()
                     }
                 }
- 
+
                 NavSuggestionsList()
             }
         }
@@ -43,25 +47,35 @@ struct SuggestionsList: View {
 
 struct SuggestionsList_Previews: PreviewProvider {
     static var previews: some View {
-        let suggestions =  [Suggestion.query(.init(type: .standard, suggestedQuery: "hello world", boldSpan: [], source: .unknown))]
+        let suggestions = [
+            Suggestion.query(
+                .init(
+                    type: .standard, suggestedQuery: "hello world", boldSpan: [], source: .unknown))
+        ]
         let history = [
             Site(url: "https://neeva.com", title: "Neeva", id: 1),
             Site(url: "https://neeva.com", title: "", id: 2),
-            Site(url: "https://google.com", title: "Google", id: 3)
+            Site(url: "https://google.com", title: "Google", id: 3),
         ]
         Group {
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: nil,
-                                                        chipQuerySuggestions: suggestions))
+                .environmentObject(
+                    NeevaSuggestionModel(
+                        previewLensBang: nil,
+                        chipQuerySuggestions: suggestions))
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang,
-                                                        rowQuerySuggestions: suggestions))
+                .environmentObject(
+                    NeevaSuggestionModel(
+                        previewLensBang: .previewBang,
+                        rowQuerySuggestions: suggestions))
             SuggestionsList()
                 .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens,
-                                                        rowQuerySuggestions: suggestions))
+                .environmentObject(
+                    NeevaSuggestionModel(
+                        previewLensBang: .previewLens,
+                        rowQuerySuggestions: suggestions))
         }.previewLayout(.fixed(width: 375, height: 250))
     }
 }

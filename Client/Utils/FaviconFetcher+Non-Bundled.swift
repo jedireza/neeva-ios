@@ -2,24 +2,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Storage
-import Shared
-import XCGLogger
-import SDWebImage
 import Fuzi
+import SDWebImage
+import Shared
+import Storage
 import SwiftyJSON
+import XCGLogger
 
 // Extension of FaviconFetcher that handles fetching non-bundled, non-letter favicons
 extension FaviconFetcher {
-    
+
     class func getForURL(_ url: URL, profile: Profile) -> Deferred<Maybe<[Favicon]>> {
         let favicon = FaviconFetcher()
         return favicon.loadFavicons(url, profile: profile)
     }
 
-    fileprivate func loadFavicons(_ url: URL, profile: Profile, oldIcons: [Favicon] = [Favicon]()) -> Deferred<Maybe<[Favicon]>> {
+    fileprivate func loadFavicons(_ url: URL, profile: Profile, oldIcons: [Favicon] = [Favicon]())
+        -> Deferred<Maybe<[Favicon]>>
+    {
         if isIgnoredURL(url) {
-            return deferMaybe(FaviconFetcherErrorType(description: "Not fetching ignored URL to find favicons."))
+            return deferMaybe(
+                FaviconFetcherErrorType(description: "Not fetching ignored URL to find favicons."))
         }
 
         let deferred = Deferred<Maybe<[Favicon]>>()
@@ -27,7 +30,8 @@ extension FaviconFetcher {
         var oldIcons: [Favicon] = oldIcons
 
         queue.async {
-            self.parseHTMLForFavicons(url).bind({ (result: Maybe<[Favicon]>) -> Deferred<[Maybe<Favicon>]> in
+            self.parseHTMLForFavicons(url).bind({
+                (result: Maybe<[Favicon]>) -> Deferred<[Maybe<Favicon>]> in
                 var deferreds = [Deferred<Maybe<Favicon>>]()
                 if let icons = result.successValue {
                     deferreds = icons.map { self.getFavicon(url, icon: $0, profile: profile) }
@@ -53,21 +57,23 @@ extension FaviconFetcher {
 
         return deferred
     }
-    
+
     // Loads and parses an html document and tries to find any known favicon-type tags for the page
     fileprivate func parseHTMLForFavicons(_ url: URL) -> Deferred<Maybe<[Favicon]>> {
         return fetchDataForURL(url).bind({ result -> Deferred<Maybe<[Favicon]>> in
             var icons = [Favicon]()
             guard let data = result.successValue, result.isSuccess,
-                let root = try? HTMLDocument(data: data as Data) else {
-                    return deferMaybe([])
+                let root = try? HTMLDocument(data: data as Data)
+            else {
+                return deferMaybe([])
             }
             var reloadUrl: URL?
             for meta in root.xpath("//head/meta") {
                 if let refresh = meta["http-equiv"], refresh == "Refresh",
                     let content = meta["content"],
                     let index = content.range(of: "URL="),
-                    let url = NSURL(string: String(content[index.upperBound...])) {
+                    let url = NSURL(string: String(content[index.upperBound...]))
+                {
                     reloadUrl = url as URL
                 }
             }
@@ -78,7 +84,7 @@ extension FaviconFetcher {
 
             for link in root.xpath("//head//link[contains(@rel, 'icon')]") {
                 guard let href = link["href"] else {
-                    continue //Skip the rest of the loop. But don't stop the loop
+                    continue  //Skip the rest of the loop. But don't stop the loop
                 }
 
                 if let iconUrl = URL(string: href, relativeTo: url) {
@@ -96,7 +102,7 @@ extension FaviconFetcher {
             return deferMaybe(icons)
         })
     }
-    
+
     fileprivate func fetchDataForURL(_ url: URL) -> Deferred<Maybe<Data>> {
         let deferred = Deferred<Maybe<Data>>()
         urlSession.dataTask(with: url) { (data, _, error) in
@@ -111,7 +117,7 @@ extension FaviconFetcher {
 
         return deferred
     }
-    
+
     func getFavicon(_ siteUrl: URL, icon: Favicon, profile: Profile) -> Deferred<Maybe<Favicon>> {
         let deferred = Deferred<Maybe<Favicon>>()
         let url = icon.url
@@ -124,7 +130,9 @@ extension FaviconFetcher {
             with: url,
             options: .lowPriority,
             progress: { (receivedSize, expectedSize, _) in
-                if receivedSize > FaviconFetcher.MaximumFaviconSize || expectedSize > FaviconFetcher.MaximumFaviconSize {
+                if receivedSize > FaviconFetcher.MaximumFaviconSize
+                    || expectedSize > FaviconFetcher.MaximumFaviconSize
+                {
                     fetch?.cancel()
                 }
             },
@@ -156,14 +164,17 @@ extension FaviconFetcher {
         let deferred = Deferred<Maybe<UIImage>>()
         FaviconFetcher.getForURL(url.domainURL, profile: profile).uponQueue(.main) { result in
             var iconURL: URL?
-            
+
             if let favicons = result.successValue, favicons.count > 0,
-               let faviconImageURL = favicons.first?.url {
+                let faviconImageURL = favicons.first?.url
+            {
                 iconURL = faviconImageURL
             } else {
                 return deferred.fill(Maybe(failure: FaviconError()))
             }
-            SDWebImageManager.shared.loadImage(with: iconURL, options: .continueInBackground, progress: nil) { (image, _, _, _, _, _) in
+            SDWebImageManager.shared.loadImage(
+                with: iconURL, options: .continueInBackground, progress: nil
+            ) { (image, _, _, _, _, _) in
                 if let image = image {
                     deferred.fill(Maybe(success: image))
                 } else {

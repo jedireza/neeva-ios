@@ -1,8 +1,8 @@
 // Copyright © Neeva. All rights reserved.
 
-import SwiftUI
-import Shared
 import Defaults
+import Shared
+import SwiftUI
 
 // known issue: removing an entry from this enum will cause the user’s settings to be cleared
 enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
@@ -40,7 +40,9 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
 }
 
 extension Defaults.Keys {
-    fileprivate static let clearDataTypes = Defaults.Key<Set<ClearableDataType>>("profile.dataManagement.clearTypes", default: Set(ClearableDataType.allCases).filter { $0 != .downloads })
+    fileprivate static let clearDataTypes = Defaults.Key<Set<ClearableDataType>>(
+        "profile.dataManagement.clearTypes",
+        default: Set(ClearableDataType.allCases).filter { $0 != .downloads })
 }
 
 struct DataManagementView: View {
@@ -69,17 +71,20 @@ struct DataManagementView: View {
 
             Section(header: Text("Data on This Device")) {
                 ForEach(ClearableDataType.allCases) { dataType in
-                    Toggle(isOn: Binding {
-                        clearDataTypes.contains(dataType)
-                    } set: { isOn in
-                        if isOn {
-                            clearDataTypes.insert(dataType)
-                        } else {
-                            clearDataTypes.remove(dataType)
+                    Toggle(
+                        isOn: Binding {
+                            clearDataTypes.contains(dataType)
+                        } set: { isOn in
+                            if isOn {
+                                clearDataTypes.insert(dataType)
+                            } else {
+                                clearDataTypes.remove(dataType)
+                            }
                         }
-                    }) {
+                    ) {
                         if let description = dataType.description {
-                            DetailedSettingsLabel(title: dataType.rawValue, description: description)
+                            DetailedSettingsLabel(
+                                title: dataType.rawValue, description: description)
                         } else {
                             Text(dataType.rawValue)
                         }
@@ -105,10 +110,11 @@ struct DataManagementView: View {
                     Spacer(minLength: 0)
                 }.actionSheet(isPresented: $isDeleting) {
                     ActionSheet(
-                        title: Text("This action will clear all of your private data. It cannot be undone."),
+                        title: Text(
+                            "This action will clear all of your private data. It cannot be undone."),
                         buttons: [
                             .destructive(Text("Clear Data"), action: self.onClear),
-                            .cancel()
+                            .cancel(),
                         ]
                     )
                 }

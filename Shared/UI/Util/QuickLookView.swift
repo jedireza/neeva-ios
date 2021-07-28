@@ -6,11 +6,11 @@
 //  Copyright © 2021 Neeva. All rights reserved.
 //
 
-import SwiftUI
 import QuickLook
+import SwiftUI
 
 class CustomPreviewController: QLPreviewController {
-    var didReset: (() -> ())!
+    var didReset: (() -> Void)!
 
     override var toolbarItems: [UIBarButtonItem]? {
         get {
@@ -18,18 +18,28 @@ class CustomPreviewController: QLPreviewController {
                 .flexibleSpace(),
                 UIBarButtonItem(title: "Revert", style: .plain) { item in
                     // title from the Photos app Revert button
-                    let confirmation = UIAlertController(title: "Revert to original will remove all edits made to this screenshot. This action cannot be undone.", message: nil, preferredStyle: .actionSheet)
-                    confirmation.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-                    confirmation.addAction(UIAlertAction(title: "Revert to Original", style: .destructive, handler: { _ in
-                        self.didReset()
-                        self.reloadData()
-                    }))
+                    let confirmation = UIAlertController(
+                        title:
+                            "Revert to original will remove all edits made to this screenshot. This action cannot be undone.",
+                        message: nil, preferredStyle: .actionSheet)
+                    confirmation.addAction(
+                        UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                    confirmation.addAction(
+                        UIAlertAction(
+                            title: "Revert to Original", style: .destructive,
+                            handler: { _ in
+                                self.didReset()
+                                self.reloadData()
+                            }))
                     confirmation.popoverPresentationController?.barButtonItem = item
-                    self.navigationController!.present(confirmation, animated: true, completion: nil)
-                }
+                    self.navigationController!.present(
+                        confirmation, animated: true, completion: nil)
+                },
             ]
         }
-        set { /* your attempts to force a share button into the toolbar have been thwarted, Quartz */ }
+        set
+        { /* your attempts to force a share button into the toolbar have been thwarted, Quartz */
+        }
     }
 }
 
@@ -42,7 +52,6 @@ public struct QuickLookView: ViewControllerWrapper {
         self.original = original
     }
 
-
     public func makeCoordinator() -> Coordinator {
         Coordinator(image: $image)
     }
@@ -52,9 +61,11 @@ public struct QuickLookView: ViewControllerWrapper {
         vc.didReset = { image = original }
         vc.dataSource = context.coordinator
         vc.delegate = context.coordinator
-        vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, closure: { _ in
-            vc.dismiss(animated: true, completion: nil)
-        })
+        vc.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .save,
+            closure: { _ in
+                vc.dismiss(animated: true, completion: nil)
+            })
         let nav = UINavigationController(rootViewController: vc)
         return nav
     }
@@ -78,22 +89,32 @@ public struct QuickLookView: ViewControllerWrapper {
             1
         }
 
-        public func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+        public func previewController(_ controller: QLPreviewController, previewItemAt index: Int)
+            -> QLPreviewItem
+        {
             image.wrappedValue
         }
 
         // MARK: - QLPreviewControllerDelegate
 
-        public func previewController(_ controller: QLPreviewController, shouldOpen url: URL, for item: QLPreviewItem) -> Bool {
+        public func previewController(
+            _ controller: QLPreviewController, shouldOpen url: URL, for item: QLPreviewItem
+        ) -> Bool {
             onOpenURL(url)
             return false
         }
-        public func previewController(_ controller: QLPreviewController, editingModeFor previewItem: QLPreviewItem) -> QLPreviewItemEditingMode {
+        public func previewController(
+            _ controller: QLPreviewController, editingModeFor previewItem: QLPreviewItem
+        ) -> QLPreviewItemEditingMode {
             .createCopy
         }
-        public func previewController(_ controller: QLPreviewController, didSaveEditedCopyOf previewItem: QLPreviewItem, at url: URL) {
+        public func previewController(
+            _ controller: QLPreviewController, didSaveEditedCopyOf previewItem: QLPreviewItem,
+            at url: URL
+        ) {
             if let data = try? Data(contentsOf: url),
-               let image = UIImage(data: data) {
+                let image = UIImage(data: data)
+            {
                 self.image.wrappedValue = image
             }
         }
@@ -102,12 +123,14 @@ public struct QuickLookView: ViewControllerWrapper {
 
 extension UIImage: QLPreviewItem {
     public var previewItemURL: URL? {
-        guard let tempDir = try? FileManager.default.url(
+        guard
+            let tempDir = try? FileManager.default.url(
                 for: .itemReplacementDirectory,
                 in: .userDomainMask,
                 appropriateFor: Bundle.main.bundleURL,
                 create: true
-        ) else { return nil }
+            )
+        else { return nil }
         let result = tempDir.appendingPathComponent("image.png")
         if let _ = try? self.pngData()?.write(to: result) {
             return result

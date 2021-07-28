@@ -33,12 +33,15 @@ class TwoLineTableViewCell: UITableViewCell {
         contentView.addSubview(_textLabel)
         contentView.addSubview(_detailTextLabel)
 
-        twoLineHelper.setUpViews(self, textLabel: textLabel!, detailTextLabel: detailTextLabel!, imageView: imageView!)
+        twoLineHelper.setUpViews(
+            self, textLabel: textLabel!, detailTextLabel: detailTextLabel!, imageView: imageView!)
 
         indentationWidth = 0
         layoutMargins = .zero
 
-        separatorInset = UIEdgeInsets(top: 0, left: TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin, bottom: 0, right: 0)
+        separatorInset = UIEdgeInsets(
+            top: 0, left: TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin, bottom: 0,
+            right: 0)
 
         twoLineHelper.applyTheme()
     }
@@ -57,7 +60,9 @@ class TwoLineTableViewCell: UITableViewCell {
         self.textLabel!.alpha = 1
         self.imageView!.alpha = 1
         self.selectionStyle = .default
-        separatorInset = UIEdgeInsets(top: 0, left: TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin, bottom: 0, right: 0)
+        separatorInset = UIEdgeInsets(
+            top: 0, left: TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin, bottom: 0,
+            right: 0)
         twoLineHelper.setupDynamicFonts()
     }
 
@@ -95,7 +100,9 @@ private class TwoLineCellHelper {
     var hasRightBadge: Bool = false
 
     // TODO: Not ideal. We should figure out a better way to get this initialized.
-    func setUpViews(_ container: UIView, textLabel: UILabel, detailTextLabel: UILabel, imageView: UIImageView) {
+    func setUpViews(
+        _ container: UIView, textLabel: UILabel, detailTextLabel: UILabel, imageView: UIImageView
+    ) {
         self.container = container
         self.textLabel = textLabel
         self.detailTextLabel = detailTextLabel
@@ -104,7 +111,7 @@ private class TwoLineCellHelper {
         setupDynamicFonts()
 
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 6 //hmm
+        imageView.layer.cornerRadius = 6  //hmm
         imageView.layer.masksToBounds = true
     }
 
@@ -137,22 +144,36 @@ private class TwoLineCellHelper {
             contentHeight += detailTextLabelHeight + TwoLineCellUX.DetailTextTopMargin
         }
 
-        let textRightInset: CGFloat = hasRightBadge ? (TwoLineCellUX.BadgeSize + TwoLineCellUX.BadgeMargin) : 0
+        let textRightInset: CGFloat =
+            hasRightBadge ? (TwoLineCellUX.BadgeSize + TwoLineCellUX.BadgeMargin) : 0
 
-        textLabel.frame = CGRect(x: textLeft, y: (height - contentHeight) / 2,
-                                 width: container.frame.width - textLeft - TwoLineCellUX.BorderViewMargin - textRightInset, height: textLabelHeight)
-        detailTextLabel.frame = CGRect(x: textLeft, y: textLabel.frame.maxY + TwoLineCellUX.DetailTextTopMargin,
-                                       width: container.frame.width - textLeft - TwoLineCellUX.BorderViewMargin - textRightInset, height: detailTextLabelHeight)
+        textLabel.frame = CGRect(
+            x: textLeft, y: (height - contentHeight) / 2,
+            width: container.frame.width - textLeft - TwoLineCellUX.BorderViewMargin
+                - textRightInset, height: textLabelHeight)
+        detailTextLabel.frame = CGRect(
+            x: textLeft, y: textLabel.frame.maxY + TwoLineCellUX.DetailTextTopMargin,
+            width: container.frame.width - textLeft - TwoLineCellUX.BorderViewMargin
+                - textRightInset, height: detailTextLabelHeight)
 
         // Like the comment above, this is not ideal. This code should probably be refactored to use autolayout. That will remove a lot of the pixel math and remove code duplication.
 
         if UIApplication.shared.userInterfaceLayoutDirection == .leftToRight {
-            imageView.frame = CGRect(x: TwoLineCellUX.BorderViewMargin, y: (height - TwoLineCellUX.ImageSize) / 2, width: TwoLineCellUX.ImageSize, height: TwoLineCellUX.ImageSize)
+            imageView.frame = CGRect(
+                x: TwoLineCellUX.BorderViewMargin, y: (height - TwoLineCellUX.ImageSize) / 2,
+                width: TwoLineCellUX.ImageSize, height: TwoLineCellUX.ImageSize)
         } else {
-            imageView.frame = CGRect(x: container.frame.width - TwoLineCellUX.ImageSize - TwoLineCellUX.BorderViewMargin, y: (height - TwoLineCellUX.ImageSize) / 2, width: TwoLineCellUX.ImageSize, height: TwoLineCellUX.ImageSize)
+            imageView.frame = CGRect(
+                x: container.frame.width - TwoLineCellUX.ImageSize - TwoLineCellUX.BorderViewMargin,
+                y: (height - TwoLineCellUX.ImageSize) / 2, width: TwoLineCellUX.ImageSize,
+                height: TwoLineCellUX.ImageSize)
 
-            textLabel.frame = textLabel.frame.offsetBy(dx: -(TwoLineCellUX.ImageSize + TwoLineCellUX.BorderViewMargin - textRightInset), dy: 0)
-            detailTextLabel.frame = detailTextLabel.frame.offsetBy(dx: -(TwoLineCellUX.ImageSize + TwoLineCellUX.BorderViewMargin - textRightInset), dy: 0)
+            textLabel.frame = textLabel.frame.offsetBy(
+                dx: -(TwoLineCellUX.ImageSize + TwoLineCellUX.BorderViewMargin - textRightInset),
+                dy: 0)
+            detailTextLabel.frame = detailTextLabel.frame.offsetBy(
+                dx: -(TwoLineCellUX.ImageSize + TwoLineCellUX.BorderViewMargin - textRightInset),
+                dy: 0)
 
             // If the cell has an accessory, shift them all to the left even more. Only required on RTL.
             if accessoryWidth != 0 {

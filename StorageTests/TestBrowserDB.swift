@@ -4,11 +4,11 @@
 
 import Foundation
 import Shared
-@testable import Storage
-@testable import Client
 import XCGLogger
-
 import XCTest
+
+@testable import Client
+@testable import Storage
 
 private let log = XCGLogger.default
 
@@ -56,9 +56,12 @@ class TestBrowserDB: XCTestCase {
 
     func testUpgradeV33toV34RemovesLongURLs() {
         let db = BrowserDB(filename: "v33.db", schema: BrowserSchema(), files: SupportingFiles())
-        let results = db.runQuery("SELECT bmkUri, title FROM bookmarksLocal WHERE type = 1", args: nil, factory: { row in
-            (row[0] as! String, row[1] as! String)
-        }).value.successValue!
+        let results = db.runQuery(
+            "SELECT bmkUri, title FROM bookmarksLocal WHERE type = 1", args: nil,
+            factory: { row in
+                (row[0] as! String, row[1] as! String)
+            }
+        ).value.successValue!
 
         // The bookmark with the long URL has been deleted.
         XCTAssertTrue(results.count == 1)
@@ -129,7 +132,7 @@ class TestBrowserDB: XCTestCase {
         let expectation = self.expectation(description: "Got all DB results")
 
         var db = BrowserDB(filename: "foo.db", schema: BrowserSchema(), files: self.files)
-        db.run("CREATE TABLE foo (id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT)").succeeded() // Just so we have writes in the WAL.
+        db.run("CREATE TABLE foo (id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT)").succeeded()  // Just so we have writes in the WAL.
 
         _ = db.withConnection { connection -> Void in
             for i in 0..<1000 {
@@ -138,15 +141,18 @@ class TestBrowserDB: XCTestCase {
             }
         }
 
-        func fooBarFactory(_ row: SDRow) -> [String : Any] {
-            var result: [String : Any] = [:]
+        func fooBarFactory(_ row: SDRow) -> [String: Any] {
+            var result: [String: Any] = [:]
             result["id"] = row["id"]
             result["bar"] = row["bar"]
             return result
         }
 
-        let longQuery = db.runQuery("SELECT * FROM (SELECT * FROM (SELECT * FROM foo WHERE bar LIKE ?) WHERE bar LIKE ?) WHERE bar LIKE ?", args: ["%b%", "%a%", "%r%"], factory: fooBarFactory)
-        let shortConcurrentQuery = db.runQueryConcurrently("SELECT * FROM foo LIMIT 1", args: nil, factory: fooBarFactory)
+        let longQuery = db.runQuery(
+            "SELECT * FROM (SELECT * FROM (SELECT * FROM foo WHERE bar LIKE ?) WHERE bar LIKE ?) WHERE bar LIKE ?",
+            args: ["%b%", "%a%", "%r%"], factory: fooBarFactory)
+        let shortConcurrentQuery = db.runQueryConcurrently(
+            "SELECT * FROM foo LIMIT 1", args: nil, factory: fooBarFactory)
 
         var isLongQueryDone = false
         var isShortConcurrentQueryDone = false
@@ -155,7 +161,7 @@ class TestBrowserDB: XCTestCase {
         var shortConcurrentQueryRuntimeDuration: Timestamp = 0
 
         let longQueryStartTimestamp = Date.nowMilliseconds()
-        let longQueryResult = longQuery.bind { result -> Deferred<Maybe<[[String : Any]]>> in
+        let longQueryResult = longQuery.bind { result -> Deferred<Maybe<[[String: Any]]>> in
             if let results = result.successValue?.asArray() {
                 isLongQueryDone = true
                 longQueryRuntimeDuration = Date.nowMilliseconds() - longQueryStartTimestamp
@@ -167,19 +173,25 @@ class TestBrowserDB: XCTestCase {
         }
 
         let shortConcurrentQueryStartTimestamp = Date.nowMilliseconds()
-        let shortConcurrentQueryResult = shortConcurrentQuery.bind { result -> Deferred<Maybe<[[String : Any]]>> in
+        let shortConcurrentQueryResult = shortConcurrentQuery.bind {
+            result -> Deferred<Maybe<[[String: Any]]>> in
             if let results = result.successValue?.asArray() {
                 isShortConcurrentQueryDone = true
-                shortConcurrentQueryRuntimeDuration = Date.nowMilliseconds() - shortConcurrentQueryStartTimestamp
+                shortConcurrentQueryRuntimeDuration =
+                    Date.nowMilliseconds() - shortConcurrentQueryStartTimestamp
                 XCTAssertFalse(isLongQueryDone)
                 return deferMaybe(results)
             }
 
-            return deferMaybe(DatabaseError(description: "Unable to execute concurrent short-running query"))
+            return deferMaybe(
+                DatabaseError(description: "Unable to execute concurrent short-running query"))
         }
 
         _ = all([longQueryResult, shortConcurrentQueryResult]).bind { results -> Success in
-            XCTAssert(longQueryRuntimeDuration > shortConcurrentQueryRuntimeDuration, "Long query runtime duration should be greater than short concurrent query runtime duration")
+            XCTAssert(
+                longQueryRuntimeDuration > shortConcurrentQueryRuntimeDuration,
+                "Long query runtime duration should be greater than short concurrent query runtime duration"
+            )
             expectation.fulfill()
             return succeed()
         }

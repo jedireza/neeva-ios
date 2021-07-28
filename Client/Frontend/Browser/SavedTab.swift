@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import WebKit
 import Shared
+import WebKit
 
 class SavedTab: NSObject, NSCoding {
     var isSelected: Bool
@@ -23,7 +23,7 @@ class SavedTab: NSObject, NSCoding {
         let title: String = self.title ?? "null"
         let faviconURL: String = self.faviconURL?.absoluteString ?? "null"
         let uuid: String = self.screenshotUUID?.uuidString ?? "null"
-        
+
         var json: [String: AnyObject] = [
             "title": title as AnyObject,
             "isPrivate": String(self.isPrivate) as AnyObject,
@@ -34,17 +34,21 @@ class SavedTab: NSObject, NSCoding {
             "UUID": self.UUID as AnyObject,
             "rootUUID": self.UUID as AnyObject,
             "parentUUID": self.UUID as AnyObject,
-            "tabIndex": self.tabIndex as AnyObject
+            "tabIndex": self.tabIndex as AnyObject,
         ]
-        
+
         if let sessionDataInfo = self.sessionData?.jsonDictionary {
             json["sessionData"] = sessionDataInfo as AnyObject?
         }
-        
+
         return json
     }
 
-    init(screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: URL?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String, tabIndex: Int?) {
+    init(
+        screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: URL?,
+        url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String,
+        tabIndex: Int?
+    ) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
@@ -56,10 +60,10 @@ class SavedTab: NSObject, NSCoding {
         self.rootUUID = rootUUID
         self.parentUUID = parentUUID
         self.tabIndex = tabIndex
-        
+
         super.init()
     }
-    
+
     required init(coder: NSCoder) {
         self.sessionData = coder.decodeObject(forKey: "sessionData") as? SessionData
         self.screenshotUUID = coder.decodeObject(forKey: "screenshotUUID") as? UUID
@@ -73,7 +77,7 @@ class SavedTab: NSObject, NSCoding {
         self.parentUUID = coder.decodeObject(forKey: "parentUUID") as? String
         self.tabIndex = coder.decodeObject(forKey: "tabIndex") as? Int
     }
-    
+
     func encode(with coder: NSCoder) {
         coder.encode(sessionData, forKey: "sessionData")
         coder.encode(screenshotUUID, forKey: "screenshotUUID")

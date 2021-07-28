@@ -1,30 +1,32 @@
 // Copyright Neeva. All rights reserved.
 
-import Combine
 import Apollo
-import Shared
+import Combine
 import Defaults
+import Shared
 import Storage
 
 class NavSuggestionModel: ObservableObject {
     @Published private var recentNavSuggestions: [NavSuggestion] = []
     @Published private var neevaNavSuggestions: [NavSuggestion] = []
     @Published private var historyNavSuggestions: [NavSuggestion] = []
-    
+
     var combinedSuggestions: [Suggestion] = []
-    
+
     private var subscriptions: Set<AnyCancellable> = []
-    
-    init(neevaModel: NeevaSuggestionModel,
-         historyModel: HistorySuggestionModel) {
+
+    init(
+        neevaModel: NeevaSuggestionModel,
+        historyModel: HistorySuggestionModel
+    ) {
         historyModel.$recentSites.sink { [unowned self] sites in
-            recentNavSuggestions = sites?.compactMap{NavSuggestion(site: $0)} ?? []
+            recentNavSuggestions = sites?.compactMap { NavSuggestion(site: $0) } ?? []
         }.store(in: &subscriptions)
-        
+
         historyModel.$sites.sink { [unowned self] sites in
-            historyNavSuggestions = sites?.compactMap{NavSuggestion(site: $0)} ?? []
+            historyNavSuggestions = sites?.compactMap { NavSuggestion(site: $0) } ?? []
         }.store(in: &subscriptions)
-        
+
         neevaModel.$navSuggestions.sink { [unowned self] suggestions in
             neevaNavSuggestions = suggestions.compactMap {
                 switch $0 {
@@ -34,9 +36,12 @@ class NavSuggestionModel: ObservableObject {
             }
         }
         .store(in: &subscriptions)
-        
-        Publishers.MergeMany($recentNavSuggestions, $historyNavSuggestions, $neevaNavSuggestions).sink { [unowned self] suggestions in
-            combinedSuggestions = (recentNavSuggestions + neevaNavSuggestions + historyNavSuggestions).removeDuplicates().map { Suggestion.navigation($0) }
-        }.store(in: &subscriptions)
+
+        Publishers.MergeMany($recentNavSuggestions, $historyNavSuggestions, $neevaNavSuggestions)
+            .sink { [unowned self] suggestions in
+                combinedSuggestions =
+                    (recentNavSuggestions + neevaNavSuggestions + historyNavSuggestions)
+                    .removeDuplicates().map { Suggestion.navigation($0) }
+            }.store(in: &subscriptions)
     }
 }

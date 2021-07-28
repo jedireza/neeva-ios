@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct PromoCardConfig {
     let title: String
@@ -11,11 +11,11 @@ struct PromoCardConfig {
 }
 
 enum PromoCardType {
-    case neevaSignIn(action: () -> ())
-    case defaultBrowser(action: () -> (), onClose: () -> ())
-    case referralPromo(action: () -> (), onClose: () -> ())
+    case neevaSignIn(action: () -> Void)
+    case defaultBrowser(action: () -> Void, onClose: () -> Void)
+    case referralPromo(action: () -> Void, onClose: () -> Void)
 
-    var action: () -> () {
+    var action: () -> Void {
         switch self {
         case .neevaSignIn(let action):
             return action
@@ -34,7 +34,8 @@ enum PromoCardType {
         case .defaultBrowser:
             Text("Browse in peace,\nalways")
         case .referralPromo:
-            (Text("Win ") + Text("$5000").fontWeight(.medium) + Text(" by inviting friends to join Neeva"))
+            (Text("Win ") + Text("$5000").fontWeight(.medium)
+                + Text(" by inviting friends to join Neeva"))
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -145,7 +146,8 @@ struct PromoCard: View {
     var background: some View {
         let shape = RoundedRectangle(cornerRadius: 12)
         let innerShadowAmount: CGFloat = 1.25
-        return shape
+        return
+            shape
             .fill(type.color)
             .background(
                 shape
@@ -171,7 +173,7 @@ struct PromoCard: View {
         }
 
         // button takes up roughly 1/2.5 of the view width
-        return viewWidth/2.5 > minimumButtonWidth
+        return viewWidth / 2.5 > minimumButtonWidth
     }
 
     var body: some View {
@@ -203,7 +205,13 @@ struct PromoCard: View {
 
 struct PromoCard_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(Array([.neevaSignIn(action: {}), .defaultBrowser(action: {}, onClose: {}), .referralPromo(action: {}, onClose: {})].enumerated()), id: \.0) { (card: (Int, PromoCardType)) in
+        ForEach(
+            Array(
+                [
+                    .neevaSignIn(action: {}), .defaultBrowser(action: {}, onClose: {}),
+                    .referralPromo(action: {}, onClose: {}),
+                ].enumerated()), id: \.0
+        ) { (card: (Int, PromoCardType)) in
             GeometryReader { geom in
                 PromoCard(type: card.1, viewWidth: geom.size.width)
             }

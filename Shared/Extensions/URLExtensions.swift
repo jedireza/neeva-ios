@@ -23,7 +23,6 @@ public func / (_ lhs: URL, rhs: String) -> URL {
     lhs.appendingPathComponent(rhs)
 }
 
-
 private struct ETLDEntry: CustomStringConvertible {
     let entry: String
 
@@ -109,7 +108,17 @@ extension URL {
 }
 
 // The list of permanent URI schemes has been taken from http://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml
-private let permanentURISchemes = ["aaa", "aaas", "about", "acap", "acct", "cap", "cid", "coap", "coaps", "crid", "data", "dav", "dict", "dns", "example", "file", "ftp", "geo", "go", "gopher", "h323", "http", "https", "iax", "icap", "im", "imap", "info", "ipp", "ipps", "iris", "iris.beep", "iris.lwz", "iris.xpc", "iris.xpcs", "jabber", "javascript", "ldap", "mailto", "mid", "msrp", "msrps", "mtqp", "mupdate", "news", "nfs", "ni", "nih", "nntp", "opaquelocktoken", "pkcs11", "pop", "pres", "reload", "rtsp", "rtsps", "rtspu", "service", "session", "shttp", "sieve", "sip", "sips", "sms", "snmp", "soap.beep", "soap.beeps", "stun", "stuns", "tag", "tel", "telnet", "tftp", "thismessage", "tip", "tn3270", "turn", "turns", "tv", "urn", "vemmi", "vnc", "ws", "wss", "xcon", "xcon-userid", "xmlrpc.beep", "xmlrpc.beeps", "xmpp", "z39.50r", "z39.50s"]
+private let permanentURISchemes = [
+    "aaa", "aaas", "about", "acap", "acct", "cap", "cid", "coap", "coaps", "crid", "data", "dav",
+    "dict", "dns", "example", "file", "ftp", "geo", "go", "gopher", "h323", "http", "https", "iax",
+    "icap", "im", "imap", "info", "ipp", "ipps", "iris", "iris.beep", "iris.lwz", "iris.xpc",
+    "iris.xpcs", "jabber", "javascript", "ldap", "mailto", "mid", "msrp", "msrps", "mtqp",
+    "mupdate", "news", "nfs", "ni", "nih", "nntp", "opaquelocktoken", "pkcs11", "pop", "pres",
+    "reload", "rtsp", "rtsps", "rtspu", "service", "session", "shttp", "sieve", "sip", "sips",
+    "sms", "snmp", "soap.beep", "soap.beeps", "stun", "stuns", "tag", "tel", "telnet", "tftp",
+    "thismessage", "tip", "tn3270", "turn", "turns", "tv", "urn", "vemmi", "vnc", "ws", "wss",
+    "xcon", "xcon-userid", "xmlrpc.beep", "xmlrpc.beeps", "xmpp", "z39.50r", "z39.50s",
+]
 
 extension URL {
 
@@ -163,7 +172,8 @@ extension URL {
     }
 
     public var origin: String? {
-        guard isWebPage(includeDataURIs: false), let hostPort = self.hostPort, let scheme = scheme else {
+        guard isWebPage(includeDataURIs: false), let hostPort = self.hostPort, let scheme = scheme
+        else {
             return nil
         }
         return "\(scheme)://\(hostPort)"
@@ -189,7 +199,9 @@ extension URL {
     public var normalizedHostAndPathForDisplay: String {
         var urlString = self.normalizedHostAndPath ?? self.absoluteString
         // For http URLs, get rid of the trailing slash if the path is empty or '/'
-        if (self.scheme == "http" || self.scheme == "https") && (self.path == "/") && urlString.hasSuffix("/") {
+        if (self.scheme == "http" || self.scheme == "https") && (self.path == "/")
+            && urlString.hasSuffix("/")
+        {
             urlString = String(urlString[..<urlString.index(urlString.endIndex, offsetBy: -1)])
         }
         if urlString.hasPrefix("https://") {
@@ -202,7 +214,9 @@ extension URL {
     public var absoluteDisplayString: String {
         var urlString = self.absoluteString
         // For http URLs, get rid of the trailing slash if the path is empty or '/'
-        if (self.scheme == "http" || self.scheme == "https") && (self.path == "/") && urlString.hasSuffix("/") {
+        if (self.scheme == "http" || self.scheme == "https") && (self.path == "/")
+            && urlString.hasSuffix("/")
+        {
             urlString = String(urlString[..<urlString.index(urlString.endIndex, offsetBy: -1)])
         }
         // If it's basic http, strip out the string but leave anything else in
@@ -220,7 +234,9 @@ extension URL {
     }
 
     public var displayURL: URL? {
-        if AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest, path.contains("test-fixture/") {
+        if AppConstants.IsRunningTest || AppConstants.IsRunningPerfTest,
+            path.contains("test-fixture/")
+        {
             return self
         }
 
@@ -289,7 +305,9 @@ extension URL {
     public var normalizedHost: String? {
         // Use components.host instead of self.host since the former correctly preserves
         // brackets for IPv6 hosts, whereas the latter strips them.
-        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: false), var host = components.host, host != "" else {
+        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
+            var host = components.host, host != ""
+        else {
             return nil
         }
 
@@ -325,7 +343,8 @@ extension URL {
      */
     public var schemeIsValid: Bool {
         guard let scheme = scheme else { return false }
-        return permanentURISchemes.contains(scheme.lowercased()) && self.absoluteURL.absoluteString.lowercased() != scheme + ":"
+        return permanentURISchemes.contains(scheme.lowercased())
+            && self.absoluteURL.absoluteString.lowercased() != scheme + ":"
     }
 
     public func havingRemovedAuthorisationComponents() -> URL {
@@ -339,7 +358,7 @@ extension URL {
         }
         return self
     }
-    
+
     public func isEqual(_ url: URL) -> Bool {
         if self == url {
             return true
@@ -360,7 +379,9 @@ extension URL {
 
 extension URL {
     public var isReaderModeURL: Bool {
-        let scheme = self.scheme, host = self.host, path = self.path
+        let scheme = self.scheme
+        let host = self.host
+        let path = self.path
         return scheme == "http" && host == "localhost" && path == "/reader-mode/page"
     }
 
@@ -370,8 +391,12 @@ extension URL {
 
     public var decodeReaderModeURL: URL? {
         if self.isReaderModeURL || self.isSyncedReaderModeURL {
-            if let components = URLComponents(url: self, resolvingAgainstBaseURL: false), let queryItems = components.queryItems {
-                if let queryItem = queryItems.first(where: { $0.name == "url"}), let value = queryItem.value {
+            if let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
+                let queryItems = components.queryItems
+            {
+                if let queryItem = queryItems.first(where: { $0.name == "url" }),
+                    let value = queryItem.value
+                {
                     return URL(string: value)
                 }
             }
@@ -380,7 +405,9 @@ extension URL {
     }
 
     public func encodeReaderModeURL(_ baseReaderModeURL: String) -> URL? {
-        if let encodedURL = absoluteString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) {
+        if let encodedURL = absoluteString.addingPercentEncoding(
+            withAllowedCharacters: .alphanumerics)
+        {
             if let aboutReaderURL = URL(string: "\(baseReaderModeURL)?url=\(encodedURL)") {
                 return aboutReaderURL
             }
@@ -399,7 +426,9 @@ public struct InternalURL {
         case errorpage = "errorpage"
         case sessionrestore = "sessionrestore"
         func matches(_ string: String) -> Bool {
-            return string.range(of: "/?\(self.rawValue)", options: .regularExpression, range: nil, locale: nil) != nil
+            return string.range(
+                of: "/?\(self.rawValue)", options: .regularExpression, range: nil, locale: nil)
+                != nil
         }
     }
 
@@ -411,14 +440,16 @@ public struct InternalURL {
 
     public let url: URL
 
-    private let sessionRestoreHistoryItemBaseUrl = "\(InternalURL.baseUrl)/\(InternalURL.Path.sessionrestore.rawValue)?url="
+    private let sessionRestoreHistoryItemBaseUrl =
+        "\(InternalURL.baseUrl)/\(InternalURL.Path.sessionrestore.rawValue)?url="
 
     public static func isValid(url: URL?) -> Bool {
         guard let url = url else {
             return false
         }
 
-        let isWebServerUrl = url.absoluteString.hasPrefix("http://localhost:\(AppInfo.webserverPort)/")
+        let isWebServerUrl = url.absoluteString.hasPrefix(
+            "http://localhost:\(AppInfo.webserverPort)/")
         if isWebServerUrl, url.path.hasPrefix("/test-fixture/") {
             // internal test pages need to be treated as external pages
             return false
@@ -441,10 +472,12 @@ public struct InternalURL {
     }
 
     public var stripAuthorization: String {
-        guard var components = URLComponents(string: url.absoluteString), let items = components.queryItems else { return url.absoluteString }
+        guard var components = URLComponents(string: url.absoluteString),
+            let items = components.queryItems
+        else { return url.absoluteString }
         components.queryItems = items.filter { !Param.uuidkey.matches($0.name) }
         if let items = components.queryItems, items.count == 0 {
-            components.queryItems = nil // This cleans up the url to not end with a '?'
+            components.queryItems = nil  // This cleans up the url to not end with a '?'
         }
         return components.url?.absoluteString ?? ""
     }
@@ -458,7 +491,8 @@ public struct InternalURL {
         if var item = components.queryItems?.first(where: { Param.uuidkey.matches($0.name) }) {
             item.value = InternalURL.uuid
         } else {
-            components.queryItems?.append(URLQueryItem(name: Param.uuidkey.rawValue, value: InternalURL.uuid))
+            components.queryItems?.append(
+                URLQueryItem(name: Param.uuidkey.rawValue, value: InternalURL.uuid))
         }
         return components.url
     }
@@ -469,7 +503,9 @@ public struct InternalURL {
 
     public var isErrorPage: Bool {
         // Error pages can be nested in session restore URLs, and session restore handler will forward them to the error page handler
-        let path = url.absoluteString.hasPrefix(sessionRestoreHistoryItemBaseUrl) ? extractedUrlParam?.path : url.path
+        let path =
+            url.absoluteString.hasPrefix(sessionRestoreHistoryItemBaseUrl)
+            ? extractedUrlParam?.path : url.path
         return InternalURL.Path.errorpage.matches(path ?? "")
     }
 
@@ -477,7 +513,8 @@ public struct InternalURL {
         if !url.absoluteString.hasPrefix(sessionRestoreHistoryItemBaseUrl) {
             return isErrorPage ? extractedUrlParam : nil
         }
-        if let urlParam = extractedUrlParam, let nested = InternalURL(urlParam), nested.isErrorPage {
+        if let urlParam = extractedUrlParam, let nested = InternalURL(urlParam), nested.isErrorPage
+        {
             return nested.extractedUrlParam
         }
         return nil
@@ -516,8 +553,10 @@ public struct InternalURL {
 }
 
 //MARK: Private Helpers
-private extension URL {
-    func publicSuffixFromHost( _ host: String, withAdditionalParts additionalPartCount: Int) -> String? {
+extension URL {
+    fileprivate func publicSuffixFromHost(
+        _ host: String, withAdditionalParts additionalPartCount: Int
+    ) -> String? {
         if host.isEmpty {
             return nil
         }
@@ -557,7 +596,9 @@ private extension URL {
 
         for offset in 0..<tokenCount {
             // Store the offset for use outside of this scope so we can add additional parts if needed
-            let nextDot: String? = offset + 1 < tokenCount ? tokens[offset + 1..<tokenCount].joined(separator: ".") : nil
+            let nextDot: String? =
+                offset + 1 < tokenCount
+                ? tokens[offset + 1..<tokenCount].joined(separator: ".") : nil
 
             if let entry = etldEntries?[currentDomain] {
                 if entry.isWild && (previousDomain != nil) {
@@ -584,11 +625,16 @@ private extension URL {
         if additionalPartCount > 0 {
             if let suffix = suffix {
                 // Take out the public suffixed and add in the additional parts we want.
-                let literalFromEnd: NSString.CompareOptions = [.literal,        // Match the string exactly.
-                                     .backwards,      // Search from the end.
-                                     .anchored]         // Stick to the end.
-                let suffixlessHost = host.replacingOccurrences(of: suffix, with: "", options: literalFromEnd, range: nil)
-                let suffixlessTokens = suffixlessHost.components(separatedBy: ".").filter { $0 != "" }
+                let literalFromEnd: NSString.CompareOptions = [
+                    .literal,  // Match the string exactly.
+                    .backwards,  // Search from the end.
+                    .anchored,
+                ]  // Stick to the end.
+                let suffixlessHost = host.replacingOccurrences(
+                    of: suffix, with: "", options: literalFromEnd, range: nil)
+                let suffixlessTokens = suffixlessHost.components(separatedBy: ".").filter {
+                    $0 != ""
+                }
                 let maxAdditionalCount = max(0, suffixlessTokens.count - additionalPartCount)
                 let additionalParts = suffixlessTokens[maxAdditionalCount..<suffixlessTokens.count]
                 let partsString = additionalParts.joined(separator: ".")

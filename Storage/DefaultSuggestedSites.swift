@@ -29,7 +29,7 @@ open class DefaultSuggestedSites {
             "te": "https://www.amazon.in",
             "ur": "https://www.amazon.in",
             "en_CA": "https://www.amazon.ca",
-            "fr_CA": "https://www.amazon.ca"
+            "fr_CA": "https://www.amazon.ca",
         ]
     ]
 
@@ -74,7 +74,7 @@ open class DefaultSuggestedSites {
                 faviconUrl: "asset://defaultFavicon",
                 trackingId: 628,
                 title: .DefaultSuggestedTwitter
-            )
+            ),
         ],
         "zh_CN": [
             SuggestedSiteData(
@@ -118,13 +118,14 @@ open class DefaultSuggestedSites {
                 title: "淘宝"
             ),
             SuggestedSiteData(
-                url: "http://union.click.jd.com/jdc?e=0&p=AyIHVCtaJQMiQwpDBUoyS0IQWlALHE4YDk5ER1xONwdJKVxASgI%2BeDkWfGJ6HEAOUmkbcjUXVyUBEQZRG1IXARQ3VhhaEQETBVweayVkbzcedVolBxIEUBxdFAoQN1UeXRQLGwFXHlsUABs3UisnS0lKWghLWBQCFzdlK2s%3D&t=W1dCFBBFC14NXAAECUte",
+                url:
+                    "http://union.click.jd.com/jdc?e=0&p=AyIHVCtaJQMiQwpDBUoyS0IQWlALHE4YDk5ER1xONwdJKVxASgI%2BeDkWfGJ6HEAOUmkbcjUXVyUBEQZRG1IXARQ3VhhaEQETBVweayVkbzcedVolBxIEUBxdFAoQN1UeXRQLGwFXHlsUABs3UisnS0lKWghLWBQCFzdlK2s%3D&t=W1dCFBBFC14NXAAECUte",
                 bgColor: "0xc71622",
                 imageUrl: "asset://suggestedsites_jd",
                 faviconUrl: "asset://jdLogo",
                 trackingId: 705,
                 title: "京东"
-            )
-        ]
+            ),
+        ],
     ]
 }

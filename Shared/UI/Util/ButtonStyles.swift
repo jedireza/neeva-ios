@@ -10,7 +10,8 @@ public struct TableCellButtonStyle: ButtonStyle {
         self.padding = padding
     }
     public init(padding: CGFloat) {
-        self.padding = EdgeInsets(top: padding, leading: padding, bottom: padding, trailing: padding)
+        self.padding = EdgeInsets(
+            top: padding, leading: padding, bottom: padding, trailing: padding)
     }
     public init() {
         self.padding = EdgeInsets()

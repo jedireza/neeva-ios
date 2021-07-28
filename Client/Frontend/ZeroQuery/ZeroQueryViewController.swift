@@ -2,24 +2,28 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Shared
-import UIKit
-import Storage
-import SDWebImage
-import XCGLogger
-import SnapKit
-import SwiftUI
 import Defaults
+import SDWebImage
+import Shared
+import SnapKit
+import Storage
+import SwiftUI
+import UIKit
+import XCGLogger
 
 private let log = Logger.browserLogger
 
 extension EnvironmentValues {
     private struct HideTopSiteKey: EnvironmentKey {
-        static var defaultValue: ((Site) -> ())? = nil
+        static var defaultValue: ((Site) -> Void)? = nil
     }
 
-    public var zeroQueryHideTopSite: (Site) -> () {
-        get { self[HideTopSiteKey] ?? { _ in fatalError(".environment(\\.zeroQueryHideTopSite) must be specified") } }
+    public var zeroQueryHideTopSite: (Site) -> Void {
+        get {
+            self[HideTopSiteKey] ?? { _ in
+                fatalError(".environment(\\.zeroQueryHideTopSite) must be specified")
+            }
+        }
         set { self[HideTopSiteKey] = newValue }
     }
 }
@@ -67,7 +71,8 @@ class ZeroQueryViewController: UIViewController {
                     self?.hideURLFromTopSites(url)
                 }
                 .environment(\.openInNewTab) { [weak self] url, isPrivate in
-                    self?.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(url, isPrivate: isPrivate)
+                    self?.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(
+                        url, isPrivate: isPrivate)
                 }
 
         )
@@ -86,7 +91,10 @@ class ZeroQueryViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         let refreshEvents: [Notification.Name] = [.DynamicFontChanged, .HomePanelPrefsChanged]
-        refreshEvents.forEach { NotificationCenter.default.addObserver(self, selector: #selector(reload), name: $0, object: nil) }
+        refreshEvents.forEach {
+            NotificationCenter.default.addObserver(
+                self, selector: #selector(reload), name: $0, object: nil)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -143,7 +151,7 @@ class ZeroQueryViewController: UIViewController {
         default:
             break
         }
-        
+
         resetLazyTab()
     }
 
@@ -195,7 +203,7 @@ extension ZeroQueryViewController: DataObserverDelegate {
         }
         let url = site.tileURL
         // if the default top sites contains the siteurl. also wipe it from default suggested sites.
-        if defaultTopSites().filter({$0.url == url}).isEmpty == false {
+        if defaultTopSites().filter({ $0.url == url }).isEmpty == false {
             deleteTileForSuggestedSite(url)
         }
         profile.history.removeHostFromTopSites(host).uponQueue(.main) { result in
@@ -231,7 +239,12 @@ extension ZeroQueryViewController: UIPopoverPresentationControllerDelegate {
 
     // Dismiss the popover if the device is being rotated.
     // This is used by the Share UIActivityViewController action sheet on iPad
-    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
-        popoverPresentationController.presentedViewController.dismiss(animated: false, completion: nil)
+    func popoverPresentationController(
+        _ popoverPresentationController: UIPopoverPresentationController,
+        willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>,
+        in view: AutoreleasingUnsafeMutablePointer<UIView>
+    ) {
+        popoverPresentationController.presentedViewController.dismiss(
+            animated: false, completion: nil)
     }
 }

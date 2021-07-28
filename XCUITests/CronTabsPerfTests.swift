@@ -2,7 +2,12 @@ import XCTest
 
 class CronTabsPerformanceTest: BaseTestCase {
 
-    let fixtures:[String:String] = ["testPerfTabs20startup": "tabsState20.archive", "testPerfTabs20tabTray":"tabsState20.archive", "testPerfTabs1280startup": "tabsState1280.archive", "testPerfTabs1280tabTray":"tabsState1280.archive"]
+    let fixtures: [String: String] = [
+        "testPerfTabs20startup": "tabsState20.archive",
+        "testPerfTabs20tabTray": "tabsState20.archive",
+        "testPerfTabs1280startup": "tabsState1280.archive",
+        "testPerfTabs1280tabTray": "tabsState1280.archive",
+    ]
 
     override func setUp() {
         // Test name looks like: "[Class testFunc]", parse out function name
@@ -11,7 +16,10 @@ class CronTabsPerformanceTest: BaseTestCase {
         let archiveName = fixtures[functionName]
 
         // defaults
-        launchArguments = [LaunchArguments.PerformanceTest, LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet]
+        launchArguments = [
+            LaunchArguments.PerformanceTest, LaunchArguments.SkipIntro,
+            LaunchArguments.SkipWhatsNew, LaunchArguments.SkipETPCoverSheet,
+        ]
 
         // append specific load profiles to LaunchArguments
         if fixtures.keys.contains(functionName) {
@@ -37,10 +45,11 @@ class CronTabsPerformanceTest: BaseTestCase {
         if #available(iOS 13.0, *) {
             measure(metrics: [
                 XCTMemoryMetric(),
-                XCTClockMetric(), // to measure timeClock Mon
-                XCTCPUMetric(), // to measure cpu cycles
-                XCTStorageMetric(), // to measure storage consuming
-                XCTMemoryMetric()]) {
+                XCTClockMetric(),  // to measure timeClock Mon
+                XCTCPUMetric(),  // to measure cpu cycles
+                XCTStorageMetric(),  // to measure storage consuming
+                XCTMemoryMetric(),
+            ]) {
                 // activity measurement here
                 app.launch()
             }
@@ -51,10 +60,11 @@ class CronTabsPerformanceTest: BaseTestCase {
         if #available(iOS 13.0, *) {
             measure(metrics: [
                 XCTMemoryMetric(),
-                XCTClockMetric(), // to measure timeClock Mon
-                XCTCPUMetric(), // to measure cpu cycles
-                XCTStorageMetric(), // to measure storage consuming
-                XCTMemoryMetric()]) {
+                XCTClockMetric(),  // to measure timeClock Mon
+                XCTCPUMetric(),  // to measure cpu cycles
+                XCTStorageMetric(),  // to measure storage consuming
+                XCTMemoryMetric(),
+            ]) {
                 // activity measurement here
                 app.launch()
             }
@@ -65,24 +75,26 @@ class CronTabsPerformanceTest: BaseTestCase {
         if #available(iOS 13.0, *) {
             app.launch()
             measure(metrics: [
-                XCTClockMetric(), // to measure timeClock Mon
-                XCTCPUMetric(), // to measure cpu cycles
-                XCTStorageMetric(), // to measure storage consuming
-                XCTMemoryMetric()]) {
+                XCTClockMetric(),  // to measure timeClock Mon
+                XCTCPUMetric(),  // to measure cpu cycles
+                XCTStorageMetric(),  // to measure storage consuming
+                XCTMemoryMetric(),
+            ]) {
                 // go to tab tray
                 navigator.goto(TabTray)
             }
         }
     }
-    
+
     func testPerfTabs1280tabTray() {
         if #available(iOS 13.0, *) {
             app.launch()
             measure(metrics: [
-                XCTClockMetric(), // to measure timeClock Mon
-                XCTCPUMetric(), // to measure cpu cycles
-                XCTStorageMetric(), // to measure storage consuming
-                XCTMemoryMetric()]) {
+                XCTClockMetric(),  // to measure timeClock Mon
+                XCTCPUMetric(),  // to measure cpu cycles
+                XCTStorageMetric(),  // to measure storage consuming
+                XCTMemoryMetric(),
+            ]) {
                 // go to tab tray
                 navigator.goto(TabTray)
             }
@@ -98,7 +110,6 @@ class CronTabsPerformanceTest: BaseTestCase {
     // 6. Switch to private browsing
     // 7. Switch back from private browsing
     // 8. Create new tab in private browsing
-
 
     // This can be used for generating new tabs
     /*

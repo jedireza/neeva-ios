@@ -2,11 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@testable import Client
 import Foundation
 import Storage
-
 import XCTest
+
+@testable import Client
 
 class TestHistory: ProfileTest {
     fileprivate func addSite(_ history: BrowserHistory, url: URL, title: String, s: Bool = true) {
@@ -15,7 +15,9 @@ class TestHistory: ProfileTest {
         XCTAssertEqual(s, history.addLocalVisit(visit).value.isSuccess, "Site added: \(url).")
     }
 
-    fileprivate func innerCheckSites(_ history: BrowserHistory, callback: @escaping (_ cursor: Cursor<Site?>) -> Void) {
+    fileprivate func innerCheckSites(
+        _ history: BrowserHistory, callback: @escaping (_ cursor: Cursor<Site?>) -> Void
+    ) {
         // Retrieve the entry
         history.getSitesByLastVisit(limit: 100, offset: 0).upon {
             XCTAssertTrue($0.isSuccess)
@@ -26,7 +28,8 @@ class TestHistory: ProfileTest {
     fileprivate func checkSites(_ history: BrowserHistory, urls: [String: String], s: Bool = true) {
         // Retrieve the entry.
         if let cursor = history.getSitesByLastVisit(limit: 100, offset: 0).value.successValue {
-            XCTAssertEqual(cursor.status, CursorStatus.success, "Returned success \(cursor.statusMessage).")
+            XCTAssertEqual(
+                cursor.status, CursorStatus.success, "Returned success \(cursor.statusMessage).")
             XCTAssertEqual(cursor.count, urls.count, "Cursor has \(urls.count) entries.")
 
             for index in 0..<cursor.count {
@@ -49,10 +52,12 @@ class TestHistory: ProfileTest {
         let expectation = self.expectation(description: "Wait for history")
         history.getSitesByLastVisit(limit: 100, offset: 0).upon { result in
             XCTAssertTrue(result.isSuccess)
-            history.getFrecentHistory().getSites(matchingSearchQuery: url, limit: 100).upon { result in
+            history.getFrecentHistory().getSites(matchingSearchQuery: url, limit: 100).upon {
+                result in
                 XCTAssertTrue(result.isSuccess)
                 let cursor = result.successValue!
-                XCTAssertEqual(cursor.status, CursorStatus.success, "returned success \(cursor.statusMessage)")
+                XCTAssertEqual(
+                    cursor.status, CursorStatus.success, "returned success \(cursor.statusMessage)")
                 // XXX - We don't allow querying much info about visits here anymore, so there isn't a lot to do
                 expectation.fulfill()
             }
@@ -128,19 +133,24 @@ class TestHistory: ProfileTest {
     // the results. Just look for crashes.
     func testRandomThreading() {
         withTestProfile { profile -> Void in
-            let queue = DispatchQueue(label: "My Queue", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent, autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
+            let queue = DispatchQueue(
+                label: "My Queue", qos: DispatchQoS.default,
+                attributes: DispatchQueue.Attributes.concurrent,
+                autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
             var counter = 0
 
             let expectation = self.expectation(description: "Wait for history")
             for _ in 0..<self.NumThreads {
                 var history = profile.history as BrowserHistory
-                self.runRandom(&history, queue: queue, cb: { () -> Void in
-                    counter += 1
-                    if counter == self.NumThreads {
-                        self.clear(history)
-                        expectation.fulfill()
-                    }
-                })
+                self.runRandom(
+                    &history, queue: queue,
+                    cb: { () -> Void in
+                        counter += 1
+                        if counter == self.NumThreads {
+                            self.clear(history)
+                            expectation.fulfill()
+                        }
+                    })
             }
             self.waitForExpectations(timeout: 10, handler: nil)
         }
@@ -149,26 +159,33 @@ class TestHistory: ProfileTest {
     // Same as testRandomThreading, but uses one history connection for all threads
     func testRandomThreading2() {
         withTestProfile { profile -> Void in
-            let queue = DispatchQueue(label: "My Queue", qos: DispatchQoS.default, attributes: DispatchQueue.Attributes.concurrent, autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
+            let queue = DispatchQueue(
+                label: "My Queue", qos: DispatchQoS.default,
+                attributes: DispatchQueue.Attributes.concurrent,
+                autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
             var history = profile.history as BrowserHistory
             var counter = 0
 
             let expectation = self.expectation(description: "Wait for history")
             for _ in 0..<self.NumThreads {
-                self.runRandom(&history, queue: queue, cb: { () -> Void in
-                    counter += 1
-                    if counter == self.NumThreads {
-                        self.clear(history)
-                        expectation.fulfill()
-                    }
-                })
+                self.runRandom(
+                    &history, queue: queue,
+                    cb: { () -> Void in
+                        counter += 1
+                        if counter == self.NumThreads {
+                            self.clear(history)
+                            expectation.fulfill()
+                        }
+                    })
             }
             self.waitForExpectations(timeout: 10, handler: nil)
         }
     }
 
     // Runs a random command on a database. Calls cb when finished.
-    fileprivate func runRandom(_ history: inout BrowserHistory, cmdIn: Int, cb: @escaping () -> Void) {
+    fileprivate func runRandom(
+        _ history: inout BrowserHistory, cmdIn: Int, cb: @escaping () -> Void
+    ) {
         var cmd = cmdIn
         if cmd < 0 {
             cmd = Int(arc4random() % 5)
@@ -188,26 +205,30 @@ class TestHistory: ProfileTest {
             }
             cb()
         default:
-            history.clearHistory().upon() { success in cb() }
+            history.clearHistory().upon { success in cb() }
         }
     }
 
     // Calls numCmds random methods on this database. val is a counter used by this interally (i.e. always pass zero for it).
     // Calls cb when finished.
-    fileprivate func runMultiRandom(_ history: inout BrowserHistory, val: Int, numCmds: Int, cb: @escaping () -> Void) {
+    fileprivate func runMultiRandom(
+        _ history: inout BrowserHistory, val: Int, numCmds: Int, cb: @escaping () -> Void
+    ) {
         if val == numCmds {
             cb()
             return
         } else {
             runRandom(&history, cmdIn: -1) { [history] in
                 var history = history
-                self.runMultiRandom(&history, val: val+1, numCmds: numCmds, cb: cb)
+                self.runMultiRandom(&history, val: val + 1, numCmds: numCmds, cb: cb)
             }
         }
     }
 
     // Helper for starting a new thread running NumCmds random methods on it. Calls cb when done.
-    fileprivate func runRandom(_ history: inout BrowserHistory, queue: DispatchQueue, cb: @escaping () -> Void) {
+    fileprivate func runRandom(
+        _ history: inout BrowserHistory, queue: DispatchQueue, cb: @escaping () -> Void
+    ) {
         queue.async { [history] in
             var history = history
             // Each thread creates its own history provider

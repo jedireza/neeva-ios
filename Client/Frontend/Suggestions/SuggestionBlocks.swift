@@ -1,17 +1,17 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
 import Storage
+import SwiftUI
 
 private enum SuggestionBlockUX {
-    static let TopSpacing:CGFloat = 2
-    static let SeparatorSpacing:CGFloat = 8
-    static let ChipBlockSpacing:CGFloat = 10
-    static let ChipBlockPadding:CGFloat = 8
-    static let TopBlockVerticalPadding:CGFloat = 6
-    static let BlockVerticalPadding:CGFloat = 4
-    static let ChipBlockHeight:CGFloat = 108
+    static let TopSpacing: CGFloat = 2
+    static let SeparatorSpacing: CGFloat = 8
+    static let ChipBlockSpacing: CGFloat = 10
+    static let ChipBlockPadding: CGFloat = 8
+    static let TopBlockVerticalPadding: CGFloat = 6
+    static let BlockVerticalPadding: CGFloat = 4
+    static let ChipBlockHeight: CGFloat = 108
 }
 
 struct SuggestionsDivider: View {
@@ -29,24 +29,28 @@ struct SuggestionChipView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             VStack(alignment: .leading, spacing: SuggestionBlockUX.ChipBlockSpacing) {
                 LazyHStack(spacing: SuggestionBlockUX.ChipBlockSpacing) {
-                    ForEach(stride(from: 0, to: neevaModel.chipQuerySuggestions.count, by: 2)
-                                .map{ neevaModel.chipQuerySuggestions[$0] }) { suggestion in
+                    ForEach(
+                        stride(from: 0, to: neevaModel.chipQuerySuggestions.count, by: 2)
+                            .map { neevaModel.chipQuerySuggestions[$0] }
+                    ) { suggestion in
                         SearchSuggestionView(suggestion)
                             .environment(\.suggestionConfig, .chip)
                             .environmentObject(neevaModel)
                     }
                 }
                 LazyHStack(spacing: SuggestionBlockUX.ChipBlockSpacing) {
-                    ForEach(stride(from: 1, to: neevaModel.chipQuerySuggestions.count, by: 2)
-                                .map{ neevaModel.chipQuerySuggestions[$0] }) { suggestion in
+                    ForEach(
+                        stride(from: 1, to: neevaModel.chipQuerySuggestions.count, by: 2)
+                            .map { neevaModel.chipQuerySuggestions[$0] }
+                    ) { suggestion in
                         SearchSuggestionView(suggestion)
                             .environment(\.suggestionConfig, .chip)
                             .environmentObject(neevaModel)
                     }
                 }
             }.padding(.horizontal, SuggestionBlockUX.ChipBlockSpacing)
-            .padding(.vertical, SuggestionBlockUX.ChipBlockPadding)
-            .frame(height: SuggestionBlockUX.ChipBlockHeight)
+                .padding(.vertical, SuggestionBlockUX.ChipBlockPadding)
+                .frame(height: SuggestionBlockUX.ChipBlockHeight)
         }
     }
 }
@@ -71,7 +75,7 @@ struct QuerySuggestionsList: View {
     var body: some View {
         if !(neevaModel.chipQuerySuggestions + neevaModel.rowQuerySuggestions).isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-            
+
             if !neevaModel.chipQuerySuggestions.isEmpty {
                 SuggestionChipView()
                     .environmentObject(neevaModel)
@@ -85,7 +89,6 @@ struct QuerySuggestionsList: View {
         }
     }
 }
-
 
 struct UrlSuggestionsList: View {
     @EnvironmentObject private var neevaModel: NeevaSuggestionModel
@@ -116,7 +119,8 @@ struct NavSuggestionsList: View {
 
 struct PlaceholderSuggestions: View {
     func placeholderQuery(_ query: String = "placeholderQuery")
-        -> SuggestionsQuery.Data.Suggest.QuerySuggestion {
+        -> SuggestionsQuery.Data.Suggest.QuerySuggestion
+    {
         SuggestionsQuery.Data.Suggest.QuerySuggestion(
             type: .standard,
             suggestedQuery: query,

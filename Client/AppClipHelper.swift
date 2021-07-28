@@ -6,7 +6,11 @@ class AppClipHelper {
     static let appClipGroupId = "group.co.neeva.app.ios.browser.app-clip.login"
 
     static func retreiveAppClipData() -> String? {
-        guard let appClipPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appClipGroupId)?.appendingPathComponent("AppClipValue") else {
+        guard
+            let appClipPath = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: appClipGroupId)?.appendingPathComponent(
+                    "AppClipValue")
+        else {
             print("Unable to get URL to retrieve App Clip token")
             return nil
         }
@@ -21,7 +25,11 @@ class AppClipHelper {
     }
 
     static func saveTokenToDevice(_ token: String?) {
-        guard let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appClipGroupId)?.appendingPathComponent("AppClipValue") else {
+        guard
+            let containerURL = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: appClipGroupId)?.appendingPathComponent(
+                    "AppClipValue")
+        else {
             print("Unable to get URL to save App Clip token")
             return
         }

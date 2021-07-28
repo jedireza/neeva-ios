@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
 import Storage
+import SwiftUI
 
 private enum SuggestedSiteUX {
     static let FaviconSize: CGFloat = 28
@@ -42,19 +42,29 @@ struct SuggestedSiteView: View {
     var body: some View {
         Button(action: { openURL(site.url) }) {
             VStack(spacing: 2) {
-                FaviconView(url: site.url, icon: site.icon, size: SuggestedSiteUX.FaviconSize, bordered: false)
-                    .frame(width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize, alignment: .center)
-                    .background(Color(light: .ui.gray97, dark: .systemFill))
-                    .cornerRadius(SuggestedSiteUX.IconCornerRadius)
+                FaviconView(
+                    url: site.url, icon: site.icon, size: SuggestedSiteUX.FaviconSize,
+                    bordered: false
+                )
+                .frame(
+                    width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize,
+                    alignment: .center
+                )
+                .background(Color(light: .ui.gray97, dark: .systemFill))
+                .cornerRadius(SuggestedSiteUX.IconCornerRadius)
                 HStack {
                     if isPinnedSite {
                         Image("pin_small").renderingMode(.template).foregroundColor(Color.ui.gray60)
-                            .frame(width: SuggestedSiteUX.PinIconSize, height: SuggestedSiteUX.PinIconSize, alignment: .center)
+                            .frame(
+                                width: SuggestedSiteUX.PinIconSize,
+                                height: SuggestedSiteUX.PinIconSize, alignment: .center)
                     }
                     Text(title)
                         .withFont(.bodyMedium)
                         .lineLimit(1)
-                        .background(RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4))
+                        .background(
+                            RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4)
+                        )
                         .padding(.top, 4)
                         .foregroundColor(.secondaryLabel)
                 }
@@ -64,10 +74,10 @@ struct SuggestedSiteView: View {
             .accessibilityElement(children: .combine)
             .accessibilityLabel(title)
             .accessibilityHint(hint)
-            .contextMenu{
+            .contextMenu {
                 ZeroQueryCommonContextMenuActions(siteURL: site.url.absoluteURL)
                 // TODO: make this red
-                Button(action: { isDeleting = true } ) {
+                Button(action: { isDeleting = true }) {
                     Label("Remove", systemSymbol: .trash)
                 }.foregroundColor(.red)
                 if FeatureFlag[.pinToTopSites] {
@@ -75,10 +85,12 @@ struct SuggestedSiteView: View {
                 }
             }
             .actionSheet(isPresented: $isDeleting) {
-                ActionSheet(title: Text("Permanently remove \(title) from Suggested Sites?"), buttons: [
-                    .destructive(Text("Remove")) { zeroQueryHideTopSite(site) },
-                    .cancel()
-                ])
+                ActionSheet(
+                    title: Text("Permanently remove \(title) from Suggested Sites?"),
+                    buttons: [
+                        .destructive(Text("Remove")) { zeroQueryHideTopSite(site) },
+                        .cancel(),
+                    ])
             }
         }
     }
@@ -102,12 +114,18 @@ struct SuggestedSitesView: View {
     }
 
     var body: some View {
-        let columns = Array(repeating: GridItem(.fixed(SuggestedSiteUX.BlockSize), spacing: SuggestedSiteUX.BlockSpacing), count: columnCount)
+        let columns = Array(
+            repeating: GridItem(
+                .fixed(SuggestedSiteUX.BlockSize), spacing: SuggestedSiteUX.BlockSpacing),
+            count: columnCount)
         if isExpanded {
-            LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing) {
+            LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing)
+            {
                 ForEach(viewModel.sites, id: \.self) { suggestedSite in
-                    SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                        .onDrag { NSItemProvider(url: suggestedSite.url) }
+                    SuggestedSiteView(
+                        site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
+                    )
+                    .onDrag { NSItemProvider(url: suggestedSite.url) }
                 }
             }
             .padding(.vertical, 10)
@@ -119,8 +137,10 @@ struct SuggestedSitesView: View {
                         if i > 0 {
                             Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
                         }
-                        SuggestedSiteView(site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite)
-                            .onDrag { NSItemProvider(url: suggestedSite.url) }
+                        SuggestedSiteView(
+                            site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
+                        )
+                        .onDrag { NSItemProvider(url: suggestedSite.url) }
                     }
                 }
                 .frame(height: SuggestedSiteUX.BlockSize)
@@ -133,19 +153,23 @@ struct SuggestedSitesView: View {
 }
 
 #if DEBUG
-struct SuggestedSitesViews_Previews: PreviewProvider {
-    static var previews: some View {
-        HStack {
-            SuggestedSiteView(site: .init(url: "https://example.com", title: "Example", id: 1), isPinnedSite: false)
-            SuggestedSiteView(site: .init(url: "https://google.com", title: "Google", id: 2), isPinnedSite: true)
-        }.padding().previewLayout(.sizeThatFits)
-        Group {
-            SuggestedSitesView(isExpanded: false)
-            SuggestedSitesView(isExpanded: true)
+    struct SuggestedSitesViews_Previews: PreviewProvider {
+        static var previews: some View {
+            HStack {
+                SuggestedSiteView(
+                    site: .init(url: "https://example.com", title: "Example", id: 1),
+                    isPinnedSite: false)
+                SuggestedSiteView(
+                    site: .init(url: "https://google.com", title: "Google", id: 2),
+                    isPinnedSite: true)
+            }.padding().previewLayout(.sizeThatFits)
+            Group {
+                SuggestedSitesView(isExpanded: false)
+                SuggestedSitesView(isExpanded: true)
+            }
+            .previewLayout(.sizeThatFits)
+            .environment(\.viewWidth, 375)
+            .environmentObject(SuggestedSitesViewModel.preview)
         }
-        .previewLayout(.sizeThatFits)
-        .environment(\.viewWidth, 375)
-        .environmentObject(SuggestedSitesViewModel.preview)
     }
-}
 #endif

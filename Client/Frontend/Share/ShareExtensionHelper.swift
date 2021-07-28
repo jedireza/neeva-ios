@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Shared
 import OnePasswordExtension
+import Shared
 
 private let log = Logger.browserLogger
 
@@ -23,8 +23,11 @@ class ShareExtensionHelper: NSObject {
         self.selectedTab = tab
     }
 
-    func createActivityViewController(appActivities: [UIActivity] = [],
-                                      _ completionHandler: @escaping (_ completed: Bool, _ activityType: UIActivity.ActivityType?) -> Void) -> UIActivityViewController {
+    func createActivityViewController(
+        appActivities: [UIActivity] = [],
+        _ completionHandler: @escaping (_ completed: Bool, _ activityType: UIActivity.ActivityType?)
+            -> Void
+    ) -> UIActivityViewController {
         var activityItems = [AnyObject]()
 
         let printInfo = UIPrintInfo(dictionary: nil)
@@ -41,13 +44,14 @@ class ShareExtensionHelper: NSObject {
         }
         activityItems.append(self)
 
-        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: appActivities)
+        let activityViewController = UIActivityViewController(
+            activityItems: activityItems, applicationActivities: appActivities)
 
         // Hide 'Add to Reading List' which currently uses Safari.
         // We would also hide View Later, if possible, but the exclusion list doesn't currently support
         // third-party activity types (rdar://19430419).
         activityViewController.excludedActivityTypes = [
-            UIActivity.ActivityType.addToReadingList,
+            UIActivity.ActivityType.addToReadingList
         ]
 
         // This needs to be ready by the time the share menu has been displayed and
@@ -55,7 +59,8 @@ class ShareExtensionHelper: NSObject {
         // which is after the user taps the button. So a million cycles away.
         findLoginExtensionItem()
 
-        activityViewController.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
+        activityViewController.completionWithItemsHandler = {
+            activityType, completed, returnedItems, activityError in
             if !completed {
                 completionHandler(completed, activityType)
                 return
@@ -79,12 +84,17 @@ class ShareExtensionHelper: NSObject {
 }
 
 extension ShareExtensionHelper: UIActivityItemSource {
-    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController)
+        -> Any
+    {
         return url
     }
 
-    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
-        
+    func activityViewController(
+        _ activityViewController: UIActivityViewController,
+        itemForActivityType activityType: UIActivity.ActivityType?
+    ) -> Any? {
+
         if isPasswordManager(activityType: activityType) {
             return onePasswordExtensionItem
         } else if isOpenByCopy(activityType: activityType) {
@@ -96,7 +106,10 @@ extension ShareExtensionHelper: UIActivityItemSource {
         return url.isReaderModeURL ? url.decodeReaderModeURL : url
     }
 
-    func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
+    func activityViewController(
+        _ activityViewController: UIActivityViewController,
+        dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?
+    ) -> String {
         if isPasswordManager(activityType: activityType) {
             return browserFillIdentifier
         } else if isOpenByCopy(activityType: activityType) {
@@ -125,33 +138,39 @@ extension ShareExtensionHelper: UIActivityItemSource {
     }
 }
 
-private extension ShareExtensionHelper {
-    func findLoginExtensionItem() {
+extension ShareExtensionHelper {
+    fileprivate func findLoginExtensionItem() {
         guard let selectedWebView = selectedTab?.webView else {
             return
         }
 
         // Add 1Password to share sheet
-        OnePasswordExtension.shared().createExtensionItem(forWebView: selectedWebView, completion: {(extensionItem, error) -> Void in
-            if extensionItem == nil {
-                log.error("Failed to create the password manager extension item: \(error.debugDescription).")
-                return
-            }
+        OnePasswordExtension.shared().createExtensionItem(
+            forWebView: selectedWebView,
+            completion: { (extensionItem, error) -> Void in
+                if extensionItem == nil {
+                    log.error(
+                        "Failed to create the password manager extension item: \(error.debugDescription)."
+                    )
+                    return
+                }
 
-            // Set the 1Password extension item property
-            self.onePasswordExtensionItem = extensionItem
-        })
+                // Set the 1Password extension item property
+                self.onePasswordExtensionItem = extensionItem
+            })
     }
 
-    func fillPasswords(_ returnedItems: [AnyObject]) {
+    fileprivate func fillPasswords(_ returnedItems: [AnyObject]) {
         guard let selectedWebView = selectedTab?.webView else {
             return
         }
 
-        OnePasswordExtension.shared().fillReturnedItems(returnedItems, intoWebView: selectedWebView, completion: { (success, returnedItemsError) -> Void in
-            if !success {
-                log.error("Failed to fill item into webview: \(returnedItemsError ??? "nil").")
-            }
-        })
+        OnePasswordExtension.shared().fillReturnedItems(
+            returnedItems, intoWebView: selectedWebView,
+            completion: { (success, returnedItemsError) -> Void in
+                if !success {
+                    log.error("Failed to fill item into webview: \(returnedItemsError ??? "nil").")
+                }
+            })
     }
 }

@@ -34,7 +34,7 @@ class SaveLoginTest: BaseTestCase {
         navigator.goto(LoginsSettings)
         waitForExistence(app.tables["Login List"])
     }
-    
+
     func testLoginsListFromBrowserTabMenu() {
         waitForTabsButton()
         //Make sure you can access empty Login List from Browser Tab Menu
@@ -51,7 +51,7 @@ class SaveLoginTest: BaseTestCase {
         XCTAssertTrue(app.staticTexts[domainLogin].exists)
         XCTAssertEqual(app.tables["Login List"].cells.count, defaultNumRowsLoginsList + 1)
     }
-    
+
     func testSaveLogin() {
         // Initially the login list should be empty
         openLoginsSettings()
@@ -122,7 +122,7 @@ class SaveLoginTest: BaseTestCase {
         XCTAssertFalse(app.staticTexts[domain].exists)
         XCTAssertFalse(app.staticTexts[domainLogin].exists)
         XCTAssertEqual(app.tables["Login List"].cells.count, defaultNumRowsLoginsList)
-       // Due to Bug 1533475 this isn't working
+        // Due to Bug 1533475 this isn't working
         //XCTAssertTrue(app.tables["No logins found"].exists)
     }
 
@@ -164,15 +164,15 @@ class SaveLoginTest: BaseTestCase {
         waitUntilPageLoad()
         // Provided text fields are completely empty
         waitForExistence(app.webViews.staticTexts["Username:"])
-        
+
         // Fill in the username text box
         app.webViews.textFields.element(boundBy: 0).tap()
         app.webViews.textFields.element(boundBy: 0).typeText(mailLogin)
-        
+
         // Fill in the password text box
         app.webViews.secureTextFields.element(boundBy: 0).tap()
         app.webViews.secureTextFields.element(boundBy: 0).typeText("test15mz")
-        
+
         // Submit form and choose to save the logins
         app.buttons["submit"].tap()
         app.buttons["SaveLoginPrompt.saveLoginButton"].tap()
@@ -180,7 +180,7 @@ class SaveLoginTest: BaseTestCase {
         // Clear Data and go to test page, fields should be filled in
         navigator.goto(SettingsScreen)
         navigator.performAction(Action.AcceptClearPrivateData)
-        
+
         navigator.goto(TabTray)
         navigator.performAction(Action.OpenNewTabFromTabTray)
         navigator.openURL(urlLogin)

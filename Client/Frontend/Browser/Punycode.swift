@@ -8,8 +8,8 @@ private let base = 36
 private let tMin = 1
 private let tMax = 26
 private let initialBias = 72
-private let initialN: Int = 128 // 0x80
-private let delimiter: Character = "-"; // '\x2D'
+private let initialN: Int = 128  // 0x80
+private let delimiter: Character = "-"  // '\x2D'
 private let prefixPunycode = "xn--"
 private let asciiPunycode = Array("abcdefghijklmnopqrstuvwxyz0123456789")
 
@@ -70,7 +70,7 @@ extension String {
         }
 
         while h < input.unicodeScalars.count {
-            var char = Int(0x7fffffff)
+            var char = Int(0x7fff_ffff)
             for c in input.unicodeScalars {
                 let ci = Int(c.value)
                 if char > ci && ci >= n {
@@ -125,7 +125,7 @@ extension String {
         var pos = 0
         if let ipos = input.firstIndex(of: delimiter) {
             pos = ipos
-            output.append(contentsOf: input[0 ..< pos])
+            output.append(contentsOf: input[0..<pos])
             pos += 1
         }
         var outputLength = output.count

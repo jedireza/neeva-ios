@@ -1,14 +1,14 @@
 // Copyright Neeva. All rights reserved.
 
 import SFSafeSymbols
-import SwiftUI
 import Shared
+import SwiftUI
 
 public struct NeevaMenuButtonView: View {
     let label: String
     let nicon: Nicon?
     let symbol: SFSymbol?
-    let action: () -> ()
+    let action: () -> Void
 
     @Environment(\.isEnabled) private var isEnabled
 
@@ -16,7 +16,7 @@ public struct NeevaMenuButtonView: View {
     ///   - label: The text displayed on the button
     ///   - nicon: The Nicon to use
     ///   - isDisabled: Whether to apply gray out disabled style
-    public init(label: String, nicon: Nicon, action: @escaping () -> ()) {
+    public init(label: String, nicon: Nicon, action: @escaping () -> Void) {
         self.label = label
         self.nicon = nicon
         self.symbol = nil
@@ -27,13 +27,13 @@ public struct NeevaMenuButtonView: View {
     ///   - label: The text displayed on the button
     ///   - symbol: The SFSymbol to use
     ///   - isDisabled: Whether to apply gray out disabled style
-    public init(label: String, symbol: SFSymbol, action: @escaping () -> ()) {
+    public init(label: String, symbol: SFSymbol, action: @escaping () -> Void) {
         self.label = label
         self.nicon = nil
         self.symbol = symbol
         self.action = action
     }
-    
+
     public var body: some View {
         GroupedCellButton(action: action) {
             VStack(spacing: 4) {

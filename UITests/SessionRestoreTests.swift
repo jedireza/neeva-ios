@@ -3,9 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import WebKit
 import Shared
 import SwiftyJSON
+import WebKit
+
 @testable import Client
 
 class SessionRestoreTests: KIFTestCase {

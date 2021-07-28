@@ -2,12 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import GCDWebServers
+import SDWebImage
+import Shared
+import Storage
 import UIKit
 import XCTest
-import Storage
-import SDWebImage
-import GCDWebServers
-import Shared
 
 @testable import Client
 
@@ -24,28 +24,44 @@ class UIImageViewExtensionsTests: XCTestCase {
         let (goodIcon, correctColor) = FaviconFetcher.letter(forUrl: url!)
         imageView.setImageAndBackground(forIcon: nil, website: url) {}
         XCTAssertEqual(imageView.image!, goodIcon, "The correct default favicon should be applied")
-        XCTAssertEqual(imageView.backgroundColor, correctColor, "The correct default color should be applied")
+        XCTAssertEqual(
+            imageView.backgroundColor, correctColor, "The correct default color should be applied")
 
-        imageView.setImageAndBackground(forIcon: nil, website: URL(string: "http://mozilla.com/blahblah")) {}
-        XCTAssertEqual(imageView.image!, goodIcon, "The same icon should be applied to all urls with the same domain")
+        imageView.setImageAndBackground(
+            forIcon: nil, website: URL(string: "http://mozilla.com/blahblah")
+        ) {}
+        XCTAssertEqual(
+            imageView.image!, goodIcon,
+            "The same icon should be applied to all urls with the same domain")
 
         imageView.setImageAndBackground(forIcon: nil, website: URL(string: "b")) {}
-        XCTAssertEqual(imageView.image, FaviconFetcher.defaultFavicon, "The default favicon should be applied when no information is given about the icon")
+        XCTAssertEqual(
+            imageView.image, FaviconFetcher.defaultFavicon,
+            "The default favicon should be applied when no information is given about the icon")
     }
 
     func testAsyncSetIcon() {
         let originalImage = UIImage(named: "AppIcon_Developer")!
 
-        WebServer.sharedInstance.registerHandlerForMethod("GET", module: "favicon", resource: "icon") { (request) -> GCDWebServerResponse in
-            return GCDWebServerDataResponse(data: originalImage.pngData()!, contentType: "image/png")
+        WebServer.sharedInstance.registerHandlerForMethod(
+            "GET", module: "favicon", resource: "icon"
+        ) { (request) -> GCDWebServerResponse in
+            return GCDWebServerDataResponse(
+                data: originalImage.pngData()!, contentType: "image/png")
         }
 
         let favImageView = UIImageView()
-        favImageView.setImageAndBackground(forIcon: Favicon(url: "http://localhost:\(AppInfo.webserverPort)/favicon/icon".asURL!), website: URL(string: "http://localhost:\(AppInfo.webserverPort)")) {}
+        favImageView.setImageAndBackground(
+            forIcon: Favicon(url: "http://localhost:\(AppInfo.webserverPort)/favicon/icon".asURL!),
+            website: URL(string: "http://localhost:\(AppInfo.webserverPort)")
+        ) {}
 
         let expect = expectation(description: "UIImageView async load")
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.0) {
-            XCTAssert(originalImage.size.width * originalImage.scale == favImageView.image!.size.width * favImageView.image!.scale, "The correct favicon should be applied to the UIImageView")
+            XCTAssert(
+                originalImage.size.width * originalImage.scale == favImageView.image!.size.width
+                    * favImageView.image!.scale,
+                "The correct favicon should be applied to the UIImageView")
             expect.fulfill()
         }
         waitForExpectations(timeout: 5, handler: nil)
@@ -54,7 +70,7 @@ class UIImageViewExtensionsTests: XCTestCase {
     func testDefaultIcons() {
         let favImageView = UIImageView()
 
-        let gFavURL: URL = "https://www.facebook.com/fav" //This will be fetched from tippy top sites
+        let gFavURL: URL = "https://www.facebook.com/fav"  //This will be fetched from tippy top sites
         let gURL: URL = "http://www.facebook.com"
         let defaultItem = FaviconFetcher.bundledIcons[gURL.baseDomain!]!
         let correctImage = UIImage(contentsOfFile: defaultItem.filePath)!
@@ -65,7 +81,10 @@ class UIImageViewExtensionsTests: XCTestCase {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             XCTAssertEqual(favImageView.backgroundColor, defaultItem.bgcolor)
-            XCTAssert(correctImage.size.width * correctImage.scale == favImageView.image!.size.width * favImageView.image!.scale, "The correct default favicon should be applied to the UIImageView")
+            XCTAssert(
+                correctImage.size.width * correctImage.scale == favImageView.image!.size.width
+                    * favImageView.image!.scale,
+                "The correct default favicon should be applied to the UIImageView")
             expect.fulfill()
         }
         waitForExpectations(timeout: 5, handler: nil)

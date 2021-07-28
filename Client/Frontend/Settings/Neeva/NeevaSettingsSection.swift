@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 import WebKit
 
 struct NeevaSettingsSection: View {
@@ -43,7 +43,11 @@ struct NeevaSettingsSection: View {
                 loaderOpacity = 0
             }
         } else if userInfo.isUserLoggedIn {
-            NavigationLink(destination: NeevaAccountInfoView(userInfo: userInfo, isPresented: $showingAccountDetails), isActive: $showingAccountDetails) {
+            NavigationLink(
+                destination: NeevaAccountInfoView(
+                    userInfo: userInfo, isPresented: $showingAccountDetails),
+                isActive: $showingAccountDetails
+            ) {
                 NeevaAccountRow(userInfo: userInfo)
             }
 
@@ -55,12 +59,16 @@ struct NeevaSettingsSection: View {
                         .ignoresSafeArea(.all, edges: [.bottom, .horizontal])
                         .navigationTitle("Account Settings")
                         .onAppear {
-                            ClientLogger.shared.logCounter(.SettingAccountSettings, attributes: EnvironmentHelper.shared.getAttributes())
+                            ClientLogger.shared.logCounter(
+                                .SettingAccountSettings,
+                                attributes: EnvironmentHelper.shared.getAttributes())
                         }
                 )
             } else {
                 NavigationLinkButton("Account Settings") {
-                    ClientLogger.shared.logCounter(.SettingAccountSettings, attributes: EnvironmentHelper.shared.getAttributes())
+                    ClientLogger.shared.logCounter(
+                        .SettingAccountSettings,
+                        attributes: EnvironmentHelper.shared.getAttributes())
                     openURL(NeevaConstants.appSettingsURL, false)
                     BrowserViewController.foregroundBVC().dismissVC()
                 }
@@ -69,13 +77,16 @@ struct NeevaSettingsSection: View {
             NavigationLinkButton("Connected Apps") {
                 // if user is in a tour, trigger navigation on webui side to
                 // prevent page refresh, which will cause lost of states
-                if TourManager.shared.userReachedStep(step: .promptSettingsInNeevaMenu, tapTarget: .connectedApps) != .stopAction {
+                if TourManager.shared.userReachedStep(
+                    step: .promptSettingsInNeevaMenu, tapTarget: .connectedApps) != .stopAction
+                {
                     openURL(NeevaConstants.appConnectionsURL, false)
                 } else {
                     BrowserViewController.foregroundBVC().dismissVC()
                 }
-            }.if (TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
-                view.throbbingHighlightBorderStyle(highlight: Color.Tour.Background, staticColorMode: true)
+            }.if(TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
+                view.throbbingHighlightBorderStyle(
+                    highlight: Color.Tour.Background, staticColorMode: true)
             }
             NavigationLinkButton("Invite your friends!") {
                 openURL(NeevaConstants.appReferralsURL, false)
@@ -83,7 +94,8 @@ struct NeevaSettingsSection: View {
             }
         } else {
             Button("Sign In or Join Neeva") {
-                ClientLogger.shared.logCounter(.SettingSignin, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .SettingSignin, attributes: EnvironmentHelper.shared.getAttributes())
                 openURL(NeevaConstants.appSigninURL, false)
             }.frame(height: 60 - 12)
         }
@@ -100,7 +112,12 @@ struct NeevaSettingsSection_Previews: PreviewProvider {
     static var previews: some View {
         SettingPreviewWrapper {
             Section(header: Text("Neeva — Logged in")) {
-                NeevaSettingsSection(userInfo: NeevaUserInfo(previewDisplayName: "First Last", email: "name@example.com", pictureUrl: "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg", authProvider: .apple))
+                NeevaSettingsSection(
+                    userInfo: NeevaUserInfo(
+                        previewDisplayName: "First Last", email: "name@example.com",
+                        pictureUrl:
+                            "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg",
+                        authProvider: .apple))
             }
             Section(header: Text("Neeva — Logged out")) {
                 NeevaSettingsSection(userInfo: .previewLoggedOut)

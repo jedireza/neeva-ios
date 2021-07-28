@@ -1,10 +1,10 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
-fileprivate struct TourPromptCloseButton: View {
-    var onClose: (()-> Void)
+private struct TourPromptCloseButton: View {
+    var onClose: (() -> Void)
 
     var body: some View {
         Button(action: onClose) {
@@ -22,15 +22,18 @@ fileprivate struct TourPromptCloseButton: View {
 }
 
 struct TourPromptView: View {
-    var onConfirm: (()-> Void)?
+    var onConfirm: (() -> Void)?
     let title: String
     let description: String
     let buttonMessage: String?
-    var onClose: (()-> Void)?
+    var onClose: (() -> Void)?
     let staticColorMode: Bool
     @Environment(\.colorScheme) private var colorScheme
 
-    init(title: String, description: String, buttonMessage: String? = nil, onConfirm: (()-> Void)? = nil, onClose: (()-> Void)? = nil, staticColorMode: Bool = false) {
+    init(
+        title: String, description: String, buttonMessage: String? = nil,
+        onConfirm: (() -> Void)? = nil, onClose: (() -> Void)? = nil, staticColorMode: Bool = false
+    ) {
         self.onConfirm = onConfirm
         self.title = title
         self.description = description
@@ -43,7 +46,7 @@ struct TourPromptView: View {
         ZStack {
             Color.Tour.Background
             ScrollView {
-                HStack(alignment:.top) {
+                HStack(alignment: .top) {
                     VStack {
                         VStack(alignment: .leading) {
                             Text(title)
@@ -55,7 +58,9 @@ struct TourPromptView: View {
                                 .font(.system(size: 14))
                         }
                         .fixedSize(horizontal: false, vertical: true)
-                        if let buttonMessage = buttonMessage, let onConfirm = onConfirm, !buttonMessage.isEmpty {
+                        if let buttonMessage = buttonMessage, let onConfirm = onConfirm,
+                            !buttonMessage.isEmpty
+                        {
                             Button(action: onConfirm) {
                                 ZStack {
                                     Color.Tour.ButtonBackground
@@ -84,6 +89,7 @@ struct TourPromptView: View {
 
 struct TourPromptView_Previews: PreviewProvider {
     static var previews: some View {
-        TourPromptView(title: "Test title", description: "Test description", buttonMessage: "Got it!")
+        TourPromptView(
+            title: "Test title", description: "Test description", buttonMessage: "Got it!")
     }
 }

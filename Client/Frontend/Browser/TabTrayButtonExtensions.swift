@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
 import SwiftUI
+import UIKit
 
 class PrivateModeButton: ToggleButton, PrivateModeUI {
     var offTint = UIColor.black
@@ -28,7 +28,8 @@ class PrivateModeButton: ToggleButton, PrivateModeUI {
         tintColor = isPrivate ? onTint : offTint
         imageView?.tintColor = tintColor
 
-        accessibilityValue = isSelected ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
+        accessibilityValue =
+            isSelected ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
     }
 }
 

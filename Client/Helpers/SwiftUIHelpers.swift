@@ -14,13 +14,14 @@ public struct VerticalScrollViewIfNeeded<EmbeddedView>: View where EmbeddedView:
     public var body: some View {
         GeometryReader { parentGeom in
             let content = embeddedView()
-                .background(GeometryReader { contentGeom in
-                    Color.clear
-                        .allowsHitTesting(false)
-                        .useEffect(deps: contentGeom.size.height) {
-                            viewHeight = $0
-                        }
-                })
+                .background(
+                    GeometryReader { contentGeom in
+                        Color.clear
+                            .allowsHitTesting(false)
+                            .useEffect(deps: contentGeom.size.height) {
+                                viewHeight = $0
+                            }
+                    })
             if parentGeom.size.height < viewHeight {
                 ScrollView {
                     content
@@ -44,7 +45,9 @@ extension KeyboardReadable {
         Publishers.Merge(
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillShowNotification)
-                .map { ($0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0 },
+                .map {
+                    ($0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
+                },
 
             NotificationCenter.default
                 .publisher(for: UIResponder.keyboardWillHideNotification)
@@ -66,8 +69,9 @@ struct ViewHeightKey: PreferenceKey {
 // a preference value.
 extension ViewHeightKey: ViewModifier {
     func body(content: Content) -> some View {
-        return content.background(GeometryReader { proxy in
-            Color.clear.preference(key: Self.self, value: proxy.size.height)
-        })
+        return content.background(
+            GeometryReader { proxy in
+                Color.clear.preference(key: Self.self, value: proxy.size.height)
+            })
     }
 }

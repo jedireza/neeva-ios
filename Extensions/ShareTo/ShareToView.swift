@@ -1,18 +1,18 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
+import Defaults
+import SDWebImageSwiftUI
 import Shared
 import Storage
-import SDWebImageSwiftUI
-import Defaults
+import SwiftUI
 
-fileprivate enum ShareToUX {
+private enum ShareToUX {
     static let padding: CGFloat = 12
 }
 
 struct ShareToView: View {
     let item: ExtensionUtils.ExtractedShareItem?
-    let onDismiss: (_ didComplete: Bool) -> ()
+    let onDismiss: (_ didComplete: Bool) -> Void
 
     @Environment(\.openURL) var openURL
 
@@ -22,15 +22,19 @@ struct ShareToView: View {
                 VStack(alignment: .leading, spacing: ShareToUX.padding) {
                     ItemDetailView(item: item)
                     VStack(spacing: 0) {
-                        NavigationLink(destination: AddToSpaceView(item: item, onDismiss: onDismiss)) {
+                        NavigationLink(
+                            destination: AddToSpaceView(item: item, onDismiss: onDismiss)
+                        ) {
                             ShareToAction(name: "Save to Spaces", icon: Symbol(.bookmark, size: 18))
                         }
                         Divider()
                         Button(action: {
                             Defaults[.appExtensionTelemetryOpenUrl] = true
-                            item.url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.alphanumerics)
-                                .flatMap { URL(string: "neeva://open-url?url=\($0)") }
-                                .map { openURL($0) }
+                            item.url.addingPercentEncoding(
+                                withAllowedCharacters: NSCharacterSet.alphanumerics
+                            )
+                            .flatMap { URL(string: "neeva://open-url?url=\($0)") }
+                            .map { openURL($0) }
                         }) {
                             ShareToAction(
                                 name: "Open in Neeva",
@@ -48,7 +52,10 @@ struct ShareToView: View {
                                 onDismiss(result.isSuccess)
                             }
                         }) {
-                            ShareToAction(name: "Load in Background", icon: Symbol(.squareAndArrowDownOnSquare, size: 18, weight: .regular))
+                            ShareToAction(
+                                name: "Load in Background",
+                                icon: Symbol(
+                                    .squareAndArrowDownOnSquare, size: 18, weight: .regular))
                         }
                     }
                     Spacer()
@@ -109,16 +116,17 @@ struct ItemDetailView: View {
 }
 
 struct AddToSpaceView: View {
-    let onDismiss: (_ didComplete: Bool) -> ()
+    let onDismiss: (_ didComplete: Bool) -> Void
 
     @StateObject private var request: AddToSpaceRequest
 
-    init(item: ShareItem, onDismiss: @escaping (Bool) -> ()) {
-        _request = .init(wrappedValue: AddToSpaceRequest(
-            title: item.title ?? item.url,
-            description: nil,
-            url: item.url.asURL!
-        ))
+    init(item: ShareItem, onDismiss: @escaping (Bool) -> Void) {
+        _request = .init(
+            wrappedValue: AddToSpaceRequest(
+                title: item.title ?? item.url,
+                description: nil,
+                url: item.url.asURL!
+            ))
         self.onDismiss = onDismiss
     }
 
@@ -158,9 +166,11 @@ struct AddToSpaceView: View {
 // Select the ShareTo Preview Support target to use previews
 struct ShareToView_Previews: PreviewProvider {
     static let item = ShareItem(
-        url: "https://www.bestbuy.com/site/electronics/mobile-cell-phones/abcat0800000.c?id=abcat0800000",
+        url:
+            "https://www.bestbuy.com/site/electronics/mobile-cell-phones/abcat0800000.c?id=abcat0800000",
         title: "Cell Phones: New Mobile Phones & Plans - Best Buy",
-        favicon: .init(url: "https://pisces.bbystatic.com/image2/BestBuy_US/Gallery/favicon-32-72227.png")
+        favicon: .init(
+            url: "https://pisces.bbystatic.com/image2/BestBuy_US/Gallery/favicon-32-72227.png")
     )
     static var previews: some View {
         ItemDetailView(item: item)
@@ -168,4 +178,3 @@ struct ShareToView_Previews: PreviewProvider {
         ShareToView(item: .shareItem(item), onDismiss: { _ in })
     }
 }
-

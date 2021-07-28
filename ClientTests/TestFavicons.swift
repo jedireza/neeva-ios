@@ -3,11 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import XCTest
-import Storage
 import SDWebImage
-@testable import Client
 import Shared
+import Storage
+import XCTest
+
+@testable import Client
 
 class TestFavicons: ProfileTest {
 

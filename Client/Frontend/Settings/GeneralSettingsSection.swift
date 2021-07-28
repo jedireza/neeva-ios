@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Defaults
+import SwiftUI
 
 struct DetailedSettingsLabel: View {
     let title: String
@@ -27,10 +27,13 @@ struct GeneralSettingsSection: View {
             "Default Browser",
             destination:
                 DefaultBrowserOnboardingView(openSettings: {
-                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:])
+                    UIApplication.shared.open(
+                        URL(string: UIApplication.openSettingsURLString)!, options: [:])
                 })
                 .onAppear {
-                    ClientLogger.shared.logCounter(.SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+                    ClientLogger.shared.logCounter(
+                        .SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes()
+                    )
                 }
         )
         Toggle("Show Search Suggestions", isOn: $showSearchSuggestions)

@@ -4,48 +4,49 @@
 
 import Foundation
 import Storage
+
 @testable import Client
 // Disabling due to failure in iOS 13/Xcode 11. Investigation requiered
 /*
 class ReopenLastTabTests: KIFTestCase {
-    
+
     private var webRoot: String!
-    
+
     var closeButtonMatchers: [GREYMatcher] {
         return [
             grey_accessibilityID("TabTrayController.deleteButton.closeAll"),
             grey_kindOfClass(NSClassFromString("_UIAlertControllerActionView")!)
         ]
     }
-    
+
     var reopenButtonMatchers: [GREYMatcher] {
         return [
             grey_accessibilityID("BrowserViewController.ReopenLastTabAlert.ReopenButton"),
             grey_kindOfClass(NSClassFromString("_UIAlertControllerActionView")!)
         ]
     }
-    
+
     override func setUp() {
         super.setUp()
         webRoot = SimplePageServer.start()
         BrowserUtils.dismissFirstRunUI()
     }
-    
-    
+
+
     func testReopenLastTab() {
         if !BrowserUtils.iPad() {
             openReadablePage()
             tester().waitForWebViewElementWithAccessibilityLabel("Readable Page")
-        
+
             openTabsController()
             closeAllTabs()
             EarlGrey.shakeDevice()
-        
+
             reopenLastPage()
             tester().waitForWebViewElementWithAccessibilityLabel("Readable Page")
         }
     }
-    
+
     func openReadablePage() {
         let url = "\(webRoot!)/readablePage.html"
         EarlGrey.selectElement(with: grey_accessibilityID("url"))
@@ -58,18 +59,18 @@ class ReopenLastTabTests: KIFTestCase {
              .inRoot(grey_kindOfClass(UITextField.self))
             .perform(grey_typeText("\n"))
     }
-    
+
     func openTabsController() {
         EarlGrey
             .selectElement(with: grey_accessibilityID("TabToolbar.tabsButton"))
             .perform(grey_tap())
     }
-    
+
     func closeAllTabs() {
         EarlGrey.selectElement(with: grey_accessibilityID("TabTrayController.removeTabsButton")).perform(grey_tap())
         EarlGrey.selectElement(with: grey_allOf(closeButtonMatchers)).perform(grey_tap())
     }
-    
+
     func reopenLastPage() {
         EarlGrey.selectElement(with: grey_allOf(reopenButtonMatchers)).perform(grey_tap())
     }

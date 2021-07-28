@@ -1,13 +1,14 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import SwiftUI
 import Combine
+import SwiftUI
 
-public typealias Updater<T> = (((inout T) -> ())?) -> ()
+public typealias Updater<T> = (((inout T) -> Void)?) -> Void
 
 /// An abstract class that provides useful tools for executing queries inside of a view.
-open class QueryController<Query, Data>: AbstractController, ObservableObject where Query: GraphQLQuery {
+open class QueryController<Query, Data>: AbstractController, ObservableObject
+where Query: GraphQLQuery {
     public enum State {
         case running
         case success(Data)
@@ -95,7 +96,7 @@ open class QueryController<Query, Data>: AbstractController, ObservableObject wh
     /// on your controller class to run queries outside of the SwiftUI data flow.
     @discardableResult open class func perform(
         query: Query,
-        completion: @escaping (Result<Data, Error>) -> ()
+        completion: @escaping (Result<Data, Error>) -> Void
     ) -> Apollo.Cancellable {
         query.fetch { result in
             switch result {

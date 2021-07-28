@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
-import Storage
 import Shared
+import Storage
+import UIKit
 
 class BackForwardTableViewCell: UITableViewCell {
 
@@ -52,12 +52,18 @@ class BackForwardTableViewCell: UITableViewCell {
                 faviconView.setFavicon(forSite: s) { [weak self] in
                     if InternalURL.isValid(url: s.tileURL) {
                         self?.faviconView.image = UIImage(named: "faviconFox")
-                        self?.faviconView.image = self?.faviconView.image?.createScaled(CGSize(width: BackForwardViewCellUX.IconSize, height: BackForwardViewCellUX.IconSize))
+                        self?.faviconView.image = self?.faviconView.image?.createScaled(
+                            CGSize(
+                                width: BackForwardViewCellUX.IconSize,
+                                height: BackForwardViewCellUX.IconSize))
                         self?.faviconView.backgroundColor = UIColor.Photon.White100
                         return
                     }
 
-                    self?.faviconView.image = self?.faviconView.image?.createScaled(CGSize(width: BackForwardViewCellUX.IconSize, height: BackForwardViewCellUX.IconSize))
+                    self?.faviconView.image = self?.faviconView.image?.createScaled(
+                        CGSize(
+                            width: BackForwardViewCellUX.IconSize,
+                            height: BackForwardViewCellUX.IconSize))
                     if self?.faviconView.backgroundColor == .clear {
                         self?.faviconView.backgroundColor = .white
                     }
@@ -89,7 +95,8 @@ class BackForwardTableViewCell: UITableViewCell {
 
         label.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.leading.equalTo(faviconView.snp.trailing).offset(BackForwardViewCellUX.labelPadding)
+            make.leading.equalTo(faviconView.snp.trailing).offset(
+                BackForwardViewCellUX.labelPadding)
             make.trailing.equalTo(self.snp.trailing).offset(-BackForwardViewCellUX.labelPadding)
         }
 
@@ -103,10 +110,14 @@ class BackForwardTableViewCell: UITableViewCell {
         super.draw(rect)
         guard let context = UIGraphicsGetCurrentContext() else { return }
 
-        var startPoint = CGPoint(x: rect.origin.x + BackForwardViewCellUX.faviconPadding + CGFloat(Double(BackForwardViewCellUX.faviconWidth)*0.5),
-                                     y: rect.origin.y + (connectingForwards ?  0 : rect.size.height/2))
-        var endPoint   = CGPoint(x: rect.origin.x + BackForwardViewCellUX.faviconPadding + CGFloat(Double(BackForwardViewCellUX.faviconWidth)*0.5),
-                                     y: rect.origin.y + rect.size.height - (connectingBackwards  ? 0 : rect.size.height/2))
+        var startPoint = CGPoint(
+            x: rect.origin.x + BackForwardViewCellUX.faviconPadding
+                + CGFloat(Double(BackForwardViewCellUX.faviconWidth) * 0.5),
+            y: rect.origin.y + (connectingForwards ? 0 : rect.size.height / 2))
+        var endPoint = CGPoint(
+            x: rect.origin.x + BackForwardViewCellUX.faviconPadding
+                + CGFloat(Double(BackForwardViewCellUX.faviconWidth) * 0.5),
+            y: rect.origin.y + rect.size.height - (connectingBackwards ? 0 : rect.size.height / 2))
 
         // flip the x component if RTL
         if UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft {

@@ -2,13 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Defaults
 import Foundation
 import Shared
 import Storage
-import XCGLogger
-import WebKit
 import SwiftyJSON
-import Defaults
+import WebKit
+import XCGLogger
 
 private let log = Logger.browserLogger
 
@@ -37,7 +37,8 @@ class LoginsHelper: TabContentScript {
     fileprivate func getOrigin(_ uriString: String, allowJS: Bool = false) -> String? {
         guard let uri = URL(string: uriString),
             let scheme = uri.scheme, !scheme.isEmpty,
-            let host = uri.host else {
+            let host = uri.host
+        else {
             // bug 159484 - disallow url types that don't support a hostPort.
             // (although we handle "javascript:..." as a special case above.)
             log.debug("Couldn't parse origin for \(uriString)")
@@ -62,18 +63,20 @@ class LoginsHelper: TabContentScript {
     func loginRecordFromScript(_ script: [String: Any], url: URL) -> LoginRecord? {
         guard let username = script["username"] as? String,
             let password = script["password"] as? String,
-            let origin = getOrigin(url.absoluteString) else {
+            let origin = getOrigin(url.absoluteString)
+        else {
             return nil
         }
 
         var dict: [String: Any] = [
             "hostname": origin,
             "username": username,
-            "password": password
+            "password": password,
         ]
 
         if let string = script["formSubmitURL"] as? String,
-            let formSubmitURL = getOrigin(string) {
+            let formSubmitURL = getOrigin(string)
+        {
             dict["formSubmitURL"] = formSubmitURL
         }
 
@@ -88,9 +91,13 @@ class LoginsHelper: TabContentScript {
         return LoginRecord(fromJSONDict: dict)
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceiveScriptMessage message: WKScriptMessage
+    ) {
         guard let res = message.body as? [String: Any],
-            let type = res["type"] as? String else {
+            let type = res["type"] as? String
+        else {
             return
         }
 
@@ -112,23 +119,28 @@ class LoginsHelper: TabContentScript {
         }
     }
 
-    class func replace(_ base: String, keys: [String], replacements: [String]) -> NSMutableAttributedString {
+    class func replace(_ base: String, keys: [String], replacements: [String])
+        -> NSMutableAttributedString
+    {
         var ranges = [NSRange]()
         var string = base
         for (index, key) in keys.enumerated() {
             let replace = replacements[index]
-            let range = string.range(of: key,
+            let range = string.range(
+                of: key,
                 options: .literal,
                 range: nil,
                 locale: nil)!
             string.replaceSubrange(range, with: replace)
-            let nsRange = NSRange(location: string.distance(from: string.startIndex, to: range.lowerBound),
-                                  length: replace.count)
+            let nsRange = NSRange(
+                location: string.distance(from: string.startIndex, to: range.lowerBound),
+                length: replace.count)
             ranges.append(nsRange)
         }
 
         var attributes = [NSAttributedString.Key: AnyObject]()
-        attributes[NSAttributedString.Key.font] = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.regular)
+        attributes[NSAttributedString.Key.font] = UIFont.systemFont(
+            ofSize: 13, weight: UIFont.Weight.regular)
         attributes[NSAttributedString.Key.foregroundColor] = UIColor.Photon.Grey60
         let attr = NSMutableAttributedString(string: string, attributes: attributes)
         let font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.medium)
@@ -145,25 +157,25 @@ class LoginsHelper: TabContentScript {
         }
 
         profile.logins
-               .getLoginsForProtectionSpace(login.protectionSpace, withUsername: login.username)
-               .uponQueue(.main) { res in
-            if let data = res.successValue {
-                log.debug("Found \(data.count) logins.")
-                for saved in data {
-                    if let saved = saved {
-                        if saved.password == login.password {
-                            _ = self.profile.logins.use(login: saved)
+            .getLoginsForProtectionSpace(login.protectionSpace, withUsername: login.username)
+            .uponQueue(.main) { res in
+                if let data = res.successValue {
+                    log.debug("Found \(data.count) logins.")
+                    for saved in data {
+                        if let saved = saved {
+                            if saved.password == login.password {
+                                _ = self.profile.logins.use(login: saved)
+                                return
+                            }
+
+                            self.promptUpdateFromLogin(login: saved, toLogin: login)
                             return
                         }
-
-                        self.promptUpdateFromLogin(login: saved, toLogin: login)
-                        return
                     }
                 }
-            }
 
-            self.promptSave(login)
-        }
+                self.promptSave(login)
+            }
     }
 
     fileprivate func promptSave(_ login: LoginRecord) {
@@ -173,7 +185,8 @@ class LoginsHelper: TabContentScript {
 
         let promptMessage: String
         let https = "^https:\\/\\/"
-        let url = login.hostname.replacingOccurrences(of: https, with: "", options: .regularExpression, range: nil)
+        let url = login.hostname.replacingOccurrences(
+            of: https, with: "", options: .regularExpression, range: nil)
         let userName = login.username
         if !userName.isEmpty {
             promptMessage = String(format: Strings.SaveLoginUsernamePrompt, userName, url)
@@ -212,7 +225,8 @@ class LoginsHelper: TabContentScript {
 
             // We pass in the webview's URL and derive the origin here
             // to workaround Bug 1194567.
-            let origin = getOrigin(url.absoluteString) else {
+            let origin = getOrigin(url.absoluteString)
+        else {
             return
         }
 
@@ -233,7 +247,7 @@ class LoginsHelper: TabContentScript {
             let dict: [String: Any] = [
                 "requestId": requestId,
                 "name": "RemoteLogins:loginsFound",
-                "logins": logins
+                "logins": logins,
             ]
 
             let json = JSON(dict)

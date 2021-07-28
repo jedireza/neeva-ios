@@ -13,12 +13,14 @@ class RequestDesktopSiteActivity: UIActivity {
     }
 
     override var activityTitle: String? {
-        return tab?.changedUserAgent == true ?
-            Strings.AppMenuViewMobileSiteTitleString : Strings.AppMenuViewDesktopSiteTitleString
+        return tab?.changedUserAgent == true
+            ? Strings.AppMenuViewMobileSiteTitleString : Strings.AppMenuViewDesktopSiteTitleString
     }
 
     override var activityImage: UIImage? {
-        return tab?.changedUserAgent == true ? #imageLiteral(resourceName: "shareRequestMobileSite") : #imageLiteral(resourceName: "shareRequestDesktopSite")
+        return tab?.changedUserAgent == true
+            ? #imageLiteral(resourceName: "shareRequestMobileSite")
+            : #imageLiteral(resourceName: "shareRequestDesktopSite")
     }
 
     override func perform() {

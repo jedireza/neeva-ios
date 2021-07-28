@@ -1,7 +1,7 @@
-// Copyright Neeva. All rights reserved.
-import SwiftUI
 import Shared
 import Storage
+// Copyright Neeva. All rights reserved.
+import SwiftUI
 
 /// Renders a nav suggestion
 struct NavSuggestionView: View {
@@ -11,16 +11,19 @@ struct NavSuggestionView: View {
 
     @ViewBuilder
     var icon: some View {
-        FaviconView(url: suggestion.url,
-                    size: SearchViewControllerUX.FaviconSize,
-                    bordered: false)
-            .frame(
-                width: SearchViewControllerUX.IconSize,
-                height: SearchViewControllerUX.IconSize
-            )
-            .cornerRadius(SuggestionViewUX.CornerRadius)
-            .overlay(RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
-                        .stroke(Color.quaternarySystemFill, lineWidth: 1))
+        FaviconView(
+            url: suggestion.url,
+            size: SearchViewControllerUX.FaviconSize,
+            bordered: false
+        )
+        .frame(
+            width: SearchViewControllerUX.IconSize,
+            height: SearchViewControllerUX.IconSize
+        )
+        .cornerRadius(SuggestionViewUX.CornerRadius)
+        .overlay(
+            RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
+                .stroke(Color.quaternarySystemFill, lineWidth: 1))
     }
 
     @ViewBuilder
@@ -44,13 +47,15 @@ struct NavSuggestionView: View {
     }
 
     var body: some View {
-        SuggestionView(action: nil,
+        SuggestionView(
+            action: nil,
             icon: icon,
             label: label,
             secondaryLabel: secondaryLabel,
             detail: EmptyView(),
-            suggestion: Suggestion.navigation(suggestion))
-            .environmentObject(model)
+            suggestion: Suggestion.navigation(suggestion)
+        )
+        .environmentObject(model)
     }
 }
 

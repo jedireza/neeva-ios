@@ -1,7 +1,7 @@
 // Copyright © Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 import WebKit
 
 class WebsiteDataController: ObservableObject {
@@ -24,7 +24,7 @@ struct WebsiteDataView: View {
     @State private var isDeleting = false
     @State var filterText: String?
 
-    func onClear()  {
+    func onClear() {
         let types = WKWebsiteDataStore.allWebsiteDataTypes()
         WKWebsiteDataStore.default().removeData(
             ofTypes: types,
@@ -44,7 +44,9 @@ struct WebsiteDataView: View {
 
     var body: some View {
         GeometryReader { geom in
-            let size = max(geom.size.width + geom.safeAreaInsets.leading + geom.safeAreaInsets.trailing, geom.size.height + geom.safeAreaInsets.top + geom.safeAreaInsets.bottom)
+            let size = max(
+                geom.size.width + geom.safeAreaInsets.leading + geom.safeAreaInsets.trailing,
+                geom.size.height + geom.safeAreaInsets.top + geom.safeAreaInsets.bottom)
 
             List {
                 Section(header: Text("Website Data")) {
@@ -62,7 +64,8 @@ struct WebsiteDataView: View {
                                 Spacer()
                             }
                         }
-                        let dataToDisplay = showAllData ? data : Array(data.prefix(numberOfInitialRecords))
+                        let dataToDisplay =
+                            showAllData ? data : Array(data.prefix(numberOfInitialRecords))
                         ForEach(dataToDisplay, id: \.displayName) { record in
                             Text(record.displayName)
                         }.onDelete { indexSet in
@@ -88,10 +91,12 @@ struct WebsiteDataView: View {
                         Button("Clear All Website Data") { isDeleting = true }
                             .actionSheet(isPresented: $isDeleting) {
                                 ActionSheet(
-                                    title: Text("This action will clear all of your private data. It cannot be undone."),
+                                    title: Text(
+                                        "This action will clear all of your private data. It cannot be undone."
+                                    ),
                                     buttons: [
                                         .destructive(Text("Clear Data"), action: self.onClear),
-                                        .cancel()
+                                        .cancel(),
                                     ]
                                 )
                             }
