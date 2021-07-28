@@ -27,7 +27,7 @@ struct ContentView: View {
 
             Button(
                 action: {
-                    UIApplication.shared.open(URL(string: "AppClipApp.neevaAppStorePageURL")!)
+                    UIApplication.shared.open(AppClipApp.neevaAppStorePageURL)
                 },
                 label: {
                     (Text("Don't have Neeva? ")
