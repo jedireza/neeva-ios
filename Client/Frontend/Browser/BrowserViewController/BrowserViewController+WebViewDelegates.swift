@@ -815,6 +815,7 @@ extension BrowserViewController: WKNavigationDelegate {
             if tab === tabManager.selectedTab {
                 urlBar.shared.model.url = tab.url?.displayURL
                 // XXX if we are updating the URL, we should probably also update securityLevel right???
+
             }
             return
         }

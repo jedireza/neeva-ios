@@ -1006,7 +1006,7 @@ class BrowserViewController: UIViewController {
         urlBar.shared.model.url = tab.url?.displayURL
         urlBar.shared.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
 
-        if tab.url?.scheme == "http" {
+        if tab.url?.scheme != "https" {
             urlBar.shared.model.securityLevel = URLBarModel.SecurityLevel.none
         } else if urlBar.shared.model.isSecure {
             urlBar.shared.model.securityLevel = URLBarModel.SecurityLevel.secure
@@ -1261,6 +1261,15 @@ class BrowserViewController: UIViewController {
             if tab === tabManager.selectedTab {
                 urlBar.shared.model.isSecure = webView.hasOnlySecureContent
                 // XXX need to update securityLevel enum
+                if tab.url?.scheme != "https" {
+                    urlBar.shared.model.securityLevel = URLBarModel.SecurityLevel.none
+                } else if urlBar.shared.model.isSecure {
+                    urlBar.shared.model.securityLevel = URLBarModel.SecurityLevel.secure
+                } else if let error = tab.error, CertErrors.contains(error.code) {
+                    urlBar.shared.model.securityLevel = URLBarModel.SecurityLevel.skippableError
+                } else {
+                    urlBar.shared.model.securityLevel = URLBarModel.SecurityLevel.nonskippableError
+                }
                 urlBar.shared.model.canShare = tab.url?.displayURL?.isWebPage() ?? false
             }
 

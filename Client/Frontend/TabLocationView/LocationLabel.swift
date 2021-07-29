@@ -56,7 +56,7 @@ struct LocationLabelAndIcon: View {
                 host
             } icon: {
                 if let tabSecurityLevel = securityLevel {
-                    if tabSecurityLevel == URLBarModel.SecurityLevel.none {
+                    if tabSecurityLevel == URLBarModel.SecurityLevel.none {  //TODO: could merge none with nil
 
                     } else if tabSecurityLevel == URLBarModel.SecurityLevel.secure {
                         Symbol(.lockFill)
