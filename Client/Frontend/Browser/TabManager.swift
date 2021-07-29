@@ -594,6 +594,10 @@ class TabManager: NSObject, ObservableObject {
         // if no tab selected, select the last one (most recently closed)
         var selectedSavedTab: Tab?
 
+        // prevent adding back a tab that is already present in the tab list
+        let currentTabIDs = tabs.map(\.tabUUID)
+        let savedTabs = savedTabs.filter { !currentTabIDs.contains($0.UUID ?? "") }
+
         for index in 0..<savedTabs.count {
             let savedTab = savedTabs[index]
             let urlRequest: URLRequest? = savedTab.url != nil ? URLRequest(url: savedTab.url!) : nil
