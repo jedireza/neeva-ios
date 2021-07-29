@@ -15,8 +15,12 @@ class NeevaSuggestionModel: ObservableObject {
     @Published var navSuggestions: [Suggestion] = []
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
-    @Published var isIncognito: Bool  // TODO: don’t duplicate this source of truth
     @Published var keyboardFocusedSuggestion: Suggestion?
+
+    @Published private var isIncognito: Bool  // TODO: don’t duplicate this source of truth
+    func setIncognito(_ isIncognito: Bool) {
+        self.isIncognito = isIncognito
+    }
 
     private var keyboardFocusedSuggestionIndex = -1
 

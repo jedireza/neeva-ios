@@ -469,6 +469,8 @@ extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
 
+        neevaSuggestionModel.setIncognito(isPrivate)
+
         locationHost.applyUIMode(isPrivate: isPrivate)
 
         if isPrivate {
