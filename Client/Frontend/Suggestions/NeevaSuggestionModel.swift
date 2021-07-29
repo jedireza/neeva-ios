@@ -61,7 +61,7 @@ class NeevaSuggestionModel: ObservableObject {
         let bvc = BrowserViewController.foregroundBVC()
         let navSuggestionModel = bvc.searchController?.navModel
         return topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
-            + navSuggestions + (navSuggestionModel?.combinedSuggestions ?? [])
+            + (navSuggestionModel?.combinedSuggestions ?? [])
     }
 
     func reload() {

@@ -232,8 +232,9 @@ class SuggestionViewsTests: XCTestCase {
         // We should be showing a placeholder with 1 actual suggestion, and 6 placeholders:
         // 1 history suggestion and 5 query suggestions
         XCTAssertEqual(2, list.count)
-        XCTAssertEqual(4, list.findAll(NavSuggestionView.self).count)
+        XCTAssertEqual(5, list.findAll(NavSuggestionView.self).count)
         XCTAssertEqual(0, list.findAll(QuerySuggestionView.self).count)
+        XCTAssertEqual(0, list.findAll(URLSuggestionView.self).count)
     }
 
     func testSuggestionWithCalculatorSayt() throws {

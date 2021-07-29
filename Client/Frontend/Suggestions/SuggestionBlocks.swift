@@ -110,7 +110,7 @@ struct NavSuggestionsList: View {
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
-        ForEach(neevaModel.navSuggestions + navModel.combinedSuggestions) { suggestion in
+        ForEach(navModel.combinedSuggestions) { suggestion in
             SearchSuggestionView(suggestion)
                 .environmentObject(neevaModel)
         }
