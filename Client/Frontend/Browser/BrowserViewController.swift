@@ -29,7 +29,16 @@ struct UrlToOpenModel {
 }
 
 class BrowserViewController: UIViewController {
-    var zeroQueryViewController: ZeroQueryViewController?
+    lazy var zeroQueryViewController: ZeroQueryViewController = {
+        let zeroQueryViewController = ZeroQueryViewController(profile: profile)
+        zeroQueryViewController.delegate = self
+        addChild(zeroQueryViewController)
+        view.addSubview(zeroQueryViewController.view)
+        zeroQueryViewController.didMove(toParent: self)
+
+        return zeroQueryViewController
+    }()
+
     lazy var cardStripViewController: CardStripViewController? = {
         let controller = CardStripViewController(tabManager: self.tabManager)
         addChild(controller)
@@ -275,7 +284,7 @@ class BrowserViewController: UIViewController {
         }
 
         view.setNeedsUpdateConstraints()
-        zeroQueryViewController?.view.setNeedsUpdateConstraints()
+        zeroQueryViewController.view.setNeedsUpdateConstraints()
 
         if let tab = tabManager.selectedTab,
             let webView = tab.webView
@@ -343,7 +352,7 @@ class BrowserViewController: UIViewController {
         webViewContainerBackdrop.alpha = 1
         webViewContainer.alpha = 0
         urlBar?.legacy?.locationContainer.alpha = 0
-        zeroQueryViewController?.view.alpha = 0
+        zeroQueryViewController.view.alpha = 0
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
         presentedViewController?.view.alpha = 0
     }
@@ -356,7 +365,7 @@ class BrowserViewController: UIViewController {
             animations: {
                 self.webViewContainer.alpha = 1
                 self.urlBar?.legacy?.locationContainer.alpha = 1
-                self.zeroQueryViewController?.view.alpha = 1
+                self.zeroQueryViewController.view.alpha = 1
                 self.presentedViewController?.popoverPresentationController?.containerView?.alpha =
                     1
                 self.presentedViewController?.view.alpha = 1
@@ -724,7 +733,7 @@ class BrowserViewController: UIViewController {
 
         // Remake constraints even if we're already showing the zero query controller.
         // The zero query controller may change sizes if we tap the URL bar while it's open.
-        zeroQueryViewController?.view.snp.remakeConstraints { make in
+        zeroQueryViewController.view.snp.remakeConstraints { make in
             if UIConstants.enableBottomURLBar {
                 make.top.equalTo(self.view.safeArea.top)
             } else {
@@ -771,14 +780,6 @@ class BrowserViewController: UIViewController {
         inline: Bool, openedFrom: ZeroQueryOpenedLocation? = nil, isLazyTab: Bool = false
     ) {
         zeroQueryIsInline = inline
-        if self.zeroQueryViewController == nil {
-            let zeroQueryViewController = ZeroQueryViewController(profile: profile)
-            zeroQueryViewController.delegate = self
-            self.zeroQueryViewController = zeroQueryViewController
-            addChild(zeroQueryViewController)
-            view.addSubview(zeroQueryViewController.view)
-            zeroQueryViewController.didMove(toParent: self)
-        }
 
         if !FeatureFlag[.legacyTabSwitcher], !cardGridViewController.gridModel.isHidden {
             cardGridViewController.gridModel.hideWithNoAnimation()
@@ -788,8 +789,8 @@ class BrowserViewController: UIViewController {
             urlBar.shared.model.setEditing(to: true)
             urlBar.shared.queryModel.value = ""
 
-            zeroQueryViewController?.openedFrom = openedFrom
-            zeroQueryViewController?.isLazyTab = true
+            zeroQueryViewController.openedFrom = openedFrom
+            zeroQueryViewController.isLazyTab = true
         }
 
         // We have to run this animation, even if the view is already showing
@@ -798,7 +799,7 @@ class BrowserViewController: UIViewController {
         UIView.animate(
             withDuration: 0.2,
             animations: { () -> Void in
-                self.zeroQueryViewController?.view.alpha = 1
+                self.zeroQueryViewController.view.alpha = 1
             },
             completion: { finished in
                 if finished {
@@ -807,25 +808,19 @@ class BrowserViewController: UIViewController {
                         notification: UIAccessibility.Notification.screenChanged, argument: nil)
                 }
             })
+
         view.setNeedsUpdateConstraints()
     }
 
     fileprivate func hideZeroQuery() {
-        guard let zeroQueryViewController = self.zeroQueryViewController else {
-            return
-        }
-
-        self.zeroQueryViewController = nil
         UIView.animate(
             withDuration: 0.2, delay: 0, options: .beginFromCurrentState,
             animations: { () -> Void in
-                zeroQueryViewController.view.alpha = 0
+                self.zeroQueryViewController.view.alpha = 0
             },
             completion: { _ in
-                zeroQueryViewController.willMove(toParent: nil)
-                zeroQueryViewController.view.removeFromSuperview()
-                zeroQueryViewController.removeFromParent()
                 self.webViewContainer.accessibilityElementsHidden = false
+
                 UIAccessibility.post(
                     notification: UIAccessibility.Notification.screenChanged, argument: nil)
 
@@ -937,7 +932,7 @@ class BrowserViewController: UIViewController {
             make.left.right.equalTo(self.view)
         }
 
-        zeroQueryViewController?.view?.isHidden = true
+        zeroQueryViewController.view?.isHidden = true
 
         searchController.didMove(toParent: self)
     }
@@ -947,7 +942,7 @@ class BrowserViewController: UIViewController {
             searchController.willMove(toParent: nil)
             searchController.view.removeFromSuperview()
             searchController.removeFromParent()
-            zeroQueryViewController?.view?.isHidden = false
+            zeroQueryViewController.view?.isHidden = false
         }
     }
 
@@ -958,8 +953,8 @@ class BrowserViewController: UIViewController {
     }
 
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
-        if zeroQueryViewController?.isLazyTab ?? false {
-            zeroQueryViewController?.createRealTab(url: url, tabManager: tabManager)
+        if zeroQueryViewController.isLazyTab ?? false {
+            zeroQueryViewController.createRealTab(url: url, tabManager: tabManager)
         } else {
             if let nav = tab.loadRequest(URLRequest(url: url)) {
                 self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
@@ -1077,7 +1072,7 @@ class BrowserViewController: UIViewController {
             urlBar.shared.model.setEditing(to: true)
         }
 
-        zeroQueryViewController?.model.isPrivate = self.tabManager.selectedTab!.isPrivate
+        zeroQueryViewController.model.isPrivate = tabManager.selectedTab!.isPrivate
     }
 
     func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab) {
@@ -1746,10 +1741,12 @@ extension BrowserViewController {
     }
 
     // Default browser onboarding
-    func presentDBOnboardingViewController() {
-        let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: { [weak self] in
-            self?.zeroQueryViewController?.model.updateState()
+    func presentDBOnboardingViewController(_ force: Bool = false) {
+        let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: {
+            [unowned self] in
+            zeroQueryViewController.model.updateState()
         })
+
         onboardingVC.modalPresentationStyle = .formSheet
         present(onboardingVC, animated: true, completion: nil)
     }

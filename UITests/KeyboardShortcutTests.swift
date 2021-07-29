@@ -13,7 +13,14 @@ class KeyboardShortcutTests: KIFTestCase {
     }
 
     func reset(tester: KIFUITestActor) {
-        bvc.tabManager.removeAllTabsAndAddNormalTab()
+        let tabManager = bvc.tabManager
+
+        if bvc.tabManager.selectedTab?.isPrivate ?? false {
+            _ = tabManager.switchPrivacyMode()
+        }
+
+        tabManager.removeTabsAndAddNormalTab(tabManager.tabs, showToast: false)
+        bvc.zeroQueryViewController.model.isPrivate = false
     }
 
     func openTab(tester: KIFUITestActor) {
@@ -33,7 +40,7 @@ class KeyboardShortcutTests: KIFTestCase {
         tester.waitForView(withAccessibilityLabel: "New Tab")
         tester.tapView(withAccessibilityLabel: "New Tab")
 
-        BrowserUtils.enterUrlAddressBar(tester, typeUrl: "www.neeva.com")
+        BrowserUtils.enterUrlAddressBar(tester, typeUrl: "example.com")
     }
 
     func openMultipleTabs(tester: KIFUITestActor) {
@@ -47,6 +54,7 @@ class KeyboardShortcutTests: KIFTestCase {
         bvc.previousTabKeyCommand()
     }
 
+    /* disabled because it breaks unrelated tests (see https://github.com/neevaco/neeva-ios-phoenix/issues/981)
     func testReloadTab() {
         reset(tester: tester())
         openTab(tester: tester())
@@ -86,12 +94,11 @@ class KeyboardShortcutTests: KIFTestCase {
         bvc.selectLocationBarKeyCommand()
     }
 
-    /* disabled because it breaks unrelated tests (see https://github.com/neevaco/neeva-ios-phoenix/issues/981)
     func testShowTabTrayKeyCommand() {
         reset(tester: tester())
         bvc.showTabTrayKeyCommand()
         XCTAssert(tester().viewExistsWithLabel("Add Tab"))
-    } */
+    }
 
     // MARK: Tab Mangement
     func testNewTabKeyCommand() {
@@ -160,5 +167,5 @@ class KeyboardShortcutTests: KIFTestCase {
         bvc.restoreTabKeyCommand()
 
         XCTAssert(bvc.tabManager.tabs.count > 1)
-    }
+    } */
 }

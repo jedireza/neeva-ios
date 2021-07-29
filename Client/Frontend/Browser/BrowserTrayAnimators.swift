@@ -41,7 +41,7 @@ extension TrayToBrowserAnimator {
         // Hide browser components
         bvc.toggleSnackBarVisibility(show: false)
         toggleWebViewVisibility(false, usingTabManager: bvc.tabManager)
-        bvc.zeroQueryViewController?.view.isHidden = true
+        bvc.zeroQueryViewController.view.isHidden = true
 
         bvc.webViewContainerBackdrop.isHidden = true
         bvc.statusBarOverlay.isHidden = false
@@ -113,7 +113,7 @@ extension TrayToBrowserAnimator {
                 bvc.toggleSnackBarVisibility(show: true)
                 toggleWebViewVisibility(true, usingTabManager: bvc.tabManager)
                 bvc.webViewContainerBackdrop.isHidden = false
-                bvc.zeroQueryViewController?.view.isHidden = false
+                bvc.zeroQueryViewController.view.isHidden = false
                 bvc.urlBar?.legacy?.isTransitioning = false
                 tabTray.toolbar.isUserInteractionEnabled = true
                 transitionContext.completeTransition(true)
@@ -181,7 +181,7 @@ extension BrowserToTrayAnimator {
         cell.title.transform = CGAffineTransform(translationX: 0, y: -cell.title.frame.size.height)
 
         // Hide views we don't want to show during the animation in the BVC
-        bvc.zeroQueryViewController?.view.isHidden = true
+        bvc.zeroQueryViewController.view.isHidden = true
         bvc.statusBarOverlay.isHidden = true
         bvc.toggleSnackBarVisibility(show: false)
         toggleWebViewVisibility(false, usingTabManager: bvc.tabManager)
@@ -240,7 +240,7 @@ extension BrowserToTrayAnimator {
 
                     bvc.toggleSnackBarVisibility(show: true)
                     toggleWebViewVisibility(true, usingTabManager: bvc.tabManager)
-                    bvc.zeroQueryViewController?.view.isHidden = false
+                    bvc.zeroQueryViewController.view.isHidden = false
 
                     resetTransformsForViews([bvc.urlBar.view, bvc.readerModeBar, bvc.footer])
                     bvc.urlBar.legacy!.isTransitioning = false

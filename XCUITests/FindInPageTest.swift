@@ -116,20 +116,19 @@ class FindInPageTests: BaseTestCase {
         XCTAssertFalse(app.textFields[""].exists)
     }
 
-    /* TODO Restore Test #1159
     func testBarDissapearsWhenOpeningTabsTray() {
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Dismiss keyboard
         app.buttons["FindInPage.close"].tap()
-        app.buttons["Show Tabs"].tap()
 
-        waitForExistence(app.buttons["The Book of Mozilla, Tab"])
-        app.buttons["The Book of Mozilla, Tab"].tap()
+        goToTabTray()
+        app.buttons["Done"].tap()
+
         XCTAssertFalse(app.textFields[""].exists)
         XCTAssertFalse(app.buttons["FindInPage.find_next"].exists)
         XCTAssertFalse(app.buttons["FindInPage.find_previous"].exists)
-    } */
+    }
 
     func testFindFromSelection() {
         let textToFind = "from"

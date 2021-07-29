@@ -24,14 +24,18 @@ class NavigationDelegateTests: KIFTestCase {
         super.tearDown()
     }
 
+    /* TODO Restore flakey tests #1142
     func testAppStoreLinkShowsConfirmation() {
         let url = "\(webRoot!)/navigationDelegate.html"
         tester().waitForAnimationsToFinish(withTimeout: 3)
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
         tester().waitForAnimationsToFinish()
+
         tester().waitForWebViewElementWithAccessibilityLabel("link")
         tester().tapWebViewElementWithAccessibilityLabel("link")
         tester().wait(forTimeInterval: 2)
+
+        tester().waitForView(withAccessibilityIdentifier: "CancelOpenInApp")
         tester().tapView(withAccessibilityIdentifier: "CancelOpenInApp")
-    }
+    } */
 }

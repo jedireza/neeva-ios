@@ -147,7 +147,7 @@ struct TabLocationView: View {
 
             if model.isEditing {
                 Button {
-                    SceneDelegate.getCurrentSceneDelegate().getBVC().zeroQueryViewController?
+                    SceneDelegate.getCurrentSceneDelegate().getBVC().zeroQueryViewController
                         .closeLazyTab()
                     model.setEditing(to: false)
                 } label: {

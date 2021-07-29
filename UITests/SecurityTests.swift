@@ -27,6 +27,7 @@ class SecurityTests: KIFTestCase {
 
     /// Tap the Session exploit button, which tries to load the session restore page on localhost
     /// in the current tab. Make sure nothing happens.
+    /* TODO Restore this test #1155
     func testSessionExploit() {
         tester().tapWebViewElementWithAccessibilityLabel("Session exploit")
         tester().wait(forTimeInterval: 1)
@@ -116,6 +117,7 @@ class SecurityTests: KIFTestCase {
     }*/
 
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)
+    TODO Restore this test #1155
     func testNeevaSchemeBlockedOnWebpages() {
         let url = "\(webRoot!)/neevaScheme.html"
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
@@ -125,7 +127,7 @@ class SecurityTests: KIFTestCase {
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
         // Make sure the URL doesn't change.
         XCTAssertEqual(webView.url!.absoluteString, url)
-    }
+    } */
 
     override func tearDown() {
         BrowserUtils.resetToAboutHomeKIF(tester())
