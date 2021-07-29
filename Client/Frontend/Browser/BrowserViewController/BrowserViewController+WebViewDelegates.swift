@@ -628,7 +628,8 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if ["http", "https", "blob", "file"].contains(url.scheme) {
             if navigationAction.targetFrame?.isMainFrame ?? false {
-                tab.changedUserAgent = Tab.ChangeUserAgent.contains(url: url, isPrivate: tab.isPrivate)
+                tab.changedUserAgent = Tab.ChangeUserAgent.contains(
+                    url: url, isPrivate: tab.isPrivate)
             }
 
             pendingRequests[url.absoluteString] = navigationAction.request

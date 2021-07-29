@@ -15,7 +15,7 @@ struct ZoomMenuView: View {
                     .frame(maxHeight: .infinity)
             }.accessibilityHidden(true)
 
-            GroupedStack {
+            GroupedStack(backgroundColor: Color.groupedBackground) {
                 GroupedCell {
                     HStack {
                         Button(action: model.zoomOut) {
