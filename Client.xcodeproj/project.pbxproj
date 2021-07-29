@@ -314,11 +314,6 @@
 		C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FB0C772321523D00031088 /* PageActionMenu.swift */; };
 		C9086050266693340049C072 /* CapsuleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908604F266693340049C072 /* CapsuleTextField.swift */; };
 		C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860512666BEE30049C072 /* SpacerExtensions.swift */; };
-		C9098F6E26B0537000D2B5F4 /* carthage_command.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9098F6C26B0537000D2B5F4 /* carthage_command.sh */; };
-		C9098F6F26B0537000D2B5F4 /* bootstrap.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9098F6D26B0537000D2B5F4 /* bootstrap.sh */; };
-		C9098F7226B0538500D2B5F4 /* package-lock.json in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7026B0538400D2B5F4 /* package-lock.json */; };
-		C9098F7326B0538500D2B5F4 /* package.json in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7126B0538500D2B5F4 /* package.json */; };
-		C9098F7526B0538B00D2B5F4 /* swift-format.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7426B0538A00D2B5F4 /* swift-format.sh */; };
 		C9098F7726B0539000D2B5F4 /* webpack.config.js in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7626B0539000D2B5F4 /* webpack.config.js */; };
 		C9299E34268F7BD700758795 /* DefaultBrowserOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */; };
 		C9299E36268F9CF300758795 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E35268F9CF300758795 /* CloseButton.swift */; };
@@ -1255,11 +1250,10 @@
 		C9098F6826B0535B00D2B5F4 /* .gitmodules */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitmodules; sourceTree = "<group>"; };
 		C9098F6926B0535B00D2B5F4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		C9098F6A26B0535C00D2B5F4 /* .gitattributes */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitattributes; sourceTree = "<group>"; };
-		C9098F6C26B0537000D2B5F4 /* carthage_command.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = carthage_command.sh; sourceTree = SOURCE_ROOT; };
-		C9098F6D26B0537000D2B5F4 /* bootstrap.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = bootstrap.sh; sourceTree = SOURCE_ROOT; };
+		C9098F6C26B0537000D2B5F4 /* carthage_command.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = carthage_command.sh; path = ../carthage_command.sh; sourceTree = "<group>"; };
+		C9098F6D26B0537000D2B5F4 /* bootstrap.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = bootstrap.sh; path = ../bootstrap.sh; sourceTree = "<group>"; };
 		C9098F7026B0538400D2B5F4 /* package-lock.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "package-lock.json"; sourceTree = "<group>"; };
 		C9098F7126B0538500D2B5F4 /* package.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
-		C9098F7426B0538A00D2B5F4 /* swift-format.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "swift-format.sh"; sourceTree = "<group>"; };
 		C9098F7626B0539000D2B5F4 /* webpack.config.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = webpack.config.js; sourceTree = "<group>"; };
 		C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserOnboardingView.swift; sourceTree = "<group>"; };
 		C9299E35268F9CF300758795 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
@@ -1365,6 +1359,9 @@
 		C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = KMCGeigerCounterTick.aiff; sourceTree = "<group>"; };
 		C9DACFE9269CEFE500456020 /* KMCGeigerCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMCGeigerCounter.h; sourceTree = "<group>"; };
 		C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMCGeigerCounter.m; sourceTree = "<group>"; };
+		C9DE0C5C26B2FE8400CB995A /* files-to-format.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "files-to-format.sh"; sourceTree = "<group>"; };
+		C9DE0C5D26B3054700CB995A /* swift-format-dirs.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "swift-format-dirs.txt"; sourceTree = "<group>"; };
+		C9DE0C5F26B305D900CB995A /* swift-format.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "swift-format.sh"; sourceTree = "<group>"; };
 		C9DF5690266A83F4009A2E6C /* ShareToView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareToView.swift; sourceTree = "<group>"; };
 		C9DF5696266A84A4009A2E6C /* ShareTo Preview Support.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShareTo Preview Support.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9DF5698266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareTo_Preview_SupportApp.swift; sourceTree = "<group>"; };
@@ -2364,9 +2361,11 @@
 			children = (
 				C9098F6D26B0537000D2B5F4 /* bootstrap.sh */,
 				C9098F6C26B0537000D2B5F4 /* carthage_command.sh */,
-				C9098F7426B0538A00D2B5F4 /* swift-format.sh */,
+				C9DE0C5C26B2FE8400CB995A /* files-to-format.sh */,
+				C9DE0C5F26B305D900CB995A /* swift-format.sh */,
+				C9DE0C5D26B3054700CB995A /* swift-format-dirs.txt */,
 			);
-			name = Scripts;
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 		C9299E392695EA2100758795 /* Zoom */ = {
@@ -3977,19 +3976,15 @@
 				0BA1E0301B051A07007675AF /* OfflineError.css in Resources */,
 				3BC659491E5BA4AE006D560F /* TopSites in Resources */,
 				E4B7B77E1A793CF20022C5E0 /* FiraSans-SemiBold.ttf in Resources */,
-				C9098F7226B0538500D2B5F4 /* package-lock.json in Resources */,
-				C9098F6F26B0537000D2B5F4 /* bootstrap.sh in Resources */,
 				F84B220B1A0910F600AAB793 /* Images.xcassets in Resources */,
 				F35B8D2B1D6380EA008E3D61 /* SessionRestore.html in Resources */,
 				BCC138A02656CBE70018D87D /* nicons-500.ttf in Resources */,
 				7B42406E1CA04CAC009B5C28 /* Menu.xcassets in Resources */,
 				23BEA767251A99ED00A014BF /* NewYorkMedium-Bold.otf in Resources */,
-				C9098F7526B0538B00D2B5F4 /* swift-format.sh in Resources */,
 				2328616825C9BD3D0015EA47 /* DefaultBrowserOnboarding.xcassets in Resources */,
 				C9AFE6E126582ACE000C5A03 /* Error.css in Resources */,
 				3BC659591E5BA505006D560F /* top_sites.json in Resources */,
 				BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */,
-				C9098F6E26B0537000D2B5F4 /* carthage_command.sh in Resources */,
 				C8399D9522DE5E6200EFA5CA /* disconnect-block-social.json in Resources */,
 				BC6D34852622D4DE0050DEC4 /* Roobert-Heavy.otf in Resources */,
 				BCC138B12656CBF20018D87D /* nicons-600.ttf in Resources */,
@@ -4037,7 +4032,6 @@
 				C9098F7726B0539000D2B5F4 /* webpack.config.js in Resources */,
 				E4D6BEB91A0930EC00F538BD /* LaunchScreen.xib in Resources */,
 				2F44FB2D1A9D5D8500FD20CC /* FiraSans-BoldItalic.ttf in Resources */,
-				C9098F7326B0538500D2B5F4 /* package.json in Resources */,
 				C9AFE6E326582BCB000C5A03 /* OfflineError.html in Resources */,
 				23BEA769251A99ED00A014BF /* NewYorkMedium-Regular.otf in Resources */,
 				D03F8F23200EAC1F003C2224 /* AllFramesAtDocumentStart.js in Resources */,
@@ -4130,7 +4124,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./swift-format.sh\n";
+			shellScript = "./Scripts/swift-format.sh\n";
 		};
 		C93EFEDA26711CC3000396B5 /* Run Periphery */ = {
 			isa = PBXShellScriptBuildPhase;
