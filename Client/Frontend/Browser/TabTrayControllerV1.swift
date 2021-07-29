@@ -389,15 +389,12 @@ class TabTrayControllerV1: UIViewController {
         toView.alpha = 0
         toView.transform = scaleDownTransform
 
-        UIView.animate(
-            withDuration: 0.2, delay: 0, options: [],
-            animations: { () -> Void in
-                fromView.transform = scaleDownTransform
-                fromView.alpha = 0
-                toView.transform = .identity
-                toView.alpha = 1
-            }
-        ) { finished in
+        UIView.animate(withDuration: 0.2, delay: 0, options: []) {
+            fromView.transform = scaleDownTransform
+            fromView.alpha = 0
+            toView.transform = .identity
+            toView.alpha = 1
+        } completion: { finished in
             if fromView != self.emptyPrivateTabsView {
                 fromView.removeFromSuperview()
             }
@@ -532,13 +529,10 @@ extension TabTrayControllerV1 {
     @objc func appDidBecomeActiveNotification() {
         // Re-show any components that might have been hidden because they were being displayed
         // as part of a private mode tab
-        UIView.animate(
-            withDuration: 0.2,
-            animations: {
-                self.collectionView.alpha = 1
-                self.emptyPrivateTabsView.alpha = 1
-            }
-        ) { _ in
+        UIView.animate(withDuration: 0.2) {
+            self.collectionView.alpha = 1
+            self.emptyPrivateTabsView.alpha = 1
+        } completion: { _ in
             self.webViewContainerBackdrop.alpha = 0
             self.view.sendSubviewToBack(self.webViewContainerBackdrop)
         }

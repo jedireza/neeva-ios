@@ -7,7 +7,9 @@ import Foundation
 open class CancellableDeferred<T>: Deferred<T> {
     public var dispatchWorkItem: DispatchWorkItem?
 
+    // swift-format-ignore: NoLeadingUnderscores
     internal var _running = false
+    // swift-format-ignore: NoLeadingUnderscores
     internal var _cancelled = false
 
     open func cancel() {

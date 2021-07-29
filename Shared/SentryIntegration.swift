@@ -45,12 +45,12 @@ public class Sentry {
         assert(!enabled, "Sentry.setup() should only be called once")
 
         if DeviceInfo.isSimulator() {
-            Logger.browserLogger.debug("Not enabling Sentry; Running in Simulator")
+            Logger.browser.debug("Not enabling Sentry; Running in Simulator")
             return
         }
 
         if !sendUsageData {
-            Logger.browserLogger.debug("Not enabling Sentry; Not enabled by user choice")
+            Logger.browser.debug("Not enabling Sentry; Not enabled by user choice")
             return
         }
 
@@ -144,6 +144,6 @@ public class Sentry {
             let (key, value) = arg1
             return "\(result), \(key): \(value)"
         }
-        Logger.browserLogger.debug("Sentry: \(message) \(string ??? "")")
+        Logger.browser.debug("Sentry: \(message) \(string ??? "")")
     }
 }

@@ -9,7 +9,7 @@ import Shared
 import SwiftyJSON
 import XCGLogger
 
-private let log = Logger.syncLogger
+private let log = Logger.sync
 
 // Set up for downloading web content for parsing.
 // NOTE: We use the desktop UA to try and get hi-res icons.
@@ -100,10 +100,8 @@ extension SQLiteHistory: Favicons {
         return self.favicons.insertOrUpdateFavicon(icon)
     }
 
-    /**
-     * This method assumes that the site has already been recorded
-     * in the history table.
-     */
+    /// This method assumes that the site has already been recorded
+    /// in the history table.
     public func addFavicon(_ icon: Favicon, forSite site: Site) -> Deferred<Maybe<Int>> {
         func doChange(_ query: String, args: Args?) -> Deferred<Maybe<Int>> {
             return db.withConnection { conn -> Int in

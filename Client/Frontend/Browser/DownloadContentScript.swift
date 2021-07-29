@@ -49,8 +49,8 @@ class DownloadContentScript: TabContentScript {
     ) {
         guard let browserViewController = tab?.browserViewController,
             let dictionary = message.body as? [String: Any?],
-            let _url = dictionary["url"] as? String,
-            let url = URL(string: _url),
+            let url = dictionary["url"] as? String,
+            let url = URL(string: url),
             let mimeType = dictionary["mimeType"] as? String,
             let size = dictionary["size"] as? Int64,
             let base64String = dictionary["base64String"] as? String,

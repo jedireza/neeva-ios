@@ -7,7 +7,7 @@ import Foundation
 import Shared
 import XCGLogger
 
-private let log = Logger.syncLogger
+private let log = Logger.sync
 public let TopSiteCacheSize: Int32 = 16
 
 class NoSuchRecordError: MaybeErrorType {
@@ -239,7 +239,8 @@ private struct SQLiteFrecentHistory: FrecentHistory {
 
         let localFrecencySQL = getLocalFrecencySQL()
         let remoteFrecencySQL = getRemoteFrecencySQL()
-        let sixMonthsInMicroseconds: UInt64 = 15_724_800_000_000  // 182 * 1000 * 1000 * 60 * 60 * 24
+        // 182 * 1000 * 1000 * 60 * 60 * 24
+        let sixMonthsInMicroseconds: UInt64 = 15_724_800_000_000
         let sixMonthsAgo = Date.nowMicroseconds() - sixMonthsInMicroseconds
 
         let args: Args

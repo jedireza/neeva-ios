@@ -105,7 +105,7 @@ class Tab: NSObject {
     var pendingScreenshot = false
     var url: URL? {
         didSet {
-            if let _url = url, let internalUrl = InternalURL(_url), internalUrl.isAuthorized {
+            if let internalUrl = InternalURL(url), internalUrl.isAuthorized {
                 url = URL(string: internalUrl.stripAuthorization)
             }
         }

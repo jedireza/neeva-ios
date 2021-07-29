@@ -10,7 +10,7 @@ import SwiftyJSON
 import WebKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 class LoginsHelper: TabContentScript {
     fileprivate weak var tab: Tab?

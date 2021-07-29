@@ -24,10 +24,10 @@ enum ShortcutType: String {
 
 class QuickActions: NSObject {
 
-    fileprivate let log = Logger.browserLogger
+    fileprivate let log = Logger.browser
 
-    static let QuickActionsVersion = "1.0"
-    static let QuickActionsVersionKey = "dynamicQuickActionsVersion"
+    static let Version = "1.0"
+    static let VersionKey = "dynamicQuickActionsVersion"
 
     static let TabURLKey = "url"
     static let TabTitleKey = "title"
@@ -55,7 +55,7 @@ class QuickActions: NSObject {
     ) -> Bool {
         // add the quick actions version so that it is always in the user info
         var userData: [String: String] = userData
-        userData[QuickActions.QuickActionsVersionKey] = QuickActions.QuickActionsVersion
+        userData[QuickActions.VersionKey] = QuickActions.Version
 
         let dynamicShortcutItems = application.shortcutItems ?? [UIApplicationShortcutItem]()
         application.shortcutItems = dynamicShortcutItems

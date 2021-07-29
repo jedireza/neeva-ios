@@ -7,7 +7,7 @@ import Shared
 import Storage
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 class TabManagerStore {
     static let shared = TabManagerStore(
         imageStore: DiskImageStore(

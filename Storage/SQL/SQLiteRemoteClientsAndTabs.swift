@@ -7,7 +7,7 @@ import Shared
 import SwiftyJSON
 import XCGLogger
 
-private let log = Logger.syncLogger
+private let log = Logger.sync
 
 open class SQLiteRemoteClientsAndTabs: RemoteClientsAndTabs {
     let db: BrowserDB
@@ -43,7 +43,8 @@ open class SQLiteRemoteClientsAndTabs: RemoteClientsAndTabs {
 
     class func remoteTabFactory(_ row: SDRow) -> RemoteTab {
         let clientGUID = row["client_guid"] as? String
-        let url = URL(string: row["url"] as! String)!  // TODO: find a way to make this less dangerous.
+        // TODO: find a way to make this less dangerous.
+        let url = URL(string: row["url"] as! String)!
         let title = row["title"] as! String
         let history = SQLiteRemoteClientsAndTabs.convertStringToHistory(row["history"] as? String)
         let lastUsed = row.getTimestamp("last_used")!

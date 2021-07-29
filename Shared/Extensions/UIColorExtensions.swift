@@ -20,9 +20,7 @@ extension UIColor {
         }
     }
 
-    /**
-     * Initializes and returns a color object for the given RGB hex integer.
-     */
+    /// Initializes and returns a color object for the given RGB hex integer.
     public convenience init(rgb: Int) {
         self.init(
             red: CGFloat((rgb & 0xFF0000) >> 16) / 255.0,

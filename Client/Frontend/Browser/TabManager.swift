@@ -10,7 +10,7 @@ import Storage
 import WebKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 protocol TabManagerDelegate: AnyObject {
     func tabManager(

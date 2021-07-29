@@ -19,9 +19,7 @@ class AuthenticationTests: KIFTestCase {
         super.tearDown()
     }
 
-    /**
-     * Tests HTTP authentication credentials and auto-fill.
-     */
+    /// Tests HTTP authentication credentials and auto-fill.
     /* Disabled due to Logins infrastructure being stubbed out.
     func testAuthentication() {
         loadAuthPage()

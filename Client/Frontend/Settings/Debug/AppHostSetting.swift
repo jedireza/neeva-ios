@@ -17,7 +17,7 @@ struct AppHostSetting: View {
 
             Spacer()
 
-            Button(action: {
+            Button("Change") {
                 let alert = UIAlertController(
                     title: "Enter custom Neeva server", message: "Default is neeva.com",
                     preferredStyle: .alert)
@@ -45,8 +45,6 @@ struct AppHostSetting: View {
                 }
                 UIApplication.shared.frontViewController.present(
                     alert, animated: true, completion: nil)
-            }) {
-                Text("Change")
             }
         }.accessibilityElement(children: .combine)
     }

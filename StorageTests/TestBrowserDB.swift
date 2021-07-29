@@ -132,7 +132,8 @@ class TestBrowserDB: XCTestCase {
         let expectation = self.expectation(description: "Got all DB results")
 
         let db = BrowserDB(filename: "foo.db", schema: BrowserSchema(), files: self.files)
-        db.run("CREATE TABLE foo (id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT)").succeeded()  // Just so we have writes in the WAL.
+        // Just so we have writes in the WAL.
+        db.run("CREATE TABLE foo (id INTEGER PRIMARY KEY AUTOINCREMENT, bar TEXT)").succeeded()
 
         _ = db.withConnection { connection -> Void in
             for i in 0..<1000 {

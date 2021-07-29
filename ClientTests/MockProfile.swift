@@ -93,6 +93,7 @@ open class MockProfile: Client.Profile {
         return name
     }
 
+    // swift-format-ignore: NoLeadingUnderscores
     public func _reopen() {
         isShutdown = false
 
@@ -100,6 +101,7 @@ open class MockProfile: Client.Profile {
         _ = logins.reopenIfClosed()
     }
 
+    // swift-format-ignore: NoLeadingUnderscores
     public func _shutdown() {
         isShutdown = true
 

@@ -70,7 +70,8 @@ class UIImageViewExtensionsTests: XCTestCase {
     func testDefaultIcons() {
         let favImageView = UIImageView()
 
-        let gFavURL: URL = "https://www.facebook.com/fav"  //This will be fetched from tippy top sites
+        // This will be fetched from tippy top sites
+        let gFavURL: URL = "https://www.facebook.com/fav"
         let gURL: URL = "http://www.facebook.com"
         let defaultItem = FaviconFetcher.bundledIcons[gURL.baseDomain!]!
         let correctImage = UIImage(contentsOfFile: defaultItem.filePath)!

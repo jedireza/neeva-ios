@@ -15,10 +15,13 @@ struct MultilineTextField: View {
 
     @Binding private var text: String
     private var internalText: Binding<String> {
-        Binding<String>(get: { self.text }) {
-            self.text = $0
-            self.showingPlaceholder = $0.isEmpty
-        }
+        Binding<String>(
+            get: { self.text },
+            set: {
+                self.text = $0
+                self.showingPlaceholder = $0.isEmpty
+            }
+        )
     }
 
     @State private var dynamicHeight: CGFloat = 100

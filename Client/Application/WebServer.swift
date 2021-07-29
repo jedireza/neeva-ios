@@ -7,13 +7,9 @@ import GCDWebServers
 import Shared
 
 class WebServer {
-    private let log = Logger.browserLogger
+    private let log = Logger.browser
 
-    static let WebServerSharedInstance = WebServer()
-
-    class var sharedInstance: WebServer {
-        return WebServerSharedInstance
-    }
+    static let sharedInstance = WebServer()
 
     let server: GCDWebServer = GCDWebServer()
 
@@ -38,7 +34,8 @@ class WebServer {
             try server.start(options: [
                 GCDWebServerOption_Port: AppInfo.webserverPort,
                 GCDWebServerOption_BindToLocalhost: true,
-                GCDWebServerOption_AutomaticallySuspendInBackground: false,  // done by the app in AppDelegate
+                // done by the app in AppDelegate:
+                GCDWebServerOption_AutomaticallySuspendInBackground: false,
                 GCDWebServerOption_AuthenticationMethod: GCDWebServerAuthenticationMethod_Basic,
                 GCDWebServerOption_AuthenticationAccounts: [sessionToken: ""],
             ])

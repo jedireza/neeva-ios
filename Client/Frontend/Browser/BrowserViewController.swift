@@ -108,7 +108,8 @@ class BrowserViewController: UIViewController {
     var searchController: SearchViewController?
     var screenshotHelper: ScreenshotHelper!
     fileprivate var zeroQueryIsInline = false
-    let alertStackView = UIStackView()  // All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
+    /// All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
+    let alertStackView = UIStackView()
     var findInPageBar: FindInPageBar?
     var urlFromAnotherApp: UrlToOpenModel?
     var isCrashAlertShowing: Bool = false
@@ -1316,6 +1317,7 @@ class BrowserViewController: UIViewController {
 
 // MARK: URL Bar Delegate support code
 extension BrowserViewController {
+    // swift-format-ignore: NoLeadingUnderscores
     func _urlBarUpdateSearchController(for text: String) {
         if text.isEmpty {
             hideSearchController()
@@ -1345,9 +1347,7 @@ extension BrowserViewController {
         self.typedNavigation[navigation] = visitType
     }
 
-    /**
-     * Untrack and do the right thing.
-     */
+    /// Untrack and do the right thing.
     func getVisitTypeForTab(_ tab: Tab, navigation: WKNavigation?) -> VisitType? {
         guard let navigation = navigation else {
             // See https://github.com/WebKit/webkit/blob/master/Source/WebKit2/UIProcess/Cocoa/NavigationState.mm#L390
@@ -1529,7 +1529,7 @@ extension BrowserViewController: HistoryPanelDelegate {
 
     func libraryPanel(didSelectURLString url: String, visitType: VisitType) {
         guard let url = URIFixup.getURL(url) ?? neevaSearchEngine.searchURLForQuery(url) else {
-            Logger.browserLogger.warning("Invalid URL, and couldn't generate a search URL for it.")
+            Logger.browser.warning("Invalid URL, and couldn't generate a search URL for it.")
             return
         }
         return self.libraryPanel(didSelectURL: url, visitType: visitType)

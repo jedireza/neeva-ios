@@ -18,7 +18,7 @@ import XCGLogger
     import SwiftyJSON
 #endif
 
-private let log = Logger.syncLogger
+private let log = Logger.sync
 
 public let ProfileRemoteTabsSyncDelay: TimeInterval = 0.1
 
@@ -70,10 +70,12 @@ protocol Profile: AnyObject {
 
     /// WARNING: Only to be called as part of the app lifecycle from the AppDelegate
     /// or from App Extension code.
+    // swift-format-ignore: NoLeadingUnderscores
     func _shutdown()
 
     /// WARNING: Only to be called as part of the app lifecycle from the AppDelegate
     /// or from App Extension code.
+    // swift-format-ignore: NoLeadingUnderscores
     func _reopen()
 
     // I got really weird EXC_BAD_ACCESS errors on a non-null reference when I made this a getter.
@@ -108,18 +110,18 @@ open class BrowserProfile: Profile {
         return secret
     }()
 
-    /**
-     * N.B., BrowserProfile is used from our extensions, often via a pattern like
-     *
-     *   BrowserProfile(…).foo.saveSomething(…)
-     *
-     * This can break if BrowserProfile's initializer does async work that
-     * subsequently — and asynchronously — expects the profile to stick around:
-     * see Bug 1218833. Be sure to only perform synchronous actions here.
-     *
-     * A SyncDelegate can be provided in this initializer, or once the profile is initialized.
-     * However, if we provide it here, it's assumed that we're initializing it from the application.
-     */
+    /// N.B., `BrowserProfile` is used from our extensions, often via a pattern like
+    ///
+    /// ```
+    /// BrowserProfile(…).foo.saveSomething(…)
+    /// ```
+    ///
+    /// This can break if BrowserProfile's initializer does async work that
+    /// subsequently — and asynchronously — expects the profile to stick around:
+    /// see Bug 1218833. Be sure to only perform synchronous actions here.
+    ///
+    /// A `SyncDelegate` can be provided in this initializer, or once the profile is initialized.
+    /// However, if we provide it here, it's assumed that we're initializing it from the application.
     init(localName: String, clear: Bool = false) {
         log.debug("Initing profile \(localName) on thread \(Thread.current).")
         self.name = localName
@@ -171,6 +173,7 @@ open class BrowserProfile: Profile {
         Defaults[.topSitesCacheIsValid] = false
     }
 
+    // swift-format-ignore: NoLeadingUnderscores
     func _reopen() {
         log.debug("Reopening profile.")
         isShutdown = false
@@ -179,6 +182,7 @@ open class BrowserProfile: Profile {
         _ = logins.reopenIfClosed()
     }
 
+    // swift-format-ignore: NoLeadingUnderscores
     func _shutdown() {
         log.debug("Shutting down profile.")
         isShutdown = true
@@ -221,7 +225,8 @@ open class BrowserProfile: Profile {
             log.debug("Metadata notification doesn't contain any metadata!")
             return
         }
-        let defaultMetadataTTL: UInt64 = 3 * 24 * 60 * 60 * 1000  // 3 days for the metadata to live
+        /// 3 days for the metadata to live
+        let defaultMetadataTTL: UInt64 = 3 * 24 * 60 * 60 * 1000
         self.metadata.storeMetadata(
             pageMetadata, forPageURL: pageURL, expireAt: defaultMetadataTTL + Date.nowMilliseconds()
         )
@@ -241,13 +246,11 @@ open class BrowserProfile: Profile {
         }
     }()
 
-    /**
-     * Favicons, history, and tabs are all stored in one intermeshed
-     * collection of tables.
-     *
-     * Any other class that needs to access any one of these should ensure
-     * that this is initialized first.
-     */
+    /// Favicons, history, and tabs are all stored in one intermeshed
+    /// collection of tables.
+    ///
+    /// Any other class that needs to access any one of these should ensure
+    /// that this is initialized first.
     fileprivate lazy var legacyPlaces:
         BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations = {
             return SQLiteHistory(db: self.db)

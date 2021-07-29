@@ -58,14 +58,13 @@ class SessionData: NSObject, NSCoding {
         ]
     }
 
-    /**
-        Creates a new SessionData object representing a serialized tab.
-
-        - parameter currentPage:     The active page index. Must be in the range of (-N, 0],
-                                where 1-N is the first page in history, and 0 is the last.
-        - parameter urls:            The sequence of URLs in this tab's session history.
-        - parameter lastUsedTime:    The last time this tab was modified.
-    **/
+    /// Creates a new SessionData object representing a serialized tab.
+    ///
+    /// - Parameters:
+    ///   - currentPage: The active page index. Must be in the range of (-N, 0],
+    ///                  where 1-N is the first page in history, and 0 is the last.
+    ///   - urls: The sequence of URLs in this tab's session history.
+    ///   - lastUsedTime: The last time this tab was modified.
     init(currentPage: Int, urls: [URL], lastUsedTime: Timestamp) {
         self.currentPage = currentPage
         self.urls = migrate(urls: urls)

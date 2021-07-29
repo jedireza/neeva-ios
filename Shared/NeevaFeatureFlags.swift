@@ -74,6 +74,7 @@ public class NeevaFeatureFlags {
     }
 
     public enum IntFlag: Int, CaseIterable {
+        // swift-format-ignore: NoLeadingUnderscores
         case _unused = 0
 
         public var name: String {
@@ -82,6 +83,7 @@ public class NeevaFeatureFlags {
     }
 
     public enum FloatFlag: Int, CaseIterable {
+        // swift-format-ignore: NoLeadingUnderscores
         case _unused = 0
 
         public var name: String {
@@ -90,6 +92,7 @@ public class NeevaFeatureFlags {
     }
 
     public enum StringFlag: Int, CaseIterable {
+        // swift-format-ignore: NoLeadingUnderscores
         case _unused = 0
 
         public var name: String {

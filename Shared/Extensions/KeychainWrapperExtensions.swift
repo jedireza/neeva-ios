@@ -6,7 +6,7 @@ import Foundation
 import SwiftKeychainWrapper
 import XCGLogger
 
-private let log = Logger.keychainLogger
+private let log = Logger.keychain
 
 extension KeychainWrapper {
     public static var sharedAppContainerKeychain: KeychainWrapper {

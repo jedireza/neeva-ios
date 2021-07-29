@@ -9,7 +9,7 @@ import SwiftyJSON
 import UIKit
 import WebKit
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 /// List of schemes that are allowed to be opened in new tabs.
 private let schemesAllowedToBeOpenedAsPopups = ["http", "https", "javascript", "data", "about"]

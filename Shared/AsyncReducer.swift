@@ -39,10 +39,8 @@ open class AsyncReducer<T, U> {
 
     private var isStarted: Bool = false
 
-    /**
-     * Has this task queue finished?
-     * Once the task queue has finished, it cannot have more tasks appended.
-     */
+    /// Has this task queue finished?
+    /// Once the task queue has finished, it cannot have more tasks appended.
     open var isFilled: Bool {
         lock.lock()
         defer { lock.unlock() }
@@ -109,20 +107,14 @@ open class AsyncReducer<T, U> {
         self.isStarted = true
     }
 
-    /**
-     * Append one or more tasks onto the end of the queue.
-     *
-     * @throws AlreadyFilled if the queue has finished already.
-     */
+    /// Append one or more tasks onto the end of the queue.
+    /// - throws `AlreadyFilled` if the queue has finished already.
     open func append(_ items: U...) throws -> Deferred<Maybe<T>> {
         return try append(items)
     }
 
-    /**
-     * Append a list of tasks onto the end of the queue.
-     *
-     * @throws AlreadyFilled if the queue has already finished.
-     */
+    /// Append a list of tasks onto the end of the queue.
+    /// - throws `AlreadyFilled` if the queue has finished already.
     open func append(_ items: [U]) throws -> Deferred<Maybe<T>> {
         lock.lock()
         defer { lock.unlock() }

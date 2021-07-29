@@ -8,7 +8,7 @@ import SDWebImage
 import Shared
 import WebKit
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 // A base protocol for something that can be cleared.
 protocol Clearable {

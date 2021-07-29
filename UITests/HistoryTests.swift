@@ -31,9 +31,7 @@ class HistoryTests: KIFTestCase {
         return urls
     }
 
-    /**
-     * Tests for listed history visits
-     */
+    /// Tests for listed history visits
     func testAddHistoryUI() {
         _ = addHistoryItems(2)
 

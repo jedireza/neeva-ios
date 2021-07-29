@@ -4,6 +4,9 @@ commands:
   bootstrap:
     steps:
       - checkout
+      - run:
+          name: Checkout Submodules
+          command: git submodule update --init --recursive
       - carthage-bootstrap
       - unset-clone-via-ssh
   restore-build-cache:
@@ -55,6 +58,22 @@ commands:
       - run:
           name: Build Codegen
           command: xcodebuild build -scheme Codegen -workspace Neeva.xcworkspace -destination 'platform=macOS'
+  build-swift-format:
+    steps:
+      - restore_cache:
+          name: Restore swift-format cache
+          key: swift-format-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "swift-format/Package.swift" }}
+      - run:
+          name: Build swift-format
+          command: |
+            cd swift-format
+            swift build -c release
+            cd ..
+      - save_cache:
+          name: Save swift-format cache
+          key: swift-format-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "swift-format/Package.swift" }}
+          paths:
+            - swift-format/.build
 
   test-client:
     steps:
@@ -108,9 +127,14 @@ commands:
           command: xcodebuild build-for-testing -scheme AppClip -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
   app-clip-tests:
     steps:
-    - run:
-        name: AppClipTests
-        command: xcodebuild test-without-building -scheme AppClip -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing AppClipTests
+      - run:
+          name: AppClipTests
+          command: xcodebuild test-without-building -scheme AppClip -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing AppClipTests
+  swift-format-check:
+    steps:
+      - run:
+          name: Check Formatting
+          command: ./Scripts/swift-format.sh --check-all
 
 jobs:
   build:
@@ -123,11 +147,6 @@ jobs:
       - bootstrap
       - build-codegen
       - build-client
-      - save_cache:
-          name: Save build cache
-          key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ~/Library/Developer/Xcode/DerivedData
   test-client:
     # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
     # info on using Xcode 12.5.0 at this time.
@@ -136,9 +155,11 @@ jobs:
     resource_class: m2.medium
     steps:
       - restore-build-cache
+      - build-swift-format
       - test-client
       - build-app-clip
       - app-clip-tests
+      - swift-format-check
   ui-tests:
     # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
     # info on using Xcode 12.5.0 at this time.

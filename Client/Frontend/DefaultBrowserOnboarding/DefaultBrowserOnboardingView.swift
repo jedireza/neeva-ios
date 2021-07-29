@@ -35,7 +35,8 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
                         URL(string: UIApplication.openSettingsURLString)!, options: [:])
                     didOpenSettings()
                 }
-                Defaults[.didDismissDefaultBrowserCard] = true  // Don't show default browser card if this button is tapped
+                // Don't show default browser card if this button is tapped
+                Defaults[.didDismissDefaultBrowserCard] = true
                 TelemetryWrapper.recordEvent(
                     category: .action, method: .tap, object: .goToSettingsDefaultBrowserOnboarding)
             },

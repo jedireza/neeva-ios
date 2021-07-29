@@ -52,12 +52,12 @@ class ZoomMenuModel: ObservableObject {
             }
         }
     #else
-        private var _suppressUpdate = false
+        private var suppressUpdate = false
         var pageZoom: CGFloat = 1 {
             didSet {
                 objectWillChange.send()
-                if _suppressUpdate {
-                    _suppressUpdate = false
+                if suppressUpdate {
+                    suppressUpdate = false
                 } else {
                     webView.evaluateJavaScript(
                         "document.body.style.webkitTextSizeAdjust = '\(pageZoom * 100)%'")

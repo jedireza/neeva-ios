@@ -14,7 +14,8 @@ open class SuggestedSite: Site {
     init(data: SuggestedSiteData) {
         self.trackingId = data.trackingId
         super.init(url: data.url, title: data.title)
-        self.guid = "default" + data.title  // A guid is required in the case the site might become a pinned site
+        // A guid is required in the case the site might become a pinned site
+        self.guid = "default" + data.title
     }
 }
 

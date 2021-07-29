@@ -1,19 +1,33 @@
 #!/bin/sh
 
-if [ "$1" = "--help" ]; then
+HELP="--help"
+FORMAT_ALL="--format-all"
+CHECK_ALL="--check-all"
+
+args=(--configuration .swiftformat.json)
+if [ "$1" = "$HELP" ]; then
     echo "USAGE:"
-    echo "  ./Scripts/swift-format.sh          # format changed files"
-    echo "  ./Scripts/swift-format.sh --all    # format all files"
+    echo "  ./Scripts/swift-format.sh               # format changed files"
+    echo "  ./Scripts/swift-format.sh $FORMAT_ALL  # format all files"
+    echo "  ./Scripts/swift-format.sh $CHECK_ALL   # check all files"
     exit 0
-elif [ "$1" = "--all" ]; then
-    files=(--recursive)
-    files+=($(cat $(dirname $0)/swift-format-dirs.txt))
+elif [ "$1" = "$FORMAT_ALL" -o "$1" = "$CHECK_ALL" ]; then
+    args+=(--recursive)
+    files=($(cat $(dirname $0)/swift-format-dirs.txt))
 else
     files=($($(dirname $0)/files-to-format.sh))
 fi
 
 if [ -z "$files" ]; then
     echo "No files to format"
-elif [ -z $CI ] && [ -z "$CONFIGURATION" -o "$CONFIGURATION" = "Debug" ]; then
-    ./swift-format/.build/release/swift-format format --configuration .swiftformat.json --in-place "${files[@]}"
+else
+    if [ "$1" != "$CHECK_ALL" ]; then
+        ./swift-format/.build/release/swift-format format --in-place "${args[@]}" "${files[@]}"
+        status=$?
+        if [ "$status" != 0 ]; then
+            exit $status
+        fi
+    fi
+    ./swift-format/.build/release/swift-format lint "${args[@]}" "${files[@]}"
+    exit $?
 fi

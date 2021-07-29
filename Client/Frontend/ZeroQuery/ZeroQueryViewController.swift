@@ -11,7 +11,7 @@ import SwiftUI
 import UIKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 extension EnvironmentValues {
     private struct HideTopSiteKey: EnvironmentKey {

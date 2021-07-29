@@ -29,11 +29,8 @@ open class RollingFileLogger: XCGLogger {
         super.init()
     }
 
-    /**
-    Create a new log file with the given timestamp to log events into
-
-    :param: date Date for with to start and mark the new log file
-    */
+    /// Create a new log file with the given timestamp to log events into
+    /// - parameter date: Date for with to start and mark the new log file
     open func newLogWithDate(_ date: Date) {
         // Don't start a log if we don't have a valid log directory path
         if logDirectoryPath == nil {

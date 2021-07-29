@@ -5,9 +5,7 @@
 import Foundation
 
 extension UIView {
-    /**
-     * Takes a screenshot of the view with the given size.
-     */
+    /// Takes a screenshot of the view with the given size.
     func screenshot(_ size: CGSize, offset: CGPoint? = nil, quality: CGFloat = 1) -> UIImage? {
         assert(0...1 ~= quality)
 
@@ -21,10 +19,9 @@ extension UIView {
         return image
     }
 
-    /**
-     * Takes a screenshot of the view with the given aspect ratio.
-     * An aspect ratio of 0 means capture the entire view.
-     */
+    /// Takes a screenshot of the view with the given aspect ratio.
+    ///
+    /// An aspect ratio of 0 means to capture the entire view.
     func screenshot(_ aspectRatio: CGFloat = 0, offset: CGPoint? = nil, quality: CGFloat = 1)
         -> UIImage?
     {

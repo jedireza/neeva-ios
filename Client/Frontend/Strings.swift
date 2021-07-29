@@ -2558,33 +2558,6 @@ extension String {
         comment: "See http://mzl.la/1LXbDOL")
 }
 
-// Remote Tabs Panel
-extension String {
-    // Backup and active strings added in Bug 1205294.
-    public static let RemoteTabEmptyStateInstructionsSyncTabsPasswordsString = MZLocalizedString(
-        "Sync your tabs, passwords and more.",
-        comment:
-            "Text displayed when the Sync home panel is empty, describing the features provided by Sync to invite the user to log in."
-    )
-
-    public static let RemoteTabErrorNoTabs = MZLocalizedString(
-        "You don’t have any tabs open in Neeva on your other devices.",
-        comment: "Error message in the remote tabs panel")
-    public static let RemoteTabErrorFailedToSync = MZLocalizedString(
-        "There was a problem accessing tabs from your other devices. Try again in a few moments.",
-        comment: "Error message in the remote tabs panel")
-    public static let RemoteTabLastSync = MZLocalizedString(
-        "Last synced: %@",
-        comment: "Remote tabs last synced time. Argument is the relative date string.")
-    public static let RemoteTabComputerAccessibilityLabel = MZLocalizedString(
-        "computer",
-        comment: "Accessibility label for Desktop Computer (PC) image in remote tabs list")
-    public static let RemoteTabMobileAccessibilityLabel = MZLocalizedString(
-        "mobile device", comment: "Accessibility label for Mobile Device image in remote tabs list")
-    public static let RemoteTabCreateAccount = MZLocalizedString(
-        "Create an account", comment: "See http://mzl.la/1Qtkf0j")
-}
-
 // Login list
 extension String {
     public static let LoginListDeselctAll = MZLocalizedString(

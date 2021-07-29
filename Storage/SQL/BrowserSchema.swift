@@ -35,16 +35,25 @@ enum BookmarkNodeType: Int32 {
     // are not supported
 }
 
-let _TableBookmarks = "bookmarks"  // Removed in v12. Kept for migration.
-let TableBookmarksMirror = "bookmarksMirror"  // Added in v9.
-let TableBookmarksMirrorStructure = "bookmarksMirrorStructure"  // Added in v10.
+// swift-format-ignore: NoLeadingUnderscores
+/// Removed in v12. Kept for migration.
+let _TableBookmarks = "bookmarks"
+/// Added in v9.
+let TableBookmarksMirror = "bookmarksMirror"
+/// Added in v10.
+let TableBookmarksMirrorStructure = "bookmarksMirrorStructure"
 
-let TableBookmarksBuffer = "bookmarksBuffer"  // Added in v12. bookmarksMirror is renamed to bookmarksBuffer.
-let TableBookmarksBufferStructure = "bookmarksBufferStructure"  // Added in v12.
-let TableBookmarksLocal = "bookmarksLocal"  // Added in v12. Supersedes 'bookmarks'.
-let TableBookmarksLocalStructure = "bookmarksLocalStructure"  // Added in v12.
+/// Added in v12. bookmarksMirror is renamed to bookmarksBuffer.
+let TableBookmarksBuffer = "bookmarksBuffer"
+/// Added in v12.
+let TableBookmarksBufferStructure = "bookmarksBufferStructure"
+/// Added in v12. Supersedes 'bookmarks'.
+let TableBookmarksLocal = "bookmarksLocal"
+/// Added in v12.
+let TableBookmarksLocalStructure = "bookmarksLocalStructure"
 
-let TablePendingBookmarksDeletions = "pending_deletions"  // Added in v28.
+/// Added in v28.
+let TablePendingBookmarksDeletions = "pending_deletions"
 
 let TableFavicons = "favicons"
 let TableHistory = "history"
@@ -63,7 +72,8 @@ let TableActivityStreamBlocklist = "activity_stream_blocklist"
 let TablePageMetadata = "page_metadata"
 let TableHighlights = "highlights"
 
-let TableRemoteDevices = "remote_devices"  // Added in v29.
+/// Added in v29.
+let TableRemoteDevices = "remote_devices"
 let TableFaviconSiteURLs = "favicon_site_urls"
 
 let MatViewAwesomebarBookmarksWithFavicons = "matview_awesomebar_bookmarks_with_favicons"
@@ -83,19 +93,31 @@ let ViewHistoryIDsWithWidestFavicons = "view_history_id_favicon"
 let ViewIconForURL = "view_icon_for_url"
 
 let IndexHistoryShouldUpload = "idx_history_should_upload"
-let IndexVisitsSiteIDDate = "idx_visits_siteID_date"  // Removed in v6.
-let IndexVisitsSiteIDIsLocalDate = "idx_visits_siteID_is_local_date"  // Added in v6.
-let IndexBookmarksMirrorStructureParentIdx = "idx_bookmarksMirrorStructure_parent_idx"  // Added in v10.
-let IndexBookmarksLocalStructureParentIdx = "idx_bookmarksLocalStructure_parent_idx"  // Added in v12.
-let IndexBookmarksBufferStructureParentIdx = "idx_bookmarksBufferStructure_parent_idx"  // Added in v12.
-let IndexBookmarksMirrorStructureChild = "idx_bookmarksMirrorStructure_child"  // Added in v14.
-let IndexPageMetadataCacheKey = "idx_page_metadata_cache_key_uniqueindex"  // Added in v19
-let IndexPageMetadataSiteURL = "idx_page_metadata_site_url_uniqueindex"  // Added in v21
+/// Removed in v6.
+let IndexVisitsSiteIDDate = "idx_visits_siteID_date"
+/// Added in v6.
+let IndexVisitsSiteIDIsLocalDate = "idx_visits_siteID_is_local_date"
+/// Added in v10.
+let IndexBookmarksMirrorStructureParentIdx = "idx_bookmarksMirrorStructure_parent_idx"
+/// Added in v12.
+let IndexBookmarksLocalStructureParentIdx = "idx_bookmarksLocalStructure_parent_idx"
+/// Added in v12.
+let IndexBookmarksBufferStructureParentIdx = "idx_bookmarksBufferStructure_parent_idx"
+/// Added in v14.
+let IndexBookmarksMirrorStructureChild = "idx_bookmarksMirrorStructure_child"
+/// Added in v19
+let IndexPageMetadataCacheKey = "idx_page_metadata_cache_key_uniqueindex"
+/// Added in v21
+let IndexPageMetadataSiteURL = "idx_page_metadata_site_url_uniqueindex"
 
-let TriggerHistoryBeforeUpdate = "t_history_beforeupdate"  // Added in v35
-let TriggerHistoryBeforeDelete = "t_history_beforedelete"  // Added in v35
-let TriggerHistoryAfterUpdate = "t_history_afterupdate"  // Added in v35
-let TriggerHistoryAfterInsert = "t_history_afterinsert"  // Added in v35
+/// Added in v35
+let TriggerHistoryBeforeUpdate = "t_history_beforeupdate"
+/// Added in v35
+let TriggerHistoryBeforeDelete = "t_history_beforedelete"
+/// Added in v35
+let TriggerHistoryAfterUpdate = "t_history_afterupdate"
+/// Added in v35
+let TriggerHistoryAfterInsert = "t_history_afterinsert"
 
 private let AllTables: [String] = [
     TableDomains,
@@ -166,7 +188,7 @@ private let AllTriggers: [String] = [
 private let AllTablesIndicesTriggersAndViews: [String] =
     AllViews + AllTriggers + AllIndices + AllTables
 
-private let log = Logger.syncLogger
+private let log = Logger.sync
 
 /// The monolithic class that manages the inter-related history etc. tables.
 /// We rely on SQLiteHistory having initialized the favicon table first.
@@ -496,10 +518,8 @@ open class BrowserSchema: Schema {
         return sql
     }
 
-    /**
-     * We need to explicitly store what's provided by the server, because we can't rely on
-     * referenced child nodes to exist yet!
-     */
+    /// We need to explicitly store what's provided by the server, because we can't rely on
+    /// referenced child nodes to exist yet!
     func getBookmarksStructureTableCreationStringForTable(
         _ table: String, referencingMirror mirror: String
     ) -> String {

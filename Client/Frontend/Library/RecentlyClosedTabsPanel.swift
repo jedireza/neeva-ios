@@ -7,7 +7,7 @@ import Storage
 import UIKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 private enum RecentlyClosedPanelUX {
     static let IconSize = CGSize(width: 23, height: 23)

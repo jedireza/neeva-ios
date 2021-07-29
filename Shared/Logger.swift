@@ -12,20 +12,20 @@ extension Logger {
     public static let logPII = false
 
     /// Logger used for recording happenings with Sync, Accounts, Providers, Storage, and Profiles
-    public static let syncLogger = RollingFileLogger(
+    public static let sync = RollingFileLogger(
         filenameRoot: "sync",
         logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
 
     /// Logger used for recording frontend/browser happenings
-    public static let browserLogger = RollingFileLogger(
+    public static let browser = RollingFileLogger(
         filenameRoot: "browser",
         logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
 
     /// Logger used for recording interactions with the keychain
-    public static let keychainLogger: XCGLogger = Logger.fileLoggerWithName("keychain")
+    public static let keychain: XCGLogger = Logger.fileLoggerWithName("keychain")
 
     /// Logger used for logging database errors such as corruption
-    public static let corruptLogger: RollingFileLogger = {
+    public static let corrupt: RollingFileLogger = {
         let logger = RollingFileLogger(
             filenameRoot: "corruptLogger",
             logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
@@ -62,11 +62,8 @@ extension Logger {
         }
     }
 
-    /**
-    Return the log file directory path. If the directory doesn't exist, make sure it exist first before returning the path.
-
-    :returns: Directory path where log files are stored
-    */
+    /// Return the log file directory path. If the directory doesn't exist, make sure it exist first before returning the path.
+    /// - returns: Directory path where log files are stored
     public static func logFileDirectoryPath(inDocuments: Bool) -> String? {
         let searchPathDirectory: FileManager.SearchPathDirectory =
             inDocuments ? .documentDirectory : .cachesDirectory

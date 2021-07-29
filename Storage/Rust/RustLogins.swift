@@ -5,7 +5,7 @@
 import Foundation
 import Shared
 
-private let log = Logger.syncLogger
+private let log = Logger.sync
 
 // Copied from mozilla/application-services:
 public class LoginRecord {

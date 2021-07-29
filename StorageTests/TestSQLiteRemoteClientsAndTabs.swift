@@ -344,6 +344,7 @@ class SQLRemoteClientsAndTabsTests: XCTestCase {
             "SELECT * FROM remote_devices", args: nil,
             factory: SQLiteRemoteClientsAndTabs.remoteDeviceFactory
         ).value.successValue!.asArray()
-        XCTAssertEqual(newDevices.count, 1)  // replaceRemoteDevices wipes the whole list before inserting.
+        // replaceRemoteDevices wipes the whole list before inserting.
+        XCTAssertEqual(newDevices.count, 1)
     }
 }

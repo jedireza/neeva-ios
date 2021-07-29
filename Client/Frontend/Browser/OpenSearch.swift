@@ -37,17 +37,12 @@ class OpenSearchEngine {
         self.engineID = engineID
     }
 
-    /**
-     * Returns the search URL for the given query.
-     */
+    /// Returns the search URL for the given query.
     func searchURLForQuery(_ query: String) -> URL? {
         return getURLFromTemplate(searchTemplate, query: query)
     }
 
-    /**
-     * Return the arg that we use for searching for this engine
-     * Problem: the search terms may not be a query arg, they may be part of the URL - how to deal with this?
-     **/
+    /// Return the arg that we use for searching for this engine
     fileprivate func getQueryArgFromTemplate() -> String? {
         // we have the replace the templates SearchTermComponent in order to make the template
         // a valid URL, otherwise we cannot do the conversion to NSURLComponents
@@ -76,9 +71,7 @@ class OpenSearchEngine {
         return searchTerm?.first?.name
     }
 
-    /**
-     * check that the URL host contains the name of the search engine somewhere inside it
-     **/
+    /// check that the URL host contains the name of the search engine somewhere inside it
     fileprivate func isSearchURLForEngine(_ url: URL?) -> Bool {
         guard let urlHost = url?.shortDisplayString,
             let queryEndIndex = searchTemplate.range(of: "?")?.lowerBound,
@@ -87,9 +80,7 @@ class OpenSearchEngine {
         return urlHost == templateURL.shortDisplayString
     }
 
-    /**
-     * Returns the query that was used to construct a given search URL
-     **/
+    /// Returns the query that was used to construct a given search URL
     func queryForSearchURL(_ url: URL?) -> String? {
         guard isSearchURLForEngine(url), let key = searchQueryComponentKey else { return nil }
 
@@ -115,9 +106,7 @@ class OpenSearchEngine {
         return nil
     }
 
-    /**
-     * Returns the search suggestion URL for the given query.
-     */
+    /// Returns the search suggestion URL for the given query.
     func suggestURLForQuery(_ query: String) -> URL? {
         getURLFromTemplate(suggestTemplate, query: query)
     }

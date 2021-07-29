@@ -8,7 +8,7 @@ import XCGLogger
 
 private let AllTables: [String] = ["items"]
 
-private let log = Logger.syncLogger
+private let log = Logger.sync
 
 open class ReadingListSchema: Schema {
     static let DefaultVersion = 1

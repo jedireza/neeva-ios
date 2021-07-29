@@ -10,7 +10,7 @@ struct DebugDBSettingsSection: View {
                 let documentsPath = NSSearchPathForDirectoriesInDomains(
                     .documentDirectory, .userDomainMask, true)[0]
                 do {
-                    let log = Logger.syncLogger
+                    let log = Logger.sync
                     try BrowserViewController.foregroundBVC().profile.files.copyMatching(
                         fromRelativeDirectory: "", toAbsoluteDirectory: documentsPath
                     ) { file in

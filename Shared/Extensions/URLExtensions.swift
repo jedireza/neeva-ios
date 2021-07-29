@@ -179,12 +179,12 @@ extension URL {
         return "\(scheme)://\(hostPort)"
     }
 
-    /**
-     * Returns a shorter displayable string for a domain
-     *
-     * E.g., https://m.foo.com/bar/baz?noo=abc#123  => foo
-     *       https://accounts.foo.com/bar/baz?noo=abc#123  => accounts.foo
-     **/
+    /// Returns a shorter displayable string for a domain
+    /// ## Example
+    /// ```
+    /// https://m.foo.com/bar/baz?noo=abc#123 => foo
+    /// https://accounts.foo.com/bar/baz?noo=abc#123 => accounts.foo
+    /// ```
     public var shortDisplayString: String {
         guard let publicSuffix = self.publicSuffix, let baseDomain = self.normalizedHost else {
             return self.normalizedHost ?? self.absoluteString
@@ -263,13 +263,11 @@ extension URL {
         return nil
     }
 
-    /**
-    Returns the base domain from a given hostname. The base domain name is defined as the public domain suffix
-    with the base private domain attached to the front. For example, for the URL www.bbc.co.uk, the base domain
-    would be bbc.co.uk. The base domain includes the public suffix (co.uk) + one level down (bbc).
-
-    :returns: The base domain string for the given host name.
-    */
+    /// Returns the base domain from a given hostname. The base domain name is defined as the public domain suffix
+    /// with the base private domain attached to the front. For example, for the URL www.bbc.co.uk, the base domain
+    /// would be bbc.co.uk. The base domain includes the public suffix (co.uk) + one level down (bbc).
+    ///
+    /// - returns: The base domain string for the given host name.
     public var baseDomain: String? {
         guard !isIPv6, let host = host else { return nil }
 
@@ -281,13 +279,10 @@ extension URL {
         return publicSuffixFromHost(host, withAdditionalParts: 1)
     }
 
-    /**
-     * Returns just the domain, but with the same scheme, and a trailing '/'.
-     *
-     * E.g., https://m.foo.com/bar/baz?noo=abc#123  => https://foo.com/
-     *
-     * Any failure? Return this URL.
-     */
+    /// Returns just the domain, but with the same scheme, and a trailing '/'.
+    /// Any failure? Return this URL.
+    /// ## Example
+    /// `https://m.foo.com/bar/baz?noo=abc#123  => https://foo.com/`
     public var domainURL: URL {
         if let normalized = self.normalizedHost {
             // Use NSURLComponents instead of NSURL since the former correctly preserves
@@ -318,12 +313,10 @@ extension URL {
         return host
     }
 
-    /**
-    Returns the public portion of the host name determined by the public suffix list found here: https://publicsuffix.org/list/.
-    For example for the url www.bbc.co.uk, based on the entries in the TLD list, the public suffix would return co.uk.
+    /// Returns the public portion of the host name determined by the public suffix list found here: https://publicsuffix.org/list/.
+    /// For example for the url www.bbc.co.uk, based on the entries in the TLD list, the public suffix would return co.uk.
 
-    :returns: The public suffix for within the given hostname.
-    */
+    /// - returns: The public suffix for within the given hostname.
     public var publicSuffix: String? {
         return host.flatMap { publicSuffixFromHost($0, withAdditionalParts: 0) }
     }
@@ -337,10 +330,8 @@ extension URL {
         return host?.contains(":") ?? false
     }
 
-    /**
-     Returns whether the URL's scheme is one of those listed on the official list of URI schemes.
-     This only accepts permanent schemes: historical and provisional schemes are not accepted.
-     */
+    /// Returns whether the URL's scheme is one of those listed on the official list of URI schemes.
+    /// This only accepts permanent schemes: historical and provisional schemes are not accepted.
     public var schemeIsValid: Bool {
         guard let scheme = scheme else { return false }
         return permanentURISchemes.contains(scheme.lowercased())
@@ -459,8 +450,8 @@ public struct InternalURL {
         return isWebServerUrl || InternalURL.scheme == url.scheme
     }
 
-    public init?(_ url: URL) {
-        guard InternalURL.isValid(url: url) else {
+    public init?(_ url: URL?) {
+        guard let url = url, InternalURL.isValid(url: url) else {
             return nil
         }
 
@@ -566,27 +557,25 @@ extension URL {
             return ""
         }
 
-        /**
-        *  The following algorithm breaks apart the domain and checks each sub domain against the effective TLD
-        *  entries from the effective_tld_names.dat file. It works like this:
-        *
-        *  Example Domain: test.bbc.co.uk
-        *  TLD Entry: bbc
-        *
-        *  1. Start off by checking the current domain (test.bbc.co.uk)
-        *  2. Also store the domain after the next dot (bbc.co.uk)
-        *  3. If we find an entry that matches the current domain (test.bbc.co.uk), perform the following checks:
-        *    i. If the domain is a wildcard AND the previous entry is not nil, then the current domain matches
-        *       since it satisfies the wildcard requirement.
-        *    ii. If the domain is normal (no wildcard) and we don't have anything after the next dot, then
-        *        currentDomain is a valid TLD
-        *    iii. If the entry we matched is an exception case, then the base domain is the part after the next dot
-        *
-        *  On the next run through the loop, we set the new domain to check as the part after the next dot,
-        *  update the next dot reference to be the string after the new next dot, and check the TLD entries again.
-        *  If we reach the end of the host (nextDot = nil) and we haven't found anything, then we've hit the
-        *  top domain level so we use it by default.
-        */
+        ///  The following algorithm breaks apart the domain and checks each sub domain against the effective TLD
+        ///  entries from the effective_tld_names.dat file. It works like this:
+        ///
+        ///  Example Domain: test.bbc.co.uk
+        ///  TLD Entry: bbc
+        ///
+        ///  1. Start off by checking the current domain (test.bbc.co.uk)
+        ///  2. Also store the domain after the next dot (bbc.co.uk)
+        ///  3. If we find an entry that matches the current domain (test.bbc.co.uk), perform the following checks:
+        ///     1. If the domain is a wildcard AND the previous entry is not nil, then the current domain matches
+        ///       since it satisfies the wildcard requirement.
+        ///     2. If the domain is normal (no wildcard) and we don't have anything after the next dot, then
+        ///       currentDomain is a valid TLD
+        ///     3. If the entry we matched is an exception case, then the base domain is the part after the next dot
+        ///
+        ///  On the next run through the loop, we set the new domain to check as the part after the next dot,
+        ///  update the next dot reference to be the string after the new next dot, and check the TLD entries again.
+        ///  If we reach the end of the host (nextDot = nil) and we haven't found anything, then we've hit the
+        ///  top domain level so we use it by default.
 
         let tokens = host.components(separatedBy: ".")
         let tokenCount = tokens.count

@@ -8,7 +8,7 @@ import Shared
 import Storage
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 private let URLBeforePathRegex = try! NSRegularExpression(
     pattern: "^https?://([^/]+)/", options: [])

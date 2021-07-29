@@ -67,9 +67,7 @@ open class KeyboardHelper: NSObject {
         return Singleton.instance
     }
 
-    /**
-     * Starts monitoring the keyboard state.
-     */
+    /// Starts monitoring the keyboard state.
     open func startObserving() {
         NotificationCenter.default.addObserver(
             self, selector: #selector(keyboardWillShow),
@@ -86,10 +84,8 @@ open class KeyboardHelper: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
 
-    /**
-     * Adds a delegate to the helper.
-     * Delegates are weakly held.
-     */
+    /// Adds a delegate to the helper.
+    /// Delegates are weakly held.
     open func addDelegate(_ delegate: KeyboardHelperDelegate) {
         // Reuse any existing slots that have been deallocated.
         for weakDelegate in delegates where weakDelegate.delegate == nil {

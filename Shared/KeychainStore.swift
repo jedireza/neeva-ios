@@ -7,7 +7,7 @@ import SwiftKeychainWrapper
 import SwiftyJSON
 import XCGLogger
 
-private let log = Logger.keychainLogger
+private let log = Logger.keychain
 
 public class KeychainStore {
     public static let shared = KeychainStore()

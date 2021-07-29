@@ -6,7 +6,7 @@ import Foundation
 import OnePasswordExtension
 import Shared
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 class ShareExtensionHelper: NSObject {
     fileprivate weak var selectedTab: Tab?

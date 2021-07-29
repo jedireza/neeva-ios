@@ -73,9 +73,9 @@ struct SpaceView_Previews: PreviewProvider {
             SpaceListItem(.savedForLaterEmpty, currentURL: "https://neeva.com")
             SpaceListItem(.savedForLater, currentURL: "https://neeva.com")
             SpaceListItem(.stackOverflow, currentURL: "https://neeva.com")
-            SpaceListItem(.sharedSpace, currentURL: "https://neeva.com")
-            SpaceListItem(.publicSpace, currentURL: "https://neeva.com")
-            SpaceListItem(.sharedPublicSpace, currentURL: "https://neeva.com")
+            SpaceListItem(.shared, currentURL: "https://neeva.com")
+            SpaceListItem(.public, currentURL: "https://neeva.com")
+            SpaceListItem(.sharedAndPublic, currentURL: "https://neeva.com")
         }.padding(.vertical).previewLayout(.sizeThatFits)
     }
 }

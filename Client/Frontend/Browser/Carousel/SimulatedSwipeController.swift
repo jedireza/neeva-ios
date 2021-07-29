@@ -199,7 +199,8 @@ class SimulatedSwipeController:
         }
 
         let index = urls.firstIndex(of: tab.currentURL()!) ?? -1
-        assert(index < urls.count - 1)  // If we are here, we have already fake animated and it is too late
+        // If we are here, we have already fake animated and it is too late
+        assert(index < urls.count - 1)
         tab.loadRequest(URLRequest(url: urls[index + 1]))
         return true
     }

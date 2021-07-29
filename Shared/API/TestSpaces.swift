@@ -49,7 +49,7 @@ extension Space {
         userACL: .owner
     )
 
-    public static let sharedSpace = Space(
+    public static let shared = Space(
         id: .init(value: "page-id"),
         name: "Shared Space",
         lastModifiedTs: "2020-12-18T15:57:47Z",
@@ -61,7 +61,7 @@ extension Space {
         userACL: .edit
     )
 
-    public static let publicSpace = Space(
+    public static let `public` = Space(
         id: .init(value: "page-id"),
         name: "Public Space",
         lastModifiedTs: "2020-12-18T15:57:47Z",
@@ -73,7 +73,7 @@ extension Space {
         userACL: .owner
     )
 
-    public static let sharedPublicSpace = Space(
+    public static let sharedAndPublic = Space(
         id: .init(value: "page-id"),
         name: "Shared, Public Space. Yes, this space is in fact both shared and public!",
         lastModifiedTs: "2020-12-18T15:57:47Z",

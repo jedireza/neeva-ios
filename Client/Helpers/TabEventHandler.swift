@@ -97,7 +97,8 @@ enum TabEvent {
     case didChangeContentBlocking
 
     var label: TabEventLabel {
-        let str = "\(self)".components(separatedBy: "(")[0]  // Will grab just the name from 'didChangeURL(...)'
+        // Will grab just the name from 'didChangeURL(...)'
+        let str = "\(self)".components(separatedBy: "(")[0]
         guard let result = TabEventLabel(rawValue: str) else {
             fatalError("Bad tab event label.")
         }

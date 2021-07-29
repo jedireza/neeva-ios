@@ -782,10 +782,8 @@ class BrowserSchemaV10: BaseHistoricalBrowserSchema {
         return sql
     }
 
-    /**
-     * We need to explicitly store what's provided by the server, because we can't rely on
-     * referenced child nodes to exist yet!
-     */
+    /// We need to explicitly store what's provided by the server, because we can't rely on
+    /// referenced child nodes to exist yet!
     func getBookmarksMirrorStructureTableCreationString() -> String {
         let sql = """
             CREATE TABLE IF NOT EXISTS bookmarksMirrorStructure (
@@ -1338,7 +1336,8 @@ class TestSQLiteHistory: XCTestCase {
 
         func checkTopSitesReturnsResults() -> Success {
             return history.getTopSitesWithLimit(20) >>== { topSites in
-                XCTAssertEqual(topSites[0]??.guid, "docsgoogle")  // google docs should be the first topsite
+                // google docs should be the first topsite
+                XCTAssertEqual(topSites[0]??.guid, "docsgoogle")
                 // make sure all other google guids are not in the topsites array
                 topSites.forEach {
                     let guid: String = $0!!.guid!  // type checking is hard
