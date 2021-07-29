@@ -55,7 +55,7 @@ private struct FakeTabLocationView: View {
 
     var body: some View {
         Button(action: action) {
-            LocationLabel(url: nil, isSecure: false, hasCertError: false)
+            LocationLabel(url: nil, isSecure: false, securityLevel: nil)
                 .environmentObject(GridModel())
         }
         .environment(\.isIncognito, isIncognito)

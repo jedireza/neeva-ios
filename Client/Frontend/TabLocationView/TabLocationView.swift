@@ -68,7 +68,7 @@ struct TabLocationView: View {
 
                 TabLocationAligner(transitionToEditing: model.isEditing) {
                     LocationLabel(
-                        url: model.url, isSecure: model.isSecure, hasCertError: model.hasCertError
+                        url: model.url, isSecure: model.isSecure, securityLevel: model.securityLevel
                     )
                     .accessibilityAction(copyAction)
                     .accessibilityAction(pasteAction)
@@ -95,7 +95,7 @@ struct TabLocationView: View {
                             copyAction: copyAction,
                             pasteAction: pasteAction,
                             pasteAndGoAction: pasteAndGoAction,
-                            hasCertError: model.hasCertError
+                            securityLevel: model.securityLevel
                         )
                     }
                 } leading: {

@@ -14,7 +14,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
     let copyAction: Action
     let pasteAction: Action
     let pasteAndGoAction: Action
-    let hasCertError: Bool
+    let securityLevel: URLBarModel.SecurityLevel?
 
     func makeUIView(context: Context) -> InteractionView {
         InteractionView(wrapper: self)
@@ -90,7 +90,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             let host = UIHostingController(
                 rootView: LocationLabelAndIcon(
                     url: wrapper.url, isSecure: wrapper.isSecure, forcePlaceholder: false,
-                    hasCertError: false
+                    securityLevel: nil
                 )
                 .fixedSize()
                 .padding(.horizontal)

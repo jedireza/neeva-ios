@@ -6,7 +6,7 @@ import SwiftUI
 struct LocationLabel: View {
     let url: URL?
     let isSecure: Bool
-    let hasCertError: Bool
+    let securityLevel: URLBarModel.SecurityLevel?
 
     @EnvironmentObject private var gridModel: GridModel
 
@@ -15,7 +15,7 @@ struct LocationLabel: View {
             url: url, isSecure: isSecure,
             forcePlaceholder: !gridModel.isHidden
                 || (NeevaConstants.isNeevaHome(url: url) && NeevaUserInfo.shared.hasLoginCookie()),
-            hasCertError: hasCertError
+            securityLevel: securityLevel
         )
         .lineLimit(1)
         .frame(height: TabLocationViewUX.height)
@@ -32,7 +32,7 @@ struct LocationLabelAndIcon: View {
     let url: URL?
     let isSecure: Bool
     let forcePlaceholder: Bool
-    let hasCertError: Bool
+    let securityLevel: URLBarModel.SecurityLevel?
 
     var body: some View {
         let placeholder = TabLocationViewUX.placeholder.withFont(.bodyLarge).foregroundColor(
@@ -52,17 +52,15 @@ struct LocationLabelAndIcon: View {
         {
             // NOTE: Punycode support was removed
             let host = Text(host).withFont(.bodyLarge).truncationMode(.head)
-            if isSecure {
-                Label {
-                    host
-                } icon: {
-                    Symbol(.lockFill)
-                }
-            } else {
-                Label {
-                    host
-                } icon: {
-                    if hasCertError {
+            Label {
+                host
+            } icon: {
+                if let tabSecurityLevel = securityLevel {
+                    if tabSecurityLevel == URLBarModel.SecurityLevel.none {
+
+                    } else if tabSecurityLevel == URLBarModel.SecurityLevel.secure {
+                        Symbol(.lockFill)
+                    } else if tabSecurityLevel == URLBarModel.SecurityLevel.skippableError {
                         Symbol(.exclamationmarkTriangleFill)
                     } else {
                         Symbol(.lockSlashFill)
@@ -80,27 +78,31 @@ struct LocationLabelAndIcon: View {
 struct LocationLabel_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LocationLabel(url: nil, isSecure: false, hasCertError: false)
+            LocationLabel(url: nil, isSecure: false, securityLevel: nil)
                 .previewDisplayName("Placeholder")
 
             LocationLabel(
                 url: "https://vviii.verylong.subdomain.neeva.com", isSecure: false,
-                hasCertError: false
+                securityLevel: nil
             )
             .previewDisplayName("Insecure URL")
 
-            LocationLabel(url: "https://neeva.com/asdf", isSecure: true, hasCertError: false)
-                .previewDisplayName("Secure URL")
+            LocationLabel(
+                url: "https://neeva.com/asdf", isSecure: true,
+                securityLevel: URLBarModel.SecurityLevel.secure
+            )
+            .previewDisplayName("Secure URL")
 
             LocationLabel(
                 url: neevaSearchEngine.searchURLForQuery("a long search query with words"),
                 isSecure: true,
-                hasCertError: false
+                securityLevel: URLBarModel.SecurityLevel.secure
             )
             .previewDisplayName("Search")
 
             LocationLabel(
-                url: "ftp://someftpsite.com/dir/file.txt", isSecure: false, hasCertError: false
+                url: "ftp://someftpsite.com/dir/file.txt", isSecure: false,
+                securityLevel: URLBarModel.SecurityLevel.none
             )
             .previewDisplayName("Non-HTTP")
         }.padding(.horizontal).previewLayout(.sizeThatFits)

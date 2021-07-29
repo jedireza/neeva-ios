@@ -10,10 +10,17 @@ class URLBarModel: ObservableObject {
         case stop = "Stop"
     }
 
+    public enum SecurityLevel {
+        case none
+        case secure
+        case skippableError
+        case nonskippableError
+    }
+
     @Published var url: URL?
     /// `true` iff all assets on the page are secure (i.e. there is no mixed content)
     @Published var isSecure = false
-    @Published var hasCertError = false
+    @Published var securityLevel: SecurityLevel?
 
     @Published var showToolbarItems = false
 
