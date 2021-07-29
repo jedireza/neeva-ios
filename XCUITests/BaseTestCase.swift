@@ -175,9 +175,14 @@ class BaseTestCase: XCTestCase {
         }
     }
 
+    /// Returns the number of open tabs. Must be called while the tab switcher is active.
+    public func getTabs() -> XCUIElementQuery {
+        app.buttons.matching(NSPredicate(format: "label ENDSWITH ', Tab'"))
+    }
+
     public func getNumberOfTabs() -> Int {
         goToTabTray()
-        return app.cells.count
+        return getTabs().count
     }
 }
 

@@ -4,7 +4,7 @@ import XCTest
 
 private let firstWebsite = (
     url: path(forTestPage: "test-mozilla-org.html"),
-    tabName: "Internet for people, not profit — Mozilla"
+    tabName: "Internet for people, not profit — Mozilla, Tab"
 )
 private let secondWebsite = (
     url: path(forTestPage: "test-mozilla-book.html"), tabName: "The Book of Mozilla"
@@ -22,9 +22,9 @@ class TabMenuTests: BaseTestCase {
 
         goToTabTray()
 
-        XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
+        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            app.cells.firstMatch.label, firstWebsite.tabName,
+            getTabs().firstMatch.label, firstWebsite.tabName,
             "Expected label of remaining tab is not correct")
     }
 
@@ -42,9 +42,9 @@ class TabMenuTests: BaseTestCase {
 
         goToTabTray()
 
-        XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
+        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
+            getTabs().firstMatch.label, "Home, Tab", "Expected label of remaining tab is not correct")
     }
 
     func testCloseIncognitoTabFromTab() {
@@ -59,9 +59,9 @@ class TabMenuTests: BaseTestCase {
 
         goToTabTray()
 
-        XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
+        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            app.cells.firstMatch.label, firstWebsite.tabName,
+            getTabs().firstMatch.label, firstWebsite.tabName,
             "Expected label of remaining tab is not correct")
     }
 
@@ -82,9 +82,9 @@ class TabMenuTests: BaseTestCase {
 
         goToTabTray()
 
-        XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
+        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
+            getTabs().firstMatch.label, "Home, Tab", "Expected label of remaining tab is not correct")
     }
 
     func testCloseAllNormalTabsFromSwitcher() {
@@ -101,9 +101,9 @@ class TabMenuTests: BaseTestCase {
 
         goToTabTray()
 
-        XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
+        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
+            getTabs().firstMatch.label, "Home, Tab", "Expected label of remaining tab is not correct")
     }
 
     func testCloseAllIncognitoTabsFromSwitcher() {
@@ -119,14 +119,12 @@ class TabMenuTests: BaseTestCase {
         waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
         app.buttons["Confirm Close All Tabs"].tap()
 
-        waitForExistence(app.buttons["Done"], timeout: 3)
-
         toggleIncognito()
         goToTabTray()
 
-        XCTAssertEqual(app.cells.count, 1, "Expected number of tabs remaining is not correct")
+        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            app.cells.firstMatch.label, "Home", "Expected label of remaining tab is not correct")
+            getTabs().firstMatch.label, "Home, Tab", "Expected label of remaining tab is not correct")
     }
 }
 

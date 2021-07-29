@@ -73,7 +73,6 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     }
 
     // Smoketest
-    /* https://github.com/neevaco/neeva-ios-phoenix/issues/1091
     func testChangeModeInSameTab() {
         if skipPlatform { return }
 
@@ -87,7 +86,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-    }*/
+    }
 
     // Was flaky on bots testing irrelevant changes. Disabling to fix later.
     /*func testPrivateModeOffAlsoRemovesFromNormalMode() {

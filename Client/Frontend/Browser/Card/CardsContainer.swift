@@ -30,10 +30,11 @@ struct CardsContainer: View {
                     } else {
                         TabCardsView().environment(\.selectionCompletion) {
                             withAnimation {
-                                value.scrollTo(
-                                    indexInsideTabGroupModel != nil
-                                        ? tabModel.manager.selectedTab?.rootUUID
-                                        : tabModel.manager.selectedTab?.tabUUID)
+                                // TODO: scroll to tab groups when we enable them
+                                // value.scrollTo(
+                                //     indexInsideTabGroupModel != nil
+                                //         ? tabModel.manager.selectedTab?.rootUUID : tabModel.selectedTabID)
+                                value.scrollTo(tabModel.selectedTabID)
                             }
                             gridModel.animationThumbnailState = .visibleForTrayHidden
                         }
@@ -41,9 +42,11 @@ struct CardsContainer: View {
                 }
                 .padding(.top, 20)
                 .useEffect(deps: tabModel.selectedTabID) { _ in
-                    value.scrollTo(
-                        indexInsideTabGroupModel != nil
-                            ? tabModel.manager.selectedTab?.rootUUID : tabModel.selectedTabID)
+                    // TODO: scroll to tab groups when we enable them
+                    // value.scrollTo(
+                    //     indexInsideTabGroupModel != nil
+                    //         ? tabModel.manager.selectedTab?.rootUUID : tabModel.selectedTabID)
+                    value.scrollTo(tabModel.selectedTabID)
                 }
                 .background(
                     GeometryReader { proxy in

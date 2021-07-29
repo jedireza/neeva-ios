@@ -400,7 +400,8 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        let gridModel = FeatureFlag[.cardGrid] ? self.cardGridViewController.gridModel : GridModel()
+        let gridModel =
+            FeatureFlag[.legacyTabSwitcher] ? GridModel() : self.cardGridViewController.gridModel
         let trackingStatsModel = TrackingStatsViewModel(tabManager: tabManager)
         if FeatureFlag[.newTopBar] {
             let queryModel = SearchQueryModel()
@@ -753,7 +754,7 @@ class BrowserViewController: UIViewController {
             }
         }
 
-        if FeatureFlag[.cardGrid] {
+        if !FeatureFlag[.legacyTabSwitcher] {
             cardGridViewController.view.snp.remakeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview()
                 if shouldShowFooterForTraitCollection(traitCollection) {
@@ -778,7 +779,7 @@ class BrowserViewController: UIViewController {
             zeroQueryViewController.didMove(toParent: self)
         }
 
-        if FeatureFlag[.cardGrid], !cardGridViewController.gridModel.isHidden {
+        if !FeatureFlag[.legacyTabSwitcher], !cardGridViewController.gridModel.isHidden {
             cardGridViewController.gridModel.hideWithNoAnimation()
         }
 
@@ -1296,13 +1297,13 @@ class BrowserViewController: UIViewController {
 
         updateFindInPageVisibility(visible: false)
 
-        if FeatureFlag[.cardGrid] {
-            cardGridViewController.showGrid()
-        } else {
+        if FeatureFlag[.legacyTabSwitcher] {
             let tabTrayController = TabTrayControllerV1(
                 tabManager: tabManager, profile: profile, tabTrayDelegate: self)
             navigationController?.pushViewController(tabTrayController, animated: true)
             self.tabTrayController = tabTrayController
+        } else {
+            cardGridViewController.showGrid()
         }
 
         if let tab = tabManager.selectedTab {

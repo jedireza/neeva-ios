@@ -4,6 +4,7 @@
 
 import XCTest
 
+/* disabled since tab reordering is not implemented for the SwiftUI tab switcher
 private let firstWebsite = (
     url: path(forTestPage: "test-mozilla-org.html"),
     tabName: "Internet for people, not profit — Mozilla"
@@ -141,3 +142,4 @@ class DragAndDropTestiPad: IpadOnlyTestCase {
             dragAndDropTab: true, firstTab: secondWebsite.tabName, secondTab: firstWebsite.tabName)
     }
 }
+*/

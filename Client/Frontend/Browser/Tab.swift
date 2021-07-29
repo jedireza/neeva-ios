@@ -519,7 +519,6 @@ class Tab: NSObject {
     func toggleChangeUserAgent() {
         changedUserAgent = !changedUserAgent
         reload()
-        TabEvent.post(.didToggleDesktopMode, for: self)
     }
 
     func queueJavascriptAlertPrompt(_ alert: JSAlertInfo) {

@@ -26,9 +26,12 @@ extension Tab {
             baseDomainList.removeAll()
         }
 
-        static func contains(url: URL) -> Bool {
+        static func contains(url: URL, isPrivate: Bool) -> Bool {
             guard let baseDomain = url.baseDomain else { return false }
-            return privateModeHostList.contains(baseDomain) || baseDomainList.contains(baseDomain)
+            if baseDomainList.contains(baseDomain) {
+                return true
+            }
+            return isPrivate ? privateModeHostList.contains(baseDomain) : false
         }
 
         static func updateDomainList(forUrl url: URL, isChangedUA: Bool, isPrivate: Bool) {

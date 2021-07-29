@@ -2427,10 +2427,10 @@ extension String {
 // Tab Tray v1
 extension String {
     public static let TabTrayToggleAccessibilityLabel = MZLocalizedString(
-        "Private Mode", tableName: "PrivateBrowsing",
+        "Incognito Mode", tableName: "PrivateBrowsing",
         comment: "Accessibility label for toggling on/off private mode")
     public static let TabTrayToggleAccessibilityHint = MZLocalizedString(
-        "Turns private mode on or off", tableName: "PrivateBrowsing",
+        "Turns incognito mode on or off", tableName: "PrivateBrowsing",
         comment: "Accessiblity hint for toggling on/off private mode")
     public static let TabTrayToggleAccessibilityValueOn = MZLocalizedString(
         "On", tableName: "PrivateBrowsing", comment: "Toggled ON accessibility value")

@@ -89,14 +89,10 @@ struct Card<Details>: View where Details: CardDetails {
                             alignment: details.favicon != nil ? .leading : .center
                         )
                         .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
-                    if let buttonImage = details.closeButtonImage {
-                        Button(action: details.onClose) {
-                            Image(uiImage: buttonImage).resizable().renderingMode(.template)
-                                .foregroundColor(.secondaryLabel)
-                                .padding(4)
-                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                                .padding(5)
-                        }
+                    if details.closeButtonImage != nil {
+                        Color.clear
+                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                            .padding(5)
                     }
                 }
                 .frame(height: CardUX.ButtonSize)
@@ -109,7 +105,10 @@ struct Card<Details>: View where Details: CardDetails {
                     selectionCompletion()
                 }) {
                     details.thumbnail
-                        .frame(width: geom.size.width, height: geom.size.height - CardUX.HeaderSize)
+                        .frame(
+                            width: geom.size.width, height: geom.size.height - CardUX.HeaderSize,
+                            alignment: .top
+                        )
                         .clipped()
                 }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
             }
@@ -122,6 +121,19 @@ struct Card<Details>: View where Details: CardDetails {
         .modifier(BorderTreatment(isSelected: showsSelection && details.isSelected))
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .scaleEffect(isPressed ? 0.95 : 1)
+        .overlay(
+            Group {
+                if let buttonImage = details.closeButtonImage {
+                    Button(action: details.onClose) {
+                        Image(uiImage: buttonImage).resizable().renderingMode(.template)
+                            .foregroundColor(.secondaryLabel)
+                            .padding(4)
+                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                            .padding(5)
+                            .accessibilityLabel("Close \(details.title)")
+                    }
+                }
+            }, alignment: .topTrailing)
     }
 
     private struct ActionsModifier: ViewModifier {

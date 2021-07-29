@@ -149,7 +149,7 @@ class HistoryTests: BaseTestCase {
         showRecentlyClosedTabs()
         app.buttons["Ad-free, private search - Neeva"].tap()
 
-        XCTAssertEqual(app.cells.count, 2)
+        XCTAssertEqual(getTabs().count, 2)
     }
 
     func testOpenInNewTabRecentlyClosedItem() {

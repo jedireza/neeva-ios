@@ -34,8 +34,9 @@ class ToastTests: BaseTestCase {
         waitUntilPageLoad()
         goToTabTray()
 
-        waitForExistence(app.buttons["tab close"])
-        app.buttons["tab close"].firstMatch.tap()
+        app.buttons
+            .matching(NSPredicate(format: "label BEGINSWITH 'Close '"))
+            .firstMatch.tap()
     }
 
     func testClosedTabToastDoesNotAppear() {
