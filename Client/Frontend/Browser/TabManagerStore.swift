@@ -181,18 +181,34 @@ class TabManagerStore {
         let savedTabsWithOldPath = SiteArchiver.tabsToRestore(
             tabsStateArchivePath: getLegacyTabSavePath())
 
-        guard let scene = scene else {
-            return savedTabsWithOldPath
-        }
+        let savedTabs: [SavedTab]
 
-        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(
-            tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier))
+        if let scene = scene {
+            let savedTabsWithNewPath = SiteArchiver.tabsToRestore(
+                tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier))
 
-        if savedTabsWithNewPath.count > 0 {
-            return savedTabsWithNewPath
+            if savedTabsWithNewPath.count > 0 {
+                savedTabs = savedTabsWithNewPath
+            } else {
+                savedTabs = savedTabsWithOldPath
+            }
+
         } else {
-            return savedTabsWithOldPath
+            savedTabs = savedTabsWithOldPath
         }
+
+        // crash fix: rewrite tab IDs if they are duplicates
+        var seen: Set<String> = []
+        var fixedTabs: [SavedTab] = []
+        for tab in savedTabs {
+            if let id = tab.UUID, !seen.contains(id) {
+                fixedTabs.append(tab)
+                seen.insert(id)
+            } else {
+                tab.UUID = UUID().uuidString
+            }
+        }
+        return fixedTabs
     }
 }
 
