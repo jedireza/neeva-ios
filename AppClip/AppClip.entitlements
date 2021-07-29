@@ -5,7 +5,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>appclips:neeva.com</string>
-		<string>appclips:appclip.neeva.com</string>
+		<string>appclips:m1.neeva.com</string>
 	</array>
 	<key>com.apple.developer.parent-application-identifiers</key>
 	<array>
