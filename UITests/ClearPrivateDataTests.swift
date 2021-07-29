@@ -36,7 +36,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
             tester().waitForWebViewElementWithAccessibilityLabel("Page \(pageNo)")
             let dom = URL(string: url)!.normalizedHost!
             let index = dom.index(dom.startIndex, offsetBy: 7)
-            let dispDom = dom.substring(to: index)  // On IPhone, it only displays first 8 chars
+            let dispDom = String(dom.prefix(7))  // On IPhone, it only displays first 8 chars
             let tuple: (title: String, domain: String, dispDomain: String, url: String) = (
                 "Page \(pageNo)", dom, dispDom, url
             )
@@ -212,7 +212,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         webView.evaluateJavascriptInDefaultContentWorld(
             "JSON.stringify([document.cookie, localStorage.cookie, sessionStorage.cookie])"
         ) { result, _ in
-            value = result as! String
+            value = result as? String
             expectation.fulfill()
         }
 

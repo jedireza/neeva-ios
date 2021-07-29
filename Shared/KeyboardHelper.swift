@@ -7,7 +7,7 @@ import UIKit
 /// The keyboard state at the time of notification.
 public struct KeyboardState {
     public let animationDuration: Double
-    public let animationCurve: UIView.AnimationCurve
+    public let animationCurve: UIView.AnimationOptions
     private let userInfo: [AnyHashable: Any]
 
     fileprivate init(_ userInfo: [AnyHashable: Any]) {
@@ -16,10 +16,11 @@ public struct KeyboardState {
         // HACK: UIViewAnimationCurve doesn't expose the keyboard animation used (curveValue = 7),
         // so UIViewAnimationCurve(rawValue: curveValue) returns nil. As a workaround, get a
         // reference to an EaseIn curve, then change the underlying pointer data with that ref.
-        var curve = UIView.AnimationCurve.easeIn
+        var curve = UIView.AnimationOptions.curveEaseIn
         if let curveValue = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int {
             NSNumber(value: curveValue as Int).getValue(&curve)
         }
+
         self.animationCurve = curve
     }
 
@@ -38,8 +39,7 @@ public struct KeyboardState {
     }
 
     public func animateAlongside(_ animations: @escaping () -> Void) {
-        UIView.animate(withDuration: animationDuration) {
-            UIView.setAnimationCurve(animationCurve)
+        UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve) {
             animations()
         }
     }

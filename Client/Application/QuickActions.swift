@@ -56,10 +56,10 @@ class QuickActions: NSObject {
         // add the quick actions version so that it is always in the user info
         var userData: [String: String] = userData
         userData[QuickActions.QuickActionsVersionKey] = QuickActions.QuickActionsVersion
+
         let dynamicShortcutItems = application.shortcutItems ?? [UIApplicationShortcutItem]()
-        log.warning("Cannot add static shortcut item of type \(type)")
-        return false
         application.shortcutItems = dynamicShortcutItems
+
         return true
     }
 

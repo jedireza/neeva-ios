@@ -101,8 +101,7 @@ class BaseTestCase: XCTestCase {
         if result != .completed {
             let message =
                 description ?? "Expect predicate \(predicateString) for \(element.description)"
-            self.recordFailure(
-                withDescription: message, inFile: file, atLine: Int(line), expected: false)
+            self.record(XCTIssue(type: .assertionFailure, compactDescription: message))
         }
     }
 

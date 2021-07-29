@@ -388,9 +388,6 @@ class BrowserUtils {
     class func ensureAutocompletionResult(
         _ tester: KIFUITestActor, textField: UITextField, prefix: String, completion: String
     ) {
-        // searches are async (and debounced), so we have to wait for the results to appear.
-        tester.waitForViewWithAccessibilityValue(prefix + completion)
-
         let autocompleteFieldlabel =
             textField.subviews.first { $0.accessibilityIdentifier == "autocomplete" } as? UILabel
 
@@ -457,8 +454,8 @@ class SimplePageServer {
             forMethod: "GET", path: "/scrollablePage.html", request: GCDWebServerRequest.self
         ) { (request) -> GCDWebServerResponse? in
             var pageData = self.getPageData("scrollablePage")
-            let page = Int((request.query?["page"] as! String))!
-            pageData = pageData.replacingOccurrences(of: "{page}", with: page.description)
+            let page = Int(request.query!["page"]!)
+            pageData = pageData.replacingOccurrences(of: "{page}", with: page!.description)
             return GCDWebServerDataResponse(html: pageData as String)
         }
 
@@ -467,8 +464,8 @@ class SimplePageServer {
         ) { (request) -> GCDWebServerResponse? in
             var pageData = self.getPageData("numberedPage")
 
-            let page = Int((request.query?["page"] as! String))!
-            pageData = pageData.replacingOccurrences(of: "{page}", with: page.description)
+            let page = Int(request.query!["page"]!)
+            pageData = pageData.replacingOccurrences(of: "{page}", with: page!.description)
 
             return GCDWebServerDataResponse(html: pageData as String)
         }

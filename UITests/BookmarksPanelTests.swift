@@ -3,11 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Shared
 import WebKit
 
-@testable import Client
-@testable import Storage
 /*
 class BookmarksPanelTests: KIFTestCase {
 

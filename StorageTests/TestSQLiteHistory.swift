@@ -1043,7 +1043,6 @@ class TestSQLiteHistory: XCTestCase {
         let db = BrowserDB(filename: "testDomains.db", schema: BrowserSchema(), files: files)
         let history = SQLiteHistory(db: db)
 
-        let initialGuid = Bytes.generateGUID()
         let site11 = Site(url: "http://www.example.com/test1.1", title: "title one")
         let site12 = Site(url: "http://www.example.com/test1.2", title: "title two")
         let site3 = Site(url: "http://www.example2.com/test1", title: "title three")

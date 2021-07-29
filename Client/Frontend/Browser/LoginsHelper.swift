@@ -183,6 +183,7 @@ class LoginsHelper: TabContentScript {
             return
         }
 
+        /* TODO: Add prompt message to save the user's credentials back here
         let promptMessage: String
         let https = "^https:\\/\\/"
         let url = login.hostname.replacingOccurrences(
@@ -192,9 +193,7 @@ class LoginsHelper: TabContentScript {
             promptMessage = String(format: Strings.SaveLoginUsernamePrompt, userName, url)
         } else {
             promptMessage = String(format: Strings.SaveLoginPrompt, url)
-        }
-
-        // TODO: Add prompt message to save the user's credentials back here
+        } */
     }
 
     fileprivate func promptUpdateFromLogin(login old: LoginRecord, toLogin new: LoginRecord) {
@@ -204,15 +203,14 @@ class LoginsHelper: TabContentScript {
 
         new.id = old.id
 
+        /* TODO: Add prompt message to update the user's credentials back here
         let formatted: String
         let userName = new.username
         if !userName.isEmpty {
             formatted = String(format: Strings.UpdateLoginUsernamePrompt, userName, new.hostname)
         } else {
             formatted = String(format: Strings.UpdateLoginPrompt, new.hostname)
-        }
-
-        // TODO: Add prompt message to update the user's credentials back here
+        } */
     }
 
     fileprivate func requestLogins(_ request: [String: Any], url: URL) {

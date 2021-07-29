@@ -6,7 +6,6 @@ import Shared
 import UIKit
 import XCTest
 
-@testable import Client
 @testable import Storage
 
 class DiskImageStoreTests: XCTestCase {

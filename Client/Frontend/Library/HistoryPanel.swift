@@ -519,20 +519,20 @@ class HistoryPanel: SiteTableViewController {
         // Intentionally blank. Required to use UITableViewRowActions
     }
 
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath)
-        -> [UITableViewRowAction]?
-    {
+    func tableView(
+        _ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
         if indexPath.section == Section.additionalHistoryActions.rawValue {
-            return []
+            return nil
         }
-        let title: String = .HistoryPanelDelete
 
-        let delete = UITableViewRowAction(
-            style: .default, title: title,
-            handler: { (action, indexPath) in
-                self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
-            })
-        return [delete]
+        let title: String = .HistoryPanelDelete
+        let delete = UIContextualAction(style: .destructive, title: title) {
+            (contextualAction, view, boolValue) in
+            self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
+        }
+
+        return UISwipeActionsConfiguration(actions: [delete])
     }
 
     // MARK: - Empty State

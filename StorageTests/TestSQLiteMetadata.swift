@@ -6,7 +6,6 @@ import Foundation
 import Shared
 import XCTest
 
-@testable import Client
 @testable import Storage
 
 class TestSQLiteMetadata: XCTestCase {

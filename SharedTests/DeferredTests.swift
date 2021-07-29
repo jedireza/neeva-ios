@@ -91,6 +91,8 @@ class DeferredTests: XCTestCase {
 
         var myclass: TestClass? = TestClass(e: leak)
         myclass = nil
+
+        XCTAssert(myclass == nil)
         waitForExpectations(timeout: 3, handler: nil)
     }
 
@@ -120,6 +122,8 @@ class DeferredTests: XCTestCase {
 
         var myclass: TestClass? = TestClass(e: leak)
         myclass = nil
+
+        XCTAssert(myclass == nil)
         waitForExpectations(timeout: 3, handler: nil)
     }
 

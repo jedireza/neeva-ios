@@ -199,7 +199,8 @@ class SQLRemoteClientsAndTabsTests: XCTestCase {
             remoteDevicesToInsert.append(remoteDevice)
             clientsAndTabs.insertOrUpdateTabsForClientGUID(c.client.guid, tabs: c.tabs).succeeded()
         }
-        _ = clientsAndTabs.replaceRemoteDevices(remoteDevicesToInsert).succeeded()
+
+        clientsAndTabs.replaceRemoteDevices(remoteDevicesToInsert).succeeded()
 
         let f = self.expectation(description: "Get after insert.")
         clientsAndTabs.getClientsAndTabs().upon {
@@ -326,7 +327,7 @@ class SQLRemoteClientsAndTabsTests: XCTestCase {
             id: "fx4", name: "Device 4 (fauly)", type: nil, isCurrentDevice: false,
             lastAccessTime: 12_345_678, availableCommands: [:])
 
-        _ = clientsAndTabs.replaceRemoteDevices([device1, device2, device3, device4]).succeeded()
+        clientsAndTabs.replaceRemoteDevices([device1, device2, device3, device4]).succeeded()
 
         let devices = clientsAndTabs.db.runQuery(
             "SELECT * FROM remote_devices", args: nil,
@@ -337,7 +338,7 @@ class SQLRemoteClientsAndTabsTests: XCTestCase {
         let device5 = RemoteDevice(
             id: "fx5", name: "Device 5", type: "mobile", isCurrentDevice: false,
             lastAccessTime: 12_345_678, availableCommands: [:])
-        _ = clientsAndTabs.replaceRemoteDevices([device5]).succeeded()
+        clientsAndTabs.replaceRemoteDevices([device5]).succeeded()
 
         let newDevices = clientsAndTabs.db.runQuery(
             "SELECT * FROM remote_devices", args: nil,

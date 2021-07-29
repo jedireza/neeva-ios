@@ -5,8 +5,6 @@
 import Foundation
 import Storage
 
-@testable import Client
-
 class BrowserTests: KIFTestCase {
     /*
     private var webRoot: String!
