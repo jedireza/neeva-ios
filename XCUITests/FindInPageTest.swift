@@ -104,6 +104,7 @@ class FindInPageTests: BaseTestCase {
         XCTAssertTrue(app.staticTexts["0/0"].exists, "There should not be any matches")
     }
 
+    /* Disabled due to flakiness: #1187
     func testBarDissapearsWhenReloading() {
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
@@ -115,6 +116,7 @@ class FindInPageTests: BaseTestCase {
         waitForNoExistence(app.textFields[""])
         XCTAssertFalse(app.textFields[""].exists)
     }
+    */
 
     /* TODO Restore Test #1159
     func testBarDissapearsWhenOpeningTabsTray() {
