@@ -110,6 +110,7 @@ struct NavSuggestionsList: View {
     @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
+        SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
         ForEach(navModel.combinedSuggestions) { suggestion in
             SearchSuggestionView(suggestion)
                 .environmentObject(neevaModel)
