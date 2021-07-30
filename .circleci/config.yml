@@ -147,6 +147,11 @@ jobs:
       - bootstrap
       - build-codegen
       - build-client
+      - save_cache:
+          name: Save build cache
+          key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/Library/Developer/Xcode/DerivedData
   test-client:
     # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
     # info on using Xcode 12.5.0 at this time.
