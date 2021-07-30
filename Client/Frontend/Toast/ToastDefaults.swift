@@ -67,12 +67,17 @@ class ToastDefaults: NSObject {
         toastProgressViewModel?.status = .inProgress
 
         spaceRequestListener = request.$state.sink { [self] updatedState in
-            // set to success because that is the only case possible in this case
-            toastProgressViewModel?.status = .success
+            if updatedState == .failed {
+                toastProgressViewModel?.status = .failed
+            } else {
+                // set to success because that is the only case possible in this case
+                toastProgressViewModel?.status = .success
+            }
         }
 
         let spaceName = request.targetSpaceName ?? "## Unknown ##"
         var completedText: String!
+        var deleted = false
         var toastText: String {
             switch request.state {
             case .initial:
@@ -86,24 +91,32 @@ class ToastDefaults: NSObject {
                 return "Saved to \"\(spaceName)\""
             case .deletingFromSpace:
                 completedText = "Deleted from \"\(spaceName)\""
+                deleted = true
                 return "Deleting..."
             case .deletedFromSpace:
+                deleted = true
                 completedText = "Deleted from \"\(spaceName)\""
                 return "Deleted from \"\(spaceName)\""
-            case .failed:
-                return "Failed to save to \"\(spaceName)\""
+            default:
+                return "An error occured"
             }
         }
 
         let buttonAction = {
             let bvc = BrowserViewController.foregroundBVC()
-            bvc.openURLInNewTab(NeevaConstants.appSpacesURL / request.targetSpaceID!)
+            bvc.switchToTabForURLOrOpen(NeevaConstants.appSpacesURL / request.targetSpaceID!)
         }
 
         let failedAction = {
-            if let toastProgressViewModel = self.toastProgressViewModel {
-                toastProgressViewModel.status = .inProgress
+            if deleted {
+                request.deleteFromExistingSpace(
+                    id: request.targetSpaceID ?? "", name: request.targetSpaceName ?? "")
+            } else {
+                request.addToExistingSpace(
+                    id: request.targetSpaceID ?? "", name: request.targetSpaceName ?? "")
             }
+
+            self.showToastForSpace(request: request)
         }
 
         let normalContent = ToastStateContent(
@@ -111,7 +124,8 @@ class ToastDefaults: NSObject {
         let completedContent = ToastStateContent(
             text: completedText, buttonText: "open space", buttonAction: buttonAction)
         let failedContent = ToastStateContent(
-            text: "Failed to save to \"\(spaceName)\"", buttonText: "try again",
+            text: "Failed to \(deleted ? "delete from" : "save to") \"\(spaceName)\"",
+            buttonText: "try again",
             buttonAction: failedAction)
         let toastContent = ToastViewContent(
             normalContent: normalContent, completedContent: completedContent,

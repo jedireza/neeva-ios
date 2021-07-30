@@ -117,7 +117,7 @@ public class AddToSpaceRequest: ObservableObject {
         }
     }
 
-    func deleteFromExistingSpace(id: String, name: String) {
+    public func deleteFromExistingSpace(id: String, name: String) {
         self.targetSpaceName = name
 
         // Note: This creates a reference cycle between self and the mutation.
