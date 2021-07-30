@@ -789,6 +789,9 @@ class BrowserViewController: UIViewController {
     public func showZeroQuery(
         inline: Bool, openedFrom: ZeroQueryOpenedLocation? = .openTab, isLazyTab: Bool = false
     ) {
+        // makes sure zeroQuery isn't already open
+        guard zeroQueryViewController.openedFrom == nil else { return }
+
         zeroQueryIsInline = inline
 
         if !FeatureFlag[.legacyTabSwitcher], !cardGridViewController.gridModel.isHidden {
@@ -1333,7 +1336,11 @@ extension BrowserViewController {
     }
 
     func urlBarDidEnterOverlayMode() {
-        showZeroQuery(inline: false)
+        if !cardGridViewController.gridModel.isHidden {
+            openLazyTab(openedFrom: .tabTray)
+        } else {
+            showZeroQuery(inline: false)
+        }
     }
 
     func urlBarDidLeaveOverlayMode() {
