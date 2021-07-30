@@ -4,36 +4,18 @@
 # number. It reads the current values and proposes new values. Normally,
 # the right thing to do is to just accept what this script produces.
 
-FILE="Client.xcodeproj/project.pbxproj"
+SCRIPTS_DIR=$(dirname $0)
+
+. $SCRIPTS_DIR/git-util.sh
+. $SCRIPTS_DIR/version-util.sh
 
 # We expect to be run from the root directory of the project.
-if [ ! -s $FILE ]; then
-    echo "Error: $FILE not found"
+if [ ! -s $PROJECT_FILE ]; then
+    echo "Error: $PROJECT_FILE not found"
     exit 1
 fi
 
-# Check if current branch is a branch from "main".
-is_branch_of_main() {
-    branched_from=$(git status -b -s -uno | grep '^##' | cut -d' ' -f2 | sed -E 's/.*origin\/(.*)/\1/')
-    if [ "$branched_from" = "main" ]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-# Extract version field specified by $1 from $FILE. Expect version field to be
-# of the form: (whitespace)$1 = (version);(whitespace)
-get_version() {
-    if [ $# != 1 ]; then
-        echo "get_version: expected one argument"
-        exit 1
-    fi
-    field_name=$1
-    fgrep "$field_name = " $FILE | uniq | cut -d' ' -f3 | cut -d';' -f1
-}
-
-# Search and replace on $FILE the field named $1 with new value $2.
+# Search and replace on $PROJECT_FILE the field named $1 with new value $2.
 put_version() {
     if [ $# != 2 ]; then
         echo "put_version: expected two arguments"
@@ -41,7 +23,7 @@ put_version() {
     fi
     field_name=$1
     new_value=$2
-    perl -pi -e "s/$field_name = .*;/$field_name = $new_value;/g" $FILE
+    perl -pi -e "s/$field_name = .*;/$field_name = $new_value;/g" $PROJECT_FILE
 }
 
 # Increment the given input value by one.
@@ -90,8 +72,8 @@ increment_build_number() {
     fi
 }
 
-MARKETING_VERSION=$(get_version "MARKETING_VERSION")
-CURRENT_PROJECT_VERSION=$(get_version "CURRENT_PROJECT_VERSION")
+MARKETING_VERSION=$(get_marketing_version)
+CURRENT_PROJECT_VERSION=$(get_current_project_version)
 
 echo "Current version info:"
 echo "  MARKETING_VERSION = $MARKETING_VERSION"
