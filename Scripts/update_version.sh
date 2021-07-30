@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# This script helps with updating the build number and marketing version
+# number. It reads the current values and proposes new values. Normally,
+# the right thing to do is to just accept what this script produces.
+
 FILE="Client.xcodeproj/project.pbxproj"
 
 # We expect to be run from the root directory of the project.
@@ -7,6 +11,16 @@ if [ ! -s $FILE ]; then
     echo "Error: $FILE not found"
     exit 1
 fi
+
+# Check if current branch is a branch from "main".
+is_branch_of_main() {
+    branched_from=$(git status -b -s -uno | grep '^##' | cut -d' ' -f2 | sed -E 's/.*origin\/(.*)/\1/')
+    if [ "$branched_from" = "main" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 # Extract version field specified by $1 from $FILE. Expect version field to be
 # of the form: (whitespace)$1 = (version);(whitespace)
@@ -54,6 +68,28 @@ increment_version_patch() {
     echo "$major.$minor.$(increment_number $patch)"
 }
 
+# On "main", build numbers are just single integers, but on release branches
+# they are of the form (first).(second), where (second) is incremented with
+# each build.
+increment_build_number() {
+    if [ $# != 1 ]; then
+        echo "increment_build_number: expected one argument"
+        exit 1
+    fi
+    build_number=$1
+    if is_branch_of_main; then
+        increment_number $build_number
+    else
+        if [ $(echo "$build_number" | fgrep -c '.') = 0 ]; then
+            echo "$build_number.1"
+        else
+            first=$(echo "$build_number" | cut -d'.' -f1)
+            second=$(echo "$build_number" | cut -d'.' -f2)
+            echo "$first.$(increment_number $second)"
+        fi
+    fi
+}
+
 MARKETING_VERSION=$(get_version "MARKETING_VERSION")
 CURRENT_PROJECT_VERSION=$(get_version "CURRENT_PROJECT_VERSION")
 
@@ -62,7 +98,7 @@ echo "  MARKETING_VERSION = $MARKETING_VERSION"
 echo "  CURRENT_PROJECT_VERSION = $CURRENT_PROJECT_VERSION"
 
 PROPOSED_MARKETING_VERSION=$(increment_version_patch $MARKETING_VERSION)
-PROPOSED_CURRENT_PROJECT_VERSION=$(increment_number $CURRENT_PROJECT_VERSION)
+PROPOSED_CURRENT_PROJECT_VERSION=$(increment_build_number $CURRENT_PROJECT_VERSION)
 
 echo "Proposed version info:"
 
