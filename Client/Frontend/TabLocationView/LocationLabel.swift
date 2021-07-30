@@ -49,11 +49,15 @@ struct LocationLabelAndIcon: View {
         {
             // NOTE: Punycode support was removed
             let host = Text(host).withFont(.bodyLarge).truncationMode(.head)
-            if isSecure {
+            if url?.scheme == "https" {
                 Label {
                     host
                 } icon: {
-                    Symbol(.lockFill)
+                    if isSecure {
+                        Symbol(.lockFill)
+                    } else {
+                        Symbol(.lockSlashFill)
+                    }
                 }
             } else {
                 host
