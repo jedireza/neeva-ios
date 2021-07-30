@@ -14,6 +14,10 @@ class HistoryTests: KIFTestCase {
         BrowserUtils.dismissFirstRunUI(tester())
     }
 
+    override func tearDown() {
+        BrowserUtils.resetToAboutHomeKIF(tester())
+    }
+
     func addHistoryItemPage(_ pageNo: Int) -> String {
         // Load a page
         let url = "\(webRoot!)/numberedPage.html?page=\(pageNo)"
@@ -115,7 +119,12 @@ class HistoryTests: KIFTestCase {
         // check that the deleted page does not exist
         tester().waitForAbsenceOfView(withAccessibilityLabel: row?.accessibilityLabel)
 
-        if tester().viewExistsWithLabel("Cancel") {
+        // On iPad, there is no explicit "Cancel" button. Instead, we just have to
+        // tap outside the bounds of the prompt. The "Done" button from the History
+        // Panel provides a way to do that.
+        if BrowserUtils.iPad() {
+            tester().tapView(withAccessibilityLabel: "Done")
+        } else {
             tester().tapView(withAccessibilityLabel: "Cancel")
         }
 
