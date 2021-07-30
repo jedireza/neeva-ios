@@ -70,7 +70,6 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             _ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession
         ) -> [UIDragItem] {
             if let url = wrapper.url, !InternalURL.isValid(url: url) {
-                TelemetryWrapper.recordEvent(category: .action, method: .drag, object: .locationBar)
                 return [UIDragItem(itemProvider: NSItemProvider(url: url))]
             }
             return []

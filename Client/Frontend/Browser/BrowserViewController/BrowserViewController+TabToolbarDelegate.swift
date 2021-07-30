@@ -42,8 +42,6 @@ extension BrowserViewController: TabToolbarDelegate {
 
     func tabToolbarDidPressTabs() {
         showTabTray()
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .tabToolbar, value: .tabView)
     }
 
     func tabToolbarTabsMenu() -> UIMenu? {

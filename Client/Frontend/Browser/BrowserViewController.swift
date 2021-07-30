@@ -1305,8 +1305,6 @@ class BrowserViewController: UIViewController {
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
         }
-
-        TelemetryWrapper.recordEvent(category: .action, method: .open, object: .tabTray)
     }
 }
 

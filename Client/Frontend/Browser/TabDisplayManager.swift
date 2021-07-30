@@ -126,10 +126,6 @@ class TabDisplayManager: NSObject {
         isPrivate = isOn
         UserDefaults.standard.set(isPrivate, forKey: "wasLastSessionPrivate")
 
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .tap, object: .privateBrowsingButton,
-            extras: ["is-private": isOn.description])
-
         searchedTabs = nil
         refreshStore()
 
@@ -201,13 +197,6 @@ class TabDisplayManager: NSObject {
         tabManager.removeTabAndUpdateSelectedTab(tab, allowToast: true)
     }
 
-    private func recordEventAndBreadcrumb(
-        object: TelemetryWrapper.EventObject, method: TelemetryWrapper.EventMethod
-    ) {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: method, object: object, value: .tabTray)
-    }
-
     // When using 'Close All', hide all the tabs so they don't animate their deletion individually
     func hideDisplayedTabs(completion: @escaping () -> Void) {
         let cells = collectionView.visibleCells
@@ -264,7 +253,6 @@ extension TabDisplayManager: TabSelectionDelegate {
         if tabsToDisplay.firstIndex(of: tab) != nil {
             tabManager.selectTab(tab)
         }
-        TelemetryWrapper.recordEvent(category: .action, method: .press, object: .tab)
     }
 }
 
@@ -289,8 +277,6 @@ extension TabDisplayManager: UIDropInteractionDelegate {
     }
 
     func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
-        recordEventAndBreadcrumb(object: .url, method: .drop)
-
         _ = session.loadObjects(ofClass: URL.self) { urls in
             guard let url = urls.first else {
                 return
@@ -325,8 +311,6 @@ extension TabDisplayManager: UICollectionViewDragDelegate {
         // Don't store the URL in the item as dragging a tab near the screen edge will prompt to open Safari with the URL
         let itemProvider = NSItemProvider()
 
-        recordEventAndBreadcrumb(object: .tab, method: .drag)
-
         let dragItem = UIDragItem(itemProvider: itemProvider)
         dragItem.localObject = tab
         return [dragItem]
@@ -346,8 +330,6 @@ extension TabDisplayManager: UICollectionViewDropDelegate {
         else {
             return
         }
-
-        recordEventAndBreadcrumb(object: .tab, method: .drop)
 
         coordinator.drop(dragItem, toItemAt: destinationIndexPath)
 

@@ -177,10 +177,6 @@ class Tab: NSObject {
         super.init()
 
         debugTabCount += 1
-
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .add, object: .tab,
-            value: isPrivate ? .privateTab : .normalTab)
     }
 
     class func toRemoteTab(_ tab: Tab) -> RemoteTab? {

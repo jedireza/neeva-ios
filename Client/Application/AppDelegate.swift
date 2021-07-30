@@ -32,7 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     var receivedURLs = [URL]()
 
     var profile: Profile?
-    var telemetry: TelemetryWrapper?
 
     func application(
         _ application: UIApplication,
@@ -61,7 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         // Set up a web server that serves us static content. Do this early so that it is ready when the UI is presented.
         setUpWebServer(profile)
-        telemetry = TelemetryWrapper(profile: profile)
 
         // Hold references to willFinishLaunching parameters for delayed app launch
         self.application = application
@@ -169,8 +167,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             quickActions.launchedShortcutItem = nil
         }
 
-        TelemetryWrapper.recordEvent(category: .action, method: .foreground, object: .app)
-
         // Delay these operations until after UIKit/UIApp init is complete
         // - loadQueuedTabs accesses the DB and shows up as a hot path in profiling
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -204,8 +200,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Pause file downloads.
         // TODO: iOS 13 needs to iterate all the BVCs.
         BrowserViewController.foregroundBVC().downloadQueue.pauseAll()
-
-        TelemetryWrapper.recordEvent(category: .action, method: .background, object: .app)
 
         let singleShotTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
         // 2 seconds is ample for a localhost request to be completed by GCDWebServer. <500ms is expected on newer devices.

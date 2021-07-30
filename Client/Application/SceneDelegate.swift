@@ -92,13 +92,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
-            var object = TelemetryWrapper.EventObject.url
-            if case .text(_) = routerpath {
-                object = .searchText
-            }
-
-            TelemetryWrapper.recordEvent(
-                category: .appExtensionAction, method: .applicationOpenUrl, object: object)
         }
 
         DispatchQueue.main.async {

@@ -75,7 +75,6 @@ class DownloadHelper: NSObject, OpenInHelper {
         let safeUrl = url.absoluteString.replacingOccurrences(of: "'", with: "%27")
         tab.webView?.evaluateJavascriptInDefaultContentWorld(
             "window.__firefox__.download('\(safeUrl)', '\(UserScriptManager.appIdToken)')")
-        TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .downloadLinkButton)
     }
 
     required init?(
@@ -124,8 +123,6 @@ class DownloadHelper: NSObject, OpenInHelper {
                 onDownload: {
                     self.browserViewController.downloadQueue.enqueue(download)
                     self.browserViewController.hideOverlaySheetViewController()
-                    TelemetryWrapper.recordEvent(
-                        category: .action, method: .tap, object: .downloadNowButton)
                 },
                 onDismiss: {
                     self.browserViewController.hideOverlaySheetViewController()

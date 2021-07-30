@@ -258,8 +258,6 @@ class TabManager: NSObject, ObservableObject {
                 }
             }
         }
-
-        TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .tab)
     }
 
     func preserveTabs() {
@@ -448,13 +446,6 @@ class TabManager: NSObject, ObservableObject {
         removeTab(tab, flushToDisk: true, notify: true)
 
         updateTabAfterRemovalOf(tab, deletedIndex: index)
-
-        TelemetryWrapper.recordEvent(
-            category: .action,
-            method: .close,
-            object: .tab,
-            value: tab.isPrivate ? .privateTab : .normalTab
-        )
     }
 
     private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
