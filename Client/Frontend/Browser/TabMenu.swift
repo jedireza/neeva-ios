@@ -32,7 +32,6 @@ class TabMenu {
                 // wait for tabManager to switch to normal mode before closing private tabs
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: false)
-                    zeroQueryViewController?.model.isPrivate = false
                 }
             } else {
                 tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: false)

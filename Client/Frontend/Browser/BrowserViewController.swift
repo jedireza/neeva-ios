@@ -370,11 +370,15 @@ class BrowserViewController: UIViewController {
             animations: {
                 self.webViewContainer.alpha = 1
                 self.urlBar?.legacy?.locationContainer.alpha = 1
-                self.zeroQueryViewController.view.alpha = 1
                 self.presentedViewController?.popoverPresentationController?.containerView?.alpha =
                     1
                 self.presentedViewController?.view.alpha = 1
                 self.view.backgroundColor = UIColor.clear
+
+                // checks if zeroquery is open
+                if self.zeroQueryViewController.openedFrom != nil {
+                    self.zeroQueryViewController.view.alpha = 1
+                }
             },
             completion: { _ in
                 self.webViewContainerBackdrop.alpha = 0
@@ -782,7 +786,7 @@ class BrowserViewController: UIViewController {
     }
 
     public func showZeroQuery(
-        inline: Bool, openedFrom: ZeroQueryOpenedLocation? = nil, isLazyTab: Bool = false
+        inline: Bool, openedFrom: ZeroQueryOpenedLocation? = .openTab, isLazyTab: Bool = false
     ) {
         zeroQueryIsInline = inline
 
@@ -791,12 +795,16 @@ class BrowserViewController: UIViewController {
         }
 
         if isLazyTab {
-            urlBar.shared.model.setEditing(to: true)
-            urlBar.shared.queryModel.value = ""
-
-            zeroQueryViewController.openedFrom = openedFrom
             zeroQueryViewController.isLazyTab = true
+
+            DispatchQueue.main.async {
+                self.urlBar.shared.model.setEditing(to: true)
+                self.urlBar.shared.queryModel.value = ""
+            }
         }
+
+        zeroQueryViewController.model.isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        zeroQueryViewController.openedFrom = openedFrom
 
         // We have to run this animation, even if the view is already showing
         // because there may be a hide animation running and we want to be sure
@@ -825,6 +833,7 @@ class BrowserViewController: UIViewController {
             },
             completion: { _ in
                 self.webViewContainer.accessibilityElementsHidden = false
+                self.zeroQueryViewController.reset()
 
                 UIAccessibility.post(
                     notification: UIAccessibility.Notification.screenChanged, argument: nil)
@@ -1076,8 +1085,6 @@ class BrowserViewController: UIViewController {
         if focusLocationField {
             urlBar.shared.model.setEditing(to: true)
         }
-
-        zeroQueryViewController.model.isPrivate = tabManager.selectedTab!.isPrivate
     }
 
     func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab) {

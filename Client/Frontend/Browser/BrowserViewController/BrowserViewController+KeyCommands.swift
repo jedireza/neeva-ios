@@ -48,7 +48,6 @@ extension BrowserViewController {
         // wait for tabManager to switch to normal mode before closing private tabs
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
             openLazyTab(openedFrom: .createdTab)
-            zeroQueryViewController.model.isPrivate = true
         }
     }
 
@@ -97,7 +96,6 @@ extension BrowserViewController {
             // wait for tabManager to switch to normal mode before closing private tabs
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
                 tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: true)
-                zeroQueryViewController.model.isPrivate = false
             }
         } else {
             tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: true)

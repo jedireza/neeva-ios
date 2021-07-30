@@ -101,7 +101,7 @@ struct ZeroQueryPlaceholder: View {
 }
 
 struct ZeroQueryView: View {
-    @ObservedObject var viewModel: ZeroQueryModel
+    @EnvironmentObject var viewModel: ZeroQueryModel
 
     @Default(.expandSuggestedSites) private var expandSuggestedSites
     @Default(.expandSearches) private var expandSearches

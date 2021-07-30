@@ -64,7 +64,6 @@ extension BrowserViewController: TabToolbarDelegate {
 
         let switchPrivacyMode = { [self] (_: UIAction) in
             _ = tabManager.switchPrivacyMode()
-            zeroQueryViewController.model.isPrivate = tabManager.selectedTab!.isPrivate
         }
         let incognitoActions = [
             tabManager.selectedTab?.isPrivate ?? false
@@ -101,8 +100,6 @@ extension BrowserViewController: TabToolbarDelegate {
                 ) { _ in
                     if let tab = self.tabManager.selectedTab {
                         self.tabManager.removeTabAndUpdateSelectedTab(tab)
-                        self.zeroQueryViewController.model.isPrivate =
-                            self.tabManager.selectedTab!.isPrivate
                     }
                 }
                 closeTab.accessibilityIdentifier = "Close Tab Action"

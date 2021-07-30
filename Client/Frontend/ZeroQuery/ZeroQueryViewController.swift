@@ -52,7 +52,8 @@ class ZeroQueryViewController: UIViewController {
 
     lazy var zeroQueryView: UIView = {
         let controller = UIHostingController(
-            rootView: ZeroQueryView(viewModel: model)
+            rootView: ZeroQueryView()
+                .environmentObject(model)
                 .environmentObject(suggestedSitesViewModel)
                 .environmentObject(suggestedSearchesModel)
                 .environment(\.setSearchInput) { [weak self] query in
@@ -137,7 +138,7 @@ class ZeroQueryViewController: UIViewController {
 
     public func createRealTab(url: URL, tabManager: TabManager) {
         tabManager.select(tabManager.addTab(URLRequest(url: url), isPrivate: model.isPrivate))
-        resetLazyTab()
+        reset()
     }
 
     public func closeLazyTab() {
@@ -153,11 +154,11 @@ class ZeroQueryViewController: UIViewController {
                 break
             }
 
-            self.resetLazyTab()
+            self.reset()
         }
     }
 
-    public func resetLazyTab() {
+    public func reset() {
         isLazyTab = false
         openedFrom = nil
     }

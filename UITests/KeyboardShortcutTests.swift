@@ -20,7 +20,6 @@ class KeyboardShortcutTests: KIFTestCase {
         }
 
         tabManager.removeTabsAndAddNormalTab(tabManager.tabs, showToast: false)
-        bvc.zeroQueryViewController.model.isPrivate = false
     }
 
     func openTab(tester: KIFUITestActor) {
