@@ -155,5 +155,9 @@ public struct LogConfig {
         public static let DeviceScreenSize = "DeviceScreenSize"
         /// Is user signed in
         public static let isUserSignedIn = "IsUserSignedIn"
+        /// suggestion position
+        public static let suggestionPosition = "suggestionPosition"
+        /// chip suggestion position
+        public static let chipSuggestionPosition = "chipSuggestionPosition"
     }
 }

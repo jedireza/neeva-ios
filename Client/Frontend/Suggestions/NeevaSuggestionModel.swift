@@ -7,6 +7,37 @@ import Shared
 import Storage
 import UIKit
 
+struct SuggestionPositionInfo {
+    let positionIndex: Int
+    let isChipSuggestion: Bool
+    let chipSuggestionIndex: Int?
+
+    init(
+        positionIndex: Int,
+        isChipSuggestion: Bool = false,
+        chipSuggestionIndex: Int? = nil
+    ) {
+        self.positionIndex = positionIndex
+        self.isChipSuggestion = isChipSuggestion
+        self.chipSuggestionIndex = chipSuggestionIndex
+    }
+
+    public func loggingAttributes() -> [ClientLogCounterAttribute] {
+        var clientLogAttributes = [ClientLogCounterAttribute]()
+
+        clientLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.Attribute.suggestionPosition, value: String(positionIndex)))
+        if let chipSuggestionIndex = chipSuggestionIndex {
+            clientLogAttributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.Attribute.chipSuggestionPosition,
+                    value: String(chipSuggestionIndex)))
+        }
+        return clientLogAttributes
+    }
+}
+
 class NeevaSuggestionModel: ObservableObject {
     @Published var topSuggestions: [Suggestion] = []
     @Published var chipQuerySuggestions: [Suggestion] = []
@@ -16,12 +47,26 @@ class NeevaSuggestionModel: ObservableObject {
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
     @Published var keyboardFocusedSuggestion: Suggestion?
-
     @Published private var isIncognito: Bool  // TODO: don’t duplicate this source of truth
     func setIncognito(_ isIncognito: Bool) {
         self.isIncognito = isIncognito
     }
 
+    private var chipQueryFirstIndex: Int? {
+        let chipSuggestionsCount = chipQuerySuggestions.count
+        if chipSuggestionsCount > 0 {
+            return topSuggestions.count
+        }
+        return nil
+    }
+    private var chipQueryLastIndex: Int? {
+        let chipSuggestionsCount = chipQuerySuggestions.count
+        if chipSuggestionsCount > 0 {
+            return topSuggestions.count + chipQuerySuggestions.count - 1
+        }
+        return nil
+
+    }
     private var keyboardFocusedSuggestionIndex = -1
 
     var shouldShowSuggestions: Bool {
@@ -144,24 +189,54 @@ class NeevaSuggestionModel: ObservableObject {
         }
     }
 
+    // MARK: - Suggestion Location
+    // TODO: https://github.com/neevaco/neeva-ios-phoenix/issues/1165
+    private func findSuggestionLocationInfo(_ suggestion: Suggestion) -> SuggestionPositionInfo? {
+        if let idx = suggestions.firstIndex(of: suggestion) {
+            if let chipQueryFirstIndex = chipQueryFirstIndex {
+                if let chipQueryLastIndex = chipQueryLastIndex,
+                    idx >= chipQueryFirstIndex && idx <= chipQueryLastIndex
+                {
+                    return SuggestionPositionInfo(
+                        positionIndex: chipQueryFirstIndex,
+                        isChipSuggestion: true,
+                        chipSuggestionIndex: idx - chipQueryFirstIndex)
+                } else if idx > chipQueryFirstIndex {
+                    return SuggestionPositionInfo(
+                        positionIndex: idx - chipQuerySuggestions.count + 1)
+                }
+            }
+            return SuggestionPositionInfo(positionIndex: idx)
+        }
+        return nil
+    }
+
     // MARK: - Searching
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let bvc = BrowserViewController.foregroundBVC()
         guard let tab = bvc.tabManager.selectedTab, let searchController = bvc.searchController
         else { return }
 
+        let suggestionLocationInfo = findSuggestionLocationInfo(suggestion)
+
         switch suggestion {
         case .query(let suggestion):
             let interaction: LogConfig.Interaction =
                 activeLensBang != nil
                 ? .BangSuggestion : .QuerySuggestion
-            ClientLogger.shared.logCounter(interaction)
+            ClientLogger.shared.logCounter(
+                interaction,
+                attributes: EnvironmentHelper.shared.getAttributes()
+                    + (suggestionLocationInfo?.loggingAttributes() ?? []))
 
             bvc.urlBar(didSubmitText: suggestion.suggestedQuery)
         case .url(let suggestion):
             let interaction: LogConfig.Interaction =
                 suggestion.title?.isEmpty ?? false ? .NavSuggestion : .URLSuggestion
-            ClientLogger.shared.logCounter(interaction)
+            ClientLogger.shared.logCounter(
+                interaction,
+                attributes: EnvironmentHelper.shared.getAttributes()
+                    + (suggestionLocationInfo?.loggingAttributes() ?? []))
 
             bvc.finishEditingAndSubmit(
                 URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: tab)
@@ -172,7 +247,10 @@ class NeevaSuggestionModel: ObservableObject {
             searchController.searchDelegate?.searchViewController(
                 searchController, didAcceptSuggestion: suggestion.shortcut)
         case .navigation(let nav):
-            ClientLogger.shared.logCounter(LogConfig.Interaction.HistorySuggestion)
+            ClientLogger.shared.logCounter(
+                LogConfig.Interaction.HistorySuggestion,
+                attributes: EnvironmentHelper.shared.getAttributes()
+                    + (suggestionLocationInfo?.loggingAttributes() ?? []))
             bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: tab)
         }
     }
