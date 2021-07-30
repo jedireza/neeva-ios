@@ -47,7 +47,12 @@ class BrowserViewController: UIViewController {
         return controller
     }()
     lazy var cardGridViewController: CardGridViewController = {
-        let controller = CardGridViewController(tabManager: self.tabManager)
+        let controller = CardGridViewController(
+            tabManager: self.tabManager
+        ) {
+            self.openLazyTab(openedFrom: .tabTray)
+        }
+
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -953,7 +958,7 @@ class BrowserViewController: UIViewController {
     }
 
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
-        if zeroQueryViewController.isLazyTab ?? false {
+        if zeroQueryViewController.isLazyTab {
             zeroQueryViewController.createRealTab(url: url, tabManager: tabManager)
         } else {
             if let nav = tab.loadRequest(URLRequest(url: url)) {

@@ -143,16 +143,18 @@ class ZeroQueryViewController: UIViewController {
     public func closeLazyTab() {
         let bvc = SceneDelegate.getCurrentSceneDelegate().getBVC()
 
-        switch openedFrom {
-        case .tabTray:
-            bvc.showTabTray()
-        case .createdTab:
-            bvc.tabManager.close(bvc.tabManager.selectedTab!)
-        default:
-            break
-        }
+        DispatchQueue.main.async {
+            switch self.openedFrom {
+            case .tabTray:
+                bvc.showTabTray()
+            case .createdTab:
+                bvc.tabManager.close(bvc.tabManager.selectedTab!)
+            default:
+                break
+            }
 
-        resetLazyTab()
+            self.resetLazyTab()
+        }
     }
 
     public func resetLazyTab() {
