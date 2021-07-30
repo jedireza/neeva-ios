@@ -85,9 +85,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-            let routerpath = NavigationPath(url: url),
-            let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-            let queryItems = components.queryItems
+            let routerpath = NavigationPath(url: url)
         else { return }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
@@ -97,8 +95,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.main.async {
             // This is in case the AppClip sign in URL ends up opening the app
             // Will occur if the app is already installed
-            if let signInToken = queryItems.first(where: { $0.name == "token" })?.value,
-                NeevaConstants.isNeevaHome(url: url), components.path == "/appclip/login"
+            if url.scheme == "https", NeevaConstants.isAppHost(url.host),
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+                components.path == "/appclip/login",
+                let queryItems = components.queryItems,
+                let signInToken = queryItems.first(where: { $0.name == "token" })?.value
             {
                 self.handleSignInToken(signInToken)
             } else {
