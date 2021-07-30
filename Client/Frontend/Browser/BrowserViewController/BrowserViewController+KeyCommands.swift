@@ -8,13 +8,13 @@ import Shared
 extension BrowserViewController {
 
     @objc func reloadTabKeyCommand() {
-        if let tab = tabManager.selectedTab, zeroQueryViewController == nil {
+        if let tab = tabManager.selectedTab {
             tab.reload()
         }
     }
 
     @objc func goBackKeyCommand() {
-        if let tab = tabManager.selectedTab, tab.canGoBack, zeroQueryViewController == nil {
+        if let tab = tabManager.selectedTab, tab.canGoBack {
             tab.goBack()
         }
     }
@@ -26,7 +26,7 @@ extension BrowserViewController {
     }
 
     @objc func findInPageKeyCommand() {
-        if let tab = tabManager.selectedTab, zeroQueryViewController == nil {
+        if let tab = tabManager.selectedTab {
             self.tab(tab, didSelectFindInPageForSelection: "")
         }
     }

@@ -22,7 +22,17 @@ struct SuggestionsDivider: View {
     }
 }
 
+struct ChipPlaceholderModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .redacted(reason: .placeholder)
+            .disabled(true).padding(
+                .vertical, SuggestionBlockUX.BlockVerticalPadding)
+    }
+}
+
 struct SuggestionChipView: View {
+    @State var suggestions = [Suggestion]()
     @EnvironmentObject private var neevaModel: NeevaSuggestionModel
 
     var body: some View {
@@ -30,27 +40,35 @@ struct SuggestionChipView: View {
             VStack(alignment: .leading, spacing: SuggestionBlockUX.ChipBlockSpacing) {
                 LazyHStack(spacing: SuggestionBlockUX.ChipBlockSpacing) {
                     ForEach(
-                        stride(from: 0, to: neevaModel.chipQuerySuggestions.count, by: 2)
-                            .map { neevaModel.chipQuerySuggestions[$0] }
+                        stride(from: 0, to: suggestions.count, by: 2)
+                            .map { suggestions[$0] }
                     ) { suggestion in
-                        SearchSuggestionView(suggestion)
-                            .environment(\.suggestionConfig, .chip)
-                            .environmentObject(neevaModel)
+                        if neevaModel.shouldShowSuggestions {
+                            SearchSuggestionView(suggestion)
+                                .environment(\.suggestionConfig, .chip)
+                                .environmentObject(neevaModel)
+                        }
                     }
                 }
                 LazyHStack(spacing: SuggestionBlockUX.ChipBlockSpacing) {
                     ForEach(
-                        stride(from: 1, to: neevaModel.chipQuerySuggestions.count, by: 2)
-                            .map { neevaModel.chipQuerySuggestions[$0] }
+                        stride(from: 1, to: suggestions.count, by: 2)
+                            .map { suggestions[$0] }
                     ) { suggestion in
-                        SearchSuggestionView(suggestion)
-                            .environment(\.suggestionConfig, .chip)
-                            .environmentObject(neevaModel)
+                        if neevaModel.shouldShowSuggestions {
+                            SearchSuggestionView(suggestion)
+                                .environment(\.suggestionConfig, .chip)
+                                .environmentObject(neevaModel)
+                        }
                     }
                 }
             }.padding(.horizontal, SuggestionBlockUX.ChipBlockSpacing)
                 .padding(.vertical, SuggestionBlockUX.ChipBlockPadding)
                 .frame(height: SuggestionBlockUX.ChipBlockHeight)
+        }.useEffect(deps: neevaModel.chipQuerySuggestions) { _ in
+            if !neevaModel.chipQuerySuggestions.isEmpty {
+                suggestions = neevaModel.chipQuerySuggestions
+            }
         }
     }
 }
@@ -76,11 +94,9 @@ struct QuerySuggestionsList: View {
         if !(neevaModel.chipQuerySuggestions + neevaModel.rowQuerySuggestions).isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
 
-            if !neevaModel.chipQuerySuggestions.isEmpty {
-                SuggestionChipView()
-                    .environmentObject(neevaModel)
-                    .padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
-            }
+            SuggestionChipView()
+                .environmentObject(neevaModel)
+                .padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
 
             ForEach(neevaModel.rowQuerySuggestions) { suggestion in
                 SearchSuggestionView(suggestion)
@@ -119,16 +135,13 @@ struct NavSuggestionsList: View {
 }
 
 struct PlaceholderSuggestions: View {
-    func placeholderQuery(_ query: String = "placeholderQuery")
-        -> SuggestionsQuery.Data.Suggest.QuerySuggestion
-    {
-        SuggestionsQuery.Data.Suggest.QuerySuggestion(
-            type: .standard,
-            suggestedQuery: query,
-            boldSpan: [],
-            source: .bing
-        )
-    }
+    let placeholderSuggestions = [
+        Suggestion.query(Suggestion.placeholderQuery("chip1")),
+        Suggestion.query(Suggestion.placeholderQuery("chip2")),
+        Suggestion.query(Suggestion.placeholderQuery("chip3")),
+        Suggestion.query(Suggestion.placeholderQuery("chip4")),
+        Suggestion.query(Suggestion.placeholderQuery("chip5")),
+    ]
 
     var body: some View {
         SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
@@ -136,5 +149,8 @@ struct PlaceholderSuggestions: View {
             .redacted(reason: .placeholder)
             .disabled(true).padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
         SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
+        SuggestionChipView(suggestions: placeholderSuggestions)
+            .modifier(
+                ChipPlaceholderModifier())
     }
 }
