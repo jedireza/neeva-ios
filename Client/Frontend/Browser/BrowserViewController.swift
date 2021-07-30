@@ -29,6 +29,7 @@ struct UrlToOpenModel {
 }
 
 class BrowserViewController: UIViewController {
+    var introViewController: IntroViewController?
     lazy var zeroQueryViewController: ZeroQueryViewController = {
         let zeroQueryViewController = ZeroQueryViewController(profile: profile)
         zeroQueryViewController.delegate = self
@@ -1762,9 +1763,9 @@ extension BrowserViewController {
     }
 
     private func showProperIntroVC() {
-        let introViewController = IntroViewController()
+        introViewController = IntroViewController()
 
-        introViewController.didFinishClosure = { controller in
+        introViewController!.didFinishClosure = { controller in
             Defaults[.introSeen] = true
             controller.dismiss(animated: true) {
                 if self.navigationController?.viewControllers.count ?? 0 > 1 {
@@ -1773,10 +1774,10 @@ extension BrowserViewController {
             }
         }
 
-        introViewController.visitHomePage = visitHomePage
-        introViewController.visitSigninPage = visitSigninPage
+        introViewController!.visitHomePage = visitHomePage
+        introViewController!.visitSigninPage = visitSigninPage
 
-        self.introVCPresentHelper(introViewController: introViewController)
+        self.introVCPresentHelper(introViewController: introViewController!)
     }
 
     private func visitHomePage() {

@@ -82,9 +82,6 @@ enum NavigationPath {
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-url") {
             // Widget Quick Actions - medium - open url private or regular
-            let isPrivate =
-                Bool(components.valueForQuery("private") ?? "")
-                ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-copied")
             || urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-copied")
@@ -107,6 +104,10 @@ enum NavigationPath {
         // If attempting to sign in, skip first run screen
         if let url = url, NeevaConstants.isAppHost(url.host), url.path.starts(with: "/login") {
             Defaults[.introSeen] = true
+
+            if let introVC = SceneDelegate.getCurrentSceneDelegate().getBVC().introViewController {
+                introVC.dismiss(animated: true, completion: nil)
+            }
         }
 
         // Unless the `open-url` URL specifies a `private` parameter,

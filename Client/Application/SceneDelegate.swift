@@ -94,14 +94,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
         }
 
-        DispatchQueue.main.async {
-            // This is in case the AppClip sign in URL ends up opening the app
-            // Will occur if the app is already installed
-            if let signInToken = queryItems.first(where: { $0.name == "token" })?.value {
-                self.handleSignInToken(signInToken)
-            } else {
-                NavigationPath.handle(nav: routerpath, with: self.browserViewController)
-            }
+        // This is in case the AppClip sign in URL ends up opening the app
+        // Will occur if the app is already installed
+        if let signInToken = queryItems.first(where: { $0.name == "token" })?.value {
+            self.handleSignInToken(signInToken)
+        } else {
+            NavigationPath.handle(nav: routerpath, with: self.browserViewController)
         }
     }
 
@@ -219,6 +217,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppClipHelper.saveTokenToDevice(nil)
         browserViewController.openURLInNewTab(
             URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
+
+        if let introVC = browserViewController.introViewController {
+            introVC.dismiss(animated: true, completion: nil)
+        }
     }
 }
 
