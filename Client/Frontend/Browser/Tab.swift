@@ -230,10 +230,10 @@ class Tab: NSObject {
             if UIDevice.current.userInterfaceIdiom == .phone {
                 let rc = UIRefreshControl(
                     frame: .zero,
-                    primaryAction: UIAction { [weak webView] _ in
-                        webView?.reload()
+                    primaryAction: UIAction { [weak self] _ in
+                        self?.reload()
                         // Dismiss refresh control now as the regular progress bar will soon appear.
-                        webView?.scrollView.refreshControl?.endRefreshing()
+                        self?.webView?.scrollView.refreshControl?.endRefreshing()
                     })
                 webView.scrollView.refreshControl = rc
                 webView.scrollView.bringSubviewToFront(rc)
