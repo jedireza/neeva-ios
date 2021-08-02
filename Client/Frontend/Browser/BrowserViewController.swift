@@ -830,6 +830,8 @@ class BrowserViewController: UIViewController {
     }
 
     fileprivate func hideZeroQuery() {
+        urlBar.shared.model.setEditing(to: false)
+
         UIView.animate(
             withDuration: 0.2, delay: 0, options: .beginFromCurrentState,
             animations: { () -> Void in
@@ -1571,13 +1573,10 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 
     func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
+        hideZeroQuery()
+
         let tab = self.tabManager.addTab(
             URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
-
-        // If in overlay mode switching doesn't correctly dismiss the zero query screen
-        guard !urlBar.shared.model.isEditing else {
-            return
-        }
 
         // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
         let toastView = ToastViewManager.shared.makeToast(
