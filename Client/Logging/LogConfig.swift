@@ -159,5 +159,7 @@ public struct LogConfig {
         public static let suggestionPosition = "suggestionPosition"
         /// chip suggestion position
         public static let chipSuggestionPosition = "chipSuggestionPosition"
+        /// number of characters typed in url bar
+        public static let urlBarNumOfCharsTyped = "urlBarNumOfCharsTyped"
     }
 }
