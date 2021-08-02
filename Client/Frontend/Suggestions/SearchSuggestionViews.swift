@@ -127,7 +127,6 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
             }.apply(config: config, suggestionState: suggestionState)
         }
         .accentColor(.primary)
-        .buttonStyle(TableCellButtonStyle())
         .useEffect(deps: model.keyboardFocusedSuggestion) { _ in
             if let suggestion = suggestion, model.isFocused(suggestion) {
                 suggestionState = .focused
