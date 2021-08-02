@@ -4,9 +4,6 @@
 
 import Foundation
 import SwiftKeychainWrapper
-import XCGLogger
-
-private let log = Logger.keychain
 
 extension KeychainWrapper {
     public static var sharedAppContainerKeychain: KeychainWrapper {
@@ -16,53 +13,5 @@ extension KeychainWrapper {
         let accessGroupIdentifier = AppInfo.keychainAccessGroupWithPrefix(accessGroupPrefix)
         return KeychainWrapper(
             serviceName: baseBundleIdentifier, accessGroup: accessGroupIdentifier)
-    }
-}
-
-extension KeychainWrapper {
-    public func ensureStringItemAccessibility(
-        _ accessibility: SwiftKeychainWrapper.KeychainItemAccessibility, forKey key: String
-    ) {
-        if self.hasValue(forKey: key) {
-            if self.accessibilityOfKey(key) != .afterFirstUnlock {
-                log.debug("updating item \(key) with \(accessibility)")
-
-                guard let value = self.string(forKey: key) else {
-                    log.error("failed to get item \(key)")
-                    return
-                }
-
-                if !self.removeObject(forKey: key) {
-                    log.warning("failed to remove item \(key)")
-                }
-
-                if !self.set(value, forKey: key, withAccessibility: accessibility) {
-                    log.warning("failed to update item \(key)")
-                }
-            }
-        }
-    }
-
-    public func ensureObjectItemAccessibility(
-        _ accessibility: SwiftKeychainWrapper.KeychainItemAccessibility, forKey key: String
-    ) {
-        if self.hasValue(forKey: key) {
-            if self.accessibilityOfKey(key) != .afterFirstUnlock {
-                log.debug("updating item \(key) with \(accessibility)")
-
-                guard let value = self.object(forKey: key) else {
-                    log.error("failed to get item \(key)")
-                    return
-                }
-
-                if !self.removeObject(forKey: key) {
-                    log.warning("failed to remove item \(key)")
-                }
-
-                if !self.set(value, forKey: key, withAccessibility: accessibility) {
-                    log.warning("failed to update item \(key)")
-                }
-            }
-        }
     }
 }

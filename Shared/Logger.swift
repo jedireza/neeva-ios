@@ -21,9 +21,6 @@ extension Logger {
         filenameRoot: "browser",
         logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: saveLogsToDocuments))
 
-    /// Logger used for recording interactions with the keychain
-    public static let keychain: XCGLogger = Logger.fileLoggerWithName("keychain")
-
     /// Logger used for logging database errors such as corruption
     public static let corrupt: RollingFileLogger = {
         let logger = RollingFileLogger(
