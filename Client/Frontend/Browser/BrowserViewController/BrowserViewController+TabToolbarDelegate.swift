@@ -74,8 +74,6 @@ extension BrowserViewController: TabToolbarDelegate {
                     handler: switchPrivacyMode)
         ]
 
-        let tabCount = self.tabManager.tabs.count
-
         let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare))
         { _ in
             self.openLazyTab()
@@ -88,6 +86,9 @@ extension BrowserViewController: TabToolbarDelegate {
             self.openLazyTab()
         }
 
+        let tabCount =
+            tabManager.selectedTab?.isPrivate ?? false
+            ? tabManager.privateTabs.count : tabManager.normalTabs.count
         var tabActions = [newTab]
 
         if let tab = self.tabManager.selectedTab {
