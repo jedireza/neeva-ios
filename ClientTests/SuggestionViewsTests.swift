@@ -176,7 +176,6 @@ class SuggestionViewsTests: XCTestCase {
         // 1 history suggestion and 5 query suggestions
         XCTAssertEqual(2, list.count)
         XCTAssertEqual(2, list.findAll(NavSuggestionView.self).count)
-        // 5 because of placeholder chips
         XCTAssertEqual(5, list.findAll(QuerySuggestionView.self).count)
     }
 
