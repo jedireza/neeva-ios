@@ -24,7 +24,9 @@ class TabMenu {
             preferredStyle: .actionSheet)
 
         let closeAction = UIAlertAction(
-            title: "Close \(numberOfTabs) \(isPrivate ? "Private " : "")Tabs", style: .destructive
+            title:
+                "Close \(numberOfTabs) \(isPrivate ? "Private " : "")\(numberOfTabs > 1 ? "Tabs" : "Tab")",
+            style: .destructive
         ) { [self] _ in
             if isPrivate {
                 _ = tabManager.switchPrivacyMode()
@@ -60,8 +62,10 @@ class TabMenu {
     }
 
     func createCloseAllTabsAction() -> UIAction {
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let action = UIAction(
-            title: "Close All Tabs", image: UIImage(systemName: "trash"), attributes: .destructive
+            title: "Close All \(isPrivate ? "Private " : "")Tabs",
+            image: UIImage(systemName: "trash"), attributes: .destructive
         ) { _ in
             // make sure the user really wants to close all tabs
             self.showConfirmCloseAllTabs(numberOfTabs: self.getTabCountForCurrentType())
