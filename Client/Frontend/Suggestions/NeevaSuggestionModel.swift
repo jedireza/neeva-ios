@@ -34,6 +34,11 @@ struct SuggestionPositionInfo {
                     key: LogConfig.Attribute.chipSuggestionPosition,
                     value: String(chipSuggestionIndex)))
         }
+        let bvc = BrowserViewController.foregroundBVC()
+        clientLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.Attribute.urlBarNumOfCharsTyped,
+                value: String(bvc.urlBar.shared.queryModel.value.count)))
         return clientLogAttributes
     }
 }
