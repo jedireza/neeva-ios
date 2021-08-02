@@ -473,7 +473,6 @@
 		D03DCD95211B63D000151ACA /* DateGroupedTableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03DCD94211B63D000151ACA /* DateGroupedTableData.swift */; };
 		D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03F8EB12004014E003C2224 /* FaviconHandler.swift */; };
 		D03F8F23200EAC1F003C2224 /* AllFramesAtDocumentStart.js in Resources */ = {isa = PBXBuildFile; fileRef = D03F8F22200EAC1E003C2224 /* AllFramesAtDocumentStart.js */; };
-		D053D6742211CD53006C6B64 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D053D6732211CD53006C6B64 /* KeychainStore.swift */; };
 		D05434E3225BBC4100FDE4EF /* RustShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05434E2225BBC4100FDE4EF /* RustShared.swift */; };
 		D054352A226687A400FDE4EF /* UIBarButtonItemExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0543529226687A400FDE4EF /* UIBarButtonItemExtensions.swift */; };
 		D057B2AB220103BC000614E0 /* RustLogins.swift in Sources */ = {isa = PBXBuildFile; fileRef = D057B2AA220103BC000614E0 /* RustLogins.swift */; };
@@ -640,7 +639,6 @@
 		E65075B11E37F7AB006961AC /* FSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E65075821E37F7AB006961AC /* FSUtils.m */; };
 		E65075B21E37F7AB006961AC /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075831E37F7AB006961AC /* Functions.swift */; };
 		E65075B31E37F7AB006961AC /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075841E37F7AB006961AC /* KeyboardHelper.swift */; };
-		E65075B41E37F7AB006961AC /* KeychainCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075851E37F7AB006961AC /* KeychainCache.swift */; };
 		E65075B51E37F7AB006961AC /* LaunchArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075861E37F7AB006961AC /* LaunchArguments.swift */; };
 		E65075B71E37F7AB006961AC /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075881E37F7AB006961AC /* Logger.swift */; };
 		E65075B81E37F7AB006961AC /* NotificationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075891E37F7AB006961AC /* NotificationConstants.swift */; };
@@ -1400,7 +1398,6 @@
 		D03F8F20200EABB0003C2224 /* __firefox__.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = __firefox__.js; sourceTree = "<group>"; };
 		D03F8F22200EAC1E003C2224 /* AllFramesAtDocumentStart.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AllFramesAtDocumentStart.js; sourceTree = "<group>"; };
 		D03F8F24200EACD8003C2224 /* ContextMenu.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ContextMenu.js; sourceTree = "<group>"; };
-		D053D6732211CD53006C6B64 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
 		D05434E2225BBC4100FDE4EF /* RustShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RustShared.swift; sourceTree = "<group>"; };
 		D0543529226687A400FDE4EF /* UIBarButtonItemExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItemExtensions.swift; sourceTree = "<group>"; };
 		D057B2AA220103BC000614E0 /* RustLogins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RustLogins.swift; sourceTree = "<group>"; };
@@ -1564,7 +1561,6 @@
 		E65075821E37F7AB006961AC /* FSUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSUtils.m; sourceTree = "<group>"; };
 		E65075831E37F7AB006961AC /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		E65075841E37F7AB006961AC /* KeyboardHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
-		E65075851E37F7AB006961AC /* KeychainCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainCache.swift; sourceTree = "<group>"; };
 		E65075861E37F7AB006961AC /* LaunchArguments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchArguments.swift; sourceTree = "<group>"; };
 		E65075881E37F7AB006961AC /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		E65075891E37F7AB006961AC /* NotificationConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationConstants.swift; sourceTree = "<group>"; };
@@ -2891,8 +2887,6 @@
 				E65075821E37F7AB006961AC /* FSUtils.m */,
 				E65075831E37F7AB006961AC /* Functions.swift */,
 				E65075841E37F7AB006961AC /* KeyboardHelper.swift */,
-				E65075851E37F7AB006961AC /* KeychainCache.swift */,
-				D053D6732211CD53006C6B64 /* KeychainStore.swift */,
 				E65075861E37F7AB006961AC /* LaunchArguments.swift */,
 				E65075881E37F7AB006961AC /* Logger.swift */,
 				C9C18E1326559118004710CD /* NeevaColors.xcassets */,
@@ -4203,7 +4197,6 @@
 				E65075BE1E37F7AB006961AC /* TimeConstants.swift in Sources */,
 				C9C18E50265597A6004710CD /* SpacesSearchHeaderView.swift in Sources */,
 				E65075B21E37F7AB006961AC /* Functions.swift in Sources */,
-				E65075B41E37F7AB006961AC /* KeychainCache.swift in Sources */,
 				E65075BA1E37F7AB006961AC /* Prefs.swift in Sources */,
 				C9C18E4726559616004710CD /* MultilineTextField.swift in Sources */,
 				C9C18E5C265598EA004710CD /* QueryController.swift in Sources */,
@@ -4269,7 +4262,6 @@
 				E65075BF1E37F7AB006961AC /* UserAgent.swift in Sources */,
 				C9C18E5D265598EA004710CD /* AbstractController.swift in Sources */,
 				C9C18E3E26559504004710CD /* ErrorView.swift in Sources */,
-				D053D6742211CD53006C6B64 /* KeychainStore.swift in Sources */,
 				C9C18E60265599E5004710CD /* LoadingView.swift in Sources */,
 				E65075C01E37F7AB006961AC /* WeakList.swift in Sources */,
 				E65075AE1E37F7AB006961AC /* UIImageExtensions.swift in Sources */,
