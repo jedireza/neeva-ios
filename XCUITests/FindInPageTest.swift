@@ -11,8 +11,8 @@ class FindInPageTests: BaseTestCase {
         openURL(url)
         goToFindOnPage()
 
-        waitForExistence(app.buttons["FindInPage.find_next"], timeout: 5)
-        waitForExistence(app.buttons["FindInPage.find_previous"], timeout: 5)
+        waitForExistence(app.buttons["FindInPage.find_next"])
+        waitForExistence(app.buttons["FindInPage.find_previous"])
         XCTAssertTrue(app.textFields["FindInPage.searchField"].exists)
     }
 
@@ -104,21 +104,17 @@ class FindInPageTests: BaseTestCase {
         XCTAssertTrue(app.staticTexts["0/0"].exists, "There should not be any matches")
     }
 
-    /* Disabled due to flakiness: #1187
     func testBarDissapearsWhenReloading() {
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
-        // Before reloading, it is necessary to hide the keyboard
-        app.buttons["Address Bar"].tap()
-        app.textFields["address"].typeText("\n")
+        waitForExistence(app.buttons["Reload"])
+        app.buttons["Reload"].tap()
 
         // Once the page is reloaded the search bar should not appear
         waitForNoExistence(app.textFields[""])
         XCTAssertFalse(app.textFields[""].exists)
     }
-    */
 
-    /* TODO Restore Test #1159
     func testBarDissapearsWhenOpeningTabsTray() {
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
@@ -131,7 +127,7 @@ class FindInPageTests: BaseTestCase {
         XCTAssertFalse(app.textFields[""].exists)
         XCTAssertFalse(app.buttons["FindInPage.find_next"].exists)
         XCTAssertFalse(app.buttons["FindInPage.find_previous"].exists)
-    } */
+    }
 
     func testFindFromSelection() {
         let textToFind = "from"
