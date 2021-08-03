@@ -14,8 +14,13 @@ class NavigationDelegateTests: KIFTestCase {
 
     override func setUp() {
         super.setUp()
+
         webRoot = SimplePageServer.start()
         BrowserUtils.dismissFirstRunUI(tester())
+
+        if tester().viewExistsWithLabel("Done") {
+            tester().tapView(withAccessibilityLabel: "Done")
+        }
     }
 
     override func tearDown() {
@@ -24,7 +29,6 @@ class NavigationDelegateTests: KIFTestCase {
         super.tearDown()
     }
 
-    /* TODO Restore flakey tests #1142
     func testAppStoreLinkShowsConfirmation() {
         let url = "\(webRoot!)/navigationDelegate.html"
         tester().waitForAnimationsToFinish(withTimeout: 3)
@@ -37,5 +41,5 @@ class NavigationDelegateTests: KIFTestCase {
 
         tester().waitForView(withAccessibilityIdentifier: "CancelOpenInApp")
         tester().tapView(withAccessibilityIdentifier: "CancelOpenInApp")
-    } */
+    }
 }

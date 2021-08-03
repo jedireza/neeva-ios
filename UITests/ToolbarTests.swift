@@ -9,15 +9,17 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
     fileprivate var webRoot: String!
 
     override func setUp() {
+        super.setUp()
+
         webRoot = SimplePageServer.start()
         BrowserUtils.dismissFirstRunUI(tester())
-    }
 
-    func testURLEntry() {
         if tester().viewExistsWithLabel("Done") {
             tester().tapView(withAccessibilityLabel: "Done")
         }
+    }
 
+    func testURLEntry() {
         if !tester().viewExistsWithLabel("Cancel") {
             tester().tapView(withAccessibilityLabel: "Address Bar")
         }
