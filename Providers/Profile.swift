@@ -18,7 +18,7 @@ import XCGLogger
     import SwiftyJSON
 #endif
 
-private let log = Logger.sync
+private let log = Logger.storage
 
 public let ProfileRemoteTabsSyncDelay: TimeInterval = 0.1
 
