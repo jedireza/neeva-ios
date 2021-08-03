@@ -133,7 +133,6 @@ class BrowserViewController: UIViewController {
     var displayedPopoverController: UIViewController?
     var updateDisplayedPopoverProperties: (() -> Void)?
 
-    fileprivate weak var tabTrayController: TabTrayControllerV1?
     let profile: Profile
     let tabManager: TabManager
 
@@ -418,8 +417,7 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        let gridModel =
-            FeatureFlag[.legacyTabSwitcher] ? GridModel() : self.cardGridViewController.gridModel
+        let gridModel = self.cardGridViewController.gridModel
         let trackingStatsModel = TrackingStatsViewModel(tabManager: tabManager)
         if FeatureFlag[.newTopBar] {
             let queryModel = SearchQueryModel()
@@ -772,14 +770,12 @@ class BrowserViewController: UIViewController {
             }
         }
 
-        if !FeatureFlag[.legacyTabSwitcher] {
-            cardGridViewController.view.snp.remakeConstraints { make in
-                make.leading.trailing.bottom.equalToSuperview()
-                if shouldShowFooterForTraitCollection(traitCollection) {
-                    make.top.equalTo(urlBar.view.snp.bottom)
-                } else {
-                    make.top.equalToSuperview()
-                }
+        cardGridViewController.view.snp.remakeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            if shouldShowFooterForTraitCollection(traitCollection) {
+                make.top.equalTo(urlBar.view.snp.bottom)
+            } else {
+                make.top.equalToSuperview()
             }
         }
     }
@@ -792,7 +788,7 @@ class BrowserViewController: UIViewController {
 
         zeroQueryIsInline = inline
 
-        if !FeatureFlag[.legacyTabSwitcher], !cardGridViewController.gridModel.isHidden {
+        if !cardGridViewController.gridModel.isHidden {
             cardGridViewController.gridModel.hideWithNoAnimation()
         }
 
@@ -1026,14 +1022,6 @@ class BrowserViewController: UIViewController {
     }
 
     // MARK: Opening New Tabs
-    func switchToPrivacyMode(isPrivate: Bool) {
-        if let tabTrayController = self.tabTrayController,
-            tabTrayController.tabDisplayManager.isPrivate != isPrivate
-        {
-            tabTrayController.changePrivacyMode(isPrivate)
-        }
-    }
-
     func switchToTabForURLOrOpen(_ url: URL, isPrivate: Bool = false) {
         guard !isCrashAlertShowing else {
             urlFromAnotherApp = UrlToOpenModel(url: url, isPrivate: isPrivate)
@@ -1071,7 +1059,6 @@ class BrowserViewController: UIViewController {
             request = nil
         }
 
-        switchToPrivacyMode(isPrivate: isPrivate)
         tabManager.selectTab(tabManager.addTab(request, isPrivate: isPrivate))
     }
 
@@ -1107,12 +1094,8 @@ class BrowserViewController: UIViewController {
     }
 
     fileprivate func popToBVC() {
-        guard let currentViewController = navigationController?.topViewController else {
-            return
-        }
-        currentViewController.dismiss(animated: true, completion: nil)
-        if currentViewController != self {
-            _ = self.navigationController?.popViewController(animated: true)
+        if let presentedViewController = presentedViewController {
+            presentedViewController.dismiss(animated: true, completion: nil)
         } else if urlBar.shared.model.isEditing {
             urlBar.shared.model.setEditing(to: false)
         }
@@ -1309,14 +1292,7 @@ class BrowserViewController: UIViewController {
 
         updateFindInPageVisibility(visible: false)
 
-        if FeatureFlag[.legacyTabSwitcher] {
-            let tabTrayController = TabTrayControllerV1(
-                tabManager: tabManager, profile: profile, tabTrayDelegate: self)
-            navigationController?.pushViewController(tabTrayController, animated: true)
-            self.tabTrayController = tabTrayController
-        } else {
-            cardGridViewController.showGrid()
-        }
+        cardGridViewController.showGrid()
 
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
@@ -1771,11 +1747,7 @@ extension BrowserViewController {
 
         introViewController!.didFinishClosure = { controller in
             Defaults[.introSeen] = true
-            controller.dismiss(animated: true) {
-                if self.navigationController?.viewControllers.count ?? 0 > 1 {
-                    _ = self.navigationController?.popToRootViewController(animated: true)
-                }
-            }
+            controller.dismiss(animated: true)
         }
 
         introViewController!.visitHomePage = visitHomePage
@@ -2061,31 +2033,6 @@ extension BrowserViewController: SessionRestoreHelperDelegate {
         }
 
         clipboardBarDisplayHandler?.didRestoreSession()
-    }
-}
-
-extension BrowserViewController: TabTrayDelegate {
-    // This function animates and resets the tab chrome transforms when
-    // the tab tray dismisses.
-    func tabTrayDidDismiss(_ tabTray: TabTrayControllerV1) {
-        resetBrowserChrome()
-    }
-
-    func tabTrayDidAddTab(_ tabTray: TabTrayControllerV1, tab: Tab) {}
-
-    func tabTrayDidAddToReadingList(_ tab: Tab) -> ReadingListItem? {
-        guard let url = tab.url?.absoluteString, !url.isEmpty else { return nil }
-        return profile.readingList.createRecordWithURL(
-            url, title: tab.title ?? url, addedBy: UIDevice.current.name
-        ).value.successValue
-    }
-
-    func tabTrayDidTapLocationBar(_ tabTray: TabTrayControllerV1) {
-        urlBar.shared.model.setEditing(to: true)
-    }
-
-    func tabTrayRequestsPresentationOf(_ viewController: UIViewController) {
-        self.present(viewController, animated: false, completion: nil)
     }
 }
 

@@ -154,7 +154,6 @@ class SimulatedSwipeController:
         guard let results = results else {
             progressView.view.removeFromSuperview()
             progressView.removeFromParent()
-            progressView.navigationController?.isNavigationBarHidden = true
             progressModel.urls = []
             progressModel.index = 0
             return
@@ -164,7 +163,6 @@ class SimulatedSwipeController:
         bvc.addChild(progressView)
         bvc.view.addSubview(progressView.view)
         progressView.didMove(toParent: bvc)
-        progressView.navigationController?.isNavigationBarHidden = true
         progressModel.urls = results
         progressModel.index = index
         progressView.view.snp.makeConstraints { make in
