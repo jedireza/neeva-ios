@@ -3,7 +3,7 @@
 import Combine
 import WebKit
 
-class ZoomMenuModel: ObservableObject {
+class TextSizeModel: ObservableObject {
     private let webView: WKWebView
 
     var objectWillChange = ObservableObjectPublisher()

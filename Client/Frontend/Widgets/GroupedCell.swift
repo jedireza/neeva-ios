@@ -19,7 +19,6 @@ enum GroupedCellAlignment {
 
 /// A container for `GroupedCell`s. It applies the proper padding, spacing and background color around the cells.
 struct GroupedStack<Content: View>: View {
-    var backgroundColor: Color?
     @ViewBuilder let content: () -> Content
 
     var body: some View {
@@ -28,7 +27,6 @@ struct GroupedStack<Content: View>: View {
         }
         .accentColor(.ui.adaptive.blue)
         .padding(16)
-        .background(backgroundColor.ignoresSafeArea())
     }
 }
 

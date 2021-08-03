@@ -1131,7 +1131,7 @@ class BrowserViewController: UIViewController {
         }
         appActivities.append(findInPageActivity)
         if let webView = tab?.webView {
-            appActivities.append(ZoomActivity(webView: webView, overlayParent: self))
+            appActivities.append(TextSizeActivity(webView: webView, overlayParent: self))
         }
 
         let deferredSites = self.profile.history.isPinnedTopSite(tab?.url?.absoluteString ?? "")

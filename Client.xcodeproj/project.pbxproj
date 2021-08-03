@@ -318,9 +318,9 @@
 		C9299E34268F7BD700758795 /* DefaultBrowserOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */; };
 		C9299E36268F9CF300758795 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E35268F9CF300758795 /* CloseButton.swift */; };
 		C9299E382694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */; };
-		C9299E3B2695EA4B00758795 /* ZoomMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E3A2695EA4B00758795 /* ZoomMenuView.swift */; };
-		C9299E3D2695F94400758795 /* ZoomMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E3C2695F94400758795 /* ZoomMenuModel.swift */; };
-		C9299E3F2696021C00758795 /* ZoomActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E3E2696021C00758795 /* ZoomActivity.swift */; };
+		C9299E3B2695EA4B00758795 /* TextSizeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E3A2695EA4B00758795 /* TextSizeView.swift */; };
+		C9299E3D2695F94400758795 /* TextSizeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E3C2695F94400758795 /* TextSizeModel.swift */; };
+		C9299E3F2696021C00758795 /* TextSizeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E3E2696021C00758795 /* TextSizeActivity.swift */; };
 		C93EFEE226713AF7000396B5 /* ErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE126713AF7000396B5 /* ErrorConstants.swift */; };
 		C93EFEE5267150FD000396B5 /* TabLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE4267150FD000396B5 /* TabLocationView.swift */; };
 		C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */; };
@@ -1254,9 +1254,9 @@
 		C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserOnboardingView.swift; sourceTree = "<group>"; };
 		C9299E35268F9CF300758795 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
 		C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+LegacyURLBarDelegate.swift"; sourceTree = "<group>"; };
-		C9299E3A2695EA4B00758795 /* ZoomMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomMenuView.swift; sourceTree = "<group>"; };
-		C9299E3C2695F94400758795 /* ZoomMenuModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomMenuModel.swift; sourceTree = "<group>"; };
-		C9299E3E2696021C00758795 /* ZoomActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomActivity.swift; sourceTree = "<group>"; };
+		C9299E3A2695EA4B00758795 /* TextSizeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSizeView.swift; sourceTree = "<group>"; };
+		C9299E3C2695F94400758795 /* TextSizeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSizeModel.swift; sourceTree = "<group>"; };
+		C9299E3E2696021C00758795 /* TextSizeActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSizeActivity.swift; sourceTree = "<group>"; };
 		C93EFEE126713AF7000396B5 /* ErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorConstants.swift; sourceTree = "<group>"; };
 		C93EFEE4267150FD000396B5 /* TabLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationView.swift; sourceTree = "<group>"; };
 		C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabLocationAligner.swift; sourceTree = "<group>"; };
@@ -2202,7 +2202,7 @@
 				C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */,
 				661F4FB3269CAA570078238B /* DownloadsMenu */,
 				66BB89D726A64F83000C4BDF /* OpenInApp */,
-				C9299E392695EA2100758795 /* Zoom */,
+				C9299E392695EA2100758795 /* TextSize */,
 			);
 			path = OverlaySheet;
 			sourceTree = "<group>";
@@ -2360,16 +2360,16 @@
 			path = Scripts;
 			sourceTree = "<group>";
 		};
-		C9299E392695EA2100758795 /* Zoom */ = {
+		C9299E392695EA2100758795 /* TextSize */ = {
 			isa = PBXGroup;
 			children = (
-				C9299E3A2695EA4B00758795 /* ZoomMenuView.swift */,
-				C9299E3C2695F94400758795 /* ZoomMenuModel.swift */,
-				C9299E3E2696021C00758795 /* ZoomActivity.swift */,
+				C9299E3A2695EA4B00758795 /* TextSizeView.swift */,
+				C9299E3C2695F94400758795 /* TextSizeModel.swift */,
+				C9299E3E2696021C00758795 /* TextSizeActivity.swift */,
 				C962778B26A20A3B0078CDAF /* WKWebView+Zoom.h */,
 				C962778C26A20A3B0078CDAF /* WKWebView+Zoom.m */,
 			);
-			path = Zoom;
+			path = TextSize;
 			sourceTree = "<group>";
 		};
 		C93EFEE3267150ED000396B5 /* TabLocationView */ = {
@@ -4476,7 +4476,7 @@
 				BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */,
 				D38F02D11C05127100175932 /* Authenticator.swift in Sources */,
 				E4CD9F6D1A77DD2800318571 /* ReaderModeStyleViewController.swift in Sources */,
-				C9299E3B2695EA4B00758795 /* ZoomMenuView.swift in Sources */,
+				C9299E3B2695EA4B00758795 /* TextSizeView.swift in Sources */,
 				D0FCF7F51FE45842004A7995 /* UserScriptManager.swift in Sources */,
 				F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */,
 				E4A960061ABB9C450069AD6F /* ReaderModeUtils.swift in Sources */,
@@ -4595,7 +4595,7 @@
 				282DA4731A68C1E700A406E2 /* OpenSearch.swift in Sources */,
 				C9C18E6826559DCF004710CD /* FormatDateTime.swift in Sources */,
 				C9C18E0A26559007004710CD /* BoldSpanView.swift in Sources */,
-				C9299E3D2695F94400758795 /* ZoomMenuModel.swift in Sources */,
+				C9299E3D2695F94400758795 /* TextSizeModel.swift in Sources */,
 				BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */,
 				C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */,
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
@@ -4704,7 +4704,7 @@
 				EB8A0A77206ABCE000A9859A /* WebPagesForTesting.swift in Sources */,
 				C94D4099268BAADC003A6766 /* UIKitButton.swift in Sources */,
 				D3A9949C1A3686BD008AD1AC /* BrowserViewController.swift in Sources */,
-				C9299E3F2696021C00758795 /* ZoomActivity.swift in Sources */,
+				C9299E3F2696021C00758795 /* TextSizeActivity.swift in Sources */,
 				59A681BDFC95A19F05E07223 /* SearchViewController.swift in Sources */,
 				C9BED4C12667FA91001D9C77 /* SuggestedSearchViews.swift in Sources */,
 				4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */,
