@@ -25,8 +25,11 @@ class ZeroQueryModel: ObservableObject {
             promoCard = .referralPromo {
                 self.referralPromoHandler()
             } onClose: {
+                // log closing referral promo from zero query
+                var attributes = EnvironmentHelper.shared.getAttributes()
+                attributes.append(ClientLogCounterAttribute(key: "source", value: "zero query"))
                 ClientLogger.shared.logCounter(
-                    .CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                    .CloseReferralPromo, attributes: attributes)
                 self.promoCard = nil
                 Defaults[.didDismissReferralPromoCard] = true
             }

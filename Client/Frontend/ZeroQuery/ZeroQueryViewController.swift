@@ -175,6 +175,11 @@ extension ZeroQueryViewController: DataObserverDelegate {
                 self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
             self.model.referralPromoHandler = {
+                // log click referral promo from zero query page
+                var attributes = EnvironmentHelper.shared.getAttributes()
+                attributes.append(ClientLogCounterAttribute(key: "source", value: "zero query"))
+                ClientLogger.shared.logCounter(
+                    .OpenReferralPromo, attributes: attributes)
                 self.showSiteWithURLHandler(NeevaConstants.appReferralsURL)
             }
             self.model.updateState()

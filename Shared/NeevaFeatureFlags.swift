@@ -57,6 +57,7 @@ public class NeevaFeatureFlags {
         case feedbackScreenshot = 48985
         case referralPromo = 48988
         case calculatorSuggestion = 48428
+        case referralPromoLogging = 49918
 
         public var name: String {
             switch self {
@@ -69,6 +70,7 @@ public class NeevaFeatureFlags {
             case .feedbackScreenshot: return "ios.feedback_screenshot"
             case .referralPromo: return "ios.referral_promo"
             case .calculatorSuggestion: return "suggestion.enable_calculator"
+            case .referralPromoLogging: return "ios.referral_promo_logging"
             }
         }
     }

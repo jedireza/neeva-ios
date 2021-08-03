@@ -53,6 +53,7 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
         .feedbackScreenshot,
         .referralPromo,
         .calculatorSuggestion,
+        .referralPromoLogging,
     ]
     let intFlags: [NeevaFeatureFlags.IntFlag] = []
     let floatFlags: [NeevaFeatureFlags.FloatFlag] = []
