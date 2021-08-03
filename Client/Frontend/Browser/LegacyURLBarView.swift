@@ -75,7 +75,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     var isPrivateMode = false
 
     lazy var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
-    lazy var neevaMenuButton: UIButton = {
+    lazy var neevaMenuButton: UIButton = { [unowned self] in
         let neevaMenuButton = UIButton(frame: .zero)
         neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
         neevaMenuButton.adjustsImageWhenHighlighted = false
@@ -89,7 +89,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         return neevaMenuButton
     }()
 
-    lazy var locationHost: TabLocationHost = {
+    lazy var locationHost: TabLocationHost = { [unowned self] in
         TabLocationHost(
             model: model,
             historySuggestionModel: historySuggestionModel,
@@ -144,9 +144,11 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
 
     var toolbarNeevaMenuButton = ToolbarButton()
 
-    lazy var actionButtons: [ToolbarButton] = [
-        self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton,
-    ]
+    lazy var actionButtons: [ToolbarButton] = { [unowned self] in
+        [
+            self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton,
+        ]
+    }()
 
     var profile: Profile? = nil
 

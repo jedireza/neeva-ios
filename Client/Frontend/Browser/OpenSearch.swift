@@ -20,7 +20,7 @@ class OpenSearchEngine {
     fileprivate let SearchTermComponent = "{searchTerms}"
     fileprivate let LocaleTermComponent = "{moz:locale}"
 
-    fileprivate lazy var searchQueryComponentKey: String? = self.getQueryArgFromTemplate()
+    fileprivate lazy var searchQueryComponentKey: String? = { [unowned self] in self.getQueryArgFromTemplate() }()
 
     var searchTemplate: String {
         "https://\(NeevaConstants.appHost)/search?q={searchTerms}&src=nvobar"

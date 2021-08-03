@@ -22,7 +22,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
     fileprivate var currentRow = 0
     fileprivate var verticalConstraints: [Constraint] = []
 
-    lazy var tableView: UITableView = {
+    lazy var tableView: UITableView = { [unowned self] in
         let tableView = UITableView()
         tableView.separatorStyle = .none
         tableView.dataSource = self

@@ -29,8 +29,8 @@ struct UrlToOpenModel {
 }
 
 class BrowserViewController: UIViewController {
-    var introViewController: IntroViewController?
-    lazy var zeroQueryViewController: ZeroQueryViewController = {
+    private(set) var introViewController: IntroViewController?
+    private(set) lazy var zeroQueryViewController: ZeroQueryViewController = { [unowned self] in
         let zeroQueryViewController = ZeroQueryViewController(profile: profile)
         zeroQueryViewController.delegate = self
         addChild(zeroQueryViewController)
@@ -40,14 +40,14 @@ class BrowserViewController: UIViewController {
         return zeroQueryViewController
     }()
 
-    lazy var cardStripViewController: CardStripViewController? = {
+    private(set) lazy var cardStripViewController: CardStripViewController? = { [unowned self] in
         let controller = CardStripViewController(tabManager: self.tabManager)
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
         return controller
     }()
-    lazy var cardGridViewController: CardGridViewController = {
+    private lazy var cardGridViewController: CardGridViewController = { [unowned self] in
         let controller = CardGridViewController(
             tabManager: self.tabManager
         ) {
@@ -61,9 +61,9 @@ class BrowserViewController: UIViewController {
         controller.view.isUserInteractionEnabled = false
         return controller
     }()
-    var historyViewController: UINavigationController?
-    var overlaySheetViewController: UIViewController?
-    lazy var simulateForwardViewController: SimulatedSwipeController? = {
+    private(set) var historyViewController: UINavigationController?
+    private var overlaySheetViewController: UIViewController?
+    private(set) lazy var simulateForwardViewController: SimulatedSwipeController? = { [unowned self] in
         guard FeatureFlag[.swipePlusPlus] else {
             return nil
         }
@@ -76,7 +76,7 @@ class BrowserViewController: UIViewController {
         host.view.isHidden = true
         return host
     }()
-    lazy var simulateBackViewController: SimulatedSwipeController? = {
+    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = { [unowned self] in
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             toolbarModel: toolbarModel,
@@ -86,9 +86,9 @@ class BrowserViewController: UIViewController {
         host.view.isHidden = true
         return host
     }()
-    var webViewContainer: UIView!
+    private(set) var webViewContainer: UIView!
 
-    var urlBar: URLBarWrapper!
+    private(set) var urlBar: URLBarWrapper!
     enum URLBarWrapper {
         case legacy(LegacyURLBarView)
         case modern(URLBarHost)
@@ -114,20 +114,20 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
+    private var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
     var readerModeBar: ReaderModeBarView?
-    var readerModeCache: ReaderModeCache
-    var statusBarOverlay: UIView = UIView()
+    private(set) var readerModeCache: ReaderModeCache
+    let statusBarOverlay = UIView()
     let toolbarModel = TabToolbarModel()
-    fileprivate(set) var toolbar: TabToolbarHost?
-    var searchController: SearchViewController?
-    var screenshotHelper: ScreenshotHelper!
-    fileprivate var zeroQueryIsInline = false
+    private(set) var toolbar: TabToolbarHost?
+    private(set) var searchController: SearchViewController?
+    private(set) var screenshotHelper: ScreenshotHelper!
+    private var zeroQueryIsInline = false
     /// All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
     let alertStackView = UIStackView()
     var findInPageBar: FindInPageBar?
-    var urlFromAnotherApp: UrlToOpenModel?
-    var isCrashAlertShowing: Bool = false
+    private var urlFromAnotherApp: UrlToOpenModel?
+    private var isCrashAlertShowing: Bool = false
 
     // popover rotation handling
     var displayedPopoverController: UIViewController?
@@ -138,20 +138,20 @@ class BrowserViewController: UIViewController {
     let tabManager: TabManager
 
     // This view wraps the toolbar to allow it to hide without messing up the layout
-    var footer: UIView!
+    private(set) var footer: UIView!
     fileprivate var topTouchArea: UIButton!
 
     // Backdrop used for displaying greyed background for private tabs
-    var webViewContainerBackdrop: UIView!
+    private(set) var webViewContainerBackdrop: UIView!
 
-    var scrollController = TabScrollingController()
+    let scrollController = TabScrollingController()
 
     fileprivate var keyboardState: KeyboardState?
 
     // Tracking navigation items to record history types.
     // TODO: weak references?
-    var ignoredNavigation = Set<WKNavigation>()
-    var typedNavigation = [WKNavigation: VisitType]()
+    private var ignoredNavigation = Set<WKNavigation>()
+    private var typedNavigation = [WKNavigation: VisitType]()
 
     // Keep track of allowed `URLRequest`s from `webView(_:decidePolicyFor:decisionHandler:)` so
     // that we can obtain the originating `URLRequest` when a `URLResponse` is received. This will
@@ -163,7 +163,6 @@ class BrowserViewController: UIViewController {
     weak var pendingDownloadWebView: WKWebView?
 
     let downloadQueue = DownloadQueue()
-    var isCmdClickForNewTab = false
 
     var isNeevaMenuSheetOpen = false
     var popOverNeevaMenuViewController: PopOverNeevaMenuViewController? = nil
@@ -412,7 +411,6 @@ class BrowserViewController: UIViewController {
         view.addSubview(webViewContainer)
 
         // Temporary work around for covering the non-clipped web view content
-        statusBarOverlay = UIView()
         view.addSubview(statusBarOverlay)
 
         topTouchArea = UIButton()
@@ -579,7 +577,7 @@ class BrowserViewController: UIViewController {
 
     // Because crashedLastLaunch is sticky, it does not get reset, we need to remember its
     // value so that we do not keep asking the user to restore their tabs.
-    var displayedRestoreTabsAlert = false
+    private var displayedRestoreTabsAlert = false
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -2013,27 +2011,6 @@ extension BrowserViewController: ContextMenuHelperDelegate {
     ) {
         displayedPopoverController?.dismiss(animated: true) {
             self.displayedPopoverController = nil
-        }
-    }
-
-    //Support for CMD+ Click on link to open in a new tab
-    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesBegan(presses, with: event)
-        if #available(iOS 13.4, *) {
-            guard let key = presses.first?.key,
-                key.keyCode == .keyboardLeftGUI || key.keyCode == .keyboardRightGUI
-            else { return }  //GUI buttons = CMD buttons on ipad/mac
-            self.isCmdClickForNewTab = true
-        }
-    }
-
-    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesEnded(presses, with: event)
-        if #available(iOS 13.4, *) {
-            guard let key = presses.first?.key,
-                key.keyCode == .keyboardLeftGUI || key.keyCode == .keyboardRightGUI
-            else { return }
-            self.isCmdClickForNewTab = false
         }
     }
 }

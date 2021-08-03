@@ -12,7 +12,7 @@ import XCGLogger
 private let log = Logger.browser
 
 class TestAppDelegate: AppDelegate {
-    lazy var dirForTestProfile = { return "\(self.appRootDir())/profile.testProfile" }()
+    lazy var dirForTestProfile = { [unowned self] in "\(appRootDir())/profile.testProfile" }()
 
     override func createProfile() -> Profile {
         var profile: BrowserProfile

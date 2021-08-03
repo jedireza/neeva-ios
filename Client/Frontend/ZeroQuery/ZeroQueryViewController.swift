@@ -50,7 +50,7 @@ class ZeroQueryViewController: UIViewController {
     var isLazyTab: Bool = false
     var openedFrom: ZeroQueryOpenedLocation? = nil
 
-    lazy var zeroQueryView: UIView = {
+    lazy var zeroQueryView: UIView = { [unowned self] in
         let controller = UIHostingController(
             rootView: ZeroQueryView()
                 .environmentObject(model)
