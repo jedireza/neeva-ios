@@ -191,6 +191,15 @@ class NeevaSuggestionModel: ObservableObject {
                     ]
                 }
             }
+            if let chipQueryFirstIndex = self.chipQueryFirstIndex,
+               let chipQueryLastIndex = self.chipQueryLastIndex {
+                for idx in 0..<chipQueryFirstIndex {
+                    
+                }
+                for idx in chipQueryLastIndex..<self.suggestions.count {
+
+                }
+            }
         }
     }
 
