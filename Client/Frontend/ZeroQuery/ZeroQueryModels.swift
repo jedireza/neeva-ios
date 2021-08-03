@@ -88,7 +88,7 @@ class SuggestedSearchesModel: ObservableObject {
         return neevaSearchEngine.searchURLForQuery("blank")!.normalizedHostAndPath!
     }
 
-    func reload(from profile: Profile) {
+    func reload(from profile: Profile, completion: (() -> Void)? = nil) {
         guard
             let deferredHistory = profile.history.getFrecentHistory().getSites(
                 matchingSearchQuery: searchUrlForQuery, limit: 100) as? CancellableDeferred
@@ -123,6 +123,10 @@ class SuggestedSearchesModel: ObservableObject {
                 let query = neevaSearchEngine.queryForSearchURL(topFrecentHistorySite.url)
             {
                 self.suggestedQueries.insert((query, topFrecentHistorySite), at: 0)
+            }
+
+            if let completion = completion {
+                completion()
             }
         }
     }
