@@ -16,10 +16,11 @@ struct TextSizeView: View {
             }.accessibilityHidden(true)
 
             GroupedStack {
+                // all the content in here is decorative since the accessibility element is explicitly provided below.
                 GroupedCell {
                     HStack {
                         Button(action: model.zoomOut) {
-                            Symbol(.minus, style: .bodyLarge)
+                            Symbol(decorative: .minus, style: .bodyLarge)
                                 .frame(
                                     width: GroupedCellUX.minCellHeight,
                                     height: GroupedCellUX.minCellHeight
@@ -27,10 +28,10 @@ struct TextSizeView: View {
                                 .foregroundColor(model.canZoomOut ? .label : .tertiaryLabel)
                         }.disabled(!model.canZoomOut)
                         Spacer()
-                        Symbol(.textformatSize, style: .headingLarge)
+                        Symbol(decorative: .textformatSize, style: .headingLarge)
                         Spacer()
                         Button(action: model.zoomIn) {
-                            Symbol(.plus, style: .bodyLarge)
+                            Symbol(decorative: .plus, style: .bodyLarge)
                                 .frame(
                                     width: GroupedCellUX.minCellHeight,
                                     height: GroupedCellUX.minCellHeight

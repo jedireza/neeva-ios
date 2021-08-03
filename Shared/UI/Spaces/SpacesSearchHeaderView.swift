@@ -16,12 +16,12 @@ struct SpacesSearchHeaderView: View {
         HStack(spacing: 24) {
             CapsuleTextField(
                 "Search Spaces", text: $searchText,
-                icon: Symbol(.magnifyingglass, style: .labelLarge))
+                icon: Symbol(decorative: .magnifyingglass, style: .labelLarge))
             Button {
                 self.createAction()
             } label: {
                 HStack(spacing: 5) {
-                    Symbol(.plus, style: .labelLarge)
+                    Symbol(decorative: .plus, style: .labelLarge)
                     Text("Create")
                         .withFont(.labelLarge)
                 }

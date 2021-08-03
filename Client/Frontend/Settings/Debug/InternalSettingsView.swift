@@ -124,7 +124,7 @@ private struct OptionalBooleanField: View {
             } label: {
                 HStack {
                     Text(value.map { String($0) } ?? "nil")
-                    Symbol(.chevronDown)
+                    Symbol(decorative: .chevronDown)
                 }
             }
         }
