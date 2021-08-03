@@ -10,7 +10,7 @@ struct DebugDBSettingsSection: View {
                 let documentsPath = NSSearchPathForDirectoriesInDomains(
                     .documentDirectory, .userDomainMask, true)[0]
                 do {
-                    let log = Logger.sync
+                    let log = Logger.storage
                     try BrowserViewController.foregroundBVC().profile.files.copyMatching(
                         fromRelativeDirectory: "", toAbsoluteDirectory: documentsPath
                     ) { file in
@@ -21,9 +21,6 @@ struct DebugDBSettingsSection: View {
                 } catch {
                     print("Couldn't export browser data: \(error).")
                 }
-            }
-            Button("Copy Log Files to App Container") {
-                Logger.copyPreviousLogsToDocuments()
             }
             Button("Delete Exported Databases") {
                 let documentsPath = NSSearchPathForDirectoriesInDomains(

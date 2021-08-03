@@ -285,6 +285,8 @@
 		C4E3984C1D21F2FD004E89BA /* TabTrayButtonExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3984B1D21F2FD004E89BA /* TabTrayButtonExtensions.swift */; };
 		C4EFEECF1CEBB6F2009762A4 /* BackForwardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */; };
 		C80A3D4426A25A9C0001E8A1 /* NeevaSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */; };
+		C80E03E626B8459600A7800A /* LoggingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80E03E526B8459600A7800A /* LoggingSettingsView.swift */; };
+		C80E03E826B88FF000A7800A /* OptionalLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80E03E726B88FF000A7800A /* OptionalLogger.swift */; };
 		C82A91F7262F70A90077DD22 /* SendFeedbackPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */; };
 		C82CDD47233E8996002E2743 /* Tab+ChangeUserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82CDD45233E8996002E2743 /* Tab+ChangeUserAgent.swift */; };
 		C8399D9122DE5E5200EFA5CA /* disconnect-block-advertising.json in Resources */ = {isa = PBXBuildFile; fileRef = C8399D8F22DE5E5200EFA5CA /* disconnect-block-advertising.json */; };
@@ -1212,6 +1214,8 @@
 		C4E3984B1D21F2FD004E89BA /* TabTrayButtonExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TabTrayButtonExtensions.swift; path = ../Browser/TabTrayButtonExtensions.swift; sourceTree = "<group>"; };
 		C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackForwardTableViewCell.swift; sourceTree = "<group>"; };
 		C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaSignInTests.swift; sourceTree = "<group>"; };
+		C80E03E526B8459600A7800A /* LoggingSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingSettingsView.swift; sourceTree = "<group>"; };
+		C80E03E726B88FF000A7800A /* OptionalLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalLogger.swift; sourceTree = "<group>"; };
 		C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeedbackPanel.swift; sourceTree = "<group>"; };
 		C82CDD45233E8996002E2743 /* Tab+ChangeUserAgent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tab+ChangeUserAgent.swift"; sourceTree = "<group>"; };
 		C8399D8F22DE5E5200EFA5CA /* disconnect-block-advertising.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "disconnect-block-advertising.json"; sourceTree = "<group>"; };
@@ -2393,12 +2397,13 @@
 		C965BDD0268E71B400F02224 /* Debug */ = {
 			isa = PBXGroup;
 			children = (
-				C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */,
 				C965BDD1268E71C500F02224 /* AppHostSetting.swift */,
 				C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */,
-				C9946460265706D500613110 /* FeatureFlagSettingsView.swift */,
 				C9B55A0E26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift */,
+				C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */,
+				C9946460265706D500613110 /* FeatureFlagSettingsView.swift */,
 				C965BDD5268E728F00F02224 /* InternalSettingsView.swift */,
+				C80E03E526B8459600A7800A /* LoggingSettingsView.swift */,
 				C96AC26626A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift */,
 			);
 			path = Debug;
@@ -2846,67 +2851,68 @@
 		E4E0BB141AFBC9E4008D6260 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				C9C18E1726559132004710CD /* API */,
-				C9C18E2426559457004710CD /* UI */,
-				E650756F1E37F7AB006961AC /* Extensions */,
-				064741F8AE308A64808E6265 /* Shared.strings */,
-				67AF4B8392ADBAA41F1B3AD0 /* HistoryPanel.strings */,
-				9403451493EE3ADAAEFA2EB1 /* Storage.strings */,
-				AA3047F884B6BA22989FD627 /* Search.strings */,
-				05014FF0A3822CA5C103E9C9 /* Menu.strings */,
-				32484895B328A342AED539C8 /* AuthenticationManager.strings */,
-				8DFA42FBB7C25AC38ACEEA0D /* PrivateBrowsing.strings */,
-				7401461DBA6DB88F82931350 /* Localizable.strings */,
-				4822451299E114F04F3EFAB0 /* ClearHistoryConfirm.strings */,
-				99C54F4F8354A39A0F06511F /* Intro.strings */,
 				514A4C83AE17612AF3025498 /* 3DTouchActions.strings */,
-				F0D8481DAC1E6378ABF1565A /* ClearPrivateDataConfirm.strings */,
-				99C94644BBAAC6B90043899F /* LoginManager.strings */,
-				58E14A8F991610DB13A9F1E1 /* ClearPrivateData.strings */,
-				AC44428AA48BA072E576E062 /* FindInPage.strings */,
-				904F48CABE595981535FCCEB /* ErrorPages.strings */,
-				C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */,
-				D35210E01CB2F16600FC5DCB /* Strings.swift */,
-				C994645E2657052200613110 /* FeatureFlags.swift */,
-				E4E0BB161AFBC9E4008D6260 /* Supporting Files */,
 				E65075621E37F7AB006961AC /* Accessibility.swift */,
 				EB7FFFBF20A9D38C003E1E34 /* AlertController.swift */,
+				C9C18E1726559132004710CD /* API */,
 				E65075631E37F7AB006961AC /* AppConstants.swift */,
 				E65075641E37F7AB006961AC /* AppInfo.swift */,
-				E65075651E37F7AB006961AC /* GeneralUtils.swift */,
 				E65075661E37F7AB006961AC /* AsyncReducer.swift */,
+				32484895B328A342AED539C8 /* AuthenticationManager.strings */,
 				E65075681E37F7AB006961AC /* Bytes.swift */,
 				E65075691E37F7AB006961AC /* Cancellable.swift */,
+				4822451299E114F04F3EFAB0 /* ClearHistoryConfirm.strings */,
+				58E14A8F991610DB13A9F1E1 /* ClearPrivateData.strings */,
+				F0D8481DAC1E6378ABF1565A /* ClearPrivateDataConfirm.strings */,
 				E650756A1E37F7AB006961AC /* CrashSimulator.h */,
 				E650756B1E37F7AB006961AC /* CrashSimulator.m */,
 				C9C18DD726558FF3004710CD /* DataURIBody.swift */,
 				D03DCD94211B63D000151ACA /* DateGroupedTableData.swift */,
 				E650756C1E37F7AB006961AC /* DeferredUtils.swift */,
 				E650756D1E37F7AB006961AC /* DeviceInfo.swift */,
+				C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */,
+				C93EFEE126713AF7000396B5 /* ErrorConstants.swift */,
+				904F48CABE595981535FCCEB /* ErrorPages.strings */,
+				E650756F1E37F7AB006961AC /* Extensions */,
+				C994645E2657052200613110 /* FeatureFlags.swift */,
+				AC44428AA48BA072E576E062 /* FindInPage.strings */,
 				E65075811E37F7AB006961AC /* FSUtils.h */,
 				E65075821E37F7AB006961AC /* FSUtils.m */,
 				E65075831E37F7AB006961AC /* Functions.swift */,
+				E65075651E37F7AB006961AC /* GeneralUtils.swift */,
+				67AF4B8392ADBAA41F1B3AD0 /* HistoryPanel.strings */,
+				99C54F4F8354A39A0F06511F /* Intro.strings */,
 				E65075841E37F7AB006961AC /* KeyboardHelper.swift */,
 				E65075861E37F7AB006961AC /* LaunchArguments.swift */,
+				7401461DBA6DB88F82931350 /* Localizable.strings */,
 				E65075881E37F7AB006961AC /* Logger.swift */,
-				C9C18E1326559118004710CD /* NeevaColors.xcassets */,
+				99C94644BBAAC6B90043899F /* LoginManager.strings */,
+				05014FF0A3822CA5C103E9C9 /* Menu.strings */,
 				C9C18E0F2655910C004710CD /* NeevaColors.swift */,
+				C9C18E1326559118004710CD /* NeevaColors.xcassets */,
 				C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */,
 				C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */,
+				C94D4095268A617F003A6766 /* NeevaFonts.swift */,
+				C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */,
 				E65075891E37F7AB006961AC /* NotificationConstants.swift */,
+				C80E03E726B88FF000A7800A /* OptionalLogger.swift */,
 				E650758B1E37F7AB006961AC /* Prefs.swift */,
+				8DFA42FBB7C25AC38ACEEA0D /* PrivateBrowsing.strings */,
 				C9C18DD426558FF3004710CD /* Reachability.swift */,
 				CE7F115E1F3CCEF900ABFC0B /* RemoteDevices.swift */,
 				E650758C1E37F7AB006961AC /* RollingFileLogger.swift */,
+				AA3047F884B6BA22989FD627 /* Search.strings */,
 				D02818601EF056C800240CAA /* SentryIntegration.swift */,
+				064741F8AE308A64808E6265 /* Shared.strings */,
+				9403451493EE3ADAAEFA2EB1 /* Storage.strings */,
+				D35210E01CB2F16600FC5DCB /* Strings.swift */,
+				E4E0BB161AFBC9E4008D6260 /* Supporting Files */,
 				C9C18DCE26558FF2004710CD /* SystemColors.swift */,
 				E650758E1E37F7AB006961AC /* SystemUtils.swift */,
 				E650758F1E37F7AB006961AC /* TimeConstants.swift */,
+				C9C18E2426559457004710CD /* UI */,
 				E65075901E37F7AB006961AC /* UserAgent.swift */,
 				E65075911E37F7AB006961AC /* WeakList.swift */,
-				C93EFEE126713AF7000396B5 /* ErrorConstants.swift */,
-				C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */,
-				C94D4095268A617F003A6766 /* NeevaFonts.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -4245,6 +4251,7 @@
 				E683F0C21E93D4E90035D990 /* DictionaryExtensions.swift in Sources */,
 				E650759B1E37F7AB006961AC /* CrashSimulator.m in Sources */,
 				288A2DB51AB8B38D0023ABC3 /* Error.swift in Sources */,
+				C80E03E826B88FF000A7800A /* OptionalLogger.swift in Sources */,
 				C9C18E5A265598B4004710CD /* LargeSpaceIconView.swift in Sources */,
 				BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */,
 				C9C18E6126559A7B004710CD /* DataURIBody.swift in Sources */,
@@ -4490,6 +4497,7 @@
 				C9C18E6626559B9C004710CD /* ClientLogger.swift in Sources */,
 				F072DD3825E935B4006C2665 /* NeevaSearchProvider.swift in Sources */,
 				C9E5F2CB2678F05E00025A7F /* Popover.swift in Sources */,
+				C80E03E626B8459600A7800A /* LoggingSettingsView.swift in Sources */,
 				D3B6923F1B9F9A58004B87A4 /* FindInPageHelper.swift in Sources */,
 				BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */,
 				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,

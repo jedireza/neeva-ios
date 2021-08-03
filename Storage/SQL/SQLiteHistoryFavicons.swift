@@ -9,7 +9,7 @@ import Shared
 import SwiftyJSON
 import XCGLogger
 
-private let log = Logger.sync
+private let log = Logger.storage
 
 // Set up for downloading web content for parsing.
 // NOTE: We use the desktop UA to try and get hi-res icons.

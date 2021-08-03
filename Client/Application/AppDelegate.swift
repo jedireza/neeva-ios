@@ -65,12 +65,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         self.application = application
         self.launchOptions = launchOptions
 
-        // If the 'Save logs to Files app on next launch' toggle
-        // is turned on in the Settings app, copy over old logs.
-        if DebugSettingsBundleOptions.saveLogsToDocuments {
-            Logger.copyPreviousLogsToDocuments()
-        }
-
         // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             profile.cleanupHistoryIfNeeded()
@@ -99,11 +93,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         MenuHelper.defaultHelper.setItems()
 
-        let logDate = Date()
-        // Create a new sync log file on cold app launch. Note that this doesn't roll old logs.
-        Logger.sync.newLogWithDate(logDate)
-        Logger.browser.newLogWithDate(logDate)
-
         SystemUtils.onFirstRun()
 
         log.info("startApplication end")
@@ -118,17 +107,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Override point for customization after application launch.
         var shouldPerformAdditionalDelegateHandling = true
 
-        // Now roll logs.
-        DispatchQueue.global(qos: DispatchQoS.background.qosClass).async {
-            Logger.sync.deleteOldLogsDownToSizeLimit()
-            Logger.browser.deleteOldLogsDownToSizeLimit()
-        }
+        Logger.rollLogs()
 
         // If a shortcut was launched, display its information and take the appropriate action
         if let shortcutItem = launchOptions?[UIApplication.LaunchOptionsKey.shortcutItem]
             as? UIApplicationShortcutItem
         {
-
             QuickActions.sharedInstance.launchedShortcutItem = shortcutItem
             // This will block "performActionForShortcutItem:completionHandler" from being called.
             shouldPerformAdditionalDelegateHandling = false

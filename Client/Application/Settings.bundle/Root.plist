@@ -16,16 +16,6 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Save logs to Files app on next launch</string>
-			<key>Key</key>
-			<string>SettingsBundleSaveLogsToDocuments</string>
-			<key>DefaultValue</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-			<key>Title</key>
 			<string>Skip Session Restore</string>
 			<key>Key</key>
 			<string>SettingsBundleSkipSessionRestore</string>

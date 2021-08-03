@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import XCGLogger
 
-private let log = Logger.sync
+private let log = Logger.storage
 
 public typealias Args = [Any?]
 
