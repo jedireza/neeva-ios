@@ -103,6 +103,11 @@ class SuggestedSearchesModel: ObservableObject {
             }
 
             var deferredHistorySites = result.successValue?.asArray().compactMap { $0 } ?? []
+            var topFrecentHistorySite: Site?
+            if deferredHistorySites.count > 0 {
+                topFrecentHistorySite = deferredHistorySites[0]
+                deferredHistorySites.removeFirst()
+            }
             // TODO: https://github.com/neevaco/neeva-ios-phoenix/issues/1027
             deferredHistorySites.sort { siteA, siteB in
                 return siteA.latestVisit?.date ?? 0 > siteB.latestVisit?.date ?? 0
@@ -114,7 +119,11 @@ class SuggestedSearchesModel: ObservableObject {
                     return nil
                 }
             }
+            if let topFrecentHistorySite = topFrecentHistorySite,
+                let query = neevaSearchEngine.queryForSearchURL(topFrecentHistorySite.url)
+            {
+                self.suggestedQueries.insert((query, topFrecentHistorySite), at: 0)
+            }
         }
-
     }
 }

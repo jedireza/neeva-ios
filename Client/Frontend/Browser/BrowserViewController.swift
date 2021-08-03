@@ -808,6 +808,8 @@ class BrowserViewController: UIViewController {
         zeroQueryViewController.model.isPrivate = tabManager.selectedTab?.isPrivate ?? false
         zeroQueryViewController.openedFrom = openedFrom
 
+        zeroQueryViewController.reloadAll()
+
         // We have to run this animation, even if the view is already showing
         // because there may be a hide animation running and we want to be sure
         // to override its results.
