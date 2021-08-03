@@ -7,7 +7,6 @@ import Shared
 import SwiftyJSON
 import XCTest
 
-@testable import Client
 @testable import Storage
 
 open class MockRemoteClientsAndTabs: RemoteClientsAndTabs {

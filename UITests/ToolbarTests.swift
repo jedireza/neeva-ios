@@ -14,9 +14,18 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
     }
 
     func testURLEntry() {
-        tester().tapView(withAccessibilityLabel: "Address Bar")
+        if tester().viewExistsWithLabel("Done") {
+            tester().tapView(withAccessibilityLabel: "Done")
+        }
+
+        if !tester().viewExistsWithLabel("Cancel") {
+            tester().tapView(withAccessibilityLabel: "Address Bar")
+        }
+
+        tester().waitForView(withAccessibilityIdentifier: "address")
         tester().enterText(intoCurrentFirstResponder: "foobar")
         tester().tapView(withAccessibilityLabel: "Cancel")
+
         XCTAssertNotEqual(
             tester().waitForView(withAccessibilityLabel: "Address Bar").accessibilityValue,
             "foobar",

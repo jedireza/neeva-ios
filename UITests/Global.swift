@@ -9,8 +9,6 @@ import Storage
 import SwiftKeychainWrapper
 import WebKit
 
-@testable import Client
-
 let LabelAddressAndSearch = "Address and Search"
 
 extension XCTestCase {
@@ -277,13 +275,14 @@ class BrowserUtils {
         }
     }
 
-    class func enterUrlAddressBar(_ tester: KIFUITestActor, typeUrl: String) {
-        if !tester.viewExistsWithLabel("address") && tester.viewExistsWithLabel("Address Bar") {
+    class func enterUrlAddressBar(_ tester: KIFUITestActor, typeUrl: String = "neeva.com") {
+        if !tester.viewExistsWithLabel("Cancel") {
             tester.tapView(withAccessibilityLabel: "Address Bar")
         }
 
         tester.waitForView(withAccessibilityIdentifier: "address")
-        tester.enterText(typeUrl + "\n", intoViewWithAccessibilityIdentifier: "address")
+        tester.enterText(intoCurrentFirstResponder: typeUrl)
+        tester.enterText(intoCurrentFirstResponder: "\n")
         tester.waitForAbsenceOfView(withAccessibilityIdentifier: "address")
     }
 
