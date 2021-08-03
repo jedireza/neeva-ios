@@ -199,16 +199,14 @@ class TabManagerStore {
 
         // crash fix: rewrite tab IDs if they are duplicates
         var seen: Set<String> = []
-        var fixedTabs: [SavedTab] = []
         for tab in savedTabs {
             if let id = tab.UUID, !seen.contains(id) {
-                fixedTabs.append(tab)
                 seen.insert(id)
             } else {
                 tab.UUID = UUID().uuidString
             }
         }
-        return fixedTabs
+        return savedTabs
     }
 }
 
