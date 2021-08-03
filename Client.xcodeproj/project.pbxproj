@@ -4104,7 +4104,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -z \"$CI\" -a \"$CONFIGURATION\" = \"Debug\" ]; then\n    ./Scripts/swift-format.sh\nfi\n";
+			shellScript = "if [ -z \"$CI\" -a \"$CONFIGURATION\" = \"Debug\" ]; then\n    ./Scripts/swift-format.sh --check\nfi\n";
 		};
 		C93EFEDA26711CC3000396B5 /* Run Periphery */ = {
 			isa = PBXShellScriptBuildPhase;
