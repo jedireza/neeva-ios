@@ -133,6 +133,7 @@ struct CardGrid: View {
             .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
         }
         .overlay(transitionAnimator, alignment: .top)
+        .ignoresSafeArea(.keyboard)
     }
 }
 
