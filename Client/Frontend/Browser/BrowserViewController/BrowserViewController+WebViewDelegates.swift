@@ -907,41 +907,45 @@ extension BrowserViewController: WKNavigationDelegate {
 
         self.scrollController.resetZoomState()
 
-        // every time a user visits a Neeva page, we extract the user cookie
-        // and save it to a keychain.
-        if !(tabManager.selectedTab?.isPrivate ?? false),
-            let url = webView.url,
-            NeevaConstants.isAppHost(url.host),
-            url.scheme == "https"
-        {
-            NeevaUserInfo.shared.updateKeychainTokenAndFetchUserInfo()
-        }
-
         if tabManager.selectedTab === tab {
             updateUIForReaderHomeStateForTab(tab)
         }
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        if let url = webView.url, NeevaConstants.isNeevaHome(url: url) {
-            showSearchBarTourPrompt()
-        }
+        guard let tab = tabManager[webView] else { return }
 
-        if let tab = tabManager[webView] {
-            navigateInTab(tab: tab, to: navigation, webViewStatus: .finishedNavigation)
+        navigateInTab(tab: tab, to: navigation, webViewStatus: .finishedNavigation)
 
-            // If this tab had previously crashed, wait 5 seconds before resetting
-            // the consecutive crash counter. This allows a successful webpage load
-            // without a crash to reset the consecutive crash counter in the event
-            // that the tab begins crashing again in the future.
-            if tab.consecutiveCrashes > 0 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
-                    if tab.consecutiveCrashes > 0 {
-                        tab.consecutiveCrashes = 0
-                    }
+        // If this tab had previously crashed, wait 5 seconds before resetting
+        // the consecutive crash counter. This allows a successful webpage load
+        // without a crash to reset the consecutive crash counter in the event
+        // that the tab begins crashing again in the future.
+        if tab.consecutiveCrashes > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+                if tab.consecutiveCrashes > 0 {
+                    tab.consecutiveCrashes = 0
                 }
             }
         }
+
+        // every time a user visits a Neeva page, we extract the user cookie
+        // and save it to a keychain.
+        if !tab.isPrivate,
+            let url = webView.url,
+            NeevaConstants.isAppHost(url.host),
+            url.scheme == "https"
+        {
+            webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
+                if let authCookie = cookies.first(where: {
+                    NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
+                }) {
+                    NeevaUserInfo.shared.setLoginCookie(authCookie.value)
+                    self.showSearchBarTourPromptIfNeeded(for: url)
+                }
+            }
+        }
+
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError: Error) {
