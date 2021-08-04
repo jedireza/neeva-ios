@@ -10,8 +10,12 @@ struct NeevaFeatureFlagSettingsView: View {
             // TODO: Add support for Int, Float and String flags.
             ForEach(NeevaFeatureFlags.BoolFlag.allCases, id: \.rawValue) { flag in
                 HStack {
-                    Text(flag.name).font(.system(.body, design: .monospaced)).fixedSize()
+                    Text(flag.name)
+                        .font(.system(.body, design: .monospaced))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
                     BoolFlagView(flag: flag, onChange: { needsRestart = true })
+                        .fixedSize()
                 }
             }
         }
