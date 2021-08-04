@@ -367,7 +367,7 @@ private struct TabSuggestionView: View {
     @ViewBuilder
     var icon: some View {
         if !suggestion.isSelected {
-            Symbol(.squareOnSquare)
+            Symbol(decorative: .squareOnSquare)
         }
     }
 
@@ -389,7 +389,7 @@ private struct TabSuggestionView: View {
                     UIPasteboard.general.string = suggestion.url?.absoluteString
                     ToastViewManager.shared.makeToast(text: "URL copied to clipboard").enqueue()
                 } label: {
-                    Symbol(.squareOnSquare)
+                    Symbol(decorative: .squareOnSquare)
                 }
 
             }

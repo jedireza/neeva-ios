@@ -66,8 +66,8 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
                 break
             case .textSize:
                 let sheet = UIHostingController(
-                    rootView: ZoomMenuView(
-                        model: ZoomMenuModel(webView: delegate.tabManager.selectedTab!.webView!),
+                    rootView: TextSizeView(
+                        model: TextSizeModel(webView: delegate.tabManager.selectedTab!.webView!),
                         onDismiss: { [delegate] in
                             delegate.presentedViewController?.dismiss(animated: true, completion: nil)
                         }
