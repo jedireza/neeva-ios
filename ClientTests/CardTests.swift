@@ -8,6 +8,18 @@ import XCTest
 
 @testable import Client
 
+extension CardGrid: Inspectable {}
+extension CardsContainer: Inspectable {}
+extension TabCardsView: Inspectable {}
+extension SpaceCardsView: Inspectable {}
+extension FittedCard: Inspectable {}
+extension Card: Inspectable {}
+
+private func assertCast<T>(_ value: Any, to _: T.Type) -> T {
+    XCTAssertTrue(value is T)
+    return value as! T
+}
+
 class CardTests: XCTestCase {
 
     var profile: TabManagerMockProfile!
@@ -16,6 +28,7 @@ class CardTests: XCTestCase {
     var groupManager: TabGroupManager!
     var tabCardModel: TabCardModel!
     var tabGroupCardModel: TabGroupCardModel!
+    var spaceCardModel: SpaceCardModel!
 
     fileprivate let spyDidSelectedTabChange =
         "tabManager(_:didSelectedTabChange:previous:isRestoring:)"
@@ -32,6 +45,8 @@ class CardTests: XCTestCase {
         tabCardModel = TabCardModel(manager: manager, groupManager: groupManager)
         tabGroupCardModel = TabGroupCardModel(manager: groupManager)
 
+        SpaceStore.shared = .createMock([.stackOverflow, .savedForLater, .shared, .public])
+        spaceCardModel = SpaceCardModel()
     }
 
     override func tearDown() {
@@ -84,9 +99,6 @@ class CardTests: XCTestCase {
                 XCTAssertEqual(self.groupManager.tabGroups.count, 1)
                 XCTAssertEqual(self.tabGroupCardModel.allDetails.count, 1)
                 XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.id, tab1.rootUUID)
-                XCTAssertTrue(
-                    self.tabGroupCardModel.allDetails.first?.thumbnail
-                        is ThumbnailGroupView<TabGroupCardDetails>)
 
                 XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.count, 2)
                 XCTAssertEqual(
@@ -94,9 +106,9 @@ class CardTests: XCTestCase {
                 XCTAssertEqual(
                     self.tabGroupCardModel.allDetails.first?.allDetails.last?.id, tab2.tabUUID)
 
-                let thumbnail =
-                    self.tabGroupCardModel.allDetails.first!.thumbnail
-                    as! ThumbnailGroupView<TabGroupCardDetails>
+                let thumbnail = assertCast(
+                    self.tabGroupCardModel.allDetails.first!.thumbnail,
+                    to: ThumbnailGroupView<TabGroupCardDetails>.self)
                 XCTAssertEqual(thumbnail.numItems, 2)
 
                 let tab3 = self.manager.addTab(afterTab: tab1)
@@ -111,5 +123,90 @@ class CardTests: XCTestCase {
                 }
             }
         }
+    }
+
+    func testSpaceDetails() throws {
+        XCTAssertEqual(SpaceStore.shared.getAll().count, 4)
+        SpaceStore.shared.getAll().first!.contentThumbnails =
+            Set([
+                SpaceThumbnails.githubThumbnail,
+                SpaceThumbnails.stackOverflowThumbnail,
+            ])
+        SpaceStore.shared.getAll().last!.contentThumbnails =
+            Set([SpaceThumbnails.githubThumbnail])
+        let firstCard = SpaceCardDetails(space: SpaceStore.shared.getAll().first!)
+        XCTAssertEqual(firstCard.id, Space.stackOverflow.id.id)
+        XCTAssertEqual(firstCard.allDetails.count, 2)
+        let firstThumbnail = assertCast(
+            firstCard.thumbnail,
+            to: ThumbnailGroupView<SpaceCardDetails>.self)
+        XCTAssertEqual(firstThumbnail.numItems, 2)
+        // The model should not update until the SpaceStore refreshes
+        XCTAssertEqual(spaceCardModel.allDetails.count, 0)
+        // Send a dummy event to simulate a store refresh
+        SpaceStore.shared.objectWillChange.send()
+        XCTAssertEqual(spaceCardModel.allDetails.count, 4)
+
+        let lastCard = spaceCardModel.allDetails.last!
+        XCTAssertEqual(lastCard.id, Space.public.id.id)
+        XCTAssertEqual(lastCard.allDetails.count, 1)
+        let lastThumbnail = assertCast(
+            lastCard.thumbnail,
+            to: ThumbnailGroupView<SpaceCardDetails>.self)
+        XCTAssertEqual(lastThumbnail.numItems, 1)
+    }
+
+    func testCardGrid() throws {
+        manager.addTab()
+        manager.addTab()
+        manager.addTab()
+        waitForCondition(condition: { manager.tabs.count == 3 })
+        // Make sure all the models are up to date
+        manager.objectWillChange.send()
+
+        let model = GridModel()
+        let cardGrid = CardGrid().environmentObject(tabCardModel)
+            .environmentObject(tabGroupCardModel).environmentObject(model)
+
+        let cardContainer = try cardGrid.inspect().find(CardsContainer.self)
+        XCTAssertNotNil(cardContainer)
+        let tabCardsView = try cardGrid.inspect().find(TabCardsView.self)
+        XCTAssertNotNil(tabCardsView)
+
+        let tabCards = tabCardsView.findAll(FittedCard<TabCardDetails>.self)
+        XCTAssertEqual(tabCards.count, 3)
+
+        manager.addTab()
+        manager.addTab()
+        waitForCondition(condition: { manager.tabs.count == 5 })
+        XCTAssertEqual(manager.tabs.count, 5)
+        // Make sure all the models are up to date
+        manager.objectWillChange.send()
+        XCTAssertEqual(tabCardsView.findAll(FittedCard<TabCardDetails>.self).count, 5)
+    }
+
+    func testCardGridWithSpaces() throws {
+        manager.addTab()
+        manager.addTab()
+        manager.addTab()
+        waitForCondition(condition: { manager.tabs.count == 3 })
+        // Make sure all the models are up to date
+        manager.objectWillChange.send()
+
+        let model = GridModel()
+        SpaceStore.shared.objectWillChange.send()
+
+        let cardContainer = CardsContainer(
+            switcherState: .constant(.spaces),
+            columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)
+        ).environmentObject(tabCardModel).environmentObject(spaceCardModel)
+            .environmentObject(tabGroupCardModel).environmentObject(model)
+            .environmentObject(tabGroupCardModel)
+
+        let spaceCardsView = try cardContainer.inspect().find(SpaceCardsView.self)
+        XCTAssertNotNil(spaceCardsView)
+
+        let spaceCards = spaceCardsView.findAll(FittedCard<SpaceCardDetails>.self)
+        XCTAssertEqual(spaceCards.count, 4)
     }
 }
