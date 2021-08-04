@@ -209,7 +209,7 @@ extension KIFUITestActor {
 
         webView.evaluateJavaScript("typeof KIFHelper") { result, _ in
             if result as! String == "undefined" {
-                let bundle = Bundle(for: BrowserTests.self)
+                let bundle = Bundle(for: BundleHelper.self)
                 let path = bundle.path(forResource: "KIFHelper", ofType: "js")!
                 let source = try! String(contentsOfFile: path, encoding: .utf8)
                 webView.evaluateJavaScript(source, completionHandler: nil)
@@ -226,6 +226,8 @@ extension KIFUITestActor {
         self.enterText(intoCurrentFirstResponder: "\u{0008}")
     }
 }
+
+private class BundleHelper {}
 
 class BrowserUtils {
     // Needs to be in sync with Client Clearables.
@@ -609,4 +611,9 @@ class HomePageUtils {
         tester.tapView(withAccessibilityLabel: "Settings")
         tester.tapView(withAccessibilityLabel: "Done")
     }
+}
+
+// see also `skipTest` in StorageTests and XCUITests
+func skipTest(issue: Int, _ message: String) throws {
+    throw XCTSkip("#\(issue): \(message)")
 }

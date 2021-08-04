@@ -30,16 +30,7 @@ class TabMenuTests: BaseTestCase {
 
     func testCloseAllNormalTabsFromTab() {
         openTwoWebsites()
-
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        app.buttons["Show Tabs"].press(forDuration: 1)
-
-        waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
-        app.buttons["Close All Tabs"].tap()
-
-        waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
-        app.buttons["Confirm Close All Tabs"].tap()
-
+        closeAllTabs()
         goToTabTray()
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
@@ -69,15 +60,7 @@ class TabMenuTests: BaseTestCase {
     func testCloseAllIncognitoTabsFromTab() {
         toggleIncognito()
         openTwoWebsites()
-
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        app.buttons["Show Tabs"].press(forDuration: 1)
-        waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
-        app.buttons["Close All Tabs"].tap()
-
-        waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
-        app.buttons["Confirm Close All Tabs"].tap()
-
+        closeAllTabs()
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
         toggleIncognito()
 
@@ -91,16 +74,8 @@ class TabMenuTests: BaseTestCase {
 
     func testCloseAllNormalTabsFromSwitcher() {
         openTwoWebsites()
-
         goToTabTray()
-        app.buttons["Done"].press(forDuration: 1)
-
-        waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
-        app.buttons["Close All Tabs"].tap()
-
-        waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
-        app.buttons["Confirm Close All Tabs"].tap()
-
+        closeAllTabs(fromTabSwitcher: true)
         goToTabTray()
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
@@ -112,16 +87,8 @@ class TabMenuTests: BaseTestCase {
     func testCloseAllIncognitoTabsFromSwitcher() {
         toggleIncognito()
         openTwoWebsites()
-
         goToTabTray()
-        app.buttons["Done"].press(forDuration: 1)
-
-        waitForExistence(app.buttons["Close All Tabs"], timeout: 3)
-        app.buttons["Close All Tabs"].tap()
-
-        waitForExistence(app.buttons["Confirm Close All Tabs"], timeout: 3)
-        app.buttons["Confirm Close All Tabs"].tap()
-
+        closeAllTabs(fromTabSwitcher: true)
         toggleIncognito()
         goToTabTray()
 

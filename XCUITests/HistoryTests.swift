@@ -217,25 +217,31 @@ class HistoryTests: BaseTestCase {
         waitUntilPageLoad()
     }
 
-    /* disabled because it fails with the new URL bar
-    func testClearRecentHistory() {
+    func testClearRecentHistory() throws {
+        try skipTest(issue: 981, "disabled because it fails with the new URL bar")
         goToHistory()
-        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
-        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
+        waitForExistence(
+            app.tables["History List"].cells.element(
+                matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(
+            matching: .cell, identifier: "HistoryPanel.clearHistory"
+        ).tap()
         tapOnClearRecentHistoryOption(optionSelected: "The Last Hour")
         // No data will be removed after Action.ClearRecentHistory since there is no recent history created.
         for entry in oldHistoryEntries {
             XCTAssertTrue(app.tables.cells.staticTexts[entry].exists)
         }
 
-        // Go to 'goolge.com' to create a recent history entry.
         app.buttons["Done"].tap()
-        navigator.nowAt(NewTabScreen)
         navigateToExample()
 
         goToHistory()
-        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
-        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
+        waitForExistence(
+            app.tables["History List"].cells.element(
+                matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(
+            matching: .cell, identifier: "HistoryPanel.clearHistory"
+        ).tap()
         // Recent data will be removed after calling tapOnClearRecentHistoryOption(optionSelected: "Today").
         // Older data will not be removed
         tapOnClearRecentHistoryOption(optionSelected: "Today")
@@ -245,14 +251,16 @@ class HistoryTests: BaseTestCase {
         XCTAssertFalse(app.tables.cells.staticTexts["Google"].exists)
 
         // Begin Test for Today and Yesterday
-        // Go to 'goolge.com' to create a recent history entry.
         app.buttons["Done"].tap()
-        navigator.nowAt(NewTabScreen)
         navigateToExample()
 
         goToHistory()
-        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
-        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
+        waitForExistence(
+            app.tables["History List"].cells.element(
+                matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(
+            matching: .cell, identifier: "HistoryPanel.clearHistory"
+        ).tap()
         // Tapping "Today and Yesterday" will remove recent data (from yesterday and today).
         // Older data will not be removed
         tapOnClearRecentHistoryOption(optionSelected: "Today and Yesterday")
@@ -262,14 +270,16 @@ class HistoryTests: BaseTestCase {
         XCTAssertFalse(app.tables.cells.staticTexts["Google"].exists)
 
         // Begin Test for Everything
-        // Go to 'goolge.com' to create a recent history entry.
         app.buttons["Done"].tap()
-        navigator.nowAt(NewTabScreen)
         navigateToExample()
 
         goToHistory()
-        waitForExistence(app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory"))
-        app.tables["History List"].cells.element(matching: .cell, identifier: "HistoryPanel.clearHistory").tap()
+        waitForExistence(
+            app.tables["History List"].cells.element(
+                matching: .cell, identifier: "HistoryPanel.clearHistory"))
+        app.tables["History List"].cells.element(
+            matching: .cell, identifier: "HistoryPanel.clearHistory"
+        ).tap()
         // Tapping everything removes both current data and older data.
         tapOnClearRecentHistoryOption(optionSelected: "Everything")
         for entry in oldHistoryEntries {
@@ -278,10 +288,8 @@ class HistoryTests: BaseTestCase {
         }
         XCTAssertFalse(app.tables.cells.staticTexts["Google"].exists)
     }
-    */
 
     func testAllOptionsArePresent() {
-        // Go to 'goolge.com' to create a recent history entry.
         navigateToExample()
 
         goToHistory()

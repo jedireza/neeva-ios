@@ -75,10 +75,10 @@ class TestBrowserDB: XCTestCase {
         XCTAssertEqual(remaining.0, "http://example.com/short")
     }
 
-    /* TODO: This test currently fails. Disabled temporarily.
-    func testMovesDB() {
+    func testMovesDB() throws {
+        try skipTest(issue: 1236, "This test currently fails. Disabled temporarily")
         var db = BrowserDB(filename: "foo.db", schema: BrowserSchema(), files: self.files)
-        db.run("CREATE TABLE foo (bar TEXT)").succeeded() // Just so we have writes in the WAL.
+        db.run("CREATE TABLE foo (bar TEXT)").succeeded()  // Just so we have writes in the WAL.
 
         XCTAssertTrue(files.exists("foo.db"))
         XCTAssertTrue(files.exists("foo.db-shm"))
@@ -95,7 +95,9 @@ class TestBrowserDB: XCTestCase {
 
         let center = NotificationCenter.default
         let listener = MockListener()
-        center.addObserver(listener, selector: #selector(MockListener.onDatabaseWasRecreated), name: .DatabaseWasRecreated, object: nil)
+        center.addObserver(
+            listener, selector: #selector(MockListener.onDatabaseWasRecreated),
+            name: .DatabaseWasRecreated, object: nil)
         defer { center.removeObserver(listener) }
 
         // It'll still fail, but it moved our old DB.
@@ -104,9 +106,10 @@ class TestBrowserDB: XCTestCase {
         db.forceClose()
 
         db = BrowserDB(filename: "foo.db", schema: MockFailingSchema(), files: self.files)
-        db.run("CREATE TABLE foo (bar TEXT)").failed() // This won't actually write since we'll get a failed connection
+        // This won't actually write since we'll get a failed connection
+        db.run("CREATE TABLE foo (bar TEXT)").failed()
         db = BrowserDB(filename: "foo.db", schema: BrowserSchema(), files: self.files)
-        db.run("CREATE TABLE foo (bar TEXT)").succeeded() // Just so we have writes in the WAL.
+        db.run("CREATE TABLE foo (bar TEXT)").succeeded()  // Just so we have writes in the WAL.
 
         XCTAssertTrue(files.exists("foo.db"))
         XCTAssertTrue(files.exists("foo.db-shm"))
@@ -126,7 +129,6 @@ class TestBrowserDB: XCTestCase {
         // The right notification was issued.
         XCTAssertEqual("foo.db", (listener.notification?.object as? String))
     }
-    */
 
     func testConcurrentQueries() {
         let expectation = self.expectation(description: "Got all DB results")

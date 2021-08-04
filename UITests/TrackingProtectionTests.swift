@@ -122,8 +122,8 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         closeTPSetting()
     }
 
-    /* Disabled as this test is hanging.
-    func testStrictTrackingProtection() {
+    func testStrictTrackingProtection() throws {
+        try skipTest(issue: 1237, "Disabled as this test is hanging")
         openTPSetting()
         tester().tapView(withAccessibilityIdentifier: "prefkey.trackingprotection.normalbrowsing")
         closeTPSetting()
@@ -145,49 +145,50 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         disableStrictTP()
         closeTPSetting()
     }
-    */
 
     func disableStrictTP() {
         tester().tapView(
             withAccessibilityIdentifier: "Settings.TrackingProtectionOption.BlockListBasic")
     }
 
-    /* Disabled as this test is hanging.
-    func testSafelist() {
+    func testSafelist() throws {
+        try skipTest(issue: 1237, "Disabled as this test is hanging")
         // Enable strict mode
         enableStrictMode()
 
-        let url = URL(string: "http://localhost")!
+        let host = "localhost"
 
         let clear = self.expectation(description: "clearing")
-        ContentBlocker.shared.clearSafelist() { clear.fulfill() }
+        ContentBlocker.shared.clearSafelist(completion: clear.fulfill)
         waitForExpectations(timeout: 10, handler: nil)
         checkStrictTrackingProtection(isBlocking: true)
 
         let expSafelist = self.expectation(description: "safelisted")
-        ContentBlocker.shared.safelist(enable: true, url: url) { expSafelist.fulfill() }
+        TrackingPreventionConfig.updateAllowList(
+            with: host, allowed: true, completion: expSafelist.fulfill)
         waitForExpectations(timeout: 10, handler: nil)
         // The image from ymail.com would normally be blocked, but in this case it is safelisted
         checkStrictTrackingProtection(isBlocking: false)
 
         let expRemove = self.expectation(description: "safelist removed")
-        ContentBlocker.shared.safelist(enable: false,  url: url) { expRemove.fulfill() }
+        TrackingPreventionConfig.updateAllowList(
+            with: host, allowed: false, completion: expRemove.fulfill)
         waitForExpectations(timeout: 10, handler: nil)
         checkStrictTrackingProtection(isBlocking: true)
 
         let expSafelistAgain = self.expectation(description: "safelisted")
-        ContentBlocker.shared.safelist(enable: true, url: url) { expSafelistAgain.fulfill() }
+        TrackingPreventionConfig.updateAllowList(
+            with: host, allowed: true, completion: expSafelistAgain.fulfill)
         waitForExpectations(timeout: 10, handler: nil)
         // The image from ymail.com would normally be blocked, but in this case it is safelisted
         checkStrictTrackingProtection(isBlocking: false)
 
         let clear1 = self.expectation(description: "clearing")
-        ContentBlocker.shared.clearSafelist() { clear1.fulfill() }
+        ContentBlocker.shared.clearSafelist(completion: clear1.fulfill)
         waitForExpectations(timeout: 10, handler: nil)
         checkStrictTrackingProtection(isBlocking: true)
         openTPSetting()
         disableStrictTP()
         closeTPSetting()
     }
-    */
 }

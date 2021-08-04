@@ -58,10 +58,9 @@ class NavigationTest: BaseTestCase {
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
     }
 
-    /* Disabled: Test needs to be revised.
-    func testScrollsToTopWithMultipleTabs() {
-        navigator.goto(TabTray)
-        navigator.openURL(website_1["url"]!)
+    func testScrollsToTopWithMultipleTabs() throws {
+        try skipTest(issue: 1241, "Test needs to be revised")
+        openURL(website_1["url"]!)
         waitForValueContains(app.buttons["Address Bar"], value: website_1["value"]!)
         // Element at the TOP. TBChanged once the web page is correclty shown
         let topElement = app.links.staticTexts["Mozilla"].firstMatch
@@ -83,7 +82,6 @@ class NavigationTest: BaseTestCase {
         topElement.tap()
         waitForExistence(topElement)
     }
-    */
 
     // Smoketest
     func testLongPressLinkOptions() {
@@ -199,26 +197,28 @@ class NavigationTest: BaseTestCase {
         app.buttons[optionSelected].tap()
     }
 
-    /* Disabled as this test cannot be run twice in a row. It needs to delete the downloaded file.
-    func testDownloadLink() {
+    func testDownloadLink() throws {
+        try skipTest(issue: 1241, "this test cannot be run twice in a row")
         longPressLinkOptions(optionSelected: "Download Link")
         waitForExistence(app.tables["Context Menu"])
         XCTAssertTrue(app.tables["Context Menu"].cells["download"].exists)
         app.tables["Context Menu"].cells["download"].tap()
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
+
+        // TODO: update to check this another way
         waitForExistence(app.tables["DownloadsTable"])
         // There should be one item downloaded. It's name and size should be shown
         let downloadedList = app.tables["DownloadsTable"].cells.count
-        XCTAssertEqual(downloadedList, 1, "The number of items in the downloads table is not correct")
+        XCTAssertEqual(
+            downloadedList, 1, "The number of items in the downloads table is not correct")
         XCTAssertTrue(app.tables.cells.staticTexts["reserved.html"].exists)
 
         // Tap on the just downloaded link to check that the web page is loaded
         app.tables.cells.staticTexts["reserved.html"].tap()
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "reserved.html")
+
+        // TODO: delete the downloaded file
     }
-    */
 
     func testShareLink() {
         longPressLinkOptions(optionSelected: "Share Link")
@@ -236,17 +236,17 @@ class NavigationTest: BaseTestCase {
     }
 
     // Smoketest
-    /* Disabled: mechanism to read number of tabs does not work
-    func testPopUpBlocker() {
+    func testPopUpBlocker() throws {
+        try skipTest(issue: 1241, "mechanism to read number of tabs does not work")
         // Check that it is enabled by default
-        navigator.goto(SettingsScreen)
-        waitForExistence(app.tables["AppSettingsTableViewController.tableView"])
-        let switchBlockPopUps = app.tables.cells.switches["blockPopups"]
+        goToSettings()
+        let switchBlockPopUps = app.tables.cells.switches["Block Pop-up Windows"]
         let switchValue = switchBlockPopUps.value!
         XCTAssertEqual(switchValue as? String, "1")
 
         // Check that there are no pop ups
-        navigator.openURL(popUpTestUrl)
+        app.buttons["Done"].tap()
+        openURL(popUpTestUrl)
         //waitForValueContains(app.buttons["Address Bar"], value: "blocker.html")
         waitUntilPageLoad()
         waitForExistence(app.webViews.staticTexts["Blocked Element"])
@@ -255,19 +255,19 @@ class NavigationTest: BaseTestCase {
         XCTAssertEqual("1", numTabs as? String, "There should be only on tab")
 
         // Now disable the Block PopUps option
-        navigator.goto(SettingsScreen)
+        goToSettings()
         switchBlockPopUps.tap()
         let switchValueAfter = switchBlockPopUps.value!
         XCTAssertEqual(switchValueAfter as? String, "0")
 
         // Check that now pop ups are shown, two sites loaded
-        navigator.openURL(popUpTestUrl)
+        app.buttons["Done"].tap()
+        openURL(popUpTestUrl)
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "example.com")
         let numTabsAfter = app.buttons["Show Tabs"].value
         XCTAssertNotEqual("1", numTabsAfter as? String, "Several tabs are open")
     }
-    */
 
     // Smoketest
     func testSSL() {
@@ -282,39 +282,35 @@ class NavigationTest: BaseTestCase {
     }
 
     // In this test, the parent window opens a child and in the child it creates a fake link 'link-created-by-parent'
-    /* disabled because .tap() doesn’t toggle switches for some reason
-    func testWriteToChildPopupTab() {
-        navigator.goto(SettingsScreen)
+    func testWriteToChildPopupTab() throws {
+        try skipTest(issue: 1239, "toggling switches does not work")
+        goToSettings()
         let switchBlockPopUps = app.tables.cells.switches["Block Pop-up Windows"]
         switchBlockPopUps.tap()
         let switchValueAfter = switchBlockPopUps.value!
         XCTAssertEqual(switchValueAfter as? String, "0")
-        navigator.goto(BrowserTab)
+        app.buttons["Done"].tap()
         waitUntilPageLoad()
-        navigator.openURL(path(forTestPage: "test-window-opener.html"))
+        openURL(path(forTestPage: "test-window-opener.html"))
         waitForExistence(app.links["link-created-by-parent"], timeout: 10)
-    } */
-
-    // Smoketest
-    /* TODO: Re-write as test of Neeva menu
-    func testVerifyBrowserTabMenu() {
-        navigator.goto(BrowserTabMenu)
-        waitForExistence(app.tables["Context Menu"])
-
-        XCTAssertTrue(app.tables.cells["menu-sync"].exists)
-        XCTAssertTrue(app.tables.cells["key"].exists)
-        XCTAssertTrue(app.tables.cells["menu-Home"].exists)
-        XCTAssertTrue(app.tables.cells["menu-library"].exists)
-        XCTAssertTrue(app.tables.cells["menu-NightMode"].exists)
-        XCTAssertTrue(app.tables.cells["whatsnew"].exists)
-        XCTAssertTrue(app.tables.cells["menu-Settings"].exists)
-        XCTAssertTrue(app.buttons["PhotonMenu.close"].exists)
     }
-    */
 
     // Smoketest
-    /* Disabled: does not pass, need to investigate why
-    func testURLBar() {
+    func testVerifyNeevaMenu() {
+        app.buttons["Neeva Menu"].tap()
+        waitForExistence(app.buttons["Feedback"])
+
+        XCTAssertTrue(app.buttons["Home"].exists)
+        XCTAssertTrue(app.buttons["Spaces"].exists)
+        XCTAssertTrue(app.buttons["Settings"].exists)
+        XCTAssertTrue(app.buttons["Feedback"].exists)
+        XCTAssertTrue(app.buttons["History"].exists)
+        XCTAssertTrue(app.buttons["Downloads"].exists)
+    }
+
+    // Smoketest
+    func testURLBar() throws {
+        try skipTest(issue: 1241, "does not pass, need to investigate why")
         let urlBar = app.buttons["Address Bar"]
         waitForExistence(urlBar, timeout: 5)
         urlBar.tap()
@@ -328,7 +324,6 @@ class NavigationTest: BaseTestCase {
         waitForValueContains(urlBar, value: "example.com/")
         XCTAssertFalse(app.keyboards.count > 0, "The keyboard is shown")
     }
-    */
 
     // Confirms that the share menu shows the right contents when navigating back
     // from a PDF. See https://github.com/neevaco/neeva-ios-phoenix/issues/634,

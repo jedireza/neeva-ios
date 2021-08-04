@@ -5,34 +5,34 @@
 import XCTest
 
 class SettingsTest: BaseTestCase {
-    /* TODO: rewrite this test
-    func testDefaultBrowser() {
+    func testDefaultBrowser() throws {
+        try skipTest(issue: 1239, "rewrite this test")
         // A default browser card should be available on the home screen
-        if #available(iOS 14, *) {
-            waitForExistence(app.staticTexts["Open links in Neeva automatically by making it your Default Browser App."], timeout: 5)
-            waitForExistence(app.buttons["Go to Settings"], timeout: 5)
-            app.buttons["Go to Settings"].tap()
+        waitForExistence(
+            app.staticTexts[
+                "Open links in Neeva automatically by making it your Default Browser App."],
+            timeout: 5)
+        waitForExistence(app.buttons["Go to Settings"], timeout: 5)
+        app.buttons["Go to Settings"].tap()
 
-            // Tap on "Default Browser App" and set the browser as a default (Safari is listed first)
-            waitForExistence(iOS_Settings.tables.buttons.element(boundBy: 1), timeout: 5)
-            iOS_Settings.tables.buttons.element(boundBy: 1).tap()
-            iOS_Settings.tables.staticTexts.element(boundBy: 1).tap()
+        let iOS_Settings = XCUIApplication(bundleIdentifier: "com.apple.Preferences")
 
-            // Return to the browser
-            app.activate()
+        // Tap on "Default Browser App" and set the browser as a default (Safari is listed first)
+        waitForExistence(iOS_Settings.tables.buttons.element(boundBy: 1), timeout: 5)
+        iOS_Settings.tables.buttons.element(boundBy: 1).tap()
+        iOS_Settings.tables.staticTexts.element(boundBy: 1).tap()
 
-            // Tap on "Set as Default Browser" from the in-browser settings
-            navigator.goto(SettingsScreen)
-            let settingsTableView = app.tables["AppSettingsTableViewController.tableView"]
-            let defaultBrowserButton = settingsTableView.cells["Set as Default Browser"]
-            defaultBrowserButton.tap()
+        // Return to the browser
+        app.activate()
 
-            // Verify the browser is selected as a default in iOS settings
-            waitForExistence(iOS_Settings.tables.buttons.element(boundBy: 1), timeout: 5)
-            iOS_Settings.tables.buttons.element(boundBy: 1).tap()
-            waitForExistence(iOS_Settings.tables.cells.buttons["checkmark"])
-            XCTAssertFalse(iOS_Settings.tables.cells.buttons["checkmark"].isEnabled)
-        }
+        // Tap on "Set as Default Browser" from the in-browser settings
+        goToSettings()
+        app.buttons["Set as Default Browser"].tap()
+
+        // Verify the browser is selected as a default in iOS settings
+        waitForExistence(iOS_Settings.tables.buttons.element(boundBy: 1), timeout: 5)
+        iOS_Settings.tables.buttons.element(boundBy: 1).tap()
+        waitForExistence(iOS_Settings.tables.cells.buttons["checkmark"])
+        XCTAssertFalse(iOS_Settings.tables.cells.buttons["checkmark"].isEnabled)
     }
-    */
 }

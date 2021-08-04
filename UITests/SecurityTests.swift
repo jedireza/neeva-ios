@@ -27,8 +27,8 @@ class SecurityTests: KIFTestCase {
 
     /// Tap the Session exploit button, which tries to load the session restore page on localhost
     /// in the current tab. Make sure nothing happens.
-    /* TODO Restore this test #1155
-    func testSessionExploit() {
+    func testSessionExploit() throws {
+        try skipTest(issue: 1155, "Restore this test")
         tester().tapWebViewElementWithAccessibilityLabel("Session exploit")
         tester().wait(forTimeInterval: 1)
 
@@ -42,28 +42,37 @@ class SecurityTests: KIFTestCase {
 
     /// Tap the Error exploit button, which tries to load the error page on localhost
     /// in a new tab via window.open(). Make sure nothing happens.
-    /* Disabled as this test depends on reading tab count from the tabs button.
-    func testErrorExploit() {
+    func testErrorExploit() throws {
+        throw XCTSkip("Disabled as this test depends on reading tab count from the tabs button")
         // We should only have one tab open.
-        let tabcount:String?
+        let tabcount: String?
         if BrowserUtils.iPad() {
-            tabcount = tester().waitForView(withAccessibilityIdentifier: "TopTabsViewController.tabsButton")?.accessibilityValue
+            tabcount =
+                tester().waitForView(
+                    withAccessibilityIdentifier: "TopTabsViewController.tabsButton")?
+                .accessibilityValue
         } else {
-            tabcount = tester().waitForView(withAccessibilityIdentifier: "TabToolbar.tabsButton")?.accessibilityValue
+            tabcount =
+                tester().waitForView(withAccessibilityIdentifier: "TabToolbar.tabsButton")?
+                .accessibilityValue
         }
 
         // make sure a new tab wasn't opened.
         tester().tapWebViewElementWithAccessibilityLabel("Error exploit")
         tester().wait(forTimeInterval: 1.0)
-        let newTabcount:String?
+        let newTabcount: String?
         if BrowserUtils.iPad() {
-            newTabcount = tester().waitForView(withAccessibilityIdentifier: "TopTabsViewController.tabsButton")?.accessibilityValue
+            newTabcount =
+                tester().waitForView(
+                    withAccessibilityIdentifier: "TopTabsViewController.tabsButton")?
+                .accessibilityValue
         } else {
-            newTabcount = tester().waitForView(withAccessibilityIdentifier: "TabToolbar.tabsButton")?.accessibilityValue
+            newTabcount =
+                tester().waitForView(withAccessibilityIdentifier: "TabToolbar.tabsButton")?
+                .accessibilityValue
         }
         XCTAssert(tabcount != nil && tabcount == newTabcount)
     }
-    */
 
     /// Tap the New tab exploit button, which tries to piggyback off of an error page
     /// to load the session restore exploit. A new tab will load showing an error page,
@@ -85,12 +94,13 @@ class SecurityTests: KIFTestCase {
     /// Tap the URL spoof button, which opens a new window to a host with an invalid port.
     /// Since the window has no origin before load, the page is able to modify the document,
     /// so make sure we don't show the URL.
-    /* Disabled as this test depends on reading tab count from the tabs button.
-    func testSpoofExploit() {
+    func testSpoofExploit() throws {
+        throw XCTSkip("Disabled as this test depends on reading tab count from the tabs button")
         tester().tapWebViewElementWithAccessibilityLabel("URL spoof")
 
         // Wait for the window to open.
-        tester().waitForTappableView(withAccessibilityLabel: "Show Tabs", value: "2", traits: UIAccessibilityTraits.button)
+        tester().waitForTappableView(
+            withAccessibilityLabel: "Show Tabs", value: "2", traits: UIAccessibilityTraits.button)
         tester().waitForAnimationsToFinish()
 
         // Make sure the URL bar doesn't show the URL since it hasn't loaded.
@@ -101,24 +111,26 @@ class SecurityTests: KIFTestCase {
         tester().tapView(withAccessibilityIdentifier: "closeAllTabsButtonTabTray")
         tester().tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
     }
-    */
 
     // For blob URLs, just show "blob:" to the user (see bug 1446227)
-    /* disabled because we don’t have a way to test the label of the URL bar
-    func testBlobUrlShownAsSchemeOnly() {
+    func testBlobUrlShownAsSchemeOnly() throws {
+        throw XCTSkip("disabled because we don’t have a way to test the label of the URL bar")
         let url = "\(webRoot!)/blobURL.html"
         // script that will load a blob url
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
         tester().wait(forTimeInterval: 1)
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
-        XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://")) // webview internally has "blob:<rest of url>"
-        let bvc = SceneDelegate.getKeyWindow().rootViewController?.children[0] as! BrowserViewController
-        XCTAssertEqual(bvc.legacyURLBar.legacyLocationView.urlLabel.text, "blob:") // only display "blob:"
-    }*/
+        // webview internally has "blob:<rest of url>"
+        XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://"))
+        let bvc =
+            SceneDelegate.getKeyWindow().rootViewController?.children[0] as! BrowserViewController
+        // only display "blob:"
+        XCTAssertEqual("bvc.urlBar.legacyLocationView.urlLabel.text", "blob:")
+    }
 
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)
-    TODO Restore this test #1155
-    func testNeevaSchemeBlockedOnWebpages() {
+    func testNeevaSchemeBlockedOnWebpages() throws {
+        try skipTest(issue: 1155, "Restore this test")
         let url = "\(webRoot!)/neevaScheme.html"
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
         tester().tapWebViewElementWithAccessibilityLabel("go")
@@ -127,7 +139,7 @@ class SecurityTests: KIFTestCase {
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
         // Make sure the URL doesn't change.
         XCTAssertEqual(webView.url!.absoluteString, url)
-    } */
+    }
 
     override func tearDown() {
         BrowserUtils.resetToAboutHomeKIF(tester())

@@ -10,6 +10,11 @@ func path(forTestPage page: String) -> String {
     return "http://localhost:\(serverPort)/test-fixture/\(page)"
 }
 
+// see also `skipTest` in StorageTests and UITests
+func skipTest(issue: Int, _ message: String) throws {
+    throw XCTSkip("#\(issue): \(message)")
+}
+
 class BaseTestCase: XCTestCase {
     let app = XCUIApplication()
 
@@ -36,7 +41,9 @@ class BaseTestCase: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        setUpApp()
+        if !skipPlatform {
+            setUpApp()
+        }
     }
 
     override func tearDown() {
@@ -44,9 +51,13 @@ class BaseTestCase: XCTestCase {
         super.tearDown()
     }
 
-    var skipPlatform: Bool {
+    private var skipPlatform: Bool {
         guard let platform = specificForPlatform else { return false }
         return UIDevice.current.userInterfaceIdiom != platform
+    }
+
+    func skipIfNeeded() throws {
+        try XCTSkipIf(skipPlatform, "Not on \(specificForPlatform!)")
     }
 
     func restart(_ app: XCUIApplication, args: [String] = []) {
@@ -162,8 +173,14 @@ class BaseTestCase: XCTestCase {
         }
     }
 
-    public func closeAllTabs() {
-        app.buttons["Show Tabs"].press(forDuration: 1)
+    public func closeAllTabs(fromTabSwitcher: Bool = false) {
+        if fromTabSwitcher {
+            waitForExistence(app.buttons["Done"], timeout: 3)
+            app.buttons["Done"].press(forDuration: 1)
+        } else {
+            waitForExistence(app.buttons["Show Tabs"], timeout: 3)
+            app.buttons["Show Tabs"].press(forDuration: 1)
+        }
 
         let closeAllTabButton = app.buttons["Close All Tabs"]
         if closeAllTabButton.exists {

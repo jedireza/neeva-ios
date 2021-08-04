@@ -121,8 +121,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         BrowserUtils.closeHistorySheet(tester())
     }
 
-    // Disabled due to https://github.com/mozilla-mobile/firefox-ios/issues/7727
-    /*func testClearsCookies() {
+    func testClearsCookies() {
         let url = "\(webRoot!)/numberedPage.html?page=1"
         tester().waitForAnimationsToFinish(withTimeout: 5)
 
@@ -140,7 +139,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         // Verify that cookies are not cleared when Cookies is deselected.
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.Cookies]), tester())
+        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([.cookies]), tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
 
@@ -152,7 +151,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         // Verify that cookies are cleared when Cookies is selected.
         BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.Cookies], tester())
+        BrowserUtils.clearPrivateData([.cookies], tester())
         BrowserUtils.acceptClearPrivateData(tester())
         BrowserUtils.closeClearPrivateDataDialog(tester())
 
@@ -161,7 +160,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         XCTAssertEqual(cookies.cookie, "")
         XCTAssertEqual(cookies.localStorage, "null")
         XCTAssertEqual(cookies.sessionStorage, "null")
-    }*/
+    }
 
     func testClearsCache() {
         let cachedServer = CachedPageServer()

@@ -18,8 +18,8 @@ class SessionRestoreTests: KIFTestCase {
         super.setUp()
     }
 
-    /* TODO(#405): Disabled as this test is flaky
-    func testTabRestore() {
+    func testTabRestore() throws {
+        try skipTest(issue: 405, "Disabled as this test is flaky")
         let url1 = "\(webRoot!)/numberedPage.html?page=1"
         let url2 = "\(webRoot!)/numberedPage.html?page=2"
         let url3 = "\(webRoot!)/numberedPage.html?page=3"
@@ -29,9 +29,15 @@ class SessionRestoreTests: KIFTestCase {
         jsonDict["history"] = [url1, url2, url3]
         jsonDict["currentPage"] = -1 as Any?
         let json = JSON(jsonDict)
-        let escapedJSON = json.stringify()?.addingPercentEncoding(withAllowedCharacters: .URLAllowed)
+        let escapedJSON = json.stringify()?.addingPercentEncoding(
+            withAllowedCharacters: .URLAllowed)
         _ = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
-        let restoreURL = PrivilegedRequest(url: URL(string: "\(InternalURL.baseUrl)/\(InternalURL.Path.sessionrestore.rawValue)?history=\(escapedJSON!)")!).url
+        let restoreURL = PrivilegedRequest(
+            url: URL(
+                string:
+                    "\(InternalURL.baseUrl)/\(InternalURL.Path.sessionrestore.rawValue)?history=\(escapedJSON!)"
+            )!
+        ).url
 
         // Enter the restore URL and verify the back/forward history.
         // After triggering the restore, the session should look like this:
@@ -69,7 +75,6 @@ class SessionRestoreTests: KIFTestCase {
         }
         XCTAssertFalse(canGoForward, "Reached the end of browser history")
     }
-    */
 
     override func tearDown() {
         BrowserUtils.resetToAboutHomeKIF(tester())
