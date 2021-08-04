@@ -425,6 +425,8 @@
 		C9D4EE15265FE06C00E9A659 /* NeevaUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */; };
 		C9DACFEB269CEFE600456020 /* KMCGeigerCounterTick.aiff in Resources */ = {isa = PBXBuildFile; fileRef = C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */; };
 		C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */; };
+		C9DDC12026B9E24900F293AB /* WebViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DDC11F26B9E24900F293AB /* WebViewContainer.swift */; };
+		C9DDC12226B9E44200F293AB /* WebViewHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DDC12126B9E44200F293AB /* WebViewHost.swift */; };
 		C9DF5691266A83F4009A2E6C /* ShareToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5690266A83F4009A2E6C /* ShareToView.swift */; };
 		C9DF5699266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5698266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift */; };
 		C9DF56A0266A84A5009A2E6C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9DF569F266A84A5009A2E6C /* Preview Assets.xcassets */; };
@@ -1351,6 +1353,8 @@
 		C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = KMCGeigerCounterTick.aiff; sourceTree = "<group>"; };
 		C9DACFE9269CEFE500456020 /* KMCGeigerCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMCGeigerCounter.h; sourceTree = "<group>"; };
 		C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMCGeigerCounter.m; sourceTree = "<group>"; };
+		C9DDC11F26B9E24900F293AB /* WebViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewContainer.swift; sourceTree = "<group>"; };
+		C9DDC12126B9E44200F293AB /* WebViewHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewHost.swift; sourceTree = "<group>"; };
 		C9DE0C5C26B2FE8400CB995A /* files-to-format.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "files-to-format.sh"; sourceTree = "<group>"; };
 		C9DE0C5D26B3054700CB995A /* swift-format-dirs.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "swift-format-dirs.txt"; sourceTree = "<group>"; };
 		C9DE0C5F26B305D900CB995A /* swift-format.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "swift-format.sh"; sourceTree = "<group>"; };
@@ -2516,6 +2520,15 @@
 			path = ThirdParty/KMCGeigerCounter/KMCGeigerCounter;
 			sourceTree = "<group>";
 		};
+		C9DDC11E26B9E22800F293AB /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				C9DDC11F26B9E24900F293AB /* WebViewContainer.swift */,
+				C9DDC12126B9E44200F293AB /* WebViewHost.swift */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
 		C9DF5697266A84A4009A2E6C /* Preview Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -2759,6 +2772,7 @@
 				4A1D054E26696B6D00D63333 /* Card */,
 				4AF1948B266EC74C007E2C3B /* Carousel */,
 				31ADB5D91E58CEC300E87909 /* ClipboardBarDisplayHandler.swift */,
+				C9DDC11E26B9E22800F293AB /* Content */,
 				D3BA7E0D1B0E934F00153782 /* ContextMenuHelper.swift */,
 				D01017F4219CB6BD009CBB5A /* DownloadContentScript.swift */,
 				D0625C97208E87F10081F3B2 /* DownloadQueue.swift */,
@@ -4571,6 +4585,7 @@
 				C9C18E6526559B9C004710CD /* LogConfig.swift in Sources */,
 				EBB8950C21939E4100EB91A0 /* NeevaTabContentBlocker.swift in Sources */,
 				BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */,
+				C9DDC12026B9E24900F293AB /* WebViewContainer.swift in Sources */,
 				F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */,
 				C4EFEECF1CEBB6F2009762A4 /* BackForwardTableViewCell.swift in Sources */,
 				C9B55A0F26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift in Sources */,
@@ -4666,6 +4681,7 @@
 				EBB89504219398E500EB91A0 /* TrackingProtectionPageStats.swift in Sources */,
 				D31F95E91AC226CB005C9F3B /* ScreenshotHelper.swift in Sources */,
 				C965BDD2268E71C500F02224 /* AppHostSetting.swift in Sources */,
+				C9DDC12226B9E44200F293AB /* WebViewHost.swift in Sources */,
 				C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */,
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,

@@ -71,7 +71,8 @@ class BrowserViewController: UIViewController {
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             toolbarModel: toolbarModel,
-            swipeDirection: .forward)
+            swipeDirection: .forward,
+            contentView: webViewContainer.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -82,13 +83,14 @@ class BrowserViewController: UIViewController {
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             toolbarModel: toolbarModel,
-            swipeDirection: .back)
+            swipeDirection: .back,
+            contentView: webViewContainer.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
         return host
     }()
-    private(set) var webViewContainer: UIView!
+    private let webViewContainer = WebViewHost(webView: nil)
 
     private(set) var urlBar: URLBarWrapper!
     enum URLBarWrapper {
@@ -356,7 +358,7 @@ class BrowserViewController: UIViewController {
 
         view.bringSubviewToFront(webViewContainerBackdrop)
         webViewContainerBackdrop.alpha = 1
-        webViewContainer.alpha = 0
+        webViewContainer.view.alpha = 0
         urlBar?.legacy?.locationContainer.alpha = 0
         zeroQueryViewController.view.alpha = 0
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
@@ -369,7 +371,7 @@ class BrowserViewController: UIViewController {
         UIView.animate(
             withDuration: 0.2, delay: 0, options: UIView.AnimationOptions(),
             animations: {
-                self.webViewContainer.alpha = 1
+                self.webViewContainer.view.alpha = 1
                 self.urlBar?.legacy?.locationContainer.alpha = 1
                 self.presentedViewController?.popoverPresentationController?.containerView?.alpha =
                     1
@@ -408,8 +410,9 @@ class BrowserViewController: UIViewController {
         webViewContainerBackdrop.alpha = 0
         view.addSubview(webViewContainerBackdrop)
 
-        webViewContainer = UIView()
-        view.addSubview(webViewContainer)
+        webViewContainer.willMove(toParent: self)
+        view.addSubview(webViewContainer.view)
+        addChild(webViewContainer)
 
         // Temporary work around for covering the non-clipped web view content
         view.addSubview(statusBarOverlay)
@@ -516,16 +519,16 @@ class BrowserViewController: UIViewController {
 
         if FeatureFlag[.swipePlusPlus] {
             simulateForwardViewController?.view.snp.makeConstraints { make in
-                make.top.bottom.equalTo(webViewContainer)
-                make.width.equalTo(webViewContainer).offset(SwipeUX.EdgeWidth)
-                make.leading.equalTo(webViewContainer.snp.trailing).offset(-SwipeUX.EdgeWidth)
+                make.top.bottom.equalTo(webViewContainer.view)
+                make.width.equalTo(webViewContainer.view).offset(SwipeUX.EdgeWidth)
+                make.leading.equalTo(webViewContainer.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
             }
         }
 
         simulateBackViewController?.view.snp.makeConstraints { make in
-            make.top.bottom.equalTo(webViewContainer)
-            make.width.equalTo(webViewContainer).offset(SwipeUX.EdgeWidth)
-            make.trailing.equalTo(webViewContainer.snp.leading).offset(SwipeUX.EdgeWidth)
+            make.top.bottom.equalTo(webViewContainer.view)
+            make.width.equalTo(webViewContainer.view).offset(SwipeUX.EdgeWidth)
+            make.trailing.equalTo(webViewContainer.view.snp.leading).offset(SwipeUX.EdgeWidth)
         }
     }
 
@@ -701,7 +704,7 @@ class BrowserViewController: UIViewController {
             make.leading.trailing.equalTo(self.view)
         }
 
-        webViewContainer.snp.remakeConstraints { make in
+        webViewContainer.view.snp.remakeConstraints { make in
             make.left.right.equalTo(self.view)
 
             if let readerModeBarBottom = readerModeBar?.snp.bottom {
@@ -1444,7 +1447,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didCreateWebView webView: WKWebView) {
-        webView.frame = webViewContainer.frame
+        webView.frame = webViewContainer.view.frame
         webView.uiDelegate = self
 
         self.subscribe(to: webView, for: tab)
@@ -1620,10 +1623,7 @@ extension BrowserViewController: TabManagerDelegate {
             ReaderModeHandlers.readerModeCache = readerModeCache
 
             scrollController.tab = tab
-            webViewContainer.addSubview(webView)
-            webView.snp.makeConstraints { make in
-                make.left.right.top.bottom.equalTo(self.webViewContainer)
-            }
+            webViewContainer.setWebView(webView)
 
             // This is a terrible workaround for a bad iOS 12 bug where PDF
             // content disappears any time the view controller changes (i.e.

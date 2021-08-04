@@ -37,7 +37,10 @@ class SimulatedSwipeController:
 
     var progressView: UIHostingController<CarouselProgressView>!
 
-    init(tabManager: TabManager, toolbarModel: TabToolbarModel, swipeDirection: SwipeDirection) {
+    init(
+        tabManager: TabManager, toolbarModel: TabToolbarModel, swipeDirection: SwipeDirection,
+        contentView: UIView
+    ) {
         self.tabManager = tabManager
         self.toolbarModel = toolbarModel
         self.swipeDirection = swipeDirection
@@ -46,11 +49,10 @@ class SimulatedSwipeController:
         register(self, forTabEvents: .didChangeURL)
         tabManager.addDelegate(self)
 
-        let bvc = BrowserViewController.foregroundBVC()
         self.animator = SimulatedSwipeAnimator(
             swipeDirection: swipeDirection,
             animatingView: self.view,
-            webViewContainer: bvc.webViewContainer)
+            contentView: contentView)
         self.animator.delegate = self
 
         if swipeDirection == .forward {
