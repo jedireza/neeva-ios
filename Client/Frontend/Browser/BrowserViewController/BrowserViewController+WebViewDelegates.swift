@@ -904,16 +904,6 @@ extension BrowserViewController: WKNavigationDelegate {
 
         self.scrollController.resetZoomState()
 
-        if let currentURL = tab.url, NeevaConstants.isNeevaHome(url: currentURL) {
-            showSearchBarTourPrompt()
-        }
-
-        if tabManager.selectedTab === tab {
-            updateUIForReaderHomeStateForTab(tab)
-        }
-    }
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         // every time a user visits a Neeva page, we extract the user cookie
         // and save it to a keychain.
         if !(tabManager.selectedTab?.isPrivate ?? false),
@@ -922,6 +912,16 @@ extension BrowserViewController: WKNavigationDelegate {
             url.scheme == "https"
         {
             NeevaUserInfo.shared.updateKeychainTokenAndFetchUserInfo()
+        }
+
+        if tabManager.selectedTab === tab {
+            updateUIForReaderHomeStateForTab(tab)
+        }
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if let url = webView.url, NeevaConstants.isNeevaHome(url: url) {
+            showSearchBarTourPrompt()
         }
 
         if let tab = tabManager[webView] {
