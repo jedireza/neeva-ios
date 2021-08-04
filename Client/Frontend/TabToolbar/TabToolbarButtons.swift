@@ -37,7 +37,7 @@ enum TabToolbarButtons {
                     action: onBack
                 )
                 .disabled(!model.canGoBack)
-                if (FeatureFlag[.overflowMenu]) {
+                if FeatureFlag[.overflowMenu] {
                     TabToolbarButton(
                         label: Symbol(
                             .ellipsisCircle, size: 20, label: .TabToolbarForwardAccessibilityLabel),

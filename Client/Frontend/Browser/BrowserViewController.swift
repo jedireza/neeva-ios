@@ -814,8 +814,6 @@ class BrowserViewController: UIViewController {
 
         zeroQueryViewController.reloadAll()
 
-        zeroQueryViewController.reloadAll()
-
         // We have to run this animation, even if the view is already showing
         // because there may be a hide animation running and we want to be sure
         // to override its results.
@@ -2108,7 +2106,6 @@ extension BrowserViewController {
                 delegate: self,
                 onDismiss: {
                     self.hideOverlaySheetViewController()
-                    self.isNeevaMenuSheetOpen = false
                 }, isPrivate: isPrivate, feedbackImage: image)
         )
         self.dismissVC()

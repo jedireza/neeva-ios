@@ -49,8 +49,8 @@ struct TabToolbarView_Previews: PreviewProvider {
     static var previews: some View {
         let make = { (model: TabToolbarModel) in
             TabToolbarView(
-                onBack: {}, onForward: {}, onOverflow: {}, onLongPressBackForward: {}, onNeevaMenu: {},
-                onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil }
+                onBack: {}, onForward: {}, onOverflow: {}, onLongPressBackForward: {},
+                onNeevaMenu: {}, onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil }
             )
             .environmentObject(model)
         }

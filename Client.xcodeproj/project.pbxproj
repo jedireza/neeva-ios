@@ -218,6 +218,7 @@
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
 		67B0AAF426BA080D000731E0 /* OverflowMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B0AAF326BA080D000731E0 /* OverflowMenuViewController.swift */; };
 		67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */; };
+		67B0AAF826BB3F63000731E0 /* BrowserViewController+OverflowMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B0AAF726BB3F63000731E0 /* BrowserViewController+OverflowMenuDelegate.swift */; };
 		744B0FFE1B4F172E00100422 /* ToolbarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744B0FFD1B4F172E00100422 /* ToolbarTests.swift */; };
 		745DAB301CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745DAB2F1CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift */; };
 		7479B4EF1C5306A200DF000B /* Reachability-old.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7479B4ED1C5306A200DF000B /* Reachability-old.swift */; };
@@ -1141,6 +1142,7 @@
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
 		67B0AAF326BA080D000731E0 /* OverflowMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuViewController.swift; sourceTree = "<group>"; };
 		67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuView.swift; sourceTree = "<group>"; };
+		67B0AAF726BB3F63000731E0 /* BrowserViewController+OverflowMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+OverflowMenuDelegate.swift"; sourceTree = "<group>"; };
 		744B0FFD1B4F172E00100422 /* ToolbarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarTests.swift; sourceTree = "<group>"; };
 		745DAB2F1CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentlyClosedTabsPanel.swift; sourceTree = "<group>"; };
 		7479B4ED1C5306A200DF000B /* Reachability-old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Reachability-old.swift"; path = "ThirdParty/Reachability-old.swift"; sourceTree = "<group>"; };
@@ -2304,6 +2306,7 @@
 				C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */,
 				BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */,
 				C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */,
+				67B0AAF726BB3F63000731E0 /* BrowserViewController+OverflowMenuDelegate.swift */,
 			);
 			path = BrowserViewController;
 			sourceTree = "<group>";
@@ -4624,6 +4627,7 @@
 				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,
+				67B0AAF826BB3F63000731E0 /* BrowserViewController+OverflowMenuDelegate.swift in Sources */,
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				67B0AAF426BA080D000731E0 /* OverflowMenuViewController.swift in Sources */,
