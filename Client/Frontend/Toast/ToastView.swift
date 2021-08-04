@@ -162,6 +162,10 @@ struct ToastView: View {
             }
         }
     }
+
+    public func enqueue(at location: ToastQueueLocation = .last) {
+        ToastViewManager.shared.enqueue(toast: self, at: location)
+    }
 }
 
 struct ToastView_Previews: PreviewProvider {

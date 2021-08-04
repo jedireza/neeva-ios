@@ -379,7 +379,7 @@ class BrowserViewController: UIViewController {
                 self.view.backgroundColor = UIColor.clear
 
                 // checks if zeroquery is open
-                if self.zeroQueryViewController.openedFrom != nil {
+                if self.zeroQueryViewController.model.openedFrom != nil {
                     self.zeroQueryViewController.view.alpha = 1
                 }
             },
@@ -786,10 +786,12 @@ class BrowserViewController: UIViewController {
     }
 
     public func showZeroQuery(
-        inline: Bool, openedFrom: ZeroQueryOpenedLocation? = .openTab, isLazyTab: Bool = false
+        inline: Bool,
+        openedFrom: ZeroQueryOpenedLocation? = nil,
+        isLazyTab: Bool = false
     ) {
         // makes sure zeroQuery isn't already open
-        guard zeroQueryViewController.openedFrom == nil else { return }
+        guard zeroQueryViewController.model.openedFrom == nil else { return }
 
         zeroQueryIsInline = inline
 
@@ -799,15 +801,16 @@ class BrowserViewController: UIViewController {
 
         if isLazyTab {
             zeroQueryViewController.isLazyTab = true
+            urlBar.shared.model.setEditing(to: true)
+            urlBar.shared.queryModel.value = ""
+        }
 
-            DispatchQueue.main.async {
-                self.urlBar.shared.model.setEditing(to: true)
-                self.urlBar.shared.queryModel.value = ""
-            }
+        if FeatureFlag[.clearZeroQuery] {
+            urlBar.shared.queryModel.value = ""
         }
 
         zeroQueryViewController.model.isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        zeroQueryViewController.openedFrom = openedFrom
+        zeroQueryViewController.model.openedFrom = openedFrom
 
         zeroQueryViewController.reloadAll()
 
@@ -830,7 +833,7 @@ class BrowserViewController: UIViewController {
         view.setNeedsUpdateConstraints()
     }
 
-    fileprivate func hideZeroQuery() {
+    public func hideZeroQuery() {
         urlBar.shared.model.setEditing(to: false)
 
         UIView.animate(
@@ -861,6 +864,7 @@ class BrowserViewController: UIViewController {
                 hideZeroQuery()
                 return
             }
+
             if isZeroQueryURL {
                 showZeroQuery(inline: true)
             } else if !url.absoluteString.hasPrefix(
@@ -1085,7 +1089,7 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab) {
+    func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab(nil)) {
         showZeroQuery(inline: true, openedFrom: openedFrom, isLazyTab: true)
     }
 
@@ -1322,7 +1326,7 @@ extension BrowserViewController {
         if !cardGridViewController.gridModel.isHidden {
             openLazyTab(openedFrom: .tabTray)
         } else {
-            showZeroQuery(inline: false)
+            showZeroQuery(inline: false, openedFrom: .openTab(tabManager.selectedTab))
         }
     }
 

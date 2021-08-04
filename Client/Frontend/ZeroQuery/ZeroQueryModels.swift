@@ -8,6 +8,7 @@ class ZeroQueryModel: ObservableObject {
     @Published var isPrivate: Bool = false
     @Published var promoCard: PromoCardType? = nil
     @Published var buttonClickHandler: () -> Void = {}
+    @Published var openedFrom: ZeroQueryOpenedLocation?
 
     var signInHandler: () -> Void = {}
     var referralPromoHandler: () -> Void = {}

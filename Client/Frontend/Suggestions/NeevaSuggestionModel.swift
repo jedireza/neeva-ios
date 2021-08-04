@@ -44,6 +44,7 @@ struct SuggestionPositionInfo {
 }
 
 class NeevaSuggestionModel: ObservableObject {
+    @Published var tabSuggestions: [Suggestion] = []
     @Published var topSuggestions: [Suggestion] = []
     @Published var chipQuerySuggestions: [Suggestion] = []
     @Published var rowQuerySuggestions: [Suggestion] = []
@@ -110,7 +111,9 @@ class NeevaSuggestionModel: ObservableObject {
     var suggestions: [Suggestion] {
         let bvc = BrowserViewController.foregroundBVC()
         let navSuggestionModel = bvc.searchController?.navModel
-        return topSuggestions + chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
+
+        return tabSuggestions + topSuggestions + chipQuerySuggestions + rowQuerySuggestions
+            + urlSuggestions
             + (navSuggestionModel?.combinedSuggestions ?? [])
     }
 
@@ -219,8 +222,7 @@ class NeevaSuggestionModel: ObservableObject {
     // MARK: - Searching
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let bvc = BrowserViewController.foregroundBVC()
-        guard let tab = bvc.tabManager.selectedTab, let searchController = bvc.searchController
-        else { return }
+        guard let tab = bvc.tabManager.selectedTab else { return }
 
         let suggestionLocationInfo = findSuggestionLocationInfo(suggestion)
 
@@ -246,17 +248,28 @@ class NeevaSuggestionModel: ObservableObject {
             bvc.finishEditingAndSubmit(
                 URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: tab)
         case .lens(let suggestion):
-            searchController.searchDelegate?.searchViewController(
-                searchController, didAcceptSuggestion: suggestion.shortcut)
+            if let searchController = bvc.searchController {
+                searchController.searchDelegate?.searchViewController(
+                    searchController, didAcceptSuggestion: suggestion.shortcut)
+            }
         case .bang(let suggestion):
-            searchController.searchDelegate?.searchViewController(
-                searchController, didAcceptSuggestion: suggestion.shortcut)
+            if let searchController = bvc.searchController {
+                searchController.searchDelegate?.searchViewController(
+                    searchController, didAcceptSuggestion: suggestion.shortcut)
+            }
         case .navigation(let nav):
             ClientLogger.shared.logCounter(
                 LogConfig.Interaction.HistorySuggestion,
                 attributes: EnvironmentHelper.shared.getAttributes()
                     + (suggestionLocationInfo?.loggingAttributes() ?? []))
             bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: tab)
+        case .tabSuggestion(let selectedTab):
+            if !selectedTab.isSelected {
+                bvc.hideZeroQuery()
+                selectedTab.manager.select(tab)
+            } else {
+                bvc.urlBar.shared.queryModel.value = selectedTab.url?.absoluteString ?? ""
+            }
         }
     }
 

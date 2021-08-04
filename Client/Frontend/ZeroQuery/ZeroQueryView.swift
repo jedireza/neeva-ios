@@ -113,6 +113,22 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
+                    if let openTab = viewModel.openedFrom?.openedTab,
+                        FeatureFlag[.clearZeroQuery]
+                    {
+                        SearchSuggestionView(
+                            Suggestion.tabSuggestion(
+                                TabCardDetails(
+                                    tab: openTab,
+                                    manager: BrowserViewController.foregroundBVC().tabManager)
+                            )
+                        )
+                        .environmentObject(
+                            BrowserViewController.foregroundBVC().urlBar.shared
+                                .neevaSuggestionModel)
+                        SuggestionsDivider(height: 3)
+                    }
+
                     if viewModel.isPrivate {
                         IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0))
                             .padding(ZeroQueryUX.Padding)

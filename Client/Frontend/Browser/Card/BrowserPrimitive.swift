@@ -76,7 +76,7 @@ protocol SelectingManager {
 // MARK: Tab: BrowserPrimitive
 
 extension Tab: Closeable, Selectable, BrowserPrimitive {
-    var id: String {
+    public var id: String {
         tabUUID
     }
 

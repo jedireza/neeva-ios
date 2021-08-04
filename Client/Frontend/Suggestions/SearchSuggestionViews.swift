@@ -48,6 +48,8 @@ public struct SearchSuggestionView: View {
             LensSuggestionView(suggestion: suggestion)
         case .navigation(let nav):
             NavSuggestionView(suggestion: nav)
+        case .tabSuggestion(let tab):
+            TabSuggestionView(suggestion: tab)
         }
     }
 }
@@ -251,7 +253,6 @@ struct QuerySuggestionView: View {
 struct URLSuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion
 
-    @State var focused: Bool = false
     @EnvironmentObject public var model: NeevaSuggestionModel
 
     @ViewBuilder
@@ -324,7 +325,6 @@ struct URLSuggestionView: View {
 private struct BangSuggestionView: View {
     let suggestion: Suggestion.Bang
 
-    @State var focused: Bool = false
     @EnvironmentObject public var model: NeevaSuggestionModel
 
     var body: some View {
@@ -343,7 +343,6 @@ private struct BangSuggestionView: View {
 private struct LensSuggestionView: View {
     let suggestion: Suggestion.Lens
 
-    @State var focused: Bool = false
     @EnvironmentObject public var model: NeevaSuggestionModel
 
     var body: some View {
@@ -354,6 +353,58 @@ private struct LensSuggestionView: View {
             secondaryLabel: EmptyView(),
             detail: Text(suggestion.description),
             suggestion: Suggestion.lens(suggestion)
+        )
+        .environmentObject(model)
+    }
+}
+
+private struct TabSuggestionView: View {
+    let suggestion: TabCardDetails
+
+    @State var focused: Bool = false
+    @EnvironmentObject public var model: NeevaSuggestionModel
+
+    @ViewBuilder
+    var icon: some View {
+        if !suggestion.isSelected {
+            Symbol(.squareOnSquare)
+        }
+    }
+
+    @ViewBuilder
+    var secondaryLabel: some View {
+        Text(
+            suggestion.isSelected
+                ? suggestion.url?.absoluteString ?? ""
+                : suggestion.title
+        )
+        .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
+    }
+
+    @ViewBuilder
+    var detailView: some View {
+        if suggestion.isSelected {
+            HStack {
+                Button {
+                    UIPasteboard.general.string = suggestion.url?.absoluteString
+                    ToastViewManager.shared.makeToast(text: "URL copied to clipboard").enqueue()
+                } label: {
+                    Symbol(.squareOnSquare)
+                }
+
+            }
+        }
+    }
+
+    var body: some View {
+        SuggestionView(
+            action: nil,
+            icon: icon,
+            label: Text(
+                suggestion.isSelected ? suggestion.title : "Switch to Tab"),
+            secondaryLabel: secondaryLabel,
+            detail: detailView,
+            suggestion: Suggestion.tabSuggestion(suggestion)
         )
         .environmentObject(model)
     }

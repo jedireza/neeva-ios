@@ -152,6 +152,7 @@ class BaseTestCase: XCTestCase {
     }
 
     public func newTab() {
+        waitForExistence(app.buttons["Show Tabs"])
         app.buttons["Show Tabs"].press(forDuration: 2)
 
         if app.buttons["New Tab"].exists {
