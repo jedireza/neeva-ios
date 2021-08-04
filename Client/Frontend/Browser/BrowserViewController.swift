@@ -2106,6 +2106,7 @@ extension BrowserViewController {
                 delegate: self,
                 onDismiss: {
                     self.hideOverlaySheetViewController()
+                    self.isNeevaMenuSheetOpen = false
                 }, isPrivate: isPrivate, feedbackImage: image)
         )
         self.dismissVC()
