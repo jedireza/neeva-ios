@@ -41,6 +41,9 @@ struct TopSitesHandler {
                 }
             }
 
+            //Prevent duplication with neeva home, searches and spaces
+            mergedSites = mergedSites.filter { !$0.url.isNeevaURL() }
+
             let allSites: [Site]
             if FeatureFlag[.pinToTopSites] {
                 // create PinnedSite objects. used by the view layer to tell topsites apart

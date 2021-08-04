@@ -38,9 +38,9 @@ public struct NeevaMenuButtonView: View {
         GroupedCellButton(action: action) {
             VStack(spacing: 4) {
                 if let nicon = self.nicon {
-                    Symbol(nicon, size: 20)
+                    Symbol(decorative: nicon, size: 20)
                 } else if let symbol = self.symbol {
-                    Symbol(symbol, size: 20)
+                    Symbol(decorative: symbol, size: 20)
                 }
 
                 Text(label).withFont(.bodyLarge)

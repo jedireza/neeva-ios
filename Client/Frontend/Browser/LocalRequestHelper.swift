@@ -28,7 +28,7 @@ class LocalRequestHelper: TabContentScript {
 
         if params["type"] == "reload" {
             // If this is triggered by session restore pages, the url to reload is a nested url argument.
-            if let _url = internalUrl.extractedUrlParam, let nested = InternalURL(_url),
+            if let nested = InternalURL(internalUrl.extractedUrlParam),
                 let url = nested.extractedUrlParam
             {
                 message.webView?.replaceLocation(with: url)

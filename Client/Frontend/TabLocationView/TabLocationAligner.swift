@@ -153,7 +153,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
         } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
-            TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
+            TabLocationBarButton(label: Symbol(decorative: .arrowClockwise)) {}
         }.previewStyle()
 
         TabLocationAligner(transitionToEditing: true, debug: true) {
@@ -162,7 +162,7 @@ struct TabLocationAligner_Previews: PreviewProvider {
         } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
-            TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
+            TabLocationBarButton(label: Symbol(decorative: .arrowClockwise)) {}
         }.previewStyle()
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
@@ -171,8 +171,8 @@ struct TabLocationAligner_Previews: PreviewProvider {
         } leading: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
         } trailing: {
-            TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
-            TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
+            TabLocationBarButton(label: Symbol(decorative: .arrowClockwise)) {}
+            TabLocationBarButton(label: Symbol(decorative: .squareAndArrowUp)) {}
         }.previewStyle()
 
         TabLocationAligner(transitionToEditing: false, debug: true) {
@@ -181,8 +181,8 @@ struct TabLocationAligner_Previews: PreviewProvider {
         } leading: {
         } trailing: {
             TabLocationBarButton(label: Image("tracking-protection").renderingMode(.template)) {}
-            TabLocationBarButton(label: Symbol(.arrowClockwise)) {}
-            TabLocationBarButton(label: Symbol(.squareAndArrowUp)) {}
+            TabLocationBarButton(label: Symbol(decorative: .arrowClockwise)) {}
+            TabLocationBarButton(label: Symbol(decorative: .squareAndArrowUp)) {}
         }.previewStyle()
 
         TabLocationAligner(transitionToEditing: false, debug: true) {

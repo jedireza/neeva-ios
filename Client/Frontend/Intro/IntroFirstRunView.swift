@@ -33,7 +33,7 @@ struct IntroFirstRunView: View {
                     HStack {
                         Text("Sign In")
                         Spacer()
-                        Symbol(.arrowRight, size: 22)
+                        Symbol(decorative: .arrowRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
                     .foregroundColor(Color.brand.charcoal)
@@ -47,7 +47,7 @@ struct IntroFirstRunView: View {
                     HStack {
                         Text("Sign Up")
                         Spacer()
-                        Symbol(.arrowUpRight, size: 22)
+                        Symbol(decorative: .arrowUpRight, size: 22)
                     }
                     .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
                     .foregroundColor(.brand.white)

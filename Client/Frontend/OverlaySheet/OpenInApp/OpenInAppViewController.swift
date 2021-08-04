@@ -12,8 +12,7 @@ struct OpenInAppRootView: View {
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { onDismiss() })
-        {
+        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
             OpenInAppView(url: url, onOpen: onOpen, onDismiss: onDismiss)
                 .overlaySheetIsFixedHeight(isFixedHeight: true)
         }

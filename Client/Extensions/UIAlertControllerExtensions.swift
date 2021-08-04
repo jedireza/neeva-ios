@@ -10,14 +10,10 @@ typealias UIAlertActionCallback = (UIAlertAction) -> Void
 // MARK: - Extension methods for building specific UIAlertController instances used across the app
 extension UIAlertController {
 
-    /**
-    Builds the Alert view that asks the user if they wish to restore their tabs after a crash.
-
-    - parameter okayCallback: Okay option handler
-    - parameter noCallback:   No option handler
-
-    - returns: UIAlertController for asking the user to restore tabs after a crash
-    */
+    /// Builds the Alert view that asks the user if they wish to restore their tabs after a crash.
+    /// - parameter okayCallback: Okay option handler
+    /// - parameter noCallback: No option handler
+    /// - returns: `UIAlertController` for asking the user to restore tabs after a crash
     class func restoreTabsAlert(
         okayCallback: @escaping UIAlertActionCallback, noCallback: @escaping UIAlertActionCallback
     ) -> UIAlertController {

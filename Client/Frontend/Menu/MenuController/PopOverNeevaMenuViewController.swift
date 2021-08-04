@@ -5,6 +5,7 @@ import SwiftUI
 
 // can’t be fileprivate because the type of the generic on UIHostingController
 // is required to be at least as public as the hosting controller subclass itself.
+// swift-format-ignore: NoLeadingUnderscores
 struct _NeevaMenuPopover: View {
     fileprivate let isIncognito: Bool
     fileprivate let menuAction: ((NeevaMenuButtonActions) -> Void)?

@@ -1,11 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
+import SFSafeSymbols
 import SwiftUI
 
 /// An entry in a space list
 struct SpaceListItem: View {
     let space: Space
-    let icon: Nicon
+    let icon: SFSymbol
     let iconColor: Color
 
     /// - Parameter space: the space to render
@@ -27,17 +28,21 @@ struct SpaceListItem: View {
                 .withFont(.headingMedium)
                 .foregroundColor(.label)
                 .lineLimit(1)
+                .accessibilityHint(
+                    [space.isPublic ? "Public" : nil, space.isShared ? "Shared" : nil]
+                        .compactMap { $0 }
+                        .joined(separator: ", ")
+                )
             if space.isPublic {
-                Symbol(.link, style: .labelMedium)
+                Symbol(decorative: .link, style: .labelMedium)
                     .foregroundColor(.secondaryLabel)
             }
             if space.isShared {
-                Symbol(.person2Fill, style: .labelMedium)
+                Symbol(decorative: .person2Fill, style: .labelMedium)
                     .foregroundColor(.secondaryLabel)
             }
             Spacer(minLength: 0)
-            // TODO(jed): fix font
-            Symbol(icon, weight: .semibold)
+            Symbol(decorative: icon, style: .headingMedium)
                 .frame(width: 44, height: 44)
                 .foregroundColor(iconColor)
         }
@@ -73,9 +78,9 @@ struct SpaceView_Previews: PreviewProvider {
             SpaceListItem(.savedForLaterEmpty, currentURL: "https://neeva.com")
             SpaceListItem(.savedForLater, currentURL: "https://neeva.com")
             SpaceListItem(.stackOverflow, currentURL: "https://neeva.com")
-            SpaceListItem(.sharedSpace, currentURL: "https://neeva.com")
-            SpaceListItem(.publicSpace, currentURL: "https://neeva.com")
-            SpaceListItem(.sharedPublicSpace, currentURL: "https://neeva.com")
+            SpaceListItem(.shared, currentURL: "https://neeva.com")
+            SpaceListItem(.public, currentURL: "https://neeva.com")
+            SpaceListItem(.sharedAndPublic, currentURL: "https://neeva.com")
         }.padding(.vertical).previewLayout(.sizeThatFits)
     }
 }

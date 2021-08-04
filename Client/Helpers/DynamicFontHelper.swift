@@ -18,22 +18,23 @@ class DynamicFontHelper: NSObject {
     }
 
     override init() {
+        // 14pt -> 17pt -> 23pt
         defaultStandardFontSize =
-            UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).pointSize  // 14pt -> 17pt -> 23pt
+            UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).pointSize
         deviceFontSize =
             defaultStandardFontSize
             * (UIDevice.current.userInterfaceIdiom == .pad ? iPadFactor : iPhoneFactor)
+        // 12pt -> 13pt -> 19pt
         defaultMediumFontSize =
-            UIFontDescriptor.preferredFontDescriptor(withTextStyle: .footnote).pointSize  // 12pt -> 13pt -> 19pt
+            UIFontDescriptor.preferredFontDescriptor(withTextStyle: .footnote).pointSize
+        // 11pt -> 12pt -> 17pt
         defaultSmallFontSize =
-            UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1).pointSize  // 11pt -> 12pt -> 17pt
+            UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1).pointSize
 
         super.init()
     }
 
-    /**
-     * Starts monitoring the ContentSizeCategory chantes
-     */
+    /// Starts monitoring the `ContentSizeCategory` changes
     func startObserving() {
         NotificationCenter.default.addObserver(
             self, selector: #selector(contentSizeCategoryDidChange),
@@ -44,9 +45,7 @@ class DynamicFontHelper: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
 
-    /**
-     * Device specific
-     */
+    /// Device specific
     fileprivate var deviceFontSize: CGFloat
     var DeviceFontSize: CGFloat {
         return deviceFontSize
@@ -133,9 +132,7 @@ class DynamicFontHelper: NSObject {
         return UIFont.systemFont(ofSize: size)
     }
 
-    /**
-     * Small
-     */
+    /// Small
     fileprivate var defaultSmallFontSize: CGFloat
     var DefaultSmallFontSize: CGFloat {
         return defaultSmallFontSize
@@ -147,9 +144,7 @@ class DynamicFontHelper: NSObject {
         return UIFont.boldSystemFont(ofSize: defaultSmallFontSize)
     }
 
-    /**
-     * Medium
-     */
+    /// Medium
     fileprivate var defaultMediumFontSize: CGFloat
     var DefaultMediumFontSize: CGFloat {
         return defaultMediumFontSize
@@ -161,9 +156,7 @@ class DynamicFontHelper: NSObject {
         return UIFont.boldSystemFont(ofSize: defaultMediumFontSize)
     }
 
-    /**
-     * Standard
-     */
+    /// Standard
     fileprivate var defaultStandardFontSize: CGFloat
     var DefaultStandardFontSize: CGFloat {
         return defaultStandardFontSize
@@ -175,9 +168,7 @@ class DynamicFontHelper: NSObject {
         return UIFont.boldSystemFont(ofSize: defaultStandardFontSize)
     }
 
-    /**
-     * Reader mode
-     */
+    /// Reader mode
     var ReaderStandardFontSize: CGFloat {
         return defaultStandardFontSize - 2
     }
@@ -185,9 +176,7 @@ class DynamicFontHelper: NSObject {
         return defaultStandardFontSize + 5
     }
 
-    /**
-     * Intro mode
-     */
+    /// Intro mode
     var IntroStandardFontSize: CGFloat {
         return min(defaultStandardFontSize - 1, 16)
     }

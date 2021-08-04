@@ -11,9 +11,7 @@ struct NeevaMenuRootView: View {
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(
-            model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() }
-        ) {
+        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
             self.embeddedView
                 .environment(\.isIncognito, isIncognito)
                 .overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)

@@ -36,6 +36,9 @@ class IncognitoAwareHostingController<Content: View>: UIHostingController<
         rootView = _Applicator(content: rootView.content, isIncognito: isPrivate)
     }
 
+    // can’t be fileprivate because the type of the generic on UIHostingController
+    // is required to be at least as public as the hosting controller subclass itself.
+    // swift-format-ignore: NoLeadingUnderscores
     struct _Applicator<Content: View>: View {
         fileprivate let content: (() -> Content)?
         fileprivate let isIncognito: Bool

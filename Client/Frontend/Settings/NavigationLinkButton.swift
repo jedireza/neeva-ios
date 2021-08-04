@@ -16,7 +16,7 @@ struct NavigationLinkButton<Label: View>: View {
         @ViewBuilder fileprivate var symbol: some View {
             switch self {
             case .link:
-                Symbol(.arrowTopRightOnSquare, weight: .medium)
+                Symbol(decorative: .arrowTopRightOnSquare, weight: .medium)
             case .modal:
                 Image(systemSymbol: .chevronForward)
                     .font(.footnote.weight(.semibold))

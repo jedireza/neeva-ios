@@ -10,7 +10,7 @@ import Storage
 import WebKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 protocol TabManagerDelegate: AnyObject {
     func tabManager(
@@ -258,8 +258,6 @@ class TabManager: NSObject, ObservableObject {
                 }
             }
         }
-
-        TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .tab)
     }
 
     func preserveTabs() {
@@ -448,13 +446,6 @@ class TabManager: NSObject, ObservableObject {
         removeTab(tab, flushToDisk: true, notify: true)
 
         updateTabAfterRemovalOf(tab, deletedIndex: index)
-
-        TelemetryWrapper.recordEvent(
-            category: .action,
-            method: .close,
-            object: .tab,
-            value: tab.isPrivate ? .privateTab : .normalTab
-        )
     }
 
     private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
@@ -826,12 +817,16 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         for delegate in delegates {
             delegate.webView?(webView, didCommit: navigation)
         }
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)"), error: \(error)")
+
         for delegate in delegates {
             delegate.webView?(webView, didFail: navigation, withError: error)
         }
@@ -841,18 +836,24 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         _ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: Error
     ) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)"), error: \(error)")
+
         for delegate in delegates {
             delegate.webView?(webView, didFailProvisionalNavigation: navigation, withError: error)
         }
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         for delegate in delegates {
             delegate.webView?(webView, didFinish: navigation)
         }
     }
 
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         for delegate in delegates {
             delegate.webViewWebContentProcessDidTerminate?(webView)
         }
@@ -862,6 +863,8 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         _ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         let authenticatingDelegates = delegates.filter { wv in
             return wv.responds(to: #selector(webView(_:didReceive:completionHandler:)))
         }
@@ -880,12 +883,16 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         _ webView: WKWebView,
         didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!
     ) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         for delegate in delegates {
             delegate.webView?(webView, didReceiveServerRedirectForProvisionalNavigation: navigation)
         }
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         for delegate in delegates {
             delegate.webView?(webView, didStartProvisionalNavigation: navigation)
         }
@@ -895,6 +902,8 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         _ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         var res = WKNavigationActionPolicy.allow
         for delegate in delegates {
             delegate.webView?(
@@ -913,6 +922,8 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         decidePolicyFor navigationResponse: WKNavigationResponse,
         decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
     ) {
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+
         var res = WKNavigationResponsePolicy.allow
         for delegate in delegates {
             delegate.webView?(

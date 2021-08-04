@@ -5,14 +5,21 @@ import XCTest
 extension BaseTestCase {
     /// Launches from tab page
     func goToSettings() {
+        waitForExistence(app.buttons["Neeva Menu"])
         app.buttons["Neeva Menu"].tap()
+
+        waitForExistence(app.buttons["Settings"])
         app.buttons["Settings"].tap()
+
         waitForExistence(app.tables.cells["Show Search Suggestions"])
     }
 
     /// Lauches from tab page
     func goToFindOnPage() {
+        waitForExistence(app.buttons["Share"])
         app.buttons["Share"].tap()
+
+        waitForExistence(app.buttons["Find on Page"])
         app.buttons["Find on Page"].tap()
     }
 
@@ -27,11 +34,14 @@ extension BaseTestCase {
     /// Launches from tab page, then opens settings
     func goToClearData() {
         goToSettings()
+
+        waitForExistence(app.tables.cells["Clear Browsing Data"])
         app.tables.cells["Clear Browsing Data"].tap()
     }
 
     /// Launches from tab page
     func goToHistory() {
+        waitForExistence(app.buttons["Neeva Menu"])
         app.buttons["Neeva Menu"].tap()
 
         waitForExistence(app.buttons["History"])

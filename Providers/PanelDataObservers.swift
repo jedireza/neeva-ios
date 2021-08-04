@@ -8,7 +8,7 @@ import Shared
 
 public let ActivityStreamTopSiteCacheSize: Int32 = 32
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 protocol DataObserver {
     var profile: Profile { get }

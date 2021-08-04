@@ -70,7 +70,8 @@ class RollingFileLoggerTests: XCTestCase {
         XCTAssertTrue(exceedsSmaller)
         XCTAssertTrue(doesNotExceedLarger)
 
-        let newDate = Date().addingTimeInterval(60 * 60)  // Create a log file using a date an hour ahead
+        // Create a log file using a date an hour ahead
+        let newDate = Date().addingTimeInterval(60 * 60)
         let newExpected = "\(prefix).\(formatter.string(from: newDate)).log"
         let newExpectedPath = "\(logDir)/\(newExpected)"
         logger.newLogWithDate(newDate)
@@ -99,7 +100,8 @@ class RollingFileLoggerTests: XCTestCase {
         XCTAssertGreaterThan(
             directorySize, Int64(sizeLimit), "Log folder should be larger than size limit")
 
-        let newDate = Date().addingTimeInterval(60 * 60 * 5)  // Create a log file using a date an hour ahead
+        // Create a log file using a date an hour ahead
+        let newDate = Date().addingTimeInterval(60 * 60 * 5)
         let newExpected = "\(prefix).\(formatter.string(from: newDate)).log"
         let newExpectedPath = "\(logDir)/\(newExpected)"
         logger.newLogWithDate(newDate)
@@ -112,13 +114,10 @@ class RollingFileLoggerTests: XCTestCase {
             manager.fileExists(atPath: logFilePaths.first!), "Oldest log file should NOT exist")
     }
 
-    /**
-    Create a log file using the test logger and returns the path to that log file
-
-    - parameter size: Size to make the log file
-
-    - returns: Path to log file
-    */
+    /// Create a log file using the test logger and returns the path to that log file
+    ///
+    /// - parameter size: Size to make the log file
+    /// - returns: Path to log file
     fileprivate func createNewLogFileWithSize(_ size: Int, withDate date: Date = Date()) -> String {
         let expected = "test.\(formatter.string(from: date)).log"
         let expectedPath = "\(logDir)/\(expected)"

@@ -19,7 +19,8 @@ struct AppClipApp: App {
             let incomingURL = userActivity.webpageURL,
             let components = URLComponents(url: incomingURL, resolvingAgainstBaseURL: true),
             let queryItems = components.queryItems,
-            let signInToken = queryItems.first(where: { $0.name == "token" })?.value
+            let signInToken = queryItems.first(where: { $0.name == "token" })?.value,
+            components.path == "/appclip/login"
         else { return }
 
         AppClipHelper.saveTokenToDevice(signInToken)

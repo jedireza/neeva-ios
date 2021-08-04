@@ -42,8 +42,6 @@ extension BrowserViewController: TabToolbarDelegate {
 
     func tabToolbarDidPressTabs() {
         showTabTray()
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .tabToolbar, value: .tabView)
     }
 
     func tabToolbarTabsMenu() -> UIMenu? {
@@ -66,7 +64,6 @@ extension BrowserViewController: TabToolbarDelegate {
 
         let switchPrivacyMode = { [self] (_: UIAction) in
             _ = tabManager.switchPrivacyMode()
-            zeroQueryViewController?.model.isPrivate = tabManager.selectedTab!.isPrivate
         }
         let incognitoActions = [
             tabManager.selectedTab?.isPrivate ?? false
@@ -76,8 +73,6 @@ extension BrowserViewController: TabToolbarDelegate {
                     title: Strings.incognitoBrowsingModeTitle, image: icon,
                     handler: switchPrivacyMode)
         ]
-
-        let tabCount = self.tabManager.tabs.count
 
         let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare))
         { _ in
@@ -91,6 +86,9 @@ extension BrowserViewController: TabToolbarDelegate {
             self.openLazyTab()
         }
 
+        let tabCount =
+            tabManager.selectedTab?.isPrivate ?? false
+            ? tabManager.privateTabs.count : tabManager.normalTabs.count
         var tabActions = [newTab]
 
         if let tab = self.tabManager.selectedTab {
@@ -103,8 +101,6 @@ extension BrowserViewController: TabToolbarDelegate {
                 ) { _ in
                     if let tab = self.tabManager.selectedTab {
                         self.tabManager.removeTabAndUpdateSelectedTab(tab)
-                        self.zeroQueryViewController?.model.isPrivate =
-                            self.tabManager.selectedTab!.isPrivate
                     }
                 }
                 closeTab.accessibilityIdentifier = "Close Tab Action"

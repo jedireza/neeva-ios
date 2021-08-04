@@ -11,7 +11,7 @@ import SwiftUI
 import UIKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 extension EnvironmentValues {
     private struct HideTopSiteKey: EnvironmentKey {
@@ -50,9 +50,10 @@ class ZeroQueryViewController: UIViewController {
     var isLazyTab: Bool = false
     var openedFrom: ZeroQueryOpenedLocation? = nil
 
-    lazy var zeroQueryView: UIView = {
+    lazy var zeroQueryView: UIView = { [unowned self] in
         let controller = UIHostingController(
-            rootView: ZeroQueryView(viewModel: model)
+            rootView: ZeroQueryView()
+                .environmentObject(model)
                 .environmentObject(suggestedSitesViewModel)
                 .environmentObject(suggestedSearchesModel)
                 .environment(\.setSearchInput) { [weak self] query in
@@ -137,25 +138,27 @@ class ZeroQueryViewController: UIViewController {
 
     public func createRealTab(url: URL, tabManager: TabManager) {
         tabManager.select(tabManager.addTab(URLRequest(url: url), isPrivate: model.isPrivate))
-        resetLazyTab()
+        reset()
     }
 
     public func closeLazyTab() {
         let bvc = SceneDelegate.getCurrentSceneDelegate().getBVC()
 
-        switch openedFrom {
-        case .tabTray:
-            bvc.showTabTray()
-        case .createdTab:
-            bvc.tabManager.close(bvc.tabManager.selectedTab!)
-        default:
-            break
-        }
+        DispatchQueue.main.async {
+            switch self.openedFrom {
+            case .tabTray:
+                bvc.showTabTray()
+            case .createdTab:
+                bvc.tabManager.close(bvc.tabManager.selectedTab!)
+            default:
+                break
+            }
 
-        resetLazyTab()
+            self.reset()
+        }
     }
 
-    public func resetLazyTab() {
+    public func reset() {
         isLazyTab = false
         openedFrom = nil
     }
@@ -172,6 +175,11 @@ extension ZeroQueryViewController: DataObserverDelegate {
                 self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
             self.model.referralPromoHandler = {
+                // log click referral promo from zero query page
+                var attributes = EnvironmentHelper.shared.getAttributes()
+                attributes.append(ClientLogCounterAttribute(key: "source", value: "zero query"))
+                ClientLogger.shared.logCounter(
+                    .OpenReferralPromo, attributes: attributes)
                 self.showSiteWithURLHandler(NeevaConstants.appReferralsURL)
             }
             self.model.updateState()

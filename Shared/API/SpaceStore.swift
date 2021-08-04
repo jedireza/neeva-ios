@@ -97,7 +97,6 @@ public class SpaceStore: ObservableObject {
     public func refresh() {
         if case .refreshing = state { return }
         if disableRefresh { return }
-
         state = .refreshing
         SpaceListController.getSpaces { result in
             switch result {

@@ -15,7 +15,7 @@ import SwiftKeychainWrapper
 import UserNotifications
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestoration {
     public static func viewController(
@@ -32,7 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     var receivedURLs = [URL]()
 
     var profile: Profile?
-    var telemetry: TelemetryWrapper?
 
     func application(
         _ application: UIApplication,
@@ -61,17 +60,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         // Set up a web server that serves us static content. Do this early so that it is ready when the UI is presented.
         setUpWebServer(profile)
-        telemetry = TelemetryWrapper(profile: profile)
 
         // Hold references to willFinishLaunching parameters for delayed app launch
         self.application = application
         self.launchOptions = launchOptions
-
-        // If the 'Save logs to Files app on next launch' toggle
-        // is turned on in the Settings app, copy over old logs.
-        if DebugSettingsBundleOptions.saveLogsToDocuments {
-            Logger.copyPreviousLogsToDocuments()
-        }
 
         // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
@@ -101,11 +93,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         MenuHelper.defaultHelper.setItems()
 
-        let logDate = Date()
-        // Create a new sync log file on cold app launch. Note that this doesn't roll old logs.
-        Logger.syncLogger.newLogWithDate(logDate)
-        Logger.browserLogger.newLogWithDate(logDate)
-
         SystemUtils.onFirstRun()
 
         log.info("startApplication end")
@@ -120,17 +107,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Override point for customization after application launch.
         var shouldPerformAdditionalDelegateHandling = true
 
-        // Now roll logs.
-        DispatchQueue.global(qos: DispatchQoS.background.qosClass).async {
-            Logger.syncLogger.deleteOldLogsDownToSizeLimit()
-            Logger.browserLogger.deleteOldLogsDownToSizeLimit()
-        }
+        Logger.rollLogs()
 
         // If a shortcut was launched, display its information and take the appropriate action
         if let shortcutItem = launchOptions?[UIApplication.LaunchOptionsKey.shortcutItem]
             as? UIApplicationShortcutItem
         {
-
             QuickActions.sharedInstance.launchedShortcutItem = shortcutItem
             // This will block "performActionForShortcutItem:completionHandler" from being called.
             shouldPerformAdditionalDelegateHandling = false
@@ -153,7 +135,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         let defaults = UserDefaults()
         defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
 
-        BrowserViewController.foregroundBVC().zeroQueryViewController?.reloadAll()
+        BrowserViewController.foregroundBVC().zeroQueryViewController.reloadAll()
 
         // Resume file downloads.
         // TODO: iOS 13 needs to iterate all the BVCs.
@@ -168,8 +150,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
                 shortcut, withBrowserViewController: BrowserViewController.foregroundBVC())
             quickActions.launchedShortcutItem = nil
         }
-
-        TelemetryWrapper.recordEvent(category: .action, method: .foreground, object: .app)
 
         // Delay these operations until after UIKit/UIApp init is complete
         // - loadQueuedTabs accesses the DB and shows up as a hot path in profiling
@@ -205,8 +185,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // TODO: iOS 13 needs to iterate all the BVCs.
         BrowserViewController.foregroundBVC().downloadQueue.pauseAll()
 
-        TelemetryWrapper.recordEvent(category: .action, method: .background, object: .app)
-
         let singleShotTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
         // 2 seconds is ample for a localhost request to be completed by GCDWebServer. <500ms is expected on newer devices.
         singleShotTimer.schedule(deadline: .now() + 2.0, repeating: .never)
@@ -223,16 +201,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         profile?._shutdown()
     }
 
-    /**
-    * We maintain a weak reference to the profile so that we can pause timed
-    * syncs when we're backgrounded.
-    *
-    * The long-lasting ref to the profile lives in BrowserViewController,
-    * which we set in application:willFinishLaunchingWithOptions:.
-    *
-    * If that ever disappears, we won't be able to grab the profile to stop
-    * syncing... but in that case the profile's deinit will take care of things.
-    */
+    /// We maintain a weak reference to the profile so that we can pause timed
+    /// syncs when we're backgrounded.
+    ///
+    /// The long-lasting ref to the profile lives in `BrowserViewController`,
+    /// which we set in `application:willFinishLaunchingWithOptions:`.
+    ///
+    /// If that ever disappears, we won't be able to grab the profile to stop
+    /// syncing... but in that case the profile's deinit will take care of things.
     func createProfile() -> Profile {
         return BrowserProfile(localName: "profile")
     }
@@ -302,32 +278,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         _ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>
     ) {
 
-    }
-}
-
-// Orientation lock for views that use new modal presenter
-extension AppDelegate {
-    /// ref: https://stackoverflow.com/questions/28938660/
-    func application(
-        _ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?
-    ) -> UIInterfaceOrientationMask {
-        return self.orientationLock
-    }
-
-    struct AppUtility {
-        static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
-            if let delegate = UIApplication.shared.delegate as? AppDelegate {
-                delegate.orientationLock = orientation
-            }
-        }
-
-        static func lockOrientation(
-            _ orientation: UIInterfaceOrientationMask,
-            andRotateTo rotateOrientation: UIInterfaceOrientation
-        ) {
-            self.lockOrientation(orientation)
-            UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
-        }
     }
 }
 

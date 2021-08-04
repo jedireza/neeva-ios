@@ -5,7 +5,7 @@
 import Foundation
 import Shared
 
-class TabEventHandlers {
+enum TabEventHandlers {
     static func create() -> [TabEventHandler] {
         let handlers: [TabEventHandler] = [
             FaviconHandler(),

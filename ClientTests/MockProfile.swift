@@ -60,7 +60,7 @@ open class MockProfile: Client.Profile {
     fileprivate var legacyPlaces:
         BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations
 
-    public lazy var panelDataObservers: PanelDataObservers = {
+    public lazy var panelDataObservers: PanelDataObservers = { [unowned self] in
         return MockPanelDataObservers(profile: self)
     }()
 
@@ -93,6 +93,7 @@ open class MockProfile: Client.Profile {
         return name
     }
 
+    // swift-format-ignore: NoLeadingUnderscores
     public func _reopen() {
         isShutdown = false
 
@@ -100,6 +101,7 @@ open class MockProfile: Client.Profile {
         _ = logins.reopenIfClosed()
     }
 
+    // swift-format-ignore: NoLeadingUnderscores
     public func _shutdown() {
         isShutdown = true
 
@@ -130,11 +132,11 @@ open class MockProfile: Client.Profile {
         return SQLiteReadingList(db: self.readingListDB)
     }()
 
-    internal lazy var remoteClientsAndTabs: RemoteClientsAndTabs = {
+    internal lazy var remoteClientsAndTabs: RemoteClientsAndTabs = { [unowned self] in
         return SQLiteRemoteClientsAndTabs(db: self.db)
     }()
 
-    fileprivate lazy var syncCommands: SyncCommands = {
+    fileprivate lazy var syncCommands: SyncCommands = { [unowned self] in
         return SQLiteRemoteClientsAndTabs(db: self.db)
     }()
 

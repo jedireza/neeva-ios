@@ -9,10 +9,10 @@ import Shared
 import WebKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 class TestAppDelegate: AppDelegate {
-    lazy var dirForTestProfile = { return "\(self.appRootDir())/profile.testProfile" }()
+    lazy var dirForTestProfile = { [unowned self] in "\(appRootDir())/profile.testProfile" }()
 
     override func createProfile() -> Profile {
         var profile: BrowserProfile
@@ -119,9 +119,7 @@ class TestAppDelegate: AppDelegate {
         return super.application(application, willFinishLaunchingWithOptions: launchOptions)
     }
 
-    /**
-     Use this to reset the application between tests.
-     **/
+    /// Use this to reset the application between tests.
     func resetApplication() {
         log.debug("Wiping everything for a clean start.")
 

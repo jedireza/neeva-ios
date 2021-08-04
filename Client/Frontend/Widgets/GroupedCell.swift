@@ -27,7 +27,6 @@ struct GroupedStack<Content: View>: View {
         }
         .accentColor(.ui.adaptive.blue)
         .padding(16)
-        .background(Color.groupedBackground.ignoresSafeArea())
     }
 }
 

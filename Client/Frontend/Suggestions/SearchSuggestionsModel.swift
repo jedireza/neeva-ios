@@ -38,6 +38,17 @@ public enum Suggestion {
             return nil
         }
     }
+
+    public static func placeholderQuery(_ query: String = "placeholderQuery")
+        -> SuggestionsQuery.Data.Suggest.QuerySuggestion
+    {
+        SuggestionsQuery.Data.Suggest.QuerySuggestion(
+            type: .standard,
+            suggestedQuery: query,
+            boldSpan: [],
+            source: .bing
+        )
+    }
 }
 
 extension Suggestion: Identifiable, Equatable {

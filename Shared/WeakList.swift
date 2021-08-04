@@ -16,12 +16,10 @@ open class WeakList<T: AnyObject>: Sequence {
 
     public init() {}
 
-    /**
-     * Adds an item to the list.
-     * Note that every insertion iterates through the list to find any "holes" (items that have
-     * been deallocated) to reuse them, so this class may not be appropriate in situations where
-     * insertion is frequent.
-     */
+    /// Adds an item to the list.
+    /// Note that every insertion iterates through the list to find any "holes" (items that have
+    /// been deallocated) to reuse them, so this class may not be appropriate in situations where
+    /// insertion is frequent.
     open func insert(_ item: T, at: Int? = nil) {
         // Reuse any existing slots that have been deallocated.
         for wrapper in items where wrapper.value == nil {

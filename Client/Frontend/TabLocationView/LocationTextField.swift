@@ -151,9 +151,6 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         }
         switch input {
         case UIKeyCommand.inputLeftArrow:
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .press, object: .keyCommand,
-                extras: ["action": "autocomplete-left-arrow"])
             if historyModel.completion != nil {
                 applyCompletion()
 
@@ -171,9 +168,6 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
             }
         case UIKeyCommand.inputRightArrow:
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .press, object: .keyCommand,
-                extras: ["action": "autocomplete-right-arrow"])
             if historyModel.completion != nil {
                 applyCompletion()
 
@@ -191,9 +185,6 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
             }
         case UIKeyCommand.inputEscape:
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .press, object: .keyCommand,
-                extras: ["action": "autocomplete-cancel"])
             isActive = false
         case copyShortcutKey:
             if let text = text, let completion = historyModel.completion {

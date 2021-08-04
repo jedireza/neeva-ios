@@ -25,8 +25,11 @@ class ZeroQueryModel: ObservableObject {
             promoCard = .referralPromo {
                 self.referralPromoHandler()
             } onClose: {
+                // log closing referral promo from zero query
+                var attributes = EnvironmentHelper.shared.getAttributes()
+                attributes.append(ClientLogCounterAttribute(key: "source", value: "zero query"))
                 ClientLogger.shared.logCounter(
-                    .CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                    .CloseReferralPromo, attributes: attributes)
                 self.promoCard = nil
                 Defaults[.didDismissReferralPromoCard] = true
             }
@@ -88,7 +91,7 @@ class SuggestedSearchesModel: ObservableObject {
         return neevaSearchEngine.searchURLForQuery("blank")!.normalizedHostAndPath!
     }
 
-    func reload(from profile: Profile) {
+    func reload(from profile: Profile, completion: (() -> Void)? = nil) {
         guard
             let deferredHistory = profile.history.getFrecentHistory().getSites(
                 matchingSearchQuery: searchUrlForQuery, limit: 100) as? CancellableDeferred
@@ -103,6 +106,8 @@ class SuggestedSearchesModel: ObservableObject {
             }
 
             var deferredHistorySites = result.successValue?.asArray().compactMap { $0 } ?? []
+            let topFrecentHistorySite = deferredHistorySites[deferredHistorySites.indices]
+                .popFirst()
             // TODO: https://github.com/neevaco/neeva-ios-phoenix/issues/1027
             deferredHistorySites.sort { siteA, siteB in
                 return siteA.latestVisit?.date ?? 0 > siteB.latestVisit?.date ?? 0
@@ -114,7 +119,13 @@ class SuggestedSearchesModel: ObservableObject {
                     return nil
                 }
             }
-        }
+            if let topFrecentHistorySite = topFrecentHistorySite,
+                let query = neevaSearchEngine.queryForSearchURL(topFrecentHistorySite.url)
+            {
+                self.suggestedQueries.insert((query, topFrecentHistorySite), at: 0)
+            }
 
+            completion?()
+        }
     }
 }

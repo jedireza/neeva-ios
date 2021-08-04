@@ -9,8 +9,6 @@ import Storage
 import SwiftKeychainWrapper
 import WebKit
 
-@testable import Client
-
 let LabelAddressAndSearch = "Address and Search"
 
 extension XCTestCase {
@@ -113,12 +111,10 @@ extension KIFUITestActor {
         return cell
     }
 
-    /**
-     * Finding views by accessibility label doesn't currently work with WKWebView:
-     *     https://github.com/kif-framework/KIF/issues/460
-     * As a workaround, inject a KIFHelper class that iterates the document and finds
-     * elements with the given textContent or title.
-     */
+    /// Finding views by accessibility label doesn't currently work with WKWebView:
+    ///     https://github.com/kif-framework/KIF/issues/460
+    /// As a workaround, inject a KIFHelper class that iterates the document and finds
+    /// elements with the given textContent or title.
     func waitForWebViewElementWithAccessibilityLabel(
         _ text: String, timeout: TimeInterval = KIFTestActor.defaultTimeout()
     ) {
@@ -132,9 +128,7 @@ extension KIFUITestActor {
             }, timeout: timeout)
     }
 
-    /**
-     * Sets the text for a WKWebView input element with the given name.
-     */
+    /// Sets the text for a WKWebView input element with the given name.
     func enterText(_ text: String, intoWebViewInputWithName inputName: String) {
         let webView = getWebViewWithKIFHelper()
         var stepResult = KIFTestStepResult.wait
@@ -159,9 +153,7 @@ extension KIFUITestActor {
         }
     }
 
-    /**
-     * Clicks a WKWebView element with the given label.
-     */
+    /// Clicks a WKWebView element with the given label.
     func tapWebViewElementWithAccessibilityLabel(_ text: String) {
         let webView = getWebViewWithKIFHelper()
         var stepResult = KIFTestStepResult.wait
@@ -187,9 +179,7 @@ extension KIFUITestActor {
         }
     }
 
-    /**
-     * Determines whether an element in the page exists.
-     */
+    /// Determines whether an element in the page exists.
     func hasWebViewElementWithAccessibilityLabel(_ text: String) -> Bool {
         let webView = getWebViewWithKIFHelper()
         var stepResult = KIFTestStepResult.wait
@@ -285,13 +275,14 @@ class BrowserUtils {
         }
     }
 
-    class func enterUrlAddressBar(_ tester: KIFUITestActor, typeUrl: String) {
-        if !tester.viewExistsWithLabel("address") && tester.viewExistsWithLabel("Address Bar") {
+    class func enterUrlAddressBar(_ tester: KIFUITestActor, typeUrl: String = "neeva.com") {
+        if !tester.viewExistsWithLabel("Cancel") {
             tester.tapView(withAccessibilityLabel: "Address Bar")
         }
 
         tester.waitForView(withAccessibilityIdentifier: "address")
-        tester.enterText(typeUrl + "\n", intoViewWithAccessibilityIdentifier: "address")
+        tester.enterText(intoCurrentFirstResponder: typeUrl)
+        tester.enterText(intoCurrentFirstResponder: "\n")
         tester.waitForAbsenceOfView(withAccessibilityIdentifier: "address")
     }
 

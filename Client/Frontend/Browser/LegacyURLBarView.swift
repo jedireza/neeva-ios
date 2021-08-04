@@ -75,7 +75,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     var isPrivateMode = false
 
     lazy var neevaMenuIcon = UIImage.originalImageNamed("neevaMenuIcon")
-    lazy var neevaMenuButton: UIButton = {
+    lazy var neevaMenuButton: UIButton = { [unowned self] in
         let neevaMenuButton = UIButton(frame: .zero)
         neevaMenuButton.setImage(neevaMenuIcon, for: .normal)
         neevaMenuButton.adjustsImageWhenHighlighted = false
@@ -89,7 +89,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         return neevaMenuButton
     }()
 
-    lazy var locationHost: TabLocationHost = {
+    lazy var locationHost: TabLocationHost = { [unowned self] in
         TabLocationHost(
             model: model,
             historySuggestionModel: historySuggestionModel,
@@ -144,9 +144,11 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
 
     var toolbarNeevaMenuButton = ToolbarButton()
 
-    lazy var actionButtons: [ToolbarButton] = [
-        self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton,
-    ]
+    lazy var actionButtons: [ToolbarButton] = { [unowned self] in
+        [
+            self.addToSpacesButton, self.forwardButton, self.backButton, self.shareButton,
+        ]
+    }()
 
     var profile: Profile? = nil
 
@@ -368,8 +370,9 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     }
 
     private func hideProgressBar() {
-        progressBar.isHidden = true
-        progressBar.setProgress(0, animated: false)
+        model.reloadButton = .reload
+        progressBar.alpha = 0
+        progressBar.resetProgressBar()
     }
 
     func enterOverlayMode() {
@@ -468,6 +471,8 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
 extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
+
+        neevaSuggestionModel.setIncognito(isPrivate)
 
         locationHost.applyUIMode(isPrivate: isPrivate)
 

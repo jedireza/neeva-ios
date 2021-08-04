@@ -127,7 +127,6 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
             }.apply(config: config, suggestionState: suggestionState)
         }
         .accentColor(.primary)
-        .buttonStyle(TableCellButtonStyle())
         .useEffect(deps: model.keyboardFocusedSuggestion) { _ in
             if let suggestion = suggestion, model.isFocused(suggestion) {
                 suggestionState = .focused
@@ -162,7 +161,7 @@ struct QuerySuggestionView: View {
         if AnnotationType(annotation: suggestion.annotation) == .calculator {
             Image("calculator")
         } else if let activeType = model.activeLensBang?.type {
-            Symbol(activeType.defaultSymbol)
+            Symbol(decorative: activeType.defaultSymbol)
         } else if let annotation = suggestion.annotation, let imageUrl = annotation.imageUrl,
             AnnotationType(annotation: suggestion.annotation) == .wikipedia
         {
@@ -180,13 +179,13 @@ struct QuerySuggestionView: View {
         } else {
             switch suggestion.type {
             case .searchHistory:
-                Symbol(.clock)
+                Symbol(decorative: .clock)
             case .space:  // unused?
                 SpaceIconView()
             case .standard:
-                Symbol(.magnifyingglass)
+                Symbol(decorative: .magnifyingglass)
             case .operator, .unknown, .__unknown(_):  // seemingly unused
-                Symbol(.questionmarkCircle).foregroundColor(.secondaryLabel)
+                Symbol(decorative: .questionmarkCircle).foregroundColor(.secondaryLabel)
             }
         }
     }
@@ -229,7 +228,7 @@ struct QuerySuggestionView: View {
     var detail: some View {
         if suggestion.type != .space {
             Button(action: { setInput(suggestedQuery) }) {
-                Symbol(.arrowUpLeft)
+                Symbol(decorative: .arrowUpLeft)
                     .foregroundColor(.tertiaryLabel)
             }.buttonStyle(BorderlessButtonStyle())
         }
@@ -278,7 +277,7 @@ struct URLSuggestionView: View {
                 RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
                     .stroke(Color.quaternarySystemFill, lineWidth: 1))
         } else {
-            Symbol(.questionmarkDiamondFill)
+            Symbol(decorative: .questionmarkDiamondFill)
                 .foregroundColor(.red)
         }
     }
@@ -331,7 +330,7 @@ private struct BangSuggestionView: View {
     var body: some View {
         SuggestionView(
             action: nil,
-            icon: Symbol(ActiveLensBangType.bang.defaultSymbol),
+            icon: Symbol(decorative: ActiveLensBangType.bang.defaultSymbol),
             label: Text("!\(suggestion.shortcut)"),
             secondaryLabel: EmptyView(),
             detail: Text(suggestion.description),
@@ -350,7 +349,7 @@ private struct LensSuggestionView: View {
     var body: some View {
         SuggestionView(
             action: nil,
-            icon: Symbol(ActiveLensBangType.lens.defaultSymbol),
+            icon: Symbol(decorative: ActiveLensBangType.lens.defaultSymbol),
             label: Text("@\(suggestion.shortcut)"),
             secondaryLabel: EmptyView(),
             detail: Text(suggestion.description),

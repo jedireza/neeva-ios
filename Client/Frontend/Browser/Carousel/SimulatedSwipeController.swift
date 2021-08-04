@@ -37,7 +37,10 @@ class SimulatedSwipeController:
 
     var progressView: UIHostingController<CarouselProgressView>!
 
-    init(tabManager: TabManager, toolbarModel: TabToolbarModel, swipeDirection: SwipeDirection) {
+    init(
+        tabManager: TabManager, toolbarModel: TabToolbarModel, swipeDirection: SwipeDirection,
+        contentView: UIView
+    ) {
         self.tabManager = tabManager
         self.toolbarModel = toolbarModel
         self.swipeDirection = swipeDirection
@@ -46,11 +49,10 @@ class SimulatedSwipeController:
         register(self, forTabEvents: .didChangeURL)
         tabManager.addDelegate(self)
 
-        let bvc = BrowserViewController.foregroundBVC()
         self.animator = SimulatedSwipeAnimator(
             swipeDirection: swipeDirection,
             animatingView: self.view,
-            webViewContainer: bvc.webViewContainer)
+            contentView: contentView)
         self.animator.delegate = self
 
         if swipeDirection == .forward {
@@ -154,7 +156,6 @@ class SimulatedSwipeController:
         guard let results = results else {
             progressView.view.removeFromSuperview()
             progressView.removeFromParent()
-            progressView.navigationController?.isNavigationBarHidden = true
             progressModel.urls = []
             progressModel.index = 0
             return
@@ -164,7 +165,6 @@ class SimulatedSwipeController:
         bvc.addChild(progressView)
         bvc.view.addSubview(progressView.view)
         progressView.didMove(toParent: bvc)
-        progressView.navigationController?.isNavigationBarHidden = true
         progressModel.urls = results
         progressModel.index = index
         progressView.view.snp.makeConstraints { make in
@@ -199,7 +199,8 @@ class SimulatedSwipeController:
         }
 
         let index = urls.firstIndex(of: tab.currentURL()!) ?? -1
-        assert(index < urls.count - 1)  // If we are here, we have already fake animated and it is too late
+        // If we are here, we have already fake animated and it is too late
+        assert(index < urls.count - 1)
         tab.loadRequest(URLRequest(url: urls[index + 1]))
         return true
     }

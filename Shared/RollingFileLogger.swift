@@ -21,58 +21,40 @@ open class RollingFileLogger: XCGLogger {
     }()
 
     let root: String
+    var fileLogIdentifier: String {
+        fileLogIdentifierWithRoot(root)
+    }
 
-    public init(filenameRoot: String, logDirectoryPath: String?, sizeLimit: Int64 = TwoMBsInBytes) {
+    public init(
+        filenameRoot: String, logDirectoryPath: String?, includeDefaultDestinations: Bool = true,
+        sizeLimit: Int64 = TwoMBsInBytes
+    ) {
         root = filenameRoot
         self.sizeLimit = sizeLimit
         self.logDirectoryPath = logDirectoryPath
-        super.init()
+        super.init(identifier: "", includeDefaultDestinations: includeDefaultDestinations)
     }
 
-    /**
-    Create a new log file with the given timestamp to log events into
-
-    :param: date Date for with to start and mark the new log file
-    */
+    /// Create a new log file with the given timestamp to log events into
+    /// - parameter date: Date for with to start and mark the new log file
     open func newLogWithDate(_ date: Date) {
-        // Don't start a log if we don't have a valid log directory path
-        if logDirectoryPath == nil {
-            return
+        if let fileDestination = createFileDestination(date: date) {
+            remove(destinationWithIdentifier: fileLogIdentifier)
+            add(destination: fileDestination)
         }
+    }
 
-        if let filename = filenameWithRoot(root, withDate: date) {
-            remove(destinationWithIdentifier: fileLogIdentifierWithRoot(root))
-            add(
-                destination: FileDestination(
-                    owner: self, writeToFile: filename, identifier: fileLogIdentifierWithRoot(root))
-            )
-            info(
-                "Created file destination for logger with root: \(self.root) and timestamp: \(date)"
-            )
-        } else {
-            error("Failed to create a new log with root name: \(self.root) and timestamp: \(date)")
-        }
+    /// Create a new log file destination with the given timestamp to log events into
+    /// - parameter date: Date for with to start and mark the new log file
+    open func createFileDestination(date: Date) -> FileDestination? {
+        guard let filename = filenameWithRoot(root, withDate: date) else { return nil }
+        return FileDestination(owner: self, writeToFile: filename, identifier: fileLogIdentifier)
     }
 
     open func deleteOldLogsDownToSizeLimit() {
         // Check to see we haven't hit our size limit and if we did, clear out some logs to make room.
         while sizeOfAllLogFilesWithPrefix(self.root, exceedsSizeInBytes: sizeLimit) {
             deleteOldestLogWithPrefix(self.root)
-        }
-    }
-
-    open func logFilenamesAndURLs() throws -> [(String, URL)] {
-        guard let logPath = logDirectoryPath else {
-            return []
-        }
-
-        let files = try FileManager.default.contentsOfDirectoryAtPath(
-            logPath, withFilenamePrefix: root)
-        return files.compactMap { filename in
-            if let url = URL(string: "\(logPath)/\(filename)") {
-                return (filename, url)
-            }
-            return nil
         }
     }
 

@@ -4,8 +4,8 @@ import Shared
 import SwiftUI
 import WebKit
 
-struct ZoomMenuView: View {
-    @ObservedObject var model: ZoomMenuModel
+struct TextSizeView: View {
+    @ObservedObject var model: TextSizeModel
     let onDismiss: () -> Void
 
     var body: some View {
@@ -16,10 +16,11 @@ struct ZoomMenuView: View {
             }.accessibilityHidden(true)
 
             GroupedStack {
+                // all the content in here is decorative since the accessibility element is explicitly provided below.
                 GroupedCell {
                     HStack {
                         Button(action: model.zoomOut) {
-                            Symbol(.minus, style: .bodyLarge)
+                            Symbol(decorative: .minus, style: .bodyLarge)
                                 .frame(
                                     width: GroupedCellUX.minCellHeight,
                                     height: GroupedCellUX.minCellHeight
@@ -27,10 +28,10 @@ struct ZoomMenuView: View {
                                 .foregroundColor(model.canZoomOut ? .label : .tertiaryLabel)
                         }.disabled(!model.canZoomOut)
                         Spacer()
-                        Symbol(.textformatSize, style: .headingLarge)
+                        Symbol(decorative: .textformatSize, style: .headingLarge)
                         Spacer()
                         Button(action: model.zoomIn) {
-                            Symbol(.plus, style: .bodyLarge)
+                            Symbol(decorative: .plus, style: .bodyLarge)
                                 .frame(
                                     width: GroupedCellUX.minCellHeight,
                                     height: GroupedCellUX.minCellHeight
@@ -55,8 +56,11 @@ struct ZoomMenuView: View {
                     .accentColor(.red)
                 GroupedCellButton("Done", style: .labelLarge, action: onDismiss)
             }
-            .cornerRadius(GroupedCellUX.cornerRadius, corners: .top)
-            .ignoresSafeArea()
+            .background(
+                Color.groupedBackground
+                    .cornerRadius(GroupedCellUX.cornerRadius, corners: .top)
+                    .ignoresSafeArea()
+            )
             .background(
                 RoundedRectangle(cornerRadius: GroupedCellUX.cornerRadius)
                     .fill(Color.black.opacity(0.12))
@@ -69,13 +73,13 @@ struct ZoomMenuView: View {
 
 struct ZoomMenuView_Previews: PreviewProvider {
     private struct Preview: View {
-        @ObservedObject var model: ZoomMenuModel
+        @ObservedObject var model: TextSizeModel
         var body: some View {
-            ZoomMenuView(model: model, onDismiss: {})
+            TextSizeView(model: model, onDismiss: {})
                 .overlay(Text(model.label))
         }
     }
     static var previews: some View {
-        Preview(model: ZoomMenuModel(webView: WKWebView()))
+        Preview(model: TextSizeModel(webView: WKWebView()))
     }
 }

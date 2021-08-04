@@ -1,25 +1,21 @@
 #!/bin/sh
 
-FILE="Client.xcodeproj/project.pbxproj"
+# This script helps with updating the build number and marketing version
+# number. It reads the current values and proposes new values. Normally,
+# the right thing to do is to just accept what this script produces.
+
+SCRIPTS_DIR=$(dirname $0)
+
+. $SCRIPTS_DIR/git-util.sh
+. $SCRIPTS_DIR/version-util.sh
 
 # We expect to be run from the root directory of the project.
-if [ ! -s $FILE ]; then
-    echo "Error: $FILE not found"
+if [ ! -s $PROJECT_FILE ]; then
+    echo "Error: $PROJECT_FILE not found"
     exit 1
 fi
 
-# Extract version field specified by $1 from $FILE. Expect version field to be
-# of the form: (whitespace)$1 = (version);(whitespace)
-get_version() {
-    if [ $# != 1 ]; then
-        echo "get_version: expected one argument"
-        exit 1
-    fi
-    field_name=$1
-    fgrep "$field_name = " $FILE | uniq | cut -d' ' -f3 | cut -d';' -f1
-}
-
-# Search and replace on $FILE the field named $1 with new value $2.
+# Search and replace on $PROJECT_FILE the field named $1 with new value $2.
 put_version() {
     if [ $# != 2 ]; then
         echo "put_version: expected two arguments"
@@ -27,7 +23,7 @@ put_version() {
     fi
     field_name=$1
     new_value=$2
-    perl -pi -e "s/$field_name = .*;/$field_name = $new_value;/g" $FILE
+    perl -pi -e "s/$field_name = .*;/$field_name = $new_value;/g" $PROJECT_FILE
 }
 
 # Increment the given input value by one.
@@ -54,15 +50,37 @@ increment_version_patch() {
     echo "$major.$minor.$(increment_number $patch)"
 }
 
-MARKETING_VERSION=$(get_version "MARKETING_VERSION")
-CURRENT_PROJECT_VERSION=$(get_version "CURRENT_PROJECT_VERSION")
+# On "main", build numbers are just single integers, but on release branches
+# they are of the form (first).(second), where (second) is incremented with
+# each build.
+increment_build_number() {
+    if [ $# != 1 ]; then
+        echo "increment_build_number: expected one argument"
+        exit 1
+    fi
+    build_number=$1
+    if is_branch_of_main; then
+        increment_number $build_number
+    else
+        if [ $(echo "$build_number" | fgrep -c '.') = 0 ]; then
+            echo "$build_number.1"
+        else
+            first=$(echo "$build_number" | cut -d'.' -f1)
+            second=$(echo "$build_number" | cut -d'.' -f2)
+            echo "$first.$(increment_number $second)"
+        fi
+    fi
+}
+
+MARKETING_VERSION=$(get_marketing_version)
+CURRENT_PROJECT_VERSION=$(get_current_project_version)
 
 echo "Current version info:"
 echo "  MARKETING_VERSION = $MARKETING_VERSION"
 echo "  CURRENT_PROJECT_VERSION = $CURRENT_PROJECT_VERSION"
 
 PROPOSED_MARKETING_VERSION=$(increment_version_patch $MARKETING_VERSION)
-PROPOSED_CURRENT_PROJECT_VERSION=$(increment_number $CURRENT_PROJECT_VERSION)
+PROPOSED_CURRENT_PROJECT_VERSION=$(increment_build_number $CURRENT_PROJECT_VERSION)
 
 echo "Proposed version info:"
 

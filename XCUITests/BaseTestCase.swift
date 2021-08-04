@@ -132,9 +132,9 @@ class BaseTestCase: XCTestCase {
         UIPasteboard.general.string = url
 
         if app.buttons["Cancel"].exists {
-            app.textFields["address"].press(forDuration: 1)
+            app.textFields["address"].press(forDuration: 2)
         } else {
-            app.buttons["Address Bar"].press(forDuration: 1)
+            app.buttons["Address Bar"].press(forDuration: 2)
         }
 
         waitForExistence(app.menuItems["Paste & Go"])

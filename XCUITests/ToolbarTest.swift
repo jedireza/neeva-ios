@@ -24,9 +24,7 @@ class ToolbarTests: BaseTestCase {
         super.tearDown()
     }
 
-    /**
-     * Tests landscape page navigation enablement with the URL bar with tab switching.
-     */
+    /// Tests landscape page navigation enablement with the URL bar with tab switching.
     func testLandscapeNavigationWithTabSwitch() {
         XCTAssert(app.buttons["Address Bar"].exists)
 

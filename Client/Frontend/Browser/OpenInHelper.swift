@@ -26,13 +26,13 @@ struct MIMEType {
     static let USDZ = "model/vnd.usdz+zip"
     static let Reality = "model/vnd.reality"
 
-    private static let webViewViewableTypes: [String] = [
+    private static let webViewViewable: [String] = [
         MIMEType.Bitmap, MIMEType.GIF, MIMEType.JPEG, MIMEType.HTML, MIMEType.PDF,
         MIMEType.PlainText, MIMEType.PNG, MIMEType.WebP,
     ]
 
     static func canShowInWebView(_ mimeType: String) -> Bool {
-        return webViewViewableTypes.contains(mimeType.lowercased())
+        return webViewViewable.contains(mimeType.lowercased())
     }
 
     static func mimeTypeFromFileExtension(_ fileExtension: String) -> String {
@@ -75,7 +75,6 @@ class DownloadHelper: NSObject, OpenInHelper {
         let safeUrl = url.absoluteString.replacingOccurrences(of: "'", with: "%27")
         tab.webView?.evaluateJavascriptInDefaultContentWorld(
             "window.__firefox__.download('\(safeUrl)', '\(UserScriptManager.appIdToken)')")
-        TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .downloadLinkButton)
     }
 
     required init?(
@@ -124,8 +123,6 @@ class DownloadHelper: NSObject, OpenInHelper {
                 onDownload: {
                     self.browserViewController.downloadQueue.enqueue(download)
                     self.browserViewController.hideOverlaySheetViewController()
-                    TelemetryWrapper.recordEvent(
-                        category: .action, method: .tap, object: .downloadNowButton)
                 },
                 onDismiss: {
                     self.browserViewController.hideOverlaySheetViewController()

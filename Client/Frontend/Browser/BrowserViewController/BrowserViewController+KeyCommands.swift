@@ -8,59 +8,39 @@ import Shared
 extension BrowserViewController {
 
     @objc func reloadTabKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand, extras: ["action": "reload"])
-        if let tab = tabManager.selectedTab, zeroQueryViewController == nil {
+        if let tab = tabManager.selectedTab {
             tab.reload()
         }
     }
 
     @objc func goBackKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand, extras: ["action": "go-back"])
-        if let tab = tabManager.selectedTab, tab.canGoBack, zeroQueryViewController == nil {
+        if let tab = tabManager.selectedTab, tab.canGoBack {
             tab.goBack()
         }
     }
 
     @objc func goForwardKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand, extras: ["action": "go-forward"]
-        )
         if let tab = tabManager.selectedTab, tab.canGoForward {
             tab.goForward()
         }
     }
 
     @objc func findInPageKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand,
-            extras: ["action": "find-in-page"])
-        if let tab = tabManager.selectedTab, zeroQueryViewController == nil {
+        if let tab = tabManager.selectedTab {
             self.tab(tab, didSelectFindInPageForSelection: "")
         }
     }
 
     @objc func selectLocationBarKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand,
-            extras: ["action": "select-location-bar"])
         scrollController.showToolbars(animated: true)
         urlBar.shared.model.setEditing(to: true)
     }
 
     @objc func newTabKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
         openLazyTab()
     }
 
     @objc func newPrivateTabKeyCommand() {
-        // NOTE: We cannot and should not distinguish between "new-tab" and "new-private-tab"
-        // when recording telemetry for key commands.
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand, extras: ["action": "new-tab"])
-
         if !(tabManager.selectedTab?.isPrivate ?? false) {
             _ = tabManager.switchPrivacyMode()
         }
@@ -68,14 +48,10 @@ extension BrowserViewController {
         // wait for tabManager to switch to normal mode before closing private tabs
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
             openLazyTab(openedFrom: .createdTab)
-            zeroQueryViewController?.model.isPrivate = true
         }
     }
 
     @objc func closeTabKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand, extras: ["action": "close-tab"])
-
         guard let currentTab = tabManager.selectedTab else {
             return
         }
@@ -84,8 +60,6 @@ extension BrowserViewController {
     }
 
     @objc func nextTabKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand, extras: ["action": "next-tab"])
         guard let currentTab = tabManager.selectedTab else {
             return
         }
@@ -99,9 +73,6 @@ extension BrowserViewController {
     }
 
     @objc func previousTabKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand,
-            extras: ["action": "previous-tab"])
         guard let currentTab = tabManager.selectedTab else {
             return
         }
@@ -115,24 +86,16 @@ extension BrowserViewController {
     }
 
     @objc func restoreTabKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand,
-            extras: ["action": "restore-tabs"])
         _ = tabManager.restoreSavedTabs(tabManager.recentlyClosedTabs[0])
     }
 
     @objc func closeAllTabsCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand,
-            extras: ["action": "close-all-tabs"])
-
         if tabManager.selectedTab?.isPrivate ?? false {
             _ = tabManager.switchPrivacyMode()
 
             // wait for tabManager to switch to normal mode before closing private tabs
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
                 tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: true)
-                zeroQueryViewController?.model.isPrivate = false
             }
         } else {
             tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: true)
@@ -140,9 +103,6 @@ extension BrowserViewController {
     }
 
     @objc func showTabTrayKeyCommand() {
-        TelemetryWrapper.recordEvent(
-            category: .action, method: .press, object: .keyCommand,
-            extras: ["action": "show-tab-tray"])
         showTabTray()
     }
 

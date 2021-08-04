@@ -70,12 +70,12 @@ struct SuggestedSpaceViews_Previews: PreviewProvider {
             .padding(.vertical, ZeroQueryUX.Padding / 2)
             .previewLayout(.sizeThatFits)
         SuggestedSpacesView(
-            spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace]),
+            spaceStore: .createMock([.stackOverflow, .savedForLater, .shared, .public]),
             userInfo: .previewLoggedOut
         )
         .previewLayout(.sizeThatFits)
         SuggestedSpacesView(
-            spaceStore: .createMock([.stackOverflow, .savedForLater, .sharedSpace, .publicSpace])
+            spaceStore: .createMock([.stackOverflow, .savedForLater, .shared, .public])
         )
         .previewLayout(.sizeThatFits)
     }

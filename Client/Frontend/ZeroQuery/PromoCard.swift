@@ -56,7 +56,7 @@ enum PromoCardType {
         case .referralPromo:
             HStack(spacing: 8) {
                 Text("Tell me more")
-                Symbol(.arrowRight, weight: .semibold)
+                Symbol(decorative: .arrowRight, weight: .semibold)
             }
         }
     }

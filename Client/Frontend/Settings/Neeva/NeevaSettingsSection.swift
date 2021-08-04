@@ -90,6 +90,11 @@ struct NeevaSettingsSection: View {
             }
             NavigationLinkButton("Invite your friends!") {
                 openURL(NeevaConstants.appReferralsURL, false)
+                // log click referral promo from settings page
+                var attributes = EnvironmentHelper.shared.getAttributes()
+                attributes.append(ClientLogCounterAttribute(key: "source", value: "settings"))
+                ClientLogger.shared.logCounter(
+                    .OpenReferralPromo, attributes: attributes)
                 BrowserViewController.foregroundBVC().dismissVC()
             }
         } else {

@@ -5,12 +5,12 @@ import SwiftUI
 struct CloseButton: View {
     let action: () -> Void
     var body: some View {
-        _CloseButton(action: action)
+        CloseButtonView(action: action)
             .frame(width: 44, height: 44)
     }
 }
 
-private struct _CloseButton: UIViewRepresentable {
+private struct CloseButtonView: UIViewRepresentable {
     let action: () -> Void
     private static let actionID = UIAction.Identifier("CloseButton.action")
     class View: UIView {

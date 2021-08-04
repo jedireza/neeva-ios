@@ -14,8 +14,13 @@ class NavigationDelegateTests: KIFTestCase {
 
     override func setUp() {
         super.setUp()
+
         webRoot = SimplePageServer.start()
         BrowserUtils.dismissFirstRunUI(tester())
+
+        if tester().viewExistsWithLabel("Done") {
+            tester().tapView(withAccessibilityLabel: "Done")
+        }
     }
 
     override func tearDown() {
@@ -29,9 +34,12 @@ class NavigationDelegateTests: KIFTestCase {
         tester().waitForAnimationsToFinish(withTimeout: 3)
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
         tester().waitForAnimationsToFinish()
+
         tester().waitForWebViewElementWithAccessibilityLabel("link")
         tester().tapWebViewElementWithAccessibilityLabel("link")
         tester().wait(forTimeInterval: 2)
+
+        tester().waitForView(withAccessibilityIdentifier: "CancelOpenInApp")
         tester().tapView(withAccessibilityIdentifier: "CancelOpenInApp")
     }
 }

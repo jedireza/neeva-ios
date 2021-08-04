@@ -60,9 +60,11 @@ struct PlaceholderField_Previews: PreviewProvider {
         Group {
             CapsuleTextField("Placeholder", text: .constant(""))
             CapsuleTextField("Placeholder", text: .constant("Hello, world!"))
-            CapsuleTextField("Placeholder", text: .constant(""), icon: Symbol(.starFill))
             CapsuleTextField(
-                "Placeholder", text: .constant("Hello, world!"), icon: Symbol(.starFill))
+                "Placeholder", text: .constant(""), icon: Symbol(decorative: .starFill))
+            CapsuleTextField(
+                "Placeholder", text: .constant("Hello, world!"), icon: Symbol(decorative: .starFill)
+            )
         }.padding().previewLayout(.sizeThatFits)
     }
 }

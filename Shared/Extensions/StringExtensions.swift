@@ -30,19 +30,17 @@ extension String {
         return self.removingPercentEncoding
     }
 
-    /**
-    Ellipsizes a String only if it's longer than `maxLength`
-
-      "ABCDEF".ellipsize(4)
-      // "AB…EF"
-
-    :param: maxLength The maximum length of the String.
-
-    :returns: A String with `maxLength` characters or less
-    */
+    /// Ellipsizes a String only if it's longer than `maxLength`
+    /// ```
+    /// "ABCDEF".ellipsize(4)
+    /// // "AB…EF"
+    /// ```
+    /// - parameter maxLength: The maximum length of the String.
+    /// - returns: A String with `maxLength` characters or less
     public func ellipsize(maxLength: Int) -> String {
         if (maxLength >= 2) && (self.count > maxLength) {
-            let index1 = self.index(self.startIndex, offsetBy: (maxLength + 1) / 2)  // `+ 1` has the same effect as an int ceil
+            // `+ 1` has the same effect as an int ceil
+            let index1 = self.index(self.startIndex, offsetBy: (maxLength + 1) / 2)
             let index2 = self.index(self.endIndex, offsetBy: maxLength / -2)
 
             return String(self[..<index1]) + "…\u{2060}" + String(self[index2...])

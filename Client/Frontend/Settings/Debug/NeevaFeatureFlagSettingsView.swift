@@ -70,7 +70,7 @@ private struct BoolFlagView: View {
             HStack {
                 Spacer()  // fix layout issues
                 Text(String(flagValue)).fontWeight(isOverridden ? .bold : .regular)
-                Symbol(.chevronDown)
+                Symbol(decorative: .chevronDown)
             }
         }
     }

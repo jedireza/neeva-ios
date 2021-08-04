@@ -73,4 +73,9 @@ class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURL
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func applyUIMode(isPrivate: Bool) {
+        super.applyUIMode(isPrivate: isPrivate)
+        neevaSuggestionModel.setIncognito(isPrivate)
+    }
 }

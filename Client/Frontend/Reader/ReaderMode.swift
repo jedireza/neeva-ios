@@ -163,12 +163,6 @@ struct ReaderModeStyle: Codable {
         ]).stringify() ?? ""
     }
 
-    init(theme: ReaderModeTheme, fontType: ReaderModeFontType, fontSize: ReaderModeFontSize) {
-        self.theme = theme
-        self.fontType = fontType
-        self.fontSize = fontSize
-    }
-
     mutating func ensurePreferredColorThemeIfNeeded() {
         self.theme = ReaderModeTheme.preferredTheme(for: self.theme)
     }

@@ -21,9 +21,7 @@ struct AddToSpaceRootView: View {
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: true)
-        OverlaySheetView(
-            model: self.overlaySheetModel, config: config, onDismiss: { self.onDismiss() }
-        ) {
+        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
             AddToSpaceView(
                 request: request,
                 onDismiss: {

@@ -32,7 +32,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     var leadingConstraint: Constraint? = nil
     let gridModel = GridModel()
 
-    init(tabManager: TabManager) {
+    init(tabManager: TabManager, openLazyTab: @escaping () -> Void) {
         let tabGroupManager = TabGroupManager(tabManager: tabManager)
         super.init(
             rootView: Content(
@@ -40,7 +40,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 tabGroupCardModel: TabGroupCardModel(manager: tabGroupManager),
                 spaceCardModel: SpaceCardModel(),
                 gridModel: gridModel,
-                toolbarModel: SwitcherToolbarModel(tabManager: tabManager)
+                toolbarModel: SwitcherToolbarModel(tabManager: tabManager, openLazyTab: openLazyTab)
             )
         )
         gridModel.setVisibilityCallback(updateVisibility: { isHidden in

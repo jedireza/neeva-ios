@@ -8,7 +8,7 @@ import Shared
 import SwiftyJSON
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 class FaviconFetcherErrorType: MaybeErrorType {
     let description: String

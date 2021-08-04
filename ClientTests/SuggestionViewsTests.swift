@@ -150,7 +150,7 @@ class SuggestionViewsTests: XCTestCase {
             .environmentObject(navModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
-        XCTAssertEqual(3, hStacks.count)
+        XCTAssertEqual(2, hStacks.count)
         let labels0 = try hStacks[0].vStack(1).findAll(ViewType.Text.self)
         let label0 = try labels0[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva Search", label0)
@@ -158,12 +158,7 @@ class SuggestionViewsTests: XCTestCase {
         XCTAssertEqual("neeva.com", secondaryLabel0)
         let label1 = try hStacks[1].vStack(1)
             .find(ViewType.Text.self).string(locale: Locale(identifier: "en"))
-        XCTAssertEqual("neeva", label1)
-        let labels2 = try hStacks[2].vStack(1).findAll(ViewType.Text.self)
-        let label2 = try labels2[0].string(locale: Locale(identifier: "en"))
-        XCTAssertEqual("Neeva", label2)
-        let secondaryLabel2 = try labels2[1].string(locale: Locale(identifier: "en"))
-        XCTAssertEqual("neeva.com", secondaryLabel2)
+        XCTAssertEqual("Neeva", label1)
     }
 
     func testSuggestionsListNoNeevaSuggestions() throws {
@@ -181,7 +176,7 @@ class SuggestionViewsTests: XCTestCase {
         // 1 history suggestion and 5 query suggestions
         XCTAssertEqual(2, list.count)
         XCTAssertEqual(2, list.findAll(NavSuggestionView.self).count)
-        XCTAssertEqual(0, list.findAll(QuerySuggestionView.self).count)
+        XCTAssertEqual(5, list.findAll(QuerySuggestionView.self).count)
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {
@@ -232,8 +227,9 @@ class SuggestionViewsTests: XCTestCase {
         // We should be showing a placeholder with 1 actual suggestion, and 6 placeholders:
         // 1 history suggestion and 5 query suggestions
         XCTAssertEqual(2, list.count)
-        XCTAssertEqual(4, list.findAll(NavSuggestionView.self).count)
-        XCTAssertEqual(0, list.findAll(QuerySuggestionView.self).count)
+        XCTAssertEqual(5, list.findAll(NavSuggestionView.self).count)
+        XCTAssertEqual(5, list.findAll(QuerySuggestionView.self).count)
+        XCTAssertEqual(0, list.findAll(URLSuggestionView.self).count)
     }
 
     func testSuggestionWithCalculatorSayt() throws {

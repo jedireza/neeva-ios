@@ -13,13 +13,16 @@ func / (dir: URL, folderName: String) -> URL {
 }
 
 do {
+    let targetRootURL = sourceRootURL / "Shared" / "API"
     try ApolloCodegen.run(
         from: parentFolderOfScriptFile,
         with: sourceRootURL / "Codegen" / "ApolloCLI",
-        options: ApolloCodegenOptions(
-            targetRootURL: sourceRootURL / "Shared" / "API"
-        )
+        options: ApolloCodegenOptions(targetRootURL: targetRootURL)
     )
+    let compiledFileURL = targetRootURL / "API.swift"
+    let compiledFile =
+        try "// swift-format-ignore-file\n".data(using: .utf8)! + Data(contentsOf: compiledFileURL)
+    try compiledFile.write(to: compiledFileURL)
 } catch {
     print(error)
     exit(1)

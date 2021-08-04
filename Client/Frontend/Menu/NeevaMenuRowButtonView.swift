@@ -53,9 +53,9 @@ public struct NeevaMenuRowButtonView: View {
                 Spacer()
                 Group {
                     if let nicon = self.nicon {
-                        Symbol(nicon, size: 18)
+                        Symbol(decorative: nicon, size: 18)
                     } else if let symbol = self.symbol {
-                        Symbol(symbol, size: 18)
+                        Symbol(decorative: symbol, size: 18)
                     }
                 }.frame(width: 24, height: 24)
             }

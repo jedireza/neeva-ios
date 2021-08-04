@@ -7,7 +7,7 @@ import Storage
 import UIKit
 import XCGLogger
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 private enum RecentlyClosedPanelUX {
     static let IconSize = CGSize(width: 23, height: 23)
@@ -19,8 +19,9 @@ class RecentlyClosedTabsPanel: UIViewController {
     weak var delegate: HistoryPanelDelegate?
     let profile: Profile
 
-    fileprivate lazy var tableViewController = RecentlyClosedTabsPanelSiteTableViewController(
-        profile: profile)
+    fileprivate lazy var tableViewController = { [unowned self] in
+        RecentlyClosedTabsPanelSiteTableViewController(profile: profile)
+    }()
 
     init(profile: Profile) {
         self.profile = profile

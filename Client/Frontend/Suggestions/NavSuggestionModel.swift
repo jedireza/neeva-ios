@@ -7,6 +7,9 @@ import Shared
 import Storage
 
 class NavSuggestionModel: ObservableObject {
+
+    static let numOfDisplayNavSuggestions = 5
+
     @Published private var recentNavSuggestions: [NavSuggestion] = []
     @Published private var neevaNavSuggestions: [NavSuggestion] = []
     @Published private var historyNavSuggestions: [NavSuggestion] = []
@@ -40,8 +43,10 @@ class NavSuggestionModel: ObservableObject {
         Publishers.MergeMany($recentNavSuggestions, $historyNavSuggestions, $neevaNavSuggestions)
             .sink { [unowned self] suggestions in
                 combinedSuggestions =
-                    (recentNavSuggestions + neevaNavSuggestions + historyNavSuggestions)
-                    .removeDuplicates().map { Suggestion.navigation($0) }
+                    Array(
+                        (recentNavSuggestions + neevaNavSuggestions + historyNavSuggestions)
+                            .removeDuplicates().map { Suggestion.navigation($0) }
+                            .prefix(NavSuggestionModel.numOfDisplayNavSuggestions))
             }.store(in: &subscriptions)
     }
 }

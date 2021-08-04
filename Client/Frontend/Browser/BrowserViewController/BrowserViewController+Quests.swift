@@ -20,11 +20,7 @@ extension BrowserViewController {
         prompt.view.backgroundColor = UIColor.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
-        guard let currentViewController = navigationController?.topViewController else {
-            return
-        }
-
-        if currentViewController is BrowserViewController {
+        if self.presentedViewController == nil {
             present(prompt, animated: true, completion: nil)
         }
     }
@@ -69,11 +65,7 @@ extension BrowserViewController {
         prompt.view.backgroundColor = UIColor.Tour.Background.lightVariant
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 300, height: 190))
 
-        guard let currentViewController = navigationController?.topViewController else {
-            return
-        }
-
-        if currentViewController is BrowserViewController {
+        if self.presentedViewController == nil {
             present(prompt, animated: true, completion: nil)
         }
     }

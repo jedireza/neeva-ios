@@ -76,36 +76,22 @@ enum NavigationPath {
     ) -> NavigationPath? {
         if urlString.starts(with: "\(scheme)://widget-medium-topsites-open-url") {
             // Widget Top sites - open url
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .open, object: .mediumTopSitesWidget)
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-url") {
             // Widget Quick links - small - open url private or regular
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .open, object: .smallQuickActionSearch)
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-url") {
             // Widget Quick Actions - medium - open url private or regular
-            let isPrivate =
-                Bool(components.valueForQuery("private") ?? "")
-                ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .open,
-                object: isPrivate ? .mediumQuickActionPrivateSearch : .mediumQuickActionSearch)
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-copied")
             || urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-copied")
         {
             // Widget Quick links - medium - open copied url
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .open, object: .mediumQuickActionCopiedLink)
             return .openCopiedUrl()
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-close-private-tabs")
             || urlString.starts(with: "\(scheme)://widget-medium-quicklink-close-private-tabs")
         {
             // Widget Quick links - medium - close private tabs
-            TelemetryWrapper.recordEvent(
-                category: .action, method: .open, object: .mediumQuickActionClosePrivate)
             return .closePrivateTabs
         }
 
@@ -118,6 +104,10 @@ enum NavigationPath {
         // If attempting to sign in, skip first run screen
         if let url = url, NeevaConstants.isAppHost(url.host), url.path.starts(with: "/login") {
             Defaults[.introSeen] = true
+
+            if let introVC = SceneDelegate.getCurrentSceneDelegate().getBVC().introViewController {
+                introVC.dismiss(animated: true, completion: nil)
+            }
         }
 
         // Unless the `open-url` URL specifies a `private` parameter,

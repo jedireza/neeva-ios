@@ -42,18 +42,22 @@ struct LocationLabelAndIcon: View {
             Label {
                 Text(query).withFont(.bodyLarge)
             } icon: {
-                Symbol(.magnifyingglass)
+                Symbol(decorative: .magnifyingglass)
             }
         } else if let scheme = url?.scheme, let host = url?.host,
             scheme == "https" || scheme == "http"
         {
             // NOTE: Punycode support was removed
             let host = Text(host).withFont(.bodyLarge).truncationMode(.head)
-            if isSecure {
+            if url?.scheme == "https" {
                 Label {
                     host
                 } icon: {
-                    Symbol(.lockFill)
+                    if isSecure {
+                        Symbol(decorative: .lockFill)
+                    } else {
+                        Symbol(decorative: .lockSlashFill)
+                    }
                 }
             } else {
                 host

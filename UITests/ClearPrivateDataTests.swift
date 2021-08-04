@@ -35,7 +35,6 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
             tester().waitForAnimationsToFinish()
             tester().waitForWebViewElementWithAccessibilityLabel("Page \(pageNo)")
             let dom = URL(string: url)!.normalizedHost!
-            let index = dom.index(dom.startIndex, offsetBy: 7)
             let dispDom = String(dom.prefix(7))  // On IPhone, it only displays first 8 chars
             let tuple: (title: String, domain: String, dispDomain: String, url: String) = (
                 "Page \(pageNo)", dom, dispDom, url

@@ -37,10 +37,13 @@ struct IncognitoButton: View {
 
 class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
+    let openLazyTab: () -> Void
     @Published var isIncognito: Bool
 
-    init(tabManager: TabManager) {
+    init(tabManager: TabManager, openLazyTab: @escaping () -> Void) {
         self.tabManager = tabManager
+        self.openLazyTab = openLazyTab
+
         isIncognito = tabManager.selectedTab?.isPrivate ?? false
         tabManager.selectedTabPublisher
             .map { $0?.isPrivate ?? false }
@@ -48,7 +51,7 @@ class SwitcherToolbarModel: ObservableObject {
     }
 
     func onNewTab() {
-        tabManager.selectTab(tabManager.addTab(nil, isPrivate: isIncognito))
+        openLazyTab()
     }
 
     func onToggleIncognito() -> Bool {

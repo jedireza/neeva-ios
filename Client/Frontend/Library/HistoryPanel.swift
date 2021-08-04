@@ -95,7 +95,7 @@ class HistoryPanel: SiteTableViewController {
         return BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.count > 0
     }
 
-    lazy var emptyStateOverlayView: UIView = createEmptyStateOverlayView()
+    lazy var emptyStateOverlayView: UIView = { [unowned self] in createEmptyStateOverlayView() }()
 
     // MARK: - Lifecycle
     override init(profile: Profile) {

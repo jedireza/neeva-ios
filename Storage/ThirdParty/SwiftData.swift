@@ -37,7 +37,7 @@ import UIKit
 import XCGLogger
 
 private let DatabaseBusyTimeout: Int32 = 3 * 1000
-private let log = Logger.syncLogger
+private let log = Logger.storage
 
 public class DBOperationCancelled: MaybeErrorType {
     public var description: String {
@@ -125,10 +125,8 @@ open class SwiftData {
         assert(sqlite3_threadsafe() > 0)
     }
 
-    /**
-     * The real meat of all the execute methods. This is used internally to open and
-     * close a database connection and run a block of code inside it.
-     */
+    /// The real meat of all the execute methods. This is used internally to open and
+    /// close a database connection and run a block of code inside it.
     func withConnection<T>(
         _ flags: SwiftData.Flags, synchronous: Bool = false,
         _ callback: @escaping (_ connection: SQLiteDBConnection) throws -> T
@@ -222,10 +220,8 @@ open class SwiftData {
         return deferred
     }
 
-    /**
-     * Helper for opening a connection, starting a transaction, and then running a block of code inside it.
-     * The code block can return true if the transaction should be committed. False if we should roll back.
-     */
+    /// Helper for opening a connection, starting a transaction, and then running a block of code inside it.
+    /// The code block can return true if the transaction should be committed. False if we should roll back.
     func transaction<T>(
         synchronous: Bool = false,
         _ transactionClosure: @escaping (_ connection: SQLiteDBConnection) throws -> T
@@ -967,9 +963,7 @@ open class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         self.checkpoint(SQLITE_CHECKPOINT_FULL)
     }
 
-    /**
-     * Blindly attempts a WAL checkpoint on all attached databases.
-     */
+    /// Blindly attempts a WAL checkpoint on all attached databases.
     public func checkpoint(_ mode: Int32) {
         guard sqliteDB != nil else {
             log.warning("Trying to checkpoint a nil DB!")
@@ -1004,14 +998,16 @@ open class ConcreteSQLiteDBConnection: SQLiteDBConnection {
                     // The P argument is a pointer to the prepared statement.
                     // The X argument is a pointer to a string which is the unexpanded SQL text
                     guard
-                        let pStmt = OpaquePointer(
-                            p) /*, let cSql = x?.assumingMemoryBound(to: CChar.self) */
+                        let pStmt = OpaquePointer(p)
+                        // let cSql = x?.assumingMemoryBound(to: CChar.self)
                     else {
                         return 0
                     }
 
-                    // let sql = String(cString: cSql) // The unexpanded SQL text
-                    let expandedSql = String(cString: sqlite3_expanded_sql(pStmt))  // The expanded SQL text
+                    // The unexpanded SQL text
+                    // let sql = String(cString: cSql)
+                    // The expanded SQL text
+                    let expandedSql = String(cString: sqlite3_expanded_sql(pStmt))
                     print("SQLITE_TRACE_STMT:", expandedSql)
                 case SQLITE_TRACE_PROFILE:
                     // The P argument is a pointer to the prepared statement and the X argument points
@@ -1161,7 +1157,7 @@ open class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         if let error = error {
             // Special case: Write additional info to the database log in the case of a database corruption.
             if error.code == Int(SQLITE_CORRUPT) {
-                writeCorruptionInfoForDBNamed(filename, toLogger: Logger.corruptLogger)
+                writeCorruptionInfoForDBNamed(filename, toLogger: log)
                 Sentry.shared.sendWithStacktrace(
                     message: "SQLITE_CORRUPT", tag: SentryTag.swiftData, severity: .error,
                     description: "DB file '\(filename)'. \(error.localizedDescription)")
@@ -1224,7 +1220,7 @@ open class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         if let error = error {
             // Special case: Write additional info to the database log in the case of a database corruption.
             if error.code == Int(SQLITE_CORRUPT) {
-                writeCorruptionInfoForDBNamed(filename, toLogger: Logger.corruptLogger)
+                writeCorruptionInfoForDBNamed(filename, toLogger: log)
                 Sentry.shared.sendWithStacktrace(
                     message: "SQLITE_CORRUPT", tag: SentryTag.swiftData, severity: .error,
                     description: "DB file '\(filename)'. \(error.localizedDescription)")
@@ -1297,11 +1293,9 @@ open class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         }
     }
 
-    /**
-     * Queries the database.
-     * Returns a live cursor that holds the query statement and database connection.
-     * Instances of this class *must not* leak outside of the connection queue!
-     */
+    /// Queries the database.
+    /// Returns a live cursor that holds the query statement and database connection.
+    /// Instances of this class *must not* leak outside of the connection queue!
     public func executeQueryUnsafe<T>(
         _ sqlStr: String, factory: @escaping ((SDRow) -> T), withArgs args: Args?
     ) -> Cursor<T> {
@@ -1639,6 +1633,7 @@ private class LiveSQLiteCursor<T>: Cursor<T> {
     // Number of rows in the database
     // XXX - When Cursor becomes an interface, this should be a normal property, but right now
     //       we can't override the Cursor getter for count with a stored property.
+    // swift-format-ignore: NoLeadingUnderscores
     fileprivate var _count: Int = 0
     override var count: Int {
         if status != .success {

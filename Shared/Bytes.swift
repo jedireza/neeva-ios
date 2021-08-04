@@ -34,10 +34,8 @@ open class Bytes {
         return Data(base64Encoded: b64, options: [])
     }
 
-    /**
-     * Turn a string of base64 characters into an NSData *without decoding*.
-     * This is to allow HMAC to be computed of the raw base64 string.
-     */
+    /// Turn a string of base64 characters into `Data` *without decoding*.
+    /// This is to allow HMAC to be computed of the raw base64 string.
     open class func dataFromBase64(_ b64: String) -> Data? {
         return b64.data(using: .ascii, allowLossyConversion: false)
     }

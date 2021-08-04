@@ -30,13 +30,13 @@ struct LocationViewTouchHandler: UIViewRepresentable {
 
         private var touchCount = 0
         private var oldItems: [UIMenuItem]?
-        private lazy var longPressGesture: UILongPressGestureRecognizer = {
+        private lazy var longPressGesture: UILongPressGestureRecognizer = { [unowned self] in
             .init(target: self, action: #selector(didLongPress))
         }()
-        private lazy var tapGesture: UITapGestureRecognizer = {
+        private lazy var tapGesture: UITapGestureRecognizer = { [unowned self] in
             .init(target: self, action: #selector(didTap))
         }()
-        private lazy var dragInteraction: UIDragInteraction = {
+        private lazy var dragInteraction: UIDragInteraction = { [unowned self] in
             .init(delegate: self)
         }()
 
@@ -70,7 +70,6 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             _ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession
         ) -> [UIDragItem] {
             if let url = wrapper.url, !InternalURL.isValid(url: url) {
-                TelemetryWrapper.recordEvent(category: .action, method: .drag, object: .locationBar)
                 return [UIDragItem(itemProvider: NSItemProvider(url: url))]
             }
             return []

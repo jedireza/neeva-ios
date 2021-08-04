@@ -9,7 +9,7 @@ import SwiftyJSON
 import UIKit
 import WebKit
 
-private let log = Logger.browserLogger
+private let log = Logger.browser
 
 /// List of schemes that are allowed to be opened in new tabs.
 private let schemesAllowedToBeOpenedAsPopups = ["http", "https", "javascript", "data", "about"]
@@ -53,6 +53,9 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
         .feedbackScreenshot,
         .referralPromo,
         .calculatorSuggestion,
+        .referralPromoLogging,
+        .appStoreRatingPromo,
+        .logAppCrashes,
     ]
     let intFlags: [NeevaFeatureFlags.IntFlag] = []
     let floatFlags: [NeevaFeatureFlags.FloatFlag] = []
@@ -628,7 +631,8 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if ["http", "https", "blob", "file"].contains(url.scheme) {
             if navigationAction.targetFrame?.isMainFrame ?? false {
-                tab.changedUserAgent = Tab.ChangeUserAgent.contains(url: url, isPrivate: tab.isPrivate)
+                tab.changedUserAgent = Tab.ChangeUserAgent.contains(
+                    url: url, isPrivate: tab.isPrivate)
             }
 
             pendingRequests[url.absoluteString] = navigationAction.request
@@ -903,16 +907,6 @@ extension BrowserViewController: WKNavigationDelegate {
 
         self.scrollController.resetZoomState()
 
-        if let currentURL = tab.url, NeevaConstants.isNeevaHome(url: currentURL) {
-            showSearchBarTourPrompt()
-        }
-
-        if tabManager.selectedTab === tab {
-            updateUIForReaderHomeStateForTab(tab)
-        }
-    }
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         // every time a user visits a Neeva page, we extract the user cookie
         // and save it to a keychain.
         if !(tabManager.selectedTab?.isPrivate ?? false),
@@ -921,6 +915,16 @@ extension BrowserViewController: WKNavigationDelegate {
             url.scheme == "https"
         {
             NeevaUserInfo.shared.updateKeychainTokenAndFetchUserInfo()
+        }
+
+        if tabManager.selectedTab === tab {
+            updateUIForReaderHomeStateForTab(tab)
+        }
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if let url = webView.url, NeevaConstants.isNeevaHome(url: url) {
+            showSearchBarTourPrompt()
         }
 
         if let tab = tabManager[webView] {

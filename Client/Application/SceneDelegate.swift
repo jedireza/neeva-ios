@@ -59,10 +59,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         browserViewController.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
         browserViewController.restorationClass = AppDelegate.self
 
-        let navigationController = NavigationController(rootViewController: browserViewController)
-        navigationController.delegate = self
-        navigationController.edgesForExtendedLayout = UIRectEdge(rawValue: 0)
-        window!.rootViewController = navigationController
+        window!.rootViewController = browserViewController
 
         browserViewController.tabManager.selectedTab?.reload()
     }
@@ -85,26 +82,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-            let routerpath = NavigationPath(url: url),
-            let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-            let queryItems = components.queryItems
+            let routerpath = NavigationPath(url: url)
         else { return }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
-            var object = TelemetryWrapper.EventObject.url
-            if case .text(_) = routerpath {
-                object = .searchText
-            }
-
-            TelemetryWrapper.recordEvent(
-                category: .appExtensionAction, method: .applicationOpenUrl, object: object)
         }
 
         DispatchQueue.main.async {
             // This is in case the AppClip sign in URL ends up opening the app
             // Will occur if the app is already installed
-            if let signInToken = queryItems.first(where: { $0.name == "token" })?.value {
+            if url.scheme == "https", NeevaConstants.isAppHost(url.host),
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+                components.path == "/appclip/login",
+                let queryItems = components.queryItems,
+                let signInToken = queryItems.first(where: { $0.name == "token" })?.value
+            {
                 self.handleSignInToken(signInToken)
             } else {
                 NavigationPath.handle(nav: routerpath, with: self.browserViewController)
@@ -226,23 +219,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppClipHelper.saveTokenToDevice(nil)
         browserViewController.openURLInNewTab(
             URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
-    }
-}
 
-// MARK: - Root View Controller Animations
-extension SceneDelegate: UINavigationControllerDelegate {
-    func navigationController(
-        _ navigationController: UINavigationController,
-        animationControllerFor operation: UINavigationController.Operation,
-        from fromVC: UIViewController, to toVC: UIViewController
-    ) -> UIViewControllerAnimatedTransitioning? {
-        switch operation {
-        case .push:
-            return BrowserToTrayAnimator()
-        case .pop:
-            return TrayToBrowserAnimator()
-        default:
-            return nil
+        if let introVC = browserViewController.introViewController {
+            introVC.dismiss(animated: true, completion: nil)
         }
     }
 }

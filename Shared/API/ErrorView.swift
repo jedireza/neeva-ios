@@ -176,7 +176,7 @@ private struct LoginView: View {
                 }
                 .buttonStyle(BigBlueButtonStyle())
                 .padding(.bottom, 25)
-                Button(action: {}) {
+                Button(action: { onOpenURL(NeevaConstants.appSignupURL) }) {
                     Text("New to Neeva? Join now")
                         .font(.custom("Roobert", size: 18))
                         .underline()
@@ -226,7 +226,7 @@ private struct OfflineView: View {
                     HStack {
                         Spacer()
                         Text("Reload Page").withFont(.labelLarge)
-                        Symbol(.arrowClockwise)
+                        Symbol(decorative: .arrowClockwise)
                         Spacer()
                     }
                 }.buttonStyle(BigBlueButtonStyle())

@@ -70,7 +70,9 @@ struct ZeroQueryHeader: View {
                 .lineLimit(1)
             Spacer()
             Button(action: action) {
-                Symbol(icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
+                // decorative because the toggle action is expressed on the header view itself.
+                // This button is not an accessibility element.
+                Symbol(decorative: icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
                     .frame(
                         width: ZeroQueryUX.ToggleButtonSize, height: ZeroQueryUX.ToggleButtonSize,
                         alignment: .center
@@ -101,7 +103,7 @@ struct ZeroQueryPlaceholder: View {
 }
 
 struct ZeroQueryView: View {
-    @ObservedObject var viewModel: ZeroQueryModel
+    @EnvironmentObject var viewModel: ZeroQueryModel
 
     @Default(.expandSuggestedSites) private var expandSuggestedSites
     @Default(.expandSearches) private var expandSearches

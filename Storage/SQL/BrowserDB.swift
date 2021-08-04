@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import XCGLogger
 
-private let log = Logger.syncLogger
+private let log = Logger.storage
 
 public typealias Args = [Any?]
 
@@ -124,21 +124,19 @@ open class BrowserDB {
         case InsertOrFail = "INSERT OR FAIL"
     }
 
-    /**
-     * Insert multiple sets of values into the given table.
-     *
-     * Assumptions:
-     * 1. The table exists and contains the provided columns.
-     * 2. Every item in `values` is the same length.
-     * 3. That length is the same as the length of `columns`.
-     * 4. Every value in each element of `values` is non-nil.
-     *
-     * If there are too many items to insert, multiple individual queries will run
-     * in sequence.
-     *
-     * A failure anywhere in the sequence will cause immediate return of failure, but
-     * will not roll back — use a transaction if you need one.
-     */
+    /// Insert multiple sets of values into the given table.
+    ///
+    /// Assumptions:
+    /// 1. The table exists and contains the provided columns.
+    /// 2. Every item in `values` is the same length.
+    /// 3. That length is the same as the length of `columns`.
+    /// 4. Every value in each element of `values` is non-nil.
+    ///
+    /// If there are too many items to insert, multiple individual queries will run
+    /// in sequence.
+    ///
+    /// A failure anywhere in the sequence will cause immediate return of failure, but
+    /// will not roll back — use a transaction if you need one.
     func bulkInsert(_ table: String, op: InsertOperation, columns: [String], values: [Args])
         -> Success
     {
@@ -208,11 +206,11 @@ open class BrowserDB {
         return run(commands.map { (sql: $0, args: nil) })
     }
 
-    /**
-     * Runs an array of SQL commands. Note: These will all run in order in a transaction and will block
-     * the caller's thread until they've finished. If any of them fail the operation will abort (no more
-     * commands will be run) and the transaction will roll back, returning a DatabaseError.
-     */
+    /// Runs an array of SQL commands.
+    ///
+    /// Note: These will all run in order in a transaction and will block
+    /// the caller's thread until they've finished. If any of them fail the operation will abort (no more
+    /// commands will be run) and the transaction will roll back, returning a `DatabaseError`.
     func run(_ commands: [(sql: String, args: Args?)]) -> Success {
         if commands.isEmpty {
             return succeed()

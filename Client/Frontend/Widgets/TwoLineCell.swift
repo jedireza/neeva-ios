@@ -15,7 +15,9 @@ private enum TwoLineCellUX {
 class TwoLineTableViewCell: UITableViewCell {
     fileprivate let twoLineHelper = TwoLineCellHelper()
 
+    // swift-format-ignore: NoLeadingUnderscores
     let _textLabel = UILabel()
+    // swift-format-ignore: NoLeadingUnderscores
     let _detailTextLabel = UILabel()
 
     // Override the default labels with our own to disable default UITableViewCell label behaviours like dynamic type

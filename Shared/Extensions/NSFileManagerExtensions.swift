@@ -74,14 +74,11 @@ extension FileManager {
         return false
     }
 
-    /**
-     Returns the precise size of the given directory on disk.
-
-     - parameter url:    Directory URL
-     - parameter prefix: Prefix of files to check for size
-
-     - throws: Error reading/operating on disk.
-     */
+    /// Returns the precise size of the given directory on disk.
+    ///
+    /// - parameter url:    Directory URL
+    /// - parameter prefix: Prefix of files to check for size
+    /// - throws: Error reading/operating on disk.
     public func getAllocatedSizeOfDirectoryAtURL(_ url: URL, forFilesPrefixedWith prefix: String)
         throws -> Int64
     {

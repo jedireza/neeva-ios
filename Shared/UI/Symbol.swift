@@ -84,9 +84,29 @@ public struct Symbol: View {
     public static let defaultSize: CGFloat = 16
 
     // since this comes first, Neeva custom icons take priority over SF Symbols with the same name
+    /// This produces a decorative icon, which is only suitable when combined with text. It will be invisible to users of accessibility technologies
+    public init(
+        decorative nicon: Nicon, size: CGFloat = Symbol.defaultSize, weight: NiconFont = .regular,
+        relativeTo: Font.TextStyle = .body
+    ) {
+        self.icon = .neeva(nicon, Font.custom(weight.rawValue, size: size, relativeTo: relativeTo))
+        self.label = nil
+    }
+
+    /// This produces a decorative icon, which is only suitable when combined with text. It will be invisible to users of accessibility technologies
+    @_disfavoredOverload
+    public init(
+        decorative symbol: SFSymbol, size: CGFloat = Symbol.defaultSize,
+        weight: Font.Weight = .medium
+    ) {
+        self.icon = .sfSymbol(symbol, .system(size, weight))
+        self.label = nil
+    }
+
+    // since this comes first, Neeva custom icons take priority over SF Symbols with the same name
     public init(
         _ nicon: Nicon, size: CGFloat = Symbol.defaultSize, weight: NiconFont = .regular,
-        relativeTo: Font.TextStyle = .body, label: String? = nil
+        relativeTo: Font.TextStyle = .body, label: String
     ) {
         self.icon = .neeva(nicon, Font.custom(weight.rawValue, size: size, relativeTo: relativeTo))
         self.label = label
@@ -95,15 +115,20 @@ public struct Symbol: View {
     @_disfavoredOverload
     public init(
         _ symbol: SFSymbol, size: CGFloat = Symbol.defaultSize, weight: Font.Weight = .medium,
-        label: String? = nil
+        label: String
     ) {
         self.icon = .sfSymbol(symbol, .system(size, weight))
         self.label = label
     }
 
-    public init(_ symbol: SFSymbol, style: FontStyle, label: String? = nil) {
+    public init(_ symbol: SFSymbol, style: FontStyle, label: String) {
         self.icon = .sfSymbol(symbol, .custom(style))
         self.label = label
+    }
+
+    public init(decorative symbol: SFSymbol, style: FontStyle) {
+        self.icon = .sfSymbol(symbol, .custom(style))
+        self.label = nil
     }
 
     @ViewBuilder private var content: some View {

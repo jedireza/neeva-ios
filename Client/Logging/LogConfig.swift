@@ -66,6 +66,10 @@ public struct LogConfig {
         case URLSuggestion
         case BangSuggestion
         case NoSuggestion
+
+        // referral promo
+        case OpenReferralPromo  // Open referral promo
+        case CloseReferralPromo  // Close referral promo card
     }
 
     public enum InteractionCategory {
@@ -74,12 +78,15 @@ public struct LogConfig {
         case Settings
         case FirstRun
         case Suggestions
+        case ReferralPromo
     }
 
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
         switch category {
         case .Suggestions:
             return NeevaFeatureFlags[.suggestionsLogging]
+        case .ReferralPromo:
+            return NeevaFeatureFlags[.referralPromoLogging]
         default:
             return false
         }
@@ -137,16 +144,32 @@ public struct LogConfig {
         case .URLSuggestion: return .Suggestions
         case .BangSuggestion: return .Suggestions
         case .NoSuggestion: return .Suggestions
+
+        case .OpenReferralPromo: return .ReferralPromo
+        case .CloseReferralPromo: return .ReferralPromo
         }
     }
 
     public struct Attribute {
-        public static let IsInPrivateMode = "IsInPrivateMode"  // Is selected tab in private mode
-        public static let NormalTabsOpened = "NormalTabsOpened"  // Number of normal tabs opened
-        public static let PrivateTabsOpened = "PrivateTabsOpened"  // Number of incognito tabs opened
-        public static let UserInterfaceStyle = "UserInterfaceStyle"  // User theme setting, i.e dark, light
-        public static let DeviceOrientation = "DeviceOrientation"  // Device orientation, i.e. portrait, landscape
-        public static let DeviceScreenSize = "DeviceScreenSize"  // Device screen size width x height
-        public static let isUserSignedIn = "IsUserSignedIn"  // Is user signed in
+        /// Is selected tab in private mode
+        public static let IsInPrivateMode = "IsInPrivateMode"
+        /// Number of normal tabs opened
+        public static let NormalTabsOpened = "NormalTabsOpened"
+        /// Number of incognito tabs opened
+        public static let PrivateTabsOpened = "PrivateTabsOpened"
+        /// User theme setting, i.e dark, light
+        public static let UserInterfaceStyle = "UserInterfaceStyle"
+        /// Device orientation, i.e. portrait, landscape
+        public static let DeviceOrientation = "DeviceOrientation"
+        /// Device screen size width x height
+        public static let DeviceScreenSize = "DeviceScreenSize"
+        /// Is user signed in
+        public static let isUserSignedIn = "IsUserSignedIn"
+        /// suggestion position
+        public static let suggestionPosition = "suggestionPosition"
+        /// chip suggestion position
+        public static let chipSuggestionPosition = "chipSuggestionPosition"
+        /// number of characters typed in url bar
+        public static let urlBarNumOfCharsTyped = "urlBarNumOfCharsTyped"
     }
 }

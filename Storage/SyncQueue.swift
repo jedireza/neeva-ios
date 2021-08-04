@@ -33,9 +33,7 @@ public struct SyncCommand: Equatable {
         self.commandID = id
     }
 
-    /**
-     * Sent displayURI commands include the sender client GUID.
-     */
+    /// Sent displayURI commands include the sender client GUID.
     public static func displayURIFromShareItem(_ shareItem: ShareItem, asClient sender: GUID)
         -> SyncCommand
     {

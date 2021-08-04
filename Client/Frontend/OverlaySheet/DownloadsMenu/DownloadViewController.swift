@@ -14,8 +14,7 @@ struct DownloadRootView: View {
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: self.overlaySheetModel, config: config, onDismiss: { onDismiss() })
-        {
+        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
             DownloadMenuView(
                 fileName: fileName, fileURL: fileURL, fileSize: fileSize,
                 onDownload: { onDownload() }, onDismiss: { onDismiss() }

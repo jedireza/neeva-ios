@@ -27,6 +27,9 @@ struct DebugSettingsSection: View {
                 NavigationLink(
                     "Internal Settings",
                     destination: InternalSettingsView().navigationTitle("Internal Settings"))
+                NavigationLink(
+                    "Logging",
+                    destination: LoggingSettingsView().navigationTitle("Logging"))
                 Toggle("Enable Geiger Counter", isOn: $enableGeigerCounter)
                     .onChange(of: enableGeigerCounter) {
                         if $0 {
