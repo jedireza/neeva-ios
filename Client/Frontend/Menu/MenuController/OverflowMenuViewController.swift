@@ -48,7 +48,6 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
         urlBarModel: URLBarModel,
         changedUserAgent: Bool?
     ) {
-        //let currentTab = delegate.tabManager.selectedTab
         super.init(
             rootView: OverflowMenuRootView(
                 onDismiss: onDismiss,
@@ -73,7 +72,7 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
                 delegate.didPressForward()
                 break
             case .reload:
-                if (urlBarModel.reloadButton == .reload) {
+                if urlBarModel.reloadButton == .reload {
                     delegate.didPressReload()
                 } else {
                     delegate.didPressStopLoading()

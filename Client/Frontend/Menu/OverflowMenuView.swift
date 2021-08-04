@@ -71,16 +71,6 @@ public struct OverflowMenuView: View {
 
                     Color.groupedBackground.frame(height: 1)
 
-                    // Reenable this for reader mode
-                    /*
-                    NeevaMenuRowButtonView(label: "Open Reading Mode", symbol: .docText) {
-                        self.menuAction!(OverflowMenuButtonActions.readingMode)
-                    }
-                    .accessibilityIdentifier("NeevaMenu.OpenReadingMode")
-
-                    Color.groupedBackground.frame(height: 1)
-                     */
-
                     NeevaMenuRowButtonView(
                         label: changedUserAgent == true
                             ? Strings.AppMenuViewMobileSiteTitleString
