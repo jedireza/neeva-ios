@@ -21,6 +21,7 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
             TabToolbarView(
                 onBack: { [weak delegate] in delegate?.tabToolbarDidPressBack() },
                 onForward: { [weak delegate] in delegate?.tabToolbarDidPressForward() },
+                onOverflow: { [weak delegate] in delegate?.tabToolbarDidPressOverflow() },
                 onLongPressBackForward: { [weak delegate] in
                     delegate?.tabToolbarDidLongPressBackForward()
                 },

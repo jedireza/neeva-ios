@@ -221,6 +221,8 @@
 		6751BA7A26A77195007FC7EA /* NavSuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BA7926A77195007FC7EA /* NavSuggestionModel.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
+		67B0AAF426BA080D000731E0 /* OverflowMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B0AAF326BA080D000731E0 /* OverflowMenuViewController.swift */; };
+		67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */; };
 		744B0FFE1B4F172E00100422 /* ToolbarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744B0FFD1B4F172E00100422 /* ToolbarTests.swift */; };
 		745DAB301CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745DAB2F1CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift */; };
 		7479B4EF1C5306A200DF000B /* Reachability-old.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7479B4ED1C5306A200DF000B /* Reachability-old.swift */; };
@@ -1148,6 +1150,8 @@
 		6751BA7926A77195007FC7EA /* NavSuggestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionModel.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
+		67B0AAF326BA080D000731E0 /* OverflowMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuViewController.swift; sourceTree = "<group>"; };
+		67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuView.swift; sourceTree = "<group>"; };
 		744B0FFD1B4F172E00100422 /* ToolbarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarTests.swift; sourceTree = "<group>"; };
 		745DAB2F1CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentlyClosedTabsPanel.swift; sourceTree = "<group>"; };
 		7479B4ED1C5306A200DF000B /* Reachability-old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Reachability-old.swift"; path = "ThirdParty/Reachability-old.swift"; sourceTree = "<group>"; };
@@ -2264,6 +2268,7 @@
 				F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */,
 				4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */,
 				4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */,
+				67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
@@ -2281,6 +2286,7 @@
 			children = (
 				BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */,
 				F0405D3325FFCA6200A0A3B2 /* PopOverNeevaMenuViewController.swift */,
+				67B0AAF326BA080D000731E0 /* OverflowMenuViewController.swift */,
 			);
 			path = MenuController;
 			sourceTree = "<group>";
@@ -4635,6 +4641,7 @@
 				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
+				67B0AAF426BA080D000731E0 /* OverflowMenuViewController.swift in Sources */,
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
 				66BEFDC926A7678200AA32EF /* GroupedCell.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
@@ -4711,6 +4718,7 @@
 				66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */,
 				4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */,
 				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
+				67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,
 				66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */,
 				59A68B280D62462B85CF57A4 /* HistoryPanel.swift in Sources */,

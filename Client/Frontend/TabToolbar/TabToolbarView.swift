@@ -11,6 +11,7 @@ private enum TabToolbarUX {
 struct TabToolbarView: View {
     let onBack: () -> Void
     let onForward: () -> Void
+    let onOverflow: () -> Void
     let onLongPressBackForward: () -> Void
     let onNeevaMenu: () -> Void
     let onSaveToSpace: () -> Void
@@ -27,7 +28,9 @@ struct TabToolbarView: View {
             HStack(spacing: 0) {
                 TabToolbarButtons.BackForward(
                     model: model,
-                    onBack: onBack, onForward: onForward,
+                    onBack: onBack,
+                    onForward: onForward,
+                    onOverflow: onOverflow,
                     onLongPress: onLongPressBackForward
                 )
                 TabToolbarButtons.NeevaMenu(action: onNeevaMenu)
@@ -46,7 +49,7 @@ struct TabToolbarView_Previews: PreviewProvider {
     static var previews: some View {
         let make = { (model: TabToolbarModel) in
             TabToolbarView(
-                onBack: {}, onForward: {}, onLongPressBackForward: {}, onNeevaMenu: {},
+                onBack: {}, onForward: {}, onOverflow: {}, onLongPressBackForward: {}, onNeevaMenu: {},
                 onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil }
             )
             .environmentObject(model)

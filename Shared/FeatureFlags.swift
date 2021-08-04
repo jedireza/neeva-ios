@@ -20,6 +20,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case pinToTopSites = "Pin to Top Sites"
     case readingMode = "Enable Reading Mode"
     case swipePlusPlus = "Additional forward and back swipe gestures"
+    case overflowMenu = "Enable Overflow Menu"
 }
 
 extension FeatureFlag {

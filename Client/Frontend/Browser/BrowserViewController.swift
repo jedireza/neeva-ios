@@ -63,29 +63,31 @@ class BrowserViewController: UIViewController {
     }()
     private(set) var historyViewController: UINavigationController?
     private var overlaySheetViewController: UIViewController?
-    private(set) lazy var simulateForwardViewController: SimulatedSwipeController? = { [unowned self] in
-        guard FeatureFlag[.swipePlusPlus] else {
-            return nil
-        }
-        let host = SimulatedSwipeController(
-            tabManager: self.tabManager,
-            toolbarModel: toolbarModel,
-            swipeDirection: .forward)
-        addChild(host)
-        view.addSubview(host.view)
-        host.view.isHidden = true
-        return host
-    }()
-    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = { [unowned self] in
-        let host = SimulatedSwipeController(
-            tabManager: self.tabManager,
-            toolbarModel: toolbarModel,
-            swipeDirection: .back)
-        addChild(host)
-        view.addSubview(host.view)
-        host.view.isHidden = true
-        return host
-    }()
+    private(set) lazy var simulateForwardViewController: SimulatedSwipeController? =
+        { [unowned self] in
+            guard FeatureFlag[.swipePlusPlus] else {
+                return nil
+            }
+            let host = SimulatedSwipeController(
+                tabManager: self.tabManager,
+                toolbarModel: toolbarModel,
+                swipeDirection: .forward)
+            addChild(host)
+            view.addSubview(host.view)
+            host.view.isHidden = true
+            return host
+        }()
+    private(set) lazy var simulateBackViewController: SimulatedSwipeController? =
+        { [unowned self] in
+            let host = SimulatedSwipeController(
+                tabManager: self.tabManager,
+                toolbarModel: toolbarModel,
+                swipeDirection: .back)
+            addChild(host)
+            view.addSubview(host.view)
+            host.view.isHidden = true
+            return host
+        }()
     private(set) var webViewContainer: UIView!
 
     private(set) var urlBar: URLBarWrapper!

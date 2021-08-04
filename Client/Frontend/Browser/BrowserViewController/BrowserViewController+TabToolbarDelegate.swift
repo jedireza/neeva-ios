@@ -29,6 +29,31 @@ extension BrowserViewController: TabToolbarDelegate {
         tabManager.selectedTab?.goForward()
     }
 
+    func tabToolbarDidPressOverflow() {
+//        if simulateForwardViewController?.goForward() ?? false {
+//            return
+//        }
+//
+//        tabManager.selectedTab?.goForward()
+
+        TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let image = screenshot()
+
+        self.showOverlaySheetViewController(
+            OverflowMenuViewController(
+                delegate: self,
+                onDismiss: {
+                    self.hideOverlaySheetViewController()
+                    self.isNeevaMenuSheetOpen = false
+                }, isPrivate: isPrivate, feedbackImage: image,
+                tabToolbarModel: toolbarModel,
+                urlBarModel: urlBar.legacy!.model
+            )
+        )
+        self.dismissVC()
+    }
+
     func tabToolbarDidPressAddNewTab() {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
