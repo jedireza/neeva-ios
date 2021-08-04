@@ -191,7 +191,7 @@ enum NavigationPath {
         // search query value
         var value: String?
 
-        if let host = components.host, let queryItems = components.queryItems {
+        if let host = components.host, let queryItems = components.percentEncodedQueryItems {
             switch host {
             case "www.google.com", "www.bing.com", "www.ecosia.org", "search.yahoo.com":
                 // yahoo uses p for the search query name instead of q
@@ -220,7 +220,7 @@ enum NavigationPath {
             }
         }
 
-        if let value = value, let newURL = neevaSearchEngine.searchURLForQuery(value) {
+        if let value = value?.replacingOccurrences(of: "+", with: " ").removingPercentEncoding, let newURL = neevaSearchEngine.searchURLForQuery(value) {
             return newURL
         } else {
             return url
