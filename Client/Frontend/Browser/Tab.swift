@@ -345,7 +345,10 @@ class Tab: NSObject {
     }
 
     var estimatedProgress: Double {
-        return webView?.estimatedProgress ?? 0
+        // Unfortunately WebKit can report partial progress when isLoading is false! That can
+        // happen when a load is cancelled. Avoid reporting partial progress here, but take
+        // care to let the case of progress complete (value of 1) through.
+        return (loading || webView?.estimatedProgress == 1) ? webView?.estimatedProgress ?? 0 : 0
     }
 
     var backList: [WKBackForwardListItem]? {

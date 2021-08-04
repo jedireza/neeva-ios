@@ -1391,23 +1391,26 @@ extension BrowserViewController: TabDelegate {
 
         let tabManager = tabManager
 
-        // Observers that live as long as the tab. They are all cancelled in Tab/close(), so it is safe to use a strong reference to self.
-        webView.publisher(for: \.estimatedProgress, options: .new)
+        // Observers that live as long as the tab. They are all cancelled in Tab/close(),
+        // so it is safe to use a strong reference to self.
+
+        let estimatedProgressPub = webView.publisher(for: \.estimatedProgress, options: .new)
+        let isLoadingPub = webView.publisher(for: \.isLoading, options: .new)
+        estimatedProgressPub.combineLatest(isLoadingPub)
             .forEach(updateGestureHandler)
             .filter { _ in tab === tabManager.selectedTab }
-            .sink { [self] estimatedProgress in
-                if let url = webView.url, !InternalURL.isValid(url: url) {
+            .sink { [self] (estimatedProgress, isLoading) in
+                // When done loading, we want to set pregress to 1 so that we allow the progress
+                // complete animation to happen. But we want to avoid showing incomplete progress
+                // when no longer loading (as may happen when a page load is interrupted).
+                if isLoading || estimatedProgress == 1, let url = webView.url,
+                    !InternalURL.isValid(url: url)
+                {
                     urlBar.shared.model.estimatedProgress = estimatedProgress
                 } else {
                     urlBar.shared.model.estimatedProgress = nil
                 }
             }
-            .store(in: &tab.webViewSubscriptions)
-
-        // only used to trigger updateGestureHandler?
-        webView.publisher(for: \.isLoading, options: .new)
-            .forEach(updateGestureHandler)
-            .sink { _ in }
             .store(in: &tab.webViewSubscriptions)
 
         webView.publisher(for: \.url, options: .new)

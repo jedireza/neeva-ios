@@ -821,7 +821,7 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)"), error: \(error)")
 
         for delegate in delegates {
             delegate.webView?(webView, didFail: navigation, withError: error)
@@ -832,7 +832,7 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         _ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: Error
     ) {
-        Logger.network.info("webView.url: \(webView.url ?? "(nil)")")
+        Logger.network.info("webView.url: \(webView.url ?? "(nil)"), error: \(error)")
 
         for delegate in delegates {
             delegate.webView?(webView, didFailProvisionalNavigation: navigation, withError: error)
