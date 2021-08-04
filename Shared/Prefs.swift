@@ -4,6 +4,10 @@ import Defaults
 
 // If you add a setting here, make sure it’s either exposed through
 // user-visible settings or in InternalSettingsView
+//
+// TODO(Issue #1209): Migrate all pref names to use "_" in place of "." to
+// support Defaults.publisher.
+//
 extension Defaults.Keys {
     // automatically recorded
     public static let searchInputPromptDismissed = Defaults.BoolKey(
@@ -39,6 +43,11 @@ extension Defaults.Keys {
         "profile.tracking_protection.unblockedDomains", default: Set<String>())
 
     // debug settings
+    public static let enableBrowserLogging = Defaults.BoolKey("profile_enableBrowserLogging")
+    public static let enableNetworkLogging = Defaults.BoolKey("profile_enableNetworkLogging")
+    public static let enableStorageLogging = Defaults.BoolKey("profile_enableStorageLogging")
+    public static let enableLogToConsole = Defaults.BoolKey("profile_enableLogToConsole")
+    public static let enableLogToFile = Defaults.BoolKey("profile_enableLogToFile")
     public static let enableGeigerCounter = Defaults.BoolKey("profile.enableGeigerCounter")
 
     // caches
@@ -66,7 +75,7 @@ extension Defaults {
 extension UserDefaults {
     public func clearProfilePrefs() {
         for key in dictionaryRepresentation().keys {
-            if key.hasPrefix("profile.") {
+            if key.hasPrefix("profile") {
                 UserDefaults.standard.removeObject(forKey: key)
             }
         }

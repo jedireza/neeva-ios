@@ -70,7 +70,9 @@ struct ZeroQueryHeader: View {
                 .lineLimit(1)
             Spacer()
             Button(action: action) {
-                Symbol(icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
+                // decorative because the toggle action is expressed on the header view itself.
+                // This button is not an accessibility element.
+                Symbol(decorative: icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
                     .frame(
                         width: ZeroQueryUX.ToggleButtonSize, height: ZeroQueryUX.ToggleButtonSize,
                         alignment: .center
@@ -111,6 +113,22 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
+                    if let openTab = viewModel.openedFrom?.openedTab,
+                        FeatureFlag[.clearZeroQuery]
+                    {
+                        SearchSuggestionView(
+                            Suggestion.tabSuggestion(
+                                TabCardDetails(
+                                    tab: openTab,
+                                    manager: BrowserViewController.foregroundBVC().tabManager)
+                            )
+                        )
+                        .environmentObject(
+                            BrowserViewController.foregroundBVC().urlBar.shared
+                                .neevaSuggestionModel)
+                        SuggestionsDivider(height: 3)
+                    }
+
                     if viewModel.isPrivate {
                         IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0))
                             .padding(ZeroQueryUX.Padding)

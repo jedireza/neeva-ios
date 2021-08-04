@@ -8,6 +8,7 @@ class ZeroQueryModel: ObservableObject {
     @Published var isPrivate: Bool = false
     @Published var promoCard: PromoCardType? = nil
     @Published var buttonClickHandler: () -> Void = {}
+    @Published var openedFrom: ZeroQueryOpenedLocation?
 
     var signInHandler: () -> Void = {}
     var referralPromoHandler: () -> Void = {}
@@ -25,8 +26,11 @@ class ZeroQueryModel: ObservableObject {
             promoCard = .referralPromo {
                 self.referralPromoHandler()
             } onClose: {
+                // log closing referral promo from zero query
+                var attributes = EnvironmentHelper.shared.getAttributes()
+                attributes.append(ClientLogCounterAttribute(key: "source", value: "zero query"))
                 ClientLogger.shared.logCounter(
-                    .CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                    .CloseReferralPromo, attributes: attributes)
                 self.promoCard = nil
                 Defaults[.didDismissReferralPromoCard] = true
             }
@@ -103,11 +107,8 @@ class SuggestedSearchesModel: ObservableObject {
             }
 
             var deferredHistorySites = result.successValue?.asArray().compactMap { $0 } ?? []
-            var topFrecentHistorySite: Site?
-            if deferredHistorySites.count > 0 {
-                topFrecentHistorySite = deferredHistorySites[0]
-                deferredHistorySites.removeFirst()
-            }
+            let topFrecentHistorySite = deferredHistorySites[deferredHistorySites.indices]
+                .popFirst()
             // TODO: https://github.com/neevaco/neeva-ios-phoenix/issues/1027
             deferredHistorySites.sort { siteA, siteB in
                 return siteA.latestVisit?.date ?? 0 > siteB.latestVisit?.date ?? 0
@@ -125,9 +126,7 @@ class SuggestedSearchesModel: ObservableObject {
                 self.suggestedQueries.insert((query, topFrecentHistorySite), at: 0)
             }
 
-            if let completion = completion {
-                completion()
-            }
+            completion?()
         }
     }
 }

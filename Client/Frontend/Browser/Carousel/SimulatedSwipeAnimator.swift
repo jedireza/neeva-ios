@@ -30,7 +30,7 @@ protocol SimulateForwardAnimatorDelegate: AnyObject {
 class SimulatedSwipeAnimator: NSObject {
     weak var delegate: SimulateForwardAnimatorDelegate?
     weak var animatingView: UIView?
-    weak var webViewContainer: UIView?
+    weak var contentView: UIView?
     var swipeDirection: SwipeDirection
 
     fileprivate var prevOffset: CGPoint?
@@ -46,11 +46,11 @@ class SimulatedSwipeAnimator: NSObject {
     }
 
     init(
-        swipeDirection: SwipeDirection, animatingView: UIView, webViewContainer: UIView,
+        swipeDirection: SwipeDirection, animatingView: UIView, contentView: UIView,
         params: SimulateForwardAnimationParameters = DefaultParameters
     ) {
         self.animatingView = animatingView
-        self.webViewContainer = webViewContainer
+        self.contentView = contentView
         self.params = params
         self.swipeDirection = swipeDirection
 
@@ -77,11 +77,11 @@ extension SimulatedSwipeAnimator {
             UIView.animate(
                 withDuration: params.cancelAnimationDuration,
                 animations: {
-                    self.webViewContainer?.transform = .identity
+                    self.contentView?.transform = .identity
                     self.animatingView?.transform = .identity
                 }, completion: { _ in })
         } else {
-            self.webViewContainer?.transform = .identity
+            self.contentView?.transform = .identity
             UIView.animate(
                 withDuration: params.recenterAnimationDuration,
                 animations: {
@@ -98,7 +98,7 @@ extension SimulatedSwipeAnimator {
 
     fileprivate func animateAwayWithVelocity(_ velocity: CGPoint, speed: CGFloat) {
         guard let animatingView = self.animatingView,
-            let webViewContainer = self.webViewContainer
+            let webViewContainer = self.contentView
         else {
             return
         }
@@ -142,7 +142,7 @@ extension SimulatedSwipeAnimator {
             prevOffset = containerCenter
         case .changed:
             animatingView?.transform = transformForTranslation(translation.x)
-            webViewContainer?.transform = self.transformForTranslation(translation.x / 2)
+            contentView?.transform = self.transformForTranslation(translation.x / 2)
             prevOffset = CGPoint(x: translation.x, y: 0)
         case .cancelled:
             animateBackToCenter(canceledSwipe: true)

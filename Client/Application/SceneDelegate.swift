@@ -59,10 +59,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         browserViewController.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
         browserViewController.restorationClass = AppDelegate.self
 
-        let navigationController = NavigationController(rootViewController: browserViewController)
-        navigationController.delegate = self
-        navigationController.edgesForExtendedLayout = UIRectEdge(rawValue: 0)
-        window!.rootViewController = navigationController
+        window!.rootViewController = browserViewController
 
         browserViewController.tabManager.selectedTab?.reload()
     }
@@ -225,24 +222,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let introVC = browserViewController.introViewController {
             introVC.dismiss(animated: true, completion: nil)
-        }
-    }
-}
-
-// MARK: - Root View Controller Animations
-extension SceneDelegate: UINavigationControllerDelegate {
-    func navigationController(
-        _ navigationController: UINavigationController,
-        animationControllerFor operation: UINavigationController.Operation,
-        from fromVC: UIViewController, to toVC: UIViewController
-    ) -> UIViewControllerAnimatedTransitioning? {
-        switch operation {
-        case .push:
-            return BrowserToTrayAnimator()
-        case .pop:
-            return TrayToBrowserAnimator()
-        default:
-            return nil
         }
     }
 }

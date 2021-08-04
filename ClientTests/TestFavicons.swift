@@ -23,8 +23,6 @@ class TestFavicons: ProfileTest {
         self.waitForExpectations(timeout: 100, handler: nil)
     }
 
-    // XXX: Temporarily disabling this due to intermittent failures on BuddyBuild.
-    /*
     func testFaviconFetcherParse() {
         let expectation = self.expectation(description: "Wait for Favicons to be fetched")
 
@@ -32,24 +30,27 @@ class TestFavicons: ProfileTest {
         // I want a site that also has an iOS app so I can get "apple-touch-icon-precomposed" icons as well
         let url = URL(string: "https://instagram.com")
         FaviconFetcher.getForURL(url!, profile: profile).uponQueue(.main) { result in
-            guard let favicons = result.successValue, favicons.count > 0, let url = favicons.first?.url.asURL else {
+            guard let favicons = result.successValue, favicons.count > 0,
+                let url = favicons.first?.url
+            else {
                 XCTFail("Favicons were not found.")
                 return expectation.fulfill()
             }
             XCTAssertEqual(favicons.count, 1, "Instagram should have a Favicon.")
-            SDWebImageManager.shared.loadImage(with: url, options: .retryFailed, progress: nil, completed: { (img, _, _, _, _, _) in
-                guard let image = img else {
-                    XCTFail("Not a valid URL provided for a favicon.")
-                    return expectation.fulfill()
-                }
-                XCTAssertNotEqual(image.size, .zero)
-                expectation.fulfill()
-            })
+            SDWebImageManager.shared.loadImage(
+                with: url, options: .retryFailed, progress: nil,
+                completed: { (img, _, _, _, _, _) in
+                    guard let image = img else {
+                        XCTFail("Not a valid URL provided for a favicon.")
+                        return expectation.fulfill()
+                    }
+                    XCTAssertNotEqual(image.size, .zero)
+                    expectation.fulfill()
+                })
 
         }
         self.waitForExpectations(timeout: 3000, handler: nil)
     }
-    */
 
     func testDefaultFavicons() {
         // The amazon case tests a special case for multi-reguin domain lookups

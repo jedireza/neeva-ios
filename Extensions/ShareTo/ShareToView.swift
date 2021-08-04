@@ -25,7 +25,9 @@ struct ShareToView: View {
                         NavigationLink(
                             destination: AddToSpaceView(item: item, onDismiss: onDismiss)
                         ) {
-                            ShareToAction(name: "Save to Spaces", icon: Symbol(.bookmark, size: 18))
+                            ShareToAction(
+                                name: "Save to Spaces",
+                                icon: Symbol(decorative: .bookmark, size: 18))
                         }
                         Divider()
                         Button(action: {
@@ -55,7 +57,8 @@ struct ShareToView: View {
                             ShareToAction(
                                 name: "Load in Background",
                                 icon: Symbol(
-                                    .squareAndArrowDownOnSquare, size: 18, weight: .regular))
+                                    decorative: .squareAndArrowDownOnSquare, size: 18,
+                                    weight: .regular))
                         }
                     }
                     Spacer()

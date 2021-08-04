@@ -18,7 +18,7 @@ struct SuggestedSearchesView: View {
             ForEach(model.suggestedQueries.prefix(3), id: \.1) { query, site in
                 Button(action: { openURL(site.url) }) {
                     HStack {
-                        Symbol(.clock)
+                        Symbol(decorative: .clock)
                         Text(query.trimmingCharacters(in: .whitespacesAndNewlines))
                             .foregroundColor(.label)
                         Spacer()
@@ -32,7 +32,7 @@ struct SuggestedSearchesView: View {
                     Button(action: { setSearchInput(query) }) {
                         VStack {
                             Spacer(minLength: 0)
-                            Symbol(.arrowUpLeft)
+                            Symbol(decorative: .arrowUpLeft)
                                 .padding(.horizontal, 5)
                                 .padding(.leading)
                             Spacer(minLength: 0)

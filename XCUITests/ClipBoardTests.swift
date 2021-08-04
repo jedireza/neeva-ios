@@ -42,6 +42,7 @@ class ClipBoardTests: BaseTestCase {
 
         newTab()
 
+        waitForExistence(app.textFields["address"])
         app.textFields["address"].press(forDuration: 1)
         app.menuItems["Paste & Go"].tap()
 

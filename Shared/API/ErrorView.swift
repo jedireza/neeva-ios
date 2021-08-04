@@ -226,7 +226,7 @@ private struct OfflineView: View {
                     HStack {
                         Spacer()
                         Text("Reload Page").withFont(.labelLarge)
-                        Symbol(.arrowClockwise)
+                        Symbol(decorative: .arrowClockwise)
                         Spacer()
                     }
                 }.buttonStyle(BigBlueButtonStyle())

@@ -73,6 +73,20 @@ struct SuggestionChipView: View {
     }
 }
 
+struct TabSuggestionsList: View {
+    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
+
+    var body: some View {
+        if !neevaModel.topSuggestions.isEmpty {
+            SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
+            ForEach(neevaModel.tabSuggestions) { suggestion in
+                SearchSuggestionView(suggestion)
+                    .environmentObject(neevaModel)
+            }.padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
+        }
+    }
+}
+
 struct TopSuggestionsList: View {
     @EnvironmentObject private var neevaModel: NeevaSuggestionModel
 

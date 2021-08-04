@@ -18,7 +18,7 @@ import XCGLogger
     import SwiftyJSON
 #endif
 
-private let log = Logger.sync
+private let log = Logger.storage
 
 public let ProfileRemoteTabsSyncDelay: TimeInterval = 0.1
 
@@ -252,7 +252,8 @@ open class BrowserProfile: Profile {
     /// Any other class that needs to access any one of these should ensure
     /// that this is initialized first.
     fileprivate lazy var legacyPlaces:
-        BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations = { [unowned self] in
+        BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations = {
+            [unowned self] in
             return SQLiteHistory(db: self.db)
         }()
 
@@ -281,7 +282,8 @@ open class BrowserProfile: Profile {
     }()
 
     lazy var remoteClientsAndTabs:
-        RemoteClientsAndTabs & ResettableSyncStorage & AccountRemovalDelegate & RemoteDevices = { [unowned self] in
+        RemoteClientsAndTabs & ResettableSyncStorage & AccountRemovalDelegate & RemoteDevices = {
+            [unowned self] in
             return SQLiteRemoteClientsAndTabs(db: self.db)
         }()
 

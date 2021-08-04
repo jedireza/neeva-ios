@@ -369,6 +369,12 @@ extension URL {
 // Extensions to deal with ReaderMode URLs
 
 extension URL {
+    public func isNeevaURL() -> Bool {
+        return
+            (self.scheme == NeevaConstants.appHomeURL.scheme
+            && self.host == NeevaConstants.appHomeURL.host) || self.host == "login.neeva.com"
+    }
+
     public var isReaderModeURL: Bool {
         let scheme = self.scheme
         let host = self.host

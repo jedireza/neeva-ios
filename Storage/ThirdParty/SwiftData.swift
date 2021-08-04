@@ -37,7 +37,7 @@ import UIKit
 import XCGLogger
 
 private let DatabaseBusyTimeout: Int32 = 3 * 1000
-private let log = Logger.sync
+private let log = Logger.storage
 
 public class DBOperationCancelled: MaybeErrorType {
     public var description: String {
@@ -1157,7 +1157,7 @@ open class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         if let error = error {
             // Special case: Write additional info to the database log in the case of a database corruption.
             if error.code == Int(SQLITE_CORRUPT) {
-                writeCorruptionInfoForDBNamed(filename, toLogger: Logger.corrupt)
+                writeCorruptionInfoForDBNamed(filename, toLogger: log)
                 Sentry.shared.sendWithStacktrace(
                     message: "SQLITE_CORRUPT", tag: SentryTag.swiftData, severity: .error,
                     description: "DB file '\(filename)'. \(error.localizedDescription)")
@@ -1220,7 +1220,7 @@ open class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         if let error = error {
             // Special case: Write additional info to the database log in the case of a database corruption.
             if error.code == Int(SQLITE_CORRUPT) {
-                writeCorruptionInfoForDBNamed(filename, toLogger: Logger.corrupt)
+                writeCorruptionInfoForDBNamed(filename, toLogger: log)
                 Sentry.shared.sendWithStacktrace(
                     message: "SQLITE_CORRUPT", tag: SentryTag.swiftData, severity: .error,
                     description: "DB file '\(filename)'. \(error.localizedDescription)")

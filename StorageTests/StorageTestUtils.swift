@@ -88,3 +88,8 @@ extension BrowserDB {
             })
     }
 }
+
+// see also `skipTest` in UITests and XCUITests
+func skipTest(issue: Int, _ message: String) throws {
+    throw XCTSkip("#\(issue): \(message)")
+}

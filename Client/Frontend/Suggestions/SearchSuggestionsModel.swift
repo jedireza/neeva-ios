@@ -6,6 +6,7 @@ import Shared
 
 /// A type that wraps both query and URL suggestions
 public enum Suggestion {
+    case tabSuggestion(TabCardDetails)
     case query(SuggestionsQuery.Data.Suggest.QuerySuggestion)
     case url(SuggestionsQuery.Data.Suggest.UrlSuggestion)
     case bang(Bang)
@@ -64,6 +65,8 @@ extension Suggestion: Identifiable, Equatable {
             return "lens-\(lens.shortcut)"
         case .navigation(let nav):
             return "nav-\(nav.url)"
+        case .tabSuggestion(let tab):
+            return "tab-\(tab.id)"
         }
     }
 

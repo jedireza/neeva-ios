@@ -90,7 +90,7 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
     }
 }
 
-class TabCardDetails: CardDetails, AccessingManagerProvider,
+public class TabCardDetails: CardDetails, AccessingManagerProvider,
     ClosingManagerProvider, SelectingManagerProvider
 {
     typealias Item = Tab
@@ -98,6 +98,11 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     var id: String
     var manager: TabManager
+
+    var url: URL? {
+        manager.get(for: id)?.url
+    }
+
     var isSelected: Bool {
         self.manager.selectedTab?.tabUUID == id
     }
@@ -113,7 +118,7 @@ class TabCardDetails: CardDetails, AccessingManagerProvider,
         self.manager = manager
     }
 
-    func performDrop(info: DropInfo) -> Bool {
+    public func performDrop(info: DropInfo) -> Bool {
         guard info.hasItemsConforming(to: ["public.url"]) else {
             return false
         }

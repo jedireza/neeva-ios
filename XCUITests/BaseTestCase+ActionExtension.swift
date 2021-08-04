@@ -30,8 +30,10 @@ extension BaseTestCase {
     }
 
     /// Launches from tab page, ends on tab page
-    func clearPrivateData() {
-        goToClearData()
+    func clearPrivateData(fromTab: Bool = true) {
+        if fromTab {
+            goToClearData()
+        }
 
         app.cells["Clear Selected Data on This Device"].tap()
         app.buttons["Clear Data"].tap()

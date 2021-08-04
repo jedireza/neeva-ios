@@ -65,9 +65,10 @@ class DomainAutocompleteTest: BaseTestCase {
         XCTAssertEqual(value as? String, website["value"]!, "Wrong autocompletion")
     }
     // Delete the entire string and verify that the home panels are shown again.
-    /* Disabled: TopSitesCell not found.
-    func testDeleteEntireString() {
-        navigator.goto(URLBarOpen)
+    func testDeleteEntireString() throws {
+        try skipTest(issue: 1234, "needs update: TopSitesCell not found")
+
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("www.moz")
         waitForExistence(app.buttons["Clear text"])
         app.buttons["Clear text"].tap()
@@ -78,20 +79,18 @@ class DomainAutocompleteTest: BaseTestCase {
 
         waitForExistence(app.cells["TopSitesCell"])
     }
-    */
 
     // Ensure that the scheme is included in the autocompletion.
-    /* Disabled: Test needs to be updated.
-    func testEnsureSchemeIncludedAutocompletion() {
-        navigator.openURL(websiteExample["url"]!)
+    func testEnsureSchemeIncludedAutocompletion() throws {
+        try skipTest(issue: 1234, "needs update")
+        openURL(websiteExample["url"]!)
         waitUntilPageLoad()
-        navigator.goto(URLBarOpen)
+        app.buttons["Address Bar"].tap()
         app.textFields["address"].typeText("http")
         waitForValueContains(app.textFields["address"], value: "example")
         let value = app.textFields["address"].value
         XCTAssertEqual(value as? String, "http://www.example.com", "Wrong autocompletion")
     }
-    */
     // Non-matches.
     func testNoMatches() {
         openURL("twitter.com/login")
@@ -181,13 +180,17 @@ class DomainAutocompleteTest: BaseTestCase {
     }
 
     // This test is disabled for general schema due to bug 1494269
-    /* Disabled as our suggest drop-down depends on being logged in to Neeva.
-    func testDeletingCharsUpdateTheResults() {
-        let url1 = ["url" : "git.es", "label" : "git.es - Dominio premium en venta"]
-        let url2 = ["url" : "github.com", "label" : "The world's leading software development platform · GitHub"]
+    func testDeletingCharsUpdateTheResults() throws {
+        try skipTest(issue: 1234, "Disabled as our suggest drop-down depends on being logged in to Neeva")
 
-        navigator.goto(URLBarOpen)
-        app.typeText("gith")
+        let url1 = ["url": "git.es", "label": "git.es - Dominio premium en venta"]
+        let url2 = [
+            "url": "github.com",
+            "label": "The world's leading software development platform · GitHub",
+        ]
+
+        app.buttons["Address Bar"].tap()
+        app.textFields["address"].typeText("gith")
 
         waitForExistence(app.tables["SiteTable"].cells.staticTexts[url2["label"]!])
         // There should be only one matching entry
@@ -195,8 +198,8 @@ class DomainAutocompleteTest: BaseTestCase {
         XCTAssertFalse(app.tables["SiteTable"].staticTexts[url1["label"]!].exists)
 
         // Remove 2 chars ("th")  to have two coincidences with git
-        app.typeText("\u{0008}")
-        app.typeText("\u{0008}")
+        app.textFields["address"].typeText("\u{0008}")
+        app.textFields["address"].typeText("\u{0008}")
 
         XCTAssertTrue(app.tables["SiteTable"].staticTexts[url2["label"]!].exists)
         XCTAssertTrue(app.tables["SiteTable"].staticTexts[url1["label"]!].exists)
@@ -205,12 +208,11 @@ class DomainAutocompleteTest: BaseTestCase {
         let charsAddressBar: String = (app.textFields["address"].value! as? String)!
 
         for _ in 1...charsAddressBar.count {
-            app.typeText("\u{0008}")
+            app.textFields["address"].typeText("\u{0008}")
         }
 
         waitForNoExistence(app.tables["SiteTable"].staticTexts[url2["label"]!])
         XCTAssertFalse(app.tables["SiteTable"].staticTexts[url2["label"]!].exists)
         XCTAssertFalse(app.tables["SiteTable"].staticTexts[url1["label"]!].exists)
     }
-    */
 }

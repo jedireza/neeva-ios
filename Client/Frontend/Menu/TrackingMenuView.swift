@@ -191,7 +191,7 @@ struct TrackingMenuView: View {
                     HStack {
                         Text("Advanced Privacy Settings").withFont(.bodyLarge)
                         Spacer()
-                        Symbol(.shieldLefthalfFill)
+                        Symbol(decorative: .shieldLefthalfFill)
                     }.foregroundColor(.label)
                 }
                 .sheet(isPresented: $isShowingPopup) {

@@ -101,14 +101,18 @@ extension BrowserViewController: TabToolbarDelegate {
 
         let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare))
         { _ in
-            self.openLazyTab()
+            DispatchQueue.main.async {
+                self.openLazyTab(openedFrom: .openTab(self.tabManager.selectedTab))
+            }
         }
         newTab.accessibilityLabel = "New Tab"
 
         let newIncognitoTab = UIAction(
             title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")
         ) { _ in
-            self.openLazyTab()
+            DispatchQueue.main.async {
+                self.openLazyTab(openedFrom: .openTab(self.tabManager.selectedTab))
+            }
         }
 
         let tabCount =

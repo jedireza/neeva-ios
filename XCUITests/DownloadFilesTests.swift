@@ -9,6 +9,8 @@ let testBLOBFileSize = "35 bytes"
 class DownloadFilesTests: BaseTestCase {
 
     override func tearDown() {
+        // TODO: do this another way
+        /*
         // The downloaded file has to be removed between tests
         waitForExistence(app.tables["DownloadsTable"])
 
@@ -20,7 +22,7 @@ class DownloadFilesTests: BaseTestCase {
                 waitForExistence(app.tables.cells.buttons["Delete"])
                 app.tables.cells.buttons["Delete"].tap()
             }
-        }
+        }*/
     }
 
     private func deleteItem(itemName: String) {
@@ -29,9 +31,9 @@ class DownloadFilesTests: BaseTestCase {
         app.tables.cells.buttons["Delete"].tap()
     }
 
-    /* Disabled: Test depends on unreachable server.
-    func testDownloadFileContextMenu() {
-        navigator.openURL(testURL)
+    func testDownloadFileContextMenu() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
+        openURL(testURL)
         waitUntilPageLoad()
         // Verify that the context menu prior to download a file is correct
         app.webViews.links["1 Mio file"].firstMatch.tap()
@@ -40,32 +42,26 @@ class DownloadFilesTests: BaseTestCase {
         XCTAssertTrue(app.tables["Context Menu"].staticTexts[testFileName].exists)
         XCTAssertTrue(app.tables["Context Menu"].cells["download"].exists)
         app.buttons["Cancel"].tap()
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
+
         checkTheNumberOfDownloadedItems(items: 0)
     }
-    */
 
     // Smoketest
-    /* Disabled: Test depends on unreachable server.
-    func testDownloadFile() {
+    func testDownloadFile() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
         downloadFile(fileName: testFileName, numberOfDownloads: 1)
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
 
-        waitForExistence(app.tables["DownloadsTable"])
         // There should be one item downloaded. It's name and size should be shown
         checkTheNumberOfDownloadedItems(items: 1)
         XCTAssertTrue(app.tables.cells.staticTexts[testFileName].exists)
         XCTAssertTrue(app.tables.cells.staticTexts[testFileSize].exists)
     }
-    */
 
-    /* Disabled: Test depends on unreachable server.
-    func testDeleteDownloadedFile() {
+    func testDeleteDownloadedFile() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
         downloadFile(fileName: testFileName, numberOfDownloads: 1)
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
+
+        // TODO: update to check this another way
         waitForExistence(app.tables["DownloadsTable"])
 
         deleteItem(itemName: testFileName)
@@ -74,13 +70,13 @@ class DownloadFilesTests: BaseTestCase {
         // After removing the number of items should be 0
         checkTheNumberOfDownloadedItems(items: 0)
     }
-    */
 
-    /* Disabled: Test depends on unreachable server.
-    func testShareDownloadedFile() {
+    func testShareDownloadedFile() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
         downloadFile(fileName: testFileName, numberOfDownloads: 1)
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
+
+        // TODO: update to check this another way
+        waitForExistence(app.tables["DownloadsTable"])
         app.tables.cells.staticTexts[testFileName].swipeLeft()
 
         XCTAssertTrue(app.tables.cells.buttons["Share"].exists)
@@ -94,14 +90,12 @@ class DownloadFilesTests: BaseTestCase {
         //    app.buttons["Cancel"].tap()
         //}
     }
-    */
 
-    /* Disabled: Test depends on unreachable server.
-    func testLongPressOnDownloadedFile() {
+    func testLongPressOnDownloadedFile() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
         downloadFile(fileName: testFileName, numberOfDownloads: 1)
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
 
+        // TODO: update to check this another way
         waitForExistence(app.tables["DownloadsTable"])
         //Comenting out until share sheet can be managed with automated tests issue #5477
         //app.tables.cells.staticTexts[testFileName].press(forDuration: 1)
@@ -112,7 +106,6 @@ class DownloadFilesTests: BaseTestCase {
         //    app.buttons["Cancel"].tap()
         //}
     }
-    */
 
     private func downloadFile(fileName: String, numberOfDownloads: Int) {
         openURL(testURL)
@@ -132,58 +125,47 @@ class DownloadFilesTests: BaseTestCase {
         app.buttons["Download Link"].tap()
     }
 
-    /* Disabled: Test depends on unreachable server.
-    func testDownloadMoreThanOneFile() {
+    func testDownloadMoreThanOneFile() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
         downloadFile(fileName: testFileName, numberOfDownloads: 2)
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
 
-        waitForExistence(app.tables["DownloadsTable"])
         checkTheNumberOfDownloadedItems(items: 2)
     }
-    */
 
-    /* Disabled: Test depends on unreachable server.
-    func testRemoveUserDataRemovesDownloadedFiles() {
+    func testRemoveUserDataRemovesDownloadedFiles() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
         // The option to remove downloaded files from clear private data is off by default
-        navigator.goto(ClearPrivateDataSettings)
-        XCTAssertTrue(app.cells.switches["Downloaded Files"].isEnabled, "The switch is not set correclty by default")
+        goToClearData()
+        XCTAssertTrue(
+            app.cells.switches["Downloaded Files"].isEnabled,
+            "The switch is not set correclty by default")
 
         // Change the value of the setting to on (make an action for this)
         downloadFile(fileName: testFileName, numberOfDownloads: 1)
 
         // Check there is one item
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
-
         waitForExistence(app.tables["DownloadsTable"])
         checkTheNumberOfDownloadedItems(items: 1)
 
         // Remove private data once the switch to remove downloaded files is enabled
-        navigator.goto(ClearPrivateDataSettings)
+        goToClearData()
         app.cells.switches["Downloaded Files"].tap()
-        navigator.performAction(Action.AcceptClearPrivateData)
+        clearPrivateData(fromTab: false)
 
-        navigator.goto(NeevaMenu)
-        navigator.goto(LibraryPanel_Downloads)
         // Check there is still one item
         checkTheNumberOfDownloadedItems(items: 0)
     }
-    */
 
     private func checkTheNumberOfDownloadedItems(items: Int) {
+        // TODO: update to check this another way
         waitForExistence(app.tables["DownloadsTable"])
         let list = app.tables["DownloadsTable"].cells.count
         XCTAssertEqual(list, items, "The number of items in the downloads table is not correct")
     }
     // Smoketest
-    /* Disabled: Test depends on unreachable server.
-    func testToastButtonToGoToDownloads() {
+    func testToastButtonToGoToDownloads() throws {
+        try skipTest(issue: 1240, "Test depends on unreachable server")
         downloadFile(fileName: testFileName, numberOfDownloads: 1)
-        waitForExistence(app.buttons["Downloads"])
-        app.buttons["Downloads"].tap()
-        waitForExistence(app.tables["DownloadsTable"], timeout: 3)
         checkTheNumberOfDownloadedItems(items: 1)
     }
-    */
 }

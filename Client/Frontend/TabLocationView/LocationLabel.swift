@@ -42,7 +42,7 @@ struct LocationLabelAndIcon: View {
             Label {
                 Text(query).withFont(.bodyLarge)
             } icon: {
-                Symbol(.magnifyingglass)
+                Symbol(decorative: .magnifyingglass)
             }
         } else if let scheme = url?.scheme, let host = url?.host,
             scheme == "https" || scheme == "http"
@@ -54,9 +54,9 @@ struct LocationLabelAndIcon: View {
                     host
                 } icon: {
                     if isSecure {
-                        Symbol(.lockFill)
+                        Symbol(decorative: .lockFill)
                     } else {
-                        Symbol(.lockSlashFill)
+                        Symbol(decorative: .lockSlashFill)
                     }
                 }
             } else {

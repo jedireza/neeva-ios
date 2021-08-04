@@ -6,8 +6,9 @@ import XCTest
 
 // Tests for both platforms
 class DesktopModeTestsIpad: IpadOnlyTestCase {
-    func testLongPressReload() {
-        if skipPlatform { return }
+    func testLongPressReload() throws {
+        try skipIfNeeded()
+
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
@@ -29,8 +30,8 @@ class DesktopModeTestsIpad: IpadOnlyTestCase {
 }
 
 class DesktopModeTestsIphone: IphoneOnlyTestCase {
-    func testClearPrivateData() {
-        if skipPlatform { return }
+    func testClearPrivateData() throws {
+        try skipIfNeeded()
 
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
@@ -48,8 +49,8 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 
-    func testSameHostInMultipleTabs() {
-        if skipPlatform { return }
+    func testSameHostInMultipleTabs() throws {
+        try skipIfNeeded()
 
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
@@ -73,8 +74,8 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     }
 
     // Smoketest
-    func testChangeModeInSameTab() {
-        if skipPlatform { return }
+    func testChangeModeInSameTab() throws {
+        try skipIfNeeded()
 
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
@@ -88,41 +89,36 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 
-    // Was flaky on bots testing irrelevant changes. Disabling to fix later.
-    /*func testPrivateModeOffAlsoRemovesFromNormalMode() {
-        if skipPlatform { return }
+    func testPrivateModeOffAlsoRemovesFromNormalMode() throws {
+        try skipIfNeeded()
 
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-        navigator.goto(ShareMenu)
-        navigator.goto(RequestDesktopSite) // toggle on
+        requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
         // is now on in normal mode
 
-        navigator.nowAt(BrowserTab)
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        toggleIncognito()
+        openURL(path(forTestPage: "test-user-agent.html"))
         // Workaround to be sure the snackbar dissapers
         app.buttons["Reload"].tap()
-        navigator.goto(ShareMenu)
-        navigator.goto(RequestMobileSite) // toggle off
+        requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
         // is now off in private, mode, confirm it is off in normal mode
 
-        navigator.nowAt(BrowserTab)
-        navigator.toggleOff(userState.isPrivate, withAction: Action.TogglePrivateMode)
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        toggleIncognito()
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-    }*/
+    }
 
-    func testPrivateModeOnHasNoAffectOnNormalMode() {
-        if skipPlatform { return }
+    func testPrivateModeOnHasNoAffectOnNormalMode() throws {
+        try skipIfNeeded()
 
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
@@ -145,29 +141,26 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 
-    /* Disabled: Action to close all tabs does not exist.
-    func testLongPressReload() {
-        if skipPlatform { return }
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+    func testLongPressReload() throws {
+        try skipIfNeeded()
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
-        navigator.goto(ReloadLongPressMenu)
-        navigator.performAction(Action.RequestDesktopSiteViaReloadMenu)
+        requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
         // Covering scenario that when reloading the page should preserve Desktop site
-        navigator.performAction(Action.ReloadURL)
+        app.buttons["Reload"].tap()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
-        navigator.performAction(Action.AcceptRemovingAllTabs)
+        closeAllTabs()
 
         // Covering scenario that when closing a tab and re-opening should preserve Desktop mode
-        navigator.createNewTab()
-        navigator.openURL(path(forTestPage: "test-user-agent.html"))
+        newTab()
+        openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
     }
-    */
 }

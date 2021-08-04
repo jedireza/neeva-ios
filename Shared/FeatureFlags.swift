@@ -14,7 +14,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case debugURLBar = "URL Bar Debug Mode"
     case groupsInSwitcher = "TabGroups and Spaces in Switcher UI"
     case inlineAccountSettings = "Inline Account Settings"
-    case legacyTabSwitcher = "Legacy Tab Switcher"
     case newTopBar = "New Top Bar"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case pinToTopSites = "Pin to Top Sites"

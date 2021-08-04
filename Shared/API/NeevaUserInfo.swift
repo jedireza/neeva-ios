@@ -122,27 +122,17 @@ public class NeevaUserInfo: ObservableObject {
         self.clearUserInfoCache()
     }
 
-    public func updateKeychainTokenAndFetchUserInfo() {
-        let cookieStore = WKWebsiteDataStore.default().httpCookieStore
-        cookieStore.getAllCookies { cookies in
-            if let authCookie = cookies.first(where: {
-                NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
-            }) {
-
-                // check if token has changed, when different, save new token
-                // and fetch user info
-                let currentToken = self.getLoginCookie()
-                if currentToken != nil, currentToken == authCookie.value {
-                    self.isUserLoggedIn = true
-                    self.loadUserInfoFromDefaults()
-                    self.fetchUserPicture()
-                    self.reachability.stopNotifier()
-                } else {
-                    try? NeevaConstants.keychain.set(
-                        authCookie.value, key: NeevaConstants.loginKeychainKey)
-                    self.fetch()
-                }
-            }
+    public func setLoginCookie(_ value: String) {
+        // check if token has changed, when different, save new token
+        // and fetch user info
+        if self.getLoginCookie() == value {
+            self.isUserLoggedIn = true
+            self.loadUserInfoFromDefaults()
+            self.fetchUserPicture()
+            self.reachability.stopNotifier()
+        } else {
+            try? NeevaConstants.keychain.set(value, key: NeevaConstants.loginKeychainKey)
+            self.fetch()
         }
     }
 

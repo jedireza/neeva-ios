@@ -10,21 +10,18 @@ import Shared
 import SwiftUI
 
 extension BrowserViewController {
-    func showSearchBarTourPrompt() {
-        // show tour prompt for search bar
-        if Defaults[.searchInputPromptDismissed] || !NeevaUserInfo.shared.hasLoginCookie() {
+    func showSearchBarTourPromptIfNeeded(for url: URL) {
+        guard NeevaConstants.isNeevaHome(url: url), !Defaults[.searchInputPromptDismissed],
+            NeevaUserInfo.shared.hasLoginCookie()
+        else {
             return
         }
 
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: self.urlBar.view)
+        let prompt = SearchBarTourPromptViewController(delegate: self, source: urlBar.view)
         prompt.view.backgroundColor = UIColor.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
-        guard let currentViewController = navigationController?.topViewController else {
-            return
-        }
-
-        if currentViewController is BrowserViewController {
+        if self.presentedViewController == nil {
             present(prompt, animated: true, completion: nil)
         }
     }
@@ -69,11 +66,7 @@ extension BrowserViewController {
         prompt.view.backgroundColor = UIColor.Tour.Background.lightVariant
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 300, height: 190))
 
-        guard let currentViewController = navigationController?.topViewController else {
-            return
-        }
-
-        if currentViewController is BrowserViewController {
+        if self.presentedViewController == nil {
             present(prompt, animated: true, completion: nil)
         }
     }

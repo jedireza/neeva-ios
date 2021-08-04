@@ -370,8 +370,9 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     }
 
     private func hideProgressBar() {
-        progressBar.isHidden = true
-        progressBar.setProgress(0, animated: false)
+        model.reloadButton = .reload
+        progressBar.alpha = 0
+        progressBar.resetProgressBar()
     }
 
     func enterOverlayMode() {

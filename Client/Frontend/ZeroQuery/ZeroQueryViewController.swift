@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import Defaults
 import SDWebImage
 import Shared
@@ -35,10 +36,19 @@ protocol ZeroQueryPanelDelegate: AnyObject {
     func zeroQueryPanel(didEnterQuery query: String)
 }
 
-enum ZeroQueryOpenedLocation {
+enum ZeroQueryOpenedLocation: Equatable {
     case tabTray
-    case openTab
+    case openTab(Tab?)
     case createdTab
+
+    var openedTab: Tab? {
+        switch self {
+        case .openTab(let tab):
+            return tab
+        default:
+            return nil
+        }
+    }
 }
 
 class ZeroQueryViewController: UIViewController {
@@ -48,35 +58,32 @@ class ZeroQueryViewController: UIViewController {
     fileprivate let flowLayout = UICollectionViewFlowLayout()
 
     var isLazyTab: Bool = false
-    var openedFrom: ZeroQueryOpenedLocation? = nil
 
     lazy var zeroQueryView: UIView = { [unowned self] in
-        let controller = UIHostingController(
-            rootView: ZeroQueryView()
-                .environmentObject(model)
-                .environmentObject(suggestedSitesViewModel)
-                .environmentObject(suggestedSearchesModel)
-                .environment(\.setSearchInput) { [weak self] query in
-                    self?.delegate?.zeroQueryPanel(didEnterQuery: query)
-                }
-                .environment(\.onOpenURL) { [weak self] url in
-                    self?.showSiteWithURLHandler(url)
-                }
-                .environment(\.shareURL) { [weak self] url in
-                    let helper = ShareExtensionHelper(url: url, tab: nil)
-                    let controller = helper.createActivityViewController({ (_, _) in })
-                    controller.modalPresentationStyle = .formSheet
-                    self?.present(controller, animated: true, completion: nil)
-                }
-                .environment(\.zeroQueryHideTopSite) { [weak self] url in
-                    self?.hideURLFromTopSites(url)
-                }
-                .environment(\.openInNewTab) { [weak self] url, isPrivate in
-                    self?.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(
-                        url, isPrivate: isPrivate)
-                }
+        let zeroQueryView = ZeroQueryView()
+            .environmentObject(model)
+            .environmentObject(suggestedSitesViewModel)
+            .environmentObject(suggestedSearchesModel)
+            .environment(\.setSearchInput) { [weak self] query in
+                self?.delegate?.zeroQueryPanel(didEnterQuery: query)
+            }
+            .environment(\.onOpenURL) { [weak self] url in
+                self?.showSiteWithURLHandler(url)
+            }
+            .environment(\.shareURL) { [weak self] url in
+                let helper = ShareExtensionHelper(url: url, tab: nil)
+                let controller = helper.createActivityViewController({ (_, _) in })
+                controller.modalPresentationStyle = .formSheet
+                self?.present(controller, animated: true, completion: nil)
+            }
+            .environment(\.zeroQueryHideTopSite) { [weak self] url in
+                self?.hideURLFromTopSites(url)
+            }.environment(\.openInNewTab) { [weak self] url, isPrivate in
+                self?.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(
+                    url, isPrivate: isPrivate)
+            }
 
-        )
+        let controller = UIHostingController(rootView: zeroQueryView)
         controller.view.backgroundColor = UIColor.HomePanel.topSitesBackground
         view.addSubview(controller.view)
         return controller.view
@@ -145,7 +152,7 @@ class ZeroQueryViewController: UIViewController {
         let bvc = SceneDelegate.getCurrentSceneDelegate().getBVC()
 
         DispatchQueue.main.async {
-            switch self.openedFrom {
+            switch self.model.openedFrom {
             case .tabTray:
                 bvc.showTabTray()
             case .createdTab:
@@ -160,7 +167,7 @@ class ZeroQueryViewController: UIViewController {
 
     public func reset() {
         isLazyTab = false
-        openedFrom = nil
+        model.openedFrom = nil
     }
 }
 
@@ -175,6 +182,11 @@ extension ZeroQueryViewController: DataObserverDelegate {
                 self.showSiteWithURLHandler(NeevaConstants.appSigninURL)
             }
             self.model.referralPromoHandler = {
+                // log click referral promo from zero query page
+                var attributes = EnvironmentHelper.shared.getAttributes()
+                attributes.append(ClientLogCounterAttribute(key: "source", value: "zero query"))
+                ClientLogger.shared.logCounter(
+                    .OpenReferralPromo, attributes: attributes)
                 self.showSiteWithURLHandler(NeevaConstants.appReferralsURL)
             }
             self.model.updateState()

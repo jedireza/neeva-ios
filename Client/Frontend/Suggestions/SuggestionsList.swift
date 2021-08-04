@@ -30,6 +30,8 @@ struct SuggestionsList: View {
                         QuerySuggestionsList()
                     }
                 } else {
+                    TabSuggestionsList()
+
                     if neevaModel.suggestions.isEmpty && neevaModel.shouldShowSuggestions {
                         PlaceholderSuggestions()
                     } else {

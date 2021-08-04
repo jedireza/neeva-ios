@@ -188,7 +188,7 @@ private let AllTriggers: [String] = [
 private let AllTablesIndicesTriggersAndViews: [String] =
     AllViews + AllTriggers + AllIndices + AllTables
 
-private let log = Logger.sync
+private let log = Logger.storage
 
 /// The monolithic class that manages the inter-related history etc. tables.
 /// We rely on SQLiteHistory having initialized the favicon table first.

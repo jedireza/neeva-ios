@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import XCGLogger
 
-private let log = Logger.sync
+private let log = Logger.storage
 
 extension SQLiteHistory: HistoryRecommendations {
     static let MaxHistoryRowCount: UInt = 200000

@@ -7,7 +7,7 @@ import Shared
 import SwiftyJSON
 import XCGLogger
 
-private let log = Logger.sync
+private let log = Logger.storage
 
 open class SQLiteRemoteClientsAndTabs: RemoteClientsAndTabs {
     let db: BrowserDB

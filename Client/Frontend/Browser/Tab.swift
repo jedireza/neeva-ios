@@ -345,7 +345,10 @@ class Tab: NSObject {
     }
 
     var estimatedProgress: Double {
-        return webView?.estimatedProgress ?? 0
+        // Unfortunately WebKit can report partial progress when isLoading is false! That can
+        // happen when a load is cancelled. Avoid reporting partial progress here, but take
+        // care to let the case of progress complete (value of 1) through.
+        return (loading || webView?.estimatedProgress == 1) ? webView?.estimatedProgress ?? 0 : 0
     }
 
     var backList: [WKBackForwardListItem]? {
@@ -698,26 +701,4 @@ class TabWebView: WKWebView, MenuHelperInterface {
         super.evaluateJavaScript(javaScriptString, completionHandler: completionHandler)
     }
 
-}
-
-///
-// Temporary fix for Bug 1390871 - NSInvalidArgumentException: -[WKContentView menuHelperFindInPage]: unrecognized selector
-//
-// This class only exists to contain the swizzledMenuHelperFindInPage. This class is actually never
-// instantiated. It only serves as a placeholder for the method. When the method is called, self is
-// actually pointing to a WKContentView. Which is not public, but that is fine, we only need to know
-// that it is a UIView subclass to access its superview.
-//
-
-class TabWebViewMenuHelper: UIView {
-    @objc func swizzledMenuHelperFindInPage() {
-        if let tabWebView = superview?.superview as? TabWebView {
-            tabWebView.evaluateJavascriptInDefaultContentWorld("getSelection().toString()") {
-                result, _ in
-                let selection = result as? String ?? ""
-                tabWebView.delegate?.tabWebView(
-                    tabWebView, didSelectFindInPageForSelection: selection)
-            }
-        }
-    }
 }

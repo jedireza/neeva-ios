@@ -13,7 +13,7 @@ let disabledStrictTPString = "No trackers known to Neeva were detected on this p
 let websiteWithBlockedElements = "twitter.com"
 let differentWebsite = path(forTestPage: "test-example.html")
 
-/* Disabled as we don't have this UI.
+/* #1237: Disabled as we don't have this UI.
 class TrackingProtectionTests: BaseTestCase {
 
     // Smoketest

@@ -3,7 +3,7 @@
 import SwiftUI
 import WebKit
 
-class ZoomActivity: UIActivity {
+class TextSizeActivity: UIActivity {
     private let webView: WKWebView
     private let overlayParent: UIViewController
 
@@ -12,9 +12,9 @@ class ZoomActivity: UIActivity {
         self.overlayParent = overlayParent
     }
 
-    override var activityTitle: String? { "Zoom Page" }
+    override var activityTitle: String? { "Text Size" }
     override var activityImage: UIImage {
-        UIImage(systemSymbol: .arrowUpLeftAndDownRightMagnifyingglass)
+        UIImage(systemSymbol: .textformatSize)
     }
 
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
@@ -23,8 +23,8 @@ class ZoomActivity: UIActivity {
 
     override func perform() {
         let sheet = UIHostingController(
-            rootView: ZoomMenuView(
-                model: ZoomMenuModel(webView: webView),
+            rootView: TextSizeView(
+                model: TextSizeModel(webView: webView),
                 onDismiss: { [overlayParent] in
                     overlayParent.presentedViewController?.dismiss(animated: true, completion: nil)
                 }
