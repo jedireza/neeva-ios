@@ -27,8 +27,7 @@ class SecurityTests: KIFTestCase {
 
     /// Tap the Session exploit button, which tries to load the session restore page on localhost
     /// in the current tab. Make sure nothing happens.
-    func testSessionExploit() throws {
-        try skipTest(issue: 1155, "Restore this test")
+    func testSessionExploit() {
         tester().tapWebViewElementWithAccessibilityLabel("Session exploit")
         tester().wait(forTimeInterval: 1)
 
@@ -42,36 +41,17 @@ class SecurityTests: KIFTestCase {
 
     /// Tap the Error exploit button, which tries to load the error page on localhost
     /// in a new tab via window.open(). Make sure nothing happens.
-    func testErrorExploit() throws {
-        throw XCTSkip("Disabled as this test depends on reading tab count from the tabs button")
+    func testErrorExploit() {
         // We should only have one tab open.
-        let tabcount: String?
-        if BrowserUtils.iPad() {
-            tabcount =
-                tester().waitForView(
-                    withAccessibilityIdentifier: "TopTabsViewController.tabsButton")?
-                .accessibilityValue
-        } else {
-            tabcount =
-                tester().waitForView(withAccessibilityIdentifier: "TabToolbar.tabsButton")?
-                .accessibilityValue
-        }
+        let tabcount = BrowserUtils.getNumberOfTabs()
 
         // make sure a new tab wasn't opened.
         tester().tapWebViewElementWithAccessibilityLabel("Error exploit")
         tester().wait(forTimeInterval: 1.0)
-        let newTabcount: String?
-        if BrowserUtils.iPad() {
-            newTabcount =
-                tester().waitForView(
-                    withAccessibilityIdentifier: "TopTabsViewController.tabsButton")?
-                .accessibilityValue
-        } else {
-            newTabcount =
-                tester().waitForView(withAccessibilityIdentifier: "TabToolbar.tabsButton")?
-                .accessibilityValue
-        }
-        XCTAssert(tabcount != nil && tabcount == newTabcount)
+
+        let newTabcount = BrowserUtils.getNumberOfTabs()
+
+        XCTAssertEqual(tabcount, newTabcount)
     }
 
     /// Tap the New tab exploit button, which tries to piggyback off of an error page
@@ -95,42 +75,28 @@ class SecurityTests: KIFTestCase {
     /// Since the window has no origin before load, the page is able to modify the document,
     /// so make sure we don't show the URL.
     func testSpoofExploit() throws {
-        throw XCTSkip("Disabled as this test depends on reading tab count from the tabs button")
         tester().tapWebViewElementWithAccessibilityLabel("URL spoof")
 
         // Wait for the window to open.
-        tester().waitForTappableView(
-            withAccessibilityLabel: "Show Tabs", value: "2", traits: UIAccessibilityTraits.button)
+        tester().waitForTappableView(withAccessibilityLabel: "Show Tabs")
         tester().waitForAnimationsToFinish()
 
         // Make sure the URL bar doesn't show the URL since it hasn't loaded.
         XCTAssertFalse(tester().viewExistsWithLabel("http://1.2.3.4:1234/"))
 
         // Workaround number of tabs not updated
-        tester().tapView(withAccessibilityIdentifier: "TabToolbar.tabsButton")
-        tester().tapView(withAccessibilityIdentifier: "closeAllTabsButtonTabTray")
-        tester().tapView(withAccessibilityIdentifier: "TabTrayController.deleteButton.closeAll")
-    }
+        tester().tapView(withAccessibilityLabel: "Show Tabs")
+        tester().longPressView(withAccessibilityLabel: "Done", duration: 1)
 
-    // For blob URLs, just show "blob:" to the user (see bug 1446227)
-    func testBlobUrlShownAsSchemeOnly() throws {
-        throw XCTSkip("disabled because we don’t have a way to test the label of the URL bar")
-        let url = "\(webRoot!)/blobURL.html"
-        // script that will load a blob url
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
-        tester().wait(forTimeInterval: 1)
-        let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
-        // webview internally has "blob:<rest of url>"
-        XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://"))
-        let bvc =
-            SceneDelegate.getKeyWindow().rootViewController?.children[0] as! BrowserViewController
-        // only display "blob:"
-        XCTAssertEqual("bvc.urlBar.legacyLocationView.urlLabel.text", "blob:")
+        tester().waitForView(withAccessibilityLabel: "Close All Tabs")
+        tester().tapView(withAccessibilityLabel: "Close All Tabs")
+
+        tester().waitForView(withAccessibilityLabel: "Close 2 Tabs")
+        tester().tapView(withAccessibilityLabel: "Confirm Close All Tabs")
     }
 
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)
-    func testNeevaSchemeBlockedOnWebpages() throws {
-        try skipTest(issue: 1155, "Restore this test")
+    func testNeevaSchemeBlockedOnWebpages() {
         let url = "\(webRoot!)/neevaScheme.html"
         BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
         tester().tapWebViewElementWithAccessibilityLabel("go")
@@ -139,6 +105,22 @@ class SecurityTests: KIFTestCase {
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
         // Make sure the URL doesn't change.
         XCTAssertEqual(webView.url!.absoluteString, url)
+    }
+
+    // For blob URLs, just show "blob:" to the user (see bug 1446227)
+    func testBlobUrlShownAsSchemeOnly() throws {
+        throw XCTSkip("disabled because we don’t have a way to test the label of the URL bar")
+
+        let url = "\(webRoot!)/blobURL.html"
+
+        // script that will load a blob url
+        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+        tester().wait(forTimeInterval: 1)
+
+        let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
+
+        // webview internally has "blob:<rest of url>"
+        XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://"))
     }
 
     override func tearDown() {
