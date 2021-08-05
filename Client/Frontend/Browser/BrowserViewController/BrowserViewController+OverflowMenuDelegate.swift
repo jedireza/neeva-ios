@@ -34,26 +34,16 @@ extension BrowserViewController: OverflowMenuDelegate {
         if let tab = tabManager.selectedTab,
             let webView = tab.webView
         {
-            let sheet = UIHostingController(
-                rootView: TextSizeView(
-                    model: TextSizeModel(webView: webView),
-                    onDismiss: { [self] in
-                        presentedViewController?.dismiss(
-                            animated: true,
-                            completion: nil)
-                    }
-                )
-            )
-            sheet.modalPresentationStyle = .overFullScreen
-            sheet.view.isOpaque = false
-            sheet.view.backgroundColor = .clear
-            present(sheet, animated: true, completion: nil)
+            UserActivityHandler.presentTextSizeView(
+                webView: webView,
+                overlayParent: self)
         }
     }
 
     func didPressRequestDesktopSite() {
         if let tab = tabManager.selectedTab,
-           let url = tab.url {
+            let url = tab.url
+        {
             tab.toggleChangeUserAgent()
             Tab.ChangeUserAgent.updateDomainList(
                 forUrl: url, isChangedUA: tab.changedUserAgent,

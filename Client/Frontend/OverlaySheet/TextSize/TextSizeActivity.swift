@@ -22,17 +22,8 @@ class TextSizeActivity: UIActivity {
     }
 
     override func perform() {
-        let sheet = UIHostingController(
-            rootView: TextSizeView(
-                model: TextSizeModel(webView: webView),
-                onDismiss: { [overlayParent] in
-                    overlayParent.presentedViewController?.dismiss(animated: true, completion: nil)
-                }
-            )
-        )
-        sheet.modalPresentationStyle = .overFullScreen
-        sheet.view.isOpaque = false
-        sheet.view.backgroundColor = .clear
-        overlayParent.present(sheet, animated: true, completion: nil)
+        UserActivityHandler.presentTextSizeView(
+            webView: webView,
+            overlayParent: overlayParent)
     }
 }
