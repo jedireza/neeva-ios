@@ -81,7 +81,7 @@ extension Tab: Closeable, Selectable, BrowserPrimitive {
     }
 
     var primitiveUrl: URL? {
-        url
+        url ?? URL(string: pageMetadata?.siteURL ?? "")
     }
 
     var image: UIImage? {

@@ -38,11 +38,13 @@ extension UIImageView {
         sd_setImage(with: nil)  // cancels any pending SDWebImage operations.
 
         if let url = website, let bundledIcon = FaviconFetcher.getBundledIcon(forUrl: url) {
+            print(">>> using bundled icon for \(url.host ?? "")")
             self.image = UIImage(contentsOfFile: bundledIcon.filePath)
             finish(bgColor: bundledIcon.bgcolor)
         } else if let image = FaviconFetcher.getFaviconFromDiskCache(
             imageKey: website?.baseDomain ?? "")
         {
+            print(">>> using cached icon for \(website?.host ?? "")")
             self.image = image
             finish(bgColor: .systemBackground)
         } else {
@@ -64,8 +66,10 @@ extension UIImageView {
 
     private func fallbackFavicon(forUrl url: URL?) -> (image: UIImage, color: UIColor) {
         if let url = url {
+            print(">>> using letter icon for \(url.host ?? "")")
             return FaviconFetcher.letter(forUrl: url)
         } else {
+            print(">>> using default icon for unknown")
             return (FaviconFetcher.defaultFavicon, .clear)
         }
     }

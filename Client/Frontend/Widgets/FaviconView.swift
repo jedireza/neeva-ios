@@ -10,7 +10,7 @@ private enum FaviconViewUX {
 
 struct FaviconView: UIViewRepresentable {
     init(
-        url: URL, icon: Favicon? = nil, size: CGFloat, bordered: Bool,
+        url: URL?, icon: Favicon? = nil, size: CGFloat, bordered: Bool,
         defaultBackground: UIColor = .systemBackground
     ) {
         self.url = url
@@ -20,7 +20,7 @@ struct FaviconView: UIViewRepresentable {
         self.defaultBackground = defaultBackground
     }
 
-    let url: URL
+    let url: URL?
     let icon: Favicon?
     let size: CGFloat
     let bordered: Bool

@@ -124,7 +124,7 @@ struct Card<Details>: View where Details: CardDetails {
             VStack(alignment: .center, spacing: 0) {
                 HStack(spacing: 0) {
                     if let favicon = details.favicon {
-                        favicon.resizable()
+                        favicon //.resizable()
                             .transition(.fade(duration: 0.5)).background(Color.white)
                             .scaledToFit()
                             .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)

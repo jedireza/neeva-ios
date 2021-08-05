@@ -21,7 +21,7 @@ protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     var closeButtonImage: UIImage? { get }
     var title: String { get }
     var accessibilityLabel: String { get }
-    var favicon: WebImage? { get }
+    var favicon: FaviconView? { get }
     var isSelected: Bool { get }
 
     func onClose()
@@ -80,11 +80,9 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
         }
     }
 
-    var favicon: WebImage? {
+    var favicon: FaviconView? {
         if let item = manager.get(for: id) {
-            if let favIcon = item.displayFavicon {
-                return WebImage(url: favIcon.url)
-            }
+            return FaviconView(url: item.primitiveUrl, icon: item.displayFavicon, size: CardUX.FaviconSize - 5, bordered: false)
         }
         return nil
     }
