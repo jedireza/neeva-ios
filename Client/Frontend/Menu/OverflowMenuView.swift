@@ -1,10 +1,64 @@
 // Copyright Neeva. All rights reserved.
 
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
 private enum OverflowMenuUX {
     static let innerSectionPadding: CGFloat = 8
+    static let squareButtonSize: CGFloat = 83
+    static let squareButtonSpacing: CGFloat = 4
+    static let squareButtonIconSize: CGFloat = 20
+}
+
+public struct OverflowMenuButtonView: View {
+    let label: String
+    let symbol: SFSymbol
+    let action: () -> Void
+
+    @Environment(\.isEnabled) private var isEnabled
+
+    public init(label: String, symbol: SFSymbol, action: @escaping () -> Void) {
+        self.label = label
+        self.symbol = symbol
+        self.action = action
+    }
+
+    public var body: some View {
+        GroupedCellButton(action: action) {
+            VStack(spacing: OverflowMenuUX.squareButtonSpacing) {
+                Symbol(decorative: symbol, size: OverflowMenuUX.squareButtonIconSize)
+                Text(label).withFont(.bodyLarge)
+            }.frame(height: OverflowMenuUX.squareButtonSize)
+        }
+        .accentColor(isEnabled ? .label : .quaternaryLabel)
+    }
+}
+
+public struct OverflowMenuRowButtonView: View {
+    let label: String
+    let symbol: SFSymbol
+    let action: () -> Void
+
+    @Environment(\.isEnabled) private var isEnabled
+
+    public init(label: String, symbol: SFSymbol, action: @escaping () -> Void) {
+        self.label = label
+        self.symbol = symbol
+        self.action = action
+    }
+
+    public var body: some View {
+        GroupedCellButton(action: action) {
+            HStack {
+                Text(label).withFont(.bodyLarge)
+                Spacer()
+                Symbol(decorative: symbol)
+            }
+            .foregroundColor(.label)
+        }
+        .accentColor(isEnabled ? .label : .quaternaryLabel)
+    }
 }
 
 public struct OverflowMenuView: View {
@@ -28,56 +82,57 @@ public struct OverflowMenuView: View {
     }
 
     public var body: some View {
-        // TODO: when making significant updates, migrate to OverlayGroupedStack
-        VStack(alignment: .leading, spacing: GroupedCellUX.spacing) {
-            VStack(spacing: OverflowMenuUX.innerSectionPadding) {
-                HStack(spacing: OverflowMenuUX.innerSectionPadding) {
-                    NeevaMenuButtonView(label: "Forward", symbol: .arrowRight) {
-                        self.menuAction!(OverflowMenuButtonActions.forward)
-                    }
-                    .accessibilityIdentifier("NeevaMenu.Forward")
-                    .disabled(!tabToolBarModel.canGoForward)
-
-                    NeevaMenuButtonView(
-                        label:
-                            urlBarModel.reloadButton == .reload ? "Reload" : "Stop",
-                        symbol:
-                            urlBarModel.reloadButton == .reload ? .arrowClockwise : .xmark
-                    ) {
-                        self.menuAction!(OverflowMenuButtonActions.reload)
-                    }
-                    .accessibilityIdentifier("NeevaMenu.Reload")
-
-                    NeevaMenuButtonView(label: "New Tab", symbol: .plus) {
-                        self.menuAction!(OverflowMenuButtonActions.newTab)
-                    }
-                    .accessibilityIdentifier("NeevaMenu.NewTab")
+        GroupedStack {
+            HStack(spacing: OverflowMenuUX.innerSectionPadding) {
+                OverflowMenuButtonView(label: "Forward", symbol: .arrowForward) {
+                    menuAction!(OverflowMenuButtonActions.forward)
                 }
+                .accessibilityIdentifier("NeevaMenu.Forward")
+                .disabled(!tabToolBarModel.canGoForward)
+
+                OverflowMenuButtonView(
+                    label: urlBarModel.reloadButton == .reload ? "Reload" : "Stop",
+                    symbol: urlBarModel.reloadButton == .reload ? .arrowClockwise : .xmark
+                ) {
+                    menuAction!(OverflowMenuButtonActions.reload)
+                }
+                .accessibilityIdentifier("NeevaMenu.Reload")
+
+                OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                    menuAction!(OverflowMenuButtonActions.newTab)
+                }
+                .accessibilityIdentifier("NeevaMenu.NewTab")
             }
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
-                    NeevaMenuRowButtonView(label: "Find on Page", symbol: .docTextMagnifyingglass) {
-                        self.menuAction!(OverflowMenuButtonActions.findOnPage)
+                    OverflowMenuRowButtonView(
+                        label: "Find on Page",
+                        symbol: .docTextMagnifyingglass
+                    ) {
+                        menuAction!(OverflowMenuButtonActions.findOnPage)
                     }
                     .accessibilityIdentifier("NeevaMenu.FindOnPage")
 
                     Color.groupedBackground.frame(height: 1)
 
-                    NeevaMenuRowButtonView(label: "Text Size", symbol: .textformatSize) {
-                        self.menuAction!(OverflowMenuButtonActions.textSize)
+                    OverflowMenuRowButtonView(
+                        label: "Text Size",
+                        symbol: .textformatSize
+                    ) {
+                        menuAction!(OverflowMenuButtonActions.textSize)
                     }
                     .accessibilityIdentifier("NeevaMenu.TextSize")
 
                     Color.groupedBackground.frame(height: 1)
 
-                    NeevaMenuRowButtonView(
+                    OverflowMenuRowButtonView(
                         label: changedUserAgent == true
                             ? Strings.AppMenuViewMobileSiteTitleString
                             : Strings.AppMenuViewDesktopSiteTitleString,
                         symbol: .desktopcomputer
                     ) {
-                        self.menuAction!(OverflowMenuButtonActions.desktopSite)
+                        menuAction!(OverflowMenuButtonActions.desktopSite)
                     }
                     .accessibilityIdentifier("NeevaMenu.RequestDesktopSite")
 
@@ -85,9 +140,6 @@ public struct OverflowMenuView: View {
                 }
             }
         }
-        .padding(self.noTopPadding ? [.leading, .trailing] : [.leading, .trailing, .top], 16)
-        .background(Color.groupedBackground)
-        .accentColor(.label)
     }
 }
 

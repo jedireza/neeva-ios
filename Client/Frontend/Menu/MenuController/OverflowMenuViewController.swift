@@ -70,29 +70,23 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
             switch result {
             case .forward:
                 delegate.didPressForward()
-                break
             case .reload:
                 if urlBarModel.reloadButton == .reload {
                     delegate.didPressReload()
                 } else {
                     delegate.didPressStopLoading()
                 }
-                break
             case .newTab:
                 delegate.didPressAddNewTab()
-                break
             case .findOnPage:
                 delegate.didPressFindOnPage()
-                break
             case .textSize:
                 delegate.didPressTextSize()
-                break
             case .readingMode:
                 // not implement yet
                 break
             case .desktopSite:
                 delegate.didPressRequestDesktopSite()
-                break
             }
         }
         self.rootView = OverflowMenuRootView(
