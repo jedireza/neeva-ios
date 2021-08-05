@@ -111,10 +111,9 @@ class NeevaSuggestionModel: ObservableObject {
     var suggestions: [Suggestion] {
         let bvc = BrowserViewController.foregroundBVC()
         let navSuggestionModel = bvc.searchController?.navModel
-
-        return tabSuggestions + topSuggestions + chipQuerySuggestions + rowQuerySuggestions
-            + urlSuggestions
-            + (navSuggestionModel?.combinedSuggestions ?? [])
+        let top = tabSuggestions + topSuggestions
+        let mid = chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
+        return top + mid + (navSuggestionModel?.combinedSuggestions ?? [])
     }
 
     func reload() {
