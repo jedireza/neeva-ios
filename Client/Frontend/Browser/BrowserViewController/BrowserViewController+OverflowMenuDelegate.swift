@@ -6,7 +6,7 @@ import Storage
 import SwiftUI
 
 extension BrowserViewController: OverflowMenuDelegate {
-    func didPressForward() {
+    func overflowMenuDidPressForward() {
         if simulateForwardViewController?.goForward() ?? false {
             return
         }
@@ -14,23 +14,23 @@ extension BrowserViewController: OverflowMenuDelegate {
         tabManager.selectedTab?.goForward()
     }
 
-    func didPressReload() {
-        tabManager.selectedTab?.reload()
+    func overflowMenuDidPressReloadStop(_ reloadButtonState: URLBarModel.ReloadButtonState) {
+        if (reloadButtonState == .reload) {
+            tabManager.selectedTab?.reload()
+        } else {
+            tabManager.selectedTab?.stop()
+        }
     }
 
-    func didPressStopLoading() {
-        tabManager.selectedTab?.reload()
-    }
-
-    func didPressAddNewTab() {
+    func overflowMenuDidPressAddNewTab() {
         openLazyTab()
     }
 
-    func didPressFindOnPage() {
+    func overflowMenuDidPressFindOnPage() {
         updateFindInPageVisibility(visible: true)
     }
 
-    func didPressTextSize() {
+    func overflowMenuDidPressTextSize() {
         if let tab = tabManager.selectedTab,
             let webView = tab.webView
         {
@@ -40,7 +40,7 @@ extension BrowserViewController: OverflowMenuDelegate {
         }
     }
 
-    func didPressRequestDesktopSite() {
+    func overflowMenuDidPressRequestDesktopSite() {
         if let tab = tabManager.selectedTab,
             let url = tab.url
         {

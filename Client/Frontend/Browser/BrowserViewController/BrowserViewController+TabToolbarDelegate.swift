@@ -30,7 +30,6 @@ extension BrowserViewController: TabToolbarDelegate {
     }
 
     func tabToolbarDidPressOverflow() {
-        TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let image = screenshot()
 

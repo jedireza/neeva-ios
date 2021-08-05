@@ -40,7 +40,7 @@ enum TabToolbarButtons {
                 if FeatureFlag[.overflowMenu] {
                     TabToolbarButton(
                         label: Symbol(
-                            .ellipsisCircle, size: 20, label: .TabToolbarForwardAccessibilityLabel),
+                            .ellipsisCircle, size: 20, label: .TabToolbarMoreAccessibilityLabel),
                         action: onOverflow
                     )
                 } else {

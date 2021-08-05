@@ -4,13 +4,12 @@ import Shared
 import SwiftUI
 
 protocol OverflowMenuDelegate {
-    func didPressForward()
-    func didPressReload()
-    func didPressStopLoading()
-    func didPressAddNewTab()
-    func didPressFindOnPage()
-    func didPressTextSize()
-    func didPressRequestDesktopSite()
+    func overflowMenuDidPressForward()
+    func overflowMenuDidPressReloadStop(_ reloadButtonState: URLBarModel.ReloadButtonState)
+    func overflowMenuDidPressAddNewTab()
+    func overflowMenuDidPressFindOnPage()
+    func overflowMenuDidPressTextSize()
+    func overflowMenuDidPressRequestDesktopSite()
 }
 
 struct OverflowMenuRootView: View {
@@ -69,24 +68,20 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
             self.rootView.onDismiss()
             switch result {
             case .forward:
-                delegate.didPressForward()
+                delegate.overflowMenuDidPressForward()
             case .reload:
-                if urlBarModel.reloadButton == .reload {
-                    delegate.didPressReload()
-                } else {
-                    delegate.didPressStopLoading()
-                }
+                delegate.overflowMenuDidPressReloadStop(urlBarModel.reloadButton)
             case .newTab:
-                delegate.didPressAddNewTab()
+                delegate.overflowMenuDidPressAddNewTab()
             case .findOnPage:
-                delegate.didPressFindOnPage()
+                delegate.overflowMenuDidPressFindOnPage()
             case .textSize:
-                delegate.didPressTextSize()
+                delegate.overflowMenuDidPressTextSize()
             case .readingMode:
                 // not implement yet
                 break
             case .desktopSite:
-                delegate.didPressRequestDesktopSite()
+                delegate.overflowMenuDidPressRequestDesktopSite()
             }
         }
         self.rootView = OverflowMenuRootView(

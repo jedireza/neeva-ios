@@ -35,32 +35,6 @@ public struct OverflowMenuButtonView: View {
     }
 }
 
-public struct OverflowMenuRowButtonView: View {
-    let label: String
-    let symbol: SFSymbol
-    let action: () -> Void
-
-    @Environment(\.isEnabled) private var isEnabled
-
-    public init(label: String, symbol: SFSymbol, action: @escaping () -> Void) {
-        self.label = label
-        self.symbol = symbol
-        self.action = action
-    }
-
-    public var body: some View {
-        GroupedCellButton(action: action) {
-            HStack {
-                Text(label).withFont(.bodyLarge)
-                Spacer()
-                Symbol(decorative: symbol)
-            }
-            .foregroundColor(.label)
-        }
-        .accentColor(isEnabled ? .label : .quaternaryLabel)
-    }
-}
-
 public struct OverflowMenuView: View {
     private let noTopPadding: Bool
     private let menuAction: ((OverflowMenuButtonActions) -> Void)?
@@ -87,7 +61,7 @@ public struct OverflowMenuView: View {
                 OverflowMenuButtonView(label: "Forward", symbol: .arrowForward) {
                     menuAction!(OverflowMenuButtonActions.forward)
                 }
-                .accessibilityIdentifier("NeevaMenu.Forward")
+                .accessibilityIdentifier("OverflowMenu.Forward")
                 .disabled(!tabToolBarModel.canGoForward)
 
                 OverflowMenuButtonView(
@@ -96,48 +70,51 @@ public struct OverflowMenuView: View {
                 ) {
                     menuAction!(OverflowMenuButtonActions.reload)
                 }
-                .accessibilityIdentifier("NeevaMenu.Reload")
+                .accessibilityIdentifier("OverflowMenu.Reload")
 
                 OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
                     menuAction!(OverflowMenuButtonActions.newTab)
                 }
-                .accessibilityIdentifier("NeevaMenu.NewTab")
+                .accessibilityIdentifier("OverflowMenu.NewTab")
             }
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
-                    OverflowMenuRowButtonView(
+                    NeevaMenuRowButtonView(
                         label: "Find on Page",
                         symbol: .docTextMagnifyingglass
                     ) {
                         menuAction!(OverflowMenuButtonActions.findOnPage)
                     }
-                    .accessibilityIdentifier("NeevaMenu.FindOnPage")
+                    .accessibilityIdentifier("OverflowMenu.FindOnPage")
 
                     Color.groupedBackground.frame(height: 1)
 
-                    OverflowMenuRowButtonView(
+                    NeevaMenuRowButtonView(
                         label: "Text Size",
                         symbol: .textformatSize
                     ) {
                         menuAction!(OverflowMenuButtonActions.textSize)
                     }
-                    .accessibilityIdentifier("NeevaMenu.TextSize")
+                    .accessibilityIdentifier("OverflowMenu.TextSize")
 
                     Color.groupedBackground.frame(height: 1)
 
-                    OverflowMenuRowButtonView(
+                    NeevaMenuRowButtonView(
                         label: changedUserAgent == true
                             ? Strings.AppMenuViewMobileSiteTitleString
                             : Strings.AppMenuViewDesktopSiteTitleString,
-                        symbol: .desktopcomputer
+                        symbol: changedUserAgent == true
+                            ? .iphone
+                            : .desktopcomputer
                     ) {
                         menuAction!(OverflowMenuButtonActions.desktopSite)
                     }
-                    .accessibilityIdentifier("NeevaMenu.RequestDesktopSite")
+                    .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
 
                     Color.groupedBackground.frame(height: 1)
                 }
+                .accentColor(.label)
             }
         }
     }
