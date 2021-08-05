@@ -87,6 +87,10 @@ public struct LogConfig {
             return NeevaFeatureFlags[.suggestionsLogging]
         case .ReferralPromo:
             return NeevaFeatureFlags[.referralPromoLogging]
+        case .UI:
+            return NeevaFeatureFlags[.uiLogging]
+        case .NeevaMenu:
+            return NeevaFeatureFlags[.neevaMenuLogging]
         default:
             return false
         }

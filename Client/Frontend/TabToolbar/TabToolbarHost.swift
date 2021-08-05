@@ -24,7 +24,11 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
                 onLongPressBackForward: { [weak delegate] in
                     delegate?.tabToolbarDidLongPressBackForward()
                 },
-                onNeevaMenu: { BrowserViewController.foregroundBVC().showNeevaMenuSheet() },
+                onNeevaMenu: {
+                    ClientLogger.shared.logCounter(
+                        .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
+                    BrowserViewController.foregroundBVC().showNeevaMenuSheet()
+                },
                 onSaveToSpace: { [weak delegate] in delegate?.tabToolbarSpacesMenu() },
                 onShowTabs: { [weak delegate] in delegate?.tabToolbarDidPressTabs() },
                 tabsMenu: { [weak delegate] in delegate?.tabToolbarTabsMenu() }

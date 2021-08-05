@@ -12,6 +12,9 @@ extension BrowserViewController: TabToolbarDelegate {
             return
         }
 
+        ClientLogger.shared.logCounter(
+            .ClickBack, attributes: EnvironmentHelper.shared.getAttributes())
+
         tabManager.selectedTab?.goBack()
     }
 
@@ -26,10 +29,15 @@ extension BrowserViewController: TabToolbarDelegate {
             return
         }
 
+        ClientLogger.shared.logCounter(
+            .ClickForward, attributes: EnvironmentHelper.shared.getAttributes())
+
         tabManager.selectedTab?.goForward()
     }
 
     func tabToolbarDidPressAddNewTab() {
+        ClientLogger.shared.logCounter(
+            .ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
     }
@@ -37,6 +45,10 @@ extension BrowserViewController: TabToolbarDelegate {
     func tabToolbarSpacesMenu() {
         guard let tab = tabManager.selectedTab else { return }
         guard let url = tab.canonicalURL?.displayURL else { return }
+
+        ClientLogger.shared.logCounter(
+            .SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
+
         showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
     }
 
