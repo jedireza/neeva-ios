@@ -37,7 +37,7 @@ public struct OverflowMenuButtonView: View {
 
 public struct OverflowMenuView: View {
     private let noTopPadding: Bool
-    private let menuAction: ((OverflowMenuButtonActions) -> Void)?
+    private let menuAction: (OverflowMenuButtonActions) -> Void
     private let changedUserAgent: Bool
 
     @Environment(\.isIncognito) private var isIncognito
@@ -47,8 +47,7 @@ public struct OverflowMenuView: View {
     public init(
         noTopPadding: Bool = false,
         changedUserAgent: Bool = false,
-        menuAction:
-            ((OverflowMenuButtonActions) -> Void)?
+        menuAction: @escaping (OverflowMenuButtonActions) -> Void
     ) {
         self.noTopPadding = noTopPadding
         self.menuAction = menuAction
@@ -59,7 +58,7 @@ public struct OverflowMenuView: View {
         GroupedStack {
             HStack(spacing: OverflowMenuUX.innerSectionPadding) {
                 OverflowMenuButtonView(label: "Forward", symbol: .arrowForward) {
-                    menuAction!(OverflowMenuButtonActions.forward)
+                    menuAction(OverflowMenuButtonActions.forward)
                 }
                 .accessibilityIdentifier("OverflowMenu.Forward")
                 .disabled(!tabToolBarModel.canGoForward)
@@ -68,12 +67,12 @@ public struct OverflowMenuView: View {
                     label: urlBarModel.reloadButton == .reload ? "Reload" : "Stop",
                     symbol: urlBarModel.reloadButton == .reload ? .arrowClockwise : .xmark
                 ) {
-                    menuAction!(OverflowMenuButtonActions.reload)
+                    menuAction(OverflowMenuButtonActions.reload)
                 }
                 .accessibilityIdentifier("OverflowMenu.Reload")
 
                 OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                    menuAction!(OverflowMenuButtonActions.newTab)
+                    menuAction(OverflowMenuButtonActions.newTab)
                 }
                 .accessibilityIdentifier("OverflowMenu.NewTab")
             }
@@ -84,7 +83,7 @@ public struct OverflowMenuView: View {
                         label: "Find on Page",
                         symbol: .docTextMagnifyingglass
                     ) {
-                        menuAction!(OverflowMenuButtonActions.findOnPage)
+                        menuAction(OverflowMenuButtonActions.findOnPage)
                     }
                     .accessibilityIdentifier("OverflowMenu.FindOnPage")
 
@@ -94,7 +93,7 @@ public struct OverflowMenuView: View {
                         label: "Text Size",
                         symbol: .textformatSize
                     ) {
-                        menuAction!(OverflowMenuButtonActions.textSize)
+                        menuAction(OverflowMenuButtonActions.textSize)
                     }
                     .accessibilityIdentifier("OverflowMenu.TextSize")
 
@@ -108,7 +107,7 @@ public struct OverflowMenuView: View {
                             ? .iphone
                             : .desktopcomputer
                     ) {
-                        menuAction!(OverflowMenuButtonActions.desktopSite)
+                        menuAction(OverflowMenuButtonActions.desktopSite)
                     }
                     .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
 
@@ -122,8 +121,8 @@ public struct OverflowMenuView: View {
 
 struct OverflowMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        OverflowMenuView(menuAction: nil).previewDevice("iPod touch (7th generation)").environment(
+        OverflowMenuView(menuAction: { _ in }).previewDevice("iPod touch (7th generation)").environment(
             \.sizeCategory, .extraExtraExtraLarge)
-        OverflowMenuView(menuAction: nil).environment(\.isIncognito, true)
+        OverflowMenuView(menuAction: { _ in }).environment(\.isIncognito, true)
     }
 }

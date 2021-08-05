@@ -53,7 +53,7 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
                 embeddedView: OverflowMenuView(
                     noTopPadding: true,
                     changedUserAgent: changedUserAgent ?? false,
-                    menuAction: nil),
+                    menuAction: { _ in }),
                 tabToolbarModel: tabToolbarModel,
                 urlBarModel: urlBarModel))
 
@@ -65,7 +65,7 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
             noTopPadding: true,
             changedUserAgent: changedUserAgent ?? false
         ) { result in
-            self.rootView.onDismiss()
+            onDismiss()
             switch result {
             case .forward:
                 delegate.overflowMenuDidPressForward()

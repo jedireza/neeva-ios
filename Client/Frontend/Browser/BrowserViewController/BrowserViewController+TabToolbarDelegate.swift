@@ -33,20 +33,18 @@ extension BrowserViewController: TabToolbarDelegate {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let image = screenshot()
 
-        if let legacyUrlBar = urlBar.legacy {
-            self.showOverlaySheetViewController(
-                OverflowMenuViewController(
-                    delegate: self,
-                    onDismiss: {
-                        self.hideOverlaySheetViewController()
-                        self.isNeevaMenuSheetOpen = false
-                    }, isPrivate: isPrivate, feedbackImage: image,
-                    tabToolbarModel: toolbarModel,
-                    urlBarModel: legacyUrlBar.model,
-                    changedUserAgent: tabManager.selectedTab?.changedUserAgent
-                )
+        self.showOverlaySheetViewController(
+            OverflowMenuViewController(
+                delegate: self,
+                onDismiss: {
+                    self.hideOverlaySheetViewController()
+                    self.isNeevaMenuSheetOpen = false
+                }, isPrivate: isPrivate, feedbackImage: image,
+                tabToolbarModel: toolbarModel,
+                urlBarModel: urlBar.shared.model,
+                changedUserAgent: tabManager.selectedTab?.changedUserAgent
             )
-        }
+        )
         self.dismissVC()
     }
 

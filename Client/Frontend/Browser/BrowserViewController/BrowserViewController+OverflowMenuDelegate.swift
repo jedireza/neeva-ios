@@ -15,7 +15,7 @@ extension BrowserViewController: OverflowMenuDelegate {
     }
 
     func overflowMenuDidPressReloadStop(_ reloadButtonState: URLBarModel.ReloadButtonState) {
-        if (reloadButtonState == .reload) {
+        if reloadButtonState == .reload {
             tabManager.selectedTab?.reload()
         } else {
             tabManager.selectedTab?.stop()
@@ -31,9 +31,7 @@ extension BrowserViewController: OverflowMenuDelegate {
     }
 
     func overflowMenuDidPressTextSize() {
-        if let tab = tabManager.selectedTab,
-            let webView = tab.webView
-        {
+        if let webView = tabManager.selectedTab?.webView {
             UserActivityHandler.presentTextSizeView(
                 webView: webView,
                 overlayParent: self)
