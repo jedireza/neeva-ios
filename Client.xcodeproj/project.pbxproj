@@ -236,7 +236,6 @@
 		7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */; };
 		7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8A47F51D01D3B400C07734 /* PassKit.framework */; };
 		7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BF91B1E43472E00CB24F4 /* JSONExtensions.swift */; };
-		7BA0601B1C0F4DE200DFADB6 /* TabPeekViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA0601A1C0F4DE200DFADB6 /* TabPeekViewController.swift */; };
 		7BA4A9471C4CED900091D032 /* GCDWebServers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BA4A9451C4CED780091D032 /* GCDWebServers.framework */; };
 		7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BA4A9491C4CEFC70091D032 /* OnePasswordExtension.framework */; };
 		7BA8D1C71BA037F500C8AE9E /* OpenInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA8D1C61BA037F500C8AE9E /* OpenInHelper.swift */; };
@@ -1161,7 +1160,6 @@
 		7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/iOS/XCGLogger.framework; sourceTree = "<group>"; };
 		7B8A47F51D01D3B400C07734 /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
 		7B9BF91B1E43472E00CB24F4 /* JSONExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONExtensions.swift; sourceTree = "<group>"; };
-		7BA0601A1C0F4DE200DFADB6 /* TabPeekViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabPeekViewController.swift; sourceTree = "<group>"; };
 		7BA4A9451C4CED780091D032 /* GCDWebServers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GCDWebServers.framework; path = Carthage/Build/iOS/GCDWebServers.framework; sourceTree = "<group>"; };
 		7BA4A9491C4CEFC70091D032 /* OnePasswordExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OnePasswordExtension.framework; path = Carthage/Build/iOS/OnePasswordExtension.framework; sourceTree = "<group>"; };
 		7BA4A94B1C4CF03B0091D032 /* SwiftKeychainWrapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftKeychainWrapper.framework; path = Carthage/Build/iOS/SwiftKeychainWrapper.framework; sourceTree = "<group>"; };
@@ -2811,7 +2809,6 @@
 				D3968F241A38FE8500CEFD3B /* TabManager.swift */,
 				63306D422110B3CD00F25400 /* TabManagerStore.swift */,
 				66C3C772267A8909002B50B1 /* TabMenu.swift */,
-				7BA0601A1C0F4DE200DFADB6 /* TabPeekViewController.swift */,
 				DD31E0FA1B382B520077078A /* TabPrintPageRenderer.swift */,
 				23F2C365244E44FA00FA4496 /* Tabs */,
 				E698FFD91B4AADF40001F623 /* TabScrollController.swift */,
@@ -4631,7 +4628,6 @@
 				D3972BF41C22412B00035B87 /* TitleActivityItemProvider.swift in Sources */,
 				D38A1BEE1A9FA2CA00F6A386 /* SiteTableViewController.swift in Sources */,
 				BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */,
-				7BA0601B1C0F4DE200DFADB6 /* TabPeekViewController.swift in Sources */,
 				BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */,
 				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
