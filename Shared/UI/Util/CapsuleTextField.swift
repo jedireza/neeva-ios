@@ -4,20 +4,20 @@ import SwiftUI
 
 /// A custom `TextField` that matches our style — a rounded, gray background with slightly darker placeholder text than normal. We also add a clear button.
 /// TODO: make this into a `TextFieldStyle` when that becomes possible
-struct CapsuleTextField<Icon: View>: View {
+public struct CapsuleTextField<Icon: View>: View {
     let placeholder: String
     @Binding var text: String
     let icon: Icon?
 
     @State private var isEditing = false
 
-    init(_ placeholder: String, text: Binding<String>, icon: Icon) {
+    public init(_ placeholder: String, text: Binding<String>, icon: Icon) {
         self.placeholder = placeholder
         self._text = text
         self.icon = icon
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 8) {
             if let icon = icon {
                 icon.foregroundColor(.secondaryLabel)

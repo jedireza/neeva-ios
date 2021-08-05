@@ -19,39 +19,30 @@ struct TextSizeView: View {
                 // all the content in here is decorative since the accessibility element is explicitly provided below.
                 GroupedCell {
                     HStack {
-                        Button(action: model.zoomOut) {
-                            Symbol(decorative: .minus, style: .bodyLarge)
-                                .frame(
-                                    width: GroupedCellUX.minCellHeight,
-                                    height: GroupedCellUX.minCellHeight
-                                )
-                                .foregroundColor(model.canZoomOut ? .label : .tertiaryLabel)
-                        }.disabled(!model.canZoomOut)
+                        OverlaySheetStepperButton(action: model.zoomOut,
+                                                  symbol: Symbol(decorative: .minus, style: .bodyLarge),
+                                                  foregroundColor: model.canZoomOut ? .label : .tertiaryLabel)
+                            .disabled(!model.canZoomOut)
+
                         Spacer()
+
                         Symbol(decorative: .textformatSize, style: .headingLarge)
+
                         Spacer()
-                        Button(action: model.zoomIn) {
-                            Symbol(decorative: .plus, style: .bodyLarge)
-                                .frame(
-                                    width: GroupedCellUX.minCellHeight,
-                                    height: GroupedCellUX.minCellHeight
-                                )
-                                .foregroundColor(model.canZoomIn ? .label : .tertiaryLabel)
-                        }.disabled(!model.canZoomIn)
+
+                        OverlaySheetStepperButton(action: model.zoomIn,
+                                                  symbol: Symbol(decorative: .plus, style: .bodyLarge),
+                                                  foregroundColor: model.canZoomIn ? .label : .tertiaryLabel)
+                            .disabled(!model.canZoomIn)
                     }.padding(.horizontal, -GroupedCellUX.horizontalPadding)
                 }
                 .buttonStyle(TableCellButtonStyle())
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Page Zoom")
-                .accessibilityValue(model.label)
-                .accessibilityAdjustableAction { action in
-                    switch action {
-                    case .increment: model.zoomIn()
-                    case .decrement: model.zoomOut()
-                    @unknown default: break
-                    }
-                }
-
+                .modifier(OverlaySheetStepperAccessibilityModifier(accessibilityLabel: "Page Zoom",
+                                                      accessibilityValue: model.label,
+                                                      increment: model.zoomIn,
+                                                      decrement: model.zoomOut))
+                          
                 GroupedCellButton("Reset") { model.pageZoom = 1 }
                     .accentColor(.red)
                 GroupedCellButton("Done", style: .labelLarge, action: onDismiss)

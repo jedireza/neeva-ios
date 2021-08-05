@@ -47,6 +47,7 @@ class BrowserViewController: UIViewController {
         controller.didMove(toParent: self)
         return controller
     }()
+
     private lazy var cardGridViewController: CardGridViewController = { [unowned self] in
         let controller = CardGridViewController(
             tabManager: self.tabManager
@@ -61,6 +62,7 @@ class BrowserViewController: UIViewController {
         controller.view.isUserInteractionEnabled = false
         return controller
     }()
+
     private(set) var historyViewController: UINavigationController?
     private var overlaySheetViewController: UIViewController?
     private(set) lazy var simulateForwardViewController: SimulatedSwipeController? = {
@@ -78,8 +80,8 @@ class BrowserViewController: UIViewController {
         host.view.isHidden = true
         return host
     }()
-    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = {
-        [unowned self] in
+
+    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = { [unowned self] in
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             toolbarModel: toolbarModel,
@@ -90,9 +92,13 @@ class BrowserViewController: UIViewController {
         host.view.isHidden = true
         return host
     }()
+
     private let webViewContainer = WebViewHost(webView: nil)
 
+    var findInPageViewController: FindInPageViewController?
+
     private(set) var urlBar: URLBarWrapper!
+
     enum URLBarWrapper {
         case legacy(LegacyURLBarView)
         case modern(URLBarHost)
@@ -129,7 +135,6 @@ class BrowserViewController: UIViewController {
     private var zeroQueryIsInline = false
     /// All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
     let alertStackView = UIStackView()
-    var findInPageBar: FindInPageBar?
     private var urlFromAnotherApp: UrlToOpenModel?
     private var isCrashAlertShowing: Bool = false
 
@@ -717,14 +722,13 @@ class BrowserViewController: UIViewController {
                 }
             }
 
-            let findInPageHeight = (findInPageBar == nil) ? 0 : UIConstants.ToolbarHeight
             if UIConstants.enableBottomURLBar {
-                make.bottom.equalTo(self.urlBar.view.snp.top).offset(-findInPageHeight)
+                make.bottom.equalTo(self.urlBar.view.snp.top)
             } else {
                 if let toolbar = self.toolbar {
-                    make.bottom.equalTo(toolbar.view.snp.top).offset(-findInPageHeight)
+                    make.bottom.equalTo(toolbar.view.snp.top)
                 } else {
-                    make.bottom.equalTo(self.view).offset(-findInPageHeight)
+                    make.bottom.equalTo(self.view)
                 }
             }
         }
@@ -1490,10 +1494,6 @@ extension BrowserViewController: TabDelegate {
         let printHelper = PrintHelper(tab: tab)
         tab.addContentScript(printHelper, name: PrintHelper.name())
 
-        // XXX: Bug 1390200 - Disable NSUserActivity/CoreSpotlight temporarily
-        // let spotlightHelper = SpotlightHelper(tab: tab)
-        // tab.addHelper(spotlightHelper, name: SpotlightHelper.name())
-
         tab.addContentScript(LocalRequestHelper(), name: LocalRequestHelper.name())
 
         let blocker = NeevaTabContentBlocker(tab: tab)
@@ -1515,7 +1515,7 @@ extension BrowserViewController: TabDelegate {
 
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String) {
         updateFindInPageVisibility(visible: true)
-        findInPageBar?.text = selection
+        findInPageViewController?.model.searchValue = selection
     }
 
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String) {

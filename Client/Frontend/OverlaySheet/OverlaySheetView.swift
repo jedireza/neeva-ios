@@ -32,11 +32,13 @@ class OverlaySheetModel: ObservableObject {
     @Published var deltaHeight: CGFloat = 0
     @Published var position: OverlaySheetPosition = .dismissed
     @Published var backdropOpacity: Double = 0.0
+    @Published var clearBackground: Bool = false
 
-    func show() {
+    func show(clearBackground: Bool = false) {
         withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
             self.position = .middle
             self.backdropOpacity = OverlaySheetUX.backdropMaxOpacity
+            self.clearBackground = clearBackground
         }
     }
 
@@ -45,6 +47,7 @@ class OverlaySheetModel: ObservableObject {
             self.deltaHeight = 0
             self.position = .dismissed
             self.backdropOpacity = 0.0
+            self.clearBackground = false
         }
     }
 }
@@ -235,7 +238,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 // The semi-transparent backdrop used to shade the content that lies below
                 // the sheet.
                 Button(action: self.model.hide) {
-                    Color.black
+                    (self.model.clearBackground ? Color.clear : Color.black)
                         .opacity(self.model.backdropOpacity)
                         .ignoresSafeArea()
                         .modifier(
