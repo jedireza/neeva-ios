@@ -79,8 +79,9 @@ struct SwitcherToolbarView: View {
                     $0.tintColor = UIColor.label
                     $0.accessibilityIdentifier = "TabTrayController.addTabButton"
                     $0.setDynamicMenu(gridModel.buildRecentlyClosedTabsMenu)
-                }.frame(width: 44, height: 44)
-                    .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
+                }
+                .tapTargetFrame()
+                .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
                 Spacer()
                 UIKitButton(action: { gridModel.animationThumbnailState = .visibleForTrayHidden }) {
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
@@ -90,9 +91,10 @@ struct SwitcherToolbarView: View {
                     $0.setAttributedTitle(title, for: .normal)
                     $0.setTitleColor(.label, for: .normal)
                     $0.setDynamicMenu(gridModel.buildCloseAllTabsMenu)
-                }.frame(width: 44, height: 44)
-                    .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
-                    .accessibilityIdentifier("TabTrayController.doneButton")
+                }
+                .tapTargetFrame()
+                .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
+                .accessibilityIdentifier("TabTrayController.doneButton")
             }.padding(.horizontal, 16)
                 .frame(
                     height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)

@@ -12,10 +12,9 @@ struct TabToolbarButton<Content: View>: View {
 
     var body: some View {
         Button(action: action) {
-            Spacer()
-            label
-                .frame(width: 44, height: 44)
-            Spacer()
+            Spacer(minLength: 0)
+            label.tapTargetFrame()
+            Spacer(minLength: 0)
         }.accentColor(isEnabled ? .label : .quaternaryLabel)
     }
 }

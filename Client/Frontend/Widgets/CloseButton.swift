@@ -6,7 +6,7 @@ struct CloseButton: View {
     let action: () -> Void
     var body: some View {
         CloseButtonView(action: action)
-            .frame(width: 44, height: 44)
+            .tapTargetFrame()
     }
 }
 

@@ -43,7 +43,7 @@ struct SpaceListItem: View {
             }
             Spacer(minLength: 0)
             Symbol(decorative: icon, style: .headingMedium)
-                .frame(width: 44, height: 44)
+                .tapTargetFrame()
                 .foregroundColor(iconColor)
         }
         .padding(.vertical, 6)

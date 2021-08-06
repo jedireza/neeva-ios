@@ -30,6 +30,10 @@ extension View {
     public func applyToggleStyle() -> some View {
         toggleStyle(SwitchToggleStyle(tint: Color.ui.adaptive.blue))
     }
+
+    public func tapTargetFrame(alignment: Alignment = .center) -> some View {
+        frame(width: 44, height: 44, alignment: alignment)
+    }
 }
 
 // From https://www.avanderlee.com/swiftui/conditional-view-modifier/

@@ -67,34 +67,15 @@ struct LocationViewShareButton: View {
     let url: URL?
     let onTap: (UIView) -> Void
 
-    @State private var shareTargetView: UIView?
+    @State private var shareTargetView: UIView!
 
     var body: some View {
         if let url = url, !url.absoluteString.isEmpty {
-            TabLocationBarButton(label: Symbol(.squareAndArrowUp, label: "Share")) {
-                if let shareTargetView = shareTargetView {
-                    onTap(shareTargetView)
-                } else {
-                    print("nil sharetargetview!")
-                }
+            TabLocationBarButton(label: Symbol(.squareAndArrowUp, weight: .medium, label: "Share"))
+            {
+                onTap(shareTargetView)
             }
-            .overlay(WrappingView(view: $shareTargetView).allowsHitTesting(false))
-        }
-    }
-
-    fileprivate struct WrappingView: UIViewRepresentable {
-        @Binding var view: UIView?
-        func makeUIView(context: Context) -> some UIView {
-            let view = UIView()
-            view.isOpaque = false
-            return view
-        }
-        func updateUIView(_ uiView: UIViewType, context: Context) {
-            DispatchQueue.main.async {
-                if uiView != self.view {
-                    self.view = uiView
-                }
-            }
+            .uiViewRef($shareTargetView)
         }
     }
 }

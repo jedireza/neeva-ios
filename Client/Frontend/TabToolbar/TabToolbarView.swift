@@ -4,10 +4,6 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-private enum TabToolbarUX {
-    static let buttonSize: CGFloat = 44
-}
-
 struct TabToolbarView: View {
     let onBack: () -> Void
     let onForward: () -> Void

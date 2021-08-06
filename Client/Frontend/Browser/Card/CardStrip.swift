@@ -105,23 +105,21 @@ struct ToggleSpacesButton: View {
     @Binding var showingSpaces: Bool
 
     var body: some View {
-        Button(
-            action: {
-                spaceModel.onDataUpdated()
-                withAnimation {
-                    showingSpaces.toggle()
-                }
-            },
-            label: {
-                Symbol(.bookmark, size: 18, weight: .semibold, label: "Show Spaces")
-                    .foregroundColor(
-                        Color(showingSpaces ? UIColor.Browser.background : UIColor.label)
-                    )
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 44, height: 44)
-                    .background(Color(showingSpaces ? UIColor.label : UIColor.Browser.background))
-                    .clipShape(Circle()).animation(.spring())
-            })
+        Button {
+            spaceModel.onDataUpdated()
+            withAnimation {
+                showingSpaces.toggle()
+            }
+        } label: {
+            Symbol(.bookmark, size: 18, weight: .semibold, label: "Show Spaces")
+                .foregroundColor(
+                    Color(showingSpaces ? UIColor.Browser.background : UIColor.label)
+                )
+                .aspectRatio(contentMode: .fit)
+                .tapTargetFrame()
+                .background(Color(showingSpaces ? UIColor.label : UIColor.Browser.background))
+                .clipShape(Circle()).animation(.spring())
+        }
     }
 }
 
@@ -129,18 +127,14 @@ struct DismissButton: View {
     var onDismiss: () -> Void
 
     var body: some View {
-        Button(
-            action: {
-                onDismiss()
-            },
-            label: {
-                Symbol(.xmark, size: 18, weight: .semibold, label: "Dismiss View")
-                    .foregroundColor(
-                        Color(UIColor.label)
-                    )
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 44, height: 44)
-                    .animation(.spring())
-            })
+        Button(action: onDismiss) {
+            Symbol(.xmark, size: 18, weight: .semibold, label: "Dismiss View")
+                .foregroundColor(
+                    Color(UIColor.label)
+                )
+                .aspectRatio(contentMode: .fit)
+                .tapTargetFrame()
+                .animation(.spring())
+        }
     }
 }

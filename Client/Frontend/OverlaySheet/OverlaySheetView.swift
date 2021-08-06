@@ -169,7 +169,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     } label: {
                         Symbol(.xmark, style: .headingMedium, label: "Close")
                             .foregroundColor(.tertiaryLabel)
-                            .frame(width: 44, height: 44)
+                            .tapTargetFrame()
                             .padding(.trailing, 4.5)
                     }
                 } else {

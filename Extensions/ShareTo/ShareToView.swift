@@ -105,7 +105,7 @@ struct ItemDetailView: View {
             WebImage(url: item.favicon?.url)
                 .resizable()
                 .background(Color.tertiarySystemFill)
-                .frame(width: 44, height: 44)
+                .tapTargetFrame()
                 .cornerRadius(8)
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.title ?? "")
