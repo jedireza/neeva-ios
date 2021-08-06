@@ -42,6 +42,7 @@ class NeevaMenuViewController: UIHostingController<NeevaMenuRootView> {
 
         //Build callbacks for each button action
         let embeddedView = NeevaMenuView(noTopPadding: true) { result in
+            delegate.isNeevaMenuSheetOpen = false
             switch result {
             case .home:
                 self.rootView.onDismiss()
