@@ -19,6 +19,7 @@ struct InternalSettingsView: View {
     @Default(.appExtensionTelemetryOpenUrl) var appExtensionTelemetryOpenUrl
     @Default(.widgetKitSimpleTabKey) var widgetKitSimpleTabKey
     @Default(.widgetKitSimpleTopTab) var widgetKitSimpleTopTab
+    @Default(.applicationCleanlyBackgrounded) var applicationCleanlyBackgrounded
 
     var body: some View {
         List {
@@ -71,6 +72,10 @@ struct InternalSettingsView: View {
             Section(header: Text("WidgetKit")) {
                 OptionalDataKeyView("widgetKitSimpleTabKey", data: $widgetKitSimpleTabKey)
                 OptionalDataKeyView("widgetKitSimpleTopTab", data: $widgetKitSimpleTopTab)
+            }
+
+            Section(header: Text("Performance")) {
+                Toggle("applicationCleanlyBackgrounded", isOn: $applicationCleanlyBackgrounded)
             }
         }
         .font(.system(.footnote, design: .monospaced))

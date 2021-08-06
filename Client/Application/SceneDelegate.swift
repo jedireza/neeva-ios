@@ -67,6 +67,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         self.scene = scene
 
+        //
+        // We are back in the foreground, so set applicationCleanlyBackgrounded to false so that we can detect that
+        // the application was cleanly backgrounded later.
+        //
+        Defaults[.applicationCleanlyBackgrounded] = false
+
         DispatchQueue.main.async {
             if let signInToken = AppClipHelper.retreiveAppClipData() {
                 self.handleSignInToken(signInToken)
@@ -75,6 +81,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        //
+        // At this point we are happy to mark the app as applicationCleanlyBackgrounded. If a crash happens in background
+        // sync then that crash will still be reported. But we won't bother the user with the Restore Tabs
+        // dialog. We don't have to because at this point we already saved the tab state properly.
+        //
+        Defaults[.applicationCleanlyBackgrounded] = true
         tabManager.preserveTabs()
     }
 

@@ -70,6 +70,9 @@ public struct LogConfig {
         // referral promo
         case OpenReferralPromo  // Open referral promo
         case CloseReferralPromo  // Close referral promo card
+
+        // performance
+        case AppCrashWithPageLoad  // App Crash # With Page load #
     }
 
     public enum InteractionCategory {
@@ -79,6 +82,7 @@ public struct LogConfig {
         case FirstRun
         case Suggestions
         case ReferralPromo
+        case Performance
     }
 
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
@@ -91,6 +95,8 @@ public struct LogConfig {
             return NeevaFeatureFlags[.uiLogging]
         case .NeevaMenu:
             return NeevaFeatureFlags[.neevaMenuLogging]
+        case .Performance:
+            return NeevaFeatureFlags[.logAppCrashes]
         default:
             return false
         }
@@ -151,6 +157,8 @@ public struct LogConfig {
 
         case .OpenReferralPromo: return .ReferralPromo
         case .CloseReferralPromo: return .ReferralPromo
+
+        case .AppCrashWithPageLoad: return .Performance
         }
     }
 

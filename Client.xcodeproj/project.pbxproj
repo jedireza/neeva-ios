@@ -253,6 +253,7 @@
 		BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */; };
 		BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43CC265F49EA007E2F61 /* TourManager.swift */; };
 		BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */; };
+		BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5740A126BB699A0047D29B /* PerformanceLogger.swift */; };
 		BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */; };
 		BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */; };
 		BC5C442326600F23007E2F61 /* WithPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C442226600F23007E2F61 /* WithPopover.swift */; };
@@ -1179,6 +1180,7 @@
 		BC264BC126746098001527B6 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaMenuViewController.swift; sourceTree = "<group>"; };
 		BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIWindowExtensions.swift; sourceTree = "<group>"; };
+		BC5740A126BB699A0047D29B /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceLogger.swift; sourceTree = "<group>"; };
 		BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebUIMessageHelper.swift; sourceTree = "<group>"; };
 		BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptViewController.swift; sourceTree = "<group>"; };
 		BC5C43CC265F49EA007E2F61 /* TourManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourManager.swift; sourceTree = "<group>"; };
@@ -2512,6 +2514,7 @@
 			children = (
 				C9C18E6426559B9C004710CD /* ClientLogger.swift */,
 				C9C18E6326559B9C004710CD /* LogConfig.swift */,
+				BC5740A126BB699A0047D29B /* PerformanceLogger.swift */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -4629,6 +4632,7 @@
 				D38A1BEE1A9FA2CA00F6A386 /* SiteTableViewController.swift in Sources */,
 				BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */,
 				BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */,
+				BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */,
 				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,

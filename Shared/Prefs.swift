@@ -64,6 +64,10 @@ extension Defaults.Keys {
         "WidgetKitSimpleTabKey", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
     public static let widgetKitSimpleTopTab = Defaults.Key<Data?>(
         "WidgetKitSimpleTopTab", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
+
+    // performance
+    public static let applicationCleanlyBackgrounded = Defaults.Key<Bool>("ApplicationCrashedLastTime", default: true)
+    public static let pageLoadedCounter = Defaults.Key<Int32>("PageLoadedCounter", default: 0)
 }
 
 extension Defaults {
