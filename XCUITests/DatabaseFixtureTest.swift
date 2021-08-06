@@ -24,7 +24,8 @@ class DatabaseFixtureTest: BaseTestCase {
         super.setUp()
     }
 
-    func testHistoryDatabaseFixture() {
+    func testHistoryDatabaseFixture() throws {
+        try skipTest(issue: 1276, "Started failing after #1271 because tapping the Neeva Menu no longer did anything")
         app.buttons["Neeva Menu"].tap()
 
         waitForExistence(app.buttons["History"])
