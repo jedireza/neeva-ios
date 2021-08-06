@@ -8,6 +8,7 @@ class WebViewHost: UIHostingController<WebViewHost.Content> {
         var body: some View {
             if let webView = webView {
                 WebViewContainer(webView: webView)
+                    .ignoresSafeArea()
             }
         }
     }

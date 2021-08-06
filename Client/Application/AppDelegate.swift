@@ -38,22 +38,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         //
-        // Determine if the application cleanly exited last time it was used. We default to true in
-        // case we have never done this before. Then check if the "ApplicationCleanlyBackgrounded" user
+        // Determine if the application cleanly exited last time it was used.
+        // Check if the "applicationCleanlyBackgrounded" user
         // default exists and whether was properly set to true on app exit.
         //
         // Then we always set the user default to false. It will be set to true when we the application
         // is backgrounded.
         //
 
-        self.applicationCleanlyBackgrounded = true
-
-        let defaults = UserDefaults()
-        if defaults.object(forKey: "ApplicationCleanlyBackgrounded") != nil {
-            self.applicationCleanlyBackgrounded = defaults.bool(
-                forKey: "ApplicationCleanlyBackgrounded")
-        }
-        defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
+        self.applicationCleanlyBackgrounded = Defaults[.applicationCleanlyBackgrounded]
+        Defaults[.applicationCleanlyBackgrounded] = false
 
         let profile = createProfile()
         self.profile = profile
@@ -77,6 +71,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         _ application: UIApplication, withLaunchOptions launchOptions: [AnyHashable: Any]?
     ) -> Bool {
         log.info("startApplication begin")
+
+        // log last crashed status and page load number
+        // we use applicationCleanlyBackgrounded in Default to keep track
+        // if sceneDidEnterBackground or sceneDidEnterBackground triggered
+        // before the app enter background or close, we use it as a proxy
+        // to determine if there is a crash from last exit
+        PerformanceLogger.shared.logPageLoadWithCrashedStatus(
+            crashed: !self.applicationCleanlyBackgrounded)
 
         // Need to get "settings.sendUsageData" this way so that Sentry can be initialized
         // before getting the Profile.
@@ -127,14 +129,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         shutdownWebServer?.cancel()
         shutdownWebServer = nil
 
-        //
-        // We are back in the foreground, so set CleanlyBackgrounded to false so that we can detect that
-        // the application was cleanly backgrounded later.
-        //
-
-        let defaults = UserDefaults()
-        defaults.set(false, forKey: "ApplicationCleanlyBackgrounded")
-
         BrowserViewController.foregroundBVC().zeroQueryViewController.reloadAll()
 
         // Resume file downloads.
@@ -172,15 +166,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        //
-        // At this point we are happy to mark the app as CleanlyBackgrounded. If a crash happens in background
-        // sync then that crash will still be reported. But we won't bother the user with the Restore Tabs
-        // dialog. We don't have to because at this point we already saved the tab state properly.
-        //
-
-        let defaults = UserDefaults()
-        defaults.set(true, forKey: "ApplicationCleanlyBackgrounded")
-
         // Pause file downloads.
         // TODO: iOS 13 needs to iterate all the BVCs.
         BrowserViewController.foregroundBVC().downloadQueue.pauseAll()
@@ -198,6 +183,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
     func applicationWillTerminate(_ application: UIApplication) {
         // We have only five seconds here, so let's hope this doesn't take too long?.
+        // Set applicationCleanlyBackgrounded to true when user manually close the app
+        Defaults[.applicationCleanlyBackgrounded] = true
         profile?._shutdown()
     }
 

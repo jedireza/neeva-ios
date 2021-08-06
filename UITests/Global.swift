@@ -4,10 +4,11 @@
 
 import Foundation
 import GCDWebServers
-import Shared
 import Storage
 import SwiftKeychainWrapper
 import WebKit
+
+@testable import Client
 
 let LabelAddressAndSearch = "Address and Search"
 
@@ -286,6 +287,10 @@ class BrowserUtils {
         tester.enterText(intoCurrentFirstResponder: typeUrl)
         tester.enterText(intoCurrentFirstResponder: "\n")
         tester.waitForAbsenceOfView(withAccessibilityIdentifier: "address")
+    }
+
+    class func getNumberOfTabs() -> Int {
+        SceneDelegate.getTabManager().tabs.count
     }
 
     class func iPad() -> Bool {

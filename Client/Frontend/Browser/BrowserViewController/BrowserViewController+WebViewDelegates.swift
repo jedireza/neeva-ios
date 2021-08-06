@@ -50,12 +50,7 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
         .neevaMemory,
         .feedbackQuery,
         .welcomeTours,
-        .feedbackScreenshot,
-        .referralPromo,
         .calculatorSuggestion,
-        .referralPromoLogging,
-        .appStoreRatingPromo,
-        .logAppCrashes,
     ]
     let intFlags: [NeevaFeatureFlags.IntFlag] = []
     let floatFlags: [NeevaFeatureFlags.FloatFlag] = []
@@ -895,6 +890,11 @@ extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = tabManager[webView] else { return }
         tab.url = webView.url
+
+        // increment page load count
+        if let url = webView.url {
+            PerformanceLogger.shared.incrementPageLoad(url: url)
+        }
 
         // The document has changed. This metadata is now invalid.
         tab.pageMetadata = nil

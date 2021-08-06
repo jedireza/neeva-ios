@@ -70,7 +70,7 @@ class SavedTab: NSObject, NSCoding {
         self.isSelected = coder.decodeBool(forKey: "isSelected")
         self.title = coder.decodeObject(forKey: "title") as? String
         self.isPrivate = coder.decodeBool(forKey: "isPrivate")
-        self.faviconURL = (coder.decodeObject(forKey: "faviconURL") as? String)?.asURL
+        self.faviconURL = (coder.decodeObject(forKey: "faviconURL") as? URL)
         self.url = coder.decodeObject(forKey: "url") as? URL
         self.UUID = coder.decodeObject(forKey: "UUID") as? String
         self.rootUUID = coder.decodeObject(forKey: "rootUUID") as? String

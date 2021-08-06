@@ -28,8 +28,9 @@ public class ClientLogger {
             return
         }
 
+        // If it is performance logging, it is okay because no identity info is logged
         // If there is no tabs, assume that logging is OK for allowed actions
-        if BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false {
+        if LogConfig.category(for: path) != .Performance && BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false {
             return
         }
 

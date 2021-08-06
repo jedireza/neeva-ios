@@ -21,6 +21,8 @@ extension BaseTestCase {
 
         waitForExistence(app.buttons["Find on Page"])
         app.buttons["Find on Page"].tap()
+
+        waitForExistence(app.textFields["FindInPage_TextField"])
     }
 
     /// Launches from tab page

@@ -120,7 +120,6 @@ struct Card<Details>: View where Details: CardDetails {
         .cornerRadius(CardUX.CornerRadius)
         .modifier(BorderTreatment(isSelected: showsSelection && details.isSelected))
         .onDrop(of: ["public.url", "public.text"], delegate: details)
-        .scaleEffect(isPressed ? 0.95 : 1)
         .overlay(
             Group {
                 if let buttonImage = details.closeButtonImage {
@@ -134,6 +133,7 @@ struct Card<Details>: View where Details: CardDetails {
                     }
                 }
             }, alignment: .topTrailing)
+        .scaleEffect(isPressed ? 0.95 : 1)
     }
 
     private struct ActionsModifier: ViewModifier {

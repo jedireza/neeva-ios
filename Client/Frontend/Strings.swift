@@ -1198,9 +1198,6 @@ extension Strings {
     public static let AppMenuButtonAccessibilityLabel = MZLocalizedString(
         "Toolbar.Menu.AccessibilityLabel", value: "Menu",
         comment: "Accessibility label for the Menu button.")
-    public static let AppMenuCopyURLConfirmMessage = MZLocalizedString(
-        "Menu.CopyURL.Confirm", value: "URL Copied To Clipboard",
-        comment: "Toast displayed to user after copy url pressed.")
     public static let AppMenuTabSentConfirmMessage = MZLocalizedString(
         "Menu.TabSent.Confirm", value: "Tab Sent",
         comment: "Toast displayed to the user after a tab has been sent successfully.")
@@ -2384,23 +2381,6 @@ extension String {
         "Reload page", comment: "Accessibility label for the reload button")
     public static let TabLocationPageOptionsAccessibilityLabel = MZLocalizedString(
         "Neeva Menu", comment: "Accessibility label for the Page Options menu button")
-}
-
-// TabPeekViewController
-extension String {
-    public static let TabPeekCopyUrl = MZLocalizedString(
-        "Copy URL", tableName: "3DTouchActions",
-        comment:
-            "Label for preview action on Tab Tray Tab to copy the URL of the current tab to clipboard"
-    )
-    public static let TabPeekCloseTab = MZLocalizedString(
-        "Close Tab", tableName: "3DTouchActions",
-        comment: "Label for preview action on Tab Tray Tab to close the current tab")
-    public static let TabPeekPreviewAccessibilityLabel = MZLocalizedString(
-        "Preview of %@", tableName: "3DTouchActions",
-        comment:
-            "Accessibility label, associated to the 3D Touch action on the current tab in the tab tray, used to display a larger preview of the tab."
-    )
 }
 
 // Tab Toolbar

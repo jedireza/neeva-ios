@@ -14,7 +14,12 @@ class NavSuggestionModel: ObservableObject {
     @Published private var neevaNavSuggestions: [NavSuggestion] = []
     @Published private var historyNavSuggestions: [NavSuggestion] = []
 
-    var combinedSuggestions: [Suggestion] = []
+    var combinedSuggestions: [Suggestion] {
+        Array(
+            (recentNavSuggestions + neevaNavSuggestions + historyNavSuggestions)
+                .removeDuplicates().map(Suggestion.navigation)
+                .prefix(NavSuggestionModel.numOfDisplayNavSuggestions))
+    }
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -39,14 +44,5 @@ class NavSuggestionModel: ObservableObject {
             }
         }
         .store(in: &subscriptions)
-
-        Publishers.MergeMany($recentNavSuggestions, $historyNavSuggestions, $neevaNavSuggestions)
-            .sink { [unowned self] suggestions in
-                combinedSuggestions =
-                    Array(
-                        (recentNavSuggestions + neevaNavSuggestions + historyNavSuggestions)
-                            .removeDuplicates().map { Suggestion.navigation($0) }
-                            .prefix(NavSuggestionModel.numOfDisplayNavSuggestions))
-            }.store(in: &subscriptions)
     }
 }
