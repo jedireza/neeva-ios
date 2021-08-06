@@ -51,44 +51,32 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
             rootView: OverflowMenuRootView(
                 onDismiss: onDismiss,
                 embeddedView: OverflowMenuView(
-                    noTopPadding: true,
                     changedUserAgent: changedUserAgent ?? false,
-                    menuAction: { _ in }),
+                    menuAction: { action in
+                        onDismiss()
+                        switch action {
+                        case .forward:
+                            delegate.overflowMenuDidPressForward()
+                        case .reload:
+                            delegate.overflowMenuDidPressReloadStop(urlBarModel.reloadButton)
+                        case .newTab:
+                            delegate.overflowMenuDidPressAddNewTab()
+                        case .findOnPage:
+                            delegate.overflowMenuDidPressFindOnPage()
+                        case .textSize:
+                            delegate.overflowMenuDidPressTextSize()
+                        case .readingMode:
+                            // not implemented yet
+                            break
+                        case .desktopSite:
+                            delegate.overflowMenuDidPressRequestDesktopSite()
+                        }
+                    }
+                ),
                 tabToolbarModel: tabToolbarModel,
                 urlBarModel: urlBarModel))
-
         self.delegate = delegate
         self.view.accessibilityViewIsModal = true
-
-        //Build callbacks for each button action
-        let embeddedView = OverflowMenuView(
-            noTopPadding: true,
-            changedUserAgent: changedUserAgent ?? false
-        ) { result in
-            onDismiss()
-            switch result {
-            case .forward:
-                delegate.overflowMenuDidPressForward()
-            case .reload:
-                delegate.overflowMenuDidPressReloadStop(urlBarModel.reloadButton)
-            case .newTab:
-                delegate.overflowMenuDidPressAddNewTab()
-            case .findOnPage:
-                delegate.overflowMenuDidPressFindOnPage()
-            case .textSize:
-                delegate.overflowMenuDidPressTextSize()
-            case .readingMode:
-                // not implement yet
-                break
-            case .desktopSite:
-                delegate.overflowMenuDidPressRequestDesktopSite()
-            }
-        }
-        self.rootView = OverflowMenuRootView(
-            onDismiss: onDismiss,
-            embeddedView: embeddedView,
-            tabToolbarModel: tabToolbarModel,
-            urlBarModel: urlBarModel)
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

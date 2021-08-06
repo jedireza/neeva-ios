@@ -36,20 +36,16 @@ public struct OverflowMenuButtonView: View {
 }
 
 public struct OverflowMenuView: View {
-    private let noTopPadding: Bool
     private let menuAction: (OverflowMenuButtonActions) -> Void
     private let changedUserAgent: Bool
 
-    @Environment(\.isIncognito) private var isIncognito
     @EnvironmentObject var tabToolBarModel: TabToolbarModel
     @EnvironmentObject var urlBarModel: URLBarModel
 
     public init(
-        noTopPadding: Bool = false,
         changedUserAgent: Bool = false,
         menuAction: @escaping (OverflowMenuButtonActions) -> Void
     ) {
-        self.noTopPadding = noTopPadding
         self.menuAction = menuAction
         self.changedUserAgent = changedUserAgent
     }
@@ -99,19 +95,18 @@ public struct OverflowMenuView: View {
 
                     Color.groupedBackground.frame(height: 1)
 
+                    let hasHomeButton = UIConstants.safeArea.bottom == 0
                     NeevaMenuRowButtonView(
                         label: changedUserAgent == true
                             ? Strings.AppMenuViewMobileSiteTitleString
                             : Strings.AppMenuViewDesktopSiteTitleString,
                         symbol: changedUserAgent == true
-                            ? .iphone
+                            ? (hasHomeButton ? .iphoneHomebutton : .iphone)
                             : .desktopcomputer
                     ) {
                         menuAction(OverflowMenuButtonActions.desktopSite)
                     }
                     .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
-
-                    Color.groupedBackground.frame(height: 1)
                 }
                 .accentColor(.label)
             }
@@ -123,6 +118,6 @@ struct OverflowMenuView_Previews: PreviewProvider {
     static var previews: some View {
         OverflowMenuView(menuAction: { _ in }).previewDevice("iPod touch (7th generation)").environment(
             \.sizeCategory, .extraExtraExtraLarge)
-        OverflowMenuView(menuAction: { _ in }).environment(\.isIncognito, true)
+        OverflowMenuView(menuAction: { _ in })
     }
 }

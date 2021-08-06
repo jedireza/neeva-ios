@@ -37,6 +37,7 @@ enum TabToolbarButtons {
                     action: onBack
                 )
                 .disabled(!model.canGoBack)
+                .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
                 if FeatureFlag[.overflowMenu] {
                     TabToolbarButton(
                         label: Symbol(
@@ -50,8 +51,9 @@ enum TabToolbarButtons {
                         action: onForward
                     )
                     .disabled(!model.canGoForward)
+                    .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
                 }
-            }.simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
+            }
         }
     }
 
