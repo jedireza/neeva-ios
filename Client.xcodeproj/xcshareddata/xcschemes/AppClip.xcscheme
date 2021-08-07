@@ -63,7 +63,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCAppClipURL"
-            value = "https://neeva.com/appclip/login?token=9c78d23e-333c-4934-83b5-1d3a8c02f26c"
+            value = "https://m1.neeva.com/appclip/login?token=9c78d23e-333c-4934-83b5-1d3a8c02f26c"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

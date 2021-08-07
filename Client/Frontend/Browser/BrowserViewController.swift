@@ -1759,6 +1759,7 @@ extension BrowserViewController {
         introViewController!.didFinishClosure = { controller in
             Defaults[.introSeen] = true
             controller.dismiss(animated: true)
+            self.introViewController = nil
         }
 
         introViewController!.visitHomePage = visitHomePage

@@ -105,7 +105,9 @@ enum NavigationPath {
         if let url = url, NeevaConstants.isAppHost(url.host), url.path.starts(with: "/login") {
             Defaults[.introSeen] = true
 
-            if let introVC = SceneDelegate.getCurrentSceneDelegate().getBVC().introViewController {
+            let bvc = SceneDelegate.getCurrentSceneDelegate().getBVC()
+            if let introVC = bvc.introViewController {
+                bvc.view.alpha = 1
                 introVC.dismiss(animated: true, completion: nil)
             }
         }

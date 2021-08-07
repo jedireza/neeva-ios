@@ -73,11 +73,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //
         Defaults[.applicationCleanlyBackgrounded] = false
 
-        DispatchQueue.main.async {
-            if let signInToken = AppClipHelper.retreiveAppClipData() {
-                self.handleSignInToken(signInToken)
-            }
-        }
+        checkForSignInToken()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -224,15 +220,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     // MARK: - Sign In
+    func checkForSignInToken() {
+        if let signInToken = AppClipHelper.retreiveAppClipData() {
+            self.handleSignInToken(signInToken)
+        }
+    }
+
     func handleSignInToken(_ signInToken: String) {
         print(signInToken, "sign in token")
+
         Defaults[.introSeen] = true
         AppClipHelper.saveTokenToDevice(nil)
-        browserViewController.openURLInNewTab(
-            URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
 
-        if let introVC = browserViewController.introViewController {
-            introVC.dismiss(animated: true, completion: nil)
+        DispatchQueue.main.async { [self] in
+            browserViewController.openURLInNewTab(
+                URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
+
+            // view alpha is set to 0 in viewWillAppear creating a blank screen
+            browserViewController.view.alpha = 1
+
+            if let introVC = browserViewController.introViewController {
+                introVC.dismiss(animated: true, completion: nil)
+            }
         }
     }
 }
