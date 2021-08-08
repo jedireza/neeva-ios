@@ -19,6 +19,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case pinToTopSites = "Pin to Top Sites"
     case readingMode = "Enable Reading Mode"
+    case spacify = "Enable button to turn a page into a Space"
     case swipePlusPlus = "Additional forward and back swipe gestures"
 }
 

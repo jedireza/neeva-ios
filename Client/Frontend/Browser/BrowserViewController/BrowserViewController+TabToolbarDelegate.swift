@@ -49,7 +49,25 @@ extension BrowserViewController: TabToolbarDelegate {
         ClientLogger.shared.logCounter(
             .SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
 
-        showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
+        if FeatureFlag[.spacify],
+           let domain = SpaceImportDomain(rawValue: tab.url?.baseDomain ?? "")
+        {
+            tab.webView?.evaluateJavaScript(domain.script) { [unowned self] (result, error) in
+                guard let linkData = result as? [[String]] else {
+                    self.showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
+                    return
+                }
+                let importData = SpaceImportHandler(
+                    title: tab.url!.path.remove("/").capitalized, data: linkData)
+                self.showAddToSpacesSheet(
+                    url: url, title: tab.title,
+                    webView: tab.webView!,
+                    importData: importData
+                )
+            }
+        } else {
+            showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
+        }
     }
 
     func tabToolbarDidPressTabs() {

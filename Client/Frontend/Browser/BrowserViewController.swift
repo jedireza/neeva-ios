@@ -2061,7 +2061,11 @@ extension BrowserViewController {
 }
 
 extension BrowserViewController {
-    func showAddToSpacesSheet(url: URL, title: String?, webView: WKWebView) {
+    func showAddToSpacesSheet(
+        url: URL, title: String?,
+        webView: WKWebView,
+        importData: SpaceImportHandler? = nil
+    ) {
         webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") {
             (result, error) in
             let title = (title ?? "").isEmpty ? url.absoluteString : title!
@@ -2078,7 +2082,9 @@ extension BrowserViewController {
                     onOpenURL: { url in
                         self.hideOverlaySheetViewController()
                         self.openURLInNewTab(url)
-                    }))
+                    },
+                    importData: importData
+                ))
         }
     }
 }

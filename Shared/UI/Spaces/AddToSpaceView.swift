@@ -156,10 +156,16 @@ public struct AddToSpaceView: View {
     @State private var backgroundColor: Color? = nil
 
     let onDismiss: () -> Void
+    let importData: SpaceImportHandler?
 
-    public init(request: AddToSpaceRequest, onDismiss: @escaping () -> Void = {}) {
+    public init(
+        request: AddToSpaceRequest,
+        onDismiss: @escaping () -> Void = {},
+        importData: SpaceImportHandler? = nil
+    ) {
         self.request = request
         self.onDismiss = onDismiss
+        self.importData = importData
     }
 
     func filter(_ spaces: [Space]) -> [Space] {
@@ -174,7 +180,8 @@ public struct AddToSpaceView: View {
     var searchHeader: some View {
         SpacesSearchHeaderView(
             searchText: $searchTerm,
-            createAction: { request.mode = .saveToNewSpace }
+            createAction: { request.mode = .saveToNewSpace },
+            importData: importData
         )
         .padding(.horizontal, 16)
         .padding(.top, 8)

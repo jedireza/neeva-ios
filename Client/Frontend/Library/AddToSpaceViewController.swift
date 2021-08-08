@@ -9,6 +9,7 @@ struct AddToSpaceRootView: View {
     @StateObject var request: AddToSpaceRequest
     var onDismiss: () -> Void
     var onOpenURL: (URL) -> Void
+    let importData: SpaceImportHandler?
 
     private var overlaySheetIsFixedHeight: Bool {
         switch request.mode {
@@ -28,7 +29,8 @@ struct AddToSpaceRootView: View {
                     // The user made a selection. Store that and run the animation to hide the
                     // sheet. When that completes, we'll run the provided onDismiss callback.
                     self.overlaySheetModel.hide()
-                }
+                },
+                importData: importData
             )
             .environment(\.onOpenURL, { self.onOpenURL($0) })
             .overlaySheetTitle(title: request.mode.title)
@@ -47,11 +49,19 @@ struct AddToSpaceRootView: View {
 class AddToSpaceViewController: UIHostingController<AddToSpaceRootView> {
     init(
         request: AddToSpaceRequest, onDismiss: @escaping () -> Void,
-        onOpenURL: @escaping (URL) -> Void
+        onOpenURL: @escaping (URL) -> Void,
+        importData: SpaceImportHandler? = nil
     ) {
+        importData?.completion = {
+            onDismiss()
+            SpaceStore.shared.refresh()
+            onOpenURL(NeevaConstants.appSpacesURL)
+        }
         super.init(
             rootView: AddToSpaceRootView(
-                request: request, onDismiss: onDismiss, onOpenURL: onOpenURL))
+                request: request,
+                onDismiss: onDismiss, onOpenURL: onOpenURL,
+                importData: importData))
         self.view.accessibilityViewIsModal = true
     }
 

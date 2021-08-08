@@ -6,10 +6,16 @@ struct SpacesSearchHeaderView: View {
     @Binding var searchText: String
 
     let createAction: () -> Void
+    let importData: SpaceImportHandler?
 
-    public init(searchText: Binding<String>, createAction: @escaping () -> Void) {
+    public init(
+        searchText: Binding<String>,
+        createAction: @escaping () -> Void,
+        importData: SpaceImportHandler? = nil
+    ) {
         self._searchText = searchText
         self.createAction = createAction
+        self.importData = importData
     }
 
     var body: some View {
@@ -29,6 +35,20 @@ struct SpacesSearchHeaderView: View {
             .frame(height: 40)
             .foregroundColor(.ui.adaptive.blue)
             .padding(.trailing, 3)
+            if let data = importData {
+                Button {
+                    data.importToNewSpace()
+                } label: {
+                    HStack(spacing: 5) {
+                        Symbol(decorative: .plus, style: .labelLarge)
+                        Text("Spacify")
+                            .withFont(.labelLarge)
+                    }
+                }
+                .frame(height: 40)
+                .foregroundColor(.ui.adaptive.blue)
+                .padding(.trailing, 3)
+            }
         }
     }
 }
