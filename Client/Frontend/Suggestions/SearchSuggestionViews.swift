@@ -75,9 +75,21 @@ struct SuggestionSpec: ViewModifier {
             content.padding(SuggestionViewUX.ChipInnerPadding)
                 .background(suggestionState.color)
                 .overlay(Capsule().stroke(Color(UIColor.Browser.urlBarDivider), lineWidth: 1))
-                .clipShape(Capsule())
                 .contentShape(Capsule())
                 .hoverEffect()
+        }
+    }
+}
+
+struct ClipShape: ViewModifier {
+    let config: SuggestionConfig
+
+    func body(content: Content) -> some View {
+        switch config {
+        case .row:
+            content.clipped()
+        case .chip:
+            content.clipShape(Capsule())
         }
     }
 }
@@ -128,6 +140,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                 }
             }.apply(config: config, suggestionState: suggestionState)
         }
+        .buttonStyle(TableCellButtonStyle())
+        .modifier(ClipShape(config: config))
         .accentColor(.primary)
         .useEffect(deps: model.keyboardFocusedSuggestion) { _ in
             if let suggestion = suggestion, model.isFocused(suggestion) {
