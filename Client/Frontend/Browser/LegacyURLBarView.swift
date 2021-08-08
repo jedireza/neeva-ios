@@ -11,8 +11,7 @@ import SwiftUI
 protocol CommonURLBar: PrivateModeUI {
     var model: URLBarModel { get }
     var queryModel: SearchQueryModel { get }
-    var historySuggestionModel: HistorySuggestionModel { get }
-    var neevaSuggestionModel: NeevaSuggestionModel { get }
+    var suggestionModel: SuggestionModel { get }
     var gridModel: GridModel { get }
     var trackingStatsViewModel: TrackingStatsViewModel { get }
 }
@@ -43,8 +42,7 @@ protocol LegacyURLBarDelegate: UIViewController {
 class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     let model = URLBarModel()
     let queryModel = SearchQueryModel()
-    let historySuggestionModel: HistorySuggestionModel
-    let neevaSuggestionModel: NeevaSuggestionModel
+    let suggestionModel: SuggestionModel
     let gridModel: GridModel
     let trackingStatsViewModel: TrackingStatsViewModel
     var subscriptions: Set<AnyCancellable> = []
@@ -92,8 +90,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     lazy var locationHost: TabLocationHost = { [unowned self] in
         TabLocationHost(
             model: model,
-            historySuggestionModel: historySuggestionModel,
-            neevaSuggestionModel: neevaSuggestionModel,
+            suggestionModel: suggestionModel,
             queryModel: queryModel,
             gridModel: self.gridModel,
             trackingStatsModel: self.trackingStatsViewModel,
@@ -157,10 +154,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel
     ) {
         self.profile = profile
-        self.historySuggestionModel = HistorySuggestionModel(
-            profile: profile, queryModel: self.queryModel)
-        self.neevaSuggestionModel = NeevaSuggestionModel(
-            isIncognito: isPrivateMode, queryModel: self.queryModel)
+        self.suggestionModel = SuggestionModel(  profile: profile, queryModel: self.queryModel)
         self.toolbarModel = toolbarModel
         self.gridModel = gridModel
         self.trackingStatsViewModel = trackingStatsModel
@@ -471,8 +465,6 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
 extension LegacyURLBarView: PrivateModeUI {
     func applyUIMode(isPrivate: Bool) {
         isPrivateMode = isPrivate
-
-        neevaSuggestionModel.setIncognito(isPrivate)
 
         locationHost.applyUIMode(isPrivate: isPrivate)
 

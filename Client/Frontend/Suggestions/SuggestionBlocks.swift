@@ -33,7 +33,7 @@ struct ChipPlaceholderModifier: ViewModifier {
 
 struct SuggestionChipView: View {
     @State var suggestions = [Suggestion]()
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -43,10 +43,9 @@ struct SuggestionChipView: View {
                         stride(from: 0, to: suggestions.count, by: 2)
                             .map { suggestions[$0] }
                     ) { suggestion in
-                        if neevaModel.shouldShowSuggestions {
+                        if suggestionModel.shouldShowSuggestions {
                             SearchSuggestionView(suggestion)
                                 .environment(\.suggestionConfig, .chip)
-                                .environmentObject(neevaModel)
                         }
                     }
                 }
@@ -55,95 +54,86 @@ struct SuggestionChipView: View {
                         stride(from: 1, to: suggestions.count, by: 2)
                             .map { suggestions[$0] }
                     ) { suggestion in
-                        if neevaModel.shouldShowSuggestions {
+                        if suggestionModel.shouldShowSuggestions {
                             SearchSuggestionView(suggestion)
                                 .environment(\.suggestionConfig, .chip)
-                                .environmentObject(neevaModel)
                         }
                     }
                 }
             }.padding(.horizontal, SuggestionBlockUX.ChipBlockSpacing)
                 .padding(.vertical, SuggestionBlockUX.ChipBlockPadding)
                 .frame(height: SuggestionBlockUX.ChipBlockHeight)
-        }.useEffect(deps: neevaModel.chipQuerySuggestions) { _ in
-            if !neevaModel.chipQuerySuggestions.isEmpty {
-                suggestions = neevaModel.chipQuerySuggestions
+        }.useEffect(deps: suggestionModel.chipQuerySuggestions) { _ in
+            if !suggestionModel.chipQuerySuggestions.isEmpty {
+                suggestions = suggestionModel.chipQuerySuggestions
             }
         }
     }
 }
 
 struct TabSuggestionsList: View {
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if !neevaModel.topSuggestions.isEmpty {
+        if !suggestionModel.topSuggestions.isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
-            ForEach(neevaModel.tabSuggestions) { suggestion in
+            ForEach(suggestionModel.tabSuggestions) { suggestion in
                 SearchSuggestionView(suggestion)
-                    .environmentObject(neevaModel)
             }.padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
         }
     }
 }
 
 struct TopSuggestionsList: View {
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if !neevaModel.topSuggestions.isEmpty {
+        if !suggestionModel.topSuggestions.isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
-            ForEach(neevaModel.topSuggestions) { suggestion in
+            ForEach(suggestionModel.topSuggestions) { suggestion in
                 SearchSuggestionView(suggestion)
-                    .environmentObject(neevaModel)
             }.padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
         }
     }
 }
 
 struct QuerySuggestionsList: View {
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if !(neevaModel.chipQuerySuggestions + neevaModel.rowQuerySuggestions).isEmpty {
+        if !(suggestionModel.chipQuerySuggestions + suggestionModel.rowQuerySuggestions).isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
 
             SuggestionChipView()
-                .environmentObject(neevaModel)
                 .padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
 
-            ForEach(neevaModel.rowQuerySuggestions) { suggestion in
+            ForEach(suggestionModel.rowQuerySuggestions) { suggestion in
                 SearchSuggestionView(suggestion)
-                    .environmentObject(neevaModel)
             }.padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
         }
     }
 }
 
 struct UrlSuggestionsList: View {
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if !neevaModel.urlSuggestions.isEmpty {
+        if !suggestionModel.urlSuggestions.isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-            ForEach(neevaModel.urlSuggestions) { suggestion in
+            ForEach(suggestionModel.urlSuggestions) { suggestion in
                 SearchSuggestionView(suggestion)
-                    .environmentObject(neevaModel)
             }.padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
         }
     }
 }
 
 struct NavSuggestionsList: View {
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
-    @EnvironmentObject private var navModel: NavSuggestionModel
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
         SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-        ForEach(navModel.combinedSuggestions) { suggestion in
+        ForEach(suggestionModel.navCombinedSuggestions) { suggestion in
             SearchSuggestionView(suggestion)
-                .environmentObject(neevaModel)
         }
     }
 }

@@ -8,13 +8,12 @@ struct SuggestionsList: View {
     static let placeholderNavSuggestion = NavSuggestion(
         url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
 
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 0) {
-                if let lensOrBang = neevaModel.activeLensBang,
+                if let lensOrBang = suggestionModel.activeLensBang,
                     let description = lensOrBang.description
                 {
                     Section(
@@ -32,7 +31,7 @@ struct SuggestionsList: View {
                 } else {
                     TabSuggestionsList()
 
-                    if neevaModel.suggestions.isEmpty && neevaModel.shouldShowSuggestions {
+                    if suggestionModel.suggestions.isEmpty && suggestionModel.shouldShowSuggestions {
                         PlaceholderSuggestions()
                     } else {
                         TopSuggestionsList()
@@ -61,23 +60,11 @@ struct SuggestionsList_Previews: PreviewProvider {
         ]
         Group {
             SuggestionsList()
-                .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(
-                    NeevaSuggestionModel(
-                        previewLensBang: nil,
-                        chipQuerySuggestions: suggestions))
+                .environmentObject(SuggestionModel(previewSites: history))
             SuggestionsList()
-                .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(
-                    NeevaSuggestionModel(
-                        previewLensBang: .previewBang,
-                        rowQuerySuggestions: suggestions))
+                .environmentObject(SuggestionModel(previewSites: history))
             SuggestionsList()
-                .environmentObject(HistorySuggestionModel(previewSites: history))
-                .environmentObject(
-                    NeevaSuggestionModel(
-                        previewLensBang: .previewLens,
-                        rowQuerySuggestions: suggestions))
+                .environmentObject(SuggestionModel(previewSites: history))
         }.previewLayout(.fixed(width: 375, height: 250))
     }
 }

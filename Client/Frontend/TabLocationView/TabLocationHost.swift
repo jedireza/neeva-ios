@@ -10,8 +10,7 @@ protocol LegacyTabLocationViewDelegate: AnyObject {
 }
 
 struct TabLocationViewWrapper: View {
-    let historyModel: HistorySuggestionModel
-    let neevaModel: NeevaSuggestionModel
+    let suggestionModel: SuggestionModel
     let model: URLBarModel
     let queryModel: SearchQueryModel
     let gridModel: GridModel
@@ -21,8 +20,7 @@ struct TabLocationViewWrapper: View {
 
     var body: some View {
         content()
-            .environmentObject(historyModel)
-            .environmentObject(neevaModel)
+            .environmentObject(suggestionModel)
             .environmentObject(model)
             .environmentObject(queryModel)
             .environmentObject(gridModel)
@@ -39,8 +37,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
 
     init(
         model: URLBarModel,
-        historySuggestionModel: HistorySuggestionModel,
-        neevaSuggestionModel: NeevaSuggestionModel,
+        suggestionModel: SuggestionModel,
         queryModel: SearchQueryModel,
         gridModel: GridModel,
         trackingStatsModel: TrackingStatsViewModel,
@@ -51,8 +48,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         self.delegate = delegate
         super.init()
         setRootView {
-            TabLocationViewWrapper(
-                historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel,
+            TabLocationViewWrapper(suggestionModel: suggestionModel,
                 model: model, queryModel: queryModel, gridModel: gridModel,
                 trackingStatsModel: trackingStatsModel
             ) {

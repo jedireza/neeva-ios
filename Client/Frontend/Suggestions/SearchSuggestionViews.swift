@@ -110,13 +110,13 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
     let suggestion: Suggestion?
 
     @State var suggestionState: SuggestionState = .normal
-    @EnvironmentObject public var model: NeevaSuggestionModel
+    @EnvironmentObject public var suggestionModel: SuggestionModel
     @Environment(\.suggestionConfig) private var config
 
     var body: some View {
         Button {
             if let suggestion = suggestion {
-                model.handleSuggestionSelected(suggestion)
+                suggestionModel.handleSuggestionSelected(suggestion)
             }
 
             action?()
@@ -143,8 +143,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
         .buttonStyle(TableCellButtonStyle())
         .modifier(ClipShape(config: config))
         .accentColor(.primary)
-        .useEffect(deps: model.keyboardFocusedSuggestion) { _ in
-            if let suggestion = suggestion, model.isFocused(suggestion) {
+        .useEffect(deps: suggestionModel.keyboardFocusedSuggestion) { _ in
+            if let suggestion = suggestion, suggestionModel.isFocused(suggestion) {
                 suggestionState = .focused
             } else {
                 suggestionState = .normal
@@ -157,7 +157,7 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
 struct QuerySuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.QuerySuggestion
 
-    @EnvironmentObject public var model: NeevaSuggestionModel
+    @EnvironmentObject public var model: SuggestionModel
     @Environment(\.setSearchInput) private var setInput
     @Environment(\.suggestionConfig) private var config
 
@@ -267,7 +267,7 @@ struct QuerySuggestionView: View {
 struct URLSuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.UrlSuggestion
 
-    @EnvironmentObject public var model: NeevaSuggestionModel
+    @EnvironmentObject public var model: SuggestionModel
 
     @ViewBuilder
     var icon: some View {
@@ -339,7 +339,7 @@ struct URLSuggestionView: View {
 private struct BangSuggestionView: View {
     let suggestion: Suggestion.Bang
 
-    @EnvironmentObject public var model: NeevaSuggestionModel
+    @EnvironmentObject public var model: SuggestionModel
 
     var body: some View {
         SuggestionView(
@@ -357,7 +357,7 @@ private struct BangSuggestionView: View {
 private struct LensSuggestionView: View {
     let suggestion: Suggestion.Lens
 
-    @EnvironmentObject public var model: NeevaSuggestionModel
+    @EnvironmentObject public var model: SuggestionModel
 
     var body: some View {
         SuggestionView(
@@ -376,7 +376,7 @@ private struct TabSuggestionView: View {
     let suggestion: TabCardDetails
 
     @State var focused: Bool = false
-    @EnvironmentObject public var model: NeevaSuggestionModel
+    @EnvironmentObject public var model: SuggestionModel
 
     @ViewBuilder
     var icon: some View {
@@ -489,21 +489,18 @@ struct SuggestionView_Previews: PreviewProvider {
                 QuerySuggestionView(suggestion: spaceQuery)
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(NeevaSuggestionModel(previewLensBang: nil))
+            }.environmentObject(SuggestionModel())
+
             Section(header: Text("Query — Bang active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(
-                NeevaSuggestionModel(
-                    previewLensBang: .init(
-                        domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
+            }.environmentObject(SuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
+
             Section(header: Text("Query — Lens active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(
-                NeevaSuggestionModel(
-                    previewLensBang: .init(
-                        domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
+            }.environmentObject(SuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
+
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {
                 URLSuggestionView(suggestion: url)
                 BangSuggestionView(suggestion: bang)

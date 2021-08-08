@@ -149,7 +149,7 @@ class ZeroQueryViewController: UIViewController {
     }
 
     public func closeLazyTab() {
-        let bvc = SceneDelegate.getCurrentSceneDelegate().getBVC()
+        let bvc = SceneDelegate.getBVC()
 
         DispatchQueue.main.async {
             switch self.model.openedFrom {

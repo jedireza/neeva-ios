@@ -5,14 +5,12 @@ import SwiftUI
 class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURLBar {
     let model = URLBarModel()
     let queryModel: SearchQueryModel
-    let historySuggestionModel: HistorySuggestionModel
-    let neevaSuggestionModel: NeevaSuggestionModel
+    let suggestionModel: SuggestionModel
     let gridModel: GridModel
     let trackingStatsViewModel: TrackingStatsViewModel
 
     struct Content: View {
-        let historyModel: HistorySuggestionModel
-        let neevaModel: NeevaSuggestionModel
+        let suggestionModel: SuggestionModel
         let model: URLBarModel
         let queryModel: SearchQueryModel
         let gridModel: GridModel
@@ -21,8 +19,7 @@ class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURL
 
         var body: some View {
             content()
-                .environmentObject(historyModel)
-                .environmentObject(neevaModel)
+                .environmentObject(suggestionModel)
                 .environmentObject(model)
                 .environmentObject(queryModel)
                 .environmentObject(gridModel)
@@ -32,23 +29,23 @@ class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURL
     }
 
     init(
-        historySuggestionModel: HistorySuggestionModel,
-        neevaSuggestionModel: NeevaSuggestionModel,
+        suggestionModel: SuggestionModel,
         queryModel: SearchQueryModel,
         gridModel: GridModel,
         trackingStatsViewModel: TrackingStatsViewModel,
         delegate: LegacyURLBarDelegate
     ) {
         self.queryModel = queryModel
-        self.historySuggestionModel = historySuggestionModel
-        self.neevaSuggestionModel = neevaSuggestionModel
+        self.suggestionModel = suggestionModel
         self.gridModel = gridModel
         self.trackingStatsViewModel = trackingStatsViewModel
         super.init()
         setRootView { [model] in
             Content(
-                historyModel: historySuggestionModel, neevaModel: neevaSuggestionModel,
-                model: model, queryModel: queryModel, gridModel: gridModel,
+                suggestionModel: suggestionModel,
+                model: model,
+                queryModel: queryModel,
+                gridModel: gridModel,
                 trackingStatsViewModel: trackingStatsViewModel
             ) {
                 URLBarView(
@@ -76,6 +73,5 @@ class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURL
 
     override func applyUIMode(isPrivate: Bool) {
         super.applyUIMode(isPrivate: isPrivate)
-        neevaSuggestionModel.setIncognito(isPrivate)
     }
 }

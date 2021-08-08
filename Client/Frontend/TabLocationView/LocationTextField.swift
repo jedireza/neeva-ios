@@ -13,11 +13,11 @@ struct LocationTextField: UIViewRepresentable {
     @Binding var editing: Bool
     let onSubmit: (String) -> Void
 
-    @EnvironmentObject private var historyModel: HistorySuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     func makeUIView(context: Context) -> AutocompleteTextField {
         let tf = AutocompleteTextField(
-            text: $text, isActive: $editing, onSubmit: onSubmit, historyModel: historyModel)
+            text: $text, isActive: $editing, onSubmit: onSubmit, suggestionModel: suggestionModel)
 
         tf.font = UIFont.systemFont(ofSize: 16)
         tf.backgroundColor = .clear
@@ -65,7 +65,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     @Binding private var binding: String
     @Binding private var isActive: Bool
-    private var historyModel: HistorySuggestionModel
+    private var suggestionModel: SuggestionModel
 
     private let copyShortcutKey = "c"
     fileprivate var defaultTint = UIColor.ui.adaptive.blue
@@ -73,7 +73,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override var accessibilityValue: String? {
         get {
-            return (self.text ?? "") + (historyModel.completion ?? "")
+            return (self.text ?? "") + (suggestionModel.completion ?? "")
         }
         set(value) {
             super.accessibilityValue = value
@@ -82,7 +82,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     override var accessibilityHint: String? {
         get {
-            if historyModel.completion != nil {
+            if suggestionModel.completion != nil {
                 let deleteLabel = "Press delete to remove autocomplete suggestion"
                 if let hint = super.accessibilityHint {
                     return "\(hint), \(deleteLabel)"
@@ -97,12 +97,12 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     init(
         text: Binding<String>, isActive: Binding<Bool>, onSubmit: @escaping (String) -> Void,
-        historyModel: HistorySuggestionModel
+        suggestionModel: SuggestionModel
     ) {
         self._binding = text
         self._isActive = isActive
         self.onSubmit = onSubmit
-        self.historyModel = historyModel
+        self.suggestionModel = suggestionModel
         super.init(frame: .zero)
         super.delegate = self
 
@@ -112,7 +112,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 self.binding = text
             }, for: .editingChanged)
 
-        subscription = historyModel.$completion
+        subscription = suggestionModel.$completion
             .removeDuplicates()
             .sink { [unowned self] completion in
                 if completion != nil, isEditing, markedTextRange == nil {
@@ -151,7 +151,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         }
         switch input {
         case UIKeyCommand.inputLeftArrow:
-            if historyModel.completion != nil {
+            if suggestionModel.completion != nil {
                 applyCompletion()
 
                 // Set the current position to the beginning of the text.
@@ -168,7 +168,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
             }
         case UIKeyCommand.inputRightArrow:
-            if historyModel.completion != nil {
+            if suggestionModel.completion != nil {
                 applyCompletion()
 
                 // Set the current position to the end of the text.
@@ -187,7 +187,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         case UIKeyCommand.inputEscape:
             isActive = false
         case copyShortcutKey:
-            if let text = text, let completion = historyModel.completion {
+            if let text = text, let completion = suggestionModel.completion {
                 UIPasteboard.general.string = text + completion
             } else if let selectedTextRange = self.selectedTextRange {
                 UIPasteboard.general.string = self.text(in: selectedTextRange)
@@ -201,7 +201,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     @discardableResult fileprivate func applyCompletion() -> Bool {
         tintColor = defaultTint
         // Clear the current completion, then set the text.
-        guard let completion = historyModel.completion else { return false }
+        guard let completion = suggestionModel.completion else { return false }
         binding += completion
         // Move the cursor to the end of the completion.
         selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
@@ -215,7 +215,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let interaction: LogConfig.Interaction =
-            historyModel.completion == nil
+            suggestionModel.completion == nil
             ? .NoSuggestion : .AutocompleteSuggestion
         ClientLogger.shared.logCounter(interaction)
         if let text = accessibilityValue {
@@ -232,14 +232,14 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     override func setMarkedText(_ markedText: String?, selectedRange: NSRange) {
         // Clear the autocompletion if any provisionally inserted text has been
         // entered (e.g., a partial composition from a Japanese keyboard).
-        historyModel.clearCompletion()
+        suggestionModel.clearCompletion()
         super.setMarkedText(markedText, selectedRange: selectedRange)
     }
 
     override func deleteBackward() {
-        if !historyModel.clearCompletion() {
+        if !suggestionModel.clearCompletion() {
             if selectedTextRange != textRange(from: beginningOfDocument, to: beginningOfDocument) {
-                historyModel.skipNextAutocomplete()
+                suggestionModel.skipNextAutocomplete()
             }
             super.deleteBackward()
         }

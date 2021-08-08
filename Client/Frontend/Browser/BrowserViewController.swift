@@ -431,11 +431,7 @@ class BrowserViewController: UIViewController {
         let trackingStatsModel = TrackingStatsViewModel(tabManager: tabManager)
         if FeatureFlag[.newTopBar] {
             let queryModel = SearchQueryModel()
-            let host = URLBarHost(
-                historySuggestionModel: HistorySuggestionModel(
-                    profile: profile, queryModel: queryModel),
-                neevaSuggestionModel: NeevaSuggestionModel(
-                    isIncognito: false, queryModel: queryModel), queryModel: queryModel,
+            let host = URLBarHost(suggestionModel: SuggestionModel(profile: profile, queryModel: queryModel), queryModel: queryModel,
                 gridModel: gridModel, trackingStatsViewModel: trackingStatsModel, delegate: self)
             addChild(host)
             view.addSubview(host.view)
@@ -934,8 +930,9 @@ class BrowserViewController: UIViewController {
         }
 
         let searchController = SearchViewController(
-            profile: profile, historyModel: urlBar.shared.historySuggestionModel,
-            neevaModel: urlBar.shared.neevaSuggestionModel)
+            profile: profile,
+            suggestionModel: urlBar.shared.suggestionModel)
+
         searchController.searchDelegate = self
 
         self.searchController = searchController
@@ -2056,7 +2053,7 @@ extension BrowserViewController: JSPromptAlertControllerDelegate {
 
 extension BrowserViewController {
     public static func foregroundBVC() -> BrowserViewController {
-        SceneDelegate.getCurrentSceneDelegate().getBVC()
+        SceneDelegate.getBVC()
     }
 }
 

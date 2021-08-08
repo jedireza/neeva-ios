@@ -8,12 +8,12 @@ struct LocationEditView: View {
     let onSubmit: (String) -> Void
 
     @EnvironmentObject private var searchQuery: SearchQueryModel
-    @EnvironmentObject private var historyModel: HistorySuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
         ZStack(alignment: .leading) {
-            if let query = searchQuery.value,
-                let completion = historyModel.completion
+            if let query = suggestionModel.queryModel.value,
+                let completion = suggestionModel.completion
             {
                 HStack(spacing: 0) {
                     Text(query)
@@ -27,6 +27,7 @@ struct LocationEditView: View {
                 .accessibilityHidden(true)
                 .font(.system(size: 16))
             }
+
             LocationTextField(text: $searchQuery.value, editing: $isEditing, onSubmit: onSubmit)
         }
         .padding(.trailing, 6)
@@ -43,7 +44,7 @@ struct LocationTextField_Previews: PreviewProvider {
             LocationEditView(isEditing: .constant(true), onSubmit: { _ in })
                 .environmentObject(SearchQueryModel(previewValue: "https://apple.com"))
         }
-        .environmentObject(HistorySuggestionModel(previewSites: []))
+        .environmentObject(SuggestionModel(previewSites: []))
         .frame(height: TabLocationViewUX.height)
         .background(Capsule().fill(Color.systemFill))
         .padding()

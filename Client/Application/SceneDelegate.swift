@@ -199,8 +199,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         fatalError("Window for current scene is nil")
     }
 
-    public func getBVC() -> BrowserViewController {
-        return browserViewController
+    static func getBVC() -> BrowserViewController {
+        return getCurrentSceneDelegate().browserViewController
     }
 
     static func getTabManager() -> TabManager {

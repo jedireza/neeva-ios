@@ -13,13 +13,13 @@ struct LocationTextFieldIcon: View {
     let currentUrl: URL?
 
     @EnvironmentObject private var searchQuery: SearchQueryModel
-    @EnvironmentObject private var neevaModel: NeevaSuggestionModel
-    @EnvironmentObject private var historyModel: HistorySuggestionModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
         Group {
-            let completion = historyModel.completion.map { searchQuery.value + $0 }
-            if let type = neevaModel.activeLensBang?.type {
+            let completion = suggestionModel.completion.map { searchQuery.value + $0 }
+
+            if let type = suggestionModel.activeLensBang?.type {
                 Image(systemSymbol: type.defaultSymbol)
             } else if let completion = completion,
                 let url = completion.contains("://")
@@ -59,16 +59,16 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
 
             HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewBang))
+                    .environmentObject(SuggestionModel())
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(NeevaSuggestionModel(previewLensBang: .previewLens))
+                    .environmentObject(SuggestionModel())
             }.previewDisplayName("Lens/Bang")
 
             HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(HistorySuggestionModel(previewCompletion: "example.com"))
+                    .environmentObject(SuggestionModel(previewCompletion: "example.com"))
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(HistorySuggestionModel(previewCompletion: "apple.com"))
+                    .environmentObject(SuggestionModel(previewCompletion: "apple.com"))
             }.previewDisplayName("Domain completion")
 
             HStack(spacing: 0) {
@@ -90,7 +90,6 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
         .padding()
         .previewLayout(.sizeThatFits)
         .environmentObject(SearchQueryModel(previewValue: ""))
-        .environmentObject(NeevaSuggestionModel(previewLensBang: nil))
-        .environmentObject(HistorySuggestionModel(previewSites: []))
+        .environmentObject(SuggestionModel(previewSites: []))
     }
 }

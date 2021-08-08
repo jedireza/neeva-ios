@@ -21,10 +21,7 @@ enum SearchViewControllerUX {
 }
 
 struct SuggestionsView: View {
-    // not an ObservedObject because we pass it directly to .environmentObject without reading any mutable properties
-    let historyModel: HistorySuggestionModel
-    @ObservedObject var neevaModel: NeevaSuggestionModel
-    let navModel: NavSuggestionModel
+    @ObservedObject var suggestionModel: SuggestionModel
     let getKeyboardHeight: () -> CGFloat
     let onOpenURL: (URL) -> Void
     let setSearchInput: (String) -> Void
@@ -37,18 +34,16 @@ struct SuggestionsView: View {
             let _ = outerGeometry.size.height
 
             VStack(spacing: 0) {
-                if let error = neevaModel.error {
+                if let error = suggestionModel.error {
                     GeometryReader { geom in
                         ScrollView {
-                            ErrorView(error, in: self, tryAgain: neevaModel.reload)
+                            ErrorView(error, in: self, tryAgain: suggestionModel.reload)
                                 .frame(minHeight: geom.size.height)
                         }
                     }
                 } else {
                     SuggestionsList()
-                        .environmentObject(historyModel)
-                        .environmentObject(neevaModel)
-                        .environmentObject(navModel)
+                        .environmentObject(suggestionModel)
                 }
                 Spacer()
                     .frame(height: getKeyboardHeight())
@@ -64,26 +59,21 @@ class SearchViewController: IncognitoAwareHostingController<SuggestionsView>, Ke
 {
     var searchDelegate: SearchViewControllerDelegate?
 
-    fileprivate let historyModel: HistorySuggestionModel
-    fileprivate let neevaModel: NeevaSuggestionModel
-    let navModel: NavSuggestionModel
+    fileprivate let suggestionModel: SuggestionModel
     fileprivate let profile: Profile
 
-    init(profile: Profile, historyModel: HistorySuggestionModel, neevaModel: NeevaSuggestionModel) {
+    init(profile: Profile, suggestionModel: SuggestionModel) {
+        self.suggestionModel = suggestionModel
         self.profile = profile
-        self.historyModel = historyModel
-        self.neevaModel = neevaModel
-        self.navModel = NavSuggestionModel(neevaModel: neevaModel, historyModel: historyModel)
-        super.init { [navModel] in
+
+        super.init {
             SuggestionsView(
-                historyModel: historyModel,
-                neevaModel: neevaModel,
-                navModel: navModel,
+                suggestionModel: suggestionModel,
                 getKeyboardHeight: { 0 },
                 onOpenURL: { _ in },
-                setSearchInput: { _ in }
-            )
+                setSearchInput: { _ in })
         }
+
         self.render()
     }
 
@@ -92,11 +82,9 @@ class SearchViewController: IncognitoAwareHostingController<SuggestionsView>, Ke
     }
 
     fileprivate func render() {
-        setRootView { [historyModel, neevaModel, navModel] in
+        setRootView { [suggestionModel] in
             SuggestionsView(
-                historyModel: historyModel,
-                neevaModel: neevaModel,
-                navModel: navModel,
+                suggestionModel: suggestionModel,
                 getKeyboardHeight: { [weak self] in
                     if let view = self?.view,
                         let currentState = KeyboardHelper.defaultHelper.currentState
@@ -128,7 +116,7 @@ class SearchViewController: IncognitoAwareHostingController<SuggestionsView>, Ke
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        neevaModel.reload()
+        suggestionModel.reload()
     }
 
     func keyboardHelper(
@@ -157,6 +145,5 @@ class SearchViewController: IncognitoAwareHostingController<SuggestionsView>, Ke
 
     override func applyUIMode(isPrivate: Bool) {
         super.applyUIMode(isPrivate: isPrivate)
-        neevaModel.setIncognito(isPrivate)
     }
 }

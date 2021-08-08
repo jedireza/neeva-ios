@@ -26,6 +26,7 @@ struct TabLocationView: View {
     let buildReloadMenu: () -> UIMenu?
 
     @EnvironmentObject private var model: URLBarModel
+    @EnvironmentObject private var suggestionModel: SuggestionModel
     @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
     @State private var isPressed = false
@@ -148,7 +149,7 @@ struct TabLocationView: View {
 
             if model.isEditing {
                 Button {
-                    SceneDelegate.getCurrentSceneDelegate().getBVC().zeroQueryViewController
+                    SceneDelegate.getBVC().zeroQueryViewController
                         .closeLazyTab()
                     model.setEditing(to: false)
                 } label: {

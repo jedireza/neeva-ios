@@ -75,6 +75,21 @@ extension Suggestion: Identifiable, Equatable {
     }
 }
 
+extension Array where Element == Suggestion {
+    public func removeDuplicates() -> [Suggestion] {
+        var result = [Element]()
+
+
+        for value in self {
+            if !result.contains(value) {
+                result.append(value)
+            }
+        }
+
+        return result
+    }
+}
+
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
 public typealias SuggestionsQueryResult = (
     [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?

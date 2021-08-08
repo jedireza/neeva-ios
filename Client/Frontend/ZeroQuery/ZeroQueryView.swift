@@ -123,9 +123,7 @@ struct ZeroQueryView: View {
                                     manager: BrowserViewController.foregroundBVC().tabManager)
                             )
                         )
-                        .environmentObject(
-                            BrowserViewController.foregroundBVC().urlBar.shared
-                                .neevaSuggestionModel)
+                        .environmentObject(BrowserViewController.foregroundBVC().urlBar.shared.suggestionModel)
                         SuggestionsDivider(height: 3)
                     }
 

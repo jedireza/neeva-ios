@@ -1,13 +1,14 @@
+// Copyright Neeva. All rights reserved.
+
 import Shared
 import Storage
-// Copyright Neeva. All rights reserved.
 import SwiftUI
 
 /// Renders a nav suggestion
 struct NavSuggestionView: View {
     let suggestion: NavSuggestion
 
-    @EnvironmentObject public var model: NeevaSuggestionModel
+    @EnvironmentObject public var model: SuggestionModel
 
     @ViewBuilder
     var icon: some View {
