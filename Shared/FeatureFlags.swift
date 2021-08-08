@@ -21,6 +21,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case readingMode = "Enable Reading Mode"
     case spacify = "Enable button to turn a page into a Space"
     case swipePlusPlus = "Additional forward and back swipe gestures"
+    case overflowMenu = "Enable Overflow Menu"
 }
 
 extension FeatureFlag {

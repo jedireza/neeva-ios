@@ -35,6 +35,25 @@ extension BrowserViewController: TabToolbarDelegate {
         tabManager.selectedTab?.goForward()
     }
 
+    func tabToolbarDidPressOverflow() {
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let image = screenshot()
+
+        self.showOverlaySheetViewController(
+            OverflowMenuViewController(
+                delegate: self,
+                onDismiss: {
+                    self.hideOverlaySheetViewController()
+                    self.isNeevaMenuSheetOpen = false
+                }, isPrivate: isPrivate, feedbackImage: image,
+                tabToolbarModel: toolbarModel,
+                urlBarModel: urlBar.shared.model,
+                changedUserAgent: tabManager.selectedTab?.changedUserAgent
+            )
+        )
+        self.dismissVC()
+    }
+
     func tabToolbarDidPressAddNewTab() {
         ClientLogger.shared.logCounter(
             .ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())

@@ -22,6 +22,7 @@ protocol LegacyTabToolbarProtocol: AnyObject {
 protocol TabToolbarDelegate: AnyObject {
     func tabToolbarDidPressBack()
     func tabToolbarDidPressForward()
+    func tabToolbarDidPressOverflow()
     func tabToolbarDidLongPressBackForward()
     func tabToolbarSpacesMenu()
     func tabToolbarDidPressTabs()

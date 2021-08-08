@@ -105,7 +105,8 @@ struct TabLocationView: View {
                     if gridModel.isHidden {
                         Group {
                             if model.readerMode != .active, let url = model.url,
-                                !InternalURL.isValid(url: url)
+                                !InternalURL.isValid(url: url),
+                                !FeatureFlag[.overflowMenu]
                             {
                                 LocationViewReloadButton(
                                     buildMenu: buildReloadMenu, state: model.reloadButton,

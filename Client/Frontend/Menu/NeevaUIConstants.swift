@@ -16,3 +16,13 @@ public enum FirstRunButtonActions {
     case signup
     case skipToBrowser
 }
+
+public enum OverflowMenuButtonActions {
+    case forward
+    case reload
+    case newTab
+    case findOnPage
+    case textSize
+    case readingMode
+    case desktopSite
+}
