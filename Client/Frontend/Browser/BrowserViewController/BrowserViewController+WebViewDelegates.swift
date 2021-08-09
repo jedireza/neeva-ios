@@ -633,7 +633,6 @@ extension BrowserViewController: WKNavigationDelegate {
             pendingRequests[url.absoluteString] = navigationAction.request
 
             if NeevaConstants.isAppHost(url.host) {
-                webView.customUserAgent = UserAgent.neevaAppUserAgent()
                 setCookiesForNeeva(webView: webView, isPrivate: tab.isPrivate)
             } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(
