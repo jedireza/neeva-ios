@@ -16,3 +16,10 @@ import Foundation
 @inlinable func / <I: BinaryInteger>(lhs: CGFloat, rhs: I) -> CGFloat {
     lhs / CGFloat(rhs)
 }
+
+extension FloatingPoint {
+    /// Apply the provided sign to this number.
+    @inlinable func withSign(_ sign: FloatingPointSign) -> Self {
+        Self(sign: sign, exponent: exponent, significand: significand)
+    }
+}

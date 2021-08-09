@@ -103,7 +103,9 @@ extension TabManager: ClosingManager, SelectingManager, AccessingManager {
     typealias Item = Tab
 
     func close(_ tab: Tab) {
-        removeTabAndUpdateSelectedTab(tab, allowToast: true)
+        withAnimation {
+            removeTabAndUpdateSelectedTab(tab, allowToast: true)
+        }
     }
 
     func select(_ tab: Tab) {

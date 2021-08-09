@@ -15,7 +15,7 @@ enum CardUX {
     static let CardHeight: CGFloat = 174
 }
 
-struct BorderTreatment: ViewModifier {
+private struct BorderTreatment: ViewModifier {
     let isSelected: Bool
 
     func body(content: Content) -> some View {
@@ -26,6 +26,52 @@ struct BorderTreatment: ViewModifier {
                     .stroke(isSelected ? Color.ui.adaptive.blue : Color.clear, lineWidth: 3)
             )
             .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+private struct DragToCloseInteraction: ViewModifier {
+    let action: () -> Void
+
+    private let threshold: CGFloat = 80
+
+    @State private var offset = CGFloat.zero
+
+    private var progress: CGFloat {
+        abs(offset) / (threshold * 1.5)
+    }
+    private var angle: Angle {
+        .radians(Double(progress * (.pi / 10)).withSign(offset.sign))
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .scaleEffect(1 - (progress / 5))
+            .rotation3DEffect(angle, axis: (x: 0.0, y: 1.0, z: 0.0))
+            .offset(x: offset)
+            .opacity(Double(1 - progress))
+            .highPriorityGesture(
+                DragGesture()
+                    .onChanged { value in
+                        offset = value.translation.width
+                    }
+                    .onEnded { value in
+                        let target = value.predictedEndTranslation.width
+                        withAnimation(.interactiveSpring()) {
+                            if abs(target) > threshold {
+                                offset = target
+                                action()
+
+                                // work around reopening tabs causing the state to not be reset
+                                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500))
+                                {
+                                    offset = 0
+                                }
+                            } else {
+                                offset = 0
+                            }
+                        }
+                    }
+            )
     }
 }
 
@@ -106,7 +152,8 @@ struct Card<Details>: View where Details: CardDetails {
                 }) {
                     details.thumbnail
                         .frame(
-                            width: geom.size.width, height: geom.size.height - CardUX.HeaderSize,
+                            width: max(0, geom.size.width),
+                            height: max(0, geom.size.height - CardUX.HeaderSize),
                             alignment: .top
                         )
                         .clipped()
@@ -120,9 +167,9 @@ struct Card<Details>: View where Details: CardDetails {
         .cornerRadius(CardUX.CornerRadius)
         .modifier(BorderTreatment(isSelected: showsSelection && details.isSelected))
         .onDrop(of: ["public.url", "public.text"], delegate: details)
-        .overlay(
-            Group {
-                if let buttonImage = details.closeButtonImage {
+        .if(let: details.closeButtonImage) { buttonImage, view in
+            view
+                .overlay(
                     Button(action: details.onClose) {
                         Image(uiImage: buttonImage).resizable().renderingMode(.template)
                             .foregroundColor(.secondaryLabel)
@@ -130,9 +177,11 @@ struct Card<Details>: View where Details: CardDetails {
                             .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
                             .padding(5)
                             .accessibilityLabel("Close \(details.title)")
-                    }
-                }
-            }, alignment: .topTrailing)
+                    },
+                    alignment: .topTrailing
+                )
+                .modifier(DragToCloseInteraction(action: details.onClose))
+        }
         .scaleEffect(isPressed ? 0.95 : 1)
     }
 
