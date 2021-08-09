@@ -18,7 +18,6 @@ struct NeevaSettingsSection: View {
             configuration: config
         )
         webView.allowsLinkPreview = false
-        webView.customUserAgent = UserAgent.neevaAppUserAgent()
         webView.load(URLRequest(url: NeevaConstants.appSettingsURL))
 
         return webView

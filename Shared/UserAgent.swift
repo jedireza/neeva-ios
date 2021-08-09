@@ -50,11 +50,6 @@ open class UserAgent {
         }
     }
 
-    public static func neevaAppUserAgent() -> String {
-        // TODO: Consider selecting a desktop UA string on iPad
-        return UserAgentBuilder.neevaMobileUserAgent().userAgent()
-    }
-
     public static func getUserAgent(domain: String, platform: UserAgentPlatform) -> String {
         switch platform {
         case .Desktop:
