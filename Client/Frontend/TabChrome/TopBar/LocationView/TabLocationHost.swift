@@ -48,7 +48,8 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         self.delegate = delegate
         super.init()
         setRootView {
-            TabLocationViewWrapper(suggestionModel: suggestionModel,
+            TabLocationViewWrapper(
+                suggestionModel: suggestionModel,
                 model: model, queryModel: queryModel, gridModel: gridModel,
                 trackingStatsModel: trackingStatsModel
             ) {

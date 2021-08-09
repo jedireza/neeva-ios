@@ -360,8 +360,8 @@
 		C994645F2657052200613110 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994645E2657052200613110 /* FeatureFlags.swift */; };
 		C9946461265706D500613110 /* FeatureFlagSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9946460265706D500613110 /* FeatureFlagSettingsView.swift */; };
 		C99646652655AA9A005FFE83 /* (null) in Sources */ = {isa = PBXBuildFile; };
-		C9A241C9269C9EC0007156B3 /* URLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241C8269C9EC0007156B3 /* URLBarView.swift */; };
-		C9A241CB269CA4AB007156B3 /* URLBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241CA269CA4AB007156B3 /* URLBarHost.swift */; };
+		C9A241C9269C9EC0007156B3 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241C8269C9EC0007156B3 /* TopBarView.swift */; };
+		C9A241CB269CA4AB007156B3 /* TopBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A241CA269CA4AB007156B3 /* TopBarHost.swift */; };
 		C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
@@ -559,6 +559,9 @@
 		D59643F325C9B8E000EAB8B9 /* Storage.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9403451493EE3ADAAEFA2EB1 /* Storage.strings */; };
 		D5AF961B25D1FCAF006ACA6A /* WidgetIntents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = D595529725D1F5590040B30B /* WidgetIntents.intentdefinition */; };
 		D863C8F21F68BFC20058D95F /* GradientProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D863C8E31F68BFC20058D95F /* GradientProgressBar.swift */; };
+		D815A3A824A53F3200AAB221 /* TabToolbarHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D815A3A724A53F3200AAB221 /* TabToolbarHelperTests.swift */; };
+		D863C8F21F68BFC20058D95F /* LegacyGradientProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D863C8E31F68BFC20058D95F /* LegacyGradientProgressBar.swift */; };
+		D87F84AC20B891160091F2DA /* TabDisplayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F84AB20B891160091F2DA /* TabDisplayManager.swift */; };
 		D8C75DF3207584C400BB8AD0 /* UIImageViewAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C75DF2207584C300BB8AD0 /* UIImageViewAligned.m */; };
 		D8D33A7D1FBD080300A20A28 /* SnapKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D33A7C1FBD080300A20A28 /* SnapKitExtensions.swift */; };
 		D8EFFA0C1FF5B1FA001D3A09 /* NavigationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EFFA0B1FF5B1FA001D3A09 /* NavigationRouter.swift */; };
@@ -1297,8 +1300,8 @@
 		C98E406226585F01003AC0E2 /* DebugSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsSection.swift; sourceTree = "<group>"; };
 		C994645E2657052200613110 /* FeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 		C9946460265706D500613110 /* FeatureFlagSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureFlagSettingsView.swift; sourceTree = "<group>"; };
-		C9A241C8269C9EC0007156B3 /* URLBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarView.swift; sourceTree = "<group>"; };
-		C9A241CA269CA4AB007156B3 /* URLBarHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBarHost.swift; sourceTree = "<group>"; };
+		C9A241C8269C9EC0007156B3 /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
+		C9A241CA269CA4AB007156B3 /* TopBarHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarHost.swift; sourceTree = "<group>"; };
 		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
 		C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuSettingsView.swift; sourceTree = "<group>"; };
@@ -1479,6 +1482,8 @@
 		D595529725D1F5590040B30B /* WidgetIntents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WidgetIntents.intentdefinition; sourceTree = "<group>"; };
 		D81E377D2242FF61006AC72D /* Client-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Client-Bridging-Header.h"; path = "Client/Client-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		D863C8E31F68BFC20058D95F /* GradientProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientProgressBar.swift; sourceTree = "<group>"; };
+		D863C8E31F68BFC20058D95F /* LegacyGradientProgressBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyGradientProgressBar.swift; sourceTree = "<group>"; };
+		D87F84AB20B891160091F2DA /* TabDisplayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabDisplayManager.swift; sourceTree = "<group>"; };
 		D8C75DE9207584C300BB8AD0 /* UIImageViewAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIImageViewAligned.h; path = ThirdParty/UIImageViewAligned/UIImageViewAligned.h; sourceTree = SOURCE_ROOT; };
 		D8C75DF2207584C300BB8AD0 /* UIImageViewAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIImageViewAligned.m; path = ThirdParty/UIImageViewAligned/UIImageViewAligned.m; sourceTree = SOURCE_ROOT; };
 		D8D33A7C1FBD080300A20A28 /* SnapKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapKitExtensions.swift; sourceTree = "<group>"; };
@@ -2341,6 +2346,15 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		C9098F5C26AF485400D2B5F4 /* TabChrome */ = {
+			isa = PBXGroup;
+			children = (
+				C9ACC46B267BA614009AE182 /* Toolbar */,
+				C9A241C7269C9E75007156B3 /* TopBar */,
+			);
+			path = TabChrome;
+			sourceTree = "<group>";
+		};
 		C9098F6026B0533200D2B5F4 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
@@ -2388,7 +2402,7 @@
 			path = TextSize;
 			sourceTree = "<group>";
 		};
-		C93EFEE3267150ED000396B5 /* TabLocationView */ = {
+		C93EFEE3267150ED000396B5 /* LocationView */ = {
 			isa = PBXGroup;
 			children = (
 				C94D409C268CADD4003A6766 /* LocationEditView.swift */,
@@ -2403,7 +2417,7 @@
 				C93EFEE826716411000396B5 /* TabLocationBarButton.swift */,
 				C93EFEE6267163C7000396B5 /* TabLocationAligner.swift */,
 			);
-			path = TabLocationView;
+			path = LocationView;
 			sourceTree = "<group>";
 		};
 		C965BDD0268E71B400F02224 /* Debug */ = {
@@ -2450,16 +2464,17 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
-		C9A241C7269C9E75007156B3 /* URLBar */ = {
+		C9A241C7269C9E75007156B3 /* TopBar */ = {
 			isa = PBXGroup;
 			children = (
-				C9A241C8269C9EC0007156B3 /* URLBarView.swift */,
-				C9A241CA269CA4AB007156B3 /* URLBarHost.swift */,
+				C93EFEE3267150ED000396B5 /* LocationView */,
+				C9A241C8269C9EC0007156B3 /* TopBarView.swift */,
+				C9A241CA269CA4AB007156B3 /* TopBarHost.swift */,
 			);
-			path = URLBar;
+			path = TopBar;
 			sourceTree = "<group>";
 		};
-		C9ACC46B267BA614009AE182 /* TabToolbar */ = {
+		C9ACC46B267BA614009AE182 /* Toolbar */ = {
 			isa = PBXGroup;
 			children = (
 				C9F8EB332680DA8A0042CFE7 /* TabToolbarHost.swift */,
@@ -2467,7 +2482,7 @@
 				C9F8EB322680DA8A0042CFE7 /* TabToolbarView.swift */,
 				C9F8EB362680E33B0042CFE7 /* TabToolbarButtons.swift */,
 			);
-			path = TabToolbar;
+			path = Toolbar;
 			sourceTree = "<group>";
 		};
 		C9C18DFC26559007004710CD /* Suggestions */ = {
@@ -2711,6 +2726,9 @@
 				C4E3984B1D21F2FD004E89BA /* PrivateModeButton.swift */,
 				C9F49CBC266FDA9500F3408A /* SearchBar.swift */,
 				C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */,
+				D863C8E31F68BFC20058D95F /* GradientProgressBar.swift */,
+				D863C8E31F68BFC20058D95F /* LegacyGradientProgressBar.swift */,
+				0BF1B7E21AC60DEA00A7B407 /* InsetButton.swift */,
 				D38A1BEC1A9FA2CA00F6A386 /* SiteTableViewController.swift */,
 				E660BDD81BB06521009AC090 /* TabsButton.swift */,
 				E663D5771BB341C4001EF30E /* ToggleButton.swift */,
@@ -3269,6 +3287,7 @@
 			isa = PBXGroup;
 			children = (
 				D3A994941A368691008AD1AC /* Browser */,
+				C9098F5C26AF485400D2B5F4 /* TabChrome */,
 				23ED80FD25C899D700D0E9D5 /* DefaultBrowserOnboarding */,
 				BC0E275B268059C500EAAE00 /* Feedback */,
 				EBC486972195F46A00CDA48D /* InternalSchemeHandler */,
@@ -3282,12 +3301,9 @@
 				2F44FC551A9E83E200FD20CC /* Settings */,
 				D3972BF01C22412B00035B87 /* Share */,
 				C9C18DFC26559007004710CD /* Suggestions */,
-				C9ACC46B267BA614009AE182 /* TabToolbar */,
 				EB9A179720E69A7E00B12184 /* Theme */,
 				668CA09726797E9800BA756F /* Toast */,
 				2816EFFF1B33E05400522243 /* UIConstants.swift */,
-				C93EFEE3267150ED000396B5 /* TabLocationView */,
-				C9A241C7269C9E75007156B3 /* URLBar */,
 				D0FCF7EE1FE44E15004A7995 /* UserContent */,
 				D38A1BEB1A9FA2CA00F6A386 /* Widgets */,
 				F84B22211A09122500AAB793 /* ZeroQuery */,
@@ -4635,7 +4651,7 @@
 				E653422D1C5944F90039DD9E /* BrowserPrompts.swift in Sources */,
 				435222C125882E3800FCA5B6 /* WidgetKitTopSiteModel.swift in Sources */,
 				4A88F97526630EFC007C203D /* CardDetails.swift in Sources */,
-				C9A241C9269C9EC0007156B3 /* URLBarView.swift in Sources */,
+				C9A241C9269C9EC0007156B3 /* TopBarView.swift in Sources */,
 				C9F49CBD266FDA9500F3408A /* SearchBar.swift in Sources */,
 				435D7CC5246209AA0043ACB9 /* IntroViewController.swift in Sources */,
 				C9655DEF26A09A8600925912 /* CardListViews.swift in Sources */,
@@ -4668,6 +4684,8 @@
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */,
+				C9A241CB269CA4AB007156B3 /* TopBarHost.swift in Sources */,
+				C94D406A2684D442003A6766 /* NeevaSuggestionModel.swift in Sources */,
 				C9A241CB269CA4AB007156B3 /* URLBarHost.swift in Sources */,
 				C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
@@ -4714,7 +4732,7 @@
 				D3A9949D1A3686BD008AD1AC /* Tab.swift in Sources */,
 				E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */,
 				C9299E36268F9CF300758795 /* CloseButton.swift in Sources */,
-				D863C8F21F68BFC20058D95F /* GradientProgressBar.swift in Sources */,
+				D863C8F21F68BFC20058D95F /* LegacyGradientProgressBar.swift in Sources */,
 				C82A91F7262F70A90077DD22 /* SendFeedbackPanel.swift in Sources */,
 				D3C744CD1A687D6C004CE85D /* URIFixup.swift in Sources */,
 				E4A961181AC041C40069AD6F /* ReadabilityService.swift in Sources */,

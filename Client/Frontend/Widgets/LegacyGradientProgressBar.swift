@@ -12,7 +12,7 @@
 
 import UIKit
 
-open class GradientProgressBar: UIProgressView {
+open class LegacyGradientProgressBar: UIProgressView {
 
     private struct DefaultValues {
         static let backgroundColor = UIColor.clear

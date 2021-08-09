@@ -4,15 +4,6 @@ import SwiftUI
 
 class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
 
-    var tabToolbarDelegate: TabToolbarDelegate?
-    var tabsButton = TabsButton()
-    var addToSpacesButton = ToolbarButton()
-    var forwardButton = ToolbarButton()
-    var backButton = ToolbarButton()
-    var shareButton = ToolbarButton()
-    var toolbarNeevaMenuButton = ToolbarButton()
-    var actionButtons: [ToolbarButton] = []
-
     struct Content: View {
         let model: TabToolbarModel
         weak var delegate: TabToolbarDelegate?

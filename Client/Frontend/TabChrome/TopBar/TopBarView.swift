@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct URLBarView: View {
+struct TopBarView: View {
     let onReload: () -> Void
     let onSubmit: (String) -> Void
     let onShare: (UIView) -> Void
@@ -26,10 +26,10 @@ struct URLBarView: View {
     }
 }
 
-struct URLBarView_Previews: PreviewProvider {
+struct TopBarView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            URLBarView(
+            TopBarView(
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                 showsToolbar: false
             )
@@ -38,7 +38,7 @@ struct URLBarView_Previews: PreviewProvider {
         }
 
         VStack {
-            URLBarView(
+            TopBarView(
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                 showsToolbar: false
             )

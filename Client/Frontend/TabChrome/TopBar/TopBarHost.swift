@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURLBar {
+class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURLBar {
     let model = URLBarModel()
     let queryModel: SearchQueryModel
     let suggestionModel: SuggestionModel
@@ -15,7 +15,7 @@ class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURL
         let queryModel: SearchQueryModel
         let gridModel: GridModel
         let trackingStatsViewModel: TrackingStatsViewModel
-        let content: () -> URLBarView
+        let content: () -> TopBarView
 
         var body: some View {
             content()
@@ -48,7 +48,7 @@ class URLBarHost: IncognitoAwareHostingController<URLBarHost.Content>, CommonURL
                 gridModel: gridModel,
                 trackingStatsViewModel: trackingStatsViewModel
             ) {
-                URLBarView(
+                TopBarView(
                     onReload: { [weak delegate] in
                         switch model.reloadButton {
                         case .reload:

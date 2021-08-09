@@ -127,8 +127,8 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         return tabsButton
     }()
 
-    fileprivate lazy var progressBar: GradientProgressBar = {
-        let progressBar = GradientProgressBar()
+    fileprivate lazy var progressBar: LegacyGradientProgressBar = {
+        let progressBar = LegacyGradientProgressBar()
         progressBar.clipsToBounds = false
         return progressBar
     }()
@@ -154,7 +154,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel
     ) {
         self.profile = profile
-        self.suggestionModel = SuggestionModel(  profile: profile, queryModel: self.queryModel)
+        self.suggestionModel = SuggestionModel(profile: profile, queryModel: self.queryModel)
         self.toolbarModel = toolbarModel
         self.gridModel = gridModel
         self.trackingStatsViewModel = trackingStatsModel

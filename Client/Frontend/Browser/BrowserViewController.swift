@@ -81,7 +81,8 @@ class BrowserViewController: UIViewController {
         return host
     }()
 
-    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = { [unowned self] in
+    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = {
+        [unowned self] in
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             toolbarModel: toolbarModel,
@@ -101,7 +102,7 @@ class BrowserViewController: UIViewController {
 
     enum URLBarWrapper {
         case legacy(LegacyURLBarView)
-        case modern(URLBarHost)
+        case modern(TopBarHost)
 
         var shared: CommonURLBar {
             switch self {
@@ -284,7 +285,6 @@ class BrowserViewController: UIViewController {
 
         toolbar?.willMove(toParent: nil)
         toolbar?.view.removeFromSuperview()
-        toolbar?.tabToolbarDelegate = nil
         toolbar = nil
 
         if showToolbar {
@@ -431,7 +431,9 @@ class BrowserViewController: UIViewController {
         let trackingStatsModel = TrackingStatsViewModel(tabManager: tabManager)
         if FeatureFlag[.newTopBar] {
             let queryModel = SearchQueryModel()
-            let host = URLBarHost(suggestionModel: SuggestionModel(profile: profile, queryModel: queryModel), queryModel: queryModel,
+            let host = TopBarHost(
+                suggestionModel: SuggestionModel(profile: profile, queryModel: queryModel),
+                queryModel: queryModel,
                 gridModel: gridModel, trackingStatsViewModel: trackingStatsModel, delegate: self)
             addChild(host)
             view.addSubview(host.view)
