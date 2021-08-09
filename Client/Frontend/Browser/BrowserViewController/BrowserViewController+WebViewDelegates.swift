@@ -8,6 +8,7 @@ import Shared
 import SwiftyJSON
 import UIKit
 import WebKit
+import StoreKit
 
 private let log = Logger.browser
 
@@ -493,8 +494,8 @@ extension BrowserViewController: WKNavigationDelegate {
     // them then iOS will actually first open Safari, which then redirects to the app store. This works but it will
     // leave a 'Back to Safari' button in the status bar, which we do not want.
     fileprivate func isStoreURL(_ url: URL) -> Bool {
-        if url.scheme == "http" || url.scheme == "https" || url.scheme == "itms-apps" {
-            if url.host == "itunes.apple.com" {
+        if url.scheme == "http" || url.scheme == "https" || url.scheme == "itms-apps" || url.scheme == "itms-appss" {
+            if url.host == "itunes.apple.com" || url.host == "apps.apple.com" {
                 return true
             }
         }
@@ -588,7 +589,22 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if isStoreURL(url) {
             decisionHandler(.cancel)
-            showOverlay(forExternalUrl: url) { _ in }
+            let regex = try! NSRegularExpression(pattern: "id(\\d+)$", options: [])
+            let range = regex.firstMatch(
+                in: url.path,
+                options: [],
+                range: NSRange(location: 0, length: (url.path as NSString).length)
+            )?.range(at: 1)
+            let id = range.map { url.path.dropFirst($0.location).prefix($0.length) }.map(String.init) ?? "1543288638"
+            print("reading \(id) from \(range as Any)")
+            let config = SKOverlay.AppConfiguration(appIdentifier: id, position: .bottomRaised)
+            let overlay = SKOverlay(configuration: config)
+            overlay.present(in: view.window!.windowScene!)
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
+                config.position = .bottom
+                (overlay.configuration as? SKOverlay.AppConfiguration)?.position = .bottom
+            }
+//            showOverlay(forExternalUrl: url) { _ in }
         }
 
         // https://blog.mozilla.org/security/2017/11/27/blocking-top-level-navigations-data-urls-firefox-59/
