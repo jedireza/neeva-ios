@@ -1367,7 +1367,6 @@
 		C9C18E6426559B9C004710CD /* ClientLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientLogger.swift; sourceTree = "<group>"; };
 		C9C18E6726559DCF004710CD /* FormatDateTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatDateTime.swift; sourceTree = "<group>"; };
 		C9C5CCC026B0982C00776929 /* PrivateZoomAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateZoomAPITests.swift; sourceTree = "<group>"; };
-		C9D49FFE265BDF2D00299FC2 /* schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
 		C9D4A000265BE0B000299FC2 /* NeevaAccountInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountInfoView.swift; sourceTree = "<group>"; };
 		C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = KMCGeigerCounterTick.aiff; sourceTree = "<group>"; };
 		C9DACFE9269CEFE500456020 /* KMCGeigerCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMCGeigerCounter.h; sourceTree = "<group>"; };
@@ -2513,7 +2512,6 @@
 		C9C18E1726559132004710CD /* API */ = {
 			isa = PBXGroup;
 			children = (
-				C9D49FFE265BDF2D00299FC2 /* schema.json */,
 				C9C18DC926558FF2004710CD /* AbstractController.swift */,
 				C9C18E3C26559504004710CD /* API.swift */,
 				C9C18E3B26559504004710CD /* ErrorView.swift */,

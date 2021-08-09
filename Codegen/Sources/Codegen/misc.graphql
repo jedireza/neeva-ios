@@ -17,6 +17,32 @@ query UserInfo {
   }
 }
 
+query CheatsheetInfo($input: String!) {
+  getCheatsheetInfo(input: $input) {
+    ReviewURL
+    PriceHistory {
+      InStock
+      Max {
+        Date
+        PriceUSD
+      }
+      Min {
+        Date
+        PriceUSD
+      }
+      Current {
+        Date
+        PriceUSD
+      }
+      Average {
+        Date
+        PriceUSD
+      }
+    }
+    MemorizedQuery
+  }
+}
+
 mutation SendFeedback($input: SendFeedbackV2Input!) {
   sendFeedbackV2(input: $input)
 }

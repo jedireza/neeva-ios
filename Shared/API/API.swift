@@ -3479,6 +3479,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
   case calculator
   case unknown
   case clipboard
+  case `public`
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
@@ -3492,6 +3493,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case "Calculator": self = .calculator
       case "Unknown": self = .unknown
       case "Clipboard": self = .clipboard
+      case "Public": self = .public
       default: self = .__unknown(rawValue)
     }
   }
@@ -3506,6 +3508,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case .calculator: return "Calculator"
       case .unknown: return "Unknown"
       case .clipboard: return "Clipboard"
+      case .public: return "Public"
       case .__unknown(let value): return value
     }
   }
@@ -3520,6 +3523,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case (.calculator, .calculator): return true
       case (.unknown, .unknown): return true
       case (.clipboard, .clipboard): return true
+      case (.public, .public): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -3535,6 +3539,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       .calculator,
       .unknown,
       .clipboard,
+      .public,
     ]
   }
 }
@@ -3916,6 +3921,422 @@ public final class UserInfoQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "stringValue")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class CheatsheetInfoQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query CheatsheetInfo($input: String!) {
+      getCheatsheetInfo(input: $input) {
+        __typename
+        ReviewURL
+        PriceHistory {
+          __typename
+          InStock
+          Max {
+            __typename
+            Date
+            PriceUSD
+          }
+          Min {
+            __typename
+            Date
+            PriceUSD
+          }
+          Current {
+            __typename
+            Date
+            PriceUSD
+          }
+          Average {
+            __typename
+            Date
+            PriceUSD
+          }
+        }
+        MemorizedQuery
+      }
+    }
+    """
+
+  public let operationName: String = "CheatsheetInfo"
+
+  public let operationIdentifier: String? = "aaa4d265cbbd2d139fc5a0cea8f7359b5096d90e65cad869b1bb833fa66d0038"
+
+  public var input: String
+
+  public init(input: String) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("getCheatsheetInfo", arguments: ["input": GraphQLVariable("input")], type: .object(GetCheatsheetInfo.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(getCheatsheetInfo: GetCheatsheetInfo? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "getCheatsheetInfo": getCheatsheetInfo.flatMap { (value: GetCheatsheetInfo) -> ResultMap in value.resultMap }])
+    }
+
+    /// Get cheatsheet info for a url
+    public var getCheatsheetInfo: GetCheatsheetInfo? {
+      get {
+        return (resultMap["getCheatsheetInfo"] as? ResultMap).flatMap { GetCheatsheetInfo(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "getCheatsheetInfo")
+      }
+    }
+
+    public struct GetCheatsheetInfo: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["CheatsheetAnnotationData"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("ReviewURL", type: .list(.nonNull(.scalar(String.self)))),
+          GraphQLField("PriceHistory", type: .object(PriceHistory.selections)),
+          GraphQLField("MemorizedQuery", type: .list(.nonNull(.scalar(String.self)))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(reviewUrl: [String]? = nil, priceHistory: PriceHistory? = nil, memorizedQuery: [String]? = nil) {
+        self.init(unsafeResultMap: ["__typename": "CheatsheetAnnotationData", "ReviewURL": reviewUrl, "PriceHistory": priceHistory.flatMap { (value: PriceHistory) -> ResultMap in value.resultMap }, "MemorizedQuery": memorizedQuery])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var reviewUrl: [String]? {
+        get {
+          return resultMap["ReviewURL"] as? [String]
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "ReviewURL")
+        }
+      }
+
+      public var priceHistory: PriceHistory? {
+        get {
+          return (resultMap["PriceHistory"] as? ResultMap).flatMap { PriceHistory(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "PriceHistory")
+        }
+      }
+
+      public var memorizedQuery: [String]? {
+        get {
+          return resultMap["MemorizedQuery"] as? [String]
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "MemorizedQuery")
+        }
+      }
+
+      public struct PriceHistory: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["ProviderPriceHistory"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("InStock", type: .scalar(Bool.self)),
+            GraphQLField("Max", type: .object(Max.selections)),
+            GraphQLField("Min", type: .object(Min.selections)),
+            GraphQLField("Current", type: .object(Current.selections)),
+            GraphQLField("Average", type: .object(Average.selections)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(inStock: Bool? = nil, max: Max? = nil, min: Min? = nil, current: Current? = nil, average: Average? = nil) {
+          self.init(unsafeResultMap: ["__typename": "ProviderPriceHistory", "InStock": inStock, "Max": max.flatMap { (value: Max) -> ResultMap in value.resultMap }, "Min": min.flatMap { (value: Min) -> ResultMap in value.resultMap }, "Current": current.flatMap { (value: Current) -> ResultMap in value.resultMap }, "Average": average.flatMap { (value: Average) -> ResultMap in value.resultMap }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var inStock: Bool? {
+          get {
+            return resultMap["InStock"] as? Bool
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "InStock")
+          }
+        }
+
+        public var max: Max? {
+          get {
+            return (resultMap["Max"] as? ResultMap).flatMap { Max(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "Max")
+          }
+        }
+
+        public var min: Min? {
+          get {
+            return (resultMap["Min"] as? ResultMap).flatMap { Min(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "Min")
+          }
+        }
+
+        public var current: Current? {
+          get {
+            return (resultMap["Current"] as? ResultMap).flatMap { Current(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "Current")
+          }
+        }
+
+        public var average: Average? {
+          get {
+            return (resultMap["Average"] as? ResultMap).flatMap { Average(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "Average")
+          }
+        }
+
+        public struct Max: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PriceDate"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("Date", type: .scalar(String.self)),
+              GraphQLField("PriceUSD", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(date: String? = nil, priceUsd: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PriceDate", "Date": date, "PriceUSD": priceUsd])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var date: String? {
+            get {
+              return resultMap["Date"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "Date")
+            }
+          }
+
+          public var priceUsd: String? {
+            get {
+              return resultMap["PriceUSD"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "PriceUSD")
+            }
+          }
+        }
+
+        public struct Min: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PriceDate"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("Date", type: .scalar(String.self)),
+              GraphQLField("PriceUSD", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(date: String? = nil, priceUsd: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PriceDate", "Date": date, "PriceUSD": priceUsd])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var date: String? {
+            get {
+              return resultMap["Date"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "Date")
+            }
+          }
+
+          public var priceUsd: String? {
+            get {
+              return resultMap["PriceUSD"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "PriceUSD")
+            }
+          }
+        }
+
+        public struct Current: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PriceDate"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("Date", type: .scalar(String.self)),
+              GraphQLField("PriceUSD", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(date: String? = nil, priceUsd: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PriceDate", "Date": date, "PriceUSD": priceUsd])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var date: String? {
+            get {
+              return resultMap["Date"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "Date")
+            }
+          }
+
+          public var priceUsd: String? {
+            get {
+              return resultMap["PriceUSD"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "PriceUSD")
+            }
+          }
+        }
+
+        public struct Average: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PriceDate"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("Date", type: .scalar(String.self)),
+              GraphQLField("PriceUSD", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(date: String? = nil, priceUsd: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PriceDate", "Date": date, "PriceUSD": priceUsd])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var date: String? {
+            get {
+              return resultMap["Date"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "Date")
+            }
+          }
+
+          public var priceUsd: String? {
+            get {
+              return resultMap["PriceUSD"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "PriceUSD")
+            }
           }
         }
       }
