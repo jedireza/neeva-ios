@@ -7,27 +7,23 @@ import WebKit
 
 @testable import Client
 
-class SecurityTests: KIFTestCase {
+class SecurityTests: UITestBase {
     fileprivate var webRoot: String!
 
     override func setUp() {
-        webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
         super.setUp()
+
+        webRoot = SimplePageServer.start()
     }
 
-    override func beforeEach() {
-        let testURL = "\(webRoot!)/localhostLoad.html"
-        tester().waitForAnimationsToFinish(withTimeout: 3)
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: testURL)
 
-        tester().waitForView(withAccessibilityLabel: "Web content")
-        tester().waitForWebViewElementWithAccessibilityLabel("Session exploit")
-    }
 
     /// Tap the Session exploit button, which tries to load the session restore page on localhost
     /// in the current tab. Make sure nothing happens.
     func testSessionExploit() {
+        let testURL = "\(webRoot!)/localhostLoad.html"
+        openURL(testURL)
+
         tester().tapWebViewElementWithAccessibilityLabel("Session exploit")
         tester().wait(forTimeInterval: 1)
 
@@ -42,14 +38,17 @@ class SecurityTests: KIFTestCase {
     /// Tap the Error exploit button, which tries to load the error page on localhost
     /// in a new tab via window.open(). Make sure nothing happens.
     func testErrorExploit() {
+        let testURL = "\(webRoot!)/localhostLoad.html"
+        openURL(testURL)
+
         // We should only have one tab open.
-        let tabcount = BrowserUtils.getNumberOfTabs()
+        let tabcount = getNumberOfTabs()
 
         // make sure a new tab wasn't opened.
         tester().tapWebViewElementWithAccessibilityLabel("Error exploit")
         tester().wait(forTimeInterval: 1.0)
 
-        let newTabcount = BrowserUtils.getNumberOfTabs()
+        let newTabcount = getNumberOfTabs()
 
         XCTAssertEqual(tabcount, newTabcount)
     }
@@ -58,6 +57,9 @@ class SecurityTests: KIFTestCase {
     /// to load the session restore exploit. A new tab will load showing an error page,
     /// but we shouldn't be able to load session restore.
     func testWindowExploit() {
+        let testURL = "\(webRoot!)/localhostLoad.html"
+        openURL(testURL)
+
         tester().tapWebViewElementWithAccessibilityLabel("New tab exploit")
         tester().wait(forTimeInterval: 5)
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
@@ -68,13 +70,16 @@ class SecurityTests: KIFTestCase {
         // Also make sure the XSS alert doesn't appear.
         XCTAssertFalse(tester().viewExistsWithLabel("Local page loaded"))
 
-        BrowserUtils.closeAllTabs(tester())
+        closeAllTabs()
     }
 
     /// Tap the URL spoof button, which opens a new window to a host with an invalid port.
     /// Since the window has no origin before load, the page is able to modify the document,
     /// so make sure we don't show the URL.
     func testSpoofExploit() throws {
+        let testURL = "\(webRoot!)/localhostLoad.html"
+        openURL(testURL)
+
         tester().tapWebViewElementWithAccessibilityLabel("URL spoof")
 
         // Wait for the window to open.
@@ -98,7 +103,8 @@ class SecurityTests: KIFTestCase {
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)
     func testNeevaSchemeBlockedOnWebpages() {
         let url = "\(webRoot!)/neevaScheme.html"
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+        openURL(url)
+
         tester().tapWebViewElementWithAccessibilityLabel("go")
 
         tester().wait(forTimeInterval: 1)
@@ -111,20 +117,13 @@ class SecurityTests: KIFTestCase {
     func testBlobUrlShownAsSchemeOnly() throws {
         throw XCTSkip("disabled because we don’t have a way to test the label of the URL bar")
 
-        let url = "\(webRoot!)/blobURL.html"
-
-        // script that will load a blob url
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+        let testURL = "\(webRoot!)/localhostLoad.html"
+        openURL(testURL)
         tester().wait(forTimeInterval: 1)
 
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
 
         // webview internally has "blob:<rest of url>"
         XCTAssert(webView.url!.absoluteString.starts(with: "blob:http://"))
-    }
-
-    override func tearDown() {
-        BrowserUtils.resetToAboutHomeKIF(tester())
-        super.tearDown()
     }
 }

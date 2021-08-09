@@ -5,18 +5,13 @@
 import UIKit
 import WebKit
 
-class ToolbarTests: KIFTestCase, UITextFieldDelegate {
+class ToolbarTests: UITestBase, UITextFieldDelegate {
     fileprivate var webRoot: String!
 
     override func setUp() {
         super.setUp()
 
         webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
-
-        if tester().viewExistsWithLabel("Done") {
-            tester().tapView(withAccessibilityLabel: "Done")
-        }
     }
 
     func testURLEntry() {
@@ -37,7 +32,7 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
         let localhostURL = webRoot.replacingOccurrences(of: "127.0.0.1", with: "localhost")
         let url = "\(localhostURL)/numberedPage.html?page=1"
 
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+        openURL(url)
 
         tester().waitForAnimationsToFinish()
         XCTAssertEqual(
@@ -46,21 +41,21 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
             ).accessibilityValue, url,
             "URL matches page URL")
 
-        tester().tapView(withAccessibilityLabel: "Address Bar")
+        goToAddressBar()
         tester().enterText(intoCurrentFirstResponder: "foobar")
         tester().tapView(withAccessibilityLabel: "Cancel")
         tester().waitForAnimationsToFinish()
+
         XCTAssertEqual(
             tester().waitForView(withAccessibilityLabel: "Address Bar").accessibilityElement(
                 withLabel: "Address Bar"
             ).accessibilityValue, url,
             "Verify that text reverts to page URL after entering text")
 
-        tester().tapView(withAccessibilityLabel: "Address Bar")
-        tester().enterText(intoCurrentFirstResponder: " ")
-
+        goToAddressBar()
         tester().tapView(withAccessibilityLabel: "Cancel")
         tester().waitForAnimationsToFinish()
+
         XCTAssertEqual(
             tester().waitForView(withAccessibilityLabel: "Address Bar").accessibilityElement(
                 withLabel: "Address Bar"
@@ -73,7 +68,7 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
             of: "127.0.0.1", with: "username:password@127.0.0.1")
         let urlWithUserInfo = "\(hostWithUsername)/numberedPage.html?page=1"
 
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: urlWithUserInfo)
+        openURL(urlWithUserInfo)
         tester().waitForAnimationsToFinish()
         tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
 
@@ -91,7 +86,7 @@ class ToolbarTests: KIFTestCase, UITextFieldDelegate {
             let value = UIInterfaceOrientation.portrait.rawValue
             UIDevice.current.setValue(value, forKey: "orientation")
         }
-        BrowserUtils.resetToAboutHomeKIF(tester())
-        BrowserUtils.clearPrivateDataKIF(tester())
+
+        super.tearDown()
     }
 }

@@ -9,31 +9,18 @@ import Foundation
 // WKWebView's WKNavigationDelegate is used for custom URL handling
 // such as telephone links, app store links, etc.
 
-class NavigationDelegateTests: KIFTestCase {
+class NavigationDelegateTests: UITestBase {
     fileprivate var webRoot: String!
 
     override func setUp() {
         super.setUp()
 
         webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
-
-        if tester().viewExistsWithLabel("Done") {
-            tester().tapView(withAccessibilityLabel: "Done")
-        }
     }
-
-    override func tearDown() {
-        BrowserUtils.resetToAboutHomeKIF(tester())
-        BrowserUtils.clearPrivateDataKIF(tester())
-        super.tearDown()
-    }
-
+    
     func testAppStoreLinkShowsConfirmation() {
         let url = "\(webRoot!)/navigationDelegate.html"
-        tester().waitForAnimationsToFinish(withTimeout: 3)
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
-        tester().waitForAnimationsToFinish()
+        openURL(url)
 
         tester().waitForWebViewElementWithAccessibilityLabel("link")
         tester().tapWebViewElementWithAccessibilityLabel("link")

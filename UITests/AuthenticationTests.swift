@@ -1,22 +1,13 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+// Copyright Neeva. All rights reserved.
 
 import Foundation
 
-class AuthenticationTests: KIFTestCase {
+class AuthenticationTests: UITestBase {
     fileprivate var webRoot: String!
 
     override func setUp() {
         super.setUp()
         webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
-    }
-
-    override func tearDown() {
-        BrowserUtils.resetToAboutHomeKIF(tester())
-        BrowserUtils.clearPrivateDataKIF(tester())
-        super.tearDown()
     }
 
     /// Tests HTTP authentication credentials and auto-fill.
@@ -28,25 +19,20 @@ class AuthenticationTests: KIFTestCase {
         enterCredentials(usernameValue: "Username", passwordValue: "Password", username: "foo", password: "bar")
         enterCredentials(usernameValue: "foo", passwordValue: "•••", username: "foo2", password: "bar2")
         enterCredentials(usernameValue: "foo2", passwordValue: "••••", username: "foo3", password: "bar3")
-
         // Use KIFTest framework for checking elements within webView
         tester().waitForWebViewElementWithAccessibilityLabel("auth fail")
-
         // Enter valid credentials and ensure the page loads.
         tester().tapView(withAccessibilityLabel: "Reload")
-		enterCredentials(usernameValue: "Username", passwordValue: "Password", username: "user", password: "pass")
+        enterCredentials(usernameValue: "Username", passwordValue: "Password", username: "user", password: "pass")
         tester().waitForWebViewElementWithAccessibilityLabel("logged in")
-
         // Save the credentials.
         tester().tapView(withAccessibilityIdentifier: "SaveLoginPrompt.saveLoginButton")
         tester().waitForAnimationsToFinish(withTimeout: 3)
         logOut()
         loadAuthPage()
-
         // Make sure the credentials were saved and auto-filled.
         tester().tapView(withAccessibilityLabel: "Log in")
         tester().waitForWebViewElementWithAccessibilityLabel("logged in")
-
         // Add a private tab.
         if BrowserUtils.iPad() {
             tester().tapView(withAccessibilityIdentifier: "TopTabsViewController.tabsButton")
@@ -57,7 +43,6 @@ class AuthenticationTests: KIFTestCase {
         tester().tapView(withAccessibilityIdentifier: "newTabButtonTabTray")
         tester().waitForAnimationsToFinish()
         loadAuthPage()
-
         // Make sure the auth prompt is shown.
         // Note that in the future, we might decide to auto-fill authentication credentials in private browsing mode,
         // but that's not currently supported. We assume the username and password fields are empty.
@@ -68,11 +53,11 @@ class AuthenticationTests: KIFTestCase {
 
     fileprivate func loadAuthPage() {
         tester().wait(forTimeInterval: 3)
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: "\(webRoot!)/auth.html")
+        openURL("\(webRoot!)/auth.html")
     }
 
     fileprivate func logOut() {
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: "\(webRoot!)/auth.html?logout=1")
+        openURL("\(webRoot!)/auth.html?logout=1")
         // Wait until the dialog shows up
         tester().waitForAnimationsToFinish(withTimeout: 3)
         tester().tapView(withAccessibilityLabel: "Cancel")

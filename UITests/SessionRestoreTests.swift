@@ -9,13 +9,13 @@ import WebKit
 
 @testable import Client
 
-class SessionRestoreTests: KIFTestCase {
+class SessionRestoreTests: UITestBase {
     fileprivate var webRoot: String!
 
     override func setUp() {
-        webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
         super.setUp()
+
+        webRoot = SimplePageServer.start()
     }
 
     func testTabRestore() throws {
@@ -44,7 +44,7 @@ class SessionRestoreTests: KIFTestCase {
         //   about:home, page1, *page2*, page3
         // where page2 is active.
         tester().waitForAnimationsToFinish(withTimeout: 3)
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: restoreURL!.absoluteString)
+        openURL(restoreURL!.absoluteString)
         tester().waitForWebViewElementWithAccessibilityLabel("Page 2")
         tester().tapView(withAccessibilityLabel: "Back")
 
@@ -74,10 +74,5 @@ class SessionRestoreTests: KIFTestCase {
             canGoForward = false
         }
         XCTAssertFalse(canGoForward, "Reached the end of browser history")
-    }
-
-    override func tearDown() {
-        BrowserUtils.resetToAboutHomeKIF(tester())
-        BrowserUtils.clearPrivateDataKIF(tester())
     }
 }

@@ -10,18 +10,12 @@ import WebKit
 
 @testable import Client
 
-class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
-
+class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
     fileprivate var webRoot: String!
 
     override func setUp() {
         super.setUp()
         webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
-    }
-
-    override func tearDown() {
-        BrowserUtils.resetToAboutHomeKIF(tester())
     }
 
     func visitSites(noOfSites: Int) -> [(
@@ -30,7 +24,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         var urls: [(title: String, domain: String, dispDomain: String, url: String)] = []
         for pageNo in 1...noOfSites {
             let url = "\(webRoot!)/numberedPage.html?page=\(pageNo)"
-            BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+            openURL(url)
 
             tester().waitForAnimationsToFinish()
             tester().waitForWebViewElementWithAccessibilityLabel("Page \(pageNo)")
@@ -41,32 +35,27 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
             )
             urls.append(tuple)
         }
-        BrowserUtils.resetToAboutHomeKIF(tester())
+
+        resetToHome()
+
         return urls
     }
 
     func testRemembersToggles() {
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.history], tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+        clearPrivateData([Clearable.history])
 
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
+        goToClearData()
 
         // Ensure the toggles match our settings.
-        [
-            (BrowserUtils.Clearable.cache, "0"),
-            (BrowserUtils.Clearable.cookies, "0"),
-            (BrowserUtils.Clearable.downloads, "0"),
-            (BrowserUtils.Clearable.history, "1"),
-        ].forEach { clearable, switchValue in
+        [(Clearable.cache, "0"), (Clearable.cookies, "0"), (Clearable.downloads, "0"), (Clearable.history, "1")].forEach { clearable, switchValue in
             XCTAssertNotNil(
                 tester()
                     .waitForView(
                         withAccessibilityLabel: clearable.label(), value: switchValue,
                         traits: UIAccessibilityTraits.none))
         }
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+
+        closeClearPrivateData()
     }
 
     func testClearsHistoryPanel() {
@@ -75,26 +64,18 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         let url1 = urls[0].url
         let url2 = urls[1].url
-        BrowserUtils.openNeevaMenu(tester())
-        // Open History Panel
-        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
+
+        goToHistory()
         tester().waitForView(withAccessibilityLabel: url1)
         tester().waitForView(withAccessibilityLabel: url2)
+        closeHistory()
 
-        BrowserUtils.closeHistorySheet(tester())
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.history], tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+        clearPrivateData([Clearable.history])
 
-        BrowserUtils.openNeevaMenu(tester())
-
-        // Open History Panel
-        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
+        goToHistory()
         tester().waitForAbsenceOfView(withAccessibilityLabel: url1)
         tester().waitForAbsenceOfView(withAccessibilityLabel: url2)
-
-        BrowserUtils.closeHistorySheet(tester())
+        closeHistory()
     }
 
     func testDisabledHistoryDoesNotClearHistoryPanel() {
@@ -103,29 +84,19 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
 
         let url1 = urls[0].url
         let url2 = urls[1].url
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(
-            BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.history]), tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
-        tester().waitForAnimationsToFinish()
-        BrowserUtils.openNeevaMenu(tester())
-        // Open History Panel
-        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.History")
-        tester().waitForAnimationsToFinish()
+        clearPrivateData(excluding: [.history])
+
+        goToHistory()
 
         tester().waitForView(withAccessibilityLabel: url1)
         tester().waitForView(withAccessibilityLabel: url2)
-
-        // Close History (and so Library) panel
-        BrowserUtils.closeHistorySheet(tester())
+        closeHistory()
     }
 
     func testClearsCookies() {
         let url = "\(webRoot!)/numberedPage.html?page=1"
         tester().waitForAnimationsToFinish(withTimeout: 5)
-
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+        openURL(url)
         tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
 
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
@@ -138,10 +109,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         XCTAssertEqual(cookies.sessionStorage, "foo=bar")
 
         // Verify that cookies are not cleared when Cookies is deselected.
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(BrowserUtils.AllClearables.subtracting([.cookies]), tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+        clearPrivateData(excluding: [.cookies])
 
         tester().waitForAnimationsToFinish(withTimeout: 5)
         cookies = getCookies(webView)
@@ -150,10 +118,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         XCTAssertEqual(cookies.sessionStorage, "foo=bar")
 
         // Verify that cookies are cleared when Cookies is selected.
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([.cookies], tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+        clearPrivateData([.cookies])
 
         tester().waitForAnimationsToFinish(withTimeout: 5)
         cookies = getCookies(webView)
@@ -166,26 +131,19 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         let cachedServer = CachedPageServer()
         let cacheRoot = cachedServer.start()
         let url = "\(cacheRoot)/cachedPage.html"
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+        openURL(url)
         tester().waitForWebViewElementWithAccessibilityLabel("Cache test")
 
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
         let requests = cachedServer.requests
 
         // Verify that clearing non-cache items will keep the page in the cache.
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData(
-            BrowserUtils.AllClearables.subtracting([BrowserUtils.Clearable.cache]), tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+        clearPrivateData(excluding: [.cache])
         webView.reload()
         XCTAssertEqual(cachedServer.requests, requests)
 
         // Verify that clearing the cache will fire a new request.
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.cache], tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+        clearPrivateData([Clearable.cache])
         webView.reload()
         XCTAssertEqual(cachedServer.requests, requests + 1)
     }
@@ -230,11 +188,9 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         ) {
             wait.fulfill()
         }
+
         waitForExpectations(timeout: 30)
-        BrowserUtils.openClearPrivateDataDialogKIF(tester())
-        BrowserUtils.clearPrivateData([BrowserUtils.Clearable.trackingProtection], tester())
-        BrowserUtils.acceptClearPrivateData(tester())
-        BrowserUtils.closeClearPrivateDataDialog(tester())
+        clearPrivateData([Clearable.trackingProtection])
 
         XCTAssert(Defaults[.unblockedDomains].isEmpty)
     }

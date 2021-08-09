@@ -24,12 +24,8 @@ class DatabaseFixtureTest: BaseTestCase {
         super.setUp()
     }
 
-    func testHistoryDatabaseFixture() throws {
-        try skipTest(issue: 1276, "Started failing after #1271 because tapping the Neeva Menu no longer did anything")
-        app.buttons["Neeva Menu"].tap()
-
-        waitForExistence(app.buttons["History"])
-        app.buttons["History"].tap()
+    func testHistoryDatabaseFixture() {
+        goToHistory()
 
         // History list has two cells that are for recently closed and synced devices that should not count as history items,
         // the actual max number is 100

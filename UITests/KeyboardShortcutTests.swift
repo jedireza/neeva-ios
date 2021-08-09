@@ -4,11 +4,11 @@ import Foundation
 
 @testable import Client
 
-class KeyboardShortcutTests: KIFTestCase {
+class KeyboardShortcutTests: UITestBase {
     var bvc: BrowserViewController!
 
     override func setUp() {
-        BrowserUtils.dismissFirstRunUI(tester())
+        super.setUp()
         bvc = BrowserViewController.foregroundBVC()
     }
 
@@ -22,149 +22,128 @@ class KeyboardShortcutTests: KIFTestCase {
         tabManager.removeTabsAndAddNormalTab(tabManager.tabs, showToast: false)
     }
 
-    func openTab(tester: KIFUITestActor) {
-        tester.waitForAnimationsToFinish()
-
-        if tester.viewExistsWithLabel("Cancel") {
-            tester.tapView(withAccessibilityLabel: "Cancel")
-        }
-
-        if tester.tryFindingView(withAccessibilityIdentifier: "Tour.Button.Okay") {
-            tester.tapView(withAccessibilityIdentifier: "Tour.Button.Okay")
-        }
-
-        tester.waitForView(withAccessibilityLabel: "Show Tabs")
-        tester.longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
-
-        tester.waitForView(withAccessibilityLabel: "New Tab")
-        tester.tapView(withAccessibilityLabel: "New Tab")
-
-        BrowserUtils.enterUrlAddressBar(tester)
-    }
-
     func openMultipleTabs(tester: KIFUITestActor) {
         for _ in 0...3 {
-            openTab(tester: tester)
+            openNewTab()
         }
     }
 
     func previousTab(tester: KIFUITestActor) {
-        openTab(tester: tester)
+        openNewTab()
         bvc.previousTabKeyCommand()
     }
 
     func testReloadTab() {
-        reset(tester: tester())
-        openTab(tester: tester())
+        openNewTab()
         bvc.reloadTabKeyCommand()
+        reset(tester: tester())
     }
 
     // MARK: Navigation Tests
     func goBack() {
-        openTab(tester: tester())
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: "apple.com")
+        openNewTab()
         bvc.goBackKeyCommand()
     }
 
     func testGoBack() {
-        reset(tester: tester())
         goBack()
+        reset(tester: tester())
     }
 
     func testGoForward() {
-        reset(tester: tester())
         goBack()
         bvc.goForwardKeyCommand()
+        reset(tester: tester())
     }
 
     // MARK: Find in Page
     func testFindInPageKeyCommand() {
-        reset(tester: tester())
-        openTab(tester: tester())
+        openNewTab()
         bvc.findInPageKeyCommand()
+        reset(tester: tester())
     }
 
     // MARK: UI
     func testSelectLocationBarKeyCommand() {
-        reset(tester: tester())
+        openURL()
         bvc.selectLocationBarKeyCommand()
+
+        openURL("neeva.com", openAddressBar: false)
+        reset(tester: tester())
     }
 
     func testShowTabTrayKeyCommand() {
-        reset(tester: tester())
         bvc.showTabTrayKeyCommand()
 
+        tester().wait(forTimeInterval: 5)
         tester().waitForView(withAccessibilityLabel: "Done")
         tester().tapView(withAccessibilityLabel: "Done")
+        reset(tester: tester())
     }
 
     // MARK: Tab Mangement
     func testNewTabKeyCommand() {
-        reset(tester: tester())
-        BrowserUtils.enterUrlAddressBar(tester())
         bvc.newTabKeyCommand()
 
         // turn lazy tab into real tab by opening URL
-        BrowserUtils.enterUrlAddressBar(tester())
+        openURL("example.com")
+        reset(tester: tester())
     }
 
     func testNewPrivateTabKeyCommand() {
-        reset(tester: tester())
         bvc.newPrivateTabKeyCommand()
 
         // turn lazy tab into real tab by opening URL
-        BrowserUtils.enterUrlAddressBar(tester())
+        openURL("example.com")
 
         XCTAssert(bvc.tabManager.selectedTab?.isPrivate == true)
+        reset(tester: tester())
     }
 
     func testCloseTabKeyCommand() {
-        reset(tester: tester())
-        BrowserUtils.enterUrlAddressBar(tester())
-        openTab(tester: tester())
+        openNewTab()
 
         XCTAssert(bvc.tabManager.tabs.count == 2)
         bvc.closeTabKeyCommand()
         XCTAssert(bvc.tabManager.tabs.count == 1)
+        reset(tester: tester())
     }
 
     func testNextTabKeyCommand() {
-        reset(tester: tester())
-        BrowserUtils.enterUrlAddressBar(tester())
         previousTab(tester: tester())
         bvc.nextTabKeyCommand()
         XCTAssert(bvc.tabManager.selectedTab == bvc.tabManager.tabs[1])
+        reset(tester: tester())
     }
 
     func testPreviousTabCommand() {
-        reset(tester: tester())
         previousTab(tester: tester())
         XCTAssert(bvc.tabManager.selectedTab == bvc.tabManager.tabs[0])
+        reset(tester: tester())
     }
 
     func testCloseAllTabKeyCommand() {
-        reset(tester: tester())
-        openTab(tester: tester())
+        openNewTab()
         bvc.closeTabKeyCommand()
         XCTAssert(bvc.tabManager.tabs.count == 1)
+        reset(tester: tester())
     }
 
     func testCloseAllTabsCommand() {
-        reset(tester: tester())
         openMultipleTabs(tester: tester())
         bvc.closeAllTabsCommand()
         XCTAssert(bvc.tabManager.tabs.count == 1)
+        reset(tester: tester())
     }
 
     func testRestoreTabKeyCommand() {
-        reset(tester: tester())
         openMultipleTabs(tester: tester())
-
-        BrowserUtils.closeAllTabs(tester())
+        closeAllTabs()
         tester().waitForAnimationsToFinish()
 
         bvc.restoreTabKeyCommand()
 
         XCTAssert(bvc.tabManager.tabs.count > 1)
+        reset(tester: tester())
     }
 }

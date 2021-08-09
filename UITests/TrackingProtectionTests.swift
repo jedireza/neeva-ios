@@ -8,7 +8,7 @@ import Storage
 
 @testable import Client
 
-class TrackingProtectionTests: KIFTestCase, TabEventHandler {
+class TrackingProtectionTests: UITestBase, TabEventHandler {
     private var webRoot: String!
     var stats = TPPageStats()
     var statsIncrement: XCTestExpectation?
@@ -20,7 +20,6 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         // IP addresses can't be used for allowlisted domains
         SimplePageServer.useLocalhostInsteadOfIP = true
         webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
 
         // Check TP is ready manually as NSPredicate-based expectation on a primitive type doesn't work.
         let setup = self.expectation(description: "setup")
@@ -44,17 +43,13 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
     }
 
     func checkIfImageLoaded(url: String, shouldBlockImage: Bool) {
-        tester().waitForAnimationsToFinish(withTimeout: 3)
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
-
-        tester().waitForAnimationsToFinish(withTimeout: 3)
-
         if shouldBlockImage {
             tester().waitForView(withAccessibilityLabel: "image not loaded.")
         } else {
             tester().waitForView(withAccessibilityLabel: "image loaded.")
 
         }
+
         tester().tapView(withAccessibilityLabel: "OK")
     }
 
@@ -94,8 +89,7 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         tester().waitForAnimationsToFinish()
         // Check tracking protection is enabled on private tabs only in Settings
 
-        BrowserUtils.openNeevaMenu(tester())
-        tester().tapView(withAccessibilityIdentifier: "NeevaMenu.Settings")
+        goToSettings()
 
         tester().accessibilityScroll(.down)
         tester().tapView(withAccessibilityLabel: "Tracking Protection")
@@ -128,7 +122,7 @@ class TrackingProtectionTests: KIFTestCase, TabEventHandler {
         tester().tapView(withAccessibilityIdentifier: "prefkey.trackingprotection.normalbrowsing")
         closeTPSetting()
 
-        if BrowserUtils.iPad() {
+        if isiPad() {
             tester().tapView(withAccessibilityIdentifier: "TopTabsViewController.tabsButton")
         } else {
             tester().tapView(withAccessibilityIdentifier: "TabToolbar.tabsButton")

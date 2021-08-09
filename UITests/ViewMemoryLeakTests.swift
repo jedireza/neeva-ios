@@ -10,21 +10,14 @@ import WebKit
 /// Set of tests that wait for weak references to views to be cleared. Technically, this is
 /// non-deterministic and there are no guarantees the references will be set to nil. In practice,
 /// though, the references are consistently cleared, which should be good enough for testing.
-class ViewMemoryLeakTests: KIFTestCase, UITextFieldDelegate {
+class ViewMemoryLeakTests: UITestBase, UITextFieldDelegate {
     fileprivate var webRoot: String!
 
     override func setUp() {
+        super.setUp()
         webRoot = SimplePageServer.start()
     }
 
-    override func tearDown() {
-        do {
-            try tester().tryFindingTappableView(withAccessibilityLabel: "home")
-            tester().tapView(withAccessibilityLabel: "home")
-        } catch _ {
-        }
-        BrowserUtils.resetToAboutHomeKIF(tester())
-    }
     /*
     func testSearchViewControllerDisposed() {
         // Type the URL to make the search controller appear.

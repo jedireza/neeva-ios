@@ -5,24 +5,18 @@
 import Foundation
 import WebKit
 
-class HistoryTests: KIFTestCase {
+class HistoryTests: UITestBase {
     fileprivate var webRoot: String!
 
     override func setUp() {
         super.setUp()
         webRoot = SimplePageServer.start()
-        BrowserUtils.dismissFirstRunUI(tester())
-    }
-
-    override func tearDown() {
-        BrowserUtils.resetToAboutHomeKIF(tester())
     }
 
     func addHistoryItemPage(_ pageNo: Int) -> String {
         // Load a page
         let url = "\(webRoot!)/numberedPage.html?page=\(pageNo)"
-
-        BrowserUtils.enterUrlAddressBar(tester(), typeUrl: url)
+        openURL(url)
         tester().waitForWebViewElementWithAccessibilityLabel("Page \(pageNo)")
         return url
     }
@@ -40,8 +34,7 @@ class HistoryTests: KIFTestCase {
         _ = addHistoryItems(2)
 
         // Check that both appear in the history home panel
-        BrowserUtils.openNeevaMenu(tester())
-        tester().tapView(withAccessibilityLabel: "History")
+        goToHistory()
 
         // Wait until the dialog shows up
         tester().waitForAnimationsToFinish()
@@ -51,8 +44,8 @@ class HistoryTests: KIFTestCase {
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=2")
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=1")
 
-        // Close History (and so Library) panel
-        BrowserUtils.closeHistorySheet(tester())
+        // Close History panel
+        closeHistory()
     }
 
     // Could be removed since tested on XCUITets -> AP VERIFY OR ADD
@@ -92,16 +85,16 @@ class HistoryTests: KIFTestCase {
 
     func testDeleteHistoryItemFromListWithMoreThan100Items() {
         for pageNo in 1...102 {
-            BrowserUtils.addHistoryEntry(
+            addHistoryEntry(
                 "Page \(pageNo)", url: URL(string: "\(webRoot!)/numberedPage.html?page=\(pageNo)")!)
         }
+        
         tester().wait(forTimeInterval: 2)
+
         let oldestUrl = "\(webRoot!)/numberedPage.html?page=\(101)"
         tester().waitForAnimationsToFinish()
-        BrowserUtils.openNeevaMenu(tester())
-        tester().waitForAnimationsToFinish(withTimeout: 10)
-        tester().waitForView(withAccessibilityLabel: "History")
-        tester().tapView(withAccessibilityLabel: "History")
+
+        goToHistory()
         tester().waitForView(withAccessibilityLabel: "Page 102")
 
         let firstIndexPath = IndexPath(row: 0, section: 1)
@@ -122,13 +115,13 @@ class HistoryTests: KIFTestCase {
         // On iPad, there is no explicit "Cancel" button. Instead, we just have to
         // tap outside the bounds of the prompt. The "Done" button from the History
         // Panel provides a way to do that.
-        if BrowserUtils.iPad() {
+        if isiPad() {
             tester().tapView(withAccessibilityLabel: "Done")
         } else {
             tester().tapView(withAccessibilityLabel: "Cancel")
         }
 
         // Close History (and so Library) panel
-        BrowserUtils.closeHistorySheet(tester())
+        closeHistory()
     }
 }

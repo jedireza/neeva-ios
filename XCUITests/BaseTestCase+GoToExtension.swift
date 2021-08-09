@@ -46,6 +46,8 @@ extension BaseTestCase {
         waitForExistence(app.buttons["Neeva Menu"])
         app.buttons["Neeva Menu"].tap()
 
+        waitForExistence(app.buttons["Settings"])
+
         waitForExistence(app.buttons["History"])
         app.buttons["History"].tap()
     }
