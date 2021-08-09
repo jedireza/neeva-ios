@@ -13,13 +13,11 @@ class DatabaseFixtureTest: BaseTestCase {
     ]
 
     override func setUp() {
-        // Test name looks like: "[Class testFunc]", parse out the function name
-        let parts = name.replacingOccurrences(of: "]", with: "").split(separator: " ")
-        let key = String(parts[1])
         // for the current test name, add the db fixture used
         launchArguments = [
             LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
-            LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + fixtures[key]!,
+            LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix +
+            fixtures[testName]!,
         ]
         super.setUp()
     }

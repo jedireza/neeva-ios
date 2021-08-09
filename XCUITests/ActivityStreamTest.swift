@@ -25,10 +25,7 @@ class ActivityStreamTest: BaseTestCase {
     let pagesVisitediPhone = "browserActivityStreamPagesiPhone.db"
 
     override func setUp() {
-        // Test name looks like: "[Class testFunc]", parse out the function name
-        let parts = name.replacingOccurrences(of: "]", with: "").split(separator: " ")
-        let key = String(parts[1])
-        if testWithDB.contains(key) {
+        if testWithDB.contains(testName) {
             // for the current test name, add the db fixture used
             if iPad() {
                 launchArguments = [

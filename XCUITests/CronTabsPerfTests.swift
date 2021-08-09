@@ -10,10 +10,7 @@ class CronTabsPerformanceTest: BaseTestCase {
     ]
 
     override func setUp() {
-        // Test name looks like: "[Class testFunc]", parse out function name
-        let parts = name.replacingOccurrences(of: "]", with: "").split(separator: " ")
-        let functionName = String(parts[1])
-        let archiveName = fixtures[functionName]
+        let archiveName = fixtures[testName]
 
         // defaults
         launchArguments = [
@@ -22,7 +19,7 @@ class CronTabsPerformanceTest: BaseTestCase {
         ]
 
         // append specific load profiles to LaunchArguments
-        if fixtures.keys.contains(functionName) {
+        if fixtures.keys.contains(testName) {
             launchArguments.append(LaunchArguments.LoadTabsStateArchive + archiveName!)
         }
         super.setUp()

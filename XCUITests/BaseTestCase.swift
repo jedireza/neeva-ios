@@ -31,8 +31,7 @@ class BaseTestCase: XCTestCase {
 
     var testName: String {
         // Test name looks like: "[Class testFunc]", parse out the function name
-        let parts = name.replacingOccurrences(of: "]", with: "").split(separator: " ")
-        return String(parts[1])
+        return String(name.split(separator: " ")[1].dropLast())
     }
 
     func setUpApp() {
