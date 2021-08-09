@@ -75,7 +75,8 @@ class FindInPageTests: BaseTestCase {
         XCTAssertTrue(app.staticTexts["1 of 6"].exists)
     }
 
-    func testFindInPageTwoWordsSearchLargeDoc() {
+    func testFindInPageTwoWordsSearchLargeDoc() throws {
+        try skipTest(issue: 1299, "can’t find the 1 of 500+ text despite it being clearly on-screen")
         openFindInPageFromMenu()
 
         app.textFields["FindInPage_TextField"].tap()

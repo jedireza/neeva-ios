@@ -90,35 +90,40 @@ commands:
     steps:
       - run:
           name: UITests
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing UITests
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing UITests  -resultBundlePath uitests-$CIRCLE_BUILD_NUM.xcresult
+      - run:
+          name: "Store screenshots"
+          command: ./Scripts/uitests-helper.sh move-iphone-screenshots
       - run:
           name: UITests - iPad
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing UITests
-      - store_artifacts:
-          path: ui-test-screenshots
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing UITests -resultBundlePath uitests-ipad-$CIRCLE_BUILD_NUM.xcresult
+      - run:
+          name: Zip Test Results
+          command: ./Scripts/uitests-helper.sh store-artifacts
           when: always
+      - save-artifacts
   xcui-tests:
     steps:
       - run:
           name: XCUITests
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests -resultBundlePath xcuitests.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests -resultBundlePath xcuitests-$CIRCLE_BUILD_NUM.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
       - store-xcuitest-artifact
   xcui-tests-ipad:
     steps:
       - run:
           name: XCUITests - iPad
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests -resultBundlePath xcuitests.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests -resultBundlePath xcuitests-$CIRCLE_BUILD_NUM.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
       - store-xcuitest-artifact
 
   store-xcuitest-artifact:
     steps:
       - run:
           name: Zip Test Results
-          command: zip -r xcuitests.xcresult.zip xcuitests.xcresult
+          command: |
+            mkdir artifacts
+            zip -r artifacts/xcuitests-$CIRCLE_BUILD_NUM.xcresult.zip xcuitests-$CIRCLE_BUILD_NUM.xcresult
           when: always
-      - store_artifacts:
-          path: xcuitests.xcresult.zip
-          when: always
+      - save-artifacts
   build-app-clip:
     steps:
       - checkout
@@ -135,6 +140,11 @@ commands:
       - run:
           name: Check Formatting
           command: ./Scripts/swift-format.sh --check-all
+  save-artifacts:
+     steps:
+       - store_artifacts:
+           path: artifacts/
+           when: always
 
 jobs:
   build:

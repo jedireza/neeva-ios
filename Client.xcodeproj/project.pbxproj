@@ -1313,6 +1313,7 @@
 		C9AFE6E626583F5A000C5A03 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C9B2D28126612EF7005EF5AD /* NeevaAccountRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaAccountRow.swift; sourceTree = "<group>"; };
 		C9B55A0E26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsRestartPromptView.swift; sourceTree = "<group>"; };
+		C9B73F7426C17B9B00862059 /* uitests-helper.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "uitests-helper.sh"; sourceTree = "<group>"; };
 		C9BED4B82667D5D3001D9C77 /* Roobert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Roobert.swift; sourceTree = "<group>"; };
 		C9BED4BA2667E3F8001D9C77 /* ZeroQueryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModels.swift; sourceTree = "<group>"; };
 		C9BED4BC2667E453001D9C77 /* SuggestedSitesViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedSitesViews.swift; sourceTree = "<group>"; };
@@ -2386,6 +2387,7 @@
 				C9DE0C5C26B2FE8400CB995A /* files-to-format.sh */,
 				C9DE0C5F26B305D900CB995A /* swift-format.sh */,
 				C9DE0C5D26B3054700CB995A /* swift-format-dirs.txt */,
+				C9B73F7426C17B9B00862059 /* uitests-helper.sh */,
 			);
 			path = Scripts;
 			sourceTree = "<group>";
