@@ -1,10 +1,13 @@
 // Copyright Neeva. All rights reserved.
 
 import UIKit
+import Shared
+import Combine
 
-class ToastWindowManager {
+class ToastWindowManager: KeyboardReadable {
     private let inOutAnimationDuration = 0.3
     private var openWindow: UIWindow?
+    private var keyboardHeightListener: AnyCancellable?
 
     /// Creates an overlayed window to display Toast in
     // Allows UI interaction without hiding Toast
@@ -55,10 +58,28 @@ class ToastWindowManager {
 
     private func getY() -> CGFloat {
         let height = UIScreen.main.bounds.height
+        let bottomConstraint = bottomConstraint()
+
+        keyboardHeightListener = keyboardPublisher.sink(receiveValue: { keyboardHeight in
+            UIView.animate(withDuration: 0.3) {
+                if keyboardHeight > 0 {
+                    self.openWindow?.center.y = height - (bottomConstraint / 2) - keyboardHeight
+                } else {
+                    self.openWindow?.center.y = height - bottomConstraint
+                }
+
+                self.openWindow?.layoutIfNeeded()
+            }
+        })
+
+        return height - bottomConstraint
+    }
+
+    private func bottomConstraint() -> CGFloat {
         let safeArea = UIApplication.shared.windows.first?.safeAreaInsets
         let padding: CGFloat = 45
 
-        return height - (safeArea?.top ?? 0) - UIConstants.BottomToolbarHeight - padding
-            - ToastViewUX.threshold
+        return (safeArea?.top ?? 0) + UIConstants.BottomToolbarHeight + padding
+            + ToastViewUX.threshold
     }
 }
