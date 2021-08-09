@@ -1505,13 +1505,6 @@ extension BrowserViewController: TabDelegate {
         tab.addContentScript(webuiMessageHelper, name: WebUIMessageHelper.name())
     }
 
-    func tab(_ tab: Tab, willDeleteWebView webView: WKWebView) {
-        tab.cancelQueuedAlerts()
-        webView.uiDelegate = nil
-        webView.scrollView.delegate = nil
-        webView.removeFromSuperview()
-    }
-
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String) {
         updateFindInPageVisibility(visible: true)
         findInPageViewController?.model.searchValue = selection
@@ -1609,7 +1602,6 @@ extension BrowserViewController: TabManagerDelegate {
             wv.accessibilityLabel = nil
             wv.accessibilityElementsHidden = true
             wv.accessibilityIdentifier = nil
-            wv.removeFromSuperview()
         }
 
         if let tab = selected, let webView = tab.webView {

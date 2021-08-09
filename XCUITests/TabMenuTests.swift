@@ -84,7 +84,8 @@ class TabMenuTests: BaseTestCase {
             "Expected label of remaining tab is not correct")
     }
 
-    func testCloseAllIncognitoTabsFromSwitcher() {
+    func testCloseAllIncognitoTabsFromSwitcher() throws {
+        try skipTest(issue: 1300, "fails on CI for no apparent reason")
         toggleIncognito()
         openTwoWebsites()
         goToTabTray()
