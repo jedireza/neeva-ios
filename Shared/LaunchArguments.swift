@@ -17,4 +17,6 @@ public struct LaunchArguments {
     // After the colon, put the name of the file to load from test bundle
     public static let LoadDatabasePrefix = "FIREFOX_LOAD_DB_NAMED:"
     public static let LoadTabsStateArchive = "LOAD_TABS_STATE_ARCHIVE_NAMED:"
+
+    public static let SetLoginCookie = "SET_LOGIN_COOKIE:"
 }

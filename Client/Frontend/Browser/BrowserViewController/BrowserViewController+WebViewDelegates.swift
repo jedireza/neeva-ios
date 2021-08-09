@@ -929,18 +929,22 @@ extension BrowserViewController: WKNavigationDelegate {
             }
         }
 
-        // every time a user visits a Neeva page, we extract the user cookie
-        // and save it to a keychain.
+        // Every time a user visits a Neeva page, we extract the login cookie and save it to the
+        // keychain. If however we find that they are on the sign in page, then we need to assume
+        // our cached login cookie is no longer valid.
         if !tab.isPrivate,
             let url = webView.url,
             NeevaConstants.isAppHost(url.host),
             url.scheme == "https"
         {
-            webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
-                if let authCookie = cookies.first(where: {
-                    NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
-                }) {
-                    NeevaUserInfo.shared.setLoginCookie(authCookie.value)
+            let userInfo = NeevaUserInfo.shared
+            if url.path == NeevaConstants.appSigninURL.path {
+                if userInfo.hasLoginCookie() {
+                    userInfo.deleteLoginCookie()
+                    userInfo.didLogOut()
+                }
+            } else {
+                userInfo.updateLoginCookieFromWebKitCookieStore {
                     self.showSearchBarTourPromptIfNeeded(for: url)
                 }
             }

@@ -29,6 +29,12 @@ class BaseTestCase: XCTestCase {
         "\(LaunchArguments.ServerPort)\(serverPort)",
     ]
 
+    var testName: String {
+        // Test name looks like: "[Class testFunc]", parse out the function name
+        let parts = name.replacingOccurrences(of: "]", with: "").split(separator: " ")
+        return String(parts[1])
+    }
+
     func setUpApp() {
         if !launchArguments.contains("FIREFOX_PERFORMANCE_TEST") {
             app.launchArguments = [LaunchArguments.Test] + launchArguments

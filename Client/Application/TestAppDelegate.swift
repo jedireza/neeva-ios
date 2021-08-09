@@ -17,6 +17,7 @@ class TestAppDelegate: AppDelegate {
     override func createProfile() -> Profile {
         var profile: BrowserProfile
         let launchArguments = ProcessInfo.processInfo.arguments
+        var loginCookie: String?
 
         launchArguments.forEach { arg in
             if arg.starts(with: LaunchArguments.ServerPort) {
@@ -80,6 +81,10 @@ class TestAppDelegate: AppDelegate {
 
                 try! FileManager.default.copyItem(at: input, to: output)
             }
+
+            if arg.starts(with: LaunchArguments.SetLoginCookie) {
+                loginCookie = arg.replacingOccurrences(of: LaunchArguments.SetLoginCookie, with: "")
+            }
         }
 
         if launchArguments.contains(LaunchArguments.ClearProfile) {
@@ -98,6 +103,11 @@ class TestAppDelegate: AppDelegate {
         // Skip the intro when requested by for example tests or automation
         if launchArguments.contains(LaunchArguments.SkipIntro) {
             Defaults[.introSeen] = true
+        }
+
+        // Deferred to here in case the ClearProfile argument was set.
+        if let loginCookie = loginCookie {
+            NeevaUserInfo.shared.setLoginCookie(loginCookie)
         }
 
         self.profile = profile

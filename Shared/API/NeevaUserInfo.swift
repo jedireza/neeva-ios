@@ -122,6 +122,17 @@ public class NeevaUserInfo: ObservableObject {
         self.clearUserInfoCache()
     }
 
+    public func updateLoginCookieFromWebKitCookieStore(completion: @escaping () -> Void) {
+        WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
+            if let authCookie = cookies.first(where: {
+                NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
+            }) {
+                self.setLoginCookie(authCookie.value)
+                completion()
+            }
+        }
+    }
+
     public func setLoginCookie(_ value: String) {
         // check if token has changed, when different, save new token
         // and fetch user info

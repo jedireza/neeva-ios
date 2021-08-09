@@ -19,6 +19,11 @@ class NeevaSignInTests: BaseTestCase {
         XCTAssertNotEqual(username, "", "TEST_ACCOUNT_USERNAME environment variable not set!")
         XCTAssertNotEqual(password, "", "TEST_ACCOUNT_PASSWORD environment variable not set!")
 
+        // For this test, preset a junk login cookie.
+        if testName == "testSignInWithStaleLoginCookie" {
+            launchArguments.append("\(LaunchArguments.SetLoginCookie)foobar")
+        }
+
         super.setUp()
     }
 
@@ -107,6 +112,18 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.cells["Sign In or Join Neeva"])
         app.cells["Sign In or Join Neeva"].tap()
 
+        waitUntilPageLoad(withUrlContaining: "https://neeva.com/signin")
+
+        doSignIn()
+        doSignOut()
+    }
+
+    func testSignInWithStaleLoginCookie() {
+        // See the setUp() function where the stale login cookie is specified
+        // as a launch argument to the browser.
+
+        // Load neeva.com, and we should get redirected to the sign in page.
+        openURL("https://neeva.com/")
         waitUntilPageLoad(withUrlContaining: "https://neeva.com/signin")
 
         doSignIn()
