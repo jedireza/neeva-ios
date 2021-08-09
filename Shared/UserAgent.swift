@@ -129,10 +129,6 @@ public struct UserAgentBuilder {
         return makeMobileUserAgent(identifier: "Version/\(UIDevice.current.systemVersion)")
     }
 
-    public static func neevaMobileUserAgent() -> UserAgentBuilder {
-        return makeMobileUserAgent(identifier: "NeevaBrowserIOS/\(AppInfo.appVersion)")
-    }
-
     public static func defaultDesktopUserAgent() -> UserAgentBuilder {
         return UserAgentBuilder(
             product: UserAgent.product, systemInfo: "(Macintosh; Intel Mac OS X 10.15)",
