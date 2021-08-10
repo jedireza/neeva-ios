@@ -20,3 +20,8 @@ echo "Create tag? Press ENTER to continue. Ctrl+C to cancel."
 read
 
 git tag -a "$TAG_NAME" -m "$TAG_DESCRIPTION" $COMMIT
+
+echo "Push tag? Press ENTER to continue. Ctrl+C to cancel."
+read
+
+git push origin "$TAG_NAME"
