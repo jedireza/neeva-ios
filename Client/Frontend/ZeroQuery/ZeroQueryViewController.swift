@@ -34,7 +34,7 @@ protocol ZeroQueryPanelDelegate: AnyObject {
     func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType)
     func zeroQueryPanelDidRequestToOpenLibrary()
     func zeroQueryPanel(didEnterQuery query: String)
-    func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, description: String?, title: String?)
+    func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, title: String?, description: String?)
 }
 
 enum ZeroQueryOpenedLocation: Equatable {
@@ -82,10 +82,9 @@ class ZeroQueryViewController: UIViewController {
             }.environment(\.openInNewTab) { [weak self] url, isPrivate in
                 self?.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(
                     url, isPrivate: isPrivate)
-            }.environment(\.saveToSpace) { [weak self] url, description, title in
-                self?.delegate?.zeroQueryPanelDidRequestToSaveToSpace(url, description: description, title: title)
-                //self?.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(
-                    //url, isPrivate: isPrivate)
+            }.environment(\.saveToSpace) { [weak self] url, title, description in
+                self?.delegate?.zeroQueryPanelDidRequestToSaveToSpace(
+                    url, title: title, description: description)
             }
 
         let controller = UIHostingController(rootView: zeroQueryView)

@@ -6,8 +6,8 @@ import SwiftUI
 
 public struct ZeroQueryCommonContextMenuActions: View {
     let siteURL: URL
-    let description: String?
     let title: String?
+    let description: String?
 
     @Environment(\.openInNewTab) private var openInNewTab
     @Environment(\.shareURL) private var shareURL

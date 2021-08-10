@@ -76,7 +76,7 @@ struct SuggestedSiteView: View {
             .accessibilityLabel(title)
             .accessibilityHint(hint)
             .contextMenu {
-                ZeroQueryCommonContextMenuActions(siteURL: site.url, description: site.metadata?.description, title: title)
+                ZeroQueryCommonContextMenuActions(siteURL: site.url, title: title, description: site.metadata?.description)
                 // TODO: make this red
                 Button(action: { isDeleting = true }) {
                     Label("Remove", systemSymbol: .trash)

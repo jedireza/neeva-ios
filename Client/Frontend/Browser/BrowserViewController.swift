@@ -1542,7 +1542,7 @@ extension BrowserViewController: HistoryPanelDelegate {
 }
 
 extension BrowserViewController: ZeroQueryPanelDelegate {
-    func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, description: String?, title: String?) {
+    func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, title: String?, description: String?) {
         urlBar.shared.model.setEditing(to: false)
         showAddToSpacesSheet(url: url, title: title, description: description)
     }
@@ -2062,7 +2062,8 @@ extension BrowserViewController {
         webView: WKWebView,
         importData: SpaceImportHandler? = nil
     ) {
-        webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { [unowned self]
+        webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") {
+            [unowned self]
             (result, error) in
             showAddToSpacesSheet(url: url, title: title, description: result as? String)
         }
