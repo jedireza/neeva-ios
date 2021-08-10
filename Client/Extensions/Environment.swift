@@ -65,4 +65,17 @@ extension EnvironmentValues {
         get { self[suggestionConfigKey] }
         set { self[suggestionConfigKey] = newValue }
     }
+
+    private struct SaveToSpaceKey: EnvironmentKey {
+        static var defaultValue: ((URL, _ description: String?, _ title: String?) -> Void)? = nil
+    }
+
+    public var saveToSpace: (URL, _ description: String?, _ title: String?) -> Void {
+        get {
+            self[SaveToSpaceKey] ?? { _, _, _ in
+                fatalError(".environment(\\.saveToSpace) must be specified")
+            }
+        }
+        set { self[SaveToSpaceKey] = newValue }
+    }
 }

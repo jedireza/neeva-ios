@@ -30,7 +30,7 @@ struct SuggestedSpacesView: View {
                                 .foregroundColor(.primary)
                         }
                         .buttonStyle(TableCellButtonStyle())
-                        .contextMenu { ZeroQueryCommonContextMenuActions(siteURL: space.url) }
+                        .contextMenu { ZeroQueryCommonContextMenuActions(siteURL: space.url, description: nil, title: nil) }
                     }
                 }.opacity(
                     {

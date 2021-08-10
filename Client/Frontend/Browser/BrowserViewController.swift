@@ -1542,6 +1542,11 @@ extension BrowserViewController: HistoryPanelDelegate {
 }
 
 extension BrowserViewController: ZeroQueryPanelDelegate {
+    func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, description: String?, title: String?) {
+        urlBar.shared.model.setEditing(to: false)
+        showAddToSpacesSheet(url: url, title: title, description: description)
+    }
+
     func zeroQueryPanelDidRequestToOpenLibrary() {
         showLibrary()
         view.endEditing(true)
@@ -2057,27 +2062,36 @@ extension BrowserViewController {
         webView: WKWebView,
         importData: SpaceImportHandler? = nil
     ) {
-        webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") {
+        webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") { [unowned self]
             (result, error) in
-            let title = (title ?? "").isEmpty ? url.absoluteString : title!
-            let request = AddToSpaceRequest(title: title, description: result as? String, url: url)
-            self.showOverlaySheetViewController(
-                AddToSpaceViewController(
-                    request: request,
-                    onDismiss: {
-                        self.hideOverlaySheetViewController()
-                        if request.state != .initial {
-                            ToastDefaults().showToastForSpace(request: request)
-                        }
-                    },
-                    onOpenURL: { url in
-                        self.hideOverlaySheetViewController()
-                        self.openURLInNewTab(url)
-                    },
-                    importData: importData
-                ))
+            showAddToSpacesSheet(url: url, title: title, description: result as? String)
         }
     }
+
+    func showAddToSpacesSheet(
+        url: URL, title: String?,
+        description: String?,
+        importData: SpaceImportHandler? = nil
+    ) {
+        let title = (title ?? "").isEmpty ? url.absoluteString : title!
+        let request = AddToSpaceRequest(title: title, description: description, url: url)
+        self.showOverlaySheetViewController(
+            AddToSpaceViewController(
+                request: request,
+                onDismiss: {
+                    self.hideOverlaySheetViewController()
+                    if request.state != .initial {
+                        ToastDefaults().showToastForSpace(request: request)
+                    }
+                },
+                onOpenURL: { url in
+                    self.hideOverlaySheetViewController()
+                    self.openURLInNewTab(url)
+                },
+                importData: importData
+            ))
+    }
+
 }
 
 extension BrowserViewController {
