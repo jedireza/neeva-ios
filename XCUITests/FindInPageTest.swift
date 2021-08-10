@@ -10,7 +10,7 @@ class FindInPageTests: BaseTestCase {
     ) {
         openURL(url)
         goToFindOnPage()
-
+        
         waitForExistence(app.buttons["FindInPage_Next"])
         waitForExistence(app.buttons["FindInPage_Previous"])
         XCTAssertTrue(app.textFields["FindInPage_TextField"].exists)
@@ -22,7 +22,7 @@ class FindInPageTests: BaseTestCase {
         // Enter some text to start finding
         app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("Book")
-
+        
         waitForExistence(app.staticTexts["1 of 500+"])
     }
 
@@ -58,8 +58,10 @@ class FindInPageTests: BaseTestCase {
         waitForExistence(app.staticTexts["1 of 6"])
         XCTAssertTrue(app.staticTexts["1 of 6"].exists)
 
+        print(app.debugDescription)
+
         // Tapping on close dismisses the search bar
-        app.buttons["Done"].tap()
+        app.buttons["FindInPage_Done"].tap()
         waitForNoExistence(app.textFields["Book"])
     }
 
