@@ -179,9 +179,11 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
                 if let container = FileManager.default.containerURL(
                     forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)
                 {
-                    let imageKeyDirectoryUrl = container.appendingPathComponent(
-                        "Library/Caches/fxfavicon/\(imageKey)")
-                    try data?.write(to: imageKeyDirectoryUrl)
+                    let cacheDirectoryUrl = container.appendingPathComponent(
+                        "Library/Caches/fxfavicon")
+                    try FileManager.default.createDirectory(
+                        atPath: cacheDirectoryUrl.path, withIntermediateDirectories: true)
+                    try data?.write(to: cacheDirectoryUrl / imageKey)
                 }
             } catch let err as NSError {
                 print(err.description)
@@ -200,38 +202,6 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         let imageKeyDirectoryUrl = container.appendingPathComponent(
             "Library/Caches/fxfavicon/\(imageKey)")
         return fileManager.fileExists(atPath: imageKeyDirectoryUrl.path)
-    }
-
-    class func createWebImageCacheDirectory() {
-        // check existence of cache directory
-        let fileManager = FileManager.default
-        do {
-            if let container = FileManager.default.containerURL(
-                forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)
-            {
-                let directoryPath = container.appendingPathComponent("Library/Caches/fxfavicon")
-                var isDir: ObjCBool = false
-                if fileManager.fileExists(atPath: directoryPath.path, isDirectory: &isDir) {
-                    if !isDir.boolValue {
-                        // file exists and is not a directory
-                        // remove this file and create a directory
-                        try fileManager.removeItem(at: directoryPath)
-                        // create directory to save favicons
-                        try fileManager.createDirectory(
-                            at: directoryPath, withIntermediateDirectories: false, attributes: nil)
-                    }
-                } else {
-                    // directory does not exist
-                    // create directory to save favicons
-                    try fileManager.createDirectory(
-                        at: directoryPath, withIntermediateDirectories: false, attributes: nil)
-                }
-            }
-        } catch let error as NSError {
-            Sentry.shared.send(
-                message: "Favicon cache directory creation failed", tag: .general, severity: .error,
-                description: error.description)
-        }
     }
 
     class func getFaviconFromDiskCache(imageKey: String) -> UIImage? {

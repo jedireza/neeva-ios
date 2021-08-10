@@ -155,9 +155,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             application.applicationIconBadgeNumber = 0
         }
 
-        // Create fx favicon cache directory
-        FaviconFetcher.createWebImageCacheDirectory()
-
         updateTopSitesWidget()
     }
 
