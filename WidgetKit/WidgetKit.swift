@@ -2,17 +2,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#if canImport(WidgetKit)
-    import WidgetKit
-    import SwiftUI
+import WidgetKit
+import SwiftUI
 
-    @main
-    struct NeevaWidgets: WidgetBundle {
-        @WidgetBundleBuilder
-        var body: some Widget {
-            SmallQuickLinkWidget()
-            SearchQuickLinksWidget()
-            TopSitesWidget()
-        }
+@main
+struct NeevaWidgets: WidgetBundle {
+    @WidgetBundleBuilder
+    var body: some Widget {
+        SmallQuickLinkWidget()
+        SearchQuickLinksWidget()
+        TopSitesWidget()
     }
-#endif
+}

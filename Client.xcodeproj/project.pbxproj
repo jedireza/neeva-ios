@@ -260,7 +260,6 @@
 		BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC264BC126746098001527B6 /* ViewExtensions.swift */; };
 		BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */; };
 		BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43CC265F49EA007E2F61 /* TourManager.swift */; };
-		BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */; };
 		BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5740A126BB699A0047D29B /* PerformanceLogger.swift */; };
 		BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */; };
 		BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */; };
@@ -327,12 +326,6 @@
 		C9098F5E26AF48BC00D2B5F4 /* TabChromeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9098F5D26AF48BC00D2B5F4 /* TabChromeModel.swift */; };
 		C9098F7726B0539000D2B5F4 /* webpack.config.js in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7626B0539000D2B5F4 /* webpack.config.js */; };
 		C9157BB926BDDA4E009678D9 /* ViewRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9157BB826BDDA4E009678D9 /* ViewRef.swift */; };
-		C9098F6E26B0537000D2B5F4 /* carthage_command.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9098F6C26B0537000D2B5F4 /* carthage_command.sh */; };
-		C9098F6F26B0537000D2B5F4 /* bootstrap.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9098F6D26B0537000D2B5F4 /* bootstrap.sh */; };
-		C9098F7226B0538500D2B5F4 /* package-lock.json in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7026B0538400D2B5F4 /* package-lock.json */; };
-		C9098F7326B0538500D2B5F4 /* package.json in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7126B0538500D2B5F4 /* package.json */; };
-		C9098F7526B0538B00D2B5F4 /* swift-format.sh in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7426B0538A00D2B5F4 /* swift-format.sh */; };
-		C91FA35D26B1959B00E82841 /* TopBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91FA35B26B1959B00E82841 /* TopBarHost.swift */; };
 		C91FA35E26B1959B00E82841 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91FA35C26B1959B00E82841 /* TopBarView.swift */; };
 		C9299E34268F7BD700758795 /* DefaultBrowserOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */; };
 		C9299E36268F9CF300758795 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E35268F9CF300758795 /* CloseButton.swift */; };
@@ -1200,7 +1193,6 @@
 		BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackHelper.swift; sourceTree = "<group>"; };
 		BC264BC126746098001527B6 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaMenuViewController.swift; sourceTree = "<group>"; };
-		BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIWindowExtensions.swift; sourceTree = "<group>"; };
 		BC5740A126BB699A0047D29B /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceLogger.swift; sourceTree = "<group>"; };
 		BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebUIMessageHelper.swift; sourceTree = "<group>"; };
 		BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptViewController.swift; sourceTree = "<group>"; };
@@ -1255,7 +1247,6 @@
 		C8FB0C772321523D00031088 /* PageActionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageActionMenu.swift; sourceTree = "<group>"; };
 		C908604F266693340049C072 /* CapsuleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleTextField.swift; sourceTree = "<group>"; };
 		C90860512666BEE30049C072 /* SpacerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerExtensions.swift; sourceTree = "<group>"; };
-		C9098F5826AF444400D2B5F4 /* ViewRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRef.swift; sourceTree = "<group>"; };
 		C9098F5A26AF452C00D2B5F4 /* TopBarShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarShareButton.swift; sourceTree = "<group>"; };
 		C9098F5D26AF48BC00D2B5F4 /* TabChromeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabChromeModel.swift; sourceTree = "<group>"; };
 		C9098F6126B0534400D2B5F4 /* .swiftformat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = .swiftformat.json; sourceTree = "<group>"; };
@@ -1932,7 +1923,6 @@
 				A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */,
 				43446CE92412066500F5C643 /* UIViewControllerExtension.swift */,
 				E65075501E37F6D1006961AC /* UIViewExtensions.swift */,
-				BC4F15D226471CCA00B136A1 /* UIWindowExtensions.swift */,
 				BC264BC126746098001527B6 /* ViewExtensions.swift */,
 				C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */,
 				663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */,
@@ -2399,7 +2389,6 @@
 				C9B73F7426C17B9B00862059 /* uitests-helper.sh */,
 			);
 			path = Scripts;
-			name = Scripts;
 			sourceTree = "<group>";
 		};
 		C9299E392695EA2100758795 /* TextSize */ = {
@@ -4685,7 +4674,6 @@
 				D3972BF41C22412B00035B87 /* TitleActivityItemProvider.swift in Sources */,
 				D38A1BEE1A9FA2CA00F6A386 /* SiteTableViewController.swift in Sources */,
 				BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */,
-				BC4F15D326471CCA00B136A1 /* UIWindowExtensions.swift in Sources */,
 				BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */,
 				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,

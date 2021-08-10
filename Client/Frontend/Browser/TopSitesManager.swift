@@ -70,7 +70,6 @@ struct TopSitesHandler {
         }
     }
 
-    @available(iOS 14.0, *)
     static func writeWidgetKitTopSites(profile: Profile) {
         TopSitesHandler.getTopSites(profile: profile).uponQueue(.main) { result in
             var widgetkitTopSites = [WidgetKitTopSiteModel]()

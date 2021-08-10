@@ -31,20 +31,16 @@ class ScreenshotHelper {
             return
         }
 
-        //Handle zero query page snapshots, can not use Apple API snapshot function for this
         if InternalURL(url)?.isZeroQueryURL ?? false {
             if let zeroQueryVC = controller?.zeroQueryViewController {
                 let screenshot = zeroQueryVC.view.screenshot(
                     quality: UIConstants.ActiveScreenshotQuality)
                 tab.setScreenshot(screenshot)
             }
-            //Handle webview screenshots
         } else {
             let configuration = WKSnapshotConfiguration()
-            //This is for a bug in certain iOS 13 versions, snapshots cannot be taken correctly without this boolean being set
-            if #available(iOS 13.0, *) {
-                configuration.afterScreenUpdates = false
-            }
+            // This is for a bug in certain iOS 13 versions, snapshots cannot be taken correctly without this boolean being set
+            configuration.afterScreenUpdates = false
             webView.takeSnapshot(with: configuration) { image, error in
                 if let image = image {
                     tab.setScreenshot(image)

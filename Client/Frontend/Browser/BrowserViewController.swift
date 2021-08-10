@@ -184,7 +184,7 @@ class BrowserViewController: UIViewController {
         self.readerModeCache = DiskReaderModeCache.sharedInstance
         super.init(nibName: nil, bundle: nil)
         didInit()
-        self.isPreviousOrientationLandscape = UIWindow.isLandscape
+        self.isPreviousOrientationLandscape = view.window!.windowScene!.interfaceOrientation.isLandscape
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -232,7 +232,7 @@ class BrowserViewController: UIViewController {
                     }
                 }
             }
-            self.isPreviousOrientationLandscape = UIWindow.isLandscape
+            self.isPreviousOrientationLandscape = view.window!.windowScene!.interfaceOrientation.isLandscape
         } completion: { _ in
             self.scrollController.setMinimumZoom()
         }
@@ -1644,19 +1644,17 @@ extension BrowserViewController: TabManagerDelegate {
             // after a short 100ms delay. *facepalm*
             //
             // https://bugzilla.mozilla.org/show_bug.cgi?id=1516524
-            if #available(iOS 12.0, *) {
-                if tab.temporaryDocument?.mimeType == MIMEType.PDF {
-                    let previousZoomScale = webView.scrollView.zoomScale
-                    let previousContentOffset = webView.scrollView.contentOffset
+            if tab.temporaryDocument?.mimeType == MIMEType.PDF {
+                let previousZoomScale = webView.scrollView.zoomScale
+                let previousContentOffset = webView.scrollView.contentOffset
 
-                    if let currentItem = webView.backForwardList.currentItem {
-                        webView.go(to: currentItem)
-                    }
+                if let currentItem = webView.backForwardList.currentItem {
+                    webView.go(to: currentItem)
+                }
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-                        webView.scrollView.setZoomScale(previousZoomScale, animated: false)
-                        webView.scrollView.setContentOffset(previousContentOffset, animated: false)
-                    }
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    webView.scrollView.setZoomScale(previousZoomScale, animated: false)
+                    webView.scrollView.setContentOffset(previousContentOffset, animated: false)
                 }
             }
 
