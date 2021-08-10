@@ -340,7 +340,6 @@
 		C93EFEE926716411000396B5 /* TabLocationBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93EFEE826716411000396B5 /* TabLocationBarButton.swift */; };
 		C94D40652683B48A003A6766 /* LocationTextFieldIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40642683B48A003A6766 /* LocationTextFieldIcon.swift */; };
 		C94D40682684CC35003A6766 /* PublisherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40672684CC35003A6766 /* PublisherExtensions.swift */; };
-		C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40692684D442003A6766 /* SuggestionPositionInfo.swift */; };
 		C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D406B2684E677003A6766 /* SearchQueryModel.swift */; };
 		C94D4096268A617F003A6766 /* NeevaFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4095268A617F003A6766 /* NeevaFonts.swift */; };
 		C94D4099268BAADC003A6766 /* UIKitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4098268BAADC003A6766 /* UIKitButton.swift */; };
@@ -474,6 +473,7 @@
 		C9F8EB372680E33B0042CFE7 /* TabToolbarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F8EB362680E33B0042CFE7 /* TabToolbarButtons.swift */; };
 		C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F8EB45268126EB0042CFE7 /* LocationViewTouchHandler.swift */; };
 		C9FD1B1F26C1AD7C00926A70 /* TopBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91FA35B26B1959B00E82841 /* TopBarHost.swift */; };
+		C9FD1B2026C2F46B00926A70 /* SuggestionPositionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40692684D442003A6766 /* SuggestionPositionInfo.swift */; };
 		CD1CE85F24EDE66A00006DFB /* WKWebViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1CE85E24EDE66A00006DFB /* WKWebViewExtensions.swift */; };
 		CE7F11941F3CEEC800ABFC0B /* RemoteDevices.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F115E1F3CCEF900ABFC0B /* RemoteDevices.swift */; };
 		D006F2E32283307B0004D3AB /* KIF.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7B604F981C494F74006EEEC3 /* KIF.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -4579,6 +4579,7 @@
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
 				EBB89509219398E500EB91A0 /* TabContentBlocker+ContentScript.swift in Sources */,
 				D3BE7B461B054F8600641031 /* TestAppDelegate.swift in Sources */,
+				C9FD1B2026C2F46B00926A70 /* SuggestionPositionInfo.swift in Sources */,
 				1DF4266E251BC46D0086386A /* FaviconFetcher+Non-Bundled.swift in Sources */,
 				C98E405F26585AB3003AC0E2 /* SupportSettingsSection.swift in Sources */,
 				C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */,
@@ -4700,12 +4701,6 @@
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */,
-				C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */,
-				C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */,
-				C9A241CB269CA4AB007156B3 /* TopBarHost.swift in Sources */,
-				C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */,
-				C9A241CB269CA4AB007156B3 /* TopBarHost.swift in Sources */,
-				C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
 				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */,

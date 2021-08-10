@@ -217,25 +217,25 @@ class BrowserViewController: UIViewController {
 
         dismissVisibleMenus()
 
-        coordinator.animate { context in
-            self.scrollController.updateMinimumZoom()
+        coordinator.animate { [self] context in
+            scrollController.updateMinimumZoom()
 
-            if let popover = self.displayedPopoverController {
-                self.updateDisplayedPopoverProperties?()
-                self.present(popover, animated: true, completion: nil)
+            if let popover = displayedPopoverController {
+                updateDisplayedPopoverProperties?()
+                present(popover, animated: true, completion: nil)
             }
 
-            if self.isNeevaMenuSheetOpen {
-                if !(self.chromeModel.inlineToolbar && self.isPreviousOrientationLandscape) {
-                    if self.chromeModel.inlineToolbar {
-                        self.hideNeevaMenuSheet()
+            if isNeevaMenuSheetOpen {
+                if !(chromeModel.inlineToolbar && isPreviousOrientationLandscape) {
+                    if chromeModel.inlineToolbar {
+                        hideNeevaMenuSheet()
                         // TODO: update for new url bar
-                        self.urlBar.legacy?.didClickNeevaMenu()
+                        urlBar.legacy?.didClickNeevaMenu()
                     } else {
-                        self.isRotateSwitchDismiss = true
-                        self.popOverNeevaMenuViewController?.dismiss(
+                        isRotateSwitchDismiss = true
+                        popOverNeevaMenuViewController?.dismiss(
                             animated: true, completion: nil)
-                        self.showNeevaMenuSheet()
+                        showNeevaMenuSheet()
                     }
                 }
             }
