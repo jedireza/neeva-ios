@@ -100,7 +100,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.main.async {
             // This is in case the AppClip sign in URL ends up opening the app
             // Will occur if the app is already installed
-            if url.scheme == "https", NeevaConstants.isAppHost(url.host),
+            if url.scheme == "https", NeevaConstants.isAppHost(url.host, allowM1: true),
                 let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                 components.path == "/appclip/login",
                 let queryItems = components.queryItems,

@@ -20,8 +20,9 @@ public struct NeevaConstants {
         set { Defaults[.neevaHost] = newValue }
     }
 
-    public static func isAppHost(_ host: String?) -> Bool {
-        return host == appHost
+    public static func isAppHost(_ host: String?, allowM1: Bool = false) -> Bool {
+        let host = host?.lowercased()
+        return host == appHost || (host == "m1.neeva.com" && allowM1)
     }
 
     /// The URL form of `appHost`
