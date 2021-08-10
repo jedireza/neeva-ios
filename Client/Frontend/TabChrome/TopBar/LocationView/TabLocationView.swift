@@ -149,8 +149,7 @@ struct TabLocationView: View {
 
             if chromeModel.isEditingLocation {
                 Button {
-                    SceneDelegate.getBVC().zeroQueryViewController
-                        .closeLazyTab()
+                    SceneDelegate.getBVC().closeLazyTab()
                     chromeModel.setEditingLocation(to: false)
                 } label: {
                     Text("Cancel").withFont(.bodyLarge)

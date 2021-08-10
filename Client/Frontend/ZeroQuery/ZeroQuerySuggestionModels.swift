@@ -4,62 +4,6 @@ import Defaults
 import Shared
 import Storage
 
-class ZeroQueryModel: ObservableObject {
-    @Published var isPrivate: Bool = false
-    @Published var promoCard: PromoCardType? = nil
-    @Published var buttonClickHandler: () -> Void = {}
-    @Published var openedFrom: ZeroQueryOpenedLocation?
-
-    var signInHandler: () -> Void = {}
-    var referralPromoHandler: () -> Void = {}
-
-    func updateState() {
-        isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
-
-        // TODO: remove once all users have upgraded
-        if UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {
-            UserDefaults.standard.removeObject(forKey: "DidDismissDefaultBrowserCard")
-            Defaults[.didDismissDefaultBrowserCard] = true
-        }
-
-        if NeevaFeatureFlags[.referralPromo] && !Defaults[.didDismissReferralPromoCard] {
-            promoCard = .referralPromo {
-                self.referralPromoHandler()
-            } onClose: {
-                // log closing referral promo from zero query
-                var attributes = EnvironmentHelper.shared.getAttributes()
-                attributes.append(ClientLogCounterAttribute(key: "source", value: "zero query"))
-                ClientLogger.shared.logCounter(
-                    .CloseReferralPromo, attributes: attributes)
-                self.promoCard = nil
-                Defaults[.didDismissReferralPromoCard] = true
-            }
-        } else if !NeevaUserInfo.shared.hasLoginCookie() {
-            promoCard = .neevaSignIn {
-                ClientLogger.shared.logCounter(
-                    .PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
-                self.signInHandler()
-            }
-        } else if !Defaults[.didDismissDefaultBrowserCard] {
-            promoCard = .defaultBrowser {
-                ClientLogger.shared.logCounter(
-                    .PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
-                BrowserViewController.foregroundBVC().presentDBOnboardingViewController()
-
-                // Set default browser onboarding did show to true so it will not show again after user clicks this button
-                Defaults[.didShowDefaultBrowserOnboarding] = true
-            } onClose: {
-                ClientLogger.shared.logCounter(
-                    .CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
-                self.promoCard = nil
-                Defaults[.didDismissDefaultBrowserCard] = true
-            }
-        } else {
-            promoCard = nil
-        }
-    }
-}
-
 class SuggestedSitesViewModel: ObservableObject {
     @Published var sites: [Site]
 

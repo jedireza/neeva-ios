@@ -47,7 +47,5 @@ extension Notification.Name {
 
     public static let ReachabilityStatusChanged = Notification.Name("ReachabilityStatusChanged")
 
-    public static let HomePanelPrefsChanged = Notification.Name("HomePanelPrefsChanged")
-
     public static let FileDidDownload = Notification.Name("FileDidDownload")
 }

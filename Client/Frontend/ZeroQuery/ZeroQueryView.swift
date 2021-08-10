@@ -168,7 +168,7 @@ struct ZeroQueryView: View {
 
                     Spacer()
                 }
-            }.environment(\.viewWidth, geom.size.width)
+            }.environment(\.viewWidth, geom.size.width).animation(nil)
         }
     }
 }

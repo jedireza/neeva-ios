@@ -5,19 +5,29 @@
 import Shared
 import Storage
 import UIKit
+import ViewInspector
 import XCTest
 
 @testable import Client
 
+extension TabContentHost.Content: Inspectable {}
+extension WebViewContainer: Inspectable {}
+extension ZeroQueryContent: Inspectable {}
+extension ZeroQueryView: Inspectable {}
+
 class ZeroQueryTests: XCTestCase {
     var profile: MockProfile!
-    var vc: ZeroQueryViewController!
+    var zQM: ZeroQueryModel!
     var ssm = SuggestedSearchesModel(suggestedQueries: [])
+    var tabManager: TabManager!
+    var tabContentHost: TabContentHost!
 
     override func setUp() {
         super.setUp()
         self.profile = MockProfile()
-        self.vc = ZeroQueryViewController(profile: self.profile)
+        self.zQM = ZeroQueryModel(profile: self.profile, shareURLHandler: { _ in })
+        self.tabManager = TabManager(profile: profile, imageStore: nil)
+        self.tabContentHost = TabContentHost(tabManager: tabManager, zeroQueryModel: zQM)
     }
 
     override func tearDown() {
@@ -25,22 +35,96 @@ class ZeroQueryTests: XCTestCase {
         super.tearDown()
     }
 
-    func testDeletionOfSingleSuggestedSite() {
-        let siteToDelete = vc.defaultTopSites()[0]
+    func testZeroQueryInsideContentHost() throws {
+        let tab = tabManager.addTab()
+        tab.loadRequest(URLRequest(url: .aboutBlank))
+        tabManager.selectTab(tab)
+        waitForCondition(condition: { tabContentHost.rootView.webView != nil })
+        var webviewContainer: WebViewContainer? =
+            try tabContentHost.rootView.inspect().zStack().view(WebViewContainer.self, 0)
+            .actualView()
+        XCTAssertNotNil(webviewContainer)
+        zQM.isHidden = false
+        var zeroQuery =
+            try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
+        XCTAssertNotNil(zeroQuery)
+        do {
+            let _ = try tabContentHost.rootView.inspect().find(WebViewContainer.self).actualView()
+        } catch {
+            webviewContainer = nil
+        }
+        XCTAssertNil(webviewContainer)
 
-        vc.hideURLFromTopSites(siteToDelete)
-        let newSites = vc.defaultTopSites()
+        zQM.isHidden = true
+        do {
+            let _ = try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
+        } catch {
+            zeroQuery = nil
+        }
+        XCTAssertNil(zeroQuery)
+    }
+
+    func testLazyTabPromotion() throws {
+        let tab = tabManager.addTab()
+        tabManager.selectTab(tab)
+        tab.loadRequest(URLRequest(url: .aboutBlank))
+        let webviewContainer = try tabContentHost.rootView.inspect().find(WebViewContainer.self)
+        XCTAssertNotNil(webviewContainer)
+        zQM.isLazyTab = true
+        zQM.openedFrom = .tabTray
+        zQM.isHidden = false
+        var zeroQuery =
+            try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
+        XCTAssertNotNil(zeroQuery)
+        zQM.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
+        waitForCondition(condition: { tabManager.tabs.count == 2 })
+        do {
+            let _ = try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
+        } catch {
+            zeroQuery = nil
+        }
+        XCTAssertNil(zeroQuery)
+        XCTAssertNil(zQM.openedFrom)
+    }
+
+    func testLazyTabCancel() throws {
+        let tab = tabManager.addTab()
+        tabManager.selectTab(tab)
+        tab.loadRequest(URLRequest(url: .aboutBlank))
+        let webviewContainer = try tabContentHost.rootView.inspect().find(WebViewContainer.self)
+        XCTAssertNotNil(webviewContainer)
+        zQM.isLazyTab = true
+        zQM.openedFrom = .tabTray
+        zQM.isHidden = false
+        var zeroQuery =
+            try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
+        XCTAssertNotNil(zeroQuery)
+        zQM.reset()
+        do {
+            let _ = try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
+        } catch {
+            zeroQuery = nil
+        }
+        XCTAssertNil(zeroQuery)
+        XCTAssertNil(zQM.openedFrom)
+    }
+
+    func testDeletionOfSingleSuggestedSite() {
+        let siteToDelete = TopSitesHandler.defaultTopSites()[0]
+
+        zQM.hideURLFromTopSites(siteToDelete)
+        let newSites = TopSitesHandler.defaultTopSites()
 
         XCTAssertNil(newSites.first { $0.url == siteToDelete.url })
     }
 
     func testDeletionOfAllDefaultSites() {
-        let defaultSites = vc.defaultTopSites()
+        let defaultSites = TopSitesHandler.defaultTopSites()
         defaultSites.forEach({
-            vc.hideURLFromTopSites($0)
+            zQM.hideURLFromTopSites($0)
         })
 
-        let newSites = vc.defaultTopSites()
+        let newSites = TopSitesHandler.defaultTopSites()
         XCTAssertTrue(newSites.isEmpty)
     }
 
@@ -108,8 +192,6 @@ class ZeroQueryTests: XCTestCase {
         let _ = XCTWaiter().wait(for: [expectation], timeout: 100)
 
         ssm.reload(from: profile) {
-            //self.profile.history.clearHistory()
-
             XCTAssertEqual(self.ssm.suggestedQueries.count, 4)
             XCTAssertEqual(
                 self.ssm.suggestedQueries[0].site.url.absoluteURL,

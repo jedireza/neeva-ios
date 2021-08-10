@@ -30,14 +30,17 @@ struct UrlToOpenModel {
 
 class BrowserViewController: UIViewController {
     private(set) var introViewController: IntroViewController?
-    private(set) lazy var zeroQueryViewController: ZeroQueryViewController = { [unowned self] in
-        let zeroQueryViewController = ZeroQueryViewController(profile: profile)
-        zeroQueryViewController.delegate = self
-        addChild(zeroQueryViewController)
-        view.addSubview(zeroQueryViewController.view)
-        zeroQueryViewController.didMove(toParent: self)
-
-        return zeroQueryViewController
+    private(set) lazy var zeroQueryModel: ZeroQueryModel = {
+        [unowned self] in
+        let model = ZeroQueryModel(
+            profile: profile, shareURLHandler: { url in
+                let helper = ShareExtensionHelper(url: url, tab: nil)
+                let controller = helper.createActivityViewController({ (_, _) in })
+                controller.modalPresentationStyle = .formSheet
+                self.present(controller, animated: true, completion: nil)
+        })
+        model.delegate = self
+        return model
     }()
 
     private(set) lazy var cardStripViewController: CardStripViewController? = { [unowned self] in
@@ -74,7 +77,7 @@ class BrowserViewController: UIViewController {
             tabManager: self.tabManager,
             chromeModel: chromeModel,
             swipeDirection: .forward,
-            contentView: webViewContainer.view)
+            contentView: tabContentHost.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -87,14 +90,18 @@ class BrowserViewController: UIViewController {
             tabManager: self.tabManager,
             chromeModel: chromeModel,
             swipeDirection: .back,
-            contentView: webViewContainer.view)
+            contentView: tabContentHost.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
         return host
     }()
 
-    private let webViewContainer = WebViewHost(webView: nil)
+    private(set) lazy var tabContentHost: TabContentHost = {
+        [unowned self] in
+        return TabContentHost(
+            tabManager: self.tabManager, zeroQueryModel: self.zeroQueryModel)
+    }()
 
     var findInPageViewController: FindInPageViewController?
 
@@ -293,7 +300,6 @@ class BrowserViewController: UIViewController {
         }
 
         view.setNeedsUpdateConstraints()
-        zeroQueryViewController.view.setNeedsUpdateConstraints()
 
         if let tab = tabManager.selectedTab,
             let webView = tab.webView
@@ -359,9 +365,9 @@ class BrowserViewController: UIViewController {
 
         view.bringSubviewToFront(webViewContainerBackdrop)
         webViewContainerBackdrop.alpha = 1
-        webViewContainer.view.alpha = 0
+        tabContentHost.view.alpha = 0
         urlBar?.legacy?.locationContainer.alpha = 0
-        zeroQueryViewController.view.alpha = 0
+        zeroQueryModel.isHidden = true
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
         presentedViewController?.view.alpha = 0
     }
@@ -372,7 +378,7 @@ class BrowserViewController: UIViewController {
         UIView.animate(
             withDuration: 0.2, delay: 0, options: UIView.AnimationOptions(),
             animations: {
-                self.webViewContainer.view.alpha = 1
+                self.tabContentHost.view.alpha = 1
                 self.urlBar?.legacy?.locationContainer.alpha = 1
                 self.presentedViewController?.popoverPresentationController?.containerView?.alpha =
                     1
@@ -380,8 +386,8 @@ class BrowserViewController: UIViewController {
                 self.view.backgroundColor = UIColor.clear
 
                 // checks if zeroquery is open
-                if self.zeroQueryViewController.model.openedFrom != nil {
-                    self.zeroQueryViewController.view.alpha = 1
+                if self.zeroQueryModel.openedFrom != nil {
+                    self.zeroQueryModel.isHidden = false
                 }
             },
             completion: { _ in
@@ -411,9 +417,9 @@ class BrowserViewController: UIViewController {
         webViewContainerBackdrop.alpha = 0
         view.addSubview(webViewContainerBackdrop)
 
-        webViewContainer.willMove(toParent: self)
-        view.addSubview(webViewContainer.view)
-        addChild(webViewContainer)
+        tabContentHost.willMove(toParent: self)
+        view.addSubview(tabContentHost.view)
+        addChild(tabContentHost)
 
         if !FeatureFlag[.newTopBar] {
             // Temporary work around for covering the non-clipped web view content
@@ -530,16 +536,16 @@ class BrowserViewController: UIViewController {
 
         if FeatureFlag[.swipePlusPlus] {
             simulateForwardViewController?.view.snp.makeConstraints { make in
-                make.top.bottom.equalTo(webViewContainer.view)
-                make.width.equalTo(webViewContainer.view).offset(SwipeUX.EdgeWidth)
-                make.leading.equalTo(webViewContainer.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
+                make.top.bottom.equalTo(tabContentHost.view)
+                make.width.equalTo(tabContentHost.view).offset(SwipeUX.EdgeWidth)
+                make.leading.equalTo(tabContentHost.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
             }
         }
 
         simulateBackViewController?.view.snp.makeConstraints { make in
-            make.top.bottom.equalTo(webViewContainer.view)
-            make.width.equalTo(webViewContainer.view).offset(SwipeUX.EdgeWidth)
-            make.trailing.equalTo(webViewContainer.view.snp.leading).offset(SwipeUX.EdgeWidth)
+            make.top.bottom.equalTo(tabContentHost.view)
+            make.width.equalTo(tabContentHost.view).offset(SwipeUX.EdgeWidth)
+            make.trailing.equalTo(tabContentHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
         }
     }
 
@@ -719,7 +725,7 @@ class BrowserViewController: UIViewController {
             make.leading.trailing.equalTo(self.view)
         }
 
-        webViewContainer.view.snp.remakeConstraints { make in
+        tabContentHost.view.snp.remakeConstraints { make in
             make.left.right.equalTo(self.view)
 
             if let readerModeBarBottom = readerModeBar?.snp.bottom {
@@ -756,24 +762,6 @@ class BrowserViewController: UIViewController {
 
         urlBar.view.setNeedsUpdateConstraints()
 
-        // Remake constraints even if we're already showing the zero query controller.
-        // The zero query controller may change sizes if we tap the URL bar while it's open.
-        zeroQueryViewController.view.snp.remakeConstraints { make in
-            if UIConstants.enableBottomURLBar {
-                make.top.equalTo(self.view.safeArea.top)
-            } else {
-                make.top.equalTo(urlBar.view.snp.bottom)
-            }
-            make.left.right.equalTo(self.view)
-            if UIConstants.enableBottomURLBar {
-                make.bottom.equalTo(self.urlBar.view.snp.top)
-            } else if self.zeroQueryIsInline {
-                make.bottom.equalTo(self.toolbar?.view.snp.top ?? self.view.snp.bottom)
-            } else {
-                make.bottom.equalTo(self.view.snp.bottom)
-            }
-        }
-
         alertStackView.snp.remakeConstraints { make in
             make.centerX.equalTo(self.view)
             make.width.equalTo(self.view.safeArea.width)
@@ -805,7 +793,7 @@ class BrowserViewController: UIViewController {
         isLazyTab: Bool = false
     ) {
         // makes sure zeroQuery isn't already open
-        guard zeroQueryViewController.model.openedFrom == nil else { return }
+        guard zeroQueryModel.openedFrom == nil else { return }
 
         zeroQueryIsInline = inline
 
@@ -814,7 +802,7 @@ class BrowserViewController: UIViewController {
         }
 
         if isLazyTab {
-            zeroQueryViewController.isLazyTab = true
+            zeroQueryModel.isLazyTab = true
             chromeModel.setEditingLocation(to: true)
             urlBar.shared.queryModel.value = ""
         }
@@ -823,52 +811,39 @@ class BrowserViewController: UIViewController {
             urlBar.shared.queryModel.value = ""
         }
 
-        zeroQueryViewController.model.isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        zeroQueryViewController.model.openedFrom = openedFrom
+        zeroQueryModel.isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        zeroQueryModel.openedFrom = openedFrom
+        zeroQueryModel.isHidden = false
+    }
 
-        zeroQueryViewController.reloadAll()
+    public func closeLazyTab() {
+        DispatchQueue.main.async {
+            switch self.zeroQueryModel.openedFrom {
+            case .tabTray:
+                self.showTabTray()
+            case .createdTab:
+                self.tabManager.close(self.tabManager.selectedTab!)
+            default:
+                break
+            }
 
-        // We have to run this animation, even if the view is already showing
-        // because there may be a hide animation running and we want to be sure
-        // to override its results.
-        UIView.animate(
-            withDuration: 0.2,
-            animations: { () -> Void in
-                self.zeroQueryViewController.view.alpha = 1
-            },
-            completion: { finished in
-                if finished {
-                    self.webViewContainer.accessibilityElementsHidden = true
-                    UIAccessibility.post(
-                        notification: UIAccessibility.Notification.screenChanged, argument: nil)
-                }
-            })
-
-        view.setNeedsUpdateConstraints()
+            self.zeroQueryModel.reset()
+        }
     }
 
     public func hideZeroQuery() {
         chromeModel.setEditingLocation(to: false)
 
-        UIView.animate(
-            withDuration: 0.2, delay: 0, options: .beginFromCurrentState,
-            animations: { () -> Void in
-                self.zeroQueryViewController.view.alpha = 0
-            },
-            completion: { _ in
-                self.webViewContainer.accessibilityElementsHidden = false
-                self.zeroQueryViewController.reset()
+        DispatchQueue.main.async {
+            self.zeroQueryModel.reset()
 
-                UIAccessibility.post(
-                    notification: UIAccessibility.Notification.screenChanged, argument: nil)
-
-                // Refresh the reading view toolbar since the article record may have changed
-                if let readerMode = self.tabManager.selectedTab?.getContentScript(
-                    name: ReaderMode.name()) as? ReaderMode, readerMode.state == .active
-                {
-                    self.showReaderModeBar(animated: false)
-                }
-            })
+            // Refresh the reading view toolbar since the article record may have changed
+            if let readerMode = self.tabManager.selectedTab?.getContentScript(
+                name: ReaderMode.name()) as? ReaderMode, readerMode.state == .active
+            {
+                self.showReaderModeBar(animated: false)
+            }
+        }
     }
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
@@ -972,7 +947,7 @@ class BrowserViewController: UIViewController {
             make.left.right.equalTo(self.view)
         }
 
-        zeroQueryViewController.view?.isHidden = true
+        zeroQueryModel.isHidden = true
 
         searchController.didMove(toParent: self)
     }
@@ -982,7 +957,7 @@ class BrowserViewController: UIViewController {
             searchController.willMove(toParent: nil)
             searchController.view.removeFromSuperview()
             searchController.removeFromParent()
-            zeroQueryViewController.view?.isHidden = false
+            zeroQueryModel.isHidden = false
         }
     }
 
@@ -993,9 +968,7 @@ class BrowserViewController: UIViewController {
     }
 
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
-        if zeroQueryViewController.isLazyTab {
-            zeroQueryViewController.createRealTab(url: url, tabManager: tabManager)
-        } else {
+        if !zeroQueryModel.promoteToRealTabIfNecessary(url: url, tabManager: tabManager) {
             if FeatureFlag[.createOrSwitchToTab] {
                 tabManager.createOrSwitchToTab(for: url)
             } else {
@@ -1468,7 +1441,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didCreateWebView webView: WKWebView) {
-        webView.frame = webViewContainer.view.frame
+        webView.frame = tabContentHost.view.frame
         webView.uiDelegate = self
 
         self.subscribe(to: webView, for: tab)
@@ -1632,7 +1605,6 @@ extension BrowserViewController: TabManagerDelegate {
             ReaderModeHandlers.readerModeCache = readerModeCache
 
             scrollController.tab = tab
-            webViewContainer.setWebView(webView)
 
             // This is a terrible workaround for a bad iOS 12 bug where PDF
             // content disappears any time the view controller changes (i.e.
@@ -1749,7 +1721,7 @@ extension BrowserViewController {
     func presentDBOnboardingViewController(_ force: Bool = false) {
         let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: {
             [unowned self] in
-            zeroQueryViewController.model.updateState()
+            zeroQueryModel.updateState()
         })
 
         onboardingVC.modalPresentationStyle = .formSheet

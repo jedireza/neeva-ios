@@ -129,8 +129,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         shutdownWebServer?.cancel()
         shutdownWebServer = nil
 
-        BrowserViewController.foregroundBVC().zeroQueryViewController.reloadAll()
-
         // Resume file downloads.
         // TODO: iOS 13 needs to iterate all the BVCs.
         BrowserViewController.foregroundBVC().downloadQueue.resumeAll()

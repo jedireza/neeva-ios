@@ -6,7 +6,6 @@ import UIKit
 
 class TabMenu {
     var tabManager: TabManager
-    var zeroQueryViewController: ZeroQueryViewController?
     var alertPresentViewController: UIViewController?
 
     var tabsClosed: ((Bool) -> Void)?
@@ -137,11 +136,10 @@ class TabMenu {
 
     // MARK: Initialization
     init(
-        tabManager: TabManager, zeroQueryViewController: ZeroQueryViewController? = nil,
+        tabManager: TabManager,
         alertPresentViewController: UIViewController? = nil
     ) {
         self.tabManager = tabManager
-        self.zeroQueryViewController = zeroQueryViewController
         self.alertPresentViewController = alertPresentViewController
     }
 }

@@ -32,8 +32,8 @@ class ScreenshotHelper {
         }
 
         if InternalURL(url)?.isZeroQueryURL ?? false {
-            if let zeroQueryVC = controller?.zeroQueryViewController {
-                let screenshot = zeroQueryVC.view.screenshot(
+            if let webviewContainer = controller?.tabContentHost {
+                let screenshot = webviewContainer.view.screenshot(
                     quality: UIConstants.ActiveScreenshotQuality)
                 tab.setScreenshot(screenshot)
             }
