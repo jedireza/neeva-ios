@@ -349,7 +349,7 @@ class SuggestionModel: ObservableObject {
         return nil
     }
 
-    // MARK: - Searching
+    // MARK: - Suggestion Handling
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let bvc = SceneDelegate.getBVC()
         let suggestionLocationAttributes = findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []

@@ -362,6 +362,14 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
+    func createOrSwitchToTab(for url: URL) {
+        if let existingTab = getTabFor(url) {
+            select(existingTab)
+        } else {
+            select(addTab(URLRequest(url: url), flushToDisk: false, zombie: false))
+        }
+    }
+
     func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil) {
         if let atIndex = atIndex, atIndex <= tabs.count {
             tabs.insert(tab, at: atIndex)

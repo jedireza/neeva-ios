@@ -984,8 +984,12 @@ class BrowserViewController: UIViewController {
         if zeroQueryViewController.isLazyTab {
             zeroQueryViewController.createRealTab(url: url, tabManager: tabManager)
         } else {
-            if let nav = tab.loadRequest(URLRequest(url: url)) {
-                self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
+            if FeatureFlag[.createOrSwitchToTab] {
+                tabManager.createOrSwitchToTab(for: url)
+            } else {
+                if let nav = tab.loadRequest(URLRequest(url: url)) {
+                    self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
+                }
             }
         }
 
