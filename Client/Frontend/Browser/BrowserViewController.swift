@@ -33,12 +33,13 @@ class BrowserViewController: UIViewController {
     private(set) lazy var zeroQueryModel: ZeroQueryModel = {
         [unowned self] in
         let model = ZeroQueryModel(
-            profile: profile, shareURLHandler: { url in
+            profile: profile,
+            shareURLHandler: { url in
                 let helper = ShareExtensionHelper(url: url, tab: nil)
                 let controller = helper.createActivityViewController({ (_, _) in })
                 controller.modalPresentationStyle = .formSheet
                 self.present(controller, animated: true, completion: nil)
-        })
+            })
         model.delegate = self
         return model
     }()
@@ -191,7 +192,6 @@ class BrowserViewController: UIViewController {
         self.readerModeCache = DiskReaderModeCache.sharedInstance
         super.init(nibName: nil, bundle: nil)
         didInit()
-        self.isPreviousOrientationLandscape = view.window!.windowScene!.interfaceOrientation.isLandscape
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -239,7 +239,8 @@ class BrowserViewController: UIViewController {
                     }
                 }
             }
-            self.isPreviousOrientationLandscape = view.window!.windowScene!.interfaceOrientation.isLandscape
+            self.isPreviousOrientationLandscape =
+                view.window!.windowScene!.interfaceOrientation.isLandscape
         } completion: { _ in
             self.scrollController.setMinimumZoom()
         }
@@ -661,6 +662,8 @@ class BrowserViewController: UIViewController {
 
         super.viewDidAppear(animated)
 
+        self.isPreviousOrientationLandscape =
+            view.window!.windowScene!.interfaceOrientation.isLandscape
         showQueuedAlertIfAvailable()
     }
 
