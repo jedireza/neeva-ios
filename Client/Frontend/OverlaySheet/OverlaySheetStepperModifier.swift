@@ -23,7 +23,7 @@ struct OverlaySheetStepperButton: View {
 
 struct OverlaySheetStepperAccessibilityModifier: ViewModifier {
     var accessibilityLabel: String
-    var accessibilityValue: String
+    var accessibilityValue: String?
 
     var increment: () -> Void
     var decrement: () -> Void
@@ -31,7 +31,7 @@ struct OverlaySheetStepperAccessibilityModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .accessibilityLabel(accessibilityLabel)
-            .accessibilityValue(accessibilityValue)
+            .accessibilityValue(accessibilityValue ?? "")
             .accessibilityAdjustableAction { action in
                 switch action {
                 case .increment: increment()

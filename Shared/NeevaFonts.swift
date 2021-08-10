@@ -365,4 +365,8 @@ extension FontStyle {
 
         }
     }
+
+    func getUIFont(for category: ContentSizeCategory) -> UIFont {
+        return UIFont.systemFont(ofSize: size(in: category), weight: fontWeight)
+    }
 }
