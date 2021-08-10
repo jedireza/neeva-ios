@@ -33,7 +33,7 @@ extension BrowserViewController {
 
     @objc func selectLocationBarKeyCommand() {
         scrollController.showToolbars(animated: true)
-        urlBar.shared.model.setEditing(to: true)
+        chromeModel.setEditingLocation(to: true)
     }
 
     @objc func newTabKeyCommand() {
@@ -196,7 +196,7 @@ extension BrowserViewController {
 
         let isEditingText = tabManager.selectedTab?.isEditing ?? false
 
-        if urlBar.shared.model.isEditing {
+        if chromeModel.isEditingLocation {
             return tabNavigation + searchLocationCommands
         } else if !isEditingText {
             return tabNavigation + overidesTextEditing

@@ -46,14 +46,16 @@ struct LocationViewTrackingButton: View {
 
 struct LocationViewReloadButton: View {
     let buildMenu: () -> UIMenu?
-    let state: URLBarModel.ReloadButtonState
+    let state: TabChromeModel.ReloadButtonState
     let onTap: () -> Void
 
     var body: some View {
         // TODO: when dropping support for iOS 14, change this to a Menu view with a primaryAction
         UIKitButton(action: onTap) {
             $0.tintColor = .label
-            $0.setImage(Symbol.uiImage(state == .reload ? .arrowClockwise : .xmark), for: .normal)
+            $0.setImage(
+                Symbol.uiImage(state == .reload ? .arrowClockwise : .xmark, weight: .medium),
+                for: .normal)
             $0.accessibilityLabel =
                 state == .reload
                 ? .TabToolbarReloadAccessibilityLabel : .TabToolbarStopAccessibilityLabel
@@ -63,6 +65,7 @@ struct LocationViewReloadButton: View {
     }
 }
 
+/// see also `TopBarShareButton`
 struct LocationViewShareButton: View {
     let url: URL?
     let onTap: (UIView) -> Void
@@ -70,7 +73,7 @@ struct LocationViewShareButton: View {
     @State private var shareTargetView: UIView!
 
     var body: some View {
-        if let url = url, !url.absoluteString.isEmpty {
+        if url != nil {
             TabLocationBarButton(label: Symbol(.squareAndArrowUp, weight: .medium, label: "Share"))
             {
                 onTap(shareTargetView)

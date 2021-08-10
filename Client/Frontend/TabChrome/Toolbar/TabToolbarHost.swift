@@ -5,33 +5,30 @@ import SwiftUI
 class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
 
     struct Content: View {
-        let model: TabToolbarModel
-        weak var delegate: TabToolbarDelegate?
+        let chromeModel: TabChromeModel
+        let performAction: (ToolbarAction) -> Void
+        let buildTabsMenu: () -> UIMenu?
 
         var body: some View {
             TabToolbarView(
-                onBack: { [weak delegate] in delegate?.tabToolbarDidPressBack() },
-                onForward: { [weak delegate] in delegate?.tabToolbarDidPressForward() },
-                onOverflow: { [weak delegate] in delegate?.tabToolbarDidPressOverflow() },
-                onLongPressBackForward: { [weak delegate] in
-                    delegate?.tabToolbarDidLongPressBackForward()
-                },
+                performAction: performAction,
+                buildTabsMenu: buildTabsMenu,
                 onNeevaMenu: {
                     ClientLogger.shared.logCounter(
                         .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
                     BrowserViewController.foregroundBVC().showNeevaMenuSheet()
-                },
-                onSaveToSpace: { [weak delegate] in delegate?.tabToolbarSpacesMenu() },
-                onShowTabs: { [weak delegate] in delegate?.tabToolbarDidPressTabs() },
-                tabsMenu: { [weak delegate] in delegate?.tabToolbarTabsMenu() }
+                }
             )
-            .environmentObject(model)
+            .environmentObject(chromeModel)
         }
     }
 
-    init(model: TabToolbarModel, delegate: TabToolbarDelegate) {
-        super.init {
-            Content(model: model, delegate: delegate)
+    init(chromeModel: TabChromeModel, bvc: BrowserViewController) {
+        let performAction = bvc.performTabToolbarAction
+        super.init { [weak bvc] in
+            Content(
+                chromeModel: chromeModel, performAction: performAction,
+                buildTabsMenu: { bvc?.tabToolbarTabsMenu() })
         }
     }
 

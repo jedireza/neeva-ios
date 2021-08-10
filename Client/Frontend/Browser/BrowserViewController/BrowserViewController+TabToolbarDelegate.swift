@@ -6,52 +6,94 @@ import Defaults
 import Shared
 import SwiftUI
 
-extension BrowserViewController: TabToolbarDelegate {
-    func tabToolbarDidPressBack() {
-        if simulateBackViewController?.goBack() ?? false {
-            return
+enum ToolbarAction {
+    case back
+    case forward
+    case overflow
+    case longPressBackForward
+    case addToSpace
+    case showTabs
+}
+
+extension BrowserViewController {
+    var performTabToolbarAction: (ToolbarAction) -> Void {
+        { [weak self] action in
+            guard let self = self else { return }
+            switch action {
+            case .back:
+                if self.simulateBackViewController?.goBack() ?? false {
+                    return
+                }
+                self.tabManager.selectedTab?.goBack()
+
+            case .forward:
+                if self.simulateForwardViewController?.goForward() ?? false {
+                    return
+                }
+
+                self.tabManager.selectedTab?.goForward()
+
+            case .overflow:
+                let isPrivate = self.tabManager.selectedTab?.isPrivate ?? false
+                let image = self.screenshot()
+
+                self.showOverlaySheetViewController(
+                    OverflowMenuViewController(
+                        delegate: self,
+                        onDismiss: {
+                            self.hideOverlaySheetViewController()
+                            self.isNeevaMenuSheetOpen = false
+                        }, isPrivate: isPrivate, feedbackImage: image,
+                        chromeModel: self.chromeModel,
+                        changedUserAgent: self.tabManager.selectedTab?.changedUserAgent
+                    )
+                )
+                self.dismissVC()
+
+            case .longPressBackForward:
+                let generator = UIImpactFeedbackGenerator(style: .heavy)
+                generator.impactOccurred()
+                if let backForwardList = self.tabManager.selectedTab?.webView?.backForwardList {
+                    let backForwardViewController = BackForwardListViewController(
+                        profile: self.profile, backForwardList: backForwardList)
+                    backForwardViewController.tabManager = self.tabManager
+                    backForwardViewController.bvc = self
+                    backForwardViewController.modalPresentationStyle = .overCurrentContext
+                    backForwardViewController.backForwardTransitionDelegate =
+                        BackForwardListAnimator()
+                    self.present(backForwardViewController, animated: true, completion: nil)
+                }
+
+            case .addToSpace:
+                guard let tab = self.tabManager.selectedTab else { return }
+                guard let url = tab.canonicalURL?.displayURL else { return }
+
+                if FeatureFlag[.spacify],
+                    let domain = SpaceImportDomain(rawValue: tab.url?.baseDomain ?? "")
+                {
+                    tab.webView?.evaluateJavaScript(domain.script) {
+                        [unowned self] (result, error) in
+                        guard let linkData = result as? [[String]] else {
+                            self.showAddToSpacesSheet(
+                                url: url, title: tab.title, webView: tab.webView!)
+                            return
+                        }
+                        let importData = SpaceImportHandler(
+                            title: tab.url!.path.remove("/").capitalized, data: linkData)
+                        self.showAddToSpacesSheet(
+                            url: url, title: tab.title,
+                            webView: tab.webView!,
+                            importData: importData
+                        )
+                    }
+                } else {
+                    self.showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
+                }
+
+            case .showTabs:
+                self.showTabTray()
+            }
         }
-
-        ClientLogger.shared.logCounter(
-            .ClickBack, attributes: EnvironmentHelper.shared.getAttributes())
-
-        tabManager.selectedTab?.goBack()
-    }
-
-    func tabToolbarDidLongPressBackForward() {
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-        showBackForwardList()
-    }
-
-    func tabToolbarDidPressForward() {
-        if simulateForwardViewController?.goForward() ?? false {
-            return
-        }
-
-        ClientLogger.shared.logCounter(
-            .ClickForward, attributes: EnvironmentHelper.shared.getAttributes())
-
-        tabManager.selectedTab?.goForward()
-    }
-
-    func tabToolbarDidPressOverflow() {
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        let image = screenshot()
-
-        self.showOverlaySheetViewController(
-            OverflowMenuViewController(
-                delegate: self,
-                onDismiss: {
-                    self.hideOverlaySheetViewController()
-                    self.isNeevaMenuSheetOpen = false
-                }, isPrivate: isPrivate, feedbackImage: image,
-                tabToolbarModel: toolbarModel,
-                urlBarModel: urlBar.shared.model,
-                changedUserAgent: tabManager.selectedTab?.changedUserAgent
-            )
-        )
-        self.dismissVC()
     }
 
     func tabToolbarDidPressAddNewTab() {
@@ -59,38 +101,6 @@ extension BrowserViewController: TabToolbarDelegate {
             .ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
-    }
-
-    func tabToolbarSpacesMenu() {
-        guard let tab = tabManager.selectedTab else { return }
-        guard let url = tab.canonicalURL?.displayURL else { return }
-
-        ClientLogger.shared.logCounter(
-            .SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
-
-        if FeatureFlag[.spacify],
-           let domain = SpaceImportDomain(rawValue: tab.url?.baseDomain ?? "")
-        {
-            tab.webView?.evaluateJavaScript(domain.script) { [unowned self] (result, error) in
-                guard let linkData = result as? [[String]] else {
-                    self.showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
-                    return
-                }
-                let importData = SpaceImportHandler(
-                    title: tab.url!.path.remove("/").capitalized, data: linkData)
-                self.showAddToSpacesSheet(
-                    url: url, title: tab.title,
-                    webView: tab.webView!,
-                    importData: importData
-                )
-            }
-        } else {
-            showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
-        }
-    }
-
-    func tabToolbarDidPressTabs() {
-        showTabTray()
     }
 
     func tabToolbarTabsMenu() -> UIMenu? {
@@ -168,17 +178,5 @@ extension BrowserViewController: TabToolbarDelegate {
         }
 
         return UIMenu(sections: [incognitoActions, tabActions])
-    }
-
-    func showBackForwardList() {
-        if let backForwardList = tabManager.selectedTab?.webView?.backForwardList {
-            let backForwardViewController = BackForwardListViewController(
-                profile: profile, backForwardList: backForwardList)
-            backForwardViewController.tabManager = tabManager
-            backForwardViewController.bvc = self
-            backForwardViewController.modalPresentationStyle = .overCurrentContext
-            backForwardViewController.backForwardTransitionDelegate = BackForwardListAnimator()
-            self.present(backForwardViewController, animated: true, completion: nil)
-        }
     }
 }

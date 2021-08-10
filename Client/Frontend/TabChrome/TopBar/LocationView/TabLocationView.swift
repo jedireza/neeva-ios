@@ -25,7 +25,8 @@ struct TabLocationView: View {
     let onShare: (UIView) -> Void
     let buildReloadMenu: () -> UIMenu?
 
-    @EnvironmentObject private var model: URLBarModel
+    @EnvironmentObject private var model: LocationViewModel
+    @EnvironmentObject private var chromeModel: TabChromeModel
     @EnvironmentObject private var suggestionModel: SuggestionModel
     @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
@@ -46,7 +47,7 @@ struct TabLocationView: View {
                 .uponQueue(.main) {
                     if let query = $0.successValue as? String {
                         queryModel.value = query
-                        model.setEditing(to: true)
+                        chromeModel.setEditingLocation(to: true)
                     }
                 }
         }
@@ -67,13 +68,13 @@ struct TabLocationView: View {
             ZStack {
                 Capsule().fill(backgroundColor)
 
-                TabLocationAligner(transitionToEditing: model.isEditing) {
+                TabLocationAligner(transitionToEditing: chromeModel.isEditingLocation) {
                     LocationLabel(url: model.url, isSecure: model.isSecure)
                         .accessibilityAction(copyAction)
                         .accessibilityAction(pasteAction)
                         .accessibilityAction(pasteAndGoAction)
                 } labelOverlay: { padding in
-                    if !model.isEditing {
+                    if !chromeModel.isEditingLocation {
                         LocationViewTouchHandler(
                             margins: padding,
                             isPressed: $isPressed,
@@ -89,7 +90,7 @@ struct TabLocationView: View {
                                     // TODO: Decode punycode hostname.
                                     queryModel.value = model.url?.absoluteString ?? ""
                                 }
-                                model.setEditing(to: true)
+                                chromeModel.setEditingLocation(to: true)
                             },
                             copyAction: copyAction,
                             pasteAction: pasteAction,
@@ -106,28 +107,27 @@ struct TabLocationView: View {
                     if gridModel.isHidden {
                         Group {
                             if model.readerMode != .active, let url = model.url,
-                                !InternalURL.isValid(url: url),
-                                !FeatureFlag[.overflowMenu]
+                                !InternalURL.isValid(url: url), !FeatureFlag[.overflowMenu]
                             {
                                 LocationViewReloadButton(
-                                    buildMenu: buildReloadMenu, state: model.reloadButton,
+                                    buildMenu: buildReloadMenu, state: chromeModel.reloadButton,
                                     onTap: onReload)
                             }
-                            if model.canShare, model.includeShareButtonInLocationView {
+                            if chromeModel.isPage, !chromeModel.inlineToolbar {
                                 LocationViewShareButton(url: model.url, onTap: onShare)
                             }
                         }.transition(.opacity)
                     }
-                }.opacity(model.isEditing ? 0 : 1)
+                }.opacity(chromeModel.isEditingLocation ? 0 : 1)
 
                 HStack(spacing: 0) {
-                    if model.isEditing {
+                    if chromeModel.isEditingLocation {
                         LocationTextFieldIcon(currentUrl: model.url)
                             .transition(.opacity)
                         LocationEditView(
                             isEditing: Binding(
-                                get: { model.isEditing }, set: model.setEditing(to:)),
-                            onSubmit: onSubmit
+                                get: { chromeModel.isEditingLocation },
+                                set: chromeModel.setEditingLocation(to:)), onSubmit: onSubmit
                         )
                         // force the view to be recreated each time edit mode is entered
                         .id(token)
@@ -141,17 +141,17 @@ struct TabLocationView: View {
             }
             .frame(height: TabLocationViewUX.height)
             .colorScheme(isIncognito ? .dark : colorScheme)
-            .onChange(of: model.isEditing) { isEditing in
+            .onChange(of: chromeModel.isEditingLocation) { isEditing in
                 if !isEditing {
                     token += 1
                 }
             }
 
-            if model.isEditing {
+            if chromeModel.isEditingLocation {
                 Button {
                     SceneDelegate.getBVC().zeroQueryViewController
                         .closeLazyTab()
-                    model.setEditing(to: false)
+                    chromeModel.setEditingLocation(to: false)
                 } label: {
                     Text("Cancel").withFont(.bodyLarge)
                 }
@@ -168,14 +168,14 @@ struct TabLocationView_Previews: PreviewProvider {
             TabLocationView(
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
             )
-            .environmentObject(URLBarModel(previewURL: nil, isSecure: true))
+            .environmentObject(LocationViewModel(previewURL: nil, isSecure: true))
             .previewDisplayName("Placeholder")
 
             TabLocationView(
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
             )
             .environmentObject(
-                URLBarModel(
+                LocationViewModel(
                     previewURL: "http://vviii.verylong.verylong.subdomain.neeva.com", isSecure: true
                 )
             )
@@ -184,13 +184,15 @@ struct TabLocationView_Previews: PreviewProvider {
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
             )
             .environment(\.isIncognito, true)
-            .environmentObject(URLBarModel(previewURL: "https://neeva.com/asdf", isSecure: false))
+            .environmentObject(
+                LocationViewModel(previewURL: "https://neeva.com/asdf", isSecure: false)
+            )
             .previewDisplayName("Incognito")
             TabLocationView(
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
             )
             .environmentObject(
-                URLBarModel(
+                LocationViewModel(
                     previewURL: neevaSearchEngine.searchURLForQuery(
                         "a long search query with words"), isSecure: true)
             )
@@ -200,7 +202,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environment(\.isIncognito, true)
             .environmentObject(
-                URLBarModel(previewURL: "ftp://someftpsite.com/dir/file.txt", isSecure: false)
+                LocationViewModel(previewURL: "ftp://someftpsite.com/dir/file.txt", isSecure: false)
             )
             .previewDisplayName("Non-HTTP")
         }

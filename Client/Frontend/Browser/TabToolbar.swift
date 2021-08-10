@@ -8,7 +8,8 @@ import SnapKit
 import UIKit
 
 protocol LegacyTabToolbarProtocol: AnyObject {
-    var tabToolbarDelegate: TabToolbarDelegate? { get set }
+    var performAction: (ToolbarAction) -> Void { get }
+    var makeTabsMenu: () -> UIMenu? { get }
     var tabsButton: TabsButton { get }
     var addToSpacesButton: ToolbarButton { get }
     var forwardButton: ToolbarButton { get }
@@ -17,16 +18,6 @@ protocol LegacyTabToolbarProtocol: AnyObject {
     var toolbarNeevaMenuButton: ToolbarButton { get }
     var actionButtons: [ToolbarButton] { get }
     var isPrivateMode: Bool { get }
-}
-
-protocol TabToolbarDelegate: AnyObject {
-    func tabToolbarDidPressBack()
-    func tabToolbarDidPressForward()
-    func tabToolbarDidPressOverflow()
-    func tabToolbarDidLongPressBackForward()
-    func tabToolbarSpacesMenu()
-    func tabToolbarDidPressTabs()
-    func tabToolbarTabsMenu() -> UIMenu?
 }
 
 @objcMembers
@@ -73,7 +64,7 @@ open class LegacyTabToolbarHelper: NSObject {
         toolbar.tabsButton.accessibilityLabel = .TabTrayButtonShowTabsAccessibilityLabel
         toolbar.tabsButton.addTarget(self, action: #selector(didClickTabs), for: .touchUpInside)
         toolbar.tabsButton.setDynamicMenu {
-            toolbar.tabToolbarDelegate?.tabToolbarTabsMenu()
+            toolbar.makeTabsMenu()
         }
         toolbar.tabsButton.isPointerInteractionEnabled = true
 
@@ -100,10 +91,11 @@ open class LegacyTabToolbarHelper: NSObject {
     }
 
     func didPress(shareButton: UIView) {
+        // also update in TopBarHost
         ClientLogger.shared.logCounter(
             .ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
+        let bvc = BrowserViewController.foregroundBVC()
         guard
-            let bvc = toolbar.tabToolbarDelegate as? BrowserViewController,
             let tab = bvc.tabManager.selectedTab,
             let url = tab.url
         else { return }
@@ -117,34 +109,34 @@ open class LegacyTabToolbarHelper: NSObject {
     func didClickSpaces() {
         ClientLogger.shared.logCounter(
             .SaveToSpace, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarSpacesMenu()
+        toolbar.performAction(.addToSpace)
     }
 
     func didClickBack() {
         ClientLogger.shared.logCounter(
             .ClickBack, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressBack()
+        toolbar.performAction(.back)
     }
 
     func didLongPressBackForward(_ recognizer: UILongPressGestureRecognizer) {
         if recognizer.state == .began {
-            toolbar.tabToolbarDelegate?.tabToolbarDidLongPressBackForward()
+            toolbar.performAction(.longPressBackForward)
         }
     }
 
     func didClickTabs() {
         ClientLogger.shared.logCounter(
-            .ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressTabs()
+            .ShowTabTray, attributes: EnvironmentHelper.shared.getAttributes())
+        toolbar.performAction(.showTabs)
     }
 
     func didClickForward() {
         ClientLogger.shared.logCounter(
             .ClickForward, attributes: EnvironmentHelper.shared.getAttributes())
-        toolbar.tabToolbarDelegate?.tabToolbarDidPressForward()
+        toolbar.performAction(.forward)
     }
 
-    func subscribe(to model: TabToolbarModel) -> Set<AnyCancellable> {
+    func subscribe(to model: TabChromeModel) -> Set<AnyCancellable> {
         [
             model.$canGoBack.sink { [weak toolbar] in toolbar?.backButton.isEnabled = $0 },
             model.$canGoForward.sink { [weak toolbar] in toolbar?.forwardButton.isEnabled = $0 },

@@ -199,11 +199,7 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
                 ]
             } else {
                 verticalConstraints += [
-                    make.top.equalTo(self.view).offset(
-                        bvc.urlBar.view.frame.height
-                            + (view.window?.windowScene?.statusBarManager?.statusBarFrame.height
-                                ?? 0)
-                    ).constraint
+                    make.top.equalTo(self.view).offset(bvc.urlBar.view.frame.height).constraint
                 ]
             }
         }

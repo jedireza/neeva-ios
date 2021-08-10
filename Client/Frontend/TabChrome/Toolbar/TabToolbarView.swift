@@ -5,16 +5,9 @@ import Shared
 import SwiftUI
 
 struct TabToolbarView: View {
-    let onBack: () -> Void
-    let onForward: () -> Void
-    let onOverflow: () -> Void
-    let onLongPressBackForward: () -> Void
+    let performAction: (ToolbarAction) -> Void
+    let buildTabsMenu: () -> UIMenu?
     let onNeevaMenu: () -> Void
-    let onSaveToSpace: () -> Void
-    let onShowTabs: () -> Void
-    let tabsMenu: () -> UIMenu?
-
-    @EnvironmentObject private var model: TabToolbarModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -23,15 +16,20 @@ struct TabToolbarView: View {
                 .ignoresSafeArea()
             HStack(spacing: 0) {
                 TabToolbarButtons.BackForward(
-                    model: model,
-                    onBack: onBack,
-                    onForward: onForward,
-                    onOverflow: onOverflow,
-                    onLongPress: onLongPressBackForward
+                    weight: .medium,
+                    onBack: { performAction(.back) },
+                    onForward: { performAction(.forward) },
+                    onOverflow: { performAction(.overflow) },
+                    onLongPress: { performAction(.longPressBackForward) }
                 )
-                TabToolbarButtons.NeevaMenu(action: onNeevaMenu)
-                TabToolbarButtons.AddToSpace(action: onSaveToSpace)
-                TabToolbarButtons.ShowTabs(action: onShowTabs, buildMenu: tabsMenu)
+                TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
+                TabToolbarButtons.AddToSpace(
+                    weight: .medium, action: { performAction(.addToSpace) })
+                TabToolbarButtons.ShowTabs(
+                    weight: .medium,
+                    action: { performAction(.showTabs) },
+                    buildMenu: buildTabsMenu
+                )
             }
             .padding(.top, 2)
             .background(Color.chrome.ignoresSafeArea())
@@ -43,29 +41,26 @@ struct TabToolbarView: View {
 
 struct TabToolbarView_Previews: PreviewProvider {
     static var previews: some View {
-        let make = { (model: TabToolbarModel) in
-            TabToolbarView(
-                onBack: {}, onForward: {}, onOverflow: {}, onLongPressBackForward: {},
-                onNeevaMenu: {}, onSaveToSpace: {}, onShowTabs: {}, tabsMenu: { nil }
-            )
-            .environmentObject(model)
+        let make = { (model: TabChromeModel) in
+            TabToolbarView(performAction: { _ in }, buildTabsMenu: { nil }, onNeevaMenu: {})
+                .environmentObject(model)
         }
         VStack {
             Spacer()
-            make(TabToolbarModel(canGoBack: true, canGoForward: false))
+            make(TabChromeModel(canGoBack: true, canGoForward: false))
         }
         VStack {
             Spacer()
-            make(TabToolbarModel(canGoBack: true, canGoForward: false))
+            make(TabChromeModel(canGoBack: true, canGoForward: false))
         }.preferredColorScheme(.dark)
         VStack {
             Spacer()
-            make(TabToolbarModel(canGoBack: true, canGoForward: false))
+            make(TabChromeModel(canGoBack: true, canGoForward: false))
                 .environment(\.isIncognito, true)
         }
         VStack {
             Spacer()
-            make(TabToolbarModel(canGoBack: true, canGoForward: false))
+            make(TabChromeModel(canGoBack: true, canGoForward: false))
                 .environment(\.isIncognito, true)
         }.preferredColorScheme(.dark)
     }

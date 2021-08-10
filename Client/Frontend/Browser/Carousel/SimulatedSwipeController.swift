@@ -30,7 +30,7 @@ class SimulatedSwipeController:
     var animator: SimulatedSwipeAnimator!
     var blankView: UIView!
     var tabManager: TabManager
-    var toolbarModel: TabToolbarModel
+    var chromeModel: TabChromeModel
     var forwardUrlMap = [String: [URL]?]()
     var swipeDirection: SwipeDirection
     var progressModel = CarouselProgressModel(urls: [], index: 0)
@@ -38,11 +38,11 @@ class SimulatedSwipeController:
     var progressView: UIHostingController<CarouselProgressView>!
 
     init(
-        tabManager: TabManager, toolbarModel: TabToolbarModel, swipeDirection: SwipeDirection,
+        tabManager: TabManager, chromeModel: TabChromeModel, swipeDirection: SwipeDirection,
         contentView: UIView
     ) {
         self.tabManager = tabManager
-        self.toolbarModel = toolbarModel
+        self.chromeModel = chromeModel
         self.swipeDirection = swipeDirection
         super.init(nibName: nil, bundle: nil)
 
@@ -145,13 +145,13 @@ class SimulatedSwipeController:
         }
 
         view.isHidden = false
-        toolbarModel.canGoBack = true
+        chromeModel.canGoBack = true
     }
 
     func updateForwardVisibility(id: String, results: [URL]?, index: Int = -1) {
         forwardUrlMap[id] = results
         view.isHidden = results == nil
-        toolbarModel.canGoForward = !view.isHidden
+        chromeModel.canGoForward = !view.isHidden
 
         guard let results = results else {
             progressView.view.removeFromSuperview()

@@ -471,7 +471,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // (orange color) as soon as the page has loaded.
         if let url = webView.url {
             if !url.isReaderModeURL {
-                urlBar.shared.model.readerMode = .unavailable
+                urlBar.shared.locationModel.readerMode = .unavailable
                 hideReaderModeBar(animated: false)
             }
         }
@@ -812,7 +812,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if error.code == Int(CFNetworkErrors.cfurlErrorCancelled.rawValue) {
             if let tab = tabManager[webView], tab === tabManager.selectedTab {
-                urlBar.shared.model.url = tab.url?.displayURL
+                urlBar.shared.locationModel.url = tab.url?.displayURL
             }
             return
         }

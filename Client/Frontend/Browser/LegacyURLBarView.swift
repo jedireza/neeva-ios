@@ -9,7 +9,7 @@ import Storage
 import SwiftUI
 
 protocol CommonURLBar: PrivateModeUI {
-    var model: URLBarModel { get }
+    var locationModel: LocationViewModel { get }
     var queryModel: SearchQueryModel { get }
     var suggestionModel: SuggestionModel { get }
     var gridModel: GridModel { get }
@@ -40,18 +40,19 @@ protocol LegacyURLBarDelegate: UIViewController {
 }
 
 class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
-    let model = URLBarModel()
+    let locationModel = LocationViewModel()
     let queryModel = SearchQueryModel()
     let suggestionModel: SuggestionModel
     let gridModel: GridModel
     let trackingStatsViewModel: TrackingStatsViewModel
+    let performAction: (ToolbarAction) -> Void
+    let makeTabsMenu: () -> UIMenu?
     var subscriptions: Set<AnyCancellable> = []
 
     weak var delegate: LegacyURLBarDelegate?
 
-    weak var tabToolbarDelegate: TabToolbarDelegate?
     var helper: LegacyTabToolbarHelper!
-    let toolbarModel: TabToolbarModel
+    let chromeModel: TabChromeModel
     var isTransitioning: Bool = false {
         didSet {
             if isTransitioning {
@@ -89,7 +90,8 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
 
     lazy var locationHost: TabLocationHost = { [unowned self] in
         TabLocationHost(
-            model: model,
+            model: locationModel,
+            chromeModel: chromeModel,
             suggestionModel: suggestionModel,
             queryModel: queryModel,
             gridModel: self.gridModel,
@@ -150,14 +152,17 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     var profile: Profile? = nil
 
     init(
-        profile: Profile, toolbarModel: TabToolbarModel,
-        gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel
+        profile: Profile, chromeModel: TabChromeModel,
+        gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel,
+        performAction: @escaping (ToolbarAction) -> Void, makeTabsMenu: @escaping () -> UIMenu?
     ) {
         self.profile = profile
         self.suggestionModel = SuggestionModel(profile: profile, queryModel: self.queryModel)
-        self.toolbarModel = toolbarModel
+        self.chromeModel = chromeModel
         self.gridModel = gridModel
         self.trackingStatsViewModel = trackingStatsModel
+        self.performAction = performAction
+        self.makeTabsMenu = makeTabsMenu
         super.init(frame: CGRect())
         commonInit()
     }
@@ -180,7 +185,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         }
 
         helper = LegacyTabToolbarHelper(toolbar: self)
-        subscriptions.formUnion(helper.subscribe(to: toolbarModel))
+        subscriptions.formUnion(helper.subscribe(to: chromeModel))
         setupConstraints()
 
         // Make sure we hide any views that shouldn't be showing in non-overlay mode.
@@ -190,7 +195,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
 
         neevaMenuButton.isPointerInteractionEnabled = true
 
-        model.$url.sink { [unowned self] newURL in
+        locationModel.$url.sink { [unowned self] newURL in
             if let url = newURL, InternalURL(url)?.isZeroQueryURL ?? false {
                 line.isHidden = true
             } else {
@@ -198,11 +203,20 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
             }
         }.store(in: &subscriptions)
 
-        model.$showToolbarItems
-            .sink { [unowned self] in self.setShowToolbar($0) }
+        chromeModel.$inlineToolbar
+            .sink { [unowned self] shouldShow in
+                toolbarIsShowing = shouldShow
+                setNeedsUpdateConstraints()
+                // when we transition from portrait to landscape, calling this here causes
+                // the constraints to be calculated too early and there are constraint errors
+                if !toolbarIsShowing {
+                    updateConstraintsIfNeeded()
+                }
+                updateViewsForOverlayModeAndToolbarChanges()
+            }
             .store(in: &subscriptions)
 
-        model.$estimatedProgress
+        chromeModel.$estimatedProgress
             .sink { [unowned self] estimatedProgress in
                 if let estimatedProgress = estimatedProgress {
                     self.updateProgressBar(Float(estimatedProgress))
@@ -323,25 +337,8 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     }
 
     override func becomeFirstResponder() -> Bool {
-        model.setEditing(to: true)
+        chromeModel.setEditingLocation(to: true)
         return true
-    }
-
-    // Ideally we'd split this implementation in two, one URLBarView with a toolbar and one without
-    // However, switching views dynamically at runtime is a difficult. For now, we just use one view
-    // that can show in either mode.
-    private func setShowToolbar(_ shouldShow: Bool) {
-        toolbarIsShowing = shouldShow
-        setNeedsUpdateConstraints()
-        // when we transition from portrait to landscape, calling this here causes
-        // the constraints to be calculated too early and there are constraint errors
-        if !toolbarIsShowing {
-            updateConstraintsIfNeeded()
-            model.includeShareButtonInLocationView = true
-        } else {
-            model.includeShareButtonInLocationView = false
-        }
-        updateViewsForOverlayModeAndToolbarChanges()
     }
 
     func updateAlphaForSubviews(_ alpha: CGFloat) {
@@ -357,14 +354,14 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     }
 
     private func updateProgressBar(_ progress: Float) {
-        model.reloadButton = progress == 1 ? .reload : .stop
+        chromeModel.reloadButton = progress == 1 ? .reload : .stop
         progressBar.alpha = 1
         progressBar.isHidden = false
         progressBar.setProgress(progress, animated: !isTransitioning)
     }
 
     private func hideProgressBar() {
-        model.reloadButton = .reload
+        chromeModel.reloadButton = .reload
         progressBar.alpha = 0
         progressBar.resetProgressBar()
     }
@@ -377,7 +374,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     }
 
     func leaveOverlayMode(didCancel cancel: Bool = false) {
-        model.setEditing(to: false)
+        chromeModel.setEditingLocation(to: false)
         animateToOverlayState(overlayMode: false, didCancel: cancel)
         delegate?.urlBarDidLeaveOverlayMode()
     }
@@ -449,7 +446,7 @@ extension LegacyURLBarView: LegacyTabLocationViewDelegate {
     }
 
     func tabLocationViewDidTapReload() {
-        switch model.reloadButton {
+        switch chromeModel.reloadButton {
         case .reload:
             delegate?.urlBarDidPressReload()
         case .stop:

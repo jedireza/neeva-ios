@@ -72,7 +72,7 @@ class BrowserViewController: UIViewController {
         }
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
-            toolbarModel: toolbarModel,
+            chromeModel: chromeModel,
             swipeDirection: .forward,
             contentView: webViewContainer.view)
         addChild(host)
@@ -85,7 +85,7 @@ class BrowserViewController: UIViewController {
         [unowned self] in
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
-            toolbarModel: toolbarModel,
+            chromeModel: chromeModel,
             swipeDirection: .back,
             contentView: webViewContainer.view)
         addChild(host)
@@ -128,8 +128,8 @@ class BrowserViewController: UIViewController {
     private var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
     var readerModeBar: ReaderModeBarView?
     private(set) var readerModeCache: ReaderModeCache
-    let statusBarOverlay = UIView()
-    let toolbarModel = TabToolbarModel()
+    private let legacyStatusBarOverlay = UIView()
+    let chromeModel = TabChromeModel()
     private(set) var toolbar: TabToolbarHost?
     private(set) var searchController: SearchViewController?
     private(set) var screenshotHelper: ScreenshotHelper!
@@ -210,36 +210,32 @@ class BrowserViewController: UIViewController {
 
         dismissVisibleMenus()
 
-        coordinator.animate(
-            alongsideTransition: { context in
-                self.scrollController.updateMinimumZoom()
+        coordinator.animate { context in
+            self.scrollController.updateMinimumZoom()
 
-                if let popover = self.displayedPopoverController {
-                    self.updateDisplayedPopoverProperties?()
-                    self.present(popover, animated: true, completion: nil)
-                }
+            if let popover = self.displayedPopoverController {
+                self.updateDisplayedPopoverProperties?()
+                self.present(popover, animated: true, completion: nil)
+            }
 
-                if self.isNeevaMenuSheetOpen {
-                    if !(self.urlBar.shared.model.showToolbarItems
-                        && self.isPreviousOrientationLandscape)
-                    {
-                        if self.urlBar.shared.model.showToolbarItems {
-                            self.hideNeevaMenuSheet()
-                            // TODO: update for new url bar
-                            self.urlBar.legacy?.didClickNeevaMenu()
-                        } else {
-                            self.isRotateSwitchDismiss = true
-                            self.popOverNeevaMenuViewController?.dismiss(
-                                animated: true, completion: nil)
-                            self.showNeevaMenuSheet()
-                        }
+            if self.isNeevaMenuSheetOpen {
+                if !(self.chromeModel.inlineToolbar && self.isPreviousOrientationLandscape) {
+                    if self.chromeModel.inlineToolbar {
+                        self.hideNeevaMenuSheet()
+                        // TODO: update for new url bar
+                        self.urlBar.legacy?.didClickNeevaMenu()
+                    } else {
+                        self.isRotateSwitchDismiss = true
+                        self.popOverNeevaMenuViewController?.dismiss(
+                            animated: true, completion: nil)
+                        self.showNeevaMenuSheet()
                     }
                 }
-                self.isPreviousOrientationLandscape = UIWindow.isLandscape
-            },
-            completion: { _ in
-                self.scrollController.setMinimumZoom()
-            })
+            }
+            self.isPreviousOrientationLandscape = UIWindow.isLandscape
+        } completion: { _ in
+            self.scrollController.setMinimumZoom()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -281,14 +277,14 @@ class BrowserViewController: UIViewController {
     ) {
         let showToolbar = shouldShowFooterForTraitCollection(newCollection)
 
-        urlBar.shared.model.showToolbarItems = !showToolbar
+        chromeModel.inlineToolbar = !showToolbar
 
         toolbar?.willMove(toParent: nil)
         toolbar?.view.removeFromSuperview()
         toolbar = nil
 
         if showToolbar {
-            let toolbar = TabToolbarHost(model: toolbarModel, delegate: self)
+            let toolbar = TabToolbarHost(chromeModel: chromeModel, bvc: self)
             toolbar.willMove(toParent: self)
             toolbar.view.setContentHuggingPriority(.required, for: .vertical)
             footer.addSubview(toolbar.view)
@@ -304,8 +300,8 @@ class BrowserViewController: UIViewController {
         {
             toolbar?.applyUIMode(isPrivate: tab.isPrivate)
             updateURLBarDisplayURL(tab)
-            toolbarModel.canGoBack = webView.canGoBack
-            toolbarModel.canGoForward = webView.canGoForward
+            chromeModel.canGoBack = webView.canGoBack
+            chromeModel.canGoForward = webView.canGoForward
         }
     }
 
@@ -322,15 +318,15 @@ class BrowserViewController: UIViewController {
         }
 
         displayedPopoverController?.dismiss(animated: true, completion: nil)
-        coordinator.animate(
-            alongsideTransition: { context in
-                self.scrollController.showToolbars(animated: false)
-                if self.isViewLoaded {
-                    self.statusBarOverlay.backgroundColor =
-                        self.urlBar.legacy?.backgroundColor ?? .systemPink
-                    self.setNeedsStatusBarAppearanceUpdate()
+        coordinator.animate { context in
+            self.scrollController.showToolbars(animated: false)
+            if self.isViewLoaded {
+                if let urlBar = self.urlBar.legacy {
+                    self.legacyStatusBarOverlay.backgroundColor = urlBar.backgroundColor
                 }
-            }, completion: nil)
+                self.setNeedsStatusBarAppearanceUpdate()
+            }
+        }
     }
 
     func dismissVisibleMenus() {
@@ -419,8 +415,10 @@ class BrowserViewController: UIViewController {
         view.addSubview(webViewContainer.view)
         addChild(webViewContainer)
 
-        // Temporary work around for covering the non-clipped web view content
-        view.addSubview(statusBarOverlay)
+        if !FeatureFlag[.newTopBar] {
+            // Temporary work around for covering the non-clipped web view content
+            view.addSubview(legacyStatusBarOverlay)
+        }
 
         topTouchArea = UIButton()
         topTouchArea.isAccessibilityElement = false
@@ -434,19 +432,21 @@ class BrowserViewController: UIViewController {
             let host = TopBarHost(
                 suggestionModel: SuggestionModel(profile: profile, queryModel: queryModel),
                 queryModel: queryModel,
-                gridModel: gridModel, trackingStatsViewModel: trackingStatsModel, delegate: self)
+                gridModel: gridModel, trackingStatsViewModel: trackingStatsModel,
+                chromeModel: chromeModel, bvc: self)
             addChild(host)
             view.addSubview(host.view)
             host.didMove(toParent: self)
             self.urlBar = .modern(host)
         } else {
             let legacyURLBar = LegacyURLBarView(
-                profile: profile, toolbarModel: toolbarModel,
+                profile: profile, chromeModel: chromeModel,
                 gridModel: gridModel,
-                trackingStatsModel: trackingStatsModel)
+                trackingStatsModel: trackingStatsModel,
+                performAction: self.performTabToolbarAction,
+                makeTabsMenu: { [weak self] in self?.tabToolbarTabsMenu() })
             legacyURLBar.translatesAutoresizingMaskIntoConstraints = false
             legacyURLBar.delegate = self
-            legacyURLBar.tabToolbarDelegate = self
             addChild(legacyURLBar.locationHost)
             view.addSubview(legacyURLBar)
             legacyURLBar.locationHost.didMove(toParent: self)
@@ -477,7 +477,9 @@ class BrowserViewController: UIViewController {
         let dropInteraction = UIDropInteraction(delegate: self)
         view.addInteraction(dropInteraction)
 
-        statusBarOverlay.backgroundColor = urlBar?.legacy?.backgroundColor ?? .systemPink
+        if let urlBar = self.urlBar.legacy {
+            self.legacyStatusBarOverlay.backgroundColor = urlBar.backgroundColor
+        }
         setNeedsStatusBarAppearanceUpdate()
 
         for tab in tabManager.tabs {
@@ -496,14 +498,20 @@ class BrowserViewController: UIViewController {
     fileprivate func setupConstraints() {
         urlBar.view.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            if urlBar.shared.model.showToolbarItems {
-                make.height.equalTo(UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
-            } else {
-                make.height.equalTo(UIConstants.TopToolbarHeight)
+            if !FeatureFlag[.newTopBar] {
+                if chromeModel.inlineToolbar {
+                    make.height.equalTo(UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
+                } else {
+                    make.height.equalTo(UIConstants.TopToolbarHeight)
+                }
             }
             if !UIConstants.enableBottomURLBar {
-                scrollController.headerTopConstraint =
-                    make.top.equalTo(self.view.safeArea.top).constraint
+                if FeatureFlag[.newTopBar] {
+                    scrollController.headerTopConstraint = make.top.equalToSuperview().constraint
+                } else {
+                    scrollController.headerTopConstraint =
+                        make.top.equalTo(self.view.safeArea.top).constraint
+                }
             }
         }
 
@@ -537,9 +545,11 @@ class BrowserViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        statusBarOverlay.snp.remakeConstraints { make in
-            make.top.left.right.equalTo(self.view)
-            make.height.equalTo(self.view.safeAreaInsets.top)
+        if !FeatureFlag[.newTopBar] {
+            legacyStatusBarOverlay.snp.remakeConstraints { make in
+                make.top.left.right.equalTo(self.view)
+                make.height.equalTo(self.view.safeAreaInsets.top)
+            }
         }
     }
 
@@ -673,7 +683,9 @@ class BrowserViewController: UIViewController {
         [urlBar.view, footer, readerModeBar].forEach { view in
             view?.transform = .identity
         }
-        statusBarOverlay.isHidden = false
+        if !FeatureFlag[.newTopBar] {
+            legacyStatusBarOverlay.isHidden = false
+        }
     }
 
     override func updateViewConstraints() {
@@ -803,7 +815,7 @@ class BrowserViewController: UIViewController {
 
         if isLazyTab {
             zeroQueryViewController.isLazyTab = true
-            urlBar.shared.model.setEditing(to: true)
+            chromeModel.setEditingLocation(to: true)
             urlBar.shared.queryModel.value = ""
         }
 
@@ -836,7 +848,7 @@ class BrowserViewController: UIViewController {
     }
 
     public func hideZeroQuery() {
-        urlBar.shared.model.setEditing(to: false)
+        chromeModel.setEditingLocation(to: false)
 
         UIView.animate(
             withDuration: 0.2, delay: 0, options: .beginFromCurrentState,
@@ -861,7 +873,7 @@ class BrowserViewController: UIViewController {
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
         let isZeroQueryURL = url.flatMap { InternalURL($0)?.isZeroQueryURL } ?? false
-        if !urlBar.shared.model.isEditing {
+        if !chromeModel.isEditingLocation {
             guard let url = url else {
                 hideZeroQuery()
                 return
@@ -993,13 +1005,13 @@ class BrowserViewController: UIViewController {
             }
         }
 
-        urlBar.shared.model.url = url
-        urlBar.shared.model.setEditing(to: false)
+        urlBar.shared.locationModel.url = url
+        chromeModel.setEditingLocation(to: false)
     }
 
     override func accessibilityPerformEscape() -> Bool {
-        if urlBar.shared.model.isEditing {
-            urlBar.shared.model.setEditing(to: false)
+        if chromeModel.isEditingLocation {
+            chromeModel.setEditingLocation(to: false)
             return true
         } else if let selectedTab = tabManager.selectedTab, selectedTab.canGoBack {
             selectedTab.goBack()
@@ -1031,12 +1043,10 @@ class BrowserViewController: UIViewController {
     /// Updates the URL bar text and button states.
     /// Call this whenever the page URL changes.
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
-        urlBar.shared.model.url = tab.url?.displayURL
-        urlBar.shared.model.isSecure = tab.webView?.hasOnlySecureContent ?? false
+        urlBar.shared.locationModel.url = tab.url?.displayURL
+        urlBar.shared.locationModel.isSecure = tab.webView?.hasOnlySecureContent ?? false
 
-        let isPage = tab.url?.displayURL?.isWebPage() ?? false
-        urlBar.shared.model.canShare = isPage
-        toolbarModel.isPage = isPage
+        chromeModel.isPage = tab.url?.displayURL?.isWebPage() ?? false
     }
 
     // MARK: Opening New Tabs
@@ -1092,7 +1102,7 @@ class BrowserViewController: UIViewController {
         tabManager.select(newTab)
 
         if focusLocationField {
-            urlBar.shared.model.setEditing(to: true)
+            chromeModel.setEditingLocation(to: true)
         }
     }
 
@@ -1114,8 +1124,8 @@ class BrowserViewController: UIViewController {
     fileprivate func popToBVC() {
         if let presentedViewController = presentedViewController {
             presentedViewController.dismiss(animated: true, completion: nil)
-        } else if urlBar.shared.model.isEditing {
-            urlBar.shared.model.setEditing(to: false)
+        } else if chromeModel.isEditingLocation {
+            chromeModel.setEditingLocation(to: false)
         }
     }
 
@@ -1262,8 +1272,8 @@ class BrowserViewController: UIViewController {
 
         if let url = webView.url {
             if tab === tabManager.selectedTab {
-                urlBar.shared.model.isSecure = webView.hasOnlySecureContent
-                urlBar.shared.model.canShare = tab.url?.displayURL?.isWebPage() ?? false
+                urlBar.shared.locationModel.isSecure = webView.hasOnlySecureContent
+                chromeModel.isPage = tab.url?.displayURL?.isWebPage() ?? false
             }
 
             if !InternalURL.isValid(url: url) || url.isReaderModeURL, !url.isFileURL {
@@ -1398,9 +1408,9 @@ extension BrowserViewController: TabDelegate {
                 if isLoading || estimatedProgress == 1, let url = webView.url,
                     !InternalURL.isValid(url: url)
                 {
-                    urlBar.shared.model.estimatedProgress = estimatedProgress
+                    chromeModel.estimatedProgress = estimatedProgress
                 } else {
-                    urlBar.shared.model.estimatedProgress = nil
+                    chromeModel.estimatedProgress = nil
                 }
             }
             .store(in: &tab.webViewSubscriptions)
@@ -1440,13 +1450,13 @@ extension BrowserViewController: TabDelegate {
         webView.publisher(for: \.canGoBack, options: .new)
             .forEach(updateGestureHandler)
             .filter { _ in tab === tabManager.selectedTab }
-            .assign(to: \.canGoBack, on: toolbarModel)
+            .assign(to: \.canGoBack, on: chromeModel)
             .store(in: &tab.webViewSubscriptions)
 
         webView.publisher(for: \.canGoForward, options: .new)
             .forEach(updateGestureHandler)
             .filter { _ in tab === tabManager.selectedTab }
-            .assign(to: \.canGoForward, on: toolbarModel)
+            .assign(to: \.canGoForward, on: chromeModel)
             .store(in: &tab.webViewSubscriptions)
 
         webView.scrollView
@@ -1575,7 +1585,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
 
     func zeroQueryPanel(didEnterQuery query: String) {
         urlBar.shared.queryModel.value = query
-        urlBar.shared.model.setEditing(to: true)
+        chromeModel.setEditingLocation(to: true)
     }
 }
 
@@ -1662,25 +1672,25 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateFindInPageVisibility(visible: false, tab: previous)
-        toolbarModel.canGoBack =
+        chromeModel.canGoBack =
             (simulateBackViewController?.canGoBack() ?? false
                 || selected?.canGoBack ?? false)
-        toolbarModel.canGoForward =
+        chromeModel.canGoForward =
             (simulateForwardViewController?.canGoForward() ?? false
                 || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
-            urlBar.shared.model.estimatedProgress = selected?.estimatedProgress ?? 0
+            chromeModel.estimatedProgress = selected?.estimatedProgress ?? 0
         }
 
         if let readerMode = selected?.getContentScript(name: ReaderMode.name()) as? ReaderMode {
-            urlBar.shared.model.readerMode = readerMode.state
+            urlBar.shared.locationModel.readerMode = readerMode.state
             if readerMode.state == .active {
                 showReaderModeBar(animated: false)
             } else {
                 hideReaderModeBar(animated: false)
             }
         } else {
-            urlBar.shared.model.readerMode = .unavailable
+            urlBar.shared.locationModel.readerMode = .unavailable
         }
 
         updateInZeroQuery(selected?.url as URL?)

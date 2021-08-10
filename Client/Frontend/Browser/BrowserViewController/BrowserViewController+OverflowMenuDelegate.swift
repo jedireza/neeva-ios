@@ -14,7 +14,7 @@ extension BrowserViewController: OverflowMenuDelegate {
         tabManager.selectedTab?.goForward()
     }
 
-    func overflowMenuDidPressReloadStop(_ reloadButtonState: URLBarModel.ReloadButtonState) {
+    func overflowMenuDidPressReloadStop(_ reloadButtonState: TabChromeModel.ReloadButtonState) {
         if reloadButtonState == .reload {
             tabManager.selectedTab?.reload()
         } else {

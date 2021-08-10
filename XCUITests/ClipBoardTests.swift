@@ -43,7 +43,14 @@ class ClipBoardTests: BaseTestCase {
         newTab()
 
         waitForExistence(app.textFields["address"])
-        app.textFields["address"].press(forDuration: 1)
+        app.textFields["address"].tap()
+        waitFor(
+            app.menuItems.matching(
+                NSPredicate(format: "label = 'Paste & Go' OR label = 'show.next.items.menu.button'")
+            ), with: "count > 0")
+        while !app.menuItems["Paste & Go"].exists {
+            app.menuItems["show.next.items.menu.button"].tap()
+        }
         app.menuItems["Paste & Go"].tap()
 
         checkUrl()

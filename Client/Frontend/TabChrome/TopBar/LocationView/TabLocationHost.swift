@@ -11,7 +11,8 @@ protocol LegacyTabLocationViewDelegate: AnyObject {
 
 struct TabLocationViewWrapper: View {
     let suggestionModel: SuggestionModel
-    let model: URLBarModel
+    let model: LocationViewModel
+    let chromeModel: TabChromeModel
     let queryModel: SearchQueryModel
     let gridModel: GridModel
     let trackingStatsModel: TrackingStatsViewModel
@@ -22,6 +23,7 @@ struct TabLocationViewWrapper: View {
         content()
             .environmentObject(suggestionModel)
             .environmentObject(model)
+            .environmentObject(chromeModel)
             .environmentObject(queryModel)
             .environmentObject(gridModel)
             .environmentObject(trackingStatsModel)
@@ -30,13 +32,14 @@ struct TabLocationViewWrapper: View {
 }
 
 class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
-    private let model: URLBarModel
+    private let model: LocationViewModel
     private weak var delegate: LegacyTabLocationViewDelegate?
 
     private var subscriptions: Set<AnyCancellable> = []
 
     init(
-        model: URLBarModel,
+        model: LocationViewModel,
+        chromeModel: TabChromeModel,
         suggestionModel: SuggestionModel,
         queryModel: SearchQueryModel,
         gridModel: GridModel,
@@ -49,9 +52,8 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         super.init()
         setRootView {
             TabLocationViewWrapper(
-                suggestionModel: suggestionModel,
-                model: model, queryModel: queryModel, gridModel: gridModel,
-                trackingStatsModel: trackingStatsModel
+                suggestionModel: suggestionModel, model: model, chromeModel: chromeModel,
+                queryModel: queryModel, gridModel: gridModel, trackingStatsModel: trackingStatsModel
             ) {
                 TabLocationView(
                     onReload: { [weak delegate] in delegate?.tabLocationViewDidTapReload() },
@@ -64,7 +66,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
         }
         self.view.backgroundColor = .clear
 
-        model.$isEditing
+        chromeModel.$isEditingLocation
             .withPrevious()
             .sink { [weak urlBar] change in
                 switch change {
@@ -76,7 +78,7 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
                 }
             }
             .store(in: &subscriptions)
-        model.$isEditing
+        chromeModel.$isEditingLocation
             .combineLatest(queryModel.$value)
             .withPrevious()
             .sink { [weak urlBar] (prev, current) in

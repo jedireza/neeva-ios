@@ -31,8 +31,8 @@ extension View {
         toggleStyle(SwitchToggleStyle(tint: Color.ui.adaptive.blue))
     }
 
-    public func tapTargetFrame(alignment: Alignment = .center) -> some View {
-        frame(width: 44, height: 44, alignment: alignment)
+    public func tapTargetFrame() -> some View {
+        frame(width: 44, height: 44)
     }
 }
 

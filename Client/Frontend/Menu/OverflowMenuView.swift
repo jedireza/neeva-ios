@@ -39,8 +39,7 @@ public struct OverflowMenuView: View {
     private let menuAction: (OverflowMenuButtonActions) -> Void
     private let changedUserAgent: Bool
 
-    @EnvironmentObject var tabToolBarModel: TabToolbarModel
-    @EnvironmentObject var urlBarModel: URLBarModel
+    @EnvironmentObject var chromeModel: TabChromeModel
 
     public init(
         changedUserAgent: Bool = false,
@@ -57,11 +56,11 @@ public struct OverflowMenuView: View {
                     menuAction(OverflowMenuButtonActions.forward)
                 }
                 .accessibilityIdentifier("OverflowMenu.Forward")
-                .disabled(!tabToolBarModel.canGoForward)
+                .disabled(!chromeModel.canGoForward)
 
                 OverflowMenuButtonView(
-                    label: urlBarModel.reloadButton == .reload ? "Reload" : "Stop",
-                    symbol: urlBarModel.reloadButton == .reload ? .arrowClockwise : .xmark
+                    label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
+                    symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
                 ) {
                     menuAction(OverflowMenuButtonActions.reload)
                 }
@@ -116,8 +115,9 @@ public struct OverflowMenuView: View {
 
 struct OverflowMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        OverflowMenuView(menuAction: { _ in }).previewDevice("iPod touch (7th generation)").environment(
-            \.sizeCategory, .extraExtraExtraLarge)
+        OverflowMenuView(menuAction: { _ in }).previewDevice("iPod touch (7th generation)")
+            .environment(
+                \.sizeCategory, .extraExtraExtraLarge)
         OverflowMenuView(menuAction: { _ in })
     }
 }

@@ -337,7 +337,7 @@ class NavigationTest: BaseTestCase {
         app.webViews.links["nineteen for me"].tap()
         waitUntilPageLoad()
 
-        app.buttons["Share"].tap()
+        app.buttons["Share"].tap(force: true)
         waitForExistence(
             app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"],
             timeout: 10)
@@ -352,7 +352,7 @@ class NavigationTest: BaseTestCase {
 
         // Now confirm that we get a ShareMenu for the current page and not
         // the PDF again.
-        app.buttons["Share"].tap()
+        app.buttons["Share"].tap(force: true)
         waitForExistence(
             app.navigationBars["UIActivityContentView"].otherElements["localhost"], timeout: 10)
     }

@@ -32,7 +32,7 @@ extension BrowserViewController {
     }
 
     func onStartQuestButtonClickHandler() {
-        if self.urlBar.shared.model.showToolbarItems {
+        if self.chromeModel.inlineToolbar {
             self.dismiss(animated: true)
             // TODO: update for modern url bar
             self.urlBar.legacy?.didClickNeevaMenu()
@@ -47,7 +47,7 @@ extension BrowserViewController {
 
         scrollController.showToolbars(animated: true)
 
-        if !self.urlBar.shared.model.showToolbarItems, let toolbar = toolbar {
+        if !self.chromeModel.inlineToolbar, let toolbar = toolbar {
             // TODO(jed): open this prompt from SwiftUI once we have a full-height SwiftUI hierarchy
             target = toolbar.view
         } else {

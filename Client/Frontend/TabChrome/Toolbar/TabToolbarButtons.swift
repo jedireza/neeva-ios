@@ -21,33 +21,34 @@ struct TabToolbarButton<Content: View>: View {
 
 enum TabToolbarButtons {
     struct BackForward: View {
-        @ObservedObject var model: TabToolbarModel
-
+        let weight: Font.Weight
         let onBack: () -> Void
         let onForward: () -> Void
         let onOverflow: () -> Void
         let onLongPress: () -> Void
 
+        @EnvironmentObject private var model: TabChromeModel
         var body: some View {
             Group {
                 TabToolbarButton(
                     label: Symbol(
-                        .arrowBackward, size: 20, label: .TabToolbarBackAccessibilityLabel),
-                    action: onBack
+                        .arrowBackward, size: 20, weight: weight,
+                        label: .TabToolbarBackAccessibilityLabel), action: onBack
                 )
                 .disabled(!model.canGoBack)
                 .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
                 if FeatureFlag[.overflowMenu] {
                     TabToolbarButton(
                         label: Symbol(
-                            .ellipsisCircle, size: 20, label: .TabToolbarMoreAccessibilityLabel),
+                            .ellipsisCircle, size: 20, weight: weight,
+                            label: .TabToolbarMoreAccessibilityLabel),
                         action: onOverflow
                     )
                 } else {
                     TabToolbarButton(
                         label: Symbol(
-                            .arrowForward, size: 20, label: .TabToolbarForwardAccessibilityLabel),
-                        action: onForward
+                            .arrowForward, size: 20, weight: weight,
+                            label: .TabToolbarForwardAccessibilityLabel), action: onForward
                     )
                     .disabled(!model.canGoForward)
                     .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
@@ -57,6 +58,7 @@ enum TabToolbarButtons {
     }
 
     struct NeevaMenu: View {
+        let iconWidth: CGFloat
         let action: () -> Void
 
         @Environment(\.isIncognito) private var isIncognito
@@ -67,7 +69,7 @@ enum TabToolbarButtons {
                     .renderingMode(isIncognito ? .template : .original)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 22)
+                    .frame(width: iconWidth)
                     .accessibilityLabel("Neeva Menu"),
                 action: action
             )
@@ -75,14 +77,15 @@ enum TabToolbarButtons {
     }
 
     struct AddToSpace: View {
+        let weight: Font.Weight
         let action: () -> Void
 
         @Environment(\.isIncognito) private var isIncognito
-        @EnvironmentObject var model: TabToolbarModel
+        @EnvironmentObject private var model: TabChromeModel
 
         var body: some View {
             TabToolbarButton(
-                label: Symbol(.bookmark, size: 20, weight: .medium, label: "Add To Space"),
+                label: Symbol(.bookmark, size: 20, weight: weight, label: "Add To Space"),
                 action: action
             )
             .disabled(isIncognito || !model.isPage)
@@ -90,13 +93,14 @@ enum TabToolbarButtons {
     }
 
     struct ShowTabs: View {
+        let weight: UIImage.SymbolWeight
         let action: () -> Void
         let buildMenu: () -> UIMenu?
 
         var body: some View {
             // TODO: when dropping support for iOS 14, change this to a Menu view with a primaryAction
             UIKitButton(action: action) {
-                $0.setImage(Symbol.uiImage(.squareOnSquare, size: 20), for: .normal)
+                $0.setImage(Symbol.uiImage(.squareOnSquare, size: 20, weight: weight), for: .normal)
                 $0.setDynamicMenu(buildMenu)
                 $0.accessibilityLabel = "Show Tabs"
             }

@@ -5,7 +5,7 @@ import SwiftUI
 
 protocol OverflowMenuDelegate {
     func overflowMenuDidPressForward()
-    func overflowMenuDidPressReloadStop(_ reloadButtonState: URLBarModel.ReloadButtonState)
+    func overflowMenuDidPressReloadStop(_ reloadButtonState: TabChromeModel.ReloadButtonState)
     func overflowMenuDidPressAddNewTab()
     func overflowMenuDidPressFindOnPage()
     func overflowMenuDidPressTextSize()
@@ -17,15 +17,13 @@ struct OverflowMenuRootView: View {
     let onDismiss: () -> Void
     var embeddedView: OverflowMenuView
 
-    let tabToolbarModel: TabToolbarModel
-    let urlBarModel: URLBarModel
+    let chromeModel: TabChromeModel
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
         OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
             self.embeddedView
-                .environmentObject(tabToolbarModel)
-                .environmentObject(urlBarModel)
+                .environmentObject(chromeModel)
                 .overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
         }
         .onAppear {
@@ -43,8 +41,7 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
         delegate: OverflowMenuDelegate, onDismiss: @escaping () -> Void,
         isPrivate: Bool,
         feedbackImage: UIImage?,
-        tabToolbarModel: TabToolbarModel,
-        urlBarModel: URLBarModel,
+        chromeModel: TabChromeModel,
         changedUserAgent: Bool?
     ) {
         super.init(
@@ -58,7 +55,7 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
                         case .forward:
                             delegate.overflowMenuDidPressForward()
                         case .reload:
-                            delegate.overflowMenuDidPressReloadStop(urlBarModel.reloadButton)
+                            delegate.overflowMenuDidPressReloadStop(chromeModel.reloadButton)
                         case .newTab:
                             delegate.overflowMenuDidPressAddNewTab()
                         case .findOnPage:
@@ -73,8 +70,7 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
                         }
                     }
                 ),
-                tabToolbarModel: tabToolbarModel,
-                urlBarModel: urlBarModel))
+                chromeModel: chromeModel))
         self.delegate = delegate
         self.view.accessibilityViewIsModal = true
     }

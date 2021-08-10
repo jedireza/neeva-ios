@@ -17,7 +17,7 @@ extension BaseTestCase {
     /// Lauches from tab page
     func goToFindOnPage() {
         waitForExistence(app.buttons["Share"])
-        app.buttons["Share"].tap()
+        app.buttons["Share"].tap(force: true)
 
         waitForExistence(app.buttons["Find on Page"])
         app.buttons["Find on Page"].tap()
