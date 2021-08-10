@@ -8,6 +8,7 @@ protocol ZeroQueryPanelDelegate: AnyObject {
     func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
     func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType)
     func zeroQueryPanel(didEnterQuery query: String)
+    func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, title: String?, description: String?)
 }
 
 enum ZeroQueryOpenedLocation: Equatable {

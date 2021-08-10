@@ -23,6 +23,7 @@ struct SuggestedSiteView: View {
     @Environment(\.shareURL) private var shareURL
     @Environment(\.openInNewTab) private var openInNewTab
     @Environment(\.zeroQueryHideTopSite) private var zeroQueryHideTopSite
+    @Environment(\.saveToSpace) private var saveToSpace
 
     @State private var isDeleting = false
 
@@ -75,7 +76,10 @@ struct SuggestedSiteView: View {
             .accessibilityLabel(title)
             .accessibilityHint(hint)
             .contextMenu {
-                ZeroQueryCommonContextMenuActions(siteURL: site.url.absoluteURL)
+                ZeroQueryCommonContextMenuActions(
+                    siteURL: site.url.absoluteURL,
+                    title: title,
+                    description: site.metadata?.description)
                 // TODO: make this red
                 Button(action: { isDeleting = true }) {
                     Label("Remove", systemSymbol: .trash)

@@ -49,7 +49,14 @@ struct ZeroQueryContent: View {
             .environment(\.openInNewTab) { url, isPrivate in
                 model.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(
                     url, isPrivate: isPrivate)
-            }.onAppear {
+            }
+            .environment(\.saveToSpace) { url, title, description in
+                model.delegate?.zeroQueryPanelDidRequestToSaveToSpace(
+                    url,
+                    title: title,
+                    description: description)
+            }
+            .onAppear {
                 self.model.updateState()
                 TopSitesHandler.getTopSites(profile: model.profile).uponQueue(.main) { result in
                     self.suggestedSitesViewModel.sites = Array(result.prefix(8))

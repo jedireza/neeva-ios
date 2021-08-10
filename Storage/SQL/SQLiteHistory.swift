@@ -152,7 +152,7 @@ open class SQLiteHistory {
 }
 
 private let topSitesQuery =
-    "SELECT cached_top_sites.*, page_metadata.provider_name FROM cached_top_sites LEFT OUTER JOIN page_metadata ON cached_top_sites.url = page_metadata.site_url ORDER BY frecencies DESC LIMIT (?)"
+    "SELECT cached_top_sites.*, page_metadata.provider_name, page_metadata.description FROM cached_top_sites LEFT OUTER JOIN page_metadata ON cached_top_sites.url = page_metadata.site_url ORDER BY frecencies DESC LIMIT (?)"
 
 /// The init for this will perform the heaviest part of the frecency query
 /// and create a temporary table that can be queried quickly. Currently this accounts for
