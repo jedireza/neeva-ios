@@ -10,6 +10,7 @@ public struct VerticalScrollViewIfNeeded<EmbeddedView>: View where EmbeddedView:
     let embeddedView: () -> EmbeddedView
 
     @State var viewHeight: CGFloat = 0
+    @Environment(\.inPopover) var inPopover
 
     public var body: some View {
         GeometryReader { parentGeom in
@@ -25,7 +26,7 @@ public struct VerticalScrollViewIfNeeded<EmbeddedView>: View where EmbeddedView:
             if parentGeom.size.height < viewHeight {
                 ScrollView {
                     content
-                }
+                }.padding(.vertical, inPopover ? 6.5 : 0)
             } else {
                 content
             }

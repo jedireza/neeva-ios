@@ -147,14 +147,4 @@ public class TourManager {
             return .resumeAction
         }
     }
-
-    // dispatch new view with delay when tour popover is showing, which is
-    // an additional presentation layer on top. Without the delay there
-    // will be an error complaining Attempt to present another view
-    // while a presentation is in progress and the new view
-    // would not show up
-    public func delay() -> DispatchTime {
-        let delay = hasActiveStep() ? 0.5 : 0
-        return .now() + delay
-    }
 }

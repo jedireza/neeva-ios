@@ -76,7 +76,9 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
                             bvc.share(tab: tab, from: shareView, presentableVC: bvc)
                         }
                     },
-                    buildReloadMenu: { bvc?.urlBarReloadMenu() }
+                    buildReloadMenu: { bvc?.urlBarReloadMenu() },
+                    onNeevaMenuAction: { bvc?.perform(neevaMenuAction: $0) },
+                    didTapNeevaMenu: { bvc?.updateFeedbackImage() }
                 )
             }
         }
@@ -87,9 +89,5 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func applyUIMode(isPrivate: Bool) {
-        super.applyUIMode(isPrivate: isPrivate)
     }
 }

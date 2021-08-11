@@ -40,7 +40,6 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
     public init(
         delegate: OverflowMenuDelegate, onDismiss: @escaping () -> Void,
         isPrivate: Bool,
-        feedbackImage: UIImage?,
         chromeModel: TabChromeModel,
         changedUserAgent: Bool?
     ) {

@@ -8,7 +8,7 @@ import SwiftUI
 // swift-format-ignore: NoLeadingUnderscores
 struct _NeevaMenuPopover: View {
     fileprivate let isIncognito: Bool
-    fileprivate let menuAction: ((NeevaMenuButtonActions) -> Void)?
+    fileprivate let menuAction: (NeevaMenuAction) -> Void
 
     var body: some View {
         VerticalScrollViewIfNeeded {
@@ -31,76 +31,18 @@ class PopOverNeevaMenuViewController: UIHostingController<_NeevaMenuPopover> {
     public init(
         delegate: BrowserViewController,
         source: UIView, isPrivate: Bool,
-        feedbackImage: UIImage?
+        menuAction: @escaping (NeevaMenuAction) -> Void
     ) {
-        super.init(rootView: NeevaMenuPopover(isIncognito: isPrivate, menuAction: nil))
+        super.init(rootView: NeevaMenuPopover(isIncognito: isPrivate, menuAction: { _ in }))
         self.delegate = delegate
         self.modalPresentationStyle = .popover
-        delegate.isNeevaMenuSheetOpen = true
-
-        //Build callbacks for each button action
-        self.rootView = NeevaMenuPopover(isIncognito: isPrivate) { result in
-            delegate.isNeevaMenuSheetOpen = false
-            self.dismiss(animated: true, completion: nil)
-            switch result {
-            case .home:
-                ClientLogger.shared.logCounter(
-                    .OpenHome, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.home)
-                break
-            case .spaces:
-                ClientLogger.shared.logCounter(
-                    .OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
-
-                // if user started a tour, trigger navigation on webui side
-                // to prevent page refresh, which will lost the states
-                if TourManager.shared.userReachedStep(step: .promptSpaceInNeevaMenu) != .stopAction
-                {
-                    delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.spaces)
-                } else {
-                    delegate.dismissVC()
+        self.rootView = NeevaMenuPopover(
+            isIncognito: isPrivate,
+            menuAction: { [weak self] action in
+                self?.dismiss(animated: true) {
+                    menuAction(action)
                 }
-                break
-            case .settings:
-                ClientLogger.shared.logCounter(
-                    .OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
-                TourManager.shared.userReachedStep(tapTarget: .settingMenu)
-
-                let controller = SettingsViewController(bvc: delegate)
-
-                self.dismiss(animated: true) {
-                    delegate.present(controller, animated: true, completion: nil)
-                }
-                break
-            case .history:
-                ClientLogger.shared.logCounter(
-                    .OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
-                delegate.zeroQueryPanelDidRequestToOpenLibrary()
-
-                break
-            case .feedback:
-                ClientLogger.shared.logCounter(
-                    .OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
-
-                if TourManager.shared.userReachedStep(tapTarget: .feedbackMenu) == .resumeAction {
-                    // need to add this dismissVC because without it,
-                    // when user click on feedback menu, the quest popover
-                    // for feedback will disappear, but the Neeva menu
-                    // still shows. Expect behavior will be both quest
-                    // popover and Neeva menu disappear, then open up
-                    // feedback panel
-                    delegate.dismissVC()
-                }
-
-                DispatchQueue.main.asyncAfter(deadline: TourManager.shared.delay()) {
-                    showFeedbackPanel(bvc: delegate, screenshot: feedbackImage)
-                }
-                break
-            case .referralPromo:
-                delegate.neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions.referralPromo)
-                break
-            }
-        }
+            })
 
         //Create host as a popup
         let popoverMenuViewController = self.popoverPresentationController
@@ -110,15 +52,8 @@ class PopOverNeevaMenuViewController: UIHostingController<_NeevaMenuPopover> {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.presentationController?.containerView?.backgroundColor = UIColor.ui.backdrop
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        let rotateCheck = delegate?.isRotateSwitchDismiss ?? false
-
-        if !rotateCheck {
-            delegate?.isNeevaMenuSheetOpen = false
-        }
-        delegate?.isRotateSwitchDismiss = false
+        presentationController?.containerView?.subviews.first(where: {
+            String(cString: object_getClassName($0)).lowercased().contains("dimming")
+        })?.backgroundColor = .ui.backdrop
     }
 }

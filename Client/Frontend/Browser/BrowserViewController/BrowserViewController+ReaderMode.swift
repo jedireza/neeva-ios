@@ -169,7 +169,7 @@ extension BrowserViewController: ReaderModeBarViewDelegate {
     func readerModeBar(
         _ readerModeBar: ReaderModeBarView, didSelectButton buttonType: ReaderModeBarButtonType
     ) {
-        historyViewController?.dismiss(animated: true, completion: nil)
+        presentedViewController?.dismiss(animated: true, completion: nil)
 
         switch buttonType {
         case .settings:

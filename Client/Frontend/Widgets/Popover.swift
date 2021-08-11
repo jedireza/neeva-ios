@@ -16,13 +16,17 @@ extension View {
         isPresented: Binding<Bool>,
         backgroundColor: UIColor? = nil,
         arrowDirections: UIPopoverArrowDirection? = nil,
+        onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         background(
             // negative padding to counteract system padding
             Popover(
                 isPresented: isPresented, arrowDirections: arrowDirections,
-                content: content().padding(.vertical, -6.5), backgroundColor: backgroundColor)
+                content: content()
+                    .padding(.vertical, -6.5)
+                    .environment(\.inPopover, true),
+                backgroundColor: backgroundColor, onDismiss: onDismiss)
         )
     }
 }
@@ -32,16 +36,37 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
     let arrowDirections: UIPopoverArrowDirection?
     let content: Content
     let backgroundColor: UIColor?
+    let onDismiss: (() -> Void)?
 
     class ViewController: UIViewController {
+        var onDismiss: (() -> Void)?
         var presentee: Host? {
             didSet {
                 if let presentee = presentee {
-                    present(presentee, animated: true)
+                    if let view = viewIfLoaded, view.window != nil {
+                        present(presentee, animated: true)
+                    }
                 } else if let presentee = self.presentedViewController {
-                    presentee.dismiss(animated: true, completion: nil)
+                    presentee.dismiss(animated: true) { [self] in
+                        self.onDismiss?()
+                    }
                 }
             }
+        }
+
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+
+            DispatchQueue.main.async { [self] in
+                if let presentee = presentee, presentedViewController == nil {
+                    present(presentee, animated: true)
+                }
+            }
+        }
+
+        override func viewDidDisappear(_ animated: Bool) {
+            presentee = nil
+            super.viewDidDisappear(animated)
         }
     }
 
@@ -58,7 +83,11 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
 
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
-            presentationController?.containerView?.backgroundColor = .ui.backdrop
+            guard let controller = presentationController else { return }
+            // The two subviews of the container view at this point are _UIPopoverDimmingView and _UICutoutShadowView
+            controller.containerView?.subviews.first(where: {
+                String(cString: object_getClassName($0)).lowercased().contains("dimming")
+            })?.backgroundColor = .ui.backdrop
         }
 
         override func viewDidDisappear(_ animated: Bool) {
@@ -68,7 +97,7 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
 
         override func viewDidLayoutSubviews() {
             super.viewDidLayoutSubviews()
-            UIView.performWithoutAnimation {
+            UIView.performWithoutAnimation { [self] in
                 preferredContentSize = sizeThatFits(in: view.intrinsicContentSize)
             }
         }
@@ -86,6 +115,7 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
         ViewController()
     }
     func updateUIViewController(_ vc: ViewController, context: Context) {
+        vc.onDismiss = onDismiss
         if let presentee = vc.presentee {
             presentee.rootView = content
             if !isPresented {
@@ -108,6 +138,16 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
                 in: presentee.view.intrinsicContentSize)
             presentee.view.backgroundColor = backgroundColor
         }
+    }
+}
+
+extension EnvironmentValues {
+    private struct InPopoverKey: EnvironmentKey {
+        static let defaultValue = false
+    }
+    fileprivate(set) var inPopover: Bool {
+        get { self[InPopoverKey.self] }
+        set { self[InPopoverKey.self] = newValue }
     }
 }
 

@@ -10,12 +10,11 @@ struct TopBarView: View {
     let onSubmit: (String) -> Void
     let onShare: (UIView) -> Void
     let buildReloadMenu: () -> UIMenu?
+    let onNeevaMenuAction: (NeevaMenuAction) -> Void
+    let didTapNeevaMenu: () -> Void
 
     @EnvironmentObject private var chrome: TabChromeModel
     @EnvironmentObject private var location: LocationViewModel
-
-    // TODO: sync this state variable with TabToolbarView somehow
-    @State private var showingNeevaMenu = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,13 +27,8 @@ struct TopBarView: View {
                         onOverflow: { performTabToolbarAction(.overflow) },
                         onLongPress: { performTabToolbarAction(.longPressBackForward) }
                     ).tapTargetFrame()
-                    TabToolbarButtons.NeevaMenu(iconWidth: 24) {
-                        showingNeevaMenu = true
-                    }
-                    .tapTargetFrame()
-                    .presentAsPopover(isPresented: $showingNeevaMenu) {
-                        NeevaMenuView(menuAction: nil)
-                    }
+                    TopBarNeevaMenuButton(
+                        onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
                 }
                 TabLocationView(
                     onReload: onReload, onSubmit: onSubmit, onShare: onShare,
@@ -78,14 +72,16 @@ struct TopBarView_Previews: PreviewProvider {
             VStack {
                 TopBarView(
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
-                    onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })
+                    onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
+                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {})
                 Spacer()
             }.background(Color.red.ignoresSafeArea())
 
             VStack {
                 TopBarView(
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
-                    onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil })
+                    onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
+                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {})
                 Spacer()
             }
             .preferredColorScheme(.dark)

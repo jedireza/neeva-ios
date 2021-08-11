@@ -35,15 +35,12 @@ extension BrowserViewController {
 
             case .overflow:
                 let isPrivate = self.tabManager.selectedTab?.isPrivate ?? false
-                let image = self.screenshot()
 
                 self.showOverlaySheetViewController(
                     OverflowMenuViewController(
                         delegate: self,
-                        onDismiss: {
-                            self.hideOverlaySheetViewController()
-                            self.isNeevaMenuSheetOpen = false
-                        }, isPrivate: isPrivate, feedbackImage: image,
+                        onDismiss: self.hideOverlaySheetViewController,
+                        isPrivate: isPrivate,
                         chromeModel: self.chromeModel,
                         changedUserAgent: self.tabManager.selectedTab?.changedUserAgent
                     )

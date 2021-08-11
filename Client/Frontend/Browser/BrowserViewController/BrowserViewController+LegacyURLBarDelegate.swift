@@ -19,10 +19,11 @@ extension BrowserViewController: LegacyURLBarDelegate {
         }
 
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        self.updateFeedbackImage()
         let host = PopOverNeevaMenuViewController(
             delegate: self,
             source: button, isPrivate: isPrivate,
-            feedbackImage: screenshot())
+            menuAction: perform(neevaMenuAction:))
         self.popOverNeevaMenuViewController = host
         // log tap neeva menu
         ClientLogger.shared.logCounter(
@@ -36,26 +37,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
             host,
             animated: true,
             completion: nil)
-    }
-
-    func neevaMenuDidRequestToOpenPage(page: NeevaMenuButtonActions) {
-        switch page {
-        case .home:
-            switchToTabForURLOrOpen(NeevaConstants.appHomeURL)
-            break
-        case .spaces:
-            switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
-            break
-        case .referralPromo:
-            // log click referral promo from neeva menu
-            var attributes = EnvironmentHelper.shared.getAttributes()
-            attributes.append(ClientLogCounterAttribute(key: "source", value: "neeva menu"))
-            ClientLogger.shared.logCounter(
-                .OpenReferralPromo, attributes: attributes)
-            switchToTabForURLOrOpen(NeevaConstants.appReferralsURL)
-        default:
-            break
-        }
     }
 
     func urlBarDidPressStop() {

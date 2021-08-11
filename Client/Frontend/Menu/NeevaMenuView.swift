@@ -7,27 +7,27 @@ private enum NeevaMenuUX {
     static let innerSectionPadding: CGFloat = 8
 }
 
-public struct NeevaMenuView: View {
+struct NeevaMenuView: View {
     private let noTopPadding: Bool
-    private let menuAction: ((NeevaMenuButtonActions) -> Void)?
+    private let menuAction: (NeevaMenuAction) -> Void
 
     @State private var openSpacesPrompt = false
     @State private var openFeedbackPrompt = false
     @State private var openSettingsPrompt = false
     @Environment(\.isIncognito) private var isIncognito
 
-    public init(noTopPadding: Bool = false, menuAction: ((NeevaMenuButtonActions) -> Void)?) {
+    init(noTopPadding: Bool = false, menuAction: @escaping (NeevaMenuAction) -> Void) {
         self.noTopPadding = noTopPadding
         self.menuAction = menuAction
     }
 
-    public var body: some View {
+    var body: some View {
         // TODO: when making significant updates, migrate to OverlayGroupedStack
         VStack(alignment: .leading, spacing: GroupedCellUX.spacing) {
             VStack(spacing: NeevaMenuUX.innerSectionPadding) {
                 HStack(spacing: NeevaMenuUX.innerSectionPadding) {
                     NeevaMenuButtonView(label: "Home", nicon: .house) {
-                        self.menuAction!(NeevaMenuButtonActions.home)
+                        self.menuAction(.home)
                     }
                     .accessibilityIdentifier("NeevaMenu.Home")
                     .disabled(isIncognito)
@@ -37,7 +37,7 @@ public struct NeevaMenuView: View {
                         popoverSize: CGSize(width: 290, height: 150),
                         content: {
                             NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
-                                self.menuAction!(NeevaMenuButtonActions.spaces)
+                                self.menuAction(.spaces)
                             }
                             .accessibilityIdentifier("NeevaMenu.Spaces")
                             .disabled(isIncognito)
@@ -59,7 +59,7 @@ public struct NeevaMenuView: View {
                         popoverSize: CGSize(width: 290, height: 180),
                         content: {
                             NeevaMenuButtonView(label: "Settings", nicon: .gear) {
-                                self.menuAction!(NeevaMenuButtonActions.settings)
+                                self.menuAction(.settings)
                             }
                             .accessibilityIdentifier("NeevaMenu.Settings")
                         },
@@ -78,7 +78,7 @@ public struct NeevaMenuView: View {
                         popoverSize: CGSize(width: 290, height: 120),
                         content: {
                             NeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft) {
-                                self.menuAction!(NeevaMenuButtonActions.feedback)
+                                self.menuAction(.feedback)
                             }
                             .accessibilityIdentifier("NeevaMenu.Feedback")
                         },
@@ -99,7 +99,7 @@ public struct NeevaMenuView: View {
                         NeevaMenuRowButtonView(
                             label: "Win $5000 by inviting friends", isPromo: true
                         ) {
-                            self.menuAction!(NeevaMenuButtonActions.referralPromo)
+                            self.menuAction(.referralPromo)
                         }
                         .accentColor(Color.brand.adaptive.orange)
                         .accessibilityIdentifier("NeevaMenu.ReferralPromo")
@@ -108,7 +108,7 @@ public struct NeevaMenuView: View {
                     }
 
                     NeevaMenuRowButtonView(label: "History", symbol: .clock) {
-                        self.menuAction!(NeevaMenuButtonActions.history)
+                        self.menuAction(.history)
                     }
                     .accessibilityIdentifier("NeevaMenu.History")
 
@@ -169,8 +169,9 @@ public struct NeevaMenuView: View {
 
 struct NeevaMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuView(menuAction: nil).previewDevice("iPod touch (7th generation)").environment(
-            \.sizeCategory, .extraExtraExtraLarge)
-        NeevaMenuView(menuAction: nil).environment(\.isIncognito, true)
+        NeevaMenuView(menuAction: { _ in }).previewDevice("iPod touch (7th generation)")
+            .environment(
+                \.sizeCategory, .extraExtraExtraLarge)
+        NeevaMenuView(menuAction: { _ in }).environment(\.isIncognito, true)
     }
 }

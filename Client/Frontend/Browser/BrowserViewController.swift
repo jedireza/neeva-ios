@@ -67,8 +67,7 @@ class BrowserViewController: UIViewController {
         return controller
     }()
 
-    private(set) var historyViewController: UINavigationController?
-    private var overlaySheetViewController: UIViewController?
+    private(set) var overlaySheetViewController: UIViewController?
     private(set) lazy var simulateForwardViewController: SimulatedSwipeController? = {
         [unowned self] in
         guard FeatureFlag[.swipePlusPlus] else {
@@ -179,10 +178,20 @@ class BrowserViewController: UIViewController {
 
     let downloadQueue = DownloadQueue()
 
-    var isNeevaMenuSheetOpen = false
-    var popOverNeevaMenuViewController: PopOverNeevaMenuViewController? = nil
-    var isRotateSwitchDismiss = false  // keep track whether a dismiss is trigger by rotation
-    var isPreviousOrientationLandscape = false
+    var popOverNeevaMenuViewController: PopOverNeevaMenuViewController?
+
+    private(set) var feedbackImage: UIImage?
+
+    func updateFeedbackImage() {
+        UIGraphicsBeginImageContextWithOptions(view.window!.bounds.size, true, 0)
+        defer { UIGraphicsEndImageContext() }
+
+        if !view.window!.drawHierarchy(in: view.window!.bounds, afterScreenUpdates: false) {
+            // ???
+            print("failed to draw hierarchy")
+        }
+        feedbackImage = UIGraphicsGetImageFromCurrentImageContext()
+    }
 
     init(profile: Profile, tabManager: TabManager) {
         self.profile = profile
@@ -223,22 +232,12 @@ class BrowserViewController: UIViewController {
                 present(popover, animated: true, completion: nil)
             }
 
-            if isNeevaMenuSheetOpen {
-                if !(chromeModel.inlineToolbar && isPreviousOrientationLandscape) {
-                    if chromeModel.inlineToolbar {
-                        hideNeevaMenuSheet()
-                        // TODO: update for new url bar
-                        urlBar.legacy?.didClickNeevaMenu()
-                    } else {
-                        isRotateSwitchDismiss = true
-                        popOverNeevaMenuViewController?.dismiss(
-                            animated: true, completion: nil)
-                        showNeevaMenuSheet()
-                    }
-                }
+            if overlaySheetViewController is NeevaMenuViewController, chromeModel.inlineToolbar {
+                hideOverlaySheetViewController()
+            } else if let popover = popOverNeevaMenuViewController, !chromeModel.inlineToolbar {
+                popover.dismiss(animated: true, completion: nil)
+                popOverNeevaMenuViewController = nil
             }
-            self.isPreviousOrientationLandscape =
-                view.window!.windowScene!.interfaceOrientation.isLandscape
         } completion: { _ in
             self.scrollController.setMinimumZoom()
         }
@@ -648,8 +647,6 @@ class BrowserViewController: UIViewController {
 
         super.viewDidAppear(animated)
 
-        self.isPreviousOrientationLandscape =
-            view.window!.windowScene!.interfaceOrientation.isLandscape
         showQueuedAlertIfAvailable()
     }
 
@@ -837,26 +834,6 @@ class BrowserViewController: UIViewController {
             }
         } else if isZeroQueryURL {
             showZeroQuery(inline: false)
-        }
-    }
-
-    func showLibrary() {
-        if let presentedViewController = self.presentedViewController {
-            presentedViewController.dismiss(animated: true, completion: nil)
-        }
-
-        if let historyViewController = self.historyViewController {
-            present(historyViewController, animated: true, completion: nil)
-        } else {
-            let historyPanel = HistoryPanel(profile: profile)
-            historyPanel.delegate = self
-            historyPanel.accessibilityLabel = "History Panel"
-
-            let navigationController = UINavigationController(rootViewController: historyPanel)
-            navigationController.modalPresentationStyle = .formSheet
-            self.historyViewController = navigationController
-
-            present(navigationController, animated: true, completion: nil)
         }
     }
 
@@ -1480,7 +1457,7 @@ extension BrowserViewController: HistoryPanelDelegate {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType) {
         guard let tab = tabManager.selectedTab else { return }
         finishEditingAndSubmit(url, visitType: visitType, forTab: tab)
-        historyViewController?.dismiss(animated: true, completion: nil)
+        presentedViewController?.dismiss(animated: true, completion: nil)
     }
 
     func libraryPanel(didSelectURLString url: String, visitType: VisitType) {
@@ -1506,11 +1483,6 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, title: String?, description: String?) {
         chromeModel.setEditingLocation(to: false)
         showAddToSpacesSheet(url: url, title: title, description: description)
-    }
-
-    func zeroQueryPanelDidRequestToOpenLibrary() {
-        showLibrary()
-        view.endEditing(true)
     }
 
     func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType) {
@@ -1559,7 +1531,7 @@ extension BrowserViewController: TabManagerDelegate {
         _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
         isRestoring: Bool
     ) {
-        historyViewController?.dismiss(animated: false, completion: nil)
+        presentedViewController?.dismiss(animated: false, completion: nil)
 
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
         // and having multiple views with the same label confuses tests.
@@ -2046,37 +2018,19 @@ extension BrowserViewController {
 }
 
 extension BrowserViewController {
-
-    func screenshot() -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(view.window!.bounds.size, true, 0)
-        defer { UIGraphicsEndImageContext() }
-
-        if !view.window!.drawHierarchy(in: view.window!.bounds, afterScreenUpdates: false) {
-            // ???
-            print("failed to draw hierarchy")
-        }
-        return UIGraphicsGetImageFromCurrentImageContext()
-
-    }
-
     func showNeevaMenuSheet() {
         TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        let image = screenshot()
 
+        self.updateFeedbackImage()
         self.showOverlaySheetViewController(
             NeevaMenuViewController(
-                delegate: self,
+                menuAction: perform(neevaMenuAction:),
                 onDismiss: {
                     self.hideOverlaySheetViewController()
-                    self.isNeevaMenuSheetOpen = false
-                }, isPrivate: isPrivate, feedbackImage: image)
+                }, isPrivate: isPrivate)
         )
         self.dismissVC()
-    }
-
-    func hideNeevaMenuSheet() {
-        self.hideOverlaySheetViewController()
     }
 }
 

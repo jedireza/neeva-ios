@@ -7,12 +7,16 @@ import Shared
 extension BrowserViewController {
     func updateFindInPageVisibility(visible: Bool, tab: Tab? = nil) {
         if visible && findInPageViewController == nil {
-            findInPageViewController = FindInPageViewController(model: FindInPageModel(tab: tab), onDismiss: {
-                self.updateFindInPageVisibility(visible: false, tab: tab)
-            })
+            findInPageViewController = FindInPageViewController(
+                model: FindInPageModel(tab: tab),
+                onDismiss: {
+                    self.updateFindInPageVisibility(visible: false, tab: tab)
+                })
 
             showOverlaySheetViewController(findInPageViewController!)
-        } else {
+        } else if findInPageViewController != nil
+            && findInPageViewController == overlaySheetViewController
+        {
             let tab = tab ?? tabManager.selectedTab
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")

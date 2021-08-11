@@ -323,7 +323,7 @@
 		C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FB0C772321523D00031088 /* PageActionMenu.swift */; };
 		C9086050266693340049C072 /* CapsuleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908604F266693340049C072 /* CapsuleTextField.swift */; };
 		C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860512666BEE30049C072 /* SpacerExtensions.swift */; };
-		C9098F5B26AF452C00D2B5F4 /* TopBarShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9098F5A26AF452C00D2B5F4 /* TopBarShareButton.swift */; };
+		C9098F5B26AF452C00D2B5F4 /* TopBarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9098F5A26AF452C00D2B5F4 /* TopBarButtons.swift */; };
 		C9098F5E26AF48BC00D2B5F4 /* TabChromeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9098F5D26AF48BC00D2B5F4 /* TabChromeModel.swift */; };
 		C9098F7726B0539000D2B5F4 /* webpack.config.js in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7626B0539000D2B5F4 /* webpack.config.js */; };
 		C9157BB926BDDA4E009678D9 /* ViewRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9157BB826BDDA4E009678D9 /* ViewRef.swift */; };
@@ -474,6 +474,7 @@
 		C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F8EB45268126EB0042CFE7 /* LocationViewTouchHandler.swift */; };
 		C9FD1B1F26C1AD7C00926A70 /* TopBarHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91FA35B26B1959B00E82841 /* TopBarHost.swift */; };
 		C9FD1B2026C2F46B00926A70 /* SuggestionPositionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40692684D442003A6766 /* SuggestionPositionInfo.swift */; };
+		C9FD1B2226C312CB00926A70 /* BrowserViewController+NeevaMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FD1B2126C312CB00926A70 /* BrowserViewController+NeevaMenu.swift */; };
 		CD1CE85F24EDE66A00006DFB /* WKWebViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1CE85E24EDE66A00006DFB /* WKWebViewExtensions.swift */; };
 		CE7F11941F3CEEC800ABFC0B /* RemoteDevices.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F115E1F3CCEF900ABFC0B /* RemoteDevices.swift */; };
 		D006F2E32283307B0004D3AB /* KIF.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7B604F981C494F74006EEEC3 /* KIF.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1249,7 +1250,7 @@
 		C8FB0C772321523D00031088 /* PageActionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageActionMenu.swift; sourceTree = "<group>"; };
 		C908604F266693340049C072 /* CapsuleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleTextField.swift; sourceTree = "<group>"; };
 		C90860512666BEE30049C072 /* SpacerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerExtensions.swift; sourceTree = "<group>"; };
-		C9098F5A26AF452C00D2B5F4 /* TopBarShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarShareButton.swift; sourceTree = "<group>"; };
+		C9098F5A26AF452C00D2B5F4 /* TopBarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarButtons.swift; sourceTree = "<group>"; };
 		C9098F5D26AF48BC00D2B5F4 /* TabChromeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabChromeModel.swift; sourceTree = "<group>"; };
 		C9098F6126B0534400D2B5F4 /* .swiftformat.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = .swiftformat.json; sourceTree = "<group>"; };
 		C9098F6226B0534400D2B5F4 /* .mergify.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .mergify.yml; sourceTree = "<group>"; };
@@ -1401,6 +1402,7 @@
 		C9F8EB332680DA8A0042CFE7 /* TabToolbarHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabToolbarHost.swift; sourceTree = "<group>"; };
 		C9F8EB362680E33B0042CFE7 /* TabToolbarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabToolbarButtons.swift; sourceTree = "<group>"; };
 		C9F8EB45268126EB0042CFE7 /* LocationViewTouchHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewTouchHandler.swift; sourceTree = "<group>"; };
+		C9FD1B2126C312CB00926A70 /* BrowserViewController+NeevaMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+NeevaMenu.swift"; sourceTree = "<group>"; };
 		CD1CE85E24EDE66A00006DFB /* WKWebViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewExtensions.swift; sourceTree = "<group>"; };
 		CE7F115E1F3CCEF900ABFC0B /* RemoteDevices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteDevices.swift; sourceTree = "<group>"; };
 		D000661320472890009BA6F6 /* __firefox__.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = __firefox__.js; sourceTree = "<group>"; };
@@ -2332,6 +2334,7 @@
 				C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */,
 				BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */,
 				C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */,
+				C9FD1B2126C312CB00926A70 /* BrowserViewController+NeevaMenu.swift */,
 				67B0AAF726BB3F63000731E0 /* BrowserViewController+OverflowMenuDelegate.swift */,
 			);
 			path = BrowserViewController;
@@ -2472,7 +2475,7 @@
 			children = (
 				C93EFEE3267150ED000396B5 /* LocationView */,
 				C91FA35B26B1959B00E82841 /* TopBarHost.swift */,
-				C9098F5A26AF452C00D2B5F4 /* TopBarShareButton.swift */,
+				C9098F5A26AF452C00D2B5F4 /* TopBarButtons.swift */,
 				C91FA35C26B1959B00E82841 /* TopBarView.swift */,
 			);
 			path = TopBar;
@@ -4585,7 +4588,7 @@
 				C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */,
 				C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */,
 				0B62EFD21AD63CD100ACB9CD /* Clearables.swift in Sources */,
-				C9098F5B26AF452C00D2B5F4 /* TopBarShareButton.swift in Sources */,
+				C9098F5B26AF452C00D2B5F4 /* TopBarButtons.swift in Sources */,
 				C40046FA1CF8E0B200B08303 /* BackForwardListAnimator.swift in Sources */,
 				C93EFEE5267150FD000396B5 /* TabLocationView.swift in Sources */,
 				DD31E0FB1B382B520077078A /* TabPrintPageRenderer.swift in Sources */,
@@ -4699,6 +4702,7 @@
 				C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */,
 				4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */,
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
+				C9FD1B2226C312CB00926A70 /* BrowserViewController+NeevaMenu.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
