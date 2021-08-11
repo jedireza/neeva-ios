@@ -26,13 +26,13 @@ class TestSQLiteMetadata: XCTestCase {
     }
 
     func testInsertMetadata() {
-        let site = "http://test.com"
+        let site: URL = "http://test.com"
 
         let page = PageMetadata(
             id: nil, siteURL: site, mediaURL: "http://image.com",
             title: "Test", description: "Test Description", type: nil, providerName: nil)
         self.metadata.storeMetadata(
-            page, forPageURL: site.asURL!, expireAt: Date.nowMilliseconds() + 3000
+            page, forPageURL: site, expireAt: Date.nowMilliseconds() + 3000
         ).succeeded()
         let results = metadataFromDB(self.db).value.successValue!
         XCTAssertEqual(results.count, 1)
@@ -41,8 +41,8 @@ class TestSQLiteMetadata: XCTestCase {
     }
 
     func testDuplicateCacheKeyInsert() {
-        let siteA = "http://test.com/site/A"
-        let siteB = "http://test.com/site/B"
+        let siteA: URL = "http://test.com/site/A"
+        let siteB: URL = "http://test.com/site/B"
 
         let metadataA1 = PageMetadata(
             id: nil, siteURL: siteA, mediaURL: nil,
@@ -55,7 +55,7 @@ class TestSQLiteMetadata: XCTestCase {
             title: "Second Visit", description: "A new description", type: nil, providerName: nil)
 
         self.metadata.storeMetadata(
-            metadataA1, forPageURL: siteA.asURL!, expireAt: Date.nowMilliseconds() + 3000
+            metadataA1, forPageURL: siteA, expireAt: Date.nowMilliseconds() + 3000
         ).succeeded()
 
         let initialResults = metadataFromDB(self.db).value.successValue!
@@ -68,10 +68,10 @@ class TestSQLiteMetadata: XCTestCase {
         XCTAssertNil(initialA.mediaURL)
 
         self.metadata.storeMetadata(
-            metadataB, forPageURL: siteB.asURL!, expireAt: Date.nowMilliseconds() + 3000
+            metadataB, forPageURL: siteB, expireAt: Date.nowMilliseconds() + 3000
         ).succeeded()
         self.metadata.storeMetadata(
-            metadataA2, forPageURL: siteA.asURL!, expireAt: Date.nowMilliseconds() + 3000
+            metadataA2, forPageURL: siteA, expireAt: Date.nowMilliseconds() + 3000
         ).succeeded()
 
         let results = metadataFromDB(self.db).value.successValue!
@@ -92,12 +92,12 @@ class TestSQLiteMetadata: XCTestCase {
 
     func testExpirationPurging() {
         let baseTime = Date.nowMilliseconds()
-        let siteA = "http://test.com/site/A"
+        let siteA: URL = "http://test.com/site/A"
         let metadataA = PageMetadata(
             id: nil, siteURL: siteA, mediaURL: nil,
             title: "Test", description: "Test Description", type: nil, providerName: nil)
         // Set expiration to base
-        self.metadata.storeMetadata(metadataA, forPageURL: siteA.asURL!, expireAt: baseTime - 1000)
+        self.metadata.storeMetadata(metadataA, forPageURL: siteA, expireAt: baseTime - 1000)
             .succeeded()
         self.metadata.deleteExpiredMetadata().succeeded()
 
@@ -117,7 +117,7 @@ private func removeAllMetadata(_ db: BrowserDB) -> Success {
 
 private func pageMetadataFactory(_ row: SDRow) -> PageMetadata {
     let id = row["id"] as! Int
-    let siteURL = row["site_url"] as! String
+    let siteURL = (row["site_url"] as! String).asURL!
     let mediaURL = row["media_url"] as? String
     let title = row["title"] as? String
     let description = row["description"] as? String

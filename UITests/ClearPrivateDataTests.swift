@@ -127,7 +127,10 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         XCTAssertEqual(cookies.sessionStorage, "null")
     }
 
-    func testClearsCache() {
+    func testClearsCache() throws {
+        if isiPad() {
+            try skipTest(issue: 1343, "Fails on iPad on CI only")
+        }
         let cachedServer = CachedPageServer()
         let cacheRoot = cachedServer.start()
         let url = "\(cacheRoot)/cachedPage.html"

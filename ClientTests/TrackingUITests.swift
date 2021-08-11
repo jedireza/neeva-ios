@@ -164,7 +164,7 @@ class TrackingUITests: XCTestCase {
         let manager = TabManager(profile: profile, imageStore: nil)
         let tab = manager.addTab()
         manager.selectTab(tab)
-        tab.url = URL(string: "https://neeva.com")
+        tab.setURL("https://neeva.com")
         model = TrackingStatsViewModel(tabManager: manager)
         model.preventTrackersForCurrentPage = false
         XCTAssertTrue(Defaults[.unblockedDomains].contains("neeva.com"))
@@ -177,7 +177,7 @@ class TrackingUITests: XCTestCase {
         let manager = TabManager(profile: profile, imageStore: nil)
         let tab = manager.addTab()
         manager.selectTab(tab)
-        tab.url = URL(string: "https://neeva.com")
+        tab.setURL("https://neeva.com")
         model = TrackingStatsViewModel(tabManager: manager)
         let ui = TrackingMenuView().environmentObject(model)
         let rowButton = try ui.inspect().find(TrackingMenuProtectionRowButton.self).actualView()

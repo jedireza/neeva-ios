@@ -61,6 +61,11 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "KIF_SCREENSHOTS"
+            value = "$(PROJECT_DIR)/ui-test-screenshots"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "TEST_ACCOUNT_USERNAME"
             value = "$(TEST_ACCOUNT_USERNAME)"
             isEnabled = "YES">

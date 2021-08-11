@@ -72,11 +72,7 @@ extension UserActivityHandler: TabEventHandler {
     }
 
     func tab(_ tab: Tab, didLoadPageMetadata metadata: PageMetadata) {
-        guard let url = URL(string: metadata.siteURL) else {
-            return
-        }
-
-        setUserActivityForTab(tab, url: url)
+        setUserActivityForTab(tab, url: metadata.siteURL)
     }
 
     func tabDidClose(_ tab: Tab) {

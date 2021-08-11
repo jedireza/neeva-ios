@@ -1348,7 +1348,7 @@ extension BrowserViewController: TabDelegate {
             // didCommitNavigation to confirm the page load.
             .filter { tab.url?.origin == $0?.origin }
             .sink { [self] url in
-                tab.url = url
+                tab.setURL(url)
 
                 if tab === tabManager.selectedTab && !tab.restoring {
                     updateUIForReaderHomeStateForTab(tab)

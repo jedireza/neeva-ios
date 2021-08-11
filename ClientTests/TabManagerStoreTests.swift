@@ -42,7 +42,7 @@ class TabManagerStoreTests: XCTestCase {
         let tab = Tab(
             bvc: BrowserViewController.foregroundBVC(), configuration: configuration,
             isPrivate: isPrivate)
-        tab.url = URL(string: "http://yahoo.com")!
+        tab.setURL("http://yahoo.com")
         manager.configureTab(
             tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false)
         tab.sessionData = SessionData(

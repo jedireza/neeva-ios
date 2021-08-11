@@ -20,7 +20,7 @@ enum MetadataKeys: String {
  */
 public struct PageMetadata {
     public let id: Int?
-    public let siteURL: String
+    public let siteURL: URL
     public let mediaURL: String?
     public let title: String?
     public let description: String?
@@ -39,7 +39,7 @@ public struct PageMetadata {
     }
 
     public init(
-        id: Int?, siteURL: String, mediaURL: String?, title: String?, description: String?,
+        id: Int?, siteURL: URL, mediaURL: String?, title: String?, description: String?,
         type: String?, providerName: String?, faviconURL: String? = nil, language: String? = nil,
         keywords: String? = nil
     ) {
@@ -56,7 +56,7 @@ public struct PageMetadata {
     }
 
     public static func fromDictionary(_ dict: [String: Any]) -> PageMetadata? {
-        guard let siteURL = dict[MetadataKeys.pageURL.rawValue] as? String else {
+        guard let siteURL = (dict[MetadataKeys.pageURL.rawValue] as? String)?.asURL else {
             return nil
         }
 

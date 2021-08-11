@@ -40,7 +40,7 @@ extension SavedTab {
 
     func configureSavedTabUsing(_ tab: Tab, imageStore: DiskImageStore? = nil) -> Tab {
         // Since this is a restored tab, reset the URL to be loaded as that will be handled by the SessionRestoreHandler
-        tab.url = nil
+        tab.setURL(nil)
 
         if let faviconURL = faviconURL {
             let icon = Favicon(url: faviconURL, date: Date())

@@ -418,7 +418,7 @@ extension URL {
 public struct InternalURL {
     public static let uuid = UUID().uuidString
     public static let scheme = "internal"
-    public static let baseUrl = "\(scheme)://local"
+    public static let baseUrl = "\(scheme)://local".asURL!
     public enum Path: String {
         case errorpage = "errorpage"
         case sessionrestore = "sessionrestore"
@@ -468,15 +468,15 @@ public struct InternalURL {
         return (url.getQuery()[InternalURL.Param.uuidkey.rawValue] ?? "") == InternalURL.uuid
     }
 
-    public var stripAuthorization: String {
-        guard var components = URLComponents(string: url.absoluteString),
+    public var stripAuthorization: URL? {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true),
             let items = components.queryItems
-        else { return url.absoluteString }
+        else { return url }
         components.queryItems = items.filter { !Param.uuidkey.matches($0.name) }
         if let items = components.queryItems, items.count == 0 {
             components.queryItems = nil  // This cleans up the url to not end with a '?'
         }
-        return components.url?.absoluteString ?? ""
+        return components.url
     }
 
     public static func authorize(url: URL) -> URL? {
@@ -538,9 +538,7 @@ public struct InternalURL {
     /// Return the path after "about/" in the URI.
     public var aboutComponent: String? {
         let aboutPath = "/about/"
-        guard let url = URL(string: stripAuthorization) else {
-            return nil
-        }
+        guard let url = stripAuthorization else { return nil }
 
         if url.path.hasPrefix(aboutPath) {
             return String(url.path.dropFirst(aboutPath.count))

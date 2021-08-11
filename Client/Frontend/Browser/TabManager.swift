@@ -400,7 +400,7 @@ class TabManager: NSObject, ObservableObject {
 
         // If network is not available webView(_:didCommit:) is not going to be called
         // We should set request url in order to show url in url bar even no network
-        tab.url = request?.url
+        tab.setURL(request?.url)
 
         insertTab(tab, atIndex: atIndex, parent: parent)
 
@@ -415,9 +415,9 @@ class TabManager: NSObject, ObservableObject {
         if let request = request {
             tab.loadRequest(request)
         } else if !isPopup {
-            let url = URL(string: "\(InternalURL.baseUrl)/about/home")!
+            let url = InternalURL.baseUrl / "about" / "home"
             tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)
-            tab.url = url
+            tab.setURL(url)
         }
 
         if flushToDisk {

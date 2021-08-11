@@ -10,7 +10,7 @@ import Shared
 /// InternalURL helps  encapsulate all internal scheme logic for urls rather than using URL extension. Extensions to built-in classes should be more minimal that what was being done previously.
 /// This migration was required mainly for above PR which is related to a PI request that reduces security risk. Also, this particular method helps in cleaning up / migrating old localhost:6571 URLs to internal: SessionData urls
 private func migrate(urls: [URL]) -> [URL] {
-    return urls.compactMap { url in
+    return urls.map { url in
         var url = url
         let port = AppInfo.webserverPort
         [
@@ -36,7 +36,7 @@ private func migrate(urls: [URL]) -> [URL] {
         }
 
         if let internalUrl = InternalURL(url), internalUrl.isAuthorized,
-            let stripped = URL(string: internalUrl.stripAuthorization)
+            let stripped = internalUrl.stripAuthorization
         {
             return stripped
         }

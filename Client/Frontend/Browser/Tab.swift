@@ -37,12 +37,7 @@ protocol TabDelegate {
     @objc optional func tab(_ tab: Tab, didCreateWebView webView: WKWebView)
 }
 
-@objc
-protocol URLChangeDelegate {
-    func tab(_ tab: Tab, urlDidChangeTo url: URL)
-}
-
-class Tab: NSObject {
+class Tab: NSObject, ObservableObject {
     let isPrivate: Bool
 
     // PageMetadata is derived from the page content itself, and as such lags behind the
@@ -66,16 +61,13 @@ class Tab: NSObject {
     }
 
     var canonicalURL: URL? {
-        if let string = pageMetadata?.siteURL,
-            let siteURL = URL(string: string)
-        {
-
+        if let siteURL = pageMetadata?.siteURL {
             // If the canonical URL from the page metadata doesn't contain the
             // "#" fragment, check if the tab's URL has a fragment and if so,
             // append it to the canonical URL.
             if siteURL.fragment == nil,
                 let fragment = self.url?.fragment,
-                let siteURLWithFragment = URL(string: "\(string)#\(fragment)")
+                let siteURLWithFragment = URL(string: "\(siteURL.absoluteString)#\(fragment)")
             {
                 return siteURLWithFragment
             }
@@ -87,30 +79,40 @@ class Tab: NSObject {
 
     var userActivity: NSUserActivity?
 
-    var webView: WKWebView?
+    private(set) var webView: WKWebView?
     var tabDelegate: TabDelegate?
     /// This set is cleared out when the tab is closed, ensuring that any subscriptions are invalidated.
     var webViewSubscriptions: Set<AnyCancellable> = []
-    weak var urlDidChangeDelegate: URLChangeDelegate?  // TODO: generalize this.
-    var favicons = [Favicon]() {
-        didSet {
-            updateFaviconCache()
-        }
-    }
+    private var subscriptions: Set<AnyCancellable> = []
+
+    @Published var favicons: [Favicon] = []
     var lastExecutedTime: Timestamp?
     var sessionData: SessionData?
     fileprivate var lastRequest: URLRequest?
     var restoring: Bool = false
     var pendingScreenshot = false
-    var url: URL? {
-        didSet {
-            if let internalUrl = InternalURL(url), internalUrl.isAuthorized {
-                url = URL(string: internalUrl.stripAuthorization)
-            }
+
+    // MARK: Properties mirrored from webView
+    @Published private(set) var isLoading = false
+    @Published private(set) var estimatedProgress: Double = 0
+    @Published private(set) var canGoBack = false
+    @Published private(set) var canGoForward = false
+    @Published private(set) var title: String?
+    /// For security reasons, the URL may differ from the web view’s URL.
+    @Published private(set) var url: URL?
+
+    func setURL(_ newValue: URL?) {
+        if let internalUrl = InternalURL(newValue), internalUrl.isAuthorized {
+            url = internalUrl.stripAuthorization
+        } else {
+            url = newValue
         }
     }
+
+    var backList: [WKBackForwardListItem]? { webView?.backForwardList.backList }
+    var forwardList: [WKBackForwardListItem]? { webView?.backForwardList.forwardList }
+
     var isEditing: Bool = false
-    var currentFaviconUrl: URL?
 
     // When viewing a non-HTML content type in the webview (like a PDF document), this var will
     // be non-nil and hold a reference to a tempfile containing the downloaded content so it can
@@ -168,6 +170,17 @@ class Tab: NSObject {
         super.init()
 
         debugTabCount += 1
+
+        $favicons
+            // grab the display favicon whenever the set of favicons change
+            .map { [unowned self] _ in displayFavicon?.url }
+            .removeDuplicates()
+            // filter out nil URLs and URLs with invalid baseDomains,
+            // and grab the baseDomain as a cache key
+            .compactMap { url in url?.baseDomain.map { domain in (url, domain) } }
+            // tell the favicon fetcher to cache the appropriate favicon
+            .sink(receiveValue: FaviconFetcher.downloadFaviconAndCache(imageURL:imageKey:))
+            .store(in: &subscriptions)
     }
 
     class func toRemoteTab(_ tab: Tab) -> RemoteTab? {
@@ -240,16 +253,37 @@ class Tab: NSObject {
             restore(webView)
 
             self.webView = webView
-            webView.publisher(for: \.url, options: .new)
-                .compactMap { $0 }
-                .sink { [weak urlDidChangeDelegate] in
-                    urlDidChangeDelegate?.tab(self, urlDidChangeTo: $0)
+
+            send(webView: \.isLoading, to: \.isLoading)
+            send(webView: \.canGoBack, to: \.canGoBack)
+            send(webView: \.canGoForward, to: \.canGoForward)
+            send(webView: \.title, to: \.title)
+
+            $isLoading
+                .combineLatest(webView.publisher(for: \.estimatedProgress, options: .new))
+                .sink { isLoading, progress in
+                    // Unfortunately WebKit can report partial progress when isLoading is false! That can
+                    // happen when a load is cancelled. Avoid reporting partial progress here, but take
+                    // care to let the case of progress complete (value of 1) through.
+                    self.estimatedProgress = (isLoading || progress == 1) ? progress : 0
                 }
                 .store(in: &webViewSubscriptions)
 
             UserScriptManager.shared.injectUserScriptsIntoTab(self)
             tabDelegate?.tab?(self, didCreateWebView: webView)
         }
+    }
+
+    /// Helper function to observe changes to a given key path on the web view and assign
+    /// them to a property on `self`. Stores the subscription in `webViewSubscriptions`
+    /// for future disposal in `close()`
+    private func send<T>(
+        webView keyPath: KeyPath<WKWebView, T>,
+        to localKeyPath: ReferenceWritableKeyPath<Tab, T>
+    ) {
+        webView?.publisher(for: keyPath, options: [.initial, .new])
+            .assign(to: localKeyPath, on: self)
+            .store(in: &webViewSubscriptions)
     }
 
     func restore(_ webView: WKWebView) {
@@ -328,25 +362,6 @@ class Tab: NSObject {
         webView = nil
     }
 
-    var loading: Bool {
-        return webView?.isLoading ?? false
-    }
-
-    var estimatedProgress: Double {
-        // Unfortunately WebKit can report partial progress when isLoading is false! That can
-        // happen when a load is cancelled. Avoid reporting partial progress here, but take
-        // care to let the case of progress complete (value of 1) through.
-        return (loading || webView?.estimatedProgress == 1) ? webView?.estimatedProgress ?? 0 : 0
-    }
-
-    var backList: [WKBackForwardListItem]? {
-        return webView?.backForwardList.backList
-    }
-
-    var forwardList: [WKBackForwardListItem]? {
-        return webView?.backForwardList.forwardList
-    }
-
     var historyList: [URL] {
         func listToUrl(_ item: WKBackForwardListItem) -> URL { return item.url }
         var tabs = self.backList?.map(listToUrl) ?? [URL]()
@@ -356,12 +371,8 @@ class Tab: NSObject {
         return tabs
     }
 
-    var title: String? {
-        return webView?.title
-    }
-
     var displayTitle: String {
-        if let title = webView?.title, !title.isEmpty {
+        if let title = title, !title.isEmpty {
             return title
         }
 
@@ -393,17 +404,7 @@ class Tab: NSObject {
         return lastTitle
     }
 
-    var displayFavicon: Favicon? {
-        return favicons.max { $0.width! < $1.width! }
-    }
-
-    var canGoBack: Bool {
-        return webView?.canGoBack ?? false
-    }
-
-    var canGoForward: Bool {
-        return webView?.canGoForward ?? false
-    }
+    var displayFavicon: Favicon? { favicons.max { $0.width! < $1.width! } }
 
     func goBack() {
         _ = webView?.goBack()
@@ -529,32 +530,8 @@ class Tab: NSObject {
         return sequence(first: parent) { $0?.parent }.contains { $0 == ancestor }
     }
 
-    func observeURLChanges(delegate: URLChangeDelegate) {
-        self.urlDidChangeDelegate = delegate
-    }
-
-    func removeURLChangeObserver(delegate: URLChangeDelegate) {
-        if let existing = self.urlDidChangeDelegate, existing === delegate {
-            self.urlDidChangeDelegate = nil
-        }
-    }
-
     func applyTheme() {
         UITextField.appearance().keyboardAppearance = isPrivate ? .dark : .default
-    }
-
-    func updateFaviconCache() {
-        guard let faviconUrl = displayFavicon?.url, let baseDomain = url?.baseDomain else {
-            return
-        }
-
-        if currentFaviconUrl == nil {
-            currentFaviconUrl = faviconUrl
-        } else if !faviconUrl.isEqual(currentFaviconUrl!) {
-            return
-        }
-
-        FaviconFetcher.downloadFaviconAndCache(imageURL: currentFaviconUrl, imageKey: baseDomain)
     }
 }
 

@@ -122,7 +122,7 @@ extension BrowserViewController: WKUIDelegate {
         let newTab = tabManager.addPopupForParentTab(
             bvc: bvc, parentTab: parentTab, configuration: configuration)
 
-        newTab.url = .aboutBlank
+        newTab.setURL(.aboutBlank)
 
         return newTab.webView
     }
@@ -886,7 +886,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = tabManager[webView] else { return }
-        tab.url = webView.url
+        tab.setURL(webView.url)
 
         // increment page load count
         if let url = webView.url {

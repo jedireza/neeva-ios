@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import Defaults
 import Foundation
 import Shared
@@ -10,7 +11,7 @@ public enum ClipboardBarToastUX {
     static let ToastDelay = DispatchTimeInterval.milliseconds(4000)
 }
 
-class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
+class ClipboardBarDisplayHandler: NSObject {
     weak var bvc: BrowserViewController?
     weak var tabManager: TabManager?
     private var sessionStarted = true
@@ -18,6 +19,7 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     private var firstTabLoaded = false
     private var lastDisplayedURL: String?
     private weak var firstTab: Tab?
+    private var subscription: AnyCancellable?
 
     init(tabManager: TabManager) {
         self.tabManager = tabManager
@@ -59,13 +61,28 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
     }
 
     private func observeURLForFirstTab(firstTab: Tab) {
-        if firstTab.webView == nil {
+        guard let webView = firstTab.webView else {
             // Nothing to do; bail out.
             firstTabLoaded = true
             return
         }
         self.firstTab = firstTab
-        firstTab.observeURLChanges(delegate: self)
+        subscription = webView.publisher(for: \.url, options: .new).sink { [unowned self] url in
+            // Ugly hack to ensure we wait until we're finished restoring the session on the first tab
+            // before checking if we should display the clipboard bar.
+            guard
+                let url = url,
+                sessionRestored,
+                !url.absoluteString.hasPrefix(
+                    "\(WebServer.sharedInstance.base)/about/sessionrestore?history=")
+            else {
+                return
+            }
+
+            subscription = nil
+            firstTabLoaded = true
+            checkIfShouldDisplayBar()
+        }
     }
 
     func didRestoreSession() {
@@ -79,21 +96,6 @@ class ClipboardBarDisplayHandler: NSObject, URLChangeDelegate {
         }
 
         sessionRestored = true
-        checkIfShouldDisplayBar()
-    }
-
-    func tab(_ tab: Tab, urlDidChangeTo url: URL) {
-        // Ugly hack to ensure we wait until we're finished restoring the session on the first tab
-        // before checking if we should display the clipboard bar.
-        guard sessionRestored,
-            !url.absoluteString.hasPrefix(
-                "\(WebServer.sharedInstance.base)/about/sessionrestore?history=")
-        else {
-            return
-        }
-
-        tab.removeURLChangeObserver(delegate: self)
-        firstTabLoaded = true
         checkIfShouldDisplayBar()
     }
 

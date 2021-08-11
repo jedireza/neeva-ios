@@ -156,7 +156,7 @@ class TabScrollingController: NSObject {
 
 extension TabScrollingController {
     fileprivate func tabIsLoading() -> Bool {
-        return tab?.loading ?? true
+        return tab?.isLoading ?? true
     }
 
     fileprivate func isBouncingAtBottom() -> Bool {
