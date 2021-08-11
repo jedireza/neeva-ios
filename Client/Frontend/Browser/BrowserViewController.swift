@@ -142,8 +142,6 @@ class BrowserViewController: UIViewController {
     private(set) var searchController: SearchViewController?
     private(set) var screenshotHelper: ScreenshotHelper!
     private var zeroQueryIsInline = false
-    /// All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
-    let alertStackView = UIStackView()
     private var urlFromAnotherApp: UrlToOpenModel?
     private var isCrashAlertShowing: Bool = false
 
@@ -269,14 +267,6 @@ class BrowserViewController: UIViewController {
     func shouldShowFooterForTraitCollection(_ previousTraitCollection: UITraitCollection) -> Bool {
         return previousTraitCollection.verticalSizeClass != .compact
             && previousTraitCollection.horizontalSizeClass != .regular
-    }
-
-    func toggleSnackBarVisibility(show: Bool) {
-        if show {
-            UIView.animate(withDuration: 0.1, animations: { self.alertStackView.isHidden = false })
-        } else {
-            alertStackView.isHidden = true
-        }
     }
 
     func updateToolbarStateForTraitCollection(
@@ -460,11 +450,8 @@ class BrowserViewController: UIViewController {
             self.urlBar = .legacy(legacyURLBar)
         }
 
-        view.addSubview(alertStackView)
         footer = UIView()
         view.addSubview(footer)
-        alertStackView.axis = .vertical
-        alertStackView.alignment = .center
 
         clipboardBarDisplayHandler = ClipboardBarDisplayHandler(tabManager: tabManager)
         clipboardBarDisplayHandler?.bvc = self
@@ -473,7 +460,6 @@ class BrowserViewController: UIViewController {
         scrollController.readerModeBar = readerModeBar
         scrollController.header = urlBar.view
         scrollController.footer = footer
-        scrollController.snackBars = alertStackView
 
         self.updateToolbarStateForTraitCollection(self.traitCollection)
 
@@ -764,21 +750,6 @@ class BrowserViewController: UIViewController {
         }
 
         urlBar.view.setNeedsUpdateConstraints()
-
-        alertStackView.snp.remakeConstraints { make in
-            make.centerX.equalTo(self.view)
-            make.width.equalTo(self.view.safeArea.width)
-            if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view),
-                keyboardHeight > 0
-            {
-                make.bottom.equalTo(self.view).offset(-keyboardHeight)
-            } else if let toolbar = self.toolbar {
-                make.bottom.lessThanOrEqualTo(toolbar.view.snp.top)
-                make.bottom.lessThanOrEqualTo(self.view.safeArea.bottom)
-            } else {
-                make.bottom.equalTo(self.view.safeArea.bottom)
-            }
-        }
 
         cardGridViewController.view.snp.remakeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
@@ -1995,10 +1966,6 @@ extension BrowserViewController: KeyboardHelperDelegate {
     ) {
         keyboardState = state
         updateViewConstraints()
-
-        state.animateAlongside {
-            self.alertStackView.layoutIfNeeded()
-        }
     }
 
     func keyboardHelper(
@@ -2012,10 +1979,6 @@ extension BrowserViewController: KeyboardHelperDelegate {
     ) {
         keyboardState = nil
         updateViewConstraints()
-
-        state.animateAlongside {
-            self.alertStackView.layoutIfNeeded()
-        }
     }
 }
 
