@@ -30,7 +30,6 @@ class ZeroQueryModel: ObservableObject {
     @Published var isPrivate = false
     @Published var promoCard: PromoCardType?
     @Published var openedFrom: ZeroQueryOpenedLocation?
-    @Published var isHidden = true
 
     let profile: Profile
     let shareURLHandler: (URL) -> Void
@@ -135,6 +134,5 @@ class ZeroQueryModel: ObservableObject {
     public func reset() {
         isLazyTab = false
         openedFrom = nil
-        isHidden = true
     }
 }

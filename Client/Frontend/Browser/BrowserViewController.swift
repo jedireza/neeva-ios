@@ -30,6 +30,11 @@ struct UrlToOpenModel {
 
 class BrowserViewController: UIViewController {
     private(set) var introViewController: IntroViewController?
+    private var searchQueryModel = SearchQueryModel()
+    private(set) lazy var suggestionModel: SuggestionModel = { [unowned self] in
+        return SuggestionModel(profile: self.profile, queryModel: self.searchQueryModel)
+    }()
+
     private(set) lazy var zeroQueryModel: ZeroQueryModel = {
         [unowned self] in
         let model = ZeroQueryModel(
@@ -100,7 +105,9 @@ class BrowserViewController: UIViewController {
     private(set) lazy var tabContentHost: TabContentHost = {
         [unowned self] in
         return TabContentHost(
-            tabManager: self.tabManager, zeroQueryModel: self.zeroQueryModel)
+            tabManager: self.tabManager,
+            zeroQueryModel: self.zeroQueryModel,
+            suggestionModel: self.suggestionModel)
     }()
 
     var findInPageViewController: FindInPageViewController?
@@ -138,9 +145,7 @@ class BrowserViewController: UIViewController {
     private let legacyStatusBarOverlay = UIView()
     let chromeModel = TabChromeModel()
     private(set) var toolbar: TabToolbarHost?
-    private(set) var searchController: SearchViewController?
     private(set) var screenshotHelper: ScreenshotHelper!
-    private var zeroQueryIsInline = false
     private var urlFromAnotherApp: UrlToOpenModel?
     private var isCrashAlertShowing: Bool = false
 
@@ -357,7 +362,6 @@ class BrowserViewController: UIViewController {
         webViewContainerBackdrop.alpha = 1
         tabContentHost.view.alpha = 0
         urlBar?.legacy?.locationContainer.alpha = 0
-        zeroQueryModel.isHidden = true
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
         presentedViewController?.view.alpha = 0
     }
@@ -374,11 +378,6 @@ class BrowserViewController: UIViewController {
                     1
                 self.presentedViewController?.view.alpha = 1
                 self.view.backgroundColor = UIColor.clear
-
-                // checks if zeroquery is open
-                if self.zeroQueryModel.openedFrom != nil {
-                    self.zeroQueryModel.isHidden = false
-                }
             },
             completion: { _ in
                 self.webViewContainerBackdrop.alpha = 0
@@ -436,8 +435,8 @@ class BrowserViewController: UIViewController {
             self.urlBar = .modern(host)
         } else {
             let legacyURLBar = LegacyURLBarView(
-                profile: profile, chromeModel: chromeModel,
-                gridModel: gridModel,
+                profile: profile, chromeModel: chromeModel, queryModel: searchQueryModel,
+                suggestionModel: suggestionModel, gridModel: gridModel,
                 trackingStatsModel: trackingStatsModel,
                 performAction: self.performTabToolbarAction,
                 makeTabsMenu: { [weak self] in self?.tabToolbarTabsMenu() })
@@ -759,21 +758,17 @@ class BrowserViewController: UIViewController {
     }
 
     public func showZeroQuery(
-        inline: Bool,
         openedFrom: ZeroQueryOpenedLocation? = nil,
         isLazyTab: Bool = false
     ) {
         // makes sure zeroQuery isn't already open
         guard zeroQueryModel.openedFrom == nil else { return }
 
-        zeroQueryIsInline = inline
-
         if !cardGridViewController.gridModel.isHidden {
             cardGridViewController.gridModel.hideWithNoAnimation()
         }
 
         if isLazyTab {
-            zeroQueryModel.isLazyTab = true
             chromeModel.setEditingLocation(to: true)
             urlBar.shared.queryModel.value = ""
         }
@@ -782,9 +777,11 @@ class BrowserViewController: UIViewController {
             urlBar.shared.queryModel.value = ""
         }
 
-        zeroQueryModel.isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        zeroQueryModel.openedFrom = openedFrom
-        zeroQueryModel.isHidden = false
+        self.tabContentHost.updateContent(
+            .showZeroQuery(
+                isIncognito: tabManager.selectedTab?.isPrivate ?? false,
+                isLazyTab: isLazyTab,
+                openedFrom))
     }
 
     public func closeLazyTab() {
@@ -798,7 +795,7 @@ class BrowserViewController: UIViewController {
                 break
             }
 
-            self.zeroQueryModel.reset()
+            self.tabContentHost.updateContent(.hideZeroQuery)
         }
     }
 
@@ -806,7 +803,7 @@ class BrowserViewController: UIViewController {
         chromeModel.setEditingLocation(to: false)
 
         DispatchQueue.main.async {
-            self.zeroQueryModel.reset()
+            self.tabContentHost.updateContent(.hideZeroQuery)
 
             // Refresh the reading view toolbar since the article record may have changed
             if let readerMode = self.tabManager.selectedTab?.getContentScript(
@@ -826,14 +823,14 @@ class BrowserViewController: UIViewController {
             }
 
             if isZeroQueryURL {
-                showZeroQuery(inline: true)
+                showZeroQuery()
             } else if !url.absoluteString.hasPrefix(
                 "\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)")
             {
                 hideZeroQuery()
             }
         } else if isZeroQueryURL {
-            showZeroQuery(inline: false)
+            showZeroQuery()
         }
     }
 
@@ -864,62 +861,8 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    fileprivate func createSearchControllerIfNeeded() {
-        guard self.searchController == nil else {
-            return
-        }
-
-        let searchController = SearchViewController(
-            profile: profile,
-            suggestionModel: urlBar.shared.suggestionModel)
-
-        searchController.searchDelegate = self
-
-        self.searchController = searchController
-    }
-
-    fileprivate func showSearchController() {
-        createSearchControllerIfNeeded()
-
-        guard let searchController = self.searchController else {
-            return
-        }
-
-        addChild(searchController)
-        view.addSubview(searchController.view)
-        searchController.view.snp.makeConstraints { make in
-            if UIConstants.enableBottomURLBar {
-                make.top.equalTo(self.view.safeArea.top)
-                make.bottom.equalTo(self.urlBar.view.snp.top)
-            } else {
-                make.top.equalTo(self.urlBar.view.snp.bottom)
-                make.bottom.equalTo(self.view)
-            }
-            make.left.right.equalTo(self.view)
-        }
-
-        zeroQueryModel.isHidden = true
-
-        searchController.didMove(toParent: self)
-    }
-
-    private func hideSearchController() {
-        if let searchController = self.searchController {
-            searchController.willMove(toParent: nil)
-            searchController.view.removeFromSuperview()
-            searchController.removeFromParent()
-            zeroQueryModel.isHidden = false
-        }
-    }
-
-    private func destroySearchController() {
-        hideSearchController()
-
-        searchController = nil
-    }
-
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
-        if !zeroQueryModel.promoteToRealTabIfNecessary(url: url, tabManager: tabManager) {
+        if !tabContentHost.promoteToRealTabIfNecessary(url: url, tabManager: tabManager) {
             if FeatureFlag[.createOrSwitchToTab] {
                 tabManager.createOrSwitchToTab(for: url)
             } else {
@@ -1031,7 +974,7 @@ class BrowserViewController: UIViewController {
     }
 
     func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab(nil)) {
-        showZeroQuery(inline: true, openedFrom: openedFrom, isLazyTab: true)
+        showZeroQuery(openedFrom: openedFrom, isLazyTab: true)
     }
 
     func openSearchNewTab(isPrivate: Bool = false, _ text: String) {
@@ -1257,9 +1200,9 @@ extension BrowserViewController {
     // swift-format-ignore: NoLeadingUnderscores
     func _urlBarUpdateSearchController(for text: String) {
         if text.isEmpty {
-            hideSearchController()
+            tabContentHost.updateContent(.hideSuggestions)
         } else {
-            showSearchController()
+            tabContentHost.updateContent(.showSuggestions)
         }
     }
 
@@ -1267,12 +1210,11 @@ extension BrowserViewController {
         if !cardGridViewController.gridModel.isHidden {
             openLazyTab(openedFrom: .tabTray)
         } else {
-            showZeroQuery(inline: false, openedFrom: .openTab(tabManager.selectedTab))
+            showZeroQuery(openedFrom: .openTab(tabManager.selectedTab))
         }
     }
 
     func urlBarDidLeaveOverlayMode() {
-        destroySearchController()
         updateInZeroQuery(tabManager.selectedTab?.url as URL?)
     }
 }
@@ -1513,19 +1455,6 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 }
 
-extension BrowserViewController: SearchViewControllerDelegate {
-    func searchViewController(_ searchViewController: SearchViewController, didSelectURL url: URL) {
-        guard let tab = tabManager.selectedTab else { return }
-        finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
-    }
-
-    func searchViewController(
-        _ searchViewController: SearchViewController, didAcceptSuggestion suggestion: String
-    ) {
-        urlBar.shared.queryModel.value = suggestion
-    }
-}
-
 extension BrowserViewController: TabManagerDelegate {
     func tabManager(
         _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
@@ -1546,7 +1475,7 @@ extension BrowserViewController: TabManagerDelegate {
             updateURLBarDisplayURL(tab)
 
             if previous == nil || tab.isPrivate != previous?.isPrivate {
-                let ui: [PrivateModeUI?] = [toolbar, urlBar.shared]
+                let ui: [PrivateModeUI?] = [toolbar, urlBar.shared, tabContentHost]
                 ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
             }
 

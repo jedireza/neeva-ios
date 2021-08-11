@@ -138,12 +138,15 @@ class NavigationTest: BaseTestCase {
         //This test is for populated clipboard only so we need to make sure there's something in Pasteboard
         XCTAssert(app.buttons["Address Bar"].exists)
         app.buttons["Address Bar"].tap()
+        waitForExistence(app.buttons["Cancel"])
 
         app.textFields["address"].typeText("www.neeva.com")
-        // Tapping two times when the text is not selected will reveal the menu
+        // Tapping 1-2 times (depending on the pause) when the text is not selected will reveal the menu
         app.textFields["address"].tap()
         waitForExistence(app.textFields["address"])
-        app.textFields["address"].tap()
+        if !app.menuItems["Select All"].exists {
+            app.textFields["address"].tap()
+        }
         waitForExistence(app.menuItems["Select All"])
         XCTAssertTrue(app.menuItems["Select All"].exists)
         XCTAssertTrue(app.menuItems["Select"].exists)

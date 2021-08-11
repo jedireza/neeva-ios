@@ -12,6 +12,8 @@ enum SuggestionViewUX {
     static let ChipPadding: CGFloat = 8
     static let ChipInnerPadding: CGFloat = 10
     static let RowHeight: CGFloat = 58
+    static let FaviconSize: CGFloat = 12
+    static let IconSize: CGFloat = 20
 }
 
 enum SuggestionState {
@@ -124,8 +126,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
             HStack(spacing: 0) {
                 icon.foregroundColor(.tertiaryLabel)
                     .frame(
-                        width: SearchViewControllerUX.IconSize,
-                        height: SearchViewControllerUX.IconSize)
+                        width: SuggestionViewUX.IconSize,
+                        height: SuggestionViewUX.IconSize)
                 VStack(alignment: .leading, spacing: 0) {
                     label
                     secondaryLabel
@@ -280,12 +282,12 @@ struct URLSuggestionView: View {
         {
             FaviconView(
                 url: url,
-                size: SearchViewControllerUX.FaviconSize,
+                size: SuggestionViewUX.FaviconSize,
                 bordered: false
             )
             .frame(
-                width: SearchViewControllerUX.IconSize,
-                height: SearchViewControllerUX.IconSize
+                width: SuggestionViewUX.IconSize,
+                height: SuggestionViewUX.IconSize
             )
             .cornerRadius(SuggestionViewUX.CornerRadius)
             .overlay(

@@ -1,10 +1,10 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import Shared
 import Combine
-import Storage
 import Defaults
+import Shared
+import Storage
 
 private let log = Logger.browser
 private let URLBeforePathRegex = try! NSRegularExpression(
@@ -13,6 +13,8 @@ private let defaultRecencyDuration: UInt64 = 2 * OneDayInMilliseconds * 1000
 private let numSuggestionsToFetch: Int = 40
 
 class SuggestionModel: ObservableObject {
+    var getKeyboardHeight: () -> CGFloat = { 0 }
+
     public var queryModel: SearchQueryModel
     private var searchQueryListener: AnyCancellable?
 
@@ -377,15 +379,13 @@ class SuggestionModel: ObservableObject {
             bvc.finishEditingAndSubmit(
                 URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: tab)
         case .lens(let suggestion):
-            if let searchController = bvc.searchController {
-                searchController.searchDelegate?.searchViewController(
-                    searchController, didAcceptSuggestion: suggestion.shortcut)
-            }
+            guard let tab = bvc.tabManager.selectedTab else { return }
+            bvc.finishEditingAndSubmit(
+                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: tab)
         case .bang(let suggestion):
-            if let searchController = bvc.searchController {
-                searchController.searchDelegate?.searchViewController(
-                    searchController, didAcceptSuggestion: suggestion.shortcut)
-            }
+            guard let tab = bvc.tabManager.selectedTab else { return }
+            bvc.finishEditingAndSubmit(
+                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: tab)
         case .navigation(let nav):
             ClientLogger.shared.logCounter(
                 LogConfig.Interaction.HistorySuggestion,
@@ -464,6 +464,7 @@ class SuggestionModel: ObservableObject {
         })
 
         subscribe()
+        KeyboardHelper.defaultHelper.addDelegate(self)
     }
 
     convenience init(previewSites: [Site]? = nil, previewCompletion: String? = nil, queryModel: SearchQueryModel = SearchQueryModel(previewValue: "")) {
@@ -485,5 +486,30 @@ class SuggestionModel: ObservableObject {
         self.activeLensBang = previewLensBang
         self.searchQuery = searchQueryForTesting
         self.sites = previewSites
+    }
+}
+
+extension SuggestionModel: KeyboardHelperDelegate {
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardWillShowWithState state: KeyboardState
+    ) {
+        animateSearchEnginesWithKeyboard(state)
+    }
+
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardDidShowWithState state: KeyboardState
+    ) {
+    }
+
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardWillHideWithState state: KeyboardState
+    ) {
+        animateSearchEnginesWithKeyboard(state)
+    }
+
+    func animateSearchEnginesWithKeyboard(_ keyboardState: KeyboardState) {
+        keyboardState.animateAlongside {
+            self.objectWillChange.send()
+        }
     }
 }

@@ -1,25 +1,90 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Shared
+import Storage
 import SwiftUI
 
-class TabContentHost: UIHostingController<TabContentHost.Content> {
-    let zeroQueryModel: ZeroQueryModel
+enum ContentUIType {
+    case webPage(WKWebView)
+    case zeroQuery
+    case suggestions
+    case blank
+}
+
+enum ContentUIVisibilityEvent {
+    case showZeroQuery(isIncognito: Bool, isLazyTab: Bool, ZeroQueryOpenedLocation?)
+    case hideZeroQuery
+    case showSuggestions
+    case hideSuggestions
+}
+
+class TabContentHostModel: ObservableObject {
+    /// Holds the current webpage's WebView, so that when the state changes to be other content, we don't lose it.
+    @Published var webContainerType: ContentUIType {
+        didSet {
+            switch currentContentUI {
+            case .webPage:
+                currentContentUI = webContainerType
+            case .blank:
+                currentContentUI = webContainerType
+            default:
+                return
+            }
+        }
+    }
+    /// Current content UI that is showing
+    @Published var currentContentUI: ContentUIType
     var subscription: AnyCancellable? = nil
 
+    init(tabManager: TabManager) {
+        let webView = tabManager.selectedTab?.webView
+        let type = webView.map(ContentUIType.webPage) ?? .blank
+        self.webContainerType = type
+        self.currentContentUI = type
+        self.subscription = tabManager.selectedTabPublisher.sink { [unowned self] tab in
+            guard let webView = tab?.webView else {
+                webContainerType = .blank
+                return
+            }
+            webContainerType = .webPage(webView)
+        }
+    }
+}
+
+class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
+    let zeroQueryModel: ZeroQueryModel
+    let suggestionModel: SuggestionModel
+    let model: TabContentHostModel
+
     struct Content: View {
-        let webView: WKWebView?
-        @ObservedObject var zeroQueryModel: ZeroQueryModel
+        @ObservedObject var model: TabContentHostModel
+        let zeroQueryModel: ZeroQueryModel
+        let suggestionModel: SuggestionModel
         let suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
         let suggestedSearchesModel: SuggestedSearchesModel =
             SuggestedSearchesModel(suggestedQueries: [])
 
         var body: some View {
             ZStack {
-                if let webView = webView, zeroQueryModel.isHidden {
-                    WebViewContainer(webView: webView)
+                switch model.currentContentUI {
+                case .webPage(let currentWebView):
+                    WebViewContainer(webView: currentWebView)
                         .ignoresSafeArea()
-                } else {
+                case .zeroQuery:
+                    ZeroQueryContent(model: zeroQueryModel)
+                        .environmentObject(suggestedSitesViewModel)
+                        .environmentObject(suggestedSearchesModel)
+                case .suggestions:
+                    SuggestionsContent(suggestionModel: suggestionModel)
+                        .environment(\.onOpenURL) { url in
+                            let bvc = SceneDelegate.getBVC()
+                            guard let tab = bvc.tabManager.selectedTab else { return }
+                            bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
+                        }.environment(\.setSearchInput) { suggestion in
+                            suggestionModel.queryModel.value = suggestion
+                        }
+                case .blank:
                     ZeroQueryContent(model: zeroQueryModel)
                         .environmentObject(suggestedSitesViewModel)
                         .environmentObject(suggestedSearchesModel)
@@ -34,21 +99,60 @@ class TabContentHost: UIHostingController<TabContentHost.Content> {
         }
     }
 
-    init(tabManager: TabManager, zeroQueryModel: ZeroQueryModel) {
+    init(tabManager: TabManager, zeroQueryModel: ZeroQueryModel, suggestionModel: SuggestionModel) {
+        let model = TabContentHostModel(tabManager: tabManager)
         self.zeroQueryModel = zeroQueryModel
-        super.init(
-            rootView: Content(
-                webView: tabManager.selectedTab?.webView,
-                zeroQueryModel: zeroQueryModel
-            ))
-        self.subscription = tabManager.selectedTabPublisher.sink { [unowned self] tab in
-            self.rootView = Content(
-                webView: tab?.webView,
-                zeroQueryModel: zeroQueryModel)
+        self.suggestionModel = suggestionModel
+        self.model = model
+        super.init {
+            Content(
+                model: model,
+                zeroQueryModel: zeroQueryModel,
+                suggestionModel: suggestionModel)
+        }
+        suggestionModel.getKeyboardHeight = {
+            if let view = self.view,
+                let currentState = KeyboardHelper.defaultHelper.currentState
+            {
+                return currentState.intersectionHeightForView(view)
+            } else {
+                return 0
+            }
         }
     }
 
     @objc required dynamic init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @discardableResult public func promoteToRealTabIfNecessary(
+        url: URL, tabManager: TabManager
+    ) -> Bool {
+        let result = zeroQueryModel.promoteToRealTabIfNecessary(url: url, tabManager: tabManager)
+        if result {
+            updateContent(.hideZeroQuery)
+        }
+        return result
+    }
+
+    func updateContent(_ event: ContentUIVisibilityEvent) {
+        switch event {
+        case .showZeroQuery(let isIncognito, let isLazyTab, let openedFrom):
+            model.currentContentUI = .zeroQuery
+            zeroQueryModel.isPrivate = isIncognito
+            zeroQueryModel.isLazyTab = isLazyTab
+            zeroQueryModel.openedFrom = openedFrom
+        case .showSuggestions:
+            if case .zeroQuery = model.currentContentUI {
+                model.currentContentUI = .suggestions
+            }
+        case .hideSuggestions:
+            if case .suggestions = model.currentContentUI {
+                model.currentContentUI = .zeroQuery
+            }
+        case .hideZeroQuery:
+            model.currentContentUI = model.webContainerType
+            self.zeroQueryModel.reset()
+        }
     }
 }

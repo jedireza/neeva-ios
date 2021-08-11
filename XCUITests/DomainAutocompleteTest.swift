@@ -31,6 +31,7 @@ class DomainAutocompleteTest: BaseTestCase {
 
     func testAutocomplete() {
         app.buttons["Address Bar"].tap()
+        waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("w")
 
         waitForValueContains(app.textFields["address"], value: website["value"]!)
@@ -47,6 +48,7 @@ class DomainAutocompleteTest: BaseTestCase {
     // Test that deleting characters works correctly with autocomplete
     func testAutocompleteDeletingChars() {
         app.buttons["Address Bar"].tap()
+        waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("wik")
 
         // First delete the autocompleted part
@@ -66,6 +68,7 @@ class DomainAutocompleteTest: BaseTestCase {
         try skipTest(issue: 1234, "needs update: TopSitesCell not found")
 
         app.buttons["Address Bar"].tap()
+        waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("www.moz")
         waitForExistence(app.buttons["Clear text"])
         app.buttons["Clear text"].tap()
@@ -92,6 +95,7 @@ class DomainAutocompleteTest: BaseTestCase {
     func testNoMatches() {
         openURL("twitter.com/login")
         app.buttons["Address Bar"].tap()
+        waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("baz")
         let value = app.textFields["address"].value
         // Check there is not more text added, just what user typed
@@ -135,6 +139,7 @@ class DomainAutocompleteTest: BaseTestCase {
     // Test default domains.
     func testDefaultDomains() {
         app.buttons["Address Bar"].tap()
+        waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("a")
         waitForValueContains(app.textFields["address"], value: ".com")
         let value = app.textFields["address"].value
@@ -155,6 +160,7 @@ class DomainAutocompleteTest: BaseTestCase {
     // Test mixed case autocompletion.
     func testMixedCaseAutocompletion() {
         app.buttons["Address Bar"].tap()
+        waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("MoZ")
         waitForValueContains(app.textFields["address"], value: ".org")
         let value = app.textFields["address"].value

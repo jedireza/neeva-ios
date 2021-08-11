@@ -13,21 +13,26 @@ import XCTest
 extension TabContentHost.Content: Inspectable {}
 extension WebViewContainer: Inspectable {}
 extension ZeroQueryContent: Inspectable {}
+extension SuggestionsContent: Inspectable {}
 extension ZeroQueryView: Inspectable {}
-
+extension IncognitoAwareHostingController._Applicator: Inspectable {}
 class ZeroQueryTests: XCTestCase {
     var profile: MockProfile!
     var zQM: ZeroQueryModel!
     var ssm = SuggestedSearchesModel(suggestedQueries: [])
+    var sQM = SearchQueryModel()
+    var suggestionsModel: SuggestionModel!
     var tabManager: TabManager!
     var tabContentHost: TabContentHost!
 
     override func setUp() {
         super.setUp()
         self.profile = MockProfile()
+        self.suggestionsModel = SuggestionModel(profile: profile, queryModel: sQM)
         self.zQM = ZeroQueryModel(profile: self.profile, shareURLHandler: { _ in })
         self.tabManager = TabManager(profile: profile, imageStore: nil)
-        self.tabContentHost = TabContentHost(tabManager: tabManager, zeroQueryModel: zQM)
+        self.tabContentHost = TabContentHost(
+            tabManager: tabManager, zeroQueryModel: zQM, suggestionModel: suggestionsModel)
     }
 
     override func tearDown() {
@@ -39,74 +44,121 @@ class ZeroQueryTests: XCTestCase {
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
-        waitForCondition(condition: { tabContentHost.rootView.webView != nil })
-        var webviewContainer: WebViewContainer? =
-            try tabContentHost.rootView.inspect().zStack().view(WebViewContainer.self, 0)
-            .actualView()
-        XCTAssertNotNil(webviewContainer)
-        zQM.isHidden = false
-        var zeroQuery =
-            try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
-        XCTAssertNotNil(zeroQuery)
-        do {
-            let _ = try tabContentHost.rootView.inspect().find(WebViewContainer.self).actualView()
-        } catch {
-            webviewContainer = nil
-        }
-        XCTAssertNil(webviewContainer)
+        waitForCondition(condition: {
+            switch tabContentHost.model.currentContentUI {
+            case .webPage:
+                return true
+            default:
+                return false
+            }
+        })
+        try assertTabContentOnlyContainsWebContainer()
 
-        zQM.isHidden = true
-        do {
-            let _ = try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
-        } catch {
-            zeroQuery = nil
-        }
-        XCTAssertNil(zeroQuery)
+        tabContentHost.updateContent(
+            .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
+        try assertTabContentOnlyContainsZeroQuery()
+
+        tabContentHost.updateContent(.hideZeroQuery)
+        try assertTabContentOnlyContainsWebContainer()
     }
 
     func testLazyTabPromotion() throws {
         let tab = tabManager.addTab()
-        tabManager.selectTab(tab)
         tab.loadRequest(URLRequest(url: .aboutBlank))
-        let webviewContainer = try tabContentHost.rootView.inspect().find(WebViewContainer.self)
-        XCTAssertNotNil(webviewContainer)
-        zQM.isLazyTab = true
-        zQM.openedFrom = .tabTray
-        zQM.isHidden = false
-        var zeroQuery =
-            try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
-        XCTAssertNotNil(zeroQuery)
-        zQM.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
+        tabManager.selectTab(tab)
+        waitForCondition(condition: {
+            switch tabContentHost.model.currentContentUI {
+            case .webPage:
+                return true
+            default:
+                return false
+            }
+        })
+        try assertTabContentOnlyContainsWebContainer()
+
+        tabContentHost.updateContent(
+            .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
+        try assertTabContentOnlyContainsZeroQuery()
+
+        tabContentHost.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
         waitForCondition(condition: { tabManager.tabs.count == 2 })
-        do {
-            let _ = try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
-        } catch {
-            zeroQuery = nil
-        }
-        XCTAssertNil(zeroQuery)
+        try assertTabContentOnlyContainsWebContainer()
         XCTAssertNil(zQM.openedFrom)
     }
 
     func testLazyTabCancel() throws {
         let tab = tabManager.addTab()
-        tabManager.selectTab(tab)
         tab.loadRequest(URLRequest(url: .aboutBlank))
-        let webviewContainer = try tabContentHost.rootView.inspect().find(WebViewContainer.self)
-        XCTAssertNotNil(webviewContainer)
-        zQM.isLazyTab = true
-        zQM.openedFrom = .tabTray
-        zQM.isHidden = false
-        var zeroQuery =
-            try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
-        XCTAssertNotNil(zeroQuery)
-        zQM.reset()
-        do {
-            let _ = try tabContentHost.rootView.inspect().zStack().last?.find(ZeroQueryView.self)
-        } catch {
-            zeroQuery = nil
-        }
-        XCTAssertNil(zeroQuery)
+        tabManager.selectTab(tab)
+        waitForCondition(condition: {
+            switch tabContentHost.model.currentContentUI {
+            case .webPage:
+                return true
+            default:
+                return false
+            }
+        })
+        try assertTabContentOnlyContainsWebContainer()
+
+        tabContentHost.updateContent(
+            .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
+        try assertTabContentOnlyContainsZeroQuery()
+
+        tabContentHost.updateContent(.hideZeroQuery)
+        try assertTabContentOnlyContainsWebContainer()
         XCTAssertNil(zQM.openedFrom)
+    }
+
+    func testSuggestionUI() throws {
+        let tab = tabManager.addTab()
+        tab.loadRequest(URLRequest(url: .aboutBlank))
+        tabManager.selectTab(tab)
+        waitForCondition(condition: {
+            switch tabContentHost.model.currentContentUI {
+            case .webPage:
+                return true
+            default:
+                return false
+            }
+        })
+        try assertTabContentOnlyContainsWebContainer()
+
+        tabContentHost.updateContent(.showSuggestions)
+        try assertTabContentOnlyContainsWebContainer()
+
+        tabContentHost.updateContent(
+            .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
+        try assertTabContentOnlyContainsZeroQuery()
+
+        tabContentHost.updateContent(.showSuggestions)
+        try assertTabContentOnlyContainsSuggestions()
+
+        tabContentHost.updateContent(.hideSuggestions)
+        try assertTabContentOnlyContainsZeroQuery()
+
+        tabContentHost.updateContent(.hideZeroQuery)
+        try assertTabContentOnlyContainsWebContainer()
+    }
+
+    func assertTabContentOnlyContainsZeroQuery() throws {
+        let zStack = try tabContentHost.rootView.inspect().find(ViewType.ZStack.self)
+        let content = try zStack.view(ZeroQueryContent.self, 0).actualView()
+        XCTAssertNotNil(content)
+        XCTAssertEqual(zStack.count, 1)
+    }
+
+    func assertTabContentOnlyContainsSuggestions() throws {
+        let zStack = try tabContentHost.rootView.inspect().find(ViewType.ZStack.self)
+        let content = try zStack.view(SuggestionsContent.self, 0).actualView()
+        XCTAssertNotNil(content)
+        XCTAssertEqual(zStack.count, 1)
+    }
+
+    func assertTabContentOnlyContainsWebContainer() throws {
+        let zStack = try tabContentHost.rootView.inspect().find(ViewType.ZStack.self)
+        let content = try zStack.view(WebViewContainer.self, 0).actualView()
+        XCTAssertNotNil(content)
+        XCTAssertEqual(zStack.count, 1)
     }
 
     func testDeletionOfSingleSuggestedSite() {

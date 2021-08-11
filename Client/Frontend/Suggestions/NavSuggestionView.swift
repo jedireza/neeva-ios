@@ -14,12 +14,12 @@ struct NavSuggestionView: View {
     var icon: some View {
         FaviconView(
             url: suggestion.url,
-            size: SearchViewControllerUX.FaviconSize,
+            size: SuggestionViewUX.FaviconSize,
             bordered: false
         )
         .frame(
-            width: SearchViewControllerUX.IconSize,
-            height: SearchViewControllerUX.IconSize
+            width: SuggestionViewUX.IconSize,
+            height: SuggestionViewUX.IconSize
         )
         .cornerRadius(SuggestionViewUX.CornerRadius)
         .overlay(

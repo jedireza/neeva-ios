@@ -41,7 +41,7 @@ protocol LegacyURLBarDelegate: UIViewController {
 
 class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     let locationModel = LocationViewModel()
-    let queryModel = SearchQueryModel()
+    let queryModel: SearchQueryModel
     let suggestionModel: SuggestionModel
     let gridModel: GridModel
     let trackingStatsViewModel: TrackingStatsViewModel
@@ -152,12 +152,14 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     var profile: Profile? = nil
 
     init(
-        profile: Profile, chromeModel: TabChromeModel,
+        profile: Profile, chromeModel: TabChromeModel, queryModel: SearchQueryModel,
+        suggestionModel: SuggestionModel,
         gridModel: GridModel, trackingStatsModel: TrackingStatsViewModel,
         performAction: @escaping (ToolbarAction) -> Void, makeTabsMenu: @escaping () -> UIMenu?
     ) {
         self.profile = profile
-        self.suggestionModel = SuggestionModel(profile: profile, queryModel: self.queryModel)
+        self.suggestionModel = suggestionModel
+        self.queryModel = queryModel
         self.chromeModel = chromeModel
         self.gridModel = gridModel
         self.trackingStatsViewModel = trackingStatsModel
