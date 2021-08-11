@@ -911,8 +911,6 @@ class BrowserViewController: UIViewController {
     /// Call this whenever the page URL changes.
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
         urlBar.shared.locationModel.url = tab.url?.displayURL
-        urlBar.shared.locationModel.isSecure = tab.webView?.hasOnlySecureContent ?? false
-
         chromeModel.isPage = tab.url?.displayURL?.isWebPage() ?? false
     }
 
@@ -1139,7 +1137,6 @@ class BrowserViewController: UIViewController {
 
         if let url = webView.url {
             if tab === tabManager.selectedTab {
-                urlBar.shared.locationModel.isSecure = webView.hasOnlySecureContent
                 chromeModel.isPage = tab.url?.displayURL?.isWebPage() ?? false
             }
 

@@ -5,7 +5,7 @@ import SwiftUI
 
 struct LocationLabel: View {
     let url: URL?
-    let isSecure: Bool
+    let isSecure: Bool?
 
     @EnvironmentObject private var gridModel: GridModel
 
@@ -20,7 +20,7 @@ struct LocationLabel: View {
         .allowsHitTesting(false)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Address Bar")
-        .accessibilityValue((isSecure ? "Secure connection, " : "") + (url?.absoluteString ?? ""))
+        .accessibilityValue((isSecure ?? false ? "Secure connection, " : "") + (url?.absoluteString ?? ""))
         .accessibilityAddTraits(.isButton)
     }
 }
@@ -28,7 +28,7 @@ struct LocationLabel: View {
 /// This view is also used for drag&drop previews and so should not depend on the environment
 struct LocationLabelAndIcon: View {
     let url: URL?
-    let isSecure: Bool
+    let isSecure: Bool?
     let forcePlaceholder: Bool
 
     var body: some View {
@@ -53,10 +53,12 @@ struct LocationLabelAndIcon: View {
                 Label {
                     host
                 } icon: {
-                    if isSecure {
-                        Symbol(decorative: .lockFill)
-                    } else {
-                        Symbol(decorative: .lockSlashFill)
+                    if let isSecure = isSecure {
+                        if isSecure {
+                            Symbol(decorative: .lockFill)
+                        } else {
+                            Symbol(decorative: .lockSlashFill)
+                        }
                     }
                 }
             } else {

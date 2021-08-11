@@ -8,7 +8,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
     let margins: EdgeInsets
     @Binding var isPressed: Bool
     let url: URL?
-    let isSecure: Bool
+    let isSecure: Bool?
     let background: Color
     let onTap: () -> Void
     let copyAction: Action

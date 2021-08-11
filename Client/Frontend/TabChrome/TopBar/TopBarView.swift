@@ -86,7 +86,7 @@ struct TopBarView_Previews: PreviewProvider {
             }
             .preferredColorScheme(.dark)
         }
-        .environmentObject(LocationViewModel(previewURL: nil, isSecure: true))
+        .environmentObject(LocationViewModel(previewURL: nil, hasOnlySecureContent: true))
         .environmentObject(GridModel())
         .environmentObject(TabChromeModel())
     }

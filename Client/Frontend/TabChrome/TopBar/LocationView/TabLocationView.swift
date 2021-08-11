@@ -167,7 +167,7 @@ struct TabLocationView_Previews: PreviewProvider {
             TabLocationView(
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
             )
-            .environmentObject(LocationViewModel(previewURL: nil, isSecure: true))
+            .environmentObject(LocationViewModel(previewURL: nil, hasOnlySecureContent: true))
             .previewDisplayName("Placeholder")
 
             TabLocationView(
@@ -175,7 +175,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environmentObject(
                 LocationViewModel(
-                    previewURL: "http://vviii.verylong.verylong.subdomain.neeva.com", isSecure: true
+                    previewURL: "http://vviii.verylong.verylong.subdomain.neeva.com", hasOnlySecureContent: true
                 )
             )
             .previewDisplayName("Long domain")
@@ -184,7 +184,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environment(\.isIncognito, true)
             .environmentObject(
-                LocationViewModel(previewURL: "https://neeva.com/asdf", isSecure: false)
+                LocationViewModel(previewURL: "https://neeva.com/asdf", hasOnlySecureContent: nil)
             )
             .previewDisplayName("Incognito")
             TabLocationView(
@@ -193,7 +193,7 @@ struct TabLocationView_Previews: PreviewProvider {
             .environmentObject(
                 LocationViewModel(
                     previewURL: neevaSearchEngine.searchURLForQuery(
-                        "a long search query with words"), isSecure: true)
+                        "a long search query with words"), hasOnlySecureContent: true)
             )
             .previewDisplayName("Search")
             TabLocationView(
@@ -201,7 +201,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environment(\.isIncognito, true)
             .environmentObject(
-                LocationViewModel(previewURL: "ftp://someftpsite.com/dir/file.txt", isSecure: false)
+                LocationViewModel(previewURL: "ftp://someftpsite.com/dir/file.txt", hasOnlySecureContent: nil)
             )
             .previewDisplayName("Non-HTTP")
         }
