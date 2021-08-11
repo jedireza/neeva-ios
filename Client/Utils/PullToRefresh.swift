@@ -41,7 +41,7 @@ private struct StorageView<Content: View, Query: GraphQLQuery, Data>: View {
                 controller.$state
                     .receive(on: RunLoop.main)
                     .sink { state in
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             if let rc = tableView.refreshControl,
                                 rc.isRefreshing != state.isRunning
                             {

@@ -202,7 +202,7 @@ class HistoryPanel: SiteTableViewController {
             limit: QueryLimitPerFetch, offset: currentFetchOffset) >>== { result in
                 // Force 100ms delay between resolution of the last batch of results
                 // and the next time `fetchData()` can be called.
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     self.currentFetchOffset += self.QueryLimitPerFetch
                     self.isFetchInProgress = false
                 }

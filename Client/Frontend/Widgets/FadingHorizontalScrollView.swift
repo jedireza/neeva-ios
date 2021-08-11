@@ -103,7 +103,7 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
             self.layer.addSublayer(trailingGradient)
             // calculate proper gradient opacity after a short delay to give
             // SwiftUI time to mount the view.
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self.scrollViewDidScroll(self.scrollView)
             }
         }

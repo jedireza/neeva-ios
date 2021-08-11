@@ -1225,7 +1225,7 @@ class BrowserViewController: UIViewController {
                 // There are cases in which the page will still show a loading animation or nothing when the screenshot is being taken,
                 // depending on internet connection
                 // Issue created: https://github.com/mozilla-mobile/firefox-ios/issues/7003
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.screenshotHelper.takeScreenshot(tab)
                     if webView.superview == self.view {
                         webView.removeFromSuperview()
@@ -1575,7 +1575,7 @@ extension BrowserViewController: TabManagerDelegate {
                     webView.go(to: currentItem)
                 }
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     webView.scrollView.setZoomScale(previousZoomScale, animated: false)
                     webView.scrollView.setContentOffset(previousContentOffset, animated: false)
                 }

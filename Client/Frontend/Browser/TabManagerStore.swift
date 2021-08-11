@@ -113,7 +113,7 @@ class TabManagerStore {
 
         // Delay by 100ms to debounce repeated calls to preserveTabs in quick succession.
         // Notice above that a repeated 'preserveTabs' call will 'cancel()' a pending write operation.
-        serialQueue.asyncAfter(deadline: .now() + 0.100, execute: writeOperation)
+        serialQueue.asyncAfter(deadline: .now() + 0.1, execute: writeOperation)
 
         return result
     }

@@ -210,7 +210,7 @@ public struct SendFeedbackView: View {
                             tf.keyboardType = .URL
                             tf.autocapitalizationType = .none
                             tf.autocorrectionType = .no
-                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 tf.becomeFirstResponder()
                             }
                         }

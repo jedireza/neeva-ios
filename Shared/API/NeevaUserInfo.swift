@@ -74,42 +74,40 @@ public class NeevaUserInfo: ObservableObject {
 
         isLoading = true
 
-        DispatchQueue.main.asyncAfter(
-            deadline: .now() + .milliseconds(500),
-            execute: {
-                UserInfoQuery().fetch { result in
-                    self.isLoading = false
-                    switch result {
-                    case .success(let data):
-                        if let user = data.user {
-                            self.saveUserInfoToDefaults(userInfo: user)
-                            self.fetchUserPicture()
-                            self.isUserLoggedIn = true
-                            NeevaFeatureFlags.update(featureFlags: user.featureFlags)
-                            /// Once we've fetched UserInfo sucessfuly, we don't need to keep monitoring connectivity anymore.
-                            self.reachability.stopNotifier()
-                        }
-                    case .failure(let error):
-                        if let errors = (error as? GraphQLAPI.Error)?.errors {
-                            let messages = errors.filter({ $0.message != nil }).map({ $0.message! })
-                            let errorMsg =
-                                "Error fetching UserInfo: \(messages.joined(separator: "\n"))"
-                            print(errorMsg)
-
-                            if errorMsg.range(of: "login required", options: .caseInsensitive)
-                                != nil
-                            {
-                                self.isUserLoggedIn = false
-                                self.clearUserInfoCache()
-                            }
-                        } else {
-                            print("Error fetching UserInfo: \(error)")
-                        }
-
-                        self.loadUserInfoFromDefaults()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            UserInfoQuery().fetch { result in
+                self.isLoading = false
+                switch result {
+                case .success(let data):
+                    if let user = data.user {
+                        self.saveUserInfoToDefaults(userInfo: user)
+                        self.fetchUserPicture()
+                        self.isUserLoggedIn = true
+                        NeevaFeatureFlags.update(featureFlags: user.featureFlags)
+                        /// Once we've fetched UserInfo sucessfuly, we don't need to keep monitoring connectivity anymore.
+                        self.reachability.stopNotifier()
                     }
+                case .failure(let error):
+                    if let errors = (error as? GraphQLAPI.Error)?.errors {
+                        let messages = errors.filter({ $0.message != nil }).map({ $0.message! })
+                        let errorMsg =
+                            "Error fetching UserInfo: \(messages.joined(separator: "\n"))"
+                        print(errorMsg)
+
+                        if errorMsg.range(of: "login required", options: .caseInsensitive)
+                            != nil
+                        {
+                            self.isUserLoggedIn = false
+                            self.clearUserInfoCache()
+                        }
+                    } else {
+                        print("Error fetching UserInfo: \(error)")
+                    }
+
+                    self.loadUserInfoFromDefaults()
                 }
-            })
+            }
+        }
     }
 
     public func didLogOut() {

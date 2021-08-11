@@ -154,9 +154,7 @@ private let concurrentQueue = DispatchQueue(
     label: "co.neeva.test.concurrent", attributes: DispatchQueue.Attributes.concurrent)
 
 func delay(_ delay: Double, closure: @escaping () -> Void) {
-    concurrentQueue.asyncAfter(
-        deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC)))
-            / Double(NSEC_PER_SEC), execute: closure)
+    concurrentQueue.asyncAfter(deadline: .now() + delay, execute: closure)
 }
 
 private func simpleAdder(_ a: Int, b: Int) -> Deferred<Maybe<Int>> {

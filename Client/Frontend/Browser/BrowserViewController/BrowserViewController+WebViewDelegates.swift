@@ -201,7 +201,7 @@ extension BrowserViewController: WKUIDelegate {
     func webViewDidClose(_ webView: WKWebView) {
         if let tab = tabManager[webView] {
             // Need to wait here in case we're waiting for a pending `window.open()`.
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.tabManager.removeTabAndUpdateSelectedTab(tab)
             }
         }
@@ -919,7 +919,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // without a crash to reset the consecutive crash counter in the event
         // that the tab begins crashing again in the future.
         if tab.consecutiveCrashes > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 if tab.consecutiveCrashes > 0 {
                     tab.consecutiveCrashes = 0
                 }
