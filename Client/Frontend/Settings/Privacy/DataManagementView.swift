@@ -52,7 +52,7 @@ struct DataManagementView: View {
     @Environment(\.openInNewTab) var openURL
 
     func onClear() {
-        let bvc = BrowserViewController.foregroundBVC()
+        let bvc = SceneDelegate.getBVC()
         clearDataTypes
             .map { $0.clearable(profile: bvc.profile, tabManager: bvc.tabManager).clear() }
             .allSucceed()
@@ -124,7 +124,7 @@ struct DataManagementView: View {
                 Section(header: Text("Data in Neeva Memory")) {
                     NavigationLinkButton("Manage Neeva Memory") {
                         openURL(NeevaConstants.appMemoryModeURL, false)
-                        BrowserViewController.foregroundBVC().dismissVC()
+                        SceneDelegate.getBVC().dismissVC()
                     }
                 }
             }

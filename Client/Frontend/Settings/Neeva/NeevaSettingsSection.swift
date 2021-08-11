@@ -70,7 +70,7 @@ struct NeevaSettingsSection: View {
                         .SettingAccountSettings,
                         attributes: EnvironmentHelper.shared.getAttributes())
                     openURL(NeevaConstants.appSettingsURL, false)
-                    BrowserViewController.foregroundBVC().dismissVC()
+                    SceneDelegate.getBVC().dismissVC()
                 }
             }
 
@@ -82,7 +82,7 @@ struct NeevaSettingsSection: View {
                 {
                     openURL(NeevaConstants.appConnectionsURL, false)
                 } else {
-                    BrowserViewController.foregroundBVC().dismissVC()
+                    SceneDelegate.getBVC().dismissVC()
                 }
             }.if(TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
                 view.throbbingHighlightBorderStyle(
@@ -95,7 +95,7 @@ struct NeevaSettingsSection: View {
                 attributes.append(ClientLogCounterAttribute(key: "source", value: "settings"))
                 ClientLogger.shared.logCounter(
                     .OpenReferralPromo, attributes: attributes)
-                BrowserViewController.foregroundBVC().dismissVC()
+                SceneDelegate.getBVC().dismissVC()
             }
         } else {
             Button("Sign In or Join Neeva") {

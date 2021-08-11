@@ -39,15 +39,17 @@ class WebUIMessageHelper: TabContentScript {
             let tourStep = TourStep(rawValue: stepName)
         else { return }
 
+        let bvc = SceneDelegate.getBVC()
+
         switch tourStep {
         case .promptSpaceInNeevaMenu, .promptFeedbackInNeevaMenu, .promptSettingsInNeevaMenu:
             TourManager.shared.setActiveStep(
                 id: id, stepName: tourStep, webView: self.webView! as WKWebView)
-            BrowserViewController.foregroundBVC().showQuestNeevaMenuPrompt()
+            bvc.showQuestNeevaMenuPrompt()
         case .openFeedbackPanelWithInputFieldHighlight:
             TourManager.shared.setActiveStep(
                 id: id, stepName: tourStep, webView: self.webView! as WKWebView)
-            showFeedbackPanel(bvc: BrowserViewController.foregroundBVC())
+            showFeedbackPanel(bvc: bvc)
         default:
             break
         }

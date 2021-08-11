@@ -15,7 +15,7 @@ class TabEventHandlerTests: XCTestCase {
 
     func testEventDelivery() {
         let tab = Tab(
-            bvc: BrowserViewController.foregroundBVC(), configuration: WKWebViewConfiguration())
+            bvc: SceneDelegate.getBVC(), configuration: WKWebViewConfiguration())
         let handler = DummyHandler()
 
         XCTAssertNil(handler.isFocused)
@@ -48,8 +48,10 @@ class TabEventHandlerTests: XCTestCase {
         }
         let webServerBase = "http://localhost:\(webServer.port)"
 
+        let tabManager = SceneDelegate.getTabManager()
+
         Defaults[.blockPopups] = false
-        BrowserViewController.foregroundBVC().tabManager.addTab(
+        tabManager.addTab(
             URLRequest(url: URL(string: "\(webServerBase)/blankpopup")!))
 
         let exists = NSPredicate { obj, _ in
@@ -57,8 +59,8 @@ class TabEventHandlerTests: XCTestCase {
             return tabManager.tabs.count > 2
         }
 
-        expectation(for: exists, evaluatedWith: BrowserViewController.foregroundBVC().tabManager) {
-            let url = BrowserViewController.foregroundBVC().tabManager.tabs[2].url
+        expectation(for: exists, evaluatedWith: tabManager) {
+            let url = SceneDelegate.getTabManager().tabs[2].url
             XCTAssertTrue(url?.absoluteString == "about:blank")
             return true
         }

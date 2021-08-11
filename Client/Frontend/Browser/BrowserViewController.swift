@@ -1973,12 +1973,6 @@ extension BrowserViewController: JSPromptAlertControllerDelegate {
 }
 
 extension BrowserViewController {
-    public static func foregroundBVC() -> BrowserViewController {
-        SceneDelegate.getBVC()
-    }
-}
-
-extension BrowserViewController {
     func showAddToSpacesSheet(
         url: URL, title: String?,
         webView: WKWebView,

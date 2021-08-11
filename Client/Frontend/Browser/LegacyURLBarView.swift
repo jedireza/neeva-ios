@@ -117,7 +117,7 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
         newTabButton.tintColor = UIColor.label
         newTabButton.addAction(
             UIAction { _ in
-                BrowserViewController.foregroundBVC().openURLInNewTab(nil)
+                SceneDelegate.getBVC().openURLInNewTab(nil)
             }, for: .primaryActionTriggered)
         newTabButton.isPointerInteractionEnabled = true
         return newTabButton

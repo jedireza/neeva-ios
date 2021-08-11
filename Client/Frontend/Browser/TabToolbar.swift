@@ -87,14 +87,14 @@ open class LegacyTabToolbarHelper: NSObject {
     }
 
     func didPressToolbarNeevaMenu() {
-        BrowserViewController.foregroundBVC().showNeevaMenuSheet()
+        SceneDelegate.getBVC().showNeevaMenuSheet()
     }
 
     func didPress(shareButton: UIView) {
         // also update in TopBarHost
         ClientLogger.shared.logCounter(
             .ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
-        let bvc = BrowserViewController.foregroundBVC()
+        let bvc = SceneDelegate.getBVC()
         guard
             let tab = bvc.tabManager.selectedTab,
             let url = tab.url

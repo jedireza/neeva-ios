@@ -501,7 +501,7 @@ extension BrowserViewController: WKNavigationDelegate {
     }
 
     // Use for links, that do not show a confirmation before opening.
-    fileprivate func showOverlay(forExternalUrl url: URL, completion: @escaping (Bool) -> Void) {
+    fileprivate func showOverlay(forExternalUrl url: URL) {
         tabManager.selectedTab?.stop()
 
         showOverlaySheetViewController(
@@ -544,10 +544,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
         // Prompt the user before redirecting to an external app.
         if ["sms", "mailto"].contains(url.scheme) {
-            showOverlay(forExternalUrl: url) { isOk in
-                guard isOk else { return }
-                UIApplication.shared.open(url, options: [:])
-            }
+            showOverlay(forExternalUrl: url)
 
             decisionHandler(.cancel)
             return
@@ -587,7 +584,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if isStoreURL(url) {
             decisionHandler(.cancel)
-            showOverlay(forExternalUrl: url) { _ in }
+            showOverlay(forExternalUrl: url)
         }
 
         // https://blog.mozilla.org/security/2017/11/27/blocking-top-level-navigations-data-urls-firefox-59/
@@ -676,20 +673,7 @@ extension BrowserViewController: WKNavigationDelegate {
         }
 
         if !(url.scheme?.contains("neeva") ?? true) {
-            showOverlay(forExternalUrl: url) { isOk in
-                guard isOk else { return }
-                UIApplication.shared.open(url, options: [:]) { openedURL in
-                    // Do not show error message for JS navigated links or redirect as it's not the result of a user action.
-                    if !openedURL, navigationAction.navigationType == .linkActivated {
-                        let alert = UIAlertController(
-                            title: Strings.UnableToOpenURLErrorTitle,
-                            message: Strings.UnableToOpenURLError, preferredStyle: .alert)
-                        alert.addAction(
-                            UIAlertAction(title: Strings.OKString, style: .default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                }
-            }
+            showOverlay(forExternalUrl: url)
         }
 
         decisionHandler(.cancel)

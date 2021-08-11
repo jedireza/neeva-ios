@@ -36,7 +36,7 @@ class SuggestionModel: ObservableObject {
     private var keyboardFocusedSuggestionIndex = -1
 
     private var isIncognito: Bool {
-        BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+        SceneDelegate.getTabManager().selectedTab?.isPrivate ?? false
     }
 
     private var chipQueryRange: ClosedRange<Int>? {
@@ -417,7 +417,7 @@ class SuggestionModel: ObservableObject {
                 handleSuggestionSelected(keyboardFocusedSuggestion)
             } else {
                 // searches for text in address bar
-                let bvc = BrowserViewController.foregroundBVC()
+                let bvc = SceneDelegate.getBVC()
                 bvc.urlBar(
                     didSubmitText: bvc.urlBar.shared.queryModel.value
                         + (bvc.urlBar.shared.suggestionModel.completion ?? ""))

@@ -92,7 +92,7 @@ class HistoryPanel: SiteTableViewController {
     var clearHistoryCell: UITableViewCell?
 
     var hasRecentlyClosed: Bool {
-        return BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.count > 0
+        return SceneDelegate.getTabManager().recentlyClosedTabs.count > 0
     }
 
     lazy var emptyStateOverlayView: UIView = { [unowned self] in createEmptyStateOverlayView() }()
@@ -120,7 +120,7 @@ class HistoryPanel: SiteTableViewController {
         tableView.accessibilityIdentifier = "History List"
         tableView.prefetchDataSource = self
 
-        tabManager = BrowserViewController.foregroundBVC().tabManager
+        tabManager = SceneDelegate.getTabManager()
 
         updateEmptyPanelState()
 
@@ -304,7 +304,7 @@ class HistoryPanel: SiteTableViewController {
                         self.reloadData()
                     }
 
-                    BrowserViewController.foregroundBVC().tabManager.recentlyClosedTabs.removeAll()
+                    SceneDelegate.getTabManager().recentlyClosedTabs.removeAll()
                 }))
         let cancelAction = UIAlertAction(title: Strings.CancelString, style: .cancel)
         cancelAction.accessibilityLabel = "Cancel"

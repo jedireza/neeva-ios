@@ -17,7 +17,7 @@ class ScreenshotHelper {
     }
 
     init() {
-        self.controller = BrowserViewController.foregroundBVC()
+        self.controller = SceneDelegate.getBVC()
     }
 
     /// Takes a screenshot of the WebView to be displayed on the tab view page

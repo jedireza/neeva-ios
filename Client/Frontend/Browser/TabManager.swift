@@ -335,7 +335,7 @@ class TabManager: NSObject, ObservableObject {
         let configuration: WKWebViewConfiguration =
             configuration ?? (isPrivate ? privateConfiguration : self.configuration)
 
-        let bvc = BrowserViewController.foregroundBVC()
+        let bvc = SceneDelegate.getBVC()
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
         configureTab(
             tab, request: request, webView: webView, atIndex: atIndex, afterTab: afterTab,

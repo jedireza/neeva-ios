@@ -52,20 +52,21 @@ public class EnvironmentHelper {
 
     public func getAttributes() -> [ClientLogCounterAttribute] {
         // selected tab is private
+        let tabManager = SceneDelegate.getTabManager()
         let isPrivate =
-            BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+            tabManager.selectedTab?.isPrivate ?? false
         let isPrivateMode = ClientLogCounterAttribute(
             key: LogConfig.Attribute.IsInPrivateMode, value: String(isPrivate))
 
         // number of normal tabs opened
         let normalTabsOpened = ClientLogCounterAttribute(
             key: LogConfig.Attribute.NormalTabsOpened,
-            value: String(BrowserViewController.foregroundBVC().tabManager.normalTabs.count))
+            value: String(tabManager.normalTabs.count))
 
         // number of private tabs opened
         let privateTabsOpened = ClientLogCounterAttribute(
             key: LogConfig.Attribute.PrivateTabsOpened,
-            value: String(BrowserViewController.foregroundBVC().tabManager.privateTabs.count))
+            value: String(tabManager.privateTabs.count))
 
         // user theme setting
         let deviceTheme = ClientLogCounterAttribute(

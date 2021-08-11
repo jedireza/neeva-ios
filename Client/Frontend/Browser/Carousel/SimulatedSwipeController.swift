@@ -161,7 +161,7 @@ class SimulatedSwipeController:
             return
         }
 
-        let bvc = BrowserViewController.foregroundBVC()
+        let bvc = SceneDelegate.getBVC()
         bvc.addChild(progressView)
         bvc.view.addSubview(progressView.view)
         progressView.didMove(toParent: bvc)

@@ -103,7 +103,7 @@ class ToastDefaults: NSObject {
         }
 
         let buttonAction = {
-            let bvc = BrowserViewController.foregroundBVC()
+            let bvc = SceneDelegate.getBVC()
             bvc.switchToTabForURLOrOpen(NeevaConstants.appSpacesURL / request.targetSpaceID!)
         }
 

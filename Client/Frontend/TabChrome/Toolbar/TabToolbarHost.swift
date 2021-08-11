@@ -16,7 +16,7 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
                 onNeevaMenu: {
                     ClientLogger.shared.logCounter(
                         .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
-                    BrowserViewController.foregroundBVC().showNeevaMenuSheet()
+                    SceneDelegate.getBVC().showNeevaMenuSheet()
                 }
             )
             .environmentObject(chromeModel)

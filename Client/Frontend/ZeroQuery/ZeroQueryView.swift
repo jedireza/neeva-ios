@@ -120,10 +120,10 @@ struct ZeroQueryView: View {
                             Suggestion.tabSuggestion(
                                 TabCardDetails(
                                     tab: openTab,
-                                    manager: BrowserViewController.foregroundBVC().tabManager)
+                                    manager: SceneDelegate.getTabManager())
                             )
                         )
-                        .environmentObject(BrowserViewController.foregroundBVC().urlBar.shared.suggestionModel)
+                        .environmentObject(SceneDelegate.getBVC().urlBar.shared.suggestionModel)
                         SuggestionsDivider(height: 3)
                     }
 

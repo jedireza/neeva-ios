@@ -198,7 +198,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
             return
         }
 
-        BrowserViewController.foregroundBVC().openURLInNewTab(url)
+        SceneDelegate.getBVC().openURLInNewTab(url)
     }
 
     func onClose() {}
@@ -234,7 +234,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
             _ = item.loadObject(ofClass: String.self) { text, _ in
                 if let text = text, let space = self.manager.get(for: self.id) {
                     DispatchQueue.main.async {
-                        let bvc = BrowserViewController.foregroundBVC()
+                        let bvc = SceneDelegate.getBVC()
                         let request = AddToSpaceRequest(
                             title: "Selected snippets",
                             description: text,
@@ -286,7 +286,7 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
             return
         }
 
-        BrowserViewController.foregroundBVC().tabManager.selectedTab?.select(site)
+        SceneDelegate.getTabManager().selectedTab?.select(site)
     }
 
     func onClose() {}

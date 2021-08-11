@@ -9,7 +9,7 @@ class KeyboardShortcutTests: UITestBase {
 
     override func setUp() {
         super.setUp()
-        bvc = BrowserViewController.foregroundBVC()
+        bvc = SceneDelegate.getBVC()
     }
 
     func reset(tester: KIFUITestActor) {

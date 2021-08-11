@@ -52,7 +52,7 @@ struct TopBarView: View {
                     .tapTargetFrame()
                     if FeatureFlag[.cardStrip] {
                         Button(action: {
-                            BrowserViewController.foregroundBVC().openURLInNewTab(nil)
+                            SceneDelegate.getBVC().openURLInNewTab(nil)
                         }) {
                             Symbol(.plusApp, label: "New Tab")
                         }

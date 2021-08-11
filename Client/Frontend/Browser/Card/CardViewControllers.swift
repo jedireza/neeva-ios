@@ -109,7 +109,7 @@ class CardStripViewController: UIHostingController<CardStripViewController.Conte
                 tabCardModel: tabCardModel,
                 spaceCardModel: SpaceCardModel(),
                 sitesCardModel: SiteCardModel(
-                    urls: [], profile: BrowserViewController.foregroundBVC().profile),
+                    urls: [], profile: SceneDelegate.getBVC().profile),
                 cardStripModel: cardStripModel
             )
         )

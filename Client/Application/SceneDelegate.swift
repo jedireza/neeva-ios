@@ -24,7 +24,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         self.scene = scene
-
         guard let scene = (scene as? UIWindowScene) else { return }
 
         window = .init(windowScene: scene)
@@ -161,7 +160,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         completionHandler: @escaping (Bool) -> Void = { _ in }
     ) {
         let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(
-            shortcutItem, withBrowserViewController: BrowserViewController.foregroundBVC())
+            shortcutItem, withBrowserViewController: SceneDelegate.getBVC())
         completionHandler(handledShortCutItem)
     }
 

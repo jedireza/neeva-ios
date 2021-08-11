@@ -61,7 +61,7 @@ class ZeroQueryModel: ObservableObject {
     }
 
     func updateState() {
-        isPrivate = BrowserViewController.foregroundBVC().tabManager.selectedTab?.isPrivate ?? false
+        isPrivate = SceneDelegate.getTabManager().selectedTab?.isPrivate ?? false
 
         // TODO: remove once all users have upgraded
         if UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {
@@ -91,7 +91,7 @@ class ZeroQueryModel: ObservableObject {
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(
                     .PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
-                BrowserViewController.foregroundBVC().presentDBOnboardingViewController()
+                SceneDelegate.getBVC().presentDBOnboardingViewController()
 
                 // Set default browser onboarding did show to true so it will not show again after user clicks this button
                 Defaults[.didShowDefaultBrowserOnboarding] = true

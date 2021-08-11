@@ -37,7 +37,7 @@ extension BrowserViewController {
             // TODO: update for modern url bar
             self.urlBar.legacy?.didClickNeevaMenu()
         } else {
-            BrowserViewController.foregroundBVC().showNeevaMenuSheet()
+            SceneDelegate.getBVC().showNeevaMenuSheet()
         }
     }
 
