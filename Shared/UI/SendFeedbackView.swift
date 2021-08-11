@@ -46,12 +46,13 @@ public struct SendFeedbackView: View {
     @State var screenshotSheet = ModalState()
     @State var editedScreenshot: UIImage
     @State var shareQuery = true
+    @State var focusedTextField = false
 
     public var body: some View {
         NavigationView {
-            Form {
-                Section(
-                    header: HStack {
+            ScrollView {
+                GroupedStack {
+                    HStack {
                         VStack(alignment: .leading, spacing: 0) {
                             Text("Need help or want instant answers to FAQs?")
                                 .withFont(.bodyLarge)
@@ -69,99 +70,109 @@ public struct SendFeedbackView: View {
                         .font(.body)
                         Spacer()
                     }
-                    .padding(.top, 10)
-                    .padding(.bottom, 18)
-                    .textCase(nil)
-                ) {
-                    MultilineTextField(
-                        "Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!",
-                        text: $feedbackText
+
+                    GroupedCell {
+                        MultilineTextField(
+                            "Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!",
+                            text: $feedbackText,
+                            customize: { tf in
+                                if !focusedTextField {
+                                    tf.becomeFirstResponder()
+                                    focusedTextField = true
+                                }
+                            }
+                        ).padding(.vertical, 7)
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.brand.blue, lineWidth: 4)
+                            .padding(.horizontal, -10)
+                            .opacity(shouldHighlightTextInput ? 1 : 0)
                     )
-                    .if(shouldHighlightTextInput()) { view in
-                        view
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.brand.blue, lineWidth: 4)
-                                    .padding(.horizontal, -10))
-                    }
-                }
+                    .padding(.vertical, 12)
 
-                if let screenshot = screenshot, NeevaFeatureFlags[.feedbackScreenshot] {
-                    DecorativeSection {
-                        Toggle(isOn: $shareScreenshot) {
-                            VStack(alignment: .leading, spacing: 0) {
-                                Text("Share Screenshot")
-                                    .withFont(.labelLarge)
-                                Button(action: { screenshotSheet.present() }) {
-                                    Text("View or edit").withFont(.labelMedium)
-                                }
-                                .disabled(!shareScreenshot)
-                                .buttonStyle(BorderlessButtonStyle())
-                            }
-                        }
-                        .padding(.vertical, 4)
-                        .padding(.leading, -4)
-                        .modal(state: $screenshotSheet) {
-                            QuickLookView(image: $editedScreenshot, original: screenshot)
-                        }
-                    }
-                }
-
-                if let query = query, requestId != nil, NeevaFeatureFlags[.feedbackQuery] {
-                    DecorativeSection {
-                        Toggle(isOn: $shareQuery) {
-                            VStack(alignment: .leading, spacing: 0) {
-                                Text("Share My Search")
-                                    .withFont(.labelLarge)
-                                Text("“\(query)”")
-                                    .withFont(.labelMedium)
-                                    .foregroundColor(.secondaryLabel)
-                                    .lineLimit(1)
-                            }
-                        }
-                        .padding(.vertical, 4)
-                        .padding(.leading, -4)
-                    }
-                } else if let url = url {
-                    DecorativeSection {
-                        Toggle(isOn: $shareURL) {
-                            VStack(alignment: .leading, spacing: 0) {
-                                Text("Share URL").bold().withFont(.labelLarge)
-                                HStack {
-                                    let displayURL: String = {
-                                        let display = url.absoluteDisplayString
-                                        if display.hasPrefix("https://") {
-                                            return String(
-                                                display[
-                                                    display.index(
-                                                        display.startIndex,
-                                                        offsetBy: "https://".count)...])
+                    VStack(spacing: 8) {
+                        if let screenshot = screenshot, NeevaFeatureFlags[.feedbackScreenshot] {
+                            GroupedCell {
+                                Toggle(isOn: $shareScreenshot) {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text("Share Screenshot")
+                                            .withFont(.labelLarge)
+                                        Button(action: { screenshotSheet.present() }) {
+                                            Text("View or edit").withFont(.labelMedium)
                                         }
-                                        return display
-                                    }()
-                                    Text(displayURL)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(1)
-                                    Button(action: { isEditingURL = true }) {
-                                        Text("edit").withFont(.labelMedium)
+                                        .disabled(!shareScreenshot)
+                                        .buttonStyle(BorderlessButtonStyle())
                                     }
-                                    .background(
-                                        NavigationLink(
-                                            destination: EditURLView($url, isActive: $isEditingURL),
-                                            isActive: $isEditingURL
-                                        ) { EmptyView() }
-                                        .hidden()
-                                    )
-                                    .disabled(!shareURL)
-                                    .padding(.trailing, 8)
+                                }
+                                .padding(.vertical, 9)
+                                .modal(state: $screenshotSheet) {
+                                    QuickLookView(image: $editedScreenshot, original: screenshot)
+                                }
+                                .accessibilityAction(named: "View or Edit Screenshot") {
+                                    screenshotSheet.present()
                                 }
                             }
                         }
-                        .padding(.vertical, 4)
-                        .padding(.leading, -4)
+
+                        if let query = query, requestId != nil, NeevaFeatureFlags[.feedbackQuery] {
+                            GroupedCell {
+                                Toggle(isOn: $shareQuery) {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text("Share My Search")
+                                            .withFont(.labelLarge)
+                                        Text("“\(query)”")
+                                            .withFont(.labelMedium)
+                                            .foregroundColor(.secondaryLabel)
+                                            .lineLimit(1)
+                                    }
+                                }.padding(.vertical, 9)
+                            }
+                        } else if let url = url {
+                            GroupedCell {
+                                Toggle(isOn: $shareURL) {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text("Share URL").bold().withFont(.labelLarge)
+                                        HStack {
+                                            let displayURL: String = {
+                                                let display = url.absoluteDisplayString
+                                                if display.hasPrefix("https://") {
+                                                    return String(
+                                                        display[
+                                                            display.index(
+                                                                display.startIndex,
+                                                                offsetBy: "https://".count)...])
+                                                }
+                                                return display
+                                            }()
+                                            Text(displayURL)
+                                                .foregroundColor(.secondary)
+                                                .lineLimit(1)
+                                            Button(action: { isEditingURL = true }) {
+                                                Text("edit").withFont(.labelMedium)
+                                            }
+                                            .background(
+                                                NavigationLink(
+                                                    destination: EditURLView(
+                                                        $url, isActive: $isEditingURL),
+                                                    isActive: $isEditingURL
+                                                ) { EmptyView() }
+                                                .hidden()
+                                            )
+                                            .disabled(!shareURL)
+                                            .padding(.trailing, 8)
+                                        }
+                                    }
+                                }
+                                .padding(.vertical, 9)
+                                .accessibilityAction(named: "Edit URL") { isEditingURL = true }
+                            }
+                        }
                     }
+                    Spacer()
                 }
             }
+            .background(Color.groupedBackground.ignoresSafeArea())
             .applyToggleStyle()
             .navigationTitle("Back")
             .navigationBarTitleDisplayMode(.inline)
@@ -215,6 +226,7 @@ public struct SendFeedbackView: View {
                             }
                         }
                     )
+                    .padding(.horizontal, -10)
                     .onChange(of: urlString) { value in
                         self.url = URL(string: urlString)
                     }
@@ -238,7 +250,7 @@ public struct SendFeedbackView: View {
         TourManager.shared.userReachedStep(step: .openFeedbackPanelWithInputFieldHighlight)
     }
 
-    private func shouldHighlightTextInput() -> Bool {
+    private var shouldHighlightTextInput: Bool {
         return TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu)
             || TourManager.shared.isCurrentStep(with: .openFeedbackPanelWithInputFieldHighlight)
     }
@@ -312,13 +324,15 @@ struct SendFeedbackView_Previews: PreviewProvider {
         // iPhone 12 screen size
         SendFeedbackView(
             screenshot: UIImage(color: .systemRed, width: 390, height: 844)!,
-            url: "https://neeva.com/search?q=abcdef+ghijklmnop")
+            url: nil, requestId: "swiftui-preview", query: "Best Air Purifier")
         // iPhone 8 screen size
         SendFeedbackView(
             screenshot: UIImage(color: .systemRed, width: 375, height: 667)!,
-            url: NeevaConstants.appURL)
+            url: "https://www.amazon.com/dp/B0863TXG")
         SendFeedbackView(
             screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!,
-            url: NeevaConstants.appURL)
+            url: "https://www.amazon.com/dp/B0863TXG",
+            initialText: Array(repeating: "Placeholder text for filled form.", count: 5).joined(
+                separator: "\n"))
     }
 }

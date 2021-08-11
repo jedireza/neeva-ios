@@ -24,7 +24,7 @@ struct MultilineTextField: View {
         )
     }
 
-    @State private var dynamicHeight: CGFloat = 100
+    @State private var dynamicHeight: CGFloat = 80
     @State private var showingPlaceholder = false
     @Environment(\.isEnabled) private var isEnabled
 
@@ -51,7 +51,6 @@ struct MultilineTextField: View {
         )
         .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
         .background(placeholderView, alignment: .topLeading)
-        .padding(.horizontal, -10)
         .accessibilityHint(placeholder)
     }
 
@@ -111,7 +110,7 @@ private struct UITextViewWrapper: UIViewRepresentable {
             CGSize(width: view.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
         if result.wrappedValue != newSize.height {
             DispatchQueue.main.async {
-                result.wrappedValue = max(100, newSize.height)  // !! must be called asynchronously
+                result.wrappedValue = max(80, newSize.height)  // !! must be called asynchronously
             }
         }
     }

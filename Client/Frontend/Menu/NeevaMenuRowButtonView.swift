@@ -60,7 +60,7 @@ public struct NeevaMenuRowButtonView: View {
                 }.frame(width: 24, height: 24)
             }
             .padding(.trailing, -6)
-            .padding(.horizontal, GroupedCellUX.horizontalPadding)
+            .padding(.horizontal, GroupedCellUX.padding)
             .frame(minHeight: GroupedCellUX.minCellHeight)
         }
         .buttonStyle(TableCellButtonStyle())

@@ -1,32 +1,34 @@
 // Copyright Neeva. All rights reserved.
 
-import Shared
 import SwiftUI
 
-enum GroupedCellUX {
-    static let minCellHeight: CGFloat = 52
-    static let horizontalPadding: CGFloat = 16
-    static let spacing: CGFloat = 12
-    static let cornerRadius: CGFloat = 12
+public enum GroupedCellUX {
+    public static let minCellHeight: CGFloat = 52
+    public static let padding: CGFloat = 16
+    public static let spacing: CGFloat = 12
+    public static let cornerRadius: CGFloat = 12
 }
 
 // not using a `HorizontalAlignment` because it has ability to do custom alignments which we don’t want
-enum GroupedCellAlignment {
+public enum GroupedCellAlignment {
     case leading
     case center
     case trailing
 }
 
 /// A container for `GroupedCell`s. It applies the proper padding, spacing and background color around the cells.
-struct GroupedStack<Content: View>: View {
-    @ViewBuilder let content: () -> Content
+public struct GroupedStack<Content: View>: View {
+    let content: () -> Content
+    public init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
 
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             content()
         }
         .accentColor(.ui.adaptive.blue)
-        .padding(16)
+        .padding(GroupedCellUX.padding)
     }
 }
 
@@ -34,16 +36,18 @@ struct GroupedStack<Content: View>: View {
 ///
 /// `GroupedCell` automatically applies a minimum height, horizontal padding, background, and rounded corners.
 /// Pass a `GroupedCellAlignment` to change your content’s horizontal position.
-struct GroupedCell<Content: View>: View {
+public struct GroupedCell<Content: View>: View {
     let alignment: GroupedCellAlignment
     let content: () -> Content
 
-    init(alignment: GroupedCellAlignment = .center, @ViewBuilder content: @escaping () -> Content) {
+    public init(
+        alignment: GroupedCellAlignment = .center, @ViewBuilder content: @escaping () -> Content
+    ) {
         self.alignment = alignment
         self.content = content
     }
 
-    var body: some View {
+    public var body: some View {
         GroupedCell<ContentContainer>.Decoration {
             ContentContainer(alignment: alignment, content: content)
         }
@@ -54,12 +58,12 @@ struct GroupedCell<Content: View>: View {
 ///
 /// The button automatically gets `TableCellButtonStyle` applied,
 /// and adds all of the same styling that `GroupedCell` adds.
-struct GroupedCellButton<Label: View>: View {
+public struct GroupedCellButton<Label: View>: View {
     let alignment: GroupedCellAlignment
     let action: () -> Void
     let label: () -> Label
 
-    init(
+    public init(
         alignment: GroupedCellAlignment = .center, action: @escaping () -> Void,
         @ViewBuilder label: @escaping () -> Label
     ) {
@@ -68,7 +72,7 @@ struct GroupedCellButton<Label: View>: View {
         self.label = label
     }
 
-    var body: some View {
+    public var body: some View {
         GroupedCell.Decoration {
             Button(action: action) {
                 GroupedCell.ContentContainer(alignment: alignment, content: label)
@@ -78,7 +82,7 @@ struct GroupedCellButton<Label: View>: View {
 }
 
 extension GroupedCellButton where Label == Text.WithFont {
-    init<S: StringProtocol>(
+    public init<S: StringProtocol>(
         _ label: S, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil,
         action: @escaping () -> Void
     ) {
@@ -91,9 +95,13 @@ extension GroupedCellButton where Label == Text.WithFont {
 // MARK: - Internal sizing/layout views
 extension GroupedCell {
     /// Adds the standard background and rounded corners to the content.
-    struct Decoration: View {
+    public struct Decoration: View {
         let content: () -> Content
-        var body: some View {
+        public init(@ViewBuilder content: @escaping () -> Content) {
+            self.content = content
+        }
+
+        public var body: some View {
             content()
                 .background(Color.secondaryGroupedBackground)
                 .cornerRadius(GroupedCellUX.cornerRadius)
@@ -101,24 +109,30 @@ extension GroupedCell {
     }
 
     /// Applies the min height, padding, and alignment.
-    struct ContentContainer: View {
+    public struct ContentContainer: View {
         let alignment: GroupedCellAlignment
         let content: () -> Content
-        var body: some View {
+        public init(alignment: GroupedCellAlignment, @ViewBuilder content: @escaping () -> Content)
+        {
+            self.alignment = alignment
+            self.content = content
+        }
+
+        public var body: some View {
             HStack(spacing: 0) {
                 if alignment == .leading {
-                    Color.clear.frame(width: GroupedCellUX.horizontalPadding)
+                    Color.clear.frame(width: GroupedCellUX.padding)
                 } else {
-                    Spacer(minLength: GroupedCellUX.horizontalPadding)
+                    Spacer(minLength: GroupedCellUX.padding)
                 }
                 ZStack {
                     Color.clear.frame(width: 1, height: GroupedCellUX.minCellHeight)
                     content()
                 }
                 if alignment == .trailing {
-                    Color.clear.frame(width: GroupedCellUX.horizontalPadding)
+                    Color.clear.frame(width: GroupedCellUX.padding)
                 } else {
-                    Spacer(minLength: GroupedCellUX.horizontalPadding)
+                    Spacer(minLength: GroupedCellUX.padding)
                 }
             }
         }

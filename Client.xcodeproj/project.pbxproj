@@ -211,7 +211,6 @@
 		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
-		66BEFDC926A7678200AA32EF /* GroupedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC826A7678200AA32EF /* GroupedCell.swift */; };
 		66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C763267A8858002B50B1 /* ToastView.swift */; };
 		66C3C76D267A8858002B50B1 /* ToastWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C764267A8858002B50B1 /* ToastWindowManager.swift */; };
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
@@ -328,6 +327,7 @@
 		C9098F7726B0539000D2B5F4 /* webpack.config.js in Resources */ = {isa = PBXBuildFile; fileRef = C9098F7626B0539000D2B5F4 /* webpack.config.js */; };
 		C9157BB926BDDA4E009678D9 /* ViewRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9157BB826BDDA4E009678D9 /* ViewRef.swift */; };
 		C91FA35E26B1959B00E82841 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91FA35C26B1959B00E82841 /* TopBarView.swift */; };
+		C9255AA226C4392F00AA1C2E /* GroupedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BEFDC826A7678200AA32EF /* GroupedCell.swift */; };
 		C9299E34268F7BD700758795 /* DefaultBrowserOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */; };
 		C9299E36268F9CF300758795 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E35268F9CF300758795 /* CloseButton.swift */; };
 		C9299E382694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */; };
@@ -2457,6 +2457,7 @@
 		C996466726569AF0005FFE83 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				66BEFDC826A7678200AA32EF /* GroupedCell.swift */,
 				C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */,
 				C908604F266693340049C072 /* CapsuleTextField.swift */,
 				C9C18DD926558FF3004710CD /* ActivityIndicator.swift */,
@@ -2731,7 +2732,6 @@
 			children = (
 				C9299E35268F9CF300758795 /* CloseButton.swift */,
 				C9BED4C8266824D7001D9C77 /* FadingHorizontalScrollView.swift */,
-				66BEFDC826A7678200AA32EF /* GroupedCell.swift */,
 				C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */,
 				C9E5F2CA2678F05E00025A7F /* Popover.swift */,
 				C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */,
@@ -4290,6 +4290,7 @@
 				E65075AC1E37F7AB006961AC /* StringExtensions.swift in Sources */,
 				C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */,
 				C994645F2657052200613110 /* FeatureFlags.swift in Sources */,
+				C9255AA226C4392F00AA1C2E /* GroupedCell.swift in Sources */,
 				E65075951E37F7AB006961AC /* GeneralUtils.swift in Sources */,
 				E683F0C21E93D4E90035D990 /* DictionaryExtensions.swift in Sources */,
 				E650759B1E37F7AB006961AC /* CrashSimulator.m in Sources */,
@@ -4691,7 +4692,6 @@
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				67B0AAF426BA080D000731E0 /* OverflowMenuViewController.swift in Sources */,
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
-				66BEFDC926A7678200AA32EF /* GroupedCell.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
 				3BB50E201D627539004B33DF /* ZeroQueryContent.swift in Sources */,
 				663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */,
