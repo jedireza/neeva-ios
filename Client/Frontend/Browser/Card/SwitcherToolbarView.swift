@@ -3,38 +3,6 @@
 import Shared
 import SwiftUI
 
-struct IncognitoButton: View {
-    let offTint = UIColor.label
-    let onTint = UIColor.label.swappedForStyle
-
-    @EnvironmentObject var toolbarModel: SwitcherToolbarModel
-    @EnvironmentObject var gridModel: GridModel
-
-    var body: some View {
-        ToggleButtonView(action: {
-            let shouldHide = toolbarModel.onToggleIncognito()
-            if shouldHide {
-                gridModel.hideWithNoAnimation()
-            }
-        }) {
-            $0.accessibilityLabel = .TabTrayToggleAccessibilityLabel
-            $0.accessibilityHint = .TabTrayToggleAccessibilityHint
-            let maskImage = UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
-            $0.setImage(maskImage, for: [])
-            $0.isPointerInteractionEnabled = true
-            $0.setSelected(toolbarModel.isIncognito)
-
-            $0.tintColor = toolbarModel.isIncognito ? onTint : offTint
-            $0.imageView?.tintColor = $0.tintColor
-
-            $0.accessibilityValue =
-                toolbarModel.isIncognito
-                ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
-        }
-        .frame(width: TabLocationViewUX.height, height: TabLocationViewUX.height)
-    }
-}
-
 class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
     let openLazyTab: () -> Void
@@ -69,9 +37,17 @@ struct SwitcherToolbarView: View {
         VStack(spacing: 0) {
             if !top { divider }
             HStack(spacing: 0) {
-                IncognitoButton()
+                IncognitoButton(
+                    isIncognito: toolbarModel.isIncognito,
+                    action: {
+                        let shouldHide = toolbarModel.onToggleIncognito()
+                        if shouldHide {
+                            gridModel.hideWithNoAnimation()
+                        }
+                    }
+                )
                 Spacer()
-                UIKitButton(action: {
+                SecondaryMenuButton(action: {
                     toolbarModel.onNewTab()
                     gridModel.hideWithNoAnimation()
                 }) {
@@ -83,7 +59,9 @@ struct SwitcherToolbarView: View {
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
                 Spacer()
-                UIKitButton(action: { gridModel.animationThumbnailState = .visibleForTrayHidden }) {
+                SecondaryMenuButton(action: {
+                    gridModel.animationThumbnailState = .visibleForTrayHidden
+                }) {
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
                     let title = NSAttributedString(
                         string: "Done",

@@ -2,9 +2,14 @@
 
 import SwiftUI
 
-struct UIKitButton: UIViewRepresentable {
+/// A SwiftUI wrapper for a `UIButton`.
+/// **TODO**: when dropping support for iOS 14, change all call sites to a `Menu` with a `primaryAction`
+struct SecondaryMenuButton: UIViewRepresentable {
+    /// The type of the button, such as `.system`
     let buttonType: UIButton.ButtonType
+    /// Called on every render to apply customizations such as labels, menus, or coloring
     let customize: (DynamicMenuButton) -> Void
+    /// The action to perform when the button is tapped
     let action: () -> Void
 
     init(
@@ -16,6 +21,7 @@ struct UIKitButton: UIViewRepresentable {
         self.action = action
     }
 
+    /// Helper class that can participate in target-action-based event handling for the button.
     class Coordinator {
         var onTap: () -> Void
         init(onTap: @escaping () -> Void) {
@@ -45,47 +51,9 @@ struct UIKitButton: UIViewRepresentable {
     }
 }
 
-struct ToggleButtonView: UIViewRepresentable {
-    let customize: (ToggleButton) -> Void
-    let action: () -> Void
-
-    init(action: @escaping () -> Void, customize: @escaping (ToggleButton) -> Void) {
-        self.customize = customize
-        self.action = action
-    }
-
-    class Coordinator {
-        var onTap: () -> Void
-        init(onTap: @escaping () -> Void) {
-            self.onTap = onTap
-        }
-
-        @objc func action() {
-            onTap()
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(onTap: action)
-    }
-
-    func makeUIView(context: Context) -> ToggleButton {
-        let button = ToggleButton()
-        button.addTarget(
-            context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered
-        )
-        return button
-    }
-
-    func updateUIView(_ button: ToggleButton, context: Context) {
-        customize(button)
-        context.coordinator.onTap = action
-    }
-}
-
-struct UIKitButton_Previews: PreviewProvider {
+struct SecondaryMenuButton_Previews: PreviewProvider {
     static var previews: some View {
-        UIKitButton(action: {}) {
+        SecondaryMenuButton(action: {}) {
             $0.setTitle("Hello, world", for: .normal)
             $0.setDynamicMenu {
                 UIMenu(children: [

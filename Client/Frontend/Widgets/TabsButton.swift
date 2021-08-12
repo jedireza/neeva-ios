@@ -58,4 +58,9 @@ class TabsButton: DynamicMenuButton {
         sendActions(for: .touchUpInside)
     }
 
+    static func tabTrayButton() -> TabsButton {
+        let tabsButton = TabsButton()
+        tabsButton.accessibilityLabel = .TabTrayButtonShowTabsAccessibilityLabel
+        return tabsButton
+    }
 }

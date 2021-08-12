@@ -2,7 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import UIKit
+import SwiftUI
+
+struct IncognitoButton: View {
+    let isIncognito: Bool
+    let action: () -> Void
+
+    var body: some View {
+        IncognitoButtonView(isIncognito: isIncognito, action: action)
+            .tapTargetFrame()
+    }
+}
 
 private enum UX {
     // The amount of pixels the toggle button will expand over the normal size. This results in the larger -> contract animation.
@@ -17,10 +27,55 @@ private let EllipsePointerStyleProvider: UIButton.PointerStyleProvider = { butto
     UIPointerStyle(effect: effect, shape: .path(UIBezierPath(ovalIn: button.bounds)))
 }
 
-class ToggleButton: UIButton {
+/// Wrapper for the `ToggleButton` UIKit control.
+private struct IncognitoButtonView: UIViewRepresentable {
+    let isIncognito: Bool
+    let action: () -> Void
+
+    init(isIncognito: Bool, action: @escaping () -> Void) {
+        self.isIncognito = isIncognito
+        self.action = action
+    }
+
+    class Coordinator {
+        var onTap: () -> Void
+        init(onTap: @escaping () -> Void) {
+            self.onTap = onTap
+        }
+
+        @objc func action() {
+            onTap()
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onTap: action)
+    }
+
+    func makeUIView(context: Context) -> ToggleButton {
+        let button = ToggleButton(frame: .init(origin: .zero, size: .init(width: 40, height: 40)))
+        button.addTarget(
+            context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered
+        )
+        return button
+    }
+
+    func updateUIView(_ button: ToggleButton, context: Context) {
+        context.coordinator.onTap = action
+
+        button.setSelected(isIncognito)
+    }
+}
+
+private class ToggleButton: UIButton {
     var selectedBackgroundColor = UIColor.label
 
     func setSelected(_ selected: Bool, animated: Bool = true) {
+        tintColor = selected ? .label.swappedForStyle : .label
+        imageView?.tintColor = tintColor
+        accessibilityValue =
+            selected ? .TabTrayToggleAccessibilityValueOn : .TabTrayToggleAccessibilityValueOff
+
         guard isSelected != selected else {
             return
         }
@@ -39,6 +94,7 @@ class ToggleButton: UIButton {
                     effect: .lift(UITargetedPreview(view: style.preview.view, parameters: params)),
                     shape: .path(path))
             } : EllipsePointerStyleProvider
+
         if animated {
             animateSelection(selected)
         }
@@ -125,6 +181,12 @@ class ToggleButton: UIButton {
         contentMode = .redraw
         insertSubview(backgroundView, belowSubview: imageView!)
         pointerStyleProvider = EllipsePointerStyleProvider
+
+        accessibilityLabel = .TabTrayToggleAccessibilityLabel
+        accessibilityHint = .TabTrayToggleAccessibilityHint
+        let maskImage = UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
+        setImage(maskImage, for: [])
+        isPointerInteractionEnabled = true
     }
 
     override func layoutSubviews() {

@@ -98,8 +98,7 @@ enum TabToolbarButtons {
         let buildMenu: () -> UIMenu?
 
         var body: some View {
-            // TODO: when dropping support for iOS 14, change this to a Menu view with a primaryAction
-            UIKitButton(action: action) {
+            SecondaryMenuButton(action: action) {
                 $0.setImage(Symbol.uiImage(.squareOnSquare, size: 20, weight: weight), for: .normal)
                 $0.setDynamicMenu(buildMenu)
                 $0.accessibilityLabel = "Show Tabs"

@@ -51,7 +51,7 @@ struct LocationViewReloadButton: View {
 
     var body: some View {
         // TODO: when dropping support for iOS 14, change this to a Menu view with a primaryAction
-        UIKitButton(action: onTap) {
+        SecondaryMenuButton(action: onTap) {
             $0.tintColor = .label
             $0.setImage(
                 Symbol.uiImage(state == .reload ? .arrowClockwise : .xmark, weight: .medium),

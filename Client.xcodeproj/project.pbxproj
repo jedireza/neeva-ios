@@ -286,7 +286,6 @@
 		BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */; };
 		C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */; };
 		C40046FA1CF8E0B200B08303 /* BackForwardListAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40046F91CF8E0B200B08303 /* BackForwardListAnimator.swift */; };
-		C4E3984C1D21F2FD004E89BA /* PrivateModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E3984B1D21F2FD004E89BA /* PrivateModeButton.swift */; };
 		C4EFEECF1CEBB6F2009762A4 /* BackForwardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */; };
 		C80A3D4426A25A9C0001E8A1 /* NeevaSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */; };
 		C80E03E626B8459600A7800A /* LoggingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80E03E526B8459600A7800A /* LoggingSettingsView.swift */; };
@@ -339,7 +338,7 @@
 		C94D40682684CC35003A6766 /* PublisherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D40672684CC35003A6766 /* PublisherExtensions.swift */; };
 		C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D406B2684E677003A6766 /* SearchQueryModel.swift */; };
 		C94D4096268A617F003A6766 /* NeevaFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4095268A617F003A6766 /* NeevaFonts.swift */; };
-		C94D4099268BAADC003A6766 /* UIKitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4098268BAADC003A6766 /* UIKitButton.swift */; };
+		C94D4099268BAADC003A6766 /* SecondaryMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D4098268BAADC003A6766 /* SecondaryMenuButton.swift */; };
 		C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D409C268CADD4003A6766 /* LocationEditView.swift */; };
 		C962778D26A20A3B0078CDAF /* WKWebView+Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = C962778C26A20A3B0078CDAF /* WKWebView+Zoom.m */; };
 		C962778F26A21BC80078CDAF /* ArithmeticExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */; };
@@ -656,7 +655,7 @@
 		E65075C21E37F956006961AC /* ExtensionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075C11E37F956006961AC /* ExtensionUtils.swift */; };
 		E653422D1C5944F90039DD9E /* BrowserPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653422C1C5944F90039DD9E /* BrowserPrompts.swift */; };
 		E660BDD91BB06521009AC090 /* TabsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E660BDD81BB06521009AC090 /* TabsButton.swift */; };
-		E663D5781BB341C4001EF30E /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E663D5771BB341C4001EF30E /* ToggleButton.swift */; };
+		E663D5781BB341C4001EF30E /* IncognitoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E663D5771BB341C4001EF30E /* IncognitoButton.swift */; };
 		E67422C51CFF2D39009E8373 /* youtube.ico in Resources */ = {isa = PBXBuildFile; fileRef = E67422C41CFF2D39009E8373 /* youtube.ico */; };
 		E677F0451D9423FB00ECF1FB /* SQLiteMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E677F0441D9423FB00ECF1FB /* SQLiteMetadata.swift */; };
 		E677F0541D94247300ECF1FB /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E677F0531D94247300ECF1FB /* Metadata.swift */; };
@@ -1220,7 +1219,6 @@
 		C2CB4D369C756DA6836BC4A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/3DTouchActions.strings; sourceTree = "<group>"; };
 		C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackForwardListViewController.swift; sourceTree = "<group>"; };
 		C40046F91CF8E0B200B08303 /* BackForwardListAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackForwardListAnimator.swift; sourceTree = "<group>"; };
-		C4E3984B1D21F2FD004E89BA /* PrivateModeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateModeButton.swift; sourceTree = "<group>"; };
 		C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackForwardTableViewCell.swift; sourceTree = "<group>"; };
 		C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaSignInTests.swift; sourceTree = "<group>"; };
 		C80E03E526B8459600A7800A /* LoggingSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingSettingsView.swift; sourceTree = "<group>"; };
@@ -1283,7 +1281,7 @@
 		C94D40692684D442003A6766 /* SuggestionPositionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionPositionInfo.swift; sourceTree = "<group>"; };
 		C94D406B2684E677003A6766 /* SearchQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQueryModel.swift; sourceTree = "<group>"; };
 		C94D4095268A617F003A6766 /* NeevaFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaFonts.swift; sourceTree = "<group>"; };
-		C94D4098268BAADC003A6766 /* UIKitButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitButton.swift; sourceTree = "<group>"; };
+		C94D4098268BAADC003A6766 /* SecondaryMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryMenuButton.swift; sourceTree = "<group>"; };
 		C94D409C268CADD4003A6766 /* LocationEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationEditView.swift; sourceTree = "<group>"; };
 		C962778B26A20A3B0078CDAF /* WKWebView+Zoom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WKWebView+Zoom.h"; sourceTree = "<group>"; };
 		C962778C26A20A3B0078CDAF /* WKWebView+Zoom.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+Zoom.m"; sourceTree = "<group>"; };
@@ -1587,7 +1585,7 @@
 		E653422C1C5944F90039DD9E /* BrowserPrompts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowserPrompts.swift; sourceTree = "<group>"; };
 		E660BDD81BB06521009AC090 /* TabsButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabsButton.swift; sourceTree = "<group>"; };
 		E6639F171BF11E17002D0853 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		E663D5771BB341C4001EF30E /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
+		E663D5771BB341C4001EF30E /* IncognitoButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncognitoButton.swift; sourceTree = "<group>"; };
 		E67422C41CFF2D39009E8373 /* youtube.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = youtube.ico; sourceTree = "<group>"; };
 		E677F0441D9423FB00ECF1FB /* SQLiteMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteMetadata.swift; sourceTree = "<group>"; };
 		E677F0531D94247300ECF1FB /* Metadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
@@ -2736,15 +2734,14 @@
 				C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */,
 				C9E5F2CA2678F05E00025A7F /* Popover.swift */,
 				C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */,
-				C4E3984B1D21F2FD004E89BA /* PrivateModeButton.swift */,
 				C9F49CBC266FDA9500F3408A /* SearchBar.swift */,
 				C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */,
 				D863C8E31F68BFC20058D95F /* LegacyGradientProgressBar.swift */,
 				D38A1BEC1A9FA2CA00F6A386 /* SiteTableViewController.swift */,
 				E660BDD81BB06521009AC090 /* TabsButton.swift */,
-				E663D5771BB341C4001EF30E /* ToggleButton.swift */,
+				E663D5771BB341C4001EF30E /* IncognitoButton.swift */,
 				59A68B1F857A8638598A63A0 /* TwoLineCell.swift */,
-				C94D4098268BAADC003A6766 /* UIKitButton.swift */,
+				C94D4098268BAADC003A6766 /* SecondaryMenuButton.swift */,
 				C9157BB826BDDA4E009678D9 /* ViewRef.swift */,
 			);
 			path = Widgets;
@@ -4723,7 +4720,6 @@
 				4A1D054D266430DA00D63333 /* SimulatedSwipeAnimator.swift in Sources */,
 				661F4FB7269CACFD0078238B /* DownloadViewController.swift in Sources */,
 				C9C18E1E265591A1004710CD /* Icons.swift in Sources */,
-				C4E3984C1D21F2FD004E89BA /* PrivateModeButton.swift in Sources */,
 				C965BDD4268E720400F02224 /* DebugDBSettingsSection.swift in Sources */,
 				EBE26B57220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift in Sources */,
 				C962778F26A21BC80078CDAF /* ArithmeticExtensions.swift in Sources */,
@@ -4751,7 +4747,7 @@
 				D3BE7B261B054D4400641031 /* main.swift in Sources */,
 				C9299E34268F7BD700758795 /* DefaultBrowserOnboardingView.swift in Sources */,
 				EB8A0A77206ABCE000A9859A /* WebPagesForTesting.swift in Sources */,
-				C94D4099268BAADC003A6766 /* UIKitButton.swift in Sources */,
+				C94D4099268BAADC003A6766 /* SecondaryMenuButton.swift in Sources */,
 				D3A9949C1A3686BD008AD1AC /* BrowserViewController.swift in Sources */,
 				C9299E3F2696021C00758795 /* TextSizeActivity.swift in Sources */,
 				59A681BDFC95A19F05E07223 /* SuggestionsContent.swift in Sources */,
@@ -4780,7 +4776,7 @@
 				6626BC9926B9BBF900EE0760 /* FindInPageModel.swift in Sources */,
 				C9F49CBB266FD16000F3408A /* WebsiteDataView.swift in Sources */,
 				BC85E226264F407C0068092F /* TourPromptView.swift in Sources */,
-				E663D5781BB341C4001EF30E /* ToggleButton.swift in Sources */,
+				E663D5781BB341C4001EF30E /* IncognitoButton.swift in Sources */,
 				E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */,
 				D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */,
 				EBB89506219398E500EB91A0 /* TabContentBlocker.swift in Sources */,
