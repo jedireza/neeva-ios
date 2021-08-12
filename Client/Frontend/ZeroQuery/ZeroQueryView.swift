@@ -144,10 +144,11 @@ struct ZeroQueryView: View {
                         if expandSuggestedSites != .hidden {
                             SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
                         }
-                        
+
                         if viewModel.showRatingsCard {
-                            RatingsCard(onClose: { viewModel.showRatingsCard = false },
-                                        viewWidth: geom.size.width)
+                            RatingsCard(
+                                onClose: { viewModel.showRatingsCard = false },
+                                viewWidth: geom.size.width)
                         }
 
                         ZeroQueryHeader(
@@ -182,9 +183,13 @@ struct ZeroQueryView: View {
     struct ZeroQueryView_Previews: PreviewProvider {
         static var previews: some View {
             NavigationView {
-                ZeroQueryView(viewModel: ZeroQueryModel())
+                ZeroQueryView()
                     .navigationBarTitleDisplayMode(.inline)
             }
+            .environmentObject(
+                ZeroQueryModel(
+                    profile: BrowserProfile(localName: "profile"), shareURLHandler: { _ in })
+            )
             .environmentObject(SuggestedSitesViewModel.preview)
             .environmentObject(
                 SuggestedSearchesModel(

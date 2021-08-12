@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
-import UIKit
-import Shared
 import Combine
+import Shared
+import UIKit
 
 class ToastWindowManager: KeyboardReadable {
     private let inOutAnimationDuration = 0.3
