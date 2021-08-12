@@ -30,6 +30,14 @@ class TabChromeModel: ObservableObject {
         self.inlineToolbar = inlineToolbar
     }
 
+    /// Calls the address bar to be selected and enter editing mode
+    func triggerOverlay() {
+        // called twice in order to work
+        // see chromeModel.$isEditingLocation.withPrevious() in tabLocationHost
+        setEditingLocation(to: true)
+        setEditingLocation(to: true)
+    }
+
     func setEditingLocation(to value: Bool) {
         withAnimation(TabLocationViewUX.animation.delay(0.08)) {
             isEditingLocation = value

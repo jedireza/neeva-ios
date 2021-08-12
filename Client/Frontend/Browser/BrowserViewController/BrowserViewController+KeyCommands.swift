@@ -6,7 +6,6 @@ import Shared
 
 // Naming functions: use the suffix 'KeyCommand' for an additional level of namespacing (bug 1415830)
 extension BrowserViewController {
-
     @objc func reloadTabKeyCommand() {
         if let tab = tabManager.selectedTab {
             tab.reload()
@@ -33,7 +32,7 @@ extension BrowserViewController {
 
     @objc func selectLocationBarKeyCommand() {
         scrollController.showToolbars(animated: true)
-        chromeModel.setEditingLocation(to: true)
+        chromeModel.triggerOverlay()
     }
 
     @objc func newTabKeyCommand() {
