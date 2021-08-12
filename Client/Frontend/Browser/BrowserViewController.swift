@@ -163,7 +163,7 @@ class BrowserViewController: UIViewController {
     // Backdrop used for displaying greyed background for private tabs
     private(set) var webViewContainerBackdrop: UIView!
 
-    let scrollController = TabScrollingController()
+    let scrollController: TabScrollingController
 
     fileprivate var keyboardState: KeyboardState?
 
@@ -198,10 +198,13 @@ class BrowserViewController: UIViewController {
         feedbackImage = UIGraphicsGetImageFromCurrentImageContext()
     }
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(profile: Profile, tabManager: TabManager) {
         self.profile = profile
         self.tabManager = tabManager
         self.readerModeCache = DiskReaderModeCache.sharedInstance
+        self.scrollController = TabScrollingController(tabManager: tabManager, chromeModel: chromeModel)
         super.init(nibName: nil, bundle: nil)
         didInit()
     }
@@ -457,6 +460,7 @@ class BrowserViewController: UIViewController {
         scrollController.urlBar = urlBar
         scrollController.readerModeBar = readerModeBar
         scrollController.header = urlBar.view
+        scrollController.safeAreaView = view
         scrollController.footer = footer
 
         self.updateToolbarStateForTraitCollection(self.traitCollection)
@@ -497,13 +501,31 @@ class BrowserViewController: UIViewController {
                 }
             }
             if !UIConstants.enableBottomURLBar {
+                let headerTopConstraint: Constraint
                 if FeatureFlag[.newTopBar] {
-                    scrollController.headerTopConstraint = make.top.equalToSuperview().constraint
+                    headerTopConstraint = make.top.equalToSuperview().constraint
                 } else {
-                    scrollController.headerTopConstraint =
-                        make.top.equalTo(self.view.safeArea.top).constraint
+                    headerTopConstraint = make.top.equalTo(self.view.safeArea.top).constraint
                 }
+                scrollController.$headerTopOffset
+                    .sink { [unowned self] in
+                        headerTopConstraint.update(offset: $0)
+                        view.setNeedsLayout()
+                    }
+                    .store(in: &subscriptions)
             }
+        }
+
+        footer.snp.makeConstraints { make in
+            let footerBottomConstraint = make.bottom.equalTo(self.view.snp.bottom).constraint
+            make.leading.trailing.equalTo(self.view)
+
+            scrollController.$footerBottomOffset
+                .sink { [unowned self] in
+                    footerBottomConstraint.update(offset: $0)
+                    view.setNeedsLayout()
+                }
+                .store(in: &subscriptions)
         }
 
         webViewContainerBackdrop.snp.makeConstraints { make in
@@ -737,12 +759,6 @@ class BrowserViewController: UIViewController {
         // Setup the bottom toolbar
         toolbar?.view.snp.remakeConstraints { make in
             make.edges.equalTo(self.footer)
-        }
-
-        footer.snp.remakeConstraints { make in
-            scrollController.footerBottomConstraint =
-                make.bottom.equalTo(self.view.snp.bottom).constraint
-            make.leading.trailing.equalTo(self.view)
         }
 
         urlBar.view.setNeedsUpdateConstraints()
@@ -1480,8 +1496,6 @@ extension BrowserViewController: TabManagerDelegate {
                 tab.isPrivate
                 ? MemoryReaderModeCache.sharedInstance : DiskReaderModeCache.sharedInstance
             ReaderModeHandlers.readerModeCache = readerModeCache
-
-            scrollController.tab = tab
 
             // This is a terrible workaround for a bad iOS 12 bug where PDF
             // content disappears any time the view controller changes (i.e.

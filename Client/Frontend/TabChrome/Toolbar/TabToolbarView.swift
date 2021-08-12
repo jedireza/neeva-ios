@@ -9,6 +9,8 @@ struct TabToolbarView: View {
     let buildTabsMenu: () -> UIMenu?
     let onNeevaMenu: () -> Void
 
+    @EnvironmentObject var chromeModel: TabChromeModel
+
     var body: some View {
         VStack(spacing: 0) {
             Color.ui.adaptive.separator
@@ -32,6 +34,7 @@ struct TabToolbarView: View {
                 )
             }
             .padding(.top, 2)
+            .opacity(chromeModel.controlOpacity)
             .background(Color.chrome.ignoresSafeArea())
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("TabToolbar")

@@ -58,7 +58,7 @@ struct TopBarView: View {
                         }
                     }
                 }
-            }
+            }.opacity(chrome.controlOpacity)
             Color.ui.adaptive.separator.frame(height: 0.5).ignoresSafeArea()
         }
         .background(Color.chrome.ignoresSafeArea())

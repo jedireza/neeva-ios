@@ -2,12 +2,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
+import Shared
 import SnapKit
-import UIKit
+import SwiftUI
 
 private let ToolbarBaseAnimationDuration: CGFloat = 0.2
 
-class TabScrollingController: NSObject {
+class TabScrollingController: NSObject, ObservableObject {
     enum ScrollDirection {
         case up
         case down
@@ -19,44 +21,52 @@ class TabScrollingController: NSObject {
         case animating
     }
 
-    weak var tab: Tab? {
-        willSet {
-            self.scrollView?.delegate = nil
-            self.scrollView?.removeGestureRecognizer(panGesture)
-        }
+    @Published var headerTopOffset: CGFloat = 0
+    @Published var footerBottomOffset: CGFloat = 0
 
-        didSet {
-            self.scrollView?.addGestureRecognizer(panGesture)
-            scrollView?.delegate = self
-        }
+    private let chromeModel: TabChromeModel
+
+    init(tabManager: TabManager, chromeModel: TabChromeModel) {
+        self.scrollView = tabManager.selectedTab?.webView!.scrollView
+        self.chromeModel = chromeModel
+        super.init()
+
+        tabManager.selectedTabPublisher
+            .sink { [unowned self] newTab in
+                scrollView?.delegate = nil
+                scrollView?.removeGestureRecognizer(panGesture)
+
+                if let tab = newTab {
+                    let scrollView = tab.webView!.scrollView
+                    scrollView.addGestureRecognizer(panGesture)
+                    scrollView.delegate = self
+                    self.scrollView = scrollView
+
+                    tabSubscriptions = []
+                    tab.$isLoading
+                        .assign(to: \.tabIsLoading, on: self)
+                        .store(in: &tabSubscriptions)
+                } else {
+                    scrollView = nil
+                    tabSubscriptions = []
+                }
+            }
+            .store(in: &subscriptions)
     }
+
+    private var subscriptions: Set<AnyCancellable> = []
+    private var tabSubscriptions: Set<AnyCancellable> = []
+    private var tabIsLoading = false
 
     weak var header: UIView?
     weak var footer: UIView?
+    weak var safeAreaView: UIView?
     var urlBar: BrowserViewController.URLBarWrapper?
     weak var readerModeBar: ReaderModeBarView?
 
-    var footerBottomConstraint: Constraint?
-    var headerTopConstraint: Constraint?
-    var toolbarsShowing: Bool { return headerTopOffset == 0 }
-
-    fileprivate var isZoomedOut: Bool = false
+    fileprivate var isZoomedOut = false
     fileprivate var lastZoomedScale: CGFloat = 0
-    fileprivate var isUserZoom: Bool = false
-
-    fileprivate var headerTopOffset: CGFloat = 0 {
-        didSet {
-            headerTopConstraint?.update(offset: headerTopOffset)
-            header?.superview?.setNeedsLayout()
-        }
-    }
-
-    fileprivate var footerBottomOffset: CGFloat = 0 {
-        didSet {
-            footerBottomConstraint?.update(offset: footerBottomOffset)
-            footer?.superview?.setNeedsLayout()
-        }
-    }
+    fileprivate var isUserZoom = false
 
     fileprivate lazy var panGesture: UIPanGestureRecognizer = { [unowned self] in
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
@@ -65,24 +75,30 @@ class TabScrollingController: NSObject {
         return panGesture
     }()
 
-    fileprivate var scrollView: UIScrollView? { return tab?.webView?.scrollView }
-    fileprivate var contentOffset: CGPoint { return scrollView?.contentOffset ?? .zero }
-    fileprivate var contentSize: CGSize { return scrollView?.contentSize ?? .zero }
-    fileprivate var scrollViewHeight: CGFloat { return scrollView?.frame.height ?? 0 }
+    fileprivate var scrollView: UIScrollView?
+    fileprivate var contentOffset: CGPoint { scrollView?.contentOffset ?? .zero }
+    fileprivate var contentSize: CGSize { scrollView?.contentSize ?? .zero }
+    fileprivate var scrollViewHeight: CGFloat { scrollView?.frame.height ?? 0 }
+    fileprivate var headerHeight: CGFloat {
+        if let header = header, let safeAreaView = safeAreaView {
+            if FeatureFlag[.newTopBar] {
+                return header.frame.height - safeAreaView.safeAreaInsets.top
+            } else {
+                return header.frame.height
+            }
+        } else {
+            return 0
+        }
+    }
     fileprivate var topScrollHeight: CGFloat {
-        guard let headerHeight = header?.frame.height else { return 0 }
         guard let readerModeHeight = readerModeBar?.frame.height else { return headerHeight }
         return headerHeight + readerModeHeight
     }
-    fileprivate var bottomScrollHeight: CGFloat { return footer?.frame.height ?? 0 }
+    fileprivate var bottomScrollHeight: CGFloat { footer?.frame.height ?? 0 }
 
     fileprivate var lastContentOffset: CGFloat = 0
     fileprivate var scrollDirection: ScrollDirection = .down
     fileprivate var toolbarState: ToolbarState = .visible
-
-    override init() {
-        super.init()
-    }
 
     func showToolbars(animated: Bool, completion: ((_ finished: Bool) -> Void)? = nil) {
         if toolbarState == .visible {
@@ -101,7 +117,7 @@ class TabScrollingController: NSObject {
             completion: completion)
     }
 
-    func hideToolbars(animated: Bool, completion: ((_ finished: Bool) -> Void)? = nil) {
+    fileprivate func hideToolbars(animated: Bool, completion: ((_ finished: Bool) -> Void)? = nil) {
         if toolbarState == .collapsed {
             completion?(true)
             return
@@ -119,7 +135,7 @@ class TabScrollingController: NSObject {
     }
 
     func contentSizeDidChange() {
-        if !checkScrollHeightIsLargeEnoughForScrolling() && !toolbarsShowing {
+        if !checkScrollHeightIsLargeEnoughForScrolling() && headerTopOffset != 0 {
             showToolbars(animated: true, completion: nil)
         }
     }
@@ -155,11 +171,7 @@ class TabScrollingController: NSObject {
 }
 
 extension TabScrollingController {
-    fileprivate func tabIsLoading() -> Bool {
-        return tab?.isLoading ?? true
-    }
-
-    fileprivate func isBouncingAtBottom() -> Bool {
+    fileprivate var isBouncingAtBottom: Bool {
         guard let scrollView = scrollView else { return false }
         return scrollView.contentOffset.y
             > (scrollView.contentSize.height - scrollView.frame.size.height)
@@ -167,7 +179,7 @@ extension TabScrollingController {
     }
 
     @objc fileprivate func handlePan(_ gesture: UIPanGestureRecognizer) {
-        if tabIsLoading() {
+        if tabIsLoading {
             return
         }
 
@@ -226,6 +238,7 @@ extension TabScrollingController {
         footerBottomOffset = clamp(updatedOffset, min: 0, max: bottomScrollHeight)
 
         let alpha = 1 - abs(headerTopOffset / topScrollHeight)
+        chromeModel.controlOpacity = Double(alpha)
         urlBar?.legacy?.updateAlphaForSubviews(alpha)
         readerModeBar?.updateAlphaForSubviews(alpha)
     }
@@ -268,10 +281,14 @@ extension TabScrollingController {
         }
 
         if animated {
+            withAnimation(.easeInOut(duration: duration)) {
+                chromeModel.controlOpacity = Double(alpha)
+            }
             UIView.animate(
                 withDuration: duration, delay: 0, options: .allowUserInteraction,
                 animations: animation, completion: completion)
         } else {
+            chromeModel.controlOpacity = Double(alpha)
             animation()
             completion?(true)
         }
@@ -294,7 +311,7 @@ extension TabScrollingController: UIGestureRecognizerDelegate {
 
 extension TabScrollingController: UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if tabIsLoading() || isBouncingAtBottom() {
+        if tabIsLoading || isBouncingAtBottom {
             return
         }
 

@@ -7,6 +7,7 @@ class TabChromeModel: ObservableObject {
     @Published var canGoForward: Bool
 
     @Published var inlineToolbar: Bool
+    @Published var controlOpacity: Double = 1
 
     @Published var isPage: Bool
 
