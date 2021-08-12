@@ -60,6 +60,12 @@ class SuggestionModel: ObservableObject {
         return top + mid + navCombinedSuggestions
     }
 
+    var shouldShowPlaceholderSuggestions: Bool {
+        [topSuggestions, chipQuerySuggestions, rowQuerySuggestions].allSatisfy {
+            $0?.isEmpty == true
+        } && shouldShowSuggestions
+    }
+
     // MARK: - History Suggestions
     @Published private(set) var completion: String?
     @Published private(set) var sites: [Site]?

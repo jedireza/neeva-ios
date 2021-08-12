@@ -31,8 +31,7 @@ struct SuggestionsList: View {
                 } else {
                     TabSuggestionsList()
 
-                    if suggestionModel.suggestions.isEmpty && suggestionModel.shouldShowSuggestions
-                    {
+                    if suggestionModel.shouldShowPlaceholderSuggestions {
                         PlaceholderSuggestions()
                     } else {
                         TopSuggestionsList()
