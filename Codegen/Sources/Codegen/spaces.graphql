@@ -37,6 +37,8 @@ query GetSpacesData($ids: [String!]) {
         entities {
           spaceEntity {
             url
+            title
+            snippet
             thumbnail
           }
         }

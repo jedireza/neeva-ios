@@ -127,13 +127,14 @@ class CardTests: XCTestCase {
 
     func testSpaceDetails() throws {
         XCTAssertEqual(SpaceStore.shared.getAll().count, 4)
-        SpaceStore.shared.getAll().first!.contentThumbnails =
-            Set([
-                SpaceThumbnails.githubThumbnail,
-                SpaceThumbnails.stackOverflowThumbnail,
-            ])
-        SpaceStore.shared.getAll().last!.contentThumbnails =
-            Set([SpaceThumbnails.githubThumbnail])
+        SpaceStore.shared.getAll().first!.contentData = [
+            SpaceEntityData(url: .aboutBlank, title: nil, snippet: nil,
+                            thumbnail: SpaceThumbnails.githubThumbnail),
+             SpaceEntityData(url: .aboutBlank, title: nil, snippet: nil,
+                             thumbnail: SpaceThumbnails.stackOverflowThumbnail)]
+        SpaceStore.shared.getAll().last!.contentData = [
+            SpaceEntityData(url: .aboutBlank, title: nil, snippet: nil,
+                            thumbnail: SpaceThumbnails.githubThumbnail)]
         let firstCard = SpaceCardDetails(space: SpaceStore.shared.getAll().first!)
         XCTAssertEqual(firstCard.id, Space.stackOverflow.id.id)
         XCTAssertEqual(firstCard.allDetails.count, 2)

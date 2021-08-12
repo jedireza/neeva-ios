@@ -2925,8 +2925,9 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
   ///   - source
   ///   - inviteToken
   ///   - screenshot
-  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil) {
-    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot]
+  ///   - userProvidedEmail
+  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil, userProvidedEmail: Swift.Optional<String?> = nil) {
+    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot, "userProvidedEmail": userProvidedEmail]
   }
 
   public var feedback: Swift.Optional<String?> {
@@ -2989,6 +2990,15 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "screenshot")
+    }
+  }
+
+  public var userProvidedEmail: Swift.Optional<String?> {
+    get {
+      return graphQLMap["userProvidedEmail"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "userProvidedEmail")
     }
   }
 }
@@ -4943,6 +4953,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
               spaceEntity {
                 __typename
                 url
+                title
+                snippet
                 thumbnail
               }
             }
@@ -4954,7 +4966,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "4ea494be399584a561f823705dd1bf398b1d0fcb3454f51ee321df2bb2de4cc8"
+  public let operationIdentifier: String? = "ff454287a05bea208d626bc2cf8744dec7a7e9356dab063d0323940b1c31bc1f"
 
   public var ids: [String]?
 
@@ -5205,6 +5217,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                   GraphQLField("url", type: .scalar(String.self)),
+                  GraphQLField("title", type: .scalar(String.self)),
+                  GraphQLField("snippet", type: .scalar(String.self)),
                   GraphQLField("thumbnail", type: .scalar(String.self)),
                 ]
               }
@@ -5215,8 +5229,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(url: String? = nil, thumbnail: String? = nil) {
-                self.init(unsafeResultMap: ["__typename": "SpaceEntityData", "url": url, "thumbnail": thumbnail])
+              public init(url: String? = nil, title: String? = nil, snippet: String? = nil, thumbnail: String? = nil) {
+                self.init(unsafeResultMap: ["__typename": "SpaceEntityData", "url": url, "title": title, "snippet": snippet, "thumbnail": thumbnail])
               }
 
               public var __typename: String {
@@ -5234,6 +5248,24 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "url")
+                }
+              }
+
+              public var title: String? {
+                get {
+                  return resultMap["title"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "title")
+                }
+              }
+
+              public var snippet: String? {
+                get {
+                  return resultMap["snippet"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "snippet")
                 }
               }
 

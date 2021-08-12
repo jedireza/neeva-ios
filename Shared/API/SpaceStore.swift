@@ -9,6 +9,20 @@ public struct SpaceID: Hashable, Identifiable {
     public var id: String { value }
 }
 
+public struct SpaceEntityData {
+    public let url: URL
+    public let title: String?
+    public let snippet: String?
+    public let thumbnail: String?
+
+    public init(url: URL, title: String?, snippet: String?, thumbnail: String?) {
+        self.url = url
+        self.title = title
+        self.snippet = snippet
+        self.thumbnail = thumbnail
+    }
+}
+
 public class Space: Hashable, Identifiable {
     public let id: SpaceID
     public let name: String
@@ -40,7 +54,7 @@ public class Space: Hashable, Identifiable {
     }
 
     public var contentURLs: Set<URL>?
-    public var contentThumbnails: Set<String?>?
+    public var contentData: [SpaceEntityData]?
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -149,13 +163,13 @@ public class SpaceStore: ObservableObject {
                 /// Otherwise, we can use our cached data.
                 if let oldSpace = oldSpaceMap[spaceId],
                     let contentURLs = oldSpace.contentURLs,
-                    let contentThumbnails = oldSpace.contentThumbnails,
+                    let contentData = oldSpace.contentData,
                     space.lastModifiedTs == oldSpace.lastModifiedTs
                 {
                     self.onUpdateSpaceURLs(
                         space: newSpace,
                         urls: contentURLs,
-                        thumbnails: contentThumbnails)
+                        data: contentData)
                 } else {
                     spacesToFetch.append(newSpace)
                 }
@@ -178,9 +192,8 @@ public class SpaceStore: ObservableObject {
 
                         self.onUpdateSpaceURLs(
                             space: spacesToFetch.first { $0.id.value == space.id }!,
-                            urls: Set(space.entities.reduce(into: [URL]()) { $0.append($1.0) }),
-                            thumbnails: Set(
-                                space.entities.reduce(into: [String?]()) { $0.append($1.1) }))
+                            urls: Set(space.entities.reduce(into: [URL]()) { $0.append($1.url) }),
+                            data: space.entities)
                     }
                     self.state = .ready
                 case .failure(let error):
@@ -192,9 +205,9 @@ public class SpaceStore: ObservableObject {
         }
     }
 
-    private func onUpdateSpaceURLs(space: Space, urls: Set<URL>, thumbnails: Set<String?>) {
+    private func onUpdateSpaceURLs(space: Space, urls: Set<URL>, data: [SpaceEntityData]) {
         space.contentURLs = urls
-        space.contentThumbnails = thumbnails
+        space.contentData = data
         for url in urls {
             var spaces = urlToSpacesMap[url] ?? []
             spaces.append(space)

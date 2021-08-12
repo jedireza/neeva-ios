@@ -189,7 +189,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
 
     func updateDetails() {
         allDetails =
-            manager.get(for: id)?.contentThumbnails?.compactMap { $0?.dataURIBody }
+            manager.get(for: id)?.contentData?.compactMap { $0.thumbnail?.dataURIBody }
             .map { SpaceEntityThumbnail(data: $0, selected: onSelect) } ?? []
     }
 

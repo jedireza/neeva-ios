@@ -35,7 +35,7 @@ class SpacesDataQueryController: QueryController<
 {
     struct Space {
         var id: String
-        var entities: [(URL, String?)]
+        var entities: [SpaceEntityData]
     }
 
     private var spaceIds: [String]
@@ -54,12 +54,16 @@ class SpacesDataQueryController: QueryController<
         if let spaces = data.getSpace?.space {
             for space in spaces {
                 if let id = space.pageMetadata?.pageId {
-                    var spaceEntities: [(URL, String?)] = []
+                    var spaceEntities: [SpaceEntityData] = []
                     if let entities = space.space?.entities {
                         for entity in entities {
                             if let urlString = entity.spaceEntity?.url {
                                 if let url = URL(string: urlString) {
-                                    spaceEntities.append((url, entity.spaceEntity?.thumbnail))
+                                    spaceEntities.append(
+                                        SpaceEntityData(url: url,
+                                                        title: entity.spaceEntity?.title,
+                                                        snippet: entity.spaceEntity?.snippet,
+                                                        thumbnail: entity.spaceEntity?.thumbnail))
                                 }
                             }
                         }
