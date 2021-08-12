@@ -23,6 +23,7 @@ class ToastWindowManager: KeyboardReadable {
         openWindow?.rootViewController = UIViewController()
         openWindow?.windowLevel = .alert + 1
         openWindow?.alpha = 0
+        openWindow?.center.y += 70
         openWindow?.makeKeyAndVisible()
 
         setWindowRootViewController(rootViewController)
@@ -34,9 +35,10 @@ class ToastWindowManager: KeyboardReadable {
 
         UIView.animate(withDuration: inOutAnimationDuration) {
             self.openWindow?.alpha = 1
+            self.openWindow?.center.y -= 70
         }
 
-        openWindow?.rootViewController?.present(rootViewController, animated: true, completion: nil)
+        openWindow?.rootViewController?.present(rootViewController, animated: false, completion: nil)
     }
 
     /// Removes Toast window from view
