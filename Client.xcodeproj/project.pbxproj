@@ -204,6 +204,7 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		66B6567626C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */; };
 		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
@@ -313,7 +314,6 @@
 		C8E18F1E222EDE4500E30E52 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E18F1D222EDE4400E30E52 /* Accelerate.framework */; };
 		C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E18F1F222EDED000E30E52 /* SafariServices.framework */; };
 		C8EB60C41F1FB12500F9B5B3 /* navigationDelegate.html in Resources */ = {isa = PBXBuildFile; fileRef = C8EB60C31F1FB12500F9B5B3 /* navigationDelegate.html */; };
-		C8EB60DC1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8EB60DB1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift */; };
 		C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */; };
 		C8F457AA1F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */; };
 		C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FB0C772321523D00031088 /* PageActionMenu.swift */; };
@@ -1136,6 +1136,7 @@
 		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+SKStoreProductViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		66B9570D26AF827E004C6117 /* AppClipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipHelper.swift; sourceTree = "<group>"; };
 		66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppViewController.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
@@ -1242,7 +1243,6 @@
 		C8E18F1D222EDE4400E30E52 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		C8E18F1F222EDED000E30E52 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		C8EB60C31F1FB12500F9B5B3 /* navigationDelegate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = navigationDelegate.html; sourceTree = "<group>"; };
-		C8EB60DB1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationDelegateTests.swift; sourceTree = "<group>"; };
 		C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+WebViewDelegates.swift"; sourceTree = "<group>"; };
 		C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+KeyCommands.swift"; sourceTree = "<group>"; };
 		C8FB0C772321523D00031088 /* PageActionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageActionMenu.swift; sourceTree = "<group>"; };
@@ -2336,6 +2336,7 @@
 				C9299E372694DF5800758795 /* BrowserViewController+LegacyURLBarDelegate.swift */,
 				C9FD1B2126C312CB00926A70 /* BrowserViewController+NeevaMenu.swift */,
 				67B0AAF726BB3F63000731E0 /* BrowserViewController+OverflowMenuDelegate.swift */,
+				66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */,
 			);
 			path = BrowserViewController;
 			sourceTree = "<group>";
@@ -2788,7 +2789,6 @@
 				66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */,
 				E6A92ADA1C52A8DA00743291 /* LoginInputTests.swift */,
 				DADC62D9226E3297003AFF8B /* ReopenLastTabTests.swift */,
-				C8EB60DB1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift */,
 				D3CFD3631CC5605B0064AB4A /* SecurityTests.swift */,
 				D3C3EB641B6FF44000388E9A /* SessionRestoreTests.swift */,
 				744B0FFD1B4F172E00100422 /* ToolbarTests.swift */,
@@ -4486,7 +4486,6 @@
 				66F571D926BD9CF700BEECF9 /* UITestBase+ActionExtension.swift in Sources */,
 				4F514FD41ACD8F2C0022D7EA /* HistoryTests.swift in Sources */,
 				667DB63A2698E3DF0054A222 /* KeyboardShortcutTests.swift in Sources */,
-				C8EB60DC1F1FB9AD00F9B5B3 /* NavigationDelegateTests.swift in Sources */,
 				E6A92ADB1C52A8DA00743291 /* LoginInputTests.swift in Sources */,
 				DADC62DA226E3297003AFF8B /* ReopenLastTabTests.swift in Sources */,
 				D375A9201AE71675001B30D5 /* ViewMemoryLeakTests.swift in Sources */,
@@ -4759,6 +4758,7 @@
 				C9BED4C12667FA91001D9C77 /* SuggestedSearchViews.swift in Sources */,
 				4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */,
 				66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */,
+				66B6567626C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift in Sources */,
 				4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */,
 				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
 				67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */,

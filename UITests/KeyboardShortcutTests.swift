@@ -67,8 +67,8 @@ class KeyboardShortcutTests: UITestBase {
     func testSelectLocationBarKeyCommand() {
         openURL()
         bvc.selectLocationBarKeyCommand()
-
         openURL("neeva.com", openAddressBar: false)
+        
         reset(tester: tester())
     }
 

@@ -29,7 +29,7 @@ extension UITestBase {
         }
     }
 
-    func openNewTab(to url: String = "example.com") {
+    func openNewTab(to url: String = "example.com ") {
         tester().waitForView(withAccessibilityLabel: "Show Tabs")
         tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
         tester().waitForAnimationsToFinish()
@@ -44,7 +44,7 @@ extension UITestBase {
         openURL(url)
     }
 
-    func openURL(_ url: String = "example.com", openAddressBar: Bool = true) {
+    func openURL(_ url: String = "example.com ", openAddressBar: Bool = true) {
         if openAddressBar {
             goToAddressBar()
             tester().waitForKeyInputReady()

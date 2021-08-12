@@ -8,6 +8,7 @@ import Shared
 import SwiftyJSON
 import UIKit
 import WebKit
+import StoreKit
 
 private let log = Logger.browser
 
@@ -493,13 +494,24 @@ extension BrowserViewController: WKNavigationDelegate {
     // them then iOS will actually first open Safari, which then redirects to the app store. This works but it will
     // leave a 'Back to Safari' button in the status bar, which we do not want.
     fileprivate func isStoreURL(_ url: URL) -> Bool {
-        if url.scheme == "http" || url.scheme == "https" || url.scheme == "itms-apps" {
-            if url.host == "itunes.apple.com" {
+        if url.scheme == "http" || url.scheme == "https" || url.scheme == "itms-apps" || url.scheme == "itms-appss" {
+            if url.host == "apps.apple.com" || url.host == "itunes.apple.com" {
                 return true
             }
         }
+
         return false
     }
+
+    fileprivate func getAppStoreID(_ url: URL) -> String? {
+        let prefix = "id"
+        guard let id = url.pathComponents.last(where: { $0.hasPrefix(prefix)}) else {
+            return nil
+        }
+
+        return String(id.dropFirst(prefix.count))
+    }
+
 
     // Use for links, that do not show a confirmation before opening.
     fileprivate func showOverlay(forExternalUrl url: URL) {
@@ -583,9 +595,20 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        if isStoreURL(url) {
+        if isStoreURL(url), let appStoreID = getAppStoreID(url) {
+            let productVC = SKStoreProductViewController()
+            productVC.delegate = self
+            productVC.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: appStoreID]) { _, error in
+                if let error = error {
+                    print("Error loading SKStoreProductViewController:", error)
+                    self.showOverlay(forExternalUrl: url)
+                }
+            }
+
+            present(productVC, animated: true, completion: nil)
+
             decisionHandler(.cancel)
-            showOverlay(forExternalUrl: url)
+            return
         }
 
         // https://blog.mozilla.org/security/2017/11/27/blocking-top-level-navigations-data-urls-firefox-59/

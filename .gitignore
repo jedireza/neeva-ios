@@ -18,6 +18,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 *.xcscmblueprint
+ui-test-screenshots/
 
 /fastlane/scripts/upload.sh
 /fastlane/README.md
