@@ -20,7 +20,9 @@ struct TopBarNeevaMenuButton: View {
         }
         .tapTargetFrame()
         .presentAsPopover(
-            isPresented: $presenting, arrowDirections: .up,
+            isPresented: $presenting,
+            arrowDirections: .up,
+            dismissOnTransition: true,
             onDismiss: {
                 if let action = action {
                     onNeevaMenuAction(action)

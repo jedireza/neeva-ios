@@ -16,6 +16,7 @@ extension View {
         isPresented: Binding<Bool>,
         backgroundColor: UIColor? = nil,
         arrowDirections: UIPopoverArrowDirection? = nil,
+        dismissOnTransition: Bool = false,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
@@ -26,7 +27,9 @@ extension View {
                 content: content()
                     .padding(.vertical, -6.5)
                     .environment(\.inPopover, true),
-                backgroundColor: backgroundColor, onDismiss: onDismiss)
+                backgroundColor: backgroundColor,
+                dismissOnTransition: dismissOnTransition,
+                onDismiss: onDismiss)
         )
     }
 }
@@ -36,10 +39,12 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
     let arrowDirections: UIPopoverArrowDirection?
     let content: Content
     let backgroundColor: UIColor?
+    let dismissOnTransition: Bool
     let onDismiss: (() -> Void)?
 
     class ViewController: UIViewController {
         var onDismiss: (() -> Void)?
+        var dismissOnTransition = false
         var presentee: Host? {
             didSet {
                 if let presentee = presentee {
@@ -67,6 +72,14 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
         override func viewDidDisappear(_ animated: Bool) {
             presentee = nil
             super.viewDidDisappear(animated)
+        }
+
+        override func viewWillTransition(
+            to size: CGSize,
+            with coordinator: UIViewControllerTransitionCoordinator
+        ) {
+            super.viewWillTransition(to: size, with: coordinator)
+            presentee = nil
         }
     }
 
@@ -116,6 +129,7 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
     }
     func updateUIViewController(_ vc: ViewController, context: Context) {
         vc.onDismiss = onDismiss
+        vc.dismissOnTransition = dismissOnTransition
         if let presentee = vc.presentee {
             presentee.rootView = content
             if !isPresented {
