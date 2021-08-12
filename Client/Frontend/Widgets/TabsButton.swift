@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import SnapKit
 
-class TabsButton: UIButton {
+class TabsButton: DynamicMenuButton {
     override var transform: CGAffineTransform {
         didSet {
             clonedTabsButton?.transform = transform

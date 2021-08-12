@@ -4,12 +4,12 @@ import SwiftUI
 
 struct UIKitButton: UIViewRepresentable {
     let buttonType: UIButton.ButtonType
-    let customize: (UIButton) -> Void
+    let customize: (DynamicMenuButton) -> Void
     let action: () -> Void
 
     init(
         type: UIButton.ButtonType = .system, action: @escaping () -> Void,
-        customize: @escaping (UIButton) -> Void
+        customize: @escaping (DynamicMenuButton) -> Void
     ) {
         self.buttonType = type
         self.customize = customize
@@ -31,15 +31,15 @@ struct UIKitButton: UIViewRepresentable {
         Coordinator(onTap: action)
     }
 
-    func makeUIView(context: Context) -> UIButton {
-        let button = UIButton(type: buttonType)
+    func makeUIView(context: Context) -> DynamicMenuButton {
+        let button = DynamicMenuButton(type: buttonType)
         button.addTarget(
             context.coordinator, action: #selector(Coordinator.action), for: .primaryActionTriggered
         )
         return button
     }
 
-    func updateUIView(_ button: UIButton, context: Context) {
+    func updateUIView(_ button: DynamicMenuButton, context: Context) {
         customize(button)
         context.coordinator.onTap = action
     }
