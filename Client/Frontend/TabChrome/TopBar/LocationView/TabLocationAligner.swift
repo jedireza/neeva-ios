@@ -3,6 +3,9 @@
 import Shared
 import SwiftUI
 
+/// SwiftUI magic that center-aligns the location label in the location view, even if
+/// the leading and trailing buttons are different widths.
+///
 /// NOTE: this view has not been tested with layouts where `Leading` is wider than `Trailing`.
 /// If that is possible with the parameters you pass, make sure to check that it works properly.
 struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Trailing: View>: View {
@@ -30,17 +33,20 @@ struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Traili
     }
 
     var body: some View {
+        /// `outerGeom` measures the available width
         GeometryReader { outerGeom in
             HStack(spacing: 0) {
+                /// `leadingGeom` includes the content and leading buttons, but not the trailing buttons.
                 GeometryReader { leadingGeom in
                     HStack(spacing: 0) {
                         leadingActions()
+                        /// `innerGeom` takes up the middle space between the buttons.
                         GeometryReader { innerGeom in
                             let leadingPadding = leadingGeom.size.width - innerGeom.size.width
                             let trailingPadding = outerGeom.size.width - leadingGeom.size.width
                             ZStack {
                                 LocationLabelAligner(
-                                    transitionToEditing: transitionToEditing,
+                                    alignLeading: transitionToEditing,
                                     debug: debug,
                                     label: label,
                                     leadingPadding: leadingPadding,
@@ -53,15 +59,17 @@ struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Traili
                                         top: 0, leading: leadingPadding, bottom: 0,
                                         trailing: trailingPadding))
                             }
-                        }  // GeometryReader
+                        }  // GeometryReader: innerGeom
                     }  // HStack
-                }  // GeometryReader
+                }  // GeometryReader: leadingGeom
                 trailingActions()
             }  // HStack
-        }  // GeometryReader
+        }  // GeometryReader: outerGeom
         .overlay(
             Group {
                 if debug {
+                    // This marker is the center of the available space, and should
+                    // line up with the orange tick, unless the label is too wide.
                     Color.purple.frame(width: 1, height: 10)
                 }
             }, alignment: .bottom)
@@ -69,15 +77,19 @@ struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Traili
 }
 
 private struct LocationLabelAligner<Label: View>: View {
-    let transitionToEditing: Bool
+    let alignLeading: Bool
     let debug: Bool
     let label: () -> Label
+    /// The amount of space taken up by the controls on the leading edge of the location view
     let leadingPadding: CGFloat
+    /// The amount of space taken up by the controls on the trailing edge of the location view
     let trailingPadding: CGFloat
+    /// Half the width of the entire view (including leading and trailing actions).
     let centerX: CGFloat
+    /// Half the available height
     let centerY: CGFloat
 
-    @State private var titleWidth: CGFloat = 0
+    @State private var labelWidth: CGFloat = 0
 
     @ViewBuilder
     func formatPX(_ label: String, _ value: CGFloat) -> some View {
@@ -94,23 +106,22 @@ private struct LocationLabelAligner<Label: View>: View {
         /// The space between the end of the title and the trailing controls, if the title was centered inside the location view.
         ///
         /// Can be negative if the title is wide enough to collide with the trailing controls.
-        let trailingGap = centerX - trailingPadding - titleWidth / 2
+        let trailingGap = centerX - trailingPadding - labelWidth / 2
 
         /// The offset necessary (from the trailing edge of the leading controls) to center the label in the aligner.
         ///
         /// If the label would extend over the trailing controls if centered, this offset will align its trailing edge with
         /// the leading edge of the trailing controls.
         let labelOffset =
-            transitionToEditing
-            // left-align when editing
-            ? titleWidth / 2
-            : centerX - leadingPadding - max(-trailingGap, 0)
+            alignLeading ? labelWidth / 2 : centerX - leadingPadding - max(-trailingGap, 0)
 
         label()
             .background(
                 GeometryReader { textGeom in
+                    // This does double-duty: it both measures the width of the label and provides
+                    // helpful coloring for debugging.
                     (debug ? Color.yellow.opacity(0.25) : Color.clear)
-                        .useEffect(deps: textGeom.size.width) { self.titleWidth = $0 }
+                        .useEffect(deps: textGeom.size.width) { self.labelWidth = $0 }
                         .overlay(
                             Group {
                                 if debug {
@@ -118,10 +129,11 @@ private struct LocationLabelAligner<Label: View>: View {
                                 }
                             }, alignment: .top
                         )
-                        .overlay(formatPX("width", titleWidth), alignment: .bottomTrailing)
+                        .overlay(formatPX("width", labelWidth), alignment: .bottomTrailing)
                         .allowsHitTesting(false)
                 }
             )
+            /// `position` takes up as much space as possible, and aligns the center of the view in the top-left with the provided offset.
             .position(x: labelOffset, y: centerY)
             .overlay(formatPX("x", labelOffset).padding(.leading, 5), alignment: .topLeading)
             .background(

@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+/// A system close button.
 struct CloseButton: View {
     let action: () -> Void
     var body: some View {

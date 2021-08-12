@@ -287,7 +287,7 @@ class ErrorPageHelper {
             let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError,
             let certErrorCode = underlyingError.userInfo["_kCFStreamErrorCodeKey"] as? Int
         {
-            let encodedCert = (SecCertificateCopyData(cert) as Data).base64EncodedString
+            let encodedCert = (SecCertificateCopyData(cert) as Data).base64EncodedString()
             queryItems.append(URLQueryItem(name: "badcert", value: encodedCert))
 
             let certError = CertErrorCodes[certErrorCode] ?? ""

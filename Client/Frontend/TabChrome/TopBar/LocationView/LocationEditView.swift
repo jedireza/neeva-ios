@@ -3,6 +3,7 @@
 import Shared
 import SwiftUI
 
+/// The view displayed when editing the URL; containing the favicon, text input, and completion.
 struct LocationEditView: View {
     @Binding var isEditing: Bool
     let onSubmit: (String) -> Void

@@ -9,6 +9,7 @@
 import QuickLook
 import SwiftUI
 
+/// A subclass of `QLPreviewController` that forces a “Revert” button into the toolbar, replacing the share button.
 class CustomPreviewController: QLPreviewController {
     var didReset: (() -> Void)!
 
@@ -37,14 +38,14 @@ class CustomPreviewController: QLPreviewController {
                 },
             ]
         }
-        set
-        { /* your attempts to force a share button into the toolbar have been thwarted, Quartz */
-        }
+        set { /* your attempts to force a share button into the toolbar have been thwarted */  }
     }
 }
 
 public struct QuickLookView: ViewControllerWrapper {
+    /// The image to display. The binding will be modified whenever the user edits the image.
     @Binding var image: UIImage
+    /// The original image to revert to when requested.
     let original: UIImage
 
     public init(image: Binding<UIImage>, original: UIImage) {
@@ -122,6 +123,7 @@ public struct QuickLookView: ViewControllerWrapper {
 }
 
 extension UIImage: QLPreviewItem {
+    /// saves the image to a temporary directory so it can be edited.
     public var previewItemURL: URL? {
         guard
             let tempDir = try? FileManager.default.url(

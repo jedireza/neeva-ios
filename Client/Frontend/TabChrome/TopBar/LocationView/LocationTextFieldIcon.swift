@@ -9,6 +9,7 @@ private enum LocationTextFieldIconUX {
     static let faviconSize: CGFloat = 14
 }
 
+/// The icon displayed next to the location text field
 struct LocationTextFieldIcon: View {
     let currentUrl: URL?
 

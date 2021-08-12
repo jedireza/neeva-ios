@@ -17,12 +17,13 @@ class TextSizeModel: ObservableObject {
             .sink { [unowned self] _ in objectWillChange.send() }
 
         #if !USE_PRIVATE_WEB_VIEW_ZOOM_API
+            // The fallback API tries to scale the text up and down — like Chrome for iOS does
             webView.evaluateJavaScript("document.body.style.webkitTextSizeAdjust") { amount, _ in
                 if let amount = amount as? String,
                     amount.hasSuffix("%"),
                     let percent = Double(amount.dropLast())
                 {
-                    self._suppressUpdate = true
+                    self.suppressUpdate = true
                     self.pageZoom = CGFloat(percent / 100)
                 }
             }
@@ -40,6 +41,7 @@ class TextSizeModel: ObservableObject {
                 objectWillChange.send()
                 webView.neeva_zoomAmount = newValue
                 let originalOffset = webView.scrollView.contentOffset
+                // Fix the scroll position after changing zoom level
                 let newOffset = CGPoint(
                     x: originalOffset.x, y: originalOffset.y * newValue / pageZoom)
                 observer = webView.scrollView.publisher(for: \.contentOffset)

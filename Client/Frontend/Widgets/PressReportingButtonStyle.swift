@@ -6,12 +6,13 @@ import SwiftUI
 /// You are responsible for making the pressed state visible since the button will no longer change its appearance.
 struct PressReportingButtonStyle: ButtonStyle {
     @Binding var isPressed: Bool
+    var animation: Animation? = .interactiveSpring()
 
     func makeBody(configuration: Configuration) -> some View {
         return configuration.label
             .contentShape(Rectangle())
             .onChange(of: configuration.isPressed) { value in
-                withAnimation(.interactiveSpring()) {
+                withAnimation(animation) {
                     isPressed = value
                 }
             }

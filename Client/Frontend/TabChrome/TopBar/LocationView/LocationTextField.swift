@@ -8,6 +8,7 @@ import Combine
 import Shared
 import SwiftUI
 
+/// The text field used to edit the location.
 struct LocationTextField: UIViewRepresentable {
     @Binding var text: String
     @Binding var editing: Bool

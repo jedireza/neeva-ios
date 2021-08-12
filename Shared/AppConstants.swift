@@ -4,24 +4,10 @@
 
 import UIKit
 
-public enum AppName: String, CustomStringConvertible {
-    case shortName = "Neeva"
-    case longName = "Neeva Browser"
-
-    public var description: String {
-        return self.rawValue
-    }
-}
-
 public enum AppBuildChannel: String {
-    case release = "release"
-    case beta = "beta"
-    case developer = "developer"
-}
-
-public struct KeychainKey {
-    public static let fxaPushRegistration = "account.push-registration"
-    public static let apnsToken = "apnsToken"
+    case release
+    case beta
+    case developer
 }
 
 public struct AppConstants {
@@ -33,32 +19,16 @@ public struct AppConstants {
         NSClassFromString("XCTestCase") != nil
         || ProcessInfo.processInfo.arguments.contains(LaunchArguments.PerformanceTest)
 
-    public static let FxAiOSClientId = "1b1a3e44c54fbb58"
-
     /// Build Channel.
     public static let BuildChannel: AppBuildChannel = {
         #if NEEVA_CHANNEL_RELEASE
-            return AppBuildChannel.release
+            return .release
         #elseif NEEVA_CHANNEL_BETA
-            return AppBuildChannel.beta
+            return .beta
         #elseif NEEVA_CHANNEL_DEV
-            return AppBuildChannel.developer
+            return .developer
         #endif
     }()
-
-    public static let scheme: String = {
-        guard let identifier = Bundle.main.bundleIdentifier else {
-            return "unknown"
-        }
-
-        let name = identifier.replacingOccurrences(of: "co.neeva.app.ios.browser", with: "")
-        if name == "" {
-            return "neeva"
-        }
-        return "neeva-" + name.replacingOccurrences(of: ".", with: "")
-    }()
-
-    public static let PrefSendUsageData = "settings.sendUsageData"
 
     /// Enables support for International Domain Names (IDN)
     /// Disabled because of https://bugzilla.mozilla.org/show_bug.cgi?id=1312294
@@ -73,39 +43,4 @@ public struct AppConstants {
             return true
         #endif
     }()
-
-    /// The maximum length of a URL stored by Neeva. Shared with Places on desktop.
-    public static let DB_URL_LENGTH_MAX = 65536
-
-    /// The maximum length of a page title stored by Neeva. Shared with Places on desktop.
-    public static let DB_TITLE_LENGTH_MAX = 4096
-
-    /// The maximum length of a bookmark description stored by Neeva. Shared with Places on desktop.
-    public static let DB_DESCRIPTION_LENGTH_MAX = 1024
-
-    /// Put it behind a feature flag as the strings didn't land in time
-    public static let MOZ_SHAKE_TO_RESTORE: Bool = {
-        #if NEEVA_CHANNEL_RELEASE
-            return false
-        #elseif NEEVA_CHANNEL_BETA
-            return true
-        #elseif NEEVA_CHANNEL_DEV
-            return true
-        #else
-            return true
-        #endif
-    }()
-
-    public static let CHRONOLOGICAL_TABS: Bool = {
-        #if NEEVA_CHANNEL_RELEASE
-            return false
-        #elseif NEEVA_CHANNEL_BETA
-            return false
-        #elseif NEEVA_CHANNEL_DEV
-            return false
-        #else
-            return false
-        #endif
-    }()
-
 }

@@ -8,7 +8,7 @@ struct AboutSettingsSection: View {
     @Binding var showDebugSettings: Bool
     @Environment(\.onOpenURL) var openURL
     var body: some View {
-        let version = "\(AppName.longName) \(AppInfo.appVersion) (\(AppInfo.buildNumber))"
+        let version = "Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))"
         Menu {
             Button(action: { UIPasteboard.general.string = version }) {
                 Label("Copy Version information", systemSymbol: .docOnDoc)

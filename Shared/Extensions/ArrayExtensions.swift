@@ -12,6 +12,7 @@ extension Collection {
 }
 
 extension Array where Element: Equatable {
+    /// Returns this array, with all duplicate elements removed
     public func removeDuplicates() -> [Element] {
         var result = [Element]()
         for value in self {
@@ -24,6 +25,8 @@ extension Array where Element: Equatable {
 }
 
 extension ArraySlice {
+    /// Convert an `ArraySlice` to an `Array`.
+    /// Useful in a chaining context.
     public func toArray() -> [Element] {
         Array(self)
     }

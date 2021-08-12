@@ -11,6 +11,17 @@ public struct ZeroQueryUX {
     static let Padding: CGFloat = 16
 }
 
+extension EnvironmentValues {
+    private struct ZeroQueryWidthKey: EnvironmentKey {
+        static let defaultValue: CGFloat = 0
+    }
+    /// The width of the zero query view, in points.
+    var zeroQueryWidth: CGFloat {
+        get { self[ZeroQueryWidthKey.self] }
+        set { self[ZeroQueryWidthKey.self] = newValue }
+    }
+}
+
 private enum TriState: Int, Codable {
     case hidden
     case compact
@@ -174,7 +185,7 @@ struct ZeroQueryView: View {
 
                     Spacer()
                 }
-            }.environment(\.viewWidth, geom.size.width).animation(nil)
+            }.environment(\.zeroQueryWidth, geom.size.width).animation(nil)
         }
     }
 }

@@ -103,11 +103,11 @@ struct SuggestedSiteView: View {
 struct SuggestedSitesView: View {
     let isExpanded: Bool
     @EnvironmentObject private var viewModel: SuggestedSitesViewModel
-    @Environment(\.viewWidth) private var viewWidth
+    @Environment(\.zeroQueryWidth) private var zeroQueryWidth
 
     var columnCount: Int {
         var columnCount = 0
-        var excessSpace = viewWidth + SuggestedSiteUX.BlockSpacing
+        var excessSpace = zeroQueryWidth + SuggestedSiteUX.BlockSpacing
         while excessSpace > 0 {
             excessSpace -= SuggestedSiteUX.BlockSize + SuggestedSiteUX.BlockSpacing
             if excessSpace > 0 {
@@ -172,7 +172,7 @@ struct SuggestedSitesView: View {
                 SuggestedSitesView(isExpanded: true)
             }
             .previewLayout(.sizeThatFits)
-            .environment(\.viewWidth, 375)
+            .environment(\.zeroQueryWidth, 375)
             .environmentObject(SuggestedSitesViewModel.preview)
         }
     }

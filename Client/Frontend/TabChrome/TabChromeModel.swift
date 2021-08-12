@@ -6,6 +6,8 @@ class TabChromeModel: ObservableObject {
     @Published var canGoBack: Bool
     @Published var canGoForward: Bool
 
+    /// True when the toolbar is inline with the location view
+    /// (when in landscape or on iPad)
     @Published var inlineToolbar: Bool
     @Published var controlOpacity: Double = 1
 

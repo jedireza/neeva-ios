@@ -12,6 +12,13 @@ extension View {
     /// manually disable hit testing on the entire parent SwiftUI tree when a popover is presented.
     ///
     /// - Warning: ⚠️ Custom `@Environment` and `@EnvironmentObject` values are not carried into the content of the popover. You must manually specify them again in your content if you want them to be available.
+    /// - Parameters:
+    ///   - isPresented: Set this binding to `true` to present the popover, or `false` to dismiss it. The modifier will set the binding to `false` when the user manually dismisses the popover.
+    ///   - backgroundColor: The color to display beneath the SwiftUI view in the popover. SwiftUI struggles to apply a background color correctly here.
+    ///   - arrowDirections: The directions the popover arrow is allowed to point
+    ///   - dismissOnTransition: Whether to dismiss the popover when changing window size/orientation.
+    ///   - onDismiss: Called after the popover view has been dismissed. Useful for delaying actions that may present a view controller to avoid issues.
+    ///   - content: The content to display in the popover.
     func presentAsPopover<Content: View>(
         isPresented: Binding<Bool>,
         backgroundColor: UIColor? = nil,
@@ -21,30 +28,36 @@ extension View {
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
         background(
-            // negative padding to counteract system padding
             Popover(
-                isPresented: isPresented, arrowDirections: arrowDirections,
-                content: content()
-                    .padding(.vertical, -6.5)
-                    .environment(\.inPopover, true),
+                isPresented: isPresented,
+                arrowDirections: arrowDirections,
                 backgroundColor: backgroundColor,
                 dismissOnTransition: dismissOnTransition,
-                onDismiss: onDismiss)
+                onDismiss: onDismiss
+            ) {
+                content()
+                    // negative padding to counteract system popover padding
+                    .padding(.vertical, -6.5)
+                    .environment(\.inPopover, true)
+            }
         )
     }
 }
 
+/// `Popover` wraps a view controller that handles presenting and dismissing the actual popover
 private struct Popover<Content: View>: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     let arrowDirections: UIPopoverArrowDirection?
-    let content: Content
     let backgroundColor: UIColor?
     let dismissOnTransition: Bool
     let onDismiss: (() -> Void)?
+    let content: () -> Content
 
+    /// This view controller is invisible, and it displays the popover pointing at its bounds..
     class ViewController: UIViewController {
-        var onDismiss: (() -> Void)?
         var dismissOnTransition = false
+
+        /// The currently presented view controller. Set to `nil` to dismiss.
         var presentee: Host? {
             didSet {
                 if let presentee = presentee {
@@ -52,9 +65,7 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
                         present(presentee, animated: true)
                     }
                 } else if let presentee = self.presentedViewController {
-                    presentee.dismiss(animated: true) { [self] in
-                        self.onDismiss?()
-                    }
+                    presentee.dismiss(animated: true)
                 }
             }
         }
@@ -62,6 +73,7 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
 
+            // Workaround for bugs that happen when passing a binding with an initial value of true.
             DispatchQueue.main.async { [self] in
                 if let presentee = presentee, presentedViewController == nil {
                     present(presentee, animated: true)
@@ -70,6 +82,7 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
         }
 
         override func viewDidDisappear(_ animated: Bool) {
+            // Dismiss the popover when removing this view controller.
             presentee = nil
             super.viewDidDisappear(animated)
         }
@@ -83,8 +96,11 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
         }
     }
 
+    /// This hosting controller is displayed inside the popover, and renders the user-specified content.
     class Host: UIHostingController<Content>, UIPopoverPresentationControllerDelegate {
         @Binding var isPresented: Bool
+        var onDismiss: (() -> Void)?
+
         init(rootView: Content, isPresented: Binding<Bool>) {
             self._isPresented = isPresented
             super.init(rootView: rootView)
@@ -97,7 +113,8 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
             guard let controller = presentationController else { return }
-            // The two subviews of the container view at this point are _UIPopoverDimmingView and _UICutoutShadowView
+            // The two subviews of the container view at this point are _UIPopoverDimmingView and _UICutoutShadowView.
+            // Apply a custom background color here because — at least on iPhone — the default is `UIColor.clear`.
             controller.containerView?.subviews.first(where: {
                 String(cString: object_getClassName($0)).lowercased().contains("dimming")
             })?.backgroundColor = .ui.backdrop
@@ -105,18 +122,21 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
 
         override func viewDidDisappear(_ animated: Bool) {
             super.viewDidDisappear(animated)
+            // Handle interactive dismissal of the popover (triggered by tapping outside its bounds)
+            onDismiss?()
             isPresented = false
         }
 
         override func viewDidLayoutSubviews() {
             super.viewDidLayoutSubviews()
+            // Resizes the popover to fit its content.
             UIView.performWithoutAnimation { [self] in
                 preferredContentSize = sizeThatFits(in: view.intrinsicContentSize)
             }
         }
 
-        // Returning None here makes sure that the Popover is actually presented as a Popover and
-        // not as a full-screen modal, which is the default on compact device classes.
+        // Returning `.none` here makes sure that the Popover is actually presented as a popover
+        // and not as a full-screen modal, which is the default on compact device classes.
         func adaptivePresentationStyle(
             for controller: UIPresentationController, traitCollection: UITraitCollection
         ) -> UIModalPresentationStyle {
@@ -127,16 +147,19 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> ViewController {
         ViewController()
     }
+
     func updateUIViewController(_ vc: ViewController, context: Context) {
-        vc.onDismiss = onDismiss
         vc.dismissOnTransition = dismissOnTransition
         if let presentee = vc.presentee {
-            presentee.rootView = content
+            // If the popover is visible, update its content
+            presentee.rootView = content()
+            // …and hide it if necessary
             if !isPresented {
                 vc.presentee = nil
             }
         } else if isPresented {
-            let host = Host(rootView: content, isPresented: $isPresented)
+            // Create and present a new popover
+            let host = Host(rootView: content(), isPresented: $isPresented)
             host.view.sizeToFit()
             host.modalPresentationStyle = .popover
             host.popoverPresentationController?.delegate = host
@@ -147,10 +170,13 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
             vc.presentee = host
         }
 
+        // Update the displayed popover. This is different from the above if-let
+        // because it handles the case where the popover was just presented too.
         if let presentee = vc.presentee {
             presentee.preferredContentSize = presentee.sizeThatFits(
                 in: presentee.view.intrinsicContentSize)
             presentee.view.backgroundColor = backgroundColor
+            presentee.onDismiss = onDismiss
         }
     }
 }
@@ -159,6 +185,7 @@ extension EnvironmentValues {
     private struct InPopoverKey: EnvironmentKey {
         static let defaultValue = false
     }
+    /// True when inside of a `presentAsPopover`-based popover.
     fileprivate(set) var inPopover: Bool {
         get { self[InPopoverKey.self] }
         set { self[InPopoverKey.self] = newValue }

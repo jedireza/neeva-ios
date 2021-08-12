@@ -5,7 +5,9 @@ import Shared
 import Storage
 import SwiftUI
 
-struct CardStrip<Model: CardModel>: View {
+/// This file contains models and views for the iPad card strip, which is not enabled by default.
+
+private struct CardStrip<Model: CardModel>: View {
     typealias Details = Model.Details
     @ObservedObject var model: Model
     let onLongPress: (String) -> Void
@@ -26,7 +28,7 @@ struct CardStrip<Model: CardModel>: View {
     }
 }
 
-struct CardStripButtonSpec: ViewModifier {
+private struct CardStripButtonSpec: ViewModifier {
     func body(content: Content) -> some View {
         content.frame(width: CardUX.DefaultCardSize / 2, height: 124)
             .background(Color.DefaultBackground)
@@ -45,7 +47,7 @@ class CardStripModel: ObservableObject {
     }
 }
 
-struct TabsAndSpacesView: View {
+struct CardStripView: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var sitesModel: SiteCardModel
@@ -100,7 +102,7 @@ struct TabsAndSpacesView: View {
     }
 }
 
-struct ToggleSpacesButton: View {
+private struct ToggleSpacesButton: View {
     @EnvironmentObject var spaceModel: SpaceCardModel
     @Binding var showingSpaces: Bool
 
@@ -123,7 +125,7 @@ struct ToggleSpacesButton: View {
     }
 }
 
-struct DismissButton: View {
+private struct DismissButton: View {
     var onDismiss: () -> Void
 
     var body: some View {

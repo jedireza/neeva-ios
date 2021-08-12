@@ -3,6 +3,7 @@
 import Shared
 import SwiftUI
 
+/// Displayed when not editing the URL.
 struct LocationLabel: View {
     let url: URL?
     let isSecure: Bool?
@@ -20,7 +21,9 @@ struct LocationLabel: View {
         .allowsHitTesting(false)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Address Bar")
-        .accessibilityValue((isSecure ?? false ? "Secure connection, " : "") + (url?.absoluteString ?? ""))
+        .accessibilityValue(
+            (isSecure ?? false ? "Secure connection, " : "") + (url?.absoluteString ?? "")
+        )
         .accessibilityAddTraits(.isButton)
     }
 }

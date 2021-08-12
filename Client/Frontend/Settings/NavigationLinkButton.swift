@@ -3,6 +3,8 @@
 import Shared
 import SwiftUI
 
+/// A re-implementation of `NavigationLink`’s appearance in `List` that offers support for a link icon
+/// instead of the standard chevron and runs a closure instead of pushing a new view.
 struct NavigationLinkButton<Label: View>: View {
     let label: () -> Label
     let action: () -> Void
@@ -60,6 +62,7 @@ extension NavigationLinkButton where Label == Text {
     }
 }
 
+/// A view that looks like a `NavigationLink` in a `List`, but opens a sheet when tapped instead of pushing a view.
 struct SheetNavigationLink<Label: View, Sheet: View>: View {
     let label: () -> Label
     let sheet: () -> Sheet

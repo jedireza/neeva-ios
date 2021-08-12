@@ -89,7 +89,7 @@ class CardStripViewController: UIHostingController<CardStripViewController.Conte
         let cardStripModel: CardStripModel
 
         var body: some View {
-            TabsAndSpacesView()
+            CardStripView()
                 .environmentObject(tabCardModel)
                 .environmentObject(spaceCardModel)
                 .environmentObject(sitesCardModel)

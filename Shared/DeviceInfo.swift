@@ -6,13 +6,6 @@ import Defaults
 import UIKit
 
 open class DeviceInfo {
-    // List of device names that don't support advanced visual settings
-    static let lowGraphicsQualityModels = [
-        "iPad", "iPad1,1", "iPhone1,1", "iPhone1,2", "iPhone2,1", "iPhone3,1", "iPhone3,2",
-        "iPhone3,3", "iPod1,1", "iPod2,1", "iPod2,2", "iPod3,1", "iPod4,1", "iPad2,1", "iPad2,2",
-        "iPad2,3", "iPad2,4", "iPad3,1", "iPad3,2", "iPad3,3",
-    ]
-
     public static var specificModelName: String {
         var systemInfo = utsname()
         uname(&systemInfo)
@@ -31,58 +24,7 @@ open class DeviceInfo {
         return identifier
     }
 
-    /// Return the client name, which can be either "Neeva on Stefan's iPod" or simply "Stefan's iPod" if the application display name cannot be obtained.
-    open class func defaultClientName() -> String {
-        if ProcessInfo.processInfo.arguments.contains(LaunchArguments.DeviceName) {
-            return String(format: .DeviceInfoClientNameDescription, AppInfo.displayName, "iOS")
-        }
-
-        return String(
-            format: .DeviceInfoClientNameDescription, AppInfo.displayName, UIDevice.current.name)
-    }
-
-    private static let clientIdentifierKey = Defaults.Key<String?>("profile.clientIdentifier")
-    open class func clientIdentifier() -> String {
-        if let id = Defaults[clientIdentifierKey] {
-            return id
-        }
-        let id = UUID().uuidString
-        Defaults[clientIdentifierKey] = id
-        return id
-    }
-
-    open class func deviceModel() -> String {
-        return UIDevice.current.model
-    }
-
-    open class func isSimulator() -> Bool {
-        return ProcessInfo.processInfo.environment["SIMULATOR_ROOT"] != nil
-    }
-
-    open class func isBlurSupported() -> Bool {
-        // We've tried multiple ways to make this change visible on simulators, but we
-        // haven't found a solution that worked:
-        // 1. http://stackoverflow.com/questions/21603475/how-can-i-detect-if-the-iphone-my-app-is-on-is-going-to-use-a-simple-transparen
-        // 2. https://gist.github.com/conradev/8655650
-        // Thus, testing has to take place on actual devices.
-        return !lowGraphicsQualityModels.contains(specificModelName)
-    }
-
-    open class func hasConnectivity() -> Bool {
-        let status = Reach().connectionStatus()
-        switch status {
-        case .online(.wwan), .online(.wiFi):
-            return true
-        default:
-            return false
-        }
-    }
-
-    // Reports portrait screen size regardless of the current orientation.
-    open class func screenSizeOrientationIndependent() -> CGSize {
-        let screenSize = UIScreen.main.bounds.size
-        return CGSize(
-            width: min(screenSize.width, screenSize.height),
-            height: max(screenSize.width, screenSize.height))
+    open class var isSimulator: Bool {
+        ProcessInfo.processInfo.environment["SIMULATOR_ROOT"] != nil
     }
 }

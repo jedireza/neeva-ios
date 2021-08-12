@@ -8,16 +8,16 @@ import SwiftUI
 // in the main repo.
 // ***********************
 public enum SSOProvider: String, CaseIterable {
-    // Unknown means the SSO provider is not known. This is the default value,
-    // and generally means that no SSO has occurred.
+    /// Unknown means the SSO provider is not known. This is the default value,
+    /// and generally means that no SSO has occurred.
     case unknown = "Unknown"
-    // Google is for Google SSO, e.g. "Sign in with Google"
+    /// Google is for Google SSO, e.g. "Sign in with Google"
     case google = "neeva.co/auth/oauth2/authenticators/google"
-    // Apple is for Apple SSO, e.g. "Sign in with Apple"
+    /// Apple is for Apple SSO, e.g. "Sign in with Apple"
     case apple = "neeva.co/auth/oauth2/authenticators/apple"
-    // Microsoft is for Microsoft SSO.
+    /// Microsoft is for Microsoft SSO.
     case microsoft = "neeva.co/auth/oauth2/authenticators/microsoft"
-    // Okta is for Neeva Account
+    /// Okta is for Neeva Account
     case okta = "neeva.co/auth/oauth2/authenticators/okta"
 
     public var displayName: String {

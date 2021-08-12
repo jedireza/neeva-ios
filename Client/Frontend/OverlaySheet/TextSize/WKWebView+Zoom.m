@@ -2,6 +2,13 @@
 
 #import "WKWebView+Zoom.h"
 
+// Obfuscated accessors for the private _viewScale property on WKWebView
+// This code is complicated by the fact that Apple might reject us if we simply
+// define the `_viewScale` and `_setViewScale:` methods on WKWebView.
+// Instead, we use NSInvocation to perform the method calls.
+// We can’t use `performSelector` because the return type is CGFloat, not an object.
+// We can’t use Swift because NSInvocation is unavailable in Swift.
+
 #ifdef USE_PRIVATE_WEB_VIEW_ZOOM_API
 @implementation WKWebView (Zoom)
 

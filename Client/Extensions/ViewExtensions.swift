@@ -41,13 +41,6 @@ extension View {
 }
 
 extension View {
-    func clipped(padding: CGFloat) -> some View {
-        self
-            .padding(padding)
-            .clipped()
-            .padding(-padding)
-    }
-
     /// Inspired by React’s `useEffect` hook, this modifier calls `perform(deps)` both `onAppear` and whenever `deps` changes.
     func useEffect<T: Equatable>(deps: T, perform updater: @escaping (T) -> Void) -> some View {
         self.onChange(of: deps, perform: updater)

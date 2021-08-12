@@ -10,7 +10,7 @@ public class GraphQLAPI {
 
     private init() {}
 
-    /// The `ApolloClient` des the actual work of peforming GraphQL requests.
+    /// The `ApolloClient` does the actual work of performing GraphQL requests.
     public private(set) lazy var apollo: ApolloClient = {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
         let provider = LegacyInterceptorProvider(store: store)

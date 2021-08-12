@@ -44,7 +44,7 @@ public class Sentry {
     public func setup(sendUsageData: Bool) {
         assert(!enabled, "Sentry.setup() should only be called once")
 
-        if DeviceInfo.isSimulator() {
+        if DeviceInfo.isSimulator {
             Logger.browser.debug("Not enabling Sentry; Running in Simulator")
             return
         }

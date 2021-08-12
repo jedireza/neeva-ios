@@ -88,7 +88,6 @@ extension EnvironmentValues {
     private struct SelectionCompletionKey: EnvironmentKey {
         static var defaultValue: (() -> Void)? = nil
     }
-
     public var selectionCompletion: () -> Void {
         get {
             self[SelectionCompletionKey] ?? {
@@ -99,6 +98,7 @@ extension EnvironmentValues {
     }
 }
 
+/// A card that constrains itself to the default height and provided width.
 struct FittedCard<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
 
@@ -110,8 +110,10 @@ struct FittedCard<Details>: View where Details: CardDetails {
     }
 }
 
+/// A flexible card that takes up as much space as it is allotted.
 struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
+    /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
 
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void

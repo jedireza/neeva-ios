@@ -187,6 +187,7 @@ class BrowserViewController: UIViewController {
 
     private(set) var feedbackImage: UIImage?
 
+    /// Update the screenshot sent along with feedback. Called before opening the Neeva Menu.
     func updateFeedbackImage() {
         UIGraphicsBeginImageContextWithOptions(view.window!.bounds.size, true, 0)
         defer { UIGraphicsEndImageContext() }
@@ -204,7 +205,8 @@ class BrowserViewController: UIViewController {
         self.profile = profile
         self.tabManager = tabManager
         self.readerModeCache = DiskReaderModeCache.sharedInstance
-        self.scrollController = TabScrollingController(tabManager: tabManager, chromeModel: chromeModel)
+        self.scrollController = TabScrollingController(
+            tabManager: tabManager, chromeModel: chromeModel)
         super.init(nibName: nil, bundle: nil)
         didInit()
     }
@@ -1635,13 +1637,13 @@ extension BrowserViewController {
     }
 
     private func visitHomePage() {
-        if let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
+        if let tab = self.tabManager.selectedTab, NetworkReachability.shared.isOnline == true {
             tab.loadRequest(URLRequest(url: NeevaConstants.appSignupURL))
         }
     }
 
     private func visitSigninPage() {
-        if let tab = self.tabManager.selectedTab, DeviceInfo.hasConnectivity() {
+        if let tab = self.tabManager.selectedTab, NetworkReachability.shared.isOnline == true {
             tab.loadRequest(URLRequest(url: NeevaConstants.appSigninURL))
         }
     }

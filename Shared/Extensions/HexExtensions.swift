@@ -53,25 +53,4 @@ extension Data {
         }
         return String(result)
     }
-
-    public static func randomOfLength(_ length: UInt) -> Data? {
-        let length = Int(length)
-        var data = Data(count: length)
-        var result: Int32 = 0
-        data.withUnsafeMutableBytes { (p: UnsafeMutableRawBufferPointer) in
-            guard let p = p.bindMemory(to: UInt8.self).baseAddress else {
-                result = -1
-                return
-            }
-
-            result = SecRandomCopyBytes(kSecRandomDefault, length, p)
-        }
-        return result == 0 ? data : nil
-    }
-}
-
-extension Data {
-    public var base64EncodedString: String {
-        return self.base64EncodedString(options: [])
-    }
 }

@@ -105,7 +105,7 @@ open class BrowserProfile: Profile {
         }
 
         let Length: UInt = 256
-        let secret = Bytes.generateRandomBytes(Length).base64EncodedString
+        let secret = Bytes.generateRandomBytes(Length).base64EncodedString()
         keychain.set(secret, forKey: loginsUnlockKeychainKey, withAccessibility: .afterFirstUnlock)
         return secret
     }()

@@ -4,6 +4,8 @@ import Combine
 import Shared
 import SwiftUI
 
+/// Provides touch handling for the location view. Written in UIKit to allow more direct control over how
+/// tapping, pressing, and dragging interact. Also used to provide the `UIMenuItem`s shown when long-pressing.
 struct LocationViewTouchHandler: UIViewRepresentable {
     let margins: EdgeInsets
     @Binding var isPressed: Bool

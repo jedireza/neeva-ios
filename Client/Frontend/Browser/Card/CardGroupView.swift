@@ -4,7 +4,7 @@ import SwiftUI
 
 // MARK: ThumbnailGroup
 
-struct ThumbnailGroupSpec: ViewModifier {
+private struct ThumbnailGroupSpec: ViewModifier {
     let size: CGFloat
     let onSelect: () -> Void
 

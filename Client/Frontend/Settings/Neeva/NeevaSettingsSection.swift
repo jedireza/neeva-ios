@@ -9,6 +9,7 @@ struct NeevaSettingsSection: View {
     @Environment(\.openInNewTab) var openURL
     @State var showingAccountDetails = false
 
+    // Used by FeatureFlag[.inlineAccountSettings] to render inline settings
     static var webView: WKWebView = {
         let config = TabManager.makeWebViewConfig(isPrivate: false)
         config.preferences.javaScriptCanOpenWindowsAutomatically = false
@@ -51,8 +52,8 @@ struct NeevaSettingsSection: View {
                 NeevaAccountRow(userInfo: userInfo)
             }
 
-            // TODO: fix adding connectors on this screen
             if FeatureFlag[.inlineAccountSettings] {
+                // TODO: fix adding connectors on this screen
                 NavigationLink(
                     "Account Settings",
                     destination: AccountSettingsView(webView: Self.webView)

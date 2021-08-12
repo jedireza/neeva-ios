@@ -25,7 +25,7 @@ open class UserAgent {
             versionStr = "dev"
         }
         return
-            "\(prefix)/\(versionStr) (\(DeviceInfo.deviceModel()); iPhone OS \(UIDevice.current.systemVersion)) (\(AppInfo.displayName))"
+            "\(prefix)/\(versionStr) (\(UIDevice.current.model); iPhone OS \(UIDevice.current.systemVersion)) (\(AppInfo.displayName))"
     }
 
     public static func isDesktop(ua: String) -> Bool {

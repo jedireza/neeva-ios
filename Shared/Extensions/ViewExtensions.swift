@@ -23,14 +23,17 @@ extension UIRectCorner {
 }
 
 extension View {
+    /// Clips the views to a rectangle with only the specified corners rounded.
     public func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
     }
 
+    /// Applies a toggle style that turns them from green to blue
     public func applyToggleStyle() -> some View {
         toggleStyle(SwitchToggleStyle(tint: Color.ui.adaptive.blue))
     }
 
+    /// Sizes the view to 44×44 pixels, the standard tap target size
     public func tapTargetFrame() -> some View {
         frame(width: 44, height: 44)
     }

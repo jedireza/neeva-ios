@@ -27,6 +27,7 @@ class SwitcherToolbarModel: ObservableObject {
     }
 }
 
+/// The toolbar for the card grid/tab switcher
 struct SwitcherToolbarView: View {
     let top: Bool
     @EnvironmentObject var gridModel: GridModel

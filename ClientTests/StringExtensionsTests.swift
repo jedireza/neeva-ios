@@ -32,14 +32,6 @@ class StringExtensionsTests: XCTestCase {
         XCTAssertEqual("", "123456".stringByTrimmingLeadingCharactersInSet(.decimalDigits))
     }
 
-    func testStringSplitWithNewline() {
-        XCTAssertEqual("", "".stringSplitWithNewline())
-        XCTAssertEqual("foo", "foo".stringSplitWithNewline())
-        XCTAssertEqual("aaa\n bbb", "aaa bbb".stringSplitWithNewline())
-        XCTAssertEqual("Mark as\n Read", "Mark as Read".stringSplitWithNewline())
-        XCTAssertEqual("aa\n bbbbbb", "aa bbbbbb".stringSplitWithNewline())
-    }
-
     func testPercentEscaping() {
         func roundtripTest(
             _ input: String, _ expected: String, file: StaticString = #file, line: UInt = #line

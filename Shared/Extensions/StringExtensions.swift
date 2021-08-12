@@ -13,10 +13,6 @@ extension String {
         self.contains("/") && !self.contains(" ")
     }
 
-    public func capitalizingFirstLetter() -> String {
-        return prefix(1).capitalized + dropFirst()
-    }
-
     public func escape() -> String? {
         // We can't guaruntee that strings have a valid string encoding, as this is an entry point for tainted data,
         // we should be very careful about forcefully dereferencing optional types.
@@ -70,45 +66,8 @@ extension String {
         return trimmed
     }
 
-    /// Adds a newline at the closest space from the middle of a string.
-    /// Example turning "Mark as Read" into "Mark as\n Read"
-    public func stringSplitWithNewline() -> String {
-        let mid = self.count / 2
-
-        let arr: [Int] = self.indices.compactMap {
-            if self[$0] == " " {
-                return self.distance(from: startIndex, to: $0)
-            }
-
-            return nil
-        }
-        guard let closest = arr.enumerated().min(by: { abs($0.1 - mid) < abs($1.1 - mid) }) else {
-            return self
-        }
-        var newString = self
-        newString.insert("\n", at: newString.index(newString.startIndex, offsetBy: closest.element))
-        return newString
-    }
-
-    public static func contentsOfFileWithResourceName(
-        _ name: String, ofType type: String, fromBundle bundle: Bundle, encoding: String.Encoding,
-        error: NSErrorPointer
-    ) -> String? {
-        return bundle.path(forResource: name, ofType: type).flatMap {
-            try? String(contentsOfFile: $0, encoding: encoding)
-        }
-    }
-
     public func remove(_ string: String?) -> String {
         return self.replacingOccurrences(of: string ?? "", with: "")
-    }
-
-    public func replaceFirstOccurrence(of original: String, with replacement: String) -> String {
-        guard let range = self.range(of: original) else {
-            return self
-        }
-
-        return self.replacingCharacters(in: range, with: replacement)
     }
 
     public func isEmptyOrWhitespace() -> Bool {
@@ -118,21 +77,5 @@ extension String {
         }
         // Trim and check empty string
         return (self.trimmingCharacters(in: .whitespaces) == "")
-    }
-
-    /// Handles logic to make part of string bold
-    /// - Parameters:
-    ///     - boldString: the portion of the string that should be bold. Current string must already include this string.
-    ///     - font: font for entire string, part of string will be converted to bold version of this font
-    public func attributedText(boldString: String, font: UIFont) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString(
-            string: self,
-            attributes: [NSAttributedString.Key.font: font])
-        let boldFontAttribute: [NSAttributedString.Key: Any] = [
-            NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: font.pointSize)
-        ]
-        let range = (self as NSString).range(of: boldString)
-        attributedString.addAttributes(boldFontAttribute, range: range)
-        return attributedString
     }
 }

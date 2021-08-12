@@ -34,13 +34,6 @@ extension UIImage {
         return image
     }
 
-    public static func createWithColor(_ size: CGSize, color: UIColor) -> UIImage {
-        UIGraphicsImageRenderer(size: size).image { (ctx) in
-            color.setFill()
-            ctx.fill(CGRect(size: size))
-        }
-    }
-
     public func createScaled(_ size: CGSize) -> UIImage {
         UIGraphicsImageRenderer(size: size).image { (ctx) in
             draw(in: CGRect(size: size))
@@ -53,18 +46,6 @@ extension UIImage {
 
     public static func originalImageNamed(_ name: String) -> UIImage? {
         return UIImage(named: name)?.withRenderingMode(.alwaysOriginal)
-    }
-
-    // Uses compositor blending to apply color to an image.
-    public func tinted(withColor: UIColor) -> UIImage {
-        let img2 = UIImage.createWithColor(size, color: withColor)
-        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        let renderer = UIGraphicsImageRenderer(size: size)
-        let result = renderer.image { ctx in
-            img2.draw(in: rect, blendMode: .normal, alpha: 1)
-            draw(in: rect, blendMode: .destinationIn, alpha: 1)
-        }
-        return result
     }
 
     // https://stackoverflow.com/questions/31314412/how-to-resize-image-in-swift/39681316

@@ -4,6 +4,7 @@ import Combine
 import Foundation
 import SwiftUI
 
+/// One instance per window. Contains information about the current tab.
 class LocationViewModel: ObservableObject {
     @Published var url: URL?
     @Published var readerMode = ReaderModeState.unavailable
@@ -14,7 +15,9 @@ class LocationViewModel: ObservableObject {
     var isSecure: Bool? { hasOnlySecureContentListener == nil ? nil : hasOnlySecureContent }
 
     public func updateSecureListener(with webView: WKWebView) {
-        hasOnlySecureContentListener = webView.publisher(for: \.hasOnlySecureContent, options: [.initial, .new]).assign(to: \.hasOnlySecureContent, on: self)
+        hasOnlySecureContentListener = webView.publisher(
+            for: \.hasOnlySecureContent, options: [.initial, .new]
+        ).assign(to: \.hasOnlySecureContent, on: self)
     }
 
     public func resetSecureListener() {

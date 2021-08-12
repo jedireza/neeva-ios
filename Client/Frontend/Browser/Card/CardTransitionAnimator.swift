@@ -2,12 +2,16 @@
 
 import SwiftUI
 
+/// Custom animator that transitions between the tab switcher and a tab
 struct CardTransitionAnimator: View {
     let selectedCardDetails: TabCardDetails
     let cardSize: CGFloat
+    /// The location of the card in the tab switcher, relative to the container of the scroll view
     let offset: CGPoint
+    /// The size of the area where tab content is displayed when outside the tab switcher
     let containerSize: CGSize
     let safeAreaInsets: EdgeInsets
+    /// Whether the toolbar is displayed at the top of the tab switcher
     let topToolbar: Bool
 
     @EnvironmentObject private var gridModel: GridModel

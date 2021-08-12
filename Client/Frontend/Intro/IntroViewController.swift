@@ -7,6 +7,12 @@ import Shared
 import SnapKit
 import UIKit
 
+enum FirstRunButtonActions {
+    case signin
+    case signup
+    case skipToBrowser
+}
+
 class IntroViewController: UIViewController {
     private lazy var welcomeCard = UIView()
 
