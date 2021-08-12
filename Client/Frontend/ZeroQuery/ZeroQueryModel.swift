@@ -29,6 +29,7 @@ enum ZeroQueryOpenedLocation: Equatable {
 class ZeroQueryModel: ObservableObject {
     @Published var isPrivate = false
     @Published var promoCard: PromoCardType?
+    @Published var showRatingsCard: Bool = false
     @Published var openedFrom: ZeroQueryOpenedLocation?
 
     let profile: Profile
@@ -103,6 +104,8 @@ class ZeroQueryModel: ObservableObject {
         } else {
             promoCard = nil
         }
+        
+        showRatingsCard = NeevaFeatureFlags[.appStoreRatingPromo]
     }
 
     func hideURLFromTopSites(_ site: Site) {

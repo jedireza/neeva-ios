@@ -144,6 +144,11 @@ struct ZeroQueryView: View {
                         if expandSuggestedSites != .hidden {
                             SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
                         }
+                        
+                        if viewModel.showRatingsCard {
+                            RatingsCard(onClose: { viewModel.showRatingsCard = false },
+                                        viewWidth: geom.size.width)
+                        }
 
                         ZeroQueryHeader(
                             title: "Searches",
