@@ -10,5 +10,7 @@
 #import <KIF/UIApplication-KIFAdditions.h>
 #import <KIF/UIAccessibilityElement-KIFAdditions.h>
 #import <KIF/UIWindow-KIFAdditions.h>
+#import "Client-Bridging-Header.h"
+#import "Storage-Bridging-Header.h"
 
 #endif

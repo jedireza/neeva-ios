@@ -95,7 +95,9 @@ class SuggestionModel: ObservableObject {
             }
         }
 
-        let navSuggestions = Array((recentSites + convertedNavSuggestions + sites).removeDuplicates().prefix(SuggestionModel.numOfDisplayNavSuggestions))
+        let navSuggestions = Array(
+            (recentSites + convertedNavSuggestions + sites).removeDuplicates().prefix(
+                SuggestionModel.numOfDisplayNavSuggestions))
         return navSuggestions.compactMap { Suggestion.navigation($0) }
     }
 
@@ -161,7 +163,7 @@ class SuggestionModel: ObservableObject {
                                     domain: lensOrBang.domain))
                         ]
                     default:
-                        print("Unexpected lens/bang type \(lensOrBang.type?.rawValue)")
+                        print("Unexpected lens/bang type \(lensOrBang.type?.rawValue ?? "(nil)")")
                         self.rowQuerySuggestions = []
                     }
                 } else {
@@ -227,12 +229,16 @@ class SuggestionModel: ObservableObject {
                 self.recentSites =
                     deferredHistorySites
                     .filter {
-                        $0.latestVisit != nil && $0.latestVisit!.date > (Date.nowMicroseconds() - defaultRecencyDuration)
+                        $0.latestVisit != nil
+                            && $0.latestVisit!.date
+                                > (Date.nowMicroseconds() - defaultRecencyDuration)
                     }
                 self.sites =
                     deferredHistorySites
                     .filter {
-                        $0.latestVisit == nil || $0.latestVisit!.date <= (Date.nowMicroseconds() - defaultRecencyDuration)
+                        $0.latestVisit == nil
+                            || $0.latestVisit!.date
+                                <= (Date.nowMicroseconds() - defaultRecencyDuration)
                     }
 
                 // If we should skip the next autocomplete, reset
@@ -340,7 +346,9 @@ class SuggestionModel: ObservableObject {
         if let idx = suggestions.firstIndex(of: suggestion) {
             if let chipQueryRange = chipQueryRange {
                 if chipQueryRange.contains(idx) {
-                    return SuggestionPositionInfo(positionIndex: chipQueryRange.lowerBound, chipSuggestionIndex: idx - chipQueryRange.lowerBound)
+                    return SuggestionPositionInfo(
+                        positionIndex: chipQueryRange.lowerBound,
+                        chipSuggestionIndex: idx - chipQueryRange.lowerBound)
                 } else if idx > chipQueryRange.lowerBound {
                     return SuggestionPositionInfo(positionIndex: idx - chipQueryRange.count)
                 }
@@ -354,7 +362,8 @@ class SuggestionModel: ObservableObject {
     // MARK: - Suggestion Handling
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let bvc = SceneDelegate.getBVC()
-        let suggestionLocationAttributes = findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
+        let suggestionLocationAttributes =
+            findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
 
         switch suggestion {
         case .query(let suggestion):
@@ -467,19 +476,16 @@ class SuggestionModel: ObservableObject {
         KeyboardHelper.defaultHelper.addDelegate(self)
     }
 
-    convenience init(previewSites: [Site]? = nil, previewCompletion: String? = nil, queryModel: SearchQueryModel = SearchQueryModel(previewValue: "")) {
+    convenience init(
+        previewSites: [Site]? = nil, previewCompletion: String? = nil,
+        queryModel: SearchQueryModel = SearchQueryModel(previewValue: ""),
+        searchQueryForTesting: String = "", isIncognito: Bool = false,
+        previewLensBang: ActiveLensBangInfo? = nil, topSuggestions: [Suggestion] = [],
+        chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []
+    ) {
         self.init(profile: BrowserProfile(localName: "profile"), queryModel: queryModel)
         self.sites = previewSites
         self.completion = previewCompletion
-    }
-
-    // For testing
-    convenience init(
-        searchQueryForTesting: String = "", isIncognito: Bool = false,
-        previewLensBang: ActiveLensBangInfo?, topSuggestions: [Suggestion] = [],
-        chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = [], previewSites: [Site] = []
-    ) {
-        self.init(profile: BrowserProfile(localName: "profile"), queryModel: SearchQueryModel(previewValue: ""))
         self.topSuggestions = topSuggestions
         self.chipQuerySuggestions = chipQuerySuggestions
         self.rowQuerySuggestions = rowQuerySuggestions

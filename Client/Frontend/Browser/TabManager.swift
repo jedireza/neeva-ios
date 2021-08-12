@@ -906,7 +906,9 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         _ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        Logger.network.info("webView.url: \(webView.url ?? "(nil)"), request.url: \(navigationAction.request.url ?? "(nil)"), isMainFrame: \(navigationAction.targetFrame?.isMainFrame)")
+        Logger.network.info(
+            "webView.url: \(webView.url?.absoluteString ?? "(nil)"), request.url: \(navigationAction.request.url?.absoluteString ?? "(nil)"), isMainFrame: \(navigationAction.targetFrame?.isMainFrame.description ?? "(nil)")"
+        )
 
         var res = WKNavigationActionPolicy.allow
         for delegate in delegates {
@@ -926,7 +928,9 @@ class TabManagerNavDelegate: NSObject, WKNavigationDelegate {
         decidePolicyFor navigationResponse: WKNavigationResponse,
         decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
     ) {
-        Logger.network.info("webView.url: \(webView.url ?? "(nil)"), response.url: \(navigationResponse.response.url ?? "(nil)"), isMainFrame: \(navigationResponse.isForMainFrame)")
+        Logger.network.info(
+            "webView.url: \(webView.url ?? "(nil)"), response.url: \(navigationResponse.response.url ?? "(nil)"), isMainFrame: \(navigationResponse.isForMainFrame)"
+        )
 
         var res = WKNavigationResponsePolicy.allow
         for delegate in delegates {

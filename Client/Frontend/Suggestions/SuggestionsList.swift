@@ -31,7 +31,8 @@ struct SuggestionsList: View {
                 } else {
                     TabSuggestionsList()
 
-                    if suggestionModel.suggestions.isEmpty && suggestionModel.shouldShowSuggestions {
+                    if suggestionModel.suggestions.isEmpty && suggestionModel.shouldShowSuggestions
+                    {
                         PlaceholderSuggestions()
                     } else {
                         TopSuggestionsList()
@@ -60,11 +61,12 @@ struct SuggestionsList_Previews: PreviewProvider {
         ]
         Group {
             SuggestionsList()
-                .environmentObject(SuggestionModel(previewSites: history))
             SuggestionsList()
-                .environmentObject(SuggestionModel(previewSites: history))
             SuggestionsList()
-                .environmentObject(SuggestionModel(previewSites: history))
-        }.previewLayout(.fixed(width: 375, height: 250))
+        }
+        .environmentObject(
+            SuggestionModel(previewSites: history, chipQuerySuggestions: suggestions)
+        )
+        .previewLayout(.fixed(width: 375, height: 250))
     }
 }
