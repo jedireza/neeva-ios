@@ -22,6 +22,9 @@ import SwiftUI
 /// be derived from any of the data provided by the primitive. (We can choose image as the thumbnail but can also fallback to using a
 /// mediaUrl inside the pageMetadata). This is also why CardDetails is the DropDelegate rather than the BrowserPrimitive.
 
+/// If you need access to more specific BrowserPrimitive for building cards, use thumbnail inside CardDetails by setting
+/// thumbnailDrawsHeader
+
 protocol BrowserPrimitive: Identifiable {
     var primitiveUrl: URL? { get }
     var displayTitle: String { get }

@@ -4,17 +4,15 @@ import Shared
 import SwiftUI
 
 enum SwitcherViews: String, CaseIterable {
-    case spaces = "bookmark"
-    case tabs = "square.on.square"
+    case tabs = "Tabs"
+    case spaces = "Spaces"
 }
 
 enum CardGridUX {
     static let PickerPadding: CGFloat = 20
-    static let PickerHeight: CGFloat = 50
+    static let PickerHeight: CGFloat = UIConstants.TopToolbarHeight
     static let GridSpacing: CGFloat = 20
-    static let YStaticOffset: CGFloat =
-        (FeatureFlag[.groupsInSwitcher] ? PickerHeight + 2 * PickerPadding : 0)
-        + GridSpacing
+    static let YStaticOffset: CGFloat = GridSpacing
 }
 
 struct CardGrid: View {
@@ -68,6 +66,10 @@ struct CardGrid: View {
         }
     }
 
+    var row: CGFloat {
+        floor(CGFloat(indexInGrid) / columnCount)
+    }
+
     @ViewBuilder var transitionAnimator: some View {
         if gridModel.animationThumbnailState != .hidden || gridModel.isHidden,
             let selectedCardDetails = selectedCardDetails,
@@ -79,9 +81,8 @@ struct CardGrid: View {
                 offset: CGPoint(
                     x: CardGridUX.GridSpacing
                         + (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
-                    y: (CardUX.CardHeight + CardGridUX.GridSpacing)
-                        * floor(CGFloat(indexInGrid) / columnCount)
-                        + CardGridUX.YStaticOffset + gridModel.scrollOffset
+                    y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize) * row
+                        + CardGridUX.YStaticOffset
                 ),
                 containerSize: geom.size,
                 safeAreaInsets: geom.safeAreaInsets,
@@ -90,13 +91,14 @@ struct CardGrid: View {
         }
     }
 
-    func updateCardSize(width: CGFloat, horizontalSizeClass: UserInterfaceSizeClass?) {
+    func updateCardSize(width: CGFloat, isHidden: Bool) {
         if width > 1000 {
             columnCount = 4
         } else {
             switch horizontalSizeClass {
-            case .regular: columnCount = 3
-            default: columnCount = 2
+            case .regular:
+                columnCount = 3
+            default: columnCount = topToolbar ? 3 : 2
             }
         }
         self.cardSize = (width - (columnCount + 1) * CardGridUX.GridSpacing) / columnCount
@@ -109,7 +111,7 @@ struct CardGrid: View {
                     SwitcherToolbarView(top: true)
                 }
                 VStack(spacing: 0) {
-                    if FeatureFlag[.groupsInSwitcher] {
+                    if FeatureFlag[.nativeSpaces] {
                         GridPicker(switcherState: $switcherState)
                     }
                     CardsContainer(
@@ -129,7 +131,7 @@ struct CardGrid: View {
                     SwitcherToolbarView(top: false)
                 }
             }
-            .useEffect(deps: geom.size.width, horizontalSizeClass, perform: updateCardSize)
+            .useEffect(deps: geom.size.width, gridModel.isHidden, perform: updateCardSize)
             .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
         }
         .overlay(transitionAnimator, alignment: .top)
@@ -146,12 +148,12 @@ struct GridPicker: View {
     var body: some View {
         Picker("", selection: $switcherState) {
             ForEach(SwitcherViews.allCases, id: \.rawValue) { view in
-                Image(systemName: view.rawValue).tag(view).frame(width: 64)
+                Text(view.rawValue).tag(view)
             }
         }.pickerStyle(SegmentedPickerStyle())
-            .background(Color.DefaultBackground)
             .padding(CardGridUX.PickerPadding)
-            .frame(width: 160, height: CardGridUX.PickerHeight)
+            .frame(height: CardGridUX.PickerHeight)
+            .background(Color.background)
     }
 }
 

@@ -14,6 +14,7 @@ extension TabCardsView: Inspectable {}
 extension SpaceCardsView: Inspectable {}
 extension FittedCard: Inspectable {}
 extension Card: Inspectable {}
+extension ThumbnailGroupView: Inspectable {}
 
 private func assertCast<T>(_ value: Any, to _: T.Type) -> T {
     XCTAssertTrue(value is T)
@@ -128,19 +129,25 @@ class CardTests: XCTestCase {
     func testSpaceDetails() throws {
         XCTAssertEqual(SpaceStore.shared.getAll().count, 4)
         SpaceStore.shared.getAll().first!.contentData = [
-            SpaceEntityData(url: .aboutBlank, title: nil, snippet: nil,
-                            thumbnail: SpaceThumbnails.githubThumbnail),
-             SpaceEntityData(url: .aboutBlank, title: nil, snippet: nil,
-                             thumbnail: SpaceThumbnails.stackOverflowThumbnail)]
+            SpaceEntityData(
+                url: .aboutBlank, title: nil, snippet: nil,
+                thumbnail: SpaceThumbnails.githubThumbnail),
+            SpaceEntityData(
+                url: .aboutBlank, title: nil, snippet: nil,
+                thumbnail: SpaceThumbnails.stackOverflowThumbnail),
+        ]
         SpaceStore.shared.getAll().last!.contentData = [
-            SpaceEntityData(url: .aboutBlank, title: nil, snippet: nil,
-                            thumbnail: SpaceThumbnails.githubThumbnail)]
+            SpaceEntityData(
+                url: .aboutBlank, title: nil, snippet: nil,
+                thumbnail: SpaceThumbnails.githubThumbnail)
+        ]
         let firstCard = SpaceCardDetails(space: SpaceStore.shared.getAll().first!)
         XCTAssertEqual(firstCard.id, Space.stackOverflow.id.id)
         XCTAssertEqual(firstCard.allDetails.count, 2)
-        let firstThumbnail = assertCast(
-            firstCard.thumbnail,
-            to: ThumbnailGroupView<SpaceCardDetails>.self)
+        let firstThumbnail = try firstCard.thumbnail.inspect().vStack().view(
+            ThumbnailGroupView<SpaceCardDetails>.self, 0
+        ).actualView()
+        XCTAssertNotNil(firstThumbnail)
         XCTAssertEqual(firstThumbnail.numItems, 2)
         // The model should not update until the SpaceStore refreshes
         XCTAssertEqual(spaceCardModel.allDetails.count, 0)
@@ -151,9 +158,10 @@ class CardTests: XCTestCase {
         let lastCard = spaceCardModel.allDetails.last!
         XCTAssertEqual(lastCard.id, Space.public.id.id)
         XCTAssertEqual(lastCard.allDetails.count, 1)
-        let lastThumbnail = assertCast(
-            lastCard.thumbnail,
-            to: ThumbnailGroupView<SpaceCardDetails>.self)
+        let lastThumbnail = try lastCard.thumbnail.inspect().vStack().view(
+            ThumbnailGroupView<SpaceCardDetails>.self, 0
+        ).actualView()
+        XCTAssertNotNil(lastThumbnail)
         XCTAssertEqual(lastThumbnail.numItems, 1)
     }
 

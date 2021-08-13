@@ -8,7 +8,7 @@ import SwiftUI
 enum CardUX {
     static let DefaultCardSize: CGFloat = 160
     static let ShadowRadius: CGFloat = 2
-    static let CornerRadius: CGFloat = 5
+    static let CornerRadius: CGFloat = 12
     static let ButtonSize: CGFloat = 28
     static let FaviconSize: CGFloat = 18
     static let HeaderSize: CGFloat = ButtonSize + 1
@@ -17,10 +17,11 @@ enum CardUX {
 
 private struct BorderTreatment: ViewModifier {
     let isSelected: Bool
+    let thumbnailDrawsHeader: Bool
 
     func body(content: Content) -> some View {
         content
-            .shadow(radius: CardUX.ShadowRadius)
+            .shadow(radius: thumbnailDrawsHeader ? 0 : CardUX.ShadowRadius)
             .overlay(
                 RoundedRectangle(cornerRadius: CardUX.CornerRadius)
                     .stroke(isSelected ? Color.ui.adaptive.blue : Color.clear, lineWidth: 3)
@@ -106,7 +107,7 @@ struct FittedCard<Details>: View where Details: CardDetails {
 
     var body: some View {
         Card(details: details)
-            .frame(width: cardSize, height: CardUX.CardHeight)
+            .frame(width: cardSize, height: cardSize + CardUX.HeaderSize)
     }
 }
 
@@ -122,32 +123,28 @@ struct Card<Details>: View where Details: CardDetails {
     var body: some View {
         GeometryReader { geom in
             VStack(alignment: .center, spacing: 0) {
-                HStack(spacing: 0) {
-                    if let favicon = details.favicon {
-                        favicon.resizable()
-                            .transition(.fade(duration: 0.5)).background(Color.white)
-                            .scaledToFit()
-                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                            .cornerRadius(CardUX.CornerRadius)
-                            .padding(5)
+                if !details.thumbnailDrawsHeader {
+                    HStack(spacing: 0) {
+                        if let favicon = details.favicon {
+                            favicon
+                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                                .cornerRadius(CardUX.CornerRadius)
+                                .padding(5)
+                        }
+                        Text(details.title).withFont(.labelMedium)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
+                        if details.closeButtonImage != nil {
+                            Color.clear
+                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                                .padding(5)
+                        }
                     }
-                    Text(details.title).withFont(.labelMedium)
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: details.favicon != nil ? .leading : .center
-                        )
-                        .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
-                    if details.closeButtonImage != nil {
-                        Color.clear
-                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                            .padding(5)
-                    }
+                    .frame(height: CardUX.ButtonSize)
+                    .background(Color.DefaultBackground)
+
+                    Color(UIColor.Browser.urlBarDivider).frame(height: 1)
                 }
-                .frame(height: CardUX.ButtonSize)
-                .background(Color.DefaultBackground)
-
-                Color(UIColor.Browser.urlBarDivider).frame(height: 1)
-
                 Button(action: {
                     details.onSelect()
                     selectionCompletion()
@@ -155,7 +152,10 @@ struct Card<Details>: View where Details: CardDetails {
                     details.thumbnail
                         .frame(
                             width: max(0, geom.size.width),
-                            height: max(0, geom.size.height - CardUX.HeaderSize),
+                            height: max(
+                                0,
+                                geom.size.height
+                                    - (details.thumbnailDrawsHeader ? 0 : CardUX.HeaderSize)),
                             alignment: .top
                         )
                         .clipped()
@@ -167,7 +167,11 @@ struct Card<Details>: View where Details: CardDetails {
         .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
         .accessibilityAddTraits(.isButton)
         .cornerRadius(CardUX.CornerRadius)
-        .modifier(BorderTreatment(isSelected: showsSelection && details.isSelected))
+        .modifier(
+            BorderTreatment(
+                isSelected: showsSelection && details.isSelected,
+                thumbnailDrawsHeader: details.thumbnailDrawsHeader)
+        )
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in
             view

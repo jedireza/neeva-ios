@@ -4,43 +4,16 @@ import SwiftUI
 
 // MARK: ThumbnailGroup
 
-private struct ThumbnailGroupSpec: ViewModifier {
-    let size: CGFloat
-    let onSelect: () -> Void
-
-    func body(content: Content) -> some View {
-        Button(
-            action: {
-                onSelect()
-            },
-            label: {
-                content.frame(width: size, height: size)
-                    .cornerRadius(CardUX.CornerRadius)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: CardUX.CornerRadius)
-                            .stroke(Color.tertiaryLabel))
-            })
-    }
-}
-
-extension View {
-    fileprivate func applyThumbnailGroupSpec(size: CGFloat, onSelect: @escaping () -> Void)
-        -> some View
-    {
-        self.modifier(ThumbnailGroupSpec(size: size, onSelect: onSelect))
-    }
+enum ThumbnailGroupViewUX {
+    static let Spacing: CGFloat = 12
 }
 
 struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
-    @Environment(\.selectionCompletion) var selectionCompletion: () -> Void
     @Environment(\.cardSize) private var size
 
-    let spacing: CGFloat = 12
-    let smallSpacing: CGFloat = 4
-
     var contentSize: CGFloat {
-        size - 10
+        size - 2 * ThumbnailGroupViewUX.Spacing
     }
 
     var numItems: Int {
@@ -48,61 +21,43 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     }
 
     var itemSize: CGFloat {
-        (contentSize - spacing) / 2
-    }
-
-    var smallItemSize: CGFloat {
-        (itemSize - smallSpacing) / 2
+        (contentSize - ThumbnailGroupViewUX.Spacing) / 2
     }
 
     var columns: [GridItem] {
         Array(
             repeating: GridItem(
                 .fixed(itemSize),
-                spacing: spacing,
+                spacing: ThumbnailGroupViewUX.Spacing,
                 alignment: .top),
-            count: 2)
-    }
-
-    var smallColumns: [GridItem] {
-        Array(
-            repeating: GridItem(
-                .fixed(smallItemSize),
-                spacing: smallSpacing),
             count: 2)
     }
 
     func itemFor(_ index: Int) -> some View {
         let item = model.allDetails[index]
-        let blockSize = numItems < 5 ? itemSize : (index < 3 ? itemSize : smallItemSize)
-        return item.thumbnail.applyThumbnailGroupSpec(
-            size: blockSize,
-            onSelect: index < 3
-                ? {
-                    item.onSelect()
-                    selectionCompletion()
-                } : {})
+        return item.thumbnail.frame(width: itemSize, height: itemSize)
+            .cornerRadius(CardUX.CornerRadius)
     }
 
     var body: some View {
-        LazyVGrid(columns: columns, alignment: .center, spacing: spacing) {
+        LazyVGrid(columns: columns, alignment: .center, spacing: ThumbnailGroupViewUX.Spacing) {
             ForEach((0..<numItems).prefix(3), id: \.self) { index in
                 itemFor(index)
             }
             if numItems == 4 {
                 itemFor(3)
             } else if numItems > 4 {
-                LazyVGrid(
-                    columns: smallColumns,
-                    alignment: .center, spacing: 4
-                ) {
-                    ForEach((3..<numItems).prefix(4), id: \.self) { index in
-                        itemFor(index)
-                    }
-                }
+                Text("+\(numItems - 3)")
+                    .foregroundColor(Color.label)
+                    .withFont(.labelLarge)
+                    .frame(width: itemSize, height: itemSize)
+                    .background(Color.systemFill)
+                    .cornerRadius(CardUX.CornerRadius)
             }
-        }.padding(10).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color.white)
+        }.padding(ThumbnailGroupViewUX.Spacing)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(Color.systemFill)
+            .cornerRadius(CardUX.CornerRadius)
     }
 }
 

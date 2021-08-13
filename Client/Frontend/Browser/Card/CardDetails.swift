@@ -16,13 +16,15 @@ protocol SelectableThumbnail {
 
 protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     associatedtype Item: BrowserPrimitive
+    associatedtype FaviconViewType: View
 
     var id: String { get }
     var closeButtonImage: UIImage? { get }
     var title: String { get }
     var accessibilityLabel: String { get }
-    var favicon: WebImage? { get }
+    var favicon: FaviconViewType { get }
     var isSelected: Bool { get }
+    var thumbnailDrawsHeader: Bool { get }
 
     func onClose()
 }
@@ -34,6 +36,10 @@ extension CardDetails {
 
     func performDrop(info: DropInfo) -> Bool {
         return false
+    }
+
+    var thumbnailDrawsHeader: Bool {
+        true
     }
 }
 
@@ -80,13 +86,17 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
         }
     }
 
-    var favicon: WebImage? {
+    @ViewBuilder var favicon: some View {
         if let item = manager.get(for: id) {
             if let favIcon = item.displayFavicon {
-                return WebImage(url: favIcon.url)
+                WebImage(url: favIcon.url)
+                    .resizable()
+                    .transition(.fade(duration: 0.5)).background(Color.white)
+                    .scaledToFit()
+            } else if let url = item.primitiveUrl {
+                FaviconView(url: url, size: SuggestionViewUX.FaviconSize, bordered: false)
             }
         }
-        return nil
     }
 }
 
@@ -109,6 +119,10 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     var accessibilityLabel: String {
         "\(title), Tab"
+    }
+
+    var thumbnailDrawsHeader: Bool {
+        false
     }
 
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
@@ -139,13 +153,17 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 }
 
 struct SpaceEntityThumbnail: SelectableThumbnail {
-    let data: Data
+    let data: SpaceEntityData
     let selected: () -> Void
 
-    var thumbnail: some View {
-        Image(uiImage: UIImage(data: data)!)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
+    @ViewBuilder var thumbnail: some View {
+        if let thumbnailData = data.thumbnail?.dataURIBody {
+            Image(uiImage: UIImage(data: thumbnailData)!)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } else {
+            FaviconView(url: data.url, size: .infinity, bordered: false)
+        }
     }
 
     func onSelect() {
@@ -170,6 +188,10 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         "\(title), Space"
     }
 
+    var space: Space? {
+        manager.get(for: id)
+    }
+
     private init(id: String) {
         self.id = id
         self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
@@ -184,12 +206,31 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     }
 
     var thumbnail: some View {
-        ThumbnailGroupView(model: self)
+        VStack(spacing: 0) {
+            ThumbnailGroupView(model: self)
+            HStack {
+                Spacer(minLength: 12)
+                Text(title)
+                    .withFont(.labelMedium)
+                    .lineLimit(1)
+                    .foregroundColor(Color.label)
+                    .frame(height: CardUX.HeaderSize)
+                if let space = space, space.isPublic {
+                    Symbol(decorative: .link, style: .labelMedium)
+                        .foregroundColor(.secondaryLabel)
+                } else if let space = space, space.isShared {
+                    Symbol(decorative: .person2Fill, style: .labelMedium)
+                        .foregroundColor(.secondaryLabel)
+                }
+                Spacer(minLength: 12)
+            }
+        }.shadow(radius: 0)
     }
 
     func updateDetails() {
         allDetails =
-            manager.get(for: id)?.contentData?.compactMap { $0.thumbnail?.dataURIBody }
+            manager.get(for: id)?.contentData?
+            .sorted(by: { first, second in first.thumbnail?.dataURIBody != nil })
             .map { SpaceEntityThumbnail(data: $0, selected: onSelect) } ?? []
     }
 
@@ -198,7 +239,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
             return
         }
 
-        SceneDelegate.getBVC().openURLInNewTab(url)
+        SceneDelegate.getBVC().switchToTabForURLOrOpen(url)
     }
 
     func onClose() {}

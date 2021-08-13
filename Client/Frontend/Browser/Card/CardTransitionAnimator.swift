@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Shared
 import SwiftUI
 
 /// Custom animator that transitions between the tab switcher and a tab
@@ -17,11 +18,15 @@ struct CardTransitionAnimator: View {
     @EnvironmentObject private var gridModel: GridModel
 
     private var transitionBottomPadding: CGFloat {
-        topToolbar ? 0 : UIConstants.ToolbarHeight + safeAreaInsets.bottom
+        return topToolbar ? 0 : UIConstants.ToolbarHeight + safeAreaInsets.bottom
     }
 
     private var transitionTopPadding: CGFloat {
-        topToolbar ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing + safeAreaInsets.top : 0
+        topToolbar
+            ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing + safeAreaInsets.top
+            : (FeatureFlag[.nativeSpaces]
+                ? UIConstants.TopToolbarHeight + safeAreaInsets.top
+                : 0)
     }
 
     var body: some View {
@@ -29,6 +34,8 @@ struct CardTransitionAnimator: View {
         let maxHeight =
             containerSize.height + safeAreaInsets.bottom - transitionBottomPadding
             - transitionTopPadding
+            + (FeatureFlag[.nativeSpaces]
+                ? safeAreaInsets.top + CardUX.HeaderSize : CardUX.HeaderSize)
         Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden)
             .runAfter(
                 toggling: gridModel.isHidden,
@@ -41,11 +48,12 @@ struct CardTransitionAnimator: View {
             )
             .frame(
                 width: gridModel.isHidden ? maxWidth : cardSize,
-                height: gridModel.isHidden ? maxHeight + CardUX.HeaderSize : CardUX.CardHeight
+                height: gridModel.isHidden
+                    ? maxHeight : cardSize + CardUX.HeaderSize
             )
             .offset(
                 x: gridModel.isHidden ? 0 : offset.x + safeAreaInsets.leading,
-                y: gridModel.isHidden ? -CardUX.HeaderSize : offset.y + safeAreaInsets.top
+                y: gridModel.isHidden ? -CardUX.HeaderSize : offset.y + gridModel.scrollOffset
             )
             .animation(.interpolatingSpring(stiffness: 425, damping: 30))
             .onAppear {
