@@ -49,4 +49,7 @@ extension BrowserViewController: OverflowMenuDelegate {
         }
     }
 
+    func overflowMenuDidPressShare() {
+        showShareSheet(buttonView: urlBar.view)
+    }
 }

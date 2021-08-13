@@ -58,18 +58,31 @@ public struct OverflowMenuView: View {
                 .accessibilityIdentifier("OverflowMenu.Forward")
                 .disabled(!chromeModel.canGoForward)
 
-                OverflowMenuButtonView(
-                    label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
-                    symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
-                ) {
-                    menuAction(OverflowMenuButtonActions.reload)
+                if FeatureFlag[.shareButtonInOverflowMenu] {
+                    OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                        menuAction(OverflowMenuButtonActions.newTab)
+                    }
+                    .accessibilityIdentifier("OverflowMenu.NewTab")
+                    OverflowMenuButtonView(
+                        label: "Share",
+                        symbol: .squareAndArrowUp
+                    ) {
+                        menuAction(OverflowMenuButtonActions.share)
+                    }
+                    .accessibilityIdentifier("OverflowMenu.Share")
+                } else {
+                    OverflowMenuButtonView(
+                        label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
+                        symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
+                    ) {
+                        menuAction(OverflowMenuButtonActions.reload)
+                    }
+                    .accessibilityIdentifier("OverflowMenu.Reload")
+                    OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                        menuAction(OverflowMenuButtonActions.newTab)
+                    }
+                    .accessibilityIdentifier("OverflowMenu.NewTab")
                 }
-                .accessibilityIdentifier("OverflowMenu.Reload")
-
-                OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                    menuAction(OverflowMenuButtonActions.newTab)
-                }
-                .accessibilityIdentifier("OverflowMenu.NewTab")
             }
 
             GroupedCell.Decoration {

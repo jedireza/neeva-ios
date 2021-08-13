@@ -10,6 +10,7 @@ protocol OverflowMenuDelegate {
     func overflowMenuDidPressFindOnPage()
     func overflowMenuDidPressTextSize()
     func overflowMenuDidPressRequestDesktopSite()
+    func overflowMenuDidPressShare()
 }
 
 struct OverflowMenuRootView: View {
@@ -66,6 +67,8 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
                             break
                         case .desktopSite:
                             delegate.overflowMenuDidPressRequestDesktopSite()
+                        case .share:
+                            delegate.overflowMenuDidPressShare()
                         }
                     }
                 ),

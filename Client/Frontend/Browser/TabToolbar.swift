@@ -95,15 +95,7 @@ open class LegacyTabToolbarHelper: NSObject {
         ClientLogger.shared.logCounter(
             .ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
         let bvc = SceneDelegate.getBVC()
-        guard
-            let tab = bvc.tabManager.selectedTab,
-            let url = tab.url
-        else { return }
-        if url.isFileURL {
-            bvc.share(fileURL: url, buttonView: shareButton, presentableVC: bvc)
-        } else {
-            bvc.share(tab: tab, from: shareButton, presentableVC: bvc)
-        }
+        bvc.showShareSheet(buttonView: shareButton)
     }
 
     func didClickSpaces() {

@@ -10,4 +10,5 @@ public enum OverflowMenuButtonActions {
     case textSize
     case readingMode
     case desktopSite
+    case share
 }

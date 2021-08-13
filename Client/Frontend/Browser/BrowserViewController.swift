@@ -1964,3 +1964,18 @@ extension UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
 }
+
+extension BrowserViewController {
+    func showShareSheet(buttonView: UIView) {
+        guard
+            let tab = tabManager.selectedTab,
+            let url = tab.url
+        else { return }
+
+        if url.isFileURL {
+            share(fileURL: url, buttonView: buttonView, presentableVC: self)
+        } else {
+            share(tab: tab, from: buttonView, presentableVC: self)
+        }
+    }
+}
