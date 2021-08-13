@@ -3,17 +3,6 @@
 import Foundation
 
 extension UITestBase {
-    func dismissFirstRunUI() {
-        tester().waitForAnimationsToFinish()
-
-        if tester().viewExistsWithLabel("Skip to browser without Neeva search") {
-            tester().tapView(withAccessibilityLabel: "Skip to browser without Neeva search")
-            tester().waitForAnimationsToFinish()
-        }
-
-        tester().waitForAnimationsToFinish()
-    }
-
     // MARK: - Tab & URL
     func closeAllTabs() {
         tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)

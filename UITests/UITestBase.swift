@@ -64,8 +64,6 @@ class UITestBase: KIFTestCase {
     }
 
     override func setUp() {
-        dismissFirstRunUI()
-
         if tester().viewExistsWithLabel("Done") {
             tester().tapView(withAccessibilityLabel: "Done")
         }

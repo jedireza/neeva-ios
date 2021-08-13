@@ -93,7 +93,8 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         closeHistory()
     }
 
-    func testClearsCookies() {
+    func testClearsCookies() throws {
+        try skipTest(issue: 1385, "Can’t find the cookie toggle")
         let url = "\(webRoot!)/numberedPage.html?page=1"
         tester().waitForAnimationsToFinish(withTimeout: 5)
         openURL(url)

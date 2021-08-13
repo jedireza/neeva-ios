@@ -22,6 +22,8 @@ class TabChromeModel: ObservableObject {
 
     @Published private(set) var isEditingLocation = false
 
+    @Published var showNeevaMenuTourPrompt = false
+
     init(
         canGoBack: Bool = false, canGoForward: Bool = false, isPage: Bool = false,
         inlineToolbar: Bool = false

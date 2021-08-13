@@ -26,15 +26,17 @@ extension BrowserViewController {
         }
     }
 
+    // Only called by portrait mode / legacy URL bar
+    // Duplicated in TopBarNeevaMenuButton
     func onCloseQuestHandler() {
         self.dismiss(animated: true, completion: nil)
         TourManager.shared.responseMessage(for: TourManager.shared.getActiveStepName(), exit: true)
     }
 
+    // Only called by portrait mode / legacy URL bar
     func onStartQuestButtonClickHandler() {
         if self.chromeModel.inlineToolbar {
             self.dismiss(animated: true)
-            // TODO: update for modern url bar
             self.urlBar.legacy?.didClickNeevaMenu()
         } else {
             SceneDelegate.getBVC().showNeevaMenuSheet()
@@ -51,10 +53,17 @@ extension BrowserViewController {
             // TODO(jed): open this prompt from SwiftUI once we have a full-height SwiftUI hierarchy
             target = toolbar.view
         } else {
-            // TODO: update for modern url bar
-            target = self.urlBar!.legacy!.neevaMenuButton
+            switch urlBar {
+            case .legacy(let urlBar):
+                target = urlBar.neevaMenuButton
+            case .modern:
+                chromeModel.showNeevaMenuTourPrompt = true
+                return
+            case .none: fatalError()
+            }
         }
 
+        // Duplicated in TopBarNeevaMenuButton
         let content = TourPromptContent(
             title: "Get the most out of Neeva!",
             description: "Access your Neeva Home, Spaces, Settings, and more",

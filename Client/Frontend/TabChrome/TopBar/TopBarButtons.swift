@@ -8,40 +8,66 @@ struct TopBarNeevaMenuButton: View {
     let onNeevaMenuAction: (NeevaMenuAction) -> Void
 
     @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject var chromeModel: TabChromeModel
 
     // TODO: sync this state variable with TabToolbarView somehow
     @State private var presenting = false
     @State private var action: NeevaMenuAction?
 
     var body: some View {
-        TabToolbarButtons.NeevaMenu(iconWidth: 24) {
-            onTap()
-            presenting = true
-        }
-        .tapTargetFrame()
-        .presentAsPopover(
-            isPresented: $presenting,
-            backgroundColor: .systemGroupedBackground,
-            arrowDirections: .up,
-            dismissOnTransition: true,
-            onDismiss: {
-                if let action = action {
-                    onNeevaMenuAction(action)
-                    self.action = nil
+        WithPopover(
+            showPopover: $chromeModel.showNeevaMenuTourPrompt,
+            popoverSize: CGSize(width: 300, height: 190),
+            content: {
+                TabToolbarButtons.NeevaMenu(iconWidth: 24) {
+                    onTap()
+                    presenting = true
                 }
-            }
-        ) {
-            VerticalScrollViewIfNeeded {
-                NeevaMenuView(menuAction: {
-                    action = $0
-                    presenting = false
-                })
-                .padding(.bottom, 16)
-                .environment(\.isIncognito, isIncognito)
-            }
-            .frame(minWidth: 340, minHeight: 323)
-            .padding(.top, 13)  // height of the arrow
-        }
+                .tapTargetFrame()
+                .presentAsPopover(
+                    isPresented: $presenting,
+                    backgroundColor: .systemGroupedBackground,
+                    arrowDirections: .up,
+                    dismissOnTransition: true,
+                    onDismiss: {
+                        if let action = action {
+                            onNeevaMenuAction(action)
+                            self.action = nil
+                        }
+                    }
+                ) {
+                    VerticalScrollViewIfNeeded {
+                        NeevaMenuView(menuAction: {
+                            action = $0
+                            presenting = false
+                        })
+                        .padding(.bottom, 16)
+                        .environment(\.isIncognito, isIncognito)
+                    }
+                    .frame(minWidth: 340, minHeight: 323)
+                    .padding(.top, 13)  // height of the arrow
+                }
+            },
+            popoverContent: {
+                TourPromptView(
+                    title: "Get the most out of Neeva!",
+                    description: "Access your Neeva Home, Spaces, Settings, and more",
+                    buttonMessage: "Let's take a Look!",
+                    onConfirm: {
+                        chromeModel.showNeevaMenuTourPrompt = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            presenting = true
+                        }
+                    },
+                    onClose: {
+                        chromeModel.showNeevaMenuTourPrompt = false
+                        TourManager.shared.responseMessage(
+                            for: TourManager.shared.getActiveStepName(), exit: true)
+                    }
+                )
+            },
+            staticColorMode: true
+        )
     }
 }
 
@@ -118,5 +144,6 @@ struct TopBarShareButton_Previews: PreviewProvider {
             .environmentObject(TabChromeModel(isPage: true))
 
         TopBarNeevaMenuButton(onTap: {}, onNeevaMenuAction: { _ in })
+            .environmentObject(TabChromeModel())
     }
 }

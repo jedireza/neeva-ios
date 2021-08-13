@@ -43,7 +43,6 @@ struct LocationTextField: UIViewRepresentable {
 
         DispatchQueue.main.async {
             tf.becomeFirstResponder()
-            tf.selectedTextRange = tf.textRange(from: tf.beginningOfDocument, to: tf.endOfDocument)
         }
         tf.text = text
 
@@ -123,6 +122,11 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 }
             }
         tintColor = text.wrappedValue.isEmpty ? defaultTint : defaultTint.withAlphaComponent(0)
+        self.text = text.wrappedValue
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        selectedTextRange = textRange(from: beginningOfDocument, to: endOfDocument)
     }
 
     required init?(coder aDecoder: NSCoder) {
