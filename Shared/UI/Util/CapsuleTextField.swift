@@ -5,7 +5,7 @@ import SwiftUI
 /// A custom `TextField` that matches our style — a rounded, gray background with slightly darker placeholder text than normal. We also add a clear button.
 /// TODO: make this into a `TextFieldStyle` when that becomes possible
 public struct CapsuleTextField<Icon: View>: View {
-    private let onEditingChanged: ((Bool) -> ())?
+    private let onEditingChanged: ((Bool) -> Void)?
 
     let icon: Icon?
     let placeholder: String
@@ -17,7 +17,10 @@ public struct CapsuleTextField<Icon: View>: View {
     private var showClearButton: Bool {
         if !alwaysShowClearButton {
             // about the maximum number of characters before the textfield "scrolls"
-            return text.size(withAttributes: [.font: FontStyle.bodyMedium.getUIFont(for: textFieldSizeCategory)]).width > textFieldWidth - 5
+            return
+                text.size(withAttributes: [
+                    .font: FontStyle.bodyMedium.uiFont(for: textFieldSizeCategory)
+                ]).width > textFieldWidth - 5
         } else {
             return true
         }
@@ -29,7 +32,11 @@ public struct CapsuleTextField<Icon: View>: View {
 
     @Environment(\.sizeCategory) var textFieldSizeCategory
 
-    public init(icon: Icon, placeholder: String, text: Binding<String>, alwaysShowClearButton: Bool = true, detailText: String? = nil, focusTextField: Bool = false, onEditingChanged: ((Bool) -> ())? = nil) {
+    public init(
+        icon: Icon, placeholder: String, text: Binding<String>, alwaysShowClearButton: Bool = true,
+        detailText: String? = nil, focusTextField: Bool = false,
+        onEditingChanged: ((Bool) -> Void)? = nil
+    ) {
         self.icon = icon
         self.placeholder = placeholder
         self._text = text
@@ -52,14 +59,17 @@ public struct CapsuleTextField<Icon: View>: View {
                         .accessibilityHidden(true)
                 }
 
-                TextField("", text: $text, onEditingChanged: { editing in
-                    isEditing = editing
-                    onEditingChanged?(editing)
+                TextField(
+                    "", text: $text,
+                    onEditingChanged: { editing in
+                        isEditing = editing
+                        onEditingChanged?(editing)
 
-                    if editing && focusTextField {
-                        focusedTextField = false
+                        if editing && focusTextField {
+                            focusedTextField = false
+                        }
                     }
-                })
+                )
                 .accessibilityLabel(placeholder)
                 .withFont(unkerned: .bodyMedium)
                 .introspectTextField { textField in
@@ -103,7 +113,11 @@ public struct CapsuleTextField<Icon: View>: View {
 }
 
 extension CapsuleTextField where Icon == Never {
-    init(_ placeholder: String, text: Binding<String>, alwaysShowClearButton: Bool = true, detailText: String? = nil, focusTextField: Bool = false, onEditingChanged: ((Bool) -> ())? = nil) {
+    init(
+        _ placeholder: String, text: Binding<String>, alwaysShowClearButton: Bool = true,
+        detailText: String? = nil, focusTextField: Bool = false,
+        onEditingChanged: ((Bool) -> Void)? = nil
+    ) {
         self.icon = nil
         self.placeholder = placeholder
         self._text = text
@@ -121,8 +135,12 @@ struct PlaceholderField_Previews: PreviewProvider {
             CapsuleTextField("Placeholder", text: .constant(""))
             CapsuleTextField("Placeholder", text: .constant("Hello, world!"))
             CapsuleTextField("Placeholder", text: .constant("Hello, world!"), detailText: "Text")
-            CapsuleTextField(icon: Symbol(decorative: .starFill), placeholder: "Placeholder", text: .constant(""))
-            CapsuleTextField(icon: Symbol(decorative: .starFill), placeholder: "Placeholder", text: .constant("Hello, world!"))
+            CapsuleTextField(
+                icon: Symbol(decorative: .starFill), placeholder: "Placeholder", text: .constant("")
+            )
+            CapsuleTextField(
+                icon: Symbol(decorative: .starFill), placeholder: "Placeholder",
+                text: .constant("Hello, world!"))
         }.padding().previewLayout(.sizeThatFits)
     }
 }

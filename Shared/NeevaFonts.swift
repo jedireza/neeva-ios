@@ -51,9 +51,9 @@ public struct FontStyleModifier: ViewModifier {
 
     @Environment(\.sizeCategory) private var sizeCategory
     public func body(content: Content) -> some View {
-        let size = style.size(in: sizeCategory)
-        let font = UIFont.systemFont(ofSize: size, weight: weight ?? style.fontWeight)
-        let lineHeight = (style.lineHeightMultiplier * size).rounded(.toNearestOrAwayFromZero)
+        let font = style.uiFont(for: sizeCategory)
+        let lineHeight = (style.lineHeightMultiplier * font.pointSize)
+            .rounded(.toNearestOrAwayFromZero)
         content
             .font(Font(font))
             .lineSpacing(lineHeight - font.lineHeight)
@@ -129,6 +129,20 @@ extension FontStyle {
         }
     }
 
+    func uiFont(for category: ContentSizeCategory, weight: UIFont.Weight? = nil) -> UIFont {
+        return UIFont.systemFont(ofSize: size(in: category), weight: weight ?? fontWeight)
+    }
+
+    private static func defaultSize(for style: UIFont.TextStyle, in category: ContentSizeCategory)
+        -> CGFloat
+    {
+        UIFontDescriptor.preferredFontDescriptor(
+            withTextStyle: style,
+            compatibleWith: UITraitCollection(
+                preferredContentSizeCategory: UIContentSizeCategory(category))
+        ).pointSize
+    }
+
     func size(in category: ContentSizeCategory) -> CGFloat {
         switch self {
         // MARK: Display
@@ -140,10 +154,10 @@ extension FontStyle {
             case .large: return 48
             case .extraLarge: return 50
             case .extraExtraLarge: return 52
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 54
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 54
+                return Self.defaultSize(for: .largeTitle, in: category)
             @unknown default: return size(in: .large)
             }
         case .displayLarge:
@@ -154,10 +168,10 @@ extension FontStyle {
             case .large: return 40
             case .extraLarge: return 42
             case .extraExtraLarge: return 44
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 46
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 46
+                return Self.defaultSize(for: .largeTitle, in: category)
             @unknown default: return size(in: .large)
             }
         case .displayMedium:
@@ -168,10 +182,10 @@ extension FontStyle {
             case .large: return 24
             case .extraLarge: return 26
             case .extraExtraLarge: return 28
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 30
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 30
+                return Self.defaultSize(for: .title1, in: category)
             @unknown default: return size(in: .large)
             }
 
@@ -184,10 +198,10 @@ extension FontStyle {
             case .large: return 20
             case .extraLarge: return 22
             case .extraExtraLarge: return 24
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 26
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 26
+                return Self.defaultSize(for: .title1, in: category)
             @unknown default: return size(in: .large)
             }
         case .headingLarge:
@@ -198,10 +212,10 @@ extension FontStyle {
             case .large: return 18
             case .extraLarge: return 20
             case .extraExtraLarge: return 22
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 24
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 24
+                return Self.defaultSize(for: .title2, in: category)
             @unknown default: return size(in: .large)
             }
         case .headingMedium:
@@ -212,10 +226,10 @@ extension FontStyle {
             case .large: return 16
             case .extraLarge: return 18
             case .extraExtraLarge: return 20
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 22
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 22
+                return Self.defaultSize(for: .title3, in: category)
             @unknown default: return size(in: .large)
             }
         case .headingSmall:
@@ -226,10 +240,10 @@ extension FontStyle {
             case .large: return 13
             case .extraLarge: return 15
             case .extraExtraLarge: return 17
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 19
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 19
+                return Self.defaultSize(for: .headline, in: category)
             @unknown default: return size(in: .large)
             }
         case .headingXSmall:
@@ -240,10 +254,10 @@ extension FontStyle {
             case .large: return 10
             case .extraLarge: return 12
             case .extraExtraLarge: return 14
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 16
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 16
+                return Self.defaultSize(for: .subheadline, in: category)
             @unknown default: return size(in: .large)
             }
 
@@ -256,10 +270,10 @@ extension FontStyle {
             case .large: return 18
             case .extraLarge: return 20
             case .extraExtraLarge: return 22
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 24
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 24
+                return Self.defaultSize(for: .title3, in: category)
             @unknown default: return size(in: .large)
             }
         case .bodyLarge:
@@ -270,10 +284,10 @@ extension FontStyle {
             case .large: return 16
             case .extraLarge: return 18
             case .extraExtraLarge: return 20
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 22
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 22
+                return Self.defaultSize(for: .headline, in: category)
             @unknown default: return size(in: .large)
             }
         case .bodyMedium:
@@ -284,10 +298,10 @@ extension FontStyle {
             case .large: return 14
             case .extraLarge: return 16
             case .extraExtraLarge: return 18
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 20
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 20
+                return Self.defaultSize(for: .body, in: category)
             @unknown default: return size(in: .large)
             }
         case .bodySmall:
@@ -298,10 +312,10 @@ extension FontStyle {
             case .large: return 13
             case .extraLarge: return 15
             case .extraExtraLarge: return 17
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 29
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 19
+                return Self.defaultSize(for: .body, in: category)
             @unknown default: return size(in: .large)
             }
         case .bodyXSmall:
@@ -312,10 +326,10 @@ extension FontStyle {
             case .large: return 12
             case .extraLarge: return 14
             case .extraExtraLarge: return 16
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 18
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 18
+                return Self.defaultSize(for: .footnote, in: category)
             @unknown default: return size(in: .large)
             }
 
@@ -328,10 +342,10 @@ extension FontStyle {
             case .large: return 16
             case .extraLarge: return 18
             case .extraExtraLarge: return 20
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 22
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 22
+                return Self.defaultSize(for: .headline, in: category)
             @unknown default: return size(in: .large)
             }
         case .labelMedium:
@@ -342,10 +356,10 @@ extension FontStyle {
             case .large: return 14
             case .extraLarge: return 16
             case .extraExtraLarge: return 18
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 20
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 20
+                return Self.defaultSize(for: .body, in: category)
             @unknown default: return size(in: .large)
             }
         case .labelSmall:
@@ -356,17 +370,13 @@ extension FontStyle {
             case .large: return 12
             case .extraLarge: return 14
             case .extraExtraLarge: return 16
-            case .extraExtraExtraLarge,
-                .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
+            case .extraExtraExtraLarge: return 18
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge,
                 .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                return 18
+                return Self.defaultSize(for: .footnote, in: category)
             @unknown default: return size(in: .large)
             }
 
         }
-    }
-
-    func getUIFont(for category: ContentSizeCategory) -> UIFont {
-        return UIFont.systemFont(ofSize: size(in: category), weight: fontWeight)
     }
 }
