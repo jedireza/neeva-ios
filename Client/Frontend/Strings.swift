@@ -2400,6 +2400,8 @@ extension String {
         "Forward", comment: "Accessibility Label for the tab toolbar Forward button")
     public static let TabToolbarMoreAccessibilityLabel = MZLocalizedString(
         "More", comment: "Accessibility Label for the tab toolbar More button")
+    public static let TabToolbarCheatsheetAccessibilityLabel = MZLocalizedString(
+        "More", comment: "Accessibility Label for the tab toolbar Cheatsheet button")
     public static let TabToolbarNavigationToolbarAccessibilityLabel = MZLocalizedString(
         "Navigation Toolbar",
         comment:

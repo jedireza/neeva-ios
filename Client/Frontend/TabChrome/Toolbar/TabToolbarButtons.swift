@@ -26,6 +26,33 @@ enum TabToolbarButtons {
         let onForward: () -> Void
         let onOverflow: () -> Void
         let onLongPress: () -> Void
+        let onCheatsheet: () -> Void
+
+        @ViewBuilder var experimentalButton: some View {
+            if FeatureFlag[.overflowMenu] {
+                TabToolbarButton(
+                    label: Symbol(
+                        .ellipsisCircle, size: 20, weight: weight,
+                        label: .TabToolbarMoreAccessibilityLabel),
+                    action: onOverflow
+                )
+            } else if NeevaFeatureFlags[.cheatsheetQuery] {
+                TabToolbarButton(
+                    label: Symbol(
+                        .lightbulb, size: 20, weight: weight,
+                        label: .TabToolbarCheatsheetAccessibilityLabel),
+                    action: onCheatsheet
+                )
+            } else {
+                TabToolbarButton(
+                    label: Symbol(
+                        .arrowForward, size: 20, weight: weight,
+                        label: .TabToolbarForwardAccessibilityLabel), action: onForward
+                )
+                .disabled(!model.canGoForward)
+                .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
+            }
+        }
 
         @EnvironmentObject private var model: TabChromeModel
         var body: some View {
@@ -37,22 +64,7 @@ enum TabToolbarButtons {
                 )
                 .disabled(!model.canGoBack)
                 .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
-                if FeatureFlag[.overflowMenu] {
-                    TabToolbarButton(
-                        label: Symbol(
-                            .ellipsisCircle, size: 20, weight: weight,
-                            label: .TabToolbarMoreAccessibilityLabel),
-                        action: onOverflow
-                    )
-                } else {
-                    TabToolbarButton(
-                        label: Symbol(
-                            .arrowForward, size: 20, weight: weight,
-                            label: .TabToolbarForwardAccessibilityLabel), action: onForward
-                    )
-                    .disabled(!model.canGoForward)
-                    .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
-                }
+                experimentalButton
             }
         }
     }

@@ -898,9 +898,14 @@ extension BrowserViewController: WKNavigationDelegate {
         guard let tab = tabManager[webView] else { return }
         tab.setURL(webView.url)
 
-        // increment page load count
         if let url = webView.url {
+            // increment page load count
             PerformanceLogger.shared.incrementPageLoad(url: url)
+
+            if NeevaFeatureFlags[.cheatsheetQuery] {
+                // fetch cheatsheet info
+                CheatsheetInfo.shared.fetch(url: url)
+            }
         }
 
         // The document has changed. This metadata is now invalid.

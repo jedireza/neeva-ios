@@ -22,7 +22,8 @@ struct TabToolbarView: View {
                     onBack: { performAction(.back) },
                     onForward: { performAction(.forward) },
                     onOverflow: { performAction(.overflow) },
-                    onLongPress: { performAction(.longPressBackForward) }
+                    onLongPress: { performAction(.longPressBackForward) },
+                    onCheatsheet: { performAction(.cheatsheet) }
                 )
                 TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
                 TabToolbarButtons.AddToSpace(
@@ -30,8 +31,7 @@ struct TabToolbarView: View {
                 TabToolbarButtons.ShowTabs(
                     weight: .medium,
                     action: { performAction(.showTabs) },
-                    buildMenu: buildTabsMenu
-                )
+                    buildMenu: buildTabsMenu)
             }
             .padding(.top, 2)
             .opacity(chromeModel.controlOpacity)

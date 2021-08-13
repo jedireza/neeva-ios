@@ -253,6 +253,10 @@
 		A83E5B1B1C1DA8BF0026D912 /* image.png in Resources */ = {isa = PBXBuildFile; fileRef = A83E5B191C1DA8BF0026D912 /* image.png */; };
 		A83E5B1D1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5B1C1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift */; };
 		A83E5B1E1C1DAAAA0026D912 /* UIPasteboardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */; };
+		BC07524626C324A3008B607A /* CheatsheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524426C324A3008B607A /* CheatsheetController.swift */; };
+		BC07524726C32D1B008B607A /* CheatsheetInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524226C20EF7008B607A /* CheatsheetInfo.swift */; };
+		BC07524926C3A182008B607A /* CheatsheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524826C3A182008B607A /* CheatsheetViewController.swift */; };
+		BC07524C26C3B98F008B607A /* CheatsheetMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */; };
 		BC0E275D26805A2600EAAE00 /* FeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */; };
 		BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC264BC126746098001527B6 /* ViewExtensions.swift */; };
 		BC48E3E826433CCD009B4709 /* NeevaMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */; };
@@ -1186,6 +1190,10 @@
 		A83E5B181C1DA8BF0026D912 /* image.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = image.gif; sourceTree = "<group>"; };
 		A83E5B191C1DA8BF0026D912 /* image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image.png; sourceTree = "<group>"; };
 		A83E5B1C1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPasteboardExtensionsTests.swift; sourceTree = "<group>"; };
+		BC07524226C20EF7008B607A /* CheatsheetInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetInfo.swift; sourceTree = "<group>"; };
+		BC07524426C324A3008B607A /* CheatsheetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetController.swift; sourceTree = "<group>"; };
+		BC07524826C3A182008B607A /* CheatsheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetViewController.swift; sourceTree = "<group>"; };
+		BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetMenuView.swift; sourceTree = "<group>"; };
 		BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackHelper.swift; sourceTree = "<group>"; };
 		BC264BC126746098001527B6 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BC48E3E726433CCD009B4709 /* NeevaMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaMenuViewController.swift; sourceTree = "<group>"; };
@@ -2291,6 +2299,15 @@
 			path = Menu;
 			sourceTree = "<group>";
 		};
+		BC07524126C20C42008B607A /* Cheatsheet */ = {
+			isa = PBXGroup;
+			children = (
+				BC07524826C3A182008B607A /* CheatsheetViewController.swift */,
+				BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */,
+			);
+			path = Cheatsheet;
+			sourceTree = "<group>";
+		};
 		BC0E275B268059C500EAAE00 /* Feedback */ = {
 			isa = PBXGroup;
 			children = (
@@ -2523,6 +2540,7 @@
 		C9C18E1726559132004710CD /* API */ = {
 			isa = PBXGroup;
 			children = (
+				BC07524226C20EF7008B607A /* CheatsheetInfo.swift */,
 				C9C18DC926558FF2004710CD /* AbstractController.swift */,
 				C9C18E3C26559504004710CD /* API.swift */,
 				C9C18E3B26559504004710CD /* ErrorView.swift */,
@@ -2535,6 +2553,7 @@
 				C9C18E30265594DE004710CD /* Space.swift */,
 				BC5C43CC265F49EA007E2F61 /* TourManager.swift */,
 				C9C18E2F265594DE004710CD /* TestSpaces.swift */,
+				BC07524426C324A3008B607A /* CheatsheetController.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -2741,6 +2760,7 @@
 			children = (
 				C9299E35268F9CF300758795 /* CloseButton.swift */,
 				C9BED4C8266824D7001D9C77 /* FadingHorizontalScrollView.swift */,
+				66BEFDC826A7678200AA32EF /* GroupedCell.swift */,
 				C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */,
 				C9E5F2CA2678F05E00025A7F /* Popover.swift */,
 				C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */,
@@ -3285,6 +3305,7 @@
 		F84B21F11A0910F600AAB793 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				BC07524126C20C42008B607A /* Cheatsheet */,
 				D3A994941A368691008AD1AC /* Browser */,
 				C9098F5C26AF485400D2B5F4 /* TabChrome */,
 				23ED80FD25C899D700D0E9D5 /* DefaultBrowserOnboarding */,
@@ -4263,6 +4284,7 @@
 				E65075B11E37F7AB006961AC /* FSUtils.m in Sources */,
 				CE7F11941F3CEEC800ABFC0B /* RemoteDevices.swift in Sources */,
 				C9C18E3F26559504004710CD /* API.swift in Sources */,
+				BC07524626C324A3008B607A /* CheatsheetController.swift in Sources */,
 				D3A14C221CB3145E00253BC6 /* Strings.swift in Sources */,
 				C9F49CC6266FFB8200F3408A /* Environment.swift in Sources */,
 				7B3D9E651E4CBFDB007A50DA /* NSCoderExtensions.swift in Sources */,
@@ -4275,6 +4297,7 @@
 				E65075951E37F7AB006961AC /* GeneralUtils.swift in Sources */,
 				E683F0C21E93D4E90035D990 /* DictionaryExtensions.swift in Sources */,
 				E650759B1E37F7AB006961AC /* CrashSimulator.m in Sources */,
+				BC07524726C32D1B008B607A /* CheatsheetInfo.swift in Sources */,
 				288A2DB51AB8B38D0023ABC3 /* Error.swift in Sources */,
 				C80E03E826B88FF000A7800A /* OptionalLogger.swift in Sources */,
 				C9C18E5A265598B4004710CD /* LargeSpaceIconView.swift in Sources */,
@@ -4676,6 +4699,7 @@
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
 				C9C18E0826559007004710CD /* SearchSuggestionViews.swift in Sources */,
 				E47616C71AB74CA600E7DD25 /* ReaderModeBarView.swift in Sources */,
+				BC07524C26C3B98F008B607A /* CheatsheetMenuView.swift in Sources */,
 				EBB89507219398E500EB91A0 /* ContentBlocker.swift in Sources */,
 				C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */,
 				4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */,
@@ -4683,6 +4707,10 @@
 				C9FD1B2226C312CB00926A70 /* BrowserViewController+NeevaMenu.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */,
+				C9A241CB269CA4AB007156B3 /* TopBarHost.swift in Sources */,
+				C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */,
+				C9A241CB269CA4AB007156B3 /* TopBarHost.swift in Sources */,
+				C94D406A2684D442003A6766 /* SuggestionPositionInfo.swift in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
 				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */,
@@ -4703,6 +4731,7 @@
 				C9F8EB342680DA8A0042CFE7 /* TabToolbarView.swift in Sources */,
 				C9E5F2BE26779F1400025A7F /* LocationViewModel.swift in Sources */,
 				4A1D054D266430DA00D63333 /* SimulatedSwipeAnimator.swift in Sources */,
+				BC07524926C3A182008B607A /* CheatsheetViewController.swift in Sources */,
 				661F4FB7269CACFD0078238B /* DownloadViewController.swift in Sources */,
 				C9C18E1E265591A1004710CD /* Icons.swift in Sources */,
 				C965BDD4268E720400F02224 /* DebugDBSettingsSection.swift in Sources */,

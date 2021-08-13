@@ -13,6 +13,7 @@ enum ToolbarAction {
     case longPressBackForward
     case addToSpace
     case showTabs
+    case cheatsheet
 }
 
 extension BrowserViewController {
@@ -43,6 +44,16 @@ extension BrowserViewController {
                         isPrivate: isPrivate,
                         chromeModel: self.chromeModel,
                         changedUserAgent: self.tabManager.selectedTab?.changedUserAgent
+                    )
+                )
+                self.dismissVC()
+                
+            case .cheatsheet:
+                self.showOverlaySheetViewController(
+                    CheatsheetViewController(
+                        onDismiss: {
+                            self.hideOverlaySheetViewController()
+                        }
                     )
                 )
                 self.dismissVC()

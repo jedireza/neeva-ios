@@ -25,7 +25,8 @@ struct TopBarView: View {
                         onBack: { performTabToolbarAction(.back) },
                         onForward: { performTabToolbarAction(.forward) },
                         onOverflow: { performTabToolbarAction(.overflow) },
-                        onLongPress: { performTabToolbarAction(.longPressBackForward) }
+                        onLongPress: { performTabToolbarAction(.longPressBackForward) },
+                        onCheatsheet: { performTabToolbarAction(.cheatsheet) }
                     ).tapTargetFrame()
                     TopBarNeevaMenuButton(
                         onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
