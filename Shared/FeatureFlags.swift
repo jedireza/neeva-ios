@@ -13,6 +13,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case clearZeroQuery = "Clear ZeroQuery field on open"
     case createOrSwitchToTab = "Create new tab or open exisiting tab"
     case debugURLBar = "URL Bar Debug Mode"
+    case emptyTabTray = "Allow Empty Tab Tray"
     case groupsInSwitcher = "TabGroups and Spaces in Switcher UI"
     case inlineAccountSettings = "Inline Account Settings"
     case legacyTopBar = "Legacy Top Bar"
