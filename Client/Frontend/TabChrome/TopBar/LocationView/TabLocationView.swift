@@ -154,7 +154,7 @@ struct TabLocationView: View {
                 } label: {
                     Text("Cancel").withFont(.bodyLarge)
                 }
-                .transition(.move(edge: .trailing))
+                .transition(.move(edge: .trailing).combined(with: .opacity))
                 .accentColor(.ui.adaptive.blue)
             }
         }

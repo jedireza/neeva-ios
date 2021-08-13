@@ -82,8 +82,13 @@ extension BrowserViewController: LegacyURLBarDelegate {
         )
     }
 
-    func urlBar(didEnterText text: String) {
-        _urlBarUpdateSearchController(for: text)
+    // Duplicated in TopBarHost
+    func urlBar(_: LegacyURLBarView, didEnterText text: String) {
+        if text.isEmpty {
+            tabContentHost.updateContent(.hideSuggestions)
+        } else {
+            tabContentHost.updateContent(.showSuggestions)
+        }
     }
 
     func urlBar(didSubmitText text: String) {

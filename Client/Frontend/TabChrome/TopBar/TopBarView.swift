@@ -13,6 +13,8 @@ struct TopBarView: View {
     let onNeevaMenuAction: (NeevaMenuAction) -> Void
     let didTapNeevaMenu: () -> Void
 
+    @State private var shouldInsetHorizontally = false
+
     @EnvironmentObject private var chrome: TabChromeModel
     @EnvironmentObject private var location: LocationViewModel
 
@@ -59,9 +61,19 @@ struct TopBarView: View {
                         }
                     }
                 }
-            }.opacity(chrome.controlOpacity)
+            }
+            .opacity(chrome.controlOpacity)
+            .padding(.horizontal, shouldInsetHorizontally ? 12 : 0)
             Color.ui.adaptive.separator.frame(height: 0.5).ignoresSafeArea()
         }
+        .background(
+            GeometryReader { geom in
+                let shouldInsetHorizontally =
+                    geom.safeAreaInsets.leading == 0 && geom.safeAreaInsets.trailing == 0
+                Color.clear
+                    .useEffect(deps: shouldInsetHorizontally) { self.shouldInsetHorizontally = $0 }
+            }
+        )
         .background(Color.chrome.ignoresSafeArea())
         .accentColor(.label)
     }

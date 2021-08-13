@@ -71,11 +71,7 @@ class NavigationTest: BaseTestCase {
         // Scroll to bottom
         bottomElement.tap()
         waitUntilPageLoad()
-        if iPad() {
-            app.buttons["URLBarView.backButton"].tap()
-        } else {
-            app.buttons["TabToolbar.backButton"].tap()
-        }
+        app.buttons["Back"].tap()
         waitUntilPageLoad()
 
         // Scroll to top
@@ -300,7 +296,7 @@ class NavigationTest: BaseTestCase {
 
     // Smoketest
     func testVerifyNeevaMenu() {
-        app.buttons["Neeva Menu"].tap()
+        app.buttons["Neeva Menu"].tap(force: true)
         waitForExistence(app.buttons["Feedback"])
 
         XCTAssertTrue(app.buttons["Home"].exists)

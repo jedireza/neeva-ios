@@ -56,7 +56,7 @@ class ToolbarTests: BaseTestCase {
         XCTAssertTrue(app.buttons["Forward"].isEnabled)
 
         // Open new tab and then go back to previous tab to test navigation buttons.
-        waitForTabsButton()
+        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
         goToTabTray()
         waitForExistence(app.buttons["\(website1["label"]!), Tab"])
         XCTAssertEqual(valueMozilla, website1["url"])
@@ -69,7 +69,7 @@ class ToolbarTests: BaseTestCase {
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         XCTAssertTrue(app.buttons["Forward"].isEnabled)
 
-        waitForTabsButton()
+        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
         goToTabTray()
 
         waitForExistence(app.buttons["\(website1["label"]!), Tab"])
@@ -98,7 +98,7 @@ class ToolbarTests: BaseTestCase {
     func testRevealToolbarWhenTappingOnStatusbar() {
         openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
-        waitForTabsButton()
+        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
 
         // Workaround when testing on iPhone. If the orientation is in landscape on iPhone the tests will fail.
         if !iPad() {
@@ -112,7 +112,7 @@ class ToolbarTests: BaseTestCase {
         }()
 
         app.swipeUp()
-        waitForNoExistence(shareButton)
+        waitFor(shareButton, with: "isHittable == false")
 
         if iPad() {
             // test doesn't work on iPad so trying next best thing

@@ -35,7 +35,7 @@ protocol LegacyURLBarDelegate: UIViewController {
     func urlBarDidEnterOverlayMode()
     func urlBarDidLeaveOverlayMode()
     func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton)
-    func urlBar(didEnterText text: String)
+    func urlBar(_ urlBar: LegacyURLBarView, didEnterText text: String)
     func urlBar(didSubmitText text: String)
 }
 

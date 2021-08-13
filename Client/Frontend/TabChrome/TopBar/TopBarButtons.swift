@@ -21,6 +21,7 @@ struct TopBarNeevaMenuButton: View {
         .tapTargetFrame()
         .presentAsPopover(
             isPresented: $presenting,
+            backgroundColor: .systemGroupedBackground,
             arrowDirections: .up,
             dismissOnTransition: true,
             onDismiss: {
@@ -31,13 +32,15 @@ struct TopBarNeevaMenuButton: View {
             }
         ) {
             VerticalScrollViewIfNeeded {
-                NeevaMenuView {
+                NeevaMenuView(menuAction: {
                     action = $0
                     presenting = false
-                }
+                })
                 .padding(.bottom, 16)
                 .environment(\.isIncognito, isIncognito)
-            }.frame(minWidth: 340, minHeight: 323)
+            }
+            .frame(minWidth: 340, minHeight: 323)
+            .padding(.top, 13)  // height of the arrow
         }
     }
 }

@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import SwiftUI
+import Combine
 
 class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURLBar {
     let locationModel = LocationViewModel()
@@ -85,7 +86,37 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
         self.view.backgroundColor = .clear
         self.view.translatesAutoresizingMaskIntoConstraints = false
         self.view.setContentHuggingPriority(.required, for: .vertical)
+
+        chromeModel.$isEditingLocation
+            .withPrevious()
+            .sink { [weak bvc] change in
+                switch change {
+                case (false, true):
+                    bvc?.urlBarDidEnterOverlayMode()
+                case (true, false):
+                    bvc?.urlBarDidLeaveOverlayMode()
+                default: break
+                }
+            }
+            .store(in: &subscriptions)
+        chromeModel.$isEditingLocation
+            .combineLatest(queryModel.$value)
+            .withPrevious()
+            .sink { [weak bvc] (prev, current) in
+                let (prevEditing, _) = prev
+                let (isEditing, query) = current
+                if let bvc = bvc, (prevEditing, isEditing) == (true, true) {
+                    if query.isEmpty {
+                        bvc.tabContentHost.updateContent(.hideSuggestions)
+                    } else {
+                        bvc.tabContentHost.updateContent(.showSuggestions)
+                    }
+                }
+            }
+            .store(in: &subscriptions)
     }
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

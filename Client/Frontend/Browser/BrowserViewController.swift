@@ -415,7 +415,7 @@ class BrowserViewController: UIViewController {
         view.addSubview(tabContentHost.view)
         addChild(tabContentHost)
 
-        if !FeatureFlag[.newTopBar] {
+        if FeatureFlag[.legacyTopBar] {
             // Temporary work around for covering the non-clipped web view content
             view.addSubview(legacyStatusBarOverlay)
         }
@@ -427,18 +427,7 @@ class BrowserViewController: UIViewController {
 
         let gridModel = self.cardGridViewController.gridModel
         let trackingStatsModel = TrackingStatsViewModel(tabManager: tabManager)
-        if FeatureFlag[.newTopBar] {
-            let queryModel = SearchQueryModel()
-            let host = TopBarHost(
-                suggestionModel: SuggestionModel(profile: profile, queryModel: queryModel),
-                queryModel: queryModel,
-                gridModel: gridModel, trackingStatsViewModel: trackingStatsModel,
-                chromeModel: chromeModel, bvc: self)
-            addChild(host)
-            view.addSubview(host.view)
-            host.didMove(toParent: self)
-            self.urlBar = .modern(host)
-        } else {
+        if FeatureFlag[.legacyTopBar] {
             let legacyURLBar = LegacyURLBarView(
                 profile: profile, chromeModel: chromeModel, queryModel: searchQueryModel,
                 suggestionModel: suggestionModel, gridModel: gridModel,
@@ -451,6 +440,16 @@ class BrowserViewController: UIViewController {
             view.addSubview(legacyURLBar)
             legacyURLBar.locationHost.didMove(toParent: self)
             self.urlBar = .legacy(legacyURLBar)
+        } else {
+            let host = TopBarHost(
+                suggestionModel: suggestionModel,
+                queryModel: searchQueryModel,
+                gridModel: gridModel, trackingStatsViewModel: trackingStatsModel,
+                chromeModel: chromeModel, bvc: self)
+            addChild(host)
+            view.addSubview(host.view)
+            host.didMove(toParent: self)
+            self.urlBar = .modern(host)
         }
 
         footer = UIView()
@@ -495,7 +494,7 @@ class BrowserViewController: UIViewController {
     fileprivate func setupConstraints() {
         urlBar.view.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            if !FeatureFlag[.newTopBar] {
+            if FeatureFlag[.legacyTopBar] {
                 if chromeModel.inlineToolbar {
                     make.height.equalTo(UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
                 } else {
@@ -504,10 +503,10 @@ class BrowserViewController: UIViewController {
             }
             if !UIConstants.enableBottomURLBar {
                 let headerTopConstraint: Constraint
-                if FeatureFlag[.newTopBar] {
-                    headerTopConstraint = make.top.equalToSuperview().constraint
-                } else {
+                if FeatureFlag[.legacyTopBar] {
                     headerTopConstraint = make.top.equalTo(self.view.safeArea.top).constraint
+                } else {
+                    headerTopConstraint = make.top.equalToSuperview().constraint
                 }
                 scrollController.$headerTopOffset
                     .sink { [unowned self] in
@@ -560,7 +559,7 @@ class BrowserViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if !FeatureFlag[.newTopBar] {
+        if FeatureFlag[.legacyTopBar] {
             legacyStatusBarOverlay.snp.remakeConstraints { make in
                 make.top.left.right.equalTo(self.view)
                 make.height.equalTo(self.view.safeAreaInsets.top)
@@ -698,7 +697,7 @@ class BrowserViewController: UIViewController {
         [urlBar.view, footer, readerModeBar].forEach { view in
             view?.transform = .identity
         }
-        if !FeatureFlag[.newTopBar] {
+        if FeatureFlag[.legacyTopBar] {
             legacyStatusBarOverlay.isHidden = false
         }
     }
@@ -1212,15 +1211,6 @@ class BrowserViewController: UIViewController {
 
 // MARK: URL Bar Delegate support code
 extension BrowserViewController {
-    // swift-format-ignore: NoLeadingUnderscores
-    func _urlBarUpdateSearchController(for text: String) {
-        if text.isEmpty {
-            tabContentHost.updateContent(.hideSuggestions)
-        } else {
-            tabContentHost.updateContent(.showSuggestions)
-        }
-    }
-
     func urlBarDidEnterOverlayMode() {
         if !cardGridViewController.gridModel.isHidden {
             openLazyTab(openedFrom: .tabTray)

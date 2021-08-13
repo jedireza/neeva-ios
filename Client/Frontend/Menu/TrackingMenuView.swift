@@ -203,7 +203,8 @@ struct TrackingMenuView: View {
         .onAppear {
             viewModel.viewVisible = true
             self.viewModel.refreshStats()
-        }.onDisappear {
+        }
+        .onDisappear {
             viewModel.viewVisible = false
         }
     }

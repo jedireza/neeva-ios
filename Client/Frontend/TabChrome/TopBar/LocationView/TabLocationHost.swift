@@ -84,8 +84,8 @@ class TabLocationHost: IncognitoAwareHostingController<TabLocationViewWrapper> {
             .sink { [weak urlBar] (prev, current) in
                 let (prevEditing, _) = prev
                 let (isEditing, query) = current
-                if (prevEditing, isEditing) == (true, true) {
-                    urlBar?.delegate?.urlBar(didEnterText: query)
+                if let urlBar = urlBar, (prevEditing, isEditing) == (true, true) {
+                    urlBar.delegate?.urlBar(urlBar, didEnterText: query)
                 }
             }
             .store(in: &subscriptions)

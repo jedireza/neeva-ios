@@ -135,15 +135,6 @@ class BaseTestCase: XCTestCase {
         waitForNoExistence(progressIndicator, timeoutValue: 20.0)
     }
 
-    func waitForTabsButton() {
-        // iPhone sim tabs button is called differently when in portrait or landscape
-        if XCUIDevice.shared.orientation == UIDeviceOrientation.landscapeLeft {
-            waitForExistence(app.buttons["URLBarView.tabsButton"], timeout: 15)
-        } else {
-            waitForExistence(app.buttons["Show Tabs"], timeout: 15)
-        }
-    }
-
     public func openURL(_ url: String = "example.com") {
         UIPasteboard.general.string = url
 
@@ -159,7 +150,7 @@ class BaseTestCase: XCTestCase {
         waitForNoExistence(app.staticTexts["Neeva pasted from XCUITests-Runner"])
 
         waitUntilPageLoad()
-        waitForTabsButton()
+        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
     }
 
     public func openURLInNewTab(_ url: String = "example.com") {

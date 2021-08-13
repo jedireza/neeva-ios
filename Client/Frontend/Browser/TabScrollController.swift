@@ -81,10 +81,10 @@ class TabScrollingController: NSObject, ObservableObject {
     fileprivate var scrollViewHeight: CGFloat { scrollView?.frame.height ?? 0 }
     fileprivate var headerHeight: CGFloat {
         if let header = header, let safeAreaView = safeAreaView {
-            if FeatureFlag[.newTopBar] {
-                return header.frame.height - safeAreaView.safeAreaInsets.top
-            } else {
+            if FeatureFlag[.legacyTopBar] {
                 return header.frame.height
+            } else {
+                return header.frame.height - safeAreaView.safeAreaInsets.top
             }
         } else {
             return 0

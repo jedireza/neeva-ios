@@ -26,10 +26,7 @@ class HistoryTests: BaseTestCase {
     let clearRecentHistoryOptions = ["The Last Hour", "Today", "Today and Yesterday", "Everything"]
 
     func clearWebsiteData() {
-        app.buttons["Neeva Menu"].tap()
-
-        waitForExistence(app.buttons["Settings"])
-        app.buttons["Settings"].tap()
+        goToSettings()
 
         waitForExistence(app.cells["Clear Browsing Data"])
         app.cells["Clear Browsing Data"].tap()
@@ -178,7 +175,7 @@ class HistoryTests: BaseTestCase {
     }
 
     func testPrivateClosedSiteDoesNotAppearOnRecentlyClosedMenu() {
-        waitForTabsButton()
+        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
         toggleIncognito()
 
         // Open the default website
@@ -191,7 +188,7 @@ class HistoryTests: BaseTestCase {
     }
 
     func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
-        waitForTabsButton()
+        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
         toggleIncognito()
 
         // Open the default website

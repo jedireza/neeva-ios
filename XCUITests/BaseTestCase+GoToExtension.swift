@@ -6,7 +6,7 @@ extension BaseTestCase {
     /// Launches from tab page
     func goToSettings() {
         waitForExistence(app.buttons["Neeva Menu"])
-        app.buttons["Neeva Menu"].tap()
+        app.buttons["Neeva Menu"].tap(force: true)
 
         waitForExistence(app.buttons["Settings"])
         app.buttons["Settings"].tap()
@@ -44,7 +44,7 @@ extension BaseTestCase {
     /// Launches from tab page
     func goToHistory() {
         waitForExistence(app.buttons["Neeva Menu"])
-        app.buttons["Neeva Menu"].tap()
+        app.buttons["Neeva Menu"].tap(force: true)
 
         waitForExistence(app.buttons["Settings"])
 
