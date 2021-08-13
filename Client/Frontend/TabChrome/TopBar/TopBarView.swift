@@ -12,6 +12,8 @@ struct TopBarView: View {
     let buildReloadMenu: () -> UIMenu?
     let onNeevaMenuAction: (NeevaMenuAction) -> Void
     let didTapNeevaMenu: () -> Void
+    let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
+    let changedUserAgent: Bool?
 
     @State private var shouldInsetHorizontally = false
 
@@ -26,10 +28,14 @@ struct TopBarView: View {
                         weight: .regular,
                         onBack: { performTabToolbarAction(.back) },
                         onForward: { performTabToolbarAction(.forward) },
-                        onOverflow: { performTabToolbarAction(.overflow) },
                         onLongPress: { performTabToolbarAction(.longPressBackForward) },
                         onCheatsheet: { performTabToolbarAction(.cheatsheet) }
                     ).tapTargetFrame()
+                    if FeatureFlag[.overflowMenu] {
+                        TopBarOverflowMenuButton(
+                            changedUserAgent: changedUserAgent,
+                            onOverflowMenuAction: onOverflowMenuAction)
+                    }
                     TopBarNeevaMenuButton(
                         onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
                 }
@@ -86,7 +92,8 @@ struct TopBarView_Previews: PreviewProvider {
                 TopBarView(
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
-                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {})
+                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {},
+                    onOverflowMenuAction: { _, _ in }, changedUserAgent: false)
                 Spacer()
             }.background(Color.red.ignoresSafeArea())
 
@@ -94,7 +101,8 @@ struct TopBarView_Previews: PreviewProvider {
                 TopBarView(
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
-                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {})
+                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {},
+                    onOverflowMenuAction: { _, _ in }, changedUserAgent: false)
                 Spacer()
             }
             .preferredColorScheme(.dark)

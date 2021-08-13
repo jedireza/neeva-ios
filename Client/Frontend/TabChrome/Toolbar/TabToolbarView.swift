@@ -21,10 +21,14 @@ struct TabToolbarView: View {
                     weight: .medium,
                     onBack: { performAction(.back) },
                     onForward: { performAction(.forward) },
-                    onOverflow: { performAction(.overflow) },
                     onLongPress: { performAction(.longPressBackForward) },
                     onCheatsheet: { performAction(.cheatsheet) }
                 )
+                if FeatureFlag[.overflowMenu] {
+                    TabToolbarButtons.OverflowMenu {
+                        performAction(.overflow)
+                    }
+                }
                 TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
                 TabToolbarButtons.AddToSpace(
                     weight: .medium, action: { performAction(.addToSpace) })

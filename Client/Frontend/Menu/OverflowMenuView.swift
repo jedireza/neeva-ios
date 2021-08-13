@@ -36,14 +36,14 @@ public struct OverflowMenuButtonView: View {
 }
 
 public struct OverflowMenuView: View {
-    private let menuAction: (OverflowMenuButtonActions) -> Void
+    private let menuAction: (OverflowMenuAction) -> Void
     private let changedUserAgent: Bool
 
     @EnvironmentObject var chromeModel: TabChromeModel
 
     public init(
         changedUserAgent: Bool = false,
-        menuAction: @escaping (OverflowMenuButtonActions) -> Void
+        menuAction: @escaping (OverflowMenuAction) -> Void
     ) {
         self.menuAction = menuAction
         self.changedUserAgent = changedUserAgent
@@ -53,21 +53,21 @@ public struct OverflowMenuView: View {
         GroupedStack {
             HStack(spacing: OverflowMenuUX.innerSectionPadding) {
                 OverflowMenuButtonView(label: "Forward", symbol: .arrowForward) {
-                    menuAction(OverflowMenuButtonActions.forward)
+                    menuAction(.forward)
                 }
                 .accessibilityIdentifier("OverflowMenu.Forward")
                 .disabled(!chromeModel.canGoForward)
 
                 if FeatureFlag[.shareButtonInOverflowMenu] {
                     OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                        menuAction(OverflowMenuButtonActions.newTab)
+                        menuAction(.newTab)
                     }
                     .accessibilityIdentifier("OverflowMenu.NewTab")
                     OverflowMenuButtonView(
                         label: "Share",
                         symbol: .squareAndArrowUp
                     ) {
-                        menuAction(OverflowMenuButtonActions.share)
+                        menuAction(.share)
                     }
                     .accessibilityIdentifier("OverflowMenu.Share")
                 } else {
@@ -75,11 +75,11 @@ public struct OverflowMenuView: View {
                         label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
                         symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
                     ) {
-                        menuAction(OverflowMenuButtonActions.reload)
+                        menuAction(.reload)
                     }
                     .accessibilityIdentifier("OverflowMenu.Reload")
                     OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                        menuAction(OverflowMenuButtonActions.newTab)
+                        menuAction(.newTab)
                     }
                     .accessibilityIdentifier("OverflowMenu.NewTab")
                 }
@@ -91,7 +91,7 @@ public struct OverflowMenuView: View {
                         label: "Find on Page",
                         symbol: .docTextMagnifyingglass
                     ) {
-                        menuAction(OverflowMenuButtonActions.findOnPage)
+                        menuAction(.findOnPage)
                     }
                     .accessibilityIdentifier("OverflowMenu.FindOnPage")
 
@@ -101,7 +101,7 @@ public struct OverflowMenuView: View {
                         label: "Text Size",
                         symbol: .textformatSize
                     ) {
-                        menuAction(OverflowMenuButtonActions.textSize)
+                        menuAction(.textSize)
                     }
                     .accessibilityIdentifier("OverflowMenu.TextSize")
 
@@ -116,7 +116,7 @@ public struct OverflowMenuView: View {
                             ? (hasHomeButton ? .iphoneHomebutton : .iphone)
                             : .desktopcomputer
                     ) {
-                        menuAction(OverflowMenuButtonActions.desktopSite)
+                        menuAction(.desktopSite)
                     }
                     .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
                 }

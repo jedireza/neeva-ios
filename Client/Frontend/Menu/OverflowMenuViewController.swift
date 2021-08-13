@@ -3,29 +3,23 @@
 import Shared
 import SwiftUI
 
-protocol OverflowMenuDelegate {
-    func overflowMenuDidPressForward()
-    func overflowMenuDidPressReloadStop(_ reloadButtonState: TabChromeModel.ReloadButtonState)
-    func overflowMenuDidPressAddNewTab()
-    func overflowMenuDidPressFindOnPage()
-    func overflowMenuDidPressTextSize()
-    func overflowMenuDidPressRequestDesktopSite()
-    func overflowMenuDidPressShare()
-}
-
 struct OverflowMenuRootView: View {
     @StateObject var overlaySheetModel = OverlaySheetModel()
     let onDismiss: () -> Void
-    var embeddedView: OverflowMenuView
-
+    let menuAction: (OverflowMenuAction) -> Void
+    let changedUserAgent: Bool?
     let chromeModel: TabChromeModel
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
         OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
-            self.embeddedView
-                .environmentObject(chromeModel)
-                .overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
+            OverflowMenuView(changedUserAgent: changedUserAgent ?? false) { action in
+                onDismiss()
+                menuAction(action)
+                overlaySheetModel.hide()
+            }
+            .environmentObject(chromeModel)
+            .overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
         }
         .onAppear {
             DispatchQueue.main.async {
@@ -36,44 +30,19 @@ struct OverflowMenuRootView: View {
 }
 
 class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
-    var delegate: OverflowMenuDelegate?
 
     public init(
-        delegate: OverflowMenuDelegate, onDismiss: @escaping () -> Void,
-        isPrivate: Bool,
+        onDismiss: @escaping () -> Void,
         chromeModel: TabChromeModel,
-        changedUserAgent: Bool?
+        changedUserAgent: Bool?,
+        menuAction: @escaping (OverflowMenuAction) -> Void
     ) {
         super.init(
             rootView: OverflowMenuRootView(
                 onDismiss: onDismiss,
-                embeddedView: OverflowMenuView(
-                    changedUserAgent: changedUserAgent ?? false,
-                    menuAction: { action in
-                        onDismiss()
-                        switch action {
-                        case .forward:
-                            delegate.overflowMenuDidPressForward()
-                        case .reload:
-                            delegate.overflowMenuDidPressReloadStop(chromeModel.reloadButton)
-                        case .newTab:
-                            delegate.overflowMenuDidPressAddNewTab()
-                        case .findOnPage:
-                            delegate.overflowMenuDidPressFindOnPage()
-                        case .textSize:
-                            delegate.overflowMenuDidPressTextSize()
-                        case .readingMode:
-                            // not implemented yet
-                            break
-                        case .desktopSite:
-                            delegate.overflowMenuDidPressRequestDesktopSite()
-                        case .share:
-                            delegate.overflowMenuDidPressShare()
-                        }
-                    }
-                ),
+                menuAction: menuAction,
+                changedUserAgent: changedUserAgent,
                 chromeModel: chromeModel))
-        self.delegate = delegate
         self.view.accessibilityViewIsModal = true
     }
 

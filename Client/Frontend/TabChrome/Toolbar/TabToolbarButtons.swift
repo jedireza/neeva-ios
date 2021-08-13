@@ -24,33 +24,27 @@ enum TabToolbarButtons {
         let weight: Font.Weight
         let onBack: () -> Void
         let onForward: () -> Void
-        let onOverflow: () -> Void
         let onLongPress: () -> Void
         let onCheatsheet: () -> Void
 
         @ViewBuilder var experimentalButton: some View {
-            if FeatureFlag[.overflowMenu] {
-                TabToolbarButton(
-                    label: Symbol(
-                        .ellipsisCircle, size: 20, weight: weight,
-                        label: .TabToolbarMoreAccessibilityLabel),
-                    action: onOverflow
-                )
-            } else if NeevaFeatureFlags[.cheatsheetQuery] {
-                TabToolbarButton(
-                    label: Symbol(
-                        .lightbulb, size: 20, weight: weight,
-                        label: .TabToolbarCheatsheetAccessibilityLabel),
-                    action: onCheatsheet
-                )
-            } else {
-                TabToolbarButton(
-                    label: Symbol(
-                        .arrowForward, size: 20, weight: weight,
-                        label: .TabToolbarForwardAccessibilityLabel), action: onForward
-                )
-                .disabled(!model.canGoForward)
-                .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
+            if !FeatureFlag[.overflowMenu] {
+                if NeevaFeatureFlags[.cheatsheetQuery] {
+                    TabToolbarButton(
+                        label: Symbol(
+                            .lightbulb, size: 20, weight: weight,
+                            label: .TabToolbarCheatsheetAccessibilityLabel),
+                        action: onCheatsheet
+                    )
+                } else {
+                    TabToolbarButton(
+                        label: Symbol(
+                            .arrowForward, size: 20, weight: weight,
+                            label: .TabToolbarForwardAccessibilityLabel), action: onForward
+                    )
+                    .disabled(!model.canGoForward)
+                    .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
+                }
             }
         }
 
@@ -66,6 +60,21 @@ enum TabToolbarButtons {
                 .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
                 experimentalButton
             }
+        }
+    }
+
+    struct OverflowMenu: View {
+        let action: () -> Void
+
+        @Environment(\.isIncognito) private var isIncognito
+
+        var body: some View {
+            TabToolbarButton(
+                label: Symbol(
+                    .ellipsisCircle, size: 20, weight: .regular,
+                    label: .TabToolbarMoreAccessibilityLabel),
+                action: action
+            )
         }
     }
 

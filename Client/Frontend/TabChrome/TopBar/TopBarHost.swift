@@ -79,7 +79,9 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
                     },
                     buildReloadMenu: { bvc?.urlBarReloadMenu() },
                     onNeevaMenuAction: { bvc?.perform(neevaMenuAction: $0) },
-                    didTapNeevaMenu: { bvc?.updateFeedbackImage() }
+                    didTapNeevaMenu: { bvc?.updateFeedbackImage() },
+                    onOverflowMenuAction: { bvc?.perform(overflowMenuAction: $0, targetButtonView: $1) },
+                    changedUserAgent: bvc?.tabManager.selectedTab?.changedUserAgent
                 )
             }
         }

@@ -45,6 +45,51 @@ struct TopBarNeevaMenuButton: View {
     }
 }
 
+struct TopBarOverflowMenuButton: View {
+    let changedUserAgent: Bool?
+    let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
+
+    @Environment(\.isIncognito) private var isIncognito
+
+    // TODO: sync this state variable with TabToolbarView somehow
+    @State private var presenting = false
+    @State private var action: OverflowMenuAction?
+    @State private var targetButtonView: UIView!
+    @EnvironmentObject private var chromeModel: TabChromeModel
+
+    var body: some View {
+        TabToolbarButtons.OverflowMenu {
+            presenting = true
+        }
+        .uiViewRef($targetButtonView)
+        .tapTargetFrame()
+        .presentAsPopover(
+            isPresented: $presenting,
+            arrowDirections: .up,
+            dismissOnTransition: true,
+            onDismiss: {
+                if let action = action {
+                    onOverflowMenuAction(action, targetButtonView)
+                    self.action = nil
+                }
+            }
+        ) {
+            VerticalScrollViewIfNeeded {
+                OverflowMenuView(
+                    changedUserAgent: changedUserAgent ?? false,
+                    menuAction: {
+                        action = $0
+                        presenting = false
+                    }
+                )
+                .padding(.bottom, 16)
+                .environment(\.isIncognito, isIncognito)
+                .environmentObject(chromeModel)
+            }.frame(minWidth: 340, minHeight: 285)
+        }
+    }
+}
+
 /// see also `LocationViewShareButton`
 struct TopBarShareButton: View {
     let url: URL?

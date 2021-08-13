@@ -35,19 +35,17 @@ extension BrowserViewController {
                 self.tabManager.selectedTab?.goForward()
 
             case .overflow:
-                let isPrivate = self.tabManager.selectedTab?.isPrivate ?? false
-
                 self.showOverlaySheetViewController(
                     OverflowMenuViewController(
-                        delegate: self,
                         onDismiss: self.hideOverlaySheetViewController,
-                        isPrivate: isPrivate,
                         chromeModel: self.chromeModel,
-                        changedUserAgent: self.tabManager.selectedTab?.changedUserAgent
+                        changedUserAgent: self.tabManager.selectedTab?.changedUserAgent,
+                        menuAction: { action in
+                            self.perform(overflowMenuAction:action, targetButtonView:nil)
+                        }
                     )
                 )
                 self.dismissVC()
-                
             case .cheatsheet:
                 self.showOverlaySheetViewController(
                     CheatsheetViewController(
