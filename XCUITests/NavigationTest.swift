@@ -173,6 +173,10 @@ class NavigationTest: BaseTestCase {
         waitForExistence(app.textFields["address"])
         app.textFields["address"].tap()
 
+        if app.menuItems["Select All"].exists {
+            app.menuItems["Select All"].tap()
+        }
+
         waitForExistence(app.menuItems["Copy"])
 
         if iPad() {

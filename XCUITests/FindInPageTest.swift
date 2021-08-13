@@ -77,14 +77,17 @@ class FindInPageTests: BaseTestCase {
         XCTAssertTrue(app.staticTexts["1 of 6"].exists)
     }
 
-    func testFindInPageTwoWordsSearchLargeDoc() throws {
-        try skipTest(issue: 1299, "can’t find the 1 of 500+ text despite it being clearly on-screen")
+    func testFindInPageTwoWordsSearchLargeDoc() {
         openFindInPageFromMenu()
 
         app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("The Book of")
 
-        XCTAssertTrue(app.staticTexts["1 of 500+"].exists)
+        // Clear button will be shown if the count isn't visible
+        // Shown because the text exceeds the width of the TextField
+        if !app.buttons["Clear"].exists {
+            XCTAssertTrue(app.staticTexts["1 of 500+"].exists)
+        }
     }
 
     func testFindInPageResultsPageShowHideContent() {
