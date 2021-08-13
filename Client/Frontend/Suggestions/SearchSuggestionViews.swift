@@ -52,6 +52,8 @@ public struct SearchSuggestionView: View {
             NavSuggestionView(suggestion: nav)
         case .tabSuggestion(let tab):
             TabSuggestionView(suggestion: tab)
+        case .findInPage(let query):
+            FindInPageSuggestionView(query: query)
         }
     }
 }
@@ -421,6 +423,38 @@ private struct TabSuggestionView: View {
             secondaryLabel: secondaryLabel,
             detail: detailView,
             suggestion: Suggestion.tabSuggestion(suggestion)
+        )
+        .environmentObject(model)
+    }
+}
+
+private struct FindInPageSuggestionView: View {
+    let query: String
+
+    @State var focused: Bool = false
+    @EnvironmentObject public var model: SuggestionModel
+
+    var label: some View {
+        Text("Find on Page")
+            .withFont(.bodyLarge)
+            .lineLimit(1)
+    }
+
+    var secondaryLabel: some View {
+        Text(query)
+            .withFont(.bodySmall)
+            .foregroundColor(.secondaryLabel)
+            .lineLimit(1)
+    }
+
+    var body: some View {
+        SuggestionView(
+            action: nil,
+            icon: Symbol(decorative: .textMagnifyingglass),
+            label: label,
+            secondaryLabel: secondaryLabel,
+            detail: EmptyView(),
+            suggestion: Suggestion.findInPage(query)
         )
         .environmentObject(model)
     }

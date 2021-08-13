@@ -389,7 +389,7 @@
 		C9C18DE526558FF3004710CD /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DD326558FF3004710CD /* PullToRefresh.swift */; };
 		C9C18DEA26558FF3004710CD /* FrontViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DD826558FF3004710CD /* FrontViewController.swift */; };
 		C9C18E0826559007004710CD /* SearchSuggestionViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DFD26559007004710CD /* SearchSuggestionViews.swift */; };
-		C9C18E0926559007004710CD /* SearchSuggestionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DFE26559007004710CD /* SearchSuggestionsModel.swift */; };
+		C9C18E0926559007004710CD /* Suggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DFE26559007004710CD /* Suggestion.swift */; };
 		C9C18E0A26559007004710CD /* BoldSpanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18DFF26559007004710CD /* BoldSpanView.swift */; };
 		C9C18E1626559118004710CD /* Neeva.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9C18E1426559118004710CD /* Neeva.xcassets */; };
 		C9C18E1E265591A1004710CD /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C18E1C265591A1004710CD /* Icons.swift */; };
@@ -1345,7 +1345,7 @@
 		C9C18DD926558FF3004710CD /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		C9C18DDA26558FF3004710CD /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		C9C18DFD26559007004710CD /* SearchSuggestionViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSuggestionViews.swift; sourceTree = "<group>"; };
-		C9C18DFE26559007004710CD /* SearchSuggestionsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSuggestionsModel.swift; sourceTree = "<group>"; };
+		C9C18DFE26559007004710CD /* Suggestion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Suggestion.swift; sourceTree = "<group>"; };
 		C9C18DFF26559007004710CD /* BoldSpanView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoldSpanView.swift; sourceTree = "<group>"; };
 		C9C18E0F2655910C004710CD /* NeevaColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaColors.swift; sourceTree = "<group>"; };
 		C9C18E1326559118004710CD /* NeevaColors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = NeevaColors.xcassets; sourceTree = "<group>"; };
@@ -2521,6 +2521,7 @@
 		C9C18DFC26559007004710CD /* Suggestions */ = {
 			isa = PBXGroup;
 			children = (
+				C9C18DFE26559007004710CD /* Suggestion.swift */,
 				6670187026BB678700960CF3 /* SuggestionModel.swift */,
 				C94D40692684D442003A6766 /* SuggestionPositionInfo.swift */,
 				59A68CCB63E2A565CB03F832 /* SuggestionsContent.swift */,
@@ -2528,7 +2529,6 @@
 				C9ACC463267A45AC009AE182 /* SuggestionsList.swift */,
 				C9C18DFD26559007004710CD /* SearchSuggestionViews.swift */,
 				4A360214268CF74500C56328 /* SuggestionBlocks.swift */,
-				C9C18DFE26559007004710CD /* SearchSuggestionsModel.swift */,
 				C9C18DFF26559007004710CD /* BoldSpanView.swift */,
 				6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */,
 				6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */,
@@ -4549,7 +4549,7 @@
 				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,
 				EB1C84BF212EFFBF001489DF /* BrowserViewController+ReaderMode.swift in Sources */,
 				66ECB5DF26BB264700A1857E /* OverlaySheetStepperModifier.swift in Sources */,
-				C9C18E0926559007004710CD /* SearchSuggestionsModel.swift in Sources */,
+				C9C18E0926559007004710CD /* Suggestion.swift in Sources */,
 				122DE39025FA4FF100599A0D /* ReadingModeActivity.swift in Sources */,
 				66C3C76D267A8858002B50B1 /* ToastWindowManager.swift in Sources */,
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,

@@ -41,6 +41,10 @@ struct SuggestionsList: View {
                 }
 
                 NavSuggestionsList()
+
+                if let findInPageSuggestion = suggestionModel.findInPageSuggestion {
+                    SearchSuggestionView(findInPageSuggestion)
+                }
             }
         }
     }

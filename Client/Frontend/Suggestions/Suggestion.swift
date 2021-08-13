@@ -12,6 +12,7 @@ public enum Suggestion {
     case bang(Bang)
     case lens(Lens)
     case navigation(NavSuggestion)
+    case findInPage(String)
 
     public struct Bang {
         public let shortcut: String
@@ -67,6 +68,8 @@ extension Suggestion: Identifiable, Equatable {
             return "nav-\(nav.url)"
         case .tabSuggestion(let tab):
             return "tab-\(tab.id)"
+        case .findInPage(let query):
+            return "findInPage-\(query)"
         }
     }
 

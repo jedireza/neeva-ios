@@ -1391,8 +1391,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String) {
-        updateFindInPageVisibility(visible: true)
-        findInPageViewController?.model.searchValue = selection
+        updateFindInPageVisibility(visible: true, query: selection)
     }
 
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String) {

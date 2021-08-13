@@ -32,6 +32,7 @@ class SuggestionModel: ObservableObject {
     @Published var rowQuerySuggestions: [Suggestion] = []
     @Published var urlSuggestions: [Suggestion] = []
     @Published var navSuggestions: [Suggestion] = []
+    @Published var findInPageSuggestion: Suggestion?
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
     @Published var keyboardFocusedSuggestion: Suggestion?
@@ -120,6 +121,7 @@ class SuggestionModel: ObservableObject {
             rowQuerySuggestions = []
             urlSuggestions = []
             navSuggestions = []
+            findInPageSuggestion = nil
             activeLensBang = nil
             error = nil
             return
@@ -146,6 +148,7 @@ class SuggestionModel: ObservableObject {
                 self.rowQuerySuggestions = rowQuerySuggestions
                 self.urlSuggestions = urlSuggestions
                 self.navSuggestions = navSuggestions
+                self.findInPageSuggestion = .findInPage(searchQuery)
                 self.activeLensBang = lensOrBang
             }
             if self.suggestions.isEmpty {
@@ -411,12 +414,16 @@ class SuggestionModel: ObservableObject {
             bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: tab)
         case .tabSuggestion(let selectedTab):
             if !selectedTab.isSelected, let tab = selectedTab.manager.get(for: selectedTab.id) {
-                bvc.hideZeroQuery()
+
                 selectedTab.manager.select(tab)
             } else {
                 bvc.urlBar.shared.queryModel.value = selectedTab.url?.absoluteString ?? ""
             }
+        case .findInPage(let query):
+            bvc.updateFindInPageVisibility(visible: true, query: query)
         }
+
+        bvc.hideZeroQuery()
     }
 
     // MARK: - Keyboard Shortcut

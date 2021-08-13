@@ -5,7 +5,7 @@
 import Shared
 
 extension BrowserViewController {
-    func updateFindInPageVisibility(visible: Bool, tab: Tab? = nil) {
+    func updateFindInPageVisibility(visible: Bool, tab: Tab? = nil, query: String? = nil) {
         if visible && findInPageViewController == nil {
             findInPageViewController = FindInPageViewController(
                 model: FindInPageModel(tab: tab),
@@ -14,6 +14,10 @@ extension BrowserViewController {
                 })
 
             showOverlaySheetViewController(findInPageViewController!)
+
+            if let query = query {
+                findInPageViewController?.model.searchValue = query
+            }
         } else if findInPageViewController != nil
             && findInPageViewController == overlaySheetViewController
         {
