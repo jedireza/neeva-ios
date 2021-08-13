@@ -6,6 +6,7 @@ query UserInfo {
       email
       pictureURL
     }
+    flags
     featureFlags {
       id
       value
@@ -49,4 +50,8 @@ mutation SendFeedback($input: SendFeedbackV2Input!) {
 
 mutation StartIncognito($redirect: String!) {
   startIncognito(input: {redirect: $redirect})
+}
+
+mutation UpdateUserFlag($input: FlagInput!) {
+  updateFlag(input: $input)
 }

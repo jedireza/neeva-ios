@@ -3064,6 +3064,36 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   }
 }
 
+/// Input type for user flag mutations
+public struct FlagInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - flagId
+  ///   - flagValue
+  public init(flagId: String, flagValue: Bool) {
+    graphQLMap = ["flagID": flagId, "flagValue": flagValue]
+  }
+
+  public var flagId: String {
+    get {
+      return graphQLMap["flagID"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "flagID")
+    }
+  }
+
+  public var flagValue: Bool {
+    get {
+      return graphQLMap["flagValue"] as! Bool
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "flagValue")
+    }
+  }
+}
+
 public enum ListSpacesKind: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case all
@@ -3487,6 +3517,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
   case privateCorpus
   case elastic
   case calculator
+  case stock
   case unknown
   case clipboard
   case `public`
@@ -3501,6 +3532,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case "PrivateCorpus": self = .privateCorpus
       case "Elastic": self = .elastic
       case "Calculator": self = .calculator
+      case "Stock": self = .stock
       case "Unknown": self = .unknown
       case "Clipboard": self = .clipboard
       case "Public": self = .public
@@ -3516,6 +3548,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case .privateCorpus: return "PrivateCorpus"
       case .elastic: return "Elastic"
       case .calculator: return "Calculator"
+      case .stock: return "Stock"
       case .unknown: return "Unknown"
       case .clipboard: return "Clipboard"
       case .public: return "Public"
@@ -3531,6 +3564,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case (.privateCorpus, .privateCorpus): return true
       case (.elastic, .elastic): return true
       case (.calculator, .calculator): return true
+      case (.stock, .stock): return true
       case (.unknown, .unknown): return true
       case (.clipboard, .clipboard): return true
       case (.public, .public): return true
@@ -3547,6 +3581,7 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       .privateCorpus,
       .elastic,
       .calculator,
+      .stock,
       .unknown,
       .clipboard,
       .public,
@@ -3667,6 +3702,7 @@ public final class UserInfoQuery: GraphQLQuery {
           email
           pictureURL
         }
+        flags
         featureFlags {
           __typename
           id
@@ -3682,7 +3718,7 @@ public final class UserInfoQuery: GraphQLQuery {
 
   public let operationName: String = "UserInfo"
 
-  public let operationIdentifier: String? = "22b5377ca74fa3973228367e94473711011abe5520d6312639d6e9f10196002b"
+  public let operationIdentifier: String? = "4f12e7948733e73cb2ac4147d34b5aae5fea0de60ebad124b3f7da5d30c23a7d"
 
   public init() {
   }
@@ -3724,6 +3760,7 @@ public final class UserInfoQuery: GraphQLQuery {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("profile", type: .nonNull(.object(Profile.selections))),
+          GraphQLField("flags", type: .nonNull(.list(.nonNull(.scalar(String.self))))),
           GraphQLField("featureFlags", type: .nonNull(.list(.nonNull(.object(FeatureFlag.selections))))),
           GraphQLField("authProvider", type: .scalar(String.self)),
         ]
@@ -3735,8 +3772,8 @@ public final class UserInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(id: GraphQLID, profile: Profile, featureFlags: [FeatureFlag], authProvider: String? = nil) {
-        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "featureFlags": featureFlags.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, "authProvider": authProvider])
+      public init(id: GraphQLID, profile: Profile, flags: [String], featureFlags: [FeatureFlag], authProvider: String? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "flags": flags, "featureFlags": featureFlags.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, "authProvider": authProvider])
       }
 
       public var __typename: String {
@@ -3765,6 +3802,16 @@ public final class UserInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue.resultMap, forKey: "profile")
+        }
+      }
+
+      /// List of all user flags that exist for a user (these are used to store UI preferences)
+      public var flags: [String] {
+        get {
+          return resultMap["flags"]! as! [String]
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "flags")
         }
       }
 
@@ -4457,6 +4504,60 @@ public final class StartIncognitoMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "startIncognito")
+      }
+    }
+  }
+}
+
+public final class UpdateUserFlagMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation UpdateUserFlag($input: FlagInput!) {
+      updateFlag(input: $input)
+    }
+    """
+
+  public let operationName: String = "UpdateUserFlag"
+
+  public let operationIdentifier: String? = "1fc376082d3952ef7344f937ab000d85bee8223c086b7c753e51bc194661dd39"
+
+  public var input: FlagInput
+
+  public init(input: FlagInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("updateFlag", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(updateFlag: Bool) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "updateFlag": updateFlag])
+    }
+
+    /// Add or remove a flag for a user
+    public var updateFlag: Bool {
+      get {
+        return resultMap["updateFlag"]! as! Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "updateFlag")
       }
     }
   }
