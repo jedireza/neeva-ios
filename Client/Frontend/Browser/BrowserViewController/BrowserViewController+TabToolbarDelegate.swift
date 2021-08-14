@@ -114,75 +114,63 @@ extension BrowserViewController {
             return nil
         }
 
-        let count =
-            tabManager.selectedTab?.isPrivate ?? false
-            ? tabManager.normalTabs.count : tabManager.privateTabs.count
-
-        let icon: UIImage?
-        if count <= 50 {
-            icon = UIImage(systemName: "\(count).square")
-        } else {
-            // ideally this would be infinity.square but there is no such icon
-            let img = UIImage(systemSymbol: ._8Square)
-            icon = UIImage(cgImage: img.cgImage!, scale: img.scale, orientation: .left)
-        }
-
         let switchPrivacyMode = { [self] (_: UIAction) in
             _ = tabManager.switchPrivacyMode()
         }
-        let incognitoActions = [
-            tabManager.selectedTab?.isPrivate ?? false
-                ? UIAction(
-                    title: Strings.normalBrowsingModeTitle, image: icon, handler: switchPrivacyMode)
-                : UIAction(
-                    title: Strings.incognitoBrowsingModeTitle, image: icon,
-                    handler: switchPrivacyMode)
-        ]
 
-        let newTab = UIAction(title: Strings.NewTabTitle, image: UIImage(systemSymbol: .plusSquare))
-        { _ in
+        var switchModeTitle = Strings.openIncognitoModeTitle
+        var switchModeImage: UIImage? = UIImage(named: "incognito")
+
+        var newTabTitle = Strings.NewTabTitle
+        var newTabImage = UIImage(systemSymbol: .plusSquare)
+        var newTabAccessibilityLabel = "New Tab"
+
+        if tabManager.selectedTab?.isPrivate ?? false {
+            switchModeTitle = Strings.leaveIncognitoModeTitle
+            switchModeImage = nil
+
+            newTabTitle = Strings.NewIncognitoTabTitle
+            newTabImage = UIImage(systemSymbol: .plusSquareFill)
+            newTabAccessibilityLabel = "New Incognito Tab"
+        }
+
+        let switchModeAction = UIAction(
+            title: switchModeTitle,
+            image: switchModeImage,
+            handler: switchPrivacyMode)
+        let newTabAction = UIAction(title: newTabTitle, image: newTabImage) { _ in
             DispatchQueue.main.async {
                 self.openLazyTab(openedFrom: .openTab(self.tabManager.selectedTab))
             }
         }
-        newTab.accessibilityLabel = "New Tab"
+        newTabAction.accessibilityLabel = newTabAccessibilityLabel
 
-        let newIncognitoTab = UIAction(
-            title: Strings.NewIncognitoTabTitle, image: UIImage.templateImageNamed("incognito")
-        ) { _ in
-            DispatchQueue.main.async {
-                self.openLazyTab(openedFrom: .openTab(self.tabManager.selectedTab))
-            }
-        }
+        var actions = [newTabAction, switchModeAction]
 
         let tabCount =
             tabManager.selectedTab?.isPrivate ?? false
             ? tabManager.privateTabs.count : tabManager.normalTabs.count
-        var tabActions = [newTab]
 
         if let tab = self.tabManager.selectedTab {
-            tabActions = tab.isPrivate ? [newIncognitoTab] : [newTab]
-
             if tabCount > 0 || !tab.isURLStartingPage {
-                let closeTab = UIAction(
-                    title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark),
-                    attributes: .destructive
+                let closeTabAction = UIAction(
+                    title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark)
                 ) { _ in
                     if let tab = self.tabManager.selectedTab {
                         self.tabManager.removeTabAndUpdateSelectedTab(tab)
                     }
                 }
-                closeTab.accessibilityIdentifier = "Close Tab Action"
-                tabActions.append(closeTab)
+                closeTabAction.accessibilityIdentifier = "Close Tab Action"
+                actions.insert(closeTabAction, at: 0)
             }
         }
 
         if tabCount > 1 {
-            tabActions.append(
+            actions.insert(
                 TabMenu(tabManager: tabManager, alertPresentViewController: self)
-                    .createCloseAllTabsAction())
+                    .createCloseAllTabsAction(), at: 0)
         }
 
-        return UIMenu(sections: [incognitoActions, tabActions])
+        return UIMenu(sections: [actions])
     }
 }

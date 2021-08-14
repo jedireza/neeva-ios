@@ -642,11 +642,11 @@ extension Strings {
     public static let SelectLocationBarTitle = MZLocalizedString(
         "Hotkeys.SelectLocationBar.DiscoveryTitle", value: "Select Location Bar",
         comment: "Label to display in the Discoverability overlay for keyboard shortcuts")
-    public static let incognitoBrowsingModeTitle = MZLocalizedString(
-        "Hotkeys.PrivateMode.DiscoveryTitle", value: "Incognito Browsing Mode",
+    public static let openIncognitoModeTitle = MZLocalizedString(
+        "Hotkeys.PrivateMode.DiscoveryTitle", value: "Open Incognito Mode",
         comment: "Label to switch to private browsing mode")
-    public static let normalBrowsingModeTitle = MZLocalizedString(
-        "Hotkeys.NormalMode.DiscoveryTitle", value: "Normal Browsing Mode",
+    public static let leaveIncognitoModeTitle = MZLocalizedString(
+        "Hotkeys.NormalMode.DiscoveryTitle", value: "Leave Browsing Mode",
         comment: "Label to switch to normal browsing mode")
     public static let NewTabTitle = MZLocalizedString(
         "Hotkeys.NewTab.DiscoveryTitle", value: "New Tab",

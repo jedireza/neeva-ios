@@ -532,10 +532,10 @@
 "Hotkeys.NewTab.DiscoveryTitle" = "New Tab";
 
 /* Label to switch to normal browsing mode */
-"Hotkeys.NormalMode.DiscoveryTitle" = "Normal Browsing Mode";
+"Hotkeys.NormalMode.DiscoveryTitle" = "Leave Incognito Mode";
 
 /* Label to switch to private browsing mode */
-"Hotkeys.PrivateMode.DiscoveryTitle" = "Incognito Browsing Mode";
+"Hotkeys.PrivateMode.DiscoveryTitle" = "Open Incognito Mode";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
 "Hotkeys.Reload.DiscoveryTitle" = "Reload Page";

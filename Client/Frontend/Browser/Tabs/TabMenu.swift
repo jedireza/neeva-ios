@@ -63,7 +63,7 @@ class TabMenu {
     func createCloseAllTabsAction() -> UIAction {
         let isPrivate = tabManager.selectedTab?.isPrivate ?? false
         let action = UIAction(
-            title: "Close All \(isPrivate ? "Private " : "")Tabs",
+            title: "Close All \(isPrivate ? "Incognito " : "")Tabs",
             image: UIImage(systemName: "trash"), attributes: .destructive
         ) { _ in
             // make sure the user really wants to close all tabs
