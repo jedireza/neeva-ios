@@ -77,7 +77,9 @@ public struct SendFeedbackView: View {
                             text: $feedbackText,
                             customize: { tf in
                                 if !focusedTextField {
-                                    tf.becomeFirstResponder()
+                                    // Disabled for now due to issue #1400. This prevents interaction
+                                    // with the web page after submitting feedback.
+                                    //tf.becomeFirstResponder()
                                     focusedTextField = true
                                 }
                             }
