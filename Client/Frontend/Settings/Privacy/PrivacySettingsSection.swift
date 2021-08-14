@@ -20,8 +20,8 @@ struct PrivacySettingsSection: View {
         )
         Toggle(isOn: $closePrivateTabs) {
             DetailedSettingsLabel(
-                title: "Close Private Tabs",
-                description: "When Leaving Private Browsing"
+                title: "Close Incognito Tabs",
+                description: "When Leaving Incognito Mode"
             )
         }
         if FeatureFlag[.newTrackingProtectionSettings] {
