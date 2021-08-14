@@ -231,7 +231,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         allDetails =
             manager.get(for: id)?.contentData?
             .sorted(by: { first, second in first.thumbnail?.dataURIBody != nil })
-            .map { SpaceEntityThumbnail(data: $0, selected: onSelect) } ?? []
+            .map { SpaceEntityThumbnail(data: $0, selected: {}) } ?? []
     }
 
     func onSelect() {
