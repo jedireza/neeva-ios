@@ -98,7 +98,7 @@ enum TabToolbarButtons {
     }
 
     struct AddToSpace: View {
-        let weight: Font.Weight
+        let weight: NiconFont
         let action: () -> Void
 
         @Environment(\.isIncognito) private var isIncognito
