@@ -3,24 +3,15 @@
 import SwiftUI
 
 struct FindInPageRootView: View {
-    var overlaySheetModel = OverlaySheetModel()
-
     var model: FindInPageModel
     let onDismiss: () -> Void
 
     var body: some View {
-        let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
+        VStack {
             FindInPageView(onDismiss: onDismiss)
                 .environmentObject(model)
-                .overlaySheetIsFixedHeight(isFixedHeight: true)
-        }
-        .onAppear {
-            // It seems to be necessary to delay starting the animation until this point to
-            // avoid a visual artifact.
-            DispatchQueue.main.async {
-                self.overlaySheetModel.show(clearBackground: true)
-            }
+
+            Spacer()
         }
     }
 }
@@ -42,8 +33,8 @@ class FindInPageViewController: UIHostingController<FindInPageRootView> {
 
     @objc override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // By default, a UIHostingController opens as an opaque layer, so we override
-        // that behavior here.
-        view.backgroundColor = .clear
+        view.backgroundColor = .systemGroupedBackground
+        view.layer.cornerRadius = 16
+        view.layer.masksToBounds = true
     }
 }

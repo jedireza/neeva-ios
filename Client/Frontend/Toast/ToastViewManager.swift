@@ -12,7 +12,7 @@ enum ToastQueueLocation {
 
 class ToastViewManager {
     public static let shared = ToastViewManager()
-    private let toastWindowManager = ToastWindowManager()
+    private let toastWindowManager = WindowManager()
     private var queuedToasts = [ToastView]()
 
     // current toast varibles
@@ -86,7 +86,7 @@ class ToastViewManager {
         toastViewHostingController.view.backgroundColor = .clear
 
         // creates new window to display Toast in
-        toastWindowManager.createWindow(with: toastViewHostingController)
+        toastWindowManager.createWindow(with: toastViewHostingController, height: 80)
 
         // add timer if Toast should auto dismiss or if download completed by the time the Toast is displayed
         if let toastProgressViewModel = toast.toastProgressViewModel,

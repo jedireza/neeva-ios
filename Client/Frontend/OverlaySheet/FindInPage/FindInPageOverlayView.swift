@@ -31,10 +31,7 @@ struct FindInPageView: View {
                                             symbol: Symbol(.chevronDown, style: .headingMedium, label: "Next"),
                                             foregroundColor: .ui.adaptive.blue)
                     .accessibilityIdentifier("FindInPage_Next")
-            }.modifier(OverlaySheetStepperAccessibilityModifier(accessibilityLabel: "Find on Page Stepper",
-                                                                accessibilityValue: nil,
-                                                                increment: model.next,
-                                                                decrement: model.previous))
+            }
 
             Button(action: onDismiss) {
                 Text("Done")
@@ -42,7 +39,7 @@ struct FindInPageView: View {
             .accessibilityIdentifier("FindInPage_Done")
         }
         .padding(.horizontal)
-        .padding(.bottom, bottomPadding)
+        .padding(.bottom, bottomPadding + 10)
     }
 }
 

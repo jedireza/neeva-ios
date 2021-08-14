@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
+import SwiftUI
 
 extension BrowserViewController {
     func updateFindInPageVisibility(visible: Bool, tab: Tab? = nil, query: String? = nil) {
@@ -13,19 +14,33 @@ extension BrowserViewController {
                     self.updateFindInPageVisibility(visible: false, tab: tab)
                 })
 
-            showOverlaySheetViewController(findInPageViewController!)
 
+            let height: CGFloat = 50
             if let query = query {
-                findInPageViewController?.model.searchValue = query
+                // delay displaying query till after animation to prevent weird spacing
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [unowned self] in
+                    guard let findInPageViewController = findInPageViewController else {
+                        return
+                    }
+
+                    overlayWindowManager.createWindow(with: findInPageViewController,
+                                                      height: height,
+                                                      addShadow: true)
+
+                    findInPageViewController.model.searchValue = query
+                }
+
+            } else {
+                overlayWindowManager.createWindow(with: findInPageViewController!,
+                                                  height: height,
+                                                  addShadow: true)
             }
-        } else if findInPageViewController != nil
-            && findInPageViewController == overlaySheetViewController
-        {
+        } else {
             let tab = tab ?? tabManager.selectedTab
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
-
-            hideOverlaySheetViewController()
+            
+            overlayWindowManager.removeCurrentWindow()
             findInPageViewController = nil
         }
     }

@@ -110,6 +110,7 @@ class BrowserViewController: UIViewController {
             suggestionModel: self.suggestionModel)
     }()
 
+    let overlayWindowManager = WindowManager(alignToBottom: true)
     var findInPageViewController: FindInPageViewController?
 
     private(set) var urlBar: URLBarWrapper!
@@ -860,9 +861,11 @@ class BrowserViewController: UIViewController {
         setOverrideTraitCollection(
             UITraitCollection(userInterfaceLevel: .elevated), forChild: overlaySheetViewController)
         view.addSubview(overlaySheetViewController.view)
+        
         overlaySheetViewController.view.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
         }
+
         overlaySheetViewController.didMove(toParent: self)
 
         self.overlaySheetViewController = overlaySheetViewController

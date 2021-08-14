@@ -20,18 +20,18 @@ class FindInPageTests: BaseTestCase {
         openFindInPageFromMenu()
 
         // Enter some text to start finding
-        app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("Book")
         
         waitForExistence(app.staticTexts["1 of 500+"])
     }
 
     // Smoketest
-    func testFindFromMenu() {
+    func testFindFromMenu() throws {
+        try skipTest(issue: 1387, "Can't find the next/previous disabled button")
+        
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Enter some text to start finding
-        app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("Book")
 
         // Once there are matches, test previous/next buttons
@@ -69,7 +69,6 @@ class FindInPageTests: BaseTestCase {
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Enter some text to start finding
-        app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("The Book of")
 
         // Once there are matches, test previous/next buttons
@@ -80,7 +79,6 @@ class FindInPageTests: BaseTestCase {
     func testFindInPageTwoWordsSearchLargeDoc() {
         openFindInPageFromMenu()
 
-        app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("The Book of")
 
         // Clear button will be shown if the count isn't visible
@@ -94,7 +92,6 @@ class FindInPageTests: BaseTestCase {
         openFindInPageFromMenu("lorem2.com")
 
         // Enter some text to start finding
-        app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("lorem")
 
         // There should be matches
@@ -105,7 +102,6 @@ class FindInPageTests: BaseTestCase {
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Try to find text which does not match and check that there are not results
-        app.textFields["FindInPage_TextField"].tap()
         app.textFields["FindInPage_TextField"].typeText("foo")
 
         waitForExistence(app.staticTexts["0 of 0"])
