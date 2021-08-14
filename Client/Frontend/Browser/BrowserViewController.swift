@@ -1275,13 +1275,22 @@ extension BrowserViewController: TabDelegate {
             .forEach(updateGestureHandler)
             .filter { _ in tab === tabManager.selectedTab }
             .sink { [self] (estimatedProgress, isLoading) in
-                // When done loading, we want to set pregress to 1 so that we allow the progress
+                // When done loading, we want to set progress to 1 so that we allow the progress
                 // complete animation to happen. But we want to avoid showing incomplete progress
                 // when no longer loading (as may happen when a page load is interrupted).
-                if isLoading || estimatedProgress == 1, let url = webView.url,
-                    !InternalURL.isValid(url: url)
-                {
-                    chromeModel.estimatedProgress = estimatedProgress
+                if let url = webView.url, !InternalURL.isValid(url: url) {
+                    if isLoading {
+                        chromeModel.estimatedProgress = estimatedProgress
+                    } else if estimatedProgress == 1 && chromeModel.estimatedProgress != 1 {
+                        chromeModel.estimatedProgress = 1
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            if chromeModel.estimatedProgress == 1 {
+                                chromeModel.estimatedProgress = nil
+                            }
+                        }
+                    } else {
+                        chromeModel.estimatedProgress = nil
+                    }
                 } else {
                     chromeModel.estimatedProgress = nil
                 }
@@ -1533,7 +1542,11 @@ extension BrowserViewController: TabManagerDelegate {
             (simulateForwardViewController?.canGoForward() ?? false
                 || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
-            chromeModel.estimatedProgress = selected?.estimatedProgress ?? 0
+            if selected?.isLoading ?? false {
+                chromeModel.estimatedProgress = selected?.estimatedProgress
+            } else {
+                chromeModel.estimatedProgress = nil
+            }
         }
 
         if let readerMode = selected?.getContentScript(name: ReaderMode.name()) as? ReaderMode {

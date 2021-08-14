@@ -17,7 +17,9 @@ class TabChromeModel: ObservableObject {
         case reload = "Reload"
         case stop = "Stop"
     }
-    @Published var reloadButton = ReloadButtonState.reload
+    var reloadButton: ReloadButtonState {
+        estimatedProgress == 1 || estimatedProgress == nil ? .reload : .stop
+    }
     @Published var estimatedProgress: Double?
 
     @Published private(set) var isEditingLocation = false
@@ -26,12 +28,13 @@ class TabChromeModel: ObservableObject {
 
     init(
         canGoBack: Bool = false, canGoForward: Bool = false, isPage: Bool = false,
-        inlineToolbar: Bool = false
+        inlineToolbar: Bool = false, estimatedProgress: Double? = nil
     ) {
         self.canGoBack = canGoBack
         self.canGoForward = canGoForward
         self.isPage = isPage
         self.inlineToolbar = inlineToolbar
+        self.estimatedProgress = estimatedProgress
     }
 
     /// Calls the address bar to be selected and enter editing mode

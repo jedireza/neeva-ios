@@ -356,14 +356,12 @@ class LegacyURLBarView: UIView, LegacyTabToolbarProtocol, CommonURLBar {
     }
 
     private func updateProgressBar(_ progress: Float) {
-        chromeModel.reloadButton = progress == 1 ? .reload : .stop
         progressBar.alpha = 1
         progressBar.isHidden = false
         progressBar.setProgress(progress, animated: !isTransitioning)
     }
 
     private func hideProgressBar() {
-        chromeModel.reloadButton = .reload
         progressBar.alpha = 0
         progressBar.resetProgressBar()
     }

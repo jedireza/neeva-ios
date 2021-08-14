@@ -75,7 +75,7 @@ public struct OverflowMenuView: View {
                         label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
                         symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
                     ) {
-                        menuAction(.reload)
+                        menuAction(.reloadStop)
                     }
                     .accessibilityIdentifier("OverflowMenu.Reload")
                     OverflowMenuButtonView(label: "New Tab", symbol: .plus) {

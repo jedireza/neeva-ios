@@ -4,7 +4,7 @@ import Shared
 
 public enum OverflowMenuAction {
     case forward
-    case reload
+    case reloadStop
     case newTab
     case findOnPage
     case textSize
@@ -23,7 +23,7 @@ extension BrowserViewController {
 
             tabManager.selectedTab?.goForward()
             break
-        case .reload:
+        case .reloadStop:
             if chromeModel.reloadButton == .reload {
                 tabManager.selectedTab?.reload()
             } else {

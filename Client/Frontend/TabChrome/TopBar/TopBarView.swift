@@ -45,7 +45,8 @@ struct TopBarView: View {
                 )
                 .padding(.horizontal, chrome.inlineToolbar ? 0 : 8)
                 .padding(.top, chrome.inlineToolbar ? 8 : 3)
-                .padding(.bottom, chrome.inlineToolbar ? 8 : 10)
+                // -1 for the progress bar
+                .padding(.bottom, (chrome.inlineToolbar ? 8 : 10) - 1)
                 .layoutPriority(1)
                 if chrome.inlineToolbar {
                     TopBarShareButton(url: location.url, onTap: onShare)
@@ -70,16 +71,31 @@ struct TopBarView: View {
             }
             .opacity(chrome.controlOpacity)
             .padding(.horizontal, shouldInsetHorizontally ? 12 : 0)
+            .padding(.bottom, chrome.estimatedProgress == nil ? 0 : -1)
+
+            Group {
+                if let progress = chrome.estimatedProgress {
+                    ProgressView(value: progress)
+                        .progressViewStyle(PageProgressBarStyle())
+                        .padding(.bottom, -1)
+                        .zIndex(1)
+                        .ignoresSafeArea(edges: .horizontal)
+                }
+            }
+            .transition(.opacity)
+
             Color.ui.adaptive.separator.frame(height: 0.5).ignoresSafeArea()
         }
         .background(
             GeometryReader { geom in
                 let shouldInsetHorizontally =
                     geom.safeAreaInsets.leading == 0 && geom.safeAreaInsets.trailing == 0
+                    && chrome.inlineToolbar
                 Color.clear
                     .useEffect(deps: shouldInsetHorizontally) { self.shouldInsetHorizontally = $0 }
             }
         )
+        .animation(.default, value: chrome.estimatedProgress)
         .background(Color.chrome.ignoresSafeArea())
         .accentColor(.label)
     }
@@ -109,6 +125,6 @@ struct TopBarView_Previews: PreviewProvider {
         }
         .environmentObject(LocationViewModel(previewURL: nil, hasOnlySecureContent: true))
         .environmentObject(GridModel())
-        .environmentObject(TabChromeModel())
+        .environmentObject(TabChromeModel(estimatedProgress: 0.5))
     }
 }
