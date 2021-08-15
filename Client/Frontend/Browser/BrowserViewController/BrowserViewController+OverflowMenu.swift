@@ -11,6 +11,7 @@ public enum OverflowMenuAction {
     case readingMode
     case desktopSite
     case share
+    case downloadPage
 }
 
 extension BrowserViewController {
@@ -22,27 +23,22 @@ extension BrowserViewController {
             }
 
             tabManager.selectedTab?.goForward()
-            break
         case .reloadStop:
             if chromeModel.reloadButton == .reload {
                 tabManager.selectedTab?.reload()
             } else {
                 tabManager.selectedTab?.stop()
             }
-            break
         case .newTab:
             openLazyTab()
-            break
         case .findOnPage:
             updateFindInPageVisibility(visible: true)
-            break
         case .textSize:
             if let webView = tabManager.selectedTab?.webView {
                 UserActivityHandler.presentTextSizeView(
                     webView: webView,
                     overlayParent: self)
             }
-            break
         case .readingMode:
             break
         case .desktopSite:
@@ -54,10 +50,18 @@ extension BrowserViewController {
                     forUrl: url, isChangedUA: tab.changedUserAgent,
                     isPrivate: tab.isPrivate)
             }
-            break
         case .share:
             showShareSheet(buttonView: targetButtonView ?? urlBar.view)
-            break
+        case .downloadPage:
+            guard let selectedTab = tabManager.selectedTab, let url = selectedTab.url else {
+                return
+            }
+
+            if !DownloadContentScript.requestBlobDownload(url: url, tab: selectedTab) {
+                self.pendingDownloadWebView = selectedTab.webView
+                let request = URLRequest(url: url)
+                selectedTab.webView?.load(request)
+            }
         }
     }
 }

@@ -119,6 +119,14 @@ public struct OverflowMenuView: View {
                         menuAction(.desktopSite)
                     }
                     .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
+
+                    NeevaMenuRowButtonView(
+                        label: "Download Page",
+                        symbol: .squareAndArrowDown
+                    ) {
+                        menuAction(.downloadPage)
+                    }
+                    .accessibilityIdentifier("OverflowMenu.DownloadPage")
                 }
                 .accentColor(.label)
             }
