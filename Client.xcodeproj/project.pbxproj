@@ -284,6 +284,8 @@
 		BCC138B12656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
 		BCC138B22656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
 		BCC138B42656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
+		BCC39A1F26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC39A1E26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift */; };
+		BCC39A2126C7258600EEC559 /* UserFlagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC39A2026C7258600EEC559 /* UserFlagStore.swift */; };
 		BCF248472670967C00ACAD11 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248462670967C00ACAD11 /* ViewExtensions.swift */; };
 		BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */; };
 		C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */; };
@@ -1215,6 +1217,8 @@
 		BCC1388E2656CBDB0018D87D /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
 		BCC1389F2656CBE70018D87D /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
 		BCC138B02656CBF20018D87D /* nicons-600.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-600.ttf"; sourceTree = "<group>"; };
+		BCC39A1E26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaUserFlagSettingsView.swift; sourceTree = "<group>"; };
+		BCC39A2026C7258600EEC559 /* UserFlagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFlagStore.swift; sourceTree = "<group>"; };
 		BCF248462670967C00ACAD11 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+Quests.swift"; sourceTree = "<group>"; };
 		C1114054A20B1072F603BD52 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ClearHistoryConfirm.strings; sourceTree = "<group>"; };
@@ -2443,6 +2447,7 @@
 				C965BDD5268E728F00F02224 /* InternalSettingsView.swift */,
 				C80E03E526B8459600A7800A /* LoggingSettingsView.swift */,
 				C96AC26626A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift */,
+				BCC39A1E26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -2552,6 +2557,7 @@
 				BC5C43CC265F49EA007E2F61 /* TourManager.swift */,
 				C9C18E2F265594DE004710CD /* TestSpaces.swift */,
 				BC07524426C324A3008B607A /* CheatsheetController.swift */,
+				BCC39A2026C7258600EEC559 /* UserFlagStore.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -4307,6 +4313,7 @@
 				7479B4EF1C5306A200DF000B /* Reachability-old.swift in Sources */,
 				C9C18E5B265598D1004710CD /* TestSpaces.swift in Sources */,
 				E65075B31E37F7AB006961AC /* KeyboardHelper.swift in Sources */,
+				BCC39A2126C7258600EEC559 /* UserFlagStore.swift in Sources */,
 				E65075AA1E37F7AB006961AC /* URLProtectionSpaceExtensions.swift in Sources */,
 				EB7FFFC820A9D38D003E1E34 /* AlertController.swift in Sources */,
 				C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */,
@@ -4596,6 +4603,7 @@
 				C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */,
 				4A46E4E426730D790001687E /* CarouselProgressView.swift in Sources */,
 				D314E7F71A37B98700426A76 /* TabToolbar.swift in Sources */,
+				BCC39A1F26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift in Sources */,
 				66430430267C19D200674549 /* ToastDefaults.swift in Sources */,
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
 				4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */,

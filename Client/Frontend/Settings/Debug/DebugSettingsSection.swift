@@ -15,6 +15,10 @@ struct DebugSettingsSection: View {
                     "Server Feature Flags",
                     destination: NeevaFeatureFlagSettingsView().navigationTitle(
                         "Server Feature Flags"))
+                NavigationLink(
+                    "Server User Flags",
+                    destination: NeevaUserFlagSettingsView().navigationTitle(
+                        "Server User Flags"))
                 AppHostSetting()
                 NavigationLinkButton("Neeva Admin") {
                     openURL(NeevaConstants.appHomeURL / "admin")
