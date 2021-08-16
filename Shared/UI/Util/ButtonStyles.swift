@@ -41,19 +41,34 @@ public struct HighlightlessButtonStyle: ButtonStyle {
     }
 }
 
-public struct BigBlueButtonStyle: ButtonStyle {
-    public init() {}
+public struct NeevaButtonStyle: ButtonStyle {
+    public enum VisualSpec {
+        case primary
+        case secondary
+    }
+
+    let visualSpec: VisualSpec
+    @Environment(\.isEnabled) private var isEnabled
+
+    public init(_ visual: VisualSpec) {
+        self.visualSpec = visual
+    }
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundColor(.white)
+            .foregroundColor(visualSpec == VisualSpec.primary ? .white : .label)
             .padding(.vertical, 8)
-            .padding(.horizontal, 40)
             .frame(height: 48)
             .background(
                 Capsule()
-                    .fill(Color.ui.adaptive.blue)
-                    .opacity(configuration.isPressed ? 0.5 : 1)
+                    .fill(
+                        visualSpec == VisualSpec.primary
+                            ? (configuration.isPressed
+                                ? Color.brand.variant.blue : Color.ui.adaptive.blue)
+                            : (configuration.isPressed
+                                ? Color.systemFill : Color.quaternarySystemFill)
+                    )
+                    .opacity(isEnabled ? 1 : 0.5)
             )
     }
 }

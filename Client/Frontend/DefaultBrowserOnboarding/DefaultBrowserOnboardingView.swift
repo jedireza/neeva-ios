@@ -97,7 +97,7 @@ struct DefaultBrowserOnboardingView: View {
                     Spacer()
                 }
             }
-            .buttonStyle(BigBlueButtonStyle())
+            .buttonStyle(NeevaButtonStyle(.primary))
             .font(.title3)
         }
         .padding(25)

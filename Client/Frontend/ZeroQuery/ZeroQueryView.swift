@@ -158,6 +158,9 @@ struct ZeroQueryView: View {
                         if viewModel.showRatingsCard {
                             RatingsCard(
                                 onClose: { viewModel.showRatingsCard = false },
+                                onFeedback: {
+                                    showFeedbackPanel(bvc: SceneDelegate.getBVC(), shareURL: false)
+                                },
                                 viewWidth: geom.size.width)
                         }
 

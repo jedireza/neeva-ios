@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Shared
+import StoreKit
 import SwiftUI
 
 enum RatingsCardState {
@@ -10,11 +11,12 @@ enum RatingsCardState {
 }
 
 struct RatingsCard: View {
-    
+
     @State var state = RatingsCardState.rateExperience
     let onClose: () -> Void
+    let onFeedback: () -> Void
     var viewWidth: CGFloat
-    
+
     // this number is from the Figma mock
     let minimumButtonWidth: CGFloat = 250
 
@@ -28,8 +30,8 @@ struct RatingsCard: View {
     var color: Color {
         return Color(light: .hex(0xFFFDF5), dark: .hex(0xF8C991))
     }
-    
-    func leftButtonFunction () -> Void {
+
+    func leftButtonFunction() {
         switch state {
         case .rateExperience:
             state = .sendFeedback
@@ -37,42 +39,56 @@ struct RatingsCard: View {
         }
     }
 
-    func rightButtonFunction () -> Void {
+    func rightButtonFunction() {
         switch state {
         case .rateExperience:
             state = .appStoreReview
         case .sendFeedback:
-            break // present feedback page
+            onFeedback()
+            onClose()
         case .appStoreReview:
-            break // request app store review
-        }
-    }
-    
-    @ViewBuilder
-    var leftButtonLabel: some View {
-        switch state {
-        case .rateExperience:
-            Text("😕 Needs work")
-                .withFont(.bodyLarge)
-        case .sendFeedback, .appStoreReview:
-            Text("Maybe later")
-                .withFont(.bodyLarge)
+            if let scene = SceneDelegate.getCurrentScene() as? UIWindowScene {
+                SKStoreReviewController.requestReview(in: scene)
+            }
+            onClose()
         }
     }
 
     @ViewBuilder
-    var rightButtonLabel: some View {
-        switch state {
-        case .rateExperience:
-            Text("😍 Loving it!")
-                .withFont(.bodyLarge)
-        case .sendFeedback, .appStoreReview:
-            Text("Let's do it!")
-                .bold()
-                .withFont(.bodyLarge)
+    var leftButtonContent: some View {
+        HStack {
+            if state == RatingsCardState.rateExperience { Text("😕").withFont(.bodyLarge) }
+            Spacer(minLength: 0)
+            if state == RatingsCardState.rateExperience {
+                Text("Needs work").withFont(.bodyLarge)
+            } else {
+                Text("Maybe later").withFont(.bodyLarge)
+            }
+            Spacer(minLength: 0)
         }
+        .padding(.leading, 12.5)
+        .padding(.trailing, 16)
     }
-    
+
+    @ViewBuilder
+    var rightButtonContent: some View {
+        HStack {
+            if state == RatingsCardState.rateExperience { Text("😍").withFont(.bodyLarge) }
+            Spacer(minLength:  0 )
+            if state == RatingsCardState.rateExperience {
+                Text("Loving it!").withFont(.bodyLarge)
+            } else {
+                Text("Let's do it!")
+                    .bold()
+                    .withFont(.bodyLarge)
+            }
+            Spacer(minLength:  0 )
+
+        }
+        .padding(.leading, 12.5)
+        .padding(.trailing, 16)
+    }
+
     @ViewBuilder
     var title: some View {
         switch state {
@@ -97,27 +113,13 @@ struct RatingsCard: View {
     var buttons: some View {
         HStack(spacing: 10) {
             Button(action: self.leftButtonFunction) {
-                HStack {
-                    Spacer()
-                    leftButtonLabel
-                    Spacer()
-                }
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.label)
-                .frame(height: 48)
-                .background(Capsule().fill(Color.quaternarySystemFill))
+                leftButtonContent
             }
+            .buttonStyle(NeevaButtonStyle(.secondary))
             Button(action: self.rightButtonFunction) {
-                HStack {
-                    Spacer()
-                    rightButtonLabel
-                    Spacer()
-                }
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(secondButtonProminent ? .white : .label)
-                .frame(height: 48)
-                .background(Capsule().fill(secondButtonProminent ? Color.brand.blue : .quaternarySystemFill))
+                rightButtonContent
             }
+            .buttonStyle(NeevaButtonStyle(secondButtonProminent ? .primary : .secondary))
         }
 
     }
@@ -174,12 +176,14 @@ struct RatingsCard: View {
             } else {
                 VStack(spacing: 16) {
                     label
-                        .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+                        .fixedSize(
+                            horizontal: false,
+                            vertical:  true )
                     buttons
                 }
             }
         }
-        
+
         .padding(25)
         .background(background)
         .frame(maxWidth: 650)
@@ -190,9 +194,20 @@ struct RatingsCard: View {
 
 struct RatingsCard_Previews: PreviewProvider {
     static var previews: some View {
-        GeometryReader { geom in  RatingsCard(state: RatingsCardState.rateExperience, onClose: {}, viewWidth: geom.size.width) }
-        GeometryReader { geom in  RatingsCard(state: RatingsCardState.sendFeedback, onClose: {}, viewWidth: geom.size.width) }
-        GeometryReader { geom in  RatingsCard(state: RatingsCardState.appStoreReview, onClose: {}, viewWidth: geom.size.width) }
+        GeometryReader { geom in
+            RatingsCard(
+                state: RatingsCardState.rateExperience, onClose: {}, onFeedback: {},
+                viewWidth: geom.size.width)
+        }
+        GeometryReader { geom in
+            RatingsCard(
+                state: RatingsCardState.sendFeedback, onClose: {}, onFeedback: {},
+                viewWidth: geom.size.width)
+        }
+        GeometryReader { geom in
+            RatingsCard(
+                state: RatingsCardState.appStoreReview, onClose: {}, onFeedback: {},
+                viewWidth: geom.size.width)
+        }
     }
 }
-

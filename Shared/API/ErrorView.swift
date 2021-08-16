@@ -173,8 +173,9 @@ private struct LoginView: View {
                             .fontWeight(.medium)
                         Spacer()
                     }
+                    .padding(.horizontal, 40)
                 }
-                .buttonStyle(BigBlueButtonStyle())
+                .buttonStyle(NeevaButtonStyle(.primary))
                 .padding(.bottom, 25)
                 Button(action: { onOpenURL(NeevaConstants.appSignupURL) }) {
                     Text("New to Neeva? Join now")
@@ -229,7 +230,7 @@ private struct OfflineView: View {
                         Symbol(decorative: .arrowClockwise)
                         Spacer()
                     }
-                }.buttonStyle(BigBlueButtonStyle())
+                }.buttonStyle(NeevaButtonStyle(.primary))
             }
             Spacer()
         }

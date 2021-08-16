@@ -2,8 +2,10 @@
 
 import Foundation
 
-func showFeedbackPanel(bvc: BrowserViewController, screenshot: UIImage? = nil) {
-    let url = bvc.tabManager.selectedTab?.canonicalURL
+func showFeedbackPanel(
+    bvc: BrowserViewController, screenshot: UIImage? = nil, shareURL: Bool = true
+) {
+    let url = shareURL ? bvc.tabManager.selectedTab?.canonicalURL : nil
     let query = neevaSearchEngine.queryForSearchURL(url)
 
     getSearchRequestID(bvc: bvc) { requestId in
