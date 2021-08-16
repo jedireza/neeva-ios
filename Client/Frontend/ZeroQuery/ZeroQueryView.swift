@@ -133,7 +133,7 @@ struct ZeroQueryView: View {
                                     manager: SceneDelegate.getTabManager())
                             )
                         )
-                        .environmentObject(SceneDelegate.getBVC().topBar.suggestionModel)
+                        .environmentObject(SceneDelegate.getBVC().suggestionModel)
                         SuggestionsDivider(height: 3)
                     }
 

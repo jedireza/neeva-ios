@@ -464,7 +464,7 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        topBar.locationModel.resetSecureListener()
+        locationModel.resetSecureListener()
         updateFindInPageVisibility(visible: false)
 
         // If we are going to navigate to a new page, hide the reader mode button. Unless we
@@ -472,7 +472,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // (orange color) as soon as the page has loaded.
         if let url = webView.url {
             if !url.isReaderModeURL {
-                topBar.locationModel.readerMode = .unavailable
+                locationModel.readerMode = .unavailable
                 hideReaderModeBar(animated: false)
             }
         }
@@ -805,7 +805,7 @@ extension BrowserViewController: WKNavigationDelegate {
             tab.provisionalTemporaryDocument = nil
         }
 
-        topBar.locationModel.updateSecureListener(with: webView)
+        locationModel.updateSecureListener(with: webView)
 
         // Ignore the "Frame load interrupted" error that is triggered when we cancel a request
         // to open an external application and hand it over to UIApplication.openURL(). The result
@@ -822,7 +822,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if error.code == Int(CFNetworkErrors.cfurlErrorCancelled.rawValue) {
             if let tab = tabManager[webView], tab === tabManager.selectedTab {
-                topBar.locationModel.url = tab.url?.displayURL
+                locationModel.url = tab.url?.displayURL
             }
             return
         }
@@ -920,7 +920,7 @@ extension BrowserViewController: WKNavigationDelegate {
         tab.temporaryDocument = tab.provisionalTemporaryDocument
         tab.provisionalTemporaryDocument = nil
 
-        topBar.locationModel.updateSecureListener(with: webView)
+        locationModel.updateSecureListener(with: webView)
 
         self.scrollController.resetZoomState()
 

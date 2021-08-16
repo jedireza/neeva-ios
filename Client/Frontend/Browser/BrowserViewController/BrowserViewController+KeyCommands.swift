@@ -107,7 +107,7 @@ extension BrowserViewController {
 
     @objc func moveURLCompletionKeyCommand(sender: UIKeyCommand) {
         if let input = sender.input {
-            topBar.suggestionModel.handleKeyboardShortcut(input: input)
+            suggestionModel.handleKeyboardShortcut(input: input)
         }
     }
 

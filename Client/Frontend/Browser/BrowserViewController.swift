@@ -30,7 +30,8 @@ struct UrlToOpenModel {
 
 class BrowserViewController: UIViewController {
     private(set) var introViewController: IntroViewController?
-    private var searchQueryModel = SearchQueryModel()
+    private(set) var searchQueryModel = SearchQueryModel()
+    private(set) var locationModel = LocationViewModel()
     private(set) lazy var suggestionModel: SuggestionModel = { [unowned self] in
         return SuggestionModel(profile: self.profile, queryModel: self.searchQueryModel)
     }()
@@ -48,6 +49,7 @@ class BrowserViewController: UIViewController {
         model.delegate = self
         return model
     }()
+    let chromeModel = TabChromeModel()
 
     private(set) lazy var cardStripViewController: CardStripViewController? = { [unowned self] in
         let controller = CardStripViewController(tabManager: self.tabManager)
@@ -118,7 +120,6 @@ class BrowserViewController: UIViewController {
     private var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
     var readerModeBar: ReaderModeBarView?
     private(set) var readerModeCache: ReaderModeCache
-    let chromeModel = TabChromeModel()
     private(set) var toolbar: TabToolbarHost?
     private(set) var screenshotHelper: ScreenshotHelper!
     private var urlFromAnotherApp: UrlToOpenModel?
@@ -181,6 +182,8 @@ class BrowserViewController: UIViewController {
         self.scrollController = TabScrollingController(
             tabManager: tabManager, chromeModel: chromeModel)
         super.init(nibName: nil, bundle: nil)
+        chromeModel.topBarDelegate = self
+        chromeModel.toolbarDelegate = self
         didInit()
     }
 
@@ -384,6 +387,7 @@ class BrowserViewController: UIViewController {
 
         let gridModel = self.cardGridViewController.gridModel
         let topBarHost = TopBarHost(
+            locationViewModel: locationModel,
             suggestionModel: suggestionModel,
             queryModel: searchQueryModel,
             gridModel: gridModel,
@@ -692,11 +696,11 @@ class BrowserViewController: UIViewController {
 
         if isLazyTab {
             chromeModel.setEditingLocation(to: true)
-            topBar.queryModel.value = ""
+            searchQueryModel.value = ""
         }
 
         if FeatureFlag[.clearZeroQuery] {
-            topBar.queryModel.value = ""
+            searchQueryModel.value = ""
         }
 
         self.tabContentHost.updateContent(
@@ -763,7 +767,7 @@ class BrowserViewController: UIViewController {
         setOverrideTraitCollection(
             UITraitCollection(userInterfaceLevel: .elevated), forChild: overlaySheetViewController)
         view.addSubview(overlaySheetViewController.view)
-        
+
         overlaySheetViewController.view.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
         }
@@ -796,7 +800,7 @@ class BrowserViewController: UIViewController {
             }
         }
 
-        topBar.locationModel.url = url
+        locationModel.url = url
         chromeModel.setEditingLocation(to: false)
     }
 
@@ -834,7 +838,7 @@ class BrowserViewController: UIViewController {
     /// Updates the URL bar text and button states.
     /// Call this whenever the page URL changes.
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
-        topBar.locationModel.url = tab.url?.displayURL
+        locationModel.url = tab.url?.displayURL
         chromeModel.isPage = tab.url?.displayURL?.isWebPage() ?? false
     }
 
@@ -1352,7 +1356,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 
     func zeroQueryPanel(didEnterQuery query: String) {
-        topBar.queryModel.value = query
+        searchQueryModel.value = query
         chromeModel.setEditingLocation(to: true)
     }
 }
@@ -1437,14 +1441,14 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         if let readerMode = selected?.getContentScript(name: ReaderMode.name()) as? ReaderMode {
-            topBar.locationModel.readerMode = readerMode.state
+            locationModel.readerMode = readerMode.state
             if readerMode.state == .active {
                 showReaderModeBar(animated: false)
             } else {
                 hideReaderModeBar(animated: false)
             }
         } else {
-            topBar.locationModel.readerMode = .unavailable
+            locationModel.readerMode = .unavailable
         }
 
         updateInZeroQuery(selected?.url as URL?)

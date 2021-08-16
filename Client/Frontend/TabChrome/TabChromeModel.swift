@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import SwiftUI
 
 class TabChromeModel: ObservableObject {
@@ -12,6 +13,40 @@ class TabChromeModel: ObservableObject {
     @Published var controlOpacity: Double = 1
 
     @Published var isPage: Bool
+
+    private var subscriptions: Set<AnyCancellable> = []
+    weak var topBarDelegate: TopBarDelegate? {
+        didSet {
+            $isEditingLocation
+                .withPrevious()
+                .sink { [weak topBarDelegate] change in
+                    switch change {
+                    case (false, true):
+                        topBarDelegate?.urlBarDidEnterOverlayMode()
+                    case (true, false):
+                        topBarDelegate?.urlBarDidLeaveOverlayMode()
+                    default: break
+                    }
+                }
+                .store(in: &subscriptions)
+            $isEditingLocation
+                .combineLatest(topBarDelegate!.searchQueryModel.$value)
+                .withPrevious()
+                .sink { [weak topBarDelegate] (prev, current) in
+                    let (prevEditing, _) = prev
+                    let (isEditing, query) = current
+                    if let delegate = topBarDelegate, (prevEditing, isEditing) == (true, true) {
+                        if query.isEmpty {
+                            delegate.tabContentHost.updateContent(.hideSuggestions)
+                        } else {
+                            delegate.tabContentHost.updateContent(.showSuggestions)
+                        }
+                    }
+                }
+                .store(in: &subscriptions)
+        }
+    }
+    weak var toolbarDelegate: ToolbarDelegate?
 
     enum ReloadButtonState: String {
         case reload = "Reload"

@@ -8,33 +8,29 @@ protocol ToolbarDelegate: AnyObject {
     func tabToolbarTabsMenu() -> UIMenu?
 }
 
-class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
+struct TabToolbarContent: View {
+    let chromeModel: TabChromeModel
 
-    struct Content: View {
-        let chromeModel: TabChromeModel
-        let performAction: (ToolbarAction) -> Void
-        let buildTabsMenu: () -> UIMenu?
-
-        var body: some View {
-            TabToolbarView(
-                performAction: performAction,
-                buildTabsMenu: buildTabsMenu,
-                onNeevaMenu: {
-                    ClientLogger.shared.logCounter(
-                        .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
-                    SceneDelegate.getBVC().showNeevaMenuSheet()
-                }
-            )
-            .environmentObject(chromeModel)
-        }
+    var body: some View {
+        TabToolbarView(
+            performAction: { action in chromeModel.toolbarDelegate?.performTabToolbarAction(action)
+            },
+            buildTabsMenu: { chromeModel.toolbarDelegate?.tabToolbarTabsMenu() },
+            onNeevaMenu: {
+                ClientLogger.shared.logCounter(
+                    .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
+                SceneDelegate.getBVC().showNeevaMenuSheet()
+            }
+        )
+        .environmentObject(chromeModel)
     }
+}
+
+class TabToolbarHost: IncognitoAwareHostingController<TabToolbarContent> {
 
     init(chromeModel: TabChromeModel, delegate: ToolbarDelegate) {
-        let performAction = delegate.performTabToolbarAction
-        super.init { [weak delegate] in
-            Content(
-                chromeModel: chromeModel, performAction: performAction,
-                buildTabsMenu: { delegate?.tabToolbarTabsMenu() })
+        super.init {
+            TabToolbarContent(chromeModel: chromeModel)
         }
     }
 

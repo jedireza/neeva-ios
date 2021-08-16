@@ -416,7 +416,7 @@ class SuggestionModel: ObservableObject {
 
                 selectedTab.manager.select(tab)
             } else {
-                bvc.topBar.queryModel.value = selectedTab.url?.absoluteString ?? ""
+                bvc.searchQueryModel.value = selectedTab.url?.absoluteString ?? ""
             }
         case .findInPage(let query):
             bvc.updateFindInPageVisibility(visible: true, query: query)
@@ -440,8 +440,8 @@ class SuggestionModel: ObservableObject {
                 // searches for text in address bar
                 let bvc = SceneDelegate.getBVC()
                 bvc.urlBar(
-                    didSubmitText: bvc.topBar.queryModel.value
-                        + (bvc.topBar.suggestionModel.completion ?? ""))
+                    didSubmitText: bvc.searchQueryModel.value
+                        + (bvc.suggestionModel.completion ?? ""))
             }
         default:
             break
