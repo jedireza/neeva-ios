@@ -140,10 +140,10 @@ struct Card<Details>: View where Details: CardDetails {
                                 .padding(5)
                         }
                     }
-                    .frame(height: CardUX.ButtonSize)
-                    .background(Color.DefaultBackground)
+                .frame(height: CardUX.ButtonSize)
+                .background(Color.DefaultBackground)
 
-                    Color(UIColor.Browser.urlBarDivider).frame(height: 1)
+                Color.ui.adaptive.separator.frame(height: 1)
                 }
                 Button(action: {
                     details.onSelect()

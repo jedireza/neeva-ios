@@ -8,8 +8,6 @@ import Shared
 import Storage
 
 class FaviconHandler {
-    private let backgroundQueue = OperationQueue()
-
     init() {
         register(self, forTabEvents: .didLoadPageMetadata, .pageMetadataNotAvailable)
     }

@@ -27,7 +27,6 @@ struct TabLocationView: View {
 
     @EnvironmentObject private var model: LocationViewModel
     @EnvironmentObject private var chromeModel: TabChromeModel
-    @EnvironmentObject private var suggestionModel: SuggestionModel
     @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
     @State private var isPressed = false
@@ -170,7 +169,7 @@ struct TabLocationView_Previews: PreviewProvider {
             TabLocationView(
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }
             )
-            .environmentObject(LocationViewModel(previewURL: nil, hasOnlySecureContent: true))
+            .environmentObject(LocationViewModel(previewURL: nil, isSecure: true))
             .previewDisplayName("Placeholder")
 
             TabLocationView(
@@ -178,7 +177,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environmentObject(
                 LocationViewModel(
-                    previewURL: "http://vviii.verylong.verylong.subdomain.neeva.com", hasOnlySecureContent: true
+                    previewURL: "http://vviii.verylong.verylong.subdomain.neeva.com", isSecure: true
                 )
             )
             .previewDisplayName("Long domain")
@@ -187,7 +186,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environment(\.isIncognito, true)
             .environmentObject(
-                LocationViewModel(previewURL: "https://neeva.com/asdf", hasOnlySecureContent: nil)
+                LocationViewModel(previewURL: "https://neeva.com/asdf", isSecure: nil)
             )
             .previewDisplayName("Incognito")
             TabLocationView(
@@ -196,7 +195,7 @@ struct TabLocationView_Previews: PreviewProvider {
             .environmentObject(
                 LocationViewModel(
                     previewURL: neevaSearchEngine.searchURLForQuery(
-                        "a long search query with words"), hasOnlySecureContent: true)
+                        "a long search query with words"), isSecure: true)
             )
             .previewDisplayName("Search")
             TabLocationView(
@@ -204,7 +203,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environment(\.isIncognito, true)
             .environmentObject(
-                LocationViewModel(previewURL: "ftp://someftpsite.com/dir/file.txt", hasOnlySecureContent: nil)
+                LocationViewModel(previewURL: "ftp://someftpsite.com/dir/file.txt", isSecure: nil)
             )
             .previewDisplayName("Non-HTTP")
         }

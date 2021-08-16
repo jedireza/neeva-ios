@@ -52,7 +52,6 @@ class SuggestionModel: ObservableObject {
             && !searchQuery.looksLikeAURL
     }
 
-    private var subscription: AnyCancellable?
     fileprivate var suggestionQuery: Apollo.Cancellable?
 
     var suggestions: [Suggestion] {
@@ -417,7 +416,7 @@ class SuggestionModel: ObservableObject {
 
                 selectedTab.manager.select(tab)
             } else {
-                bvc.urlBar.shared.queryModel.value = selectedTab.url?.absoluteString ?? ""
+                bvc.topBar.queryModel.value = selectedTab.url?.absoluteString ?? ""
             }
         case .findInPage(let query):
             bvc.updateFindInPageVisibility(visible: true, query: query)
@@ -441,8 +440,8 @@ class SuggestionModel: ObservableObject {
                 // searches for text in address bar
                 let bvc = SceneDelegate.getBVC()
                 bvc.urlBar(
-                    didSubmitText: bvc.urlBar.shared.queryModel.value
-                        + (bvc.urlBar.shared.suggestionModel.completion ?? ""))
+                    didSubmitText: bvc.topBar.queryModel.value
+                        + (bvc.topBar.suggestionModel.completion ?? ""))
             }
         default:
             break
@@ -492,7 +491,7 @@ class SuggestionModel: ObservableObject {
     convenience init(
         previewSites: [Site]? = nil, previewCompletion: String? = nil,
         queryModel: SearchQueryModel = SearchQueryModel(previewValue: ""),
-        searchQueryForTesting: String = "", isIncognito: Bool = false,
+        searchQueryForTesting: String = "",
         previewLensBang: ActiveLensBangInfo? = nil, topSuggestions: [Suggestion] = [],
         chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []
     ) {

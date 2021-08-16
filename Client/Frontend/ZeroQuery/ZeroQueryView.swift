@@ -71,7 +71,6 @@ struct ZeroQueryHeader: View {
     let label: String
     let icon: Nicon
 
-    @Environment(\.colorScheme) private var colorScheme
     var body: some View {
         HStack {
             Text(title)
@@ -134,7 +133,7 @@ struct ZeroQueryView: View {
                                     manager: SceneDelegate.getTabManager())
                             )
                         )
-                        .environmentObject(SceneDelegate.getBVC().urlBar.shared.suggestionModel)
+                        .environmentObject(SceneDelegate.getBVC().topBar.suggestionModel)
                         SuggestionsDivider(height: 3)
                     }
 

@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import Storage
 
-extension BrowserViewController: LegacyURLBarDelegate {
+extension BrowserViewController: TopBarDelegate {
     func urlBarDidPressReload() {
         // log tap reload
         ClientLogger.shared.logCounter(
@@ -13,38 +13,8 @@ extension BrowserViewController: LegacyURLBarDelegate {
         tabManager.selectedTab?.reload()
     }
 
-    func urlBarNeevaMenu(_ urlBar: LegacyURLBarView, from button: UIButton) {
-        if TourManager.shared.userReachedStep(tapTarget: .neevaMenu) == .resumeAction {
-            self.dismiss(animated: true, completion: nil)
-        }
-
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        self.updateFeedbackImage()
-        let host = PopOverNeevaMenuViewController(
-            delegate: self,
-            source: button, isPrivate: isPrivate,
-            menuAction: perform(neevaMenuAction:))
-        self.popOverNeevaMenuViewController = host
-        // log tap neeva menu
-        ClientLogger.shared.logCounter(
-            .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
-
-        //Fix autolayout sizing
-        host.view.backgroundColor = UIColor.systemGroupedBackground
-        // TODO: Avoid hard coding the geometry here!
-        host.preferredContentSize = host.sizeThatFits(in: CGSize(width: 340, height: 323))
-        present(
-            host,
-            animated: true,
-            completion: nil)
-    }
-
     func urlBarDidPressStop() {
         tabManager.selectedTab?.stop()
-    }
-
-    func urlBarDidPressTabs(_ urlBar: LegacyURLBarView) {
-        showTabTray()
     }
 
     func urlBarReloadMenu() -> UIMenu? {
@@ -80,15 +50,6 @@ extension BrowserViewController: LegacyURLBarDelegate {
                 }
             ]
         )
-    }
-
-    // Duplicated in TopBarHost
-    func urlBar(_: LegacyURLBarView, didEnterText text: String) {
-        if text.isEmpty {
-            tabContentHost.updateContent(.hideSuggestions)
-        } else {
-            tabContentHost.updateContent(.showSuggestions)
-        }
     }
 
     func urlBar(didSubmitText text: String) {

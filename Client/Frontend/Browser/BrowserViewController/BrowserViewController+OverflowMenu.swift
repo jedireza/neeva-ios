@@ -51,7 +51,7 @@ extension BrowserViewController {
                     isPrivate: tab.isPrivate)
             }
         case .share:
-            showShareSheet(buttonView: targetButtonView ?? urlBar.view)
+            showShareSheet(buttonView: targetButtonView ?? topBar.view)
         case .downloadPage:
             guard let selectedTab = tabManager.selectedTab, let url = selectedTab.url else {
                 return

@@ -162,7 +162,8 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {
-        let suggestionModel = SuggestionModel(isIncognito: true, previewLensBang: nil)
+        try skipTest(issue: 1383, "Did not actually test incognito mode")
+        let suggestionModel = SuggestionModel(previewLensBang: nil)
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
@@ -183,7 +184,9 @@ class SuggestionViewsTests: XCTestCase {
         let duplicateSite2 = Site(url: "https://neeva.com/dup?q=abc", title: "Neeva")
         let siteB = Site(url: "https://neeva.com/signin", title: "Neeva")
 
-        let suggestionModel = SuggestionModel(previewSites: [SuggestionViewsTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB])
+        let suggestionModel = SuggestionModel(previewSites: [
+            SuggestionViewsTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB,
+        ])
         suggestionModel.navSuggestions = [SuggestionViewsTests.sampleNav, suggestion]
 
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)

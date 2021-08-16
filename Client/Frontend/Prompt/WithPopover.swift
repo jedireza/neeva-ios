@@ -104,7 +104,7 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             }
             popoverVC = vc
 
-            // when in landscape mode, menu is shown using PopOverNeevaMenuViewController
+            // when in landscape mode, menu is shown using a popover
             // delay tour popover being shown to prevent view is not in the window hierarchy complain
             let delay = SceneDelegate.getBVC().chromeModel.inlineToolbar ? 0.5 : 0
 

@@ -7,10 +7,6 @@ import Defaults
 import Foundation
 import Shared
 
-public enum ClipboardBarToastUX {
-    static let ToastDelay = DispatchTimeInterval.milliseconds(4000)
-}
-
 class ClipboardBarDisplayHandler: NSObject {
     weak var bvc: BrowserViewController?
     weak var tabManager: TabManager?
@@ -18,7 +14,6 @@ class ClipboardBarDisplayHandler: NSObject {
     private var sessionRestored = false
     private var firstTabLoaded = false
     private var lastDisplayedURL: String?
-    private weak var firstTab: Tab?
     private var subscription: AnyCancellable?
 
     init(tabManager: TabManager) {
@@ -66,7 +61,6 @@ class ClipboardBarDisplayHandler: NSObject {
             firstTabLoaded = true
             return
         }
-        self.firstTab = firstTab
         subscription = webView.publisher(for: \.url, options: .new).sink { [unowned self] url in
             // Ugly hack to ensure we wait until we're finished restoring the session on the first tab
             // before checking if we should display the clipboard bar.

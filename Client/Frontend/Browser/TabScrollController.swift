@@ -61,7 +61,6 @@ class TabScrollingController: NSObject, ObservableObject {
     weak var header: UIView?
     weak var footer: UIView?
     weak var safeAreaView: UIView?
-    var urlBar: BrowserViewController.URLBarWrapper?
     weak var readerModeBar: ReaderModeBarView?
 
     fileprivate var isZoomedOut = false
@@ -81,11 +80,7 @@ class TabScrollingController: NSObject, ObservableObject {
     fileprivate var scrollViewHeight: CGFloat { scrollView?.frame.height ?? 0 }
     fileprivate var headerHeight: CGFloat {
         if let header = header, let safeAreaView = safeAreaView {
-            if FeatureFlag[.legacyTopBar] {
-                return header.frame.height
-            } else {
-                return header.frame.height - safeAreaView.safeAreaInsets.top
-            }
+            return header.frame.height - safeAreaView.safeAreaInsets.top
         } else {
             return 0
         }
@@ -239,7 +234,6 @@ extension TabScrollingController {
 
         let alpha = 1 - abs(headerTopOffset / topScrollHeight)
         chromeModel.controlOpacity = Double(alpha)
-        urlBar?.legacy?.updateAlphaForSubviews(alpha)
         readerModeBar?.updateAlphaForSubviews(alpha)
     }
 
@@ -275,7 +269,6 @@ extension TabScrollingController {
             }
             self.headerTopOffset = headerOffset
             self.footerBottomOffset = footerOffset
-            self.urlBar?.legacy?.updateAlphaForSubviews(alpha)
             self.readerModeBar?.updateAlphaForSubviews(alpha)
             self.header?.superview?.layoutIfNeeded()
         }

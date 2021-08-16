@@ -25,9 +25,7 @@ struct NeevaSettingsSection: View {
         return webView
     }()
 
-    @State var showingSettings = false
     @State var loaderOpacity = 0.0
-    @State var userInfoOpacity = 1.0
 
     var body: some View {
         if userInfo.isLoading {

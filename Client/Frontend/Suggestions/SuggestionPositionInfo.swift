@@ -36,7 +36,7 @@ struct SuggestionPositionInfo {
         clientLogAttributes.append(
             ClientLogCounterAttribute(
                 key: LogConfig.Attribute.urlBarNumOfCharsTyped,
-                value: String(bvc.urlBar.shared.queryModel.value.count)))
+                value: String(bvc.topBar.queryModel.value.count)))
         return clientLogAttributes
     }
 }

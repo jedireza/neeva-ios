@@ -10,7 +10,7 @@ enum SwitcherViews: String, CaseIterable {
 
 enum CardGridUX {
     static let PickerPadding: CGFloat = 20
-    static let PickerHeight: CGFloat = UIConstants.TopToolbarHeight
+    static let PickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
     static let GridSpacing: CGFloat = 20
     static let YStaticOffset: CGFloat = GridSpacing
 }
@@ -126,7 +126,7 @@ struct CardGrid: View {
                     .environment(\.cardSize, cardSize)
                     Spacer(minLength: 0)
                 }
-                .background(Color(UIColor.TabTray.background).ignoresSafeArea())
+                .background(Color(UIColor.TrayBackground).ignoresSafeArea())
                 if !topToolbar {
                     SwitcherToolbarView(top: false)
                 }

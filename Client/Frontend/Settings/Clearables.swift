@@ -13,7 +13,6 @@ private let log = Logger.browser
 // A base protocol for something that can be cleared.
 protocol Clearable {
     func clear() -> Success
-    var label: String { get }
 }
 
 // Clears our browsing history, including favicons and thumbnails.
@@ -22,8 +21,6 @@ class HistoryClearable: Clearable {
     init(profile: Profile) {
         self.profile = profile
     }
-
-    var label: String { .ClearableHistory }
 
     func clear() -> Success {
 
@@ -45,13 +42,6 @@ class HistoryClearable: Clearable {
 // Clear the web cache. Note, this has to close all open tabs in order to ensure the data
 // cached in them isn't flushed to disk.
 class CacheClearable: Clearable {
-    let tabManager: TabManager
-    init(tabManager: TabManager) {
-        self.tabManager = tabManager
-    }
-
-    var label: String { .ClearableCache }
-
     func clear() -> Success {
         let dataTypes = Set([
             WKWebsiteDataTypeFetchCache, WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache,
@@ -71,13 +61,6 @@ class CacheClearable: Clearable {
 
 // Remove all cookies stored by the site. This includes localStorage, sessionStorage, and WebSQL/IndexedDB.
 class CookiesClearable: Clearable {
-    let tabManager: TabManager
-    init(tabManager: TabManager) {
-        self.tabManager = tabManager
-    }
-
-    var label: String { .ClearableCookies }
-
     func clear() -> Success {
         let dataTypes = Set([
             WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage,
@@ -93,11 +76,6 @@ class CookiesClearable: Clearable {
 }
 
 class TrackingProtectionClearable: Clearable {
-    //@TODO: re-using string because we are too late in cycle to change strings
-    var label: String {
-        return Strings.SettingsTrackingProtectionSectionName
-    }
-
     func clear() -> Success {
         let result = Success()
         ContentBlocker.shared.clearSafelist {
@@ -109,8 +87,6 @@ class TrackingProtectionClearable: Clearable {
 
 // Clears our downloaded files in the `~/Documents/Downloads` folder.
 class DownloadedFilesClearable: Clearable {
-    var label: String { .ClearableDownloads }
-
     func clear() -> Success {
         if let downloadsPath = try? FileManager.default.url(
             for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false),

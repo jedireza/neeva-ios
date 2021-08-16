@@ -172,8 +172,6 @@ struct SpaceEntityThumbnail: SelectableThumbnail {
 }
 
 class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
-    static let Spacing: CGFloat = 5
-
     typealias Item = Space
     typealias Manager = SpaceStore
     typealias Thumbnail = SpaceEntityThumbnail

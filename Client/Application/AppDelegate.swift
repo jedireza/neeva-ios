@@ -26,7 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
     var applicationCleanlyBackgrounded = true
     var shutdownWebServer: DispatchSourceTimer?
-    var orientationLock = UIInterfaceOrientationMask.all
     weak var application: UIApplication?
     var launchOptions: [AnyHashable: Any]?
     var receivedURLs = [URL]()

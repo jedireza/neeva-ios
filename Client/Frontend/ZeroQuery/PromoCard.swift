@@ -3,13 +3,6 @@
 import Shared
 import SwiftUI
 
-struct PromoCardConfig {
-    let title: String
-    let buttonLabel: String
-    let buttonImage: Image?
-    let backgroundColor: Color
-}
-
 enum PromoCardType {
     case neevaSignIn(action: () -> Void)
     case defaultBrowser(action: () -> Void, onClose: () -> Void)
@@ -85,8 +78,6 @@ enum PromoCardType {
 struct PromoCard: View {
     let type: PromoCardType
     var viewWidth: CGFloat
-
-    @State var useHStack = true
 
     // this number is from the Figma mock
     let minimumButtonWidth: CGFloat = 250

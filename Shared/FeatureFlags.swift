@@ -16,7 +16,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case emptyTabTray = "Allow Empty Tab Tray"
     case groupsInSwitcher = "TabGroups and Spaces in Switcher UI"
     case inlineAccountSettings = "Inline Account Settings"
-    case legacyTopBar = "Legacy Top Bar"
     case nativeSpaces = "Spaces in Tab Switcher"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case pinToTopSites = "Pin to Top Sites"

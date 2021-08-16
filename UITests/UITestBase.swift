@@ -2,6 +2,7 @@
 
 import Foundation
 import Storage
+
 @testable import Client
 
 // Needs to be in sync with Client Clearables.
@@ -55,12 +56,15 @@ class UITestBase: KIFTestCase {
             textField.subviews.first { $0.accessibilityIdentifier == "autocomplete" } as? UILabel
 
         if completion == "" {
-            XCTAssertTrue(autocompleteFieldlabel == nil, "The autocomplete was empty but the label still exists.")
+            XCTAssertTrue(
+                autocompleteFieldlabel == nil,
+                "The autocomplete was empty but the label still exists.")
             return
         }
 
         XCTAssertTrue(autocompleteFieldlabel != nil, "The autocomplete was not found")
-        XCTAssertEqual(completion, autocompleteFieldlabel!.text, "Expected prefix matches actual prefix")
+        XCTAssertEqual(
+            completion, autocompleteFieldlabel!.text, "Expected prefix matches actual prefix")
     }
 
     override func setUp() {

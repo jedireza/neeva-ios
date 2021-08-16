@@ -37,9 +37,7 @@ struct SettingsView: View {
                     PrivacySettingsSection()
                 }
                 Section(header: Text("Support")) {
-                    SupportSettingsSection(onDismiss: {
-                        dismiss()
-                    })
+                    SupportSettingsSection()
                 }
                 Section(header: Text("About")) {
                     AboutSettingsSection(showDebugSettings: $showDebugSettings)

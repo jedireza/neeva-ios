@@ -5,10 +5,10 @@
 import Defaults
 import Foundation
 import Shared
+import StoreKit
 import SwiftyJSON
 import UIKit
 import WebKit
-import StoreKit
 
 private let log = Logger.browser
 
@@ -464,7 +464,7 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        urlBar.shared.locationModel.resetSecureListener()
+        topBar.locationModel.resetSecureListener()
         updateFindInPageVisibility(visible: false)
 
         // If we are going to navigate to a new page, hide the reader mode button. Unless we
@@ -472,7 +472,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // (orange color) as soon as the page has loaded.
         if let url = webView.url {
             if !url.isReaderModeURL {
-                urlBar.shared.locationModel.readerMode = .unavailable
+                topBar.locationModel.readerMode = .unavailable
                 hideReaderModeBar(animated: false)
             }
         }
@@ -494,7 +494,9 @@ extension BrowserViewController: WKNavigationDelegate {
     // them then iOS will actually first open Safari, which then redirects to the app store. This works but it will
     // leave a 'Back to Safari' button in the status bar, which we do not want.
     fileprivate func isStoreURL(_ url: URL) -> Bool {
-        if url.scheme == "http" || url.scheme == "https" || url.scheme == "itms-apps" || url.scheme == "itms-appss" {
+        if url.scheme == "http" || url.scheme == "https" || url.scheme == "itms-apps"
+            || url.scheme == "itms-appss"
+        {
             if url.host == "apps.apple.com" || url.host == "itunes.apple.com" {
                 return true
             }
@@ -505,13 +507,12 @@ extension BrowserViewController: WKNavigationDelegate {
 
     fileprivate func getAppStoreID(_ url: URL) -> String? {
         let prefix = "id"
-        guard let id = url.pathComponents.last(where: { $0.hasPrefix(prefix)}) else {
+        guard let id = url.pathComponents.last(where: { $0.hasPrefix(prefix) }) else {
             return nil
         }
 
         return String(id.dropFirst(prefix.count))
     }
-
 
     // Use for links, that do not show a confirmation before opening.
     fileprivate func showOverlay(forExternalUrl url: URL) {
@@ -598,7 +599,9 @@ extension BrowserViewController: WKNavigationDelegate {
         if isStoreURL(url), let appStoreID = getAppStoreID(url) {
             let productVC = SKStoreProductViewController()
             productVC.delegate = self
-            productVC.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: appStoreID]) { _, error in
+            productVC.loadProduct(withParameters: [
+                SKStoreProductParameterITunesItemIdentifier: appStoreID
+            ]) { _, error in
                 if let error = error {
                     print("Error loading SKStoreProductViewController:", error)
                     self.showOverlay(forExternalUrl: url)
@@ -802,8 +805,8 @@ extension BrowserViewController: WKNavigationDelegate {
             tab.provisionalTemporaryDocument = nil
         }
 
-        urlBar.shared.locationModel.updateSecureListener(with: webView)
-        
+        topBar.locationModel.updateSecureListener(with: webView)
+
         // Ignore the "Frame load interrupted" error that is triggered when we cancel a request
         // to open an external application and hand it over to UIApplication.openURL(). The result
         // will be that we switch to the external app, for example the app store, while keeping the
@@ -819,7 +822,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
         if error.code == Int(CFNetworkErrors.cfurlErrorCancelled.rawValue) {
             if let tab = tabManager[webView], tab === tabManager.selectedTab {
-                urlBar.shared.locationModel.url = tab.url?.displayURL
+                topBar.locationModel.url = tab.url?.displayURL
             }
             return
         }
@@ -917,7 +920,7 @@ extension BrowserViewController: WKNavigationDelegate {
         tab.temporaryDocument = tab.provisionalTemporaryDocument
         tab.provisionalTemporaryDocument = nil
 
-        urlBar.shared.locationModel.updateSecureListener(with: webView)
+        topBar.locationModel.updateSecureListener(with: webView)
 
         self.scrollController.resetZoomState()
 

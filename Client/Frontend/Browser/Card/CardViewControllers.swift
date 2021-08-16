@@ -70,15 +70,6 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         view.backgroundColor = .clear
         view.accessibilityViewIsModal = true
     }
-
-    func showGrid() {
-        gridModel.show()
-    }
-
-    func hideGridWithNoAnimation() {
-        gridModel.hideWithNoAnimation()
-    }
-
 }
 
 class CardStripViewController: UIHostingController<CardStripViewController.Content> {

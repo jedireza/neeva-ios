@@ -25,7 +25,7 @@ struct CardTransitionAnimator: View {
         topToolbar
             ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing + safeAreaInsets.top
             : (FeatureFlag[.nativeSpaces]
-                ? UIConstants.TopToolbarHeight + safeAreaInsets.top
+                ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing + safeAreaInsets.top
                 : 0)
     }
 

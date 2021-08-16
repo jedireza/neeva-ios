@@ -13,11 +13,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var browserViewController: BrowserViewController!
     private var geigerCounter: KMCGeigerCounter?
 
-    var selectedTabUUID: String? {
-        let tabManager = SceneDelegate.getTabManager()
-        return tabManager.selectedTab?.tabUUID
-    }
-
     // MARK: - Scene state
     func scene(
         _ scene: UIScene, willConnectTo session: UISceneSession,
@@ -89,8 +84,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-              let routerpath = NavigationPath(url: url)
-              else { return }
+            let routerpath = NavigationPath(url: url)
+        else { return }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
@@ -138,7 +133,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func checkForUniversalURL(continue userActivity: NSUserActivity) -> Bool {
         // Get URL components from the incoming user activity.
         guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-              let incomingURL = userActivity.webpageURL else {
+            let incomingURL = userActivity.webpageURL
+        else {
             return false
         }
 

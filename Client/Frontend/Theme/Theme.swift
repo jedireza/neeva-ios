@@ -13,14 +13,11 @@ extension UIColor {
         enum tableView {
             static let rowBackground = UIColor(light: .Photon.White100, dark: .Photon.Grey70)
             static let rowText = UIColor(light: .Photon.Grey90, dark: .Photon.Grey90)
-            static let rowDetailText = UIColor(light: .Photon.Grey60, dark: .Photon.Grey30)
             static let disabledRowText = UIColor.Photon.Grey40
             static let separator = UIColor(light: .Photon.Grey30, dark: .Photon.Grey60)
             static let headerBackground = UIColor(light: .white, dark: .Photon.Grey80)
             // Used for table headers in home panel tables
             static let headerTextDark = UIColor(light: .Photon.Grey90, dark: .Photon.Grey30)
-            static let selectedBackground = UIColor(
-                light: .init(rgb: 0xd1d1d6), dark: .init(rgb: 0x2D2D2D))
         }
     }
 }

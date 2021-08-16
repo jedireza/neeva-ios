@@ -41,7 +41,7 @@ struct TrackingMenuSettingsView: View {
 }
 
 struct TrackingAttribution: View {
-    @Environment(\.onOpenURL) var openURL
+    // @Environment(\.onOpenURL) var openURL
     var body: some View {
         EmptyView()
         // TODO: re-enable this with correct attribution

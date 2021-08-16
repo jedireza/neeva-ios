@@ -22,3 +22,8 @@ class ClientTests: XCTestCase {
         XCTAssertTrue(compare(UserAgent.mobileUserAgent()), "User agent computes correctly.")
     }
 }
+
+// see also `skipTest` in StorageTests, UITests, and XCUITests
+func skipTest(issue: Int, _ message: String) throws {
+    throw XCTSkip("#\(issue): \(message)")
+}

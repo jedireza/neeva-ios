@@ -12,7 +12,7 @@ extension BrowserViewController: ReaderModeDelegate {
         // If this reader mode availability state change is for the tab that we currently show, then update
         // the button. Otherwise do nothing and the button will be updated when the tab is made active.
         if tabManager.selectedTab === tab {
-            urlBar.shared.locationModel.readerMode = state
+            topBar.locationModel.readerMode = state
         }
     }
 
@@ -62,7 +62,7 @@ extension BrowserViewController {
         if self.readerModeBar == nil {
             let readerModeBar = ReaderModeBarView(frame: CGRect.zero)
             readerModeBar.delegate = self
-            view.insertSubview(readerModeBar, belowSubview: urlBar.view)
+            view.insertSubview(readerModeBar, belowSubview: topBar.view)
             self.readerModeBar = readerModeBar
             scrollController.readerModeBar = self.readerModeBar
         }

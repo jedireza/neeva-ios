@@ -10,8 +10,6 @@ import SwiftUI
 import UIKit
 import XCGLogger
 
-private let log = Logger.browser
-
 extension EnvironmentValues {
     private struct HideTopSiteKey: EnvironmentKey {
         static var defaultValue: ((Site) -> Void)? = nil

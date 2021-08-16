@@ -401,7 +401,7 @@ class DynamicFontUtils {
     }
 }
 
-// see also `skipTest` in StorageTests and XCUITests
+// see also `skipTest` in ClientTests, StorageTests, and XCUITests
 func skipTest(issue: Int, _ message: String) throws {
     throw XCTSkip("#\(issue): \(message)")
 }

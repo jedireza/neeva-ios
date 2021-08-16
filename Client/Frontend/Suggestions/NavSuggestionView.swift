@@ -42,11 +42,6 @@ struct NavSuggestionView: View {
         }
     }
 
-    @ViewBuilder
-    var detail: some View {
-        EmptyView()
-    }
-
     var body: some View {
         SuggestionView(
             action: nil,

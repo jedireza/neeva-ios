@@ -8,7 +8,6 @@ import SwiftUI
 /// This file contains models and views for the iPad card strip, which is not enabled by default.
 
 private struct CardStrip<Model: CardModel>: View {
-    typealias Details = Model.Details
     @ObservedObject var model: Model
     let onLongPress: (String) -> Void
 
@@ -115,11 +114,11 @@ private struct ToggleSpacesButton: View {
         } label: {
             Symbol(.bookmark, size: 18, weight: .semibold, label: "Show Spaces")
                 .foregroundColor(
-                    Color(showingSpaces ? UIColor.Browser.background : UIColor.label)
+                    Color(showingSpaces ? UIColor.DefaultBackground : UIColor.label)
                 )
                 .aspectRatio(contentMode: .fit)
                 .tapTargetFrame()
-                .background(Color(showingSpaces ? UIColor.label : UIColor.Browser.background))
+                .background(Color(showingSpaces ? UIColor.label : UIColor.DefaultBackground))
                 .clipShape(Circle()).animation(.spring())
         }
     }

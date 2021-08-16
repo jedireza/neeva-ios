@@ -6,12 +6,7 @@ import Fuzi
 import Shared
 import UIKit
 
-private let TypeSearch = "text/html"
-private let TypeSuggest = "application/x-suggestions+json"
-
 class OpenSearchEngine {
-    static let PreferredIconSize = 30
-
     let shortName: String
     let engineID: String?
     let image: UIImage
@@ -20,14 +15,12 @@ class OpenSearchEngine {
     fileprivate let SearchTermComponent = "{searchTerms}"
     fileprivate let LocaleTermComponent = "{moz:locale}"
 
-    fileprivate lazy var searchQueryComponentKey: String? = { [unowned self] in self.getQueryArgFromTemplate() }()
+    fileprivate lazy var searchQueryComponentKey: String? = { [unowned self] in
+        self.getQueryArgFromTemplate()
+    }()
 
     var searchTemplate: String {
         "https://\(NeevaConstants.appHost)/search?q={searchTerms}&src=nvobar"
-    }
-
-    fileprivate var suggestTemplate: String {
-        "https://\(NeevaConstants.appHost)/suggest?q={searchTerms}&src=nvobar"
     }
 
     init(engineID: String?, shortName: String, image: UIImage, isCustomEngine: Bool) {
@@ -104,11 +97,6 @@ class OpenSearchEngine {
             return query
         }
         return nil
-    }
-
-    /// Returns the search suggestion URL for the given query.
-    func suggestURLForQuery(_ query: String) -> URL? {
-        getURLFromTemplate(suggestTemplate, query: query)
     }
 
     fileprivate func getURLFromTemplate(_ searchTemplate: String, query: String) -> URL? {

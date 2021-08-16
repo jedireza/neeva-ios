@@ -59,11 +59,6 @@ class SimulatedSwipeAnimator: NSObject {
         self.panGestureRecogniser = UIPanGestureRecognizer(target: self, action: #selector(didPan))
         animatingView.addGestureRecognizer(self.panGestureRecogniser)
     }
-
-    func cancelExistingGestures() {
-        self.panGestureRecogniser.isEnabled = false
-        self.panGestureRecogniser.isEnabled = true
-    }
 }
 
 //MARK: Private Helpers

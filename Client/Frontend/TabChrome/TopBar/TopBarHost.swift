@@ -1,14 +1,28 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Combine
+import SwiftUI
 
-class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURLBar {
+// For sharing to work, this must currently be the BrowserViewController
+protocol TopBarDelegate: ToolbarDelegate {
+    func urlBarReloadMenu() -> UIMenu?
+    func urlBarDidPressStop()
+    func urlBarDidPressReload()
+    func urlBarDidEnterOverlayMode()
+    func urlBarDidLeaveOverlayMode()
+    func urlBar(didSubmitText text: String)
+
+    func perform(neevaMenuAction: NeevaMenuAction)
+    func updateFeedbackImage()
+
+    var tabContentHost: TabContentHost { get }
+    var tabManager: TabManager { get }
+}
+
+class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content> {
     let locationModel = LocationViewModel()
     let queryModel: SearchQueryModel
     let suggestionModel: SuggestionModel
-    let gridModel: GridModel
-    let trackingStatsViewModel: TrackingStatsViewModel
 
     struct Content: View {
         let suggestionModel: SuggestionModel
@@ -36,15 +50,13 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
         gridModel: GridModel,
         trackingStatsViewModel: TrackingStatsViewModel,
         chromeModel: TabChromeModel,
-        bvc: BrowserViewController
+        delegate: TopBarDelegate
     ) {
         self.queryModel = queryModel
         self.suggestionModel = suggestionModel
-        self.gridModel = gridModel
-        self.trackingStatsViewModel = trackingStatsViewModel
         super.init()
-        let performTabToolbarAction = bvc.performTabToolbarAction
-        setRootView { [locationModel, weak bvc] in
+        let performTabToolbarAction = delegate.performTabToolbarAction
+        setRootView { [locationModel, weak delegate] in
             Content(
                 suggestionModel: suggestionModel, model: locationModel, queryModel: queryModel,
                 gridModel: gridModel, trackingStatsViewModel: trackingStatsViewModel,
@@ -52,22 +64,22 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
             ) {
                 TopBarView(
                     performTabToolbarAction: performTabToolbarAction,
-                    buildTabsMenu: { bvc?.tabToolbarTabsMenu() },
+                    buildTabsMenu: { delegate?.tabToolbarTabsMenu() },
                     onReload: {
                         switch chromeModel.reloadButton {
                         case .reload:
-                            bvc?.urlBarDidPressReload()
+                            delegate?.urlBarDidPressReload()
                         case .stop:
-                            bvc?.urlBarDidPressStop()
+                            delegate?.urlBarDidPressStop()
                         }
                     },
-                    onSubmit: { bvc?.urlBar(didSubmitText: $0) },
+                    onSubmit: { delegate?.urlBar(didSubmitText: $0) },
                     onShare: { shareView in
                         // also update in LegacyTabToolbarHelper
                         ClientLogger.shared.logCounter(
                             .ClickShareButton, attributes: EnvironmentHelper.shared.getAttributes())
                         guard
-                            let bvc = bvc,
+                            let bvc = delegate as? BrowserViewController,
                             let tab = bvc.tabManager.selectedTab,
                             let url = tab.url
                         else { return }
@@ -77,11 +89,11 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
                             bvc.share(tab: tab, from: shareView, presentableVC: bvc)
                         }
                     },
-                    buildReloadMenu: { bvc?.urlBarReloadMenu() },
-                    onNeevaMenuAction: { bvc?.perform(neevaMenuAction: $0) },
-                    didTapNeevaMenu: { bvc?.updateFeedbackImage() },
-                    onOverflowMenuAction: { bvc?.perform(overflowMenuAction: $0, targetButtonView: $1) },
-                    changedUserAgent: bvc?.tabManager.selectedTab?.changedUserAgent
+                    buildReloadMenu: { delegate?.urlBarReloadMenu() },
+                    onNeevaMenuAction: { delegate?.perform(neevaMenuAction: $0) },
+                    didTapNeevaMenu: { delegate?.updateFeedbackImage() },
+                    onOverflowMenuAction: { delegate?.perform(overflowMenuAction: $0, targetButtonView: $1) },
+                    changedUserAgent: delegate?.tabManager.selectedTab?.changedUserAgent
                 )
             }
         }
@@ -91,12 +103,12 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
 
         chromeModel.$isEditingLocation
             .withPrevious()
-            .sink { [weak bvc] change in
+            .sink { [weak delegate] change in
                 switch change {
                 case (false, true):
-                    bvc?.urlBarDidEnterOverlayMode()
+                    delegate?.urlBarDidEnterOverlayMode()
                 case (true, false):
-                    bvc?.urlBarDidLeaveOverlayMode()
+                    delegate?.urlBarDidLeaveOverlayMode()
                 default: break
                 }
             }
@@ -104,14 +116,14 @@ class TopBarHost: IncognitoAwareHostingController<TopBarHost.Content>, CommonURL
         chromeModel.$isEditingLocation
             .combineLatest(queryModel.$value)
             .withPrevious()
-            .sink { [weak bvc] (prev, current) in
+            .sink { [weak delegate] (prev, current) in
                 let (prevEditing, _) = prev
                 let (isEditing, query) = current
-                if let bvc = bvc, (prevEditing, isEditing) == (true, true) {
+                if let delegate = delegate, (prevEditing, isEditing) == (true, true) {
                     if query.isEmpty {
-                        bvc.tabContentHost.updateContent(.hideSuggestions)
+                        delegate.tabContentHost.updateContent(.hideSuggestions)
                     } else {
-                        bvc.tabContentHost.updateContent(.showSuggestions)
+                        delegate.tabContentHost.updateContent(.showSuggestions)
                     }
                 }
             }

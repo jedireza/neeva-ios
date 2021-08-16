@@ -34,7 +34,7 @@ struct SwitcherToolbarView: View {
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
 
     var body: some View {
-        let divider = Color(UIColor.Browser.urlBarDivider).frame(height: 1).ignoresSafeArea()
+        let divider = Color.ui.adaptive.separator.frame(height: 1).ignoresSafeArea()
         VStack(spacing: 0) {
             if !top { divider }
             HStack(spacing: 0) {

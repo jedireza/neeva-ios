@@ -10,7 +10,7 @@ func path(forTestPage page: String) -> String {
     return "http://localhost:\(serverPort)/test-fixture/\(page)"
 }
 
-// see also `skipTest` in StorageTests and UITests
+// see also `skipTest` in ClientTests, StorageTests, and UITests
 func skipTest(issue: Int, _ message: String) throws {
     throw XCTSkip("#\(issue): \(message)")
 }

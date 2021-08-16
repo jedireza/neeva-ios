@@ -2,6 +2,12 @@
 
 import SwiftUI
 
+protocol ToolbarDelegate: AnyObject {
+    var performTabToolbarAction: (ToolbarAction) -> Void { get }
+    func perform(overflowMenuAction: OverflowMenuAction, targetButtonView: UIView?)
+    func tabToolbarTabsMenu() -> UIMenu?
+}
+
 class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
 
     struct Content: View {
@@ -23,12 +29,12 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarHost.Content> {
         }
     }
 
-    init(chromeModel: TabChromeModel, bvc: BrowserViewController) {
-        let performAction = bvc.performTabToolbarAction
-        super.init { [weak bvc] in
+    init(chromeModel: TabChromeModel, delegate: ToolbarDelegate) {
+        let performAction = delegate.performTabToolbarAction
+        super.init { [weak delegate] in
             Content(
                 chromeModel: chromeModel, performAction: performAction,
-                buildTabsMenu: { bvc?.tabToolbarTabsMenu() })
+                buildTabsMenu: { delegate?.tabToolbarTabsMenu() })
         }
     }
 

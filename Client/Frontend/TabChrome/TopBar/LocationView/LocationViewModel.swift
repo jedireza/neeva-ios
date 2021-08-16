@@ -25,7 +25,7 @@ class LocationViewModel: ObservableObject {
     }
 
     init() {}
-    init(previewURL: URL?, hasOnlySecureContent: Bool?) {
+    init(previewURL: URL?, isSecure: Bool?) {
         self.url = previewURL
 
         if let isSecure = isSecure {

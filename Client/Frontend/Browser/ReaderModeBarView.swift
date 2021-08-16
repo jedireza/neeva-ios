@@ -7,8 +7,6 @@ import SnapKit
 import UIKit
 import XCGLogger
 
-private let log = Logger.browser
-
 enum ReaderModeBarButtonType {
     case settings
 
@@ -57,8 +55,8 @@ class ReaderModeBarView: UIView {
             make.width.equalTo(80)
         }
 
-        backgroundColor = UIColor.Browser.background
-        buttonTintColor = UIColor.Browser.tint
+        backgroundColor = UIColor.DefaultBackground
+        buttonTintColor = UIColor.DefaultTextAndTint
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -5,14 +5,6 @@
 import Shared
 import SwiftUI
 
-struct ViewControllerConsts {
-    struct PreferredSize {
-        static let IntroViewController = CGSize(width: 375, height: 667)
-        static let UpdateViewController = CGSize(width: 375, height: 667)
-        static let DBOnboardingViewController = CGSize(width: 624, height: 680)
-    }
-}
-
 // From https://www.avanderlee.com/swiftui/integrating-swiftui-with-uikit/
 extension UIViewController {
     /// Add a SwiftUI `View` as a child of the input `UIView`.

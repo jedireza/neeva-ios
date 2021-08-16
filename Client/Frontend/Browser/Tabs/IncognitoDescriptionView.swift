@@ -8,7 +8,6 @@ struct IncognitoDescriptionView: View {
     let lineSpacing: CGFloat = 12
     let borderPadding: CGFloat = 14
     let maxTextWidth: CGFloat = 380
-    let descriptionFontSmall = Font.system(size: 12)
 
     // TODO: Refactor to share code with BoldSpanView
     struct BoldSpan: View {

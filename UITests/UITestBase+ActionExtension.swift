@@ -52,7 +52,8 @@ extension UITestBase {
 
         let clearables = Set(clearables)
         for clearable in UITestBase.AllClearables {
-            tester().setOn(clearables.contains(clearable), forSwitchWithAccessibilityLabel: clearable.label())
+            tester().setOn(
+                clearables.contains(clearable), forSwitchWithAccessibilityLabel: clearable.label())
         }
 
         tester().tapView(withAccessibilityLabel: "Clear Selected Data on This Device")
@@ -79,7 +80,8 @@ extension UITestBase {
     func clearHistoryItems(numberOfTests: Int = -1) {
         goToHistory()
 
-        let historyTable = tester().waitForView(withAccessibilityIdentifier: "History List") as! UITableView
+        let historyTable =
+            tester().waitForView(withAccessibilityIdentifier: "History List") as! UITableView
 
         var index = 0
         for _ in 0..<historyTable.numberOfSections {
@@ -98,7 +100,9 @@ extension UITestBase {
     }
 
     func clearHistoryItemAtIndex(_ index: IndexPath) {
-        if let row = tester().waitForCell(at: index, inTableViewWithAccessibilityIdentifier: "History List") {
+        if let row = tester().waitForCell(
+            at: index, inTableViewWithAccessibilityIdentifier: "History List")
+        {
             tester().swipeView(
                 withAccessibilityLabel: row.accessibilityLabel, value: row.accessibilityValue,
                 in: KIFSwipeDirection.left)

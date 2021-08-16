@@ -17,29 +17,12 @@ extension BrowserViewController {
             return
         }
 
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: urlBar.view)
+        let prompt = SearchBarTourPromptViewController(delegate: self, source: topBar.view)
         prompt.view.backgroundColor = UIColor.Tour.Background
         prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
 
         if self.presentedViewController == nil {
             present(prompt, animated: true, completion: nil)
-        }
-    }
-
-    // Only called by portrait mode / legacy URL bar
-    // Duplicated in TopBarNeevaMenuButton
-    func onCloseQuestHandler() {
-        self.dismiss(animated: true, completion: nil)
-        TourManager.shared.responseMessage(for: TourManager.shared.getActiveStepName(), exit: true)
-    }
-
-    // Only called by portrait mode / legacy URL bar
-    func onStartQuestButtonClickHandler() {
-        if self.chromeModel.inlineToolbar {
-            self.dismiss(animated: true)
-            self.urlBar.legacy?.didClickNeevaMenu()
-        } else {
-            SceneDelegate.getBVC().showNeevaMenuSheet()
         }
     }
 
@@ -53,22 +36,25 @@ extension BrowserViewController {
             // TODO(jed): open this prompt from SwiftUI once we have a full-height SwiftUI hierarchy
             target = toolbar.view
         } else {
-            switch urlBar {
-            case .legacy(let urlBar):
-                target = urlBar.neevaMenuButton
-            case .modern:
-                chromeModel.showNeevaMenuTourPrompt = true
-                return
-            case .none: fatalError()
-            }
+            chromeModel.showNeevaMenuTourPrompt = true
+            return
         }
 
         // Duplicated in TopBarNeevaMenuButton
         let content = TourPromptContent(
             title: "Get the most out of Neeva!",
             description: "Access your Neeva Home, Spaces, Settings, and more",
-            buttonMessage: "Let's take a Look!", onButtonClick: onStartQuestButtonClickHandler,
-            onClose: onCloseQuestHandler)
+            buttonMessage: "Let's take a Look!",
+            onButtonClick: {
+                SceneDelegate.getBVC().showNeevaMenuSheet()
+
+            },
+            onClose: { [self] in
+                // Duplicated in TopBarNeevaMenuButton
+                self.dismiss(animated: true, completion: nil)
+                TourManager.shared.responseMessage(
+                    for: TourManager.shared.getActiveStepName(), exit: true)
+            })
 
         let prompt = TourPromptViewController(delegate: self, source: target, content: content)
 

@@ -17,13 +17,8 @@ struct SuggestedSiteView: View {
     let site: Site!
     let isPinnedSite: Bool!
 
-    @EnvironmentObject private var viewModel: SuggestedSitesViewModel
-
     @Environment(\.onOpenURL) private var openURL
-    @Environment(\.shareURL) private var shareURL
-    @Environment(\.openInNewTab) private var openInNewTab
     @Environment(\.zeroQueryHideTopSite) private var zeroQueryHideTopSite
-    @Environment(\.saveToSpace) private var saveToSpace
 
     @State private var isDeleting = false
 

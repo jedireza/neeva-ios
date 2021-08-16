@@ -17,14 +17,8 @@ public let DefaultFaviconBackgroundColors = [
 
 extension UIColor {
     struct Photon {
-        static let Blue40 = UIColor(rgb: 0x45a1ff)
-        static let Blue50 = UIColor(rgb: 0x0a84ff)
-        static let Blue60 = UIColor(rgb: 0x0060df)
-
         static let Orange60 = UIColor(rgb: 0xd76e00)
 
-        static let Grey10 = UIColor(rgb: 0xf9f9fa)
-        static let Grey20 = UIColor(rgb: 0xededf0)
         static let Grey30 = UIColor(rgb: 0xd7d7db)
         static let Grey40 = UIColor(rgb: 0xb1b1b3)
         static let Grey50 = UIColor(rgb: 0x737373)

@@ -16,7 +16,7 @@ enum ToolbarAction {
     case cheatsheet
 }
 
-extension BrowserViewController {
+extension BrowserViewController: ToolbarDelegate {
     var performTabToolbarAction: (ToolbarAction) -> Void {
         { [weak self] action in
             guard let self = self else { return }
@@ -46,6 +46,7 @@ extension BrowserViewController {
                     )
                 )
                 self.dismissVC()
+
             case .cheatsheet:
                 self.showOverlaySheetViewController(
                     CheatsheetViewController(
@@ -100,13 +101,6 @@ extension BrowserViewController {
                 self.showTabTray()
             }
         }
-    }
-
-    func tabToolbarDidPressAddNewTab() {
-        ClientLogger.shared.logCounter(
-            .ClickNewTabButton, attributes: EnvironmentHelper.shared.getAttributes())
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
-        openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
     }
 
     func tabToolbarTabsMenu() -> UIMenu? {

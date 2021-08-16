@@ -7,11 +7,6 @@ struct SupportSettingsSection: View {
     @Environment(\.openInNewTab) var openInNewTab
     @Environment(\.settingsPresentIntroViewController) var presentIntroViewController
 
-    let onDismiss: (() -> Void)?
-    init(onDismiss: (() -> Void)? = nil) {
-        self.onDismiss = onDismiss
-    }
-
     var body: some View {
         if NeevaFeatureFlags[.welcomeTours] {
             NavigationLinkButton("Welcome Tours") {

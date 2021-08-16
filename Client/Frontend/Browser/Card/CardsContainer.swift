@@ -4,17 +4,17 @@ import SwiftUI
 
 struct CardsContainer: View {
     @EnvironmentObject var tabModel: TabCardModel
-    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    //@EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var gridModel: GridModel
 
     @Binding var switcherState: SwitcherViews
     let columns: [GridItem]
 
-    var indexInsideTabGroupModel: Int? {
-        let selectedTab = tabModel.manager.selectedTab!
-        return tabGroupModel.allDetails
-            .firstIndex(where: { $0.id == selectedTab.rootUUID })
-    }
+    //var indexInsideTabGroupModel: Int? {
+    //    let selectedTab = tabModel.manager.selectedTab!
+    //    return tabGroupModel.allDetails
+    //        .firstIndex(where: { $0.id == selectedTab.rootUUID })
+    //}
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {

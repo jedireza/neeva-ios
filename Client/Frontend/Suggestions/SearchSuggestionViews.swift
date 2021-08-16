@@ -78,7 +78,7 @@ struct SuggestionSpec: ViewModifier {
         case .chip:
             content.padding(SuggestionViewUX.ChipInnerPadding)
                 .background(suggestionState.color)
-                .overlay(Capsule().stroke(Color(UIColor.Browser.urlBarDivider), lineWidth: 1))
+                .overlay(Capsule().stroke(Color.ui.adaptive.separator, lineWidth: 1))
                 .contentShape(Capsule())
                 .hoverEffect()
         }
@@ -163,7 +163,6 @@ struct QuerySuggestionView: View {
 
     @EnvironmentObject public var model: SuggestionModel
     @Environment(\.setSearchInput) private var setInput
-    @Environment(\.suggestionConfig) private var config
 
     var suggestedQuery: String {
         if let lensOrBang = model.activeLensBang,
@@ -379,7 +378,6 @@ private struct LensSuggestionView: View {
 private struct TabSuggestionView: View {
     let suggestion: TabCardDetails
 
-    @State var focused: Bool = false
     @EnvironmentObject public var model: SuggestionModel
 
     @ViewBuilder
@@ -530,12 +528,18 @@ struct SuggestionView_Previews: PreviewProvider {
             Section(header: Text("Query — Bang active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(SuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
+            }.environmentObject(
+                SuggestionModel(
+                    previewLensBang: .init(
+                        domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
 
             Section(header: Text("Query — Lens active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(SuggestionModel(previewLensBang: .init(domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
+            }.environmentObject(
+                SuggestionModel(
+                    previewLensBang: .init(
+                        domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
 
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {
                 URLSuggestionView(suggestion: url)

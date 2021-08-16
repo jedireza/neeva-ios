@@ -54,7 +54,6 @@ class TabContentHostModel: ObservableObject {
 
 class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
     let zeroQueryModel: ZeroQueryModel
-    let suggestionModel: SuggestionModel
     let model: TabContentHostModel
 
     struct Content: View {
@@ -91,7 +90,8 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 }
             }.onAppear {
                 TopSitesHandler.getTopSites(
-                    profile: zeroQueryModel.profile).uponQueue(.main) { result in
+                    profile: zeroQueryModel.profile
+                ).uponQueue(.main) { result in
                     self.suggestedSitesViewModel.sites = Array(result.prefix(8))
                 }
                 self.suggestedSearchesModel.reload(from: zeroQueryModel.profile)
@@ -102,7 +102,6 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
     init(tabManager: TabManager, zeroQueryModel: ZeroQueryModel, suggestionModel: SuggestionModel) {
         let model = TabContentHostModel(tabManager: tabManager)
         self.zeroQueryModel = zeroQueryModel
-        self.suggestionModel = suggestionModel
         self.model = model
         super.init {
             Content(
