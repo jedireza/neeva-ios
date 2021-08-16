@@ -53,9 +53,21 @@ extension View {
         self.onChange(of: Pair(zero: zero, one: one)) { updater($0.zero, $0.one) }
             .onAppear { updater(zero, one) }
     }
-    // TODO: add conformances for larger tuples as necessary
+
+    func useEffect<T0: Equatable, T1: Equatable, T2: Equatable>(
+        deps zero: T0, _ one: T1, _ two: T2, perform updater: @escaping (T0, T1, T2) -> Void
+    ) -> some View {
+        self.onChange(of: Tuple(zero: zero, one: one, two: two)) {
+            updater($0.zero, $0.one, $0.two)
+        }
+        .onAppear { updater(zero, one, two) }
+    }
 }
 
 private struct Pair<T0: Equatable, T1: Equatable>: Equatable {
     let zero: T0, one: T1
+}
+
+private struct Tuple<T0: Equatable, T1: Equatable, T2: Equatable>: Equatable {
+    let zero: T0, one: T1, two: T2
 }

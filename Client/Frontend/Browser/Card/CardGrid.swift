@@ -91,7 +91,7 @@ struct CardGrid: View {
         }
     }
 
-    func updateCardSize(width: CGFloat, isHidden: Bool) {
+    func updateCardSize(width: CGFloat, isHidden: Bool, topToolbar: Bool) {
         if width > 1000 {
             columnCount = 4
         } else {
@@ -131,7 +131,9 @@ struct CardGrid: View {
                     SwitcherToolbarView(top: false)
                 }
             }
-            .useEffect(deps: geom.size.width, gridModel.isHidden, perform: updateCardSize)
+            .useEffect(
+                deps: geom.size.width, gridModel.isHidden, topToolbar, perform: updateCardSize
+            )
             .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
         }
         .overlay(transitionAnimator, alignment: .top)
