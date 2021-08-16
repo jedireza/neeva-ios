@@ -12,7 +12,15 @@ query Suggestions($query: String!) {
         annotationType
         description
         imageURL
-      }
+        stockInfo {
+          companyName
+          ticker
+          currentPrice
+          changeFromPreviousClose
+          percentChangeFromPreviousClose
+          fetchedAtTime
+        }
+     }
     }
     urlSuggestion {
       icon {

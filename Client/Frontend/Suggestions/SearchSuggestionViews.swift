@@ -174,7 +174,17 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var icon: some View {
-        if AnnotationType(annotation: suggestion.annotation) == .calculator {
+        if AnnotationType(annotation: suggestion.annotation) == .stock {
+            if isPositiveStockChange(suggestion.annotation) {
+                Symbol(decorative: .arrowtriangleUpFill)
+                    .foregroundColor(.green)
+                    .padding(.bottom, 18)
+            } else {
+                Symbol(decorative: .arrowtriangleDownFill)
+                    .foregroundColor(.red)
+                    .padding(.bottom, 18)
+            }
+        } else if AnnotationType(annotation: suggestion.annotation) == .calculator {
             Image("calculator")
         } else if let activeType = model.activeLensBang?.type {
             Symbol(decorative: activeType.defaultSymbol)
@@ -208,7 +218,40 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var label: some View {
-        if AnnotationType(annotation: suggestion.annotation) == .calculator {
+        if AnnotationType(annotation: suggestion.annotation) == .stock {
+            HStack {
+                Text(String(suggestion.annotation?.stockInfo?.currentPrice ?? 0.0))
+                    .withFont(.bodyLarge)
+                if let changeFromPreivousClose =
+                    suggestion.annotation?.stockInfo?.changeFromPreviousClose,
+                    let percentChangeFromPreviousClose =
+                        suggestion.annotation?.stockInfo?.percentChangeFromPreviousClose
+                {
+                    if isPositiveStockChange(suggestion.annotation) {
+                        Text(
+                            "+\(String(changeFromPreivousClose)) "
+                                + "(\(String(percentChangeFromPreviousClose))%)"
+                        )
+                        .withFont(.bodyMedium)
+                        .accentColor(.green)
+                    } else {
+                        Text(
+                            "\(String(changeFromPreivousClose)) "
+                                + "(\(String(percentChangeFromPreviousClose))%)"
+                        )
+                        .withFont(.bodyMedium)
+                        .accentColor(.red)
+                    }
+                }
+                Spacer()
+                Text("\(suggestion.annotation?.stockInfo?.fetchedAtTime ?? "")")
+                    .withFont(.bodySmall)
+                    .accentColor(.gray)
+                    .alignmentGuide(.trailing) { d in d[.trailing] }
+                    .padding(.trailing, 5)
+            }
+            .lineLimit(1)
+        } else if AnnotationType(annotation: suggestion.annotation) == .calculator {
             Text(suggestion.annotation?.description ?? "")
                 .withFont(.bodyLarge)
                 .lineLimit(1)
@@ -225,7 +268,17 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var secondaryLabel: some View {
-        if let suggestedCalculatorQuery = suggestion.suggestedCalculatorQuery(),
+        if AnnotationType(annotation: suggestion.annotation) == .stock {
+            HStack {
+                Text("\(String(suggestion.annotation?.stockInfo?.companyName ?? ""))")
+                    .withFont(.bodySmall)
+                    .lineLimit(1)
+                Text("\(String(suggestion.annotation?.stockInfo?.ticker ?? ""))")
+                    .withFont(.bodySmall)
+                    .lineLimit(1)
+                    .accentColor(.gray)
+            }
+        } else if let suggestedCalculatorQuery = suggestion.suggestedCalculatorQuery(),
             AnnotationType(annotation: suggestion.annotation) == .calculator
         {
             Text(suggestedCalculatorQuery).withFont(.bodySmall)
@@ -238,6 +291,7 @@ struct QuerySuggestionView: View {
         } else {
             EmptyView()
         }
+
     }
 
     @ViewBuilder
@@ -260,6 +314,12 @@ struct QuerySuggestionView: View {
             suggestion: Suggestion.query(suggestion)
         )
         .environmentObject(model)
+    }
+
+    func isPositiveStockChange(
+        _ annotation: SuggestionsQuery.Data.Suggest.QuerySuggestion.Annotation?
+    ) -> Bool {
+        return annotation?.stockInfo?.changeFromPreviousClose ?? 0.0 > 0
     }
 }
 

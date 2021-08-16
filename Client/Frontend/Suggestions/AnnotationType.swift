@@ -15,6 +15,8 @@ enum AnnotationType: String {
     case calculator = "Calculator"
     /// `AnnotationTypeWikipedia` indicates the type is a wikipedia annotation
     case wikipedia = "Wikipedia"
+    /// `AnnotationTypeStock` indicated the type is a stock annotation
+    case stock = "Stock"
 
 }
 
@@ -27,5 +29,13 @@ extension AnnotationType {
         } else {
             return nil
         }
+    }
+}
+
+extension SuggestionsQuery.Data.Suggest.QuerySuggestion {
+    func hasSupportedAnnotationType() -> Bool {
+        return AnnotationType(annotation: annotation) == AnnotationType.calculator
+            || AnnotationType(annotation: annotation) == .stock
+            || AnnotationType(annotation: annotation) == .wikipedia
     }
 }

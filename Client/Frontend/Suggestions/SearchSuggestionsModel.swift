@@ -141,9 +141,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         let querySuggestions = data.suggest?.querySuggestion ?? []
         // Split queries into standard queries that doesnt have annotations and everything else.
         let chipQuerySuggestions =
-            querySuggestions.filter { $0.type == .standard && $0.annotation?.description == nil }
+            querySuggestions.filter { $0.type == .standard && !$0.hasSupportedAnnotationType() }
         var rowQuerySuggestions =
-            querySuggestions.filter { $0.type != .standard || $0.annotation?.description != nil }
+            querySuggestions.filter { $0.type != .standard || $0.hasSupportedAnnotationType() }
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
         // Move all nav suggestions out of url suggestions.
         var navSuggestions = urlSuggestions.filter { !($0.subtitle?.isEmpty ?? true) }

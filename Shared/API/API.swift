@@ -2925,8 +2925,9 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
   ///   - source
   ///   - inviteToken
   ///   - screenshot
-  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil) {
-    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot]
+  ///   - userProvidedEmail
+  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil, userProvidedEmail: Swift.Optional<String?> = nil) {
+    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot, "userProvidedEmail": userProvidedEmail]
   }
 
   public var feedback: Swift.Optional<String?> {
@@ -2989,6 +2990,15 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "screenshot")
+    }
+  }
+
+  public var userProvidedEmail: Swift.Optional<String?> {
+    get {
+      return graphQLMap["userProvidedEmail"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "userProvidedEmail")
     }
   }
 }
@@ -3477,8 +3487,10 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
   case privateCorpus
   case elastic
   case calculator
+  case stock
   case unknown
   case clipboard
+  case `public`
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
@@ -3490,8 +3502,10 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case "PrivateCorpus": self = .privateCorpus
       case "Elastic": self = .elastic
       case "Calculator": self = .calculator
+      case "Stock": self = .stock
       case "Unknown": self = .unknown
       case "Clipboard": self = .clipboard
+      case "Public": self = .public
       default: self = .__unknown(rawValue)
     }
   }
@@ -3504,8 +3518,10 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case .privateCorpus: return "PrivateCorpus"
       case .elastic: return "Elastic"
       case .calculator: return "Calculator"
+      case .stock: return "Stock"
       case .unknown: return "Unknown"
       case .clipboard: return "Clipboard"
+      case .public: return "Public"
       case .__unknown(let value): return value
     }
   }
@@ -3518,8 +3534,10 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       case (.privateCorpus, .privateCorpus): return true
       case (.elastic, .elastic): return true
       case (.calculator, .calculator): return true
+      case (.stock, .stock): return true
       case (.unknown, .unknown): return true
       case (.clipboard, .clipboard): return true
+      case (.public, .public): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -3533,8 +3551,10 @@ public enum QuerySuggestionSource: RawRepresentable, Equatable, Hashable, CaseIt
       .privateCorpus,
       .elastic,
       .calculator,
+      .stock,
       .unknown,
       .clipboard,
+      .public,
     ]
   }
 }
@@ -5016,6 +5036,15 @@ public final class SuggestionsQuery: GraphQLQuery {
             annotationType
             description
             imageURL
+            stockInfo {
+              __typename
+              companyName
+              ticker
+              currentPrice
+              changeFromPreviousClose
+              percentChangeFromPreviousClose
+              fetchedAtTime
+            }
           }
         }
         urlSuggestion {
@@ -5060,7 +5089,7 @@ public final class SuggestionsQuery: GraphQLQuery {
 
   public let operationName: String = "Suggestions"
 
-  public let operationIdentifier: String? = "54419649575fe082c546a9e7ff787ad849b6d02b69927adba0751d162f25499a"
+  public let operationIdentifier: String? = "e11457ff1095d65124e93a3311309cdfcc1b48e051b55129620c4a8d8782f56a"
 
   public var query: String
 
@@ -5320,6 +5349,7 @@ public final class SuggestionsQuery: GraphQLQuery {
               GraphQLField("annotationType", type: .scalar(String.self)),
               GraphQLField("description", type: .scalar(String.self)),
               GraphQLField("imageURL", type: .scalar(String.self)),
+              GraphQLField("stockInfo", type: .object(StockInfo.selections)),
             ]
           }
 
@@ -5329,8 +5359,8 @@ public final class SuggestionsQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(annotationType: String? = nil, description: String? = nil, imageUrl: String? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Annotation", "annotationType": annotationType, "description": description, "imageURL": imageUrl])
+          public init(annotationType: String? = nil, description: String? = nil, imageUrl: String? = nil, stockInfo: StockInfo? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Annotation", "annotationType": annotationType, "description": description, "imageURL": imageUrl, "stockInfo": stockInfo.flatMap { (value: StockInfo) -> ResultMap in value.resultMap }])
           }
 
           public var __typename: String {
@@ -5366,6 +5396,104 @@ public final class SuggestionsQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "imageURL")
+            }
+          }
+
+          public var stockInfo: StockInfo? {
+            get {
+              return (resultMap["stockInfo"] as? ResultMap).flatMap { StockInfo(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "stockInfo")
+            }
+          }
+
+          public struct StockInfo: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["StockInfo"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("companyName", type: .scalar(String.self)),
+                GraphQLField("ticker", type: .scalar(String.self)),
+                GraphQLField("currentPrice", type: .scalar(Double.self)),
+                GraphQLField("changeFromPreviousClose", type: .scalar(Double.self)),
+                GraphQLField("percentChangeFromPreviousClose", type: .scalar(Double.self)),
+                GraphQLField("fetchedAtTime", type: .scalar(String.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(companyName: String? = nil, ticker: String? = nil, currentPrice: Double? = nil, changeFromPreviousClose: Double? = nil, percentChangeFromPreviousClose: Double? = nil, fetchedAtTime: String? = nil) {
+              self.init(unsafeResultMap: ["__typename": "StockInfo", "companyName": companyName, "ticker": ticker, "currentPrice": currentPrice, "changeFromPreviousClose": changeFromPreviousClose, "percentChangeFromPreviousClose": percentChangeFromPreviousClose, "fetchedAtTime": fetchedAtTime])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            public var companyName: String? {
+              get {
+                return resultMap["companyName"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "companyName")
+              }
+            }
+
+            public var ticker: String? {
+              get {
+                return resultMap["ticker"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "ticker")
+              }
+            }
+
+            public var currentPrice: Double? {
+              get {
+                return resultMap["currentPrice"] as? Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "currentPrice")
+              }
+            }
+
+            public var changeFromPreviousClose: Double? {
+              get {
+                return resultMap["changeFromPreviousClose"] as? Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "changeFromPreviousClose")
+              }
+            }
+
+            public var percentChangeFromPreviousClose: Double? {
+              get {
+                return resultMap["percentChangeFromPreviousClose"] as? Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "percentChangeFromPreviousClose")
+              }
+            }
+
+            public var fetchedAtTime: String? {
+              get {
+                return resultMap["fetchedAtTime"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "fetchedAtTime")
+              }
             }
           }
         }
