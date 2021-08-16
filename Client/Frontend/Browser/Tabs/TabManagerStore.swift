@@ -157,7 +157,7 @@ class TabManagerStore {
         }
 
         if tabToSelect == nil {
-            tabToSelect = tabManager.tabs.first(where: { $0.isPrivate == false })
+            tabToSelect = tabManager.tabs.first(where: { $0.isIncognito == false })
         }
 
         return tabToSelect

@@ -32,7 +32,7 @@ extension SavedTab {
 
         self.init(
             screenshotUUID: tab.screenshotUUID, isSelected: isSelected,
-            title: tab.title ?? tab.lastTitle, isPrivate: tab.isPrivate,
+            title: tab.title ?? tab.lastTitle, isPrivate: tab.isIncognito,
             faviconURL: tab.displayFavicon?.url, url: tab.url, sessionData: sessionData,
             uuid: tab.tabUUID, rootUUID: tab.rootUUID, parentUUID: tab.parentUUID ?? "",
             tabIndex: tabIndex)

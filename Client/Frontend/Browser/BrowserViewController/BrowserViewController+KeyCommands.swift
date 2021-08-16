@@ -40,7 +40,7 @@ extension BrowserViewController {
     }
 
     @objc func newPrivateTabKeyCommand() {
-        if !(tabManager.selectedTab?.isPrivate ?? false) {
+        if !(tabManager.isIncognito) {
             _ = tabManager.switchPrivacyMode()
         }
 
@@ -63,7 +63,7 @@ extension BrowserViewController {
             return
         }
 
-        let tabs = currentTab.isPrivate ? tabManager.privateTabs : tabManager.normalTabs
+        let tabs = tabManager.isIncognito ? tabManager.privateTabs : tabManager.normalTabs
         if let index = tabs.firstIndex(of: currentTab), index + 1 < tabs.count {
             tabManager.selectTab(tabs[index + 1])
         } else if let firstTab = tabs.first {
@@ -76,7 +76,7 @@ extension BrowserViewController {
             return
         }
 
-        let tabs = currentTab.isPrivate ? tabManager.privateTabs : tabManager.normalTabs
+        let tabs = tabManager.isIncognito ? tabManager.privateTabs : tabManager.normalTabs
         if let index = tabs.firstIndex(of: currentTab), index - 1 < tabs.count && index != 0 {
             tabManager.selectTab(tabs[index - 1])
         } else if let lastTab = tabs.last {
@@ -89,7 +89,7 @@ extension BrowserViewController {
     }
 
     @objc func closeAllTabsCommand() {
-        if tabManager.selectedTab?.isPrivate ?? false {
+        if tabManager.isIncognito {
             _ = tabManager.switchPrivacyMode()
 
             // wait for tabManager to switch to normal mode before closing private tabs

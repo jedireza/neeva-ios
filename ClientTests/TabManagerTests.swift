@@ -170,7 +170,7 @@ class TabManagerTests: XCTestCase {
             XCTAssertTrue(previous != next)
             XCTAssertTrue(previous == privateTab)
             XCTAssertTrue(next == tab)
-            XCTAssertTrue(previous.isPrivate)
+            XCTAssertTrue(previous.isIncognito)
             XCTAssertTrue(self.manager.selectedTab == next)
         }
         delegate.expect([didRemove, didSelect])
@@ -208,7 +208,7 @@ class TabManagerTests: XCTestCase {
         manager.selectTab(manager.addTab(isPrivate: true))
 
         XCTAssertEqual(
-            manager.selectedTab?.isPrivate, true, "The selected tab should be the private tab")
+            manager.selectedTab?.isIncognito, true, "The selected tab should be the private tab")
         XCTAssertEqual(manager.privateTabs.count, 1, "There should only be one private tab")
 
         manager.selectTab(tab)
@@ -242,7 +242,7 @@ class TabManagerTests: XCTestCase {
         manager.selectTab(manager.addTab(isPrivate: true))
         manager.selectTab(tab)
         XCTAssertEqual(
-            manager.selectedTab?.isPrivate, false, "The selected tab should not be private")
+            manager.selectedTab?.isIncognito, false, "The selected tab should not be private")
         XCTAssertEqual(
             manager.privateTabs.count, 1,
             "If the flag is false then private tabs should still exist")
@@ -348,7 +348,7 @@ class TabManagerTests: XCTestCase {
 
         // Double check a few things
         XCTAssertEqual(
-            manager.selectedTab?.isPrivate, true, "The selected tab should be the private tab")
+            manager.selectedTab?.isIncognito, true, "The selected tab should be the private tab")
         XCTAssertEqual(manager.privateTabs.count, 1, "There should only be one private tab")
 
         // switch to normal mode. Which should delete the private tabs
@@ -360,7 +360,7 @@ class TabManagerTests: XCTestCase {
         // didSelect should still be called when switching between a nil tab
         let didSelect = MethodSpy(functionName: spyDidSelectedTabChange) { tabs in
             let next = tabs[0]!
-            XCTAssertFalse(next.isPrivate)
+            XCTAssertFalse(next.isIncognito)
         }
 
         // make sure delegate method is actually called
@@ -432,7 +432,7 @@ class TabManagerTests: XCTestCase {
             let next = tabs[0]!
             let previous = tabs[1]!
             XCTAssertEqual(last, previous)
-            XCTAssert(next != privateOne && !next.isPrivate)
+            XCTAssert(next != privateOne && !next.isIncognito)
         }
         delegate.expect([didRemove, didSelect])
         manager.removeTabAndUpdateSelectedTab(last)

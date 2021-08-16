@@ -38,7 +38,7 @@ protocol TabDelegate {
 }
 
 class Tab: NSObject, ObservableObject {
-    let isPrivate: Bool
+    let isIncognito: Bool
 
     // PageMetadata is derived from the page content itself, and as such lags behind the
     // rest of the tab.
@@ -166,7 +166,7 @@ class Tab: NSObject, ObservableObject {
     {
         self.configuration = configuration
         self.browserViewController = bvc
-        self.isPrivate = isPrivate
+        self.isIncognito = isPrivate
         super.init()
 
         debugTabCount += 1
@@ -184,7 +184,7 @@ class Tab: NSObject, ObservableObject {
     }
 
     class func toRemoteTab(_ tab: Tab) -> RemoteTab? {
-        if tab.isPrivate {
+        if tab.isIncognito {
             return nil
         }
 
@@ -531,7 +531,7 @@ class Tab: NSObject, ObservableObject {
     }
 
     func applyTheme() {
-        UITextField.appearance().keyboardAppearance = isPrivate ? .dark : .default
+        UITextField.appearance().keyboardAppearance = isIncognito ? .dark : .default
     }
 }
 

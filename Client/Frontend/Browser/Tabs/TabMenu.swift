@@ -12,7 +12,7 @@ class TabMenu {
 
     // MARK: Close All Tabs
     func showConfirmCloseAllTabs(numberOfTabs: Int) {
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let isPrivate = tabManager.isIncognito
         guard let alertPresentViewController = alertPresentViewController else {
             return
         }
@@ -61,7 +61,7 @@ class TabMenu {
     }
 
     func createCloseAllTabsAction() -> UIAction {
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let isPrivate = tabManager.isIncognito
         let action = UIAction(
             title: "Close All \(isPrivate ? "Incognito " : "")Tabs",
             image: UIImage(systemName: "trash"), attributes: .destructive
@@ -79,7 +79,7 @@ class TabMenu {
     }
 
     func getTabCountForCurrentType() -> Int {
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let isPrivate = tabManager.isIncognito
 
         if isPrivate {
             return tabManager.privateTabs.count

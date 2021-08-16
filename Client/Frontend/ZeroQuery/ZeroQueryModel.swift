@@ -61,7 +61,7 @@ class ZeroQueryModel: ObservableObject {
     }
 
     func updateState() {
-        isPrivate = SceneDelegate.getTabManager().selectedTab?.isPrivate ?? false
+        isPrivate = SceneDelegate.getTabManager().isIncognito
 
         // TODO: remove once all users have upgraded
         if UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {

@@ -119,7 +119,7 @@ extension BrowserViewController: ToolbarDelegate {
         var newTabImage = UIImage(systemSymbol: .plusSquare)
         var newTabAccessibilityLabel = "New Tab"
 
-        if tabManager.selectedTab?.isPrivate ?? false {
+        if tabManager.isIncognito {
             switchModeTitle = Strings.leaveIncognitoModeTitle
             switchModeImage = nil
 
@@ -142,7 +142,7 @@ extension BrowserViewController: ToolbarDelegate {
         var actions = [newTabAction, switchModeAction]
 
         let tabCount =
-            tabManager.selectedTab?.isPrivate ?? false
+            tabManager.isIncognito
             ? tabManager.privateTabs.count : tabManager.normalTabs.count
 
         if let tab = self.tabManager.selectedTab {

@@ -15,7 +15,7 @@ class KeyboardShortcutTests: UITestBase {
     func reset(tester: KIFUITestActor) {
         let tabManager = bvc.tabManager
 
-        if bvc.tabManager.selectedTab?.isPrivate ?? false {
+        if bvc.tabManager.selectedTab?.isIncognito ?? false {
             _ = tabManager.switchPrivacyMode()
         }
 
@@ -96,7 +96,7 @@ class KeyboardShortcutTests: UITestBase {
         // turn lazy tab into real tab by opening URL
         openURL("example.com")
 
-        XCTAssert(bvc.tabManager.selectedTab?.isPrivate == true)
+        XCTAssert(bvc.tabManager.selectedTab?.isIncognito == true)
         reset(tester: tester())
     }
 

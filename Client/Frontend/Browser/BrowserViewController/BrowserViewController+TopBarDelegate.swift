@@ -44,7 +44,7 @@ extension BrowserViewController: TopBarDelegate {
                     if let url = tab.url {
                         tab.toggleChangeUserAgent()
                         Tab.ChangeUserAgent.updateDomainList(
-                            forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: tab.isPrivate
+                            forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: self.tabManager.isIncognito
                         )
                     }
                 }

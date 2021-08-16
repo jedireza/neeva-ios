@@ -54,7 +54,7 @@ public class EnvironmentHelper {
         // selected tab is private
         let tabManager = SceneDelegate.getTabManager()
         let isPrivate =
-            tabManager.selectedTab?.isPrivate ?? false
+            tabManager.isIncognito
         let isPrivateMode = ClientLogCounterAttribute(
             key: LogConfig.Attribute.IsInPrivateMode, value: String(isPrivate))
 

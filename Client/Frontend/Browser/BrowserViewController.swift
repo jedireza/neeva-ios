@@ -274,7 +274,7 @@ class BrowserViewController: UIViewController {
         if let tab = tabManager.selectedTab,
             let webView = tab.webView
         {
-            toolbar?.applyUIMode(isPrivate: tab.isPrivate)
+            toolbar?.applyUIMode(isPrivate: tabManager.isIncognito)
             updateURLBarDisplayURL(tab)
             chromeModel.canGoBack = webView.canGoBack
             chromeModel.canGoForward = webView.canGoForward
@@ -323,7 +323,7 @@ class BrowserViewController: UIViewController {
 
         // If we are displying a private tab, hide any elements in the tab that we wouldn't want shown
         // when the app is in the app switcher
-        guard let privateTab = tabManager.selectedTab, privateTab.isPrivate else {
+        guard tabManager.isIncognito else {
             return
         }
 
@@ -701,7 +701,7 @@ class BrowserViewController: UIViewController {
 
         self.tabContentHost.updateContent(
             .showZeroQuery(
-                isIncognito: tabManager.selectedTab?.isPrivate ?? false,
+                isIncognito: tabManager.isIncognito,
                 isLazyTab: isLazyTab,
                 openedFrom))
     }
@@ -880,7 +880,7 @@ class BrowserViewController: UIViewController {
     }
 
     func openURLInNewTabPreservingIncognitoState(_ url: URL) {
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let isPrivate = tabManager.isIncognito
         self.openURLInNewTab(url, isPrivate: isPrivate)
     }
 
@@ -1006,7 +1006,7 @@ class BrowserViewController: UIViewController {
             tab?.toggleChangeUserAgent()
             Tab.ChangeUserAgent.updateDomainList(
                 forUrl: url, isChangedUA: tab?.changedUserAgent ?? false,
-                isPrivate: tab?.isPrivate ?? false)
+                isPrivate: self.tabManager.isIncognito)
         }
         appActivities.append(requestDesktopSiteActivity)
 
@@ -1040,7 +1040,7 @@ class BrowserViewController: UIViewController {
         if let visitType = self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue {
             info["visitType"] = visitType
         }
-        info["isPrivate"] = tab.isPrivate
+        info["isPrivate"] = tabManager.isIncognito
         notificationCenter.post(name: .OnLocationChange, object: self, userInfo: info)
     }
 
@@ -1268,7 +1268,7 @@ extension BrowserViewController: TabDelegate {
         tab.addContentScript(readerMode, name: ReaderMode.name())
 
         // only add the logins helper if the tab is not a private browsing tab
-        if !tab.isPrivate {
+        if !tabManager.isIncognito {
             let logins = LoginsHelper(tab: tab, profile: profile)
             tab.addContentScript(logins, name: LoginsHelper.name())
         }
@@ -1311,7 +1311,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String) {
-        openSearchNewTab(isPrivate: tab.isPrivate, selection)
+        openSearchNewTab(isPrivate: tabManager.isIncognito, selection)
     }
 }
 
@@ -1376,13 +1376,13 @@ extension BrowserViewController: TabManagerDelegate {
         if let tab = selected, let webView = tab.webView {
             updateURLBarDisplayURL(tab)
 
-            if previous == nil || tab.isPrivate != previous?.isPrivate {
+            if previous == nil || tab.isIncognito != previous?.isIncognito {
                 let ui: [PrivateModeUI?] = [toolbar, topBar, tabContentHost]
-                ui.forEach { $0?.applyUIMode(isPrivate: tab.isPrivate) }
+                ui.forEach { $0?.applyUIMode(isPrivate: tab.isIncognito) }
             }
 
             readerModeCache =
-                tab.isPrivate
+                tab.isIncognito
                 ? MemoryReaderModeCache.sharedInstance : DiskReaderModeCache.sharedInstance
             ReaderModeHandlers.readerModeCache = readerModeCache
 
@@ -1574,7 +1574,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
 
         if let url = elements.link, let currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString
-            let isPrivate = currentTab.isPrivate
+            let isPrivate = tabManager.isIncognito
             screenshotHelper.takeDelayedScreenshot(currentTab)
 
             let addTab = { (rURL: URL, isPrivate: Bool) in
@@ -1845,7 +1845,7 @@ extension BrowserViewController {
 extension BrowserViewController {
     func showNeevaMenuSheet() {
         TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
-        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let isPrivate = tabManager.isIncognito
 
         self.updateFeedbackImage()
         self.showOverlaySheetViewController(

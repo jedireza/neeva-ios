@@ -239,7 +239,7 @@ extension BrowserViewController: WKUIDelegate {
                             name: ContextMenuHelper.name()) as? ContextMenuHelper,
                         let elements = contextHelper.elements
                     else { return nil }
-                    let isPrivate = currentTab.isPrivate
+                    let isPrivate = currentTab.isIncognito
                     let addTab = { (rURL: URL, isPrivate: Bool) in
                         let tab = self.tabManager.addTab(
                             URLRequest(url: rURL as URL), afterTab: currentTab, isPrivate: isPrivate
@@ -650,14 +650,14 @@ extension BrowserViewController: WKNavigationDelegate {
         if ["http", "https", "blob", "file"].contains(url.scheme) {
             if navigationAction.targetFrame?.isMainFrame ?? false {
                 tab.changedUserAgent = Tab.ChangeUserAgent.contains(
-                    url: url, isPrivate: tab.isPrivate)
+                    url: url, isPrivate: tab.isIncognito)
             }
 
             pendingRequests[url.absoluteString] = navigationAction.request
 
             if NeevaConstants.isAppHost(url.host) {
                 webView.customUserAgent = UserAgent.neevaAppUserAgent()
-                setCookiesForNeeva(webView: webView, isPrivate: tab.isPrivate)
+                setCookiesForNeeva(webView: webView, isPrivate: tab.isIncognito)
             } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(
                     domain: url.baseDomain ?? "")
@@ -668,7 +668,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
             // Neeva incognito logic
             var request = navigationAction.request
-            if NeevaConstants.isAppHost(url.host), request.httpMethod == "GET", tab.isPrivate,
+            if NeevaConstants.isAppHost(url.host), request.httpMethod == "GET", tab.isIncognito,
                 !url.path.starts(with: "/incognito")
             {
                 let cookies = webView.configuration.websiteDataStore.httpCookieStore
@@ -949,7 +949,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // Every time a user visits a Neeva page, we extract the login cookie and save it to the
         // keychain. If however we find that they are on the sign in page, then we need to assume
         // our cached login cookie is no longer valid.
-        if !tab.isPrivate,
+        if !tab.isIncognito,
             let url = webView.url,
             NeevaConstants.isAppHost(url.host),
             url.scheme == "https"

@@ -51,7 +51,7 @@ class MetadataParserHelper: TabEventHandler {
             TabEvent.post(.didLoadPageMetadata(pageMetadata), for: tab)
 
             let userInfo: [String: Any] = [
-                "isPrivate": tab.isPrivate,
+                "isPrivate": tab.isIncognito,
                 "pageMetadata": pageMetadata,
                 "tabURL": pageURL,
             ]

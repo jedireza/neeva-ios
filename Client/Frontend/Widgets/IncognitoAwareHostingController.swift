@@ -21,8 +21,7 @@ class IncognitoAwareHostingController<Content: View>: UIHostingController<
         super.init(
             rootView: _Applicator(
                 content: rootView,
-                isIncognito: SceneDelegate.getTabManager().selectedTab?.isPrivate
-                    ?? false
+                isIncognito: SceneDelegate.getTabManager().isIncognito
             )
         )
     }

@@ -39,7 +39,7 @@ class SuggestionModel: ObservableObject {
     private var keyboardFocusedSuggestionIndex = -1
 
     private var isIncognito: Bool {
-        SceneDelegate.getTabManager().selectedTab?.isPrivate ?? false
+        SceneDelegate.getTabManager().isIncognito
     }
 
     private var chipQueryRange: ClosedRange<Int>? {

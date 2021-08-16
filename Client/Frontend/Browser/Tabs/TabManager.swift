@@ -116,12 +116,12 @@ class TabManager: NSObject, ObservableObject {
 
     var normalTabs: [Tab] {
         assert(Thread.isMainThread)
-        return tabs.filter { !$0.isPrivate }
+        return tabs.filter { !$0.isIncognito }
     }
 
     var privateTabs: [Tab] {
         assert(Thread.isMainThread)
-        return tabs.filter { $0.isPrivate }
+        return tabs.filter { $0.isIncognito }
     }
 
     init(profile: Profile, scene: UIScene) {
@@ -156,6 +156,13 @@ class TabManager: NSObject, ObservableObject {
     }
 
     var selectedTab: Tab?
+    @Published private(set) var isIncognito: Bool = false {
+        didSet {
+            if let selectedTab = selectedTab {
+                assert(selectedTab.isIncognito == isIncognito)
+            }
+        }
+    }
 
     subscript(index: Int) -> Tab? {
         assert(Thread.isMainThread)
@@ -205,11 +212,12 @@ class TabManager: NSObject, ObservableObject {
         let previous = previous ?? selectedTab
 
         // Make sure to wipe the private tabs if the user has the pref turned on
-        if Defaults[.closePrivateTabs], !(tab?.isPrivate ?? false), privateTabs.count > 0 {
+        if Defaults[.closePrivateTabs], !(tab?.isIncognito ?? false), privateTabs.count > 0 {
             removeAllPrivateTabs()
         }
 
         selectedTab = tab
+        isIncognito = tab?.isIncognito ?? false
         store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
 
         assert(tab === selectedTab, "Expected tab is selected")
@@ -234,7 +242,7 @@ class TabManager: NSObject, ObservableObject {
         }
         objectWillChange.send()
 
-        if let tab = tab, tab.isPrivate, let url = tab.url, NeevaConstants.isAppHost(url.host),
+        if let tab = tab, tab.isIncognito, let url = tab.url, NeevaConstants.isAppHost(url.host),
             !url.path.starts(with: "/incognito")
         {
             tab.webView?.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
@@ -279,7 +287,7 @@ class TabManager: NSObject, ObservableObject {
     func addPopupForParentTab(
         bvc: BrowserViewController, parentTab: Tab, configuration: WKWebViewConfiguration
     ) -> Tab {
-        let popup = Tab(bvc: bvc, configuration: configuration, isPrivate: parentTab.isPrivate)
+        let popup = Tab(bvc: bvc, configuration: configuration, isPrivate: parentTab.isIncognito)
         configureTab(
             popup, request: nil, afterTab: parentTab, flushToDisk: true, zombie: false,
             isPopup: true)
@@ -373,7 +381,7 @@ class TabManager: NSObject, ObservableObject {
     func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil) {
         if let atIndex = atIndex, atIndex <= tabs.count {
             tabs.insert(tab, at: atIndex)
-        } else if parent == nil || parent?.isPrivate != tab.isPrivate {
+        } else if parent == nil || parent?.isIncognito != tab.isIncognito {
             tabs.append(tab)
         } else if let parent = parent, var insertIndex = tabs.firstIndex(of: parent) {
             insertIndex += 1
@@ -432,7 +440,7 @@ class TabManager: NSObject, ObservableObject {
         guard let selectedTab = selectedTab else { return result }
         let nextSelectedTab: Tab?
 
-        if selectedTab.isPrivate {
+        if selectedTab.isIncognito {
             nextSelectedTab = mostRecentTab(inTabs: normalTabs)
         } else {
             if privateTabs.isEmpty {
@@ -457,10 +465,10 @@ class TabManager: NSObject, ObservableObject {
     }
 
     private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
-        let closedLastNormalTab = !tab.isPrivate && normalTabs.isEmpty
-        let closedLastPrivateTab = tab.isPrivate && privateTabs.isEmpty
+        let closedLastNormalTab = !tab.isIncognito && normalTabs.isEmpty
+        let closedLastPrivateTab = tab.isIncognito && privateTabs.isEmpty
 
-        let viableTabs: [Tab] = tab.isPrivate ? privateTabs : normalTabs
+        let viableTabs: [Tab] = tab.isIncognito ? privateTabs : normalTabs
 
         if closedLastNormalTab {
             selectTab(addTab(), previous: tab)
@@ -495,7 +503,7 @@ class TabManager: NSObject, ObservableObject {
         tabs.remove(at: removalIndex)
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
-        if tab.isPrivate && privateTabs.count < 1 {
+        if tab.isIncognito && privateTabs.count < 1 {
             privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
         }
 
@@ -515,7 +523,7 @@ class TabManager: NSObject, ObservableObject {
 
     // Select the most recently visited tab, IFF it is also the parent tab of the closed tab.
     func selectParentTab(afterRemoving tab: Tab) -> Bool {
-        let viableTabs = (tab.isPrivate ? privateTabs : normalTabs).filter { $0 != tab }
+        let viableTabs = (tab.isIncognito ? privateTabs : normalTabs).filter { $0 != tab }
         guard let parentTab = tab.parent, parentTab != tab, !viableTabs.isEmpty,
             viableTabs.contains(parentTab)
         else { return false }
@@ -561,7 +569,7 @@ class TabManager: NSObject, ObservableObject {
 
     func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
         // Avoid remembering incognito tabs.
-        let tabs = tabs.filter { !$0.isPrivate }
+        let tabs = tabs.filter { !$0.isIncognito }
         if tabs.isEmpty {
             return
         }
@@ -731,7 +739,7 @@ extension TabManager {
         var tabToSelect = store.restoreStartupTabs(
             for: scene, clearPrivateTabs: Defaults[.closePrivateTabs], tabManager: self)
         let wasLastSessionPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-        if wasLastSessionPrivate, !(tabToSelect?.isPrivate ?? false) {
+        if wasLastSessionPrivate, !(tabToSelect?.isIncognito ?? false) {
             tabToSelect = addTab(isPrivate: true)
         }
 

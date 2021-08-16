@@ -120,8 +120,7 @@ extension TabManager: ClosingManager, SelectingManager, AccessingManager {
     }
 
     func getAll() -> [Tab] {
-        let isPrivate = selectedTab?.isPrivate ?? false
-        return tabs.filter { $0.isPrivate == isPrivate }
+        return tabs.filter { $0.isIncognito == isIncognito }
     }
 }
 

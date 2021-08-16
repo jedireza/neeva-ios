@@ -48,7 +48,7 @@ extension BrowserViewController {
                 tab.toggleChangeUserAgent()
                 Tab.ChangeUserAgent.updateDomainList(
                     forUrl: url, isChangedUA: tab.changedUserAgent,
-                    isPrivate: tab.isPrivate)
+                    isPrivate: tab.isIncognito)
             }
         case .share:
             showShareSheet(buttonView: targetButtonView ?? topBar.view)

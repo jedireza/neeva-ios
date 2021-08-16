@@ -22,7 +22,7 @@ class FaviconHandler {
         let manager = SDWebImageManager.shared
         let site = Site(url: currentURL, title: "")
         let options: SDWebImageOptions =
-            tab.isPrivate
+            tab.isIncognito
             ? [SDWebImageOptions.lowPriority, SDWebImageOptions.fromCacheOnly]
             : SDWebImageOptions.lowPriority
 
@@ -40,7 +40,7 @@ class FaviconHandler {
         let onSuccess: (Favicon, Data?) -> Void = { [weak tab] (favicon, data) -> Void in
             tab?.favicons.append(favicon)
 
-            guard !(tab?.isPrivate ?? true) else {
+            guard !(tab?.isIncognito ?? true) else {
                 deferred.fill(Maybe(success: (favicon, data)))
                 return
             }
