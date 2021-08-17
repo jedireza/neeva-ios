@@ -1816,7 +1816,8 @@ extension BrowserViewController {
         webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") {
             [unowned self]
             (result, error) in
-            showAddToSpacesSheet(url: url, title: title, description: result as? String)
+            showAddToSpacesSheet(
+                url: url, title: title, description: result as? String, importData: importData)
         }
     }
 
