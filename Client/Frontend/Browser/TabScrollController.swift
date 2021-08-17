@@ -36,8 +36,7 @@ class TabScrollingController: NSObject, ObservableObject {
                 scrollView?.delegate = nil
                 scrollView?.removeGestureRecognizer(panGesture)
 
-                if let tab = newTab {
-                    let scrollView = tab.webView!.scrollView
+                if let tab = newTab, let scrollView = tab.webView?.scrollView  {
                     scrollView.addGestureRecognizer(panGesture)
                     scrollView.delegate = self
                     self.scrollView = scrollView
