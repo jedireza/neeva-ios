@@ -228,8 +228,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppClipHelper.saveTokenToDevice(nil)
 
         DispatchQueue.main.async { [self] in
-            browserViewController.openURLInNewTab(
-                URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
+            browserViewController.switchToTabForURLOrOpen(URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
 
             // view alpha is set to 0 in viewWillAppear creating a blank screen
             browserViewController.view.alpha = 1

@@ -844,7 +844,9 @@ class BrowserViewController: UIViewController {
             urlFromAnotherApp = UrlToOpenModel(url: url, isPrivate: isPrivate)
             return
         }
+
         popToBVC()
+
         if let tab = tabManager.getTabForURL(url) {
             tabManager.selectTab(tab)
         } else {
@@ -911,6 +913,10 @@ class BrowserViewController: UIViewController {
     }
 
     fileprivate func popToBVC() {
+        if !cardGridViewController.gridModel.isHidden {
+            cardGridViewController.gridModel.hideWithNoAnimation()
+        }
+
         if let presentedViewController = presentedViewController {
             presentedViewController.dismiss(animated: true, completion: nil)
         } else if chromeModel.isEditingLocation {
