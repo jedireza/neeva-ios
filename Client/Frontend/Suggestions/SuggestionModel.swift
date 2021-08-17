@@ -451,6 +451,7 @@ class SuggestionModel: ObservableObject {
     // MARK: - Suggestion Handling
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let bvc = SceneDelegate.getBVC()
+        let tabManager = bvc.tabManager
         let suggestionLocationAttributes =
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
 
@@ -475,17 +476,14 @@ class SuggestionModel: ObservableObject {
                     + suggestionLocationAttributes
                     + suggestionSnapshotAttributes())
 
-            guard let tab = bvc.tabManager.selectedTab else { return }
             bvc.finishEditingAndSubmit(
-                URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: tab)
+                URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
         case .lens(let suggestion):
-            guard let tab = bvc.tabManager.selectedTab else { return }
             bvc.finishEditingAndSubmit(
-                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: tab)
+                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
         case .bang(let suggestion):
-            guard let tab = bvc.tabManager.selectedTab else { return }
             bvc.finishEditingAndSubmit(
-                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: tab)
+                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
         case .navigation(let nav):
             ClientLogger.shared.logCounter(
                 LogConfig.Interaction.HistorySuggestion,
@@ -493,11 +491,9 @@ class SuggestionModel: ObservableObject {
                     + suggestionLocationAttributes
                     + suggestionSnapshotAttributes())
 
-            guard let tab = bvc.tabManager.selectedTab else { return }
-            bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: tab)
+            bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
         case .tabSuggestion(let selectedTab):
             if !selectedTab.isSelected, let tab = selectedTab.manager.get(for: selectedTab.id) {
-
                 selectedTab.manager.select(tab)
             } else {
                 bvc.searchQueryModel.value = selectedTab.url?.absoluteString ?? ""

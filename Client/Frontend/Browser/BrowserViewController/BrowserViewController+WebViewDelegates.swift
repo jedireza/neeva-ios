@@ -203,7 +203,7 @@ extension BrowserViewController: WKUIDelegate {
         if let tab = tabManager[webView] {
             // Need to wait here in case we're waiting for a pending `window.open()`.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.tabManager.removeTabAndUpdateSelectedTab(tab)
+                self.tabManager.removeTabAndUpdateSelectedTab(tab, addNewTab: true)
             }
         }
     }

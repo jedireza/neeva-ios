@@ -124,7 +124,7 @@ class SimulatedSwipeController:
 
     func tabManager(
         _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
-        isRestoring: Bool
+        isRestoring: Bool, updateZeroQuery: Bool
     ) {
         guard let tabUUID = selected?.tabUUID else {
             return
@@ -183,7 +183,7 @@ class SimulatedSwipeController:
             return false
         }
 
-        tabManager.removeTabAndUpdateSelectedTab(tab)
+        tabManager.removeTabAndUpdateSelectedTab(tab, addNewTab: true)
         return true
     }
 

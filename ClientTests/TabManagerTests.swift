@@ -34,7 +34,7 @@ struct MethodSpy {
     }
 }
 
-private let spyDidSelectedTabChange = "tabManager(_:didSelectedTabChange:previous:isRestoring:)"
+private let spyDidSelectedTabChange = "tabManager(_:didSelectedTabChange:previous:isRestoring:updateZeroQuery:)"
 private let spyRestoredTabs = "tabManagerDidRestoreTabs(_:)"
 
 open class MockTabManagerDelegate: TabManagerDelegate {
@@ -66,7 +66,7 @@ open class MockTabManagerDelegate: TabManagerDelegate {
 
     public func tabManager(
         _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
-        isRestoring: Bool
+        isRestoring: Bool, updateZeroQuery: Bool
     ) {
         testDelegateMethodWithName(#function, tabs: [selected, previous])
     }

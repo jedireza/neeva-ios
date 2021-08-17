@@ -15,7 +15,7 @@ private let log = Logger.browser
 protocol TabManagerDelegate: AnyObject {
     func tabManager(
         _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
-        isRestoring: Bool)
+        isRestoring: Bool, updateZeroQuery: Bool)
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool)
     func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool)
 
@@ -207,7 +207,7 @@ class TabManager: NSObject, ObservableObject {
 
     // This function updates the _selectedIndex.
     // Note: it is safe to call this with `tab` and `previous` as the same tab, for use in the case where the index of the tab has changed (such as after deletion).
-    func selectTab(_ tab: Tab?, previous: Tab? = nil) {
+    func selectTab(_ tab: Tab?, previous: Tab? = nil, updateZeroQuery: Bool = true) {
         assert(Thread.isMainThread)
         let previous = previous ?? selectedTab
 
@@ -228,8 +228,10 @@ class TabManager: NSObject, ObservableObject {
         delegates.forEach {
             $0.get()?.tabManager(
                 self, didSelectedTabChange: tab, previous: previous,
-                isRestoring: store.isRestoringTabs)
+                isRestoring: store.isRestoringTabs,
+                updateZeroQuery: updateZeroQuery)
         }
+
         if let tab = selectedTab {
             selectedTabPublisher.send(tab)
         }
@@ -433,46 +435,38 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    enum SwitchPrivacyModeResult { case createdNewTab, usedExistingTab }
-    @discardableResult
-    func switchPrivacyMode() -> SwitchPrivacyModeResult {
-        var result = SwitchPrivacyModeResult.usedExistingTab
-        guard let selectedTab = selectedTab else { return result }
-        let nextSelectedTab: Tab?
+    func toggleIncognitoMode() {
+        // set to nil while inconito changes
+        selectedTab = nil
 
-        if selectedTab.isIncognito {
-            nextSelectedTab = mostRecentTab(inTabs: normalTabs)
-        } else {
-            if privateTabs.isEmpty {
-                nextSelectedTab = addTab(isPrivate: true)
-                result = .createdNewTab
-            } else {
-                nextSelectedTab = mostRecentTab(inTabs: privateTabs)
-            }
+        // prevents assert from failing here
+        isIncognito.toggle()
+
+        if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
+            selectTab(mostRecentTab, updateZeroQuery: FeatureFlag[.emptyTabTray] ? false : true)
+        } else if !FeatureFlag[.emptyTabTray] {
+            select(addTab(isPrivate: isIncognito))
         }
-
-        selectTab(nextSelectedTab)
-
-        return result
     }
 
-    func removeTabAndUpdateSelectedTab(_ tab: Tab, allowToast: Bool = false) {
+    func removeTabAndUpdateSelectedTab(_ tab: Tab, allowToast: Bool = false, addNewTab: Bool = true) {
         guard let index = tabs.firstIndex(where: { $0 === tab }) else { return }
         addTabsToRecentlyClosed([tab], allowToast: allowToast)
         removeTab(tab, flushToDisk: true, notify: true)
 
-        updateTabAfterRemovalOf(tab, deletedIndex: index)
+        updateTabAfterRemovalOf(tab, deletedIndex: index, addNewTab: addNewTab)
     }
 
-    private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
+    private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int, addNewTab: Bool) {
+        let addNewTab = FeatureFlag[.emptyTabTray] ? addNewTab : true
         let closedLastNormalTab = !tab.isIncognito && normalTabs.isEmpty
         let closedLastPrivateTab = tab.isIncognito && privateTabs.isEmpty
 
         let viableTabs: [Tab] = tab.isIncognito ? privateTabs : normalTabs
 
-        if closedLastNormalTab {
+        if closedLastNormalTab && addNewTab {
             selectTab(addTab(), previous: tab)
-        } else if closedLastPrivateTab {
+        } else if closedLastPrivateTab && addNewTab {
             selectTab(mostRecentTab(inTabs: tabs) ?? tabs.last, previous: tab)
         } else if tab == selectedTab {
             if !selectParentTab(afterRemoving: tab) {
@@ -542,17 +536,17 @@ class TabManager: NSObject, ObservableObject {
         privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 
-    func removeTabsAndAddNormalTab(_ tabsToBeRemoved: [Tab], showToast: Bool) {
+    func removeTabs(_ tabsToBeRemoved: [Tab], showToast: Bool, addNormalTab: Bool) {
         addTabsToRecentlyClosed(tabsToBeRemoved, allowToast: showToast)
         removeTabs(tabsToBeRemoved)
 
-        if normalTabs.isEmpty {
+        if normalTabs.isEmpty && (addNormalTab || !FeatureFlag[.emptyTabTray]) {
             selectTab(addTab())
         }
     }
 
-    func removeAllTabsAndAddNormalTab() {
-        removeTabsAndAddNormalTab(tabs, showToast: false)
+    func removeAllTabs(addNormalTab: Bool) {
+        removeTabs(tabs, showToast: false, addNormalTab: addNormalTab)
     }
 
     func removeTabsWithToast(_ tabsToRemove: [Tab]) {

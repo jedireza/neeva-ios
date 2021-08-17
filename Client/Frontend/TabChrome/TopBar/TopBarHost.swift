@@ -88,9 +88,11 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         super.init()
         setRootView {
             TopBarContent(
-                suggestionModel: suggestionModel, model: locationViewModel,
+                suggestionModel: suggestionModel,
+                model: locationViewModel,
                 queryModel: queryModel,
-                gridModel: gridModel, trackingStatsViewModel: trackingStatsViewModel,
+                gridModel: gridModel,
+                trackingStatsViewModel: trackingStatsViewModel,
                 chromeModel: chromeModel
             )
         }

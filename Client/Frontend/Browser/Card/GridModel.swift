@@ -3,7 +3,7 @@
 import Foundation
 
 class GridModel: ObservableObject {
-    @Published var isHidden = true
+    @Published var isHidden = true 
     @Published var animationThumbnailState: AnimationThumbnailState = .visibleForTrayShown
     private var updateVisibility: ((Bool) -> Void)!
     var scrollOffset: CGFloat = CGFloat.zero

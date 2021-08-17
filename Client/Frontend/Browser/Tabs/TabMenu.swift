@@ -11,7 +11,7 @@ class TabMenu {
     var tabsClosed: ((Bool) -> Void)?
 
     // MARK: Close All Tabs
-    func showConfirmCloseAllTabs(numberOfTabs: Int) {
+    func showConfirmCloseAllTabs(numberOfTabs: Int, fromTabTray: Bool) {
         let isPrivate = tabManager.isIncognito
         guard let alertPresentViewController = alertPresentViewController else {
             return
@@ -28,14 +28,18 @@ class TabMenu {
             style: .destructive
         ) { [self] _ in
             if isPrivate {
-                _ = tabManager.switchPrivacyMode()
+                if (!fromTabTray || !FeatureFlag[.emptyTabTray]) {
+                	tabManager.toggleIncognitoMode()
 
-                // wait for tabManager to switch to normal mode before closing private tabs
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: false)
+                	// wait for tabManager to switch to normal mode before closing private tabs
+                	DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                	    tabManager.removeTabs(tabManager.privateTabs, showToast: false, addNormalTab: true)
+                	}
+                } else {
+                    tabManager.removeTabs(tabManager.privateTabs, showToast: false, addNormalTab: false)
                 }
             } else {
-                tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: false)
+                tabManager.removeTabs(tabManager.normalTabs, showToast: false, addNormalTab: !fromTabTray)
             }
 
             if let tabsClosed = tabsClosed {
@@ -60,22 +64,22 @@ class TabMenu {
         alertPresentViewController.present(actionSheet, animated: true, completion: nil)
     }
 
-    func createCloseAllTabsAction() -> UIAction {
+    func createCloseAllTabsAction(fromTabTray: Bool) -> UIAction {
         let isPrivate = tabManager.isIncognito
         let action = UIAction(
             title: "Close All \(isPrivate ? "Incognito " : "")Tabs",
             image: UIImage(systemName: "trash"), attributes: .destructive
         ) { _ in
             // make sure the user really wants to close all tabs
-            self.showConfirmCloseAllTabs(numberOfTabs: self.getTabCountForCurrentType())
+            self.showConfirmCloseAllTabs(numberOfTabs: self.getTabCountForCurrentType(), fromTabTray: fromTabTray)
         }
         action.accessibilityLabel = "Close All Tabs"
 
         return action
     }
 
-    func createCloseAllTabsMenu() -> UIMenu {
-        return UIMenu(sections: [[createCloseAllTabsAction()]])
+    func createCloseAllTabsMenu(fromTabTray: Bool) -> UIMenu {
+        return UIMenu(sections: [[createCloseAllTabsAction(fromTabTray: fromTabTray)]])
     }
 
     func getTabCountForCurrentType() -> Int {

@@ -41,6 +41,7 @@ class IncognitoAwareHostingController<Content: View>: UIHostingController<
     struct _Applicator<Content: View>: View {
         fileprivate let content: (() -> Content)?
         fileprivate let isIncognito: Bool
+
         var body: some View {
             if let content = content {
                 content()

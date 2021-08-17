@@ -53,7 +53,7 @@ extension BrowserViewController: TopBarDelegate {
     }
 
     func urlBar(didSubmitText text: String) {
-        guard let currentTab = tabManager.selectedTab else { return }
+        let currentTab = tabManager.selectedTab
 
         if let fixupURL = URIFixup.getURL(text) {
             // The user entered a URL, so use it.
@@ -71,7 +71,7 @@ extension BrowserViewController: TopBarDelegate {
         self.submitSearchText(text, forTab: currentTab)
     }
 
-    fileprivate func submitSearchText(_ text: String, forTab tab: Tab) {
+    fileprivate func submitSearchText(_ text: String, forTab tab: Tab?) {
         if let searchURL = neevaSearchEngine.searchURLForQuery(text) {
             // We couldn't find a matching search keyword, so do a search query.
             finishEditingAndSubmit(searchURL, visitType: VisitType.typed, forTab: tab)

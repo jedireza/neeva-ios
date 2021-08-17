@@ -78,8 +78,9 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                     SuggestionsContent(suggestionModel: suggestionModel)
                         .environment(\.onOpenURL) { url in
                             let bvc = SceneDelegate.getBVC()
-                            guard let tab = bvc.tabManager.selectedTab else { return }
-                            bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
+                            let tabManager = bvc.tabManager
+
+                            bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tabManager.selectedTab)
                         }.environment(\.setSearchInput) { suggestion in
                             suggestionModel.queryModel.value = suggestion
                         }
@@ -125,13 +126,14 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
     }
 
     @discardableResult public func promoteToRealTabIfNecessary(
-        url: URL, tabManager: TabManager
+        url: URL, tabManager: TabManager, selectedTabIsNil: Bool = false
     ) -> Bool {
         let result = zeroQueryModel.promoteToRealTabIfNecessary(url: url, tabManager: tabManager)
         if result {
             updateContent(.hideZeroQuery)
         }
-        return result
+
+        return selectedTabIsNil || result
     }
 
     func updateContent(_ event: ContentUIVisibilityEvent) {

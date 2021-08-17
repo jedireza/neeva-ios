@@ -27,7 +27,6 @@ struct TabToolbarContent: View {
 }
 
 class TabToolbarHost: IncognitoAwareHostingController<TabToolbarContent> {
-
     init(chromeModel: TabChromeModel, delegate: ToolbarDelegate) {
         super.init {
             TabToolbarContent(chromeModel: chromeModel)

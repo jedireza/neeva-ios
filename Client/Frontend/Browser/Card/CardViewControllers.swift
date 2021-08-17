@@ -52,7 +52,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         })
         gridModel.buildCloseAllTabsMenu = {
             let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
-            return tabMenu.createCloseAllTabsMenu()
+            return tabMenu.createCloseAllTabsMenu(fromTabTray: true)
         }
         gridModel.buildRecentlyClosedTabsMenu = {
             let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)

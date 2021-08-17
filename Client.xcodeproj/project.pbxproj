@@ -193,6 +193,7 @@
 		66430430267C19D200674549 /* ToastDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6643042F267C19D200674549 /* ToastDefaults.swift */; };
 		664825F0268FD106000E7F6A /* XCUIElementExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664825EF268FD106000E7F6A /* XCUIElementExtension.swift */; };
 		665879CE26C3408700B53EB7 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665879CD26C3408700B53EB7 /* WindowManager.swift */; };
+		666CFD8A26C735DC009ED9CF /* EmptyCardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */; };
 		6670187126BB678700960CF3 /* SuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6670187026BB678700960CF3 /* SuggestionModel.swift */; };
 		667DB63A2698E3DF0054A222 /* KeyboardShortcutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */; };
 		669409BD26AF8D8B00FE635B /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
@@ -1119,6 +1120,7 @@
 		6643042F267C19D200674549 /* ToastDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastDefaults.swift; sourceTree = "<group>"; };
 		664825EF268FD106000E7F6A /* XCUIElementExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCUIElementExtension.swift; sourceTree = "<group>"; };
 		665879CD26C3408700B53EB7 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
+		666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCardGrid.swift; sourceTree = "<group>"; };
 		6670187026BB678700960CF3 /* SuggestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionModel.swift; sourceTree = "<group>"; };
 		669ACD53269CED060038C89C /* AppClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		669ACD55269CED060038C89C /* AppClipApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipApp.swift; sourceTree = "<group>"; };
@@ -2112,6 +2114,7 @@
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
 				4A3D2992268583710082F293 /* CardModels.swift */,
 				4A3D299026850CB60082F293 /* CardGrid.swift */,
+				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */,
 				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
 				C9655DEE26A09A8600925912 /* CardListViews.swift */,
@@ -4677,6 +4680,7 @@
 				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,
+				666CFD8A26C735DC009ED9CF /* EmptyCardGrid.swift in Sources */,
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				67B0AAF426BA080D000731E0 /* OverflowMenuViewController.swift in Sources */,

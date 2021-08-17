@@ -41,7 +41,7 @@ extension BrowserViewController {
 
     @objc func newPrivateTabKeyCommand() {
         if !(tabManager.isIncognito) {
-            _ = tabManager.switchPrivacyMode()
+            _ = tabManager.toggleIncognitoMode()
         }
 
         // wait for tabManager to switch to normal mode before closing private tabs
@@ -90,14 +90,14 @@ extension BrowserViewController {
 
     @objc func closeAllTabsCommand() {
         if tabManager.isIncognito {
-            _ = tabManager.switchPrivacyMode()
+            tabManager.toggleIncognitoMode()
 
             // wait for tabManager to switch to normal mode before closing private tabs
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
-                tabManager.removeTabsAndAddNormalTab(tabManager.privateTabs, showToast: true)
+                tabManager.removeTabs(tabManager.privateTabs, showToast: true, addNormalTab: cardGridViewController.gridModel.isHidden)
             }
         } else {
-            tabManager.removeTabsAndAddNormalTab(tabManager.normalTabs, showToast: true)
+            tabManager.removeTabs(tabManager.normalTabs, showToast: true, addNormalTab: cardGridViewController.gridModel.isHidden)
         }
     }
 

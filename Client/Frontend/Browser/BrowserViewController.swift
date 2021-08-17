@@ -59,7 +59,7 @@ class BrowserViewController: UIViewController {
         return controller
     }()
 
-    private lazy var cardGridViewController: CardGridViewController = { [unowned self] in
+    lazy var cardGridViewController: CardGridViewController = { [unowned self] in
         let controller = CardGridViewController(
             tabManager: self.tabManager
         ) {
@@ -789,14 +789,12 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab) {
-        if !tabContentHost.promoteToRealTabIfNecessary(url: url, tabManager: tabManager) {
+    func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab?) {
+        if !tabContentHost.promoteToRealTabIfNecessary(url: url, tabManager: tabManager, selectedTabIsNil: tab == nil) {
             if FeatureFlag[.createOrSwitchToTab] {
                 tabManager.createOrSwitchToTab(for: url)
-            } else {
-                if let nav = tab.loadRequest(URLRequest(url: url)) {
-                    self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
-                }
+            } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {
+                self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             }
         }
 
@@ -1327,8 +1325,7 @@ extension BrowserViewController: TabDelegate {
 
 extension BrowserViewController: HistoryPanelDelegate {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType) {
-        guard let tab = tabManager.selectedTab else { return }
-        finishEditingAndSubmit(url, visitType: visitType, forTab: tab)
+        finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
         presentedViewController?.dismiss(animated: true, completion: nil)
     }
 }
@@ -1340,8 +1337,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 
     func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType) {
-        guard let tab = tabManager.selectedTab else { return }
-        finishEditingAndSubmit(url, visitType: visitType, forTab: tab)
+        finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
     }
 
     func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
@@ -1370,7 +1366,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
 extension BrowserViewController: TabManagerDelegate {
     func tabManager(
         _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
-        isRestoring: Bool
+        isRestoring: Bool, updateZeroQuery: Bool
     ) {
         presentedViewController?.dismiss(animated: false, completion: nil)
 
@@ -1457,7 +1453,9 @@ extension BrowserViewController: TabManagerDelegate {
             locationModel.readerMode = .unavailable
         }
 
-        updateInZeroQuery(selected?.url as URL?)
+        if updateZeroQuery {
+            updateInZeroQuery(selected?.url as URL?)
+        }
     }
 
     func tabManager(_: TabManager, didAddTab tab: Tab, isRestoring: Bool) {

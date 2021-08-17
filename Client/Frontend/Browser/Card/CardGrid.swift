@@ -108,27 +108,34 @@ struct CardGrid: View {
         GeometryReader { geom in
             VStack(spacing: 0) {
                 if topToolbar {
-                    SwitcherToolbarView(top: true)
+                    SwitcherToolbarView(top: true, isEmpty: tabModel.isCardGridEmpty)
                 }
-                VStack(spacing: 0) {
-                    if FeatureFlag[.nativeSpaces] {
-                        GridPicker(switcherState: $switcherState)
+                
+                if tabModel.isCardGridEmpty {
+                    EmptyCardGrid()
+                } else {
+                    VStack(spacing: 0) {
+                        if FeatureFlag[.groupsInSwitcher] {
+                            GridPicker(switcherState: $switcherState)
+                        } else {
+                            CardsContainer(
+                                switcherState: $switcherState,
+                                columns: Array(
+                                    repeating:
+                                        GridItem(
+                                            .fixed(cardSize),
+                                            spacing: CardGridUX.GridSpacing),
+                                    count: columnCount)
+                            )
+                            .environment(\.cardSize, cardSize)
+                            Spacer(minLength: 0)
+                        }
                     }
-                    CardsContainer(
-                        switcherState: $switcherState,
-                        columns: Array(
-                            repeating:
-                                GridItem(
-                                    .fixed(cardSize),
-                                    spacing: CardGridUX.GridSpacing),
-                            count: columnCount)
-                    )
-                    .environment(\.cardSize, cardSize)
-                    Spacer(minLength: 0)
+                    .background(Color(UIColor.TrayBackground).ignoresSafeArea())
                 }
-                .background(Color(UIColor.TrayBackground).ignoresSafeArea())
+
                 if !topToolbar {
-                    SwitcherToolbarView(top: false)
+                    SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
                 }
             }
             .useEffect(

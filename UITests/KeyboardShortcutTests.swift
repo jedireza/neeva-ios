@@ -16,10 +16,10 @@ class KeyboardShortcutTests: UITestBase {
         let tabManager = bvc.tabManager
 
         if bvc.tabManager.selectedTab?.isIncognito ?? false {
-            _ = tabManager.switchPrivacyMode()
+            _ = tabManager.toggleIncognitoMode()
         }
 
-        tabManager.removeTabsAndAddNormalTab(tabManager.tabs, showToast: false)
+        tabManager.removeTabs(tabManager.tabs, showToast: false, addNormalTab: true)
     }
 
     func openMultipleTabs(tester: KIFUITestActor) {

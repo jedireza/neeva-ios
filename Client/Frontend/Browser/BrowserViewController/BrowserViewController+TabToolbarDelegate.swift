@@ -109,7 +109,7 @@ extension BrowserViewController: ToolbarDelegate {
         }
 
         let switchPrivacyMode = { [self] (_: UIAction) in
-            _ = tabManager.switchPrivacyMode()
+            _ = tabManager.toggleIncognitoMode()
         }
 
         var switchModeTitle = Strings.openIncognitoModeTitle
@@ -151,7 +151,7 @@ extension BrowserViewController: ToolbarDelegate {
                     title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark)
                 ) { _ in
                     if let tab = self.tabManager.selectedTab {
-                        self.tabManager.removeTabAndUpdateSelectedTab(tab)
+                        self.tabManager.removeTabAndUpdateSelectedTab(tab, addNewTab: true)
                     }
                 }
                 closeTabAction.accessibilityIdentifier = "Close Tab Action"
@@ -162,7 +162,7 @@ extension BrowserViewController: ToolbarDelegate {
         if tabCount > 1 {
             actions.insert(
                 TabMenu(tabManager: tabManager, alertPresentViewController: self)
-                    .createCloseAllTabsAction(), at: 0)
+                    .createCloseAllTabsAction(fromTabTray: false), at: 0)
         }
 
         return UIMenu(sections: [actions])

@@ -6,7 +6,7 @@ import SwiftUI
 class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
     let openLazyTab: () -> Void
-    @Published var isIncognito: Bool 
+    @Published var isIncognito: Bool
 
     init(tabManager: TabManager, openLazyTab: @escaping () -> Void) {
         self.tabManager = tabManager
@@ -22,14 +22,15 @@ class SwitcherToolbarModel: ObservableObject {
         openLazyTab()
     }
 
-    func onToggleIncognito() -> Bool {
-        tabManager.switchPrivacyMode() == .createdNewTab
+    func onToggleIncognito() {
+        tabManager.toggleIncognitoMode()
     }
 }
 
 /// The toolbar for the card grid/tab switcher
 struct SwitcherToolbarView: View {
     let top: Bool
+    var isEmpty: Bool
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
 
@@ -37,14 +38,12 @@ struct SwitcherToolbarView: View {
         let divider = Color.ui.adaptive.separator.frame(height: 1).ignoresSafeArea()
         VStack(spacing: 0) {
             if !top { divider }
+            
             HStack(spacing: 0) {
                 IncognitoButton(
                     isIncognito: toolbarModel.isIncognito,
                     action: {
-                        let shouldHide = toolbarModel.onToggleIncognito()
-                        if shouldHide {
-                            gridModel.hideWithNoAnimation()
-                        }
+                        toolbarModel.onToggleIncognito()
                     }
                 )
                 Spacer()
@@ -68,8 +67,9 @@ struct SwitcherToolbarView: View {
                         string: "Done",
                         attributes: [NSAttributedString.Key.font: font])
                     $0.setAttributedTitle(title, for: .normal)
-                    $0.setTitleColor(.label, for: .normal)
+                    $0.setTitleColor(isEmpty ? .secondaryLabel : .label, for: .normal)
                     $0.setDynamicMenu(gridModel.buildCloseAllTabsMenu)
+                    $0.isEnabled = !isEmpty
                 }
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
@@ -77,6 +77,7 @@ struct SwitcherToolbarView: View {
             }.padding(.horizontal, 16)
                 .frame(
                     height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)
+
             if top { divider }
         }
         .background(Color.DefaultBackground.ignoresSafeArea())

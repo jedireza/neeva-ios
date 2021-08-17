@@ -30,6 +30,10 @@ class TabCardModel: CardModel, TabEventHandler {
     @Published var allDetailsWithExclusionList: [TabCardDetails] = []
     @Published var selectedTabID: String? = nil
 
+    var isCardGridEmpty: Bool {
+        FeatureFlag[.emptyTabTray] && (manager.isIncognito ? manager.privateTabs.count == 0 : manager.normalTabs.count == 0)
+    }
+
     init(manager: TabManager, groupManager: TabGroupManager) {
         self.manager = manager
         self.groupManager = groupManager
@@ -49,6 +53,7 @@ class TabCardModel: CardModel, TabEventHandler {
         guard let url = tab.url, InternalURL(url)?.isZeroQueryURL ?? false else {
             return
         }
+
         onDataUpdated()
     }
 
