@@ -129,19 +129,34 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         let querySuggestions = data.suggest?.querySuggestion ?? []
         // Split queries into standard queries that doesnt have annotations and everything else.
         let chipQuerySuggestions =
-            querySuggestions.filter { $0.type == .standard && $0.annotation?.description == nil }
+            querySuggestions.filter {
+                $0.type == .standard
+                    && $0.annotation?.description == nil
+                    && $0.annotation?.stockInfo == nil
+            }
         var rowQuerySuggestions =
-            querySuggestions.filter { $0.type != .standard || $0.annotation?.description != nil }
+            querySuggestions.filter {
+                $0.type != .standard
+                    || $0.annotation?.description != nil
+                    || $0.annotation?.stockInfo != nil
+            }
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
         // Move all nav suggestions out of url suggestions.
         var navSuggestions = urlSuggestions.filter { !($0.subtitle?.isEmpty ?? true) }
         urlSuggestions.removeAll(where: { !($0.subtitle?.isEmpty ?? true) })
         // Top suggestion is either the first memorized suggestion or the first query shown in rows.
-        let topSuggestions =
-            navSuggestions.isEmpty
-            ? (rowQuerySuggestions.isEmpty
-                ? [] : [rowQuerySuggestions.removeFirst()].map(Suggestion.query))
-            : [navSuggestions.removeFirst()].map(Suggestion.url)
+        var topSuggestions = [Suggestion]()
+        if let stockElementIdx =
+            (rowQuerySuggestions.firstIndex { $0.annotation?.stockInfo != nil })
+        {
+            topSuggestions = [rowQuerySuggestions.remove(at: stockElementIdx)].map(Suggestion.query)
+        } else if navSuggestions.isEmpty {
+            if !rowQuerySuggestions.isEmpty {
+                topSuggestions = [rowQuerySuggestions.removeFirst()].map(Suggestion.query)
+            }
+        } else {
+            topSuggestions = [navSuggestions.removeFirst()].map(Suggestion.url)
+        }
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
         return (

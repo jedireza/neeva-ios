@@ -14,6 +14,8 @@ enum SuggestionViewUX {
     static let RowHeight: CGFloat = 58
     static let FaviconSize: CGFloat = 12
     static let IconSize: CGFloat = 20
+    static let positiveStockColor = Color(hex: 0x028961)
+    static let negativeStockColor = Color(hex: 0xD12E19)
 }
 
 enum SuggestionState {
@@ -160,9 +162,44 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
 /// Renders a query suggestion
 struct QuerySuggestionView: View {
     let suggestion: SuggestionsQuery.Data.Suggest.QuerySuggestion
+    var isStockUp: Bool {
+        suggestion.annotation?.isChangeInStockPricePositive() ?? false
+    }
 
     @EnvironmentObject public var model: SuggestionModel
     @Environment(\.setSearchInput) private var setInput
+
+    @ViewBuilder
+    var stockLabelView: some View {
+        if let stockInfo = suggestion.annotation?.stockInfo {
+            HStack {
+                Text(String(stockInfo.currentPrice ?? 0.0))
+                    .withFont(.bodyLarge)
+                if let changeFromPreviousClose =
+                    stockInfo.changeFromPreviousClose,
+                    let percentChangeFromPreviousClose =
+                        stockInfo.percentChangeFromPreviousClose
+                {
+                    Text(
+                        (isStockUp ? "+" : "")
+                            + String(changeFromPreviousClose)
+                            + " (\(String(percentChangeFromPreviousClose))%)"
+                    )
+                    .withFont(.bodyMedium)
+                    .accentColor(
+                        isStockUp
+                            ? SuggestionViewUX.positiveStockColor
+                            : SuggestionViewUX.negativeStockColor
+                    )
+                }
+                Spacer()
+                Text(stockInfo.fetchedAtTime ?? "")
+                    .withFont(.bodySmall)
+                    .accentColor(.gray)
+            }
+            .lineLimit(1)
+        }
+    }
 
     var suggestedQuery: String {
         if let lensOrBang = model.activeLensBang,
@@ -177,7 +214,17 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var icon: some View {
-        if AnnotationType(annotation: suggestion.annotation) == .calculator {
+        if AnnotationType(annotation: suggestion.annotation) == .stock
+            && suggestion.annotation?.stockInfo != nil
+        {
+            Symbol(decorative: isStockUp ? .arrowtriangleUpFill : .arrowtriangleDownFill)
+                .foregroundColor(
+                    isStockUp
+                        ? SuggestionViewUX.positiveStockColor
+                        : SuggestionViewUX.negativeStockColor
+                )
+                .padding(.bottom, 18)
+        } else if AnnotationType(annotation: suggestion.annotation) == .calculator {
             Image("calculator")
         } else if let activeType = model.activeLensBang?.type {
             Symbol(decorative: activeType.defaultSymbol)
@@ -211,7 +258,11 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var label: some View {
-        if AnnotationType(annotation: suggestion.annotation) == .calculator {
+        if AnnotationType(annotation: suggestion.annotation) == .stock
+            && suggestion.annotation?.stockInfo != nil
+        {
+            stockLabelView
+        } else if AnnotationType(annotation: suggestion.annotation) == .calculator {
             Text(suggestion.annotation?.description ?? "")
                 .withFont(.bodyLarge)
                 .lineLimit(1)
@@ -228,7 +279,19 @@ struct QuerySuggestionView: View {
 
     @ViewBuilder
     var secondaryLabel: some View {
-        if let suggestedCalculatorQuery = suggestion.suggestedCalculatorQuery(),
+        if AnnotationType(annotation: suggestion.annotation) == .stock
+            && suggestion.annotation?.stockInfo != nil
+        {
+            HStack {
+                Text("\(String(suggestion.annotation?.stockInfo?.companyName ?? ""))")
+                    .withFont(.bodySmall)
+                    .lineLimit(1)
+                Text("\(String(suggestion.annotation?.stockInfo?.ticker ?? ""))")
+                    .withFont(.bodySmall)
+                    .lineLimit(1)
+                    .accentColor(.gray)
+            }
+        } else if let suggestedCalculatorQuery = suggestion.suggestedCalculatorQuery(),
             AnnotationType(annotation: suggestion.annotation) == .calculator
         {
             Text(suggestedCalculatorQuery).withFont(.bodySmall)
@@ -241,11 +304,15 @@ struct QuerySuggestionView: View {
         } else {
             EmptyView()
         }
+
     }
 
     @ViewBuilder
     var detail: some View {
-        if suggestion.type != .space {
+        if suggestion.type != .space
+            && AnnotationType(annotation: suggestion.annotation) != .calculator
+            && suggestion.annotation?.stockInfo == nil
+        {
             Button(action: { setInput(suggestedQuery) }) {
                 Symbol(decorative: .arrowUpLeft)
                     .foregroundColor(.tertiaryLabel)
