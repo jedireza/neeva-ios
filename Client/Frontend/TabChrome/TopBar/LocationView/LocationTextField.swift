@@ -230,7 +230,9 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
             ]
         ClientLogger.shared.logCounter(
             interaction,
-            attributes: EnvironmentHelper.shared.getAttributes() + additionalClientAttribute)
+            attributes: EnvironmentHelper.shared.getAttributes()
+                + additionalClientAttribute
+                + suggestionModel.suggestionSnapshotAttributes())
         if let text = accessibilityValue {
             if !text.trimmingCharacters(in: .whitespaces).isEmpty {
                 onSubmit(text)

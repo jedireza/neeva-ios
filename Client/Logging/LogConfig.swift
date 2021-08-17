@@ -183,5 +183,11 @@ public struct LogConfig {
         public static let chipSuggestionPosition = "chipSuggestionPosition"
         /// number of characters typed in url bar
         public static let urlBarNumOfCharsTyped = "urlBarNumOfCharsTyped"
+        /// suggestion impression position index
+        public static let suggestionImpPosition = "SuggestionImpAtPosition"
+        /// number of total chip suggestions
+        public static let numberOfChipSuggestions = "NumberOfChipSuggestions"
+        /// annotation type at position
+        public static let annotationTypeAtPosition = "AnnotationTypeAtPosition"
     }
 }
