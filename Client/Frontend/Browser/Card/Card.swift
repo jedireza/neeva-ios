@@ -53,7 +53,16 @@ private struct DragToCloseInteraction: ViewModifier {
             .highPriorityGesture(
                 DragGesture()
                     .onChanged { value in
-                        offset = value.translation.width
+                        // Workaround for SwiftUI gestures and UIScrollView not playing well
+                        // together. See issue #1378 for details. Only apply an offset if the
+                        // translation is mostly in the horizontal direction to avoid translating
+                        // the card when the UIScrollView is scrolling.
+                        if offset != 0
+                            || abs(value.predictedEndTranslation.width)
+                                > abs(value.predictedEndTranslation.height)
+                        {
+                            offset = value.translation.width
+                        }
                     }
                     .onEnded { value in
                         let target = value.predictedEndTranslation.width
@@ -140,10 +149,10 @@ struct Card<Details>: View where Details: CardDetails {
                                 .padding(5)
                         }
                     }
-                .frame(height: CardUX.ButtonSize)
-                .background(Color.DefaultBackground)
+                    .frame(height: CardUX.ButtonSize)
+                    .background(Color.DefaultBackground)
 
-                Color.ui.adaptive.separator.frame(height: 1)
+                    Color.ui.adaptive.separator.frame(height: 1)
                 }
                 Button(action: {
                     details.onSelect()
