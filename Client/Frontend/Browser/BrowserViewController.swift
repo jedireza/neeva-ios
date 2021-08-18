@@ -1541,13 +1541,13 @@ extension BrowserViewController {
     }
 
     private func visitHomePage() {
-        if let tab = self.tabManager.selectedTab, NetworkReachability.shared.isOnline == true {
+        if let tab = self.tabManager.selectedTab {
             tab.loadRequest(URLRequest(url: NeevaConstants.appSignupURL))
         }
     }
 
     private func visitSigninPage() {
-        if let tab = self.tabManager.selectedTab, NetworkReachability.shared.isOnline == true {
+        if let tab = self.tabManager.selectedTab {
             tab.loadRequest(URLRequest(url: NeevaConstants.appSigninURL))
         }
     }
