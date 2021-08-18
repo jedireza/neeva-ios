@@ -15,6 +15,7 @@ extension SpaceCardsView: Inspectable {}
 extension FittedCard: Inspectable {}
 extension Card: Inspectable {}
 extension ThumbnailGroupView: Inspectable {}
+extension DetailView: Inspectable {}
 
 private func assertCast<T>(_ value: Any, to _: T.Type) -> T {
     XCTAssertTrue(value is T)
@@ -174,7 +175,7 @@ class CardTests: XCTestCase {
         manager.objectWillChange.send()
 
         let model = GridModel()
-        let cardGrid = CardGrid().environmentObject(tabCardModel)
+        let cardGrid = CardGrid().environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(model)
 
         let cardContainer = try cardGrid.inspect().find(CardsContainer.self)
@@ -203,10 +204,10 @@ class CardTests: XCTestCase {
         manager.objectWillChange.send()
 
         let model = GridModel()
+        model.switcherState = .spaces
         SpaceStore.shared.objectWillChange.send()
 
         let cardContainer = CardsContainer(
-            switcherState: .constant(.spaces),
             columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)
         ).environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(model)

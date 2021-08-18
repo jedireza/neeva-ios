@@ -47,11 +47,11 @@ protocol Selectable {
 
 protocol AccessingManagerProvider {
     associatedtype Manager: AccessingManager
-    var manager: Manager { get set }
+    var manager: Manager { get }
 }
 
 protocol AccessingManager {
-    associatedtype Item
+    associatedtype Item: BrowserPrimitive
     func get(for id: String) -> Item?
     func getAll() -> [Item]
 }
@@ -160,6 +160,49 @@ extension SpaceStore: AccessingManager {
     func getAll() -> [Space] {
         allSpaces
     }
+}
+
+extension SpaceEntityData: BrowserPrimitive {
+    var primitiveUrl: URL? {
+        url
+    }
+
+    var displayTitle: String {
+        title ?? url.absoluteString
+    }
+
+    var displayFavicon: Favicon? {
+        nil
+    }
+
+    var image: UIImage? {
+        guard let data = thumbnail?.dataURIBody else {
+            return nil
+        }
+        return UIImage(data: data)
+    }
+
+    var pageMetadata: PageMetadata? {
+        nil
+    }
+
+    public var id: String {
+        url.absoluteString
+    }
+}
+
+extension Space: AccessingManager {
+    func get(for id: String) -> SpaceEntityData? {
+        contentData?.first {
+            $0.id == id
+        }
+    }
+
+    func getAll() -> [SpaceEntityData] {
+        contentData ?? []
+    }
+
+    typealias Item = SpaceEntityData
 }
 
 // MARK: Site: BrowserPrimitive

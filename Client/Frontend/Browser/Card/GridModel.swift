@@ -3,8 +3,12 @@
 import Foundation
 
 class GridModel: ObservableObject {
-    @Published var isHidden = true 
+    @Published var isHidden = true
     @Published var animationThumbnailState: AnimationThumbnailState = .visibleForTrayShown
+    @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+    @Published var switcherState: SwitcherViews = .tabs
+    @Published var showingDetailsAsList = true
+
     private var updateVisibility: ((Bool) -> Void)!
     var scrollOffset: CGFloat = CGFloat.zero
     var buildCloseAllTabsMenu: (() -> UIMenu)!
@@ -20,6 +24,7 @@ class GridModel: ObservableObject {
         updateVisibility(true)
         isHidden = true
         animationThumbnailState = .visibleForTrayShown
+        switcherState = .tabs
     }
 
     func setVisibilityCallback(updateVisibility: @escaping (Bool) -> Void) {

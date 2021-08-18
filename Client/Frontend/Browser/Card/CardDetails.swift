@@ -152,9 +152,26 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 }
 
-struct SpaceEntityThumbnail: SelectableThumbnail {
+class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
+    typealias Item = SpaceEntityData
+    typealias Manager = Space
+
+    var manager: Space {
+        SpaceStore.shared.get(for: spaceID)!
+    }
+
+    let spaceID: String
     let data: SpaceEntityData
-    let selected: () -> Void
+
+    var id: String
+    var closeButtonImage: UIImage? = nil
+    var accessibilityLabel: String = "Space Item"
+
+    init(data: SpaceEntityData, spaceID: String) {
+        self.spaceID = spaceID
+        self.data = data
+        self.id = data.id
+    }
 
     @ViewBuilder var thumbnail: some View {
         if let thumbnailData = data.thumbnail?.dataURIBody {
@@ -166,9 +183,9 @@ struct SpaceEntityThumbnail: SelectableThumbnail {
         }
     }
 
-    func onSelect() {
-        selected()
-    }
+    func onClose() {}
+    func onSelect() {}
+
 }
 
 class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
@@ -181,6 +198,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
+    @Published var isShowingDetails = false
 
     var accessibilityLabel: String {
         "\(title), Space"
@@ -229,15 +247,11 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         allDetails =
             manager.get(for: id)?.contentData?
             .sorted(by: { first, second in first.thumbnail?.dataURIBody != nil })
-            .map { SpaceEntityThumbnail(data: $0, selected: {}) } ?? []
+            .map { SpaceEntityThumbnail(data: $0, spaceID: id) } ?? []
     }
 
     func onSelect() {
-        guard let url = manager.get(for: id)?.primitiveUrl else {
-            return
-        }
-
-        SceneDelegate.getBVC().switchToTabForURLOrOpen(url)
+        isShowingDetails = true
     }
 
     func onClose() {}

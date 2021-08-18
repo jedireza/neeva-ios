@@ -790,7 +790,9 @@ class BrowserViewController: UIViewController {
     }
 
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab?) {
-        if !tabContentHost.promoteToRealTabIfNecessary(url: url, tabManager: tabManager, selectedTabIsNil: tab == nil) {
+        if !tabContentHost.promoteToRealTabIfNecessary(
+            url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
+        {
             if FeatureFlag[.createOrSwitchToTab] {
                 tabManager.createOrSwitchToTab(for: url)
             } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {
@@ -1115,6 +1117,8 @@ class BrowserViewController: UIViewController {
         Sentry.shared.clearBreadcrumbs()
 
         updateFindInPageVisibility(visible: false)
+        cardGridViewController.gridModel.pickerHeight =
+            topBar.view.frame.height - view.safeAreaInsets.top
 
         cardGridViewController.gridModel.show()
 

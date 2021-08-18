@@ -2,38 +2,37 @@
 
 import SwiftUI
 
+extension EnvironmentValues {
+    private struct ColumnsKey: EnvironmentKey {
+        static var defaultValue: [GridItem] = Array(
+            repeating:
+                GridItem(
+                    .fixed(CardUX.DefaultCardSize),
+                    spacing: CardGridUX.GridSpacing),
+            count: 2)
+    }
+
+    public var columns: [GridItem] {
+        get { self[ColumnsKey] }
+        set { self[ColumnsKey] = newValue }
+    }
+}
 struct CardsContainer: View {
     @EnvironmentObject var tabModel: TabCardModel
-    //@EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var gridModel: GridModel
 
-    @Binding var switcherState: SwitcherViews
     let columns: [GridItem]
-
-    //var indexInsideTabGroupModel: Int? {
-    //    let selectedTab = tabModel.manager.selectedTab!
-    //    return tabGroupModel.allDetails
-    //        .firstIndex(where: { $0.id == selectedTab.rootUUID })
-    //}
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             ScrollViewReader { value in
                 LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                    if case .spaces = switcherState {
+                    if case .spaces = gridModel.switcherState {
                         SpaceCardsView()
-                            .environment(\.selectionCompletion) {
-                                gridModel.hideWithNoAnimation()
-                                switcherState = .tabs
-                                value.scrollTo(tabModel.manager.selectedTab?.tabUUID)
-                            }
+                            .environment(\.columns, columns)
                     } else {
                         TabCardsView().environment(\.selectionCompletion) {
                             withAnimation {
-                                // TODO: scroll to tab groups when we enable them
-                                // value.scrollTo(
-                                //     indexInsideTabGroupModel != nil
-                                //         ? tabModel.manager.selectedTab?.rootUUID : tabModel.selectedTabID)
                                 value.scrollTo(tabModel.selectedTabID)
                             }
                             gridModel.animationThumbnailState = .visibleForTrayHidden
@@ -42,10 +41,6 @@ struct CardsContainer: View {
                 }
                 .padding(.top, 20)
                 .useEffect(deps: tabModel.selectedTabID) { _ in
-                    // TODO: scroll to tab groups when we enable them
-                    // value.scrollTo(
-                    //     indexInsideTabGroupModel != nil
-                    //         ? tabModel.manager.selectedTab?.rootUUID : tabModel.selectedTabID)
                     value.scrollTo(tabModel.selectedTabID)
                 }
                 .background(

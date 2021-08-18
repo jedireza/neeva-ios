@@ -31,7 +31,9 @@ class TabCardModel: CardModel, TabEventHandler {
     @Published var selectedTabID: String? = nil
 
     var isCardGridEmpty: Bool {
-        FeatureFlag[.emptyTabTray] && (manager.isIncognito ? manager.privateTabs.count == 0 : manager.normalTabs.count == 0)
+        FeatureFlag[.emptyTabTray]
+            && (manager.isIncognito
+                ? manager.privateTabs.count == 0 : manager.normalTabs.count == 0)
     }
 
     init(manager: TabManager, groupManager: TabGroupManager) {
@@ -78,15 +80,33 @@ class SpaceCardModel: CardModel {
         }
     }
     @Published var allDetailsWithExclusionList: [SpaceCardDetails] = []
+    @Published var detailedSpace: SpaceCardDetails? {
+        willSet {
+            guard let space = detailedSpace, newValue == nil else {
+                return
+            }
+            space.isShowingDetails = false
+        }
+    }
+
     var onViewUpdate: () -> Void = {}
     var anyCancellable: AnyCancellable? = nil
+    var detailsSubscriptions: Set<AnyCancellable> = Set()
 
     init() {
         manager.refresh()
-        self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
-            self?.allDetails = self?.manager.getAll().map { SpaceCardDetails(space: $0) } ?? []
-            self?.onViewUpdate()
-            self?.objectWillChange.send()
+        self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
+            allDetails = manager.getAll().map { SpaceCardDetails(space: $0) }
+            allDetails.forEach { details in
+                details.$isShowingDetails.sink { showingDetails in
+                    if showingDetails {
+                        self.detailedSpace = details
+                    }
+                }.store(in: &self.detailsSubscriptions)
+            }
+            onViewUpdate()
+            detailedSpace = allDetails.first { $0.isShowingDetails }
+            objectWillChange.send()
         }
     }
 

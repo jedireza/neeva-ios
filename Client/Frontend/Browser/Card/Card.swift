@@ -96,14 +96,10 @@ extension EnvironmentValues {
     }
 
     private struct SelectionCompletionKey: EnvironmentKey {
-        static var defaultValue: (() -> Void)? = nil
+        static var defaultValue: () -> Void = {}
     }
     public var selectionCompletion: () -> Void {
-        get {
-            self[SelectionCompletionKey] ?? {
-                fatalError(".environment(\\.selectionCompletion) must be specified")
-            }
-        }
+        get { self[SelectionCompletionKey] }
         set { self[SelectionCompletionKey] = newValue }
     }
 }

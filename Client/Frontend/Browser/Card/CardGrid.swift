@@ -10,7 +10,6 @@ enum SwitcherViews: String, CaseIterable {
 
 enum CardGridUX {
     static let PickerPadding: CGFloat = 20
-    static let PickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
     static let GridSpacing: CGFloat = 20
     static let YStaticOffset: CGFloat = GridSpacing
 }
@@ -18,9 +17,9 @@ enum CardGridUX {
 struct CardGrid: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
 
-    @State private var switcherState: SwitcherViews = .tabs
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
     @State private var columnCount = 2
     @State private var geom: (size: CGSize, safeAreaInsets: EdgeInsets)?
@@ -91,6 +90,44 @@ struct CardGrid: View {
         }
     }
 
+    @ViewBuilder var cardContainer: some View {
+        if tabModel.isCardGridEmpty {
+            EmptyCardGrid()
+        } else {
+            VStack(spacing: 0) {
+                CardsContainer(
+                    columns: Array(
+                        repeating:
+                            GridItem(
+                                .fixed(cardSize),
+                                spacing: CardGridUX.GridSpacing),
+                        count: columnCount)
+                )
+                .environment(\.cardSize, cardSize)
+                Spacer(minLength: 0)
+            }
+            .background(Color(UIColor.TrayBackground).ignoresSafeArea())
+        }
+    }
+
+    @ViewBuilder var topBar: some View {
+        if topToolbar {
+            SwitcherToolbarView(top: true, isEmpty: tabModel.isCardGridEmpty)
+        } else if FeatureFlag[.nativeSpaces] {
+            GridPicker()
+        }
+    }
+
+    @ViewBuilder var grid: some View {
+        VStack(spacing: 0) {
+            topBar
+            cardContainer
+            if !topToolbar {
+                SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
+            }
+        }
+    }
+
     func updateCardSize(width: CGFloat, isHidden: Bool, topToolbar: Bool) {
         if width > 1000 {
             columnCount = 4
@@ -106,36 +143,12 @@ struct CardGrid: View {
 
     var body: some View {
         GeometryReader { geom in
-            VStack(spacing: 0) {
-                if topToolbar {
-                    SwitcherToolbarView(top: true, isEmpty: tabModel.isCardGridEmpty)
-                }
-                
-                if tabModel.isCardGridEmpty {
-                    EmptyCardGrid()
-                } else {
-                    VStack(spacing: 0) {
-                        if FeatureFlag[.groupsInSwitcher] {
-                            GridPicker(switcherState: $switcherState)
-                        } else {
-                            CardsContainer(
-                                switcherState: $switcherState,
-                                columns: Array(
-                                    repeating:
-                                        GridItem(
-                                            .fixed(cardSize),
-                                            spacing: CardGridUX.GridSpacing),
-                                    count: columnCount)
-                            )
-                            .environment(\.cardSize, cardSize)
-                            Spacer(minLength: 0)
-                        }
-                    }
-                    .background(Color(UIColor.TrayBackground).ignoresSafeArea())
-                }
-
-                if !topToolbar {
-                    SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
+            ZStack {
+                grid
+                if let spaceDetails = spaceModel.detailedSpace {
+                    DetailView(primitive: spaceDetails)
+                        .frame(width: geom.size.width, height: geom.size.height)
+                        .background(Color(UIColor.TrayBackground).ignoresSafeArea())
                 }
             }
             .useEffect(
@@ -152,17 +165,19 @@ struct CardGrid: View {
 }
 
 struct GridPicker: View {
-    @Binding var switcherState: SwitcherViews
+    @EnvironmentObject var gridModel: GridModel
 
     var body: some View {
-        Picker("", selection: $switcherState) {
+        Picker("", selection: $gridModel.switcherState) {
             ForEach(SwitcherViews.allCases, id: \.rawValue) { view in
                 Text(view.rawValue).tag(view)
             }
         }.pickerStyle(SegmentedPickerStyle())
             .padding(CardGridUX.PickerPadding)
-            .frame(height: CardGridUX.PickerHeight)
+            .frame(height: gridModel.pickerHeight)
             .background(Color.background)
+            .opacity(gridModel.isHidden ? 0 : 1)
+            .animation(.easeOut)
     }
 }
 

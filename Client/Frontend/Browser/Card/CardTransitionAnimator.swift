@@ -22,11 +22,8 @@ struct CardTransitionAnimator: View {
     }
 
     private var transitionTopPadding: CGFloat {
-        topToolbar
-            ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing + safeAreaInsets.top
-            : (FeatureFlag[.nativeSpaces]
-                ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing + safeAreaInsets.top
-                : 0)
+        topToolbar || FeatureFlag[.nativeSpaces]
+            ? gridModel.pickerHeight + safeAreaInsets.top : 0
     }
 
     var body: some View {

@@ -26,6 +26,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environmentObject(spaceCardModel)
                 .environmentObject(tabGroupCardModel)
                 .environmentObject(gridModel)
+                .environment(\.onOpenURL, tabCardModel.manager.createOrSwitchToTab(for:))
         }
     }
 
