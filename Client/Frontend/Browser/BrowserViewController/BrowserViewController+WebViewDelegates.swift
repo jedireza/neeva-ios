@@ -478,17 +478,6 @@ extension BrowserViewController: WKNavigationDelegate {
         }
     }
 
-    // Recognize an Apple Maps URL. This will trigger the native app. But only if a search query is present. Otherwise
-    // it could just be a visit to a regular page on maps.apple.com.
-    fileprivate func isAppleMapsURL(_ url: URL) -> Bool {
-        if url.scheme == "http" || url.scheme == "https" {
-            if url.host == "maps.apple.com" && url.query != nil {
-                return true
-            }
-        }
-        return false
-    }
-
     // Recognize a iTunes Store URL. These all trigger the native apps. Note that appstore.com and phobos.apple.com
     // used to be in this list. I have removed them because they now redirect to itunes.apple.com. If we special case
     // them then iOS will actually first open Safari, which then redirects to the app store. This works but it will
@@ -585,16 +574,6 @@ extension BrowserViewController: WKNavigationDelegate {
         //            }
         //            return
         //        }
-
-        // Second special case are a set of URLs that look like regular http links, but should be handed over to iOS
-        // instead of being loaded in the webview. Note that there is no point in calling canOpenURL() here, because
-        // iOS will always say yes.
-
-        if isAppleMapsURL(url) {
-            UIApplication.shared.open(url, options: [:])
-            decisionHandler(.cancel)
-            return
-        }
 
         if isStoreURL(url), let appStoreID = getAppStoreID(url) {
             let productVC = SKStoreProductViewController()
