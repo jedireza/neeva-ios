@@ -377,6 +377,25 @@ class SuggestionModel: ObservableObject {
         return nil
     }
 
+    private func annotationTypeAttribute(
+        suggestion: Suggestion,
+        suggestionIdx: Int
+    ) -> ClientLogCounterAttribute? {
+        switch suggestion {
+        case .query(let suggestion):
+            if let annotationType = suggestion.annotation?.annotationType {
+                return
+                    ClientLogCounterAttribute(
+                        key: "\(LogConfig.Attribute.annotationTypeAtPosition)\(suggestionIdx)",
+                        value: annotationType
+                    )
+            }
+        default:
+            break
+        }
+        return nil
+    }
+
     func suggestionSnapshotAttributes() -> [ClientLogCounterAttribute] {
         var implLogAttributes = [ClientLogCounterAttribute]()
         var snapshotLogAttributes = [ClientLogCounterAttribute]()
@@ -389,12 +408,18 @@ class SuggestionModel: ObservableObject {
             )
             suggestionIdx += 1
         }
-        topSuggestions.forEach { _ in
+        topSuggestions.forEach { suggestion in
             implLogAttributes.append(
                 ClientLogCounterAttribute(
                     key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
                     value: SuggestionLoggingType.topSuggestion.rawValue)
             )
+            if let attribute = annotationTypeAttribute(
+                suggestion: suggestion,
+                suggestionIdx: suggestionIdx
+            ) {
+                implLogAttributes.append(attribute)
+            }
             suggestionIdx += 1
         }
         if chipQuerySuggestions.count > 0 {
@@ -411,22 +436,17 @@ class SuggestionModel: ObservableObject {
             suggestionIdx += 1
         }
         rowQuerySuggestions.forEach { suggestion in
-            switch suggestion {
-            case .query(let suggestion):
-                implLogAttributes.append(
-                    ClientLogCounterAttribute(
-                        key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
-                        value: SuggestionLoggingType.rowQuerySuggestion.rawValue
-                    )
+            implLogAttributes.append(
+                ClientLogCounterAttribute(
+                    key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
+                    value: SuggestionLoggingType.rowQuerySuggestion.rawValue
                 )
-                snapshotLogAttributes.append(
-                    ClientLogCounterAttribute(
-                        key: "\(LogConfig.Attribute.annotationTypeAtPosition)\(suggestionIdx)",
-                        value: suggestion.annotation?.annotationType ?? ""
-                    )
-                )
-            default:
-                break
+            )
+            if let attribute = annotationTypeAttribute(
+                suggestion: suggestion,
+                suggestionIdx: suggestionIdx)
+            {
+                implLogAttributes.append(attribute)
             }
             suggestionIdx += 1
         }
