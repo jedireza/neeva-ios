@@ -42,7 +42,7 @@ enum ReaderModeTheme: String, Codable {
         // Get current Neeva theme (Dark vs Normal)
         // Normal means light theme. This is the overall theme used
         // by Neeva iOS app
-        let appWideTheme = SceneDelegate.getKeyWindow().traitCollection.userInterfaceStyle
+        let appWideTheme = SceneDelegate.getKeyWindow(for: nil).traitCollection.userInterfaceStyle
         // We check for 3 basic themes we have Light / Dark / Sepia
         // Theme: Dark - app-wide dark overrides all
         if appWideTheme == .dark {

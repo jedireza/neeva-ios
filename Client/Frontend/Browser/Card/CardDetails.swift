@@ -194,10 +194,13 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     typealias Thumbnail = SpaceEntityThumbnail
 
     @Published var manager = SpaceStore.shared
+    @Published var isShowingDetails = false
+  
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
-    @Published var isShowingDetails = false
+    let bvc: BrowserViewController
+    
 
     var accessibilityLabel: String {
         "\(title), Space"
@@ -207,13 +210,15 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         manager.get(for: id)
     }
 
-    private init(id: String) {
+    private init(id: String, bvc: BrowserViewController) {
         self.id = id
+        self.bvc = bvc
+
         updateDetails()
     }
 
-    convenience init(space: Space) {
-        self.init(id: space.id.id)
+    convenience init(space: Space, bvc: BrowserViewController) {
+        self.init(id: space.id.id, bvc: bvc)
     }
 
     var thumbnail: some View {
@@ -267,7 +272,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                             description: "", url: url)
                         request.addToExistingSpace(id: space.id.id, name: space.name)
 
-                        ToastDefaults().showToastForSpace(request: request)
+                        ToastDefaults().showToastForSpace(bvc: self.bvc, request: request)
                     }
                 }
             }
@@ -282,14 +287,13 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
             _ = item.loadObject(ofClass: String.self) { text, _ in
                 if let text = text, let space = self.manager.get(for: self.id) {
                     DispatchQueue.main.async {
-                        let bvc = SceneDelegate.getBVC()
                         let request = AddToSpaceRequest(
                             title: "Selected snippets",
                             description: text,
-                            url: (bvc.tabManager.selectedTab?.url)!)
+                            url: (self.bvc.tabManager.selectedTab?.url)!)
                         request.addToExistingSpace(id: space.id.id, name: space.name)
 
-                        ToastDefaults().showToastForSpace(request: request)
+                        ToastDefaults().showToastForSpace(bvc: self.bvc, request: request)
                     }
                 }
             }
@@ -307,18 +311,22 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
     var anyCancellable: AnyCancellable? = nil
     var id: String
     var closeButtonImage: UIImage?
+    var tabManager: TabManager
 
     var accessibilityLabel: String {
         "\(title), Link"
     }
 
-    init(url: URL, profile: Profile, fetcher: SiteFetcher) {
+    init(url: URL, fetcher: SiteFetcher, tabManager: TabManager) {
         self.id = url.absoluteString
         self.manager = fetcher
+        self.tabManager = tabManager
+
         self.anyCancellable = fetcher.objectWillChange.sink { [weak self] (_) in
             self?.objectWillChange.send()
         }
-        fetcher.load(url: url, profile: profile)
+
+        fetcher.load(url: url, profile: tabManager.profile)
     }
 
     func thumbnail(size: CGFloat) -> some View {
@@ -334,7 +342,7 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
             return
         }
 
-        SceneDelegate.getTabManager().selectedTab?.select(site)
+        tabManager.selectedTab?.select(site)
     }
 
     func onClose() {}

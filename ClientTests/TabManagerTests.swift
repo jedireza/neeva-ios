@@ -487,7 +487,7 @@ class TabManagerTests: XCTestCase {
     func testUndoCloseTabsRemovesAutomaticallyCreatedNonPrivateTab() {
         let tab = manager.addTab()
         let tabToSave = Tab(
-            bvc: SceneDelegate.getBVC(), configuration: WKWebViewConfiguration())
+            bvc: SceneDelegate.getBVC(for: nil), configuration: WKWebViewConfiguration())
         tabToSave.sessionData = SessionData(
             currentPage: 0, urls: [URL(string: "url")!], lastUsedTime: Date.nowMilliseconds())
 

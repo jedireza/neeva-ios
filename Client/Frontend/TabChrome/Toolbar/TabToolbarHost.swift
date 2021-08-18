@@ -10,6 +10,7 @@ protocol ToolbarDelegate: AnyObject {
 
 struct TabToolbarContent: View {
     let chromeModel: TabChromeModel
+    let showNeevaMenuSheet: () -> Void
 
     var body: some View {
         TabToolbarView(
@@ -19,7 +20,7 @@ struct TabToolbarContent: View {
             onNeevaMenu: {
                 ClientLogger.shared.logCounter(
                     .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
-                SceneDelegate.getBVC().showNeevaMenuSheet()
+                showNeevaMenuSheet()
             }
         )
         .environmentObject(chromeModel)
@@ -27,9 +28,9 @@ struct TabToolbarContent: View {
 }
 
 class TabToolbarHost: IncognitoAwareHostingController<TabToolbarContent> {
-    init(chromeModel: TabChromeModel, delegate: ToolbarDelegate) {
-        super.init {
-            TabToolbarContent(chromeModel: chromeModel)
+    init(isIncognito: Bool, chromeModel: TabChromeModel, showNeevaMenuSheet: @escaping () -> Void) {
+        super.init(isIncognito: isIncognito) {
+            TabToolbarContent(chromeModel: chromeModel, showNeevaMenuSheet: showNeevaMenuSheet)
         }
     }
 

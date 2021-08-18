@@ -26,7 +26,7 @@ class TabManagerStoreTests: XCTestCase {
             // Wait for this to happen (UIView.window only gets assigned after viewWillAppear()), then begin testing.
             let predicate = XCTNSPredicateExpectation(
                 predicate: NSPredicate(format: "view.window != nil"),
-                object: SceneDelegate.getBVC())
+                object: SceneDelegate.getBVC(for: nil))
             wait(for: [predicate], timeout: 20)
         }
 
@@ -40,7 +40,7 @@ class TabManagerStoreTests: XCTestCase {
     // Without session data, a Tab can't become a SavedTab and get archived
     func addTabWithSessionData(isPrivate: Bool = false) {
         let tab = Tab(
-            bvc: SceneDelegate.getBVC(), configuration: configuration,
+            bvc: SceneDelegate.getBVC(for: nil), configuration: configuration,
             isPrivate: isPrivate)
         tab.setURL("http://yahoo.com")
         manager.configureTab(

@@ -54,22 +54,24 @@ struct LocationTextFieldIcon: View {
 
 struct LocationTextFieldIcon_Previews: PreviewProvider {
     static var previews: some View {
+        let bvc = SceneDelegate.getBVC(for: nil)
+
         Group {
             LocationTextFieldIcon(currentUrl: nil)
                 .previewDisplayName("Empty")
 
             HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(SuggestionModel())
+                    .environmentObject(SuggestionModel(bvc: bvc))
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(SuggestionModel())
+                    .environmentObject(SuggestionModel(bvc: bvc))
             }.previewDisplayName("Lens/Bang")
 
             HStack(spacing: 0) {
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(SuggestionModel(previewCompletion: "example.com"))
+                    .environmentObject(SuggestionModel(bvc: bvc, previewCompletion: "example.com"))
                 LocationTextFieldIcon(currentUrl: nil)
-                    .environmentObject(SuggestionModel(previewCompletion: "apple.com"))
+                    .environmentObject(SuggestionModel(bvc: bvc, previewCompletion: "apple.com"))
             }.previewDisplayName("Domain completion")
 
             HStack(spacing: 0) {
@@ -91,6 +93,6 @@ struct LocationTextFieldIcon_Previews: PreviewProvider {
         .padding()
         .previewLayout(.sizeThatFits)
         .environmentObject(SearchQueryModel(previewValue: ""))
-        .environmentObject(SuggestionModel(previewSites: []))
+        .environmentObject(SuggestionModel(bvc: bvc, previewSites: []))
     }
 }

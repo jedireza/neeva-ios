@@ -10,9 +10,9 @@ import XCGLogger
 private let log = Logger.browser
 class TabManagerStore {
     static let shared = TabManagerStore(
-        imageStore: DiskImageStore(
-            files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots",
-            quality: UIConstants.ScreenshotQuality))
+            imageStore: DiskImageStore(
+                files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots",
+                quality: UIConstants.ScreenshotQuality))
 
     fileprivate var lockedForReading = false
     public let imageStore: DiskImageStore?
@@ -198,10 +198,10 @@ class TabManagerStore {
 
 // Functions for testing
 extension TabManagerStore {
-    func testTabCountOnDisk() -> Int {
+    func testTabCountOnDisk(sceneId: String) -> Int {
         assert(AppConstants.IsRunningTest)
         return SiteArchiver.tabsToRestore(
-            tabsStateArchivePath: tabSavePath(withId: SceneDelegate.getCurrentSceneId())
+            tabsStateArchivePath: tabSavePath(withId: sceneId)
         ).count
     }
 }

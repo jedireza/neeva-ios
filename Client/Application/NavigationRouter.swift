@@ -20,7 +20,7 @@ enum NavigationPath {
     case text(String)
     case closePrivateTabs
 
-    init?(url: URL) {
+    init?(bvc: BrowserViewController, url: URL) {
         let urlString = url.absoluteString
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return nil
@@ -40,9 +40,9 @@ enum NavigationPath {
         }
 
         if urlString.starts(with: "\(scheme)://open-url") {
-            self = .openUrlFromComponents(components: components)
+            self = .openUrlFromComponents(bvc: bvc, components: components)
         } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(
-            urlString: urlString, scheme: scheme, components: components)
+                    bvc: bvc, urlString: urlString, scheme: scheme, components: components)
         {
             self = widgetKitNavPath
         } else if urlString.starts(with: "\(scheme)://open-text") {
@@ -72,17 +72,17 @@ enum NavigationPath {
     }
 
     private static func handleWidgetKitQuery(
-        urlString: String, scheme: String, components: URLComponents
+        bvc: BrowserViewController, urlString: String, scheme: String, components: URLComponents
     ) -> NavigationPath? {
         if urlString.starts(with: "\(scheme)://widget-medium-topsites-open-url") {
             // Widget Top sites - open url
-            return .openUrlFromComponents(components: components)
+            return .openUrlFromComponents(bvc: bvc, components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-url") {
             // Widget Quick links - small - open url private or regular
-            return .openUrlFromComponents(components: components)
+            return .openUrlFromComponents(bvc: bvc, components: components)
         } else if urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-url") {
             // Widget Quick Actions - medium - open url private or regular
-            return .openUrlFromComponents(components: components)
+            return .openUrlFromComponents(bvc: bvc, components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-copied")
             || urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-copied")
         {
@@ -98,14 +98,13 @@ enum NavigationPath {
         return nil
     }
 
-    private static func openUrlFromComponents(components: URLComponents) -> NavigationPath {
+    private static func openUrlFromComponents(bvc: BrowserViewController, components: URLComponents) -> NavigationPath {
         let url = components.valueForQuery("url")?.asURL
 
         // If attempting to sign in, skip first run screen
         if let url = url, NeevaConstants.isAppHost(url.host), url.path.starts(with: "/login") {
             Defaults[.introSeen] = true
 
-            let bvc = SceneDelegate.getBVC()
             if let introVC = bvc.introViewController {
                 bvc.view.alpha = 1
                 introVC.dismiss(animated: true, completion: nil)

@@ -62,7 +62,7 @@ class ToastDefaults: NSObject {
         ToastViewManager.shared.enqueue(toast: toastView, at: .first)
     }
 
-    func showToastForSpace(request: AddToSpaceRequest) {
+    func showToastForSpace(bvc: BrowserViewController, request: AddToSpaceRequest) {
         toastProgressViewModel = ToastProgressViewModel()
         toastProgressViewModel?.status = .inProgress
 
@@ -103,7 +103,6 @@ class ToastDefaults: NSObject {
         }
 
         let buttonAction = {
-            let bvc = SceneDelegate.getBVC()
             bvc.switchToTabForURLOrOpen(NeevaConstants.appSpacesURL / request.targetSpaceID!)
         }
 
@@ -116,7 +115,7 @@ class ToastDefaults: NSObject {
                     id: request.targetSpaceID ?? "", name: request.targetSpaceName ?? "")
             }
 
-            self.showToastForSpace(request: request)
+            self.showToastForSpace(bvc: bvc, request: request)
         }
 
         let normalContent = ToastStateContent(

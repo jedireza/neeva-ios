@@ -22,6 +22,7 @@ enum SuggestionLoggingType : String {
 }
 
 class SuggestionModel: ObservableObject {
+    let bvc: BrowserViewController
     var getKeyboardHeight: () -> CGFloat = { 0 }
 
     public var queryModel: SearchQueryModel
@@ -48,7 +49,7 @@ class SuggestionModel: ObservableObject {
     private var keyboardFocusedSuggestionIndex = -1
 
     private var isIncognito: Bool {
-        SceneDelegate.getTabManager().isIncognito
+        bvc.tabManager.isIncognito
     }
 
     private var chipQueryRange: ClosedRange<Int>? {
@@ -450,8 +451,6 @@ class SuggestionModel: ObservableObject {
 
     // MARK: - Suggestion Handling
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
-        let bvc = SceneDelegate.getBVC()
-        let tabManager = bvc.tabManager
         let suggestionLocationAttributes =
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
 
@@ -518,7 +517,6 @@ class SuggestionModel: ObservableObject {
                 handleSuggestionSelected(keyboardFocusedSuggestion)
             } else {
                 // searches for text in address bar
-                let bvc = SceneDelegate.getBVC()
                 bvc.urlBar(
                     didSubmitText: bvc.searchQueryModel.value
                         + (bvc.suggestionModel.completion ?? ""))
@@ -556,7 +554,8 @@ class SuggestionModel: ObservableObject {
     }
 
     // MARK: - Initlization
-    init(profile: Profile, queryModel: SearchQueryModel) {
+    init(bvc: BrowserViewController, profile: Profile, queryModel: SearchQueryModel) {
+        self.bvc = bvc
         self.frecentHistory = profile.history.getFrecentHistory()
         self.queryModel = queryModel
 
@@ -569,13 +568,13 @@ class SuggestionModel: ObservableObject {
     }
 
     convenience init(
-        previewSites: [Site]? = nil, previewCompletion: String? = nil,
+        bvc: BrowserViewController, previewSites: [Site]? = nil, previewCompletion: String? = nil,
         queryModel: SearchQueryModel = SearchQueryModel(previewValue: ""),
         searchQueryForTesting: String = "",
         previewLensBang: ActiveLensBangInfo? = nil, topSuggestions: [Suggestion] = [],
         chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []
     ) {
-        self.init(profile: BrowserProfile(localName: "profile"), queryModel: queryModel)
+        self.init(bvc: bvc, profile: BrowserProfile(localName: "profile"), queryModel: queryModel)
         self.sites = previewSites
         self.completion = previewCompletion
         self.topSuggestions = topSuggestions

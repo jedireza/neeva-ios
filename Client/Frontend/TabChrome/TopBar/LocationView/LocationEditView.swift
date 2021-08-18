@@ -45,7 +45,7 @@ struct LocationTextField_Previews: PreviewProvider {
             LocationEditView(isEditing: .constant(true), onSubmit: { _ in })
                 .environmentObject(SearchQueryModel(previewValue: "https://apple.com"))
         }
-        .environmentObject(SuggestionModel(previewSites: []))
+        .environmentObject(SuggestionModel(bvc: SceneDelegate.getBVC(for: nil), previewSites: []))
         .frame(height: TabLocationViewUX.height)
         .background(Capsule().fill(Color.systemFill))
         .padding()

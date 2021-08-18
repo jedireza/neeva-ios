@@ -5,15 +5,12 @@ import SwiftUI
 
 struct ReviewURLButton: View {
     let url: URL
+    let openInNewTab: (URL) -> Void
 
     var body: some View {
-        Button(action: onClick) {
+        Button(action: { openInNewTab(url) }) {
             getHostName()
         }
-    }
-
-    func onClick() {
-        SceneDelegate.getBVC().openURLInNewTab(url)
     }
 
     @ViewBuilder
@@ -61,12 +58,13 @@ struct QueryButton: View {
             withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
         {
             let target = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")!
-            SceneDelegate.getBVC().openURLInNewTab(target)
+            SceneDelegate.getBVC(for: nil).openURLInNewTab(target)
         }
     }
 }
 
 struct CheatsheetMenuView: View {
+    let openInNewTab: (URL) -> Void
     @ObservedObject var cheatsheetInfo = CheatsheetInfo.shared
 
     var body: some View {
@@ -99,7 +97,7 @@ struct CheatsheetMenuView: View {
                 Text("Buying Guide").withFont(.headingMedium)
                 ForEach(cheatsheetInfo.cheatsheetData?.reviewURL ?? [], id: \.self) { review in
                     if let url = URL(string: review) {
-                        ReviewURLButton(url: url)
+                        ReviewURLButton(url: url, openInNewTab: openInNewTab)
                     }
                 }
             }
@@ -182,6 +180,6 @@ struct CheatsheetMenuView: View {
 
 struct CheatsheetMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        CheatsheetMenuView()
+        CheatsheetMenuView(openInNewTab: { _ in })
     }
 }

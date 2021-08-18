@@ -26,7 +26,10 @@ class HistoryClearable: Clearable {
 
         // Treat desktop sites as part of browsing history.
         Tab.ChangeUserAgent.clear()
-        SceneDelegate.getTabManager().recentlyClosedTabs.removeAll()
+
+        SceneDelegate.getAllSceneDelegates().forEach { bvc in
+            bvc.tabManager.recentlyClosedTabs.removeAll()
+        }
 
         return profile.history.clearHistory().bindQueue(.main) { success in
             SDImageCache.shared.clearDisk()

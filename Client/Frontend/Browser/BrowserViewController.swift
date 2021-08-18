@@ -33,12 +33,13 @@ class BrowserViewController: UIViewController {
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
     private(set) lazy var suggestionModel: SuggestionModel = { [unowned self] in
-        return SuggestionModel(profile: self.profile, queryModel: self.searchQueryModel)
+        return SuggestionModel(bvc: self, profile: self.profile, queryModel: self.searchQueryModel)
     }()
 
     private(set) lazy var zeroQueryModel: ZeroQueryModel = {
         [unowned self] in
         let model = ZeroQueryModel(
+            bvc: self,
             profile: profile,
             shareURLHandler: { url in
                 let helper = ShareExtensionHelper(url: url, tab: nil)
@@ -52,7 +53,7 @@ class BrowserViewController: UIViewController {
     let chromeModel = TabChromeModel()
 
     private(set) lazy var cardStripViewController: CardStripViewController? = { [unowned self] in
-        let controller = CardStripViewController(tabManager: self.tabManager)
+        let controller = CardStripViewController(bvc: self)
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -60,11 +61,7 @@ class BrowserViewController: UIViewController {
     }()
 
     lazy var cardGridViewController: CardGridViewController = { [unowned self] in
-        let controller = CardGridViewController(
-            tabManager: self.tabManager
-        ) {
-            self.openLazyTab(openedFrom: .tabTray)
-        }
+        let controller = CardGridViewController(bvc: self)
 
         addChild(controller)
         view.addSubview(controller.view)
@@ -264,7 +261,7 @@ class BrowserViewController: UIViewController {
         toolbar = nil
 
         if showToolbar {
-            let toolbar = TabToolbarHost(chromeModel: chromeModel, delegate: self)
+            let toolbar = TabToolbarHost(isIncognito: tabManager.isIncognito, chromeModel: chromeModel, showNeevaMenuSheet: showNeevaMenuSheet)
             toolbar.willMove(toParent: self)
             toolbar.view.setContentHuggingPriority(.required, for: .vertical)
             footer.addSubview(toolbar.view)
@@ -387,12 +384,16 @@ class BrowserViewController: UIViewController {
 
         let gridModel = self.cardGridViewController.gridModel
         let topBarHost = TopBarHost(
+            isIncognito: tabManager.isIncognito,
             locationViewModel: locationModel,
             suggestionModel: suggestionModel,
             queryModel: searchQueryModel,
             gridModel: gridModel,
             trackingStatsViewModel: TrackingStatsViewModel(tabManager: tabManager),
-            chromeModel: chromeModel, delegate: self)
+            chromeModel: chromeModel,
+            delegate: self,
+            newTab: { self.openURLInNewTab(nil) },
+            closeLazyTab: closeLazyTab)
         addChild(topBarHost)
         view.addSubview(topBarHost.view)
         topBarHost.didMove(toParent: self)
@@ -1842,7 +1843,7 @@ extension BrowserViewController {
                 onDismiss: {
                     self.hideOverlaySheetViewController()
                     if request.state != .initial {
-                        ToastDefaults().showToastForSpace(request: request)
+                        ToastDefaults().showToastForSpace(bvc: self, request: request)
                     }
                 },
                 onOpenURL: { url in

@@ -24,11 +24,11 @@ struct CheatsheetRootView: View {
 }
 
 class CheatsheetViewController: UIHostingController<CheatsheetRootView> {
-    public init(onDismiss: @escaping () -> Void) {
+    public init(onDismiss: @escaping () -> Void, openInNewTab: @escaping (URL) -> Void) {
         super.init(
             rootView: CheatsheetRootView(
                 onDismiss: onDismiss,
-                embeddedView: CheatsheetMenuView()
+                embeddedView: CheatsheetMenuView(openInNewTab: openInNewTab)
             )
         )
     }

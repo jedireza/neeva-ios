@@ -129,8 +129,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         shutdownWebServer = nil
 
         // Resume file downloads.
-        // TODO: iOS 13 needs to iterate all the BVCs.
-        SceneDelegate.getBVC().downloadQueue.resumeAll()
+        SceneDelegate.getAllSceneDelegates().forEach { $0.downloadQueue.resumeAll() }
 
         // handle quick actions is available
         let quickActions = QuickActions.sharedInstance
@@ -138,7 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             // dispatch asynchronously so that BVC is all set up for handling new tabs
             // when we try and open them
             quickActions.handleShortCutItem(
-                shortcut, withBrowserViewController: SceneDelegate.getBVC())
+                shortcut, withBrowserViewController: SceneDelegate.getBVC(for: nil))
             quickActions.launchedShortcutItem = nil
         }
 
@@ -147,7 +146,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             // We could load these here, but then we have to futz with the tab counter
             // and making NSURLRequests.
-            SceneDelegate.getBVC().loadQueuedTabs(receivedURLs: self.receivedURLs)
+            SceneDelegate.getBVC(for: nil).loadQueuedTabs(receivedURLs: self.receivedURLs)
             self.receivedURLs.removeAll()
             application.applicationIconBadgeNumber = 0
         }
@@ -161,8 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Pause file downloads.
-        // TODO: iOS 13 needs to iterate all the BVCs.
-        SceneDelegate.getBVC().downloadQueue.pauseAll()
+        SceneDelegate.getAllSceneDelegates().forEach { $0.downloadQueue.pauseAll() }
 
         let singleShotTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
         // 2 seconds is ample for a localhost request to be completed by GCDWebServer. <500ms is expected on newer devices.

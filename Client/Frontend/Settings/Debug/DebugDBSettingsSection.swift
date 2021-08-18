@@ -11,7 +11,7 @@ struct DebugDBSettingsSection: View {
                     .documentDirectory, .userDomainMask, true)[0]
                 do {
                     let log = Logger.storage
-                    try SceneDelegate.getBVC().profile.files.copyMatching(
+                    try SceneDelegate.getBVC(for: nil).profile.files.copyMatching(
                         fromRelativeDirectory: "", toAbsoluteDirectory: documentsPath
                     ) { file in
                         log.debug("Matcher: \(file)")

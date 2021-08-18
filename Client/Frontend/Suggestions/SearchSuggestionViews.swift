@@ -585,19 +585,21 @@ struct SuggestionView_Previews: PreviewProvider {
     )
 
     static var previews: some View {
+        let bvc = SceneDelegate.getBVC(for: nil)
+
         List {
             Section(header: Text("Query").textCase(nil)) {
                 QuerySuggestionView(suggestion: spaceQuery)
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
-            }.environmentObject(SuggestionModel())
+            }.environmentObject(SuggestionModel(bvc: bvc))
 
             Section(header: Text("Query — Bang active").textCase(nil)) {
                 QuerySuggestionView(suggestion: query)
                 QuerySuggestionView(suggestion: historyQuery)
             }.environmentObject(
                 SuggestionModel(
-                    previewLensBang: .init(
+                    bvc: bvc, previewLensBang: .init(
                         domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
 
             Section(header: Text("Query — Lens active").textCase(nil)) {
@@ -605,7 +607,7 @@ struct SuggestionView_Previews: PreviewProvider {
                 QuerySuggestionView(suggestion: historyQuery)
             }.environmentObject(
                 SuggestionModel(
-                    previewLensBang: .init(
+                    bvc: bvc, previewLensBang: .init(
                         domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
 
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {

@@ -68,7 +68,7 @@ struct SuggestionsList_Previews: PreviewProvider {
             SuggestionsList()
         }
         .environmentObject(
-            SuggestionModel(previewSites: history, chipQuerySuggestions: suggestions)
+            SuggestionModel(bvc: SceneDelegate.getBVC(for: nil), previewSites: history, chipQuerySuggestions: suggestions)
         )
         .previewLayout(.fixed(width: 375, height: 250))
     }

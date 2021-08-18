@@ -32,7 +32,7 @@ struct SuggestionPositionInfo {
                     value: String(chipSuggestionIndex)))
         }
 
-        let bvc = SceneDelegate.getBVC()
+        let bvc = SceneDelegate.getBVC(for: nil)
         clientLogAttributes.append(
             ClientLogCounterAttribute(
                 key: LogConfig.Attribute.urlBarNumOfCharsTyped,

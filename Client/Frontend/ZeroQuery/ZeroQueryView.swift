@@ -130,10 +130,10 @@ struct ZeroQueryView: View {
                             Suggestion.tabSuggestion(
                                 TabCardDetails(
                                     tab: openTab,
-                                    manager: SceneDelegate.getTabManager())
+                                    manager: viewModel.bvc.tabManager)
                             )
                         )
-                        .environmentObject(SceneDelegate.getBVC().suggestionModel)
+                        .environmentObject(viewModel.bvc.suggestionModel)
                         SuggestionsDivider(height: 3)
                     }
 
@@ -157,9 +157,10 @@ struct ZeroQueryView: View {
 
                         if viewModel.showRatingsCard {
                             RatingsCard(
+                                scene: SceneDelegate.getCurrentScene(for: viewModel.bvc.view),
                                 onClose: { viewModel.showRatingsCard = false },
                                 onFeedback: {
-                                    showFeedbackPanel(bvc: SceneDelegate.getBVC(), shareURL: false)
+                                    showFeedbackPanel(bvc: viewModel.bvc, shareURL: false)
                                 },
                                 viewWidth: geom.size.width)
                         }
@@ -201,7 +202,7 @@ struct ZeroQueryView: View {
             }
             .environmentObject(
                 ZeroQueryModel(
-                    profile: BrowserProfile(localName: "profile"), shareURLHandler: { _ in })
+                    bvc: SceneDelegate.getBVC(for: nil), profile: BrowserProfile(localName: "profile"), shareURLHandler: { _ in })
             )
             .environmentObject(SuggestedSitesViewModel.preview)
             .environmentObject(

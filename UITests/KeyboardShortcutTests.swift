@@ -9,7 +9,7 @@ class KeyboardShortcutTests: UITestBase {
 
     override func setUp() {
         super.setUp()
-        bvc = SceneDelegate.getBVC()
+        bvc = SceneDelegate.getBVC(for: nil)
     }
 
     func reset(tester: KIFUITestActor) {

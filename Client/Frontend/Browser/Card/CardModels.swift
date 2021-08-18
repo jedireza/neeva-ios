@@ -93,10 +93,11 @@ class SpaceCardModel: CardModel {
     var anyCancellable: AnyCancellable? = nil
     var detailsSubscriptions: Set<AnyCancellable> = Set()
 
-    init() {
+    init(bvc: BrowserViewController) {
         manager.refresh()
+
         self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
-            allDetails = manager.getAll().map { SpaceCardDetails(space: $0) }
+            allDetails = manager.getAll().map { SpaceCardDetails(space: $0, bvc: bvc) }
             allDetails.forEach { details in
                 details.$isShowingDetails.sink { [weak self] showingDetails in
                     if showingDetails {
@@ -104,6 +105,7 @@ class SpaceCardModel: CardModel {
                     }
                 }.store(in: &detailsSubscriptions)
             }
+                                                             
             onViewUpdate()
             detailedSpace = allDetails.first { $0.isShowingDetails }
             objectWillChange.send()
@@ -125,12 +127,13 @@ class SiteCardModel: CardModel {
     }
     @Published var allDetailsWithExclusionList: [SiteCardDetails] = []
     var anyCancellable: AnyCancellable? = nil
-    var profile: Profile
+    let tabManager: TabManager
 
-    init(urls: [URL], profile: Profile) {
-        self.profile = profile
+    init(urls: [URL], tabManager: TabManager) {
+        self.tabManager = tabManager
+
         self.allDetails = urls.reduce(into: []) {
-            $0.append(SiteCardDetails(url: $1, profile: profile, fetcher: manager))
+            $0.append(SiteCardDetails(url: $1, fetcher: manager, tabManager: tabManager))
         }
         self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
             self?.objectWillChange.send()
@@ -139,7 +142,7 @@ class SiteCardModel: CardModel {
 
     func refresh(urls: [URL]) {
         self.allDetails = urls.reduce(into: []) {
-            $0.append(SiteCardDetails(url: $1, profile: profile, fetcher: manager))
+            $0.append(SiteCardDetails(url: $1, fetcher: manager, tabManager: tabManager))
         }
     }
 

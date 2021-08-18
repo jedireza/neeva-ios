@@ -36,13 +36,11 @@ extension UITestBase {
     func openURL(_ url: String = "example.com ", openAddressBar: Bool = true) {
         if openAddressBar {
             goToAddressBar()
-            tester().waitForKeyInputReady()
         }
 
         tester().enterText(intoCurrentFirstResponder: url)
         tester().enterText(intoCurrentFirstResponder: "\n")
         tester().waitForAbsenceOfView(withAccessibilityIdentifier: "address")
-        tester().waitForAbsenceOfSoftwareKeyboard()
         tester().waitForView(withAccessibilityLabel: "Show Tabs")
     }
 

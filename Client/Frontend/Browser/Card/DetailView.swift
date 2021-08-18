@@ -118,6 +118,6 @@ struct SingleDetailView<Details: CardDetails>: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(primitive: SpaceCardDetails(space: .stackOverflow))
+        DetailView(primitive: SpaceCardDetails(space: .stackOverflow, bvc: SceneDelegate.getBVC(for: nil)))
     }
 }

@@ -77,10 +77,9 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 case .suggestions:
                     SuggestionsContent(suggestionModel: suggestionModel)
                         .environment(\.onOpenURL) { url in
-                            let bvc = SceneDelegate.getBVC()
-                            let tabManager = bvc.tabManager
-
-                            bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tabManager.selectedTab)
+                            let bvc = zeroQueryModel.bvc
+                            guard let tab = bvc.tabManager.selectedTab else { return }
+                            bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
                         }.environment(\.setSearchInput) { suggestion in
                             suggestionModel.queryModel.value = suggestion
                         }
@@ -104,12 +103,14 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         let model = TabContentHostModel(tabManager: tabManager)
         self.zeroQueryModel = zeroQueryModel
         self.model = model
-        super.init {
+
+        super.init(isIncognito: tabManager.isIncognito) {
             Content(
                 model: model,
                 zeroQueryModel: zeroQueryModel,
                 suggestionModel: suggestionModel)
         }
+
         suggestionModel.getKeyboardHeight = {
             if let view = self.view,
                 let currentState = KeyboardHelper.defaultHelper.currentState

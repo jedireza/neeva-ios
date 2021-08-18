@@ -48,7 +48,7 @@ class CardTests: XCTestCase {
         tabGroupCardModel = TabGroupCardModel(manager: groupManager)
 
         SpaceStore.shared = .createMock([.stackOverflow, .savedForLater, .shared, .public])
-        spaceCardModel = SpaceCardModel()
+        spaceCardModel = SpaceCardModel(bvc: SceneDelegate.getBVC(for: nil))
     }
 
     override func tearDown() {
@@ -142,7 +142,7 @@ class CardTests: XCTestCase {
                 url: .aboutBlank, title: nil, snippet: nil,
                 thumbnail: SpaceThumbnails.githubThumbnail)
         ]
-        let firstCard = SpaceCardDetails(space: SpaceStore.shared.getAll().first!)
+        let firstCard = SpaceCardDetails(space: SpaceStore.shared.getAll().first!, bvc: SceneDelegate.getBVC(for: nil))
         XCTAssertEqual(firstCard.id, Space.stackOverflow.id.id)
         XCTAssertEqual(firstCard.allDetails.count, 2)
         let firstThumbnail = try firstCard.thumbnail.inspect().vStack().view(

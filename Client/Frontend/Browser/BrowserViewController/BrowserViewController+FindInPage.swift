@@ -9,7 +9,7 @@ extension BrowserViewController {
     func updateFindInPageVisibility(visible: Bool, tab: Tab? = nil, query: String? = nil) {
         if visible && findInPageViewController == nil {
             findInPageViewController = FindInPageViewController(
-                model: FindInPageModel(tab: tab),
+                model: FindInPageModel(tab: tab ?? tabManager.selectedTab),
                 onDismiss: {
                     self.updateFindInPageVisibility(visible: false, tab: tab)
                 })

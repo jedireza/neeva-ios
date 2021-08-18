@@ -39,7 +39,7 @@ class WebUIMessageHelper: TabContentScript {
             let tourStep = TourStep(rawValue: stepName)
         else { return }
 
-        let bvc = SceneDelegate.getBVC()
+        let bvc = SceneDelegate.getBVC(for: nil)
 
         switch tourStep {
         case .promptSpaceInNeevaMenu, .promptFeedbackInNeevaMenu, .promptSettingsInNeevaMenu:

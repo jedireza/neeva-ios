@@ -28,7 +28,7 @@ struct SettingsView: View {
         NavigationView {
             List {
                 Section(header: Text("Neeva")) {
-                    NeevaSettingsSection(userInfo: .shared)
+                    NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
                 }
                 Section(header: Text("General")) {
                     GeneralSettingsSection()

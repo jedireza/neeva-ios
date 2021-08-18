@@ -62,6 +62,7 @@ class SuggestionViewsTests: XCTestCase {
 
     func testQuerySuggestion() throws {
         let model = SuggestionModel(
+            bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
             chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
         let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
@@ -101,6 +102,7 @@ class SuggestionViewsTests: XCTestCase {
 
     func testNavSuggestion() throws {
         let model = SuggestionModel(
+            bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
             topSuggestions: [SuggestionViewsTests.sampleNav])
         let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleNav).environmentObject(
@@ -121,7 +123,10 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testHistorySuggestion() throws {
-        let suggestionModel = SuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
+        let suggestionModel = SuggestionModel(
+            bvc: SceneDelegate.getBVC(for: nil),
+            searchQueryForTesting: "query",
+            previewLensBang: nil)
         let historySuggestion = SuggestionsList().environmentObject(suggestionModel)
         let hStack = try historySuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
@@ -136,6 +141,7 @@ class SuggestionViewsTests: XCTestCase {
 
     func testSuggestionsList() throws {
         let suggestionModel = SuggestionModel(
+            bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
             topSuggestions: [SuggestionViewsTests.sampleNav],
             chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
@@ -149,7 +155,10 @@ class SuggestionViewsTests: XCTestCase {
     }
 
     func testSuggestionsListNoNeevaSuggestions() throws {
-        let suggestionModel = SuggestionModel(searchQueryForTesting: "query", previewLensBang: nil)
+        let suggestionModel = SuggestionModel(
+            bvc: SceneDelegate.getBVC(for: nil),
+            searchQueryForTesting: "query",
+            previewLensBang: nil)
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
         XCTAssertNotNil(list)
@@ -163,7 +172,9 @@ class SuggestionViewsTests: XCTestCase {
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {
         try skipTest(issue: 1383, "Did not actually test incognito mode")
-        let suggestionModel = SuggestionModel(previewLensBang: nil)
+        let suggestionModel = SuggestionModel(
+            bvc: SceneDelegate.getBVC(for: nil),
+            previewLensBang: nil)
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
@@ -184,7 +195,7 @@ class SuggestionViewsTests: XCTestCase {
         let duplicateSite2 = Site(url: "https://neeva.com/dup?q=abc", title: "Neeva")
         let siteB = Site(url: "https://neeva.com/signin", title: "Neeva")
 
-        let suggestionModel = SuggestionModel(previewSites: [
+        let suggestionModel = SuggestionModel(bvc: SceneDelegate.getBVC(for: nil), previewSites: [
             SuggestionViewsTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB,
         ])
         suggestionModel.navSuggestions = [SuggestionViewsTests.sampleNav, suggestion]
@@ -203,7 +214,7 @@ class SuggestionViewsTests: XCTestCase {
 
     func testSuggestionWithCalculatorSayt() throws {
         let model = SuggestionModel(
-            previewLensBang: nil,
+            bvc: SceneDelegate.getBVC(for: nil), previewLensBang: nil,
             rowQuerySuggestions: [SuggestionViewsTests.sampleCalculatorQuery])
         let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
             .environmentObject(model)

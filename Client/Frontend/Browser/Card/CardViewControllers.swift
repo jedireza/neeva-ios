@@ -33,17 +33,18 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     var leadingConstraint: Constraint? = nil
     let gridModel = GridModel()
 
-    init(tabManager: TabManager, openLazyTab: @escaping () -> Void) {
-        let tabGroupManager = TabGroupManager(tabManager: tabManager)
+    init(bvc: BrowserViewController) {
+        let tabGroupManager = TabGroupManager(tabManager: bvc.tabManager)
         super.init(
             rootView: Content(
-                tabCardModel: TabCardModel(manager: tabManager, groupManager: tabGroupManager),
+                tabCardModel: TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager),
                 tabGroupCardModel: TabGroupCardModel(manager: tabGroupManager),
-                spaceCardModel: SpaceCardModel(),
+                spaceCardModel: SpaceCardModel(bvc: bvc),
                 gridModel: gridModel,
-                toolbarModel: SwitcherToolbarModel(tabManager: tabManager, openLazyTab: openLazyTab)
+                toolbarModel: SwitcherToolbarModel(tabManager: bvc.tabManager, openLazyTab: { bvc.openLazyTab(openedFrom: .tabTray) })
             )
         )
+
         gridModel.setVisibilityCallback(updateVisibility: { isHidden in
             self.view.isHidden = isHidden
             self.view.isUserInteractionEnabled = !isHidden
@@ -52,11 +53,11 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
             }
         })
         gridModel.buildCloseAllTabsMenu = {
-            let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
+            let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
             return tabMenu.createCloseAllTabsMenu(fromTabTray: true)
         }
         gridModel.buildRecentlyClosedTabsMenu = {
-            let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
+            let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
             return tabMenu.createRecentlyClosedTabsMenu()
         }
     }
@@ -92,16 +93,16 @@ class CardStripViewController: UIHostingController<CardStripViewController.Conte
     var leadingConstraint: Constraint? = nil
     let tabCardModel: TabCardModel
 
-    init(tabManager: TabManager) {
-        let tabGroupManager = TabGroupManager(tabManager: tabManager)
-        self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
+    init(bvc: BrowserViewController) {
+        let tabGroupManager = TabGroupManager(tabManager: bvc.tabManager)
+        self.tabCardModel = TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager)
         let cardStripModel = CardStripModel()
         super.init(
             rootView: Content(
                 tabCardModel: tabCardModel,
-                spaceCardModel: SpaceCardModel(),
+                spaceCardModel: SpaceCardModel(bvc: bvc),
                 sitesCardModel: SiteCardModel(
-                    urls: [], profile: SceneDelegate.getBVC().profile),
+                    urls: [], tabManager: bvc.tabManager),
                 cardStripModel: cardStripModel
             )
         )

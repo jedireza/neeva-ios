@@ -39,7 +39,7 @@ class WeakTabManagerDelegate {
 
 extension TabManager: TabEventHandler {
     func tab(_ tab: Tab, didLoadFavicon favicon: Favicon?, with: Data?) {
-        store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
+        store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
     }
 
     func tabDidChangeContentBlocking(_ tab: Tab) {
@@ -53,7 +53,7 @@ class TabManager: NSObject, ObservableObject {
     fileprivate let tabEventHandlers: [TabEventHandler]
     public let store: TabManagerStore
     public var scene: UIScene
-    fileprivate let profile: Profile
+    let profile: Profile
 
     let delaySelectingNewPopupTab: TimeInterval = 0.1
 
@@ -217,8 +217,9 @@ class TabManager: NSObject, ObservableObject {
         }
 
         selectedTab = tab
+
         isIncognito = tab?.isIncognito ?? false
-        store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
+        store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
 
         assert(tab === selectedTab, "Expected tab is selected")
 
@@ -271,7 +272,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func preserveTabs() {
-        store.preserveTabs(tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
+        store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
     }
 
     //Called by other classes to signal that they are entering/exiting private mode
@@ -345,7 +346,7 @@ class TabManager: NSObject, ObservableObject {
         let configuration: WKWebViewConfiguration =
             configuration ?? (isPrivate ? privateConfiguration : self.configuration)
 
-        let bvc = SceneDelegate.getBVC()
+        let bvc = SceneDelegate.getBVC(with: scene)
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
         configureTab(
             tab, request: request, webView: webView, atIndex: atIndex, afterTab: afterTab,
@@ -706,7 +707,7 @@ extension TabManager {
     @discardableResult func storeChanges() -> Success {
         saveTabs(toProfile: profile, normalTabs)
         return store.preserveTabs(
-            tabs, selectedTab: selectedTab, for: SceneDelegate.getCurrentScene())
+            tabs, selectedTab: selectedTab, for: scene)
     }
 
     func hasTabsToRestoreAtStartup() -> Bool {
@@ -954,22 +955,22 @@ extension TabManager {
     convenience init(profile: Profile, imageStore: DiskImageStore?) {
         assert(Thread.isMainThread)
 
-        let scene = SceneDelegate.getCurrentScene()
+        let scene = SceneDelegate.getCurrentScene(for: nil)
         self.init(profile: profile, scene: scene)
     }
 
     func testTabCountOnDisk() -> Int {
         assert(AppConstants.IsRunningTest)
-        return store.testTabCountOnDisk()
+        return store.testTabCountOnDisk(sceneId: SceneDelegate.getCurrentSceneId(for: nil))
     }
 
     func testCountRestoredTabs() -> Int {
         assert(AppConstants.IsRunningTest)
-        return store.getStartupTabs(for: SceneDelegate.getCurrentScene()).count
+        return store.getStartupTabs(for: SceneDelegate.getCurrentScene(for: nil)).count
     }
 
     func testClearArchive() {
         assert(AppConstants.IsRunningTest)
-        store.clearArchive(for: SceneDelegate.getCurrentScene())
+        store.clearArchive(for: SceneDelegate.getCurrentScene(for: nil))
     }
 }

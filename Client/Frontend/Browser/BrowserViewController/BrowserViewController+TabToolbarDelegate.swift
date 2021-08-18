@@ -52,6 +52,8 @@ extension BrowserViewController: ToolbarDelegate {
                     CheatsheetViewController(
                         onDismiss: {
                             self.hideOverlaySheetViewController()
+                        }, openInNewTab: { url in
+                            self.openURLInNewTab(url)
                         }
                     )
                 )

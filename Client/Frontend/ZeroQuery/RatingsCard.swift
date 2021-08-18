@@ -11,8 +11,9 @@ enum RatingsCardState {
 }
 
 struct RatingsCard: View {
-
     @State var state = RatingsCardState.rateExperience
+
+    let scene: UIScene
     let onClose: () -> Void
     let onFeedback: () -> Void
     var viewWidth: CGFloat
@@ -47,9 +48,7 @@ struct RatingsCard: View {
             onFeedback()
             onClose()
         case .appStoreReview:
-            if let scene = SceneDelegate.getCurrentScene() as? UIWindowScene {
-                SKStoreReviewController.requestReview(in: scene)
-            }
+            SKStoreReviewController.requestReview(in: scene as! UIWindowScene)
             onClose()
         }
     }
@@ -196,17 +195,17 @@ struct RatingsCard_Previews: PreviewProvider {
     static var previews: some View {
         GeometryReader { geom in
             RatingsCard(
-                state: RatingsCardState.rateExperience, onClose: {}, onFeedback: {},
+                state: RatingsCardState.rateExperience, scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
                 viewWidth: geom.size.width)
         }
         GeometryReader { geom in
             RatingsCard(
-                state: RatingsCardState.sendFeedback, onClose: {}, onFeedback: {},
+                state: RatingsCardState.sendFeedback, scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
                 viewWidth: geom.size.width)
         }
         GeometryReader { geom in
             RatingsCard(
-                state: RatingsCardState.appStoreReview, onClose: {}, onFeedback: {},
+                state: RatingsCardState.appStoreReview, scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
                 viewWidth: geom.size.width)
         }
     }

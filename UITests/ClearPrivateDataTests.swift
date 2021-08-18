@@ -24,7 +24,7 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         var urls: [(title: String, domain: String, dispDomain: String, url: String)] = []
         for pageNo in 1...noOfSites {
             let url = "\(webRoot!)/numberedPage.html?page=\(pageNo)"
-            openURL(url)
+            openNewTab(to: url)
 
             tester().waitForAnimationsToFinish()
             tester().waitForWebViewElementWithAccessibilityLabel("Page \(pageNo)")

@@ -84,7 +84,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-            let routerpath = NavigationPath(url: url)
+              let routerpath = NavigationPath(bvc: browserViewController, url: url)
         else { return }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
@@ -156,12 +156,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         completionHandler: @escaping (Bool) -> Void = { _ in }
     ) {
         let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(
-            shortcutItem, withBrowserViewController: SceneDelegate.getBVC())
+            shortcutItem, withBrowserViewController: SceneDelegate.getBVC(for: nil))
         completionHandler(handledShortCutItem)
     }
 
-    // MARK: - Get data from current scene
-    static func getCurrentSceneDelegate() -> SceneDelegate {
+    // MARK: - Get data for current scene
+    /// Gets the  Scene Delegate for a view.
+    /// - Warning: If view is nil, the function will fallback to a different method, but it is **preffered** if a view **is passed**.
+    static func getCurrentSceneDelegate(for view: UIView?) -> SceneDelegate {
+        if let view = view, let sceneDelegate = getSceneDelegate(for: view) { // preffered method
+            return sceneDelegate
+        } else if let sceneDelegate = getActiveSceneDelegate() {
+            return sceneDelegate
+        }
+
+        fatalError("Scene Delegate doesn't exist for view or is nil")
+    }
+
+    static private func getSceneDelegate(for view: UIView) -> SceneDelegate? {
+        let sceneDelegate = view.window?.windowScene?.delegate as? SceneDelegate
+        return sceneDelegate
+    }
+
+    /// - Warning: Should be avoided as multiple scenes could be active.
+    static private func getActiveSceneDelegate() -> SceneDelegate? {
         for scene in UIApplication.shared.connectedScenes {
             if scene.activationState == .foregroundActive
                 || UIApplication.shared.connectedScenes.count == 1,
@@ -171,35 +189,47 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
 
-        fatalError("Scene Delegate doesn't exist or is nil")
+        return nil
     }
 
-    static func getCurrentScene() -> UIScene {
-        if let scene = getCurrentSceneDelegate().scene {
+    static func getAllSceneDelegates() -> [BrowserViewController] {
+        return UIApplication.shared.connectedScenes.compactMap { (($0 as? UIWindowScene)?.delegate as? SceneDelegate)?.browserViewController }
+    }
+
+    static func getCurrentScene(for view: UIView?) -> UIScene {
+        if let scene = getCurrentSceneDelegate(for: view).scene {
             return scene
         }
 
         fatalError("Scene doesn't exist or is nil")
     }
 
-    static func getCurrentSceneId() -> String {
-        return getCurrentScene().session.persistentIdentifier
+    static func getCurrentSceneId(for view: UIView?) -> String {
+        return getCurrentScene(for: view).session.persistentIdentifier
     }
 
-    static func getKeyWindow() -> UIWindow {
-        if let window = getCurrentSceneDelegate().window {
+    static func getKeyWindow(for view: UIView?) -> UIWindow {
+        if let window = getCurrentSceneDelegate(for: view).window {
             return window
         }
 
         fatalError("Window for current scene is nil")
     }
 
-    static func getBVC() -> BrowserViewController {
-        return getCurrentSceneDelegate().browserViewController
+    static func getBVC(for view: UIView?) -> BrowserViewController {
+        return getCurrentSceneDelegate(for: view).browserViewController
     }
 
-    static func getTabManager() -> TabManager {
-        return getCurrentSceneDelegate().tabManager
+    static func getBVC(with scene: UIScene?) -> BrowserViewController {
+        if let sceneDelegate = scene?.delegate as? SceneDelegate {
+            return sceneDelegate.browserViewController
+        }
+
+        fatalError("Scene Delegate doesn't exist for scene or is nil")
+    }
+
+    static func getTabManager(for view: UIView?) -> TabManager {
+        return getCurrentSceneDelegate(for: view).tabManager
     }
 
     // MARK: - Geiger

@@ -17,11 +17,11 @@ class IncognitoAwareHostingController<Content: View>: UIHostingController<
     /// }
     /// ```
     /// or by calling `super.init()` and using `setRootView` to specify a view that depends on `self`.
-    init(rootView: (() -> Content)? = nil) {
+    init(isIncognito: Bool, rootView: (() -> Content)? = nil) {
         super.init(
             rootView: _Applicator(
                 content: rootView,
-                isIncognito: SceneDelegate.getTabManager().isIncognito
+                isIncognito: isIncognito
             )
         )
     }

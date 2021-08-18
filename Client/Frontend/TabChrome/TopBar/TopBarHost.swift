@@ -28,6 +28,9 @@ struct TopBarContent: View {
     let trackingStatsViewModel: TrackingStatsViewModel
     let chromeModel: TabChromeModel
 
+    let newTab: () -> Void
+    let closeLazyTab: () -> Void
+
     var body: some View {
         TopBarView(
             performTabToolbarAction: { action in
@@ -61,6 +64,8 @@ struct TopBarContent: View {
             buildReloadMenu: { chromeModel.topBarDelegate?.urlBarReloadMenu() },
             onNeevaMenuAction: { chromeModel.topBarDelegate?.perform(neevaMenuAction: $0) },
             didTapNeevaMenu: { chromeModel.topBarDelegate?.updateFeedbackImage() },
+            newTab: newTab,
+            closeLazyTab: closeLazyTab,
             onOverflowMenuAction: {
                 chromeModel.topBarDelegate?.perform(overflowMenuAction: $0, targetButtonView: $1)
             },
@@ -77,15 +82,19 @@ struct TopBarContent: View {
 
 class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
     init(
+        isIncognito: Bool,
         locationViewModel: LocationViewModel,
         suggestionModel: SuggestionModel,
         queryModel: SearchQueryModel,
         gridModel: GridModel,
         trackingStatsViewModel: TrackingStatsViewModel,
         chromeModel: TabChromeModel,
-        delegate: TopBarDelegate
+        delegate: TopBarDelegate,
+        newTab: @escaping () -> Void,
+        closeLazyTab: @escaping () -> Void
     ) {
-        super.init()
+        super.init(isIncognito: isIncognito)
+
         setRootView {
             TopBarContent(
                 suggestionModel: suggestionModel,
@@ -93,9 +102,12 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
                 queryModel: queryModel,
                 gridModel: gridModel,
                 trackingStatsViewModel: trackingStatsViewModel,
-                chromeModel: chromeModel
+                chromeModel: chromeModel,
+                newTab: newTab,
+                closeLazyTab: closeLazyTab
             )
         }
+      
         self.view.backgroundColor = .clear
         self.view.translatesAutoresizingMaskIntoConstraints = false
         self.view.setContentHuggingPriority(.required, for: .vertical)

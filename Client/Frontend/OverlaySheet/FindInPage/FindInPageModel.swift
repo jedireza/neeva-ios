@@ -27,15 +27,13 @@ class FindInPageModel: ObservableObject {
 
     // MARK: Searching
     private func search(function: SearchFunction) {
-        if let tab = tab ?? SceneDelegate.getTabManager().selectedTab {
-            guard let webView = tab.webView else { return }
+        guard let tab = tab, let webView = tab.webView else { return }
 
-            do {
-                guard let escapedEncoded = String(data: try JSONEncoder().encode(searchValue), encoding: .utf8) else { return }
-                webView.evaluateJavascriptInDefaultContentWorld("__firefox__.\(function.rawValue)(\(escapedEncoded))")
-            } catch {
-                print("Error encoding escaped value: \(error)")
-            }
+        do {
+            guard let escapedEncoded = String(data: try JSONEncoder().encode(searchValue), encoding: .utf8) else { return }
+            webView.evaluateJavascriptInDefaultContentWorld("__firefox__.\(function.rawValue)(\(escapedEncoded))")
+        } catch {
+            print("Error encoding escaped value: \(error)")
         }
     }
 

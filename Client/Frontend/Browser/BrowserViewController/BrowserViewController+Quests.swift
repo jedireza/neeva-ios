@@ -46,7 +46,7 @@ extension BrowserViewController {
             description: "Access your Neeva Home, Spaces, Settings, and more",
             buttonMessage: "Let's take a Look!",
             onButtonClick: {
-                SceneDelegate.getBVC().showNeevaMenuSheet()
+                SceneDelegate.getBVC(for: self.view).showNeevaMenuSheet()
 
             },
             onClose: { [self] in

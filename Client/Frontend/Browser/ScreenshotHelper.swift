@@ -17,7 +17,7 @@ class ScreenshotHelper {
     }
 
     init() {
-        self.controller = SceneDelegate.getBVC()
+        self.controller = SceneDelegate.getBVC(for: nil)
     }
 
     /// Takes a screenshot of the WebView to be displayed on the tab view page

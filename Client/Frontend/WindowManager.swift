@@ -6,13 +6,16 @@ import UIKit
 import SwiftUI
 
 class WindowManager: KeyboardReadable {
+    private var rootViewController: UIViewController?
     private var alignToBottom: Bool
     private let inOutAnimationDuration = 0.3
     private var openWindow: UIWindow?
     private var keyboardHeightListener: AnyCancellable?
 
     public func createWindow(with rootViewController: UIViewController, height: CGFloat, addShadow: Bool = false) {
-        let window = SceneDelegate.getKeyWindow()
+        self.rootViewController = rootViewController
+
+        let window = SceneDelegate.getKeyWindow(for: rootViewController.view)
 
         guard let scene = window.windowScene else {
             return
@@ -90,7 +93,7 @@ class WindowManager: KeyboardReadable {
     }
 
     private func bottomConstraint() -> CGFloat {
-        let safeArea = SceneDelegate.getKeyWindow().safeAreaInsets.bottom
+        let safeArea = SceneDelegate.getKeyWindow(for: rootViewController?.view).safeAreaInsets.bottom
         return safeArea + UIConstants.BottomToolbarHeight
     }
 

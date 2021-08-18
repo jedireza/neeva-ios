@@ -61,7 +61,7 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.accessibilityIdentifier = "Recently Closed Tabs List"
-        tabManager = SceneDelegate.getTabManager()
+        tabManager = SceneDelegate.getTabManager(for: view)
         tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
     }
 

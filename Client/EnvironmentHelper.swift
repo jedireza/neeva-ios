@@ -52,7 +52,7 @@ public class EnvironmentHelper {
 
     public func getAttributes() -> [ClientLogCounterAttribute] {
         // selected tab is private
-        let tabManager = SceneDelegate.getTabManager()
+        let tabManager = SceneDelegate.getTabManager(for: nil)
         let isPrivate =
             tabManager.isIncognito
         let isPrivateMode = ClientLogCounterAttribute(
