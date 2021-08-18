@@ -98,11 +98,11 @@ class SpaceCardModel: CardModel {
         self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
             allDetails = manager.getAll().map { SpaceCardDetails(space: $0) }
             allDetails.forEach { details in
-                details.$isShowingDetails.sink { showingDetails in
+                details.$isShowingDetails.sink { [weak self] showingDetails in
                     if showingDetails {
-                        self.detailedSpace = details
+                        self?.detailedSpace = details
                     }
-                }.store(in: &self.detailsSubscriptions)
+                }.store(in: &detailsSubscriptions)
             }
             onViewUpdate()
             detailedSpace = allDetails.first { $0.isShowingDetails }

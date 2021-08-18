@@ -194,7 +194,6 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     typealias Thumbnail = SpaceEntityThumbnail
 
     @Published var manager = SpaceStore.shared
-    var anyCancellable: AnyCancellable? = nil
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
@@ -210,10 +209,6 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
 
     private init(id: String) {
         self.id = id
-        self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
-            self?.updateDetails()
-            self?.objectWillChange.send()
-        }
         updateDetails()
     }
 
