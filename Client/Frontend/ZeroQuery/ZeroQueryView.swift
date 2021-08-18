@@ -158,7 +158,12 @@ struct ZeroQueryView: View {
                         if viewModel.showRatingsCard {
                             RatingsCard(
                                 scene: SceneDelegate.getCurrentScene(for: viewModel.bvc.view),
-                                onClose: { viewModel.showRatingsCard = false },
+                                onClose: {
+                                    viewModel.showRatingsCard = false
+                                    UserFlagStore.shared.setFlag(
+                                        .dismissedRatingPromo,
+                                        action: {})
+                                },
                                 onFeedback: {
                                     showFeedbackPanel(bvc: viewModel.bvc, shareURL: false)
                                 },

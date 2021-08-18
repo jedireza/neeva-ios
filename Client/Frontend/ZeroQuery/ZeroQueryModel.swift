@@ -107,7 +107,12 @@ class ZeroQueryModel: ObservableObject {
             promoCard = nil
         }
 
-        showRatingsCard = NeevaFeatureFlags[.appStoreRatingPromo] && promoCard == nil
+        showRatingsCard =
+            NeevaFeatureFlags[.appStoreRatingPromo]
+            && promoCard == nil
+            && Defaults[.loginLastWeekTimeStamp].count == 10
+            && UserFlagStore.shared.state == .ready
+            && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)
     }
 
     func hideURLFromTopSites(_ site: Site) {

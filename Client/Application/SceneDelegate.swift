@@ -70,6 +70,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         checkForSignInToken()
     }
 
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        checkUserActivenessLastWeek()
+    }
+
     func sceneDidEnterBackground(_ scene: UIScene) {
         //
         // At this point we are happy to mark the app as applicationCleanlyBackgrounded. If a crash happens in background
@@ -267,5 +271,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 introVC.dismiss(animated: true, completion: nil)
             }
         }
+    }
+
+    func checkUserActivenessLastWeek() {
+        let minusOneWeekToCurrentDate = Calendar.current.date(
+            byAdding: .weekOfYear, value: -1, to: Date())
+
+        guard let startOfLastWeek = minusOneWeekToCurrentDate else {
+            return
+        }
+
+        Defaults[.loginLastWeekTimeStamp] = Defaults[.loginLastWeekTimeStamp].suffix(9).filter {
+            $0 > startOfLastWeek
+        }
+        Defaults[.loginLastWeekTimeStamp].append(Date())
     }
 }

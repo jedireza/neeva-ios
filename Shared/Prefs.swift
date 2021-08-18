@@ -66,8 +66,12 @@ extension Defaults.Keys {
         "WidgetKitSimpleTopTab", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
 
     // performance
-    public static let applicationCleanlyBackgrounded = Defaults.Key<Bool>("ApplicationCrashedLastTime", default: true)
+    public static let applicationCleanlyBackgrounded = Defaults.Key<Bool>(
+        "ApplicationCrashedLastTime", default: true)
     public static let pageLoadedCounter = Defaults.Key<Int32>("PageLoadedCounter", default: 0)
+
+    public static let loginLastWeekTimeStamp = Defaults.Key<[Date]>(
+        "LoginLastWeekTimeStamp", default: [])
 }
 
 extension Defaults {
