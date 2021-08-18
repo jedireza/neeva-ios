@@ -58,8 +58,7 @@ private struct DragToCloseInteraction: ViewModifier {
                         // translation is mostly in the horizontal direction to avoid translating
                         // the card when the UIScrollView is scrolling.
                         if offset != 0
-                            || abs(value.predictedEndTranslation.width)
-                                > abs(value.predictedEndTranslation.height)
+                            || abs(value.translation.width) > abs(value.translation.height)
                         {
                             offset = value.translation.width
                         }
