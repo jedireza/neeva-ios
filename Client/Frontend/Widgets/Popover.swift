@@ -64,7 +64,9 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
                     if let view = viewIfLoaded, view.window != nil {
                         present(presentee, animated: true)
                     }
-                } else if let presentee = self.presentedViewController {
+                } else if let presentee = self.presentedViewController,
+                          // hacky workaround to make sure we don't dismiss IntroViewController to cause a cycle
+                          !(presentee is IntroViewController) {
                     presentee.dismiss(animated: true)
                 }
             }
