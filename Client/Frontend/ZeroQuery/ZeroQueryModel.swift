@@ -107,12 +107,21 @@ class ZeroQueryModel: ObservableObject {
             promoCard = nil
         }
 
+        // In case the ratings card server update was unsuccessful: each time we enter a ZeroQueryPage, check whether local change has been synced to server
+        // The check is only performed once the local ratings card has been hidden
+        if Defaults[.ratingsCardHidden] && UserFlagStore.shared.state == .ready
+            && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)
+        {
+            UserFlagStore.shared.setFlag(.dismissedRatingPromo, action: {})
+        }
+
         showRatingsCard =
             NeevaFeatureFlags[.appStoreRatingPromo]
             && promoCard == nil
             && Defaults[.loginLastWeekTimeStamp].count == 10
-            && UserFlagStore.shared.state == .ready
-            && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)
+            && (!Defaults[.ratingsCardHidden]
+                || (UserFlagStore.shared.state == .ready
+                    && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)))
     }
 
     func hideURLFromTopSites(_ site: Site) {

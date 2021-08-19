@@ -20,6 +20,7 @@ struct InternalSettingsView: View {
     @Default(.widgetKitSimpleTabKey) var widgetKitSimpleTabKey
     @Default(.widgetKitSimpleTopTab) var widgetKitSimpleTopTab
     @Default(.applicationCleanlyBackgrounded) var applicationCleanlyBackgrounded
+    @Default(.ratingsCardHidden) var ratingsCardHidden
 
     var body: some View {
         List {
@@ -30,6 +31,7 @@ struct InternalSettingsView: View {
                 Toggle("didShowDefaultBrowserOnboarding", isOn: $didShowDefaultBrowserOnboarding)
                 Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)
                 Toggle("didDismissReferralPromoCard", isOn: $didDismissReferralPromoCard)
+                Toggle("ratingsCardHidden", isOn: $ratingsCardHidden)
             }
             Section(header: Text("User-generated")) {
                 HStack {

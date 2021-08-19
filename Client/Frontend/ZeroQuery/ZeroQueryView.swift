@@ -160,6 +160,7 @@ struct ZeroQueryView: View {
                                 scene: SceneDelegate.getCurrentScene(for: viewModel.bvc.view),
                                 onClose: {
                                     viewModel.showRatingsCard = false
+                                    Defaults[.ratingsCardHidden] = true
                                     UserFlagStore.shared.setFlag(
                                         .dismissedRatingPromo,
                                         action: {})
@@ -207,7 +208,8 @@ struct ZeroQueryView: View {
             }
             .environmentObject(
                 ZeroQueryModel(
-                    bvc: SceneDelegate.getBVC(for: nil), profile: BrowserProfile(localName: "profile"), shareURLHandler: { _ in })
+                    bvc: SceneDelegate.getBVC(for: nil),
+                    profile: BrowserProfile(localName: "profile"), shareURLHandler: { _ in })
             )
             .environmentObject(SuggestedSitesViewModel.preview)
             .environmentObject(
