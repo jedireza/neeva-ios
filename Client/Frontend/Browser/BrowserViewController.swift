@@ -712,6 +712,11 @@ class BrowserViewController: UIViewController {
     }
 
     public func closeLazyTab() {
+        // Have to be a lazy tab to close a lazy tab
+        guard self.zeroQueryModel.isLazyTab else {
+            return
+        }
+
         DispatchQueue.main.async {
             switch self.zeroQueryModel.openedFrom {
             case .tabTray:
