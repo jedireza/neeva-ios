@@ -4,9 +4,6 @@
 
 import XCTest
 
-let website_1 = [
-    "url": "www.neeva.com", "label": "Ad free, private search — Neeva", "value": "neeva.com",
-]
 let website_2 = [
     "url": "www.example.com", "label": "Example", "value": "example", "link": "More information...",
     "moreLinkLongPressUrl": "http://www.iana.org/domains/example", "moreLinkLongPressInfo": "iana",
@@ -56,27 +53,6 @@ class NavigationTest: BaseTestCase {
         app.buttons["Forward"].tap()
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
-    }
-
-    func testScrollsToTopWithMultipleTabs() throws {
-        try skipTest(issue: 1241, "Test needs to be revised")
-        openURL(website_1["url"]!)
-        waitForValueContains(app.buttons["Address Bar"], value: website_1["value"]!)
-        // Element at the TOP. TBChanged once the web page is correclty shown
-        let topElement = app.links.staticTexts["Mozilla"].firstMatch
-
-        // Element at the BOTTOM
-        let bottomElement = app.webViews.links.staticTexts["Legal"]
-
-        // Scroll to bottom
-        bottomElement.tap()
-        waitUntilPageLoad()
-        app.buttons["Back"].tap()
-        waitUntilPageLoad()
-
-        // Scroll to top
-        topElement.tap()
-        waitForExistence(topElement)
     }
 
     // Smoketest

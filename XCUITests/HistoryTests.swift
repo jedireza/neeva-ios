@@ -136,12 +136,12 @@ class HistoryTests: BaseTestCase {
 
     func testOpenInNewTabRecentlyClosedItemFromMenu() {
         // test the recently closed tab menu
-        openURL("neeva.com")
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
 
         showRecentlyClosedTabs()
-        app.buttons["Ad-free, private search - Neeva"].tap()
+        app.buttons["The Book of Mozilla"].tap()
 
         XCTAssertEqual(getTabs().count, 2)
     }
@@ -160,14 +160,14 @@ class HistoryTests: BaseTestCase {
 
     func testOpenInNewPrivateTabRecentlyClosedItem() {
         // Open the default website
-        openURL("neeva.com")
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
 
         goToRecentlyClosedPage()
 
         waitForExistence(app.tables["Recently Closed Tabs List"])
-        app.tables.cells.staticTexts["https://neeva.com"].press(forDuration: 1)
+        app.tables.cells.staticTexts[closedWebPageLabel].press(forDuration: 1)
 
         app.buttons["Open in New Incognito Tab"].tap()
 
@@ -179,12 +179,12 @@ class HistoryTests: BaseTestCase {
         toggleIncognito()
 
         // Open the default website
-        openURL("neeva.com")
+        openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         closeAllTabs()
 
         showRecentlyClosedTabs()
-        XCTAssertFalse(app.buttons["Ad-free, private search - Neeva"].exists)
+        XCTAssertFalse(app.buttons["The Book of Mozilla"].exists)
     }
 
     func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
