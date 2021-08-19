@@ -18,7 +18,11 @@ public struct ZeroQueryCommonContextMenuActions: View {
             Label("Open in New Tab", systemSymbol: .plusSquare)
         }
         Button(action: { openInNewTab(siteURL, true) }) {
-            Label("Open in Incognito", image: "incognito")
+            Label {
+                Text("Open in Incognito")
+            } icon: {
+                Image("incognito").renderingMode(.template)
+            }
         }
         Button(action: { saveToSpace(siteURL, title, description) }) {
             Label("Save to Spaces", systemSymbol: .bookmark)
