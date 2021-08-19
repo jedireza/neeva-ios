@@ -886,7 +886,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
             if NeevaFeatureFlags[.cheatsheetQuery] {
                 // fetch cheatsheet info
-                CheatsheetInfo.shared.fetch(url: url)
+                tab.fetchCheatsheetInfo()
             }
         }
 

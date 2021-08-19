@@ -21,8 +21,7 @@ struct TabToolbarView: View {
                     weight: .medium,
                     onBack: { performAction(.back) },
                     onForward: { performAction(.forward) },
-                    onLongPress: { performAction(.longPressBackForward) },
-                    onCheatsheet: { performAction(.cheatsheet) }
+                    onLongPress: { performAction(.longPressBackForward) }
                 )
                 if FeatureFlag[.overflowMenu] {
                     TabToolbarButtons.OverflowMenu {

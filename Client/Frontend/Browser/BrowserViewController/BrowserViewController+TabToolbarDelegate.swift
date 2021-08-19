@@ -13,7 +13,6 @@ enum ToolbarAction {
     case longPressBackForward
     case addToSpace
     case showTabs
-    case cheatsheet
 }
 
 extension BrowserViewController: ToolbarDelegate {
@@ -42,18 +41,6 @@ extension BrowserViewController: ToolbarDelegate {
                         changedUserAgent: self.tabManager.selectedTab?.changedUserAgent,
                         menuAction: { action in
                             self.perform(overflowMenuAction:action, targetButtonView:nil)
-                        }
-                    )
-                )
-                self.dismissVC()
-
-            case .cheatsheet:
-                self.showOverlaySheetViewController(
-                    CheatsheetViewController(
-                        onDismiss: {
-                            self.hideOverlaySheetViewController()
-                        }, openInNewTab: { url in
-                            self.openURLInNewTab(url)
                         }
                     )
                 )

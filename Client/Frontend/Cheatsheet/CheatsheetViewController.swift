@@ -7,13 +7,20 @@ struct CheatsheetRootView: View {
     @StateObject var overlaySheetModel = OverlaySheetModel()
 
     let onDismiss: () -> Void
-    var embeddedView: CheatsheetMenuView
+    let menuAction: (NeevaMenuAction) -> Void
+    let model: CheatsheetMenuViewModel
+    let openInNewTab: (URL, Bool) -> Void
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
         OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
-            self.embeddedView
-                .overlaySheetIsFixedHeight(isFixedHeight: false)
+            CheatsheetMenuView { action in
+                menuAction(action)
+                overlaySheetModel.hide()
+            }
+            .overlaySheetIsFixedHeight(isFixedHeight: false)
+            .environmentObject(model)
+            .environment(\.openInNewTab, openInNewTab)
         }
         .onAppear {
             DispatchQueue.main.async {
@@ -23,14 +30,25 @@ struct CheatsheetRootView: View {
     }
 }
 
-class CheatsheetViewController: UIHostingController<CheatsheetRootView> {
-    public init(onDismiss: @escaping () -> Void, openInNewTab: @escaping (URL) -> Void) {
-        super.init(
-            rootView: CheatsheetRootView(
+class CheatsheetViewController: IncognitoAwareHostingController<CheatsheetRootView> {
+    public init(
+        menuAction: @escaping (NeevaMenuAction) -> Void,
+        onDismiss: @escaping () -> Void,
+        openInNewTab: @escaping (URL, Bool) -> Void,
+        tabManager: TabManager,
+        isPrivate: Bool
+    ) {
+        let model = CheatsheetMenuViewModel(tabManager: tabManager)
+
+        super.init(isIncognito: isPrivate)
+
+        setRootView {
+            CheatsheetRootView(
                 onDismiss: onDismiss,
-                embeddedView: CheatsheetMenuView(openInNewTab: openInNewTab)
-            )
-        )
+                menuAction: menuAction,
+                model: model,
+                openInNewTab: openInNewTab)
+        }
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

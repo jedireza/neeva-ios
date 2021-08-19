@@ -69,7 +69,7 @@ public class CheatsheetQueryController:
         return [result]
     }
 
-    @discardableResult static func getCheatsheetInfo(
+    @discardableResult public static func getCheatsheetInfo(
         url: String, completion: @escaping (Result<[CheatsheetInfo], Error>) -> Void
     ) -> Apollo.Cancellable {
         Self.perform(query: CheatsheetInfoQuery(input: url), completion: completion)

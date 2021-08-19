@@ -101,6 +101,9 @@ class Tab: NSObject, ObservableObject {
     /// For security reasons, the URL may differ from the web view’s URL.
     @Published private(set) var url: URL?
 
+    /// Cheatsheet info for current url
+    @Published private(set) var cheatsheetData: CheatsheetQueryController.CheatsheetInfo?
+
     func setURL(_ newValue: URL?) {
         if let internalUrl = InternalURL(newValue), internalUrl.isAuthorized {
             url = internalUrl.stripAuthorization
@@ -271,6 +274,23 @@ class Tab: NSObject, ObservableObject {
 
             UserScriptManager.shared.injectUserScriptsIntoTab(self)
             tabDelegate?.tab?(self, didCreateWebView: webView)
+        }
+    }
+
+    // fetch cheatsheet info for current url
+    func fetchCheatsheetInfo() {
+        guard let url = self.url else { return }
+        if url.host == NeevaConstants.appHost || url.scheme != "https" {
+            return
+        }
+
+        CheatsheetQueryController.getCheatsheetInfo(url: url.absoluteString) { result in
+            switch result {
+            case .success(let cheatsheetInfo):
+                self.cheatsheetData = cheatsheetInfo[0]
+            case .failure(let error):
+                print("Error: \(error)")
+            }
         }
     }
 

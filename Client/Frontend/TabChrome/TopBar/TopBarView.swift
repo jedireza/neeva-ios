@@ -30,8 +30,7 @@ struct TopBarView: View {
                         weight: .regular,
                         onBack: { performTabToolbarAction(.back) },
                         onForward: { performTabToolbarAction(.forward) },
-                        onLongPress: { performTabToolbarAction(.longPressBackForward) },
-                        onCheatsheet: { performTabToolbarAction(.cheatsheet) }
+                        onLongPress: { performTabToolbarAction(.longPressBackForward) }
                     ).tapTargetFrame()
                     if FeatureFlag[.overflowMenu] {
                         TopBarOverflowMenuButton(

@@ -1,14 +1,16 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import Shared
 import SwiftUI
 
 struct ReviewURLButton: View {
     let url: URL
-    let openInNewTab: (URL) -> Void
+    @Environment(\.openInNewTab) var openInNewTab
+    @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
-        Button(action: { openInNewTab(url) }) {
+        Button(action: { openInNewTab(url, isIncognito) }) {
             getHostName()
         }
     }
@@ -16,7 +18,9 @@ struct ReviewURLButton: View {
     @ViewBuilder
     func getHostName() -> some View {
         let host = url.baseDomain?.replacingOccurrences(of: ".com", with: "")
-        let lastPath = url.lastPathComponent.replacingOccurrences(of: ".html", with: "")
+        let lastPath = url.lastPathComponent
+            .replacingOccurrences(of: ".html", with: "")
+            .replacingOccurrences(of: "-", with: " ")
         if host != nil {
             HStack {
                 Text(host!).bold()
@@ -39,6 +43,8 @@ struct ReviewURLButton: View {
 
 struct QueryButton: View {
     let query: String
+    @Environment(\.openInNewTab) var openInNewTab
+    @Environment(\.isIncognito) private var isIncognito
 
     var body: some View {
         Button(action: onClick) {
@@ -58,32 +64,41 @@ struct QueryButton: View {
             withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
         {
             let target = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")!
-            SceneDelegate.getBVC(for: nil).openURLInNewTab(target)
+            openInNewTab(target, isIncognito)
         }
     }
 }
 
-struct CheatsheetMenuView: View {
-    let openInNewTab: (URL) -> Void
-    @ObservedObject var cheatsheetInfo = CheatsheetInfo.shared
+class CheatsheetMenuViewModel: ObservableObject {
+    @Published var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
+    private var subscriptions: Set<AnyCancellable> = []
 
-    var body: some View {
+    init(tabManager: TabManager) {
+        self.cheatsheetInfo = tabManager.selectedTab?.cheatsheetData
+        tabManager.selectedTabPublisher
+            .compactMap { $0?.cheatsheetData }
+            .assign(to: \.cheatsheetInfo, on: self)
+            .store(in: &subscriptions)
+    }
+}
+
+public struct CheatsheetMenuView: View {
+    @EnvironmentObject private var model: CheatsheetMenuViewModel
+    private let menuAction: (NeevaMenuAction) -> Void
+    @Environment(\.isIncognito) private var isIncognito
+
+    init(menuAction: @escaping (NeevaMenuAction) -> Void) {
+        self.menuAction = menuAction
+    }
+
+    public var body: some View {
         GeometryReader { geom in
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
+                    CompactNeevaMenuView(menuAction: menuAction, isIncognito: isIncognito)
                     priceHistorySection
                     reviewURLSection
                     memorizedQuerySection
-                    if cheatsheetInfo.currentURL != nil {
-                        VStack(alignment: .leading) {
-                            Text("Cheatsheet for URL: ").bold()
-                            Text(cheatsheetInfo.currentURL!)
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(2)
-                        }
-                        .withFont(unkerned: .bodyXSmall)
-                        .padding()
-                    }
                 }.frame(width: geom.size.width)
             }
             .frame(minHeight: 200)
@@ -92,12 +107,12 @@ struct CheatsheetMenuView: View {
 
     @ViewBuilder
     var reviewURLSection: some View {
-        if cheatsheetInfo.cheatsheetData?.reviewURL?.count ?? 0 > 0 {
+        if model.cheatsheetInfo?.reviewURL?.count ?? 0 > 0 {
             VStack(alignment: .leading, spacing: 20) {
                 Text("Buying Guide").withFont(.headingMedium)
-                ForEach(cheatsheetInfo.cheatsheetData?.reviewURL ?? [], id: \.self) { review in
+                ForEach(model.cheatsheetInfo?.reviewURL ?? [], id: \.self) { review in
                     if let url = URL(string: review) {
-                        ReviewURLButton(url: url, openInNewTab: openInNewTab)
+                        ReviewURLButton(url: url)
                     }
                 }
             }
@@ -107,10 +122,10 @@ struct CheatsheetMenuView: View {
 
     @ViewBuilder
     var memorizedQuerySection: some View {
-        if cheatsheetInfo.cheatsheetData?.memorizedQuery?.count ?? 0 > 0 {
+        if model.cheatsheetInfo?.memorizedQuery?.count ?? 0 > 0 {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Keep Looking").withFont(.headingMedium)
-                ForEach(cheatsheetInfo.cheatsheetData?.memorizedQuery ?? [], id: \.self) { query in
+                ForEach(model.cheatsheetInfo?.memorizedQuery ?? [], id: \.self) { query in
                     QueryButton(query: query)
                 }
             }
@@ -120,7 +135,7 @@ struct CheatsheetMenuView: View {
 
     @ViewBuilder
     var priceHistorySection: some View {
-        if let priceHistory = cheatsheetInfo.cheatsheetData?.priceHistory,
+        if let priceHistory = model.cheatsheetInfo?.priceHistory,
             !priceHistory.Max.Price.isEmpty || !priceHistory.Min.Price.isEmpty
         {
             VStack(alignment: .leading, spacing: 10) {
@@ -180,6 +195,6 @@ struct CheatsheetMenuView: View {
 
 struct CheatsheetMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        CheatsheetMenuView(openInNewTab: { _ in })
+        CheatsheetMenuView(menuAction: { _ in })
     }
 }

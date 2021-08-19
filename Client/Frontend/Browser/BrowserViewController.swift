@@ -1867,13 +1867,30 @@ extension BrowserViewController {
         let isPrivate = tabManager.isIncognito
 
         self.updateFeedbackImage()
-        self.showOverlaySheetViewController(
-            NeevaMenuViewController(
-                menuAction: perform(neevaMenuAction:),
-                onDismiss: {
-                    self.hideOverlaySheetViewController()
-                }, isPrivate: isPrivate)
-        )
+
+        if NeevaFeatureFlags[.cheatsheetQuery] {
+            self.showOverlaySheetViewController(
+                CheatsheetViewController(
+                    menuAction: perform(neevaMenuAction:),
+                    onDismiss: {
+                        self.hideOverlaySheetViewController()
+                    },
+                    openInNewTab: { url, isPrivate in
+                        self.openURLInNewTab(url)
+                    },
+                    tabManager: tabManager,
+                    isPrivate: isPrivate
+                )
+            )
+        } else {
+            self.showOverlaySheetViewController(
+                NeevaMenuViewController(
+                    menuAction: perform(neevaMenuAction:),
+                    onDismiss: {
+                        self.hideOverlaySheetViewController()
+                    }, isPrivate: isPrivate)
+            )
+        }
         self.dismissVC()
     }
 }

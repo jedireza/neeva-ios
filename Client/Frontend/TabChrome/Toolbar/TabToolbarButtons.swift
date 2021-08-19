@@ -25,26 +25,16 @@ enum TabToolbarButtons {
         let onBack: () -> Void
         let onForward: () -> Void
         let onLongPress: () -> Void
-        let onCheatsheet: () -> Void
 
         @ViewBuilder var experimentalButton: some View {
             if !FeatureFlag[.overflowMenu] {
-                if NeevaFeatureFlags[.cheatsheetQuery] {
-                    TabToolbarButton(
-                        label: Symbol(
-                            .lightbulb, size: 20, weight: weight,
-                            label: .TabToolbarCheatsheetAccessibilityLabel),
-                        action: onCheatsheet
-                    )
-                } else {
-                    TabToolbarButton(
-                        label: Symbol(
-                            .arrowForward, size: 20, weight: weight,
-                            label: .TabToolbarForwardAccessibilityLabel), action: onForward
-                    )
-                    .disabled(!model.canGoForward)
-                    .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
-                }
+                TabToolbarButton(
+                    label: Symbol(
+                        .arrowForward, size: 20, weight: weight,
+                        label: .TabToolbarForwardAccessibilityLabel), action: onForward
+                )
+                .disabled(!model.canGoForward)
+                .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
             }
         }
 
