@@ -64,7 +64,7 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
                     if let view = viewIfLoaded, view.window != nil {
                         present(presentee, animated: true)
                     }
-                } else if let presentee = self.presentedViewController {
+                } else if let presentee = self.presentedViewController, presentee == oldValue {
                     presentee.dismiss(animated: true)
                 }
             }
