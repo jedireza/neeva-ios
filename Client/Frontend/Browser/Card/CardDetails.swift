@@ -21,6 +21,7 @@ protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     var id: String { get }
     var closeButtonImage: UIImage? { get }
     var title: String { get }
+    var description: String? { get }
     var accessibilityLabel: String { get }
     var favicon: FaviconViewType { get }
     var isSelected: Bool { get }
@@ -48,7 +49,6 @@ where
     Item: Selectable, Self: SelectingManagerProvider, Self.Manager.Item == Item,
     Manager: AccessingManager
 {
-
     func onSelect() {
         if let item = manager.get(for: id) {
             manager.select(item)
@@ -76,6 +76,10 @@ where
 extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item == Item {
     var title: String {
         manager.get(for: id)?.displayTitle ?? ""
+    }
+
+    var description: String? {
+        return manager.get(for: id)?.pageMetadata?.description
     }
 
     @ViewBuilder var thumbnail: some View {
@@ -179,7 +183,10 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
         } else {
-            FaviconView(url: data.url, size: .infinity, bordered: false)
+            Symbol(decorative: .bookmarkOnBookmark)
+                .foregroundColor(Color.white)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.spaceIconBackground)
         }
     }
 
@@ -195,12 +202,11 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
 
     @Published var manager = SpaceStore.shared
     @Published var isShowingDetails = false
-  
+
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
     let bvc: BrowserViewController
-    
 
     var accessibilityLabel: String {
         "\(title), Space"

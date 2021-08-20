@@ -183,7 +183,11 @@ extension SpaceEntityData: BrowserPrimitive {
     }
 
     var pageMetadata: PageMetadata? {
-        nil
+        return PageMetadata.fromDictionary([
+            MetadataKeys.pageURL.rawValue: primitiveUrl?.absoluteString as Any,
+            MetadataKeys.provider.rawValue: primitiveUrl?.baseDomain as Any,
+            MetadataKeys.description.rawValue: snippet as Any,
+        ])
     }
 
     public var id: String {

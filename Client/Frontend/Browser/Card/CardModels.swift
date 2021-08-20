@@ -101,11 +101,13 @@ class SpaceCardModel: CardModel {
             allDetails.forEach { details in
                 details.$isShowingDetails.sink { [weak self] showingDetails in
                     if showingDetails {
-                        self?.detailedSpace = details
+                        withAnimation {
+                            self?.detailedSpace = details
+                        }
                     }
                 }.store(in: &detailsSubscriptions)
             }
-                                                             
+
             onViewUpdate()
             detailedSpace = allDetails.first { $0.isShowingDetails }
             objectWillChange.send()

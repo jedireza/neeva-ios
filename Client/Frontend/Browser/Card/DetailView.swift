@@ -4,11 +4,10 @@ import Shared
 import SwiftUI
 
 enum DetailsViewUX {
-    static let Padding: CGFloat = 10
-    static let DetailsCornerRadius: CGFloat = 12
-    static let ThumbnailCornerRadius: CGFloat = 8
+    static let Padding: CGFloat = 2
+    static let ThumbnailCornerRadius: CGFloat = 6
     static let ThumbnailSize: CGFloat = 54
-    static let ItemPadding: CGFloat = 12
+    static let ItemPadding: CGFloat = 14
 }
 
 struct DetailView<Details: ThumbnailModel>: View
@@ -34,7 +33,11 @@ where
         VStack(spacing: 0) {
             HStack {
                 Button(
-                    action: { spacesModel.detailedSpace = nil },
+                    action: {
+                        withAnimation {
+                            spacesModel.detailedSpace = nil
+                        }
+                    },
                     label: {
                         Symbol(decorative: .arrowLeft)
                             .foregroundColor(Color.label)
@@ -45,7 +48,11 @@ where
                     .foregroundColor(Color.label)
                 Spacer()
                 Button(
-                    action: { gridModel.showingDetailsAsList.toggle() },
+                    action: {
+                        withAnimation {
+                            gridModel.showingDetailsAsList.toggle()
+                        }
+                    },
                     label: {
                         Image(
                             systemName: gridModel.showingDetailsAsList
@@ -58,15 +65,17 @@ where
                 .frame(maxWidth: .infinity)
                 .background(Color.background)
             ScrollView(.vertical, showsIndicators: false) {
-                LazyVGrid(columns: gridModel.showingDetailsAsList ? listColumns : gridColumns) {
+                LazyVGrid(
+                    columns: gridModel.showingDetailsAsList ? listColumns : gridColumns,
+                    spacing: DetailsViewUX.Padding
+                ) {
                     ForEach(primitive.allDetails, id: \.id) { details in
                         if gridModel.showingDetailsAsList {
-                            SingleDetailView(details: details)
-                                .onTapGesture {
-                                    openURL((details.manager.get(for: details.id)?.primitiveUrl)!)
-                                    gridModel.hideWithNoAnimation()
-                                    spacesModel.detailedSpace = nil
-                                }
+                            SingleDetailView(details: details) {
+                                openURL((details.manager.get(for: details.id)?.primitiveUrl)!)
+                                gridModel.hideWithNoAnimation()
+                                spacesModel.detailedSpace = nil
+                            }
                         } else {
                             VStack(spacing: 0) {
                                 FittedCard(details: details).environment(\.selectionCompletion) {
@@ -89,7 +98,7 @@ where
                     }
                     Spacer()
                 }
-                .padding(DetailsViewUX.Padding)
+                .padding(.vertical, DetailsViewUX.Padding)
             }
         }
     }
@@ -97,27 +106,47 @@ where
 
 struct SingleDetailView<Details: CardDetails>: View {
     let details: Details
-    var body: some View {
-        HStack(spacing: DetailsViewUX.ItemPadding) {
-            details.thumbnail.frame(
-                width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
-            )
-            .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
-            Text(details.title)
-                .withFont(.bodyMedium)
-                .lineLimit(2)
-                .foregroundColor(Color.label)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(DetailsViewUX.ItemPadding)
-        .background(Color.background)
-        .cornerRadius(DetailsViewUX.DetailsCornerRadius)
+    let onSelected: () -> Void
+    @State private var isPressed = false
+    var description: String {
+        details.id
     }
 
+    var body: some View {
+        Button {
+            onSelected()
+        } label: {
+            HStack(spacing: DetailsViewUX.ItemPadding) {
+                details.thumbnail.frame(
+                    width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
+                )
+                    .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                VStack(spacing: DetailsViewUX.Padding) {
+                    Text(details.title)
+                        .withFont(.bodyMedium)
+                        .lineLimit(2)
+                        .foregroundColor(Color.label)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    if let snippet = details.description {
+                        Text(snippet)
+                            .withFont(.bodySmall)
+                            .lineLimit(2)
+                            .foregroundColor(Color.secondaryLabel)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+
+            }
+            .padding(DetailsViewUX.ItemPadding)
+            .background(Color.background)
+            .scaleEffect(isPressed ? 0.95 : 1)
+        }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+    }
 }
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(primitive: SpaceCardDetails(space: .stackOverflow, bvc: SceneDelegate.getBVC(for: nil)))
+        DetailView(
+            primitive: SpaceCardDetails(space: .stackOverflow, bvc: SceneDelegate.getBVC(for: nil)))
     }
 }

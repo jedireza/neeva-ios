@@ -149,6 +149,7 @@ struct CardGrid: View {
                     DetailView(primitive: spaceDetails)
                         .frame(width: geom.size.width, height: geom.size.height)
                         .background(Color(UIColor.TrayBackground).ignoresSafeArea())
+                        .transition(.slide)
                 }
             }
             .useEffect(

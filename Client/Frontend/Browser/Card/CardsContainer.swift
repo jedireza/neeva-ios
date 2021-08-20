@@ -19,6 +19,7 @@ extension EnvironmentValues {
 }
 struct CardsContainer: View {
     @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
 
     let columns: [GridItem]
@@ -40,8 +41,16 @@ struct CardsContainer: View {
                     }
                 }
                 .padding(.top, 20)
-                .useEffect(deps: tabModel.selectedTabID) { _ in
-                    value.scrollTo(tabModel.selectedTabID)
+                .useEffect(
+                    deps: tabModel.selectedTabID, gridModel.isHidden, gridModel.switcherState
+                ) { _, _, _ in
+                    switch gridModel.switcherState {
+                    case .tabs:
+                        value.scrollTo(tabModel.selectedTabID)
+                    case .spaces:
+                        spacesModel.manager.refresh()
+                        value.scrollTo(spacesModel.allDetails.first?.id ?? "")
+                    }
                 }
                 .background(
                     GeometryReader { proxy in
