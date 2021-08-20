@@ -35,14 +35,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         log.info("URL contexts from willConnectTo: \(connectionOptions.urlContexts)")
         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
 
-        DispatchQueue.main.async { [self] in
-            if let userActivity = connectionOptions.userActivities.first {
-                _ = continueSiriIntent(continue: userActivity)
-            }
+        log.info("Checking for user activites: \(connectionOptions.userActivities)")
+        if let userActivity = connectionOptions.userActivities.first {
+            self.scene(scene, continue: userActivity)
+        }
 
-            if let shortcutItem = connectionOptions.shortcutItem {
-                handleShortcut(shortcutItem: shortcutItem)
-            }
+        if let shortcutItem = connectionOptions.shortcutItem {
+            handleShortcut(shortcutItem: shortcutItem)
         }
     }
 
