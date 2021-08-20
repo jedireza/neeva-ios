@@ -135,7 +135,7 @@ class BaseTestCase: XCTestCase {
         waitForNoExistence(progressIndicator, timeoutValue: 20.0)
     }
 
-    public func openURL(_ url: String = "example.com") {
+    public func openURL(_ url: String = "example.com", waitForPageLoad: Bool = true) {
         UIPasteboard.general.string = url
 
         if app.buttons["Cancel"].exists {
@@ -149,8 +149,10 @@ class BaseTestCase: XCTestCase {
 
         waitForNoExistence(app.staticTexts["Neeva pasted from XCUITests-Runner"])
 
-        waitUntilPageLoad()
-        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
+        if waitForPageLoad {
+            waitUntilPageLoad()
+            waitForExistence(app.buttons["Show Tabs"], timeout: 15)
+        }
     }
 
     public func openURLInNewTab(_ url: String = "example.com") {

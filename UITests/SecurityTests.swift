@@ -16,8 +16,6 @@ class SecurityTests: UITestBase {
         webRoot = SimplePageServer.start()
     }
 
-
-
     /// Tap the Session exploit button, which tries to load the session restore page on localhost
     /// in the current tab. Make sure nothing happens.
     func testSessionExploit() {

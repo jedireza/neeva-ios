@@ -41,7 +41,6 @@ extension UITestBase {
         tester().enterText(intoCurrentFirstResponder: url)
         tester().enterText(intoCurrentFirstResponder: "\n")
         tester().waitForAbsenceOfView(withAccessibilityIdentifier: "address")
-        tester().waitForView(withAccessibilityLabel: "Show Tabs")
     }
 
     // MARK: - Data

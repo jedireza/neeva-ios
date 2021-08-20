@@ -30,21 +30,44 @@ public struct CapsuleTextField<Icon: View>: View {
     @State private var focusedTextField = false
     @State private var isEditing = false
 
+    var secureText: Bool
+
+    @Binding var errorMessage: String
+
     @Environment(\.sizeCategory) var textFieldSizeCategory
 
-    public init(
-        icon: Icon, placeholder: String, text: Binding<String>, alwaysShowClearButton: Bool = true,
-        detailText: String? = nil, focusTextField: Bool = false,
-        onEditingChanged: ((Bool) -> Void)? = nil
-    ) {
-        self.icon = icon
-        self.placeholder = placeholder
-        self._text = text
-        self.detailText = detailText
+    @ViewBuilder
+    var textField: some View {
+        if secureText {
+            SecureField("", text: $text) {
+                isEditing = false
+                onEditingChanged?(isEditing)
+            }
+            .onTapGesture {
+                isEditing = true
+                onEditingChanged?(isEditing)
 
-        self.alwaysShowClearButton = alwaysShowClearButton
-        self.focusTextField = focusTextField
-        self.onEditingChanged = onEditingChanged
+                errorMessage = ""
+
+                if focusTextField {
+                    focusedTextField = false
+                }
+            }
+        } else {
+            TextField(
+                "", text: $text,
+                onEditingChanged: { editing in
+                    isEditing = editing
+                    onEditingChanged?(editing)
+
+                    errorMessage = ""
+
+                    if editing && focusTextField {
+                        focusedTextField = false
+                    }
+                }
+            )
+        }
     }
 
     public var body: some View {
@@ -55,39 +78,34 @@ public struct CapsuleTextField<Icon: View>: View {
 
             ZStack(alignment: .leading) {
                 if text.isEmpty {
-                    Text(placeholder).withFont(.bodyMedium).foregroundColor(.secondaryLabel)
-                        .accessibilityHidden(true)
+                    if !errorMessage.isEmpty {
+                        Text(errorMessage).withFont(.bodyMedium).foregroundColor(.red)
+                            .accessibilityHidden(true)
+                    } else {
+                        Text(placeholder).withFont(.bodyMedium).foregroundColor(.secondaryLabel)
+                            .accessibilityHidden(true)
+                    }
                 }
 
-                TextField(
-                    "", text: $text,
-                    onEditingChanged: { editing in
-                        isEditing = editing
-                        onEditingChanged?(editing)
+                textField
+                    .accessibilityLabel(placeholder)
+                    .withFont(unkerned: .bodyMedium)
+                    .introspectTextField { textField in
+                        if focusTextField && !focusedTextField {
+                            focusedTextField = true
 
-                        if editing && focusTextField {
-                            focusedTextField = false
+                            textField.becomeFirstResponder()
+                            textField.selectAll(nil)
                         }
                     }
-                )
-                .accessibilityLabel(placeholder)
-                .withFont(unkerned: .bodyMedium)
-                .introspectTextField { textField in
-                    if focusTextField && !focusedTextField {
-                        focusedTextField = true
-
-                        textField.becomeFirstResponder()
-                        textField.selectAll(nil)
-                    }
-                }
-                .background(
-                    GeometryReader { geo in
-                        Color.clear
-                            .onChange(of: geo.size.width) { _ in
-                                textFieldWidth = geo.size.width
-                            }
-                    }
-                )
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onChange(of: geo.size.width) { _ in
+                                    textFieldWidth = geo.size.width
+                                }
+                        }
+                    )
             }
 
             if isEditing && !text.isEmpty && showClearButton {
@@ -110,21 +128,52 @@ public struct CapsuleTextField<Icon: View>: View {
         .padding(.leading, 7)
         .background(Capsule().fill(Color.tertiarySystemFill))
     }
+
+    public init(
+        icon: Icon, placeholder: String,
+        text: Binding<String>,
+        errorMessage: Binding<String> = .constant(""),
+        alwaysShowClearButton: Bool = true,
+        detailText: String? = nil,
+        focusTextField: Bool = false,
+        secureText: Bool = false,
+        onEditingChanged: ((Bool) -> Void)? = nil
+    ) {
+        self.icon = icon
+        self.placeholder = placeholder
+        self._text = text
+        self._errorMessage = errorMessage
+        self.detailText = detailText
+
+        self.alwaysShowClearButton = alwaysShowClearButton
+        self.focusTextField = focusTextField
+        self.secureText = secureText
+
+        self.onEditingChanged = onEditingChanged
+    }
 }
 
 extension CapsuleTextField where Icon == Never {
     init(
-        _ placeholder: String, text: Binding<String>, alwaysShowClearButton: Bool = true,
-        detailText: String? = nil, focusTextField: Bool = false,
+        _ placeholder: String,
+        text: Binding<String>,
+        errorMessage: Binding<String> = .constant(""),
+        alwaysShowClearButton: Bool = true,
+        detailText: String? = nil,
+        focusTextField: Bool = false,
+        secureText: Bool = false,
         onEditingChanged: ((Bool) -> Void)? = nil
     ) {
         self.icon = nil
         self.placeholder = placeholder
         self._text = text
+        self._errorMessage = errorMessage
         self.detailText = detailText
 
         self.alwaysShowClearButton = alwaysShowClearButton
         self.focusTextField = focusTextField
+        self.secureText = secureText
+
         self.onEditingChanged = onEditingChanged
     }
 }

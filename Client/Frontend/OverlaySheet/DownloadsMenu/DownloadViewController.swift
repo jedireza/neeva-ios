@@ -4,7 +4,7 @@ import SwiftUI
 import UIKit
 
 struct DownloadRootView: View {
-    var overlaySheetModel = OverlaySheetModel()
+    let overlaySheetModel = OverlaySheetModel()
     let fileName: String
     let fileURL: String
     let fileSize: String?
