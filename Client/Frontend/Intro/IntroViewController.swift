@@ -51,17 +51,17 @@ class IntroViewController: UIViewController {
         switch option {
         case FirstRunButtonActions.signin:
             ClientLogger.shared.logCounter(
-                .FirstRunSignin, attributes: EnvironmentHelper.shared.getAttributes())
+                .FirstRunSignin, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
             self.visitSigninPage?()
         case FirstRunButtonActions.signup:
             ClientLogger.shared.logCounter(
-                .FirstRunSignUp, attributes: EnvironmentHelper.shared.getAttributes())
+                .FirstRunSignUp, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
             self.visitHomePage?()
         case FirstRunButtonActions.skipToBrowser:
             ClientLogger.shared.logCounter(
-                .FirstRunSkipToBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+                .FirstRunSkipToBrowser, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
         }
     }

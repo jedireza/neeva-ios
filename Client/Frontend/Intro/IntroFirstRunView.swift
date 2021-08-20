@@ -75,6 +75,12 @@ struct IntroFirstRunView: View {
         .background(Color.brand.beige)
         .ignoresSafeArea(.all)
         .colorScheme(.light)
+        .onAppear(perform: logImpression)
+    }
+
+    func logImpression() {
+        ClientLogger.shared.logCounter(
+            .FirstRunImpression, attributes: [ClientLogCounterAttribute]())
     }
 }
 

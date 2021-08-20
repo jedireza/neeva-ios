@@ -52,6 +52,7 @@ public struct LogConfig {
         case FirstRunSignUp  // Click sign up on first run
         case FirstRunSignin  // Click sign in on first run
         case FirstRunSkipToBrowser  // Click skip to browser on first run
+        case FirstRunImpression  // First run screen rendered
 
         // promo card
         case PromoSignin  // Sign in from promo card
@@ -83,6 +84,7 @@ public struct LogConfig {
         case Suggestions
         case ReferralPromo
         case Performance
+        case PromoCard
     }
 
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
@@ -97,6 +99,11 @@ public struct LogConfig {
             return NeevaFeatureFlags[.neevaMenuLogging]
         case .Performance:
             return NeevaFeatureFlags[.logAppCrashes]
+        case .FirstRun:
+            // Not using a feature flag for first fun because
+            // during first run, user never signed in, therefore
+            // we cannot fetch the feature flag from user info
+            return true
         default:
             return false
         }
@@ -143,9 +150,11 @@ public struct LogConfig {
         case .FirstRunSignUp: return .FirstRun
         case .FirstRunSignin: return .FirstRun
         case .FirstRunSkipToBrowser: return .FirstRun
-        case .PromoSignin: return .FirstRun
-        case .PromoDefaultBrowser: return .FirstRun
-        case .CloseDefaultBrowserPromo: return .FirstRun
+        case .FirstRunImpression: return .FirstRun
+
+        case .PromoSignin: return .PromoCard
+        case .PromoDefaultBrowser: return .PromoCard
+        case .CloseDefaultBrowserPromo: return .PromoCard
 
         case .QuerySuggestion: return .Suggestions
         case .NavSuggestion: return .Suggestions
