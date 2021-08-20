@@ -5,6 +5,8 @@ import SDWebImage
 import Shared
 import Storage
 
+private let log = Logger.browser
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     private var scene: UIScene?
@@ -30,6 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             startGeigerCounter()
         }
 
+        log.info("URL contexts from willConnectTo: \(connectionOptions.urlContexts)")
         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
 
         DispatchQueue.main.async { [self] in
@@ -88,8 +91,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-              let routerpath = NavigationPath(bvc: browserViewController, url: url)
-        else { return }
+              let routerpath = NavigationPath(bvc: browserViewController, url: url) else {
+            log.info("Failed to unwrap url for context: \(URLContexts.first?.url)")
+            return
+        }
+
+        log.info("URL passed: \(url)")
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
@@ -104,8 +111,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let queryItems = components.queryItems,
                 let signInToken = queryItems.first(where: { $0.name == "token" })?.value
             {
+                log.info("Passing sign in token from URL: \(signInToken)")
                 self.handleSignInToken(signInToken)
             } else {
+                log.info("Passing URL to router path: \(routerpath)")
                 NavigationPath.handle(nav: routerpath, with: self.browserViewController)
             }
         }
@@ -141,6 +150,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         else {
             return false
         }
+
+        log.info("Universal URL passed: \(incomingURL)")
 
         self.browserViewController.openURLInNewTab(incomingURL)
 
@@ -250,25 +261,33 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     // MARK: - Sign In
     func checkForSignInToken() {
+        log.info("Checking for sign in token from App Clip")
+
         if let signInToken = AppClipHelper.retreiveAppClipData() {
             self.handleSignInToken(signInToken)
+        } else {
+            log.info("Unable to retrieve sign in token from App Clip")
         }
     }
 
     func handleSignInToken(_ signInToken: String) {
-        print(signInToken, "sign in token")
+        log.info("Using sign in token \(signInToken) from App Clip")
 
         Defaults[.introSeen] = true
         AppClipHelper.saveTokenToDevice(nil)
 
         DispatchQueue.main.async { [self] in
-            browserViewController.switchToTabForURLOrOpen(URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!)
+            let signInURL = URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!
+
+            log.info("Navigating to sign in URL: \(signInURL)")
+            browserViewController.switchToTabForURLOrOpen(signInURL)
 
             // view alpha is set to 0 in viewWillAppear creating a blank screen
             browserViewController.view.alpha = 1
 
             if let introVC = browserViewController.introViewController {
                 introVC.dismiss(animated: true, completion: nil)
+                log.info("Dismissed introVC")
             }
         }
     }

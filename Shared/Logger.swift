@@ -43,6 +43,7 @@ extension Logger {
             Logger.browser.deleteOldLogsDownToSizeLimit()
             Logger.network.deleteOldLogsDownToSizeLimit()
             Logger.storage.deleteOldLogsDownToSizeLimit()
+
             DispatchQueue.main.async {
                 if !Defaults[.enableLogToFile] {
                     Defaults[.enableLogToFile].toggle()
