@@ -69,7 +69,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //
         Defaults[.applicationCleanlyBackgrounded] = false
 
-        checkForSignInToken()
+        checkForSignInTokenOnDevice()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -102,17 +102,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         DispatchQueue.main.async {
-            // This is in case the AppClip sign in URL ends up opening the app
-            // Will occur if the app is already installed
-            if url.scheme == "https", NeevaConstants.isAppHost(url.host, allowM1: true),
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-                components.path == "/appclip/login",
-                let queryItems = components.queryItems,
-                let signInToken = queryItems.first(where: { $0.name == "token" })?.value
-            {
-                log.info("Passing sign in token from URL: \(signInToken)")
-                self.handleSignInToken(signInToken)
-            } else {
+            if !self.checkForSignInToken(in: url) {
                 log.info("Passing URL to router path: \(routerpath)")
                 NavigationPath.handle(nav: routerpath, with: self.browserViewController)
             }
@@ -152,7 +142,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         log.info("Universal URL passed: \(incomingURL)")
 
-        self.browserViewController.openURLInNewTab(incomingURL)
+        if !self.checkForSignInToken(in: incomingURL) {
+            self.browserViewController.openURLInNewTab(incomingURL)
+        }
 
         return true
     }
@@ -259,14 +251,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     // MARK: - Sign In
-    func checkForSignInToken() {
-        log.info("Checking for sign in token from App Clip")
+    func checkForSignInTokenOnDevice() {
+        log.info("Checking for sign in token from App Clip on device")
 
         if let signInToken = AppClipHelper.retreiveAppClipData() {
             self.handleSignInToken(signInToken)
         } else {
-            log.info("Unable to retrieve sign in token from App Clip")
+            log.info("Unable to retrieve sign in token from App Clip on device")
         }
+    }
+
+    /// Checks for a sign in token in the URL and also handles the URL if true.
+    func checkForSignInToken(in url: URL) -> Bool {
+        log.info("Checking for sign in token from URL: \(url)")
+
+        // This is in case the App Clip sign in URL ends up opening the app
+        // Will occur if the app is already installed
+        if url.scheme == "https", NeevaConstants.isAppHost(url.host, allowM1: true),
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+            components.path == "/appclip/login",
+            let queryItems = components.queryItems,
+            let signInToken = queryItems.first(where: { $0.name == "token" })?.value
+        {
+            log.info("Passing sign in token from URL: \(signInToken)")
+            self.handleSignInToken(signInToken)
+
+            return true
+        }
+
+        return false
     }
 
     func handleSignInToken(_ signInToken: String) {
