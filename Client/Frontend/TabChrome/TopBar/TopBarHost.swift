@@ -29,7 +29,7 @@ struct TopBarContent: View {
     let chromeModel: TabChromeModel
 
     let newTab: () -> Void
-    let closeLazyTab: () -> Void
+    let onCancel: () -> Void
 
     var body: some View {
         TopBarView(
@@ -65,7 +65,7 @@ struct TopBarContent: View {
             onNeevaMenuAction: { chromeModel.topBarDelegate?.perform(neevaMenuAction: $0) },
             didTapNeevaMenu: { chromeModel.topBarDelegate?.updateFeedbackImage() },
             newTab: newTab,
-            closeLazyTab: closeLazyTab,
+            onCancel: onCancel,
             onOverflowMenuAction: {
                 chromeModel.topBarDelegate?.perform(overflowMenuAction: $0, targetButtonView: $1)
             },
@@ -91,7 +91,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         chromeModel: TabChromeModel,
         delegate: TopBarDelegate,
         newTab: @escaping () -> Void,
-        closeLazyTab: @escaping () -> Void
+        onCancel: @escaping () -> Void
     ) {
         super.init(isIncognito: isIncognito)
 
@@ -104,7 +104,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
                 trackingStatsViewModel: trackingStatsViewModel,
                 chromeModel: chromeModel,
                 newTab: newTab,
-                closeLazyTab: closeLazyTab
+                onCancel: onCancel
             )
         }
       

@@ -13,7 +13,7 @@ struct TopBarView: View {
     let onNeevaMenuAction: (NeevaMenuAction) -> Void
     let didTapNeevaMenu: () -> Void
     let newTab: () -> Void
-    let closeLazyTab: () -> Void
+    let onCancel: () -> Void
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
     let changedUserAgent: Bool?
 
@@ -42,7 +42,7 @@ struct TopBarView: View {
                 }
                 TabLocationView(
                     onReload: onReload, onSubmit: onSubmit, onShare: onShare,
-                    buildReloadMenu: buildReloadMenu, closeLazyTab: closeLazyTab
+                    buildReloadMenu: buildReloadMenu, onCancel: onCancel
                 )
                 .padding(.horizontal, chrome.inlineToolbar ? 0 : 8)
                 .padding(.top, chrome.inlineToolbar ? 8 : 3)
@@ -107,7 +107,7 @@ struct TopBarView_Previews: PreviewProvider {
                 TopBarView(
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
-                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, closeLazyTab: {},
+                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
                     onOverflowMenuAction: { _, _ in }, changedUserAgent: false)
                 Spacer()
             }.background(Color.red.ignoresSafeArea())
@@ -116,7 +116,7 @@ struct TopBarView_Previews: PreviewProvider {
                 TopBarView(
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
-                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, closeLazyTab: {},
+                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
                     onOverflowMenuAction: { _, _ in }, changedUserAgent: false)
                 Spacer()
             }

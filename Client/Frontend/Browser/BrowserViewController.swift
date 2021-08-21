@@ -393,7 +393,13 @@ class BrowserViewController: UIViewController {
             chromeModel: chromeModel,
             delegate: self,
             newTab: { self.openURLInNewTab(nil) },
-            closeLazyTab: closeLazyTab)
+            onCancel: { [unowned self] in
+                if zeroQueryModel.isLazyTab {
+                    closeLazyTab()
+                } else {
+                    hideZeroQuery()
+                }
+            })
         addChild(topBarHost)
         view.addSubview(topBarHost.view)
         topBarHost.didMove(toParent: self)
@@ -714,6 +720,8 @@ class BrowserViewController: UIViewController {
     public func closeLazyTab() {
         // Have to be a lazy tab to close a lazy tab
         guard self.zeroQueryModel.isLazyTab else {
+            print("Tried to close lazy tab that wasn't a lazy tab")
+            hideZeroQuery()
             return
         }
 
@@ -727,7 +735,7 @@ class BrowserViewController: UIViewController {
                 break
             }
 
-            self.tabContentHost.updateContent(.hideZeroQuery)
+            self.hideZeroQuery()
         }
     }
 

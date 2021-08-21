@@ -24,7 +24,7 @@ struct TabLocationView: View {
     let onSubmit: (String) -> Void
     let onShare: (UIView) -> Void
     let buildReloadMenu: () -> UIMenu?
-    let closeLazyTab: () -> Void
+    let onCancel: () -> Void
 
     @EnvironmentObject private var model: LocationViewModel
     @EnvironmentObject private var chromeModel: TabChromeModel
@@ -152,7 +152,7 @@ struct TabLocationView: View {
 
             if chromeModel.isEditingLocation {
                 Button {
-                    closeLazyTab()
+                    onCancel()
                     chromeModel.setEditingLocation(to: false)
                 } label: {
                     Text("Cancel").withFont(.bodyLarge)
@@ -168,13 +168,13 @@ struct TabLocationView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, closeLazyTab: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
             )
             .environmentObject(LocationViewModel(previewURL: nil, isSecure: true))
             .previewDisplayName("Placeholder")
 
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, closeLazyTab: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
             )
             .environmentObject(
                 LocationViewModel(
@@ -183,7 +183,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .previewDisplayName("Long domain")
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, closeLazyTab: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
             )
             .environment(\.isIncognito, true)
             .environmentObject(
@@ -191,7 +191,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .previewDisplayName("Incognito")
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, closeLazyTab: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
             )
             .environmentObject(
                 LocationViewModel(
@@ -200,7 +200,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .previewDisplayName("Search")
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, closeLazyTab: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
             )
             .environment(\.isIncognito, true)
             .environmentObject(
