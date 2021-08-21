@@ -99,8 +99,14 @@ struct SuggestedSitesView: View {
     let isExpanded: Bool
     @EnvironmentObject private var viewModel: SuggestedSitesViewModel
     @Environment(\.zeroQueryWidth) private var zeroQueryWidth
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var columnCount: Int {
+        guard verticalSizeClass == .compact || horizontalSizeClass == .regular else {
+            return 4
+        }
+
         var columnCount = 0
         var excessSpace = zeroQueryWidth + SuggestedSiteUX.BlockSpacing
         while excessSpace > 0 {
@@ -159,7 +165,19 @@ struct SuggestedSitesView: View {
                     site: .init(url: "https://example.com", title: "Example", id: 1),
                     isPinnedSite: false)
                 SuggestedSiteView(
-                    site: .init(url: "https://google.com", title: "Google", id: 2),
+                    site: .init(url: "https://twitter.com", title: "Twitter", id: 2),
+                    isPinnedSite: true)
+                SuggestedSiteView(
+                    site: .init(url: "https://google.com", title: "Google", id: 3),
+                    isPinnedSite: true)
+                SuggestedSiteView(
+                    site: .init(url: "https://youtube.com", title: "Youtube", id: 4),
+                    isPinnedSite: true)
+                SuggestedSiteView(
+                    site: .init(url: "https://nba.com", title: "NBA", id: 5),
+                    isPinnedSite: true)
+                SuggestedSiteView(
+                    site: .init(url: "https://mlb.com", title: "MLB", id: 6),
                     isPinnedSite: true)
             }.padding().previewLayout(.sizeThatFits)
             Group {
