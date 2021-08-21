@@ -624,6 +624,11 @@ extension SuggestionModel: KeyboardHelperDelegate {
         animateSearchEnginesWithKeyboard(state)
     }
 
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardDidHideWithState state: KeyboardState
+    ) {
+    }
+
     func animateSearchEnginesWithKeyboard(_ keyboardState: KeyboardState) {
         keyboardState.animateAlongside {
             self.objectWillChange.send()

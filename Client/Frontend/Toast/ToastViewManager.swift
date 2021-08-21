@@ -86,15 +86,15 @@ class ToastViewManager {
         toastViewHostingController.view.backgroundColor = .clear
 
         // creates new window to display Toast in
-        toastWindowManager.createWindow(with: toastViewHostingController, height: 80)
-
-        // add timer if Toast should auto dismiss or if download completed by the time the Toast is displayed
-        if let toastProgressViewModel = toast.toastProgressViewModel,
-            toastProgressViewModel.status != .inProgress
-        {
-            startToastDismissTimer(for: toast)
-        } else if toast.autoDismiss {
-            startToastDismissTimer(for: toast)
+        toastWindowManager.createWindow(with: toastViewHostingController, height: 80) { [unowned self] in
+            // add timer if Toast should auto dismiss or if download completed by the time the Toast is displayed
+            if let toastProgressViewModel = toast.toastProgressViewModel,
+                toastProgressViewModel.status != .inProgress
+            {
+                startToastDismissTimer(for: toast)
+            } else if toast.autoDismiss {
+                startToastDismissTimer(for: toast)
+            }
         }
     }
 

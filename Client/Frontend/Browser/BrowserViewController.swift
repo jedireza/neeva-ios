@@ -1801,6 +1801,12 @@ extension BrowserViewController: KeyboardHelperDelegate {
         keyboardState = nil
         updateViewConstraints()
     }
+
+    func keyboardHelper(
+        _ keyboardHelper: KeyboardHelper, keyboardDidHideWithState state: KeyboardState
+    ) {
+
+    }
 }
 
 extension BrowserViewController: SessionRestoreHelperDelegate {

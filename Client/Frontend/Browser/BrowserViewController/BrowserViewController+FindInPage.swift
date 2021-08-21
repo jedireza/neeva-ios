@@ -29,7 +29,6 @@ extension BrowserViewController {
 
                     findInPageViewController.model.searchValue = query
                 }
-
             } else {
                 overlayWindowManager.createWindow(with: findInPageViewController!,
                                                   height: height,
