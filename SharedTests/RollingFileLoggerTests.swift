@@ -78,7 +78,9 @@ class RollingFileLoggerTests: XCTestCase {
 
         XCTAssertTrue(manager.fileExists(atPath: newExpectedPath), "New log file should exist")
         XCTAssertTrue(manager.fileExists(atPath: expectedPath), "Old log file exists until pruned")
-        logger.deleteOldLogsDownToSizeLimit()
+        if let backgroundWorkItem = logger.deleteOldLogsDownToSizeLimit() {
+            backgroundWorkItem.wait()
+        }
         XCTAssertFalse(manager.fileExists(atPath: expectedPath), "Old log file should NOT exist")
     }
 
@@ -109,7 +111,9 @@ class RollingFileLoggerTests: XCTestCase {
         XCTAssertTrue(manager.fileExists(atPath: newExpectedPath), "New log file should exist")
         XCTAssertTrue(
             manager.fileExists(atPath: logFilePaths.first!), "Old log file exists until pruned")
-        logger.deleteOldLogsDownToSizeLimit()
+        if let backgroundWorkItem = logger.deleteOldLogsDownToSizeLimit() {
+            backgroundWorkItem.wait()
+        }
         XCTAssertFalse(
             manager.fileExists(atPath: logFilePaths.first!), "Oldest log file should NOT exist")
     }

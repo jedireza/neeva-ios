@@ -51,38 +51,49 @@ open class RollingFileLogger: XCGLogger {
         return FileDestination(owner: self, writeToFile: filename, identifier: fileLogIdentifier)
     }
 
-    open func deleteOldLogsDownToSizeLimit() {
-        // Check to see we haven't hit our size limit and if we did, clear out some logs to make room.
-        while sizeOfAllLogFilesWithPrefix(self.root, exceedsSizeInBytes: sizeLimit) {
-            deleteOldestLogWithPrefix(self.root)
+    @discardableResult open func deleteOldLogsDownToSizeLimit() -> DispatchWorkItem? {
+        guard let path = logDirectoryPath else { return nil }
+        let prefix = root
+        let sizeLimit = sizeLimit
+
+        let work = DispatchWorkItem {
+            // Check to see that we haven't hit our size limit and if we did, clear out some old
+            // logs to make room. This will avoid deleting the latest log file as that could be
+            // currently in use.
+            while Self.sizeOfAllLogFilesWithPrefix(
+                prefix, inDirectory: path, exceedsSizeInBytes: sizeLimit)
+            {
+                if !Self.deleteOldestLogWithPrefix(prefix, inDirectory: path) {
+                    break
+                }
+            }
         }
+
+        // Run lazily on a background thread.
+        DispatchQueue.global(qos: .background).async(execute: work)
+
+        return work
     }
 
-    fileprivate func deleteOldestLogWithPrefix(_ prefix: String) {
-        if logDirectoryPath == nil {
-            return
-        }
-
+    fileprivate static func deleteOldestLogWithPrefix(_ prefix: String, inDirectory path: String) -> Bool {
+        var removed = false
         do {
             let logFiles = try FileManager.default.contentsOfDirectoryAtPath(
-                logDirectoryPath!, withFilenamePrefix: prefix)
-            if let oldestLogFilename = logFiles.first {
-                try FileManager.default.removeItem(
-                    atPath: "\(logDirectoryPath!)/\(oldestLogFilename)")
+                path, withFilenamePrefix: prefix)
+            // Avoid deleting the latest log file.
+            if logFiles.count > 1, let oldestLogFilename = logFiles.first {
+                try FileManager.default.removeItem(atPath: "\(path)/\(oldestLogFilename)")
+                removed = true
             }
         } catch _ as NSError {
             error("Shouldn't get here")
-            return
         }
+        return removed
     }
 
-    fileprivate func sizeOfAllLogFilesWithPrefix(
-        _ prefix: String, exceedsSizeInBytes threshold: Int64
+    fileprivate static func sizeOfAllLogFilesWithPrefix(
+        _ prefix: String, inDirectory path: String, exceedsSizeInBytes threshold: Int64
     ) -> Bool {
-        guard let path = logDirectoryPath else {
-            return false
-        }
-
         let logDirURL = URL(fileURLWithPath: path)
         do {
             return try FileManager.default.allocatedSizeOfDirectoryAtURL(
@@ -90,7 +101,6 @@ open class RollingFileLogger: XCGLogger {
         } catch let errorValue as NSError {
             error("Error determining log directory size: \(errorValue)")
         }
-
         return false
     }
 

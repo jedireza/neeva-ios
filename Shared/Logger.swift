@@ -38,17 +38,7 @@ extension Logger {
         // afterwards, so that new log files get created.
         if Defaults[.enableLogToFile] {
             Defaults[.enableLogToFile].toggle()
-        }
-        DispatchQueue.global(qos: .background).async {
-            Logger.browser.deleteOldLogsDownToSizeLimit()
-            Logger.network.deleteOldLogsDownToSizeLimit()
-            Logger.storage.deleteOldLogsDownToSizeLimit()
-
-            DispatchQueue.main.async {
-                if !Defaults[.enableLogToFile] {
-                    Defaults[.enableLogToFile].toggle()
-                }
-            }
+            Defaults[.enableLogToFile].toggle()
         }
     }
 
