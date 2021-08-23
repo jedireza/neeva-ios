@@ -15,6 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var browserViewController: BrowserViewController!
     private var geigerCounter: KMCGeigerCounter?
 
+    private static var activeSceneCount: Int = 0
+
     // MARK: - Scene state
     func scene(
         _ scene: UIScene, willConnectTo session: UISceneSession,
@@ -69,6 +71,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //
         Defaults[.applicationCleanlyBackgrounded] = false
 
+        Self.activeSceneCount += 1
+        if Self.activeSceneCount == 1 {
+            getAppDelegateProfile()._reopen()
+        }
+
         checkForSignInTokenOnDevice()
     }
 
@@ -84,6 +91,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //
         Defaults[.applicationCleanlyBackgrounded] = true
         tabManager.preserveTabs()
+
+        Self.activeSceneCount -= 1
+        if Self.activeSceneCount == 0 {
+            let taskId = UIApplication.shared.beginBackgroundTask(expirationHandler: {
+                log.error("Shutting down the profile took too long!")
+            })
+            getAppDelegateProfile()._shutdown()
+            UIApplication.shared.endBackgroundTask(taskId)
+        }
     }
 
     // MARK: - URL managment

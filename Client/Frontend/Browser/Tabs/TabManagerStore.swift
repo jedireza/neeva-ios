@@ -7,7 +7,8 @@ import Shared
 import Storage
 import XCGLogger
 
-private let log = Logger.browser
+private let log = Logger.storage
+
 class TabManagerStore {
     static let shared = TabManagerStore(
             imageStore: DiskImageStore(
@@ -83,6 +84,8 @@ class TabManagerStore {
     @discardableResult func preserveTabs(_ tabs: [Tab], selectedTab: Tab?, for scene: UIScene)
         -> Success
     {
+        log.info("Preserve tabs for scene: \(scene.session.persistentIdentifier)")
+
         assert(Thread.isMainThread)
 
         guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab),
@@ -96,6 +99,8 @@ class TabManagerStore {
     }
 
     func saveTabsToPath(path: String, savedTabs: [SavedTab]) -> Success {
+        log.info("Saving to \(path), number of tabs: \(savedTabs.count)")
+
         let result = Success()
 
         writeOperation = DispatchWorkItem {
@@ -103,9 +108,9 @@ class TabManagerStore {
                 let data = try NSKeyedArchiver.archivedData(
                     withRootObject: savedTabs, requiringSecureCoding: false)
                 try data.write(to: URL(fileURLWithPath: path), options: .atomic)
-                print("Tabs succesfully saved")
+                log.info("Tabs succesfully saved")
             } catch {
-                print("Tab failed to save:", error.localizedDescription)
+                log.error("Tab failed to save: \(error.localizedDescription)")
             }
 
             result.fill(Maybe(success: ()))
@@ -166,6 +171,8 @@ class TabManagerStore {
     func clearArchive(for scene: UIScene?) {
         var path: String?
 
+        log.info("Clearing archive for scene: \(scene?.session.persistentIdentifier ?? "unknown")")
+
         if let scene = scene {
             path = tabSavePath(withId: scene.session.persistentIdentifier)
         } else {
@@ -173,11 +180,14 @@ class TabManagerStore {
         }
 
         if let path = path {
+            log.info("Removing \(path)")
             try? FileManager.default.removeItem(atPath: path)
         }
     }
 
     func getStartupTabs(for scene: UIScene?) -> [SavedTab] {
+        log.info("Getting startup tabs for scene: \(scene?.session.persistentIdentifier ?? "unknown")")
+
         let savedTabsWithOldPath = SiteArchiver.tabsToRestore(
             tabsStateArchivePath: getLegacyTabSavePath())
 
@@ -185,9 +195,10 @@ class TabManagerStore {
             return savedTabsWithOldPath
         }
 
-        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(
-            tabsStateArchivePath: tabSavePath(withId: scene.session.persistentIdentifier))
+        let path = tabSavePath(withId: scene.session.persistentIdentifier)
+        log.info("Restoring tabs from \(path)")
 
+        let savedTabsWithNewPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: path)
         if savedTabsWithNewPath.count > 0 {
             return savedTabsWithNewPath
         } else {

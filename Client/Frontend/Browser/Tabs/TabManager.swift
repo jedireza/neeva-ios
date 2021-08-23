@@ -716,9 +716,12 @@ extension TabManager {
     }
 
     func restoreTabs(_ forced: Bool = false) {
+        log.info("Restoring tabs")
+
         defer {
             // Always make sure there is a single normal tab.
             if normalTabs.isEmpty {
+                log.info("Tabs are empty; adding an initial tab")
                 let tab = addTab()
                 if selectedTab == nil {
                     selectTab(tab)
@@ -729,6 +732,7 @@ extension TabManager {
         guard forced || count == 0, !AppConstants.IsRunningTest,
             !DebugSettingsBundleOptions.skipSessionRestore, hasTabsToRestoreAtStartup()
         else {
+            log.info("Skipping tab restore")
             return
         }
 
