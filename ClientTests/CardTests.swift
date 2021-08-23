@@ -171,8 +171,6 @@ class CardTests: XCTestCase {
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
-        // Make sure all the models are up to date
-        manager.objectWillChange.send()
 
         let model = GridModel()
         let cardGrid = CardGrid().environmentObject(tabCardModel).environmentObject(spaceCardModel)
@@ -190,8 +188,6 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
         XCTAssertEqual(manager.tabs.count, 5)
-        // Make sure all the models are up to date
-        manager.objectWillChange.send()
         XCTAssertEqual(tabCardsView.findAll(FittedCard<TabCardDetails>.self).count, 5)
     }
 
@@ -200,8 +196,6 @@ class CardTests: XCTestCase {
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
-        // Make sure all the models are up to date
-        manager.objectWillChange.send()
 
         let model = GridModel()
         model.switcherState = .spaces
