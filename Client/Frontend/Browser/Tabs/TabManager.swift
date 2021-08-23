@@ -226,7 +226,7 @@ class TabManager: NSObject, ObservableObject {
         selectedTab?.createWebview()
         selectedTab?.lastExecutedTime = Date.nowMilliseconds()
 
-        delegates.forEach {
+       delegates.forEach {
             $0.get()?.tabManager(
                 self, didSelectedTabChange: tab, previous: previous,
                 isRestoring: store.isRestoringTabs,
@@ -438,6 +438,8 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func toggleIncognitoMode() {
+        let bvc = SceneDelegate.getBVC(with: scene)
+
         // set to nil while inconito changes
         selectedTab = nil
 
@@ -445,9 +447,14 @@ class TabManager: NSObject, ObservableObject {
         isIncognito.toggle()
 
         if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
-            selectTab(mostRecentTab, updateZeroQuery: FeatureFlag[.emptyTabTray] ? false : true)
-        } else if !FeatureFlag[.emptyTabTray] {
-            select(addTab(isPrivate: isIncognito))
+            selectTab(mostRecentTab)
+        } else if !FeatureFlag[.emptyTabTray] || isIncognito { // no empty tab tray in incognito
+            selectTab(addTab(isPrivate: isIncognito))
+        } else {
+            let placeholderTab = Tab(bvc: bvc, configuration: configuration, isPrivate: isIncognito)
+
+            // Creates a placeholder Tab to make sure incognito is switched in the Top Bar
+            select(placeholderTab)
         }
     }
 

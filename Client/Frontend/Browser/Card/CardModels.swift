@@ -31,9 +31,8 @@ class TabCardModel: CardModel, TabEventHandler {
     @Published var selectedTabID: String? = nil
 
     var isCardGridEmpty: Bool {
-        FeatureFlag[.emptyTabTray]
-            && (manager.isIncognito
-                ? manager.privateTabs.count == 0 : manager.normalTabs.count == 0)
+        // Tab tray cannot be empty in incognito mode
+        FeatureFlag[.emptyTabTray] && !manager.isIncognito && manager.normalTabs.count == 0
     }
 
     init(manager: TabManager, groupManager: TabGroupManager) {
