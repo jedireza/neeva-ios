@@ -401,6 +401,7 @@ class TabManager: NSObject, ObservableObject {
         delegates.forEach {
             $0.get()?.tabManager(self, didAddTab: tab, isRestoring: store.isRestoringTabs)
         }
+        objectWillChange.send()
     }
 
     func configureTab(
