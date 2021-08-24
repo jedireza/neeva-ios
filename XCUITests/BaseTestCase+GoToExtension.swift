@@ -59,4 +59,12 @@ extension BaseTestCase {
         waitForExistence(app.tables.cells["Recently Closed"])
         app.tables.cells["Recently Closed"].tap()
     }
+
+    // Launches from tab page, then opens the overflow menu
+    func goToOverflowMenu() {
+        waitForExistence(app.buttons["More"], timeout: 30)
+        app.buttons["More"].tap(force: true)
+
+        waitForExistence(app.buttons["New Tab"])
+    }
 }

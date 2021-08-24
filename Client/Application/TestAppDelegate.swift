@@ -18,6 +18,7 @@ class TestAppDelegate: AppDelegate {
         var profile: BrowserProfile
         let launchArguments = ProcessInfo.processInfo.arguments
         var loginCookie: String?
+        var enableFeatureFlags: [FeatureFlag]?
 
         launchArguments.forEach { arg in
             if arg.starts(with: LaunchArguments.ServerPort) {
@@ -85,6 +86,11 @@ class TestAppDelegate: AppDelegate {
             if arg.starts(with: LaunchArguments.SetLoginCookie) {
                 loginCookie = arg.replacingOccurrences(of: LaunchArguments.SetLoginCookie, with: "")
             }
+
+            if arg.starts(with: LaunchArguments.EnableFeatureFlags) {
+                let flags = arg.replacingOccurrences(of: LaunchArguments.EnableFeatureFlags, with: "")
+                enableFeatureFlags = flags.components(separatedBy: ",").compactMap { FeatureFlag(caseName: $0) }
+            }
         }
 
         if launchArguments.contains(LaunchArguments.ClearProfile) {
@@ -108,6 +114,10 @@ class TestAppDelegate: AppDelegate {
         // Deferred to here in case the ClearProfile argument was set.
         if let loginCookie = loginCookie {
             NeevaUserInfo.shared.setLoginCookie(loginCookie)
+        }
+
+        if let enableFeatureFlags = enableFeatureFlags {
+            FeatureFlag.enabledFlags = Set(enableFeatureFlags)
         }
 
         self.profile = profile

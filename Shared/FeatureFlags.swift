@@ -24,13 +24,22 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case swipePlusPlus = "Additional forward and back swipe gestures"
     case overflowMenu = "Enable Overflow Menu"
     case shareButtonInOverflowMenu = "Enable Share button in Overflow Menu"
+
+    public init?(caseName: String) {
+        for value in FeatureFlag.allCases where "\(value)" == caseName {
+            self = value
+            return
+        }
+
+        return nil
+    }
 }
 
 extension FeatureFlag {
     public static let defaultsKey = Defaults.Key<Set<String>>(
         "neevaFeatureFlags", default: [], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
-    fileprivate static let enabledFlags: Set<FeatureFlag> = {
+    public static var enabledFlags: Set<FeatureFlag> = {
         let names = Defaults[Self.defaultsKey]
         let flags = names.compactMap(FeatureFlag.init(rawValue:))
         Defaults[Self.defaultsKey] = Set(flags.map(\.rawValue))

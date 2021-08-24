@@ -139,9 +139,9 @@ class BaseTestCase: XCTestCase {
         UIPasteboard.general.string = url
 
         if app.buttons["Cancel"].exists {
-            app.textFields["address"].press(forDuration: 2)
+            app.textFields["address"].press(forDuration: 1)
         } else {
-            app.buttons["Address Bar"].press(forDuration: 2)
+            app.buttons["Address Bar"].press(forDuration: 1)
         }
 
         waitForExistence(app.menuItems["Paste & Go"])
@@ -169,6 +169,8 @@ class BaseTestCase: XCTestCase {
         } else {
             app.buttons["New Incognito Tab"].tap()
         }
+
+        waitForExistence(app.buttons["Cancel"])
     }
 
     public func closeAllTabs(fromTabSwitcher: Bool = false) {

@@ -19,4 +19,5 @@ public struct LaunchArguments {
     public static let LoadTabsStateArchive = "LOAD_TABS_STATE_ARCHIVE_NAMED:"
 
     public static let SetLoginCookie = "SET_LOGIN_COOKIE:"
+    public static let EnableFeatureFlags = "ENABLE_FEATURE_FLAGS:"
 }
