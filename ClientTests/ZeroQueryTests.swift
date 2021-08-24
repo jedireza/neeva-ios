@@ -27,12 +27,12 @@ class ZeroQueryTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        let bvc = SceneDelegate.getBVC(for: nil)
         self.profile = MockProfile()
-        self.suggestionsModel = SuggestionModel(bvc: SceneDelegate.getBVC(for: nil), profile: profile, queryModel: sQM)
+        self.suggestionsModel = SuggestionModel(bvc: bvc, profile: profile, queryModel: sQM)
         self.zQM = ZeroQueryModel(bvc: SceneDelegate.getBVC(for: nil), profile: self.profile, shareURLHandler: { _ in })
         self.tabManager = TabManager(profile: profile, imageStore: nil)
-        self.tabContentHost = TabContentHost(
-            tabManager: tabManager, zeroQueryModel: zQM, suggestionModel: suggestionsModel)
+        self.tabContentHost = TabContentHost(bvc: bvc)
     }
 
     override func tearDown() {
@@ -156,8 +156,6 @@ class ZeroQueryTests: XCTestCase {
 
     func assertTabContentOnlyContainsWebContainer() throws {
         let zStack = try tabContentHost.rootView.inspect().find(ViewType.ZStack.self)
-        let content = try zStack.view(WebViewContainer.self, 0).actualView()
-        XCTAssertNotNil(content)
         XCTAssertEqual(zStack.count, 1)
     }
 

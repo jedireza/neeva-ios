@@ -55,9 +55,11 @@ class TabContentHostModel: ObservableObject {
 class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
     let zeroQueryModel: ZeroQueryModel
     let model: TabContentHostModel
+    let tabCardModel: TabCardModel
 
     struct Content: View {
         @ObservedObject var model: TabContentHostModel
+        let bvc: BrowserViewController
         let zeroQueryModel: ZeroQueryModel
         let suggestionModel: SuggestionModel
         let suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
@@ -68,8 +70,19 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
             ZStack {
                 switch model.currentContentUI {
                 case .webPage(let currentWebView):
-                    WebViewContainer(webView: currentWebView)
-                        .ignoresSafeArea()
+                    ZStack {
+                        WebViewContainer(webView: currentWebView)
+                            .ignoresSafeArea()
+
+                        if FeatureFlag[.cardStrip] {
+                            GeometryReader { geo in
+                                VStack {
+                                    Spacer()
+                                    CardStripContent(bvc: bvc, width: geo.size.width)
+                                }
+                            }
+                        }
+                    }
                 case .zeroQuery:
                     ZeroQueryContent(model: zeroQueryModel)
                         .environmentObject(suggestedSitesViewModel)
@@ -99,16 +112,23 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         }
     }
 
-    init(tabManager: TabManager, zeroQueryModel: ZeroQueryModel, suggestionModel: SuggestionModel) {
+    init(bvc: BrowserViewController) {
+        let tabManager = bvc.tabManager
         let model = TabContentHostModel(tabManager: tabManager)
-        self.zeroQueryModel = zeroQueryModel
+        let zeroQueryModel = bvc.zeroQueryModel
+        let suggestionModel = bvc.suggestionModel
+
         self.model = model
+        self.zeroQueryModel = bvc.zeroQueryModel
+
+        let tabCardModel = TabCardModel(manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
+        self.tabCardModel = tabCardModel
 
         super.init(isIncognito: tabManager.isIncognito) {
-            Content(
-                model: model,
-                zeroQueryModel: zeroQueryModel,
-                suggestionModel: suggestionModel)
+            Content(model: model,
+                    bvc: bvc,
+                    zeroQueryModel: zeroQueryModel,
+                    suggestionModel: suggestionModel)
         }
 
         suggestionModel.getKeyboardHeight = {

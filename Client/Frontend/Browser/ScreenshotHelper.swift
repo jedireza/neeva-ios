@@ -45,7 +45,7 @@ class ScreenshotHelper {
                 if let image = image {
                     tab?.setScreenshot(image)
                     if FeatureFlag[.cardStrip] {
-                        self.controller?.cardStripViewController?.tabCardModel.onDataUpdated()
+                        self.controller?.tabContentHost.tabCardModel.onDataUpdated()
                     }
                 } else if let error = error {
                     Sentry.shared.send(

@@ -206,7 +206,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
-    let bvc: BrowserViewController
+    weak var bvc: BrowserViewController?
 
     var accessibilityLabel: String {
         "\(title), Space"
@@ -263,7 +263,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     func onClose() {}
 
     func performDrop(info: DropInfo) -> Bool {
-        guard info.hasItemsConforming(to: ["public.text", "public.url"]) else {
+        guard let bvc = bvc, info.hasItemsConforming(to: ["public.text", "public.url"]) else {
             return false
         }
 
@@ -278,7 +278,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                             description: "", url: url)
                         request.addToExistingSpace(id: space.id.id, name: space.name)
 
-                        ToastDefaults().showToastForSpace(bvc: self.bvc, request: request)
+                        ToastDefaults().showToastForSpace(bvc: bvc, request: request)
                     }
                 }
             }
@@ -296,10 +296,10 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                         let request = AddToSpaceRequest(
                             title: "Selected snippets",
                             description: text,
-                            url: (self.bvc.tabManager.selectedTab?.url)!)
+                            url: (bvc.tabManager.selectedTab?.url)!)
                         request.addToExistingSpace(id: space.id.id, name: space.name)
 
-                        ToastDefaults().showToastForSpace(bvc: self.bvc, request: request)
+                        ToastDefaults().showToastForSpace(bvc: bvc, request: request)
                     }
                 }
             }

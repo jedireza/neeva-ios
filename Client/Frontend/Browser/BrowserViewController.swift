@@ -50,16 +50,8 @@ class BrowserViewController: UIViewController {
         model.delegate = self
         return model
     }()
+
     let chromeModel = TabChromeModel()
-
-    private(set) lazy var cardStripViewController: CardStripViewController? = { [unowned self] in
-        let controller = CardStripViewController(bvc: self)
-        addChild(controller)
-        view.addSubview(controller.view)
-        controller.didMove(toParent: self)
-        return controller
-    }()
-
     lazy var cardGridViewController: CardGridViewController = { [unowned self] in
         let controller = CardGridViewController(bvc: self)
 
@@ -103,10 +95,7 @@ class BrowserViewController: UIViewController {
 
     private(set) lazy var tabContentHost: TabContentHost = {
         [unowned self] in
-        return TabContentHost(
-            tabManager: self.tabManager,
-            zeroQueryModel: self.zeroQueryModel,
-            suggestionModel: self.suggestionModel)
+        return TabContentHost(bvc: self)
     }()
 
     let overlayWindowManager = WindowManager(alignToBottom: true)
@@ -468,15 +457,6 @@ class BrowserViewController: UIViewController {
 
         webViewContainerBackdrop.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
-        }
-
-        if FeatureFlag[.cardStrip] {
-            cardStripViewController?.view.snp.updateConstraints { make in
-                make.leading.equalTo(self.view.snp.trailing).offset(-CardControllerUX.HandleWidth)
-                make.width.equalTo(self.view)
-                make.bottom.equalTo(self.view.snp.bottom).offset(-CardControllerUX.BottomPadding)
-                make.height.equalTo(CardControllerUX.Height)
-            }
         }
 
         if FeatureFlag[.swipePlusPlus] {

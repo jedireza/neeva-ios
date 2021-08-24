@@ -74,66 +74,31 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     }
 }
 
-class CardStripViewController: UIHostingController<CardStripViewController.Content> {
-    struct Content: View {
-        let tabCardModel: TabCardModel
-        let spaceCardModel: SpaceCardModel
-        let sitesCardModel: SiteCardModel
-        let cardStripModel: CardStripModel
-
-        var body: some View {
-            CardStripView()
-                .environmentObject(tabCardModel)
-                .environmentObject(spaceCardModel)
-                .environmentObject(sitesCardModel)
-                .environmentObject(cardStripModel)
-        }
-    }
-
-    var leadingConstraint: Constraint? = nil
+struct CardStripContent: View {
     let tabCardModel: TabCardModel
+    let spaceCardModel: SpaceCardModel
+    let sitesCardModel: SiteCardModel
+    @ObservedObject var cardStripModel: CardStripModel
 
-    init(bvc: BrowserViewController) {
-        let tabGroupManager = TabGroupManager(tabManager: bvc.tabManager)
-        self.tabCardModel = TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager)
-        let cardStripModel = CardStripModel()
-        super.init(
-            rootView: Content(
-                tabCardModel: tabCardModel,
-                spaceCardModel: SpaceCardModel(bvc: bvc),
-                sitesCardModel: SiteCardModel(
-                    urls: [], tabManager: bvc.tabManager),
-                cardStripModel: cardStripModel
-            )
-        )
-        cardStripModel.onToggleVisible = { isVisible in
-            self.view.superview?.layoutIfNeeded()
+    var width: CGFloat
 
-            if isVisible {
-                self.view.snp.makeConstraints { make in
-                    self.leadingConstraint = make.leading.equalToSuperview().constraint
-                }
-            } else {
-                self.leadingConstraint?.update(
-                    offset: UIScreen.main.bounds.width - CardControllerUX.HandleWidth)
-            }
-
-            UIView.animate(
-                withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.85,
-                initialSpringVelocity: 0.0, options: [],
-                animations: {
-                    self.view.superview?.layoutIfNeeded()
-                })
-        }
+    var body: some View {
+        CardStripView()
+            .environmentObject(tabCardModel)
+            .environmentObject(spaceCardModel)
+            .environmentObject(sitesCardModel)
+            .environmentObject(cardStripModel)
+            .offset(x: !cardStripModel.isVisible ? 0 : width - 50)
+            .frame(height: CardControllerUX.Height)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    init(bvc: BrowserViewController, width: CGFloat) {
+        let tabManager = bvc.tabManager
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view.backgroundColor = .clear
+        self.tabCardModel = TabCardModel(manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
+        self.spaceCardModel = SpaceCardModel(bvc: bvc)
+        self.sitesCardModel = SiteCardModel(urls: [], tabManager: tabManager)
+        self.cardStripModel = CardStripModel()
+        self.width = width
     }
 }
