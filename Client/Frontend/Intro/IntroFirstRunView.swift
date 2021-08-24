@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import Shared
 import SwiftUI
 
@@ -81,6 +82,7 @@ struct IntroFirstRunView: View {
     func logImpression() {
         ClientLogger.shared.logCounter(
             .FirstRunImpression, attributes: [ClientLogCounterAttribute]())
+        Defaults[.firstRunSeenAndNotSignedIn] = true
     }
 }
 

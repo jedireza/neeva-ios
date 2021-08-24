@@ -53,6 +53,7 @@ public struct LogConfig {
         case FirstRunSignin  // Click sign in on first run
         case FirstRunSkipToBrowser  // Click skip to browser on first run
         case FirstRunImpression  // First run screen rendered
+        case LoginAfterFirstRun // Login after first run
 
         // promo card
         case PromoSignin  // Sign in from promo card
@@ -151,6 +152,7 @@ public struct LogConfig {
         case .FirstRunSignin: return .FirstRun
         case .FirstRunSkipToBrowser: return .FirstRun
         case .FirstRunImpression: return .FirstRun
+        case .LoginAfterFirstRun: return .FirstRun
 
         case .PromoSignin: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
