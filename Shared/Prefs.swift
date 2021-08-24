@@ -20,6 +20,8 @@ extension Defaults.Keys {
         "profile.didDismissDefaultBrowserCard")
     public static let didDismissReferralPromoCard =
         Defaults.BoolKey("profile.didDismissReferralPromoCard")
+    public static let firstRunSeenAndNotSignedIn = Defaults.BoolKey(
+        "firstRunSeenAndNotSignedIn")
 
     // explicit/implicit settings
     public static let contextMenuShowLinkPreviews = Defaults.Key(

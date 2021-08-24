@@ -934,12 +934,21 @@ extension BrowserViewController: WKNavigationDelegate {
             url.scheme == "https"
         {
             let userInfo = NeevaUserInfo.shared
+
             if url.path == NeevaConstants.appSigninURL.path {
                 if userInfo.hasLoginCookie() {
                     userInfo.deleteLoginCookie()
                     userInfo.didLogOut()
                 }
             } else {
+                // Log .LoginAfterFirstRun when user signed in for the first time
+                // after seeing first run screen
+                if Defaults[.firstRunSeenAndNotSignedIn] && userInfo.hasLoginCookie() {
+                    ClientLogger.shared.logCounter(
+                        .LoginAfterFirstRun, attributes: [ClientLogCounterAttribute]())
+                    Defaults[.firstRunSeenAndNotSignedIn] = false
+                }
+                
                 userInfo.updateLoginCookieFromWebKitCookieStore {
                     self.showSearchBarTourPromptIfNeeded(for: url)
                 }
