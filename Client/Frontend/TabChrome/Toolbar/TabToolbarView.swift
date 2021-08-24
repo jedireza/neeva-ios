@@ -24,9 +24,13 @@ struct TabToolbarView: View {
                     onLongPress: { performAction(.longPressBackForward) }
                 )
                 if FeatureFlag[.overflowMenu] {
-                    TabToolbarButtons.OverflowMenu {
-                        performAction(.overflow)
-                    }
+                    TabToolbarButtons.OverflowMenu(
+                        action: {
+                            performAction(.overflow)
+                        },
+                        onLongPress: {
+                            performAction(.longPressOverflow)
+                        })
                 }
                 TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
                 TabToolbarButtons.AddToSpace(

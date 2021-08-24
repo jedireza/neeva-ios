@@ -55,16 +55,20 @@ enum TabToolbarButtons {
 
     struct OverflowMenu: View {
         let action: () -> Void
+        let onLongPress: () -> Void
 
         @Environment(\.isIncognito) private var isIncognito
 
         var body: some View {
             TabToolbarButton(
                 label: Symbol(
-                    .ellipsisCircle, size: 20, weight: .regular,
+                    FeatureFlag[.overflowIconOnOverflowMenu]
+                        ? .ellipsisCircle
+                        : .squareAndArrowUp, size: 20, weight: .regular,
                     label: .TabToolbarMoreAccessibilityLabel),
                 action: action
             )
+            .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
         }
     }
 

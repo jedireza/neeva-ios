@@ -13,6 +13,7 @@ enum ToolbarAction {
     case longPressBackForward
     case addToSpace
     case showTabs
+    case longPressOverflow
 }
 
 extension BrowserViewController: ToolbarDelegate {
@@ -40,7 +41,7 @@ extension BrowserViewController: ToolbarDelegate {
                         chromeModel: self.chromeModel,
                         changedUserAgent: self.tabManager.selectedTab?.changedUserAgent,
                         menuAction: { action in
-                            self.perform(overflowMenuAction:action, targetButtonView:nil)
+                            self.perform(overflowMenuAction: action, targetButtonView: nil)
                         }
                     )
                 )
@@ -88,6 +89,8 @@ extension BrowserViewController: ToolbarDelegate {
 
             case .showTabs:
                 self.showTabTray()
+            case .longPressOverflow:
+                self.showShareSheet(buttonView: self.topBar.view)
             }
         }
     }

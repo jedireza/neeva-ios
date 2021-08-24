@@ -74,6 +74,7 @@ struct TopBarNeevaMenuButton: View {
 struct TopBarOverflowMenuButton: View {
     let changedUserAgent: Bool?
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
+    let onLongPress: (UIView) -> Void
 
     @Environment(\.isIncognito) private var isIncognito
 
@@ -84,9 +85,14 @@ struct TopBarOverflowMenuButton: View {
     @EnvironmentObject private var chromeModel: TabChromeModel
 
     var body: some View {
-        TabToolbarButtons.OverflowMenu {
-            presenting = true
-        }
+        TabToolbarButtons.OverflowMenu(
+            action: {
+                presenting = true
+            },
+            onLongPress: {
+                onLongPress(targetButtonView)
+            }
+        )
         .uiViewRef($targetButtonView)
         .tapTargetFrame()
         .presentAsPopover(

@@ -44,7 +44,9 @@ extension BrowserViewController: TopBarDelegate {
                     if let url = tab.url {
                         tab.toggleChangeUserAgent()
                         Tab.ChangeUserAgent.updateDomainList(
-                            forUrl: url, isChangedUA: tab.changedUserAgent, isPrivate: self.tabManager.isIncognito
+                            forUrl: url,
+                            isChangedUA: tab.changedUserAgent,
+                            isPrivate: self.tabManager.isIncognito
                         )
                     }
                 }
@@ -69,6 +71,10 @@ extension BrowserViewController: TopBarDelegate {
         }
 
         self.submitSearchText(text, forTab: currentTab)
+    }
+
+    func urlBarDidLongPressOverflow(targetButtonView: UIView) {
+        showShareSheet(buttonView: targetButtonView)
     }
 
     fileprivate func submitSearchText(_ text: String, forTab tab: Tab?) {

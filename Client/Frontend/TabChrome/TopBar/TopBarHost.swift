@@ -10,6 +10,7 @@ protocol TopBarDelegate: ToolbarDelegate {
     func urlBarDidPressReload()
     func urlBarDidEnterOverlayMode()
     func urlBarDidLeaveOverlayMode()
+    func urlBarDidLongPressOverflow(targetButtonView: UIView)
     func urlBar(didSubmitText text: String)
 
     func perform(neevaMenuAction: NeevaMenuAction)
@@ -69,6 +70,9 @@ struct TopBarContent: View {
             onOverflowMenuAction: {
                 chromeModel.topBarDelegate?.perform(overflowMenuAction: $0, targetButtonView: $1)
             },
+            onLongPressOverflowButton: {
+                chromeModel.topBarDelegate?.urlBarDidLongPressOverflow(targetButtonView: $0)
+            },
             changedUserAgent: chromeModel.topBarDelegate?.tabManager.selectedTab?.changedUserAgent
         )
         .environmentObject(suggestionModel)
@@ -107,7 +111,6 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
                 onCancel: onCancel
             )
         }
-      
         self.view.backgroundColor = .clear
         self.view.translatesAutoresizingMaskIntoConstraints = false
         self.view.setContentHuggingPriority(.required, for: .vertical)

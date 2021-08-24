@@ -15,6 +15,7 @@ struct TopBarView: View {
     let newTab: () -> Void
     let onCancel: () -> Void
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
+    let onLongPressOverflowButton: (UIView) -> Void
     let changedUserAgent: Bool?
 
     @State private var shouldInsetHorizontally = false
@@ -35,7 +36,9 @@ struct TopBarView: View {
                     if FeatureFlag[.overflowMenu] {
                         TopBarOverflowMenuButton(
                             changedUserAgent: changedUserAgent,
-                            onOverflowMenuAction: onOverflowMenuAction)
+                            onOverflowMenuAction: onOverflowMenuAction,
+                            onLongPress: onLongPressOverflowButton
+                        )
                     }
                     TopBarNeevaMenuButton(
                         onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
@@ -50,8 +53,10 @@ struct TopBarView: View {
                 .padding(.bottom, (chrome.inlineToolbar ? 8 : 10) - 1)
                 .layoutPriority(1)
                 if chrome.inlineToolbar {
-                    TopBarShareButton(url: location.url, onTap: onShare)
-                        .tapTargetFrame()
+                    if !FeatureFlag[.shareButtonInOverflowMenu] {
+                        TopBarShareButton(url: location.url, onTap: onShare)
+                            .tapTargetFrame()
+                    }
                     TabToolbarButtons.AddToSpace(
                         weight: .regular, action: { performTabToolbarAction(.addToSpace) }
                     )
@@ -108,7 +113,8 @@ struct TopBarView_Previews: PreviewProvider {
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                     onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
-                    onOverflowMenuAction: { _, _ in }, changedUserAgent: false)
+                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in },
+                    changedUserAgent: false)
                 Spacer()
             }.background(Color.red.ignoresSafeArea())
 
@@ -117,7 +123,8 @@ struct TopBarView_Previews: PreviewProvider {
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                     onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
-                    onOverflowMenuAction: { _, _ in }, changedUserAgent: false)
+                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in },
+                    changedUserAgent: false)
                 Spacer()
             }
             .preferredColorScheme(.dark)
