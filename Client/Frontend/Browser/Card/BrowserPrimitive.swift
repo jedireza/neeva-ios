@@ -189,10 +189,6 @@ extension SpaceEntityData: BrowserPrimitive {
             MetadataKeys.description.rawValue: snippet as Any,
         ])
     }
-
-    public var id: String {
-        url.absoluteString
-    }
 }
 
 extension Space: AccessingManager {
