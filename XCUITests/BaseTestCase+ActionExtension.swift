@@ -45,4 +45,13 @@ extension BaseTestCase {
         waitForExistence(app.buttons["Done"])
         app.buttons["Done"].tap()
     }
+
+    /// Launches from tab page, ends with the URL bar focused and the URL as the query
+    func editCurrentURL() {
+        waitForExistence(app.buttons["Address Bar"])
+        app.buttons["Address Bar"].tap()
+
+        waitForExistence(app.buttons["Edit Current URL"])
+        app.buttons["Edit Current URL"].tap()
+    }
 }

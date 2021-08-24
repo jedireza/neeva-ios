@@ -18,7 +18,7 @@ struct SuggestionsDivider: View {
     let height: CGFloat
 
     var body: some View {
-        Color.TrayBackground.frame(height: height)
+        Color.secondaryBackground.frame(height: height)
     }
 }
 

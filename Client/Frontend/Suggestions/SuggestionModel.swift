@@ -473,6 +473,7 @@ class SuggestionModel: ObservableObject {
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let suggestionLocationAttributes =
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
+        var hideZeroQuery = true
 
         switch suggestion {
         case .query(let suggestion):
@@ -511,17 +512,20 @@ class SuggestionModel: ObservableObject {
                     + suggestionSnapshotAttributes())
 
             bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
+        case .editCurrentURL(let tab):
+            hideZeroQuery = false
+            bvc.searchQueryModel.value = tab.url?.absoluteString ?? ""
         case .tabSuggestion(let selectedTab):
-            if !selectedTab.isSelected, let tab = selectedTab.manager.get(for: selectedTab.id) {
+            if let tab = selectedTab.manager.get(for: selectedTab.id) {
                 selectedTab.manager.select(tab)
-            } else {
-                bvc.searchQueryModel.value = selectedTab.url?.absoluteString ?? ""
             }
         case .findInPage(let query):
             bvc.updateFindInPageVisibility(visible: true, query: query)
         }
 
-        bvc.hideZeroQuery()
+        if hideZeroQuery {
+            bvc.hideZeroQuery()
+        }
     }
 
     // MARK: - Keyboard Shortcut

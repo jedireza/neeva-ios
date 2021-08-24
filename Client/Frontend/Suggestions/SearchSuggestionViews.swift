@@ -52,6 +52,8 @@ public struct SearchSuggestionView: View {
             LensSuggestionView(suggestion: suggestion)
         case .navigation(let nav):
             NavSuggestionView(suggestion: nav)
+        case .editCurrentURL(let tab):
+            EditCurrentURLSuggestionView(suggestion: tab)
         case .tabSuggestion(let tab):
             TabSuggestionView(suggestion: tab)
         case .findInPage(let query):
@@ -490,6 +492,66 @@ private struct TabSuggestionView: View {
             suggestion: Suggestion.tabSuggestion(suggestion)
         )
         .environmentObject(model)
+    }
+}
+
+private struct EditCurrentURLSuggestionView: View {
+    let suggestion: TabCardDetails
+
+    @EnvironmentObject public var model: SuggestionModel
+
+    var label: some View {
+        Text(suggestion.url?.absoluteString ?? "")
+            .withFont(.bodySmall).lineLimit(1)
+    }
+
+    var secondaryLabel: some View {
+        Text("Edit current URL")
+            .withFont(.bodyMedium).foregroundColor(.secondaryLabel).lineLimit(1)
+    }
+
+    var menuItems: some View {
+        Group {
+            Button {
+                UIPasteboard.general.string = suggestion.url?.absoluteString
+                ToastViewManager.shared.makeToast(text: "URL copied to clipboard").enqueue()
+            } label: {
+                Label("Copy Address", systemSymbol: .link)
+            }
+
+
+            Button {
+                let tabManager = suggestion.manager
+                let bvc = SceneDelegate.getBVC(with: tabManager.scene)
+
+                guard
+                    let tab = tabManager.selectedTab,
+                    let url = suggestion.url
+                else { return }
+
+                if url.isFileURL {
+                    bvc.share(fileURL: url, buttonView: UIHostingController(rootView: self).view, presentableVC: bvc)
+                } else {
+                    bvc.share(tab: tab, from: UIHostingController(rootView: self).view, presentableVC: bvc)
+                }
+            } label: {
+                Label("Share", systemSymbol: .squareAndArrowUp)
+            }
+        }
+    }
+
+    var body: some View {
+        SuggestionView(
+            action: nil,
+            icon: suggestion.favicon.cornerRadius(4),
+            label: label,
+            secondaryLabel: secondaryLabel,
+            detail: Symbol(decorative: .arrowUpLeft),
+            suggestion: Suggestion.editCurrentURL(suggestion)
+        )
+        .environmentObject(model)
+        .contextMenu { menuItems }
+        .accessibility(label: Text("Edit Current URL"))
     }
 }
 

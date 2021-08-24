@@ -95,7 +95,8 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
             if let favIcon = item.displayFavicon {
                 WebImage(url: favIcon.url)
                     .resizable()
-                    .transition(.fade(duration: 0.5)).background(Color.white)
+                    .transition(.fade(duration: 0.5))
+                    .background(Color.white)
                     .scaledToFit()
             } else if let url = item.primitiveUrl {
                 FaviconView(url: url, size: SuggestionViewUX.FaviconSize, bordered: false)

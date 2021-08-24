@@ -7,24 +7,24 @@ import XCTest
 class ClipBoardTests: BaseTestCase {
     let url = "www.example.com"
 
-    //Check for test url in the browser
+    // Check for test url in the browser
     func checkUrl() {
         let urlField = app.buttons["Address Bar"]
         waitForValueContains(urlField, value: "http://example.com/")
     }
 
-    //Copy url from the browser
+    // Copy url from the browser
     func copyUrl() {
         app.buttons["Address Bar"].tap()
-        waitForExistence(app.textFields["address"])
-        app.textFields["address"].tap()
 
-        waitForExistence(app.menuItems["Copy"])
-        app.menuItems["Copy"].tap()
-        app.typeText("\r")
+        waitForExistence(app.buttons["Edit Current URL"])
+        app.buttons["Edit Current URL"].press(forDuration: 1)
+
+        waitForExistence(app.buttons["Copy Address"])
+        app.buttons["Copy Address"].tap()
     }
 
-    //Check copied url is same as in browser
+    // Check copied url is same as in browser
     func checkCopiedUrl() {
         if let myString = UIPasteboard.general.string {
             let value = app.buttons["Address Bar"].value as! String
@@ -40,17 +40,14 @@ class ClipBoardTests: BaseTestCase {
         copyUrl()
         checkCopiedUrl()
 
-        newTab()
+        waitForExistence(app.buttons["Edit Current URL"])
+        app.buttons["Edit Current URL"].tap()
+        app.textFields["address"].typeText("\n")
 
-        waitForExistence(app.textFields["address"])
-        app.textFields["address"].tap()
-        waitFor(
-            app.menuItems.matching(
-                NSPredicate(format: "label = 'Paste & Go' OR label = 'show.next.items.menu.button'")
-            ), with: "count > 0")
-        while !app.menuItems["Paste & Go"].exists {
-            app.menuItems["show.next.items.menu.button"].tap()
-        }
+        waitForExistence(app.buttons["Address Bar"])
+        app.buttons["Address Bar"].press(forDuration: 1)
+
+        waitForExistence(app.menuItems["Paste & Go"])
         app.menuItems["Paste & Go"].tap()
 
         checkUrl()

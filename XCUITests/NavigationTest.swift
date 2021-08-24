@@ -107,21 +107,12 @@ class NavigationTest: BaseTestCase {
     }
 
     func testLongPressOnAddressBar() {
-        //This test is for populated clipboard only so we need to make sure there's something in Pasteboard
-        XCTAssert(app.buttons["Address Bar"].exists)
-        app.buttons["Address Bar"].tap()
-        waitForExistence(app.buttons["Cancel"])
+        openURL()
 
-        app.textFields["address"].typeText("www.neeva.com")
-        // Tapping 1-2 times (depending on the pause) when the text is not selected will reveal the menu
-        app.textFields["address"].tap()
-        waitForExistence(app.textFields["address"])
-        if !app.menuItems["Select All"].exists {
-            app.textFields["address"].tap()
-        }
+        editCurrentURL()
+
+        app.textFields["address"].press(forDuration: 1)
         waitForExistence(app.menuItems["Select All"])
-        XCTAssertTrue(app.menuItems["Select All"].exists)
-        XCTAssertTrue(app.menuItems["Select"].exists)
 
         //Tap on Select All option and make sure Copy, Cut, Paste, and Look Up are shown
         app.menuItems["Select All"].tap()
@@ -143,17 +134,13 @@ class NavigationTest: BaseTestCase {
         app.textFields["address"].typeText("\n")
         waitUntilPageLoad()
 
-        waitForExistence(app.buttons["Address Bar"])
-        app.buttons["Address Bar"].tap()
+        editCurrentURL()
 
-        waitForExistence(app.textFields["address"])
-        app.textFields["address"].tap()
+        app.textFields["address"].press(forDuration: 1)
+        waitForExistence(app.menuItems["Select All"])
 
-        if app.menuItems["Select All"].exists {
-            app.menuItems["Select All"].tap()
-        }
-
-        waitForExistence(app.menuItems["Copy"])
+        app.menuItems["Select All"].tap()
+        waitForExistence(app.menuItems["Paste"])
 
         if iPad() {
             XCTAssertTrue(app.menuItems["Copy"].exists)

@@ -123,18 +123,16 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if let openTab = viewModel.openedFrom?.openedTab,
-                        FeatureFlag[.clearZeroQuery]
-                    {
+                    if let openTab = viewModel.openedFrom?.openedTab {
                         SearchSuggestionView(
-                            Suggestion.tabSuggestion(
-                                TabCardDetails(
-                                    tab: openTab,
-                                    manager: viewModel.bvc.tabManager)
+                            Suggestion.editCurrentURL(
+                                TabCardDetails(tab: openTab,
+                                               manager: viewModel.bvc.tabManager)
                             )
                         )
                         .environmentObject(viewModel.bvc.suggestionModel)
-                        SuggestionsDivider(height: 3)
+
+                        SuggestionsDivider(height: 8)
                     }
 
                     if viewModel.isPrivate {

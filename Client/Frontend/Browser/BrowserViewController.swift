@@ -686,10 +686,8 @@ class BrowserViewController: UIViewController {
             searchQueryModel.value = ""
         }
 
-        if FeatureFlag[.clearZeroQuery] {
-            searchQueryModel.value = ""
-        }
-
+        searchQueryModel.value = ""
+        
         self.tabContentHost.updateContent(
             .showZeroQuery(
                 isIncognito: tabManager.isIncognito,
