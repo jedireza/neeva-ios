@@ -2,6 +2,7 @@
 
 import Foundation
 import Storage
+import Defaults
 
 @testable import Client
 
@@ -30,6 +31,14 @@ class UITestBase: KIFTestCase {
     ])
 
     func resetToHome() {
+        if tester().viewExistsWithLabel("Done") {
+            tester().tapView(withAccessibilityLabel: "Done")
+        }
+
+        if tester().viewExistsWithLabel("Cancel") {
+            tester().tapView(withAccessibilityLabel: "Cancel")
+        }
+
         closeAllTabs()
     }
 
@@ -77,7 +86,9 @@ class UITestBase: KIFTestCase {
 
     override func tearDown() {
         resetToHome()
-        clearPrivateData()
+
+        let bvc = SceneDelegate.getBVC(for: nil)
+        ClearableDataType.allCases.forEach { _ = $0.clearable(profile: bvc.profile, tabManager: bvc.tabManager).clear() }
 
         super.tearDown()
     }
