@@ -104,11 +104,13 @@ public class NeevaFeatureFlags {
     }
 
     public enum StringFlag: Int, CaseIterable {
-        // swift-format-ignore: NoLeadingUnderscores
-        case _unused = 0
+        case loggingCategories = 51172
 
         public var name: String {
-            return ""
+            switch self {
+            /// bitmask to control which logging categories to be enabled (see InteractionCategory in LogConfig.swift)
+            case .loggingCategories: return "ios.logging_categories"
+            }
         }
     }
 

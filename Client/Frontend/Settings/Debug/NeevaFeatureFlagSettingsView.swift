@@ -7,15 +7,27 @@ struct NeevaFeatureFlagSettingsView: View {
     @State var needsRestart = false
     var body: some View {
         List {
-            // TODO: Add support for Int, Float and String flags.
-            ForEach(NeevaFeatureFlags.BoolFlag.allCases, id: \.rawValue) { flag in
-                HStack {
-                    Text(flag.name)
-                        .font(.system(.body, design: .monospaced))
-                        .fixedSize(horizontal: false, vertical: true)
-                    Spacer()
-                    BoolFlagView(flag: flag, onChange: { needsRestart = true })
-                        .fixedSize()
+            // TODO: Add support for Float flags to TextFlagView
+            Section(header: Text("Bool Flags")) {
+                ForEach(NeevaFeatureFlags.BoolFlag.allCases, id: \.rawValue) { flag in
+                    HStack {
+                        Text(flag.name)
+                            .font(.system(.body, design: .monospaced))
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer()
+                        BoolFlagView(flag: flag, onChange: { needsRestart = true })
+                            .fixedSize()
+                    }
+                }
+            }
+            Section(header: Text("String Flags")) {
+                ForEach(NeevaFeatureFlags.StringFlag.allCases, id: \.rawValue) { flag in
+                    VStack(alignment: .leading) {
+                        Text(flag.name)
+                            .font(.system(.body, design: .monospaced))
+                            .fixedSize(horizontal: false, vertical: true)
+                        TextFlagView(flag: flag, onChange: { needsRestart = true })
+                    }
                 }
             }
         }
@@ -82,6 +94,54 @@ private struct BoolFlagView: View {
     func updateState() {
         self.onChange()
         self.flagValue = NeevaFeatureFlags[flag]
+        self.isOverridden = NeevaFeatureFlags.isOverridden(flag)
+    }
+}
+
+private struct TextFlagView: View {
+    @State private var isOverridden: Bool
+    @State private var flagValueText: String
+
+    private let onChange: () -> Void
+    private let flag: NeevaFeatureFlags.StringFlag
+
+    init(flag: NeevaFeatureFlags.StringFlag, onChange: @escaping () -> Void) {
+        self.flag = flag
+        self.onChange = onChange
+        self.flagValueText = String(NeevaFeatureFlags[flag])
+        self._isOverridden = .init(initialValue: NeevaFeatureFlags.isOverridden(flag))
+    }
+
+    var body: some View {
+        HStack {
+            TextField(NeevaFeatureFlags[flag], text: $flagValueText, onEditingChanged: { _ in }) {
+                NeevaFeatureFlags[flag] = flagValueText
+                updateState()
+            }
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .font(Font.headline.weight(isOverridden ? .bold : .regular))
+            Menu {
+                Button {
+                    NeevaFeatureFlags.reset(flag)
+                    updateState()
+                } label: {
+                    if isOverridden {
+                        Text("Restore Default")
+                    } else {
+                        Label("Default", systemSymbol: .checkmark)
+                    }
+                }
+            } label: {
+                HStack {
+                    Symbol(decorative: .chevronDown)
+                }
+            }
+        }
+    }
+
+    func updateState() {
+        self.onChange()
+        self.flagValueText = NeevaFeatureFlags[flag]
         self.isOverridden = NeevaFeatureFlags.isOverridden(flag)
     }
 }

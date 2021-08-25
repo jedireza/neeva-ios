@@ -77,37 +77,38 @@ public struct LogConfig {
         case AppCrashWithPageLoad  // App Crash # With Page load #
     }
 
-    public enum InteractionCategory {
-        case UI
-        case NeevaMenu
-        case Settings
-        case FirstRun
-        case Suggestions
-        case ReferralPromo
-        case Performance
-        case PromoCard
+    // Specify a comma separated string with these values to
+    // enable specific logging category on the server:
+    // ios_logging_categories.experiment.yaml
+    public enum InteractionCategory: String, CaseIterable {
+        case UI = "UI"
+        case NeevaMenu = "NeevaMenu"
+        case Settings = "Settings"
+        case Suggestions = "Suggestions"
+        case ReferralPromo = "ReferralPromo"
+        case Performance = "Performance"
+        case FirstRun = "FirstRun"
+        case PromoCard = "PromoCard"
     }
 
+    public static var enabledLoggingCategories: Set<InteractionCategory>?
+
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
-        switch category {
-        case .Suggestions:
-            return NeevaFeatureFlags[.suggestionsLogging]
-        case .ReferralPromo:
-            return NeevaFeatureFlags[.referralPromoLogging]
-        case .UI:
-            return NeevaFeatureFlags[.uiLogging]
-        case .NeevaMenu:
-            return NeevaFeatureFlags[.neevaMenuLogging]
-        case .Performance:
-            return NeevaFeatureFlags[.logAppCrashes]
-        case .FirstRun:
-            // Not using a feature flag for first fun because
-            // during first run, user never signed in, therefore
-            // we cannot fetch the feature flag from user info
+        if category == .FirstRun {
             return true
-        default:
-            return false
         }
+
+        if enabledLoggingCategories == nil {
+            enabledLoggingCategories = Set<InteractionCategory>()
+            NeevaFeatureFlags[.loggingCategories].components(separatedBy: ",").forEach { token in
+                if let category = InteractionCategory(
+                    rawValue: token.stringByTrimmingLeadingCharactersInSet(.whitespaces)
+                ) {
+                    enabledLoggingCategories?.insert(category)
+                }
+            }
+        }
+        return enabledLoggingCategories?.contains(category) ?? false
     }
 
     public static func category(for interaction: Interaction) -> InteractionCategory {
