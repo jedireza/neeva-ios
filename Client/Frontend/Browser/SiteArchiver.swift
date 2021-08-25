@@ -7,13 +7,13 @@ import Shared
 
 // Struct that retrives saved tabs and simple tabs dictionary for WidgetKit
 struct SiteArchiver {
-    static func tabsToRestore(tabsStateArchivePath: String?) -> [SavedTab] {
+    static func tabsToRestore(tabsStateArchivePath: String?) -> [SavedTab]? {
         guard let tabStateArchivePath = tabsStateArchivePath,
             FileManager.default.fileExists(atPath: tabStateArchivePath),
             let tabData = try? Data(contentsOf: URL(fileURLWithPath: tabStateArchivePath))
         else {
             print(tabsStateArchivePath ?? "", "path doesn't exist")
-            return [SavedTab]()
+            return nil
         }
 
         // modern swift way of restoring tabs
@@ -40,7 +40,7 @@ struct SiteArchiver {
             Sentry.shared.send(
                 message: "Failed to restore tabs", tag: .tabManager, severity: .error,
                 description: "\(unarchiver.error ??? "nil")")
-            return [SavedTab]()
+            return nil
         }
 
         return oldRestoredTabs

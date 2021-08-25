@@ -46,7 +46,7 @@ class TabManagerStore {
         return path
     }
 
-    fileprivate func getLegacyTabSavePath() -> String? {
+    fileprivate func fallbackTabsPath() -> String? {
         guard let path = getBasePath() else { return nil }
         return URL(fileURLWithPath: path).appendingPathComponent("tabsState.archive").path
     }
@@ -89,10 +89,16 @@ class TabManagerStore {
         assert(Thread.isMainThread)
 
         guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab),
-            let path = tabSavePath(withId: scene.session.persistentIdentifier)
+              let path = tabSavePath(withId: scene.session.persistentIdentifier)
         else {
             clearArchive(for: scene)
             return succeed()
+        }
+
+        // Save a fallback copy in case the scene persistanceID changes
+        // Prevents the loss of user's tabs
+        if let fallbackTabsPath = fallbackTabsPath() {
+            _ = saveTabsToPath(path: fallbackTabsPath, savedTabs: savedTabs)
         }
 
         return saveTabsToPath(path: path, savedTabs: savedTabs)
@@ -168,41 +174,39 @@ class TabManagerStore {
         return tabToSelect
     }
 
-    func clearArchive(for scene: UIScene?) {
+    func clearArchive(for scene: UIScene) {
         var path: String?
 
-        log.info("Clearing archive for scene: \(scene?.session.persistentIdentifier ?? "unknown")")
-
-        if let scene = scene {
-            path = tabSavePath(withId: scene.session.persistentIdentifier)
-        } else {
-            path = getLegacyTabSavePath()
-        }
+        log.info("Clearing archive for scene: \(scene.session.persistentIdentifier)")
+        path = tabSavePath(withId: scene.session.persistentIdentifier)
 
         if let path = path {
             log.info("Removing \(path)")
             try? FileManager.default.removeItem(atPath: path)
         }
+
+        if let fallbackTabsPath = fallbackTabsPath() {
+            log.info("Removing \(fallbackTabsPath)")
+            try? FileManager.default.removeItem(atPath: fallbackTabsPath)
+        }
     }
 
-    func getStartupTabs(for scene: UIScene?) -> [SavedTab] {
-        log.info("Getting startup tabs for scene: \(scene?.session.persistentIdentifier ?? "unknown")")
-
-        let savedTabsWithOldPath = SiteArchiver.tabsToRestore(
-            tabsStateArchivePath: getLegacyTabSavePath())
-
-        guard let scene = scene else {
-            return savedTabsWithOldPath
-        }
+    func getStartupTabs(for scene: UIScene) -> [SavedTab] {
+        log.info("Getting startup tabs for scene: \(scene.session.persistentIdentifier)")
 
         let path = tabSavePath(withId: scene.session.persistentIdentifier)
         log.info("Restoring tabs from \(path)")
 
         let savedTabsWithNewPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: path)
-        if savedTabsWithNewPath.count > 0 {
+        let fallbackTabs = SiteArchiver.tabsToRestore(
+            tabsStateArchivePath: fallbackTabsPath())
+
+        if let savedTabsWithNewPath = savedTabsWithNewPath {
             return savedTabsWithNewPath
+        } else if let fallbackTabs = fallbackTabs {
+            return fallbackTabs
         } else {
-            return savedTabsWithOldPath
+            return [SavedTab]()
         }
     }
 }
@@ -213,6 +217,6 @@ extension TabManagerStore {
         assert(AppConstants.IsRunningTest)
         return SiteArchiver.tabsToRestore(
             tabsStateArchivePath: tabSavePath(withId: sceneId)
-        ).count
+        )?.count ?? 0
     }
 }
