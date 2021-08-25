@@ -131,9 +131,12 @@ struct TopBarShareButton: View {
     @EnvironmentObject private var chromeModel: TabChromeModel
 
     var body: some View {
-        TabToolbarButton(label: Symbol(.squareAndArrowUp, size: 20, label: "Share")) {
-            onTap(shareTargetView)
-        }
+        TabToolbarButton(
+            label: Symbol(.squareAndArrowUp, size: 20, label: "Share"),
+            action: {
+                onTap(shareTargetView)
+            }
+        )
         .uiViewRef($shareTargetView)
         .disabled(url == nil || !chromeModel.isPage)
     }

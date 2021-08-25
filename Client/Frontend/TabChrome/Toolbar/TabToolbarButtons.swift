@@ -7,15 +7,41 @@ import SwiftUI
 struct TabToolbarButton<Content: View>: View {
     let label: Content
     let action: () -> Void
+    let longPressAction: (() -> Void)?
 
+    @State private var didLongPress = false
     @Environment(\.isEnabled) private var isEnabled
 
+    public init(
+        label: Content,
+        action: @escaping () -> Void,
+        longPressAction: (() -> Void)? = nil
+    ) {
+        self.label = label
+        self.action = action
+        self.longPressAction = longPressAction
+    }
+
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            if !didLongPress {
+                action()
+            }
+            didLongPress = false
+        }) {
             Spacer(minLength: 0)
             label.tapTargetFrame()
             Spacer(minLength: 0)
-        }.accentColor(isEnabled ? .label : .quaternaryLabel)
+        }
+        .accentColor(isEnabled ? .label : .quaternaryLabel)
+        .simultaneousGesture(
+            LongPressGesture().onEnded { _ in
+                if let longPressAction = longPressAction {
+                    longPressAction()
+                    didLongPress = true
+                }
+            }
+        )
     }
 }
 
@@ -31,10 +57,11 @@ enum TabToolbarButtons {
                 TabToolbarButton(
                     label: Symbol(
                         .arrowForward, size: 20, weight: weight,
-                        label: .TabToolbarForwardAccessibilityLabel), action: onForward
+                        label: .TabToolbarForwardAccessibilityLabel),
+                    action: onForward,
+                    longPressAction: onLongPress
                 )
                 .disabled(!model.canGoForward)
-                .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
             }
         }
 
@@ -44,10 +71,11 @@ enum TabToolbarButtons {
                 TabToolbarButton(
                     label: Symbol(
                         .arrowBackward, size: 20, weight: weight,
-                        label: .TabToolbarBackAccessibilityLabel), action: onBack
+                        label: .TabToolbarBackAccessibilityLabel),
+                    action: onBack,
+                    longPressAction: onLongPress
                 )
                 .disabled(!model.canGoBack)
-                .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
                 experimentalButton
             }
         }
@@ -66,9 +94,9 @@ enum TabToolbarButtons {
                         ? .ellipsisCircle
                         : .squareAndArrowUp, size: 20, weight: .regular,
                     label: .TabToolbarMoreAccessibilityLabel),
-                action: action
+                action: action,
+                longPressAction: onLongPress
             )
-            .simultaneousGesture(LongPressGesture().onEnded { _ in onLongPress() })
         }
     }
 
