@@ -217,12 +217,14 @@
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
 		66DA9E49268E8EFB001EFF13 /* ToastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DA9E48268E8EFB001EFF13 /* ToastTests.swift */; };
+		66E745E426D6BE400056FB98 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E745E326D6BE400056FB98 /* Blur.swift */; };
 		66ECB5DF26BB264700A1857E /* OverlaySheetStepperModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ECB5DE26BB264700A1857E /* OverlaySheetStepperModifier.swift */; };
 		66EE7D9526CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */; };
 		66EE7D9626CD5F02004BD435 /* HTTPAuthPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EE7D9326CD5F02004BD435 /* HTTPAuthPromptViewController.swift */; };
 		66F571D726BD9CE800BEECF9 /* UITestBase+GoToExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571D626BD9CE800BEECF9 /* UITestBase+GoToExtension.swift */; };
 		66F571D926BD9CF700BEECF9 /* UITestBase+ActionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571D826BD9CF700BEECF9 /* UITestBase+ActionExtension.swift */; };
 		66F571DB26BD9D0B00BEECF9 /* UITestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571DA26BD9D0B00BEECF9 /* UITestBase.swift */; };
+		66FEB6A226D56718007090B9 /* CompactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FEB6A126D56718007090B9 /* CompactCard.swift */; };
 		67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67292D3226AD2CF200DB1BFA /* AnnotationType.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
@@ -1152,12 +1154,14 @@
 		66C3C772267A8909002B50B1 /* TabMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenu.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutTests.swift; sourceTree = "<group>"; };
+		66E745E326D6BE400056FB98 /* Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
 		66ECB5DE26BB264700A1857E /* OverlaySheetStepperModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySheetStepperModifier.swift; sourceTree = "<group>"; };
 		66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthPromptOverlayView.swift; sourceTree = "<group>"; };
 		66EE7D9326CD5F02004BD435 /* HTTPAuthPromptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthPromptViewController.swift; sourceTree = "<group>"; };
 		66F571D626BD9CE800BEECF9 /* UITestBase+GoToExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestBase+GoToExtension.swift"; sourceTree = "<group>"; };
 		66F571D826BD9CF700BEECF9 /* UITestBase+ActionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestBase+ActionExtension.swift"; sourceTree = "<group>"; };
 		66F571DA26BD9D0B00BEECF9 /* UITestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestBase.swift; sourceTree = "<group>"; };
+		66FEB6A126D56718007090B9 /* CompactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactCard.swift; sourceTree = "<group>"; };
 		67292D3226AD2CF200DB1BFA /* AnnotationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationType.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
@@ -2133,6 +2137,7 @@
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A1D054F2669715B00D63333 /* CardViewControllers.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
+				66FEB6A126D56718007090B9 /* CompactCard.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
 			);
 			path = Card;
@@ -2250,6 +2255,14 @@
 				66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */,
 			);
 			path = OpenInApp;
+			sourceTree = "<group>";
+		};
+		66E745E226D6BE2B0056FB98 /* UIViewRepresentable */ = {
+			isa = PBXGroup;
+			children = (
+				66E745E326D6BE400056FB98 /* Blur.swift */,
+			);
+			path = UIViewRepresentable;
 			sourceTree = "<group>";
 		};
 		66EE7D9026CD5EB5004BD435 /* HTTPAuthPrompt */ = {
@@ -3337,6 +3350,7 @@
 				EB9A179720E69A7E00B12184 /* Theme */,
 				668CA09726797E9800BA756F /* Toast */,
 				2816EFFF1B33E05400522243 /* UIConstants.swift */,
+				66E745E226D6BE2B0056FB98 /* UIViewRepresentable */,
 				D0FCF7EE1FE44E15004A7995 /* UserContent */,
 				D38A1BEB1A9FA2CA00F6A386 /* Widgets */,
 				665879CD26C3408700B53EB7 /* WindowManager.swift */,
@@ -4784,10 +4798,12 @@
 				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
 				67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,
+				66E745E426D6BE400056FB98 /* Blur.swift in Sources */,
 				66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */,
 				59A68B280D62462B85CF57A4 /* HistoryPanel.swift in Sources */,
 				C965BDD6268E729000F02224 /* InternalSettingsView.swift in Sources */,
 				122DE34125F975D900599A0D /* RequestDesktopSiteActivity.swift in Sources */,
+				66FEB6A226D56718007090B9 /* CompactCard.swift in Sources */,
 				C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */,
 				C9BED4C9266824D7001D9C77 /* FadingHorizontalScrollView.swift in Sources */,
 				D3972BF31C22412B00035B87 /* ShareExtensionHelper.swift in Sources */,

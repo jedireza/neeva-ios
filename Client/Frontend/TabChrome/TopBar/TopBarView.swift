@@ -61,11 +61,6 @@ struct TopBarView: View {
                         buildMenu: buildTabsMenu
                     )
                     .tapTargetFrame()
-                    if FeatureFlag[.cardStrip] {
-                        Button(action: newTab) {
-                            Symbol(.plusApp, label: "New Tab")
-                        }
-                    }
                 }
             }
             .opacity(chrome.controlOpacity)

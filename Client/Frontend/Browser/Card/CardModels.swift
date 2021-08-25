@@ -95,7 +95,7 @@ class SpaceCardModel: CardModel {
     init(bvc: BrowserViewController) {
         manager.refresh()
 
-        self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
+        self.anyCancellable = manager.objectWillChange.receive(on: DispatchQueue.main).sink { [unowned self] (_) in
             allDetails = manager.getAll().map { SpaceCardDetails(space: $0, bvc: bvc) }
             allDetails.forEach { details in
                 details.$isShowingDetails.sink { [weak self] showingDetails in

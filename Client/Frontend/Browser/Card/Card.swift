@@ -10,16 +10,18 @@ enum CardUX {
     static let ShadowRadius: CGFloat = 2
     static let CornerRadius: CGFloat = 12
     static let ButtonSize: CGFloat = 28
+    static let CompactCardHeight: CGFloat = 44
+    static let CompactCardHeightHover: CGFloat = 32
     static let FaviconSize: CGFloat = 18
     static let HeaderSize: CGFloat = ButtonSize + 1
     static let CardHeight: CGFloat = 174
 }
 
-private struct BorderTreatment: ViewModifier {
+public struct BorderTreatment: ViewModifier {
     let isSelected: Bool
     let thumbnailDrawsHeader: Bool
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .shadow(radius: thumbnailDrawsHeader ? 0 : CardUX.ShadowRadius)
             .overlay(
@@ -30,7 +32,19 @@ private struct BorderTreatment: ViewModifier {
     }
 }
 
-private struct DragToCloseInteraction: ViewModifier {
+public struct ActionsModifier: ViewModifier {
+    let close: (() -> Void)?
+
+    public func body(content: Content) -> some View {
+        if let close = close {
+            content.accessibilityAction(named: "Close", close)
+        } else {
+            content
+        }
+    }
+}
+
+public struct DragToCloseInteraction: ViewModifier {
     let action: () -> Void
 
     private let threshold: CGFloat = 80
@@ -44,7 +58,7 @@ private struct DragToCloseInteraction: ViewModifier {
         .radians(Double(progress * (.pi / 10)).withSign(offset.sign))
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .scaleEffect(1 - (progress / 5))
             .rotation3DEffect(angle, axis: (x: 0.0, y: 1.0, z: 0.0))
@@ -100,18 +114,6 @@ extension EnvironmentValues {
     public var selectionCompletion: () -> Void {
         get { self[SelectionCompletionKey] }
         set { self[SelectionCompletionKey] = newValue }
-    }
-}
-
-/// A card that constrains itself to the default height and provided width.
-struct FittedCard<Details>: View where Details: CardDetails {
-    @ObservedObject var details: Details
-
-    @Environment(\.cardSize) private var cardSize
-
-    var body: some View {
-        Card(details: details)
-            .frame(width: cardSize, height: cardSize + CardUX.HeaderSize)
     }
 }
 
@@ -194,16 +196,16 @@ struct Card<Details>: View where Details: CardDetails {
         }
         .scaleEffect(isPressed ? 0.95 : 1)
     }
+}
 
-    private struct ActionsModifier: ViewModifier {
-        let close: (() -> Void)?
+/// A card that constrains itself to the default height and provided width.
+struct FittedCard<Details>: View where Details: CardDetails {
+    @ObservedObject var details: Details
 
-        func body(content: Content) -> some View {
-            if let close = close {
-                content.accessibilityAction(named: "Close", close)
-            } else {
-                content
-            }
-        }
+    @Environment(\.cardSize) private var cardSize
+
+    var body: some View {
+        Card(details: details)
+            .frame(width: cardSize, height: cardSize + CardUX.HeaderSize)
     }
 }

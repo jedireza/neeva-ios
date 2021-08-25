@@ -15,8 +15,7 @@ private struct CardStrip<Model: CardModel>: View {
         LazyHStack(spacing: 32) {
             ForEach(model.allDetails.indices, id: \.self) { index in
                 let details = model.allDetails[index]
-                Card(details: details)
-                    .aspectRatio(1, contentMode: .fit)
+                CompactCardContent(details: details)
                     .environment(\.selectionCompletion) {}
                     .environment(\.cardSize, CardUX.DefaultCardSize)
                     .onLongPressGesture {
@@ -29,7 +28,7 @@ private struct CardStrip<Model: CardModel>: View {
 
 private struct CardStripButtonSpec: ViewModifier {
     func body(content: Content) -> some View {
-        content.frame(width: CardUX.DefaultCardSize / 2, height: 124)
+        content.frame(width: CardUX.DefaultCardSize / 2, height: 160)
             .background(Color.DefaultBackground)
             .clipShape(Capsule())
             .shadow(radius: CardUX.ShadowRadius).padding(.leading, 20)
@@ -37,7 +36,13 @@ private struct CardStripButtonSpec: ViewModifier {
 }
 
 class CardStripModel: ObservableObject {
-    @Published var isVisible: Bool = false
+    @Published var isVisible: Bool = true
+
+    func setVisible(to state: Bool) {
+        withAnimation {
+            isVisible = state
+        }
+    }
 
     func toggleVisible() {
         withAnimation {
@@ -70,8 +75,16 @@ struct CardStripView: View {
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        VStack(spacing: 12) {
-                            ToggleSpacesButton(showingSpaces: $showingSpaces)
+                        VStack(spacing: 6) {
+                            if cardStripModel.isVisible {
+                                ToggleSpacesButton(showingSpaces: $showingSpaces)
+
+                                NewTabButton(onNewTab: {
+                                    let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                    bvc.openLazyTab(openedFrom: .openTab(tabModel.manager.selectedTab))
+                                })
+                            }
+
                             DismissButton {
                                 cardStripModel.toggleVisible()
                             }
@@ -79,9 +92,11 @@ struct CardStripView: View {
                             .onTapGesture {
                                 cardStripModel.toggleVisible()
                             }
-                        if showingSpaces {
+
+                        if showingSpaces && spaceModel.allDetails.count > 0 {
                             CardStrip(model: spaceModel, onLongPress: { _ in })
                         }
+
                         CardStrip(
                             model: tabModel,
                             onLongPress: { id in
@@ -120,6 +135,22 @@ private struct ToggleSpacesButton: View {
                 .tapTargetFrame()
                 .background(Color(showingSpaces ? UIColor.label : UIColor.DefaultBackground))
                 .clipShape(Circle()).animation(.spring())
+        }
+    }
+}
+
+private struct NewTabButton: View {
+    var onNewTab: () -> Void
+
+    var body: some View {
+        Button(action: onNewTab) {
+            Symbol(.plusApp, size: 18, weight: .semibold, label: "New Tab")
+                .foregroundColor(
+                    Color(UIColor.label)
+                )
+                .aspectRatio(contentMode: .fit)
+                .tapTargetFrame()
+                .animation(.spring())
         }
     }
 }
