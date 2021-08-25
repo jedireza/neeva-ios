@@ -62,6 +62,10 @@ private struct Popover<Content: View>: UIViewControllerRepresentable {
             didSet {
                 if let presentee = presentee {
                     if let view = viewIfLoaded, view.window != nil {
+                        // Dismiss any presented view controller before presenting the popover. (this can happen when
+                        // a popover is already presented like tapping another bar button) Ideally, we should block touches behind
+                        // the popover backdrop once we have one SwiftUI. More detail in presentAsPopover comment
+                        dismiss(animated: false, completion: nil)
                         present(presentee, animated: true)
                     }
                 } else if let presentee = self.presentedViewController, presentee == oldValue {
