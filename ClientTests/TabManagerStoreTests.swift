@@ -82,7 +82,7 @@ class TabManagerStoreTests: XCTestCase {
         }
 
         // Remove all tabs, and add just 1 tab
-        manager.removeAll()
+        manager.removeAll(updatingSelectedTab: true)
         addTabWithSessionData()
         waitForCondition {
             self.manager.testTabCountOnDisk() == 1

@@ -112,7 +112,7 @@ class TabManagerTests: XCTestCase {
     override func tearDown() {
         profile._shutdown()
         manager.removeDelegate(delegate)
-        manager.removeAll()
+        manager.removeAll(updatingSelectedTab: false)
 
         super.tearDown()
     }
@@ -412,7 +412,7 @@ class TabManagerTests: XCTestCase {
         let tab0 = manager.addTab()
         let tab1 = manager.addTab()
 
-        manager.removeAll()
+        manager.removeAll(updatingSelectedTab: false)
         XCTAssert(nil == manager.tabs.firstIndex(of: tab0))
         XCTAssert(nil == manager.tabs.firstIndex(of: tab1))
     }
@@ -491,7 +491,7 @@ class TabManagerTests: XCTestCase {
         tabToSave.sessionData = SessionData(
             currentPage: 0, urls: [URL(string: "url")!], lastUsedTime: Date.nowMilliseconds())
 
-        manager.removeTabs([tab])
+        manager.removeTabs([tab], updatingSelectedTab: true)
         manager.restoreAllClosedTabs()
 
         XCTAssertNotEqual(manager.tabs.first, tab)
@@ -516,7 +516,7 @@ class TabManagerTests: XCTestCase {
         let tab2 = manager.addTab(afterTab: tab1)
         let initialRootUUID = tab1.rootUUID
 
-        manager.removeTabs([tab1, tab2])
+        manager.removeTabs([tab1, tab2], updatingSelectedTab: true)
         manager.restoreAllClosedTabs()
 
         let _ = MethodSpy(functionName: spyRestoredTabs) { tabs in
@@ -550,7 +550,7 @@ class TabManagerTests: XCTestCase {
         let tab2 = manager.addTab(afterTab: tab1)
         let initialParentUUID = tab2.parentUUID
 
-        manager.removeTabs([tab1, tab2])
+        manager.removeTabs([tab1, tab2], updatingSelectedTab: true)
         manager.restoreAllClosedTabs()
 
         let _ = MethodSpy(functionName: spyRestoredTabs) { tabs in

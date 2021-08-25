@@ -6,17 +6,19 @@ import Foundation
 
 class KeyboardShortcutTests: UITestBase {
     var bvc: BrowserViewController!
+    fileprivate var webRoot: String!
 
     override func setUp() {
         super.setUp()
         bvc = SceneDelegate.getBVC(for: nil)
+        webRoot = SimplePageServer.start()
     }
 
     func reset(tester: KIFUITestActor) {
         let tabManager = bvc.tabManager
 
         if bvc.tabManager.selectedTab?.isIncognito ?? false {
-            _ = tabManager.toggleIncognitoMode()
+            tabManager.toggleIncognitoMode()
         }
 
         tabManager.removeTabs(tabManager.tabs, showToast: false, addNormalTab: true)
@@ -67,7 +69,7 @@ class KeyboardShortcutTests: UITestBase {
     func testSelectLocationBarKeyCommand() {
         openURL()
         bvc.selectLocationBarKeyCommand()
-        openURL("neeva.com", openAddressBar: false)
+        openURL(openAddressBar: false)
         
         reset(tester: tester())
     }
@@ -101,11 +103,15 @@ class KeyboardShortcutTests: UITestBase {
     }
 
     func testCloseTabKeyCommand() {
-        openNewTab()
-
+        openURL()
+        openNewTab(to: "\(webRoot!)/numberedPage.html?page=1")
         XCTAssert(bvc.tabManager.tabs.count == 2)
+        tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
+
         bvc.closeTabKeyCommand()
         XCTAssert(bvc.tabManager.tabs.count == 1)
+        tester().waitForWebViewElementWithAccessibilityLabel("Example Domain")
+
         reset(tester: tester())
     }
 
