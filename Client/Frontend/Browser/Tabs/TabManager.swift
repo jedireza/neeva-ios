@@ -541,26 +541,26 @@ class TabManager: NSObject, ObservableObject {
     }
 
     private func removeAllPrivateTabs() {
-        removeTabs(privateTabs)
+        removeTabs(privateTabs, updatingSelectedTab: true)
         privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 
     func removeTabs(_ tabsToBeRemoved: [Tab], showToast: Bool, addNormalTab: Bool) {
         addTabsToRecentlyClosed(tabsToBeRemoved, allowToast: showToast)
-        removeTabs(tabsToBeRemoved)
+        removeTabs(tabsToBeRemoved, updatingSelectedTab: true)
 
         if normalTabs.isEmpty && (addNormalTab || !FeatureFlag[.emptyTabTray]) {
             selectTab(addTab())
         }
     }
 
-    func removeAllTabs(addNormalTab: Bool) {
+    func removeAllTabs(addNormalTab: Bool = true) {
         removeTabs(tabs, showToast: false, addNormalTab: addNormalTab)
     }
 
     func removeTabsWithToast(_ tabsToRemove: [Tab]) {
         addTabsToRecentlyClosed(tabsToRemove, allowToast: true)
-        removeTabs(tabsToRemove)
+        removeTabs(tabsToRemove, updatingSelectedTab: true)
 
         if normalTabs.isEmpty {
             selectTab(addTab())
@@ -649,13 +649,17 @@ class TabManager: NSObject, ObservableObject {
         _ = restoreSavedTabs(Array(recentlyClosedTabs.joined()))
     }
 
-    func removeAll() {
-        removeTabs(self.tabs)
+    func removeAll(updatingSelectedTab: Bool) {
+        removeTabs(self.tabs, updatingSelectedTab: updatingSelectedTab)
     }
 
-    func removeTabs(_ tabs: [Tab]) {
-        for tab in tabs {
-            self.removeTab(tab, flushToDisk: false, notify: true)
+    func removeTabs(_ tabs: [Tab], updatingSelectedTab: Bool) {
+        for index in 0..<tabs.count {
+            if index + 1 == tabs.count && updatingSelectedTab {
+                removeTabAndUpdateSelectedTab(tabs[index])
+            } else {
+                removeTab(tabs[index], flushToDisk: false, notify: true)
+            }
         }
 
         storeChanges()
