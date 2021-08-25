@@ -90,7 +90,6 @@ struct CardStripContent: View {
             .environmentObject(cardStripModel)
             .offset(x: cardStripModel.isVisible ? 0 : width - 50)
             .frame(height: CardControllerUX.Height)
-            .padding(.bottom)
     }
 
     init(bvc: BrowserViewController, width: CGFloat) {
@@ -99,7 +98,7 @@ struct CardStripContent: View {
         self.tabCardModel = TabCardModel(manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
         self.spaceCardModel = SpaceCardModel(bvc: bvc)
         self.sitesCardModel = SiteCardModel(urls: [], tabManager: tabManager)
-        self.cardStripModel = CardStripModel()
+        self.cardStripModel = CardStripModel(tabManager: tabManager)
         self.width = width
     }
 }

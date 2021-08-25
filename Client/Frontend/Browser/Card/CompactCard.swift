@@ -66,11 +66,10 @@ struct CompactCard<Details>: View where Details: CardDetails {
             	    }
             	}
             	.padding()
-                .frame(height: !inHoverMode ? CardUX.CompactCardHeight : CardUX.CompactCardHeightHover)
-            	.background(Color.DefaultBackground)
+                .frame(height: CardUX.CompactCardHeight)
+            	.background(Color.background)
             }
         }
-        .buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
         .accessibilityLabel(details.accessibilityLabel)
         .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
         .accessibilityAddTraits(.isButton)
@@ -94,8 +93,8 @@ struct CompactCard<Details>: View where Details: CardDetails {
                     },
                     alignment: .topTrailing
                 )
-                .modifier(DragToCloseInteraction(action: details.onClose))
         }
         .scaleEffect(isPressed ? 0.95 : 1)
+        .padding(.bottom)
     }
 }

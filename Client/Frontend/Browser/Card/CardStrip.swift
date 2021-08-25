@@ -11,8 +11,10 @@ private struct CardStrip<Model: CardModel>: View {
     @ObservedObject var model: Model
     let onLongPress: (String) -> Void
 
+    @EnvironmentObject var cardStripModel: CardStripModel
+
     var body: some View {
-        LazyHStack(spacing: 32) {
+        LazyHStack(spacing: 12) {
             ForEach(model.allDetails.indices, id: \.self) { index in
                 let details = model.allDetails[index]
                 CompactCardContent(details: details)
@@ -21,14 +23,21 @@ private struct CardStrip<Model: CardModel>: View {
                     .onLongPressGesture {
                         onLongPress(model.allDetails[index].id)
                     }
+                    .gesture(
+                        DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                            .onChanged { gesture in
+                                print(gesture.translation.width)
+                                cardStripModel.selectTabForDrag(distance: gesture.translation.width)
+                            }
+                    )
             }
-        }.padding().frame(height: 275)
+        }.padding(.vertical)
     }
 }
 
 private struct CardStripButtonSpec: ViewModifier {
     func body(content: Content) -> some View {
-        content.frame(width: CardUX.DefaultCardSize / 2, height: 160)
+        content.frame(width: 160, height: CardUX.DefaultCardSize / 3)
             .background(Color.DefaultBackground)
             .clipShape(Capsule())
             .shadow(radius: CardUX.ShadowRadius).padding(.leading, 20)
@@ -37,6 +46,7 @@ private struct CardStripButtonSpec: ViewModifier {
 
 class CardStripModel: ObservableObject {
     @Published var isVisible: Bool = true
+    let tabManager: TabManager
 
     func setVisible(to state: Bool) {
         withAnimation {
@@ -48,6 +58,23 @@ class CardStripModel: ObservableObject {
         withAnimation {
             isVisible.toggle()
         }
+    }
+
+    func selectTabForDrag(distance: CGFloat) {
+        let distance = abs(distance)
+        let distanceToNextTab = 25
+        let index = Int(distance / distanceToNextTab)
+        let tabs = tabManager.isIncognito ? tabManager.privateTabs : tabManager.normalTabs
+
+        if index > tabs.count - 1 {
+            tabManager.select(tabs[tabs.count - 1])
+        } else {
+            tabManager.select(tabs[index])
+        }
+    }
+
+    init(tabManager: TabManager) {
+        self.tabManager = tabManager
     }
 }
 
@@ -73,28 +100,30 @@ struct CardStripView: View {
                     }
                 }
             } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        VStack(spacing: 6) {
-                            if cardStripModel.isVisible {
-                                ToggleSpacesButton(showingSpaces: $showingSpaces)
+                VStack(alignment: .leading) {
+                    HStack(spacing: 6) {
+                        if cardStripModel.isVisible {
+                            ToggleSpacesButton(showingSpaces: $showingSpaces)
+                            NewTabButton(onNewTab: {
+                                let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                bvc.openLazyTab(openedFrom: .openTab(tabModel.manager.selectedTab))
+                            })
+                        }
 
-                                NewTabButton(onNewTab: {
-                                    let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                    bvc.openLazyTab(openedFrom: .openTab(tabModel.manager.selectedTab))
-                                })
-                            }
+                        DismissButton {
+                            cardStripModel.toggleVisible()
+                        }
+                    }
+                    .modifier(CardStripButtonSpec())
+                    .padding(.top)
+                    .onTapGesture {
+                        cardStripModel.toggleVisible()
+                    }
 
-                            DismissButton {
-                                cardStripModel.toggleVisible()
-                            }
-                        }.modifier(CardStripButtonSpec())
-                            .onTapGesture {
-                                cardStripModel.toggleVisible()
-                            }
-
+                    ScrollView(.horizontal, showsIndicators: false) {
                         if showingSpaces && spaceModel.allDetails.count > 0 {
                             CardStrip(model: spaceModel, onLongPress: { _ in })
+                                .environmentObject(cardStripModel)
                         }
 
                         CardStrip(
@@ -107,12 +136,15 @@ struct CardStripView: View {
                                     })!
                                 self.sitesModel.refresh(urls: urls)
                             })
+                            .environmentObject(cardStripModel)
                     }
                 }
             }
         }.onAppear {
             tabModel.onDataUpdated()
-        }.frame(maxWidth: .infinity)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal)
     }
 }
 
