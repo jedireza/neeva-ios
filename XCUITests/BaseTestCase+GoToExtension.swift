@@ -27,7 +27,7 @@ extension BaseTestCase {
 
     /// Launches from tab page
     func goToTabTray() {
-        waitForExistence(app.buttons["Show Tabs"])
+        waitForExistence(app.buttons["Show Tabs"], timeout: 30)
         app.buttons["Show Tabs"].tap()
 
         waitForExistence(app.buttons["Done"], timeout: 3)

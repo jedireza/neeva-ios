@@ -92,7 +92,7 @@ class HistoryTests: BaseTestCase {
 
         // The Closed Tabs list should contain the info of the website just closed
         waitForExistence(app.tables["Recently Closed Tabs List"], timeout: 3)
-        XCTAssertTrue(app.tables.cells.staticTexts[closedWebPageLabel].exists)
+        XCTAssertTrue(app.tables.cells.staticTexts["The Book of Mozilla"].exists)
         app.buttons["History Panel"].tap()
         app.buttons["Done"].tap()
 

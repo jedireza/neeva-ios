@@ -32,16 +32,19 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
 
     var leadingConstraint: Constraint? = nil
     let gridModel = GridModel()
+    let toolbarModel: SwitcherToolbarModel
 
-    init(bvc: BrowserViewController) {
+    init(bvc: BrowserViewController, toolbarModel: SwitcherToolbarModel) {
         let tabGroupManager = TabGroupManager(tabManager: bvc.tabManager)
+        self.toolbarModel = toolbarModel
+        
         super.init(
             rootView: Content(
                 tabCardModel: TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager),
                 tabGroupCardModel: TabGroupCardModel(manager: tabGroupManager),
                 spaceCardModel: SpaceCardModel(bvc: bvc),
                 gridModel: gridModel,
-                toolbarModel: SwitcherToolbarModel(tabManager: bvc.tabManager, openLazyTab: { bvc.openLazyTab(openedFrom: .tabTray) })
+                toolbarModel: toolbarModel
             )
         )
 

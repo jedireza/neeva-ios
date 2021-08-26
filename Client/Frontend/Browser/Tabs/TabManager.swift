@@ -448,8 +448,10 @@ class TabManager: NSObject, ObservableObject {
 
         if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
             selectTab(mostRecentTab)
-        } else if !FeatureFlag[.emptyTabTray] || isIncognito { // no empty tab tray in incognito
-            selectTab(addTab(isPrivate: isIncognito))
+        } else if isIncognito { // no empty tab tray in incognito
+            bvc.openLazyTab(openedFrom: .tabTray)
+        } else if !FeatureFlag[.emptyTabTray] {
+            select(addTab(isPrivate: false))
         } else {
             let placeholderTab = Tab(bvc: bvc, configuration: configuration, isPrivate: isIncognito)
 

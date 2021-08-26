@@ -12,7 +12,8 @@ private let secondWebsite = (
 
 class TabMenuTests: BaseTestCase {
     func testCloseNormalTabFromTab() {
-        openTwoWebsites()
+        openURL(firstWebsite.url)
+        openURLInNewTab(secondWebsite.url)
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
         app.buttons["Show Tabs"].press(forDuration: 1)
@@ -29,7 +30,8 @@ class TabMenuTests: BaseTestCase {
     }
 
     func testCloseAllNormalTabsFromTab() {
-        openTwoWebsites()
+        openURL(firstWebsite.url)
+        openURLInNewTab(secondWebsite.url)
         closeAllTabs()
         goToTabTray()
 
@@ -41,7 +43,7 @@ class TabMenuTests: BaseTestCase {
 
     func testCloseIncognitoTabFromTab() {
         toggleIncognito()
-        openTwoWebsites()
+        openURLInNewTab(secondWebsite.url)
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
         app.buttons["Show Tabs"].press(forDuration: 1)
@@ -53,17 +55,15 @@ class TabMenuTests: BaseTestCase {
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            getTabs().firstMatch.label, firstWebsite.tabName,
+            getTabs().firstMatch.label, "Example Domain, Tab",
             "Expected label of remaining tab is not correct")
     }
 
     func testCloseAllIncognitoTabsFromTab() {
         toggleIncognito()
-        openTwoWebsites()
-        closeAllTabs()
-        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
-        toggleIncognito()
+        openURLInNewTab(secondWebsite.url)
 
+        closeAllTabs()
         goToTabTray()
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
@@ -73,8 +73,10 @@ class TabMenuTests: BaseTestCase {
     }
 
     func testCloseAllNormalTabsFromSwitcher() {
-        openTwoWebsites()
+        openURL(firstWebsite.url)
+        openURLInNewTab(secondWebsite.url)
         goToTabTray()
+
         closeAllTabs(fromTabSwitcher: true)
         goToTabTray()
 
@@ -86,23 +88,15 @@ class TabMenuTests: BaseTestCase {
 
     func testCloseAllIncognitoTabsFromSwitcher() {
         toggleIncognito()
-        openTwoWebsites()
+        openURLInNewTab(secondWebsite.url)
         goToTabTray()
+
         closeAllTabs(fromTabSwitcher: true)
-        toggleIncognito()
         goToTabTray()
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
             getTabs().firstMatch.label, "Home, Tab",
             "Expected label of remaining tab is not correct")
-    }
-}
-
-extension BaseTestCase {
-    func openTwoWebsites() {
-        // Open two tabs
-        openURL(firstWebsite.url)
-        openURLInNewTab(secondWebsite.url)
     }
 }

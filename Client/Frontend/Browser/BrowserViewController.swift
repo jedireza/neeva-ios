@@ -53,8 +53,8 @@ class BrowserViewController: UIViewController {
 
     let chromeModel = TabChromeModel()
     lazy var cardGridViewController: CardGridViewController = { [unowned self] in
-        let controller = CardGridViewController(bvc: self)
-
+        let controller = CardGridViewController(bvc: self,
+                                                toolbarModel: SwitcherToolbarModel(tabManager: tabManager, openLazyTab: { openLazyTab(openedFrom: .tabTray) }))
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -719,6 +719,7 @@ class BrowserViewController: UIViewController {
 
     public func hideZeroQuery() {
         chromeModel.setEditingLocation(to: false)
+        zeroQueryModel.reset(bvc: self)
 
         DispatchQueue.main.async {
             self.tabContentHost.updateContent(.hideZeroQuery)

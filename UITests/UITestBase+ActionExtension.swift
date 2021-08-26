@@ -38,9 +38,17 @@ extension UITestBase {
             goToAddressBar()
         }
 
-        tester().enterText(intoCurrentFirstResponder: url)
-        tester().enterText(intoCurrentFirstResponder: "\n")
-        tester().waitForAbsenceOfView(withAccessibilityIdentifier: "address")
+        UIPasteboard.general.string = url
+
+        if tester().viewExistsWithLabel("Cancel") {
+            tester().longPressView(withAccessibilityIdentifier: "address", duration: 1)
+        } else {
+            tester().longPressView(withAccessibilityLabel: "Address Bar", duration: 1)
+        }
+
+        tester().waitForView(withAccessibilityLabel: "Paste & Go")
+        tester().tapView(withAccessibilityLabel: "Paste & Go")
+        tester().waitForAbsenceOfView(withAccessibilityLabel: "Neeva pasted from XCUITests-Runner")
     }
 
     // MARK: - Data

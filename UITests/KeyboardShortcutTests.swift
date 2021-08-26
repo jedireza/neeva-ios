@@ -68,6 +68,7 @@ class KeyboardShortcutTests: UITestBase {
     // MARK: UI
     func testSelectLocationBarKeyCommand() {
         openURL()
+
         bvc.selectLocationBarKeyCommand()
         openURL(openAddressBar: false)
         
@@ -88,7 +89,7 @@ class KeyboardShortcutTests: UITestBase {
         bvc.newTabKeyCommand()
 
         // turn lazy tab into real tab by opening URL
-        openURL("example.com")
+        openURL()
         reset(tester: tester())
     }
 
@@ -96,7 +97,7 @@ class KeyboardShortcutTests: UITestBase {
         bvc.newPrivateTabKeyCommand()
 
         // turn lazy tab into real tab by opening URL
-        openURL("example.com")
+        openURL()
 
         XCTAssert(bvc.tabManager.selectedTab?.isIncognito == true)
         reset(tester: tester())

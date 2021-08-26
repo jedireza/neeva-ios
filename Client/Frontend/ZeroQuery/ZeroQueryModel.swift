@@ -146,11 +146,15 @@ class ZeroQueryModel: ObservableObject {
             return false
         }
         tabManager.select(tabManager.addTab(URLRequest(url: url), isPrivate: isPrivate))
-        reset()
+        reset(bvc: nil, createdLazyTab: true)
         return true
     }
 
-    public func reset() {
+    public func reset(bvc: BrowserViewController?, createdLazyTab: Bool = false) {
+        if let bvc = bvc, bvc.tabManager.isIncognito, isLazyTab && !createdLazyTab {
+            bvc.cardGridViewController.toolbarModel.onToggleIncognito()
+        }
+
         isLazyTab = false
         openedFrom = nil
     }

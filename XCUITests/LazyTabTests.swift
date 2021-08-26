@@ -96,4 +96,59 @@ class LazyTabTests: BaseTestCase {
         goToTabTray()
         XCTAssertEqual(getTabs().count, 2)
     }
+
+    // MARK: Incognito Mode
+    func testNoTabAddedWhenCancelingNewTabFromIncognito() {
+        goToTabTray()
+        toggleIncognito(shouldOpenURL: false)
+
+        waitForExistence(app.buttons["Cancel"])
+        app.buttons["Cancel"].tap()
+
+        // confirms that the tab tray is open and that the non-incognito tab is shown
+        XCTAssertEqual(
+            getTabs().firstMatch.label, "Home, Tab",
+            "Expected label of remaining tab is not correct")
+    }
+
+    func testLazyTabCreatedFromIncognito() {
+        openURL(path(forTestPage: "test-mozilla-book.html"))
+        goToTabTray()
+        toggleIncognito()
+
+        goToTabTray()
+
+        // confirms incognito tab was created
+        XCTAssertEqual(
+            getTabs().firstMatch.label, "Example Domain, Tab",
+            "Expected label of remaining tab is not correct")
+
+        toggleIncognito()
+
+        // confirms that non-incognito tab is shown
+        XCTAssertEqual(
+            getTabs().firstMatch.label, "The Book of Mozilla, Tab",
+            "Expected label of remaining tab is not correct")
+    }
+
+    func testLazyTabNotCreatedWhenIncognitoTabOpen() {
+        // create normal tab and open incognito tab
+        openURL(path(forTestPage: "test-mozilla-book.html"))
+        goToTabTray()
+        toggleIncognito()
+
+        // switch back to normal mode
+        goToTabTray()
+        toggleIncognito()
+
+        // switch back to incognito mode
+        goToTabTray()
+        toggleIncognito(closeTabTray: false)
+
+        // confirms that non-incognito tab is shown
+        XCTAssert(!app.buttons["Cancel"].exists)
+        XCTAssertEqual(
+            getTabs().firstMatch.label, "Example Domain, Tab",
+            "Expected label of remaining tab is not correct")
+    }
 }

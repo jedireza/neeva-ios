@@ -174,7 +174,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
             }
         case .hideZeroQuery:
             model.currentContentUI = model.webContainerType
-            self.zeroQueryModel.reset()
+            self.zeroQueryModel.reset(bvc: nil)
         }
     }
 }
