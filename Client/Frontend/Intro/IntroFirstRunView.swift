@@ -30,7 +30,7 @@ struct IntroFirstRunView: View {
                     .roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 28 : 32)
                 )
                 .foregroundColor(Color.ui.gray20)
-                .padding(.top, 40)
+                .padding(.top, 10)
             }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Neeva. Ad-free private search that puts you first")
@@ -86,7 +86,7 @@ struct IntroFirstRunView: View {
         }
         .padding(35)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.brand.beige)
+        .background(Color.brand.offwhite)
         .ignoresSafeArea(.all)
         .colorScheme(.light)
         .onAppear(perform: logImpression)

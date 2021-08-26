@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import AuthenticationServices
 import Foundation
 import Shared
 import SnapKit
@@ -14,7 +15,7 @@ enum FirstRunButtonActions {
     case skipToBrowser
 }
 
-class IntroViewController: UIViewController {
+class IntroViewController: UIViewController, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     private lazy var welcomeCard = UIView()
 
     // Closure delegate
@@ -57,6 +58,7 @@ class IntroViewController: UIViewController {
             self.visitSigninPage?()
         case .signupWithApple:
             // XXX
+            doSignupWithApple()
             break
         case .signupWithOther:
             ClientLogger.shared.logCounter(
@@ -79,6 +81,39 @@ class IntroViewController: UIViewController {
         }
         addSubSwiftUIView(IntroFirstRunView(buttonAction: buttonAction), to: welcomeCard)
         setupWelcomeCard()
+    }
+
+    private func doSignupWithApple() {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        switch authorization.credential {
+        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+            // Create an account in your system.
+            let userIdentifier = appleIDCredential.user
+            let fullName = appleIDCredential.fullName
+            let email = appleIDCredential.email
+
+            print("uid: \(userIdentifier), name: \(String(describing: fullName)), email: \(String(describing: email))")
+        default:
+            break
+        }
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print("Sign up with Apple failed: \(error)")
     }
 }
 
