@@ -80,27 +80,27 @@ struct CompactCard<Details>: View where Details: CardDetails {
                         isSelected: showsSelection && details.isSelected,
                         thumbnailDrawsHeader: details.thumbnailDrawsHeader)
                 )
+                .if(let: details.closeButtonImage) { buttonImage, view in
+                    view
+                        .overlay(
+                            Button(action: details.onClose) {
+                                Image(uiImage: buttonImage).resizable().renderingMode(.template)
+                                    .foregroundColor(.secondaryLabel)
+                                    .padding(4)
+                                    .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                                    .padding(5)
+                                    .accessibilityLabel("Close \(details.title)")
+                                    .padding(.trailing, 4)
+                            },
+                            alignment: .trailing
+                        )
+                }
             }
         }
         .accessibilityLabel(details.accessibilityLabel)
         .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
         .accessibilityAddTraits(.isButton)
         .onDrop(of: ["public.url", "public.text"], delegate: details)
-        .if(let: details.closeButtonImage) { buttonImage, view in
-            view
-                .overlay(
-                    Button(action: details.onClose) {
-                        Image(uiImage: buttonImage).resizable().renderingMode(.template)
-                            .foregroundColor(.secondaryLabel)
-                            .padding(4)
-                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                            .padding(5)
-                            .accessibilityLabel("Close \(details.title)")
-                            .padding(.top, 8)
-                    },
-                    alignment: .topTrailing
-                )
-        }
         .scaleEffect(isPressed ? 0.95 : 1)
         .padding(.bottom)
         .frame(minWidth: showThumbnail ? 200 : 0, maxWidth: 350)
