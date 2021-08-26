@@ -11,6 +11,7 @@ enum CardUX {
     static let CornerRadius: CGFloat = 12
     static let ButtonSize: CGFloat = 28
     static let CompactCardHeight: CGFloat = 44
+    static let CompactCardThumbnailHeight: CGFloat = 200
     static let CompactCardHeightHover: CGFloat = 32
     static let FaviconSize: CGFloat = 18
     static let HeaderSize: CGFloat = ButtonSize + 1

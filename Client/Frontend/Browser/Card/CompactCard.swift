@@ -3,16 +3,21 @@
 import SwiftUI
 
 struct CompactCardContent<Details>: View where Details: CardDetails {
+    @EnvironmentObject var cardStripModel: CardStripModel
     @ObservedObject var details: Details
-    @State var inHoverMode = true
+
+    var isHover = false
+    var alwaysShowThumbnail: Bool
 
     var body: some View {
-        CompactCard(details: details, inHoverMode: false)
-            .onHover { isHover in
-                withAnimation {
-                    inHoverMode = isHover
-                }
-            }
+        CompactCard(details: details, showThumbnail: isHover || alwaysShowThumbnail)
+            .gesture(
+                DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                    .onChanged { gesture in
+                        print(gesture.translation.width)
+                        cardStripModel.selectTabForDrag(distance: gesture.translation.width)
+                    }
+            )
             .padding()
     }
 }
@@ -24,7 +29,7 @@ struct CompactCard<Details>: View where Details: CardDetails {
 
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
-    var inHoverMode = true
+    var showThumbnail = true
 
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
 
@@ -34,18 +39,20 @@ struct CompactCard<Details>: View where Details: CardDetails {
             selectionCompletion()
         } label: {
             VStack {
-                if inHoverMode {
+                if showThumbnail {
                     GeometryReader { geom in
                         details.thumbnail
                             .frame(
                                 width: max(0, geom.size.width),
-                                height: max(
-                                    0,
-                                    geom.size.height
-                                        - (details.thumbnailDrawsHeader ? 0 : CardUX.HeaderSize)),
-                                alignment: .top
+                                height: CardUX.CompactCardThumbnailHeight
                             )
                             .clipped()
+                            .cornerRadius(CardUX.CornerRadius)
+                            .modifier(
+                                BorderTreatment(
+                                    isSelected: showsSelection && details.isSelected,
+                                    thumbnailDrawsHeader: details.thumbnailDrawsHeader)
+                            )
                     }
                 }
 
@@ -67,18 +74,17 @@ struct CompactCard<Details>: View where Details: CardDetails {
             	}
             	.padding()
                 .frame(height: CardUX.CompactCardHeight)
-            	.background(Color.background)
+                .background(Color.background.cornerRadius(CardUX.CornerRadius))
+                .modifier(
+                    BorderTreatment(
+                        isSelected: showsSelection && details.isSelected,
+                        thumbnailDrawsHeader: details.thumbnailDrawsHeader)
+                )
             }
         }
         .accessibilityLabel(details.accessibilityLabel)
         .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
         .accessibilityAddTraits(.isButton)
-        .cornerRadius(CardUX.CornerRadius)
-        .modifier(
-            BorderTreatment(
-                isSelected: showsSelection && details.isSelected,
-                thumbnailDrawsHeader: details.thumbnailDrawsHeader)
-        )
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in
             view
@@ -90,11 +96,14 @@ struct CompactCard<Details>: View where Details: CardDetails {
                             .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
                             .padding(5)
                             .accessibilityLabel("Close \(details.title)")
+                            .padding(.top, 8)
                     },
                     alignment: .topTrailing
                 )
         }
         .scaleEffect(isPressed ? 0.95 : 1)
         .padding(.bottom)
+        .frame(minWidth: showThumbnail ? 200 : 0, maxWidth: 350)
+        .transition(.fade)
     }
 }

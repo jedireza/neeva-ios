@@ -7,7 +7,6 @@ import SwiftUI
 
 public enum CardControllerUX {
     static let BottomPadding: CGFloat = 50
-    static let Height: CGFloat = 160
     static let HandleWidth: CGFloat = 50
 }
 
@@ -83,13 +82,16 @@ struct CardStripContent: View {
     var width: CGFloat
 
     var body: some View {
-        CardStripView()
-            .environmentObject(tabCardModel)
-            .environmentObject(spaceCardModel)
-            .environmentObject(sitesCardModel)
-            .environmentObject(cardStripModel)
-            .offset(x: cardStripModel.isVisible ? 0 : width - 50)
-            .frame(height: CardControllerUX.Height)
+        VStack {
+            Spacer()
+
+            CardStripView()
+                .environmentObject(tabCardModel)
+                .environmentObject(spaceCardModel)
+                .environmentObject(sitesCardModel)
+                .environmentObject(cardStripModel)
+                .offset(x: cardStripModel.isVisible ? 0 : width - 50)
+        }
     }
 
     init(bvc: BrowserViewController, width: CGFloat) {

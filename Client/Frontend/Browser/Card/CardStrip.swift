@@ -9,35 +9,37 @@ import SwiftUI
 
 private struct CardStrip<Model: CardModel>: View {
     @ObservedObject var model: Model
+    @State var isHover: Bool = false
     let onLongPress: (String) -> Void
 
-    @EnvironmentObject var cardStripModel: CardStripModel
+    var alwaysShowThumbnail: Bool
 
     var body: some View {
         LazyHStack(spacing: 12) {
             ForEach(model.allDetails.indices, id: \.self) { index in
                 let details = model.allDetails[index]
-                CompactCardContent(details: details)
+                CompactCardContent(details: details, isHover: isHover, alwaysShowThumbnail: alwaysShowThumbnail)
                     .environment(\.selectionCompletion) {}
                     .environment(\.cardSize, CardUX.DefaultCardSize)
                     .onLongPressGesture {
                         onLongPress(model.allDetails[index].id)
                     }
-                    .gesture(
-                        DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                            .onChanged { gesture in
-                                print(gesture.translation.width)
-                                cardStripModel.selectTabForDrag(distance: gesture.translation.width)
-                            }
-                    )
             }
-        }.padding(.vertical)
+        }
+        .padding(.vertical)
+        .frame(height: alwaysShowThumbnail || isHover ? CardUX.CompactCardHeight + CardUX.CompactCardThumbnailHeight + 100 : CardUX.CompactCardHeight + 48)
+        .onHover { isHover in
+            withAnimation {
+                self.isHover = isHover
+            }
+        }
     }
 }
 
 private struct CardStripButtonSpec: ViewModifier {
     func body(content: Content) -> some View {
-        content.frame(width: 160, height: CardUX.DefaultCardSize / 3)
+        content
+            .frame(width: 350, height: 100)
             .background(Color.DefaultBackground)
             .clipShape(Capsule())
             .shadow(radius: CardUX.ShadowRadius).padding(.leading, 20)
@@ -46,6 +48,7 @@ private struct CardStripButtonSpec: ViewModifier {
 
 class CardStripModel: ObservableObject {
     @Published var isVisible: Bool = true
+
     let tabManager: TabManager
 
     func setVisible(to state: Bool) {
@@ -83,8 +86,10 @@ struct CardStripView: View {
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var sitesModel: SiteCardModel
     @EnvironmentObject var cardStripModel: CardStripModel
+
     @State var showingSpaces: Bool = false
     @State var showingSites: Bool = false
+    @State var alwaysShowThumbnail: Bool = false
 
     var body: some View {
         ZStack {
@@ -96,33 +101,41 @@ struct CardStripView: View {
                                 showingSites.toggle()
                             }
                         }.modifier(CardStripButtonSpec())
-                        CardStrip(model: self.sitesModel, onLongPress: { _ in })
+                        CardStrip(model: self.sitesModel, onLongPress: { _ in }, alwaysShowThumbnail: alwaysShowThumbnail)
                     }
                 }
             } else {
-                VStack(alignment: .leading) {
-                    HStack(spacing: 6) {
-                        if cardStripModel.isVisible {
-                            ToggleSpacesButton(showingSpaces: $showingSpaces)
-                            NewTabButton(onNewTab: {
-                                let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                bvc.openLazyTab(openedFrom: .openTab(tabModel.manager.selectedTab))
-                            })
+                VStack(alignment: .leading, spacing: 0) {
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 6) {
+                            if cardStripModel.isVisible {
+                                ToggleSpacesButton(showingSpaces: $showingSpaces)
+                                NewTabButton(onNewTab: {
+                                    let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                    bvc.openLazyTab(openedFrom: .openTab(tabModel.manager.selectedTab))
+                                })
+                            }
+
+                            DismissButton {
+                                cardStripModel.toggleVisible()
+                            }
                         }
 
-                        DismissButton {
-                            cardStripModel.toggleVisible()
-                        }
+                        Toggle("Always Show Thumbnail", isOn: $alwaysShowThumbnail)
+                            .padding(.leading, 6)
                     }
+                    .padding(.leading, 24)
+                    .padding(.trailing, 32)
                     .modifier(CardStripButtonSpec())
-                    .padding(.top)
                     .onTapGesture {
                         cardStripModel.toggleVisible()
                     }
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         if showingSpaces && spaceModel.allDetails.count > 0 {
-                            CardStrip(model: spaceModel, onLongPress: { _ in })
+                            CardStrip(model: spaceModel, onLongPress: { _ in }, alwaysShowThumbnail: alwaysShowThumbnail)
                                 .environmentObject(cardStripModel)
                         }
 
@@ -135,7 +148,7 @@ struct CardStripView: View {
                                         $0.url
                                     })!
                                 self.sitesModel.refresh(urls: urls)
-                            })
+                            }, alwaysShowThumbnail: alwaysShowThumbnail)
                             .environmentObject(cardStripModel)
                     }
                 }
