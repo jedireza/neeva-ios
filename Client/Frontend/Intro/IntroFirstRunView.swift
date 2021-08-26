@@ -10,17 +10,24 @@ struct IntroFirstRunView: View {
 
     var body: some View {
         VStack {
+            HStack {
+                Spacer()
+                Button(action: { buttonAction(.skipToBrowser) }) {
+                    Symbol(decorative: .xmark, size: 20, weight: .semibold)
+                        .foregroundColor(Color.ui.gray60)
+                }
+            }
+
             Spacer()
             VStack(alignment: .leading) {
-                Image("neeva-letter-logo")
+                //Image("neeva-letter-logo")
                 VStack(alignment: .leading) {
-                    Text("Ad-free,")
-                    Text("private search")
-                    Text("that puts you")
-                    Text("first.")
+                    Text("Welcome to Neeva,")
+                    Text("the only ad-free,")
+                    Text("private search engine")
                 }
                 .font(
-                    .roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48)
+                    .roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 28 : 32)
                 )
                 .foregroundColor(Color.ui.gray20)
                 .padding(.top, 40)
@@ -29,45 +36,51 @@ struct IntroFirstRunView: View {
             .accessibilityLabel("Neeva. Ad-free private search that puts you first")
             .accessibilityAddTraits(.isHeader)
 
+            Image("woman-at-cafe")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+
             VStack {
-                Button(action: { buttonAction(.signin) }) {
+                Button(action: { buttonAction(.signupWithApple) }) {
                     HStack {
-                        Text("Sign In")
                         Spacer()
-                        Symbol(decorative: .arrowRight, size: 22)
+                        Image("apple")
+                            .renderingMode(.template)
+                        Text("Sign up with Apple")
+                        Spacer()
                     }
-                    .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
-                    .foregroundColor(Color.brand.charcoal)
+                    .foregroundColor(Color.white)
+                    .padding(EdgeInsets(top: 23, leading: 0, bottom: 23, trailing: 0))
                 }
-                .background(Color.brand.polar)
+                .background(Color.black)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
                 .shadow(color: Color.ui.gray70, radius: 1, x: 0, y: 1)
-                .padding(.top, 40)
+                .padding(.top, 20)
 
-                Button(action: { buttonAction(.signup) }) {
+                Button(action: { buttonAction(.signupWithOther) }) {
                     HStack {
-                        Text("Sign Up")
                         Spacer()
-                        Symbol(decorative: .arrowUpRight, size: 22)
+                        Text("Other Options")
+                            .foregroundColor(.brand.white)
+                        Spacer()
                     }
-                    .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
                     .foregroundColor(.brand.white)
+                    .padding(EdgeInsets(top: 23, leading: 0, bottom: 23, trailing: 0))
                 }
                 .background(Color.brand.blue)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
                 .shadow(color: Color.ui.gray70, radius: 1, x: 0, y: 1)
-                .padding(.top, 20)
+                .padding(.top, 10)
             }
             .font(.roobert(.semibold, size: 18))
 
-            Button(action: { buttonAction(.skipToBrowser) }) {
-                Text("Skip to browser without Neeva search")
-                    .underline()
-                    .font(.roobert(size: 16))
-                    .foregroundColor(Color.ui.gray20)
+            Button(action: { buttonAction(.signin) }) {
+                (Text("Already have an account? ").foregroundColor(Color.ui.gray50) +
+                    Text("Log In").foregroundColor(Color.ui.gray20).fontWeight(.medium))
+                    .font(.system(size: 14))
                     .multilineTextAlignment(.center)
             }
-            .padding(.top, 50)
+            .padding(.top, 26)
 
             Spacer()
         }

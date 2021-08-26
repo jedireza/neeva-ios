@@ -9,7 +9,8 @@ import UIKit
 
 enum FirstRunButtonActions {
     case signin
-    case signup
+    case signupWithApple
+    case signupWithOther
     case skipToBrowser
 }
 
@@ -49,17 +50,20 @@ class IntroViewController: UIViewController {
 
     private func buttonAction(_ option: FirstRunButtonActions) {
         switch option {
-        case FirstRunButtonActions.signin:
+        case .signin:
             ClientLogger.shared.logCounter(
                 .FirstRunSignin, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
             self.visitSigninPage?()
-        case FirstRunButtonActions.signup:
+        case .signupWithApple:
+            // XXX
+            break
+        case .signupWithOther:
             ClientLogger.shared.logCounter(
                 .FirstRunSignUp, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
             self.visitHomePage?()
-        case FirstRunButtonActions.skipToBrowser:
+        case .skipToBrowser:
             ClientLogger.shared.logCounter(
                 .FirstRunSkipToBrowser, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
