@@ -39,6 +39,7 @@ extension BrowserViewController: ToolbarDelegate {
                     OverflowMenuViewController(
                         onDismiss: self.hideOverlaySheetViewController,
                         chromeModel: self.chromeModel,
+                        locationModel: self.locationModel,
                         changedUserAgent: self.tabManager.selectedTab?.changedUserAgent,
                         menuAction: { action in
                             self.perform(overflowMenuAction: action, targetButtonView: nil)

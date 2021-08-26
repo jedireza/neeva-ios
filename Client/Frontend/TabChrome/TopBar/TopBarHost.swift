@@ -72,8 +72,7 @@ struct TopBarContent: View {
             },
             onLongPressOverflowButton: {
                 chromeModel.topBarDelegate?.urlBarDidLongPressOverflow(targetButtonView: $0)
-            },
-            changedUserAgent: chromeModel.topBarDelegate?.tabManager.selectedTab?.changedUserAgent
+            }
         )
         .environmentObject(suggestionModel)
         .environmentObject(model)

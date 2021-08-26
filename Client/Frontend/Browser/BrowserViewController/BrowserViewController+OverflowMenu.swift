@@ -40,7 +40,20 @@ extension BrowserViewController {
                     overlayParent: self)
             }
         case .readingMode:
-            break
+            if let tab = tabManager.selectedTab,
+               let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode,
+               readerMode.state != .unavailable,
+               FeatureFlag[.readingMode]
+            {
+                switch (readerMode.state) {
+                case .available:
+                    enableReaderMode()
+                case .active:
+                    disableReaderMode()
+                case .unavailable:
+                    break
+                }
+            }
         case .desktopSite:
             if let tab = tabManager.selectedTab,
                 let url = tab.url

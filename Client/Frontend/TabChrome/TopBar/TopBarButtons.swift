@@ -83,6 +83,7 @@ struct TopBarOverflowMenuButton: View {
     @State private var action: OverflowMenuAction?
     @State private var targetButtonView: UIView!
     @EnvironmentObject private var chromeModel: TabChromeModel
+    @EnvironmentObject private var locationModel: LocationViewModel
 
     var body: some View {
         TabToolbarButtons.OverflowMenu(
@@ -117,6 +118,7 @@ struct TopBarOverflowMenuButton: View {
                 .padding(.bottom, 16)
                 .environment(\.isIncognito, isIncognito)
                 .environmentObject(chromeModel)
+                .environmentObject(locationModel)
             }.frame(minWidth: 340, minHeight: 285)
         }
     }

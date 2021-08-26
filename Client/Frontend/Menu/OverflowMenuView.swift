@@ -40,6 +40,7 @@ public struct OverflowMenuView: View {
     private let changedUserAgent: Bool
 
     @EnvironmentObject var chromeModel: TabChromeModel
+    @EnvironmentObject var locationModel: LocationViewModel
 
     public init(
         changedUserAgent: Bool = false,
@@ -107,6 +108,23 @@ public struct OverflowMenuView: View {
 
                     Color.groupedBackground.frame(height: 1)
 
+                    if locationModel.readerMode != .unavailable && FeatureFlag[.readingMode] {
+                        NeevaMenuRowButtonView(
+                            label: locationModel.readerMode == .available
+                                ? "Open Reading Mode" : "Close Reading Mode",
+                            symbol: .docPlaintext
+                        ) {
+                            menuAction(.readingMode)
+                        }
+                        .accessibilityIdentifier(
+                            locationModel.readerMode == .available
+                                ? "OverflowMenu.OpenReadingMode"
+                                : "OverflowMenu.CloseReadingMode"
+                        )
+
+                        Color.groupedBackground.frame(height: 1)
+                    }
+
                     let hasHomeButton = UIConstants.safeArea.bottom == 0
                     NeevaMenuRowButtonView(
                         label: changedUserAgent == true
@@ -119,6 +137,8 @@ public struct OverflowMenuView: View {
                         menuAction(.desktopSite)
                     }
                     .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
+
+                    Color.groupedBackground.frame(height: 1)
 
                     NeevaMenuRowButtonView(
                         label: "Download Page",

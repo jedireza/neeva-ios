@@ -16,7 +16,6 @@ struct TopBarView: View {
     let onCancel: () -> Void
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
     let onLongPressOverflowButton: (UIView) -> Void
-    let changedUserAgent: Bool?
 
     @State private var shouldInsetHorizontally = false
 
@@ -35,7 +34,8 @@ struct TopBarView: View {
                     ).tapTargetFrame()
                     if FeatureFlag[.overflowMenu] {
                         TopBarOverflowMenuButton(
-                            changedUserAgent: changedUserAgent,
+                            changedUserAgent:
+                                chrome.topBarDelegate?.tabManager.selectedTab?.changedUserAgent,
                             onOverflowMenuAction: onOverflowMenuAction,
                             onLongPress: onLongPressOverflowButton
                         )
@@ -113,8 +113,7 @@ struct TopBarView_Previews: PreviewProvider {
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                     onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
-                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in },
-                    changedUserAgent: false)
+                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in })
                 Spacer()
             }.background(Color.red.ignoresSafeArea())
 
@@ -123,8 +122,7 @@ struct TopBarView_Previews: PreviewProvider {
                     performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
                     onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                     onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
-                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in },
-                    changedUserAgent: false)
+                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in })
                 Spacer()
             }
             .preferredColorScheme(.dark)

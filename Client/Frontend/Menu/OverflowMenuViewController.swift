@@ -9,6 +9,7 @@ struct OverflowMenuRootView: View {
     let menuAction: (OverflowMenuAction) -> Void
     let changedUserAgent: Bool?
     let chromeModel: TabChromeModel
+    let locationModel: LocationViewModel
 
     var body: some View {
         let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
@@ -19,7 +20,9 @@ struct OverflowMenuRootView: View {
                 overlaySheetModel.hide()
             }
             .environmentObject(chromeModel)
-            .overlaySheetIsFixedHeight(isFixedHeight: true).padding(.top, 8)
+            .environmentObject(locationModel)
+            .overlaySheetIsFixedHeight(isFixedHeight: true)
+            .padding(.top, -8)
         }
         .onAppear {
             DispatchQueue.main.async {
@@ -34,6 +37,7 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
     public init(
         onDismiss: @escaping () -> Void,
         chromeModel: TabChromeModel,
+        locationModel: LocationViewModel,
         changedUserAgent: Bool?,
         menuAction: @escaping (OverflowMenuAction) -> Void
     ) {
@@ -42,7 +46,8 @@ class OverflowMenuViewController: UIHostingController<OverflowMenuRootView> {
                 onDismiss: onDismiss,
                 menuAction: menuAction,
                 changedUserAgent: changedUserAgent,
-                chromeModel: chromeModel))
+                chromeModel: chromeModel,
+                locationModel: locationModel))
         self.view.accessibilityViewIsModal = true
     }
 
