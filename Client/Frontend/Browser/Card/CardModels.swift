@@ -69,6 +69,15 @@ class TabCardModel: CardModel, TabEventHandler {
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
     }
+
+    func tab(_ tab: Tab, didChangeURL url: URL) {
+        guard let selectedTab = self.manager.selectedTab, selectedTab == tab else {
+            return
+        }
+
+        ScreenshotHelper().takeDelayedScreenshot(tab)
+        onDataUpdated()
+    }
 }
 
 class SpaceCardModel: CardModel {
