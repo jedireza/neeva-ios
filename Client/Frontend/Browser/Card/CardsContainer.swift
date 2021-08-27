@@ -40,7 +40,7 @@ struct CardsContainer: View {
                         }
                     }
                 }
-                .padding(.top, 20)
+                .padding(.vertical, CardGridUX.GridSpacing)
                 .useEffect(
                     deps: tabModel.selectedTabID, gridModel.isHidden, gridModel.switcherState
                 ) { _, _, _ in
