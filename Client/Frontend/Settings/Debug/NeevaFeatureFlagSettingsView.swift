@@ -3,6 +3,8 @@
 import Shared
 import SwiftUI
 
+private let log = Logger.browser
+
 struct NeevaFeatureFlagSettingsView: View {
     @State var needsRestart = false
     var body: some View {
@@ -106,10 +108,12 @@ private struct TextFlagView: View {
     private let flag: NeevaFeatureFlags.StringFlag
 
     init(flag: NeevaFeatureFlags.StringFlag, onChange: @escaping () -> Void) {
+        log.info("Initializing TextFlagView")
         self.flag = flag
         self.onChange = onChange
-        self.flagValueText = String(NeevaFeatureFlags[flag])
+        self._flagValueText = .init(initialValue: String(NeevaFeatureFlags[flag]))
         self._isOverridden = .init(initialValue: NeevaFeatureFlags.isOverridden(flag))
+        log.info("Done initializing TextFlagView")
     }
 
     var body: some View {
@@ -140,9 +144,11 @@ private struct TextFlagView: View {
     }
 
     func updateState() {
+        log.info("update String flag state")
         self.onChange()
         self.flagValueText = NeevaFeatureFlags[flag]
         self.isOverridden = NeevaFeatureFlags.isOverridden(flag)
+        log.info("done updating String flag state")
     }
 }
 
