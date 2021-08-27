@@ -6,7 +6,7 @@ import SwiftUI
 /// An entry in a space list
 struct SpaceListItem: View {
     let space: Space
-    let icon: SFSymbol
+    let icon: Nicon
     let iconColor: Color
 
     /// - Parameter space: the space to render
@@ -42,7 +42,7 @@ struct SpaceListItem: View {
                     .foregroundColor(.secondaryLabel)
             }
             Spacer(minLength: 0)
-            Symbol(decorative: icon, style: .headingMedium)
+            Symbol(decorative: icon, weight: .semibold, relativeTo: .title3)
                 .tapTargetFrame()
                 .foregroundColor(iconColor)
         }
