@@ -26,20 +26,17 @@ struct TopBarView: View {
         VStack(spacing: 0) {
             HStack(spacing: chrome.inlineToolbar ? 12 : 0) {
                 if chrome.inlineToolbar {
-                    TabToolbarButtons.BackForward(
+                    TabToolbarButtons.BackButton(
                         weight: .regular,
                         onBack: { performTabToolbarAction(.back) },
-                        onForward: { performTabToolbarAction(.forward) },
                         onLongPress: { performTabToolbarAction(.longPressBackForward) }
                     ).tapTargetFrame()
-                    if FeatureFlag[.overflowMenu] {
-                        TopBarOverflowMenuButton(
-                            changedUserAgent:
-                                chrome.topBarDelegate?.tabManager.selectedTab?.changedUserAgent,
-                            onOverflowMenuAction: onOverflowMenuAction,
-                            onLongPress: onLongPressOverflowButton
-                        )
-                    }
+                    TopBarOverflowMenuButton(
+                        changedUserAgent:
+                            chrome.topBarDelegate?.tabManager.selectedTab?.changedUserAgent,
+                        onOverflowMenuAction: onOverflowMenuAction,
+                        onLongPress: onLongPressOverflowButton
+                    )
                     TopBarNeevaMenuButton(
                         onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
                 }
@@ -53,10 +50,6 @@ struct TopBarView: View {
                 .padding(.bottom, (chrome.inlineToolbar ? 8 : 10) - 1)
                 .layoutPriority(1)
                 if chrome.inlineToolbar {
-                    if !FeatureFlag[.shareButtonInOverflowMenu] {
-                        TopBarShareButton(url: location.url, onTap: onShare)
-                            .tapTargetFrame()
-                    }
                     TabToolbarButtons.AddToSpace(
                         weight: .regular, action: { performTabToolbarAction(.addToSpace) }
                     )

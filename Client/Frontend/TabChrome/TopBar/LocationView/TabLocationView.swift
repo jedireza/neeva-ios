@@ -107,17 +107,11 @@ struct TabLocationView: View {
                     if gridModel.isHidden {
                         Group {
                             if model.readerMode != .active, let url = model.url,
-                                !InternalURL.isValid(url: url),
-                                !FeatureFlag[.overflowMenu] || FeatureFlag[.shareButtonInOverflowMenu]
+                                !InternalURL.isValid(url: url)
                             {
                                 LocationViewReloadButton(
                                     buildMenu: buildReloadMenu, state: chromeModel.reloadButton,
                                     onTap: onReload)
-                            }
-                            if chromeModel.isPage, !chromeModel.inlineToolbar,
-                               !FeatureFlag[.overflowMenu] || !FeatureFlag[.shareButtonInOverflowMenu]
-                            {
-                                LocationViewShareButton(url: model.url, onTap: onShare)
                             }
                         }.transition(.opacity)
                     }

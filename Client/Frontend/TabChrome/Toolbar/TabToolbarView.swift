@@ -17,21 +17,19 @@ struct TabToolbarView: View {
                 .frame(height: 0.5)
                 .ignoresSafeArea()
             HStack(spacing: 0) {
-                TabToolbarButtons.BackForward(
+                TabToolbarButtons.BackButton(
                     weight: .medium,
                     onBack: { performAction(.back) },
-                    onForward: { performAction(.forward) },
                     onLongPress: { performAction(.longPressBackForward) }
                 )
-                if FeatureFlag[.overflowMenu] {
-                    TabToolbarButtons.OverflowMenu(
-                        action: {
-                            performAction(.overflow)
-                        },
-                        onLongPress: {
-                            performAction(.longPressOverflow)
-                        })
-                }
+                TabToolbarButtons.OverflowMenu(
+                    weight: .medium,
+                    action: {
+                        performAction(.overflow)
+                    },
+                    onLongPress: {
+                        performAction(.longPressOverflow)
+                    })
                 TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
                 TabToolbarButtons.AddToSpace(
                     weight: .medium, action: { performAction(.addToSpace) })

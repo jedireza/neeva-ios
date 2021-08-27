@@ -8,7 +8,6 @@ import SwiftUI
 
 enum ToolbarAction {
     case back
-    case forward
     case overflow
     case longPressBackForward
     case addToSpace
@@ -26,13 +25,6 @@ extension BrowserViewController: ToolbarDelegate {
                     return
                 }
                 self.tabManager.selectedTab?.goBack()
-
-            case .forward:
-                if self.simulateForwardViewController?.goForward() ?? false {
-                    return
-                }
-
-                self.tabManager.selectedTab?.goForward()
 
             case .overflow:
                 self.showOverlaySheetViewController(

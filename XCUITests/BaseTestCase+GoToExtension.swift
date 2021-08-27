@@ -27,11 +27,9 @@ extension BaseTestCase {
 
     /// Lauches from tab page
     func goToFindOnPage() {
-        waitForExistence(app.buttons["Share"])
-        app.buttons["Share"].tap(force: true)
-
-        waitForExistence(app.buttons["Find on Page"])
-        app.buttons["Find on Page"].tap()
+        goToOverflowMenuButton(label: "Find on Page", shouldDismissOverlay: false) { element in
+            element.tap()
+        }
 
         waitForExistence(app.textFields["FindInPage_TextField"])
     }
@@ -71,11 +69,29 @@ extension BaseTestCase {
         app.tables.cells["Recently Closed"].tap()
     }
 
-    // Launches from tab page, then opens the overflow menu
+    /// Launches from tab page, then opens the overflow menu
     func goToOverflowMenu() {
         waitForExistence(app.buttons["More"], timeout: 30)
         app.buttons["More"].tap(force: true)
 
         waitForExistence(app.buttons["New Tab"])
+    }
+
+    /// Launches overflow menu and interact with a button
+    func goToOverflowMenuButton(
+        label: String,
+        shouldDismissOverlay: Bool = true,
+        action: (XCUIElement) -> Void
+    ) {
+        app.buttons["More"].tap(force: true)
+        waitForExistence(app.buttons[label])
+        action(app.buttons[label])
+        if shouldDismissOverlay {
+            if iPad() {
+                tapCoordinate(at: 1, and: 100)
+            } else {
+                tapCoordinate(at: 5, and: 50)
+            }
+        }
     }
 }

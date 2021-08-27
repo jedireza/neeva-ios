@@ -3,15 +3,6 @@
 import XCTest
 
 class LazyTabTests: BaseTestCase {
-    override func setUp() {
-        // For this test, preset a junk login cookie.
-        if testName == "testNoTabAddedWhenCancelingNewTabFromOverflow" || testName == "testLazyTabCreatedFromOverflow" {
-            launchArguments.append("\(LaunchArguments.EnableFeatureFlags)overflowMenu")
-        }
-
-        super.setUp()
-    }
-
     func testCancelURLBarReturnsToWebsite() {
         openURL()
         waitForExistence(app.staticTexts["Example Domain"])
@@ -54,7 +45,7 @@ class LazyTabTests: BaseTestCase {
     func testNoTabAddedWhenCancelingNewTabFromLongPressTabTrayButton() {
         openURL()
         newTab()
-        
+
         app.buttons["Cancel"].tap()
 
         // Confirms that no tab was created

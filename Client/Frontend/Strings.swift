@@ -35,10 +35,6 @@ extension Strings {
         "Pin to Top Sites", comment: "Pin to Top Sites no Share activity title")
     public static let UnpinFromTopSitesTitleActivity = MZLocalizedString(
         "Unpin from Top Sites", comment: "Unpin from Top Sites Share activity title")
-    public static let ShowReadingModeTitleActivity = MZLocalizedString(
-        "Show Reading Mode", comment: "Show Reading Mode on Share activity title")
-    public static let HideReadingModeTitleActivity = MZLocalizedString(
-        "Hide Reading Mode", comment: "Hide Reading Mode on Share activity title")
 }
 
 // Table date section titles.
@@ -1142,11 +1138,6 @@ extension Strings {
     public static let AppMenuNewIncognitoTabTitleString = MZLocalizedString(
         "Menu.NewIncognitoTabAction.Title", tableName: "Menu", value: "Open New Incognito Tab",
         comment: "Label for the button, displayed in the menu, used to open a new incognito tab.")
-    public static let AppMenuFindInPageTitleString = MZLocalizedString(
-        "Menu.FindInPageAction.Title", tableName: "Menu", value: "Find on Page",
-        comment:
-            "Label for the button, displayed in the menu, used to open the toolbar to search for text within the current page."
-    )
     public static let AppMenuViewDesktopSiteTitleString = MZLocalizedString(
         "Menu.ViewDekstopSiteAction.Title", tableName: "Menu", value: "Request Desktop Site",
         comment:

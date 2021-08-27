@@ -53,37 +53,23 @@ public struct OverflowMenuView: View {
     public var body: some View {
         GroupedStack {
             HStack(spacing: OverflowMenuUX.innerSectionPadding) {
-                OverflowMenuButtonView(label: "Forward", symbol: .arrowForward) {
+                OverflowMenuButtonView(label: .TabToolbarForwardAccessibilityLabel, symbol: .arrowForward) {
                     menuAction(.forward)
                 }
                 .accessibilityIdentifier("OverflowMenu.Forward")
                 .disabled(!chromeModel.canGoForward)
 
-                if FeatureFlag[.shareButtonInOverflowMenu] {
-                    OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                        menuAction(.newTab)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.NewTab")
-                    OverflowMenuButtonView(
-                        label: "Share",
-                        symbol: .squareAndArrowUp
-                    ) {
-                        menuAction(.share)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.Share")
-                } else {
-                    OverflowMenuButtonView(
-                        label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
-                        symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
-                    ) {
-                        menuAction(.reloadStop)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.Reload")
-                    OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                        menuAction(.newTab)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.NewTab")
+                OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                    menuAction(.newTab)
                 }
+                .accessibilityIdentifier("OverflowMenu.NewTab")
+                OverflowMenuButtonView(
+                    label: "Share",
+                    symbol: .squareAndArrowUp
+                ) {
+                    menuAction(.share)
+                }
+                .accessibilityIdentifier("OverflowMenu.Share")
             }
 
             GroupedCell.Decoration {

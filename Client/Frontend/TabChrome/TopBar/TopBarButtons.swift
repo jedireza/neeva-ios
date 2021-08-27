@@ -87,6 +87,7 @@ struct TopBarOverflowMenuButton: View {
 
     var body: some View {
         TabToolbarButtons.OverflowMenu(
+            weight: .medium,
             action: {
                 presenting = true
             },

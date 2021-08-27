@@ -202,6 +202,12 @@ class BaseTestCase: XCTestCase {
         goToTabTray()
         return getTabs().count
     }
+
+    func tapCoordinate(at xCoordinate: Double, and yCoordinate: Double) {
+        let normalized = app.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        let coordinate = normalized.withOffset(CGVector(dx: xCoordinate, dy: yCoordinate))
+        coordinate.tap()
+    }
 }
 
 class IpadOnlyTestCase: BaseTestCase {

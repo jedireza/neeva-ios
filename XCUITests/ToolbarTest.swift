@@ -30,7 +30,9 @@ class ToolbarTests: BaseTestCase {
 
         // Check that the back and forward buttons are disabled
         XCTAssertFalse(app.buttons["Back"].isEnabled)
-        XCTAssertFalse(app.buttons["Forward"].isEnabled)
+        goToOverflowMenuButton(label: "Forward") { element in
+            XCTAssertFalse(element.isEnabled)
+        }
 
         // Navigate to two pages and press back once so that all buttons are enabled in landscape mode.
         openURL(website1["url"]!)
@@ -39,21 +41,27 @@ class ToolbarTests: BaseTestCase {
         let valueMozilla = app.buttons["Address Bar"].value as! String
         XCTAssertEqual(valueMozilla, website1["url"])
         XCTAssertTrue(app.buttons["Back"].isEnabled)
-        XCTAssertFalse(app.buttons["Forward"].isEnabled)
         XCTAssertTrue(app.buttons["Reload"].isEnabled)
+        goToOverflowMenuButton(label: "Forward") { element in
+            XCTAssertFalse(element.isEnabled)
+        }
 
         openURL(website2)
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: website2)
         XCTAssertTrue(app.buttons["Back"].isEnabled)
-        XCTAssertFalse(app.buttons["Forward"].isEnabled)
+        goToOverflowMenuButton(label: "Forward") { element in
+            XCTAssertFalse(element.isEnabled)
+        }
 
         app.buttons["Back"].tap()
         XCTAssertEqual(valueMozilla, website1["url"])
 
         waitUntilPageLoad()
         XCTAssertTrue(app.buttons["Back"].isEnabled)
-        XCTAssertTrue(app.buttons["Forward"].isEnabled)
+        goToOverflowMenuButton(label: "Forward") { element in
+            XCTAssertTrue(element.isEnabled)
+        }
 
         // Open new tab and then go back to previous tab to test navigation buttons.
         waitForExistence(app.buttons["Show Tabs"], timeout: 15)
@@ -67,7 +75,9 @@ class ToolbarTests: BaseTestCase {
         waitUntilPageLoad()
         waitForExistence(app.buttons["Back"])
         XCTAssertTrue(app.buttons["Back"].isEnabled)
-        XCTAssertTrue(app.buttons["Forward"].isEnabled)
+        goToOverflowMenuButton(label: "Forward") { element in
+            XCTAssertTrue(element.isEnabled)
+        }
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 15)
         goToTabTray()
@@ -77,7 +87,9 @@ class ToolbarTests: BaseTestCase {
 
         // Go Back to other tab to see if all buttons are disabled.
         XCTAssertFalse(app.buttons["Back"].isEnabled)
-        XCTAssertFalse(app.buttons["Forward"].isEnabled)
+        goToOverflowMenuButton(label: "Forward") { element in
+            XCTAssertFalse(element.isEnabled)
+        }
     }
 
     func testClearURLTextUsingBackspace() {
@@ -106,13 +118,13 @@ class ToolbarTests: BaseTestCase {
             waitForExistence(app.otherElements.matching(identifier: "TabToolbar").firstMatch)
         }
 
-        let shareButton = app.buttons["Share"]
+        let reloadButton = app.buttons["Reload"]
         let statusbarElement: XCUIElement = {
             return XCUIApplication(bundleIdentifier: "com.apple.springboard").statusBars.firstMatch
         }()
 
         app.swipeUp()
-        waitFor(shareButton, with: "isHittable == false")
+        waitFor(reloadButton, with: "isHittable == false")
 
         if iPad() {
             // test doesn't work on iPad so trying next best thing
@@ -121,7 +133,7 @@ class ToolbarTests: BaseTestCase {
             statusbarElement.tap(force: true)
         }
 
-        waitForExistence(shareButton)
-        XCTAssertTrue(shareButton.isHittable)
+        waitForExistence(reloadButton)
+        XCTAssertTrue(reloadButton.isHittable)
     }
 }

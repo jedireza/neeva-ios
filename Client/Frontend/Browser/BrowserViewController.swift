@@ -934,16 +934,6 @@ class BrowserViewController: UIViewController {
 
         var appActivities = [UIActivity]()
 
-        if !FeatureFlag[.overflowMenu] {
-            let findInPageActivity = FindOnPageActivity { [unowned self] in
-                self.updateFindInPageVisibility(visible: true)
-            }
-            appActivities.append(findInPageActivity)
-            if let webView = tab?.webView {
-                appActivities.append(TextSizeActivity(webView: webView, overlayParent: self))
-            }
-        }
-
         let deferredSites = self.profile.history.isPinnedTopSite(tab?.url?.absoluteString ?? "")
 
         let isPinned = deferredSites.value.successValue ?? false
@@ -991,35 +981,6 @@ class BrowserViewController: UIViewController {
                 }
             }
             appActivities.append(topSitesActivity)
-        }
-
-        if !FeatureFlag[.overflowMenu] {
-            if let tab = tabManager.selectedTab,
-                let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode,
-                readerMode.state != .unavailable,
-                FeatureFlag[.readingMode]
-            {
-                let readingModeActivity = ReadingModeActivity(readerModeState: readerMode.state) {
-                    [unowned self] in
-                    switch readerMode.state {
-                    case .available:
-                        enableReaderMode()
-                    case .active:
-                        disableReaderMode()
-                    case .unavailable:
-                        break
-                    }
-                }
-                appActivities.append(readingModeActivity)
-            }
-
-            let requestDesktopSiteActivity = RequestDesktopSiteActivity(tab: tab) { [weak tab] in
-                tab?.toggleChangeUserAgent()
-                Tab.ChangeUserAgent.updateDomainList(
-                    forUrl: url, isChangedUA: tab?.changedUserAgent ?? false,
-                    isPrivate: self.tabManager.isIncognito)
-            }
-            appActivities.append(requestDesktopSiteActivity)
         }
 
         let controller = helper.createActivityViewController(appActivities: appActivities) {

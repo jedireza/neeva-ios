@@ -46,24 +46,10 @@ struct TabToolbarButton<Content: View>: View {
 }
 
 enum TabToolbarButtons {
-    struct BackForward: View {
+    struct BackButton: View {
         let weight: Font.Weight
         let onBack: () -> Void
-        let onForward: () -> Void
         let onLongPress: () -> Void
-
-        @ViewBuilder var experimentalButton: some View {
-            if !FeatureFlag[.overflowMenu] {
-                TabToolbarButton(
-                    label: Symbol(
-                        .arrowForward, size: 20, weight: weight,
-                        label: .TabToolbarForwardAccessibilityLabel),
-                    action: onForward,
-                    longPressAction: onLongPress
-                )
-                .disabled(!model.canGoForward)
-            }
-        }
 
         @EnvironmentObject private var model: TabChromeModel
         var body: some View {
@@ -76,12 +62,12 @@ enum TabToolbarButtons {
                     longPressAction: onLongPress
                 )
                 .disabled(!model.canGoBack)
-                experimentalButton
             }
         }
     }
 
     struct OverflowMenu: View {
+        let weight: Font.Weight
         let action: () -> Void
         let onLongPress: () -> Void
 
@@ -90,9 +76,7 @@ enum TabToolbarButtons {
         var body: some View {
             TabToolbarButton(
                 label: Symbol(
-                    FeatureFlag[.overflowIconOnOverflowMenu]
-                        ? .ellipsisCircle
-                        : .squareAndArrowUp, size: 20, weight: .regular,
+                    .squareAndArrowUp, size: 20, weight: weight,
                     label: .TabToolbarMoreAccessibilityLabel),
                 action: action,
                 longPressAction: onLongPress
