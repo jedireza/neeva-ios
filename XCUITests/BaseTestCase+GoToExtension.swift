@@ -3,6 +3,17 @@
 import XCTest
 
 extension BaseTestCase {
+    /// Launches from anywhere the URL bar is visible
+    func goToAddressBar() {
+        waitForExistence(app.buttons["Address Bar"], timeout: 30)
+        
+        if app.buttons["Cancel"].exists {
+            app.textFields["address"].tap()
+        } else {
+            app.buttons["Address Bar"].tap()
+        }
+    }
+
     /// Launches from tab page
     func goToSettings() {
         waitForExistence(app.buttons["Neeva Menu"])

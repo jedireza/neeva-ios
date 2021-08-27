@@ -31,6 +31,7 @@ struct SuggestionsContent: View {
                     SuggestionsList()
                         .environmentObject(suggestionModel)
                 }
+
                 Spacer()
                     .frame(height: suggestionModel.getKeyboardHeight())
             }

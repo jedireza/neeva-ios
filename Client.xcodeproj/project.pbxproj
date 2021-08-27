@@ -208,6 +208,7 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		66AF61BA26D87E9900FB68DF /* ZeroQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AF61B926D87E9900FB68DF /* ZeroQueryTests.swift */; };
 		66B6567626C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */; };
 		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DA26A64FB0000C4BDF /* OpenInAppViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */; };
@@ -1141,6 +1142,7 @@
 		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		66AF61B926D87E9900FB68DF /* ZeroQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryTests.swift; sourceTree = "<group>"; };
 		66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+SKStoreProductViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		66B9570D26AF827E004C6117 /* AppClipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipHelper.swift; sourceTree = "<group>"; };
 		66BB89D826A64FAF000C4BDF /* OpenInAppViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppViewController.swift; sourceTree = "<group>"; };
@@ -2108,6 +2110,7 @@
 				66DA9E48268E8EFB001EFF13 /* ToastTests.swift */,
 				2CB56E3E1E926BFB00AF7586 /* ToolbarTest.swift */,
 				3DEFED071F55EBE300F8620C /* TrackingProtectionTests.swift */,
+				66AF61B926D87E9900FB68DF /* ZeroQueryTests.swift */,
 				3BF4B8DA1D38493300493393 /* Utils */,
 				EB7A651020699BD200B52A5F /* WebPagesForTesting.swift */,
 				0B9D40781E8D5AC80059E664 /* XCUITests-Bridging-Header.h */,
@@ -4452,6 +4455,7 @@
 				664825F0268FD106000E7F6A /* XCUIElementExtension.swift in Sources */,
 				2CC1B3F01E9B861400814EEC /* DomainAutocompleteTest.swift in Sources */,
 				2C473BD0209778900008C853 /* DownloadFilesTests.swift in Sources */,
+				66AF61BA26D87E9900FB68DF /* ZeroQueryTests.swift in Sources */,
 				C80A3D4426A25A9C0001E8A1 /* NeevaSignInTests.swift in Sources */,
 				3DEFED081F55EBE300F8620C /* TrackingProtectionTests.swift in Sources */,
 				2C8C07771E7800EA00DC1237 /* FindInPageTest.swift in Sources */,

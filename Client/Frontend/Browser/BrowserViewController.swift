@@ -718,6 +718,11 @@ class BrowserViewController: UIViewController {
     }
 
     public func hideZeroQuery() {
+        guard !(InternalURL(tabManager.selectedTab?.url)?.isZeroQueryURL ?? false) else {
+            print("Tried to hide zero query on a zero query tab")
+            return
+        }
+
         chromeModel.setEditingLocation(to: false)
         zeroQueryModel.reset(bvc: self)
 
