@@ -75,36 +75,22 @@ public class NeevaUserInfo: ObservableObject {
         isLoading = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            UserInfoQuery().fetch { result in
+            UserInfoProvider.shared.fetch { result in
                 self.isLoading = false
                 switch result {
-                case .success(let data):
-                    if let user = data.user {
-                        self.saveUserInfoToDefaults(userInfo: user)
-                        self.fetchUserPicture()
-                        self.isUserLoggedIn = true
-                        NeevaFeatureFlags.update(featureFlags: user.featureFlags)
-                        UserFlagStore.shared.onUpdateUserFlags(user.flags)
-                        /// Once we've fetched UserInfo sucessfuly, we don't need to keep monitoring connectivity anymore.
-                        self.reachability.stopNotifier()
-                    }
-                case .failure(let error):
-                    if let errors = (error as? GraphQLAPI.Error)?.errors {
-                        let messages = errors.filter({ $0.message != nil }).map({ $0.message! })
-                        let errorMsg =
-                            "Error fetching UserInfo: \(messages.joined(separator: "\n"))"
-                        print(errorMsg)
-
-                        if errorMsg.range(of: "login required", options: .caseInsensitive)
-                            != nil
-                        {
-                            self.isUserLoggedIn = false
-                            self.clearUserInfoCache()
-                        }
-                    } else {
-                        print("Error fetching UserInfo: \(error)")
-                    }
-
+                case .success(let userInfo):
+                    self.saveUserInfoToDefaults(userInfo: userInfo)
+                    self.fetchUserPicture()
+                    self.isUserLoggedIn = true
+                    NeevaFeatureFlags.update(featureFlags: userInfo.featureFlags)
+                    UserFlagStore.shared.onUpdateUserFlags(userInfo.userFlags)
+                    /// Once we've fetched UserInfo sucessfully, we don't need to keep monitoring connectivity anymore.
+                    self.reachability.stopNotifier()
+                case .failureAuthenticationError:
+                    self.isUserLoggedIn = false
+                    self.clearUserInfoCache()
+                    self.loadUserInfoFromDefaults()
+                case .failureTemporaryError:
                     self.loadUserInfoFromDefaults()
                 }
             }
@@ -211,17 +197,19 @@ public class NeevaUserInfo: ObservableObject {
         return false
     }
 
-    private func saveUserInfoToDefaults(userInfo: UserInfoQuery.Data.User) {
+    private func saveUserInfoToDefaults(userInfo: UserInfo) {
         let userInfoDict = [
-            "userDisplayName": userInfo.profile.displayName, "userEmail": userInfo.profile.email,
-            "userPictureUrl": userInfo.profile.pictureUrl,
-            "userAuthProvider": userInfo.authProvider, "userId": userInfo.id,
+            "userId": userInfo.id,
+            "userDisplayName": userInfo.name,
+            "userEmail": userInfo.email,
+            "userPictureUrl": userInfo.pictureUrl,
+            "userAuthProvider": userInfo.authProvider,
         ]
         defaults.set(userInfoDict, forKey: UserInfoKey)
 
-        displayName = userInfo.profile.displayName
-        email = userInfo.profile.email
-        pictureUrl = userInfo.profile.pictureUrl
+        displayName = userInfo.name
+        email = userInfo.email
+        pictureUrl = userInfo.pictureUrl
         authProvider = userInfo.authProvider.flatMap(SSOProvider.init(rawValue:))
     }
 

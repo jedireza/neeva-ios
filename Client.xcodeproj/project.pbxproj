@@ -310,6 +310,7 @@
 		C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87AA4A12614C1FC00F1318F /* IncognitoDescriptionView.swift */; };
 		C8800ED72635F0FE005B7503 /* DeferredTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8800EA52635EF06005B7503 /* DeferredTestUtils.swift */; };
 		C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C885659D2620366400B2C228 /* SwiftUIHelpers.swift */; };
+		C88F9D1426D961EC00FD0E04 /* UserInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */; };
 		C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */; };
 		C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */; };
 		C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */; };
@@ -1238,6 +1239,7 @@
 		C87AA4A12614C1FC00F1318F /* IncognitoDescriptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncognitoDescriptionView.swift; sourceTree = "<group>"; };
 		C8800EA52635EF06005B7503 /* DeferredTestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredTestUtils.swift; sourceTree = "<group>"; };
 		C885659D2620366400B2C228 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUIHelpers.swift; path = Helpers/SwiftUIHelpers.swift; sourceTree = "<group>"; };
+		C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoProvider.swift; sourceTree = "<group>"; };
 		C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlaySheetView.swift; sourceTree = "<group>"; };
 		C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationLinkButton.swift; sourceTree = "<group>"; };
 		C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaFeatureFlags.swift; sourceTree = "<group>"; };
@@ -2551,21 +2553,22 @@
 		C9C18E1726559132004710CD /* API */ = {
 			isa = PBXGroup;
 			children = (
-				677858C626CB377700274BC3 /* APIExtension.swift */,
 				C9C18DC926558FF2004710CD /* AbstractController.swift */,
 				C9C18E3C26559504004710CD /* API.swift */,
+				677858C626CB377700274BC3 /* APIExtension.swift */,
+				BC07524426C324A3008B607A /* CheatsheetController.swift */,
 				C9C18E3B26559504004710CD /* ErrorView.swift */,
 				C9C18E3A26559504004710CD /* Incognito.swift */,
 				12224FAF26081FCF007E8705 /* NeevaUserInfo.swift */,
-				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
 				C9C18DD126558FF2004710CD /* Network.swift */,
 				C9C18DD026558FF2004710CD /* QueryController.swift */,
-				C9C18E31265594DE004710CD /* SpaceStore.swift */,
 				C9C18E30265594DE004710CD /* Space.swift */,
-				BC5C43CC265F49EA007E2F61 /* TourManager.swift */,
+				C9C18E31265594DE004710CD /* SpaceStore.swift */,
+				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
 				C9C18E2F265594DE004710CD /* TestSpaces.swift */,
-				BC07524426C324A3008B607A /* CheatsheetController.swift */,
+				BC5C43CC265F49EA007E2F61 /* TourManager.swift */,
 				BCC39A2026C7258600EEC559 /* UserFlagStore.swift */,
+				C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -4272,6 +4275,7 @@
 				C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */,
 				E65075A01E37F7AB006961AC /* ArrayExtensions.swift in Sources */,
 				BCF248472670967C00ACAD11 /* ViewExtensions.swift in Sources */,
+				C88F9D1426D961EC00FD0E04 /* UserInfoProvider.swift in Sources */,
 				E65075A31E37F7AB006961AC /* KeychainWrapperExtensions.swift in Sources */,
 				E65075921E37F7AB006961AC /* Accessibility.swift in Sources */,
 				C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */,

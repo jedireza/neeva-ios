@@ -35,14 +35,12 @@ public class UserFlagStore: ObservableObject {
     public func refresh() {
         if case .refreshing = state { return }
         state = .refreshing
-        UserInfoQuery().fetch { result in
+        UserInfoProvider.shared.fetch { result in
             switch result {
-            case .success(let data):
-                if let user = data.user {
-                    self.onUpdateUserFlags(user.flags)
-                }
-            case .failure(let error):
-                print("Error fetching UserInfo: \(error)")
+            case .success(let userInfo):
+                self.onUpdateUserFlags(userInfo.userFlags)
+            default:
+                print("Error fetching UserInfo")
                 self.reset()
             }
         }
