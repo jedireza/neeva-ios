@@ -15,17 +15,23 @@ public struct OverflowMenuButtonView: View {
     let label: String
     let symbol: SFSymbol
     let action: () -> Void
+    let longPressAction: (() -> Void)?
 
     @Environment(\.isEnabled) private var isEnabled
 
-    public init(label: String, symbol: SFSymbol, action: @escaping () -> Void) {
+    public init(
+        label: String, symbol: SFSymbol,
+        longPressAction: (() -> Void)? = nil,
+        action: @escaping () -> Void
+    ) {
         self.label = label
         self.symbol = symbol
         self.action = action
+        self.longPressAction = longPressAction
     }
 
     public var body: some View {
-        GroupedCellButton(action: action) {
+        GroupedCellButton(action: action, longPressAction: longPressAction) {
             VStack(spacing: OverflowMenuUX.squareButtonSpacing) {
                 Symbol(decorative: symbol, size: OverflowMenuUX.squareButtonIconSize)
                 Text(label).withFont(.bodyLarge)
@@ -53,9 +59,16 @@ public struct OverflowMenuView: View {
     public var body: some View {
         GroupedStack {
             HStack(spacing: OverflowMenuUX.innerSectionPadding) {
-                OverflowMenuButtonView(label: .TabToolbarForwardAccessibilityLabel, symbol: .arrowForward) {
-                    menuAction(.forward)
-                }
+                OverflowMenuButtonView(
+                    label: .TabToolbarForwardAccessibilityLabel,
+                    symbol: .arrowForward,
+                    longPressAction: {
+                        menuAction(.longPressForward)
+                    },
+                    action: {
+                        menuAction(.forward)
+                    }
+                )
                 .accessibilityIdentifier("OverflowMenu.Forward")
                 .disabled(!chromeModel.canGoForward)
 

@@ -1877,4 +1877,19 @@ extension BrowserViewController {
             share(tab: tab, from: buttonView, presentableVC: self)
         }
     }
+
+    func showBackForwardList() {
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+        if let backForwardList = self.tabManager.selectedTab?.webView?.backForwardList {
+            let backForwardViewController = BackForwardListViewController(
+                profile: self.profile, backForwardList: backForwardList)
+            backForwardViewController.tabManager = self.tabManager
+            backForwardViewController.bvc = self
+            backForwardViewController.modalPresentationStyle = .overCurrentContext
+            backForwardViewController.backForwardTransitionDelegate =
+                BackForwardListAnimator()
+            self.present(backForwardViewController, animated: true, completion: nil)
+        }
+    }
 }

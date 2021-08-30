@@ -224,6 +224,7 @@
 		67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67292D3226AD2CF200DB1BFA /* AnnotationType.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
+		675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EEDD226D9AF1700473332 /* LongPressButton.swift */; };
 		677858C726CB377800274BC3 /* APIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677858C626CB377700274BC3 /* APIExtension.swift */; };
 		67AA22F226C476F300F33D09 /* BrowserViewController+OverflowMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */; };
 		67B0AAF426BA080D000731E0 /* OverflowMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B0AAF326BA080D000731E0 /* OverflowMenuViewController.swift */; };
@@ -1157,6 +1158,7 @@
 		67292D3226AD2CF200DB1BFA /* AnnotationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationType.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
+		675EEDD226D9AF1700473332 /* LongPressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressButton.swift; sourceTree = "<group>"; };
 		677858C626CB377700274BC3 /* APIExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIExtension.swift; sourceTree = "<group>"; };
 		67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+OverflowMenu.swift"; sourceTree = "<group>"; };
 		67B0AAF326BA080D000731E0 /* OverflowMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuViewController.swift; sourceTree = "<group>"; };
@@ -2505,6 +2507,7 @@
 				C9C18DDA26558FF3004710CD /* LoadingView.swift */,
 				C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */,
 				C9BED4CA2669451B001D9C77 /* ViewControllerWrapper.swift */,
+				675EEDD226D9AF1700473332 /* LongPressButton.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -4278,6 +4281,7 @@
 				C88F9D1426D961EC00FD0E04 /* UserInfoProvider.swift in Sources */,
 				E65075A31E37F7AB006961AC /* KeychainWrapperExtensions.swift in Sources */,
 				E65075921E37F7AB006961AC /* Accessibility.swift in Sources */,
+				675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */,
 				C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */,
 				CD1CE85F24EDE66A00006DFB /* WKWebViewExtensions.swift in Sources */,
 				C9C18E552655983B004710CD /* SystemColors.swift in Sources */,

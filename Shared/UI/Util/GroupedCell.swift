@@ -61,22 +61,26 @@ public struct GroupedCell<Content: View>: View {
 public struct GroupedCellButton<Label: View>: View {
     let alignment: GroupedCellAlignment
     let action: () -> Void
+    let longPressAction: (() -> Void)?
     let label: () -> Label
 
     public init(
         alignment: GroupedCellAlignment = .center, action: @escaping () -> Void,
+        longPressAction: (() -> Void)? = nil,
         @ViewBuilder label: @escaping () -> Label
     ) {
         self.alignment = alignment
         self.action = action
         self.label = label
+        self.longPressAction = longPressAction
     }
 
     public var body: some View {
         GroupedCell.Decoration {
-            Button(action: action) {
+            LongPressButton(action: action, longPressAction: longPressAction) {
                 GroupedCell.ContentContainer(alignment: alignment, content: label)
-            }.buttonStyle(TableCellButtonStyle())
+            }
+            .buttonStyle(TableCellButtonStyle())
         }
     }
 }
@@ -84,11 +88,12 @@ public struct GroupedCellButton<Label: View>: View {
 extension GroupedCellButton where Label == Text.WithFont {
     public init<S: StringProtocol>(
         _ label: S, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil,
-        action: @escaping () -> Void
+        action: @escaping () -> Void, longPressAction: (() -> Void)? = nil
     ) {
         self.label = { Text(label).withFont(style, weight: weight) }
         self.alignment = .center
         self.action = action
+        self.longPressAction = longPressAction
     }
 }
 

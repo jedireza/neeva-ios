@@ -12,6 +12,7 @@ public enum OverflowMenuAction {
     case desktopSite
     case share
     case downloadPage
+    case longPressForward
 }
 
 extension BrowserViewController {
@@ -75,6 +76,8 @@ extension BrowserViewController {
                 let request = URLRequest(url: url)
                 selectedTab.webView?.load(request)
             }
+        case .longPressForward:
+            self.showBackForwardList()
         }
     }
 }

@@ -9,7 +9,6 @@ struct TabToolbarButton<Content: View>: View {
     let action: () -> Void
     let longPressAction: (() -> Void)?
 
-    @State private var didLongPress = false
     @Environment(\.isEnabled) private var isEnabled
 
     public init(
@@ -23,25 +22,12 @@ struct TabToolbarButton<Content: View>: View {
     }
 
     var body: some View {
-        Button(action: {
-            if !didLongPress {
-                action()
-            }
-            didLongPress = false
-        }) {
+        LongPressButton(action: action, longPressAction: longPressAction) {
             Spacer(minLength: 0)
             label.tapTargetFrame()
             Spacer(minLength: 0)
         }
         .accentColor(isEnabled ? .label : .quaternaryLabel)
-        .simultaneousGesture(
-            LongPressGesture().onEnded { _ in
-                if let longPressAction = longPressAction {
-                    longPressAction()
-                    didLongPress = true
-                }
-            }
-        )
     }
 }
 

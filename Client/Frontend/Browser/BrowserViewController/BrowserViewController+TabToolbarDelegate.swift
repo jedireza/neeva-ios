@@ -41,19 +41,7 @@ extension BrowserViewController: ToolbarDelegate {
                 self.dismissVC()
 
             case .longPressBackForward:
-                let generator = UIImpactFeedbackGenerator(style: .heavy)
-                generator.impactOccurred()
-                if let backForwardList = self.tabManager.selectedTab?.webView?.backForwardList {
-                    let backForwardViewController = BackForwardListViewController(
-                        profile: self.profile, backForwardList: backForwardList)
-                    backForwardViewController.tabManager = self.tabManager
-                    backForwardViewController.bvc = self
-                    backForwardViewController.modalPresentationStyle = .overCurrentContext
-                    backForwardViewController.backForwardTransitionDelegate =
-                        BackForwardListAnimator()
-                    self.present(backForwardViewController, animated: true, completion: nil)
-                }
-
+                self.showBackForwardList()
             case .addToSpace:
                 guard let tab = self.tabManager.selectedTab else { return }
                 guard let url = tab.canonicalURL?.displayURL else { return }
