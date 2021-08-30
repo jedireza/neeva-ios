@@ -101,8 +101,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
 
         // is now on in normal mode
 
-        toggleIncognito()
-        openURL(path(forTestPage: "test-user-agent.html"))
+        toggleIncognito(urlToOpen: path(forTestPage: "test-user-agent.html"))
         // Workaround to be sure the snackbar dissapers
         app.buttons["Reload"].tap()
         requestMobileSite()
@@ -110,8 +109,8 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
         // is now off in private, mode, confirm it is off in normal mode
-
-        toggleIncognito()
+        toggleIncognito(closeTabTray: false)
+        app.buttons["Add Tab"].tap()
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
@@ -134,7 +133,8 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
-        toggleIncognito()
+        toggleIncognito(closeTabTray: false)
+        app.buttons["Add Tab"].tap()
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
 

@@ -141,6 +141,7 @@ class BaseTestCase: XCTestCase {
         if app.buttons["Cancel"].exists {
             app.textFields["address"].press(forDuration: 1)
         } else {
+            waitForExistence(app.buttons["Address Bar"], timeout: 30)
             app.buttons["Address Bar"].press(forDuration: 1)
         }
 

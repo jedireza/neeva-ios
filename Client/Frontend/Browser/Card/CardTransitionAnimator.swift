@@ -53,7 +53,7 @@ struct CardTransitionAnimator: View {
                 y: gridModel.isHidden ? -CardUX.HeaderSize : offset.y + gridModel.scrollOffset
             )
             .animation(.interpolatingSpring(stiffness: 425, damping: 30))
-            .onAppear {
+            .useEffect(deps: gridModel.animationThumbnailState) { _ in
                 if !gridModel.isHidden
                     && gridModel.animationThumbnailState == .visibleForTrayHidden
                 {

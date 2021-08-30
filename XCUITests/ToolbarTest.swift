@@ -69,7 +69,7 @@ class ToolbarTests: BaseTestCase {
         waitForExistence(app.buttons["\(website1["label"]!), Tab"])
         XCTAssertEqual(valueMozilla, website1["url"])
 
-        getTabs().firstMatch.tap()
+        app.buttons["\(website1["label"]!), Tab"].tap()
 
         // Test to see if all the buttons are enabled then close tab.
         waitUntilPageLoad()
@@ -79,11 +79,9 @@ class ToolbarTests: BaseTestCase {
             XCTAssertTrue(element.isEnabled)
         }
 
-        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
-        goToTabTray()
+        closeAllTabs(fromTabSwitcher: app.buttons["Done"].exists)
 
-        waitForExistence(app.buttons["\(website1["label"]!), Tab"])
-        app.buttons["Close \(website1["label"]!)"].tap()
+        waitForExistence(app.buttons["Back"])
 
         // Go Back to other tab to see if all buttons are disabled.
         XCTAssertFalse(app.buttons["Back"].isEnabled)

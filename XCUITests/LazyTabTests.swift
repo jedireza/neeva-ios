@@ -130,10 +130,9 @@ class LazyTabTests: BaseTestCase {
 
         // switch back to normal mode
         goToTabTray()
-        toggleIncognito()
+        toggleIncognito(closeTabTray: false)
 
         // switch back to incognito mode
-        goToTabTray()
         toggleIncognito(closeTabTray: false)
 
         // confirms that non-incognito tab is shown
