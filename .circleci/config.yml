@@ -106,13 +106,13 @@ commands:
     steps:
       - run:
           name: XCUITests
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests -resultBundlePath xcuitests-$CIRCLE_BUILD_NUM.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12' -only-testing XCUITests -resultBundlePath xcuitests-$CIRCLE_BUILD_NUM.xcresult
       - store-xcuitest-artifact
   xcui-tests-ipad:
     steps:
       - run:
           name: XCUITests - iPad
-          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests -resultBundlePath xcuitests-$CIRCLE_BUILD_NUM.xcresult TEST_ACCOUNT_USERNAME=$TEST_ACCOUNT_USERNAME TEST_ACCOUNT_PASSWORD=$TEST_ACCOUNT_PASSWORD
+          command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests -resultBundlePath xcuitests-$CIRCLE_BUILD_NUM.xcresult
       - store-xcuitest-artifact
 
   store-xcuitest-artifact:

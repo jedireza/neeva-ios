@@ -6,7 +6,7 @@ import Foundation
 private let log = Logger.browser
 
 /// Information associated with a user account, fetched from the server.
-struct UserInfo {
+public struct UserInfo {
     let id: String?
     let name: String?
     let email: String?
@@ -14,10 +14,23 @@ struct UserInfo {
     let authProvider: String?
     let featureFlags: [UserInfoQuery.Data.User.FeatureFlag]
     let userFlags: [String]
+
+    public init(
+        id: String?, name: String?, email: String?, pictureUrl: String?, authProvider: String?,
+        featureFlags: [UserInfoQuery.Data.User.FeatureFlag], userFlags: [String]
+    ) {
+        self.id = id
+        self.name = name
+        self.email = email
+        self.pictureUrl = pictureUrl
+        self.authProvider = authProvider
+        self.featureFlags = featureFlags
+        self.userFlags = userFlags
+    }
 }
 
 /// Enum container for the result of fetching `UserInfo` from the server.
-enum UserInfoResult {
+public enum UserInfoResult {
     /// On success, the `UserInfo` parameter provides information about the user.
     case success(UserInfo)
 
@@ -31,10 +44,13 @@ enum UserInfoResult {
 
 /// Used to fetch UserInfo from the server. The implementation can be overridden
 /// for testing purposes.
-class UserInfoProvider {
-    static var shared = UserInfoProvider()
+open class UserInfoProvider {
+    public static var shared = UserInfoProvider()
 
-    func fetch(completion: @escaping (UserInfoResult) -> Void) {
+    public init() {
+    }
+
+    open func fetch(completion: @escaping (UserInfoResult) -> Void) {
         UserInfoQuery().fetch { result in
             var userInfoResult: UserInfoResult
             switch result {

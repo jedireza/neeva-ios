@@ -62,18 +62,8 @@
       </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "TEST_ACCOUNT_PASSWORD"
-            value = "$(TEST_ACCOUNT_PASSWORD)"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
             key = "KIF_SCREENSHOTS"
             value = "$(PROJECT_DIR)/ui-test-screenshots"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "TEST_ACCOUNT_USERNAME"
-            value = "$(TEST_ACCOUNT_USERNAME)"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

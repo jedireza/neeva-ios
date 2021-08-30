@@ -930,8 +930,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // our cached login cookie is no longer valid.
         if !tab.isIncognito,
             let url = webView.url,
-            NeevaConstants.isAppHost(url.host),
-            url.scheme == "https"
+            url.origin == NeevaConstants.appURL.origin
         {
             let userInfo = NeevaUserInfo.shared
 
@@ -948,9 +947,14 @@ extension BrowserViewController: WKNavigationDelegate {
                         .LoginAfterFirstRun, attributes: [ClientLogCounterAttribute]())
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
-                
+
                 userInfo.updateLoginCookieFromWebKitCookieStore {
-                    self.showSearchBarTourPromptIfNeeded(for: url)
+                    // Delay showing the prompt in case there is a redirect.
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        if let url = tab.url, url == NeevaConstants.appHomeURL {
+                            self.showSearchBarTourPromptIfNeeded(for: url)
+                        }
+                    }
                 }
             }
         }

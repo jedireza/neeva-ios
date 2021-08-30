@@ -25,23 +25,28 @@ public struct NeevaConstants {
         return host == appHost || (host == "m1.neeva.com" && allowM1)
     }
 
-    /// The URL form of `appHost`
-    public static var appURL: URL { URL(string: "https://\(appHost)/")! }
+    // This function provides a layer of indirection to allow tests to override how URLs on
+    // `appHost` are formed.
+    public static var buildAppURL: (String) -> URL = { path in
+        URL(string: "https://\(appHost)/\(path)")!
+    }
+
+    /// The URL form of `appHost` and various routes:
+    public static var appURL: URL { buildAppURL("") }
+    public static var appHomeURL: URL { appURL }
+    public static var appSearchURL: URL { buildAppURL("search") }
+    public static var appSpacesURL: URL { buildAppURL("spaces") }
+    public static var appSettingsURL: URL { buildAppURL("settings") }
+    public static var appReferralsURL: URL { buildAppURL("settings/referrals") }
+    public static var appConnectionsURL: URL { buildAppURL("connections") }
+    public static var appMemoryModeURL: URL { buildAppURL("settings#memory-mode") }
+    public static var appSigninURL: URL { buildAppURL("signin") }
+    public static var appSignupURL: URL { buildAppURL("p/signup") }
+    public static var appFAQURL: URL { buildAppURL("faq") }
+    public static var appWelcomeToursURL: URL { buildAppURL("#modal-hello") }
+
     public static let appMarketingURL: URL = "https://neeva.com/"
     public static let appHelpCenterURL: URL = "https://help.neeva.com/"
-
-    public static var appHomeURL: URL { appURL }
-    public static var appSearchURL: URL { appURL / "search" }
-    public static var appSpacesURL: URL { appURL / "spaces" }
-    public static var appSettingsURL: URL { appURL / "settings" }
-    public static var appReferralsURL: URL { appSettingsURL / "referrals" }
-    public static var appConnectionsURL: URL { appURL / "connections" }
-    public static var appMemoryModeURL: URL { URL(string: "\(appURL)settings#memory-mode")! }
-    public static var appSigninURL: URL { appURL / "signin" }
-    public static var appSignupURL: URL { appURL / "p/signup" }
-    public static var appFAQURL: URL { appURL / "faq" }
-    public static var appWelcomeToursURL: URL { URL(string: "\(appURL)#modal-hello")! }
-
     public static let appPrivacyURL = appMarketingURL / "privacy"
     public static let appTermsURL = appMarketingURL / "terms"
 

@@ -109,9 +109,7 @@ public class NeevaUserInfo: ObservableObject {
 
     public func updateLoginCookieFromWebKitCookieStore(completion: @escaping () -> Void) {
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
-            if let authCookie = cookies.first(where: {
-                NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
-            }) {
+            if let authCookie = cookies.first(where: Self.matchesLoginCookie) {
                 self.setLoginCookie(authCookie.value)
                 completion()
             }
@@ -147,13 +145,17 @@ public class NeevaUserInfo: ObservableObject {
     public func deleteLoginCookie() {
         let cookieStore = WKWebsiteDataStore.default().httpCookieStore
         cookieStore.getAllCookies { cookies in
-            if let authCookie = cookies.first(where: {
-                NeevaConstants.isAppHost($0.domain) && $0.name == "httpd~login" && $0.isSecure
-            }) {
+            if let authCookie = cookies.first(where: Self.matchesLoginCookie) {
                 cookieStore.delete(authCookie)
             }
         }
         try? NeevaConstants.keychain.remove(NeevaConstants.loginKeychainKey)
+    }
+
+    private static func matchesLoginCookie(cookie: HTTPCookie) -> Bool {
+        // Allow non-HTTPS for testing purposes.
+        NeevaConstants.isAppHost(cookie.domain) && cookie.name == "httpd~login"
+            && (NeevaConstants.appURL.scheme != "https" || cookie.isSecure)
     }
 
     public func loadUserInfoFromDefaults() {

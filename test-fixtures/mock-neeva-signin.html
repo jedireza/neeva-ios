@@ -1,0 +1,25 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width">
+
+<script>
+function login() {
+    var token = document.getElementById("token").value
+    if (token.length > 0) {
+        document.cookie = "httpd~login=" + token
+        location = "mock-neeva-home.html"
+    }
+}
+</script>
+
+</head>
+<body>
+
+<h2>Neeva Signin</h2>
+
+Enter token: <input id="token" placeholder="Enter token"></input>
+
+<button onclick="login()">Sign in</button>
+
+</body>
+</html>

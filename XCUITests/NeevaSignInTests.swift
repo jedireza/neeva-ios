@@ -4,24 +4,13 @@ import Foundation
 import XCTest
 
 class NeevaSignInTests: BaseTestCase {
-    var username: String?
-    var password: String?
-
     override func setUp() {
-        username = ProcessInfo.processInfo.environment["TEST_ACCOUNT_USERNAME"]
-        password = ProcessInfo.processInfo.environment["TEST_ACCOUNT_PASSWORD"]
-
-        XCTAssertNotNil(username)
-        XCTAssertNotNil(password)
-
-        // These are set by our test environment on CircleCI. If you want to run the
-        // tests manually, you will need to edit the Schema to define these variables.
-        XCTAssertNotEqual(username, "", "TEST_ACCOUNT_USERNAME environment variable not set!")
-        XCTAssertNotEqual(password, "", "TEST_ACCOUNT_PASSWORD environment variable not set!")
+        launchArguments.append(LaunchArguments.EnableMockAppHost)
+        launchArguments.append(LaunchArguments.EnableMockUserInfo)
 
         // For this test, preset a junk login cookie.
         if testName == "testSignInWithStaleLoginCookie" {
-            launchArguments.append("\(LaunchArguments.SetLoginCookie)foobar")
+            launchArguments.append("\(LaunchArguments.SetLoginCookie)bad-token")
         }
 
         super.setUp()
@@ -43,27 +32,19 @@ class NeevaSignInTests: BaseTestCase {
 
     fileprivate func doSignIn() {
         let textField = app.textFields.firstMatch
-        XCTAssertEqual("Please enter your email address", textField.placeholderValue)
+        XCTAssertEqual("Enter token", textField.placeholderValue)
 
-        UIPasteboard.general.string = username
+        UIPasteboard.general.string = "good-token"
         textField.tap()
         textField.press(forDuration: 2)
         app.menus.firstMatch.menuItems["Paste"].tap()
 
-        waitForExistence(app.staticTexts["Sign in"])
-        app.staticTexts["Sign in"].tap()
+        waitForExistence(app.buttons["Sign in"])
+        app.buttons["Sign in"].tap()
 
-        waitUntilPageLoad(withUrlContaining: "https://login.neeva.com/")
+        waitUntilPageLoad(withUrlContaining: "mock-neeva-home")
 
-        // Password field should already be focused
-        UIPasteboard.general.string = password
-        app.secureTextFields.firstMatch.press(forDuration: 2)
-        app.menus.firstMatch.menuItems["Paste"].tap()
-
-        waitForExistence(app.buttons["Sign In"])
-        app.buttons["Sign In"].tap()
-
-        waitUntilPageLoad(withUrlContaining: "https://neeva.com/")
+        waitForExistence(app.staticTexts["login cookie: good-token"])
 
         // Expect first run dialog.
         waitForExistence(app.buttons["Got it!"])
@@ -73,8 +54,8 @@ class NeevaSignInTests: BaseTestCase {
     fileprivate func doSignOut() {
         goToSettings()
 
-        waitForExistence(app.cells["Member, \(username!)"])
-        app.cells["Member, \(username!)"].tap()
+        waitForExistence(app.cells["Bob, bob@example.com"])
+        app.cells["Bob, bob@example.com"].tap()
 
         waitForExistence(app.buttons["Sign Out"])
         app.buttons["Sign Out"].tap()
@@ -92,15 +73,15 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.buttons["Reload"])
         app.buttons["Reload"].tap()
 
-        waitUntilPageLoad(withUrlContaining: "https://neeva.com/")
-        waitForExistence(app.webViews.links["Sign In"])
+        waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
+        waitForExistence(app.buttons["Sign in"])
     }
 
     func testSignInFromPromoCard() {
         waitForExistence(app.buttons["Sign in or Join Neeva"])
         app.buttons["Sign in or Join Neeva"].tap()
 
-        waitUntilPageLoad(withUrlContaining: "https://neeva.com/signin")
+        waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
 
         doSignIn()
         doSignOut()
@@ -112,7 +93,7 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.cells["Sign In or Join Neeva"])
         app.cells["Sign In or Join Neeva"].tap()
 
-        waitUntilPageLoad(withUrlContaining: "https://neeva.com/signin")
+        waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
 
         doSignIn()
         doSignOut()
@@ -122,9 +103,14 @@ class NeevaSignInTests: BaseTestCase {
         // See the setUp() function where the stale login cookie is specified
         // as a launch argument to the browser.
 
-        // Load neeva.com, and we should get redirected to the sign in page.
-        openURL("https://neeva.com/")
-        waitUntilPageLoad(withUrlContaining: "https://neeva.com/signin")
+        // Load Neeva Home, and we should get redirected to the sign in page.
+        waitForExistence(app.buttons["Neeva Menu"])
+        app.buttons["Neeva Menu"].tap(force: true)
+
+        waitForExistence(app.buttons["Home"])
+        app.buttons["Home"].tap()
+
+        waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
 
         doSignIn()
         doSignOut()

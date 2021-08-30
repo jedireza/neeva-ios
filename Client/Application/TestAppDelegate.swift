@@ -11,6 +11,35 @@ import XCGLogger
 
 private let log = Logger.browser
 
+private func testURLString(for resource: String) -> String {
+    "http://localhost:\(AppInfo.webserverPort)/test-fixture/\(resource)"
+}
+
+class MockUserInfoProvider: UserInfoProvider {
+    override init() {
+        super.init()
+    }
+
+    override func fetch(completion: @escaping (UserInfoResult) -> Void) {
+        DispatchQueue.main.async {
+            if !NeevaUserInfo.shared.hasLoginCookie() {
+                completion(.failureAuthenticationError)
+            } else {
+                let userInfo = UserInfo(
+                    id: "123456",
+                    name: "Bob",
+                    email: "bob@example.com",
+                    pictureUrl: testURLString(for: ""),
+                    authProvider: SSOProvider.okta.rawValue,
+                    featureFlags: [],
+                    userFlags: []
+                )
+                completion(.success(userInfo))
+            }
+        }
+    }
+}
+
 class TestAppDelegate: AppDelegate {
     lazy var dirForTestProfile = { [unowned self] in "\(appRootDir())/profile.testProfile" }()
 
@@ -88,9 +117,32 @@ class TestAppDelegate: AppDelegate {
             }
 
             if arg.starts(with: LaunchArguments.EnableFeatureFlags) {
-                let flags = arg.replacingOccurrences(of: LaunchArguments.EnableFeatureFlags, with: "")
-                enableFeatureFlags = flags.components(separatedBy: ",").compactMap { FeatureFlag(caseName: $0) }
+                let flags = arg.replacingOccurrences(
+                    of: LaunchArguments.EnableFeatureFlags, with: "")
+                enableFeatureFlags = flags.components(separatedBy: ",").compactMap {
+                    FeatureFlag(caseName: $0)
+                }
             }
+        }
+
+        if launchArguments.contains(LaunchArguments.EnableMockAppHost) {
+            NeevaConstants.appHost = "localhost"
+            NeevaConstants.buildAppURL = { path in
+                let page: String
+                switch path {
+                case "signin":
+                    page = "mock-neeva-signin.html"
+                case "":
+                    page = "mock-neeva-home.html"
+                default:
+                    page = "mock-neeva-home.html?path=\(path)"
+                }
+                return URL(string: testURLString(for: page))!
+            }
+        }
+
+        if launchArguments.contains(LaunchArguments.EnableMockUserInfo) {
+            UserInfoProvider.shared = MockUserInfoProvider()
         }
 
         if launchArguments.contains(LaunchArguments.ClearProfile) {

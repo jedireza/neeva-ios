@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width">
+
+<script>
+function getLoginCookie() {
+    var cookies = document.cookie.split(";").map((s) => s.trim(" "))
+    for (var c of cookies) {
+        var values = c.split("=")
+        if (values[0] == "httpd~login") {
+            return values[1]
+        }
+    }
+    return null
+}
+
+var loginCookie = getLoginCookie()
+if (loginCookie != null && loginCookie != "bad-token") {
+    document.write("login cookie: " + loginCookie)
+} else {
+    location.replace("mock-neeva-signin.html")
+}
+
+</script>
+
+</head>
+<body>
+
+<h2>Neeva Home</h2>
+
+</body>
+</html>
