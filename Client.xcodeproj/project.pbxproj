@@ -2117,22 +2117,22 @@
 		4A1D054E26696B6D00D63333 /* Card */ = {
 			isa = PBXGroup;
 			children = (
-				4A88F9722662AEAB007C203D /* CardStrip.swift */,
-				4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */,
-				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
-				4A3D2992268583710082F293 /* CardModels.swift */,
-				4A3D299026850CB60082F293 /* CardGrid.swift */,
-				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
-				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
-				C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */,
-				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
-				C9655DEE26A09A8600925912 /* CardListViews.swift */,
-				C9655DEC26A09A6900925912 /* CardsContainer.swift */,
-				C9655DEA26A09A2800925912 /* GridModel.swift */,
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
-				4A1D054F2669715B00D63333 /* CardViewControllers.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
+				4A3D299026850CB60082F293 /* CardGrid.swift */,
+				4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */,
+				C9655DEE26A09A8600925912 /* CardListViews.swift */,
+				4A3D2992268583710082F293 /* CardModels.swift */,
+				C9655DEC26A09A6900925912 /* CardsContainer.swift */,
+				4A88F9722662AEAB007C203D /* CardStrip.swift */,
+				C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */,
+				4A1D054F2669715B00D63333 /* CardViewControllers.swift */,
+				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
+				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
+				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
+				C9655DEA26A09A2800925912 /* GridModel.swift */,
+				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";

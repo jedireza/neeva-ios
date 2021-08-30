@@ -19,6 +19,7 @@ where
     @EnvironmentObject var spacesModel: SpaceCardModel
     @Environment(\.onOpenURL) var openURL
     @Environment(\.columns) var gridColumns
+    @State private var editMode = EditMode.inactive
 
     let primitive: Details
 
@@ -31,83 +32,136 @@ where
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            topBar
+            if gridModel.showingDetailsAsList {
+                spaceList
+            } else {
+                spaceGrid
+            }
+        }
+    }
+
+    var topBar: some View {
+        HStack {
+            Button(
+                action: {
+                    withAnimation {
+                        spacesModel.detailedSpace = nil
+                    }
+                },
+                label: {
+                    Symbol(decorative: .arrowLeft)
+                        .foregroundColor(Color.label)
+                        .tapTargetFrame()
+                })
+            Text(primitive.title)
+                .withFont(.labelLarge)
+                .foregroundColor(Color.label)
+            Spacer()
+            if gridModel.showingDetailsAsList {
                 Button(
                     action: {
-                        withAnimation {
-                            spacesModel.detailedSpace = nil
-                        }
-                    },
-                    label: {
-                        Symbol(decorative: .arrowLeft)
-                            .foregroundColor(Color.label)
-                            .tapTargetFrame()
-                    })
-                Text(primitive.title)
-                    .withFont(.labelLarge)
-                    .foregroundColor(Color.label)
-                Spacer()
-                Button(
-                    action: {
-                        withAnimation {
-                            gridModel.showingDetailsAsList.toggle()
-                        }
+                        editMode = .active
                     },
                     label: {
                         Image(
-                            systemName: gridModel.showingDetailsAsList
-                                ? "square.grid.2x2.fill" : "rectangle.grid.1x2.fill"
+                            systemName: "square.and.pencil"
                         )
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                     })
-            }.frame(height: gridModel.pickerHeight)
-                .frame(maxWidth: .infinity)
-                .background(Color.background)
-            ScrollView(.vertical, showsIndicators: false) {
-                LazyVGrid(
-                    columns: gridModel.showingDetailsAsList ? listColumns : gridColumns,
-                    spacing: DetailsViewUX.Padding
-                ) {
-                    ForEach(primitive.allDetails, id: \.id) { details in
-                        if gridModel.showingDetailsAsList {
-                            SingleDetailView(details: details) {
-                                openURL((details.manager.get(for: details.id)?.primitiveUrl)!)
-                                gridModel.hideWithNoAnimation()
-                                spacesModel.detailedSpace = nil
-                            }
-                        } else {
-                            VStack(spacing: 0) {
-                                FittedCard(details: details).environment(\.selectionCompletion) {
-                                    openURL(
-                                        (details.manager.get(for: details.id)?.primitiveUrl)!)
-                                    gridModel.hideWithNoAnimation()
-                                    spacesModel.detailedSpace = nil
-                                }
-                                HStack {
-                                    Spacer(minLength: DetailsViewUX.ItemPadding)
-                                    Text(details.title)
-                                        .withFont(.labelMedium)
-                                        .lineLimit(1)
-                                        .foregroundColor(Color.label)
-                                        .frame(height: CardUX.HeaderSize)
-                                    Spacer(minLength: DetailsViewUX.ItemPadding)
-                                }
-                            }
+            }
+            Button(
+                action: {
+                    withAnimation {
+                        gridModel.showingDetailsAsList.toggle()
+                    }
+                },
+                label: {
+                    Image(
+                        systemName: gridModel.showingDetailsAsList
+                            ? "square.grid.2x2.fill" : "rectangle.grid.1x2.fill"
+                    )
+                    .foregroundColor(Color.label)
+                    .tapTargetFrame()
+                })
+        }.frame(height: gridModel.pickerHeight)
+            .frame(maxWidth: .infinity)
+            .background(Color.background.edgesIgnoringSafeArea(.horizontal))
+    }
+
+    var spaceList: some View {
+        List {
+            ForEach(primitive.allDetails, id: \.id) { details in
+                if let entity = details.manager.get(for: details.id) {
+                    if let url = entity.primitiveUrl {
+                        SingleDetailView(details: details) {
+                            openURL(url)
+                            gridModel.hideWithNoAnimation()
+                            spacesModel.detailedSpace = nil
+                        }.background(Color.background)
+                    } else {
+                        Section(
+                            header: Text(entity.displayTitle)
+                                .withFont(.headingSmall)
+                                .textCase(.none)
+                                .padding(.horizontal)
+                                .padding(.top, 14)
+                                .padding(.bottom, 10)
+                        ) {}
+                    }
+                }
+            }
+            .onDelete(perform: onDelete)
+            .onMove(perform: onMove)
+        }
+        .environment(\.editMode, $editMode)
+        .background(Color.groupedBackground)
+    }
+
+    var spaceGrid: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVGrid(
+                columns: gridColumns,
+                spacing: DetailsViewUX.Padding
+            ) {
+                ForEach(primitive.allDetails, id: \.id) { details in
+                    VStack(spacing: 0) {
+                        FittedCard(details: details).environment(\.selectionCompletion) {
+                            openURL(
+                                (details.manager.get(for: details.id)?.primitiveUrl)!)
+                            gridModel.hideWithNoAnimation()
+                            spacesModel.detailedSpace = nil
+                        }
+                        HStack {
+                            Spacer(minLength: DetailsViewUX.ItemPadding)
+                            Text(details.title)
+                                .withFont(.labelMedium)
+                                .lineLimit(1)
+                                .foregroundColor(Color.label)
+                                .frame(height: CardUX.HeaderSize)
+                            Spacer(minLength: DetailsViewUX.ItemPadding)
                         }
                     }
-                    Spacer()
                 }
-                .padding(.vertical, DetailsViewUX.Padding)
+                Spacer()
             }
+            .padding(.vertical, DetailsViewUX.Padding)
         }
+    }
+
+    private func onDelete(offsets: IndexSet) {
+        primitive.allDetails.remove(atOffsets: offsets)
+    }
+
+    private func onMove(source: IndexSet, destination: Int) {
+        primitive.allDetails.move(fromOffsets: source, toOffset: destination)
     }
 }
 
 struct SingleDetailView<Details: CardDetails>: View {
     let details: Details
     let onSelected: () -> Void
-    @State private var isPressed = false
     var description: String {
         details.id
     }
@@ -120,7 +174,7 @@ struct SingleDetailView<Details: CardDetails>: View {
                 details.thumbnail.frame(
                     width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
                 )
-                    .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
                 VStack(spacing: DetailsViewUX.Padding) {
                     Text(details.title)
                         .withFont(.bodyMedium)
@@ -135,13 +189,11 @@ struct SingleDetailView<Details: CardDetails>: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-
             }
-            .padding(DetailsViewUX.ItemPadding)
-            .background(Color.background)
-            .scaleEffect(isPressed ? 0.95 : 1)
-        }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+        }
+        .padding()
     }
+
 }
 
 struct DetailView_Previews: PreviewProvider {

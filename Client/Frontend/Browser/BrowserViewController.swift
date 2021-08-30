@@ -53,8 +53,10 @@ class BrowserViewController: UIViewController {
 
     let chromeModel = TabChromeModel()
     lazy var cardGridViewController: CardGridViewController = { [unowned self] in
-        let controller = CardGridViewController(bvc: self,
-                                                toolbarModel: SwitcherToolbarModel(tabManager: tabManager, openLazyTab: { openLazyTab(openedFrom: .tabTray) }))
+        let controller = CardGridViewController(
+            bvc: self,
+            toolbarModel: SwitcherToolbarModel(
+                tabManager: tabManager, openLazyTab: { openLazyTab(openedFrom: .tabTray) }))
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -250,7 +252,9 @@ class BrowserViewController: UIViewController {
         toolbar = nil
 
         if showToolbar {
-            let toolbar = TabToolbarHost(isIncognito: tabManager.isIncognito, chromeModel: chromeModel, showNeevaMenuSheet: showNeevaMenuSheet)
+            let toolbar = TabToolbarHost(
+                isIncognito: tabManager.isIncognito, chromeModel: chromeModel,
+                showNeevaMenuSheet: showNeevaMenuSheet)
             toolbar.willMove(toParent: self)
             toolbar.view.setContentHuggingPriority(.required, for: .vertical)
             footer.addSubview(toolbar.view)
@@ -687,7 +691,7 @@ class BrowserViewController: UIViewController {
         }
 
         searchQueryModel.value = ""
-        
+
         self.tabContentHost.updateContent(
             .showZeroQuery(
                 isIncognito: tabManager.isIncognito,

@@ -126,8 +126,9 @@ struct ZeroQueryView: View {
                     if let openTab = viewModel.openedFrom?.openedTab, let url = openTab.url, !InternalURL.isValid(url: url) {
                         SearchSuggestionView(
                             Suggestion.editCurrentURL(
-                                TabCardDetails(tab: openTab,
-                                               manager: viewModel.bvc.tabManager)
+                                TabCardDetails(
+                                    tab: openTab,
+                                    manager: viewModel.bvc.tabManager)
                             )
                         )
                         .environmentObject(viewModel.bvc.suggestionModel)

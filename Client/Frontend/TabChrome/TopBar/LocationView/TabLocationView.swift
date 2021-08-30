@@ -162,13 +162,15 @@ struct TabLocationView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
+                onCancel: {}
             )
             .environmentObject(LocationViewModel(previewURL: nil, isSecure: true))
             .previewDisplayName("Placeholder")
 
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
+                onCancel: {}
             )
             .environmentObject(
                 LocationViewModel(
@@ -177,7 +179,8 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .previewDisplayName("Long domain")
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
+                onCancel: {}
             )
             .environment(\.isIncognito, true)
             .environmentObject(
@@ -185,7 +188,8 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .previewDisplayName("Incognito")
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
+                onCancel: {}
             )
             .environmentObject(
                 LocationViewModel(
@@ -194,7 +198,8 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .previewDisplayName("Search")
             TabLocationView(
-                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil }, onCancel: {}
+                onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
+                onCancel: {}
             )
             .environment(\.isIncognito, true)
             .environmentObject(

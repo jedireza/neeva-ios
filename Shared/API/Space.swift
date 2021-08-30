@@ -57,15 +57,12 @@ class SpacesDataQueryController: QueryController<
                     var spaceEntities: [SpaceEntityData] = []
                     if let entities = space.space?.entities {
                         for entity in entities {
-                            if let urlString = entity.spaceEntity?.url {
-                                if let url = URL(string: urlString) {
-                                    spaceEntities.append(
-                                        SpaceEntityData(url: url,
-                                                        title: entity.spaceEntity?.title,
-                                                        snippet: entity.spaceEntity?.snippet,
-                                                        thumbnail: entity.spaceEntity?.thumbnail))
-                                }
-                            }
+                            spaceEntities.append(
+                                SpaceEntityData(
+                                    url: URL(string: entity.spaceEntity?.url ?? ""),
+                                    title: entity.spaceEntity?.title,
+                                    snippet: entity.spaceEntity?.snippet,
+                                    thumbnail: entity.spaceEntity?.thumbnail))
                         }
                     }
                     result.append(Space(id: id, entities: spaceEntities))

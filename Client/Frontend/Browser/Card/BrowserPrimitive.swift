@@ -168,7 +168,7 @@ extension SpaceEntityData: BrowserPrimitive {
     }
 
     var displayTitle: String {
-        title ?? url.absoluteString
+        title ?? url?.absoluteString ?? ""
     }
 
     var displayFavicon: Favicon? {

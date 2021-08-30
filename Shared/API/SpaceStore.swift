@@ -11,12 +11,12 @@ public struct SpaceID: Hashable, Identifiable {
 
 public struct SpaceEntityData {
     public let id = UUID().uuidString
-    public let url: URL
+    public let url: URL?
     public let title: String?
     public let snippet: String?
     public let thumbnail: String?
 
-    public init(url: URL, title: String?, snippet: String?, thumbnail: String?) {
+    public init(url: URL?, title: String?, snippet: String?, thumbnail: String?) {
         self.url = url
         self.title = title
         self.snippet = snippet
@@ -193,7 +193,10 @@ public class SpaceStore: ObservableObject {
 
                         self.onUpdateSpaceURLs(
                             space: spacesToFetch.first { $0.id.value == space.id }!,
-                            urls: Set(space.entities.reduce(into: [URL]()) { $0.append($1.url) }),
+                            urls: Set(
+                                space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
+                                    $0.append($1.url!)
+                                }),
                             data: space.entities)
                     }
                     self.state = .ready

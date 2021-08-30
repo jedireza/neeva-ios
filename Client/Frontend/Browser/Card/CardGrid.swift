@@ -148,7 +148,9 @@ struct CardGrid: View {
                 if let spaceDetails = spaceModel.detailedSpace {
                     DetailView(primitive: spaceDetails)
                         .frame(width: geom.size.width, height: geom.size.height)
-                        .background(Color(UIColor.TrayBackground).ignoresSafeArea())
+                        .background(
+                            Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
+                        )
                         .transition(.slide)
                 }
             }

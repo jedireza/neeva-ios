@@ -253,7 +253,6 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     func updateDetails() {
         allDetails =
             manager.get(for: id)?.contentData?
-            .sorted(by: { first, second in first.thumbnail?.dataURIBody != nil })
             .map { SpaceEntityThumbnail(data: $0, spaceID: id) } ?? []
     }
 
