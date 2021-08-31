@@ -43,6 +43,7 @@ class ZeroQueryModel: ObservableObject {
         self.profile = profile
         self.shareURLHandler = shareURLHandler
         updateState()
+        profile.panelDataObservers.activityStream.refreshIfNeeded(forceTopSites: true)
     }
 
     func signIn() {
