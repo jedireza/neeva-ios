@@ -687,7 +687,6 @@ class BrowserViewController: UIViewController {
 
         if isLazyTab {
             chromeModel.setEditingLocation(to: true)
-            searchQueryModel.value = ""
         }
 
         searchQueryModel.value = ""
@@ -718,6 +717,7 @@ class BrowserViewController: UIViewController {
             }
 
             self.hideZeroQuery()
+            self.zeroQueryModel.reset(bvc: self)
         }
     }
 

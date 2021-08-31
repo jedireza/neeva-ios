@@ -45,9 +45,9 @@ class ClipBoardTests: BaseTestCase {
         app.textFields["address"].typeText("\n")
 
         waitForExistence(app.buttons["Address Bar"])
-        app.buttons["Address Bar"].press(forDuration: 1)
+        app.buttons["Address Bar"].press(forDuration: 2)
 
-        waitForExistence(app.menuItems["Paste & Go"])
+        waitForExistence(app.menuItems["Paste & Go"], timeout: 30)
         app.menuItems["Paste & Go"].tap()
 
         checkUrl()

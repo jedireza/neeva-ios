@@ -16,7 +16,7 @@ extension BaseTestCase {
 
     /// Launches from tab page
     func goToSettings() {
-        waitForExistence(app.buttons["Neeva Menu"])
+        waitForExistence(app.buttons["Neeva Menu"], timeout: 30)
         app.buttons["Neeva Menu"].tap(force: true)
 
         waitForExistence(app.buttons["Settings"])
@@ -52,7 +52,7 @@ extension BaseTestCase {
 
     /// Launches from tab page
     func goToHistory() {
-        waitForExistence(app.buttons["Neeva Menu"])
+        waitForExistence(app.buttons["Neeva Menu"], timeout: 30)
         app.buttons["Neeva Menu"].tap(force: true)
 
         waitForExistence(app.buttons["Settings"])
@@ -84,7 +84,7 @@ extension BaseTestCase {
         action: (XCUIElement) -> Void
     ) {
         app.buttons["More"].tap(force: true)
-        waitForExistence(app.buttons[label])
+        waitForExistence(app.buttons[label], timeout: 30)
         action(app.buttons[label])
         if shouldDismissOverlay {
             if iPad() {
