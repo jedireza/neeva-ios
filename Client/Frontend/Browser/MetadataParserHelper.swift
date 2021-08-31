@@ -12,6 +12,24 @@ import XCGLogger
 
 private let log = Logger.browser
 
+private func fixUpMetadata(_ dict: [String: Any]?, for tab: Tab) -> [String: Any]? {
+    // Workaround for Issue #678: The favicon for a non-HTML document (e.g., PDF) can
+    // only be the site favicon.
+    // See https://github.com/mozilla/page-metadata-parser/issues/120 for the better fix.
+    if tab.temporaryDocument != nil {
+        var copy = dict
+        if let pageURLString = copy?[MetadataKeys.pageURL.rawValue] as? String,
+            let pageURL = URL(string: pageURLString)
+        {
+            copy?[MetadataKeys.favicon.rawValue] =
+                pageURL.domainURL.appendingPathComponent("favicon.ico").absoluteString
+        }
+        return copy
+    } else {
+        return dict
+    }
+}
+
 class MetadataParserHelper: TabEventHandler {
     init() {
         register(self, forTabEvents: .didChangeURL)
@@ -37,7 +55,7 @@ class MetadataParserHelper: TabEventHandler {
                 return
             }
 
-            guard let dict = result as? [String: Any],
+            guard let dict = fixUpMetadata(result as? [String: Any], for: tab),
                 let pageURL = tab.url?.displayURL,
                 let pageMetadata = PageMetadata.fromDictionary(dict)
             else {
