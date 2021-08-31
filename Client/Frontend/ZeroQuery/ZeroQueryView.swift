@@ -123,7 +123,7 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if let openTab = viewModel.openedFrom?.openedTab, let url = openTab.url, !InternalURL.isValid(url: url) {
+                    if let openTab = viewModel.openedFrom?.openedTab, let url = openTab.url, !(InternalURL(url)?.isZeroQueryURL ?? false) {
                         SearchSuggestionView(
                             Suggestion.editCurrentURL(
                                 TabCardDetails(

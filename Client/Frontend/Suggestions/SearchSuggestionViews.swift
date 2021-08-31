@@ -498,10 +498,16 @@ private struct TabSuggestionView: View {
 private struct EditCurrentURLSuggestionView: View {
     let suggestion: TabCardDetails
 
+    var url: URL? {
+        let url = suggestion.url
+        return InternalURL.isValid(url: url) ?
+                InternalURL(url)?.originalURLFromErrorPage : suggestion.url
+    }
+
     @EnvironmentObject public var model: SuggestionModel
 
     var label: some View {
-        Text(suggestion.url?.absoluteString ?? "")
+        Text(url?.absoluteString ?? "")
             .withFont(.bodySmall).lineLimit(1)
     }
 
