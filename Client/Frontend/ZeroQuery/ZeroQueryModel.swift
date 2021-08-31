@@ -119,7 +119,7 @@ class ZeroQueryModel: ObservableObject {
         showRatingsCard =
             NeevaFeatureFlags[.appStoreRatingPromo]
             && promoCard == nil
-            && Defaults[.loginLastWeekTimeStamp].count == 10
+            && Defaults[.loginLastWeekTimeStamp].count == 3
             && (!Defaults[.ratingsCardHidden]
                 || (UserFlagStore.shared.state == .ready
                     && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)))

@@ -118,6 +118,29 @@ struct ZeroQueryView: View {
     @Default(.expandSuggestedSites) private var expandSuggestedSites
     @Default(.expandSearches) private var expandSearches
     @Default(.expandSpaces) private var expandSpaces
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    func ratingsCard(_ viewWidth: CGFloat) -> some View {
+        RatingsCard(
+            scene: SceneDelegate.getCurrentScene(for: viewModel.bvc.view),
+            onClose: {
+                viewModel.showRatingsCard = false
+                Defaults[.ratingsCardHidden] = true
+                UserFlagStore.shared.setFlag(
+                    .dismissedRatingPromo,
+                    action: {})
+            },
+            onFeedback: {
+                showFeedbackPanel(bvc: viewModel.bvc, shareURL: false)
+            },
+            viewWidth: viewWidth)
+    }
+
+    func isLandScape() -> Bool {
+        return horizontalSizeClass == .regular
+            || (horizontalSizeClass == .compact && verticalSizeClass == .compact)
+    }
 
     var body: some View {
         GeometryReader { geom in
@@ -144,6 +167,10 @@ struct ZeroQueryView: View {
                             PromoCard(type: promoCardType, viewWidth: geom.size.width)
                         }
 
+                        if isLandScape() && viewModel.showRatingsCard {
+                            ratingsCard(geom.size.width)
+                        }
+                        
                         ZeroQueryHeader(
                             title: "Suggested sites",
                             action: { expandSuggestedSites.advance() },
@@ -153,21 +180,9 @@ struct ZeroQueryView: View {
                         if expandSuggestedSites != .hidden {
                             SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
                         }
-
-                        if viewModel.showRatingsCard {
-                            RatingsCard(
-                                scene: SceneDelegate.getCurrentScene(for: viewModel.bvc.view),
-                                onClose: {
-                                    viewModel.showRatingsCard = false
-                                    Defaults[.ratingsCardHidden] = true
-                                    UserFlagStore.shared.setFlag(
-                                        .dismissedRatingPromo,
-                                        action: {})
-                                },
-                                onFeedback: {
-                                    showFeedbackPanel(bvc: viewModel.bvc, shareURL: false)
-                                },
-                                viewWidth: geom.size.width)
+                        
+                        if !isLandScape() && viewModel.showRatingsCard {
+                            ratingsCard(geom.size.width)
                         }
 
                         ZeroQueryHeader(

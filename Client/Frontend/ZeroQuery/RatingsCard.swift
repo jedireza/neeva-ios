@@ -73,7 +73,7 @@ struct RatingsCard: View {
     var rightButtonContent: some View {
         HStack {
             if state == RatingsCardState.rateExperience { Text("😍").withFont(.bodyLarge) }
-            Spacer(minLength:  0 )
+            Spacer(minLength: 0)
             if state == RatingsCardState.rateExperience {
                 Text("Loving it!").withFont(.bodyLarge)
             } else {
@@ -81,7 +81,7 @@ struct RatingsCard: View {
                     .bold()
                     .withFont(.bodyLarge)
             }
-            Spacer(minLength:  0 )
+            Spacer(minLength: 0)
 
         }
         .padding(.leading, 12.5)
@@ -93,18 +93,20 @@ struct RatingsCard: View {
         switch state {
         case .rateExperience:
             Text("How's your Neeva experience?")
-                .withFont(.bodyMedium)
+                .withFont(.bodyLarge)
                 .multilineTextAlignment(.center)
         case .sendFeedback:
             Text("✍️").font(.system(size: 32))
             Text("We hear you. Send feedback to help us make Neeva better for you!")
-                .withFont(.bodyMedium)
-                .multilineTextAlignment(.center)
+                .withFont(.bodyLarge)
+                .multilineTextAlignment(isHorizontal ? .leading : .center)
+                .frame(width: 210)
         case .appStoreReview:
             Text("😍").font(.system(size: 32))
             Text("Spread the cheer on the App Store? Your review will help Neeva grow.")
-                .withFont(.bodyMedium)
-                .multilineTextAlignment(.center)
+                .withFont(.bodyLarge)
+                .multilineTextAlignment(isHorizontal ? .leading : .center)
+                .frame(width: 210)
         }
     }
 
@@ -115,10 +117,12 @@ struct RatingsCard: View {
                 leftButtonContent
             }
             .buttonStyle(NeevaButtonStyle(.secondary))
+            .frame(width: 148)
             Button(action: self.rightButtonFunction) {
                 rightButtonContent
             }
             .buttonStyle(NeevaButtonStyle(secondButtonProminent ? .primary : .secondary))
+            .frame(width: 148)
         }
 
     }
@@ -177,7 +181,7 @@ struct RatingsCard: View {
                     label
                         .fixedSize(
                             horizontal: false,
-                            vertical:  true )
+                            vertical: true)
                     buttons
                 }
             }
@@ -185,7 +189,7 @@ struct RatingsCard: View {
 
         .padding(25)
         .background(background)
-        .frame(maxWidth: 650)
+        .frame(maxWidth: viewWidth)
         .padding()
     }
 
@@ -195,17 +199,20 @@ struct RatingsCard_Previews: PreviewProvider {
     static var previews: some View {
         GeometryReader { geom in
             RatingsCard(
-                state: RatingsCardState.rateExperience, scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
+                state: RatingsCardState.rateExperience,
+                scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
                 viewWidth: geom.size.width)
         }
         GeometryReader { geom in
             RatingsCard(
-                state: RatingsCardState.sendFeedback, scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
+                state: RatingsCardState.sendFeedback,
+                scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
                 viewWidth: geom.size.width)
         }
         GeometryReader { geom in
             RatingsCard(
-                state: RatingsCardState.appStoreReview, scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
+                state: RatingsCardState.appStoreReview,
+                scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
                 viewWidth: geom.size.width)
         }
     }

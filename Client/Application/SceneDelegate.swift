@@ -328,7 +328,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
-        Defaults[.loginLastWeekTimeStamp] = Defaults[.loginLastWeekTimeStamp].suffix(9).filter {
+        Defaults[.loginLastWeekTimeStamp] = Defaults[.loginLastWeekTimeStamp].suffix(2).filter {
             $0 > startOfLastWeek
         }
         Defaults[.loginLastWeekTimeStamp].append(Date())
