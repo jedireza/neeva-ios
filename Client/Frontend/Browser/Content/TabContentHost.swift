@@ -5,7 +5,7 @@ import Shared
 import Storage
 import SwiftUI
 
-enum ContentUIType {
+enum ContentUIType: Equatable {
     case webPage(WKWebView)
     case zeroQuery
     case suggestions
@@ -101,7 +101,9 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                         .environmentObject(suggestedSitesViewModel)
                         .environmentObject(suggestedSearchesModel)
                 }
-            }.onAppear {
+            }.useEffect(deps: model.currentContentUI) { _ in
+                zeroQueryModel.profile.panelDataObservers.activityStream.refreshIfNeeded(
+                    forceTopSites: true)
                 TopSitesHandler.getTopSites(
                     profile: zeroQueryModel.profile
                 ).uponQueue(.main) { result in
