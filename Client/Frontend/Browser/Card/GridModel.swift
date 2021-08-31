@@ -4,7 +4,7 @@ import Foundation
 
 class GridModel: ObservableObject {
     @Published var isHidden = true
-    @Published var animationThumbnailState: AnimationThumbnailState = .visibleForTrayShown
+    @Published var animationThumbnailState: AnimationThumbnailState = .hidden
     @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
     @Published var switcherState: SwitcherViews = .tabs
     @Published var showingDetailsAsList = true
@@ -15,15 +15,19 @@ class GridModel: ObservableObject {
     var buildRecentlyClosedTabsMenu: (() -> UIMenu)!
 
     func show() {
-        animationThumbnailState = .visibleForTrayShown
+        animationThumbnailState = .visibleForTrayShow
         isHidden = false
         updateVisibility(false)
     }
 
+    func hideWithAnimation() {
+        animationThumbnailState = .visibleForTrayHidden
+    }
+
     func hideWithNoAnimation() {
+        animationThumbnailState = .visibleForTrayHidden
         updateVisibility(true)
         isHidden = true
-        animationThumbnailState = .visibleForTrayShown
         switcherState = .tabs
     }
 
@@ -33,7 +37,7 @@ class GridModel: ObservableObject {
 }
 
 enum AnimationThumbnailState {
-    case visibleForTrayShown
     case hidden
+    case visibleForTrayShow
     case visibleForTrayHidden
 }

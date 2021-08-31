@@ -23,7 +23,7 @@ class SwitcherToolbarModel: ObservableObject {
     }
 
     func onToggleIncognito() {
-        tabManager.toggleIncognitoMode()
+        tabManager.toggleIncognitoMode(clearSelectedTab: false)
     }
 }
 
@@ -60,7 +60,7 @@ struct SwitcherToolbarView: View {
                 .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
                 Spacer()
                 SecondaryMenuButton(action: {
-                    gridModel.animationThumbnailState = .visibleForTrayHidden
+                    gridModel.hideWithAnimation()
                 }) {
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
                     let title = NSAttributedString(

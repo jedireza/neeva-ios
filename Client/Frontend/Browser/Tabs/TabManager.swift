@@ -156,13 +156,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     var selectedTab: Tab?
-    @Published private(set) var isIncognito: Bool = false {
-        didSet {
-            if let selectedTab = selectedTab {
-                assert(selectedTab.isIncognito == isIncognito)
-            }
-        }
-    }
+    @Published private(set) var isIncognito: Bool = false
 
     subscript(index: Int) -> Tab? {
         assert(Thread.isMainThread)
@@ -437,11 +431,13 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    func toggleIncognitoMode() {
+    func toggleIncognitoMode(clearSelectedTab: Bool = true) {
         let bvc = SceneDelegate.getBVC(with: scene)
 
         // set to nil while inconito changes
-        selectedTab = nil
+        if clearSelectedTab {
+            selectedTab = nil
+        }
 
         // prevents assert from failing here
         isIncognito.toggle()

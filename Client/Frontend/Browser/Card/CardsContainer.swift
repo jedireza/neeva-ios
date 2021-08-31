@@ -36,7 +36,8 @@ struct CardsContainer: View {
                             withAnimation {
                                 value.scrollTo(tabModel.selectedTabID)
                             }
-                            gridModel.animationThumbnailState = .visibleForTrayHidden
+                            
+                            gridModel.hideWithAnimation()
                         }
                     }
                 }

@@ -162,7 +162,7 @@ struct CardGrid: View {
         .overlay(transitionAnimator, alignment: .top)
         .ignoresSafeArea(.keyboard)
         .accessibilityAction(.escape) {
-            gridModel.animationThumbnailState = .visibleForTrayHidden
+            gridModel.hideWithAnimation()
         }
     }
 }

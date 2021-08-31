@@ -93,7 +93,6 @@ class DomainAutocompleteTest: BaseTestCase {
     }
     // Non-matches.
     func testNoMatches() {
-        openURL("twitter.com/login")
         app.buttons["Address Bar"].tap()
         waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("baz")

@@ -139,13 +139,13 @@ class BaseTestCase: XCTestCase {
         UIPasteboard.general.string = url
 
         if app.buttons["Cancel"].exists {
-            app.textFields["address"].press(forDuration: 1)
+            app.textFields["address"].press(forDuration: 2)
         } else {
             waitForExistence(app.buttons["Address Bar"], timeout: 30)
-            app.buttons["Address Bar"].press(forDuration: 1)
+            app.buttons["Address Bar"].press(forDuration: 2)
         }
 
-        waitForExistence(app.menuItems["Paste & Go"])
+        waitForExistence(app.menuItems["Paste & Go"], timeout: 30)
         app.menuItems["Paste & Go"].tap()
 
         waitForNoExistence(app.staticTexts["Neeva pasted from XCUITests-Runner"])
