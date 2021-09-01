@@ -131,18 +131,19 @@ class CardTests: XCTestCase {
         XCTAssertEqual(SpaceStore.shared.getAll().count, 4)
         SpaceStore.shared.getAll().first!.contentData = [
             SpaceEntityData(
-                url: .aboutBlank, title: nil, snippet: nil,
+                id: "id1", url: .aboutBlank, title: nil, snippet: nil,
                 thumbnail: SpaceThumbnails.githubThumbnail),
             SpaceEntityData(
-                url: .aboutBlank, title: nil, snippet: nil,
+                id: "id2", url: .aboutBlank, title: nil, snippet: nil,
                 thumbnail: SpaceThumbnails.stackOverflowThumbnail),
         ]
         SpaceStore.shared.getAll().last!.contentData = [
             SpaceEntityData(
-                url: .aboutBlank, title: nil, snippet: nil,
+                id: "id3", url: .aboutBlank, title: nil, snippet: nil,
                 thumbnail: SpaceThumbnails.githubThumbnail)
         ]
-        let firstCard = SpaceCardDetails(space: SpaceStore.shared.getAll().first!, bvc: SceneDelegate.getBVC(for: nil))
+        let firstCard = SpaceCardDetails(
+            space: SpaceStore.shared.getAll().first!, bvc: SceneDelegate.getBVC(for: nil))
         XCTAssertEqual(firstCard.id, Space.stackOverflow.id.id)
         XCTAssertEqual(firstCard.allDetails.count, 2)
         let firstThumbnail = try firstCard.thumbnail.inspect().vStack().view(
@@ -154,7 +155,7 @@ class CardTests: XCTestCase {
         XCTAssertEqual(spaceCardModel.allDetails.count, 0)
         // Send a dummy event to simulate a store refresh
         SpaceStore.shared.objectWillChange.send()
-        XCTAssertEqual(spaceCardModel.allDetails.count, 4)
+        waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })
 
         let lastCard = spaceCardModel.allDetails.last!
         XCTAssertEqual(lastCard.id, Space.public.id.id)
@@ -200,6 +201,7 @@ class CardTests: XCTestCase {
         let model = GridModel()
         model.switcherState = .spaces
         SpaceStore.shared.objectWillChange.send()
+        waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })
 
         let cardContainer = CardsContainer(
             columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)

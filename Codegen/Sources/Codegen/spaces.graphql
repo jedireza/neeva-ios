@@ -35,6 +35,9 @@ query GetSpacesData($ids: [String!]) {
       }
       space {
         entities {
+          metadata {
+            docID
+          }
           spaceEntity {
             url
             title
@@ -57,4 +60,12 @@ mutation CreateSpace($name: String!) {
 
 mutation DeleteSpaceResultByURL($input: DeleteSpaceResultByURLInput!) {
   deleteSpaceResultByURL(input: $input)
+}
+
+mutation BatchDeleteSpaceResult($input: BatchDeleteSpaceResultInput!) {
+  batchDeleteSpaceResult(input: $input)
+}
+
+mutation SetSpaceDetailPageSortOrder($input: SetSpaceDetailPageSortOrderInput!) {
+  setSpaceDetailPageSortOrder(input: $input)
 }

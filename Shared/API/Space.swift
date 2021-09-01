@@ -59,6 +59,7 @@ class SpacesDataQueryController: QueryController<
                         for entity in entities {
                             spaceEntities.append(
                                 SpaceEntityData(
+                                    id: entity.metadata?.docId ?? "unknown-id",
                                     url: URL(string: entity.spaceEntity?.url ?? ""),
                                     title: entity.spaceEntity?.title,
                                     snippet: entity.spaceEntity?.snippet,

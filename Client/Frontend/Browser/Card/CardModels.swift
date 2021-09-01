@@ -86,34 +86,65 @@ class SpaceCardModel: CardModel {
             }
             space.isShowingDetails = false
         }
+
+        didSet {
+            if stateNeedsRefresh {
+                manager.refresh()
+                stateNeedsRefresh = false
+            }
+        }
     }
 
     var onViewUpdate: () -> Void = {}
-    var anyCancellable: AnyCancellable? = nil
-    var detailsSubscriptions: Set<AnyCancellable> = Set()
+    private var anyCancellable: AnyCancellable? = nil
+    private var detailsSubscriptions: Set<AnyCancellable> = Set()
+    private var stateNeedsRefresh = false
 
     init(bvc: BrowserViewController) {
         manager.refresh()
 
         self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
-            allDetails = manager.getAll().map { SpaceCardDetails(space: $0, bvc: bvc) }
-            allDetails.forEach { details in
-                details.$isShowingDetails.sink { [weak self] showingDetails in
-                    if showingDetails {
-                        withAnimation {
-                            self?.detailedSpace = details
-                        }
-                    }
-                }.store(in: &detailsSubscriptions)
+            if detailedSpace != nil {
+                return
             }
+            DispatchQueue.main.async {
+                allDetails = manager.getAll().map { SpaceCardDetails(space: $0, bvc: bvc) }
+                allDetails.forEach { details in
+                    details.$isShowingDetails.sink { [weak self] showingDetails in
+                        if showingDetails {
+                            withAnimation {
+                                self?.detailedSpace = details
+                            }
+                        }
+                    }.store(in: &detailsSubscriptions)
+                }
 
-            onViewUpdate()
-            detailedSpace = allDetails.first { $0.isShowingDetails }
-            objectWillChange.send()
+                onViewUpdate()
+                detailedSpace = allDetails.first { $0.isShowingDetails }
+                objectWillChange.send()
+            }
         }
     }
 
     func onDataUpdated() {}
+
+    func delete(space spaceID: String, entities: [String]) {
+        DispatchQueue.main.async {
+            let request = SpaceBatchRequest(for: spaceID, to: .delete, entities: entities)
+            request.$state.sink { state in
+                self.stateNeedsRefresh = true
+            }.cancel()
+        }
+    }
+
+    func reorder(space spaceID: String, entities: [String]) {
+        DispatchQueue.main.async {
+            let request = SpaceBatchRequest(for: spaceID, to: .reorder, entities: entities)
+            request.$state.sink { state in
+                self.stateNeedsRefresh = true
+            }.cancel()
+        }
+    }
 }
 
 class SiteCardModel: CardModel {

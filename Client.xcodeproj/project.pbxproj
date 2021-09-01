@@ -137,6 +137,7 @@
 		4392FB48252EC50400AD3D23 /* InternalSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC486982195F46A00CDA48D /* InternalSchemeHandler.swift */; };
 		4392FB5C252EC51E00AD3D23 /* PrivilegedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31CF65B1CC1959A001D0BD0 /* PrivilegedRequest.swift */; };
 		4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */; };
+		4A15C8B326DEE2D8006CD097 /* SpaceBatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A15C8B226DEE2D8006CD097 /* SpaceBatchRequest.swift */; };
 		4A1D054B26642BF400D63333 /* SimulatedSwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */; };
 		4A1D054D266430DA00D63333 /* SimulatedSwipeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */; };
 		4A1D05502669715B00D63333 /* CardViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054F2669715B00D63333 /* CardViewControllers.swift */; };
@@ -1064,6 +1065,7 @@
 		435D7CC4246209AA0043ACB9 /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		435FAB17242404B400AE9310 /* FullscreenHelper.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = FullscreenHelper.js; path = Client/Frontend/UserContent/UserScripts/AllFrames/AtDocumentStart/FullscreenHelper.js; sourceTree = SOURCE_ROOT; };
 		4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGroupView.swift; sourceTree = "<group>"; };
+		4A15C8B226DEE2D8006CD097 /* SpaceBatchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceBatchRequest.swift; sourceTree = "<group>"; };
 		4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeController.swift; sourceTree = "<group>"; };
 		4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeAnimator.swift; sourceTree = "<group>"; };
 		4A1D054F2669715B00D63333 /* CardViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewControllers.swift; sourceTree = "<group>"; };
@@ -2566,6 +2568,7 @@
 				C9C18DD126558FF2004710CD /* Network.swift */,
 				C9C18DD026558FF2004710CD /* QueryController.swift */,
 				C9C18E30265594DE004710CD /* Space.swift */,
+				4A15C8B226DEE2D8006CD097 /* SpaceBatchRequest.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
 				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
 				C9C18E2F265594DE004710CD /* TestSpaces.swift */,
@@ -4262,6 +4265,7 @@
 				C9C18E50265597A6004710CD /* SpacesSearchHeaderView.swift in Sources */,
 				E65075B21E37F7AB006961AC /* Functions.swift in Sources */,
 				E65075BA1E37F7AB006961AC /* Prefs.swift in Sources */,
+				4A15C8B326DEE2D8006CD097 /* SpaceBatchRequest.swift in Sources */,
 				C9C18E4726559616004710CD /* MultilineTextField.swift in Sources */,
 				C9C18E5C265598EA004710CD /* QueryController.swift in Sources */,
 				C9C18E5726559874004710CD /* NeevaColors.swift in Sources */,

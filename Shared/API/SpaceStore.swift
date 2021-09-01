@@ -10,13 +10,14 @@ public struct SpaceID: Hashable, Identifiable {
 }
 
 public struct SpaceEntityData {
-    public let id = UUID().uuidString
+    public let id: String
     public let url: URL?
     public let title: String?
     public let snippet: String?
     public let thumbnail: String?
 
-    public init(url: URL?, title: String?, snippet: String?, thumbnail: String?) {
+    public init(id: String, url: URL?, title: String?, snippet: String?, thumbnail: String?) {
+        self.id = id
         self.url = url
         self.title = title
         self.snippet = snippet

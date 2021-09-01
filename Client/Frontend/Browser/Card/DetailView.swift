@@ -61,7 +61,14 @@ where
             if gridModel.showingDetailsAsList {
                 Button(
                     action: {
-                        editMode = .active
+                        switch editMode {
+                        case .inactive:
+                            editMode = .active
+                        case .active:
+                            editMode = .inactive
+                        default:
+                            print("Pressed button again during transition. Ignoring...")
+                        }
                     },
                     label: {
                         Image(
@@ -151,11 +158,16 @@ where
     }
 
     private func onDelete(offsets: IndexSet) {
+        let deletedEntities: [String] = offsets.map { index in
+            primitive.allDetails[index].id
+        }
         primitive.allDetails.remove(atOffsets: offsets)
+        spacesModel.delete(space: primitive.id, entities: deletedEntities)
     }
 
     private func onMove(source: IndexSet, destination: Int) {
         primitive.allDetails.move(fromOffsets: source, toOffset: destination)
+        spacesModel.reorder(space: primitive.id, entities: primitive.allDetails.map { $0.id })
     }
 }
 

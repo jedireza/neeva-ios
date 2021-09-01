@@ -6,7 +6,7 @@ import Apollo
 import Foundation
 
 /// Input type for client logs.
-/// 
+///
 /// Client logs are generic, and cover every type of log that the client
 /// may want to pass, including counters, pingbacks, trace information, errors,
 /// etc. Log messages from the client are batched, and each batch contains
@@ -17,7 +17,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
   /// - Parameters:
   ///   - base: Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  /// 
+  ///
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   ///   - web: 0.2.105
@@ -31,7 +31,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
 
   /// Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  /// 
+  ///
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   /// - web: 0.2.105
@@ -639,7 +639,7 @@ public enum ClientLogTrackingLogType: RawRepresentable, Equatable, Hashable, Cas
 }
 
 /// Input type for logInteraction mutation.
-/// 
+///
 /// Though this is not officially deprecated (and still works), new interactions
 /// should be added to the interactionV3Event instead.
 public struct InteractionEventInput: GraphQLMapConvertible {
@@ -1454,10 +1454,10 @@ public enum ResultActionType: RawRepresentable, Equatable, Hashable, CaseIterabl
 
 /// This enum needs to be keep in sync with
 /// fedsearch/request/interaction_logger_request.go
-/// 
+///
 /// and need to add to fedsearch/mixer/packer.go
 /// to start collecting the data.
-/// 
+///
 /// Keep this enum in sync with InteractionType in file
 /// neeva/logs/avro_schemas/interaction/interaction_log_v2_entry.avsc
 public enum InteractionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
@@ -2126,11 +2126,11 @@ public struct ResultGroupAttributes: GraphQLMapConvertible {
 }
 
 /// Input type for v3 ClientLog.interactionV3Event mutation.
-/// 
+///
 /// This is the preferred mechanism for logging an interaction that happens in a
 /// search results page (SRP) context. The concepts and design behind how
 /// interactions are recorded in the design doc:
-/// 
+///
 /// https://paper.dropbox.com/doc/Logging-V3-Page-structure--A7Q0Gpx7oVh1vflhuaIBsHQfAg-4RsxGgmgnFiaM5Rg72YjO
 public struct InteractionV3EventInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
@@ -2184,12 +2184,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
   /// the category for LoggingContext.
   ///   - element: What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  /// 
+  ///
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   ///   - elementAction: Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  /// 
+  ///
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public init(actionType: Swift.Optional<InteractionV3Type?> = nil, category: Swift.Optional<InteractionV3Category?> = nil, element: Swift.Optional<String?> = nil, elementAction: Swift.Optional<String?> = nil) {
@@ -2219,7 +2219,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  /// 
+  ///
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   public var element: Swift.Optional<String?> {
@@ -2233,7 +2233,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  /// 
+  ///
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public var elementAction: Swift.Optional<String?> {
@@ -2247,12 +2247,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 }
 
 /// The collection of action types for the v3 interactions table.
-/// 
+///
 /// Be VERY CAREFUL about extending the action types here. In general, we want
 /// to have a very limited number of action types. If you need more information
 /// about the context of an action, consider using Element, ElementAction, or
 /// the Attributes table.
-/// 
+///
 /// PLEASE KEEP IN SYNC with //schemas/constants/interaction_type.go.
 public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2328,7 +2328,7 @@ public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterab
 /// InteractionV3Category specifies the type of the item in the log tree hierarchy.
 /// The log tree can have have N number of entries, but these are the ones
 /// that have IDs associated.
-/// 
+///
 /// PLEASE KEEP IN SYNC with //schemas/constants/category.go
 public enum InteractionV3Category: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2396,12 +2396,12 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   /// This is a event of graphqql request fied to render the measured view
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome)
-  /// 
+  ///
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - rttMs: RTT of the recent connection
   ///   - userActionTimeMs: Use action time in ms since start of the document
   /// This is valid only when inAppTransition is true
-  ///   - queryRequestTimeMs: Query start time, since start of the document 
+  ///   - queryRequestTimeMs: Query start time, since start of the document
   ///   - queryResponseTimeMs: Query response received, since start of the document
   ///   - resultRenderTimeMs: Result is rendered on the browser, since start of the document
   ///   - criticalPathResourcePerfEntries: Detailed critical path resources of critical path resources as JSON
@@ -2435,7 +2435,7 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   }
 
   /// Type of network predicted by browser based (supported in chrome)
-  /// 
+  ///
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2694,7 +2694,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  /// 
+  ///
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - events: The events in the trace. A trace is an ordered collection of perf events
   /// that are all related in some way. A single action (such as loading the app)
@@ -2761,7 +2761,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
 
   /// Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  /// 
+  ///
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2805,11 +2805,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   /// not the absolute timestamp, which can be computed by adding the trace
   /// timestamp to the elapsedMs.
   ///   - elapsedMs: DEPRECATED 2020-04-24
-  /// 
+  ///
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  /// 
+  ///
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public init(type: Swift.Optional<String?> = nil, elapsedTotalMs: Swift.Optional<Double?> = nil, elapsedMs: Swift.Optional<Double?> = nil) {
     graphQLMap = ["type": type, "elapsedTotalMs": elapsedTotalMs, "elapsedMs": elapsedMs]
@@ -2838,11 +2838,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   }
 
   /// DEPRECATED 2020-04-24
-  /// 
+  ///
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  /// 
+  ///
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public var elapsedMs: Swift.Optional<Double?> {
     get {
@@ -3450,6 +3450,153 @@ public struct DeleteSpaceResultByURLInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "url")
+    }
+  }
+}
+
+public struct BatchDeleteSpaceResultInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - spaceId
+  ///   - resultIDs
+  public init(spaceId: String, resultIDs: [String]) {
+    graphQLMap = ["spaceID": spaceId, "resultIDs": resultIDs]
+  }
+
+  public var spaceId: String {
+    get {
+      return graphQLMap["spaceID"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "spaceID")
+    }
+  }
+
+  public var resultIDs: [String] {
+    get {
+      return graphQLMap["resultIDs"] as! [String]
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "resultIDs")
+    }
+  }
+}
+
+public struct SetSpaceDetailPageSortOrderInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - spaceId
+  ///   - attribute
+  ///   - sortOrderType
+  ///   - customSortOrder
+  public init(spaceId: Swift.Optional<String?> = nil, attribute: Swift.Optional<String?> = nil, sortOrderType: Swift.Optional<SortOrderType?> = nil, customSortOrder: Swift.Optional<CustomSortOrderInput?> = nil) {
+    graphQLMap = ["spaceID": spaceId, "attribute": attribute, "sortOrderType": sortOrderType, "customSortOrder": customSortOrder]
+  }
+
+  public var spaceId: Swift.Optional<String?> {
+    get {
+      return graphQLMap["spaceID"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "spaceID")
+    }
+  }
+
+  public var attribute: Swift.Optional<String?> {
+    get {
+      return graphQLMap["attribute"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "attribute")
+    }
+  }
+
+  public var sortOrderType: Swift.Optional<SortOrderType?> {
+    get {
+      return graphQLMap["sortOrderType"] as? Swift.Optional<SortOrderType?> ?? Swift.Optional<SortOrderType?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "sortOrderType")
+    }
+  }
+
+  public var customSortOrder: Swift.Optional<CustomSortOrderInput?> {
+    get {
+      return graphQLMap["customSortOrder"] as? Swift.Optional<CustomSortOrderInput?> ?? Swift.Optional<CustomSortOrderInput?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "customSortOrder")
+    }
+  }
+}
+
+public enum SortOrderType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case unspecified
+  case ascending
+  case descending
+  case custom
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "Unspecified": self = .unspecified
+      case "Ascending": self = .ascending
+      case "Descending": self = .descending
+      case "Custom": self = .custom
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .unspecified: return "Unspecified"
+      case .ascending: return "Ascending"
+      case .descending: return "Descending"
+      case .custom: return "Custom"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: SortOrderType, rhs: SortOrderType) -> Bool {
+    switch (lhs, rhs) {
+      case (.unspecified, .unspecified): return true
+      case (.ascending, .ascending): return true
+      case (.descending, .descending): return true
+      case (.custom, .custom): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [SortOrderType] {
+    return [
+      .unspecified,
+      .ascending,
+      .descending,
+      .custom,
+    ]
+  }
+}
+
+public struct CustomSortOrderInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - resultIDs
+  public init(resultIDs: Swift.Optional<[String]?> = nil) {
+    graphQLMap = ["resultIDs": resultIDs]
+  }
+
+  public var resultIDs: Swift.Optional<[String]?> {
+    get {
+      return graphQLMap["resultIDs"] as? Swift.Optional<[String]?> ?? Swift.Optional<[String]?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "resultIDs")
     }
   }
 }
@@ -5051,6 +5198,10 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             __typename
             entities {
               __typename
+              metadata {
+                __typename
+                docID
+              }
               spaceEntity {
                 __typename
                 url
@@ -5067,7 +5218,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "ff454287a05bea208d626bc2cf8744dec7a7e9356dab063d0323940b1c31bc1f"
+  public let operationIdentifier: String? = "21af15bc6239f417057038496029d2fd7dfa9b265f704b45332dfbffe1c80b27"
 
   public var ids: [String]?
 
@@ -5279,6 +5430,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             public static var selections: [GraphQLSelection] {
               return [
                 GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("metadata", type: .object(Metadatum.selections)),
                 GraphQLField("spaceEntity", type: .object(SpaceEntity.selections)),
               ]
             }
@@ -5289,8 +5441,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(spaceEntity: SpaceEntity? = nil) {
-              self.init(unsafeResultMap: ["__typename": "SpaceEntity", "spaceEntity": spaceEntity.flatMap { (value: SpaceEntity) -> ResultMap in value.resultMap }])
+            public init(metadata: Metadatum? = nil, spaceEntity: SpaceEntity? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SpaceEntity", "metadata": metadata.flatMap { (value: Metadatum) -> ResultMap in value.resultMap }, "spaceEntity": spaceEntity.flatMap { (value: SpaceEntity) -> ResultMap in value.resultMap }])
             }
 
             public var __typename: String {
@@ -5302,12 +5454,62 @@ public final class GetSpacesDataQuery: GraphQLQuery {
               }
             }
 
+            public var metadata: Metadatum? {
+              get {
+                return (resultMap["metadata"] as? ResultMap).flatMap { Metadatum(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "metadata")
+              }
+            }
+
             public var spaceEntity: SpaceEntity? {
               get {
                 return (resultMap["spaceEntity"] as? ResultMap).flatMap { SpaceEntity(unsafeResultMap: $0) }
               }
               set {
                 resultMap.updateValue(newValue?.resultMap, forKey: "spaceEntity")
+              }
+            }
+
+            public struct Metadatum: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["ResultMetadata"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("docID", type: .scalar(String.self)),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(docId: String? = nil) {
+                self.init(unsafeResultMap: ["__typename": "ResultMetadata", "docID": docId])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              /// The DocID for this item
+              /// See: https://github.com/neevaco/neeva/blob/41e1f138129605b106dc88d456ed50f1b9da4578/docs/doc.go#L18-L26
+              public var docId: String? {
+                get {
+                  return resultMap["docID"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "docID")
+                }
               }
             }
 
@@ -5543,6 +5745,114 @@ public final class DeleteSpaceResultByUrlMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "deleteSpaceResultByURL")
+      }
+    }
+  }
+}
+
+public final class BatchDeleteSpaceResultMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation BatchDeleteSpaceResult($input: BatchDeleteSpaceResultInput!) {
+      batchDeleteSpaceResult(input: $input)
+    }
+    """
+
+  public let operationName: String = "BatchDeleteSpaceResult"
+
+  public let operationIdentifier: String? = "430484f13a7348f1881725708333e97e169063d9fbb345e06a15e73cbf34f262"
+
+  public var input: BatchDeleteSpaceResultInput
+
+  public init(input: BatchDeleteSpaceResultInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("batchDeleteSpaceResult", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(batchDeleteSpaceResult: Bool) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "batchDeleteSpaceResult": batchDeleteSpaceResult])
+    }
+
+    /// API to delete entity from a space.
+    public var batchDeleteSpaceResult: Bool {
+      get {
+        return resultMap["batchDeleteSpaceResult"]! as! Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "batchDeleteSpaceResult")
+      }
+    }
+  }
+}
+
+public final class SetSpaceDetailPageSortOrderMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation SetSpaceDetailPageSortOrder($input: SetSpaceDetailPageSortOrderInput!) {
+      setSpaceDetailPageSortOrder(input: $input)
+    }
+    """
+
+  public let operationName: String = "SetSpaceDetailPageSortOrder"
+
+  public let operationIdentifier: String? = "502700fc85c24dbffab26f782fa7cbe0c059f08c9683fa8b4642113d8fdc8104"
+
+  public var input: SetSpaceDetailPageSortOrderInput
+
+  public init(input: SetSpaceDetailPageSortOrderInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("setSpaceDetailPageSortOrder", arguments: ["input": GraphQLVariable("input")], type: .scalar(Bool.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(setSpaceDetailPageSortOrder: Bool? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "setSpaceDetailPageSortOrder": setSpaceDetailPageSortOrder])
+    }
+
+    /// API to set the sort order in the space detail page.
+    public var setSpaceDetailPageSortOrder: Bool? {
+      get {
+        return resultMap["setSpaceDetailPageSortOrder"] as? Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "setSpaceDetailPageSortOrder")
       }
     }
   }
