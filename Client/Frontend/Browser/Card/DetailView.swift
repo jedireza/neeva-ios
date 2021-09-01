@@ -8,6 +8,7 @@ enum DetailsViewUX {
     static let ThumbnailCornerRadius: CGFloat = 6
     static let ThumbnailSize: CGFloat = 54
     static let ItemPadding: CGFloat = 14
+    static let EditingRowInset: CGFloat = 8
 }
 
 struct DetailView<Details: ThumbnailModel>: View
@@ -29,6 +30,10 @@ where
                 .flexible(),
                 spacing: DetailsViewUX.Padding),
         count: 1)
+
+    var canEdit: Bool {
+        primitive.ACL > .edit
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -57,8 +62,16 @@ where
             Text(primitive.title)
                 .withFont(.labelLarge)
                 .foregroundColor(Color.label)
+            if primitive.isSharedPublic {
+                Symbol(decorative: .link, style: .labelMedium)
+                    .foregroundColor(.secondaryLabel)
+            }
+            if primitive.isSharedWithGroup {
+                Symbol(decorative: .person2Fill, style: .labelMedium)
+                    .foregroundColor(.secondaryLabel)
+            }
             Spacer()
-            if gridModel.showingDetailsAsList {
+            if gridModel.showingDetailsAsList && canEdit {
                 Button(
                     action: {
                         switch editMode {
@@ -106,7 +119,15 @@ where
                             openURL(url)
                             gridModel.hideWithNoAnimation()
                             spacesModel.detailedSpace = nil
-                        }.background(Color.background)
+                        }
+                        .listRowInsets(
+                            EdgeInsets.init(
+                                top: 0,
+                                leading: editMode == .active ? DetailsViewUX.EditingRowInset : 0,
+                                bottom: 0,
+                                trailing: editMode == .active ? DetailsViewUX.EditingRowInset : 0)
+                        )
+                        .listRowBackground(Color.TrayBackground)
                     } else {
                         Section(
                             header: Text(entity.displayTitle)
@@ -115,14 +136,18 @@ where
                                 .padding(.horizontal)
                                 .padding(.top, 14)
                                 .padding(.bottom, 10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.TrayBackground)
                         ) {}
+                        .listRowInsets(
+                            EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                        )
                     }
                 }
-            }
-            .onDelete(perform: onDelete)
-            .onMove(perform: onMove)
+            }.onDelete(perform: onDelete)
+                .onMove(perform: onMove)
         }
-        .environment(\.editMode, $editMode)
+        .environment(\.editMode, canEdit ? $editMode : nil)
         .background(Color.groupedBackground)
     }
 
@@ -177,33 +202,39 @@ struct SingleDetailView<Details: CardDetails>: View {
     var description: String {
         details.id
     }
+    @State private var isPressed: Bool = false
 
     var body: some View {
-        Button {
-            onSelected()
-        } label: {
-            HStack(spacing: DetailsViewUX.ItemPadding) {
-                details.thumbnail.frame(
-                    width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
-                )
-                .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
-                VStack(spacing: DetailsViewUX.Padding) {
-                    Text(details.title)
-                        .withFont(.bodyMedium)
-                        .lineLimit(2)
-                        .foregroundColor(Color.label)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    if let snippet = details.description {
-                        Text(snippet)
-                            .withFont(.bodySmall)
+        VStack {
+            Button {
+                onSelected()
+            } label: {
+                HStack(spacing: DetailsViewUX.ItemPadding) {
+                    details.thumbnail.frame(
+                        width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
+                    )
+                    .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                    VStack(spacing: DetailsViewUX.Padding) {
+                        Text(details.title)
+                            .withFont(.bodyMedium)
                             .lineLimit(2)
-                            .foregroundColor(Color.secondaryLabel)
+                            .foregroundColor(Color.label)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                        if let snippet = details.description {
+                            Text(snippet)
+                                .withFont(.bodySmall)
+                                .lineLimit(2)
+                                .foregroundColor(Color.secondaryLabel)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
                 }
-            }
-        }
-        .padding()
+            }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+                .padding()
+                .background(Color.background)
+            Color.TrayBackground.frame(height: 1)
+        }.scaleEffect(isPressed ? 0.95 : 1)
+
     }
 
 }

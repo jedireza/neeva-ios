@@ -26,6 +26,9 @@ protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     var favicon: FaviconViewType { get }
     var isSelected: Bool { get }
     var thumbnailDrawsHeader: Bool { get }
+    var isSharedWithGroup: Bool { get }
+    var isSharedPublic: Bool { get }
+    var ACL: SpaceACLLevel { get }
 
     func onClose()
 }
@@ -81,6 +84,10 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
     var description: String? {
         return manager.get(for: id)?.pageMetadata?.description
     }
+
+    var isSharedWithGroup: Bool { manager.get(for: id)?.isSharedWithGroup ?? false }
+    var isSharedPublic: Bool { manager.get(for: id)?.isSharedPublic ?? false }
+    var ACL: SpaceACLLevel { manager.get(for: id)?.ACL ?? .owner }
 
     @ViewBuilder var thumbnail: some View {
         if let image = manager.get(for: id)?.image {

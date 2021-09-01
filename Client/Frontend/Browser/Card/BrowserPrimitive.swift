@@ -31,6 +31,16 @@ protocol BrowserPrimitive: Identifiable {
     var displayFavicon: Favicon? { get }
     var image: UIImage? { get }
     var pageMetadata: PageMetadata? { get }
+
+    var isSharedWithGroup: Bool { get }
+    var isSharedPublic: Bool { get }
+    var ACL: SpaceACLLevel { get }
+}
+
+extension BrowserPrimitive {
+    var isSharedWithGroup: Bool { false }
+    var isSharedPublic: Bool { false }
+    var ACL: SpaceACLLevel { .owner }
 }
 
 protocol Closeable {
@@ -148,6 +158,10 @@ extension Space: BrowserPrimitive {
     var pageMetadata: PageMetadata? {
         return nil
     }
+
+    var isSharedWithGroup: Bool { isShared }
+    var isSharedPublic: Bool { isPublic }
+    var ACL: SpaceACLLevel { userACL }
 }
 
 extension SpaceStore: AccessingManager {

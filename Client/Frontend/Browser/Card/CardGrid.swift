@@ -151,7 +151,7 @@ struct CardGrid: View {
                         .background(
                             Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
                         )
-                        .transition(.slide)
+                        .transition(.flipFromRight)
                 }
             }
             .useEffect(
