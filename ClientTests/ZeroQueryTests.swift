@@ -225,6 +225,15 @@ class ZeroQueryTests: XCTestCase {
             date: Date.nowMicroseconds() + 4000,
             type: VisitType.link)
 
+        let thirdMostRecentSiteDuplicate =
+            Site(
+                url: "https://www.neeva.com/search?q=thirdMostRecentSite&src=nvobar2",
+                title: "thirdMostRecentSite")
+        let thirdMostRecentSiteDuplicateVisit = SiteVisit(
+            site: thirdMostRecentSiteDuplicate,
+            date: Date.nowMicroseconds() + 3500,
+            type: VisitType.link)
+
         let expectation = self.expectation(description: "First.")
         func done() -> Success {
             expectation.fulfill()
@@ -237,6 +246,7 @@ class ZeroQueryTests: XCTestCase {
             >>> { self.profile.history.addLocalVisit(thirdMostRecentSiteVisit) }
             >>> { self.profile.history.addLocalVisit(mostFrecentSiteVisit2) }
             >>> { self.profile.history.addLocalVisit(mostFrecentSiteVisit3) }
+            >>> { self.profile.history.addLocalVisit(thirdMostRecentSiteDuplicateVisit) }
             >>> { done() }
 
         let _ = XCTWaiter().wait(for: [expectation], timeout: 100)

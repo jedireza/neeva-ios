@@ -57,17 +57,29 @@ class SuggestedSearchesModel: ObservableObject {
             deferredHistorySites.sort { siteA, siteB in
                 return siteA.latestVisit?.date ?? 0 > siteB.latestVisit?.date ?? 0
             }
+
+            var queries = Set<String>()
+            var topFrecentHistoryQuery: String? = nil
+            if let topFrecentHistorySite = topFrecentHistorySite,
+                let query = neevaSearchEngine.queryForSearchURL(topFrecentHistorySite.url)
+            {
+                topFrecentHistoryQuery = query
+                queries.insert(query)
+            }
             self.suggestedQueries = deferredHistorySites.compactMap { site in
-                if let query = neevaSearchEngine.queryForSearchURL(site.url) {
+                if let query = neevaSearchEngine.queryForSearchURL(site.url),
+                    !queries.contains(query)
+                {
+                    queries.insert(query)
                     return (query, site)
                 } else {
                     return nil
                 }
             }
             if let topFrecentHistorySite = topFrecentHistorySite,
-                let query = neevaSearchEngine.queryForSearchURL(topFrecentHistorySite.url)
+                let topFrecentHistoryQuery = topFrecentHistoryQuery
             {
-                self.suggestedQueries.insert((query, topFrecentHistorySite), at: 0)
+                self.suggestedQueries.insert((topFrecentHistoryQuery, topFrecentHistorySite), at: 0)
             }
 
             completion?()
