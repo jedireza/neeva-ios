@@ -225,7 +225,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         let additionalClientAttribute =
             [
                 ClientLogCounterAttribute(
-                    key: LogConfig.Attribute.urlBarNumOfCharsTyped,
+                    key: LogConfig.SuggestionAttribute.urlBarNumOfCharsTyped,
                     value: String(textField.text?.count ?? 0))
             ]
         ClientLogger.shared.logCounter(

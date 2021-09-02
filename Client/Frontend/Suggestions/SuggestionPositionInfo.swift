@@ -24,18 +24,18 @@ struct SuggestionPositionInfo {
 
         clientLogAttributes.append(
             ClientLogCounterAttribute(
-                key: LogConfig.Attribute.suggestionPosition, value: String(positionIndex)))
+                key: LogConfig.SuggestionAttribute.suggestionPosition, value: String(positionIndex)))
         if let chipSuggestionIndex = chipSuggestionIndex {
             clientLogAttributes.append(
                 ClientLogCounterAttribute(
-                    key: LogConfig.Attribute.chipSuggestionPosition,
+                    key: LogConfig.SuggestionAttribute.chipSuggestionPosition,
                     value: String(chipSuggestionIndex)))
         }
 
         let bvc = SceneDelegate.getBVC(for: nil)
         clientLogAttributes.append(
             ClientLogCounterAttribute(
-                key: LogConfig.Attribute.urlBarNumOfCharsTyped,
+                key: LogConfig.SuggestionAttribute.urlBarNumOfCharsTyped,
                 value: String(bvc.searchQueryModel.value.count)))
         return clientLogAttributes
     }

@@ -12,15 +12,6 @@ private let URLBeforePathRegex = try! NSRegularExpression(
 private let defaultRecencyDuration: UInt64 = 2 * OneDayInMilliseconds * 1000
 private let numSuggestionsToFetch: Int = 40
 
-enum SuggestionLoggingType : String {
-    case tabSuggestion = "TabSuggestion"
-    case topSuggestion = "TopSuggestion"
-    case chipSuggestion = "ChipSuggestion"
-    case rowQuerySuggestion = "RowQuerySuggestion"
-    case urlSuggestion = "UrlSuggestion"
-    case navSuggestion = "NavSuggestion"
-}
-
 class SuggestionModel: ObservableObject {
     let bvc: BrowserViewController
     var getKeyboardHeight: () -> CGFloat = { 0 }
@@ -52,10 +43,7 @@ class SuggestionModel: ObservableObject {
         bvc.tabManager.isIncognito
     }
 
-    private var chipQueryRange: ClosedRange<Int>? {
-        guard !chipQuerySuggestions.isEmpty else { return nil }
-        return topSuggestions.count...topSuggestions.count + chipQuerySuggestions.count - 1
-    }
+    private var chipQueryRange: ClosedRange<Int>?
 
     var shouldShowSuggestions: Bool {
         !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions]
@@ -65,8 +53,11 @@ class SuggestionModel: ObservableObject {
     fileprivate var suggestionQuery: Apollo.Cancellable?
 
     var suggestions: [Suggestion] {
-        let top = tabSuggestions + topSuggestions + chipQuerySuggestions
-        let mid = rowQuerySuggestions + urlSuggestions
+        let top = tabSuggestions + topSuggestions
+        if !chipQuerySuggestions.isEmpty {
+            chipQueryRange = top.count...top.count + chipQuerySuggestions.count - 1
+        }
+        let mid = chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
         return top + mid + navCombinedSuggestions
     }
 
@@ -386,7 +377,8 @@ class SuggestionModel: ObservableObject {
             if let annotationType = suggestion.annotation?.annotationType {
                 return
                     ClientLogCounterAttribute(
-                        key: "\(LogConfig.Attribute.annotationTypeAtPosition)\(suggestionIdx)",
+                        key:
+                            "\(LogConfig.SuggestionAttribute.annotationTypeAtPosition)\(suggestionIdx)",
                         value: annotationType
                     )
             }
@@ -396,122 +388,48 @@ class SuggestionModel: ObservableObject {
         return nil
     }
 
-    func suggestionSnapshotAttributes() -> [ClientLogCounterAttribute] {
-        var implLogAttributes = [ClientLogCounterAttribute]()
-        var snapshotLogAttributes = [ClientLogCounterAttribute]()
-        var suggestionIdx = 0
-        tabSuggestions.forEach { _ in
-            implLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
-                    value: SuggestionLoggingType.tabSuggestion.rawValue)
-            )
-            suggestionIdx += 1
-        }
-        topSuggestions.forEach { suggestion in
-            implLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
-                    value: SuggestionLoggingType.topSuggestion.rawValue)
-            )
-            if let attribute = annotationTypeAttribute(
-                suggestion: suggestion,
-                suggestionIdx: suggestionIdx
-            ) {
-                implLogAttributes.append(attribute)
-            }
-            suggestionIdx += 1
-        }
-        if chipQuerySuggestions.count > 0 {
-            implLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
-                    value: SuggestionLoggingType.chipSuggestion.rawValue)
-            )
-            snapshotLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: LogConfig.Attribute.numberOfChipSuggestions,
-                    value: String(chipQuerySuggestions.count))
-            )
-            suggestionIdx += 1
-        }
-        rowQuerySuggestions.forEach { suggestion in
-            implLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
-                    value: SuggestionLoggingType.rowQuerySuggestion.rawValue
-                )
-            )
-            if let attribute = annotationTypeAttribute(
-                suggestion: suggestion,
-                suggestionIdx: suggestionIdx)
-            {
-                implLogAttributes.append(attribute)
-            }
-            suggestionIdx += 1
-        }
-        urlSuggestions.forEach { _ in
-            implLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
-                    value: SuggestionLoggingType.urlSuggestion.rawValue)
-            )
-            suggestionIdx += 1
-        }
-        navCombinedSuggestions.forEach { _ in
-            implLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: "\(LogConfig.Attribute.suggestionImpPosition)\(suggestionIdx)",
-                    value: SuggestionLoggingType.navSuggestion.rawValue)
-            )
-            suggestionIdx += 1
-        }
-        return snapshotLogAttributes + Array(implLogAttributes.prefix(6))
-    }
-
     // MARK: - Suggestion Handling
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let suggestionLocationAttributes =
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
         var hideZeroQuery = true
 
+        var interaction : LogConfig.Interaction?
+
         switch suggestion {
         case .query(let suggestion):
-            let interaction: LogConfig.Interaction =
+            interaction =
                 activeLensBang != nil
                 ? .BangSuggestion : .QuerySuggestion
-            ClientLogger.shared.logCounter(
-                interaction,
-                attributes: EnvironmentHelper.shared.getAttributes()
-                    + suggestionLocationAttributes
-                    + suggestionSnapshotAttributes())
-
             bvc.urlBar(didSubmitText: suggestion.suggestedQuery)
         case .url(let suggestion):
-            let interaction: LogConfig.Interaction =
-                suggestion.title?.isEmpty ?? false ? .NavSuggestion : .URLSuggestion
-            ClientLogger.shared.logCounter(
-                interaction,
-                attributes: EnvironmentHelper.shared.getAttributes()
-                    + suggestionLocationAttributes
-                    + suggestionSnapshotAttributes())
-
+            interaction =
+                suggestion.title?.isEmpty ?? false ? .PersonalSuggestion : .MemorizedSuggestion
             bvc.finishEditingAndSubmit(
-                URL(string: suggestion.suggestedUrl)!, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
+                URL(string: suggestion.suggestedUrl)!,
+                visitType: VisitType.typed,
+                forTab: bvc.tabManager.selectedTab)
         case .lens(let suggestion):
+            interaction = .LensSuggestion
             bvc.finishEditingAndSubmit(
-                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
+                URL(string: suggestion.shortcut)!,
+                visitType: VisitType.typed,
+                forTab: bvc.tabManager.selectedTab)
         case .bang(let suggestion):
+            interaction = .BangSuggestion
             bvc.finishEditingAndSubmit(
-                URL(string: suggestion.shortcut)!, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
+                URL(string: suggestion.shortcut)!,
+                visitType: VisitType.typed,
+                forTab: bvc.tabManager.selectedTab)
         case .navigation(let nav):
-            ClientLogger.shared.logCounter(
-                LogConfig.Interaction.HistorySuggestion,
-                attributes: EnvironmentHelper.shared.getAttributes()
-                    + suggestionLocationAttributes
-                    + suggestionSnapshotAttributes())
-
-            bvc.finishEditingAndSubmit(nav.url, visitType: VisitType.typed, forTab: bvc.tabManager.selectedTab)
+            interaction =
+                nav.isMemorizedNav
+                ? LogConfig.Interaction.MemorizedSuggestion
+                : LogConfig.Interaction.HistorySuggestion
+            bvc.finishEditingAndSubmit(
+                nav.url,
+                visitType: VisitType.typed,
+                forTab: bvc.tabManager.selectedTab)
         case .editCurrentURL(let tab):
             hideZeroQuery = false
             bvc.searchQueryModel.value = tab.url?.absoluteString ?? ""
@@ -520,7 +438,16 @@ class SuggestionModel: ObservableObject {
                 selectedTab.manager.select(tab)
             }
         case .findInPage(let query):
+            interaction = .FindOnPageSuggestion
             bvc.updateFindInPageVisibility(visible: true, query: query)
+        }
+
+        if let interaction = interaction {
+            ClientLogger.shared.logCounter(
+                interaction,
+                attributes: EnvironmentHelper.shared.getAttributes()
+                    + suggestionLocationAttributes
+                    + suggestionSnapshotAttributes())
         }
 
         if hideZeroQuery {
@@ -637,5 +564,181 @@ extension SuggestionModel: KeyboardHelperDelegate {
         keyboardState.animateAlongside {
             self.objectWillChange.send()
         }
+    }
+}
+
+// Analytics
+
+// See https://paper.dropbox.com/doc/Suggestion-Logging--BRKRJ~Nh4Swy4qpS2YznTGHxAg-090AYbHRKr5TsjKPDG406
+// for the attribute format of suggestion
+extension SuggestionModel {
+    enum SuggestionLoggingType: String {
+        case tabSuggestion = "TabSuggestion"
+        case chipSuggestion = "ChipSuggestion"
+        case rowQuerySuggestion = "RowQuerySuggestion"
+        case personalSuggestion = "PersonalSuggestion"
+        case memorizedSuggestion = "MemorizedSuggestion"
+        case historySuggestion = "HistorySuggestion"
+        case bangSuggestion = "BangSuggestion"
+        case lensSuggestion = "LensSuggestion"
+    }
+
+    func suggestionSnapshotAttributes() -> [ClientLogCounterAttribute] {
+        var implLogAttributes = [ClientLogCounterAttribute]()
+        var snapshotLogAttributes = [ClientLogCounterAttribute]()
+        var suggestionIdx = 0
+
+        var numberOfMemorizedSuggestions = 0
+        var numberOfHistorySuggestions = 0
+        var numberOfPersonalSuggestions = 0
+        var numberOfCalculatorAnnotations = 0
+        var numberOfWikiAnnotations = 0
+        var numberOfStockAnnotations = 0
+
+        suggestions.enumerated().forEach { (index, suggestion) in
+            var isChipQuery = false
+            switch suggestion {
+            case .tabSuggestion(_):
+                implLogAttributes.append(
+                    ClientLogCounterAttribute(
+                        key:
+                            "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                        value: SuggestionLoggingType.tabSuggestion.rawValue)
+                )
+            case .query(let query):
+                switch AnnotationType(annotation: query.annotation) {
+                case .calculator:
+                    numberOfCalculatorAnnotations += 1
+                case .wikipedia:
+                    numberOfWikiAnnotations += 1
+                case .stock:
+                    numberOfStockAnnotations += 1
+                default:
+                    break
+                }
+                if index >= chipQueryRange?.lowerBound ?? -1
+                    && index <= chipQueryRange?.upperBound ?? -1
+                {
+                    if index == chipQueryRange?.lowerBound {
+                        implLogAttributes.append(
+                            ClientLogCounterAttribute(
+                                key:
+                                    "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                                value: SuggestionLoggingType.chipSuggestion.rawValue)
+                        )
+                        snapshotLogAttributes.append(
+                            ClientLogCounterAttribute(
+                                key: LogConfig.SuggestionAttribute.numberOfChipSuggestions,
+                                value: String(chipQuerySuggestions.count))
+                        )
+                        suggestionIdx += 1
+                    }
+                    isChipQuery = true
+                } else {
+                    implLogAttributes.append(
+                        ClientLogCounterAttribute(
+                            key:
+                                "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                            value: SuggestionLoggingType.rowQuerySuggestion.rawValue
+                        )
+                    )
+                }
+                if let attribute = annotationTypeAttribute(
+                    suggestion: suggestion,
+                    suggestionIdx: suggestionIdx
+                ) {
+                    snapshotLogAttributes.append(attribute)
+                }
+            case .url(let url):
+                if !(url.subtitle?.isEmpty ?? true) {
+                    numberOfMemorizedSuggestions += 1
+                    implLogAttributes.append(
+                        ClientLogCounterAttribute(
+                            key:
+                                "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                            value: SuggestionLoggingType.memorizedSuggestion.rawValue)
+                    )
+                } else {
+                    numberOfPersonalSuggestions += 1
+                    implLogAttributes.append(
+                        ClientLogCounterAttribute(
+                            key:
+                                "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                            value: SuggestionLoggingType.personalSuggestion.rawValue)
+                    )
+                }
+            case .navigation(let nav):
+                if nav.isMemorizedNav {
+                    numberOfMemorizedSuggestions += 1
+                    implLogAttributes.append(
+                        ClientLogCounterAttribute(
+                            key:
+                                "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                            value: SuggestionLoggingType.memorizedSuggestion.rawValue)
+                    )
+                } else {
+                    numberOfHistorySuggestions += 1
+                    implLogAttributes.append(
+                        ClientLogCounterAttribute(
+                            key:
+                                "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                            value: SuggestionLoggingType.historySuggestion.rawValue)
+                    )
+                }
+            case .bang(_):
+                implLogAttributes.append(
+                    ClientLogCounterAttribute(
+                        key:
+                            "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                        value: SuggestionLoggingType.bangSuggestion.rawValue)
+                )
+            case .lens(_):
+                implLogAttributes.append(
+                    ClientLogCounterAttribute(
+                        key:
+                            "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                        value: SuggestionLoggingType.lensSuggestion.rawValue)
+                )
+            default:
+                break
+            }
+            if !isChipQuery {
+                suggestionIdx += 1
+            }
+        }
+
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfMemorizedSuggestions,
+                value: String(numberOfMemorizedSuggestions))
+        )
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfHistorySuggestions,
+                value: String(numberOfHistorySuggestions))
+        )
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfPersonalSuggestions,
+                value: String(numberOfPersonalSuggestions))
+        )
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfCalculatorAnnotations,
+                value: String(numberOfCalculatorAnnotations))
+        )
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfWikiAnnotations,
+                value: String(numberOfWikiAnnotations))
+        )
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfStockAnnotations,
+                value: String(numberOfStockAnnotations))
+        )
+
+        // we only log the first 6 positions which should cover what's appear on most screens without scrolling
+        return snapshotLogAttributes + Array(implLogAttributes.prefix(6))
     }
 }

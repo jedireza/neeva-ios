@@ -223,6 +223,7 @@
 		66F571D926BD9CF700BEECF9 /* UITestBase+ActionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571D826BD9CF700BEECF9 /* UITestBase+ActionExtension.swift */; };
 		66F571DB26BD9D0B00BEECF9 /* UITestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571DA26BD9D0B00BEECF9 /* UITestBase.swift */; };
 		67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67292D3226AD2CF200DB1BFA /* AnnotationType.swift */; };
+		673C85D826E090DF006C21B0 /* SuggestionModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
 		675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EEDD226D9AF1700473332 /* LongPressButton.swift */; };
@@ -1158,6 +1159,7 @@
 		66F571D826BD9CF700BEECF9 /* UITestBase+ActionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestBase+ActionExtension.swift"; sourceTree = "<group>"; };
 		66F571DA26BD9D0B00BEECF9 /* UITestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestBase.swift; sourceTree = "<group>"; };
 		67292D3226AD2CF200DB1BFA /* AnnotationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationType.swift; sourceTree = "<group>"; };
+		673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionModelTests.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
 		675EEDD226D9AF1700473332 /* LongPressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressButton.swift; sourceTree = "<group>"; };
@@ -3256,6 +3258,7 @@
 				4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */,
 				4A5B0F2026AF9610009D1336 /* CardTests.swift */,
 				C9C5CCC026B0982C00776929 /* PrivateZoomAPITests.swift */,
+				673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */,
 			);
 			path = ClientTests;
 			sourceTree = "<group>";
@@ -4844,6 +4847,7 @@
 				A83E5B1D1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift in Sources */,
 				E1D8BC7A21FF7A0000B100BD /* TPStatsBlocklistsTests.swift in Sources */,
 				3B6F40181DC7849C00656CC6 /* ZeroQueryTests.swift in Sources */,
+				673C85D826E090DF006C21B0 /* SuggestionModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

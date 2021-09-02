@@ -62,12 +62,14 @@ public struct LogConfig {
 
         // selected suggestion
         case QuerySuggestion
-        case NavSuggestion
+        case MemorizedSuggestion
         case HistorySuggestion
         case AutocompleteSuggestion
-        case URLSuggestion
+        case PersonalSuggestion
         case BangSuggestion
+        case LensSuggestion
         case NoSuggestion
+        case FindOnPageSuggestion
 
         // referral promo
         case OpenReferralPromo  // Open referral promo
@@ -160,12 +162,14 @@ public struct LogConfig {
         case .CloseDefaultBrowserPromo: return .PromoCard
 
         case .QuerySuggestion: return .Suggestions
-        case .NavSuggestion: return .Suggestions
+        case .MemorizedSuggestion: return .Suggestions
         case .HistorySuggestion: return .Suggestions
         case .AutocompleteSuggestion: return .Suggestions
-        case .URLSuggestion: return .Suggestions
+        case .PersonalSuggestion: return .Suggestions
         case .BangSuggestion: return .Suggestions
         case .NoSuggestion: return .Suggestions
+        case .LensSuggestion: return .Suggestions
+        case .FindOnPageSuggestion: return .Suggestions
 
         case .OpenReferralPromo: return .ReferralPromo
         case .CloseReferralPromo: return .ReferralPromo
@@ -189,6 +193,9 @@ public struct LogConfig {
         public static let DeviceScreenSize = "DeviceScreenSize"
         /// Is user signed in
         public static let isUserSignedIn = "IsUserSignedIn"
+    }
+
+    public struct SuggestionAttribute {
         /// suggestion position
         public static let suggestionPosition = "suggestionPosition"
         /// chip suggestion position
@@ -196,10 +203,16 @@ public struct LogConfig {
         /// number of characters typed in url bar
         public static let urlBarNumOfCharsTyped = "urlBarNumOfCharsTyped"
         /// suggestion impression position index
-        public static let suggestionImpPosition = "SuggestionImpAtPosition"
+        public static let suggestionTypePosition = "SuggestionTypeAtPosition"
         /// number of total chip suggestions
         public static let numberOfChipSuggestions = "NumberOfChipSuggestions"
         /// annotation type at position
         public static let annotationTypeAtPosition = "AnnotationTypeAtPosition"
+        public static let numberOfMemorizedSuggestions = "NumberOfMemorizedSuggestions"
+        public static let numberOfHistorySuggestions = "NumberOfHistorySuggestions"
+        public static let numberOfPersonalSuggestions = "NumberOfPersonalSuggestions"
+        public static let numberOfCalculatorAnnotations = "NumberOfCalculatorAnnotations"
+        public static let numberOfWikiAnnotations = "NumberOfWikiAnnotations"
+        public static let numberOfStockAnnotations = "NumberOfStockAnnotations"
     }
 }

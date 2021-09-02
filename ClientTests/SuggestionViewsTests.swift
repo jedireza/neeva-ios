@@ -25,52 +25,17 @@ extension BoldSpanView: Inspectable {}
 extension NavSuggestionsList: Inspectable {}
 
 class SuggestionViewsTests: XCTestCase {
-    static let sampleQuerySuggestion = SuggestionsQuery.Data.Suggest.QuerySuggestion(
-        type: .standard,
-        suggestedQuery: "neeva",
-        boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
-        source: .bing
-    )
-    static let sampleCalculatorQuerySuggestion = SuggestionsQuery.Data.Suggest.QuerySuggestion(
-        type: .standard,
-        suggestedQuery: "5+5",
-        boldSpan: [.init(startInclusive: 0, endExclusive: 5)],
-        source: .calculator,
-        annotation: .init(annotationType: "Calculator", description: "10")
-    )
-    static let sampleQuery = Suggestion.query(sampleQuerySuggestion)
-    static let sampleCalculatorQuery = Suggestion.query(sampleCalculatorQuerySuggestion)
-    static let sampleURLSuggestion = SuggestionsQuery.Data.Suggest.UrlSuggestion(
-        icon: .init(labels: ["google-email", "email"]),
-        suggestedUrl: "https://mail.google.com/mail/u/jed@neeva.co/#inbox/1766c8357ae540a5",
-        title: "How was your Neeva onboarding?",
-        author: "feedback@neeva.co",
-        timestamp: "2020-12-16T17:05:12Z",
-        boldSpan: [.init(startInclusive: 13, endExclusive: 29)]
-    )
-    static let sampleURL = Suggestion.url(sampleURLSuggestion)
-    static let sampleNavUrlSuggestion = SuggestionsQuery.Data.Suggest.UrlSuggestion(
-        icon: .init(labels: [""]),
-        suggestedUrl: "https://neeva.com",
-        title: "neeva.com",
-        subtitle: "Neeva Search",
-        boldSpan: [.init(startInclusive: 0, endExclusive: 0)]
-    )
-    static let sampleNav = Suggestion.url(sampleNavUrlSuggestion)
-    static let sampleNavSuggestion = NavSuggestion(url: "https://neeva.com", title: "Neeva")
-    static let sampleSite = Site(url: "https://neeva.com", title: "Neeva")
-
     func testQuerySuggestion() throws {
         let model = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
-            chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
-        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
+            chipQuerySuggestions: [SuggestionModelTests.sampleQuery])
+        let suggestionView = SearchSuggestionView(SuggestionModelTests.sampleQuery)
             .environmentObject(model)
         let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
         XCTAssertNotNil(query)
         let querySuggestion =
-            QuerySuggestionView(suggestion: SuggestionViewsTests.sampleQuerySuggestion)
+            QuerySuggestionView(suggestion: SuggestionModelTests.sampleQuerySuggestion)
             .environmentObject(model)
         let image = try querySuggestion.inspect().find(ViewType.Image.self).actualImage()
         XCTAssertEqual(
@@ -104,14 +69,14 @@ class SuggestionViewsTests: XCTestCase {
         let model = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
-            topSuggestions: [SuggestionViewsTests.sampleNav])
-        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleNav).environmentObject(
+            topSuggestions: [SuggestionModelTests.sampleNavURL])
+        let suggestionView = SearchSuggestionView(SuggestionModelTests.sampleNavURL).environmentObject(
             model)
         let nav = try suggestionView.inspect().find(URLSuggestionView.self).actualView()
         XCTAssertNotNil(nav)
         let navSuggestion = URLSuggestionView(
             suggestion:
-                SuggestionViewsTests.sampleNavUrlSuggestion
+                SuggestionModelTests.sampleNavUrlSuggestion
         ).environmentObject(model)
         let hStack = try navSuggestion.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
@@ -143,8 +108,8 @@ class SuggestionViewsTests: XCTestCase {
         let suggestionModel = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
-            topSuggestions: [SuggestionViewsTests.sampleNav],
-            chipQuerySuggestions: [SuggestionViewsTests.sampleQuery])
+            topSuggestions: [SuggestionModelTests.sampleNavURL],
+            chipQuerySuggestions: [SuggestionModelTests.sampleQuery])
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
@@ -196,9 +161,9 @@ class SuggestionViewsTests: XCTestCase {
         let siteB = Site(url: "https://neeva.com/signin", title: "Neeva")
 
         let suggestionModel = SuggestionModel(bvc: SceneDelegate.getBVC(for: nil), previewSites: [
-            SuggestionViewsTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB,
+            SuggestionModelTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB,
         ])
-        suggestionModel.navSuggestions = [SuggestionViewsTests.sampleNav, suggestion]
+        suggestionModel.navSuggestions = [SuggestionModelTests.sampleNavURL, suggestion]
 
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
@@ -215,13 +180,13 @@ class SuggestionViewsTests: XCTestCase {
     func testSuggestionWithCalculatorSayt() throws {
         let model = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil), previewLensBang: nil,
-            rowQuerySuggestions: [SuggestionViewsTests.sampleCalculatorQuery])
-        let suggestionView = SearchSuggestionView(SuggestionViewsTests.sampleQuery)
+            rowQuerySuggestions: [SuggestionModelTests.sampleCalculatorQuery])
+        let suggestionView = SearchSuggestionView(SuggestionModelTests.sampleQuery)
             .environmentObject(model)
         let query = try suggestionView.inspect().find(QuerySuggestionView.self).actualView()
         XCTAssertNotNil(query)
         let querySuggestion =
-            QuerySuggestionView(suggestion: SuggestionViewsTests.sampleCalculatorQuerySuggestion)
+            QuerySuggestionView(suggestion: SuggestionModelTests.sampleCalculatorQuerySuggestion)
             .environmentObject(model)
         let label = try querySuggestion.inspect()
             .find(ViewType.VStack.self)
