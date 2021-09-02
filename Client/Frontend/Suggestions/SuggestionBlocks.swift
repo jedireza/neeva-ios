@@ -104,8 +104,10 @@ struct QuerySuggestionsList: View {
         if !(suggestionModel.chipQuerySuggestions + suggestionModel.rowQuerySuggestions).isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
 
-            SuggestionChipView()
-                .padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
+            if !suggestionModel.chipQuerySuggestions.isEmpty {
+                SuggestionChipView()
+                    .padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
+            }
 
             ForEach(suggestionModel.rowQuerySuggestions) { suggestion in
                 SearchSuggestionView(suggestion)
