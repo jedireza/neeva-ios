@@ -818,6 +818,7 @@ class BrowserViewController: UIViewController {
             url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
         {
             if FeatureFlag[.createOrSwitchToTab] {
+                hideZeroQuery()
                 tabManager.createOrSwitchToTab(for: url)
             } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {
                 self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)

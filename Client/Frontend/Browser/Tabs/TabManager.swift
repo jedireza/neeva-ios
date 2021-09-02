@@ -371,7 +371,7 @@ class TabManager: NSObject, ObservableObject {
         if let existingTab = getTabFor(url) {
             select(existingTab)
         } else {
-            select(addTab(URLRequest(url: url), flushToDisk: false, zombie: false))
+            select(addTab(URLRequest(url: url), flushToDisk: true, zombie: false))
         }
     }
 
