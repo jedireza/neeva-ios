@@ -17,6 +17,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case inlineAccountSettings = "Inline Account Settings"
     case nativeSpaces = "Spaces in Tab Switcher"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
+    case notifications = "Notifications"
     case pinToTopSites = "Pin to Top Sites"
     case readingMode = "Enable Reading Mode"
     case spacify = "Enable button to turn a page into a Space"
