@@ -10,8 +10,7 @@ struct NeevaMenuRootView: View {
     let isIncognito: Bool
 
     var body: some View {
-        let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
+        OverlaySheetView(model: overlaySheetModel, style: .grouped, onDismiss: onDismiss) {
             NeevaMenuView(noTopPadding: true) { action in
                 menuAction(action)
                 overlaySheetModel.hide()

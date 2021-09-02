@@ -117,16 +117,15 @@ class DownloadHelper: NSObject, OpenInHelper {
             download.totalBytesExpected != nil
             ? ByteCountFormatter.string(
                 fromByteCount: download.totalBytesExpected!, countStyle: .file) : nil
-        browserViewController.showOverlaySheetViewController(
-            DownloadViewController(
+
+        browserViewController.showAsModalOverlaySheet(style: .grouped) {
+            DownloadOverlaySheetContent(
                 fileName: download.filename, fileURL: host, fileSize: expectedSize,
-                onDownload: {
-                    self.browserViewController.downloadQueue.enqueue(download)
-                    self.browserViewController.hideOverlaySheetViewController()
-                },
-                onDismiss: {
-                    self.browserViewController.hideOverlaySheetViewController()
-                }))
+                onDownload: { [weak self] in
+                    self?.browserViewController.downloadQueue.enqueue(download)
+                }
+            )
+        }
     }
 }
 

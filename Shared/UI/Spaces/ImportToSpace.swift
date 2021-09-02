@@ -31,7 +31,7 @@ public enum SpaceImportDomain: String {
 public class SpaceImportHandler {
     let title: String
     var data: [SpaceLinkData]
-    public var completion: (() -> Void)? = nil
+    private var completion: (() -> Void)? = nil
     public var spaceURL: URL {
         guard let id = spaceID else {
             return NeevaConstants.appSpacesURL
@@ -51,7 +51,8 @@ public class SpaceImportHandler {
         self.title = title
     }
 
-    func importToNewSpace() {
+    func importToNewSpace(completion: @escaping () -> Void) {
+        self.completion = completion
         createSpace()
     }
 

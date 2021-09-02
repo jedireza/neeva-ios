@@ -5,7 +5,7 @@ import XCTest
 class AuthenticationTests: BaseTestCase {
     let url = "https://jigsaw.w3.org/HTTP/Basic"
 
-    func testIncorrectCredientials() {
+    func testIncorrectCredentials() {
         openURL(url, waitForPageLoad: false)
 
         // Make sure that 3 invalid credentials result in authentication failure.
@@ -15,7 +15,7 @@ class AuthenticationTests: BaseTestCase {
         waitForExistence(app.staticTexts["Unauthorized access"])
     }
 
-    func testCorrectCredientials() {
+    func testCorrectCredentials() {
         openURL(url, waitForPageLoad: false)
 
         enterCredentials(username: "guest", password: "guest")

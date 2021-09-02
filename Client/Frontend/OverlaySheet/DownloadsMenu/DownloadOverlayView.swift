@@ -10,7 +10,7 @@ struct DownloadMenuView: View {
     let fileSize: String?
 
     let onDownload: () -> Void
-    let onDismiss: () -> Void
+    let onCancel: () -> Void
 
     public var body: some View {
         GroupedStack {
@@ -28,7 +28,7 @@ struct DownloadMenuView: View {
 
             GroupedCellButton(
                 fileSize != nil ? "Download (\(fileSize!))" : "Download", action: onDownload)
-            GroupedCellButton("Cancel", style: .labelLarge, action: onDismiss)
+            GroupedCellButton("Cancel", style: .labelLarge, action: onCancel)
         }
     }
 }
@@ -37,6 +37,6 @@ struct DownloadMenuView_Previews: PreviewProvider {
     static var previews: some View {
         DownloadMenuView(
             fileName: "markus-spiske-jsqrSfrtjB80-unsplash.jpg", fileURL: "www.unsplash.com",
-            fileSize: "2.2 MB", onDownload: {}, onDismiss: {})
+            fileSize: "2.2 MB", onDownload: {}, onCancel: {})
     }
 }

@@ -5,6 +5,7 @@
 import Foundation
 import Shared
 import Storage
+import SwiftUI
 
 private let log = Logger.browser
 
@@ -58,18 +59,24 @@ class Authenticator {
 
         let deferred = Deferred<Maybe<LoginRecord>>()
 
-        bvc.showOverlaySheetViewController(HTTPAuthPromptViewController(url: protectionSpace.urlString(), onSubmit: { username, password in
-            let login = LoginRecord(
-                credentials: URLCredential(user: username, password: password, persistence: .forSession),
-                protectionSpace: protectionSpace)
-            deferred.fill(Maybe(success: login))
-            loginsHelper?.setCredentials(login)
-
-            bvc.hideOverlaySheetViewController()
-        }, onDismiss: {
-            deferred.fill(Maybe(failure: LoginRecordError(description: "Save password cancelled")))
-            bvc.hideOverlaySheetViewController()
-        }))
+        bvc.showAsModalOverlaySheet(style: .grouped) {
+            HTTPAuthPromptOverlaySheetContent(
+                url: protectionSpace.urlString(),
+                onSubmit: { username, password in
+                    let login = LoginRecord(
+                        credentials: URLCredential(
+                            user: username, password: password, persistence: .forSession),
+                        protectionSpace: protectionSpace)
+                    deferred.fill(Maybe(success: login))
+                    loginsHelper?.setCredentials(login)
+                }
+            )
+        } onDismiss: {
+            if !deferred.isFilled {
+                deferred.fill(
+                    Maybe(failure: LoginRecordError(description: "Save password cancelled")))
+            }
+        }
 
         return deferred
     }

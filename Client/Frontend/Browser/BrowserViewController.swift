@@ -791,6 +791,28 @@ class BrowserViewController: UIViewController {
         }
     }
 
+    func showAsModalOverlaySheet<Content: View>(
+        style: OverlaySheetStyle, content: @escaping () -> Content,
+        onDismiss: (() -> Void)? = nil
+    ) {
+        var controller: UIViewController? = nil
+        controller = OverlaySheetViewController(
+            style: style, content: { AnyView(erasing: content()) },
+            onDismiss: {
+                if controller == self.overlaySheetViewController {
+                    self.hideOverlaySheetViewController()
+                }
+                onDismiss?()
+            },
+            onOpenURL: { url in
+                if controller == self.overlaySheetViewController {
+                    self.hideOverlaySheetViewController()
+                }
+                self.openURLInNewTab(url)
+            })
+        showOverlaySheetViewController(controller!)
+    }
+
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab?) {
         if !tabContentHost.promoteToRealTabIfNecessary(
             url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
@@ -1809,23 +1831,17 @@ extension BrowserViewController {
     ) {
         let title = (title ?? "").isEmpty ? url.absoluteString : title!
         let request = AddToSpaceRequest(title: title, description: description, url: url)
-        self.showOverlaySheetViewController(
-            AddToSpaceViewController(
-                request: request,
-                onDismiss: {
-                    self.hideOverlaySheetViewController()
-                    if request.state != .initial {
-                        ToastDefaults().showToastForSpace(bvc: self, request: request)
-                    }
-                },
-                onOpenURL: { url in
-                    self.hideOverlaySheetViewController()
-                    self.openURLInNewTab(url)
-                },
-                importData: importData
-            ))
-    }
 
+        self.showAsModalOverlaySheet(style: .withTitle) {
+            AddToSpaceOverlaySheetContent(
+                request: request,
+                importData: importData)
+        } onDismiss: {
+            if request.state != .initial {
+                ToastDefaults().showToastForSpace(bvc: self, request: request)
+            }
+        }
+    }
 }
 
 extension BrowserViewController {

@@ -8,7 +8,7 @@ struct HTTPAuthPromptOverlayView: View {
 
     /// Passes a `username` and `password` in the completion handler
     let onSubmit: (String, String) -> Void
-    let onDismiss: () -> Void
+    let onCancel: () -> Void
 
     @State var username = ""
     @State var password = ""
@@ -26,14 +26,20 @@ struct HTTPAuthPromptOverlayView: View {
                     .foregroundColor(.secondaryLabel)
             }.padding(.bottom, 14)
 
-            CapsuleTextField(icon: Symbol(decorative: .personFill, style: .labelLarge), placeholder: "Username", text: $username)
-                .accessibilityIdentifier("Auth_Username_Field")
-                .accessibility(label: Text("Username"))
+            CapsuleTextField(
+                icon: Symbol(decorative: .personFill, style: .labelLarge), placeholder: "Username",
+                text: $username
+            )
+            .accessibilityIdentifier("Auth_Username_Field")
+            .accessibility(label: Text("Username"))
 
-            CapsuleTextField(icon: Symbol(decorative: .lockFill, style: .labelLarge), placeholder: "Password", text: $password, alwaysShowClearButton: false, secureText: true)
-                .padding(.bottom)
-                .accessibilityIdentifier("Auth_Password_Field")
-                .accessibility(label: Text("Password"))
+            CapsuleTextField(
+                icon: Symbol(decorative: .lockFill, style: .labelLarge), placeholder: "Password",
+                text: $password, alwaysShowClearButton: false, secureText: true
+            )
+            .padding(.bottom)
+            .accessibilityIdentifier("Auth_Password_Field")
+            .accessibility(label: Text("Password"))
 
             GroupedCellButton("Submit", style: .labelLarge) {
                 onSubmit(username, password)
@@ -41,13 +47,13 @@ struct HTTPAuthPromptOverlayView: View {
             .accessibilityIdentifier("Auth_Submit")
             .accessibility(label: Text("Submit"))
 
-            GroupedCellButton("Cancel", style: .labelLarge, action: onDismiss)
+            GroupedCellButton("Cancel", style: .labelLarge, action: onCancel)
         }
     }
 }
 
 struct HTTPAuthPromptOverlayView_Previews: PreviewProvider {
     static var previews: some View {
-        HTTPAuthPromptOverlayView(url: "neeva.com", onSubmit: { _, _ in }, onDismiss: {})
+        HTTPAuthPromptOverlayView(url: "neeva.com", onSubmit: { _, _ in }, onCancel: {})
     }
 }

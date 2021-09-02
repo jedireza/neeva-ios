@@ -181,6 +181,7 @@ public struct AddToSpaceView: View {
         SpacesSearchHeaderView(
             searchText: $searchTerm,
             createAction: { request.mode = .saveToNewSpace },
+            onDismiss: onDismiss,
             importData: importData
         )
         .padding(.horizontal, 16)

@@ -32,13 +32,11 @@ class OverlaySheetModel: ObservableObject {
     @Published var deltaHeight: CGFloat = 0
     @Published var position: OverlaySheetPosition = .dismissed
     @Published var backdropOpacity: Double = 0.0
-    @Published var clearBackground: Bool = false
 
-    func show(clearBackground: Bool = false) {
+    func show() {
         withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
             self.position = .middle
             self.backdropOpacity = OverlaySheetUX.backdropMaxOpacity
-            self.clearBackground = clearBackground
         }
     }
 
@@ -47,12 +45,11 @@ class OverlaySheetModel: ObservableObject {
             self.deltaHeight = 0
             self.position = .dismissed
             self.backdropOpacity = 0.0
-            self.clearBackground = false
         }
     }
 }
 
-struct OverlaySheetConfig {
+struct OverlaySheetStyle {
     let showTitle: Bool
     let backgroundColor: UIColor
 
@@ -60,6 +57,12 @@ struct OverlaySheetConfig {
         self.showTitle = showTitle
         self.backgroundColor = backgroundColor
     }
+
+    /// Use for sheets containing grouped sets of controls (e.g., like the Overflow menu).
+    static let grouped = OverlaySheetStyle(showTitle: false, backgroundColor: .systemGroupedBackground)
+
+    /// Use for sheets with a title (e.g., like the AddToSpaces sheet).
+    static let withTitle = OverlaySheetStyle(showTitle: true)
 }
 
 // Intended to present content that is flexible in height (e.g., a ScrollView).
@@ -72,9 +75,9 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @State private var title: String = ""
     @State private var isFixedHeight: Bool = false
 
-    let config: OverlaySheetConfig
+    let style: OverlaySheetStyle
     let onDismiss: () -> Void
-    var content: () -> Content
+    let content: () -> Content
 
     private var keyboardIsVisible: Bool {
         return keyboardHeight > 0
@@ -158,7 +161,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     .padding(.top, 8)
             }
             HStack(spacing: 0) {
-                if config.showTitle {
+                if style.showTitle {
                     Text(title)
                         .withFont(.headingMedium)
                         .foregroundColor(.label)
@@ -206,7 +209,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     }
                 }
                 .background(
-                    Color(config.backgroundColor)
+                    Color(style.backgroundColor)
                         .cornerRadius(16, corners: [.topLeft, .topRight])
                         .ignoresSafeArea(edges: .bottom)
                         .gesture(topDrag)
@@ -238,7 +241,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 // The semi-transparent backdrop used to shade the content that lies below
                 // the sheet.
                 Button(action: self.model.hide) {
-                    (self.model.clearBackground ? Color.clear : Color.black)
+                    Color.black
                         .opacity(self.model.backdropOpacity)
                         .ignoresSafeArea()
                         .modifier(

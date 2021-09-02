@@ -12,8 +12,7 @@ struct OverflowMenuRootView: View {
     let locationModel: LocationViewModel
 
     var body: some View {
-        let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
+        OverlaySheetView(model: overlaySheetModel, style: .grouped, onDismiss: onDismiss) {
             OverflowMenuView(changedUserAgent: changedUserAgent ?? false) { action in
                 onDismiss()
                 menuAction(action)

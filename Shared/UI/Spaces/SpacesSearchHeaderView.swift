@@ -3,18 +3,23 @@
 import SwiftUI
 
 struct SpacesSearchHeaderView: View {
+    @Environment(\.onOpenURL) private var onOpenURL
+
     @Binding var searchText: String
 
     let createAction: () -> Void
+    let onDismiss: () -> Void
     let importData: SpaceImportHandler?
 
     public init(
         searchText: Binding<String>,
         createAction: @escaping () -> Void,
+        onDismiss: @escaping () -> Void,
         importData: SpaceImportHandler? = nil
     ) {
         self._searchText = searchText
         self.createAction = createAction
+        self.onDismiss = onDismiss
         self.importData = importData
     }
 
@@ -36,7 +41,12 @@ struct SpacesSearchHeaderView: View {
             .padding(.trailing, 3)
             if let data = importData {
                 Button {
-                    data.importToNewSpace()
+                    // TODO: Show a toast as importing could take a while or fail.
+                    data.importToNewSpace {
+                        SpaceStore.shared.refresh()
+                        onOpenURL(NeevaConstants.appSpacesURL)
+                    }
+                    onDismiss()
                 } label: {
                     HStack(spacing: 5) {
                         Symbol(decorative: .plus, style: .labelLarge)
@@ -54,7 +64,7 @@ struct SpacesSearchHeaderView: View {
 
 struct SpacesSearchHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        SpacesSearchHeaderView(searchText: .constant(""), createAction: {})
-        SpacesSearchHeaderView(searchText: .constant("Hello, world"), createAction: {})
+        SpacesSearchHeaderView(searchText: .constant(""), createAction: {}, onDismiss: {})
+        SpacesSearchHeaderView(searchText: .constant("Hello, world"), createAction: {}, onDismiss: {})
     }
 }

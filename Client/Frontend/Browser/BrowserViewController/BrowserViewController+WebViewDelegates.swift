@@ -507,16 +507,9 @@ extension BrowserViewController: WKNavigationDelegate {
     fileprivate func showOverlay(forExternalUrl url: URL) {
         tabManager.selectedTab?.stop()
 
-        showOverlaySheetViewController(
-            OpenInAppViewController(
-                url: url,
-                onOpen: {
-                    self.hideOverlaySheetViewController()
-                    UIApplication.shared.open(url, options: [:])
-                },
-                onDismiss: {
-                    self.hideOverlaySheetViewController()
-                }))
+        showAsModalOverlaySheet(style: .grouped) {
+            OpenInAppOverlaySheetContent(url: url)
+        }
     }
 
     // This is the place where we decide what to do with a new navigation action. There are a number of special schemes

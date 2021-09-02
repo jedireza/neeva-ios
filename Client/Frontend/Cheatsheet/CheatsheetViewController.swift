@@ -12,8 +12,7 @@ struct CheatsheetRootView: View {
     let openInNewTab: (URL, Bool) -> Void
 
     var body: some View {
-        let config = OverlaySheetConfig(showTitle: false, backgroundColor: .systemGroupedBackground)
-        OverlaySheetView(model: overlaySheetModel, config: config, onDismiss: onDismiss) {
+        OverlaySheetView(model: overlaySheetModel, style: .grouped, onDismiss: onDismiss) {
             CheatsheetMenuView { action in
                 menuAction(action)
                 overlaySheetModel.hide()

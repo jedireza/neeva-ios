@@ -4,10 +4,12 @@ import Shared
 import SwiftUI
 import UIKit
 
-struct OpenInAppView: View {
+struct OpenInAppOverlayView: View {
     let url: URL
     let onOpen: () -> Void
-    let onDismiss: () -> Void
+    let onCancel: () -> Void
+
+    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
 
     public var body: some View {
         GroupedStack {
@@ -25,14 +27,14 @@ struct OpenInAppView: View {
             GroupedCellButton("Open", action: onOpen)
                 .accessibilityIdentifier("ConfirmOpenInApp")
 
-            GroupedCellButton("Cancel", style: .labelLarge, action: onDismiss)
+            GroupedCellButton("Cancel", style: .labelLarge, action: onCancel)
                 .accessibilityIdentifier("CancelOpenInApp")
         }
     }
 }
 
-struct OpenInAppView_Previews: PreviewProvider {
+struct OpenInAppOverlayView_Previews: PreviewProvider {
     static var previews: some View {
-        OpenInAppView(url: URL(string: "example.com")!, onOpen: {}, onDismiss: {})
+        OpenInAppOverlayView(url: URL(string: "example.com")!, onOpen: {}, onCancel: {})
     }
 }
