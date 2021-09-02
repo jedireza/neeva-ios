@@ -107,7 +107,7 @@ where
                 })
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
-            .background(Color.DefaultBackground.edgesIgnoringSafeArea(.horizontal))
+            .background(Color.background.edgesIgnoringSafeArea(.horizontal))
     }
 
     var spaceList: some View {
@@ -231,7 +231,7 @@ struct SingleDetailView<Details: CardDetails>: View {
                 }
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
                 .padding()
-                .background(Color.background)
+                .background(Color.DefaultBackground)
             Color.TrayBackground.frame(height: 1)
         }.scaleEffect(isPressed ? 0.95 : 1)
 
