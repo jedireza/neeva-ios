@@ -107,7 +107,7 @@ where
                 })
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
-            .background(Color.background.edgesIgnoringSafeArea(.horizontal))
+            .background(Color.DefaultBackground.edgesIgnoringSafeArea(.horizontal))
     }
 
     var spaceList: some View {
