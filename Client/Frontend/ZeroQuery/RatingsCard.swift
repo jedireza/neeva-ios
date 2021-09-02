@@ -29,7 +29,7 @@ struct RatingsCard: View {
     }
 
     var color: Color {
-        return Color(light: .hex(0xFFFDF5), dark: .hex(0xF8C991))
+        return Color(light: .hex(0xFFFDF5), dark: .hex(0x191919))
     }
 
     func leftButtonFunction() {
@@ -100,13 +100,13 @@ struct RatingsCard: View {
             Text("We hear you. Send feedback to help us make Neeva better for you!")
                 .withFont(.bodyLarge)
                 .multilineTextAlignment(isHorizontal ? .leading : .center)
-                .frame(width: 210)
+                .frame(width: isHorizontal ? 210 : 311)
         case .appStoreReview:
             Text("😍").font(.system(size: 32))
             Text("Spread the cheer on the App Store? Your review will help Neeva grow.")
                 .withFont(.bodyLarge)
                 .multilineTextAlignment(isHorizontal ? .leading : .center)
-                .frame(width: 210)
+                .frame(width: isHorizontal ? 210 : 311)
         }
     }
 
