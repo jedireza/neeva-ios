@@ -90,7 +90,7 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     func itemFor(_ index: Int) -> some View {
         Group {
             if index >= numItems {
-                Color.background.frame(width: itemSize, height: itemSize)
+                Color.DefaultBackground.frame(width: itemSize, height: itemSize)
                     .modifier(CustomRadius(index: index))
             }
             else {
@@ -110,10 +110,10 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
                 itemFor(3)
             } else if numItems > 4 {
                 Text("+\(numItems - 3)")
-                    .foregroundColor(Color.label)
+                    .foregroundColor(Color.secondaryLabel)
                     .withFont(.labelLarge)
                     .frame(width: itemSize, height: itemSize)
-                    .background(Color.background)
+                    .background(Color.DefaultBackground)
                     .modifier(CustomRadius(index: 3))
             }
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
