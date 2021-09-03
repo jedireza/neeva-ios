@@ -206,7 +206,7 @@ class BrowserViewController: UIViewController {
                 present(popover, animated: true, completion: nil)
             }
 
-            if overlaySheetViewController is NeevaMenuViewController, chromeModel.inlineToolbar {
+            if chromeModel.inlineToolbar {
                 hideOverlaySheetViewController()
             }
         } completion: { _ in
@@ -764,7 +764,7 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func showOverlaySheetViewController(_ overlaySheetViewController: UIViewController) {
+    private func showOverlaySheetViewController(_ overlaySheetViewController: UIViewController) {
         hideOverlaySheetViewController()
 
         addChild(overlaySheetViewController)
@@ -784,7 +784,7 @@ class BrowserViewController: UIViewController {
             notification: .screenChanged, argument: overlaySheetViewController.view)
     }
 
-    func hideOverlaySheetViewController() {
+    private func hideOverlaySheetViewController() {
         if let overlaySheetViewController = self.overlaySheetViewController {
             overlaySheetViewController.willMove(toParent: nil)
             overlaySheetViewController.view.removeFromSuperview()
@@ -810,7 +810,7 @@ class BrowserViewController: UIViewController {
                 if controller == self.overlaySheetViewController {
                     self.hideOverlaySheetViewController()
                 }
-                self.openURLInNewTab(url)
+                self.openURLInNewTabPreservingIncognitoState(url)
             })
         showOverlaySheetViewController(controller!)
     }
@@ -1863,32 +1863,21 @@ extension BrowserViewController {
 extension BrowserViewController {
     func showNeevaMenuSheet() {
         TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
-        let isPrivate = tabManager.isIncognito
 
-        self.updateFeedbackImage()
+        updateFeedbackImage()
 
         if NeevaFeatureFlags[.cheatsheetQuery] {
-            self.showOverlaySheetViewController(
-                CheatsheetViewController(
+            showAsModalOverlaySheet(style: .grouped) { [self] in
+                CheatsheetOverlaySheetContent(
                     menuAction: perform(neevaMenuAction:),
-                    onDismiss: {
-                        self.hideOverlaySheetViewController()
-                    },
-                    openInNewTab: { url, isPrivate in
-                        self.openURLInNewTab(url)
-                    },
-                    tabManager: tabManager,
-                    isPrivate: isPrivate
-                )
-            )
+                    tabManager: tabManager)
+            }
         } else {
-            self.showOverlaySheetViewController(
-                NeevaMenuViewController(
+            showAsModalOverlaySheet(style: .grouped) { [self] in
+                NeevaMenuOverlaySheetContent(
                     menuAction: perform(neevaMenuAction:),
-                    onDismiss: {
-                        self.hideOverlaySheetViewController()
-                    }, isPrivate: isPrivate)
-            )
+                    isIncognito: tabManager.isIncognito)
+            }
         }
         self.dismissVC()
     }

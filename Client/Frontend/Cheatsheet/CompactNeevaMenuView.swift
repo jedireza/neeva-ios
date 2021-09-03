@@ -10,12 +10,11 @@ private enum CompactNeevaMenuUX {
 }
 
 struct CompactNeevaMenuView: View {
+    @Environment(\.isIncognito) private var isIncognito
     private let menuAction: (NeevaMenuAction) -> Void
-    private var isIncognito: Bool
 
-    init(menuAction: @escaping (NeevaMenuAction) -> Void, isIncognito: Bool) {
+    init(menuAction: @escaping (NeevaMenuAction) -> Void) {
         self.menuAction = menuAction
-        self.isIncognito = isIncognito
     }
 
     // TODO: Refactor CompactNeevaMenuView to take visualSpec as .compact
@@ -70,12 +69,11 @@ struct CompactNeevaMenuView: View {
 
 struct CompactNeevaMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        CompactNeevaMenuView(
-            menuAction: { _ in },
-            isIncognito: false
-        ).previewDevice("iPod touch (7th generation)")
-            .environment(
-                \.sizeCategory, .extraExtraExtraLarge)
-        CompactNeevaMenuView(menuAction: { _ in }, isIncognito: true)
+        CompactNeevaMenuView(menuAction: { _ in })
+            .previewDevice("iPod touch (7th generation)")
+            .environment(\.sizeCategory, .extraExtraExtraLarge)
+            .environment(\.isIncognito, false)
+        CompactNeevaMenuView(menuAction: { _ in })
+            .environment(\.isIncognito, true)
     }
 }

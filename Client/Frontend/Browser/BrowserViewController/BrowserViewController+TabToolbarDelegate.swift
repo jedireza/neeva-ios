@@ -27,17 +27,16 @@ extension BrowserViewController: ToolbarDelegate {
                 self.tabManager.selectedTab?.goBack()
 
             case .overflow:
-                self.showOverlaySheetViewController(
-                    OverflowMenuViewController(
-                        onDismiss: self.hideOverlaySheetViewController,
-                        chromeModel: self.chromeModel,
-                        locationModel: self.locationModel,
-                        changedUserAgent: self.tabManager.selectedTab?.changedUserAgent,
+                self.showAsModalOverlaySheet(style: .grouped) {
+                    OverflowMenuOverlaySheetContent(
                         menuAction: { action in
                             self.perform(overflowMenuAction: action, targetButtonView: nil)
-                        }
+                        },
+                        changedUserAgent: self.tabManager.selectedTab?.changedUserAgent,
+                        chromeModel: self.chromeModel,
+                        locationModel: self.locationModel
                     )
-                )
+                }
                 self.dismissVC()
 
             case .longPressBackForward:

@@ -228,7 +228,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             }
             withAnimation(.easeInOut(duration: OverlaySheetUX.animationDuration * durationScalar)) {
                 keyboardHeight = height
-                if height > 0 {
+                if height > 0 && model.position != .dismissed {
                     model.position = .top
                 }
             }

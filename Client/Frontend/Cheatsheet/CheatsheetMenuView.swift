@@ -6,11 +6,10 @@ import SwiftUI
 
 struct ReviewURLButton: View {
     let url: URL
-    @Environment(\.openInNewTab) var openInNewTab
-    @Environment(\.isIncognito) private var isIncognito
+    @Environment(\.onOpenURL) var onOpenURL
 
     var body: some View {
-        Button(action: { openInNewTab(url, isIncognito) }) {
+        Button(action: { onOpenURL(url) }) {
             getHostName()
         }
     }
@@ -43,8 +42,7 @@ struct ReviewURLButton: View {
 
 struct QueryButton: View {
     let query: String
-    @Environment(\.openInNewTab) var openInNewTab
-    @Environment(\.isIncognito) private var isIncognito
+    @Environment(\.onOpenURL) var onOpenURL
 
     var body: some View {
         Button(action: onClick) {
@@ -64,7 +62,7 @@ struct QueryButton: View {
             withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
         {
             let target = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")!
-            openInNewTab(target, isIncognito)
+            onOpenURL(target)
         }
     }
 }
@@ -85,7 +83,6 @@ class CheatsheetMenuViewModel: ObservableObject {
 public struct CheatsheetMenuView: View {
     @EnvironmentObject private var model: CheatsheetMenuViewModel
     private let menuAction: (NeevaMenuAction) -> Void
-    @Environment(\.isIncognito) private var isIncognito
 
     init(menuAction: @escaping (NeevaMenuAction) -> Void) {
         self.menuAction = menuAction
@@ -95,7 +92,7 @@ public struct CheatsheetMenuView: View {
         GeometryReader { geom in
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
-                    CompactNeevaMenuView(menuAction: menuAction, isIncognito: isIncognito)
+                    CompactNeevaMenuView(menuAction: menuAction)
                     priceHistorySection
                     reviewURLSection
                     memorizedQuerySection
