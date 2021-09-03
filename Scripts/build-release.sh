@@ -10,5 +10,8 @@ xcodebuild clean archive -scheme Client -workspace Neeva.xcworkspace -configurat
 # Open Xcode Organizer
 osascript Scripts/open-organizer.as > /dev/null
 
+# Confirm uploading build to app store
+Scripts/confirm-upload-binary.sh
+
 # Generate tag for build
 Scripts/tag-release.sh
