@@ -1081,22 +1081,29 @@ class BrowserViewController: UIViewController {
         // Represents WebView observation or delegate update that called this function
         switch webViewStatus {
         case .title, .url, .finishedNavigation:
-            if tab !== tabManager.selectedTab, let webView = tab.webView {
-                // To Screenshot a tab that is hidden we must add the webView,
-                // then wait enough time for the webview to render.
-                view.insertSubview(webView, at: 0)
-                // This is kind of a hacky fix for Bug 1476637 to prevent webpages from focusing the
-                // touch-screen keyboard from the background even though they shouldn't be able to.
-                webView.resignFirstResponder()
+            // Workaround for issue #1562. It's not safe to insert a WebView into a View hierarchy
+            // directly from a property change event. There could be a lot of WebKit code on the
+            // stack at this point.
+            DispatchQueue.main.async {
+                if tab !== self.tabManager.selectedTab, let webView = tab.webView {
+                    // To Screenshot a tab that is hidden we must add the webView,
+                    // then wait enough time for the webview to render.
+                    self.view.insertSubview(webView, at: 0)
 
-                // We need a better way of identifying when webviews are finished rendering
-                // There are cases in which the page will still show a loading animation or nothing when the screenshot is being taken,
-                // depending on internet connection
-                // Issue created: https://github.com/mozilla-mobile/firefox-ios/issues/7003
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.screenshotHelper.takeScreenshot(tab)
-                    if webView.superview == self.view {
-                        webView.removeFromSuperview()
+                    // This is kind of a hacky fix for Bug 1476637 to prevent webpages from focusing
+                    // the touch-screen keyboard from the background even though they shouldn't be
+                    // able to.
+                    webView.resignFirstResponder()
+
+                    // We need a better way of identifying when webviews are finished rendering
+                    // There are cases in which the page will still show a loading animation or
+                    // nothing when the screenshot is being taken, depending on internet connection
+                    // Issue created: https://github.com/mozilla-mobile/firefox-ios/issues/7003
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        self.screenshotHelper.takeScreenshot(tab)
+                        if webView.superview == self.view {
+                            webView.removeFromSuperview()
+                        }
                     }
                 }
             }
