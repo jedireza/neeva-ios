@@ -163,8 +163,8 @@ struct ToastView: View {
         }
     }
 
-    public func enqueue(at location: ToastQueueLocation = .last) {
-        ToastViewManager.shared.enqueue(toast: self, at: location)
+    public func enqueue(at location: ToastQueueLocation = .last, manager: ToastViewManager) {
+        manager.enqueue(toast: self, at: location)
     }
 }
 

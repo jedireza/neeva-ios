@@ -6,8 +6,8 @@ import UIKit
 import SwiftUI
 
 class WindowManager: KeyboardReadable {
-    private var rootViewController: UIViewController?
-    private var alignToBottom: Bool
+    private let parentWindow: UIWindow
+
     private let inOutAnimationDuration = 0.3
     private var openWindow: UIWindow?
 
@@ -15,12 +15,8 @@ class WindowManager: KeyboardReadable {
     private var keyboardHeightListener: AnyCancellable?
     private var keyboardVisibleListener: AnyCancellable?
 
-    public func createWindow(with rootViewController: UIViewController, height: CGFloat, addShadow: Bool = false, checkKeyboard: Bool = true, completionHandler: @escaping () -> Void = {}) {
-        self.rootViewController = rootViewController
-
-        let window = SceneDelegate.getKeyWindow(for: rootViewController.view)
-
-        guard let scene = window.windowScene else {
+    public func createWindow(with rootViewController: UIViewController, height: CGFloat, addShadow: Bool = false, checkKeyboard: Bool = true, alignToBottom: Bool, completionHandler: @escaping () -> Void = {}) {
+        guard let scene = parentWindow.windowScene else {
             return
         }
 
@@ -34,7 +30,7 @@ class WindowManager: KeyboardReadable {
                 // Small delay to allow keyboard to hide before showing window
                 if !keyboardVisible {
                     DispatchQueue.main.asyncAfter(deadline: .now() + KeyboardHelper.keyboardAnimationTime) {
-                        createWindow(with: rootViewController, height: height, addShadow: addShadow, checkKeyboard: false, completionHandler: completionHandler)
+                        createWindow(with: rootViewController, height: height, addShadow: addShadow, checkKeyboard: false, alignToBottom: alignToBottom, completionHandler: completionHandler)
                     }
                 }
             }
@@ -46,7 +42,7 @@ class WindowManager: KeyboardReadable {
 
         // add extra height to extend the window under the view
         // prevents taps from going to the view underneath the window
-        openWindow?.frame = CGRect(x: 0, y: calculateY(viewHeight: height), width: window.bounds.width, height: height + 30)
+        openWindow?.frame = CGRect(x: 0, y: calculateY(viewHeight: height, alignToBottom: alignToBottom), width: parentWindow.bounds.width, height: height + 30)
         openWindow?.rootViewController = UIViewController()
         openWindow?.windowLevel = .alert + 1
         openWindow?.alpha = 0
@@ -94,7 +90,7 @@ class WindowManager: KeyboardReadable {
             })
     }
 
-    private func calculateY(viewHeight: CGFloat) -> CGFloat {
+    private func calculateY(viewHeight: CGFloat, alignToBottom: Bool) -> CGFloat {
         let height = alignToBottom ? UIScreen.main.bounds.height - viewHeight + 25 : UIScreen.main.bounds.height - viewHeight
         let bottomConstraint = alignToBottom ? 0 : bottomConstraint()
         let safeAreaPadding: CGFloat = 24
@@ -108,7 +104,7 @@ class WindowManager: KeyboardReadable {
                 }
 
                 // have to add back half of the viewHeight as this is from the center not the top
-                if !self.alignToBottom {
+                if !alignToBottom {
                     self.openWindow?.center.y += (viewHeight / 2)
                 } else if keyboardHeight <= 0 {
                     self.openWindow?.center.y -= safeAreaPadding
@@ -122,11 +118,11 @@ class WindowManager: KeyboardReadable {
     }
 
     private func bottomConstraint() -> CGFloat {
-        let safeArea = SceneDelegate.getKeyWindow(for: rootViewController?.view).safeAreaInsets.bottom
+        let safeArea = openWindow?.safeAreaInsets.bottom ?? 0
         return safeArea + UIConstants.BottomToolbarHeight
     }
 
-    init(alignToBottom: Bool = false) {
-        self.alignToBottom = alignToBottom
+    init(parentWindow: UIWindow) {
+        self.parentWindow = parentWindow
     }
 }

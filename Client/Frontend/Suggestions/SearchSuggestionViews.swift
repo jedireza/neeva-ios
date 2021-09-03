@@ -466,21 +466,6 @@ private struct TabSuggestionView: View {
         .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
     }
 
-    @ViewBuilder
-    var detailView: some View {
-        if suggestion.isSelected {
-            HStack {
-                Button {
-                    UIPasteboard.general.string = suggestion.url?.absoluteString
-                    ToastViewManager.shared.makeToast(text: "URL copied to clipboard").enqueue()
-                } label: {
-                    Symbol(decorative: .squareOnSquare)
-                }
-
-            }
-        }
-    }
-
     var body: some View {
         SuggestionView(
             action: nil,
@@ -488,7 +473,7 @@ private struct TabSuggestionView: View {
             label: Text(
                 suggestion.isSelected ? suggestion.title : "Switch to Tab"),
             secondaryLabel: secondaryLabel,
-            detail: detailView,
+            detail: EmptyView(),
             suggestion: Suggestion.tabSuggestion(suggestion)
         )
         .environmentObject(model)
@@ -520,11 +505,13 @@ private struct EditCurrentURLSuggestionView: View {
         Group {
             Button {
                 UIPasteboard.general.string = suggestion.url?.absoluteString
-                ToastViewManager.shared.makeToast(text: "URL copied to clipboard").enqueue()
+
+                if let toastManager = SceneDelegate.getCurrentSceneDelegate(with: suggestion.manager.scene)?.toastViewManager {
+                    toastManager.makeToast(text: "URL copied to clipboard").enqueue(manager: toastManager)
+                }
             } label: {
                 Label("Copy Address", systemSymbol: .link)
             }
-
 
             Button {
                 let tabManager = suggestion.manager

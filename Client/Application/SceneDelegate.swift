@@ -11,7 +11,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     private var scene: UIScene?
 
+    public var toastViewManager: ToastViewManager!
     private var tabManager: TabManager!
+
     private var browserViewController: BrowserViewController!
     private var geigerCounter: KMCGeigerCounter?
 
@@ -26,7 +28,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
 
         window = .init(windowScene: scene)
-        window?.makeKeyAndVisible()
+        window!.makeKeyAndVisible()
+        toastViewManager = ToastViewManager(window: window!)
 
         setupRootViewController(scene)
 
@@ -183,6 +186,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     // MARK: - Get data for current scene
+    static func getCurrentSceneDelegate(with scene: UIScene) -> SceneDelegate? {
+        let sceneDelegate = scene.delegate as? SceneDelegate
+        return sceneDelegate
+    }
+
     /// Gets the  Scene Delegate for a view.
     /// - Warning: If view is nil, the function will fallback to a different method, but it is **preffered** if a view **is passed**.
     static func getCurrentSceneDelegate(for view: UIView?) -> SceneDelegate {

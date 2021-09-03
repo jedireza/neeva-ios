@@ -23,23 +23,25 @@ extension BrowserViewController {
                         return
                     }
 
-                    overlayWindowManager.createWindow(with: findInPageViewController,
+                    overlayWindowManager?.createWindow(with: findInPageViewController,
                                                       height: height,
-                                                      addShadow: true)
+                                                      addShadow: true,
+                                                      alignToBottom: true)
 
                     findInPageViewController.model.searchValue = query
                 }
             } else {
-                overlayWindowManager.createWindow(with: findInPageViewController!,
+                overlayWindowManager?.createWindow(with: findInPageViewController!,
                                                   height: height,
-                                                  addShadow: true)
+                                                  addShadow: true,
+                                                  alignToBottom: true)
             }
         } else {
             let tab = tab ?? tabManager.selectedTab
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
             
-            overlayWindowManager.removeCurrentWindow()
+            overlayWindowManager?.removeCurrentWindow()
             findInPageViewController = nil
         }
     }

@@ -11,8 +11,7 @@ enum ToastQueueLocation {
 }
 
 class ToastViewManager {
-    public static let shared = ToastViewManager()
-    private let toastWindowManager = WindowManager()
+    private let windowManager: WindowManager
     private var queuedToasts = [ToastView]()
 
     // current toast varibles
@@ -86,7 +85,7 @@ class ToastViewManager {
         toastViewHostingController.view.backgroundColor = .clear
 
         // creates new window to display Toast in
-        toastWindowManager.createWindow(with: toastViewHostingController, height: 80) { [unowned self] in
+        windowManager.createWindow(with: toastViewHostingController, height: 80, alignToBottom: false) { [unowned self] in
             // add timer if Toast should auto dismiss or if download completed by the time the Toast is displayed
             if let toastProgressViewModel = toast.toastProgressViewModel,
                 toastProgressViewModel.status != .inProgress
@@ -114,7 +113,7 @@ class ToastViewManager {
         currentToastTimer?.invalidate()
 
         // removes Toast from view
-        toastWindowManager.removeCurrentWindow()
+        windowManager.removeCurrentWindow()
 
         self.currentToast = nil
         self.currentToastTimer = nil
@@ -136,6 +135,10 @@ class ToastViewManager {
                 present(nextToast)
             }
         }
+    }
+
+    init(window: UIWindow) {
+        self.windowManager = WindowManager(parentWindow: window)
     }
 }
 

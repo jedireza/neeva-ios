@@ -253,14 +253,14 @@ extension BrowserViewController: WKUIDelegate {
                             toastLabelText = Strings.ContextMenuButtonToastNewTabOpenedLabelText
                         }
 
-                        let toastView = ToastViewManager.shared.makeToast(
-                            text: toastLabelText,
-                            buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
-                            buttonAction: {
-                                self.tabManager.selectTab(tab)
-                            })
-
-                        ToastViewManager.shared.enqueue(toast: toastView)
+                        if let toastManager = self.getSceneDelegate()?.toastViewManager {
+                            toastManager.makeToast(
+                                text: toastLabelText,
+                                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                                buttonAction: {
+                                    self.tabManager.selectTab(tab)
+                                }).enqueue(manager: toastManager)
+                        }
                     }
 
                     let getImageData = { (_ url: URL, success: @escaping (Data) -> Void) in

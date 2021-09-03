@@ -139,13 +139,15 @@ class ClipboardBarDisplayHandler: NSObject {
 
             self.lastDisplayedURL = absoluteString
 
-            let toastView = ToastViewManager.shared.makeToast(
-                text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle,
-                buttonAction: {
-                    self.bvc?.openURLInNewTabPreservingIncognitoState(url)
-                })
+            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.bvc?.view).toastViewManager {
+                let toastView = toastManager.makeToast(
+                    text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle,
+                    buttonAction: {
+                        self.bvc?.openURLInNewTabPreservingIncognitoState(url)
+                    })
 
-            ToastViewManager.shared.enqueue(toast: toastView)
+                toastManager.enqueue(toast: toastView)
+            }
         }
     }
 }

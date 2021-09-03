@@ -100,8 +100,8 @@ class BrowserViewController: UIViewController {
         return TabContentHost(bvc: self)
     }()
 
-    let overlayWindowManager = WindowManager(alignToBottom: true)
     var findInPageViewController: FindInPageViewController?
+    var overlayWindowManager: WindowManager?
 
     private(set) var topBar: TopBarHost!
 
@@ -578,6 +578,8 @@ class BrowserViewController: UIViewController {
         screenshotHelper.viewIsVisible = true
         screenshotHelper.takePendingScreenshots(tabManager.tabs)
 
+        overlayWindowManager = WindowManager(parentWindow: view.window!)
+
         super.viewDidAppear(animated)
 
         showQueuedAlertIfAvailable()
@@ -980,9 +982,10 @@ class BrowserViewController: UIViewController {
                         return self.profile.history.addPinnedTopSite(site)
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
-                            let toastView = ToastViewManager.shared.makeToast(
-                                text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
-                            ToastViewManager.shared.enqueue(toast: toastView)
+                            if let toastManager = self.getSceneDelegate()?.toastViewManager {
+                                toastManager.makeToast(
+                                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage).enqueue(manager: toastManager)
+                            }
                         }
                     }
                 }
@@ -1000,9 +1003,10 @@ class BrowserViewController: UIViewController {
                         return self.profile.history.removeFromPinnedTopSites(site)
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
-                            let toastView = ToastViewManager.shared.makeToast(
-                                text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage)
-                            ToastViewManager.shared.enqueue(toast: toastView)
+                            if let toastManager = self.getSceneDelegate()?.toastViewManager {
+                                toastManager.makeToast(
+                                    text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage).enqueue(manager: toastManager)
+                            }
                         }
                     }
                 }
@@ -1341,14 +1345,14 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
             URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
 
         // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-        let toastView = ToastViewManager.shared.makeToast(
-            text: Strings.ContextMenuButtonToastNewTabOpenedLabelText,
-            buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
-            buttonAction: {
-                self.tabManager.selectTab(tab)
-            })
-
-        ToastViewManager.shared.enqueue(toast: toastView)
+        if let toastManager = getSceneDelegate()?.toastViewManager {
+            toastManager.makeToast(
+                text: Strings.ContextMenuButtonToastNewTabOpenedLabelText,
+                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                buttonAction: {
+                    self.tabManager.selectTab(tab)
+                }).enqueue(manager: toastManager)
+        }
     }
 
     func zeroQueryPanel(didEnterQuery query: String) {
@@ -1473,6 +1477,10 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func tabManagerDidRemoveAllTabs(_ tabManager: TabManager) {}
+
+    func getSceneDelegate() -> SceneDelegate? {
+        SceneDelegate.getCurrentSceneDelegate(for: self.view)
+    }
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate
@@ -1584,14 +1592,14 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                     URLRequest(url: rURL as URL), afterTab: currentTab, isPrivate: isPrivate)
 
                 // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-                let toastView = ToastViewManager.shared.makeToast(
-                    text: Strings.ContextMenuButtonToastNewTabOpenedLabelText,
-                    buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
-                    buttonAction: {
-                        self.tabManager.selectTab(tab)
-                    })
-
-                ToastViewManager.shared.enqueue(toast: toastView)
+                if let toastManager = self.getSceneDelegate()?.toastViewManager {
+                    toastManager.makeToast(
+                        text: Strings.ContextMenuButtonToastNewTabOpenedLabelText,
+                        buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                        buttonAction: {
+                            self.tabManager.selectTab(tab)
+                        }).enqueue(manager: toastManager)
+                }
             }
 
             if !isPrivate {

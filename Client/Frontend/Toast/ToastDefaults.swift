@@ -30,14 +30,17 @@ class ToastDefaults: NSObject {
                         _ = tabManager.restoreSavedTabs(savedTabs)
                     }))
 
-            let toastView = ToastViewManager.shared.makeToast(content: toastContent)
+            guard let toastViewManager = SceneDelegate.getCurrentSceneDelegate(with: tabManager.scene)?.toastViewManager else {
+                return
+            }
 
+            let toastView = toastViewManager.makeToast(content: toastContent)
             toast = toastView
-            ToastViewManager.shared.enqueue(toast: toastView)
+            toastViewManager.enqueue(toast: toastView)
         }
     }
 
-    func showToastForDownload(download: Download) {
+    func showToastForDownload(toastViewManager: ToastViewManager, download: Download) {
         toastProgressViewModel = ToastProgressViewModel()
         toastProgressViewModel?.status = .inProgress
 
@@ -54,12 +57,12 @@ class ToastDefaults: NSObject {
         let toastContent = ToastViewContent(
             normalContent: normalContent, completedContent: completedContent,
             failedContent: failedContent)
-        let toastView = ToastViewManager.shared.makeToast(
+
+        let toastView = toastViewManager.makeToast(
             content: toastContent, toastProgressViewModel: toastProgressViewModel,
             autoDismiss: false)
-
         toast = toastView
-        ToastViewManager.shared.enqueue(toast: toastView, at: .first)
+        toastViewManager.enqueue(toast: toastView, at: .first)
     }
 
     func showToastForSpace(bvc: BrowserViewController, request: AddToSpaceRequest) {
@@ -130,11 +133,15 @@ class ToastDefaults: NSObject {
             normalContent: normalContent, completedContent: completedContent,
             failedContent: failedContent)
 
-        let toastView = ToastViewManager.shared.makeToast(
+        guard let toastViewManager = SceneDelegate.getCurrentSceneDelegate(for: bvc.view).toastViewManager else {
+            return
+        }
+
+        let toastView = toastViewManager.makeToast(
             content: toastContent, toastProgressViewModel: toastProgressViewModel,
             autoDismiss: false)
         toast = toastView
-        ToastViewManager.shared.enqueue(toast: toastView)
+        toastViewManager.enqueue(toast: toastView)
     }
 }
 

@@ -236,10 +236,9 @@ class HistoryPanel: SiteTableViewController {
 
     func pinToTopSites(_ site: Site) {
         profile.history.addPinnedTopSite(site).uponQueue(.main) { result in
-            if result.isSuccess {
-                let toastView = ToastViewManager.shared.makeToast(
-                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage)
-                ToastViewManager.shared.enqueue(toast: toastView)
+            if result.isSuccess, let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view).toastViewManager  {
+                toastManager.makeToast(
+                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage).enqueue(manager: toastManager)
             }
         }
     }
@@ -495,18 +494,19 @@ class HistoryPanel: SiteTableViewController {
                 self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
             }
         ) { tab, isPrivate in
-            let toastLabelText: String =
-                isPrivate
-                ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
-                : Strings.ContextMenuButtonToastNewTabOpenedLabelText
-            let toastView = ToastViewManager.shared.makeToast(
-                text: toastLabelText,
-                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
-                buttonAction: {
-                    self.tabManager.selectTab(tab)
-                })
+            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view).toastViewManager {
+                let toastLabelText: String =
+                    isPrivate
+                    ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
+                    : Strings.ContextMenuButtonToastNewTabOpenedLabelText
 
-            ToastViewManager.shared.enqueue(toast: toastView)
+                toastManager.makeToast(
+                    text: toastLabelText,
+                    buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                    buttonAction: {
+                        self.tabManager.selectTab(tab)
+                    }).enqueue(manager: toastManager)
+            }
         }
     }
 
