@@ -3601,6 +3601,112 @@ public struct CustomSortOrderInput: GraphQLMapConvertible {
   }
 }
 
+public struct AddSpacePublicACLInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - id
+  public init(id: Swift.Optional<String?> = nil) {
+    graphQLMap = ["id": id]
+  }
+
+  public var id: Swift.Optional<String?> {
+    get {
+      return graphQLMap["id"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+}
+
+public struct DeleteSpacePublicACLInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - id
+  public init(id: Swift.Optional<String?> = nil) {
+    graphQLMap = ["id": id]
+  }
+
+  public var id: Swift.Optional<String?> {
+    get {
+      return graphQLMap["id"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+}
+
+public struct AddSpaceSoloACLsInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - id
+  ///   - shareWith
+  ///   - note
+  public init(id: Swift.Optional<String?> = nil, shareWith: Swift.Optional<[SpaceEmailACL]?> = nil, note: Swift.Optional<String?> = nil) {
+    graphQLMap = ["id": id, "shareWith": shareWith, "note": note]
+  }
+
+  public var id: Swift.Optional<String?> {
+    get {
+      return graphQLMap["id"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  public var shareWith: Swift.Optional<[SpaceEmailACL]?> {
+    get {
+      return graphQLMap["shareWith"] as? Swift.Optional<[SpaceEmailACL]?> ?? Swift.Optional<[SpaceEmailACL]?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "shareWith")
+    }
+  }
+
+  public var note: Swift.Optional<String?> {
+    get {
+      return graphQLMap["note"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "note")
+    }
+  }
+}
+
+public struct SpaceEmailACL: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - email
+  ///   - acl
+  public init(email: String, acl: SpaceACLLevel) {
+    graphQLMap = ["email": email, "acl": acl]
+  }
+
+  public var email: String {
+    get {
+      return graphQLMap["email"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "email")
+    }
+  }
+
+  public var acl: SpaceACLLevel {
+    get {
+      return graphQLMap["acl"] as! SpaceACLLevel
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "acl")
+    }
+  }
+}
+
 public enum QuerySuggestionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case standard
@@ -4548,6 +4654,225 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
   }
 }
 
+public final class GetContactSuggestionsQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query GetContactSuggestions($q: String!, $count: Int, $onlyNeevaUsers: Boolean) {
+      suggestContacts(q: $q, count: $count, onlyNeevaUsers: $onlyNeevaUsers) {
+        __typename
+        requestID
+        contactSuggestions {
+          __typename
+          profile {
+            __typename
+            displayName
+            email
+            pictureURL
+          }
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "GetContactSuggestions"
+
+  public let operationIdentifier: String? = "b7c4438e46da456873602ff047a2693ad52e93b8344aacdcf6554f20ab10306f"
+
+  public var q: String
+  public var count: Int?
+  public var onlyNeevaUsers: Bool?
+
+  public init(q: String, count: Int? = nil, onlyNeevaUsers: Bool? = nil) {
+    self.q = q
+    self.count = count
+    self.onlyNeevaUsers = onlyNeevaUsers
+  }
+
+  public var variables: GraphQLMap? {
+    return ["q": q, "count": count, "onlyNeevaUsers": onlyNeevaUsers]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("suggestContacts", arguments: ["q": GraphQLVariable("q"), "count": GraphQLVariable("count"), "onlyNeevaUsers": GraphQLVariable("onlyNeevaUsers")], type: .object(SuggestContact.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(suggestContacts: SuggestContact? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "suggestContacts": suggestContacts.flatMap { (value: SuggestContact) -> ResultMap in value.resultMap }])
+    }
+
+    /// Suggestions for contacts (i.e. people).
+    public var suggestContacts: SuggestContact? {
+      get {
+        return (resultMap["suggestContacts"] as? ResultMap).flatMap { SuggestContact(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "suggestContacts")
+      }
+    }
+
+    public struct SuggestContact: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["SuggestContacts"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("requestID", type: .scalar(String.self)),
+          GraphQLField("contactSuggestions", type: .list(.nonNull(.object(ContactSuggestion.selections)))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(requestId: String? = nil, contactSuggestions: [ContactSuggestion]? = nil) {
+        self.init(unsafeResultMap: ["__typename": "SuggestContacts", "requestID": requestId, "contactSuggestions": contactSuggestions.flatMap { (value: [ContactSuggestion]) -> [ResultMap] in value.map { (value: ContactSuggestion) -> ResultMap in value.resultMap } }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// requestID for suggest contacts request
+      public var requestId: String? {
+        get {
+          return resultMap["requestID"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "requestID")
+        }
+      }
+
+      /// List of suggested contacts based on query
+      public var contactSuggestions: [ContactSuggestion]? {
+        get {
+          return (resultMap["contactSuggestions"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [ContactSuggestion] in value.map { (value: ResultMap) -> ContactSuggestion in ContactSuggestion(unsafeResultMap: value) } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [ContactSuggestion]) -> [ResultMap] in value.map { (value: ContactSuggestion) -> ResultMap in value.resultMap } }, forKey: "contactSuggestions")
+        }
+      }
+
+      public struct ContactSuggestion: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["ContactSuggestion"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("profile", type: .object(Profile.selections)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(profile: Profile? = nil) {
+          self.init(unsafeResultMap: ["__typename": "ContactSuggestion", "profile": profile.flatMap { (value: Profile) -> ResultMap in value.resultMap }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var profile: Profile? {
+          get {
+            return (resultMap["profile"] as? ResultMap).flatMap { Profile(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "profile")
+          }
+        }
+
+        public struct Profile: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["Profile"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("displayName", type: .nonNull(.scalar(String.self))),
+              GraphQLField("email", type: .nonNull(.scalar(String.self))),
+              GraphQLField("pictureURL", type: .nonNull(.scalar(String.self))),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(displayName: String, email: String, pictureUrl: String) {
+            self.init(unsafeResultMap: ["__typename": "Profile", "displayName": displayName, "email": email, "pictureURL": pictureUrl])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var displayName: String {
+            get {
+              return resultMap["displayName"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "displayName")
+            }
+          }
+
+          public var email: String {
+            get {
+              return resultMap["email"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "email")
+            }
+          }
+
+          public var pictureUrl: String {
+            get {
+              return resultMap["pictureURL"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "pictureURL")
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 public final class SendFeedbackMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
@@ -4735,6 +5060,13 @@ public final class ListSpacesQuery: GraphQLQuery {
             acl {
               __typename
               userID
+              profile {
+                __typename
+                displayName
+                email
+                pictureURL
+              }
+              acl
             }
             hasPublicACL
             thumbnail
@@ -4753,7 +5085,7 @@ public final class ListSpacesQuery: GraphQLQuery {
 
   public let operationName: String = "ListSpaces"
 
-  public let operationIdentifier: String? = "395bc6b167d715cb0e9194316e44cb9900c9cf8887b55ac0df273f58f189aa5e"
+  public let operationIdentifier: String? = "adb6e51cd6f9f2db0a5ca53232db6ba11568dc6be4d2aefb8f16782f403dac30"
 
   public var kind: ListSpacesKind?
 
@@ -5095,6 +5427,8 @@ public final class ListSpacesQuery: GraphQLQuery {
               return [
                 GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                 GraphQLField("userID", type: .nonNull(.scalar(String.self))),
+                GraphQLField("profile", type: .nonNull(.object(Profile.selections))),
+                GraphQLField("acl", type: .nonNull(.scalar(SpaceACLLevel.self))),
               ]
             }
 
@@ -5104,8 +5438,8 @@ public final class ListSpacesQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(userId: String) {
-              self.init(unsafeResultMap: ["__typename": "SpaceACL", "userID": userId])
+            public init(userId: String, profile: Profile, acl: SpaceACLLevel) {
+              self.init(unsafeResultMap: ["__typename": "SpaceACL", "userID": userId, "profile": profile.resultMap, "acl": acl])
             }
 
             public var __typename: String {
@@ -5123,6 +5457,83 @@ public final class ListSpacesQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "userID")
+              }
+            }
+
+            public var profile: Profile {
+              get {
+                return Profile(unsafeResultMap: resultMap["profile"]! as! ResultMap)
+              }
+              set {
+                resultMap.updateValue(newValue.resultMap, forKey: "profile")
+              }
+            }
+
+            public var acl: SpaceACLLevel {
+              get {
+                return resultMap["acl"]! as! SpaceACLLevel
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "acl")
+              }
+            }
+
+            public struct Profile: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["Profile"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("displayName", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("email", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("pictureURL", type: .nonNull(.scalar(String.self))),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(displayName: String, email: String, pictureUrl: String) {
+                self.init(unsafeResultMap: ["__typename": "Profile", "displayName": displayName, "email": email, "pictureURL": pictureUrl])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var displayName: String {
+                get {
+                  return resultMap["displayName"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "displayName")
+                }
+              }
+
+              public var email: String {
+                get {
+                  return resultMap["email"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "email")
+                }
+              }
+
+              public var pictureUrl: String {
+                get {
+                  return resultMap["pictureURL"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "pictureURL")
+                }
               }
             }
           }
@@ -5853,6 +6264,221 @@ public final class SetSpaceDetailPageSortOrderMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "setSpaceDetailPageSortOrder")
+      }
+    }
+  }
+}
+
+public final class AddSpacePublicAclMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation AddSpacePublicACL($input: AddSpacePublicACLInput!) {
+      addSpacePublicACL(input: $input)
+    }
+    """
+
+  public let operationName: String = "AddSpacePublicACL"
+
+  public let operationIdentifier: String? = "7e14e3c762d112f24a2aad5e2935c128016f1fdd4c55e172d45c8235d4d3d1e4"
+
+  public var input: AddSpacePublicACLInput
+
+  public init(input: AddSpacePublicACLInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("addSpacePublicACL", arguments: ["input": GraphQLVariable("input")], type: .scalar(Bool.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(addSpacePublicAcl: Bool? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "addSpacePublicACL": addSpacePublicAcl])
+    }
+
+    /// Add public ACL to a space.
+    public var addSpacePublicAcl: Bool? {
+      get {
+        return resultMap["addSpacePublicACL"] as? Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "addSpacePublicACL")
+      }
+    }
+  }
+}
+
+public final class DeleteSpacePublicAclMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation DeleteSpacePublicACL($input: DeleteSpacePublicACLInput!) {
+      deleteSpacePublicACL(input: $input)
+    }
+    """
+
+  public let operationName: String = "DeleteSpacePublicACL"
+
+  public let operationIdentifier: String? = "4730b43e599a2e2183cbf928de2b59267fc8a40122c45c700775343f8371f8f4"
+
+  public var input: DeleteSpacePublicACLInput
+
+  public init(input: DeleteSpacePublicACLInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("deleteSpacePublicACL", arguments: ["input": GraphQLVariable("input")], type: .scalar(Bool.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(deleteSpacePublicAcl: Bool? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "deleteSpacePublicACL": deleteSpacePublicAcl])
+    }
+
+    /// Delete public ACL from a space.
+    public var deleteSpacePublicAcl: Bool? {
+      get {
+        return resultMap["deleteSpacePublicACL"] as? Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "deleteSpacePublicACL")
+      }
+    }
+  }
+}
+
+public final class AddSpaceSoloAcLsMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation AddSpaceSoloACLs($input: AddSpaceSoloACLsInput!) {
+      addSpaceSoloACLs(input: $input) {
+        __typename
+        nonNeevanEmails
+        changedACLCount
+      }
+    }
+    """
+
+  public let operationName: String = "AddSpaceSoloACLs"
+
+  public let operationIdentifier: String? = "48811ea28522d0331e0b7d4540aa5076fc784faadacec0b53b8dcc4b51a05f00"
+
+  public var input: AddSpaceSoloACLsInput
+
+  public init(input: AddSpaceSoloACLsInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("addSpaceSoloACLs", arguments: ["input": GraphQLVariable("input")], type: .object(AddSpaceSoloAcl.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(addSpaceSoloAcLs: AddSpaceSoloAcl? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "addSpaceSoloACLs": addSpaceSoloAcLs.flatMap { (value: AddSpaceSoloAcl) -> ResultMap in value.resultMap }])
+    }
+
+    /// Add a list of emails to a space.
+    public var addSpaceSoloAcLs: AddSpaceSoloAcl? {
+      get {
+        return (resultMap["addSpaceSoloACLs"] as? ResultMap).flatMap { AddSpaceSoloAcl(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "addSpaceSoloACLs")
+      }
+    }
+
+    public struct AddSpaceSoloAcl: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["AddSpaceSoloACLsResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("nonNeevanEmails", type: .list(.nonNull(.scalar(String.self)))),
+          GraphQLField("changedACLCount", type: .scalar(Int.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(nonNeevanEmails: [String]? = nil, changedAclCount: Int? = nil) {
+        self.init(unsafeResultMap: ["__typename": "AddSpaceSoloACLsResponse", "nonNeevanEmails": nonNeevanEmails, "changedACLCount": changedAclCount])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var nonNeevanEmails: [String]? {
+        get {
+          return resultMap["nonNeevanEmails"] as? [String]
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "nonNeevanEmails")
+        }
+      }
+
+      public var changedAclCount: Int? {
+        get {
+          return resultMap["changedACLCount"] as? Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "changedACLCount")
+        }
       }
     }
   }

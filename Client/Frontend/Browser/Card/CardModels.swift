@@ -130,7 +130,7 @@ class SpaceCardModel: CardModel {
 
     func delete(space spaceID: String, entities: [String]) {
         DispatchQueue.main.async {
-            let request = SpaceBatchRequest(for: spaceID, to: .delete, entities: entities)
+            let request = DeleteSpaceItemsRequest(spaceID: spaceID, ids: entities)
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
             }.cancel()
@@ -139,9 +139,41 @@ class SpaceCardModel: CardModel {
 
     func reorder(space spaceID: String, entities: [String]) {
         DispatchQueue.main.async {
-            let request = SpaceBatchRequest(for: spaceID, to: .reorder, entities: entities)
+            let request = ReorderSpaceRequest(spaceID: spaceID, ids: entities)
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
+            }.cancel()
+        }
+    }
+
+    func changePublicACL(space: Space, add: Bool) {
+        DispatchQueue.main.async {
+            if add {
+                let request = AddPublicACLRequest(spaceID: space.id.id)
+                request.$state.sink { state in
+                    self.stateNeedsRefresh = true
+                    space.isPublic = true
+                    self.objectWillChange.send()
+                }.cancel()
+            } else {
+                let request = DeletePublicACLRequest(spaceID: space.id.id)
+                request.$state.sink { state in
+                    self.stateNeedsRefresh = true
+                    space.isPublic = false
+                    self.objectWillChange.send()
+                }.cancel()
+            }
+        }
+    }
+
+    func addSoloACLs(space: Space, emails: [String], acl: SpaceACLLevel) {
+        DispatchQueue.main.async {
+            let request = AddSoloACLsRequest(
+                spaceID: space.id.id, emails: emails, acl: acl)
+            request.$state.sink { state in
+                self.stateNeedsRefresh = true
+                space.isShared = true
+                self.objectWillChange.send()
             }.cancel()
         }
     }

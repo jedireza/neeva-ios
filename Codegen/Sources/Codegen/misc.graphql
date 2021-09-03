@@ -44,6 +44,23 @@ query CheatsheetInfo($input: String!) {
   }
 }
 
+query GetContactSuggestions(
+    $q: String!
+    $count: Int
+    $onlyNeevaUsers: Boolean
+) {
+    suggestContacts(q: $q, count: $count, onlyNeevaUsers: $onlyNeevaUsers) {
+        requestID
+        contactSuggestions {
+            profile {
+                displayName
+                email
+                pictureURL
+            }
+        }
+    }
+}
+
 mutation SendFeedback($input: SendFeedbackV2Input!) {
   sendFeedbackV2(input: $input)
 }

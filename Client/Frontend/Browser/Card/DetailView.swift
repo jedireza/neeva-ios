@@ -13,6 +13,7 @@ enum DetailsViewUX {
 
 struct DetailView<Details: ThumbnailModel>: View
 where
+    Details: AccessingManagerProvider,
     Details.Thumbnail: CardDetails, Details: CardDetails,
     Details.Thumbnail: AccessingManagerProvider
 {
@@ -21,8 +22,13 @@ where
     @Environment(\.onOpenURL) var openURL
     @Environment(\.columns) var gridColumns
     @State private var editMode = EditMode.inactive
+    @State private var shareMenuPresented = false
 
     let primitive: Details
+
+    var space: Space? {
+        primitive.manager.get(for: primitive.id) as? Space
+    }
 
     let listColumns = Array(
         repeating:
@@ -32,7 +38,7 @@ where
         count: 1)
 
     var canEdit: Bool {
-        primitive.ACL > .edit
+        primitive.ACL >= .edit
     }
 
     var body: some View {
@@ -71,6 +77,24 @@ where
                     .foregroundColor(.secondaryLabel)
             }
             Spacer()
+            if let space = space, case .owner = space.userACL {
+                Button(
+                    action: {
+                        shareMenuPresented = true
+                    },
+                    label: {
+                        Image(
+                            systemName: "square.and.arrow.up"
+                        )
+                        .foregroundColor(Color.label)
+                        .tapTargetFrame()
+                    }
+                ).presentAsPopover(isPresented: $shareMenuPresented) {
+                    ShareSpaceView(space: space) {
+                        self.shareMenuPresented = false
+                    }.environmentObject(spacesModel)
+                }
+            }
             if gridModel.showingDetailsAsList && canEdit {
                 Button(
                     action: {
@@ -91,20 +115,6 @@ where
                         .tapTargetFrame()
                     })
             }
-            Button(
-                action: {
-                    withAnimation {
-                        gridModel.showingDetailsAsList.toggle()
-                    }
-                },
-                label: {
-                    Image(
-                        systemName: gridModel.showingDetailsAsList
-                            ? "square.grid.2x2.fill" : "rectangle.grid.1x2.fill"
-                    )
-                    .foregroundColor(Color.label)
-                    .tapTargetFrame()
-                })
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.background.edgesIgnoringSafeArea(.horizontal))

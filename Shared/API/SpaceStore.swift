@@ -26,19 +26,22 @@ public struct SpaceEntityData {
 }
 
 public class Space: Hashable, Identifiable {
+    public typealias Acl = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     public let id: SpaceID
     public let name: String
     public let lastModifiedTs: String
     public let thumbnail: String?
     public let resultCount: Int
     public let isDefaultSpace: Bool
-    public let isShared: Bool
-    public let isPublic: Bool
+    public var isShared: Bool
+    public var isPublic: Bool
     public let userACL: SpaceACLLevel
+    public let acls: [Acl]
 
     init(
         id: SpaceID, name: String, lastModifiedTs: String, thumbnail: String?, resultCount: Int,
-        isDefaultSpace: Bool, isShared: Bool, isPublic: Bool, userACL: SpaceACLLevel
+        isDefaultSpace: Bool, isShared: Bool, isPublic: Bool, userACL: SpaceACLLevel,
+        acls: [Acl] = []
     ) {
         self.id = id
         self.name = name
@@ -49,6 +52,7 @@ public class Space: Hashable, Identifiable {
         self.isShared = isShared
         self.isPublic = isPublic
         self.userACL = userACL
+        self.acls = acls
     }
 
     public var url: URL {
@@ -156,7 +160,8 @@ public class SpaceStore: ObservableObject {
                         !(space.acl?.map(\.userId).filter { $0 != NeevaUserInfo.shared.id }.isEmpty
                         ?? true),
                     isPublic: space.hasPublicAcl ?? false,
-                    userACL: userAcl
+                    userACL: userAcl,
+                    acls: space.acl ?? []
                 )
 
                 /// Note, we avoid parsing `lastModifiedTs` here and instead just use it as

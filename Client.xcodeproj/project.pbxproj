@@ -126,7 +126,9 @@
 		4392FB48252EC50400AD3D23 /* InternalSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC486982195F46A00CDA48D /* InternalSchemeHandler.swift */; };
 		4392FB5C252EC51E00AD3D23 /* PrivilegedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31CF65B1CC1959A001D0BD0 /* PrivilegedRequest.swift */; };
 		4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */; };
-		4A15C8B326DEE2D8006CD097 /* SpaceBatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A15C8B226DEE2D8006CD097 /* SpaceBatchRequest.swift */; };
+		4A15C8B526E1815A006CD097 /* ShareSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */; };
+		4A15C8B726E183F5006CD097 /* ContactsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A15C8B626E183F5006CD097 /* ContactsProvider.swift */; };
+		4A15C8B926E1BFAC006CD097 /* SpaceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A15C8B826E1BFAB006CD097 /* SpaceRequest.swift */; };
 		4A1D054B26642BF400D63333 /* SimulatedSwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */; };
 		4A1D054D266430DA00D63333 /* SimulatedSwipeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */; };
 		4A1D05502669715B00D63333 /* CardViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054F2669715B00D63333 /* CardViewControllers.swift */; };
@@ -1067,7 +1069,9 @@
 		435D7CC4246209AA0043ACB9 /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		435FAB17242404B400AE9310 /* FullscreenHelper.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = FullscreenHelper.js; path = Client/Frontend/UserContent/UserScripts/AllFrames/AtDocumentStart/FullscreenHelper.js; sourceTree = SOURCE_ROOT; };
 		4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGroupView.swift; sourceTree = "<group>"; };
-		4A15C8B226DEE2D8006CD097 /* SpaceBatchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceBatchRequest.swift; sourceTree = "<group>"; };
+		4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSpaceView.swift; sourceTree = "<group>"; };
+		4A15C8B626E183F5006CD097 /* ContactsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsProvider.swift; sourceTree = "<group>"; };
+		4A15C8B826E1BFAB006CD097 /* SpaceRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceRequest.swift; sourceTree = "<group>"; };
 		4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeController.swift; sourceTree = "<group>"; };
 		4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeAnimator.swift; sourceTree = "<group>"; };
 		4A1D054F2669715B00D63333 /* CardViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewControllers.swift; sourceTree = "<group>"; };
@@ -2138,6 +2142,7 @@
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
+				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
 			);
 			path = Card;
@@ -2582,12 +2587,13 @@
 				C9C18DD126558FF2004710CD /* Network.swift */,
 				C9C18DD026558FF2004710CD /* QueryController.swift */,
 				C9C18E30265594DE004710CD /* Space.swift */,
-				4A15C8B226DEE2D8006CD097 /* SpaceBatchRequest.swift */,
+				4A15C8B826E1BFAB006CD097 /* SpaceRequest.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
 				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
 				C9C18E2F265594DE004710CD /* TestSpaces.swift */,
 				BC5C43CC265F49EA007E2F61 /* TourManager.swift */,
 				BCC39A2026C7258600EEC559 /* UserFlagStore.swift */,
+				4A15C8B626E183F5006CD097 /* ContactsProvider.swift */,
 				C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */,
 			);
 			path = API;
@@ -4279,7 +4285,6 @@
 				C9C18E50265597A6004710CD /* SpacesSearchHeaderView.swift in Sources */,
 				E65075B21E37F7AB006961AC /* Functions.swift in Sources */,
 				E65075BA1E37F7AB006961AC /* Prefs.swift in Sources */,
-				4A15C8B326DEE2D8006CD097 /* SpaceBatchRequest.swift in Sources */,
 				C9C18E4726559616004710CD /* MultilineTextField.swift in Sources */,
 				C9C18E5C265598EA004710CD /* QueryController.swift in Sources */,
 				C9C18E5726559874004710CD /* NeevaColors.swift in Sources */,
@@ -4301,6 +4306,7 @@
 				E65075921E37F7AB006961AC /* Accessibility.swift in Sources */,
 				675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */,
 				C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */,
+				4A15C8B926E1BFAC006CD097 /* SpaceRequest.swift in Sources */,
 				CD1CE85F24EDE66A00006DFB /* WKWebViewExtensions.swift in Sources */,
 				C9C18E552655983B004710CD /* SystemColors.swift in Sources */,
 				C9C18E4F26559784004710CD /* SpaceStore.swift in Sources */,
@@ -4336,6 +4342,7 @@
 				4A51E57026BDBCDF00AD7CDE /* ImportToSpace.swift in Sources */,
 				C9C18E6126559A7B004710CD /* DataURIBody.swift in Sources */,
 				E65075A91E37F7AB006961AC /* URLExtensions.swift in Sources */,
+				4A15C8B726E183F5006CD097 /* ContactsProvider.swift in Sources */,
 				D054352A226687A400FDE4EF /* UIBarButtonItemExtensions.swift in Sources */,
 				7479B4EF1C5306A200DF000B /* Reachability-old.swift in Sources */,
 				C9C18E5B265598D1004710CD /* TestSpaces.swift in Sources */,
@@ -4596,6 +4603,7 @@
 				C9098F5E26AF48BC00D2B5F4 /* TabChromeModel.swift in Sources */,
 				1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */,
 				66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */,
+				4A15C8B526E1815A006CD097 /* ShareSpaceView.swift in Sources */,
 				661F4FB5269CAAE00078238B /* DownloadOverlayView.swift in Sources */,
 				BC423EA626CE391D007E2C01 /* CompactNeevaMenuView.swift in Sources */,
 				C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */,
