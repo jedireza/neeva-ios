@@ -432,7 +432,11 @@ class SuggestionModel: ObservableObject {
                 forTab: bvc.tabManager.selectedTab)
         case .editCurrentURL(let tab):
             hideZeroQuery = false
-            bvc.searchQueryModel.value = tab.url?.absoluteString ?? ""
+
+            let tabURL = tab.url
+            let url = InternalURL.isValid(url: tabURL) ?
+                    InternalURL(tabURL)?.originalURLFromErrorPage : tabURL
+            bvc.searchQueryModel.value = url?.absoluteString ?? ""
         case .tabSuggestion(let selectedTab):
             if let tab = selectedTab.manager.get(for: selectedTab.id) {
                 selectedTab.manager.select(tab)

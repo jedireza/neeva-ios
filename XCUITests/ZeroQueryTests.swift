@@ -3,11 +3,6 @@
 import Foundation
 
 class ZeroQueryTests: BaseTestCase {
-    func testZeroQueryURLNotSuggestedToEdit() {
-        goToAddressBar()
-        assert(app.buttons["Edit Current URL"].exists == false)
-    }
-
     // Tests to be sure that hitting the cancel button on the URL bar
     // shows the zero query page (if it was open)
     // instead of showing a blank tab.
