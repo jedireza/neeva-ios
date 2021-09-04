@@ -11,6 +11,7 @@ public struct SendFeedbackView: View {
     let onDismiss: (() -> Void)?
     let screenshot: UIImage?
     let query: String?
+    let onFeedbackSend: (FeedbackRequest) -> Void
 
     /// - Parameters:
     ///   - screenshot: A screenshot image that the user may optionally send along with the text
@@ -21,7 +22,8 @@ public struct SendFeedbackView: View {
     ///   - initialText: Text to pre-fill the feedback input with. If non-empty, the user can submit feedback without entering any additional text.
     public init(
         screenshot: UIImage?, url: URL?, onDismiss: (() -> Void)? = nil, requestId: String? = nil,
-        query: String? = nil, geoLocationStatus: String? = nil, initialText: String = ""
+        query: String? = nil, geoLocationStatus: String? = nil, initialText: String = "",
+        onFeedbackSend: @escaping (FeedbackRequest) -> Void
     ) {
         self.screenshot = screenshot
         self._url = .init(initialValue: url)
@@ -32,6 +34,7 @@ public struct SendFeedbackView: View {
         self.initialText = initialText
         self._editedScreenshot = .init(initialValue: screenshot ?? UIImage())
         self.query = query
+        self.onFeedbackSend = onFeedbackSend
     }
 
     @Environment(\.presentationMode) var presentationMode
@@ -42,7 +45,6 @@ public struct SendFeedbackView: View {
     @State var shareURL = true
     @State var isEditingURL = false
     @State var shareScreenshot = true
-    @State var isSending = false
     @State var screenshotSheet = ModalState()
     @State var editedScreenshot: UIImage
     @State var shareQuery = true
@@ -187,12 +189,8 @@ public struct SendFeedbackView: View {
                         "Cancel", action: onDismiss ?? { presentationMode.wrappedValue.dismiss() })
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    if isSending {
-                        ActivityIndicator()
-                    } else {
-                        Button("Send", action: sendFeedbackHandler)
-                            .disabled(feedbackText.isEmpty)
-                    }
+                    Button("Send", action: sendFeedbackHandler)
+                        .disabled(feedbackText.isEmpty)
                 }
             }
         }
@@ -247,10 +245,7 @@ public struct SendFeedbackView: View {
         TourManager.shared.notifyCurrentViewClose()
     }
 
-    private func updateTourManagerUponSuccess() {
-        TourManager.shared.userReachedStep(step: .promptFeedbackInNeevaMenu)
-        TourManager.shared.userReachedStep(step: .openFeedbackPanelWithInputFieldHighlight)
-    }
+   
 
     private var shouldHighlightTextInput: Bool {
         return TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu)
@@ -258,7 +253,6 @@ public struct SendFeedbackView: View {
     }
 
     private func sendFeedbackHandler() {
-        isSending = true
         let feedbackText: String
 
         if let url = url, shareURL,
@@ -271,7 +265,7 @@ public struct SendFeedbackView: View {
 
         let shareResults = NeevaFeatureFlags[.feedbackQuery] ? shareQuery && query != nil : false
 
-        SendFeedbackMutation(
+        onFeedbackSend(FeedbackRequest(feedback: SendFeedbackMutation(
             input: .init(
                 feedback: feedbackText,
                 shareResults: shareResults,
@@ -281,20 +275,12 @@ public struct SendFeedbackView: View {
                 screenshot: shareScreenshot && NeevaFeatureFlags[.feedbackScreenshot]
                     ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
             )
-        ).perform { result in
-            isSending = false
-            switch result {
-            case .success:
-                updateTourManagerUponSuccess()
-                if let onDismiss = onDismiss {
-                    onDismiss()
-                } else {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            case .failure(let error):
-                print(error)
-            }
-            TourManager.shared.reset()
+        )))
+
+        if let onDismiss = onDismiss {
+            onDismiss()
+        } else {
+            presentationMode.wrappedValue.dismiss()
         }
     }
 }
@@ -326,15 +312,15 @@ struct SendFeedbackView_Previews: PreviewProvider {
         // iPhone 12 screen size
         SendFeedbackView(
             screenshot: UIImage(color: .systemRed, width: 390, height: 844)!,
-            url: nil, requestId: "swiftui-preview", query: "Best Air Purifier")
+            url: nil, requestId: "swiftui-preview", query: "Best Air Purifier", onFeedbackSend: { _ in })
         // iPhone 8 screen size
         SendFeedbackView(
             screenshot: UIImage(color: .systemRed, width: 375, height: 667)!,
-            url: "https://www.amazon.com/dp/B0863TXG")
+            url: "https://www.amazon.com/dp/B0863TXG", onFeedbackSend: { _ in })
         SendFeedbackView(
             screenshot: UIImage(color: .systemBlue, width: 390, height: 844)!,
             url: "https://www.amazon.com/dp/B0863TXG",
             initialText: Array(repeating: "Placeholder text for filled form.", count: 5).joined(
-                separator: "\n"))
+                separator: "\n"), onFeedbackSend: { _ in })
     }
 }

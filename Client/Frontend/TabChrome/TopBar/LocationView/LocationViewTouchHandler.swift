@@ -183,7 +183,6 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             UIMenuController.shared.hideMenu(from: self)
             wrapper.pasteAndGoAction.handler()
         }
-
         override func resignFirstResponder() -> Bool {
             UIMenuController.shared.hideMenu(from: self)
             return super.resignFirstResponder()

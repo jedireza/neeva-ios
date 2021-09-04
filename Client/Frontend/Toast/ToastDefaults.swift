@@ -8,7 +8,7 @@ class ToastDefaults: NSObject {
     var toast: ToastView?
     var toastProgressViewModel: ToastProgressViewModel?
 
-    private var spaceRequestListener: Any?
+    private var requestListener: Any?
 
     func showToastForClosedTabs(_ savedTabs: [SavedTab], tabManager: TabManager) {
         guard savedTabs.count > 0 else {
@@ -40,7 +40,7 @@ class ToastDefaults: NSObject {
         }
     }
 
-    func showToastForDownload(toastViewManager: ToastViewManager, download: Download) {
+    func showToastForDownload(download: Download, toastViewManager: ToastViewManager) {
         toastProgressViewModel = ToastProgressViewModel()
         toastProgressViewModel?.status = .inProgress
 
@@ -69,12 +69,14 @@ class ToastDefaults: NSObject {
         toastProgressViewModel = ToastProgressViewModel()
         toastProgressViewModel?.status = .inProgress
 
-        spaceRequestListener = request.$state.sink { [self] updatedState in
+        requestListener = request.$state.sink { [weak self] updatedState in
+            guard let self = self else { return }
+
             if updatedState == .failed {
-                toastProgressViewModel?.status = .failed
+                self.toastProgressViewModel?.status = .failed
             } else {
                 // set to success because that is the only case possible in this case
-                toastProgressViewModel?.status = .success
+                self.toastProgressViewModel?.status = .success
             }
         }
 
@@ -140,6 +142,45 @@ class ToastDefaults: NSObject {
         let toastView = toastViewManager.makeToast(
             content: toastContent, toastProgressViewModel: toastProgressViewModel,
             autoDismiss: false)
+        toast = toastView
+        toastViewManager.enqueue(toast: toastView)
+    }
+
+    func showToastForFeedback(request: FeedbackRequest, toastViewManager: ToastViewManager) {
+        toastProgressViewModel = ToastProgressViewModel()
+        toastProgressViewModel?.status = .inProgress
+
+        requestListener = request.$state.sink { [weak self] updatedState in
+            guard let self = self else { return }
+
+            switch updatedState {
+            case .inProgress:
+                self.toastProgressViewModel?.status = .inProgress
+            case .success:
+                self.toastProgressViewModel?.status = .success
+            case .failed:
+                self.toastProgressViewModel?.status = .failed
+            }
+        }
+
+        let failedAction = {
+            request.sendFeedback()
+            self.showToastForFeedback(request: request, toastViewManager: toastViewManager)
+        }
+
+        let normalContent = ToastStateContent(text: "Submitting Feedback")
+        let completedContent = ToastStateContent(text: "Feedback Submitted")
+        let failedContent = ToastStateContent(
+            text: "Failed to Submit Feedback",
+            buttonText: "try again",
+            buttonAction: failedAction)
+        let toastContent = ToastViewContent(
+            normalContent: normalContent, completedContent: completedContent,
+            failedContent: failedContent)
+
+        let toastView = toastViewManager.makeToast(
+            content: toastContent,
+            toastProgressViewModel: toastProgressViewModel, autoDismiss: false)
         toast = toastView
         toastViewManager.enqueue(toast: toastView)
     }

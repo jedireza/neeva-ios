@@ -57,7 +57,6 @@ class ToastViewContent: ObservableObject {
 }
 
 struct ToastView: View {
-    /// used by ToastViewModel to dismiss view
     weak var viewDelegate: ToastViewDelegate?
 
     // how long the Toast is shown

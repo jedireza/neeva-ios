@@ -11,7 +11,7 @@ extension BrowserViewController: DownloadQueueDelegate {
             return
         }
 
-        ToastDefaults().showToastForDownload(toastViewManager: toastViewManager, download: download)
+        ToastDefaults().showToastForDownload(download: download, toastViewManager: toastViewManager)
     }
 
     func downloadQueue(

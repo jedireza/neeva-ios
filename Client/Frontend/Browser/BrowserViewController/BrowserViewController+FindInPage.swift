@@ -24,17 +24,17 @@ extension BrowserViewController {
                     }
 
                     overlayWindowManager?.createWindow(with: findInPageViewController,
-                                                      height: height,
-                                                      addShadow: true,
-                                                      alignToBottom: true)
+                                                       height: height,
+                                                       addShadow: true,
+                                                       alignToBottom: true)
 
                     findInPageViewController.model.searchValue = query
                 }
             } else {
                 overlayWindowManager?.createWindow(with: findInPageViewController!,
-                                                  height: height,
-                                                  addShadow: true,
-                                                  alignToBottom: true)
+                                                   height: height,
+                                                   addShadow: true,
+                                                   alignToBottom: true)
             }
         } else {
             let tab = tab ?? tabManager.selectedTab

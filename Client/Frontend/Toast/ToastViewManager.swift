@@ -30,17 +30,18 @@ class ToastViewManager {
             normalContent: ToastStateContent(
                 text: text, buttonText: buttonText, buttonAction: buttonAction))
         return ToastView(
-            displayTime: displayTime, autoDismiss: autoDismiss, content: content,
-            toastProgressViewModel: toastProgressViewModel)
+            displayTime: displayTime, autoDismiss: autoDismiss,
+            content: content, toastProgressViewModel: toastProgressViewModel)
     }
 
     public func makeToast(
-        content: ToastViewContent, toastProgressViewModel: ToastProgressViewModel? = nil,
+        content: ToastViewContent,
+        toastProgressViewModel: ToastProgressViewModel? = nil,
         displayTime: Double = 4.5, autoDismiss: Bool = true
     ) -> ToastView {
         return ToastView(
-            displayTime: displayTime, autoDismiss: autoDismiss, content: content,
-            toastProgressViewModel: toastProgressViewModel)
+            displayTime: displayTime, autoDismiss: autoDismiss,
+            content: content, toastProgressViewModel: toastProgressViewModel)
     }
 
     /// Adds Toast view to queue of Toasts to be displayed in linear order

@@ -115,7 +115,7 @@ private struct GenericErrorView: View {
             }.sheet(isPresented: $sendingFeedback) {
                 SendFeedbackView(
                     screenshot: nil, url: nil,
-                    initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)"
+                    initialText: "\n\nReceived these errors in \(viewName):\n\(errorsForFeedback)", onFeedbackSend: { _ in }
                 ).font(.body)
             }
         }
