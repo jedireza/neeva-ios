@@ -32,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
     var profile: Profile?
 
+    // MARK: - Lifecycle
     func application(
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -61,6 +62,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             profile.cleanupHistoryIfNeeded()
+        }
+
+        if FeatureFlag[.notifications] {
+            NotificationHelper.shared.requestNotificationPermission()
         }
 
         return startApplication(application, withLaunchOptions: launchOptions)
@@ -178,6 +183,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         profile?._shutdown()
     }
 
+    // MARK: - Scene
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        return UISceneConfiguration(
+            name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+
+    func application(
+        _ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>
+    ) {
+
+    }
+
+    // MARK: - Notifications
+    func application(
+      _ application: UIApplication,
+      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
+        let token = tokenParts.joined()
+        print("Notification device token: \(token)")
+    }
+
+    func application(
+      _ application: UIApplication,
+      didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print("Failed to register notifications: \(error)")
+    }
+
+    // MARK: - Setup
     /// We maintain a weak reference to the profile so that we can pause timed
     /// syncs when we're backgrounded.
     ///
@@ -240,21 +279,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     private func updateTopSitesWidget() {
         guard let profile = self.profile else { return }
         TopSitesHandler.writeWidgetKitTopSites(profile: profile)
-    }
-
-    func application(
-        _ application: UIApplication,
-        configurationForConnecting connectingSceneSession: UISceneSession,
-        options: UIScene.ConnectionOptions
-    ) -> UISceneConfiguration {
-        return UISceneConfiguration(
-            name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(
-        _ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>
-    ) {
-
     }
 }
 

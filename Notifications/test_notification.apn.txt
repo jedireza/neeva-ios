@@ -1,0 +1,8 @@
+﻿{
+  "aps": {
+    "alert": {
+      "title": "Test",
+      "body": "Test Notification"
+    }
+  }
+}

@@ -185,6 +185,7 @@
 		666CFD8A26C735DC009ED9CF /* EmptyCardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */; };
 		6670187126BB678700960CF3 /* SuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6670187026BB678700960CF3 /* SuggestionModel.swift */; };
 		667DB63A2698E3DF0054A222 /* KeyboardShortcutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */; };
+		66888B1E26E19A5100DDF2D4 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66888B1D26E19A5100DDF2D4 /* NotificationHelper.swift */; };
 		669409BD26AF8D8B00FE635B /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		669ACD56269CED060038C89C /* AppClipApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669ACD55269CED060038C89C /* AppClipApp.swift */; };
 		669ACD58269CED060038C89C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669ACD57269CED060038C89C /* ContentView.swift */; };
@@ -1134,6 +1135,7 @@
 		6666D8C626D40278001AD43F /* LazyTabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyTabTests.swift; sourceTree = "<group>"; };
 		666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCardGrid.swift; sourceTree = "<group>"; };
 		6670187026BB678700960CF3 /* SuggestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionModel.swift; sourceTree = "<group>"; };
+		66888B1D26E19A5100DDF2D4 /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		669ACD53269CED060038C89C /* AppClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		669ACD55269CED060038C89C /* AppClipApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipApp.swift; sourceTree = "<group>"; };
 		669ACD57269CED060038C89C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -2072,6 +2074,7 @@
 				39F819C51FD70F5D009E31E4 /* TabEventHandlers.swift */,
 				39A359E31BFCCE94006B9E87 /* UserActivityHandler.swift */,
 				66B9570D26AF827E004C6117 /* AppClipHelper.swift */,
+				66888B1D26E19A5100DDF2D4 /* NotificationHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -4832,6 +4835,7 @@
 				C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */,
 				665879CE26C3408700B53EB7 /* WindowManager.swift in Sources */,
 				C96AC26726A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift in Sources */,
+				66888B1E26E19A5100DDF2D4 /* NotificationHelper.swift in Sources */,
 				C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */,
 				C9655DEB26A09A2800925912 /* GridModel.swift in Sources */,
 				6626BC9926B9BBF900EE0760 /* FindInPageModel.swift in Sources */,
