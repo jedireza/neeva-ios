@@ -788,11 +788,11 @@ extension TabManager: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = self[webView] else { return }
 
-        if let blocker = tab.contentBlocker {
+        if let url = webView.url, let blocker = tab.contentBlocker {
             // Initialize to the cached stats for this page. If the page is being fetched
             // from WebKit's page cache, then this will pick up stats from when that page
             // was previously loaded. If not, then the cached value will be empty.
-            blocker.stats = blocker.pageStatsCache[webView.url!] ?? TPPageStats()
+            blocker.stats = blocker.pageStatsCache[url] ?? TPPageStats()
             if !blocker.isEnabled {
                 webView.evaluateJavascriptInDefaultContentWorld(
                     "window.__firefox__.TrackingProtectionStats.setEnabled(false, \(UserScriptManager.appIdToken))"
