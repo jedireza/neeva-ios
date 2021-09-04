@@ -1319,6 +1319,10 @@ extension BrowserViewController: TabDelegate {
         tab.addContentScript(webuiMessageHelper, name: WebUIMessageHelper.name())
     }
 
+    func tab(_ tab: Tab, didSelectAddToSpaceForSelection selection: String) {
+        showAddToSpacesSheet(url: tab.url!, title: tab.displayTitle, description: selection)
+    }
+
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String) {
         updateFindInPageVisibility(visible: true, query: selection)
     }

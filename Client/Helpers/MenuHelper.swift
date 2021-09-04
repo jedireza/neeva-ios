@@ -12,6 +12,7 @@ import Foundation
     @objc optional func menuHelperFindInPage()
     @objc optional func menuHelperSearchWithNeeva()
     @objc optional func menuHelperPasteAndGo()
+    @objc optional func menuHelperAddToSpace()
 }
 
 open class MenuHelper: NSObject {
@@ -26,6 +27,8 @@ open class MenuHelper: NSObject {
         MenuHelperInterface.menuHelperSearchWithNeeva)
     public static let SelectorPasteAndGo: Selector = #selector(
         MenuHelperInterface.menuHelperPasteAndGo)
+    public static let SelectorAddToSpace: Selector = #selector(
+        MenuHelperInterface.menuHelperAddToSpace)
 
     open class var defaultHelper: MenuHelper {
         struct Singleton {
@@ -47,10 +50,12 @@ open class MenuHelper: NSObject {
             title: .MenuHelperFindInPage, action: MenuHelper.SelectorFindInPage)
         let searchItem = UIMenuItem(
             title: .MenuHelperSearchWithNeeva, action: MenuHelper.SelectorSearchWithNeeva)
+        let addToSpaceItem = UIMenuItem(
+            title: .MenuHelperAddToSpace, action: MenuHelper.SelectorAddToSpace)
 
         UIMenuController.shared.menuItems = [
             pasteAndGoItem, copyItem, revealPasswordItem, hidePasswordItem, openAndFillItem,
-            findInPageItem, searchItem,
+            addToSpaceItem, findInPageItem, searchItem,
         ]
     }
 }

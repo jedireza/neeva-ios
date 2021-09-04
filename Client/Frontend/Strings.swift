@@ -2812,6 +2812,9 @@ extension String {
     public static let MenuHelperSearchWithNeeva = MZLocalizedString(
         "UIMenuItem.SearchWithNeeva", value: "Search with Neeva",
         comment: "Search in New Tab Text selection menu item")
+    public static let MenuHelperAddToSpace = MZLocalizedString(
+        "UIMenuItem.AddToSpace", value: "Add to Space",
+        comment: "Add the selected text to a Space selection menu item")
 }
 
 // DeviceInfo

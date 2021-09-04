@@ -33,6 +33,7 @@ protocol TabContentScript {
 @objc
 protocol TabDelegate {
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String)
+    func tab(_ tab: Tab, didSelectAddToSpaceForSelection selection: String)
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String)
     @objc optional func tab(_ tab: Tab, didCreateWebView webView: WKWebView)
 }
@@ -561,6 +562,11 @@ extension Tab: TabWebViewDelegate {
     ) {
         tabDelegate?.tab(self, didSelectFindInPageForSelection: selection)
     }
+    fileprivate func tabWebView(
+        _ tabWebView: TabWebView, didSelectAddToSpaceForSelection selection: String
+    ) {
+        tabDelegate?.tab(self, didSelectAddToSpaceForSelection: selection)
+    }
     fileprivate func tabWebViewSearchWithNeeva(
         _ tabWebViewSearchWithNeeva: TabWebView,
         didSelectSearchWithNeevaForSelection selection: String
@@ -628,6 +634,7 @@ private class TabContentScriptManager: NSObject, WKScriptMessageHandler {
 
 private protocol TabWebViewDelegate: AnyObject {
     func tabWebView(_ tabWebView: TabWebView, didSelectFindInPageForSelection selection: String)
+    func tabWebView(_ tabWebView: TabWebView, didSelectAddToSpaceForSelection selection: String)
     func tabWebViewSearchWithNeeva(
         _ tabWebViewSearchWithNeeva: TabWebView,
         didSelectSearchWithNeevaForSelection selection: String)
@@ -648,7 +655,14 @@ class TabWebView: WKWebView, MenuHelperInterface {
 
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         return super.canPerformAction(action, withSender: sender)
-            || action == MenuHelper.SelectorFindInPage
+            || action == MenuHelper.SelectorFindInPage || action == MenuHelper.SelectorAddToSpace
+    }
+
+    @objc func menuHelperAddToSpace() {
+        evaluateJavascriptInDefaultContentWorld("getSelection().toString()") { result, _ in
+            let selection = result as? String ?? ""
+            self.delegate?.tabWebView(self, didSelectAddToSpaceForSelection: selection)
+        }
     }
 
     @objc func menuHelperFindInPage() {
