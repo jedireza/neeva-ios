@@ -211,7 +211,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     typealias Manager = SpaceStore
     typealias Thumbnail = SpaceEntityThumbnail
 
-    @Published var manager = SpaceStore.shared
+    @Published var manager: SpaceStore
     @Published var isShowingDetails = false
 
     var id: String
@@ -227,15 +227,16 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         manager.get(for: id)
     }
 
-    private init(id: String, bvc: BrowserViewController) {
+    private init(id: String, bvc: BrowserViewController, manager: SpaceStore) {
         self.id = id
         self.bvc = bvc
+        self.manager = manager
 
         updateDetails()
     }
 
-    convenience init(space: Space, bvc: BrowserViewController) {
-        self.init(id: space.id.id, bvc: bvc)
+    convenience init(space: Space, bvc: BrowserViewController, manager: SpaceStore) {
+        self.init(id: space.id.id, bvc: bvc, manager: manager)
     }
 
     var thumbnail: some View {

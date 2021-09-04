@@ -16,11 +16,9 @@ private struct HideSelectedForTransition<Details: CardDetails>: ViewModifier {
 
 struct SpaceCardsView: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
-
     var body: some View {
         ForEach(spacesModel.allDetails, id: \.id) { details in
             FittedCard(details: details)
-                .modifier(HideSelectedForTransition(details: details))
                 .id(details.id)
         }
     }

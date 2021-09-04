@@ -5607,6 +5607,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           }
           space {
             __typename
+            name
             entities {
               __typename
               metadata {
@@ -5629,7 +5630,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "21af15bc6239f417057038496029d2fd7dfa9b265f704b45332dfbffe1c80b27"
+  public let operationIdentifier: String? = "214f2a588b1997b4636d5087f2fbabd4fb1e12647e8878a121bbfeefaa65495c"
 
   public var ids: [String]?
 
@@ -5803,6 +5804,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           public static var selections: [GraphQLSelection] {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("name", type: .scalar(String.self)),
               GraphQLField("entities", type: .list(.nonNull(.object(Entity.selections)))),
             ]
           }
@@ -5813,8 +5815,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(entities: [Entity]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceData", "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
+          public init(name: String? = nil, entities: [Entity]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
           }
 
           public var __typename: String {
@@ -5823,6 +5825,15 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var name: String? {
+            get {
+              return resultMap["name"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "name")
             }
           }
 

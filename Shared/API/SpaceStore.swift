@@ -75,6 +75,33 @@ public class Space: Hashable, Identifiable {
 // data is stored and fetched.
 public class SpaceStore: ObservableObject {
     public static var shared = SpaceStore()
+    public static var suggested = SpaceStore(
+        suggestedIDs: FeatureFlag[.recommendedSpaces]
+            ? [
+                // From neeva.com/community
+                "AvTLrA0-XxVpTsesZx_gRcDBxl4SE9tY6pgF9eNh",
+                "XYJHMw5ptIlAot-1yln1MdLgSOoRsGzn1-b2C3GE",
+                "F5saVvevP299zjEbkh3ZsmzL8SsMERGPtHU7JWkI",
+                "Ok-XsoNeDNzu0uV6ziFFJ-XxH0oGAquIyxPhaweF",
+                "WiF8e6LomHAnUNTudwzpCZ0i3dHsTtiaP14F6FcA",
+                "v8JNVLpV2V_tRshYe87ZXoF2NfkVaMyDKaQImveS",
+                "bG6jT2pnzrmdINzh9vY77wacBjawGfnUlc_V6D1P",
+                "VSg5lqugMVgpyXiCDoQsuEBXbqrwYydDJkOMVSy9",
+                "MwC3dgk3bbVSmB_AGPL0RHMkt-_Ejn5yjOV3sLTF",
+                "Zt0o4Sj_7va3Uakw2V-n6MZ5YY6sVdLSRNcQkNSq",
+                "wb6aqCBubAs9GHAZuq6ycBdzK38DdxpU5PAP9wWC",
+                "brt5oi5afuen3lbh1ij0",
+                "qyAaEMBS-1AZE_3RI-jnlAao6OvbbtT4e294zDM5",
+                "zxrsTxErt66ZvoTG5FBEKG8yHiqiCpfpA4XWybrn",
+                "P18WZHuqEJDnf7llLgmyOIhiLpwF-gLl3OlhT6sh",
+                "brogg3ipmtasecqj230g",
+            ] : [])
+
+    private var suggestedSpaceIDs: [String]? = nil
+
+    public init(suggestedIDs: [String]? = nil) {
+        self.suggestedSpaceIDs = suggestedIDs
+    }
 
     public static func createMock(_ spaces: [Space]) -> SpaceStore {
         let mock = SpaceStore()
@@ -118,6 +145,10 @@ public class SpaceStore: ObservableObject {
         if case .refreshing = state { return }
         if disableRefresh { return }
         state = .refreshing
+        if let _ = suggestedSpaceIDs {
+            fetchSuggestedSpaces()
+            return
+        }
         SpaceListController.getSpaces { result in
             switch result {
             case .success(let spaces):
@@ -126,6 +157,49 @@ public class SpaceStore: ObservableObject {
                 self.allSpaces = []
                 self.urlToSpacesMap = [:]
                 self.state = .failed(error)
+            }
+        }
+    }
+
+    private func fetchSuggestedSpaces() {
+        guard let ids = suggestedSpaceIDs else {
+            return
+        }
+
+        GraphQLAPI.shared.isAnonymous = true
+        SpacesDataQueryController.getSpacesData(spaceIds: ids) { result in
+            switch result {
+            case .success(let spaces):
+                for space in spaces {
+                    let fetchedSpace = Space(
+                        id: SpaceID(value: space.id), name: space.name, lastModifiedTs: "",
+                        thumbnail: nil, resultCount: space.entities.count, isDefaultSpace: false,
+                        isShared: false, isPublic: true, userACL: .publicView)
+                    self.allSpaces.append(fetchedSpace)
+                    self.onUpdateSpaceURLs(
+                        space: fetchedSpace,
+                        urls: Set(
+                            space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
+                                $0.append($1.url!)
+                            }),
+                        data: space.entities)
+                }
+                self.state = .ready
+            case .failure(let error):
+                self.state = .failed(error)
+            }
+        }
+        GraphQLAPI.shared.isAnonymous = false
+    }
+
+    public static func onRecommendedSpaceSelected(space: Space) {
+        shared.allSpaces.append(space)
+        SpacesDataQueryController.getSpacesData(spaceIds: [space.id.id]) { result in
+            switch result {
+            case .success:
+                Logger.browser.info("Space followed")
+            case .failure(let error):
+                Logger.browser.error(error.localizedDescription)
             }
         }
     }

@@ -88,6 +88,10 @@ class SpaceCardModel: CardModel {
         }
 
         didSet {
+            guard detailedSpace == nil else {
+                return
+            }
+
             if stateNeedsRefresh {
                 manager.refresh()
                 stateNeedsRefresh = false
@@ -97,18 +101,22 @@ class SpaceCardModel: CardModel {
 
     var onViewUpdate: () -> Void = {}
     private var anyCancellable: AnyCancellable? = nil
+    private var recommendationSubscription: AnyCancellable? = nil
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var stateNeedsRefresh = false
 
-    init(bvc: BrowserViewController) {
-        manager.refresh()
+    init(bvc: BrowserViewController, manager: SpaceStore = SpaceStore.shared) {
+        self.manager = manager
+        self.manager.refresh()
 
         self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
             if detailedSpace != nil {
                 return
             }
             DispatchQueue.main.async {
-                allDetails = manager.getAll().map { SpaceCardDetails(space: $0, bvc: bvc) }
+                allDetails = manager.getAll().map {
+                    SpaceCardDetails(space: $0, bvc: bvc, manager: manager)
+                }
                 allDetails.forEach { details in
                     details.$isShowingDetails.sink { [weak self] showingDetails in
                         if showingDetails {
@@ -175,6 +183,24 @@ class SpaceCardModel: CardModel {
                 space.isShared = true
                 self.objectWillChange.send()
             }.cancel()
+        }
+    }
+
+    func recommendedSpaceSelected(details: SpaceCardDetails) {
+        let space = SpaceStore.suggested.allSpaces.first(where: {
+            details.id == $0.id.id
+        })
+        SpaceStore.onRecommendedSpaceSelected(space: space!)
+        SpaceStore.shared.objectWillChange.send()
+        recommendationSubscription = objectWillChange.sink {
+            let newDetails = self.allDetails.first(where: {
+                $0.id == details.id
+            })
+            DispatchQueue.main.async {
+                newDetails?.isShowingDetails = true
+                self.stateNeedsRefresh = true
+                self.recommendationSubscription?.cancel()
+            }
         }
     }
 }

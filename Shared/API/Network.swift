@@ -10,6 +10,8 @@ public class GraphQLAPI {
 
     private init() {}
 
+    public var isAnonymous = false
+
     /// The `ApolloClient` does the actual work of performing GraphQL requests.
     public private(set) lazy var apollo: ApolloClient = {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
@@ -73,7 +75,7 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         req.addHeader(name: "X-Neeva-Client-ID", value: "co.neeva.app.ios.browser")
         req.addHeader(name: "X-Neeva-Client-Version", value: AppInfo.appVersionReportedToNeeva)
 
-        if let cookie = NeevaUserInfo.shared.getLoginCookie() {
+        if !GraphQLAPI.shared.isAnonymous, let cookie = NeevaUserInfo.shared.getLoginCookie() {
             assignCookie(cookie)
         } else if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1",
             let devTokenPath = Bundle.main.path(forResource: "dev-token", ofType: "txt")

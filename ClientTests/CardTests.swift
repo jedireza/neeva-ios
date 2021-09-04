@@ -143,7 +143,8 @@ class CardTests: XCTestCase {
                 thumbnail: SpaceThumbnails.githubThumbnail)
         ]
         let firstCard = SpaceCardDetails(
-            space: SpaceStore.shared.getAll().first!, bvc: SceneDelegate.getBVC(for: nil))
+            space: SpaceStore.shared.getAll().first!, bvc: SceneDelegate.getBVC(for: nil),
+            manager: SpaceStore.shared)
         XCTAssertEqual(firstCard.id, Space.stackOverflow.id.id)
         XCTAssertEqual(firstCard.allDetails.count, 2)
         let firstThumbnail = try firstCard.thumbnail.inspect().vStack().view(

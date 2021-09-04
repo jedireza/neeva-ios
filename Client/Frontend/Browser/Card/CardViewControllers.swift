@@ -37,7 +37,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     init(bvc: BrowserViewController, toolbarModel: SwitcherToolbarModel) {
         let tabGroupManager = TabGroupManager(tabManager: bvc.tabManager)
         self.toolbarModel = toolbarModel
-        
+
         super.init(
             rootView: Content(
                 tabCardModel: TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager),
@@ -63,6 +63,8 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
             let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
             return tabMenu.createRecentlyClosedTabsMenu()
         }
+
+        SpaceStore.suggested.refresh()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -98,7 +100,8 @@ struct CardStripContent: View {
     init(bvc: BrowserViewController, width: CGFloat) {
         let tabManager = bvc.tabManager
 
-        self.tabCardModel = TabCardModel(manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
+        self.tabCardModel = TabCardModel(
+            manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
         self.spaceCardModel = SpaceCardModel(bvc: bvc)
         self.sitesCardModel = SiteCardModel(urls: [], tabManager: tabManager)
         self.cardStripModel = CardStripModel()
