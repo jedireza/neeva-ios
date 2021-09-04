@@ -179,17 +179,20 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     var closeButtonImage: UIImage? = nil
     var accessibilityLabel: String = "Space Item"
 
+    private var imageThumbnailModel: ImageThumbnailModel?
+
     init(data: SpaceEntityData, spaceID: String) {
         self.spaceID = spaceID
         self.data = data
         self.id = data.id
+        if let thumbnailData = data.thumbnail?.dataURIBody {
+            self.imageThumbnailModel = .init(imageData: thumbnailData)
+        }
     }
 
     @ViewBuilder var thumbnail: some View {
-        if let thumbnailData = data.thumbnail?.dataURIBody {
-            Image(uiImage: UIImage(data: thumbnailData)!)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
+        if let imageThumbnailModel = imageThumbnailModel {
+            ImageThumbnailView(model: imageThumbnailModel)
         } else {
             Symbol(decorative: .bookmarkOnBookmark)
                 .foregroundColor(Color.white)

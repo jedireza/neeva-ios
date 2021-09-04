@@ -118,6 +118,7 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
             }
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .background(Color.clear)
+            .drawingGroup()
             .shadow(radius: ThumbnailGroupViewUX.ShadowRadius)
     }
 }

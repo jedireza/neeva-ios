@@ -195,10 +195,8 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		66AF61BA26D87E9900FB68DF /* ZeroQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AF61B926D87E9900FB68DF /* ZeroQueryTests.swift */; };
 		66B379DB26DDAD1800087B04 /* FeedbackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665CE64726DDA7E70069EFDD /* FeedbackRequest.swift */; };
 		66B379DD26DDAD4400087B04 /* FeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */; };
-		66B379DE26DDAD4400087B04 /* SendFeedbackPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */; };
 		66B6567626C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */; };
 		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
@@ -312,6 +310,8 @@
 		C832BF7F26E1543A00B9A1F8 /* NeevaMenuOverlaySheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF7E26E1543A00B9A1F8 /* NeevaMenuOverlaySheetContent.swift */; };
 		C832BF8126E1566E00B9A1F8 /* CheatsheetOverlaySheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF8026E1566E00B9A1F8 /* CheatsheetOverlaySheetContent.swift */; };
 		C832BF8326E15B5B00B9A1F8 /* OverflowMenuOverlaySheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF8226E15B5B00B9A1F8 /* OverflowMenuOverlaySheetContent.swift */; };
+		C832BF8526E2DA2B00B9A1F8 /* ImageThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF8426E2DA2B00B9A1F8 /* ImageThumbnailView.swift */; };
+		C832BF8726E3CA0900B9A1F8 /* SendFeedbackPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF8626E3CA0900B9A1F8 /* SendFeedbackPanel.swift */; };
 		C8399D9122DE5E5200EFA5CA /* disconnect-block-advertising.json in Resources */ = {isa = PBXBuildFile; fileRef = C8399D8F22DE5E5200EFA5CA /* disconnect-block-advertising.json */; };
 		C8399D9322DE5E5B00EFA5CA /* disconnect-block-analytics.json in Resources */ = {isa = PBXBuildFile; fileRef = C8399D9222DE5E5B00EFA5CA /* disconnect-block-analytics.json */; };
 		C8399D9522DE5E6200EFA5CA /* disconnect-block-social.json in Resources */ = {isa = PBXBuildFile; fileRef = C8399D9422DE5E6200EFA5CA /* disconnect-block-social.json */; };
@@ -1240,7 +1240,6 @@
 		C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaSignInTests.swift; sourceTree = "<group>"; };
 		C80E03E526B8459600A7800A /* LoggingSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingSettingsView.swift; sourceTree = "<group>"; };
 		C80E03E726B88FF000A7800A /* OptionalLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalLogger.swift; sourceTree = "<group>"; };
-		C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeedbackPanel.swift; sourceTree = "<group>"; };
 		C82CDD45233E8996002E2743 /* Tab+ChangeUserAgent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tab+ChangeUserAgent.swift"; sourceTree = "<group>"; };
 		C832BF5326DEB11300B9A1F8 /* OverlaySheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlaySheetViewController.swift; sourceTree = "<group>"; };
 		C832BF5826DEE0BB00B9A1F8 /* AddToSpaceOverlaySheetContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToSpaceOverlaySheetContent.swift; sourceTree = "<group>"; };
@@ -1250,6 +1249,8 @@
 		C832BF7E26E1543A00B9A1F8 /* NeevaMenuOverlaySheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaMenuOverlaySheetContent.swift; sourceTree = "<group>"; };
 		C832BF8026E1566E00B9A1F8 /* CheatsheetOverlaySheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetOverlaySheetContent.swift; sourceTree = "<group>"; };
 		C832BF8226E15B5B00B9A1F8 /* OverflowMenuOverlaySheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuOverlaySheetContent.swift; sourceTree = "<group>"; };
+		C832BF8426E2DA2B00B9A1F8 /* ImageThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageThumbnailView.swift; sourceTree = "<group>"; };
+		C832BF8626E3CA0900B9A1F8 /* SendFeedbackPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeedbackPanel.swift; sourceTree = "<group>"; };
 		C8399D8F22DE5E5200EFA5CA /* disconnect-block-advertising.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "disconnect-block-advertising.json"; sourceTree = "<group>"; };
 		C8399D9222DE5E5B00EFA5CA /* disconnect-block-analytics.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "disconnect-block-analytics.json"; sourceTree = "<group>"; };
 		C8399D9422DE5E6200EFA5CA /* disconnect-block-social.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "disconnect-block-social.json"; sourceTree = "<group>"; };
@@ -2257,7 +2258,7 @@
 			isa = PBXGroup;
 			children = (
 				BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */,
-				C82A91F6262F70A90077DD22 /* SendFeedbackPanel.swift */,
+				C832BF8626E3CA0900B9A1F8 /* SendFeedbackPanel.swift */,
 			);
 			path = Feedback;
 			sourceTree = "<group>";
@@ -2815,14 +2816,15 @@
 			children = (
 				C9299E35268F9CF300758795 /* CloseButton.swift */,
 				C9BED4C8266824D7001D9C77 /* FadingHorizontalScrollView.swift */,
+				C832BF8426E2DA2B00B9A1F8 /* ImageThumbnailView.swift */,
 				C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */,
+				E663D5771BB341C4001EF30E /* IncognitoButton.swift */,
 				C9E5F2CA2678F05E00025A7F /* Popover.swift */,
 				C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */,
 				C9F49CBC266FDA9500F3408A /* SearchBar.swift */,
-				D38A1BEC1A9FA2CA00F6A386 /* SiteTableViewController.swift */,
-				E663D5771BB341C4001EF30E /* IncognitoButton.swift */,
-				59A68B1F857A8638598A63A0 /* TwoLineCell.swift */,
 				C94D4098268BAADC003A6766 /* SecondaryMenuButton.swift */,
+				D38A1BEC1A9FA2CA00F6A386 /* SiteTableViewController.swift */,
+				59A68B1F857A8638598A63A0 /* TwoLineCell.swift */,
 				C9157BB826BDDA4E009678D9 /* ViewRef.swift */,
 			);
 			path = Widgets;
@@ -4668,9 +4670,11 @@
 				C9655DF326A09B4300925912 /* CardTransitionAnimator.swift in Sources */,
 				D0C95EF6201A55A800E4E51C /* BrowserViewController+UIDropInteractionDelegate.swift in Sources */,
 				D31CF65C1CC1959A001D0BD0 /* PrivilegedRequest.swift in Sources */,
+				C832BF8726E3CA0900B9A1F8 /* SendFeedbackPanel.swift in Sources */,
 				C832BF5D26E0A8D500B9A1F8 /* DownloadOverlaySheetContent.swift in Sources */,
 				D8D33A7D1FBD080300A20A28 /* SnapKitExtensions.swift in Sources */,
 				C99646652655AA9A005FFE83 /* (null) in Sources */,
+				C832BF8526E2DA2B00B9A1F8 /* ImageThumbnailView.swift in Sources */,
 				F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */,
 				4A255AB2265C48EC00422839 /* TrackingPreventionUtils.swift in Sources */,
 				6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */,
@@ -4689,7 +4693,6 @@
 				7BA8D1C71BA037F500C8AE9E /* OpenInHelper.swift in Sources */,
 				E4B423BE1AB9FE6A007E66C8 /* ReaderModeCache.swift in Sources */,
 				4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */,
-				66B379DE26DDAD4400087B04 /* SendFeedbackPanel.swift in Sources */,
 				6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */,
 				C9C18E6526559B9C004710CD /* LogConfig.swift in Sources */,
 				C832BF5B26E0A7A400B9A1F8 /* OpenInAppOverlaySheetContent.swift in Sources */,
@@ -4807,7 +4810,6 @@
 				E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */,
 				C9299E36268F9CF300758795 /* CloseButton.swift in Sources */,
 				C832BF5F26E0A9E400B9A1F8 /* HTTPAuthPromptOverlaySheetContent.swift in Sources */,
-				C82A91F7262F70A90077DD22 /* SendFeedbackPanel.swift in Sources */,
 				D3C744CD1A687D6C004CE85D /* URIFixup.swift in Sources */,
 				E4A961181AC041C40069AD6F /* ReadabilityService.swift in Sources */,
 				D3BE7B261B054D4400641031 /* main.swift in Sources */,
