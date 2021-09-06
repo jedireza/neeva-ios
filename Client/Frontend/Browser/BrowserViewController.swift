@@ -984,7 +984,8 @@ class BrowserViewController: UIViewController {
                         if result.isSuccess {
                             if let toastManager = self.getSceneDelegate()?.toastViewManager {
                                 toastManager.makeToast(
-                                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage).enqueue(manager: toastManager)
+                                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage
+                                ).enqueue(manager: toastManager)
                             }
                         }
                     }
@@ -1005,7 +1006,8 @@ class BrowserViewController: UIViewController {
                         if result.isSuccess {
                             if let toastManager = self.getSceneDelegate()?.toastViewManager {
                                 toastManager.makeToast(
-                                    text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage).enqueue(manager: toastManager)
+                                    text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage
+                                ).enqueue(manager: toastManager)
                             }
                         }
                     }
@@ -1362,7 +1364,8 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
                 buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
                 buttonAction: {
                     self.tabManager.selectTab(tab)
-                }).enqueue(manager: toastManager)
+                }
+            ).enqueue(manager: toastManager)
         }
     }
 
@@ -1609,7 +1612,8 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                         buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
                         buttonAction: {
                             self.tabManager.selectTab(tab)
-                        }).enqueue(manager: toastManager)
+                        }
+                    ).enqueue(manager: toastManager)
                 }
             }
 

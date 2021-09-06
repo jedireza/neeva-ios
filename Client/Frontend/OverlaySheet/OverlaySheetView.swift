@@ -59,7 +59,8 @@ struct OverlaySheetStyle {
     }
 
     /// Use for sheets containing grouped sets of controls (e.g., like the Overflow menu).
-    static let grouped = OverlaySheetStyle(showTitle: false, backgroundColor: .systemGroupedBackground)
+    static let grouped = OverlaySheetStyle(
+        showTitle: false, backgroundColor: .systemGroupedBackground)
 
     /// Use for sheets with a title (e.g., like the AddToSpaces sheet).
     static let withTitle = OverlaySheetStyle(showTitle: true)

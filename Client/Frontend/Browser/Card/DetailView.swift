@@ -20,9 +20,11 @@ where
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var spacesModel: SpaceCardModel
     @Environment(\.onOpenURL) var openURL
+    @Environment(\.shareURL) var shareURL
     @Environment(\.columns) var gridColumns
     @State private var editMode = EditMode.inactive
     @State private var shareMenuPresented = false
+    @State private var presentShareOnDismiss = false
 
     let primitive: Details
 
@@ -77,10 +79,14 @@ where
                     .foregroundColor(.secondaryLabel)
             }
             Spacer()
-            if let space = space, case .owner = space.userACL {
+            if let space = space {
                 Button(
                     action: {
-                        shareMenuPresented = true
+                        if case .owner = space.userACL {
+                            shareMenuPresented = true
+                        } else {
+                            shareURL(space.url)
+                        }
                     },
                     label: {
                         Image(
@@ -89,10 +95,20 @@ where
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                     }
-                ).presentAsPopover(isPresented: $shareMenuPresented) {
-                    ShareSpaceView(space: space) {
+                ).presentAsPopover(
+                    isPresented: $shareMenuPresented,
+                    onDismiss: {
+                        guard presentShareOnDismiss else {
+                            return
+                        }
+                        shareURL(space.url)
+                        presentShareOnDismiss = false
+                    }
+                ) {
+                    ShareSpaceView(space: space, presentShareOnDismiss: $presentShareOnDismiss) {
                         self.shareMenuPresented = false
-                    }.environmentObject(spacesModel)
+                    }
+                    .environmentObject(spacesModel)
                 }
             }
             if gridModel.showingDetailsAsList && canEdit {

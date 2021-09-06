@@ -12,6 +12,7 @@ struct ShareSpaceView: View {
     typealias ACL = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     let space: Space
     let dismiss: () -> Void
+    @Binding var presentShareOnDismiss: Bool
 
     @EnvironmentObject var spaceModel: SpaceCardModel
     @State var suggestedContacts: [ContactsProvider.Profile] = []
@@ -20,9 +21,10 @@ struct ShareSpaceView: View {
     @State var emailText: String = ""
     @State var selectedACL = SpaceACLLevel.view
 
-    init(space: Space, dismiss: @escaping () -> Void) {
+    init(space: Space, presentShareOnDismiss: Binding<Bool>, dismiss: @escaping () -> Void) {
         self.space = space
         self.isPublic = space.isPublic
+        self._presentShareOnDismiss = presentShareOnDismiss
         self.dismiss = dismiss
     }
 
@@ -53,7 +55,7 @@ struct ShareSpaceView: View {
                 Text("Share")
                     .withFont(.labelMedium)
                     .lineLimit(1)
-                    .foregroundColor(Color.label)
+                    .foregroundColor(.brand.white)
                     .padding(.vertical, 10)
                     .padding(.horizontal, 20)
                     .background(Color.brand.blue)
@@ -70,7 +72,7 @@ struct ShareSpaceView: View {
                     Text(profile.displayName)
                         .withFont(.labelMedium)
                         .lineLimit(1)
-                        .foregroundColor(Color.label)
+                        .foregroundColor(.brand.white)
                     Button {
                         let index = selectedProfiles.firstIndex {
                             $0.email == profile.email
@@ -78,7 +80,7 @@ struct ShareSpaceView: View {
                         selectedProfiles.remove(at: index!)
                     } label: {
                         Symbol(decorative: .xmark, style: .labelMedium)
-                            .foregroundColor(.label)
+                            .foregroundColor(.brand.white)
                     }
                 }.padding(.vertical, 6).padding(.horizontal, 10)
                     .background(Color.brand.blue)
@@ -97,11 +99,22 @@ struct ShareSpaceView: View {
                         shareButtonsUI
                     }
                 }
-                TextField("Enter email address", text: $emailText)
-                    .textContentType(.emailAddress)
-                    .lineLimit(1)
-                    .foregroundColor(Color.label)
-                    .padding(.vertical, 10)
+                TextField(
+                    "Enter email address", text: $emailText,
+                    onCommit: {
+                        if emailText.contains("@") {
+                            selectedProfiles.append(
+                                ContactsProvider.Profile(
+                                    displayName: emailText, email: emailText, pictureUrl: ""))
+                            emailText = ""
+                        }
+                    }
+                )
+                .autocapitalization(.none)
+                .textContentType(.emailAddress)
+                .lineLimit(1)
+                .foregroundColor(Color.label)
+                .padding(.vertical, 10)
             }.padding(10)
         }
     }
@@ -152,7 +165,7 @@ struct ShareSpaceView: View {
 
     var sharePubliclyToggle: some View {
         GroupedCell(alignment: .leading) {
-            HStack {
+            VStack {
                 Toggle(isOn: $isPublic) {
                     VStack(alignment: .leading) {
                         Text("Share Publicly")
@@ -163,9 +176,24 @@ struct ShareSpaceView: View {
                             .withFont(.labelMedium)
                             .lineLimit(1)
                             .foregroundColor(Color.secondaryLabel)
-                    }.padding(ShareSpaceViewUX.Padding)
+                    }
                 }
-            }
+                if isPublic {
+                    Button {
+                        presentShareOnDismiss = true
+                        dismiss()
+                    } label: {
+                        Text("Share Link")
+                            .withFont(.labelMedium)
+                            .lineLimit(1)
+                            .foregroundColor(.brand.white)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 20)
+                            .background(Color.brand.blue)
+                            .clipShape(Capsule())
+                    }
+                }
+            }.padding(ShareSpaceViewUX.Padding)
         }
     }
 

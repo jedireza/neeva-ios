@@ -18,6 +18,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         let spaceCardModel: SpaceCardModel
         let gridModel: GridModel
         let toolbarModel: SwitcherToolbarModel
+        let shareURL: (URL) -> Void
 
         var body: some View {
             CardGrid()
@@ -27,6 +28,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environmentObject(tabGroupCardModel)
                 .environmentObject(gridModel)
                 .environment(\.onOpenURL, tabCardModel.manager.createOrSwitchToTab(for:))
+                .environment(\.shareURL, shareURL)
         }
     }
 
@@ -37,14 +39,20 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     init(bvc: BrowserViewController, toolbarModel: SwitcherToolbarModel) {
         let tabGroupManager = TabGroupManager(tabManager: bvc.tabManager)
         self.toolbarModel = toolbarModel
-
+        let shareURL: (URL) -> Void = { url in
+            let helper = ShareExtensionHelper(url: url, tab: nil)
+            let controller = helper.createActivityViewController({ (_, _) in })
+            controller.modalPresentationStyle = .formSheet
+            bvc.present(controller, animated: true, completion: nil)
+        }
         super.init(
             rootView: Content(
                 tabCardModel: TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager),
                 tabGroupCardModel: TabGroupCardModel(manager: tabGroupManager),
                 spaceCardModel: SpaceCardModel(bvc: bvc),
                 gridModel: gridModel,
-                toolbarModel: toolbarModel
+                toolbarModel: toolbarModel,
+                shareURL: shareURL
             )
         )
 

@@ -220,7 +220,7 @@ class TabManager: NSObject, ObservableObject {
         selectedTab?.createWebview()
         selectedTab?.lastExecutedTime = Date.nowMilliseconds()
 
-       delegates.forEach {
+        delegates.forEach {
             $0.get()?.tabManager(
                 self, didSelectedTabChange: tab, previous: previous,
                 isRestoring: store.isRestoringTabs,
@@ -444,7 +444,7 @@ class TabManager: NSObject, ObservableObject {
 
         if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
             selectTab(mostRecentTab)
-        } else if isIncognito { // no empty tab tray in incognito
+        } else if isIncognito {  // no empty tab tray in incognito
             bvc.openLazyTab(openedFrom: .tabTray)
         } else if !FeatureFlag[.emptyTabTray] {
             select(addTab(isPrivate: false))
@@ -456,7 +456,8 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    func removeTabAndUpdateSelectedTab(_ tab: Tab, allowToast: Bool = false, addNewTab: Bool = true) {
+    func removeTabAndUpdateSelectedTab(_ tab: Tab, allowToast: Bool = false, addNewTab: Bool = true)
+    {
         guard let index = tabs.firstIndex(where: { $0 === tab }) else { return }
         addTabsToRecentlyClosed([tab], allowToast: allowToast)
         removeTab(tab, flushToDisk: true, notify: true)
