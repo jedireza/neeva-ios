@@ -148,11 +148,11 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         self.manager = manager
     }
 
-    func validateDrop(info: DropInfo) -> Bool {
+    public func validateDrop(info: DropInfo) -> Bool {
         return info.hasItemsConforming(to: [.url])
     }
 
-    func performDrop(info: DropInfo) -> Bool {
+    public func performDrop(info: DropInfo) -> Bool {
         guard validateDrop(info: info) else {
             return false
         }

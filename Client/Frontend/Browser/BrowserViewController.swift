@@ -36,6 +36,21 @@ class BrowserViewController: UIViewController {
         return SuggestionModel(bvc: self, profile: self.profile, queryModel: self.searchQueryModel)
     }()
 
+    private(set) lazy var zeroQueryModel: ZeroQueryModel = {
+        [unowned self] in
+        let model = ZeroQueryModel(
+            bvc: self,
+            profile: profile,
+            shareURLHandler: { url in
+                let helper = ShareExtensionHelper(url: url, tab: nil)
+                let controller = helper.createActivityViewController({ (_, _) in })
+                controller.modalPresentationStyle = .formSheet
+                self.present(controller, animated: true, completion: nil)
+            })
+        model.delegate = self
+        return model
+    }()
+
     let chromeModel = TabChromeModel()
     lazy var cardGridViewController: CardGridViewController = { [unowned self] in
         let controller = CardGridViewController(
@@ -411,17 +426,7 @@ class BrowserViewController: UIViewController {
         // links into the view from other apps.
         let dropInteraction = UIDropInteraction(delegate: self)
         view.addInteraction(dropInteraction)
-        if FeatureFlag[.cardGrid] {
-            subscription = cardGridViewController.gridModel.$isHidden.sink(receiveValue: { isHidden in
-                self.cardGridViewController.view.isUserInteractionEnabled = !isHidden
-//                if !isHidden {
-//                    self.present(self.cardGridViewController, animated: false, completion: nil)
-//                } else {
-//                    self.cardGridViewController.dismiss(animated: false, completion: nil)
-//                }
-            })
-        }
-
+      
         setNeedsStatusBarAppearanceUpdate()
 
         for tab in tabManager.tabs {
