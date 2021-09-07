@@ -6,7 +6,15 @@ class GridModel: ObservableObject {
     @Published var isHidden = true
     @Published var animationThumbnailState: AnimationThumbnailState = .hidden
     @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
-    @Published var switcherState: SwitcherViews = .tabs
+    @Published var switcherState: SwitcherViews = .tabs {
+        didSet {
+            if case .spaces = switcherState {
+                ClientLogger.shared.logCounter(
+                    .SpacesUIVisited,
+                    attributes: EnvironmentHelper.shared.getAttributes())
+            }
+        }
+    }
     @Published var showingDetailsAsList = true
 
     private var updateVisibility: ((Bool) -> Void)!

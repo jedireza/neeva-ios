@@ -71,6 +71,25 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 }
 
+func getLogCounterAttributesForSpaces(details: SpaceCardDetails) -> [ClientLogCounterAttribute] {
+    var attributes = EnvironmentHelper.shared.getAttributes()
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.SpacesAttribute.isPublic,
+            value: String(details.isSharedPublic)))
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.SpacesAttribute.isShared,
+            value: String(details.isSharedWithGroup)))
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.SpacesAttribute.numberOfSpaceEntities,
+            value: String(details.allDetails.count)
+        )
+    )
+    return attributes
+}
+
 class SpaceCardModel: CardModel {
     @Published var manager = SpaceStore.shared
     @Published var allDetails: [SpaceCardDetails] = [] {
@@ -89,6 +108,10 @@ class SpaceCardModel: CardModel {
 
         didSet {
             guard detailedSpace == nil else {
+                ClientLogger.shared.logCounter(
+                    .SpacesDetailUIVisited,
+                    attributes:
+                        getLogCounterAttributesForSpaces(details: detailedSpace!))
                 return
             }
 

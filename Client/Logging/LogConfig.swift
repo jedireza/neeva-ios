@@ -53,7 +53,7 @@ public struct LogConfig {
         case FirstRunSignin  // Click sign in on first run
         case FirstRunSkipToBrowser  // Click skip to browser on first run
         case FirstRunImpression  // First run screen rendered
-        case LoginAfterFirstRun // Login after first run
+        case LoginAfterFirstRun  // Login after first run
 
         // promo card
         case PromoSignin  // Sign in from promo card
@@ -77,6 +77,16 @@ public struct LogConfig {
 
         // performance
         case AppCrashWithPageLoad  // App Crash # With Page load #
+
+        // spaces
+        case SpacesUIVisited
+        case SpacesDetailUIVisited
+        case SpacesDetailEntityClicked
+        case SpacesDetailEditButtonClicked
+        case SpacesDetailShareButtonClicked
+        case OwnerSharedSpace
+        case FollowerSharedSpace
+        case RecommendedSpaceVisited
     }
 
     // Specify a comma separated string with these values to
@@ -91,6 +101,7 @@ public struct LogConfig {
         case Performance = "Performance"
         case FirstRun = "FirstRun"
         case PromoCard = "PromoCard"
+        case Spaces = "Spaces"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
@@ -175,6 +186,15 @@ public struct LogConfig {
         case .CloseReferralPromo: return .ReferralPromo
 
         case .AppCrashWithPageLoad: return .Performance
+
+        case .SpacesUIVisited: return .Spaces
+        case .SpacesDetailUIVisited: return .Spaces
+        case .SpacesDetailEntityClicked: return .Spaces
+        case .SpacesDetailEditButtonClicked: return .Spaces
+        case .SpacesDetailShareButtonClicked: return .Spaces
+        case .RecommendedSpaceVisited: return .Spaces
+        case .OwnerSharedSpace: return .Spaces
+        case .FollowerSharedSpace: return .Spaces
         }
     }
 
@@ -214,5 +234,11 @@ public struct LogConfig {
         public static let numberOfCalculatorAnnotations = "NumberOfCalculatorAnnotations"
         public static let numberOfWikiAnnotations = "NumberOfWikiAnnotations"
         public static let numberOfStockAnnotations = "NumberOfStockAnnotations"
+    }
+
+    public struct SpacesAttribute {
+        public static let isShared = "isShared"
+        public static let isPublic = "isPublic"
+        public static let numberOfSpaceEntities = "NumberOfSpaceEntities"
     }
 }

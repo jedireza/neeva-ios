@@ -34,7 +34,8 @@ struct CardsContainer: View {
             ScrollViewReader { value in
                 VStack(alignment: .leading) {
                     if !recommendedSpacesModel.allDetails.isEmpty,
-                       case .spaces = gridModel.switcherState {
+                        case .spaces = gridModel.switcherState
+                    {
                         RecommendedSpacesView(recommendedSpacesModel: recommendedSpacesModel).id(
                             RecommendedSpacesView.ID)
                     }
@@ -64,8 +65,7 @@ struct CardsContainer: View {
                         spacesModel.manager.refresh()
                         value.scrollTo(
                             recommendedSpacesModel.allDetails.isEmpty
-                                ? spacesModel.allDetails.first?.id ?? "" :
-                                RecommendedSpacesView.ID
+                                ? spacesModel.allDetails.first?.id ?? "" : RecommendedSpacesView.ID
                         )
                     }
                 }
@@ -101,12 +101,16 @@ struct RecommendedSpacesView: View {
             LazyHStack(spacing: 10) {
                 ForEach(
                     recommendedSpacesModel.allDetails.filter { recommended in
-                    !spaceModel.allDetails.contains(where: { $0.id == recommended.id })
-                }, id: \.id) { details in
+                        !spaceModel.allDetails.contains(where: { $0.id == recommended.id })
+                    }, id: \.id
+                ) { details in
                     FittedCard(details: details)
                         .id(details.id + "suggested")
                         .environment(\.selectionCompletion) {
                             spaceModel.recommendedSpaceSelected(details: details)
+                            ClientLogger.shared.logCounter(
+                                .RecommendedSpaceVisited,
+                                attributes: getLogCounterAttributesForSpaces(details: details))
                         }
                 }
             }.padding(.bottom, 20).padding(.horizontal, 10)

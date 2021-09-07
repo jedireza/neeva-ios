@@ -86,7 +86,14 @@ where
                             shareMenuPresented = true
                         } else {
                             shareURL(space.url)
+                            ClientLogger.shared.logCounter(
+                                .FollowerSharedSpace,
+                                attributes: getLogCounterAttributesForSpaces(
+                                    details: primitive as! SpaceCardDetails))
                         }
+                        ClientLogger.shared.logCounter(
+                            .SpacesDetailShareButtonClicked,
+                            attributes: EnvironmentHelper.shared.getAttributes())
                     },
                     label: {
                         Image(
@@ -102,6 +109,10 @@ where
                             return
                         }
                         shareURL(space.url)
+                        ClientLogger.shared.logCounter(
+                            .OwnerSharedSpace,
+                            attributes: getLogCounterAttributesForSpaces(
+                                details: primitive as! SpaceCardDetails))
                         presentShareOnDismiss = false
                     }
                 ) {
@@ -122,6 +133,9 @@ where
                         default:
                             print("Pressed button again during transition. Ignoring...")
                         }
+                        ClientLogger.shared.logCounter(
+                            .SpacesDetailEditButtonClicked,
+                            attributes: EnvironmentHelper.shared.getAttributes())
                     },
                     label: {
                         Image(
@@ -234,6 +248,9 @@ struct SingleDetailView<Details: CardDetails>: View {
         VStack {
             Button {
                 onSelected()
+                ClientLogger.shared.logCounter(
+                    .SpacesDetailEntityClicked,
+                    attributes: EnvironmentHelper.shared.getAttributes())
             } label: {
                 HStack(spacing: DetailsViewUX.ItemPadding) {
                     details.thumbnail.frame(
