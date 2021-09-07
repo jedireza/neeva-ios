@@ -13,6 +13,7 @@ enum CardUX {
     static let FaviconSize: CGFloat = 18
     static let HeaderSize: CGFloat = ButtonSize + 1
     static let CardHeight: CGFloat = 174
+    static let DragToCloseThreshold: CGFloat = 80
 }
 
 private struct BorderTreatment: ViewModifier {
@@ -33,12 +34,10 @@ private struct BorderTreatment: ViewModifier {
 private struct DragToCloseInteraction: ViewModifier {
     let action: () -> Void
 
-    private let threshold: CGFloat = 80
-
     @State private var offset = CGFloat.zero
 
     private var progress: CGFloat {
-        abs(offset) / (threshold * 1.5)
+        abs(offset) / (CardUX.DragToCloseThreshold * 1.5)
     }
     private var angle: Angle {
         .radians(Double(progress * (.pi / 10)).withSign(offset.sign))
@@ -64,10 +63,11 @@ private struct DragToCloseInteraction: ViewModifier {
                         }
                     }
                     .onEnded { value in
-                        let target = value.predictedEndTranslation.width
+                        let actual = value.translation.width
+                        let predicted = value.predictedEndTranslation.width
                         withAnimation(.interactiveSpring()) {
-                            if abs(target) > threshold {
-                                offset = target
+                            if shouldClose(actualOffset: actual, predictedOffset: predicted) {
+                                offset = predicted
                                 action()
 
                                 // work around reopening tabs causing the state to not be reset
@@ -81,6 +81,14 @@ private struct DragToCloseInteraction: ViewModifier {
                         }
                     }
             )
+    }
+
+    private func shouldClose(actualOffset: CGFloat, predictedOffset: CGFloat) -> Bool {
+        // Require both a displacement threshold and sufficient velocity,
+        // modeled as predicted > target by some multiple.
+        let multiple = 2
+        return abs(actualOffset) > CardUX.DragToCloseThreshold
+            && abs(predictedOffset) > multiple * abs(actualOffset)
     }
 }
 
