@@ -928,7 +928,11 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab(nil)) {
+    func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab(nil), switchToIncognitoMode: Bool? = nil) {
+        if let switchToIncognitoMode = switchToIncognitoMode {
+            tabManager.setIncognitoMode(to: switchToIncognitoMode)
+        }
+
         showZeroQuery(openedFrom: openedFrom, isLazyTab: true)
     }
 

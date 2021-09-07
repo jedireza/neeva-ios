@@ -81,10 +81,10 @@ extension BrowserViewController: ToolbarDelegate {
         }
 
         let switchPrivacyMode = { [self] (_: UIAction) in
-            _ = tabManager.toggleIncognitoMode()
+            tabManager.toggleIncognitoMode(fromTabTray: false)
         }
 
-        var switchModeTitle = Strings.openIncognitoModeTitle
+        var switchModeTitle = "Switch to Incognito Mode"
         var switchModeImage: UIImage? = UIImage(named: "incognito")
 
         var newTabTitle = Strings.NewTabTitle

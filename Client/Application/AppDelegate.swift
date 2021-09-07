@@ -244,6 +244,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // The FaviconFetcher is explicitly for getting high-res icons, so use the desktop user agent.
         FaviconFetcher.userAgent = UserAgent.desktopUserAgent()
     }
+
     fileprivate func setUpWebServer(_ profile: Profile) {
         let server = WebServer.sharedInstance
         guard !server.server.isRunning else { return }
