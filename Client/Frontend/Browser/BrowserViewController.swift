@@ -1551,6 +1551,7 @@ extension BrowserViewController {
 
         introViewController!.visitHomePage = visitHomePage
         introViewController!.visitSigninPage = visitSigninPage
+        introViewController!.visitAppleAuthPage = visitAppleAuthPage(authURL:)
 
         self.introVCPresentHelper(introViewController: introViewController!)
     }
@@ -1564,6 +1565,12 @@ extension BrowserViewController {
     private func visitSigninPage() {
         if let tab = self.tabManager.selectedTab {
             tab.loadRequest(URLRequest(url: NeevaConstants.appSigninURL))
+        }
+    }
+
+    private func visitAppleAuthPage(authURL: URL) {
+        if let tab = self.tabManager.selectedTab {
+            tab.loadRequest(URLRequest(url: authURL))
         }
     }
 

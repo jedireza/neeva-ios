@@ -151,6 +151,23 @@ public struct NeevaConstants {
             && url?.path == NeevaConstants.appSearchURL.path
             && url?.hasQueryParam("c", value: "Maps") == true
     }
+
+    // Construct auth url for signin with apple
+    public static func appleAuthURL(
+        serverAuthCode: String,
+        marketingEmailOptOut: Bool,
+        signup: Bool
+    ) -> URL {
+        let authURL = buildAppURL("login-mobile")
+        let queryItems: [URLQueryItem] = [
+            URLQueryItem(name: "provider", value: "neeva.co/auth/oauth2/authenticators/apple"),
+            URLQueryItem(name: "serverAuthCode", value: serverAuthCode),
+            URLQueryItem(name: "mktEmailOptOut", value: String(marketingEmailOptOut)),
+            URLQueryItem(name: "signup", value: String(signup)),
+            URLQueryItem(name: "ignoreCountryCode", value: "true"),
+        ]
+        return authURL.withQueryParams(queryItems)
+    }
 }
 
 private class BundleHookClass {}

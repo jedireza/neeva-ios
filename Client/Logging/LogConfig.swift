@@ -49,7 +49,8 @@ public struct LogConfig {
         case ClearAllWebsiteData  // Click Clear All Website Data in Data Management > Website Data
 
         // First Run
-        case FirstRunSignUp  // Click sign up on first run
+        case FirstRunSignupWithApple // Click Sign up with Apple on first run
+        case FirstRunOtherSignUpOptions  // Click Other sign up options on first run
         case FirstRunSignin  // Click sign in on first run
         case FirstRunSkipToBrowser  // Click skip to browser on first run
         case FirstRunImpression  // First run screen rendered
@@ -162,7 +163,8 @@ public struct LogConfig {
         case .ClearPrivateData: return .Settings
         case .ClearAllWebsiteData: return .Settings
 
-        case .FirstRunSignUp: return .FirstRun
+        case .FirstRunSignupWithApple: return .FirstRun
+        case .FirstRunOtherSignUpOptions: return .FirstRun
         case .FirstRunSignin: return .FirstRun
         case .FirstRunSkipToBrowser: return .FirstRun
         case .FirstRunImpression: return .FirstRun

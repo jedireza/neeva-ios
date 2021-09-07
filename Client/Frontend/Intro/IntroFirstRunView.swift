@@ -8,50 +8,65 @@ struct IntroFirstRunView: View {
     var buttonAction: (FirstRunButtonActions) -> Void
     let smallSizeScreen: CGFloat = 375.0
 
+    @State var marketingEmailOptOut = false
+
     var body: some View {
         VStack {
+            HStack {
+                Spacer()
+                Button(action: { buttonAction(.skipToBrowser) }) {
+                    Symbol(decorative: .xmark, size: 20, weight: .semibold)
+                        .foregroundColor(Color.ui.gray60)
+                }
+            }
             Spacer()
             VStack(alignment: .leading) {
-                Image("neeva-letter-logo")
+                Image("neeva-letter-only")
                 VStack(alignment: .leading) {
-                    Text("Ad-free,")
-                    Text("private search")
-                    Text("that puts you")
-                    Text("first.")
+                    Text("Welcome to")
+                    Text("Neeva, the only")
+                    Text("ad-free, private")
+                    Text("search engine")
                 }
                 .font(
-                    .roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 36 : 48)
+                    .roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 32 : 42)
                 )
                 .foregroundColor(Color.ui.gray20)
-                .padding(.top, 40)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 20)
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Neeva. Ad-free private search that puts you first")
+            .accessibilityLabel("Welcome to Neeva, the only ad-free, private search engine")
             .accessibilityAddTraits(.isHeader)
 
             VStack {
-                Button(action: { buttonAction(.signin) }) {
+                Button(action: { buttonAction(.signupWithApple(marketingEmailOptOut)) }) {
                     HStack {
-                        Text("Sign In")
+                        Image("apple")
+                            .renderingMode(.template)
+                            .padding(.leading, 28)
                         Spacer()
-                        Symbol(decorative: .arrowRight, size: 22)
+                        Text("Sign up with Apple")
+                        Spacer()
+                        Spacer()
                     }
-                    .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
-                    .foregroundColor(Color.brand.charcoal)
+                    .foregroundColor(.brand.white)
+                    .padding(EdgeInsets(top: 23, leading: 0, bottom: 23, trailing: 0))
                 }
-                .background(Color.brand.polar)
+                .background(Color.black)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
                 .shadow(color: Color.ui.gray70, radius: 1, x: 0, y: 1)
                 .padding(.top, 40)
 
-                Button(action: { buttonAction(.signup) }) {
+                Button(action: { buttonAction(.signupWithOther) }) {
                     HStack {
-                        Text("Sign Up")
                         Spacer()
-                        Symbol(decorative: .arrowUpRight, size: 22)
+                        Text("Other sign up options")
+                            .foregroundColor(.brand.white)
+                        Spacer()
                     }
-                    .padding(EdgeInsets(top: 23, leading: 40, bottom: 23, trailing: 40))
                     .foregroundColor(.brand.white)
+                    .padding(EdgeInsets(top: 23, leading: 0, bottom: 23, trailing: 0))
                 }
                 .background(Color.brand.blue)
                 .clipShape(RoundedRectangle(cornerRadius: 100))
@@ -60,20 +75,35 @@ struct IntroFirstRunView: View {
             }
             .font(.roobert(.semibold, size: 18))
 
-            Button(action: { buttonAction(.skipToBrowser) }) {
-                Text("Skip to browser without Neeva search")
-                    .underline()
-                    .font(.roobert(size: 16))
-                    .foregroundColor(Color.ui.gray20)
-                    .multilineTextAlignment(.center)
+            Button(action: { marketingEmailOptOut.toggle() }) {
+                HStack {
+                    marketingEmailOptOut
+                        ? Symbol(decorative: .circle, size: 20)
+                            .foregroundColor(Color.tertiaryLabel)
+                        : Symbol(decorative: .checkmarkCircleFill, size: 20)
+                            .foregroundColor(Color.blue)
+                    Text("Send me product & privacy tips")
+                        .font(.roobert(size: 13))
+                        .foregroundColor(Color.ui.gray20)
+                        .multilineTextAlignment(.center)
+                }
             }
-            .padding(.top, 50)
+            .padding(.top, 20)
 
             Spacer()
+
+            Button(action: { buttonAction(.signin) }) {
+                (Text("Already have an account? ")
+                    .foregroundColor(Color.ui.gray50)
+                    + Text("Sign In").foregroundColor(Color.ui.gray20).fontWeight(.medium))
+                    .font(.system(size: 14))
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.bottom, 30)
         }
         .padding(35)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.brand.beige)
+        .background(Color.brand.offwhite)
         .ignoresSafeArea(.all)
         .colorScheme(.light)
         .onAppear(perform: logImpression)

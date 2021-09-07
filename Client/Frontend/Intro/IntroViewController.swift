@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import AuthenticationServices
 import Foundation
 import Shared
 import SnapKit
@@ -9,17 +10,24 @@ import UIKit
 
 enum FirstRunButtonActions {
     case signin
-    case signup
+    case signupWithApple(Bool)
+    case signupWithOther
     case skipToBrowser
 }
 
-class IntroViewController: UIViewController {
+class IntroViewController: UIViewController,
+    ASAuthorizationControllerDelegate,
+    ASAuthorizationControllerPresentationContextProviding
+{
+
     private lazy var welcomeCard = UIView()
+    private var marketingEmailOptOut: Bool = true
 
     // Closure delegate
     var didFinishClosure: ((IntroViewController) -> Void)?
     var visitHomePage: (() -> Void)?
     var visitSigninPage: (() -> Void)?
+    var visitAppleAuthPage: ((URL) -> Void)?
 
     // MARK: Initializer
     init() {
@@ -54,15 +62,22 @@ class IntroViewController: UIViewController {
                 .FirstRunSignin, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
             self.visitSigninPage?()
-        case FirstRunButtonActions.signup:
+        case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut):
             ClientLogger.shared.logCounter(
-                .FirstRunSignUp, attributes: [ClientLogCounterAttribute]())
-            self.didFinishClosure?(self)
-            self.visitHomePage?()
+                .FirstRunSignupWithApple, attributes: [ClientLogCounterAttribute]())
+            self.marketingEmailOptOut = marketingEmailOptOut
+            doSignupWithApple()
+            break
         case FirstRunButtonActions.skipToBrowser:
             ClientLogger.shared.logCounter(
                 .FirstRunSkipToBrowser, attributes: [ClientLogCounterAttribute]())
             self.didFinishClosure?(self)
+        case .signupWithOther:
+            ClientLogger.shared.logCounter(
+                .FirstRunOtherSignUpOptions, attributes: [ClientLogCounterAttribute]())
+            self.didFinishClosure?(self)
+            self.visitHomePage?()
+            break
         }
     }
 
@@ -75,6 +90,53 @@ class IntroViewController: UIViewController {
         }
         addSubSwiftUIView(IntroFirstRunView(buttonAction: buttonAction), to: welcomeCard)
         setupWelcomeCard()
+    }
+
+    private func doSignupWithApple() {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+
+    func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithAuthorization authorization: ASAuthorization
+    ) {
+        switch authorization.credential {
+        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+            // redirect and create account
+            let token = appleIDCredential.identityToken
+
+            if token != nil {
+                if let authStr = String(data: token!, encoding: .utf8) {
+                    let authURL = NeevaConstants.appleAuthURL(
+                        serverAuthCode: authStr,
+                        marketingEmailOptOut: self.marketingEmailOptOut,
+                        signup: true)
+                    self.didFinishClosure?(self)
+                    visitAppleAuthPage?(authURL)
+                }
+            }
+            break
+        default:
+            break
+        }
+    }
+
+    func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithError error: Error
+    ) {
+        Logger.browser.error("Sign up with Apple failed: \(error)")
     }
 }
 
