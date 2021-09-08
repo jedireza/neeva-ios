@@ -497,7 +497,7 @@ private struct EditCurrentURLSuggestionView: View {
     }
 
     var secondaryLabel: some View {
-        Text("Edit current URL")
+        Text("Edit current address")
             .withFont(.bodyMedium).foregroundColor(.secondaryLabel).lineLimit(1)
     }
 
