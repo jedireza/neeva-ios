@@ -128,7 +128,7 @@ class SpaceCardModel: CardModel {
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var stateNeedsRefresh = false
 
-    init(bvc: BrowserViewController, manager: SpaceStore = SpaceStore.shared) {
+    init(manager: SpaceStore = SpaceStore.shared) {
         self.manager = manager
         self.manager.refresh()
 
@@ -138,7 +138,7 @@ class SpaceCardModel: CardModel {
             }
             DispatchQueue.main.async {
                 allDetails = manager.getAll().map {
-                    SpaceCardDetails(space: $0, bvc: bvc, manager: manager)
+                    SpaceCardDetails(space: $0, manager: manager)
                 }
                 allDetails.forEach { details in
                     details.$isShowingDetails.sink { [weak self] showingDetails in

@@ -227,16 +227,15 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
         manager.get(for: id)
     }
 
-    private init(id: String, bvc: BrowserViewController, manager: SpaceStore) {
+    private init(id: String, manager: SpaceStore) {
         self.id = id
-        self.bvc = bvc
         self.manager = manager
 
         updateDetails()
     }
 
-    convenience init(space: Space, bvc: BrowserViewController, manager: SpaceStore) {
-        self.init(id: space.id.id, bvc: bvc, manager: manager)
+    convenience init(space: Space, manager: SpaceStore) {
+        self.init(id: space.id.id, manager: manager)
     }
 
     var thumbnail: some View {
@@ -274,12 +273,11 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     func onClose() {}
 
     func performDrop(info: DropInfo) -> Bool {
-        guard let bvc = bvc, info.hasItemsConforming(to: ["public.text", "public.url"]) else {
+        guard info.hasItemsConforming(to: ["public.text", "public.url"]) else {
             return false
         }
 
-        var items = info.itemProviders(for: ["public.url"])
-        let foundUrl = !items.isEmpty
+        let items = info.itemProviders(for: ["public.url"])
         for item in items {
             _ = item.loadObject(ofClass: URL.self) { url, _ in
                 if let url = url, let space = self.manager.get(for: self.id) {
@@ -288,29 +286,6 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                             title: "Link from \(url.baseDomain ?? "page")",
                             description: "", url: url)
                         request.addToExistingSpace(id: space.id.id, name: space.name)
-
-                        ToastDefaults().showToastForSpace(bvc: bvc, request: request)
-                    }
-                }
-            }
-        }
-
-        guard !foundUrl else {
-            return true
-        }
-
-        items = info.itemProviders(for: ["public.text"])
-        for item in items {
-            _ = item.loadObject(ofClass: String.self) { text, _ in
-                if let text = text, let space = self.manager.get(for: self.id) {
-                    DispatchQueue.main.async {
-                        let request = AddToSpaceRequest(
-                            title: "Selected snippets",
-                            description: text,
-                            url: (bvc.tabManager.selectedTab?.url)!)
-                        request.addToExistingSpace(id: space.id.id, name: space.name)
-
-                        ToastDefaults().showToastForSpace(bvc: bvc, request: request)
                     }
                 }
             }

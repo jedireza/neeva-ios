@@ -49,7 +49,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
             rootView: Content(
                 tabCardModel: TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager),
                 tabGroupCardModel: TabGroupCardModel(manager: tabGroupManager),
-                spaceCardModel: SpaceCardModel(bvc: bvc),
+                spaceCardModel: SpaceCardModel(),
                 gridModel: gridModel,
                 toolbarModel: toolbarModel,
                 shareURL: shareURL
@@ -110,7 +110,7 @@ struct CardStripContent: View {
 
         self.tabCardModel = TabCardModel(
             manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
-        self.spaceCardModel = SpaceCardModel(bvc: bvc)
+        self.spaceCardModel = SpaceCardModel()
         self.sitesCardModel = SiteCardModel(urls: [], tabManager: tabManager)
         self.cardStripModel = CardStripModel()
         self.width = width

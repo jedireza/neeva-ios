@@ -24,8 +24,7 @@ struct CardsContainer: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
 
-    @StateObject private var recommendedSpacesModel = SpaceCardModel(
-        bvc: SceneDelegate.getBVC(for: nil), manager: SpaceStore.suggested)
+    @StateObject private var recommendedSpacesModel = SpaceCardModel(manager: SpaceStore.suggested)
 
     let columns: [GridItem]
 
