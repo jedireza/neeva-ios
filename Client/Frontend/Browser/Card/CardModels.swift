@@ -32,7 +32,7 @@ class TabCardModel: CardModel, TabEventHandler {
 
     var isCardGridEmpty: Bool {
         // Tab tray cannot be empty in incognito mode
-        FeatureFlag[.emptyTabTray] && !manager.isIncognito && manager.normalTabs.count == 0
+        !manager.isIncognito && manager.normalTabs.count == 0
     }
 
     init(manager: TabManager, groupManager: TabGroupManager) {

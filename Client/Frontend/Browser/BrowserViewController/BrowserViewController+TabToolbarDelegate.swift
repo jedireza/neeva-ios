@@ -123,7 +123,7 @@ extension BrowserViewController: ToolbarDelegate {
                     title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark)
                 ) { _ in
                     if let tab = self.tabManager.selectedTab {
-                        self.tabManager.removeTabAndUpdateSelectedTab(tab, addNewTab: true)
+                        self.tabManager.removeTabAndUpdateSelectedTab(tab)
                     }
                 }
                 closeTabAction.accessibilityIdentifier = "Close Tab Action"

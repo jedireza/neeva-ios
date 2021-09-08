@@ -536,7 +536,13 @@ class BrowserViewController: UIViewController {
             displayedRestoreTabsAlert = true
             showRestoreTabsAlert()
         } else {
-            tabManager.restoreTabs()
+            if !tabManager.restoreTabs() {
+                if Defaults[.createNewTabOnStart] {
+                    tabManager.select(tabManager.addTab())
+                } else {
+                    showTabTray()
+                }
+            }
         }
 
         clipboardBarDisplayHandler?.checkIfShouldDisplayBar()
@@ -561,7 +567,10 @@ class BrowserViewController: UIViewController {
         let alert = UIAlertController.restoreTabsAlert(
             okayCallback: { _ in
                 self.isCrashAlertShowing = false
-                self.tabManager.restoreTabs(true)
+
+                if !self.tabManager.restoreTabs(true) {
+                    self.showTabTray()
+                }
             },
             noCallback: { _ in
                 self.isCrashAlertShowing = false
@@ -684,11 +693,11 @@ class BrowserViewController: UIViewController {
         guard zeroQueryModel.openedFrom == nil else { return }
 
         if !cardGridViewController.gridModel.isHidden {
-            cardGridViewController.gridModel.hideWithNoAnimation()
+            hideCardGrid(withAnimation: false)
         }
 
         if isLazyTab {
-            chromeModel.setEditingLocation(to: true)
+            chromeModel.triggerOverlay()
         }
 
         searchQueryModel.value = ""
@@ -909,7 +918,10 @@ class BrowserViewController: UIViewController {
             request = nil
         }
 
-        tabManager.selectTab(tabManager.addTab(request, isPrivate: isPrivate))
+        DispatchQueue.main.async {
+            self.tabManager.selectTab(self.tabManager.addTab(request, isPrivate: isPrivate))
+            self.cardGridViewController.gridModel.hideWithNoAnimation()
+        }
     }
 
     func openURLInNewTabPreservingIncognitoState(_ url: URL) {
@@ -1131,6 +1143,14 @@ class BrowserViewController: UIViewController {
 
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
+        }
+    }
+
+    func hideCardGrid(withAnimation: Bool) {
+        if withAnimation {
+            cardGridViewController.gridModel.hideWithAnimation()
+        } else {
+            cardGridViewController.gridModel.hideWithNoAnimation()
         }
     }
 }
@@ -1552,26 +1572,27 @@ extension BrowserViewController {
         introViewController!.visitHomePage = visitHomePage
         introViewController!.visitSigninPage = visitSigninPage
         introViewController!.visitAppleAuthPage = visitAppleAuthPage(authURL:)
+        introViewController!.skipToBrowser = skipToBrowser
 
         self.introVCPresentHelper(introViewController: introViewController!)
     }
 
     private func visitHomePage() {
-        if let tab = self.tabManager.selectedTab {
-            tab.loadRequest(URLRequest(url: NeevaConstants.appSignupURL))
-        }
+        openURLInNewTab(NeevaConstants.appSignupURL)
     }
 
     private func visitSigninPage() {
-        if let tab = self.tabManager.selectedTab {
-            tab.loadRequest(URLRequest(url: NeevaConstants.appSigninURL))
-        }
+        openURLInNewTab(NeevaConstants.appSigninURL)
     }
 
     private func visitAppleAuthPage(authURL: URL) {
         if let tab = self.tabManager.selectedTab {
             tab.loadRequest(URLRequest(url: authURL))
         }
+    }
+
+    private func skipToBrowser() {
+        openURLInNewTab(URL(string: "https://neeva.com"))
     }
 
     private func introVCPresentHelper(introViewController: UIViewController) {

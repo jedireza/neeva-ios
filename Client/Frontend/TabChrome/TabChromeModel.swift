@@ -74,10 +74,7 @@ class TabChromeModel: ObservableObject {
 
     /// Calls the address bar to be selected and enter editing mode
     func triggerOverlay() {
-        // called twice in order to work
-        // see chromeModel.$isEditingLocation.withPrevious() in tabLocationHost
-        setEditingLocation(to: true)
-        setEditingLocation(to: true)
+        isEditingLocation = true
     }
 
     func setEditingLocation(to value: Bool) {

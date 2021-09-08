@@ -117,7 +117,7 @@ extension TabManager: ClosingManager, SelectingManager, AccessingManager {
 
     func close(_ tab: Tab) {
         withAnimation {
-            removeTabAndUpdateSelectedTab(tab, allowToast: true, addNewTab: false)
+            removeTabAndUpdateSelectedTab(tab, allowToast: true)
         }
     }
 

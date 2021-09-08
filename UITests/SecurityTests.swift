@@ -86,16 +86,6 @@ class SecurityTests: UITestBase {
 
         // Make sure the URL bar doesn't show the URL since it hasn't loaded.
         XCTAssertFalse(tester().viewExistsWithLabel("http://1.2.3.4:1234/"))
-
-        // Workaround number of tabs not updated
-        tester().tapView(withAccessibilityLabel: "Show Tabs")
-        tester().longPressView(withAccessibilityLabel: "Done", duration: 1)
-
-        tester().waitForView(withAccessibilityLabel: "Close All Tabs")
-        tester().tapView(withAccessibilityLabel: "Close All Tabs")
-
-        tester().waitForView(withAccessibilityLabel: "Close 2 Tabs")
-        tester().tapView(withAccessibilityLabel: "Confirm Close All Tabs")
     }
 
     // Web pages can't have neeva: urls, these should be used external to the app only (see bug 1447853)

@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import Foundation
 import Storage
-import Defaults
 
 @testable import Client
 
@@ -31,10 +31,6 @@ class UITestBase: KIFTestCase {
     ])
 
     func resetToHome() {
-        if tester().viewExistsWithLabel("Done") {
-            tester().tapView(withAccessibilityLabel: "Done")
-        }
-
         if tester().viewExistsWithLabel("Cancel") {
             tester().tapView(withAccessibilityLabel: "Cancel")
         }
@@ -77,8 +73,9 @@ class UITestBase: KIFTestCase {
     }
 
     override func setUp() {
-        if tester().viewExistsWithLabel("Done") {
-            tester().tapView(withAccessibilityLabel: "Done")
+        if tester().viewExistsWithLabel("Done") && getNumberOfTabs() == 0 {
+            tester().tapView(withAccessibilityLabel: "Add Tab")
+            openURL(openAddressBar: false)
         }
 
         tester().waitForAnimationsToFinish()
@@ -88,7 +85,9 @@ class UITestBase: KIFTestCase {
         resetToHome()
 
         let bvc = SceneDelegate.getBVC(for: nil)
-        ClearableDataType.allCases.forEach { _ = $0.clearable(profile: bvc.profile, tabManager: bvc.tabManager).clear() }
+        ClearableDataType.allCases.forEach {
+            _ = $0.clearable(profile: bvc.profile, tabManager: bvc.tabManager).clear()
+        }
 
         super.tearDown()
     }

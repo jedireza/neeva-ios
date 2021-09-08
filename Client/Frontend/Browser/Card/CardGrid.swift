@@ -93,6 +93,7 @@ struct CardGrid: View {
     @ViewBuilder var cardContainer: some View {
         if tabModel.isCardGridEmpty {
             EmptyCardGrid()
+                .accessibility(identifier: "Empty Card Grid")
         } else {
             VStack(spacing: 0) {
                 CardsContainer(

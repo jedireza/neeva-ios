@@ -183,7 +183,7 @@ class SimulatedSwipeController:
             return false
         }
 
-        tabManager.removeTabAndUpdateSelectedTab(tab, addNewTab: true)
+        tabManager.removeTabAndUpdateSelectedTab(tab)
         return true
     }
 

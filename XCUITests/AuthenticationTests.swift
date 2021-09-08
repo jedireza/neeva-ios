@@ -22,15 +22,29 @@ class AuthenticationTests: BaseTestCase {
         waitForExistence(app.staticTexts["Your browser made it!"])
     }
 
-    fileprivate func enterCredentials(username: String, password: String) {
-        waitForExistence(app.textFields["Auth_Username_Field"])
-        app.textFields["Auth_Username_Field"].tap()
-        app.textFields["Auth_Username_Field"].typeText(username + "\n")
+    private func enterCredentials(username: String, password: String) {
+        enter(text: username, in: "Auth_Username_Field")
+        enter(text: password, in: "Auth_Password_Field", isSecure: true)
 
-        app.secureTextFields["Auth_Password_Field"].tap()
-        app.secureTextFields["Auth_Password_Field"].typeText(username)
-
+        waitForExistence(app.buttons["Auth_Submit"])
         app.buttons["Auth_Submit"].tap()
         waitForExistence(app.buttons["Show Tabs"])
+    }
+
+    private func enter(text: String, in field: String, isSecure: Bool = false) {
+        UIPasteboard.general.string = text
+
+        if isSecure {
+            waitForExistence(app.secureTextFields[field])
+            app.secureTextFields[field].tap()
+            app.secureTextFields[field].press(forDuration: 1)
+        } else {
+            waitForExistence(app.textFields[field])
+            app.textFields[field].tap()
+            app.textFields[field].press(forDuration: 1)
+        }
+
+        waitForExistence(app.menuItems["Paste"])
+        app.menuItems["Paste"].tap()
     }
 }

@@ -146,7 +146,9 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if let openTab = viewModel.openedFrom?.openedTab, let url = openTab.url, !(InternalURL(url)?.isZeroQueryURL ?? false) {
+                    if let openTab = viewModel.openedFrom?.openedTab, let url = openTab.url,
+                        !(InternalURL(url)?.isZeroQueryURL ?? false)
+                    {
                         SearchSuggestionView(
                             Suggestion.editCurrentURL(
                                 TabCardDetails(
@@ -170,7 +172,7 @@ struct ZeroQueryView: View {
                         if isLandScape() && viewModel.showRatingsCard {
                             ratingsCard(geom.size.width)
                         }
-                        
+
                         ZeroQueryHeader(
                             title: "Suggested sites",
                             action: { expandSuggestedSites.advance() },
@@ -180,7 +182,7 @@ struct ZeroQueryView: View {
                         if expandSuggestedSites != .hidden {
                             SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
                         }
-                        
+
                         if !isLandScape() && viewModel.showRatingsCard {
                             ratingsCard(geom.size.width)
                         }

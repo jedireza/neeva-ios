@@ -32,13 +32,9 @@ class TabMenuTests: BaseTestCase {
     func testCloseAllNormalTabsFromTab() {
         openURL(firstWebsite.url)
         openURLInNewTab(secondWebsite.url)
-        closeAllTabs()
-        goToTabTray()
+        closeAllTabs(createNewTab: false)
 
-        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
-        XCTAssertEqual(
-            getTabs().firstMatch.label, "Home, Tab",
-            "Expected label of remaining tab is not correct")
+        waitForExistence(app.images["EmptyTabTray"])
     }
 
     func testCloseIncognitoTabFromTab() {
@@ -63,7 +59,7 @@ class TabMenuTests: BaseTestCase {
         toggleIncognito()
         openURLInNewTab(secondWebsite.url)
 
-        closeAllTabs()
+        closeAllTabs(createNewTab: false)
         goToTabTray()
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
@@ -77,26 +73,21 @@ class TabMenuTests: BaseTestCase {
         openURLInNewTab(secondWebsite.url)
         goToTabTray()
 
-        closeAllTabs(fromTabSwitcher: true)
-        goToTabTray()
-
-        XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
-        XCTAssertEqual(
-            getTabs().firstMatch.label, "Home, Tab",
-            "Expected label of remaining tab is not correct")
+        closeAllTabs(fromTabSwitcher: true, createNewTab: false)
+        waitForExistence(app.images["EmptyTabTray"])
     }
 
     func testCloseAllIncognitoTabsFromSwitcher() {
+        openURL()
         toggleIncognito()
         openURLInNewTab(secondWebsite.url)
         goToTabTray()
 
-        closeAllTabs(fromTabSwitcher: true)
-        goToTabTray()
+        closeAllTabs(fromTabSwitcher: true, createNewTab: false)
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            getTabs().firstMatch.label, "Home, Tab",
+            getTabs().firstMatch.label, "Example Domain, Tab",
             "Expected label of remaining tab is not correct")
     }
 }

@@ -10,7 +10,7 @@ class ClipBoardTests: BaseTestCase {
     // Check for test url in the browser
     func checkUrl() {
         let urlField = app.buttons["Address Bar"]
-        waitForValueContains(urlField, value: "http://example.com/")
+        waitForValueContains(urlField, value: "http://example.com/", timeout: 30)
     }
 
     // Copy url from the browser
@@ -35,7 +35,7 @@ class ClipBoardTests: BaseTestCase {
 
     // This test is disabled in release, but can still run on master
     func testClipboard() {
-        openURL("example.com")
+        openURL()
         checkUrl()
         copyUrl()
         checkCopiedUrl()

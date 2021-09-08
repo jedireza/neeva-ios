@@ -40,12 +40,15 @@ class BaseTestCase: XCTestCase {
         } else {
             app.launchArguments = [LaunchArguments.PerformanceTest] + launchArguments
         }
+
         app.launch()
     }
 
     override func setUp() {
         super.setUp()
+
         continueAfterFailure = false
+
         if !skipPlatform {
             setUpApp()
         }
@@ -162,19 +165,24 @@ class BaseTestCase: XCTestCase {
     }
 
     public func newTab() {
-        waitForExistence(app.buttons["Show Tabs"])
-        app.buttons["Show Tabs"].press(forDuration: 1)
-
-        if app.buttons["New Tab"].exists {
-            app.buttons["New Tab"].tap()
+        if app.buttons["Add Tab"].exists {
+            app.buttons["Add Tab"].tap()
         } else {
-            app.buttons["New Incognito Tab"].tap()
+            waitForExistence(app.buttons["Show Tabs"])
+            app.buttons["Show Tabs"].press(forDuration: 1)
+
+            if app.buttons["New Tab"].exists {
+                app.buttons["New Tab"].tap()
+            } else {
+                app.buttons["New Incognito Tab"].tap()
+            }
+
         }
 
         waitForExistence(app.buttons["Cancel"])
     }
 
-    public func closeAllTabs(fromTabSwitcher: Bool = false) {
+    public func closeAllTabs(fromTabSwitcher: Bool = false, createNewTab: Bool = true) {
         if fromTabSwitcher {
             waitForExistence(app.buttons["Done"], timeout: 3)
             app.buttons["Done"].press(forDuration: 1)
@@ -191,6 +199,10 @@ class BaseTestCase: XCTestCase {
             app.buttons["Confirm Close All Tabs"].tap()
         } else {
             app.buttons["Close Tab"].tap()
+        }
+
+        if createNewTab {
+            openURLInNewTab()
         }
     }
 

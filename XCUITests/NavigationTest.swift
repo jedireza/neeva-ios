@@ -121,7 +121,6 @@ class NavigationTest: BaseTestCase {
 
     func testLongPressOnAddressBar() {
         openURL()
-
         editCurrentURL()
 
         app.textFields["address"].press(forDuration: 1)

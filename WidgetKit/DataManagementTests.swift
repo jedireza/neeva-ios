@@ -6,8 +6,7 @@ import XCTest
 
 class DataManagementTests: BaseTestCase {
     func testWebSiteDataEnterFirstTime() {
-        openURL("example.com")
-
+        openURL()
         goToClearData()
         app.tables.cells["Website Data"].tap()
         XCTAssertTrue(app.tables.cells["example.com"].exists)

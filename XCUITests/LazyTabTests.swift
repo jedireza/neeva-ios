@@ -17,7 +17,6 @@ class LazyTabTests: BaseTestCase {
 
     // MARK: Tab Tray
     func testNoTabAddedWhenCancelingNewTabFromTabTray() {
-        openURL()
         goToTabTray()
 
         app.buttons["Add Tab"].tap()
@@ -30,7 +29,6 @@ class LazyTabTests: BaseTestCase {
     }
 
     func testLazyTabCreatedFromTabTray() {
-        openURL()
         goToTabTray()
 
         app.buttons["Add Tab"].tap()
@@ -43,7 +41,6 @@ class LazyTabTests: BaseTestCase {
 
     // MARK: Long Press Tab Tray Button
     func testNoTabAddedWhenCancelingNewTabFromLongPressTabTrayButton() {
-        openURL()
         newTab()
 
         app.buttons["Cancel"].tap()
@@ -54,7 +51,6 @@ class LazyTabTests: BaseTestCase {
     }
 
     func testLazyTabCreatedFromLongPressTabTrayButton() {
-        openURL()
         newTab()
         openURL()
 

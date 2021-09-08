@@ -27,20 +27,9 @@ class TabMenu {
                 "Close \(numberOfTabs) \(isPrivate ? "Private " : "")\(numberOfTabs > 1 ? "Tabs" : "Tab")",
             style: .destructive
         ) { [self] _ in
-            if isPrivate {
-                if (!fromTabTray || !FeatureFlag[.emptyTabTray]) {
-                	tabManager.toggleIncognitoMode()
-
-                	// wait for tabManager to switch to normal mode before closing private tabs
-                	DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                	    tabManager.removeTabs(tabManager.privateTabs, showToast: false, addNormalTab: true)
-                	}
-                } else {
-                    tabManager.removeTabs(tabManager.privateTabs, showToast: false, addNormalTab: false)
-                }
-            } else {
-                tabManager.removeTabs(tabManager.normalTabs, showToast: false, addNormalTab: !fromTabTray)
-            }
+            tabManager.removeTabs(
+                isPrivate ? tabManager.privateTabs : tabManager.normalTabs, showToast: false,
+                addNormalTab: false)
 
             if let tabsClosed = tabsClosed {
                 tabsClosed(isPrivate)
@@ -71,7 +60,8 @@ class TabMenu {
             image: UIImage(systemName: "trash"), attributes: .destructive
         ) { _ in
             // make sure the user really wants to close all tabs
-            self.showConfirmCloseAllTabs(numberOfTabs: self.getTabCountForCurrentType(), fromTabTray: fromTabTray)
+            self.showConfirmCloseAllTabs(
+                numberOfTabs: self.getTabCountForCurrentType(), fromTabTray: fromTabTray)
         }
         action.accessibilityLabel = "Close All Tabs"
 

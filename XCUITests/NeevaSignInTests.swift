@@ -78,6 +78,8 @@ class NeevaSignInTests: BaseTestCase {
     }
 
     func testSignInFromPromoCard() {
+        // Open a new tsb to show zero query
+        newTab()
         waitForExistence(app.buttons["Sign in or Join Neeva"])
         app.buttons["Sign in or Join Neeva"].tap()
 

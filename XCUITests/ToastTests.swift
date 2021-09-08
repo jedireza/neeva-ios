@@ -27,20 +27,17 @@ class ToastTests: BaseTestCase {
     // MARK: Close Tab Toast
     private func showCloseTabToast() {
         // test the recently closed tab page
-        openURLInNewTab(path(forTestPage: "test-mozilla-book.html"))
-        waitUntilPageLoad()
         goToTabTray()
 
-        app.buttons
-            .matching(NSPredicate(format: "label BEGINSWITH 'Close '"))
-            .firstMatch.tap()
+        // close tab
+        app.buttons["Home, Tab"].swipeLeft()
     }
 
     func testClosedTabToastDoesNotAppear() {
         // test the recently closed tab page
         openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
-        closeAllTabs()
+        closeAllTabs(createNewTab: false)
 
         waitForNoExistence(app.buttons["restore"])
     }

@@ -34,7 +34,8 @@ struct MethodSpy {
     }
 }
 
-private let spyDidSelectedTabChange = "tabManager(_:didSelectedTabChange:previous:isRestoring:updateZeroQuery:)"
+private let spyDidSelectedTabChange =
+    "tabManager(_:didSelectedTabChange:previous:isRestoring:updateZeroQuery:)"
 private let spyRestoredTabs = "tabManagerDidRestoreTabs(_:)"
 
 open class MockTabManagerDelegate: TabManagerDelegate {
@@ -138,22 +139,6 @@ class TabManagerTests: XCTestCase {
         manager.selectTab(tab)
 
         XCTAssertEqual(manager.selectedTab, tab, "There should be selected first tab")
-    }
-
-    func testDidDeleteLastTab() {
-        let didSelect = MethodSpy(functionName: spyDidSelectedTabChange) { tabs in
-            XCTAssertNotNil(tabs[0])
-            XCTAssertNotNil(tabs[1])
-        }
-
-        // create the tab before adding the mock delegate. So we don't have to check delegate calls we dont care about
-        let tab = manager.addTab()
-        manager.selectTab(tab)
-        manager.addDelegate(delegate)
-        // it wont call didSelect because addTabAndSelect did not pass last removed tab
-        delegate.expect([didRemove, didAdd, didSelect])
-        manager.removeTabAndUpdateSelectedTab(tab)
-        delegate.verify("Not all delegate methods were called")
     }
 
     func testDidDeleteLastPrivateTab() {
@@ -391,20 +376,6 @@ class TabManagerTests: XCTestCase {
 
         manager.removeTabAndUpdateSelectedTab(manager.tabs.first!)
         delegate.verify("Not all delegate methods were called")
-    }
-
-    func testRemoveTabRemovingLastNormalTabShouldNotSwitchToPrivateTab() {
-        let tab0 = manager.addTab()
-        let tab1 = manager.addTab(isPrivate: true)
-
-        manager.selectTab(tab0)
-        // select private tab, so we are in privateMode
-        manager.selectTab(tab1, previous: tab0)
-        // if we are able to remove normal tab this means we are no longer in private mode
-        manager.removeTabAndUpdateSelectedTab(tab0)
-
-        // manager should create new tab and select it
-        XCTAssertNotEqual(manager.selectedTab, tab1)
     }
 
     func testRemoveAllShouldRemoveAllTabs() {

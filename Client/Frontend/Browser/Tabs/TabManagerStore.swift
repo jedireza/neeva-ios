@@ -11,9 +11,9 @@ private let log = Logger.storage
 
 class TabManagerStore {
     static let shared = TabManagerStore(
-            imageStore: DiskImageStore(
-                files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots",
-                quality: UIConstants.ScreenshotQuality))
+        imageStore: DiskImageStore(
+            files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots",
+            quality: UIConstants.ScreenshotQuality))
 
     fileprivate var lockedForReading = false
     public let imageStore: DiskImageStore?
@@ -89,7 +89,7 @@ class TabManagerStore {
         assert(Thread.isMainThread)
 
         guard let savedTabs = prepareSavedTabs(fromTabs: tabs, selectedTab: selectedTab),
-              let path = tabSavePath(withId: scene.session.persistentIdentifier)
+            let path = tabSavePath(withId: scene.session.persistentIdentifier)
         else {
             clearArchive(for: scene)
             return succeed()
@@ -159,7 +159,7 @@ class TabManagerStore {
         for savedTab in savedTabs {
             // Provide an empty request to prevent a new tab from loading the home screen
             var tab = tabManager.addTab(
-                flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
+                flushToDisk: true, zombie: true, isPrivate: savedTab.isPrivate)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: imageStore)
 
             if savedTab.isSelected {
@@ -168,7 +168,11 @@ class TabManagerStore {
         }
 
         if tabToSelect == nil {
-            tabToSelect = tabManager.tabs.first(where: { $0.isIncognito == false })
+            if !tabManager.normalTabs.isEmpty {
+                tabToSelect = tabManager.tabs.first(where: { $0.isIncognito == false })
+            } else {
+                SceneDelegate.getBVC(with: tabManager.scene).showTabTray()
+            }
         }
 
         return tabToSelect
@@ -215,8 +219,9 @@ class TabManagerStore {
 extension TabManagerStore {
     func testTabCountOnDisk(sceneId: String) -> Int {
         assert(AppConstants.IsRunningTest)
-        return SiteArchiver.tabsToRestore(
-            tabsStateArchivePath: tabSavePath(withId: sceneId)
-        )?.count ?? 0
+        return
+            SiteArchiver.tabsToRestore(
+                tabsStateArchivePath: tabSavePath(withId: sceneId)
+            )?.count ?? 0
     }
 }

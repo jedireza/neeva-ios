@@ -16,6 +16,11 @@ extension UITestBase {
         } else {
             tester().tapView(withAccessibilityIdentifier: "Close Tab Action")
         }
+
+        if getNumberOfTabs() == 0 {
+            tester().tapView(withAccessibilityLabel: "Add Tab")
+            openURL(openAddressBar: false)
+        }
     }
 
     func openNewTab(to url: String = "example.com ") {

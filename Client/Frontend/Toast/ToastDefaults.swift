@@ -26,11 +26,14 @@ class ToastDefaults: NSObject {
                 normalContent: ToastStateContent(
                     text: toastText, buttonText: "restore",
                     buttonAction: {
-                        // restores last closed tab
-                        _ = tabManager.restoreSavedTabs(savedTabs)
+                        let bvc = SceneDelegate.getBVC(with: tabManager.scene)
+                        _ = bvc.tabManager.restoreSavedTabs(savedTabs)
                     }))
 
-            guard let toastViewManager = SceneDelegate.getCurrentSceneDelegate(with: tabManager.scene)?.toastViewManager else {
+            guard
+                let toastViewManager = SceneDelegate.getCurrentSceneDelegate(
+                    with: tabManager.scene)?.toastViewManager
+            else {
                 return
             }
 
@@ -135,7 +138,10 @@ class ToastDefaults: NSObject {
             normalContent: normalContent, completedContent: completedContent,
             failedContent: failedContent)
 
-        guard let toastViewManager = SceneDelegate.getCurrentSceneDelegate(for: bvc.view).toastViewManager else {
+        guard
+            let toastViewManager = SceneDelegate.getCurrentSceneDelegate(for: bvc.view)
+                .toastViewManager
+        else {
             return
         }
 

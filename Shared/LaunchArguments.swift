@@ -23,4 +23,6 @@ public struct LaunchArguments {
 
     public static let EnableMockAppHost = "ENABLE_MOCK_APP_HOST"
     public static let EnableMockUserInfo = "ENABLE_MOCK_USER_INFO"
+
+    public static let DontAddTabOnLaunch = "DONT_ADD_TAB_ON_LAUNCH"
 }

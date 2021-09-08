@@ -96,7 +96,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     // A WKWebViewConfiguration used for normal tabs
-    lazy fileprivate var configuration: WKWebViewConfiguration = {
+    lazy var configuration: WKWebViewConfiguration = {
         return TabManager.makeWebViewConfig(isPrivate: false)
     }()
 
@@ -230,9 +230,11 @@ class TabManager: NSObject, ObservableObject {
         if let tab = selectedTab {
             selectedTabPublisher.send(tab)
         }
+
         if let tab = previous {
             TabEvent.post(.didLoseFocus, for: tab)
         }
+
         if let tab = selectedTab {
             TabEvent.post(.didGainFocus, for: tab)
             tab.applyTheme()
@@ -449,9 +451,7 @@ class TabManager: NSObject, ObservableObject {
         if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
             selectTab(mostRecentTab)
         } else if isIncognito {  // no empty tab tray in incognito
-            bvc.openLazyTab(openedFrom: fromTabTray ? .tabTray : .openTab(selectedTab))
-        } else if !FeatureFlag[.emptyTabTray] {
-            select(addTab(isPrivate: false))
+            bvc.openLazyTab(openedFrom: .tabTray)
         } else {
             let placeholderTab = Tab(bvc: bvc, configuration: configuration, isPrivate: isIncognito)
 
@@ -460,26 +460,29 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    func removeTabAndUpdateSelectedTab(_ tab: Tab, allowToast: Bool = false, addNewTab: Bool = true)
-    {
+    func removeTabAndUpdateSelectedTab(_ tab: Tab, allowToast: Bool = false) {
         guard let index = tabs.firstIndex(where: { $0 === tab }) else { return }
         addTabsToRecentlyClosed([tab], allowToast: allowToast)
         removeTab(tab, flushToDisk: true, notify: true)
 
-        updateTabAfterRemovalOf(tab, deletedIndex: index, addNewTab: addNewTab)
+        updateTabAfterRemovalOf(tab, deletedIndex: index)
     }
 
-    private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int, addNewTab: Bool) {
-        let addNewTab = FeatureFlag[.emptyTabTray] ? addNewTab : true
+    private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
         let closedLastNormalTab = !tab.isIncognito && normalTabs.isEmpty
         let closedLastPrivateTab = tab.isIncognito && privateTabs.isEmpty
-
         let viableTabs: [Tab] = tab.isIncognito ? privateTabs : normalTabs
+        let bvc = SceneDelegate.getBVC(with: scene)
 
-        if closedLastNormalTab && addNewTab {
-            selectTab(addTab(), previous: tab)
-        } else if closedLastPrivateTab && addNewTab {
-            selectTab(mostRecentTab(inTabs: tabs) ?? tabs.last, previous: tab)
+        if closedLastNormalTab {
+            bvc.showTabTray()
+        } else if closedLastPrivateTab {
+            if let tab = mostRecentTab(inTabs: normalTabs) {
+                select(tab)
+            } else {
+                toggleIncognitoMode()
+                bvc.showTabTray()
+            }
         } else if tab == selectedTab {
             if !selectParentTab(afterRemoving: tab) {
                 if let rightOrLeftTab = viableTabs[safe: deletedIndex]
@@ -552,8 +555,12 @@ class TabManager: NSObject, ObservableObject {
         addTabsToRecentlyClosed(tabsToBeRemoved, allowToast: showToast)
         removeTabs(tabsToBeRemoved, updatingSelectedTab: true)
 
-        if normalTabs.isEmpty && (addNormalTab || !FeatureFlag[.emptyTabTray]) {
-            selectTab(addTab())
+        if normalTabs.isEmpty {
+            if addNormalTab {
+                selectTab(addTab())
+            } else {
+                SceneDelegate.getBVC(with: scene).showTabTray()
+            }
         }
     }
 
@@ -631,6 +638,9 @@ class TabManager: NSObject, ObservableObject {
                 selectedSavedTab = tab
             }
         }
+
+        // Prevents a sticky tab tray
+        SceneDelegate.getBVC(with: scene).cardGridViewController.gridModel.animationThumbnailState = .hidden
 
         if let selectedSavedTab = selectedSavedTab, shouldSelectTab {
             self.selectTab(selectedSavedTab)
@@ -729,25 +739,15 @@ extension TabManager {
         return store.getStartupTabs(for: scene).count > 0
     }
 
-    func restoreTabs(_ forced: Bool = false) {
+    /// - Returns: Returns a bool of wether there were tabs to restore
+    func restoreTabs(_ forced: Bool = false) -> Bool {
         log.info("Restoring tabs")
-
-        defer {
-            // Always make sure there is a single normal tab.
-            if normalTabs.isEmpty {
-                log.info("Tabs are empty; adding an initial tab")
-                let tab = addTab()
-                if selectedTab == nil {
-                    selectTab(tab)
-                }
-            }
-        }
 
         guard forced || count == 0, !AppConstants.IsRunningTest,
             !DebugSettingsBundleOptions.skipSessionRestore, hasTabsToRestoreAtStartup()
         else {
             log.info("Skipping tab restore")
-            return
+            return false
         }
 
         var tabToSelect = store.restoreStartupTabs(
@@ -762,6 +762,8 @@ extension TabManager {
         for delegate in self.delegates {
             delegate.get()?.tabManagerDidRestoreTabs(self)
         }
+
+        return true
     }
 }
 

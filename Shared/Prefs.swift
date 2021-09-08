@@ -76,6 +76,9 @@ extension Defaults.Keys {
         "LoginLastWeekTimeStamp", default: [])
 
     public static let ratingsCardHidden = Defaults.Key<Bool>("RatingsCardHidden", default: false)
+
+    public static let createNewTabOnStart = Defaults.Key<Bool>(
+        "CreateNewTabOnStart", default: false)
 }
 
 extension Defaults {
