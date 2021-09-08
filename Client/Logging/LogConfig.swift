@@ -69,7 +69,8 @@ public struct LogConfig {
         case PersonalSuggestion
         case BangSuggestion
         case LensSuggestion
-        case NoSuggestion
+        case NoSuggestionQuery
+        case NoSuggestionURL
         case FindOnPageSuggestion
 
         // referral promo
@@ -180,7 +181,8 @@ public struct LogConfig {
         case .AutocompleteSuggestion: return .Suggestions
         case .PersonalSuggestion: return .Suggestions
         case .BangSuggestion: return .Suggestions
-        case .NoSuggestion: return .Suggestions
+        case .NoSuggestionURL: return .Suggestions
+        case .NoSuggestionQuery: return .Suggestions
         case .LensSuggestion: return .Suggestions
         case .FindOnPageSuggestion: return .Suggestions
 
