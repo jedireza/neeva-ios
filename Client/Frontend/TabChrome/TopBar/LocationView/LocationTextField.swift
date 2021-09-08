@@ -221,12 +221,16 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let interaction: LogConfig.Interaction =
             suggestionModel.completion == nil
-            ? .NoSuggestion : .AutocompleteSuggestion
+            ? (URIFixup.getURL(textField.text ?? "") == nil
+                ? .NoSuggestionQuery
+                : .NoSuggestionURL)
+            : .AutocompleteSuggestion
         let additionalClientAttribute =
             [
                 ClientLogCounterAttribute(
                     key: LogConfig.SuggestionAttribute.urlBarNumOfCharsTyped,
-                    value: String(textField.text?.count ?? 0))
+                    value: String(textField.text?.count ?? 0)
+                )
             ]
         ClientLogger.shared.logCounter(
             interaction,
