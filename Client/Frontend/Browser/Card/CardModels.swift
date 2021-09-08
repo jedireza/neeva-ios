@@ -209,6 +209,17 @@ class SpaceCardModel: CardModel {
         }
     }
 
+    func updateSpaceName(space: Space, newTitle: String) {
+        DispatchQueue.main.async {
+            let request = UpdateSpaceRequest(spaceID: space.id.id, name: newTitle)
+            request.$state.sink { state in
+                self.stateNeedsRefresh = true
+                space.name = newTitle
+                self.objectWillChange.send()
+            }.cancel()
+        }
+    }
+
     func recommendedSpaceSelected(details: SpaceCardDetails) {
         let space = SpaceStore.suggested.allSpaces.first(where: {
             details.id == $0.id.id

@@ -25,6 +25,7 @@ where
     @State private var editMode = EditMode.inactive
     @State private var shareMenuPresented = false
     @State private var presentShareOnDismiss = false
+    @State private var newTitle: String = ""
 
     let primitive: Details
 
@@ -54,6 +55,82 @@ where
         }
     }
 
+    @ViewBuilder var shareButton: some View {
+        if let space = space {
+            Button(
+                action: {
+                    if case .owner = space.userACL {
+                        (primitive as! SpaceCardDetails).bvc?.showAsModalOverlaySheet(
+                            style: .grouped,
+                            content: {
+                                ShareSpaceOverlaySheetContent(
+                                    space: space, presentShareOnDismiss: $presentShareOnDismiss
+                                )
+                                .environmentObject(spacesModel)
+                            }
+                        ) {
+                            guard presentShareOnDismiss else {
+                                return
+                            }
+                            shareURL(space.url)
+                            ClientLogger.shared.logCounter(
+                                .OwnerSharedSpace,
+                                attributes: getLogCounterAttributesForSpaces(
+                                    details: primitive as! SpaceCardDetails))
+                            presentShareOnDismiss = false
+                        }
+                    } else {
+                        shareURL(space.url)
+                        ClientLogger.shared.logCounter(
+                            .FollowerSharedSpace,
+                            attributes: getLogCounterAttributesForSpaces(
+                                details: primitive as! SpaceCardDetails))
+                    }
+                    ClientLogger.shared.logCounter(
+                        .SpacesDetailShareButtonClicked,
+                        attributes: EnvironmentHelper.shared.getAttributes())
+                },
+                label: {
+                    Image(
+                        systemName: "square.and.arrow.up"
+                    )
+                    .foregroundColor(Color.label)
+                    .tapTargetFrame()
+                }
+            )
+        }
+    }
+
+    @ViewBuilder var editButton: some View {
+        if gridModel.showingDetailsAsList && canEdit {
+            Button(
+                action: {
+                    switch editMode {
+                    case .inactive:
+                        newTitle = primitive.title
+                        editMode = .active
+                    case .active:
+                        editMode = .inactive
+                        if let space = space, newTitle != primitive.title {
+                            spacesModel.updateSpaceName(space: space, newTitle: newTitle)
+                        }
+                    default:
+                        Logger.browser.info("Pressed button again during transition. Ignoring...")
+                    }
+                    ClientLogger.shared.logCounter(
+                        .SpacesDetailEditButtonClicked,
+                        attributes: EnvironmentHelper.shared.getAttributes())
+                },
+                label: {
+                    Image(
+                        systemName: "square.and.pencil"
+                    )
+                    .foregroundColor(Color.label)
+                    .tapTargetFrame()
+                })
+        }
+    }
+
     var topBar: some View {
         HStack {
             Button(
@@ -67,9 +144,26 @@ where
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                 })
-            Text(primitive.title)
-                .withFont(.labelLarge)
-                .foregroundColor(Color.label)
+            if case .active = editMode {
+                VStack(spacing: 2) {
+                    TextField(
+                        "Enter a name for your Space", text: $newTitle,
+                        onCommit: {
+                            if let space = space, newTitle != primitive.title {
+                                spacesModel.updateSpaceName(space: space, newTitle: newTitle)
+                            }
+                        }
+                    )
+                    .lineLimit(1)
+                    .foregroundColor(Color.label)
+                    Color.ui.adaptive.separator
+                        .frame(height: 1)
+                }
+            } else {
+                Text(primitive.title)
+                    .withFont(.labelLarge)
+                    .foregroundColor(Color.label)
+            }
             if primitive.isSharedPublic {
                 Symbol(decorative: .link, style: .labelMedium)
                     .foregroundColor(.secondaryLabel)
@@ -79,72 +173,8 @@ where
                     .foregroundColor(.secondaryLabel)
             }
             Spacer()
-            if let space = space {
-                Button(
-                    action: {
-                        if case .owner = space.userACL {
-                            shareMenuPresented = true
-                        } else {
-                            shareURL(space.url)
-                            ClientLogger.shared.logCounter(
-                                .FollowerSharedSpace,
-                                attributes: getLogCounterAttributesForSpaces(
-                                    details: primitive as! SpaceCardDetails))
-                        }
-                        ClientLogger.shared.logCounter(
-                            .SpacesDetailShareButtonClicked,
-                            attributes: EnvironmentHelper.shared.getAttributes())
-                    },
-                    label: {
-                        Image(
-                            systemName: "square.and.arrow.up"
-                        )
-                        .foregroundColor(Color.label)
-                        .tapTargetFrame()
-                    }
-                ).presentAsPopover(
-                    isPresented: $shareMenuPresented,
-                    onDismiss: {
-                        guard presentShareOnDismiss else {
-                            return
-                        }
-                        shareURL(space.url)
-                        ClientLogger.shared.logCounter(
-                            .OwnerSharedSpace,
-                            attributes: getLogCounterAttributesForSpaces(
-                                details: primitive as! SpaceCardDetails))
-                        presentShareOnDismiss = false
-                    }
-                ) {
-                    ShareSpaceView(space: space, presentShareOnDismiss: $presentShareOnDismiss) {
-                        self.shareMenuPresented = false
-                    }
-                    .environmentObject(spacesModel)
-                }
-            }
-            if gridModel.showingDetailsAsList && canEdit {
-                Button(
-                    action: {
-                        switch editMode {
-                        case .inactive:
-                            editMode = .active
-                        case .active:
-                            editMode = .inactive
-                        default:
-                            print("Pressed button again during transition. Ignoring...")
-                        }
-                        ClientLogger.shared.logCounter(
-                            .SpacesDetailEditButtonClicked,
-                            attributes: EnvironmentHelper.shared.getAttributes())
-                    },
-                    label: {
-                        Image(
-                            systemName: "square.and.pencil"
-                        )
-                        .foregroundColor(Color.label)
-                        .tapTargetFrame()
-                    })
-            }
+            shareButton
+            editButton
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.background.edgesIgnoringSafeArea(.horizontal))
@@ -245,7 +275,8 @@ struct SingleDetailView<Details: CardDetails>: View {
     @State private var isPressed: Bool = false
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            Color.TrayBackground.frame(height: 2)
             Button {
                 onSelected()
                 ClientLogger.shared.logCounter(
@@ -275,7 +306,6 @@ struct SingleDetailView<Details: CardDetails>: View {
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
                 .padding()
                 .background(Color.DefaultBackground)
-            Color.TrayBackground.frame(height: 1)
         }.scaleEffect(isPressed ? 0.95 : 1)
 
     }

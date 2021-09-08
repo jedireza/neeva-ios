@@ -15,7 +15,7 @@ private struct SaveButtonStyle: ButtonStyle {
     }
 }
 
-struct CreateSpaceView: View {
+public struct CreateSpaceView: View {
     @State private var spaceName = ""
     let onDismiss: (String) -> Void
 
@@ -23,7 +23,7 @@ struct CreateSpaceView: View {
         self.onDismiss = onDismiss
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 20) {
             CapsuleTextField("Space name", text: $spaceName)
 

@@ -3425,6 +3425,45 @@ public enum SnapshotKind: RawRepresentable, Equatable, Hashable, CaseIterable, A
   }
 }
 
+public struct UpdateSpaceInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - id
+  ///   - name
+  ///   - description
+  public init(id: String, name: Swift.Optional<String?> = nil, description: Swift.Optional<String?> = nil) {
+    graphQLMap = ["id": id, "name": name, "description": description]
+  }
+
+  public var id: String {
+    get {
+      return graphQLMap["id"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  public var name: Swift.Optional<String?> {
+    get {
+      return graphQLMap["name"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "name")
+    }
+  }
+
+  public var description: Swift.Optional<String?> {
+    get {
+      return graphQLMap["description"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "description")
+    }
+  }
+}
+
 public struct DeleteSpaceResultByURLInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
@@ -6113,6 +6152,60 @@ public final class CreateSpaceMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "createSpace")
+      }
+    }
+  }
+}
+
+public final class UpdateSpaceMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation UpdateSpace($input: UpdateSpaceInput!) {
+      updateSpace(input: $input)
+    }
+    """
+
+  public let operationName: String = "UpdateSpace"
+
+  public let operationIdentifier: String? = "088045e16c6d36719441ffe31e587aa6062705ebde5b38e12d1e00396ac60e34"
+
+  public var input: UpdateSpaceInput
+
+  public init(input: UpdateSpaceInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("updateSpace", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(updateSpace: Bool) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "updateSpace": updateSpace])
+    }
+
+    /// API to update a space.
+    public var updateSpace: Bool {
+      get {
+        return resultMap["updateSpace"]! as! Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "updateSpace")
       }
     }
   }

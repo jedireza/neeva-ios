@@ -28,7 +28,7 @@ public struct SpaceEntityData {
 public class Space: Hashable, Identifiable {
     public typealias Acl = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     public let id: SpaceID
-    public let name: String
+    public var name: String
     public let lastModifiedTs: String
     public let thumbnail: String?
     public let resultCount: Int

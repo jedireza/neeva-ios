@@ -6,20 +6,22 @@ import SwiftUI
 class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
     let openLazyTab: () -> Void
+    let createNewSpace: () -> Void
     @Published var isIncognito: Bool
 
-    init(tabManager: TabManager, openLazyTab: @escaping () -> Void) {
+    init(
+        tabManager: TabManager,
+        openLazyTab: @escaping () -> Void,
+        createNewSpace: @escaping () -> Void
+    ) {
         self.tabManager = tabManager
         self.openLazyTab = openLazyTab
+        self.createNewSpace = createNewSpace
 
         isIncognito = tabManager.isIncognito
         tabManager.$isIncognito
             .map { $0 }
             .assign(to: &$isIncognito)
-    }
-
-    func onNewTab() {
-        openLazyTab()
     }
 
     func onToggleIncognito() {
@@ -38,18 +40,26 @@ struct SwitcherToolbarView: View {
         let divider = Color.ui.adaptive.separator.frame(height: 1).ignoresSafeArea()
         VStack(spacing: 0) {
             if !top { divider }
-            
+
             HStack(spacing: 0) {
-                IncognitoButton(
-                    isIncognito: toolbarModel.isIncognito,
-                    action: {
-                        toolbarModel.onToggleIncognito()
-                    }
-                )
-                Spacer()
+                if case .tabs = gridModel.switcherState {
+                    IncognitoButton(
+                        isIncognito: toolbarModel.isIncognito,
+                        action: {
+                            toolbarModel.onToggleIncognito()
+                        }
+                    )
+                    Spacer()
+                }
                 SecondaryMenuButton(action: {
-                    toolbarModel.onNewTab()
-                    gridModel.hideWithNoAnimation()
+                    switch gridModel.switcherState {
+                    case .tabs:
+                        toolbarModel.openLazyTab()
+                        gridModel.hideWithNoAnimation()
+                    case .spaces:
+                        gridModel.hideWithNoAnimation()
+                        toolbarModel.createNewSpace()
+                    }
                 }) {
                     $0.setImage(Symbol.uiImage(.plusApp, size: 20), for: .normal)
                     $0.tintColor = UIColor.label
@@ -60,7 +70,12 @@ struct SwitcherToolbarView: View {
                 .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
                 Spacer()
                 SecondaryMenuButton(action: {
-                    gridModel.hideWithAnimation()
+                    switch gridModel.switcherState {
+                    case .tabs:
+                        gridModel.hideWithAnimation()
+                    case .spaces:
+                        gridModel.hideWithNoAnimation()
+                    }
                 }) {
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
                     let title = NSAttributedString(

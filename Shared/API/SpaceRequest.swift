@@ -32,6 +32,20 @@ public class SpaceRequest<Mutation: GraphQLMutation>: ObservableObject {
     }
 }
 
+public class CreateSpaceRequest: SpaceRequest<CreateSpaceMutation> {
+    public init(name: String) {
+        super.init(mutation: CreateSpaceMutation(name: name))
+    }
+}
+
+public class UpdateSpaceRequest: SpaceRequest<UpdateSpaceMutation> {
+    public init(spaceID: String, name: String, description: String? = nil) {
+        super.init(
+            mutation: UpdateSpaceMutation(
+                input: UpdateSpaceInput(id: spaceID, name: name, description: description)))
+    }
+}
+
 public class AddPublicACLRequest: SpaceRequest<AddSpacePublicAclMutation> {
     public init(spaceID: String) {
         super.init(mutation: AddSpacePublicAclMutation(input: AddSpacePublicACLInput(id: spaceID)))

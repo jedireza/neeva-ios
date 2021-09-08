@@ -56,7 +56,13 @@ class BrowserViewController: UIViewController {
         let controller = CardGridViewController(
             bvc: self,
             toolbarModel: SwitcherToolbarModel(
-                tabManager: tabManager, openLazyTab: { openLazyTab(openedFrom: .tabTray) }))
+                tabManager: tabManager,
+                openLazyTab: { openLazyTab(openedFrom: .tabTray) },
+                createNewSpace: {
+                    self.showAsModalOverlaySheet(style: .grouped) {
+                        CreateSpaceOverlaySheetContent()
+                    }
+                }))
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -940,7 +946,9 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func openLazyTab(openedFrom: ZeroQueryOpenedLocation = .openTab(nil), switchToIncognitoMode: Bool? = nil) {
+    func openLazyTab(
+        openedFrom: ZeroQueryOpenedLocation = .openTab(nil), switchToIncognitoMode: Bool? = nil
+    ) {
         if let switchToIncognitoMode = switchToIncognitoMode {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }

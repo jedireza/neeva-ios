@@ -8,11 +8,25 @@ enum ShareSpaceViewUX {
     static let Padding: CGFloat = 8
 }
 
+struct ShareSpaceOverlaySheetContent: View {
+    let space: Space
+    @Binding var presentShareOnDismiss: Bool
+    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+
+    var body: some View {
+        ShareSpaceView(
+            space: space,
+            presentShareOnDismiss: $presentShareOnDismiss,
+            dismiss: hideOverlaySheet
+        )
+    }
+}
+
 struct ShareSpaceView: View {
     typealias ACL = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     let space: Space
-    let dismiss: () -> Void
     @Binding var presentShareOnDismiss: Bool
+    let dismiss: () -> Void
 
     @EnvironmentObject var spaceModel: SpaceCardModel
     @State var suggestedContacts: [ContactsProvider.Profile] = []
