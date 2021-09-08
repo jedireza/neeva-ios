@@ -426,7 +426,7 @@ class BrowserViewController: UIViewController {
         // links into the view from other apps.
         let dropInteraction = UIDropInteraction(delegate: self)
         view.addInteraction(dropInteraction)
-      
+
         setNeedsStatusBarAppearanceUpdate()
 
         for tab in tabManager.tabs {
