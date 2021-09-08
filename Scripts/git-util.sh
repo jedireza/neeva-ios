@@ -5,6 +5,11 @@ get_latest_commit() {
     git log -1 --oneline | cut -d' ' -f1
 }
 
+# Gets the name of the latest tag.
+get_latest_tag() {
+    git tag --list 'Build-*' | tail -n 1
+}
+
 git_user_name() {
     git config user.email | cut -d'@' -f1
 }
