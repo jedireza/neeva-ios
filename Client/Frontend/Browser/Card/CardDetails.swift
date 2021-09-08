@@ -217,7 +217,6 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     var id: String
     var closeButtonImage: UIImage? = nil
     var allDetails: [SpaceEntityThumbnail] = []
-    weak var bvc: BrowserViewController?
 
     var accessibilityLabel: String {
         "\(title), Space"

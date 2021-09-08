@@ -18,6 +18,7 @@ where
     Details.Thumbnail: AccessingManagerProvider
 {
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
     @Environment(\.onOpenURL) var openURL
     @Environment(\.shareURL) var shareURL
@@ -60,7 +61,7 @@ where
             Button(
                 action: {
                     if case .owner = space.userACL {
-                        (primitive as! SpaceCardDetails).bvc?.showAsModalOverlaySheet(
+                        SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
                             style: .grouped,
                             content: {
                                 ShareSpaceOverlaySheetContent(
