@@ -25,7 +25,7 @@ struct FeatureFlagSettingsView: View {
                             }
 
                             if flag == FeatureFlag.notifications.rawValue, !isOn {
-                                NotificationHelper.shared.unregisterNotifications()
+                                NotificationHelper.shared.unregisterRemoteNotifications()
                             }
                         }
                     ))

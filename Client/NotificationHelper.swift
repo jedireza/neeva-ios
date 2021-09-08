@@ -6,13 +6,37 @@ import UserNotifications
 class NotificationHelper {
     static let shared = NotificationHelper()
 
-    func isAuthorized(completion: @escaping (Bool) -> Void) {
+    func didAlreadyRequestPermission(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            completion(settings.authorizationStatus == .authorized)
+            completion(settings.authorizationStatus != .notDetermined)
         }
     }
 
-    func requestNotificationPermission() {
+    func isAuthorized(completion: @escaping (Bool) -> Void) {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            completion(settings.authorizationStatus != .denied && settings.authorizationStatus != .notDetermined)
+        }
+    }
+
+    func requestPermissionIfNeeded(openSettingsIfNeeded: Bool = false) {
+        isAuthorized { [self] authorized in
+            guard !authorized else { return }
+
+            didAlreadyRequestPermission { requested in
+                if !requested {
+                    requestPermissionFromSystem()
+                } else if openSettingsIfNeeded {
+                    /// If we can't show the iOS system notification because the user denied our first request,
+                    /// this will take them to system settings to enable notifications there.
+                    SystemsHelper.openSystemSettingsNeevaPage()
+                }
+            }
+        }
+    }
+
+    /// Shows the iOS system popup to request notification permission.
+    /// Will only show **once**, and if the user has not denied permission already.
+    func requestPermissionFromSystem() {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [.alert, .sound, .badge, .provisional]) { granted, _ in
                 print("Notification permission granted: \(granted)")
@@ -33,7 +57,7 @@ class NotificationHelper {
         }
     }
 
-    func unregisterNotifications() {
+    func unregisterRemoteNotifications() {
         UIApplication.shared.unregisterForRemoteNotifications()
     }
 }

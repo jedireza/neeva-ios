@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
 
         if FeatureFlag[.notifications] {
-            NotificationHelper.shared.requestNotificationPermission()
+            NotificationHelper.shared.requestPermissionIfNeeded()
         }
 
         return startApplication(application, withLaunchOptions: launchOptions)
