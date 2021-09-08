@@ -154,6 +154,10 @@ extension Date {
     public func isWithinLast7Days() -> Bool {
         return (Date().lastWeek...Date()).contains(self)
     }
+
+    public func daysFromToday() -> Double {
+        return self.distance(to: Date()) / 3600 / 24
+    }
 }
 
 let MaxTimestampAsDouble = Double(UInt64.max)

@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
 
         if FeatureFlag[.notifications] {
-            NotificationHelper.shared.requestPermissionIfNeeded()
+            NotificationPermissionHelper.shared.requestPermissionIfNeeded()
         }
 
         return startApplication(application, withLaunchOptions: launchOptions)
@@ -201,8 +201,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
     // MARK: - Notifications
     func application(
-      _ application: UIApplication,
-      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
@@ -210,8 +210,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 
     func application(
-      _ application: UIApplication,
-      didFailToRegisterForRemoteNotificationsWithError error: Error
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
     ) {
         print("Failed to register notifications: \(error)")
     }

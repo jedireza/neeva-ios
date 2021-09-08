@@ -3,8 +3,8 @@
 import Foundation
 import UserNotifications
 
-class NotificationHelper {
-    static let shared = NotificationHelper()
+class NotificationPermissionHelper {
+    static let shared = NotificationPermissionHelper()
 
     func didAlreadyRequestPermission(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
