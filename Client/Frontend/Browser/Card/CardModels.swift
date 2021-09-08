@@ -159,6 +159,15 @@ class SpaceCardModel: CardModel {
 
     func onDataUpdated() {}
 
+    func add(spaceID: String, url: String, title: String) {
+        DispatchQueue.main.async {
+            let request = AddToSpaceWithURLRequest(spaceID: spaceID, url: url, title: title)
+            request.$state.sink { state in
+                self.stateNeedsRefresh = true
+            }.cancel()
+        }
+    }
+
     func delete(space spaceID: String, entities: [String]) {
         DispatchQueue.main.async {
             let request = DeleteSpaceItemsRequest(spaceID: spaceID, ids: entities)

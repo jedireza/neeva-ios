@@ -86,3 +86,11 @@ public class ReorderSpaceRequest: SpaceRequest<SetSpaceDetailPageSortOrderMutati
                     customSortOrder: CustomSortOrderInput(resultIDs: ids))))
     }
 }
+
+public class AddToSpaceWithURLRequest: SpaceRequest<AddToSpaceMutation> {
+    public init(spaceID: String, url: String, title: String) {
+        super.init(
+            mutation: AddToSpaceMutation(
+                input: AddSpaceResultByURLInput(spaceId: spaceID, url: url, title: title)))
+    }
+}

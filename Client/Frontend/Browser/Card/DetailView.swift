@@ -27,6 +27,7 @@ where
     @State private var shareMenuPresented = false
     @State private var presentShareOnDismiss = false
     @State private var newTitle: String = ""
+    @State private var showingAddSpaceEntityMenu = false
 
     let primitive: Details
 
@@ -176,6 +177,23 @@ where
             Spacer()
             shareButton
             editButton
+            if let space = space {
+                Button(
+                    action: {
+                        showingAddSpaceEntityMenu = true
+                    },
+                    label: {
+                        Image(systemName: "plus")
+                            .foregroundColor(Color.label)
+                            .tapTargetFrame()
+                    }
+                )
+                .presentAsPopover(isPresented: $showingAddSpaceEntityMenu) {
+                    AddToNativeSpaceView(space: space) {
+                        showingAddSpaceEntityMenu = false
+                    }.environmentObject(spacesModel)
+                }
+            }
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.background.edgesIgnoringSafeArea(.horizontal))
