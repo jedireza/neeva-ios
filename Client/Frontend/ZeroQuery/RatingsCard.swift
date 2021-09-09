@@ -36,7 +36,14 @@ struct RatingsCard: View {
         switch state {
         case .rateExperience:
             state = .sendFeedback
-        default: onClose()
+            ClientLogger.shared.logCounter(.RatingsNeedsWork)
+            ClientLogger.shared.logCounter(.RatingsPromptFeedback)
+        case .sendFeedback:
+            onClose()
+            ClientLogger.shared.logCounter(.RatingsDismissedFeedback)
+        case .appStoreReview:
+            onClose()
+            ClientLogger.shared.logCounter(.RatingsDismissedAppReview)
         }
     }
 
@@ -44,12 +51,16 @@ struct RatingsCard: View {
         switch state {
         case .rateExperience:
             state = .appStoreReview
+            ClientLogger.shared.logCounter(.RatingsLoveit)
+            ClientLogger.shared.logCounter(.RatingsPromptAppStore)
         case .sendFeedback:
             onFeedback()
             onClose()
+            ClientLogger.shared.logCounter(.RatingsSendFeedback)
         case .appStoreReview:
             SKStoreReviewController.requestReview(in: scene as! UIWindowScene)
             onClose()
+            ClientLogger.shared.logCounter(.RatingsSendAppReview)
         }
     }
 
