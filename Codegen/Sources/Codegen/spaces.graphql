@@ -61,10 +61,6 @@ mutation AddToSpace($input: AddSpaceResultByURLInput!) {
   entityId: addSpaceResultByURL(input: $input)
 }
 
-mutation AddSpaceResult($input: AddSpaceResultInput!){
-    addSpaceResult(input: $input)
-}
-
 mutation CreateSpace($name: String!) {
   createSpace(input: { name: $name })
 }
