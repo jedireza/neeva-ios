@@ -19,7 +19,7 @@ private struct CardAdjustments<Details: CardDetails>: ViewModifier {
             )
             .animation(nil)
             .overlay(
-                Color.tertiarySystemFill
+                Color.clear
                     .cornerRadius(CardUX.CornerRadius)
                     .overlay(
                         RoundedRectangle(cornerRadius: CardUX.CornerRadius)
@@ -27,20 +27,11 @@ private struct CardAdjustments<Details: CardDetails>: ViewModifier {
                             .stroke(
                                 Color.black.opacity(colorScheme == .dark ? 0.7 : 0.1), lineWidth: 3
                             )
-                            .offset(x: 3, y: 3)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: CardUX.CornerRadius)
-                                    .inset(by: -3)
-                                    .stroke(
-                                        Color.white.opacity(colorScheme == .dark ? 0.05 : 0.3),
-                                        lineWidth: 3
-                                    )
-                                    .offset(x: -3, y: -3)
-                            )
                             .blur(radius: 3)
                             .clipShape(RoundedRectangle(cornerRadius: CardUX.CornerRadius))
                     )
                     .opacity(isDragging ? 1 : 0)
+                    .clipShape(RoundedRectangle(cornerRadius: CardUX.CornerRadius))
             )
     }
 }
@@ -107,7 +98,6 @@ struct TabCardsView: View {
                         dragging = details
                         return NSItemProvider(object: DraggableTab(id: details.id))
                     }
-
                     .onDrop(
                         of: [DraggableTab.uti, .url, .text],
                         delegate: DropDelegate(
