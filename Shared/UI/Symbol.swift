@@ -60,6 +60,8 @@ public enum Nicon: Character {
     case house = "\u{10039E}"
     /// 🅯
     case ccBy = "\u{101013}"
+
+    case ellipsis = "\u{100360}"
     // TODO: Add more here
 }
 

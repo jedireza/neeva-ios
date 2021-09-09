@@ -38,6 +38,18 @@ public class CreateSpaceRequest: SpaceRequest<CreateSpaceMutation> {
     }
 }
 
+public class DeleteSpaceRequest: SpaceRequest<DeleteSpaceMutation> {
+    public init(spaceID: String) {
+        super.init(mutation: DeleteSpaceMutation(input: DeleteSpaceInput(id: spaceID)))
+    }
+}
+
+public class UnfollowSpaceRequest: SpaceRequest<LeaveSpaceMutation> {
+    public init(spaceID: String) {
+        super.init(mutation: LeaveSpaceMutation(input: LeaveSpaceInput(id: spaceID)))
+    }
+}
+
 public class UpdateSpaceRequest: SpaceRequest<UpdateSpaceMutation> {
     public init(spaceID: String, name: String, description: String? = nil) {
         super.init(

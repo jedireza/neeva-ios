@@ -125,6 +125,7 @@ class SpaceCardModel: CardModel {
     var onViewUpdate: () -> Void = {}
     private var anyCancellable: AnyCancellable? = nil
     private var recommendationSubscription: AnyCancellable? = nil
+    private var editingSubscription: AnyCancellable? = nil
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var stateNeedsRefresh = false
 
@@ -226,6 +227,39 @@ class SpaceCardModel: CardModel {
                 space.name = newTitle
                 self.objectWillChange.send()
             }.cancel()
+        }
+    }
+
+    func removeSpace(spaceID: String, isOwner: Bool) {
+
+        if isOwner {
+            let request = DeleteSpaceRequest(spaceID: spaceID)
+            editingSubscription = request.$state.sink { state in
+                switch state {
+                case .success:
+                    self.editingSubscription?.cancel()
+                    self.stateNeedsRefresh = true
+                    self.detailedSpace = nil
+                case .failure:
+                    self.editingSubscription?.cancel()
+                case .initial:
+                    Logger.browser.info("Waiting for success or failure")
+                }
+            }
+        } else {
+            let request = UnfollowSpaceRequest(spaceID: spaceID)
+            editingSubscription = request.$state.sink { state in
+                switch state {
+                case .success:
+                    self.editingSubscription?.cancel()
+                    self.stateNeedsRefresh = true
+                    self.detailedSpace = nil
+                case .failure:
+                    self.editingSubscription?.cancel()
+                case .initial:
+                    Logger.browser.info("Waiting for success or failure")
+                }
+            }
         }
     }
 

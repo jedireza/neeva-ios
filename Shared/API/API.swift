@@ -3758,6 +3758,25 @@ public struct RichContentSectionItemInput: GraphQLMapConvertible {
   }
 }
 
+public struct LeaveSpaceInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - id
+  public init(id: String) {
+    graphQLMap = ["id": id]
+  }
+
+  public var id: String {
+    get {
+      return graphQLMap["id"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+}
+
 public struct RichContentSectionImageItemInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
@@ -3773,6 +3792,25 @@ public struct RichContentSectionImageItemInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "url")
+    }
+  }
+}
+
+public struct DeleteSpaceInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - id
+  public init(id: String) {
+    graphQLMap = ["id": id]
+  }
+
+  public var id: String {
+    get {
+      return graphQLMap["id"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
     }
   }
 }
@@ -6573,6 +6611,114 @@ public final class UpdateSpaceMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "updateSpace")
+      }
+    }
+  }
+}
+
+public final class LeaveSpaceMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation LeaveSpace($input: LeaveSpaceInput!) {
+      leaveSpace(input: $input)
+    }
+    """
+
+  public let operationName: String = "LeaveSpace"
+
+  public let operationIdentifier: String? = "5250d08a797df48e0e39df49c31151f4970cf355257c46180fcedfe76d530ee9"
+
+  public var input: LeaveSpaceInput
+
+  public init(input: LeaveSpaceInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("leaveSpace", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(leaveSpace: Bool) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "leaveSpace": leaveSpace])
+    }
+
+    /// Leave a space, meaning a non-owner is removing themselves from the ACL
+    public var leaveSpace: Bool {
+      get {
+        return resultMap["leaveSpace"]! as! Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "leaveSpace")
+      }
+    }
+  }
+}
+
+public final class DeleteSpaceMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation DeleteSpace($input: DeleteSpaceInput!) {
+      deleteSpace(input: $input)
+    }
+    """
+
+  public let operationName: String = "DeleteSpace"
+
+  public let operationIdentifier: String? = "d1565076557135baf018125228903ebddedbb2aaac0fb6548027073aca93cf3b"
+
+  public var input: DeleteSpaceInput
+
+  public init(input: DeleteSpaceInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("deleteSpace", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(deleteSpace: Bool) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "deleteSpace": deleteSpace])
+    }
+
+    /// API to delete a space.
+    public var deleteSpace: Bool {
+      get {
+        return resultMap["deleteSpace"]! as! Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "deleteSpace")
       }
     }
   }

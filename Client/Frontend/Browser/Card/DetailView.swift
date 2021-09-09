@@ -27,7 +27,6 @@ where
     @State private var shareMenuPresented = false
     @State private var presentShareOnDismiss = false
     @State private var newTitle: String = ""
-    @State private var showingAddSpaceEntityMenu = false
 
     let primitive: Details
 
@@ -54,6 +53,31 @@ where
             } else {
                 spaceGrid
             }
+        }
+    }
+
+    @ViewBuilder var addButton: some View {
+        if let space = space, canEdit {
+            Button(
+                action: {
+                    SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
+                        style: .grouped
+                    ) {
+                        AddToNativeSpaceOverlaySheetContent(space: space)
+                            .environmentObject(spacesModel)
+                    }
+                },
+                label: {
+                    Label(
+                        title: {
+                            Text("Add Item")
+                                .withFont(.labelMedium)
+                                .foregroundColor(Color.label)
+                        },
+                        icon: { Image(systemName: "plus.square") }
+                    )
+                }
+            )
         }
     }
 
@@ -124,13 +148,56 @@ where
                         attributes: EnvironmentHelper.shared.getAttributes())
                 },
                 label: {
-                    Image(
-                        systemName: "square.and.pencil"
+                    Label(
+                        title: {
+                            Text(editMode == .inactive ? "Edit Space" : "Done Editing")
+                                .withFont(.labelMedium)
+                                .foregroundColor(Color.label)
+                        },
+                        icon: { Image(systemName: "square.and.pencil") }
                     )
-                    .foregroundColor(Color.label)
-                    .tapTargetFrame()
                 })
         }
+    }
+
+    @ViewBuilder var deleteButton: some View {
+        Button {
+            if let space = space {
+                guard
+                    let index = spacesModel.allDetails.firstIndex(where: {
+                        primitive.id == $0.id
+                    })
+                else {
+                    return
+                }
+                spacesModel.allDetails.remove(at: index)
+                spacesModel.removeSpace(spaceID: space.id.id, isOwner: space.ACL == .owner)
+            }
+        } label: {
+            Label(
+                title: {
+                    Text(space?.ACL == .owner ? "Delete Space" : "Unfollow")
+                        .withFont(.labelMedium)
+                        .lineLimit(1)
+                        .foregroundColor(Color.secondaryLabel)
+                },
+                icon: { Image(systemName: "trash") }
+            )
+        }
+    }
+
+    @ViewBuilder var menuButton: some View {
+        Menu(
+            content: {
+                deleteButton
+                editButton
+                addButton
+            },
+            label: {
+                Symbol(decorative: .ellipsis, style: .labelMedium)
+                    .foregroundColor(Color.label)
+                    .tapTargetFrame()
+            })
     }
 
     var topBar: some View {
@@ -176,24 +243,8 @@ where
             }
             Spacer()
             shareButton
-            editButton
-            if let space = space {
-                Button(
-                    action: {
-                        showingAddSpaceEntityMenu = true
-                    },
-                    label: {
-                        Image(systemName: "plus")
-                            .foregroundColor(Color.label)
-                            .tapTargetFrame()
-                    }
-                )
-                .presentAsPopover(isPresented: $showingAddSpaceEntityMenu) {
-                    AddToNativeSpaceView(space: space) {
-                        showingAddSpaceEntityMenu = false
-                    }.environmentObject(spacesModel)
-                }
-            }
+
+            menuButton
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.background.edgesIgnoringSafeArea(.horizontal))

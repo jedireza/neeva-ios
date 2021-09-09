@@ -73,6 +73,14 @@ mutation UpdateSpace($input: UpdateSpaceInput!) {
   updateSpace(input: $input)
 }
 
+mutation LeaveSpace($input: LeaveSpaceInput!) {
+  leaveSpace(input: $input)
+}
+
+mutation DeleteSpace($input: DeleteSpaceInput!) {
+  deleteSpace(input: $input)
+}
+
 mutation DeleteSpaceResultByURL($input: DeleteSpaceResultByURLInput!) {
   deleteSpaceResultByURL(input: $input)
 }

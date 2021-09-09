@@ -4,6 +4,15 @@ import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 
+struct AddToNativeSpaceOverlaySheetContent: View {
+    let space: Space
+    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+
+    var body: some View {
+        AddToNativeSpaceView(space: space, dismiss: hideOverlaySheet)
+    }
+}
+
 struct AddToNativeSpaceView: View {
     let space: Space
     let dismiss: () -> Void
