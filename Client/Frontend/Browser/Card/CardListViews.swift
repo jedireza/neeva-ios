@@ -107,6 +107,7 @@ struct TabCardsView: View {
                         dragging = details
                         return NSItemProvider(object: DraggableTab(id: details.id))
                     }
+
                     .onDrop(
                         of: [DraggableTab.uti, .url, .text],
                         delegate: DropDelegate(
@@ -120,11 +121,7 @@ struct TabCardsView: View {
         @Binding var items: [TabCardDetails]
         @Binding var dragging: TabCardDetails?
 
-        func validateDrop(info: DropInfo) -> Bool {
-            return info.hasItemsConforming(to: [DraggableTab.uti]) || item.validateDrop(info: info)
-        }
-
-        func dropUpdated(info: DropInfo) -> DropProposal? {
+        func dropEntered(info: DropInfo) {
             if let dragging = dragging, item.id != dragging.id {
                 let from = items.firstIndex { $0.id == dragging.id }
                 let to = items.firstIndex { $0.id == item.id }
@@ -134,7 +131,9 @@ struct TabCardsView: View {
                        toOffset: to > from ? to + 1 : to)
                 }
             }
+        }
 
+        func dropUpdated(info: DropInfo) -> DropProposal? {
             return DropProposal(operation: .move)
         }
 
