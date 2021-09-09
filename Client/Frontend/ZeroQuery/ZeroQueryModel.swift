@@ -123,6 +123,10 @@ class ZeroQueryModel: ObservableObject {
             && (!Defaults[.ratingsCardHidden]
                 || (UserFlagStore.shared.state == .ready
                     && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)))
+        
+        if showRatingsCard {
+            ClientLogger.shared.logCounter(.RatingsRateExperience)
+        }
     }
 
     func hideURLFromTopSites(_ site: Site) {

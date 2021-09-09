@@ -89,6 +89,17 @@ public struct LogConfig {
         case OwnerSharedSpace
         case FollowerSharedSpace
         case RecommendedSpaceVisited
+        
+        // ratings card
+        case RatingsRateExperience
+        case RatingsPromptFeedback
+        case RatingsPromptAppStore
+        case RatingsLoveit
+        case RatingsNeedsWork
+        case RatingsDismissedFeedback
+        case RatingsDismissedAppReview
+        case RatingsSendFeedback
+        case RatingsSendAppReview
     }
 
     // Specify a comma separated string with these values to
@@ -104,6 +115,7 @@ public struct LogConfig {
         case FirstRun = "FirstRun"
         case PromoCard = "PromoCard"
         case Spaces = "Spaces"
+        case RatingsCard = "RatingsCard"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
@@ -199,6 +211,16 @@ public struct LogConfig {
         case .RecommendedSpaceVisited: return .Spaces
         case .OwnerSharedSpace: return .Spaces
         case .FollowerSharedSpace: return .Spaces
+            
+        case .RatingsRateExperience: return .RatingsCard
+        case .RatingsPromptFeedback: return .RatingsCard
+        case .RatingsPromptAppStore: return .RatingsCard
+        case .RatingsLoveit: return .RatingsCard
+        case .RatingsNeedsWork: return .RatingsCard
+        case .RatingsDismissedFeedback: return .RatingsCard
+        case .RatingsDismissedAppReview: return .RatingsCard
+        case .RatingsSendFeedback: return .RatingsCard
+        case .RatingsSendAppReview: return .RatingsCard
         }
     }
 
