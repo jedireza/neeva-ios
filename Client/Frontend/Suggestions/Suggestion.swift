@@ -167,7 +167,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
             rowQuerySuggestions.map(Suggestion.query)
                 + bangSuggestions.compactMap(Suggestion.init(bang:))
                 + lensSuggestions.compactMap(Suggestion.init(lens:)),
-            urlSuggestions.map(Suggestion.url),
+            NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
             navSuggestions.map(Suggestion.url),
             data.suggest?.activeLensBangInfo
         )
