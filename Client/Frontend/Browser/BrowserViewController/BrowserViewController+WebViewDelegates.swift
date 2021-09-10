@@ -506,6 +506,10 @@ extension BrowserViewController: WKNavigationDelegate {
 
     // Use for links, that do not show a confirmation before opening.
     fileprivate func showOverlay(forExternalUrl url: URL) {
+        guard UIApplication.shared.canOpenURL(url) else {
+            return
+        }
+
         tabManager.selectedTab?.stop()
 
         showAsModalOverlaySheet(style: .grouped) {
