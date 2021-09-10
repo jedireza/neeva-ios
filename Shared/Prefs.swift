@@ -79,6 +79,10 @@ extension Defaults.Keys {
 
     public static let createNewTabOnStart = Defaults.Key<Bool>(
         "CreateNewTabOnStart", default: false)
+
+    // spaces
+    public static let seenSpacesIntro = Defaults.Key<Bool>(
+        "spacesIntroSeen", default: false)
 }
 
 extension Defaults {

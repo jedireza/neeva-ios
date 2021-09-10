@@ -155,6 +155,7 @@
 		4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
 		4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */; };
 		4AB678B626E874E40078F61B /* CreateSpaceOverlaySheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B526E874E40078F61B /* CreateSpaceOverlaySheetContent.swift */; };
+		4AB678B826EAA8160078F61B /* SpacesIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B726EAA8160078F61B /* SpacesIntro.swift */; };
 		4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
 		4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */; };
@@ -1107,6 +1108,7 @@
 		4AA14F1F264C7954003B815A /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
 		4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserPrimitive.swift; sourceTree = "<group>"; };
 		4AB678B526E874E40078F61B /* CreateSpaceOverlaySheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSpaceOverlaySheetContent.swift; sourceTree = "<group>"; };
+		4AB678B726EAA8160078F61B /* SpacesIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesIntro.swift; sourceTree = "<group>"; };
 		4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModel.swift; sourceTree = "<group>"; };
 		4ADC541F265DA2CD00A210CE /* PromoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoCard.swift; sourceTree = "<group>"; };
 		4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitcherToolbarView.swift; sourceTree = "<group>"; };
@@ -2165,6 +2167,7 @@
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
 				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
+				4AB678B726EAA8160078F61B /* SpacesIntro.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
 				8A422E9A26E19783005CC814 /* AddToNativeSpaceView.swift */,
 			);
@@ -4818,6 +4821,7 @@
 				D34DC8531A16C40C00D49B7B /* Profile.swift in Sources */,
 				C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */,
 				E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */,
+				4AB678B826EAA8160078F61B /* SpacesIntro.swift in Sources */,
 				C82CDD47233E8996002E2743 /* Tab+ChangeUserAgent.swift in Sources */,
 				C9F8EB342680DA8A0042CFE7 /* TabToolbarView.swift in Sources */,
 				C9E5F2BE26779F1400025A7F /* LocationViewModel.swift in Sources */,

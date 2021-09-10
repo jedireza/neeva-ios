@@ -111,7 +111,8 @@ class ToastDefaults: NSObject {
         }
 
         let buttonAction = {
-            bvc.switchToTabForURLOrOpen(NeevaConstants.appSpacesURL / request.targetSpaceID!)
+            SpaceStore.shared.refresh()
+            bvc.cardGridViewController.gridModel.showSpaces()
         }
 
         let failedAction = {

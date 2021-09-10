@@ -48,7 +48,9 @@ where
     var body: some View {
         VStack(spacing: 0) {
             topBar
-            if gridModel.showingDetailsAsList {
+            if primitive.allDetails.isEmpty {
+                EmptySpaceView()
+            } else if gridModel.showingDetailsAsList {
                 spaceList
             } else {
                 spaceGrid

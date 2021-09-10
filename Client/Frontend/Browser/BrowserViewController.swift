@@ -61,6 +61,7 @@ class BrowserViewController: UIViewController {
                 createNewSpace: {
                     self.showAsModalOverlaySheet(style: .grouped) {
                         CreateSpaceOverlaySheetContent()
+                            .environmentObject(self.cardGridViewController.gridModel)
                     }
                 }))
         addChild(controller)

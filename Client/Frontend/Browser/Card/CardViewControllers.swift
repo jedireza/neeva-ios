@@ -30,6 +30,12 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environment(\.onOpenURL, tabCardModel.manager.createOrSwitchToTab(for:))
                 .environment(\.shareURL, shareURL)
         }
+
+        func openSpace(spaceID: String) {
+            let detail = spaceCardModel.allDetails.first(where: { $0.id == spaceID })
+            gridModel.showSpaces()
+            detail?.isShowingDetails = true
+        }
     }
 
     var leadingConstraint: Constraint? = nil

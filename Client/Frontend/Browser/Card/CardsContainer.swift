@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Defaults
 import Shared
 import SwiftUI
 
@@ -20,6 +21,8 @@ extension EnvironmentValues {
     }
 }
 struct CardsContainer: View {
+    @Default(.seenSpacesIntro) var seenSpacesIntro: Bool
+
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
@@ -75,10 +78,24 @@ struct CardsContainer: View {
                             value: proxy.frame(in: .named("scroll")).minY)
                     })
             }
-        }.coordinateSpace(name: "scroll")
-            .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
-                gridModel.scrollOffset = scrollOffset
+        }.onChange(of: gridModel.switcherState) { value in
+            guard case .spaces = value, !seenSpacesIntro else {
+                return
             }
+            SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
+                style: .grouped,
+                content: {
+                    SpacesIntroOverlaySheetContent()
+                },
+                onDismiss: {
+                    gridModel.showSpaces()
+                })
+            seenSpacesIntro = true
+        }
+        .coordinateSpace(name: "scroll")
+        .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
+            gridModel.scrollOffset = scrollOffset
+        }
     }
 }
 

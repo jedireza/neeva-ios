@@ -7,6 +7,7 @@ import SwiftUI
 struct InternalSettingsView: View {
     @Default(.searchInputPromptDismissed) var searchInputPromptDismissed
     @Default(.introSeen) var introSeen
+    @Default(.seenSpacesIntro) var seenSpacesIntro
     @Default(.lastVersionNumber) var lastVersionNumber
     @Default(.didShowDefaultBrowserOnboarding) var didShowDefaultBrowserOnboarding
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
@@ -27,6 +28,7 @@ struct InternalSettingsView: View {
             Section(header: Text("Implicit")) {
                 Toggle("searchInputPromptDismissed", isOn: $searchInputPromptDismissed)
                 Toggle("introSeen", isOn: $introSeen)
+                Toggle("spacesIntroSeen", isOn: $seenSpacesIntro)
                 OptionalStringField("lastVersionNumber", text: $lastVersionNumber)
                 Toggle("didShowDefaultBrowserOnboarding", isOn: $didShowDefaultBrowserOnboarding)
                 Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)
