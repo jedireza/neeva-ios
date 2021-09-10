@@ -27,13 +27,16 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environmentObject(spaceCardModel)
                 .environmentObject(tabGroupCardModel)
                 .environmentObject(gridModel)
-                .environment(\.onOpenURL, tabCardModel.manager.createOrSwitchToTab(for:))
+                .environment(\.onOpenURL, { tabCardModel.manager.createOrSwitchToTab(for: $0) })
+                .environment(\.onOpenURLForSpace, tabCardModel.manager.createOrSwitchToTabForSpace)
                 .environment(\.shareURL, shareURL)
         }
 
         func openSpace(spaceID: String) {
             let detail = spaceCardModel.allDetails.first(where: { $0.id == spaceID })
-            gridModel.showSpaces()
+            withAnimation(nil) {
+                gridModel.showSpaces()
+            }
             detail?.isShowingDetails = true
         }
     }

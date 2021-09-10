@@ -369,12 +369,21 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    func createOrSwitchToTab(for url: URL) {
+    @discardableResult func createOrSwitchToTab(for url: URL) -> Tab {
+        var tab: Tab
         if let existingTab = getTabFor(url) {
             select(existingTab)
+            tab = existingTab
         } else {
-            select(addTab(URLRequest(url: url), flushToDisk: true, zombie: false))
+            let newTab = addTab(URLRequest(url: url), flushToDisk: true, zombie: false)
+            select(newTab)
+            tab = newTab
         }
+        return tab
+    }
+
+    func createOrSwitchToTabForSpace(for url: URL, spaceID: String) {
+        createOrSwitchToTab(for: url).parentSpaceID = spaceID
     }
 
     func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil) {
@@ -640,7 +649,8 @@ class TabManager: NSObject, ObservableObject {
         }
 
         // Prevents a sticky tab tray
-        SceneDelegate.getBVC(with: scene).cardGridViewController.gridModel.animationThumbnailState = .hidden
+        SceneDelegate.getBVC(with: scene).cardGridViewController.gridModel.animationThumbnailState =
+            .hidden
 
         if let selectedSavedTab = selectedSavedTab, shouldSelectTab {
             self.selectTab(selectedSavedTab)

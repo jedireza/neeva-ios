@@ -32,20 +32,39 @@ struct CardsContainer: View {
     let columns: [GridItem]
 
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            ScrollViewReader { value in
-                VStack(alignment: .leading) {
-                    if !recommendedSpacesModel.allDetails.isEmpty,
-                        case .spaces = gridModel.switcherState
-                    {
-                        RecommendedSpacesView(recommendedSpacesModel: recommendedSpacesModel).id(
-                            RecommendedSpacesView.ID)
+        ZStack {
+            GeometryReader { geom in
+                ScrollView(.vertical, showsIndicators: false) {
+                    ScrollViewReader { spaceScrollValue in
+                        VStack(alignment: .leading) {
+                            if !recommendedSpacesModel.allDetails.isEmpty,
+                                case .spaces = gridModel.switcherState
+                            {
+                                RecommendedSpacesView(
+                                    recommendedSpacesModel: recommendedSpacesModel
+                                ).id(
+                                    RecommendedSpacesView.ID)
+                            }
+                            LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
+                                SpaceCardsView()
+                                    .environment(\.columns, columns)
+                            }.animation(nil)
+                        }.padding(.vertical, CardGridUX.GridSpacing)
+                            .useEffect(
+                                deps: gridModel.isHidden
+                            ) { _ in
+                                spaceScrollValue.scrollTo(
+                                    recommendedSpacesModel.allDetails.isEmpty
+                                        ? spacesModel.allDetails.first?.id ?? ""
+                                        : RecommendedSpacesView.ID
+                                )
+                            }
                     }
-                    LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                        if case .spaces = gridModel.switcherState {
-                            SpaceCardsView()
-                                .environment(\.columns, columns)
-                        } else {
+                }.offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
+                    .animation(.easeInOut)
+                ScrollView(.vertical, showsIndicators: false) {
+                    ScrollViewReader { value in
+                        LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
                             TabCardsView().environment(\.selectionCompletion) {
                                 withAnimation {
                                     value.scrollTo(tabModel.selectedTabID)
@@ -53,30 +72,30 @@ struct CardsContainer: View {
 
                                 gridModel.hideWithAnimation()
                             }
+                        }.background(
+                            GeometryReader { proxy in
+                                Color.clear.preference(
+                                    key: ScrollViewOffsetPreferenceKey.self,
+                                    value: proxy.frame(in: .named("scroll")).minY)
+                            }
+                        )
+                        .padding(.vertical, CardGridUX.GridSpacing)
+
+                        .useEffect(
+                            deps: tabModel.selectedTabID, gridModel.isHidden
+                        ) { _, _ in
+                            value.scrollTo(tabModel.selectedTabID)
+                            DispatchQueue.main.async {
+                                spacesModel.manager.refresh()
+                            }
                         }
                     }
-                }
-                .padding(.vertical, CardGridUX.GridSpacing)
-                .useEffect(
-                    deps: tabModel.selectedTabID, gridModel.isHidden, gridModel.switcherState
-                ) { _, _, _ in
-                    switch gridModel.switcherState {
-                    case .tabs:
-                        value.scrollTo(tabModel.selectedTabID)
-                    case .spaces:
-                        spacesModel.manager.refresh()
-                        value.scrollTo(
-                            recommendedSpacesModel.allDetails.isEmpty
-                                ? spacesModel.allDetails.first?.id ?? "" : RecommendedSpacesView.ID
-                        )
+                }.offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
+                    .animation(.easeInOut)
+                    .coordinateSpace(name: "scroll")
+                    .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
+                        gridModel.scrollOffset = scrollOffset
                     }
-                }
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear.preference(
-                            key: ScrollViewOffsetPreferenceKey.self,
-                            value: proxy.frame(in: .named("scroll")).minY)
-                    })
             }
         }.onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro else {
@@ -91,10 +110,6 @@ struct CardsContainer: View {
                     gridModel.showSpaces()
                 })
             seenSpacesIntro = true
-        }
-        .coordinateSpace(name: "scroll")
-        .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
-            gridModel.scrollOffset = scrollOffset
         }
     }
 }

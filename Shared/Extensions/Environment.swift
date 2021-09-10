@@ -13,4 +13,13 @@ extension EnvironmentValues {
         get { self[OnOpenURLKey] ?? { openURL($0) } }
         set { self[OnOpenURLKey] = newValue }
     }
+
+    private struct OnOpenURLForSpaceKey: EnvironmentKey {
+        static var defaultValue: ((URL, String) -> Void)? = nil
+    }
+
+    public var onOpenURLForSpace: (URL, String) -> Void {
+        get { self[OnOpenURLForSpaceKey] ?? { url, _ in openURL(url) } }
+        set { self[OnOpenURLForSpaceKey] = newValue }
+    }
 }

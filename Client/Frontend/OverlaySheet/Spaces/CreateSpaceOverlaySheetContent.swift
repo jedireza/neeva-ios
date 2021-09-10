@@ -27,7 +27,7 @@ struct CreateSpaceOverlaySheetContent: View {
                 }
             }
             hideOverlaySheet()
-        }
+        }.overlaySheetIsFixedHeight(isFixedHeight: true)
     }
 }
 

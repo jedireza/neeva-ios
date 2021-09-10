@@ -11,7 +11,6 @@ enum SwitcherViews: String, CaseIterable {
 enum CardGridUX {
     static let PickerPadding: CGFloat = 20
     static let GridSpacing: CGFloat = 20
-    static let YStaticOffset: CGFloat = GridSpacing
 }
 
 struct CardGrid: View {
@@ -81,7 +80,6 @@ struct CardGrid: View {
                     x: CardGridUX.GridSpacing
                         + (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
                     y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize) * row
-                        + CardGridUX.YStaticOffset
                 ),
                 containerSize: geom.size,
                 safeAreaInsets: geom.safeAreaInsets,

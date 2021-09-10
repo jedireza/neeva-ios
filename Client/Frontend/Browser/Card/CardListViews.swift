@@ -11,6 +11,7 @@ private struct HideSelectedForTransition<Details: CardDetails>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .opacity(details.isSelected && gridModel.animationThumbnailState != .hidden ? 0 : 1)
+            .animation(nil)
     }
 }
 

@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Shared
 import SwiftUI
 import UIKit
 
@@ -139,13 +140,19 @@ class SimulatedSwipeController:
     }
 
     func updateBackVisibility(tab: Tab?) {
-        guard let _ = tab?.parent, !(tab?.canGoBack ?? true) else {
+        guard let tab = tab else {
             view.isHidden = true
             return
         }
-
-        view.isHidden = false
-        chromeModel.canGoBack = true
+        if tab.canGoBack {
+            view.isHidden = true
+        } else if let _ = tab.parent {
+            view.isHidden = false
+            chromeModel.canGoBack = true
+        } else if let _ = tab.parentSpaceID {
+            view.isHidden = false
+            chromeModel.canGoBack = true
+        }
     }
 
     func updateForwardVisibility(id: String, results: [URL]?, index: Int = -1) {
@@ -183,7 +190,12 @@ class SimulatedSwipeController:
             return false
         }
 
-        tabManager.removeTabAndUpdateSelectedTab(tab)
+        if let _ = tab.parent {
+            tabManager.removeTabAndUpdateSelectedTab(tab)
+        } else if let id = tab.parentSpaceID {
+            SceneDelegate.getBVC(with: tabManager.scene).cardGridViewController.rootView.openSpace(
+                spaceID: id)
+        }
         return true
     }
 

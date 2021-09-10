@@ -20,7 +20,7 @@ where
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
-    @Environment(\.onOpenURL) var openURL
+    @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
     @Environment(\.shareURL) var shareURL
     @Environment(\.columns) var gridColumns
     @State private var editMode = EditMode.inactive
@@ -258,7 +258,7 @@ where
                 if let entity = details.manager.get(for: details.id) {
                     if let url = entity.primitiveUrl {
                         SingleDetailView(details: details) {
-                            openURL(url)
+                            onOpenURLForSpace(url, primitive.id)
                             gridModel.hideWithNoAnimation()
                             spacesModel.detailedSpace = nil
                         }
@@ -302,8 +302,8 @@ where
                 ForEach(primitive.allDetails, id: \.id) { details in
                     VStack(spacing: 0) {
                         FittedCard(details: details).environment(\.selectionCompletion) {
-                            openURL(
-                                (details.manager.get(for: details.id)?.primitiveUrl)!)
+                            onOpenURLForSpace(
+                                (details.manager.get(for: details.id)?.primitiveUrl)!, primitive.id)
                             gridModel.hideWithNoAnimation()
                             spacesModel.detailedSpace = nil
                         }
