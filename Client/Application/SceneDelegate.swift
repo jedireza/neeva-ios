@@ -97,8 +97,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         Self.activeSceneCount -= 1
         if Self.activeSceneCount == 0 {
+            // According to https://developer.apple.com/documentation/uikit/uiapplication/1623031-beginbackgroundtask,
+            // the `expirationHandler` may be called if we are already close to running out of time. In that case,
+            // we want to take care to still shutdown the profile. It is safe to call `_shutdown` more than once.
             let taskId = UIApplication.shared.beginBackgroundTask(expirationHandler: {
-                log.error("Shutting down the profile took too long!")
+                getAppDelegateProfile()._shutdown()
             })
             getAppDelegateProfile()._shutdown()
             UIApplication.shared.endBackgroundTask(taskId)
@@ -109,7 +112,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-              let routerpath = NavigationPath(bvc: browserViewController, url: url) else {
+            let routerpath = NavigationPath(bvc: browserViewController, url: url)
+        else {
             log.info("Failed to unwrap url for context: \(URLContexts.first?.url)")
             return
         }
@@ -194,7 +198,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     /// Gets the  Scene Delegate for a view.
     /// - Warning: If view is nil, the function will fallback to a different method, but it is **preffered** if a view **is passed**.
     static func getCurrentSceneDelegate(for view: UIView?) -> SceneDelegate {
-        if let view = view, let sceneDelegate = getSceneDelegate(for: view) { // preffered method
+        if let view = view, let sceneDelegate = getSceneDelegate(for: view) {  // preffered method
             return sceneDelegate
         } else if let sceneDelegate = getActiveSceneDelegate() {
             return sceneDelegate
@@ -223,7 +227,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     static func getAllSceneDelegates() -> [BrowserViewController] {
-        return UIApplication.shared.connectedScenes.compactMap { (($0 as? UIWindowScene)?.delegate as? SceneDelegate)?.browserViewController }
+        return UIApplication.shared.connectedScenes.compactMap {
+            (($0 as? UIWindowScene)?.delegate as? SceneDelegate)?.browserViewController
+        }
     }
 
     static func getCurrentScene(for view: UIView?) -> UIScene {
@@ -313,7 +319,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppClipHelper.saveTokenToDevice(nil)
 
         DispatchQueue.main.async { [self] in
-            let signInURL = URL(string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!
+            let signInURL = URL(
+                string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!
 
             log.info("Navigating to sign in URL: \(signInURL)")
             browserViewController.switchToTabForURLOrOpen(signInURL)
