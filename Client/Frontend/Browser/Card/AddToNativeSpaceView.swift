@@ -10,6 +10,7 @@ struct AddToNativeSpaceOverlaySheetContent: View {
 
     var body: some View {
         AddToNativeSpaceView(space: space, dismiss: hideOverlaySheet)
+            .overlaySheetIsFixedHeight(isFixedHeight: true)
     }
 }
 
