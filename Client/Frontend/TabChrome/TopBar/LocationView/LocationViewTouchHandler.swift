@@ -28,7 +28,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
     }
 
     class InteractionView: UIView, UIGestureRecognizerDelegate, UIDragInteractionDelegate {
-        var wrapper: LocationViewTouchHandler!
+        var wrapper: LocationViewTouchHandler?
 
         private var touchCount = 0
         private var oldItems: [UIMenuItem]?
@@ -71,7 +71,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         func dragInteraction(
             _ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession
         ) -> [UIDragItem] {
-            if let url = wrapper.url, !InternalURL.isValid(url: url) {
+            if let url = wrapper?.url, !InternalURL.isValid(url: url) {
                 return [UIDragItem(itemProvider: NSItemProvider(url: url))]
             }
             return []
@@ -89,17 +89,17 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         ) -> UITargetedDragPreview? {
             let host = UIHostingController(
                 rootView: LocationLabelAndIcon(
-                    url: wrapper.url, isSecure: wrapper.isSecure, forcePlaceholder: false
+                    url: wrapper?.url, isSecure: wrapper?.isSecure, forcePlaceholder: false
                 )
                 .fixedSize()
                 .padding(.horizontal)
                 .frame(height: TabLocationViewUX.height)
-                .background(wrapper.background)
+                .background(wrapper?.background)
             )
             host.view.sizeToFit()
             session.localContext = host
             let params = UIPreviewParameters()
-            params.backgroundColor = UIColor(wrapper.background)
+            params.backgroundColor = UIColor(wrapper?.background ?? .clear)
             params.visiblePath = UIBezierPath(
                 roundedRect: host.view.bounds, cornerRadius: host.view.bounds.height / 2)
             return UITargetedDragPreview(
@@ -111,7 +111,9 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             withDefault defaultPreview: UITargetedDragPreview
         ) -> UITargetedDragPreview? {
             var center = self.center
-            center.x -= (wrapper.margins.leading - wrapper.margins.trailing)
+            if let wrapper = wrapper {
+                center.x -= (wrapper.margins.leading - wrapper.margins.trailing)
+            }
             return defaultPreview.retargetedPreview(
                 with: UIDragPreviewTarget(container: self, center: center))
         }
@@ -120,7 +122,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
 
         override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
             super.touchesBegan(touches, with: event)
-            wrapper.isPressed = true
+            wrapper?.isPressed = true
             touchCount += touches.count
         }
 
@@ -128,7 +130,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             touchCount -= amount
             if touchCount < 0 { touchCount = 0 }
             if touchCount == 0 {
-                wrapper.isPressed = false
+                wrapper?.isPressed = false
             }
         }
         override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -144,7 +146,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             if UIMenuController.shared.isMenuVisible {
                 UIMenuController.shared.hideMenu()
             } else {
-                wrapper.onTap()
+                wrapper?.onTap()
             }
         }
 
@@ -157,31 +159,33 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         // MARK: Long-Press Menu Methods
 
         @objc func didLongPress() {
-            wrapper.isPressed = false
+            wrapper?.isPressed = false
             oldItems = oldItems ?? UIMenuController.shared.menuItems
             UIMenuController.shared.menuItems = [
-                UIMenuItem(title: wrapper.pasteAndGoAction.name, action: #selector(pasteAndGo(_:)))
+                UIMenuItem(
+                    title: wrapper?.pasteAndGoAction.name ?? "",
+                    action: #selector(pasteAndGo(_:)))
             ]
             becomeFirstResponder()  // without this function call, the menu will not appear.
             UIMenuController.shared.showMenu(
                 from: self,
                 rect: frame.inset(
                     by: UIEdgeInsets(
-                        top: 0, left: -wrapper.margins.leading, bottom: 0,
-                        right: -wrapper.margins.trailing)))
+                        top: 0, left: -(wrapper?.margins.leading ?? 0), bottom: 0,
+                        right: -(wrapper?.margins.trailing ?? 0))))
         }
 
         override func copy(_: Any?) {
             UIMenuController.shared.hideMenu(from: self)
-            wrapper.copyAction.handler()
+            wrapper?.copyAction.handler()
         }
         override func paste(_: Any?) {
             UIMenuController.shared.hideMenu(from: self)
-            wrapper.pasteAction.handler()
+            wrapper?.pasteAction.handler()
         }
         @objc func pasteAndGo(_: Any?) {
             UIMenuController.shared.hideMenu(from: self)
-            wrapper.pasteAndGoAction.handler()
+            wrapper?.pasteAndGoAction.handler()
         }
         override func resignFirstResponder() -> Bool {
             UIMenuController.shared.hideMenu(from: self)
