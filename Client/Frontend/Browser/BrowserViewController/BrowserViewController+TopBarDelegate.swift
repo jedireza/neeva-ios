@@ -38,6 +38,9 @@ extension BrowserViewController: TopBarDelegate {
             toggleActionTitle = Strings.AppMenuViewDesktopSiteTitleString
             iconName = .laptopcomputer
         }
+
+        Haptics.longPress()
+        
         return UIMenu(
             children: [
                 UIAction(title: toggleActionTitle, image: UIImage(systemSymbol: iconName)) { _ in

@@ -137,6 +137,8 @@ extension BrowserViewController: ToolbarDelegate {
                     .createCloseAllTabsAction(fromTabTray: false), at: 0)
         }
 
+        Haptics.longPress()
+
         return UIMenu(sections: [actions])
     }
 }

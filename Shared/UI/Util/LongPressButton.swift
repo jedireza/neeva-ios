@@ -32,6 +32,7 @@ public struct LongPressButton<Label: View>: View {
             LongPressGesture().onEnded { _ in
                 if let longPressAction = longPressAction {
                     longPressAction()
+                    Haptics.longPress()
                     didLongPress = true
                 }
             }

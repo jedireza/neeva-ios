@@ -65,6 +65,8 @@ class TabMenu {
         }
         action.accessibilityLabel = "Close All Tabs"
 
+        Haptics.longPress()
+
         return action
     }
 
@@ -99,6 +101,10 @@ class TabMenu {
             actions.append(action)
         }
 
+        if recentlyClosed.count > 0 {
+            Haptics.longPress()
+        }
+
         return UIMenu(title: "Recently Closed", children: actions)
     }
 
@@ -106,6 +112,8 @@ class TabMenu {
     func createOpenTabMenu(_ tab: SavedTab, openedTab: @escaping (Tab?, Bool) -> Void)
         -> UIContextMenuConfiguration
     {
+        Haptics.longPress()
+
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let newTabAction = UIAction(
                 title: "Open in New tab",

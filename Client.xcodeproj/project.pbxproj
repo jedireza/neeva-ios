@@ -203,6 +203,7 @@
 		66AC64B326E8324500D7BA83 /* SystemsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AC64B226E8324500D7BA83 /* SystemsHelper.swift */; };
 		66B379DB26DDAD1800087B04 /* FeedbackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665CE64726DDA7E70069EFDD /* FeedbackRequest.swift */; };
 		66B379DD26DDAD4400087B04 /* FeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */; };
+		66B54EB926EC414000744358 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B7A0EA26EAFCAB00AB751A /* Haptics.swift */; };
 		66B6567626C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */; };
 		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
@@ -1165,6 +1166,7 @@
 		66AC64B226E8324500D7BA83 /* SystemsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemsHelper.swift; sourceTree = "<group>"; };
 		66AF61B926D87E9900FB68DF /* ZeroQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryTests.swift; sourceTree = "<group>"; };
 		66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+SKStoreProductViewControllerDelegate.swift"; sourceTree = "<group>"; };
+		66B7A0EA26EAFCAB00AB751A /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		66B9570D26AF827E004C6117 /* AppClipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipHelper.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
 		66BEFDC826A7678200AA32EF /* GroupedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCell.swift; sourceTree = "<group>"; };
@@ -3014,6 +3016,7 @@
 				E65075831E37F7AB006961AC /* Functions.swift */,
 				E65075651E37F7AB006961AC /* GeneralUtils.swift */,
 				67AF4B8392ADBAA41F1B3AD0 /* HistoryPanel.strings */,
+				66B7A0EA26EAFCAB00AB751A /* Haptics.swift */,
 				99C54F4F8354A39A0F06511F /* Intro.strings */,
 				E65075841E37F7AB006961AC /* KeyboardHelper.swift */,
 				E65075861E37F7AB006961AC /* LaunchArguments.swift */,
@@ -4410,6 +4413,7 @@
 				C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */,
 				E65075A21E37F7AB006961AC /* HexExtensions.swift in Sources */,
 				288A2DB61AB8B38D0023ABC3 /* Result.swift in Sources */,
+				66B54EB926EC414000744358 /* Haptics.swift in Sources */,
 				E65075AD1E37F7AB006961AC /* UIColorExtensions.swift in Sources */,
 				E650759C1E37F7AB006961AC /* DeferredUtils.swift in Sources */,
 				C9C18E4D26559711004710CD /* ModalPresentationController.swift in Sources */,

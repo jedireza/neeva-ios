@@ -1954,8 +1954,6 @@ extension BrowserViewController {
     }
 
     func showBackForwardList() {
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
         if let backForwardList = self.tabManager.selectedTab?.webView?.backForwardList {
             let backForwardViewController = BackForwardListViewController(
                 profile: self.profile, backForwardList: backForwardList)
