@@ -31,8 +31,7 @@ class EmptyTabTrayTests: BaseTestCase {
         openURLInNewTab()
         goToTabTray()
 
-        waitForExistence(app.buttons["Example Domain, Tab"])
-        app.buttons["Example Domain, Tab"].swipeLeft()
+        app.buttons["Close Example Domain"].tap()
 
         waitForExistence(app.images["EmptyTabTray"])
     }

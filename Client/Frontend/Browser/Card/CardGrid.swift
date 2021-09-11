@@ -88,25 +88,28 @@ struct CardGrid: View {
         }
     }
 
-    @ViewBuilder var cardContainer: some View {
-        if tabModel.isCardGridEmpty {
+    @ViewBuilder var cardContainerBackground: some View {
+        if tabModel.isCardGridEmpty, case .tabs = gridModel.switcherState {
             EmptyCardGrid()
-                .accessibility(identifier: "Empty Card Grid")
         } else {
-            VStack(spacing: 0) {
-                CardsContainer(
-                    columns: Array(
-                        repeating:
-                            GridItem(
-                                .fixed(cardSize),
-                                spacing: CardGridUX.GridSpacing),
-                        count: columnCount)
-                )
-                .environment(\.cardSize, cardSize)
-                Spacer(minLength: 0)
-            }
-            .background(Color(UIColor.TrayBackground).ignoresSafeArea())
+            Color(UIColor.TrayBackground).ignoresSafeArea()
         }
+    }
+
+    @ViewBuilder var cardContainer: some View {
+        VStack(spacing: 0) {
+            CardsContainer(
+                columns: Array(
+                    repeating:
+                        GridItem(
+                            .fixed(cardSize),
+                            spacing: CardGridUX.GridSpacing),
+                    count: columnCount)
+            )
+            .environment(\.cardSize, cardSize)
+            Spacer(minLength: 0)
+        }
+        .background(cardContainerBackground)
     }
 
     @ViewBuilder var topBar: some View {
