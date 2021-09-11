@@ -78,6 +78,7 @@ class IntroViewController: UIViewController,
             case FirstRunButtonActions.skipToBrowser:
                 ClientLogger.shared.logCounter(
                     .FirstRunSkipToBrowser, attributes: [ClientLogCounterAttribute]())
+                self.didFinishClosure?(self)
                 self.visitHomePage?()
             }
         }
