@@ -72,11 +72,12 @@ public class DeletePublicACLRequest: SpaceRequest<DeleteSpacePublicAclMutation> 
 }
 
 public class AddSoloACLsRequest: SpaceRequest<AddSpaceSoloAcLsMutation> {
-    public init(spaceID: String, emails: [String], acl: SpaceACLLevel) {
+    public init(spaceID: String, emails: [String], acl: SpaceACLLevel, note: String) {
         super.init(
             mutation: AddSpaceSoloAcLsMutation(
                 input: AddSpaceSoloACLsInput(
-                    id: spaceID, shareWith: emails.map { SpaceEmailACL(email: $0, acl: acl) })))
+                    id: spaceID, shareWith: emails.map { SpaceEmailACL(email: $0, acl: acl) },
+                    note: note)))
     }
 }
 

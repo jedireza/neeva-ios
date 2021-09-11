@@ -206,10 +206,10 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    func addSoloACLs(space: Space, emails: [String], acl: SpaceACLLevel) {
+    func addSoloACLs(space: Space, emails: [String], acl: SpaceACLLevel, note: String) {
         DispatchQueue.main.async {
             let request = AddSoloACLsRequest(
-                spaceID: space.id.id, emails: emails, acl: acl)
+                spaceID: space.id.id, emails: emails, acl: acl, note: note)
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
                 space.isShared = true

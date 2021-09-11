@@ -63,7 +63,8 @@ class BrowserViewController: UIViewController {
                         CreateSpaceOverlaySheetContent()
                             .environmentObject(self.cardGridViewController.gridModel)
                     }
-                }))
+                },
+                onNeevaMenuAction: self.perform(neevaMenuAction:)))
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)

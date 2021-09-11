@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 
@@ -89,7 +90,7 @@ where
                 action: {
                     if case .owner = space.userACL {
                         SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
-                            style: .grouped,
+                            style: OverlaySheetStyle(showTitle: false),
                             content: {
                                 ShareSpaceOverlaySheetContent(
                                     space: space, presentShareOnDismiss: $presentShareOnDismiss
@@ -188,12 +189,33 @@ where
         }
     }
 
+    @ViewBuilder var webUIButton: some View {
+        Button {
+            if let space = space {
+                gridModel.hideWithNoAnimation()
+                spacesModel.detailedSpace = nil
+                onOpenURLForSpace(space.url, space.id.id)
+            }
+        } label: {
+            Label(
+                title: {
+                    Text("Open as Website")
+                        .withFont(.labelMedium)
+                        .lineLimit(1)
+                        .foregroundColor(Color.secondaryLabel)
+                },
+                icon: { Image(systemName: "doc.richtext") }
+            )
+        }
+    }
+
     @ViewBuilder var menuButton: some View {
         Menu(
             content: {
                 deleteButton
                 editButton
                 addButton
+                webUIButton
             },
             label: {
                 Symbol(decorative: .ellipsis, style: .labelMedium)
@@ -245,7 +267,6 @@ where
             }
             Spacer()
             shareButton
-
             menuButton
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
@@ -338,12 +359,28 @@ where
     }
 }
 
-struct SingleDetailView<Details: CardDetails>: View {
+struct SingleDetailView<Details: CardDetails>: View where Details: AccessingManagerProvider {
     let details: Details
     let onSelected: () -> Void
+
     var description: String {
         details.id
     }
+
+    var hostAndPath: String? {
+        details.manager.get(for: details.id)?.primitiveUrl?.normalizedHostAndPath
+    }
+
+    var isImage: Bool {
+        guard let hostAndPath = hostAndPath else {
+            return false
+        }
+
+        return hostAndPath.hasSuffix(".jpeg")
+            || hostAndPath.hasSuffix(".jpg")
+            || hostAndPath.hasSuffix(".png")
+    }
+
     @State private var isPressed: Bool = false
 
     var body: some View {
@@ -355,23 +392,40 @@ struct SingleDetailView<Details: CardDetails>: View {
                     .SpacesDetailEntityClicked,
                     attributes: EnvironmentHelper.shared.getAttributes())
             } label: {
-                HStack(spacing: DetailsViewUX.ItemPadding) {
-                    details.thumbnail.frame(
-                        width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
-                    )
-                    .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
-                    VStack(spacing: DetailsViewUX.Padding) {
-                        Text(details.title)
-                            .withFont(.bodyMedium)
-                            .lineLimit(2)
-                            .foregroundColor(Color.label)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        if let snippet = details.description {
-                            Text(snippet)
-                                .withFont(.bodySmall)
-                                .lineLimit(2)
-                                .foregroundColor(Color.secondaryLabel)
+                if isImage, let url = details.manager.get(for: details.id)?.primitiveUrl {
+                    VStack(spacing: 0) {
+                        WebImage(url: url).resizable()
+                            .transition(.fade(duration: 0.5))
+                            .background(Color.white)
+                            .scaledToFit().frame(maxHeight: 120)
+                            .padding(16)
+                        if !details.title.isEmpty {
+                            Text(details.title)
+                                .withFont(.bodyMedium)
+                                .lineLimit(1)
+                                .foregroundColor(Color.label)
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                } else {
+                    HStack(spacing: DetailsViewUX.ItemPadding) {
+                        details.thumbnail.frame(
+                            width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
+                        )
+                        .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                        VStack(spacing: DetailsViewUX.Padding) {
+                            Text(details.title)
+                                .withFont(.bodyMedium)
+                                .lineLimit(2)
+                                .foregroundColor(Color.label)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if let snippet = details.description {
+                                Text(snippet)
+                                    .withFont(.bodySmall)
+                                    .lineLimit(2)
+                                    .foregroundColor(Color.secondaryLabel)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
                     }
                 }

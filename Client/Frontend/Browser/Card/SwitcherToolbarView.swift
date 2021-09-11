@@ -7,16 +7,19 @@ class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
     let openLazyTab: () -> Void
     let createNewSpace: () -> Void
+    let onNeevaMenuAction: (NeevaMenuAction) -> Void
     @Published var isIncognito: Bool
 
     init(
         tabManager: TabManager,
         openLazyTab: @escaping () -> Void,
-        createNewSpace: @escaping () -> Void
+        createNewSpace: @escaping () -> Void,
+        onNeevaMenuAction: @escaping (NeevaMenuAction) -> Void
     ) {
         self.tabManager = tabManager
         self.openLazyTab = openLazyTab
         self.createNewSpace = createNewSpace
+        self.onNeevaMenuAction = onNeevaMenuAction
 
         isIncognito = tabManager.isIncognito
         tabManager.$isIncognito
@@ -35,6 +38,8 @@ struct SwitcherToolbarView: View {
     var isEmpty: Bool
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
+    @State var presentingMenu: Bool = false
+    @State private var action: NeevaMenuAction? = nil
 
     var body: some View {
         let divider = Color.ui.adaptive.separator.frame(height: 1).ignoresSafeArea()
@@ -42,6 +47,37 @@ struct SwitcherToolbarView: View {
             if !top { divider }
 
             HStack(spacing: 0) {
+                if FeatureFlag[.nativeSpaces], top {
+                    TabToolbarButtons.NeevaMenu(iconWidth: 24) {
+                        presentingMenu = true
+                    }
+                    .tapTargetFrame()
+                    .presentAsPopover(
+                        isPresented: $presentingMenu,
+                        backgroundColor: .systemGroupedBackground,
+                        arrowDirections: .up,
+                        dismissOnTransition: true,
+                        onDismiss: {
+                            if let action = action {
+                                toolbarModel.onNeevaMenuAction(action)
+                                self.action = nil
+                            }
+                        }
+                    ) {
+                        VerticalScrollViewIfNeeded {
+                            NeevaMenuView(menuAction: {
+                                action = $0
+                                presentingMenu = false
+                            })
+                            .padding(.bottom, 16)
+                            .environment(\.isIncognito, toolbarModel.isIncognito)
+                        }
+                        .frame(minWidth: 340, minHeight: 323)
+                        .padding(.top, 13)  // height of the arrow
+                    }
+                    .tapTargetFrame()
+                    GridPicker()
+                }
                 if case .tabs = gridModel.switcherState {
                     IncognitoButton(
                         isIncognito: toolbarModel.isIncognito,
