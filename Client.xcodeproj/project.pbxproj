@@ -5583,7 +5583,7 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neeva.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				COMMON_DEFS = USE_PRIVATE_WEB_VIEW_ZOOM_API;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 89;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -5614,7 +5614,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7.1;
+				MARKETING_VERSION = 1.7.2;
 				MOZ_INTERNAL_URL_SCHEME = neeva;
 				NEEVA_BUNDLE_DISPLAY_NAME = Neeva;
 				NEEVA_ROOT_BUNDLE_INDENTIFIER = co.neeva.app.ios.browser;
@@ -5696,7 +5696,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 89;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = "Shared/Supporting Files/Info.plist";
@@ -5705,7 +5705,7 @@
 					NSLocalizedString,
 					CFCopyLocalizedString,
 				);
-				MARKETING_VERSION = 1.7.1;
+				MARKETING_VERSION = 1.7.2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
@@ -5848,7 +5848,7 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaDev.entitlements;
 				COMMON_DEFS = USE_PRIVATE_WEB_VIEW_ZOOM_API;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 89;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -5881,7 +5881,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7.1;
+				MARKETING_VERSION = 1.7.2;
 				MOZ_INTERNAL_URL_SCHEME = neeva;
 				NEEVA_BUNDLE_DISPLAY_NAME = "Neeva ($(USER))";
 				NEEVA_ROOT_BUNDLE_INDENTIFIER = "co.neeva.app.ios.browser-dev";
@@ -5955,7 +5955,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 89;
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "Shared/Supporting Files/Info.plist";
 				LOCALIZED_STRING_MACRO_NAMES = (
@@ -5963,7 +5963,7 @@
 					NSLocalizedString,
 					CFCopyLocalizedString,
 				);
-				MARKETING_VERSION = 1.7.1;
+				MARKETING_VERSION = 1.7.2;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
 			};
 			name = Debug;
