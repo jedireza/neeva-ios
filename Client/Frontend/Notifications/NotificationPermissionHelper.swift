@@ -14,7 +14,9 @@ class NotificationPermissionHelper {
 
     func isAuthorized(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            completion(settings.authorizationStatus != .denied && settings.authorizationStatus != .notDetermined)
+            completion(
+                settings.authorizationStatus != .denied
+                    && settings.authorizationStatus != .notDetermined)
         }
     }
 
@@ -38,7 +40,9 @@ class NotificationPermissionHelper {
     /// Will only show **once**, and if the user has not denied permission already.
     func requestPermissionFromSystem() {
         UNUserNotificationCenter.current()
-            .requestAuthorization(options: [.alert, .sound, .badge, .provisional]) { granted, _ in
+            .requestAuthorization(options: [
+                .alert, .sound, .badge, .providesAppNotificationSettings,
+            ]) { granted, _ in
                 print("Notification permission granted: \(granted)")
 
                 guard granted else { return }

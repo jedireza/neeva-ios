@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
 import Foundation
-import Combine
 import Shared
+import SwiftUI
 
 let logger = Logger.browser
 
@@ -82,7 +82,9 @@ class NotificationManager: ObservableObject {
 
     /// Deletes all read notifications that are 7+ days old.
     func purgeOldNotifications() {
-        notifications = notifications.filter { $0.isUnread || $0.dateRead?.daysFromToday() ?? 0 <= 7 }
+        notifications = notifications.filter {
+            $0.isUnread || $0.dateRead?.daysFromToday() ?? 0 <= 7
+        }
     }
 
     // MARK: - Init

@@ -12,7 +12,6 @@ import SDWebImage
 import Shared
 import Storage
 import SwiftKeychainWrapper
-import UserNotifications
 import XCGLogger
 
 private let log = Logger.browser
@@ -191,29 +190,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     ) -> UISceneConfiguration {
         return UISceneConfiguration(
             name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(
-        _ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>
-    ) {
-
-    }
-
-    // MARK: - Notifications
-    func application(
-        _ application: UIApplication,
-        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-    ) {
-        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-        let token = tokenParts.joined()
-        print("Notification device token: \(token)")
-    }
-
-    func application(
-        _ application: UIApplication,
-        didFailToRegisterForRemoteNotificationsWithError error: Error
-    ) {
-        print("Failed to register notifications: \(error)")
     }
 
     // MARK: - Setup

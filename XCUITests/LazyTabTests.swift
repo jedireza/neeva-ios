@@ -106,13 +106,15 @@ class LazyTabTests: BaseTestCase {
         goToTabTray()
 
         // confirms incognito tab was created
+        waitForExistence(app.buttons["Example Domain, Tab"])
         XCTAssertEqual(
             getTabs().firstMatch.label, "Example Domain, Tab",
             "Expected label of remaining tab is not correct")
 
-        toggleIncognito()
+        toggleIncognito(closeTabTray: false)
 
         // confirms that non-incognito tab is shown
+        waitForExistence(app.buttons["The Book of Mozilla, Tab"])
         XCTAssertEqual(
             getTabs().firstMatch.label, "The Book of Mozilla, Tab",
             "Expected label of remaining tab is not correct")

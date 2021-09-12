@@ -80,6 +80,9 @@ extension Defaults.Keys {
     public static let createNewTabOnStart = Defaults.Key<Bool>(
         "CreateNewTabOnStart", default: false)
 
+    public static let notificationToken = Defaults.Key<String?>(
+        "notificationToken", default: nil)
+  
     // spaces
     public static let seenSpacesIntro = Defaults.Key<Bool>(
         "spacesIntroSeen", default: false)

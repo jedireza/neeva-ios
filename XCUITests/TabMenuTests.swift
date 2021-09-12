@@ -85,9 +85,7 @@ class TabMenuTests: BaseTestCase {
 
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
 
+        waitForExistence(app.buttons["Example Domain, Tab"])
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
-        XCTAssertEqual(
-            getTabs().firstMatch.label, "Example Domain, Tab",
-            "Expected label of remaining tab is not correct")
     }
 }

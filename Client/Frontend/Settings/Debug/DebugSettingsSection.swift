@@ -42,6 +42,22 @@ struct DebugSettingsSection: View {
                             SceneDelegate.getCurrentSceneDelegate(for: nil).stopGeigerCounter()
                         }
                     }
+
+                if let token = Defaults[.notificationToken] {
+                    HStack {
+                        Text("Notification Token")
+                        Text(token)
+                            .withFont(.bodySmall)
+                            .contextMenu(
+                                ContextMenu(menuItems: {
+                                    Button(
+                                        "Copy",
+                                        action: {
+                                            UIPasteboard.general.string = token
+                                        })
+                                }))
+                    }
+                }
             }
             DebugDBSettingsSection()
             DecorativeSection {
