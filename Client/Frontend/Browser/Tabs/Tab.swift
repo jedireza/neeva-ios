@@ -104,6 +104,7 @@ class Tab: NSObject, ObservableObject {
 
     /// Cheatsheet info for current url
     @Published private(set) var cheatsheetData: CheatsheetQueryController.CheatsheetInfo?
+    @Published private(set) var searchRichResults: [SearchController.RichResult]?
 
     func setURL(_ newValue: URL?) {
         if let internalUrl = InternalURL(newValue), internalUrl.isAuthorized {
@@ -290,6 +291,23 @@ class Tab: NSObject, ObservableObject {
             switch result {
             case .success(let cheatsheetInfo):
                 self.cheatsheetData = cheatsheetInfo[0]
+
+                // when cheatsheet data fetched successfully
+                // fetch other rich result
+                if let queries = cheatsheetInfo[0].memorizedQuery {
+                    if queries.count > 0 {
+                        let query = queries[0]
+                        SearchController.getRichResult(query: query) { searchResult in
+                            switch searchResult {
+                            case .success(let richResult):
+                                self.searchRichResults = richResult
+                            case .failure(let error):
+                                print("Error: \(error)")
+                            }
+                        }
+
+                    }
+                }
             case .failure(let error):
                 print("Error: \(error)")
             }

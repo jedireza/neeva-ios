@@ -6,7 +6,7 @@ import Apollo
 import Foundation
 
 /// Input type for client logs.
-///
+/// 
 /// Client logs are generic, and cover every type of log that the client
 /// may want to pass, including counters, pingbacks, trace information, errors,
 /// etc. Log messages from the client are batched, and each batch contains
@@ -17,7 +17,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
   /// - Parameters:
   ///   - base: Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   ///   - web: 0.2.105
@@ -31,7 +31,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
 
   /// Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   /// - web: 0.2.105
@@ -639,7 +639,7 @@ public enum ClientLogTrackingLogType: RawRepresentable, Equatable, Hashable, Cas
 }
 
 /// Input type for logInteraction mutation.
-///
+/// 
 /// Though this is not officially deprecated (and still works), new interactions
 /// should be added to the interactionV3Event instead.
 public struct InteractionEventInput: GraphQLMapConvertible {
@@ -1454,10 +1454,10 @@ public enum ResultActionType: RawRepresentable, Equatable, Hashable, CaseIterabl
 
 /// This enum needs to be keep in sync with
 /// fedsearch/request/interaction_logger_request.go
-///
+/// 
 /// and need to add to fedsearch/mixer/packer.go
 /// to start collecting the data.
-///
+/// 
 /// Keep this enum in sync with InteractionType in file
 /// neeva/logs/avro_schemas/interaction/interaction_log_v2_entry.avsc
 public enum InteractionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
@@ -2126,11 +2126,11 @@ public struct ResultGroupAttributes: GraphQLMapConvertible {
 }
 
 /// Input type for v3 ClientLog.interactionV3Event mutation.
-///
+/// 
 /// This is the preferred mechanism for logging an interaction that happens in a
 /// search results page (SRP) context. The concepts and design behind how
 /// interactions are recorded in the design doc:
-///
+/// 
 /// https://paper.dropbox.com/doc/Logging-V3-Page-structure--A7Q0Gpx7oVh1vflhuaIBsHQfAg-4RsxGgmgnFiaM5Rg72YjO
 public struct InteractionV3EventInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
@@ -2184,12 +2184,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
   /// the category for LoggingContext.
   ///   - element: What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   ///   - elementAction: Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public init(actionType: Swift.Optional<InteractionV3Type?> = nil, category: Swift.Optional<InteractionV3Category?> = nil, element: Swift.Optional<String?> = nil, elementAction: Swift.Optional<String?> = nil) {
@@ -2219,7 +2219,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   public var element: Swift.Optional<String?> {
@@ -2233,7 +2233,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public var elementAction: Swift.Optional<String?> {
@@ -2247,12 +2247,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 }
 
 /// The collection of action types for the v3 interactions table.
-///
+/// 
 /// Be VERY CAREFUL about extending the action types here. In general, we want
 /// to have a very limited number of action types. If you need more information
 /// about the context of an action, consider using Element, ElementAction, or
 /// the Attributes table.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/interaction_type.go.
 public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2328,7 +2328,7 @@ public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterab
 /// InteractionV3Category specifies the type of the item in the log tree hierarchy.
 /// The log tree can have have N number of entries, but these are the ones
 /// that have IDs associated.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/category.go
 public enum InteractionV3Category: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2396,12 +2396,12 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   /// This is a event of graphqql request fied to render the measured view
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - rttMs: RTT of the recent connection
   ///   - userActionTimeMs: Use action time in ms since start of the document
   /// This is valid only when inAppTransition is true
-  ///   - queryRequestTimeMs: Query start time, since start of the document
+  ///   - queryRequestTimeMs: Query start time, since start of the document 
   ///   - queryResponseTimeMs: Query response received, since start of the document
   ///   - resultRenderTimeMs: Result is rendered on the browser, since start of the document
   ///   - criticalPathResourcePerfEntries: Detailed critical path resources of critical path resources as JSON
@@ -2435,7 +2435,7 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   }
 
   /// Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2694,7 +2694,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - events: The events in the trace. A trace is an ordered collection of perf events
   /// that are all related in some way. A single action (such as loading the app)
@@ -2761,7 +2761,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
 
   /// Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2805,11 +2805,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   /// not the absolute timestamp, which can be computed by adding the trace
   /// timestamp to the elapsedMs.
   ///   - elapsedMs: DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public init(type: Swift.Optional<String?> = nil, elapsedTotalMs: Swift.Optional<Double?> = nil, elapsedMs: Swift.Optional<Double?> = nil) {
     graphQLMap = ["type": type, "elapsedTotalMs": elapsedTotalMs, "elapsedMs": elapsedMs]
@@ -2838,11 +2838,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   }
 
   /// DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public var elapsedMs: Swift.Optional<Double?> {
     get {
@@ -5107,6 +5107,1814 @@ public final class UpdateUserFlagMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "updateFlag")
+      }
+    }
+  }
+}
+
+public final class SearchQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query Search($query: String!) {
+      search(q: $query) {
+        __typename
+        resultGroup {
+          __typename
+          result {
+            __typename
+            title
+            appIcon {
+              __typename
+              labels
+            }
+            actionURL
+            snippet
+            typeSpecific {
+              __typename
+              ... on ProductClusters {
+                productClusters {
+                  __typename
+                  filterLabels {
+                    __typename
+                    min
+                    max
+                    label
+                  }
+                  products {
+                    __typename
+                    productName
+                    thumbnailURL
+                    buyingGuideReviews {
+                      __typename
+                      source
+                      reviewURL
+                      price
+                      header {
+                        __typename
+                        title
+                        summary
+                      }
+                      proCon {
+                        __typename
+                        pros
+                        cons
+                      }
+                    }
+                    sellers {
+                      __typename
+                      url
+                      price
+                      displayName
+                      providerCode
+                    }
+                    priceLow
+                    priceHigh
+                    priceLabel
+                    rating
+                    maxRating
+                    ratingProvider
+                    retailerReviews {
+                      __typename
+                      allReviewsURL
+                      provider {
+                        __typename
+                        displayName
+                        providerCode
+                      }
+                      reviews {
+                        __typename
+                        author
+                        title
+                        body
+                        highlights {
+                          __typename
+                          begin
+                          end
+                        }
+                        rating {
+                          __typename
+                          maxStars
+                          productStars
+                        }
+                      }
+                      criticalReviews {
+                        __typename
+                        author
+                        title
+                        body
+                        highlights {
+                          __typename
+                          begin
+                          end
+                        }
+                        rating {
+                          __typename
+                          maxStars
+                          productStars
+                        }
+                      }
+                      ratingSummary {
+                        __typename
+                        rating {
+                          __typename
+                          maxStars
+                          productStars
+                        }
+                        numReviews
+                        price
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "Search"
+
+  public let operationIdentifier: String? = "f7edd88c5fee0daf732776a6dfbc24ce6707b637c72ddeab4f999b0febcb2626"
+
+  public var query: String
+
+  public init(query: String) {
+    self.query = query
+  }
+
+  public var variables: GraphQLMap? {
+    return ["query": query]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("search", arguments: ["q": GraphQLVariable("query")], type: .object(Search.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(search: Search? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "search": search.flatMap { (value: Search) -> ResultMap in value.resultMap }])
+    }
+
+    /// The main search query. Note that latitude and longitude are deprecated parameters as of 2020/03/05 but kept for iOS app compatibility.
+    public var search: Search? {
+      get {
+        return (resultMap["search"] as? ResultMap).flatMap { Search(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "search")
+      }
+    }
+
+    public struct Search: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Search"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("resultGroup", type: .list(.object(ResultGroup.selections))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(resultGroup: [ResultGroup?]? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Search", "resultGroup": resultGroup.flatMap { (value: [ResultGroup?]) -> [ResultMap?] in value.map { (value: ResultGroup?) -> ResultMap? in value.flatMap { (value: ResultGroup) -> ResultMap in value.resultMap } } }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// Results are grouped into 0 or more result groups according to criteria
+      /// decided by the backend.
+      public var resultGroup: [ResultGroup?]? {
+        get {
+          return (resultMap["resultGroup"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [ResultGroup?] in value.map { (value: ResultMap?) -> ResultGroup? in value.flatMap { (value: ResultMap) -> ResultGroup in ResultGroup(unsafeResultMap: value) } } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [ResultGroup?]) -> [ResultMap?] in value.map { (value: ResultGroup?) -> ResultMap? in value.flatMap { (value: ResultGroup) -> ResultMap in value.resultMap } } }, forKey: "resultGroup")
+        }
+      }
+
+      public struct ResultGroup: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["ResultGroup"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("result", type: .list(.object(Result.selections))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(result: [Result?]? = nil) {
+          self.init(unsafeResultMap: ["__typename": "ResultGroup", "result": result.flatMap { (value: [Result?]) -> [ResultMap?] in value.map { (value: Result?) -> ResultMap? in value.flatMap { (value: Result) -> ResultMap in value.resultMap } } }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// An ordered list of all the results.
+        public var result: [Result?]? {
+          get {
+            return (resultMap["result"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Result?] in value.map { (value: ResultMap?) -> Result? in value.flatMap { (value: ResultMap) -> Result in Result(unsafeResultMap: value) } } }
+          }
+          set {
+            resultMap.updateValue(newValue.flatMap { (value: [Result?]) -> [ResultMap?] in value.map { (value: Result?) -> ResultMap? in value.flatMap { (value: Result) -> ResultMap in value.resultMap } } }, forKey: "result")
+          }
+        }
+
+        public struct Result: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["Result"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("title", type: .scalar(String.self)),
+              GraphQLField("appIcon", type: .nonNull(.object(AppIcon.selections))),
+              GraphQLField("actionURL", type: .nonNull(.scalar(String.self))),
+              GraphQLField("snippet", type: .scalar(String.self)),
+              GraphQLField("typeSpecific", type: .object(TypeSpecific.selections)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(title: String? = nil, appIcon: AppIcon, actionUrl: String, snippet: String? = nil, typeSpecific: TypeSpecific? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Result", "title": title, "appIcon": appIcon.resultMap, "actionURL": actionUrl, "snippet": snippet, "typeSpecific": typeSpecific.flatMap { (value: TypeSpecific) -> ResultMap in value.resultMap }])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// Result title. Used if no type-specific data is used for the title.
+          public var title: String? {
+            get {
+              return resultMap["title"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "title")
+            }
+          }
+
+          /// Icon of the application to show with the result.
+          public var appIcon: AppIcon {
+            get {
+              return AppIcon(unsafeResultMap: resultMap["appIcon"]! as! ResultMap)
+            }
+            set {
+              resultMap.updateValue(newValue.resultMap, forKey: "appIcon")
+            }
+          }
+
+          /// The primary url to navigate to when the user clicks on a result.
+          public var actionUrl: String {
+            get {
+              return resultMap["actionURL"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "actionURL")
+            }
+          }
+
+          /// Snippet string. HTML format.
+          public var snippet: String? {
+            get {
+              return resultMap["snippet"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "snippet")
+            }
+          }
+
+          /// Information specific to the result type. For example, this may be the
+          /// 'to' and 'from' fields for an email, or 'mime type' for a file.
+          public var typeSpecific: TypeSpecific? {
+            get {
+              return (resultMap["typeSpecific"] as? ResultMap).flatMap { TypeSpecific(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "typeSpecific")
+            }
+          }
+
+          public struct AppIcon: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["Icon"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("labels", type: .list(.nonNull(.scalar(String.self)))),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(labels: [String]? = nil) {
+              self.init(unsafeResultMap: ["__typename": "Icon", "labels": labels])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// A list of labels to use. The labels are looked up in order, and the
+            /// client will use the first found label. If no icons are found matching the
+            /// given labels, then it's up to the client to determine whether to
+            /// use a default icon or no icon.
+            public var labels: [String]? {
+              get {
+                return resultMap["labels"] as? [String]
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "labels")
+              }
+            }
+          }
+
+          public struct TypeSpecific: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["AgendaView", "BillsView", "Computation", "Contact", "Currency", "Dictionary", "Doc", "DocView", "Email", "EmailActivity", "Entity", "Event", "EventView", "ExternalSearchProvider", "Flight", "FeedDocsView", "FeedGHView", "Image", "IpAddress", "Issue", "Journey", "KnowledgeGraphAnswer", "Message", "MovieList", "MovieShowtimes", "NeevaDefinition", "News", "NewsItem", "NewsletterView", "NoAdsBanner", "PackageTracking", "PersonView", "Place", "PlaceList", "PriceFollow", "ProductCategoryOverview", "ProductQNA", "ProductReviews", "ProductClusters", "ProductBrowse", "ProgrammingDoc", "Promo", "ReceiptView", "RecipeResult", "RecipeBlock", "Redirect", "RelatedSearches", "RelatedQnA", "RichEntity", "ShippingView", "Social", "SpaceView", "SpaceBlock", "SportsCard", "Stock", "TechDoc", "TechQNA", "TimeCalculation", "Timezone", "TimezoneDifference", "Translation", "TravelView", "Tweet", "Vanity", "Video", "Weather", "Web"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLTypeCase(
+                  variants: ["ProductClusters": AsProductClusters.selections],
+                  default: [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  ]
+                )
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public static func makeAgendaView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "AgendaView"])
+            }
+
+            public static func makeBillsView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "BillsView"])
+            }
+
+            public static func makeComputation() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Computation"])
+            }
+
+            public static func makeContact() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Contact"])
+            }
+
+            public static func makeCurrency() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Currency"])
+            }
+
+            public static func makeDictionary() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Dictionary"])
+            }
+
+            public static func makeDoc() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Doc"])
+            }
+
+            public static func makeDocView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "DocView"])
+            }
+
+            public static func makeEmail() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Email"])
+            }
+
+            public static func makeEmailActivity() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "EmailActivity"])
+            }
+
+            public static func makeEntity() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Entity"])
+            }
+
+            public static func makeEvent() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Event"])
+            }
+
+            public static func makeEventView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "EventView"])
+            }
+
+            public static func makeExternalSearchProvider() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ExternalSearchProvider"])
+            }
+
+            public static func makeFlight() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Flight"])
+            }
+
+            public static func makeFeedDocsView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "FeedDocsView"])
+            }
+
+            public static func makeFeedGHView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "FeedGHView"])
+            }
+
+            public static func makeImage() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Image"])
+            }
+
+            public static func makeIpAddress() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "IpAddress"])
+            }
+
+            public static func makeIssue() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Issue"])
+            }
+
+            public static func makeJourney() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Journey"])
+            }
+
+            public static func makeKnowledgeGraphAnswer() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "KnowledgeGraphAnswer"])
+            }
+
+            public static func makeMessage() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Message"])
+            }
+
+            public static func makeMovieList() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "MovieList"])
+            }
+
+            public static func makeMovieShowtimes() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "MovieShowtimes"])
+            }
+
+            public static func makeNeevaDefinition() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "NeevaDefinition"])
+            }
+
+            public static func makeNews() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "News"])
+            }
+
+            public static func makeNewsItem() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "NewsItem"])
+            }
+
+            public static func makeNewsletterView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "NewsletterView"])
+            }
+
+            public static func makeNoAdsBanner() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "NoAdsBanner"])
+            }
+
+            public static func makePackageTracking() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "PackageTracking"])
+            }
+
+            public static func makePersonView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "PersonView"])
+            }
+
+            public static func makePlace() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Place"])
+            }
+
+            public static func makePlaceList() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "PlaceList"])
+            }
+
+            public static func makePriceFollow() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "PriceFollow"])
+            }
+
+            public static func makeProductCategoryOverview() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ProductCategoryOverview"])
+            }
+
+            public static func makeProductQNA() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ProductQNA"])
+            }
+
+            public static func makeProductReviews() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ProductReviews"])
+            }
+
+            public static func makeProductBrowse() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ProductBrowse"])
+            }
+
+            public static func makeProgrammingDoc() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ProgrammingDoc"])
+            }
+
+            public static func makePromo() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Promo"])
+            }
+
+            public static func makeReceiptView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ReceiptView"])
+            }
+
+            public static func makeRecipeResult() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "RecipeResult"])
+            }
+
+            public static func makeRecipeBlock() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "RecipeBlock"])
+            }
+
+            public static func makeRedirect() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Redirect"])
+            }
+
+            public static func makeRelatedSearches() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "RelatedSearches"])
+            }
+
+            public static func makeRelatedQnA() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "RelatedQnA"])
+            }
+
+            public static func makeRichEntity() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "RichEntity"])
+            }
+
+            public static func makeShippingView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ShippingView"])
+            }
+
+            public static func makeSocial() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Social"])
+            }
+
+            public static func makeSpaceView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "SpaceView"])
+            }
+
+            public static func makeSpaceBlock() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "SpaceBlock"])
+            }
+
+            public static func makeSportsCard() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "SportsCard"])
+            }
+
+            public static func makeStock() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Stock"])
+            }
+
+            public static func makeTechDoc() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "TechDoc"])
+            }
+
+            public static func makeTechQNA() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "TechQNA"])
+            }
+
+            public static func makeTimeCalculation() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "TimeCalculation"])
+            }
+
+            public static func makeTimezone() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Timezone"])
+            }
+
+            public static func makeTimezoneDifference() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "TimezoneDifference"])
+            }
+
+            public static func makeTranslation() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Translation"])
+            }
+
+            public static func makeTravelView() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "TravelView"])
+            }
+
+            public static func makeTweet() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Tweet"])
+            }
+
+            public static func makeVanity() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Vanity"])
+            }
+
+            public static func makeVideo() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Video"])
+            }
+
+            public static func makeWeather() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Weather"])
+            }
+
+            public static func makeWeb() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Web"])
+            }
+
+            public static func makeProductClusters(productClusters: AsProductClusters.ProductCluster? = nil) -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "ProductClusters", "productClusters": productClusters.flatMap { (value: AsProductClusters.ProductCluster) -> ResultMap in value.resultMap }])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            public var asProductClusters: AsProductClusters? {
+              get {
+                if !AsProductClusters.possibleTypes.contains(__typename) { return nil }
+                return AsProductClusters(unsafeResultMap: resultMap)
+              }
+              set {
+                guard let newValue = newValue else { return }
+                resultMap = newValue.resultMap
+              }
+            }
+
+            public struct AsProductClusters: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["ProductClusters"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("productClusters", type: .object(ProductCluster.selections)),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(productClusters: ProductCluster? = nil) {
+                self.init(unsafeResultMap: ["__typename": "ProductClusters", "productClusters": productClusters.flatMap { (value: ProductCluster) -> ResultMap in value.resultMap }])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var productClusters: ProductCluster? {
+                get {
+                  return (resultMap["productClusters"] as? ResultMap).flatMap { ProductCluster(unsafeResultMap: $0) }
+                }
+                set {
+                  resultMap.updateValue(newValue?.resultMap, forKey: "productClusters")
+                }
+              }
+
+              public struct ProductCluster: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["ProductClustersData"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("filterLabels", type: .list(.nonNull(.object(FilterLabel.selections)))),
+                    GraphQLField("products", type: .list(.nonNull(.object(Product.selections)))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(filterLabels: [FilterLabel]? = nil, products: [Product]? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "ProductClustersData", "filterLabels": filterLabels.flatMap { (value: [FilterLabel]) -> [ResultMap] in value.map { (value: FilterLabel) -> ResultMap in value.resultMap } }, "products": products.flatMap { (value: [Product]) -> [ResultMap] in value.map { (value: Product) -> ResultMap in value.resultMap } }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var filterLabels: [FilterLabel]? {
+                  get {
+                    return (resultMap["filterLabels"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [FilterLabel] in value.map { (value: ResultMap) -> FilterLabel in FilterLabel(unsafeResultMap: value) } }
+                  }
+                  set {
+                    resultMap.updateValue(newValue.flatMap { (value: [FilterLabel]) -> [ResultMap] in value.map { (value: FilterLabel) -> ResultMap in value.resultMap } }, forKey: "filterLabels")
+                  }
+                }
+
+                public var products: [Product]? {
+                  get {
+                    return (resultMap["products"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Product] in value.map { (value: ResultMap) -> Product in Product(unsafeResultMap: value) } }
+                  }
+                  set {
+                    resultMap.updateValue(newValue.flatMap { (value: [Product]) -> [ResultMap] in value.map { (value: Product) -> ResultMap in value.resultMap } }, forKey: "products")
+                  }
+                }
+
+                public struct FilterLabel: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["PriceLabelsInfo"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("min", type: .scalar(Double.self)),
+                      GraphQLField("max", type: .scalar(Double.self)),
+                      GraphQLField("label", type: .scalar(String.self)),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(min: Double? = nil, max: Double? = nil, label: String? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "PriceLabelsInfo", "min": min, "max": max, "label": label])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var min: Double? {
+                    get {
+                      return resultMap["min"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "min")
+                    }
+                  }
+
+                  public var max: Double? {
+                    get {
+                      return resultMap["max"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "max")
+                    }
+                  }
+
+                  public var label: String? {
+                    get {
+                      return resultMap["label"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "label")
+                    }
+                  }
+                }
+
+                public struct Product: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["ProductClusteredInfo"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("productName", type: .scalar(String.self)),
+                      GraphQLField("thumbnailURL", type: .scalar(String.self)),
+                      GraphQLField("buyingGuideReviews", type: .list(.nonNull(.object(BuyingGuideReview.selections)))),
+                      GraphQLField("sellers", type: .list(.nonNull(.object(Seller.selections)))),
+                      GraphQLField("priceLow", type: .scalar(Double.self)),
+                      GraphQLField("priceHigh", type: .scalar(Double.self)),
+                      GraphQLField("priceLabel", type: .scalar(String.self)),
+                      GraphQLField("rating", type: .scalar(Double.self)),
+                      GraphQLField("maxRating", type: .scalar(Double.self)),
+                      GraphQLField("ratingProvider", type: .scalar(String.self)),
+                      GraphQLField("retailerReviews", type: .list(.nonNull(.object(RetailerReview.selections)))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(productName: String? = nil, thumbnailUrl: String? = nil, buyingGuideReviews: [BuyingGuideReview]? = nil, sellers: [Seller]? = nil, priceLow: Double? = nil, priceHigh: Double? = nil, priceLabel: String? = nil, rating: Double? = nil, maxRating: Double? = nil, ratingProvider: String? = nil, retailerReviews: [RetailerReview]? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "ProductClusteredInfo", "productName": productName, "thumbnailURL": thumbnailUrl, "buyingGuideReviews": buyingGuideReviews.flatMap { (value: [BuyingGuideReview]) -> [ResultMap] in value.map { (value: BuyingGuideReview) -> ResultMap in value.resultMap } }, "sellers": sellers.flatMap { (value: [Seller]) -> [ResultMap] in value.map { (value: Seller) -> ResultMap in value.resultMap } }, "priceLow": priceLow, "priceHigh": priceHigh, "priceLabel": priceLabel, "rating": rating, "maxRating": maxRating, "ratingProvider": ratingProvider, "retailerReviews": retailerReviews.flatMap { (value: [RetailerReview]) -> [ResultMap] in value.map { (value: RetailerReview) -> ResultMap in value.resultMap } }])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var productName: String? {
+                    get {
+                      return resultMap["productName"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "productName")
+                    }
+                  }
+
+                  public var thumbnailUrl: String? {
+                    get {
+                      return resultMap["thumbnailURL"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "thumbnailURL")
+                    }
+                  }
+
+                  public var buyingGuideReviews: [BuyingGuideReview]? {
+                    get {
+                      return (resultMap["buyingGuideReviews"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [BuyingGuideReview] in value.map { (value: ResultMap) -> BuyingGuideReview in BuyingGuideReview(unsafeResultMap: value) } }
+                    }
+                    set {
+                      resultMap.updateValue(newValue.flatMap { (value: [BuyingGuideReview]) -> [ResultMap] in value.map { (value: BuyingGuideReview) -> ResultMap in value.resultMap } }, forKey: "buyingGuideReviews")
+                    }
+                  }
+
+                  public var sellers: [Seller]? {
+                    get {
+                      return (resultMap["sellers"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Seller] in value.map { (value: ResultMap) -> Seller in Seller(unsafeResultMap: value) } }
+                    }
+                    set {
+                      resultMap.updateValue(newValue.flatMap { (value: [Seller]) -> [ResultMap] in value.map { (value: Seller) -> ResultMap in value.resultMap } }, forKey: "sellers")
+                    }
+                  }
+
+                  public var priceLow: Double? {
+                    get {
+                      return resultMap["priceLow"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "priceLow")
+                    }
+                  }
+
+                  public var priceHigh: Double? {
+                    get {
+                      return resultMap["priceHigh"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "priceHigh")
+                    }
+                  }
+
+                  public var priceLabel: String? {
+                    get {
+                      return resultMap["priceLabel"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "priceLabel")
+                    }
+                  }
+
+                  public var rating: Double? {
+                    get {
+                      return resultMap["rating"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "rating")
+                    }
+                  }
+
+                  public var maxRating: Double? {
+                    get {
+                      return resultMap["maxRating"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "maxRating")
+                    }
+                  }
+
+                  public var ratingProvider: String? {
+                    get {
+                      return resultMap["ratingProvider"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "ratingProvider")
+                    }
+                  }
+
+                  public var retailerReviews: [RetailerReview]? {
+                    get {
+                      return (resultMap["retailerReviews"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [RetailerReview] in value.map { (value: ResultMap) -> RetailerReview in RetailerReview(unsafeResultMap: value) } }
+                    }
+                    set {
+                      resultMap.updateValue(newValue.flatMap { (value: [RetailerReview]) -> [ResultMap] in value.map { (value: RetailerReview) -> ResultMap in value.resultMap } }, forKey: "retailerReviews")
+                    }
+                  }
+
+                  public struct BuyingGuideReview: GraphQLSelectionSet {
+                    public static let possibleTypes: [String] = ["WebProductExpertReview"]
+
+                    public static var selections: [GraphQLSelection] {
+                      return [
+                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                        GraphQLField("source", type: .scalar(String.self)),
+                        GraphQLField("reviewURL", type: .scalar(String.self)),
+                        GraphQLField("price", type: .scalar(Double.self)),
+                        GraphQLField("header", type: .object(Header.selections)),
+                        GraphQLField("proCon", type: .object(ProCon.selections)),
+                      ]
+                    }
+
+                    public private(set) var resultMap: ResultMap
+
+                    public init(unsafeResultMap: ResultMap) {
+                      self.resultMap = unsafeResultMap
+                    }
+
+                    public init(source: String? = nil, reviewUrl: String? = nil, price: Double? = nil, header: Header? = nil, proCon: ProCon? = nil) {
+                      self.init(unsafeResultMap: ["__typename": "WebProductExpertReview", "source": source, "reviewURL": reviewUrl, "price": price, "header": header.flatMap { (value: Header) -> ResultMap in value.resultMap }, "proCon": proCon.flatMap { (value: ProCon) -> ResultMap in value.resultMap }])
+                    }
+
+                    public var __typename: String {
+                      get {
+                        return resultMap["__typename"]! as! String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "__typename")
+                      }
+                    }
+
+                    public var source: String? {
+                      get {
+                        return resultMap["source"] as? String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "source")
+                      }
+                    }
+
+                    public var reviewUrl: String? {
+                      get {
+                        return resultMap["reviewURL"] as? String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "reviewURL")
+                      }
+                    }
+
+                    public var price: Double? {
+                      get {
+                        return resultMap["price"] as? Double
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "price")
+                      }
+                    }
+
+                    public var header: Header? {
+                      get {
+                        return (resultMap["header"] as? ResultMap).flatMap { Header(unsafeResultMap: $0) }
+                      }
+                      set {
+                        resultMap.updateValue(newValue?.resultMap, forKey: "header")
+                      }
+                    }
+
+                    public var proCon: ProCon? {
+                      get {
+                        return (resultMap["proCon"] as? ResultMap).flatMap { ProCon(unsafeResultMap: $0) }
+                      }
+                      set {
+                        resultMap.updateValue(newValue?.resultMap, forKey: "proCon")
+                      }
+                    }
+
+                    public struct Header: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["WebProductExpertReviewHeader"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("title", type: .scalar(String.self)),
+                          GraphQLField("summary", type: .scalar(String.self)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(title: String? = nil, summary: String? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "WebProductExpertReviewHeader", "title": title, "summary": summary])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var title: String? {
+                        get {
+                          return resultMap["title"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "title")
+                        }
+                      }
+
+                      public var summary: String? {
+                        get {
+                          return resultMap["summary"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "summary")
+                        }
+                      }
+                    }
+
+                    public struct ProCon: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["WebProductExpertReviewProCon"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("pros", type: .list(.nonNull(.scalar(String.self)))),
+                          GraphQLField("cons", type: .list(.nonNull(.scalar(String.self)))),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(pros: [String]? = nil, cons: [String]? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "WebProductExpertReviewProCon", "pros": pros, "cons": cons])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var pros: [String]? {
+                        get {
+                          return resultMap["pros"] as? [String]
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "pros")
+                        }
+                      }
+
+                      public var cons: [String]? {
+                        get {
+                          return resultMap["cons"] as? [String]
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "cons")
+                        }
+                      }
+                    }
+                  }
+
+                  public struct Seller: GraphQLSelectionSet {
+                    public static let possibleTypes: [String] = ["SellerInfo"]
+
+                    public static var selections: [GraphQLSelection] {
+                      return [
+                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                        GraphQLField("url", type: .scalar(String.self)),
+                        GraphQLField("price", type: .scalar(Double.self)),
+                        GraphQLField("displayName", type: .scalar(String.self)),
+                        GraphQLField("providerCode", type: .scalar(String.self)),
+                      ]
+                    }
+
+                    public private(set) var resultMap: ResultMap
+
+                    public init(unsafeResultMap: ResultMap) {
+                      self.resultMap = unsafeResultMap
+                    }
+
+                    public init(url: String? = nil, price: Double? = nil, displayName: String? = nil, providerCode: String? = nil) {
+                      self.init(unsafeResultMap: ["__typename": "SellerInfo", "url": url, "price": price, "displayName": displayName, "providerCode": providerCode])
+                    }
+
+                    public var __typename: String {
+                      get {
+                        return resultMap["__typename"]! as! String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "__typename")
+                      }
+                    }
+
+                    public var url: String? {
+                      get {
+                        return resultMap["url"] as? String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "url")
+                      }
+                    }
+
+                    public var price: Double? {
+                      get {
+                        return resultMap["price"] as? Double
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "price")
+                      }
+                    }
+
+                    public var displayName: String? {
+                      get {
+                        return resultMap["displayName"] as? String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "displayName")
+                      }
+                    }
+
+                    public var providerCode: String? {
+                      get {
+                        return resultMap["providerCode"] as? String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "providerCode")
+                      }
+                    }
+                  }
+
+                  public struct RetailerReview: GraphQLSelectionSet {
+                    public static let possibleTypes: [String] = ["WebProductReviews"]
+
+                    public static var selections: [GraphQLSelection] {
+                      return [
+                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                        GraphQLField("allReviewsURL", type: .scalar(String.self)),
+                        GraphQLField("provider", type: .object(Provider.selections)),
+                        GraphQLField("reviews", type: .list(.nonNull(.object(Review.selections)))),
+                        GraphQLField("criticalReviews", type: .list(.nonNull(.object(CriticalReview.selections)))),
+                        GraphQLField("ratingSummary", type: .object(RatingSummary.selections)),
+                      ]
+                    }
+
+                    public private(set) var resultMap: ResultMap
+
+                    public init(unsafeResultMap: ResultMap) {
+                      self.resultMap = unsafeResultMap
+                    }
+
+                    public init(allReviewsUrl: String? = nil, provider: Provider? = nil, reviews: [Review]? = nil, criticalReviews: [CriticalReview]? = nil, ratingSummary: RatingSummary? = nil) {
+                      self.init(unsafeResultMap: ["__typename": "WebProductReviews", "allReviewsURL": allReviewsUrl, "provider": provider.flatMap { (value: Provider) -> ResultMap in value.resultMap }, "reviews": reviews.flatMap { (value: [Review]) -> [ResultMap] in value.map { (value: Review) -> ResultMap in value.resultMap } }, "criticalReviews": criticalReviews.flatMap { (value: [CriticalReview]) -> [ResultMap] in value.map { (value: CriticalReview) -> ResultMap in value.resultMap } }, "ratingSummary": ratingSummary.flatMap { (value: RatingSummary) -> ResultMap in value.resultMap }])
+                    }
+
+                    public var __typename: String {
+                      get {
+                        return resultMap["__typename"]! as! String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "__typename")
+                      }
+                    }
+
+                    public var allReviewsUrl: String? {
+                      get {
+                        return resultMap["allReviewsURL"] as? String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "allReviewsURL")
+                      }
+                    }
+
+                    public var provider: Provider? {
+                      get {
+                        return (resultMap["provider"] as? ResultMap).flatMap { Provider(unsafeResultMap: $0) }
+                      }
+                      set {
+                        resultMap.updateValue(newValue?.resultMap, forKey: "provider")
+                      }
+                    }
+
+                    public var reviews: [Review]? {
+                      get {
+                        return (resultMap["reviews"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Review] in value.map { (value: ResultMap) -> Review in Review(unsafeResultMap: value) } }
+                      }
+                      set {
+                        resultMap.updateValue(newValue.flatMap { (value: [Review]) -> [ResultMap] in value.map { (value: Review) -> ResultMap in value.resultMap } }, forKey: "reviews")
+                      }
+                    }
+
+                    public var criticalReviews: [CriticalReview]? {
+                      get {
+                        return (resultMap["criticalReviews"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [CriticalReview] in value.map { (value: ResultMap) -> CriticalReview in CriticalReview(unsafeResultMap: value) } }
+                      }
+                      set {
+                        resultMap.updateValue(newValue.flatMap { (value: [CriticalReview]) -> [ResultMap] in value.map { (value: CriticalReview) -> ResultMap in value.resultMap } }, forKey: "criticalReviews")
+                      }
+                    }
+
+                    public var ratingSummary: RatingSummary? {
+                      get {
+                        return (resultMap["ratingSummary"] as? ResultMap).flatMap { RatingSummary(unsafeResultMap: $0) }
+                      }
+                      set {
+                        resultMap.updateValue(newValue?.resultMap, forKey: "ratingSummary")
+                      }
+                    }
+
+                    public struct Provider: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["ProductProvider"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("displayName", type: .scalar(String.self)),
+                          GraphQLField("providerCode", type: .scalar(String.self)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(displayName: String? = nil, providerCode: String? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "ProductProvider", "displayName": displayName, "providerCode": providerCode])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var displayName: String? {
+                        get {
+                          return resultMap["displayName"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "displayName")
+                        }
+                      }
+
+                      public var providerCode: String? {
+                        get {
+                          return resultMap["providerCode"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "providerCode")
+                        }
+                      }
+                    }
+
+                    public struct Review: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["ProductReview"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("author", type: .scalar(String.self)),
+                          GraphQLField("title", type: .scalar(String.self)),
+                          GraphQLField("body", type: .scalar(String.self)),
+                          GraphQLField("highlights", type: .list(.nonNull(.object(Highlight.selections)))),
+                          GraphQLField("rating", type: .object(Rating.selections)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(author: String? = nil, title: String? = nil, body: String? = nil, highlights: [Highlight]? = nil, rating: Rating? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "ProductReview", "author": author, "title": title, "body": body, "highlights": highlights.flatMap { (value: [Highlight]) -> [ResultMap] in value.map { (value: Highlight) -> ResultMap in value.resultMap } }, "rating": rating.flatMap { (value: Rating) -> ResultMap in value.resultMap }])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var author: String? {
+                        get {
+                          return resultMap["author"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "author")
+                        }
+                      }
+
+                      public var title: String? {
+                        get {
+                          return resultMap["title"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "title")
+                        }
+                      }
+
+                      public var body: String? {
+                        get {
+                          return resultMap["body"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "body")
+                        }
+                      }
+
+                      public var highlights: [Highlight]? {
+                        get {
+                          return (resultMap["highlights"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Highlight] in value.map { (value: ResultMap) -> Highlight in Highlight(unsafeResultMap: value) } }
+                        }
+                        set {
+                          resultMap.updateValue(newValue.flatMap { (value: [Highlight]) -> [ResultMap] in value.map { (value: Highlight) -> ResultMap in value.resultMap } }, forKey: "highlights")
+                        }
+                      }
+
+                      public var rating: Rating? {
+                        get {
+                          return (resultMap["rating"] as? ResultMap).flatMap { Rating(unsafeResultMap: $0) }
+                        }
+                        set {
+                          resultMap.updateValue(newValue?.resultMap, forKey: "rating")
+                        }
+                      }
+
+                      public struct Highlight: GraphQLSelectionSet {
+                        public static let possibleTypes: [String] = ["Snippet"]
+
+                        public static var selections: [GraphQLSelection] {
+                          return [
+                            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                            GraphQLField("begin", type: .scalar(Int.self)),
+                            GraphQLField("end", type: .scalar(Int.self)),
+                          ]
+                        }
+
+                        public private(set) var resultMap: ResultMap
+
+                        public init(unsafeResultMap: ResultMap) {
+                          self.resultMap = unsafeResultMap
+                        }
+
+                        public init(begin: Int? = nil, end: Int? = nil) {
+                          self.init(unsafeResultMap: ["__typename": "Snippet", "begin": begin, "end": end])
+                        }
+
+                        public var __typename: String {
+                          get {
+                            return resultMap["__typename"]! as! String
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "__typename")
+                          }
+                        }
+
+                        public var begin: Int? {
+                          get {
+                            return resultMap["begin"] as? Int
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "begin")
+                          }
+                        }
+
+                        public var end: Int? {
+                          get {
+                            return resultMap["end"] as? Int
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "end")
+                          }
+                        }
+                      }
+
+                      public struct Rating: GraphQLSelectionSet {
+                        public static let possibleTypes: [String] = ["ProductRating"]
+
+                        public static var selections: [GraphQLSelection] {
+                          return [
+                            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                            GraphQLField("maxStars", type: .scalar(Double.self)),
+                            GraphQLField("productStars", type: .scalar(Double.self)),
+                          ]
+                        }
+
+                        public private(set) var resultMap: ResultMap
+
+                        public init(unsafeResultMap: ResultMap) {
+                          self.resultMap = unsafeResultMap
+                        }
+
+                        public init(maxStars: Double? = nil, productStars: Double? = nil) {
+                          self.init(unsafeResultMap: ["__typename": "ProductRating", "maxStars": maxStars, "productStars": productStars])
+                        }
+
+                        public var __typename: String {
+                          get {
+                            return resultMap["__typename"]! as! String
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "__typename")
+                          }
+                        }
+
+                        public var maxStars: Double? {
+                          get {
+                            return resultMap["maxStars"] as? Double
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "maxStars")
+                          }
+                        }
+
+                        public var productStars: Double? {
+                          get {
+                            return resultMap["productStars"] as? Double
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "productStars")
+                          }
+                        }
+                      }
+                    }
+
+                    public struct CriticalReview: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["ProductReview"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("author", type: .scalar(String.self)),
+                          GraphQLField("title", type: .scalar(String.self)),
+                          GraphQLField("body", type: .scalar(String.self)),
+                          GraphQLField("highlights", type: .list(.nonNull(.object(Highlight.selections)))),
+                          GraphQLField("rating", type: .object(Rating.selections)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(author: String? = nil, title: String? = nil, body: String? = nil, highlights: [Highlight]? = nil, rating: Rating? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "ProductReview", "author": author, "title": title, "body": body, "highlights": highlights.flatMap { (value: [Highlight]) -> [ResultMap] in value.map { (value: Highlight) -> ResultMap in value.resultMap } }, "rating": rating.flatMap { (value: Rating) -> ResultMap in value.resultMap }])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var author: String? {
+                        get {
+                          return resultMap["author"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "author")
+                        }
+                      }
+
+                      public var title: String? {
+                        get {
+                          return resultMap["title"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "title")
+                        }
+                      }
+
+                      public var body: String? {
+                        get {
+                          return resultMap["body"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "body")
+                        }
+                      }
+
+                      public var highlights: [Highlight]? {
+                        get {
+                          return (resultMap["highlights"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Highlight] in value.map { (value: ResultMap) -> Highlight in Highlight(unsafeResultMap: value) } }
+                        }
+                        set {
+                          resultMap.updateValue(newValue.flatMap { (value: [Highlight]) -> [ResultMap] in value.map { (value: Highlight) -> ResultMap in value.resultMap } }, forKey: "highlights")
+                        }
+                      }
+
+                      public var rating: Rating? {
+                        get {
+                          return (resultMap["rating"] as? ResultMap).flatMap { Rating(unsafeResultMap: $0) }
+                        }
+                        set {
+                          resultMap.updateValue(newValue?.resultMap, forKey: "rating")
+                        }
+                      }
+
+                      public struct Highlight: GraphQLSelectionSet {
+                        public static let possibleTypes: [String] = ["Snippet"]
+
+                        public static var selections: [GraphQLSelection] {
+                          return [
+                            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                            GraphQLField("begin", type: .scalar(Int.self)),
+                            GraphQLField("end", type: .scalar(Int.self)),
+                          ]
+                        }
+
+                        public private(set) var resultMap: ResultMap
+
+                        public init(unsafeResultMap: ResultMap) {
+                          self.resultMap = unsafeResultMap
+                        }
+
+                        public init(begin: Int? = nil, end: Int? = nil) {
+                          self.init(unsafeResultMap: ["__typename": "Snippet", "begin": begin, "end": end])
+                        }
+
+                        public var __typename: String {
+                          get {
+                            return resultMap["__typename"]! as! String
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "__typename")
+                          }
+                        }
+
+                        public var begin: Int? {
+                          get {
+                            return resultMap["begin"] as? Int
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "begin")
+                          }
+                        }
+
+                        public var end: Int? {
+                          get {
+                            return resultMap["end"] as? Int
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "end")
+                          }
+                        }
+                      }
+
+                      public struct Rating: GraphQLSelectionSet {
+                        public static let possibleTypes: [String] = ["ProductRating"]
+
+                        public static var selections: [GraphQLSelection] {
+                          return [
+                            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                            GraphQLField("maxStars", type: .scalar(Double.self)),
+                            GraphQLField("productStars", type: .scalar(Double.self)),
+                          ]
+                        }
+
+                        public private(set) var resultMap: ResultMap
+
+                        public init(unsafeResultMap: ResultMap) {
+                          self.resultMap = unsafeResultMap
+                        }
+
+                        public init(maxStars: Double? = nil, productStars: Double? = nil) {
+                          self.init(unsafeResultMap: ["__typename": "ProductRating", "maxStars": maxStars, "productStars": productStars])
+                        }
+
+                        public var __typename: String {
+                          get {
+                            return resultMap["__typename"]! as! String
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "__typename")
+                          }
+                        }
+
+                        public var maxStars: Double? {
+                          get {
+                            return resultMap["maxStars"] as? Double
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "maxStars")
+                          }
+                        }
+
+                        public var productStars: Double? {
+                          get {
+                            return resultMap["productStars"] as? Double
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "productStars")
+                          }
+                        }
+                      }
+                    }
+
+                    public struct RatingSummary: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["WebProductRating"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("rating", type: .object(Rating.selections)),
+                          GraphQLField("numReviews", type: .scalar(Int.self)),
+                          GraphQLField("price", type: .scalar(Double.self)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(rating: Rating? = nil, numReviews: Int? = nil, price: Double? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "WebProductRating", "rating": rating.flatMap { (value: Rating) -> ResultMap in value.resultMap }, "numReviews": numReviews, "price": price])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var rating: Rating? {
+                        get {
+                          return (resultMap["rating"] as? ResultMap).flatMap { Rating(unsafeResultMap: $0) }
+                        }
+                        set {
+                          resultMap.updateValue(newValue?.resultMap, forKey: "rating")
+                        }
+                      }
+
+                      public var numReviews: Int? {
+                        get {
+                          return resultMap["numReviews"] as? Int
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "numReviews")
+                        }
+                      }
+
+                      public var price: Double? {
+                        get {
+                          return resultMap["price"] as? Double
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "price")
+                        }
+                      }
+
+                      public struct Rating: GraphQLSelectionSet {
+                        public static let possibleTypes: [String] = ["ProductRating"]
+
+                        public static var selections: [GraphQLSelection] {
+                          return [
+                            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                            GraphQLField("maxStars", type: .scalar(Double.self)),
+                            GraphQLField("productStars", type: .scalar(Double.self)),
+                          ]
+                        }
+
+                        public private(set) var resultMap: ResultMap
+
+                        public init(unsafeResultMap: ResultMap) {
+                          self.resultMap = unsafeResultMap
+                        }
+
+                        public init(maxStars: Double? = nil, productStars: Double? = nil) {
+                          self.init(unsafeResultMap: ["__typename": "ProductRating", "maxStars": maxStars, "productStars": productStars])
+                        }
+
+                        public var __typename: String {
+                          get {
+                            return resultMap["__typename"]! as! String
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "__typename")
+                          }
+                        }
+
+                        public var maxStars: Double? {
+                          get {
+                            return resultMap["maxStars"] as? Double
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "maxStars")
+                          }
+                        }
+
+                        public var productStars: Double? {
+                          get {
+                            return resultMap["productStars"] as? Double
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "productStars")
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

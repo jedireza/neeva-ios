@@ -69,13 +69,20 @@ struct QueryButton: View {
 
 class CheatsheetMenuViewModel: ObservableObject {
     @Published var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
+    @Published var searchRichResults: [SearchController.RichResult]?
     private var subscriptions: Set<AnyCancellable> = []
 
     init(tabManager: TabManager) {
         self.cheatsheetInfo = tabManager.selectedTab?.cheatsheetData
+        self.searchRichResults = tabManager.selectedTab?.searchRichResults
         tabManager.selectedTabPublisher
             .compactMap { $0?.cheatsheetData }
             .assign(to: \.cheatsheetInfo, on: self)
+            .store(in: &subscriptions)
+
+        tabManager.selectedTabPublisher
+            .compactMap { $0?.searchRichResults }
+            .assign(to: \.searchRichResults, on: self)
             .store(in: &subscriptions)
     }
 }
@@ -93,6 +100,7 @@ public struct CheatsheetMenuView: View {
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
                     CompactNeevaMenuView(menuAction: menuAction)
+                    richResult()
                     priceHistorySection
                     reviewURLSection
                     memorizedQuerySection
@@ -100,6 +108,18 @@ public struct CheatsheetMenuView: View {
             }
             .frame(minHeight: 200)
         }
+    }
+
+    func richResult() -> AnyView {
+        if let richResults = model.searchRichResults {
+            for richResult in richResults {
+                switch richResult.resultType {
+                case .ProductCluster(let productCluster):
+                    return AnyView(ProductClusterList(products: productCluster))
+                }
+            }
+        }
+        return AnyView(EmptyView())
     }
 
     @ViewBuilder

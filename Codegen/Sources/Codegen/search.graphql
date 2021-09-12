@@ -1,0 +1,99 @@
+query Search($query: String!) {
+  search(q: $query) {
+    resultGroup {
+      result {
+        __typename
+        title
+        appIcon {
+          labels
+        }
+        actionURL
+        snippet
+        typeSpecific {
+          __typename
+          ... on ProductClusters {
+            __typename
+            productClusters {
+              filterLabels {
+                min
+                max
+                label
+              }
+              products {
+                productName
+                thumbnailURL
+                buyingGuideReviews {
+                  source
+                  reviewURL
+                  price
+                  header {
+                    title
+                    summary
+                  }
+                  proCon {
+                    pros
+                    cons
+                  }
+                }
+                sellers {
+                  url
+                  price
+                  displayName
+                  providerCode
+                }
+                priceLow
+                priceHigh
+                priceLabel
+                rating
+                maxRating
+                ratingProvider
+                retailerReviews {
+                  allReviewsURL
+                  provider {
+                    displayName
+                    providerCode
+                  }
+                  reviews {
+                    author
+                    title
+                    body
+                    highlights {
+                      begin
+                      end
+                    }
+                    rating {
+                      maxStars
+                      productStars
+                    }
+                  }
+                  criticalReviews {
+                    author
+                    title
+                    body
+                    highlights {
+                      begin
+                      end
+                    }
+                    rating {
+                      maxStars
+                      productStars
+                    }
+                  }
+                  ratingSummary {
+                    rating {
+                      maxStars
+                      productStars
+                    }
+                    numReviews
+                    price
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

@@ -272,6 +272,8 @@
 		BC6D34892622D4DE0050DEC4 /* Roobert-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */; };
 		BC85E226264F407C0068092F /* TourPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E225264F407C0068092F /* TourPromptView.swift */; };
 		BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */; };
+		BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */; };
+		BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8ABEA126D88F2500E4A415 /* SearchController.swift */; };
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
 		BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		BCC138902656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
@@ -1242,6 +1244,8 @@
 		BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Medium.otf"; sourceTree = "<group>"; };
 		BC85E225264F407C0068092F /* TourPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptView.swift; sourceTree = "<group>"; };
 		BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTourPromptViewController.swift; sourceTree = "<group>"; };
+		BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClusterView.swift; sourceTree = "<group>"; };
+		BC8ABEA126D88F2500E4A415 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
 		BCC1388E2656CBDB0018D87D /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
 		BCC1389F2656CBE70018D87D /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
@@ -2388,6 +2392,7 @@
 				BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */,
 				BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */,
 				C832BF8026E1566E00B9A1F8 /* CheatsheetOverlaySheetContent.swift */,
+				BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */,
 			);
 			path = Cheatsheet;
 			sourceTree = "<group>";
@@ -2644,6 +2649,7 @@
 				BCC39A2026C7258600EEC559 /* UserFlagStore.swift */,
 				4A15C8B626E183F5006CD097 /* ContactsProvider.swift */,
 				C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */,
+				BC8ABEA126D88F2500E4A415 /* SearchController.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -4383,6 +4389,7 @@
 				C994645F2657052200613110 /* FeatureFlags.swift in Sources */,
 				C9255AA226C4392F00AA1C2E /* GroupedCell.swift in Sources */,
 				E65075951E37F7AB006961AC /* GeneralUtils.swift in Sources */,
+				BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */,
 				E683F0C21E93D4E90035D990 /* DictionaryExtensions.swift in Sources */,
 				E650759B1E37F7AB006961AC /* CrashSimulator.m in Sources */,
 				288A2DB51AB8B38D0023ABC3 /* Error.swift in Sources */,
@@ -4674,6 +4681,7 @@
 				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
 				4A3D299126850CB60082F293 /* CardGrid.swift in Sources */,
 				EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */,
+				BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */,
 				EBB89509219398E500EB91A0 /* TabContentBlocker+ContentScript.swift in Sources */,
 				D3BE7B461B054F8600641031 /* TestAppDelegate.swift in Sources */,
 				C9FD1B2026C2F46B00926A70 /* SuggestionPositionInfo.swift in Sources */,
