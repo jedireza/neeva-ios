@@ -29,7 +29,7 @@ where
     @State private var presentShareOnDismiss = false
     @State private var newTitle: String = ""
 
-    let primitive: Details
+    @ObservedObject var primitive: Details
 
     var space: Space? {
         primitive.manager.get(for: primitive.id) as? Space

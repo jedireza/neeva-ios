@@ -216,7 +216,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
 
     var id: String
     var closeButtonImage: UIImage? = nil
-    var allDetails: [SpaceEntityThumbnail] = []
+    @Published var allDetails: [SpaceEntityThumbnail] = []
 
     var accessibilityLabel: String {
         "\(title), Space"

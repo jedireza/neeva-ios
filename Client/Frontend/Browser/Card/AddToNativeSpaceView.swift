@@ -62,6 +62,19 @@ struct AddToNativeSpaceView: View {
                 Spacer()
                 Button(
                     action: {
+                        
+                        // construct a local spaceEntityData
+                        let data = SpaceEntityData(id: space.id.id,
+                                        url: URL(string: urlText),
+                                        title: titleText,
+                                        snippet: nil,
+                                        thumbnail: nil)
+                                                
+
+                        // modify target spaceCardDetail's Data and signal changes
+                        spaceModel.detailedSpace?.space?.contentData?.insert(data, at: 0)
+                        spaceModel.detailedSpace?.updateDetails()
+                        
                         spaceModel.add(spaceID: space.id.id, url: urlText, title: titleText)
                         dismiss()
                     },
