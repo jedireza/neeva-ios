@@ -51,7 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     private func setupRootViewController(_ scene: UIScene) {
-        let profile = getAppDelegateProfile()
+        let profile = getAppDelegate().profile
 
         self.tabManager = TabManager(profile: profile, scene: scene)
         self.browserViewController = BrowserViewController(profile: profile, tabManager: tabManager)
@@ -76,7 +76,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         Self.activeSceneCount += 1
         if Self.activeSceneCount == 1 {
-            getAppDelegateProfile()._reopen()
+            getAppDelegate().profile._reopen()
         }
 
         checkForSignInTokenOnDevice()
@@ -97,14 +97,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         Self.activeSceneCount -= 1
         if Self.activeSceneCount == 0 {
-            // According to https://developer.apple.com/documentation/uikit/uiapplication/1623031-beginbackgroundtask,
-            // the `expirationHandler` may be called if we are already close to running out of time. In that case,
-            // we want to take care to still shutdown the profile. It is safe to call `_shutdown` more than once.
-            let taskId = UIApplication.shared.beginBackgroundTask(expirationHandler: {
-                getAppDelegateProfile()._shutdown()
-            })
-            getAppDelegateProfile()._shutdown()
-            UIApplication.shared.endBackgroundTask(taskId)
+            getAppDelegate().shutdownProfile()
         }
     }
 

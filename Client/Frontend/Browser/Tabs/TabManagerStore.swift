@@ -12,7 +12,7 @@ private let log = Logger.storage
 class TabManagerStore {
     static let shared = TabManagerStore(
         imageStore: DiskImageStore(
-            files: getAppDelegateProfile().files, namespace: "TabManagerScreenshots",
+            files: getAppDelegate().profile.files, namespace: "TabManagerScreenshots",
             quality: UIConstants.ScreenshotQuality))
 
     fileprivate var lockedForReading = false

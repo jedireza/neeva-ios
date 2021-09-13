@@ -57,6 +57,8 @@ class TabManager: NSObject, ObservableObject {
 
     let delaySelectingNewPopupTab: TimeInterval = 0.1
 
+    static var all = WeakList<TabManager>()
+
     func addDelegate(_ delegate: TabManagerDelegate) {
         assert(Thread.isMainThread)
         delegates.append(WeakTabManagerDelegate(value: delegate))
@@ -133,6 +135,8 @@ class TabManager: NSObject, ObservableObject {
         self.store = TabManagerStore.shared
         self.scene = scene
         super.init()
+
+        Self.all.insert(self)
 
         register(self, forTabEvents: .didLoadFavicon, .didChangeContentBlocking)
 

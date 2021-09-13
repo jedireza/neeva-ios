@@ -178,7 +178,6 @@ class TestAppDelegate: AppDelegate {
             FeatureFlag.enabledFlags = Set(enableFeatureFlags)
         }
 
-        self.profile = profile
         return profile
     }
 

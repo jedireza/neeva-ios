@@ -45,7 +45,7 @@ class FaviconHandler {
                 return
             }
 
-            getAppDelegateProfile().favicons.addFavicon(favicon, forSite: site) >>> {
+            getAppDelegate().profile.favicons.addFavicon(favicon, forSite: site) >>> {
                 deferred.fill(Maybe(success: (favicon, data)))
             }
         }

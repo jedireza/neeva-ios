@@ -29,7 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     var launchOptions: [AnyHashable: Any]?
     var receivedURLs = [URL]()
 
-    var profile: Profile?
+    // The profile is initialized during startup below and then remains valid for the
+    // lifetime of the app. Expose a non-optional Profile accessor for convenience.
+    private var lateInitializedProfile: Profile?
+    var profile: Profile {
+        lateInitializedProfile!
+    }
 
     // MARK: - Lifecycle
     func application(
@@ -48,8 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         self.applicationCleanlyBackgrounded = Defaults[.applicationCleanlyBackgrounded]
         Defaults[.applicationCleanlyBackgrounded] = false
 
-        let profile = createProfile()
-        self.profile = profile
+        lateInitializedProfile = createProfile()
 
         // Set up a web server that serves us static content. Do this early so that it is ready when the UI is presented.
         setUpWebServer(profile)
@@ -60,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            profile.cleanupHistoryIfNeeded()
+            self.profile.cleanupHistoryIfNeeded()
         }
 
         if FeatureFlag[.notifications] {
@@ -177,9 +181,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
     func applicationWillTerminate(_ application: UIApplication) {
         // We have only five seconds here, so let's hope this doesn't take too long?.
-        // Set applicationCleanlyBackgrounded to true when user manually close the app
+
+        // Set applicationCleanlyBackgrounded to true when user manually close the app.
+        // Do this first as any subsequent crash would be while the app is backgrounded
+        // from the perspective of the user.
         Defaults[.applicationCleanlyBackgrounded] = true
-        profile?._shutdown()
+
+        // Make sure tabs state has been saved.
+        for tabManager in TabManager.all.makeIterator() {
+            tabManager.preserveTabs()
+        }
+        shutdownProfile()
     }
 
     // MARK: - Scene
@@ -254,11 +266,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 
     private func updateTopSitesWidget() {
-        guard let profile = self.profile else { return }
         TopSitesHandler.writeWidgetKitTopSites(profile: profile)
+    }
+
+    func shutdownProfile() {
+        // Use optional here so that the underlying struct value type is passed by reference.
+        var taskId: UIBackgroundTaskIdentifier?
+
+        // According to https://developer.apple.com/documentation/uikit/uiapplication/1623031-beginbackgroundtask,
+        // the `expirationHandler` may be called if we are already close to running out of time. In that case,
+        // we want to take care to still shutdown the profile. It is safe to call `_shutdown` more than once.
+
+        let shutdownHandler = {
+            self.profile._shutdown()
+            if let unwrappedTaskId = taskId {
+                UIApplication.shared.endBackgroundTask(unwrappedTaskId)
+                taskId = nil
+            }
+        }
+
+        taskId = UIApplication.shared.beginBackgroundTask(expirationHandler: shutdownHandler)
+        shutdownHandler()
     }
 }
 
-func getAppDelegateProfile() -> Profile {
-    return (UIApplication.shared.delegate as? AppDelegate)!.profile!
+func getAppDelegate() -> AppDelegate {
+    return (UIApplication.shared.delegate as? AppDelegate)!
 }
