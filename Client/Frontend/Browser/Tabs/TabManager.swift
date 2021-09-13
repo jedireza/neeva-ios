@@ -743,9 +743,9 @@ extension TabManager {
         }
     }
 
-    @discardableResult func storeChanges() -> Success {
+    func storeChanges() {
         saveTabs(toProfile: profile, normalTabs)
-        return store.preserveTabs(
+        store.preserveTabs(
             tabs, selectedTab: selectedTab, for: scene)
     }
 

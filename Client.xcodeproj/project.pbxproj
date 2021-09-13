@@ -340,6 +340,8 @@
 		C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */; };
 		C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */; };
 		C8CC4F8725253E79003FDE1F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD46F3324A1606C001B3967 /* WidgetKit.framework */; };
+		C8CF648426ED20DF00C3816F /* BackgroundFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648326ED20DF00C3816F /* BackgroundFileWriter.swift */; };
+		C8CF648626EDB89500C3816F /* BackgroundFileWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648526EDB89500C3816F /* BackgroundFileWriterTests.swift */; };
 		C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */; };
 		C8DFFE492294AAB600296DB1 /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */; };
 		C8E18F1E222EDE4500E30E52 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E18F1D222EDE4400E30E52 /* Accelerate.framework */; };
@@ -1287,6 +1289,8 @@
 		C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationLinkButton.swift; sourceTree = "<group>"; };
 		C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaFeatureFlags.swift; sourceTree = "<group>"; };
 		C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaConstants.swift; sourceTree = "<group>"; };
+		C8CF648326ED20DF00C3816F /* BackgroundFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFileWriter.swift; sourceTree = "<group>"; };
+		C8CF648526EDB89500C3816F /* BackgroundFileWriterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFileWriterTests.swift; sourceTree = "<group>"; };
 		C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = effective_tld_names.swift; sourceTree = "<group>"; };
 		C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		C8E18F1D222EDE4400E30E52 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -2001,7 +2005,7 @@
 		2FCAE21B1ABB51F800877008 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				2FCAE33D1ABB5F1800877008 /* Storage-Bridging-Header.h */,
+				C8CF648326ED20DF00C3816F /* BackgroundFileWriter.swift */,
 				D37DE2821CA2047500A5EC69 /* CertStore.swift */,
 				28C4AB711AD42D4300D9ACE3 /* Clients.swift */,
 				2FCAE2411ABB531100877008 /* Cursor.swift */,
@@ -2013,19 +2017,20 @@
 				2FCAE2431ABB531100877008 /* FileAccessor.swift */,
 				2FCAE2441ABB531100877008 /* History.swift */,
 				E677F0531D94247300ECF1FB /* Metadata.swift */,
-				285D3B671B4380B70035FD22 /* Queue.swift */,
 				E6FF6AC91D873CFF0070C294 /* PageMetadata.swift */,
+				285D3B671B4380B70035FD22 /* Queue.swift */,
 				D076971E206AC60900FACFD8 /* ReadingList.swift */,
 				2FCAE2471ABB531100877008 /* RemoteTabs.swift */,
+				D057B2AC22022617000614E0 /* Rust */,
 				2829D39F1C2F0AD400DCF931 /* Sharing.swift */,
 				2FCAE2481ABB531100877008 /* Site.swift */,
+				2FCAE2491ABB531100877008 /* SQL */,
+				2FCAE33D1ABB5F1800877008 /* Storage-Bridging-Header.h */,
 				0B54BD181B698B7C004C822C /* SuggestedSites.swift */,
 				28B62ACD1BC745E7004A585A /* Syncable.swift */,
 				7BF5A1E91B41640500EA9DD8 /* SyncQueue.swift */,
-				2FCAE25C1ABB531100877008 /* Visit.swift */,
-				D057B2AC22022617000614E0 /* Rust */,
-				2FCAE2491ABB531100877008 /* SQL */,
 				2FCAE25A1ABB531100877008 /* ThirdParty */,
+				2FCAE25C1ABB531100877008 /* Visit.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -2033,20 +2038,21 @@
 		2FCAE22A1ABB51F800877008 /* StorageTests */ = {
 			isa = PBXGroup;
 			children = (
-				D37DE2C81CA356F900A5EC69 /* testcert1.pem */,
-				D37DE2C91CA356F900A5EC69 /* testcert2.pem */,
-				C9FD1B2626C414DD00926A70 /* StorageTests-Bridging-Header.h */,
+				C8CF648526EDB89500C3816F /* BackgroundFileWriterTests.swift */,
 				D37DE2C61CA356D800A5EC69 /* CertTests.swift */,
 				C8800EA52635EF06005B7503 /* DeferredTestUtils.swift */,
 				D3BF8CBC1B7472FA0007AFE6 /* DiskImageStoreTests.swift */,
 				2FCAE2791ABB533A00877008 /* MockFiles.swift */,
+				C9FD1B2626C414DD00926A70 /* StorageTests-Bridging-Header.h */,
 				289A4C121C4EB90600A460E3 /* StorageTestUtils.swift */,
+				2FCAE22B1ABB51F800877008 /* Supporting Files */,
 				281B02991C037C1F005202C3 /* TestBrowserDB.swift */,
+				D37DE2C81CA356F900A5EC69 /* testcert1.pem */,
+				D37DE2C91CA356F900A5EC69 /* testcert2.pem */,
 				2FCAE27D1ABB533A00877008 /* TestSQLiteHistory.swift */,
 				E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */,
 				D0B693D4206C5BB9008A8B11 /* TestSQLiteReadingList.swift */,
 				2FCAE27A1ABB533A00877008 /* TestSQLiteRemoteClientsAndTabs.swift */,
-				2FCAE22B1ABB51F800877008 /* Supporting Files */,
 			);
 			path = StorageTests;
 			sourceTree = "<group>";
@@ -4470,6 +4476,7 @@
 				D3BF8CBB1B7425570007AFE6 /* DiskImageStore.swift in Sources */,
 				E6FF6ACA1D873CFF0070C294 /* PageMetadata.swift in Sources */,
 				2FCAE2611ABB531100877008 /* FileAccessor.swift in Sources */,
+				C8CF648426ED20DF00C3816F /* BackgroundFileWriter.swift in Sources */,
 				E677F0451D9423FB00ECF1FB /* SQLiteMetadata.swift in Sources */,
 				D37DE2831CA2047500A5EC69 /* CertStore.swift in Sources */,
 				D018F93E1F44A71A0098F8CA /* Schema.swift in Sources */,
@@ -4499,6 +4506,7 @@
 				E63F71881DB7FBE200A995C9 /* TestSQLiteMetadata.swift in Sources */,
 				2FCAE2851ABB533A00877008 /* TestSQLiteRemoteClientsAndTabs.swift in Sources */,
 				289A4C131C4EB90600A460E3 /* StorageTestUtils.swift in Sources */,
+				C8CF648626EDB89500C3816F /* BackgroundFileWriterTests.swift in Sources */,
 				D37DE2C71CA356D800A5EC69 /* CertTests.swift in Sources */,
 				281B029A1C037C1F005202C3 /* TestBrowserDB.swift in Sources */,
 				2FCAE2841ABB533A00877008 /* MockFiles.swift in Sources */,

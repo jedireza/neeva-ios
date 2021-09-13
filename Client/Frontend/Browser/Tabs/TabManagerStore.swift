@@ -18,8 +18,7 @@ class TabManagerStore {
     fileprivate var lockedForReading = false
     public let imageStore: DiskImageStore?
     fileprivate var fileManager = FileManager.default
-    fileprivate let serialQueue = DispatchQueue(label: "tab-manager-write-queue")
-    fileprivate var writeOperation = DispatchWorkItem {}
+    private var backgroundFileWriters: [String: BackgroundFileWriter] = [:]
 
     init(imageStore: DiskImageStore?, _ fileManager: FileManager = FileManager.default) {
         self.fileManager = fileManager
@@ -78,12 +77,19 @@ class TabManagerStore {
         return savedTabs.isEmpty ? nil : savedTabs
     }
 
+    private func backgroundFileWriter(for path: String) -> BackgroundFileWriter {
+        if let backgroundFileWriter = backgroundFileWriters[path] {
+            return backgroundFileWriter
+        }
+        let writer = BackgroundFileWriter(label: "tabs", path: path)
+        backgroundFileWriters[path] = writer
+        return writer
+    }
+
     // Async write of the tab state. In most cases, code doesn't care about performing an operation
     // after this completes. Deferred completion is called always, regardless of Data.write return value.
     // Write failures (i.e. due to read locks) are considered inconsequential, as preserveTabs will be called frequently.
-    @discardableResult func preserveTabs(_ tabs: [Tab], selectedTab: Tab?, for scene: UIScene)
-        -> Success
-    {
+    func preserveTabs(_ tabs: [Tab], selectedTab: Tab?, for scene: UIScene) {
         log.info("Preserve tabs for scene: \(scene.session.persistentIdentifier)")
 
         assert(Thread.isMainThread)
@@ -92,41 +98,31 @@ class TabManagerStore {
             let path = tabSavePath(withId: scene.session.persistentIdentifier)
         else {
             clearArchive(for: scene)
-            return succeed()
+            return
         }
 
         // Save a fallback copy in case the scene persistanceID changes
         // Prevents the loss of user's tabs
         if let fallbackTabsPath = fallbackTabsPath() {
-            _ = saveTabsToPath(path: fallbackTabsPath, savedTabs: savedTabs)
+            saveTabsToPath(path: fallbackTabsPath, savedTabs: savedTabs)
         }
 
-        return saveTabsToPath(path: path, savedTabs: savedTabs)
+        saveTabsToPath(path: path, savedTabs: savedTabs)
     }
 
-    func saveTabsToPath(path: String, savedTabs: [SavedTab]) -> Success {
+    func saveTabsToPath(path: String, savedTabs: [SavedTab]) {
         log.info("Saving to \(path), number of tabs: \(savedTabs.count)")
 
-        let result = Success()
-
-        writeOperation = DispatchWorkItem {
-            do {
-                let data = try NSKeyedArchiver.archivedData(
-                    withRootObject: savedTabs, requiringSecureCoding: false)
-                try data.write(to: URL(fileURLWithPath: path), options: .atomic)
-                log.info("Tabs succesfully saved")
-            } catch {
-                log.error("Tab failed to save: \(error.localizedDescription)")
-            }
-
-            result.fill(Maybe(success: ()))
+        let data: Data
+        do {
+            data = try NSKeyedArchiver.archivedData(
+                withRootObject: savedTabs, requiringSecureCoding: false)
+        } catch {
+            log.error("Failed to create data archive for tabs: \(error.localizedDescription)")
+            return
         }
 
-        // Delay by 100ms to debounce repeated calls to preserveTabs in quick succession.
-        // Notice above that a repeated 'preserveTabs' call will 'cancel()' a pending write operation.
-        serialQueue.asyncAfter(deadline: .now() + 0.1, execute: writeOperation)
-
-        return result
+        backgroundFileWriter(for: path).writeData(data: data)
     }
 
     func restoreStartupTabs(for scene: UIScene, clearPrivateTabs: Bool, tabManager: TabManager)
