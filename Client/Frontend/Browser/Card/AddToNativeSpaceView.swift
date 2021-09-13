@@ -6,46 +6,45 @@ import SwiftUI
 
 struct AddToNativeSpaceOverlaySheetContent: View {
     let space: Space
+    let entityID: String?
+
     @Environment(\.hideOverlaySheet) private var hideOverlaySheet
 
+    init(space: Space, entityID: String? = nil) {
+        self.space = space
+        self.entityID = entityID
+    }
+
     var body: some View {
-        AddToNativeSpaceView(space: space, dismiss: hideOverlaySheet)
+        AddToNativeSpaceView(space: space, entityID: entityID, dismiss: hideOverlaySheet)
             .overlaySheetIsFixedHeight(isFixedHeight: true)
+            .overlaySheetTitle(title: entityID == nil ? "Add item" : "Update item")
     }
 }
 
 struct AddToNativeSpaceView: View {
     let space: Space
+    let entityID: String?
     let dismiss: () -> Void
 
     @EnvironmentObject var spaceModel: SpaceCardModel
-    @State var titleText: String = ""
-    @State var urlText: String = ""
+    @State var titleText: String
+    @State var urlText: String
 
-    init(space: Space, dismiss: @escaping () -> Void) {
+    init(space: Space, entityID: String? = nil, dismiss: @escaping () -> Void) {
         self.space = space
+        self.entityID = entityID
         self.dismiss = dismiss
-        // Do we need to know if this space is public?
-    }
-
-    var header: some View {
-        HStack {
-            Text("Add item").withFont(.headingMedium)
-            Spacer()
-            Button(
-                action: {
-                    dismiss()
-                },
-                label: {
-                    Image(systemName: "xmark").foregroundColor(.secondaryLabel)
-                })
-        }
+        self.titleText = space.contentData?.first(where: { $0.id == entityID })?.title ?? ""
+        self.urlText =
+            space.contentData?.first(where: { $0.id == entityID })?.url?.absoluteString ?? ""
     }
 
     func inputField(title: String, bodytext: String, inputText: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title).foregroundColor(.secondaryLabel).withFont(.labelMedium)
             TextField(bodytext, text: inputText)
+                .withFont(unkerned: .bodyLarge)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
         }
@@ -53,40 +52,52 @@ struct AddToNativeSpaceView: View {
 
     var body: some View {
         GroupedStack {
-            header
             inputField(title: "Title", bodytext: "Please provide a title", inputText: $titleText)
             inputField(
                 title: "URL", bodytext: "Add a URL to your new item (optional)", inputText: $urlText
             )
-            HStack {
-                Spacer()
-                Button(
-                    action: {
-                        
+            Button(
+                action: {
+                    if let entityID = entityID {
+                        let oldData = (space.contentData?.first(where: { $0.id == entityID }))!
+                        let index = (space.contentData?.firstIndex(where: { $0.id == entityID }))!
+                        let newData = SpaceEntityData(
+                            id: space.id.id,
+                            url: oldData.url,
+                            title: titleText,
+                            snippet: oldData.snippet,
+                            thumbnail: oldData.thumbnail)
+
+                        spaceModel.detailedSpace?.space?.contentData?.replaceSubrange(
+                            index..<(index + 1), with: [newData])
+                        spaceModel.detailedSpace?.updateDetails()
+                        spaceModel.updateSpaceEntity(
+                            spaceID: space.id.id, entityID: entityID, title: titleText)
+                    } else {
                         // construct a local spaceEntityData
-                        let data = SpaceEntityData(id: space.id.id,
-                                        url: URL(string: urlText),
-                                        title: titleText,
-                                        snippet: nil,
-                                        thumbnail: nil)
-                                                
+                        let data = SpaceEntityData(
+                            id: space.id.id,
+                            url: URL(string: urlText),
+                            title: titleText,
+                            snippet: nil,
+                            thumbnail: nil)
 
                         // modify target spaceCardDetail's Data and signal changes
                         spaceModel.detailedSpace?.space?.contentData?.insert(data, at: 0)
                         spaceModel.detailedSpace?.updateDetails()
-                        
                         spaceModel.add(spaceID: space.id.id, url: urlText, title: titleText)
-                        dismiss()
-                    },
-                    label: {
-                        Text("Save").frame(width: 50).foregroundColor(.white)
                     }
-                )
-                .padding(.vertical, 5)
-                .padding(.horizontal, 10)
-                .background(Capsule().fill(Color.brand.blue))
-            }
-            .padding(.top, 10)
+                    dismiss()
+                },
+                label: {
+                    Text(entityID == nil ? "Save" : "Update")
+                        .withFont(.labelLarge)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(Capsule())
+                }
+            )
+            .buttonStyle(NeevaButtonStyle(.primary))
+            .padding(.vertical, 16)
         }
     }
 }

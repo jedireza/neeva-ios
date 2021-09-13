@@ -168,6 +168,16 @@ class SpaceCardModel: CardModel {
         }
     }
 
+    func updateSpaceEntity(spaceID: String, entityID: String, title: String) {
+        DispatchQueue.main.async {
+            let request = UpdateSpaceEntityRequest(
+                spaceID: spaceID, entityID: entityID, title: title)
+            request.$state.sink { state in
+                self.stateNeedsRefresh = true
+            }.cancel()
+        }
+    }
+
     func delete(space spaceID: String, entities: [String]) {
         DispatchQueue.main.async {
             let request = DeleteSpaceItemsRequest(spaceID: spaceID, ids: entities)

@@ -64,7 +64,7 @@ where
             Button(
                 action: {
                     SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
-                        style: .grouped
+                        style: .withTitle
                     ) {
                         AddToNativeSpaceOverlaySheetContent(space: space)
                             .environmentObject(spacesModel)
@@ -278,11 +278,35 @@ where
             ForEach(primitive.allDetails, id: \.id) { details in
                 if let entity = details.manager.get(for: details.id) {
                     if let url = entity.primitiveUrl {
-                        SingleDetailView(details: details) {
-                            onOpenURLForSpace(url, primitive.id)
-                            gridModel.hideWithNoAnimation()
-                            spacesModel.detailedSpace = nil
-                        }
+                        SingleDetailView(
+                            details: details,
+                            onSelected: {
+                                onOpenURLForSpace(url, primitive.id)
+                                gridModel.hideWithNoAnimation()
+                                spacesModel.detailedSpace = nil
+                            },
+                            addToAnotherSpace: { url, title, description in
+                                spacesModel.detailedSpace = nil
+                                SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                    .showAddToSpacesSheet(
+                                        url: url, title: title, description: description)
+                            },
+                            editSpaceItem: {
+                                guard let space = space else {
+                                    return
+                                }
+
+                                SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                    .showAsModalOverlaySheet(
+                                        style: .withTitle
+                                    ) {
+                                        AddToNativeSpaceOverlaySheetContent(
+                                            space: space, entityID: details.id
+                                        )
+                                        .environmentObject(spacesModel)
+                                    }
+                            }
+                        )
                         .listRowInsets(
                             EdgeInsets.init(
                                 top: 0,
@@ -307,8 +331,8 @@ where
                         )
                     }
                 }
-            }.onDelete(perform: onDelete)
-                .onMove(perform: onMove)
+            }.onDelete(perform: canEdit ? onDelete : nil)
+                .onMove(perform: canEdit ? onMove : nil)
         }
         .environment(\.editMode, canEdit ? $editMode : nil)
         .background(Color.groupedBackground)
@@ -362,10 +386,8 @@ where
 struct SingleDetailView<Details: CardDetails>: View where Details: AccessingManagerProvider {
     let details: Details
     let onSelected: () -> Void
-
-    var description: String {
-        details.id
-    }
+    let addToAnotherSpace: (URL, String?, String?) -> Void
+    let editSpaceItem: () -> Void
 
     var hostAndPath: String? {
         details.manager.get(for: details.id)?.primitiveUrl?.normalizedHostAndPath
@@ -382,6 +404,7 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
     }
 
     @State private var isPressed: Bool = false
+    @State private var isExpanded: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -422,7 +445,8 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                             if let snippet = details.description {
                                 Text(snippet)
                                     .withFont(.bodySmall)
-                                    .lineLimit(2)
+                                    .lineLimit(isExpanded ? .none : 2)
+                                    .fixedSize(horizontal: false, vertical: isExpanded)
                                     .foregroundColor(Color.secondaryLabel)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
@@ -432,10 +456,46 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
                 .padding()
                 .background(Color.DefaultBackground)
+                .overlay(
+                    Button(
+                        action: { isExpanded.toggle() },
+                        label: {
+                            Symbol(decorative: isExpanded ? .chevronUp : .chevronDown)
+                                .foregroundColor(.tertiaryLabel)
+                                .tapTargetFrame()
+                                .background(
+                                    RadialGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.background, Color.background.opacity(0),
+                                        ]), center: .center, startRadius: 1, endRadius: 30)
+                                )
+                                .opacity(details.description?.isEmpty == false ? 1 : 0)
+                        }
+                    ).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing))
         }.scaleEffect(isPressed ? 0.95 : 1)
+            .contextMenu(
+                ContextMenu(menuItems: {
+                    if details.ACL >= .edit {
+                        Button(
+                            action: {
+                                editSpaceItem()
+                            },
+                            label: {
+                                Label("Edit item", systemSymbol: .squareAndPencil)
+                            })
+                    }
+                    Button(
+                        action: {
+                            addToAnotherSpace(
+                                (details.manager.get(for: details.id)?.primitiveUrl)!,
+                                details.title, details.description)
+                        },
+                        label: {
+                            Label("Add to another Space", systemSymbol: .docOnDoc)
+                        })
+                }))
 
     }
-
 }
 
 struct DetailView_Previews: PreviewProvider {

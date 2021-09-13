@@ -179,6 +179,10 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     var closeButtonImage: UIImage? = nil
     var accessibilityLabel: String = "Space Item"
 
+    var ACL: SpaceACLLevel {
+        manager.ACL
+    }
+
     private var imageThumbnailModel: ImageThumbnailModel?
 
     init(data: SpaceEntityData, spaceID: String) {

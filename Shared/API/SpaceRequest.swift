@@ -90,6 +90,15 @@ public class DeleteSpaceItemsRequest: SpaceRequest<BatchDeleteSpaceResultMutatio
     }
 }
 
+public class UpdateSpaceEntityRequest: SpaceRequest<UpdateSpaceEntityDisplayDataMutation> {
+    public init(spaceID: String, entityID: String, title: String) {
+        super.init(
+            mutation: UpdateSpaceEntityDisplayDataMutation(
+                input: UpdateSpaceEntityDisplayDataInput(
+                    spaceId: spaceID, resultId: entityID, title: title)))
+    }
+}
+
 public class ReorderSpaceRequest: SpaceRequest<SetSpaceDetailPageSortOrderMutation> {
     public init(spaceID: String, ids: [String]) {
         super.init(
