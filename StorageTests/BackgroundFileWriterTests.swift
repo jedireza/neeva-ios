@@ -16,8 +16,8 @@ class BackgroundFileWriterTests: XCTestCase {
 
     private func assert(file: String, contains data: Data) {
         XCTAssertTrue(FileManager.default.fileExists(atPath: file))
-        let contents = try! String(contentsOfFile: file, encoding: .utf8)
-        XCTAssertEqual(String(data: data, encoding: .utf8), contents)
+        let contents = try! Data(contentsOf: URL(fileURLWithPath: file))
+        XCTAssertEqual(data, contents)
     }
 
     func testBasic() {
