@@ -4,16 +4,17 @@ import UIKit
 
 public class Haptics {
     public static func longPress() {
-        guard FeatureFlag[.haptics] else { return }
-
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.impactOccurred()
+        custom(style: .medium)
     }
 
     public static func swipeGesture() {
+        custom(style: .rigid)
+    }
+
+    public static func custom(style: UIImpactFeedbackGenerator.FeedbackStyle) {
         guard FeatureFlag[.haptics] else { return }
 
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()
     }
 }

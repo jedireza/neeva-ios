@@ -32,6 +32,7 @@ private struct BorderTreatment: ViewModifier {
 
 private struct DragToCloseInteraction: ViewModifier {
     let action: () -> Void
+    @State private var hasExceededThreshold = false
 
     @Environment(\.cardSize) private var cardSize
     @State private var offset = CGFloat.zero
@@ -39,7 +40,7 @@ private struct DragToCloseInteraction: ViewModifier {
     private var dragToCloseThreshold: CGFloat {
         // Using `cardSize` here helps this scale properly with different card sizes,
         // across portrait and landscape modes.
-        cardSize
+        cardSize * 0.6
     }
 
     private var progress: CGFloat {
@@ -66,6 +67,14 @@ private struct DragToCloseInteraction: ViewModifier {
                             || abs(value.translation.width) > abs(value.translation.height)
                         {
                             offset = value.translation.width
+                            if abs(offset) > dragToCloseThreshold {
+                                if !hasExceededThreshold {
+                                    hasExceededThreshold = true
+                                    Haptics.swipeGesture()
+                                }
+                            } else {
+                                hasExceededThreshold = false
+                            }
                         }
                     }
                     .onEnded { value in
