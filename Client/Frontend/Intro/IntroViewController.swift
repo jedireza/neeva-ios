@@ -10,7 +10,7 @@ import UIKit
 
 enum FirstRunButtonActions {
     case signin
-    case signupWithApple(Bool)
+    case signupWithApple(Bool?, URL?)
     case signupWithOther
     case skipToBrowser
 }
@@ -24,11 +24,7 @@ class IntroViewController: UIViewController,
     private var marketingEmailOptOut: Bool = true
 
     // Closure delegate
-    var didFinishClosure: ((IntroViewController) -> Void)?
-    var visitHomePage: (() -> Void)?
-    var visitSigninPage: (() -> Void)?
-    var visitAppleAuthPage: ((URL) -> Void)?
-    var skipToBrowser: (() -> Void)?
+    var didFinishClosure: ((FirstRunButtonActions) -> Void)?
 
     // MARK: Initializer
     init() {
@@ -60,26 +56,23 @@ class IntroViewController: UIViewController,
         // Make sure all actions are run on the main thread to prevent runtime errors
         DispatchQueue.main.async {
             switch option {
+            case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut, _):
+                ClientLogger.shared.logCounter(
+                    .FirstRunSignupWithApple, attributes: [ClientLogCounterAttribute]())
+                self.marketingEmailOptOut = marketingEmailOptOut ?? false
+                self.doSignupWithApple()
             case FirstRunButtonActions.signin:
                 ClientLogger.shared.logCounter(
                     .FirstRunSignin, attributes: [ClientLogCounterAttribute]())
-                self.didFinishClosure?(self)
-                self.visitSigninPage?()
-            case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut):
-                ClientLogger.shared.logCounter(
-                    .FirstRunSignupWithApple, attributes: [ClientLogCounterAttribute]())
-                self.marketingEmailOptOut = marketingEmailOptOut
-                self.doSignupWithApple()
+                self.didFinishClosure?(.signin)
             case .signupWithOther:
                 ClientLogger.shared.logCounter(
                     .FirstRunOtherSignUpOptions, attributes: [ClientLogCounterAttribute]())
-                self.didFinishClosure?(self)
-                self.visitHomePage?()
+                self.didFinishClosure?(.signupWithOther)
             case FirstRunButtonActions.skipToBrowser:
                 ClientLogger.shared.logCounter(
                     .FirstRunSkipToBrowser, attributes: [ClientLogCounterAttribute]())
-                self.didFinishClosure?(self)
-                self.visitHomePage?()
+                self.didFinishClosure?(.skipToBrowser)
             }
         }
     }
@@ -125,8 +118,7 @@ class IntroViewController: UIViewController,
                         serverAuthCode: authStr,
                         marketingEmailOptOut: self.marketingEmailOptOut,
                         signup: true)
-                    self.didFinishClosure?(self)
-                    visitAppleAuthPage?(authURL)
+                    self.didFinishClosure?(.signupWithApple(nil, authURL))
                 }
             }
             break

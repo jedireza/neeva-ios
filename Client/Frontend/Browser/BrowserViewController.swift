@@ -919,6 +919,7 @@ class BrowserViewController: UIViewController {
         if let selectedTab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(selectedTab)
         }
+
         let request: URLRequest?
         if let url = url {
             request = URLRequest(url: url)
@@ -928,7 +929,7 @@ class BrowserViewController: UIViewController {
 
         DispatchQueue.main.async {
             self.tabManager.selectTab(self.tabManager.addTab(request, isPrivate: isPrivate))
-            self.cardGridViewController.gridModel.hideWithNoAnimation()
+            self.hideCardGrid(withAnimation: false)
         }
     }
 
@@ -1573,36 +1574,28 @@ extension BrowserViewController {
     private func showProperIntroVC() {
         introViewController = IntroViewController()
 
-        introViewController!.didFinishClosure = { controller in
+        introViewController!.didFinishClosure = { action in
             Defaults[.introSeen] = true
-            controller.dismiss(animated: true)
-            self.introViewController = nil
-        }
 
-        introViewController!.visitHomePage = visitHomePage
-        introViewController!.visitSigninPage = visitSigninPage
-        introViewController!.visitAppleAuthPage = visitAppleAuthPage(authURL:)
-        introViewController!.skipToBrowser = skipToBrowser
+            self.introViewController?.dismiss(animated: true) { [self] in
+                switch action {
+                case .signin:
+                    self.openURLInNewTab(NeevaConstants.appSigninURL)
+                case .signupWithApple(_, let url):
+                    if let url = url, let tab = self.tabManager.selectedTab {
+                        tab.loadRequest(URLRequest(url: url))
+                    }
+                case .signupWithOther:
+                    self.openURLInNewTab(NeevaConstants.appSignupURL)
+                case .skipToBrowser:
+                    openURLInNewTab(URL(string: "https://neeva.com"))
+                }
+
+                self.introViewController = nil
+            }
+        }
 
         self.introVCPresentHelper(introViewController: introViewController!)
-    }
-
-    private func visitHomePage() {
-        openURLInNewTab(NeevaConstants.appSignupURL)
-    }
-
-    private func visitSigninPage() {
-        openURLInNewTab(NeevaConstants.appSigninURL)
-    }
-
-    private func visitAppleAuthPage(authURL: URL) {
-        if let tab = self.tabManager.selectedTab {
-            tab.loadRequest(URLRequest(url: authURL))
-        }
-    }
-
-    private func skipToBrowser() {
-        openURLInNewTab(URL(string: "https://neeva.com"))
     }
 
     private func introVCPresentHelper(introViewController: UIViewController) {

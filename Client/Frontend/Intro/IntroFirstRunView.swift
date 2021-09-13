@@ -40,7 +40,7 @@ struct IntroFirstRunView: View {
             .accessibilityAddTraits(.isHeader)
 
             VStack {
-                Button(action: { buttonAction(.signupWithApple(marketingEmailOptOut)) }) {
+                Button(action: { buttonAction(.signupWithApple(marketingEmailOptOut, nil)) }) {
                     HStack {
                         Image("apple")
                             .renderingMode(.template)
