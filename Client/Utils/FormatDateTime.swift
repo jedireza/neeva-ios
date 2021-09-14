@@ -54,6 +54,14 @@ private let calendar = Calendar(identifier: .gregorian)
 extension Date {
     fileprivate var gregorianYear: Int { calendar.component(.year, from: self) }
     fileprivate var dayOfGregorianYear: Int { calendar.ordinality(of: .day, in: .year, for: self)! }
+
+    public func minutesFromNow() -> Int {
+        let selfComponent =
+            Calendar.current.dateComponents([.minute], from: self)
+        let nowComponent = Calendar.current.dateComponents([.minute], from: Date())
+
+        return Calendar.current.dateComponents([.minute], from: selfComponent, to: nowComponent).minute ?? 0
+    }
 }
 private func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
     calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date1)

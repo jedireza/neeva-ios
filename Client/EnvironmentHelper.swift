@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import Foundation
 import Shared
 
@@ -91,5 +92,37 @@ public class EnvironmentHelper {
         ]
 
         return attributes
+    }
+
+    public func getFirstRunAttributes() -> [ClientLogCounterAttribute] {
+
+        // Rotate session UUID every 30 mins
+        if Defaults[.sessionUUIDExpirationTime].minutesFromNow() > 30 {
+            Defaults[.sessionUUID] = UUID().uuidString
+            Defaults[.sessionUUIDExpirationTime] = Date()
+        }
+
+        // session UUID that will rotate every 30 mins
+        let sessionUUID = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.SessionUUID, value: Defaults[.sessionUUID])
+
+        // is user signed in
+        let isUserSignedIn = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.isUserSignedIn,
+            value: String(NeevaUserInfo.shared.hasLoginCookie()))
+
+        // user theme setting
+        let deviceTheme = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.UserInterfaceStyle, value: self.themeStyle)
+
+        // device name
+        let deviceName = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.DeviceName, value: NeevaConstants.deviceNameValue)
+
+        // first run path, option user selected on first run screen
+        let firstRunPath = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.FirstRunPath, value: Defaults[.firstRunPath])
+
+        return [sessionUUID, isUserSignedIn, deviceTheme, deviceName, firstRunPath]
     }
 }

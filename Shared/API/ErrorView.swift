@@ -125,6 +125,7 @@ private struct GenericErrorView: View {
 /// Prompts the user to log into Neeva
 private struct LoginView: View {
     @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.logAuth) var logAuth
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
@@ -160,7 +161,7 @@ private struct LoginView: View {
                 } else {
                     Spacer().repeated(2)
                 }
-                Button(action: { onOpenURL(NeevaConstants.appSigninURL) }) {
+                Button(action: tapSignIn) {
                     HStack {
                         Image("neeva-logo", bundle: .main)
                             .renderingMode(.template)
@@ -177,7 +178,7 @@ private struct LoginView: View {
                 }
                 .buttonStyle(NeevaButtonStyle(.primary))
                 .padding(.bottom, 25)
-                Button(action: { onOpenURL(NeevaConstants.appSignupURL) }) {
+                Button(action: tapSignUp) {
                     Text("New to Neeva? Join now")
                         .font(.custom("Roobert", size: 18))
                         .underline()
@@ -190,6 +191,16 @@ private struct LoginView: View {
         }
         .preference(key: ErrorViewBackgroundPreferenceKey.self, value: Color.brand.offwhite)
         .colorScheme(.light)
+    }
+
+    func tapSignIn() {
+        logAuth(true)
+        onOpenURL(NeevaConstants.appSigninURL)
+    }
+
+    func tapSignUp() {
+        logAuth(false)
+        onOpenURL(NeevaConstants.appSignupURL)
     }
 }
 

@@ -22,4 +22,14 @@ extension EnvironmentValues {
         get { self[OnOpenURLForSpaceKey] ?? { url, _ in openURL(url) } }
         set { self[OnOpenURLForSpaceKey] = newValue }
     }
+
+    private struct LogAuth: EnvironmentKey {
+        static var defaultValue: ((Bool) -> Void)? = nil
+    }
+    public var logAuth: (Bool) -> Void {
+        get {
+            self[LogAuth] ?? { _ in fatalError(".environment(\\.logSignIn) must be specified") }
+        }
+        set { self[LogAuth] = newValue }
+    }
 }

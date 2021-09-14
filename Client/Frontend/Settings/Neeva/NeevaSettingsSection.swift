@@ -101,7 +101,7 @@ struct NeevaSettingsSection: View {
         } else {
             Button("Sign In or Join Neeva") {
                 ClientLogger.shared.logCounter(
-                    .SettingSignin, attributes: EnvironmentHelper.shared.getAttributes())
+                    .SettingSignin, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                 openURL(NeevaConstants.appSigninURL, false)
             }.frame(height: 60 - 12)
         }

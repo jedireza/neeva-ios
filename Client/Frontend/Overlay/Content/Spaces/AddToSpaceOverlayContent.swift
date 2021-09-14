@@ -3,10 +3,10 @@
 import Shared
 import SwiftUI
 
-/// A `View` intended to be embedded within an `OverlaySheetView`, used to
+/// A `View` intended to be embedded within an `OverlayView`, used to
 /// present the `AddToSpaceView` UI.
-struct AddToSpaceOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct AddToSpaceOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
 
     @ObservedObject var request: AddToSpaceRequest
 
@@ -15,11 +15,11 @@ struct AddToSpaceOverlaySheetContent: View {
     var body: some View {
         AddToSpaceView(
             request: request,
-            onDismiss: hideOverlaySheet,
+            onDismiss: hideOverlay,
             importData: importData
         )
-        .overlaySheetTitle(title: request.mode.title)
-        .overlaySheetIsFixedHeight(isFixedHeight: request.mode == .saveToNewSpace)
+        .overlayTitle(title: request.mode.title)
+        .overlayIsFixedHeight(isFixedHeight: request.mode == .saveToNewSpace)
         .environment(\.logAuth) { isSignin in
             ClientLogger.shared.logCounter(
                 isSignin

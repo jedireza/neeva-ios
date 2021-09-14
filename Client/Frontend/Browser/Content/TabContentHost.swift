@@ -95,6 +95,12 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                             bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
                         }.environment(\.setSearchInput) { suggestion in
                             suggestionModel.queryModel.value = suggestion
+                        }.environment(\.logAuth) { isSignin in
+                            ClientLogger.shared.logCounter(
+                                isSignin
+                                    ? .SuggestionErrorLoginViewSignin
+                                    : .SuggestionErrorLoginViewSignUp,
+                                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                         }
                 case .blank:
                     ZeroQueryContent(model: zeroQueryModel)

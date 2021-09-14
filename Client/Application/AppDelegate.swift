@@ -87,6 +87,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         PerformanceLogger.shared.logPageLoadWithCrashedStatus(
             crashed: !self.applicationCleanlyBackgrounded)
 
+        // set session UUID and timestamp if not set
+        if Defaults[.sessionUUID].isEmpty {
+            Defaults[.sessionUUID] = UUID().uuidString
+            Defaults[.sessionUUIDExpirationTime] = Date()
+        }
+
         // Need to get "settings.sendUsageData" this way so that Sentry can be initialized
         // before getting the Profile.
         let sendUsageData = false

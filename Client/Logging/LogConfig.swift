@@ -33,7 +33,6 @@ public struct LogConfig {
         case OpenSendFeedback  // Open send feedback from neeva menu
 
         // settings
-        case SettingSignin  // Sign in from setting
         case SettingAccountSettings  // Click search setting/account setting
         case SettingDefaultBrowser  // Click default browser in setting
         case SettingSignout  // Click sign out in setting
@@ -49,15 +48,22 @@ public struct LogConfig {
         case ClearAllWebsiteData  // Click Clear All Website Data in Data Management > Website Data
 
         // First Run
-        case FirstRunSignupWithApple // Click Sign up with Apple on first run
+        case FirstRunSignupWithApple  // Click Sign up with Apple on first run
         case FirstRunOtherSignUpOptions  // Click Other sign up options on first run
         case FirstRunSignin  // Click sign in on first run
         case FirstRunSkipToBrowser  // Click skip to browser on first run
         case FirstRunImpression  // First run screen rendered
         case LoginAfterFirstRun  // Login after first run
+        case FirstRunPageLoad  // Page load at first run and before login
+        case PromoSignin  // Sign in from promo card
+        case SettingSignin  // Sign in from setting
+        case SuggestionErrorLoginViewImpression  // Error login view triggered by suggestion
+        case SuggestionErrorLoginViewSignin  // Click Sign in on suggestion error login page
+        case SuggestionErrorLoginViewSignUp  // Click Sign up on suggestion error login page
+        case AddToSpaceErrorLoginViewSignin  // Click Sign in on add to space error login page
+        case AddToSpaceErrorLoginViewSignUp  // Click Sign up on add to space error login page
 
         // promo card
-        case PromoSignin  // Sign in from promo card
         case PromoDefaultBrowser  // Click set default browser from promo
         case CloseDefaultBrowserPromo  // Close default browser promo card
 
@@ -162,7 +168,6 @@ public struct LogConfig {
         case .OpenSetting: return .NeevaMenu
         case .OpenSendFeedback: return .NeevaMenu
 
-        case .SettingSignin: return .Settings
         case .SettingAccountSettings: return .Settings
         case .SettingDefaultBrowser: return .Settings
         case .SettingSignout: return .Settings
@@ -182,8 +187,15 @@ public struct LogConfig {
         case .FirstRunSkipToBrowser: return .FirstRun
         case .FirstRunImpression: return .FirstRun
         case .LoginAfterFirstRun: return .FirstRun
-
-        case .PromoSignin: return .PromoCard
+        case .FirstRunPageLoad: return .FirstRun
+        case .PromoSignin: return .FirstRun
+        case .SettingSignin: return .FirstRun
+        case .SuggestionErrorLoginViewImpression: return .FirstRun
+        case .SuggestionErrorLoginViewSignin: return .FirstRun
+        case .SuggestionErrorLoginViewSignUp: return .FirstRun
+        case .AddToSpaceErrorLoginViewSignin: return .FirstRun
+        case .AddToSpaceErrorLoginViewSignUp: return .FirstRun
+        
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
 
@@ -239,6 +251,14 @@ public struct LogConfig {
         public static let DeviceScreenSize = "DeviceScreenSize"
         /// Is user signed in
         public static let isUserSignedIn = "IsUserSignedIn"
+        /// Device name
+        public static let DeviceName = "DeviceName"
+        /// Session UUID
+        public static let SessionUUID = "SessionUUID"
+        /// First run search path and query
+        public static let FirstRunSearchPathQuery = "FirstRunSearchPathQuery"
+        /// First run path, option user clicked on first run screen
+        public static let FirstRunPath = "FirstRunPath"
     }
 
     public struct SuggestionAttribute {

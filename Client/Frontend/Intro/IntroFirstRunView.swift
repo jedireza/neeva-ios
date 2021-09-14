@@ -110,8 +110,11 @@ struct IntroFirstRunView: View {
     }
 
     func logImpression() {
-        ClientLogger.shared.logCounter(
-            .FirstRunImpression, attributes: [ClientLogCounterAttribute]())
+        if !Defaults[.firstRunImpressionLogged] {
+            ClientLogger.shared.logCounter(
+                .FirstRunImpression, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+            Defaults[.firstRunImpressionLogged] = true
+        }
         Defaults[.firstRunSeenAndNotSignedIn] = true
     }
 }
