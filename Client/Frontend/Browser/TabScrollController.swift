@@ -36,9 +36,10 @@ class TabScrollingController: NSObject, ObservableObject {
                 scrollView?.delegate = nil
                 scrollView?.removeGestureRecognizer(panGesture)
 
-                if let tab = newTab, let scrollView = tab.webView?.scrollView  {
+                if let tab = newTab, let scrollView = tab.webView?.scrollView {
                     scrollView.addGestureRecognizer(panGesture)
                     scrollView.delegate = self
+
                     self.scrollView = scrollView
 
                     tabSubscriptions = []
@@ -70,6 +71,7 @@ class TabScrollingController: NSObject, ObservableObject {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
         panGesture.delegate = self
+        panGesture.allowedScrollTypesMask = .all
         return panGesture
     }()
 
@@ -161,7 +163,6 @@ class TabScrollingController: NSObject, ObservableObject {
     fileprivate func roundNum(_ num: CGFloat) -> CGFloat {
         return round(100 * num) / 100
     }
-
 }
 
 extension TabScrollingController {
