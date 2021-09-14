@@ -22,6 +22,15 @@ extension Defaults.Keys {
         Defaults.BoolKey("profile.didDismissReferralPromoCard")
     public static let firstRunSeenAndNotSignedIn = Defaults.BoolKey(
         "firstRunSeenAndNotSignedIn")
+    public static let signedInOnce = Defaults.BoolKey("signedInOnce")
+    public static let firstRunPath = Defaults.Key<String>(
+        "firstRunPath", default: "none")
+    public static let firstRunImpressionLogged = Defaults.BoolKey(
+        "firstRunImpressionLogged")
+    public static let sessionUUID = Defaults.Key<String>(
+        "sessionUUID", default: "")
+    public static let sessionUUIDExpirationTime = Defaults.Key<Date>(
+        "sessionUUIDExpirationTime", default: Date(timeIntervalSince1970: 0))
 
     // explicit/implicit settings
     public static let contextMenuShowLinkPreviews = Defaults.Key(

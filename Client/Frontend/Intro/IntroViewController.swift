@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import AuthenticationServices
+import Defaults
 import Foundation
 import Shared
 import SnapKit
@@ -58,20 +59,28 @@ class IntroViewController: UIViewController,
             switch option {
             case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut, _):
                 ClientLogger.shared.logCounter(
-                    .FirstRunSignupWithApple, attributes: [ClientLogCounterAttribute]())
+                    .FirstRunSignupWithApple,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                Defaults[.firstRunPath] = "FirstRunSignupWithApple"
                 self.marketingEmailOptOut = marketingEmailOptOut ?? false
                 self.doSignupWithApple()
             case FirstRunButtonActions.signin:
                 ClientLogger.shared.logCounter(
-                    .FirstRunSignin, attributes: [ClientLogCounterAttribute]())
+                    .FirstRunSignin,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                Defaults[.firstRunPath] = "FirstRunSignin"
                 self.didFinishClosure?(.signin)
             case .signupWithOther:
                 ClientLogger.shared.logCounter(
-                    .FirstRunOtherSignUpOptions, attributes: [ClientLogCounterAttribute]())
+                    .FirstRunOtherSignUpOptions,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                Defaults[.firstRunPath] = "FirstRunOtherSignUpOptions"
                 self.didFinishClosure?(.signupWithOther)
             case FirstRunButtonActions.skipToBrowser:
                 ClientLogger.shared.logCounter(
-                    .FirstRunSkipToBrowser, attributes: [ClientLogCounterAttribute]())
+                    .FirstRunSkipToBrowser,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                Defaults[.firstRunPath] = "FirstRunSkipToBrowser"
                 self.didFinishClosure?(.skipToBrowser)
             }
         }

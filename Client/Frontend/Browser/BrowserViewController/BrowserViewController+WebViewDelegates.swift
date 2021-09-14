@@ -879,6 +879,24 @@ extension BrowserViewController: WKNavigationDelegate {
         tab.setURL(webView.url)
 
         if let url = webView.url {
+            // if user never signed in, log page load
+            if !Defaults[.signedInOnce] {
+                var attributes = EnvironmentHelper.shared.getFirstRunAttributes()
+
+                // if user visiting Neeva page, log path and query
+                if url.origin == NeevaConstants.appURL.origin {
+                    let query = url.query ?? ""
+                    attributes.append(
+                        ClientLogCounterAttribute(
+                            key: LogConfig.Attribute.FirstRunSearchPathQuery,
+                            value: url.path + query))
+                }
+
+                ClientLogger.shared.logCounter(
+                    .FirstRunPageLoad,
+                    attributes: attributes)
+            }
+
             // increment page load count
             PerformanceLogger.shared.incrementPageLoad(url: url)
 
@@ -942,8 +960,13 @@ extension BrowserViewController: WKNavigationDelegate {
                 // after seeing first run screen
                 if Defaults[.firstRunSeenAndNotSignedIn] && userInfo.hasLoginCookie() {
                     ClientLogger.shared.logCounter(
-                        .LoginAfterFirstRun, attributes: [ClientLogCounterAttribute]())
+                        .LoginAfterFirstRun, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                     Defaults[.firstRunSeenAndNotSignedIn] = false
+                }
+
+                // Mark user has signed in at least once
+                if userInfo.hasLoginCookie() {
+                    Defaults[.signedInOnce] = true
                 }
 
                 userInfo.updateLoginCookieFromWebKitCookieStore {

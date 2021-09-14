@@ -20,5 +20,12 @@ struct AddToSpaceOverlayContent: View {
         )
         .overlayTitle(title: request.mode.title)
         .overlayIsFixedHeight(isFixedHeight: request.mode == .saveToNewSpace)
+        .environment(\.logAuth) { isSignin in
+            ClientLogger.shared.logCounter(
+                isSignin
+                    ? .AddToSpaceErrorLoginViewSignin
+                    : .AddToSpaceErrorLoginViewSignUp,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        }
     }
 }
