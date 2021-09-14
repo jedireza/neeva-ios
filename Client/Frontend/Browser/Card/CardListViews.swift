@@ -19,7 +19,8 @@ private struct CardAdjustments<Details: CardDetails>: ViewModifier {
             )
             .animation(nil)
             .overlay(
-                Color.clear
+                Color.black
+                    .opacity(isDragging ? 0.2 : 0)
                     .cornerRadius(CardUX.CornerRadius)
                     .overlay(
                         RoundedRectangle(cornerRadius: CardUX.CornerRadius)
@@ -112,13 +113,16 @@ struct TabCardsView: View {
         @Binding var dragging: TabCardDetails?
 
         func dropEntered(info: DropInfo) {
-            if let dragging = dragging, item.id != dragging.id {
+            guard let dragging = self.dragging else {
+                return
+            }
+
+            if dragging.id != item.id {
                 let from = items.firstIndex { $0.id == dragging.id }
                 let to = items.firstIndex { $0.id == item.id }
 
                 if let from = from, let to = to {
-                   items.move(fromOffsets: IndexSet(integer: from),
-                       toOffset: to > from ? to + 1 : to)
+                   items.move(fromOffsets: IndexSet(integer: from), toOffset: to > from ? to + 1 : to)
                 }
             }
         }
@@ -128,11 +132,8 @@ struct TabCardsView: View {
         }
 
         func performDrop(info: DropInfo) -> Bool {
-            if item.validateDrop(info: info) {
-                return item.performDrop(info: info)
-            } else {
-                return true
-            }
+            self.dragging = nil
+            return true
         }
     }
 }

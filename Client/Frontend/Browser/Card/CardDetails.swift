@@ -288,13 +288,11 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     }
 
     func performDrop(info: DropInfo) -> Bool {
-        guard let bvc = bvc, validateDrop(info: info) else {
+        guard validateDrop(info: info) else {
             return false
         }
 
         let items = info.itemProviders(for: ["public.url"])
-        let foundUrl = !items.isEmpty
-
         for item in items {
             _ = item.loadObject(ofClass: URL.self) { url, _ in
                 if let url = url, let space = self.manager.get(for: self.id) {
