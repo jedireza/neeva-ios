@@ -4,11 +4,11 @@ import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 
-struct AddToNativeSpaceOverlaySheetContent: View {
+struct AddToNativeSpaceOverlayContent: View {
+  @Environment(\.hideOverlay) private var hideOverlay
+  
     let space: Space
     let entityID: String?
-
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
 
     init(space: Space, entityID: String? = nil) {
         self.space = space
@@ -16,9 +16,9 @@ struct AddToNativeSpaceOverlaySheetContent: View {
     }
 
     var body: some View {
-        AddToNativeSpaceView(space: space, entityID: entityID, dismiss: hideOverlaySheet)
-            .overlaySheetIsFixedHeight(isFixedHeight: true)
-            .overlaySheetTitle(title: entityID == nil ? "Add item" : "Update item")
+        AddToNativeSpaceView(space: space, entityID: entityID, dismiss: hideOverlay)
+            .overlayIsFixedHeight(isFixedHeight: true)
+            .overlayTitle(title: entityID == nil ? "Add item" : "Update item")
     }
 }
 

@@ -2,8 +2,8 @@
 
 import SwiftUI
 
-struct OverflowMenuOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct OverflowMenuOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
 
     let menuAction: (OverflowMenuAction) -> Void
     let changedUserAgent: Bool?
@@ -12,12 +12,12 @@ struct OverflowMenuOverlaySheetContent: View {
 
     var body: some View {
         OverflowMenuView(changedUserAgent: changedUserAgent ?? false) { action in
-            hideOverlaySheet()
+            hideOverlay()
             menuAction(action)
         }
         .environmentObject(chromeModel)
         .environmentObject(locationModel)
-        .overlaySheetIsFixedHeight(isFixedHeight: true)
+        .overlayIsFixedHeight(isFixedHeight: true)
         .padding(.top, -8)
     }
 }

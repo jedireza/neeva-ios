@@ -4,11 +4,12 @@ import Defaults
 import Shared
 import SwiftUI
 
-struct SpacesIntroOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct SpacesIntroOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
+    
     var body: some View {
-        SpacesIntroView(dismiss: hideOverlaySheet)
-            .overlaySheetIsFixedHeight(isFixedHeight: true)
+        SpacesIntroView(dismiss: hideOverlay)
+            .overlayIsFixedHeight(isFixedHeight: true)
     }
 }
 

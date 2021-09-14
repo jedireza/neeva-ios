@@ -3,69 +3,24 @@
 import Shared
 import SwiftUI
 
-// This file provides an overlay bottom sheet implementation that starts in a
-// half-height (or middle) position. The user can drag it to a fullscreen (or
-// top) position or can drag down to dismiss.
-
 enum OverlaySheetUX {
     /// Number of points you have to drag the top bar to tigger an animation
     /// of the overlay sheet to a new position.
-    fileprivate static let slideThreshold: CGFloat = 100
+    static let slideThreshold: CGFloat = 100
 
     /// Duration of slide animations.
-    fileprivate static let animationDuration: Double = 0.2
+    static let animationDuration: Double = 0.2
 
     /// Opacity of the backdrop when the overlay sheet is done animating open.
-    fileprivate static let backdropMaxOpacity: Double = 0.2
+    static let backdropMaxOpacity: Double = 0.2
 
     /// Width of the sheet when in landscape mode.
-    fileprivate static let landscapeModeWidth: CGFloat = 500
+    static let landscapeModeWidth: CGFloat = 500
 }
 
-enum OverlaySheetPosition: LocalizedStringKey {
-    case top = "Full screen"
-    case middle = "Half screen"
-    case dismissed = ""
-}
-
-class OverlaySheetModel: ObservableObject {
-    @Published var deltaHeight: CGFloat = 0
-    @Published var position: OverlaySheetPosition = .dismissed
-    @Published var backdropOpacity: Double = 0.0
-
-    func show() {
-        withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
-            self.position = .middle
-            self.backdropOpacity = OverlaySheetUX.backdropMaxOpacity
-        }
-    }
-
-    func hide() {
-        withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
-            self.deltaHeight = 0
-            self.position = .dismissed
-            self.backdropOpacity = 0.0
-        }
-    }
-}
-
-struct OverlaySheetStyle {
-    let showTitle: Bool
-    let backgroundColor: UIColor
-
-    init(showTitle: Bool, backgroundColor: UIColor = .systemBackground) {
-        self.showTitle = showTitle
-        self.backgroundColor = backgroundColor
-    }
-
-    /// Use for sheets containing grouped sets of controls (e.g., like the Overflow menu).
-    static let grouped = OverlaySheetStyle(
-        showTitle: false, backgroundColor: .systemGroupedBackground)
-
-    /// Use for sheets with a title (e.g., like the AddToSpaces sheet).
-    static let withTitle = OverlaySheetStyle(showTitle: true)
-}
-
+// This view provides an overlay bottom sheet implementation that starts in a
+// half-height (or middle) position. The user can drag it to a fullscreen (or
+// top) position or can drag down to dismiss.
 // Intended to present content that is flexible in height (e.g., a ScrollView).
 struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @StateObject var model: OverlaySheetModel
@@ -76,7 +31,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @State private var title: String = ""
     @State private var isFixedHeight: Bool = false
 
-    let style: OverlaySheetStyle
+    let style: OverlayStyle
     let onDismiss: () -> Void
     let content: () -> Content
 
@@ -201,8 +156,8 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     self.content()
                         .modifier(ViewHeightKey())
                         .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
-                        .onPreferenceChange(OverlaySheetTitlePreferenceKey.self) { self.title = $0 }
-                        .onPreferenceChange(OverlaySheetIsFixedHeightPreferenceKey.self) {
+                        .onPreferenceChange(OverlayTitlePreferenceKey.self) { self.title = $0 }
+                        .onPreferenceChange(OverlayIsFixedHeightPreferenceKey.self) {
                             self.isFixedHeight = $0
                         }
                     if isFixedHeight {
@@ -308,60 +263,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     }
 }
 
-// This PreferenceKey may be used by a child View of the OverlaySheetView
-// to specify a title for the sheet.
-//
-// E.g.:
-//
-//    OverlaySheetView(..) {
-//        SomeContent()
-//            .overlaySheetTitle(title: "Some Title")
-//    }
-//
-struct OverlaySheetTitlePreferenceKey: PreferenceKey {
-    typealias Value = String
-    static var defaultValue: String = ""
-    static func reduce(value: inout String, nextValue: () -> String) {
-        value = nextValue()
-    }
-}
-struct OverlaySheetTitleViewModifier: ViewModifier {
-    let title: String
-    func body(content: Content) -> some View {
-        content.preference(
-            key: OverlaySheetTitlePreferenceKey.self,
-            value: title)
-    }
-}
-extension View {
-    func overlaySheetTitle(title: String) -> some View {
-        self.modifier(OverlaySheetTitleViewModifier(title: title))
-    }
-}
-
-// This PreferenceKey may be used by a child View of the OverlaySheetView
-// to specify that the content should be treated as fixed height.
-struct OverlaySheetIsFixedHeightPreferenceKey: PreferenceKey {
-    typealias Value = Bool
-    static var defaultValue: Bool = false
-    static func reduce(value: inout Bool, nextValue: () -> Bool) {
-        value = nextValue()
-    }
-}
-struct OverlaySheetIsFixedHeightViewModifier: ViewModifier {
-    let isFixedHeight: Bool
-    func body(content: Content) -> some View {
-        content.preference(
-            key: OverlaySheetIsFixedHeightPreferenceKey.self,
-            value: isFixedHeight)
-    }
-}
-extension View {
-    func overlaySheetIsFixedHeight(isFixedHeight: Bool) -> some View {
-        self.modifier(OverlaySheetIsFixedHeightViewModifier(isFixedHeight: isFixedHeight))
-    }
-}
-
 private struct DismissalObserverModifier: AnimatableModifier {
     var backdropOpacity: Double
     let position: OverlaySheetPosition
@@ -376,6 +277,7 @@ private struct DismissalObserverModifier: AnimatableModifier {
                 // the overlay sheet, which could cause issues for SwiftUI processing.
                 // See issue #401.
                 let onDismiss = self.onDismiss
+                
                 DispatchQueue.main.async {
                     onDismiss()
                 }

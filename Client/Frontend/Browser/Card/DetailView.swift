@@ -63,10 +63,10 @@ where
         if let space = space, canEdit {
             Button(
                 action: {
-                    SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
+                    SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
                         style: .withTitle
                     ) {
-                        AddToNativeSpaceOverlaySheetContent(space: space)
+                        AddToNativeSpaceOverlayContent(space: space)
                             .environmentObject(spacesModel)
                     }
                 },
@@ -89,10 +89,10 @@ where
             Button(
                 action: {
                     if case .owner = space.userACL {
-                        SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
-                            style: OverlaySheetStyle(showTitle: false),
+                        SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
+                            style: OverlayStyle(showTitle: false),
                             content: {
-                                ShareSpaceOverlaySheetContent(
+                                ShareSpaceOverlayContent(
                                     space: space, presentShareOnDismiss: $presentShareOnDismiss
                                 )
                                 .environmentObject(spacesModel)
@@ -300,7 +300,7 @@ where
                                     .showAsModalOverlaySheet(
                                         style: .withTitle
                                     ) {
-                                        AddToNativeSpaceOverlaySheetContent(
+                                        AddToNativeSpaceOverlayContent(
                                             space: space, entityID: details.id
                                         )
                                         .environmentObject(spacesModel)

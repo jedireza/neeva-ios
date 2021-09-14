@@ -4,8 +4,8 @@ import Combine
 import Shared
 import SwiftUI
 
-struct CreateSpaceOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct CreateSpaceOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
     @EnvironmentObject private var gridModel: GridModel
     @State private var subscription: AnyCancellable? = nil
 
@@ -26,13 +26,14 @@ struct CreateSpaceOverlaySheetContent: View {
                     }
                 }
             }
-            hideOverlaySheet()
-        }.overlaySheetIsFixedHeight(isFixedHeight: true)
+            
+            hideOverlay()
+        }.overlayIsFixedHeight(isFixedHeight: true)
     }
 }
 
-struct CreateSpaceOverlaySheetContent_Previews: PreviewProvider {
+struct CreateSpaceOverlayContent_Previews: PreviewProvider {
     static var previews: some View {
-        CreateSpaceOverlaySheetContent()
+        CreateSpaceOverlayContent()
     }
 }

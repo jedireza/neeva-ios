@@ -3,8 +3,8 @@
 import Shared
 import SwiftUI
 
-struct OpenInAppOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct OpenInAppOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
 
     let url: URL
 
@@ -12,11 +12,11 @@ struct OpenInAppOverlaySheetContent: View {
         OpenInAppOverlayView(
             url: url,
             onOpen: {
-                hideOverlaySheet()
+                hideOverlay()
                 UIApplication.shared.open(url, options: [:])
             },
-            onCancel: hideOverlaySheet
+            onCancel: hideOverlay
         )
-        .overlaySheetIsFixedHeight(isFixedHeight: true)
+        .overlayIsFixedHeight(isFixedHeight: true)
     }
 }

@@ -3,17 +3,17 @@
 import Shared
 import SwiftUI
 
-struct HTTPAuthPromptOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct HTTPAuthPromptOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
 
     let url: String
     let onSubmit: (String, String) -> Void
 
     var body: some View {
         HTTPAuthPromptOverlayView(
-            url: url, onSubmit: onSubmit, onCancel: hideOverlaySheet
+            url: url, onSubmit: onSubmit, onCancel: hideOverlay
         )
-        .overlaySheetIsFixedHeight(isFixedHeight: true)
+        .overlayIsFixedHeight(isFixedHeight: true)
         .accessibility(label: Text("HTTP Sign In"))
     }
 }

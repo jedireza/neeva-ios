@@ -2,8 +2,8 @@
 
 import SwiftUI
 
-struct CheatsheetOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct CheatsheetOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
     private let menuAction: (NeevaMenuAction) -> Void
     private let model: CheatsheetMenuViewModel
     private let isIncognito: Bool
@@ -17,9 +17,9 @@ struct CheatsheetOverlaySheetContent: View {
     var body: some View {
         CheatsheetMenuView { action in
             menuAction(action)
-            hideOverlaySheet()
+            hideOverlay()
         }
-        .overlaySheetIsFixedHeight(isFixedHeight: false)
+        .overlayIsFixedHeight(isFixedHeight: false)
         .environmentObject(model)
         .environment(\.isIncognito, isIncognito)
     }

@@ -27,8 +27,8 @@ extension BrowserViewController: ToolbarDelegate {
                 self.tabManager.selectedTab?.goBack()
 
             case .overflow:
-                self.showAsModalOverlaySheet(style: .grouped) {
-                    OverflowMenuOverlaySheetContent(
+                self.showModal(style: .grouped) {
+                    OverflowMenuOverlayContent(
                         menuAction: { action in
                             self.perform(overflowMenuAction: action, targetButtonView: nil)
                         },

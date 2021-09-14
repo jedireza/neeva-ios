@@ -30,8 +30,12 @@ class FindInPageModel: ObservableObject {
         guard let tab = tab, let webView = tab.webView else { return }
 
         do {
-            guard let escapedEncoded = String(data: try JSONEncoder().encode(searchValue), encoding: .utf8) else { return }
-            webView.evaluateJavascriptInDefaultContentWorld("__firefox__.\(function.rawValue)(\(escapedEncoded))")
+            guard
+                let escapedEncoded = String(
+                    data: try JSONEncoder().encode(searchValue), encoding: .utf8)
+            else { return }
+            webView.evaluateJavascriptInDefaultContentWorld(
+                "__firefox__.\(function.rawValue)(\(escapedEncoded))")
         } catch {
             print("Error encoding escaped value: \(error)")
         }

@@ -23,17 +23,17 @@ extension SpaceACLLevel {
     }
 }
 
-struct ShareSpaceOverlaySheetContent: View {
+struct ShareSpaceOverlayContent: View {
     let space: Space
     @Binding var presentShareOnDismiss: Bool
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+    @Environment(\.hideOverlay) private var hideOverlay
 
     var body: some View {
         ShareSpaceView(
             space: space,
             presentShareOnDismiss: $presentShareOnDismiss,
-            dismiss: hideOverlaySheet
-        ).overlaySheetIsFixedHeight(isFixedHeight: true)
+            dismiss: hideOverlay
+        ).overlayIsFixedHeight(isFixedHeight: true)
     }
 }
 

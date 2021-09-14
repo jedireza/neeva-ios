@@ -512,8 +512,8 @@ extension BrowserViewController: WKNavigationDelegate {
 
         tabManager.selectedTab?.stop()
 
-        showAsModalOverlaySheet(style: .grouped) {
-            OpenInAppOverlaySheetContent(url: url)
+        showModal(style: .grouped) {
+            OpenInAppOverlayContent(url: url)
         }
     }
 

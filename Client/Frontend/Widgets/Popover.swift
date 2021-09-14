@@ -45,7 +45,7 @@ extension View {
 }
 
 /// `Popover` wraps a view controller that handles presenting and dismissing the actual popover
-private struct Popover<Content: View>: UIViewControllerRepresentable {
+struct Popover<Content: View>: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     let arrowDirections: UIPopoverArrowDirection?
     let backgroundColor: UIColor?

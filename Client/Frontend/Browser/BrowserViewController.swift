@@ -59,8 +59,8 @@ class BrowserViewController: UIViewController {
                 tabManager: tabManager,
                 openLazyTab: { openLazyTab(openedFrom: .tabTray) },
                 createNewSpace: {
-                    self.showAsModalOverlaySheet(style: .grouped) {
-                        CreateSpaceOverlaySheetContent()
+                    self.showModal(style: .grouped) {
+                        CreateSpaceOverlayContent()
                             .environmentObject(self.cardGridViewController.gridModel)
                     }
                 },
@@ -810,13 +810,25 @@ class BrowserViewController: UIViewController {
         }
     }
 
+    func showModal<Content: View>(
+        style: OverlayStyle, content: @escaping () -> Content,
+        onDismiss: (() -> Void)? = nil
+    ) {
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            showAsModalOverlaySheet(style: style, content: content, onDismiss: onDismiss)
+        } else {
+            showAsModalOverlayPopover(style: style, content: content, onDismiss: onDismiss)
+        }
+    }
+
     func showAsModalOverlaySheet<Content: View>(
-        style: OverlaySheetStyle, content: @escaping () -> Content,
+        style: OverlayStyle, content: @escaping () -> Content,
         onDismiss: (() -> Void)? = nil
     ) {
         var controller: UIViewController? = nil
-        controller = OverlaySheetViewController(
-            style: style, content: { AnyView(erasing: content()) },
+        controller = OverlayViewController(
+            isPopover: false, style: style,
+            content: { AnyView(erasing: content()) },
             onDismiss: {
                 if controller == self.overlaySheetViewController {
                     self.hideOverlaySheetViewController()
@@ -830,6 +842,28 @@ class BrowserViewController: UIViewController {
                 self.openURLInNewTabPreservingIncognitoState(url)
             })
         showOverlaySheetViewController(controller!)
+    }
+
+    func showAsModalOverlayPopover<Content: View>(
+        style: OverlayStyle, content: @escaping () -> Content,
+        onDismiss: (() -> Void)? = nil
+    ) {
+        var controller: UIViewController? = nil
+        controller = OverlayViewController(
+            isPopover: true, style: style, content: { AnyView(erasing: content()) },
+            onDismiss: {
+                controller?.dismiss(animated: true, completion: nil)
+                onDismiss?()
+            },
+            onOpenURL: { url in
+                controller?.dismiss(animated: true, completion: nil)
+                self.openURLInNewTabPreservingIncognitoState(url)
+            })
+
+        controller?.modalPresentationStyle = .overFullScreen
+        controller?.modalTransitionStyle = .crossDissolve
+
+        present(controller!, animated: true, completion: nil)
     }
 
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab?) {
@@ -1891,8 +1925,8 @@ extension BrowserViewController {
         let title = (title ?? "").isEmpty ? url.absoluteString : title!
         let request = AddToSpaceRequest(title: title, description: description, url: url)
 
-        self.showAsModalOverlaySheet(style: .withTitle) {
-            AddToSpaceOverlaySheetContent(
+        self.showModal(style: .withTitle) {
+            AddToSpaceOverlayContent(
                 request: request,
                 importData: importData)
         } onDismiss: {
@@ -1910,14 +1944,14 @@ extension BrowserViewController {
         updateFeedbackImage()
 
         if NeevaFeatureFlags[.cheatsheetQuery] {
-            showAsModalOverlaySheet(style: .grouped) { [self] in
-                CheatsheetOverlaySheetContent(
+            showModal(style: .grouped) { [self] in
+                CheatsheetOverlayContent(
                     menuAction: perform(neevaMenuAction:),
                     tabManager: tabManager)
             }
         } else {
-            showAsModalOverlaySheet(style: .grouped) { [self] in
-                NeevaMenuOverlaySheetContent(
+            showModal(style: .grouped) { [self] in
+                NeevaMenuOverlayContent(
                     menuAction: perform(neevaMenuAction:),
                     isIncognito: tabManager.isIncognito)
             }

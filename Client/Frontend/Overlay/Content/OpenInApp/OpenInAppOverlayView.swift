@@ -9,7 +9,7 @@ struct OpenInAppOverlayView: View {
     let onOpen: () -> Void
     let onCancel: () -> Void
 
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+    @Environment(\.hideOverlay) private var hideOverlay
 
     public var body: some View {
         GroupedStack {

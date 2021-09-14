@@ -3,8 +3,8 @@
 import Shared
 import SwiftUI
 
-struct DownloadOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct DownloadOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
 
     let fileName: String
     let fileURL: String
@@ -15,11 +15,11 @@ struct DownloadOverlaySheetContent: View {
         DownloadMenuView(
             fileName: fileName, fileURL: fileURL, fileSize: fileSize,
             onDownload: {
-                hideOverlaySheet()
+                hideOverlay()
                 onDownload()
             },
-            onCancel: hideOverlaySheet
+            onCancel: hideOverlay
         )
-        .overlaySheetIsFixedHeight(isFixedHeight: true)
+        .overlayIsFixedHeight(isFixedHeight: true)
     }
 }

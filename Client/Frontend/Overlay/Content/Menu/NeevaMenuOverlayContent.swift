@@ -2,8 +2,8 @@
 
 import SwiftUI
 
-struct NeevaMenuOverlaySheetContent: View {
-    @Environment(\.hideOverlaySheet) private var hideOverlaySheet
+struct NeevaMenuOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
 
     let menuAction: (NeevaMenuAction) -> Void
     let isIncognito: Bool
@@ -11,10 +11,10 @@ struct NeevaMenuOverlaySheetContent: View {
     var body: some View {
         NeevaMenuView(noTopPadding: true) { action in
             menuAction(action)
-            hideOverlaySheet()
+            hideOverlay()
         }
         .environment(\.isIncognito, isIncognito)
-        .overlaySheetIsFixedHeight(isFixedHeight: true)
+        .overlayIsFixedHeight(isFixedHeight: true)
         .padding(.top, 8)
     }
 }

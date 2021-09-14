@@ -1,13 +1,13 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
-struct OverlaySheetStepperButton: View {
+struct OverlayStepperButton: View {
     var action: () -> Void
     var symbol: Symbol
     var foregroundColor: Color
-    
+
     var body: some View {
         Button(action: action) {
             symbol
@@ -20,8 +20,7 @@ struct OverlaySheetStepperButton: View {
     }
 }
 
-
-struct OverlaySheetStepperAccessibilityModifier: ViewModifier {
+struct OverlayStepperAccessibilityModifier: ViewModifier {
     var accessibilityLabel: String
     var accessibilityValue: String?
 

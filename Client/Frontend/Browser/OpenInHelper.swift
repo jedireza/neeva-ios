@@ -118,8 +118,8 @@ class DownloadHelper: NSObject, OpenInHelper {
             ? ByteCountFormatter.string(
                 fromByteCount: download.totalBytesExpected!, countStyle: .file) : nil
 
-        browserViewController.showAsModalOverlaySheet(style: .grouped) {
-            DownloadOverlaySheetContent(
+        browserViewController.showModal(style: .grouped) {
+            DownloadOverlayContent(
                 fileName: download.filename, fileURL: host, fileSize: expectedSize,
                 onDownload: { [weak self] in
                     self?.browserViewController.downloadQueue.enqueue(download)
