@@ -850,12 +850,13 @@ class BrowserViewController: UIViewController {
 
     override func accessibilityPerformEscape() -> Bool {
         if chromeModel.isEditingLocation {
-            chromeModel.setEditingLocation(to: false)
+            closeLazyTab()
             return true
         } else if let selectedTab = tabManager.selectedTab, selectedTab.canGoBack {
             selectedTab.goBack()
             return true
         }
+
         return false
     }
 
