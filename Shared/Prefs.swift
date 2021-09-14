@@ -82,10 +82,12 @@ extension Defaults.Keys {
 
     public static let notificationToken = Defaults.Key<String?>(
         "notificationToken", default: nil)
-  
+
     // spaces
     public static let seenSpacesIntro = Defaults.Key<Bool>(
         "spacesIntroSeen", default: false)
+    public static let seenSpacesShareIntro = Defaults.Key<Bool>(
+        "spacesShareIntroSeen", default: false)
 }
 
 extension Defaults {

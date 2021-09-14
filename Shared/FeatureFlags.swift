@@ -15,7 +15,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case groupsInSwitcher = "TabGroups in Tab Switcher"
     case haptics = "Haptics"
     case inlineAccountSettings = "Inline Account Settings"
-    case nativeSpaces = "Spaces in Tab Switcher"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case notifications = "Notifications"
     case pinToTopSites = "Pin to Top Sites"

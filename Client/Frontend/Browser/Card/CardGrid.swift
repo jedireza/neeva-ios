@@ -115,7 +115,7 @@ struct CardGrid: View {
     @ViewBuilder var topBar: some View {
         if topToolbar {
             SwitcherToolbarView(top: true, isEmpty: tabModel.isCardGridEmpty)
-        } else if FeatureFlag[.nativeSpaces] {
+        } else {
             GridPicker()
         }
     }
@@ -171,6 +171,7 @@ struct CardGrid: View {
 
 struct GridPicker: View {
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var tabModel: TabCardModel
 
     var body: some View {
         Picker("", selection: $gridModel.switcherState) {
@@ -179,8 +180,9 @@ struct GridPicker: View {
             }
         }.pickerStyle(SegmentedPickerStyle())
             .padding(CardGridUX.PickerPadding)
+            .disabled(tabModel.manager.isIncognito)
             .frame(height: gridModel.pickerHeight)
-            .background(Color.background)
+            .background(Color.DefaultBackground)
             .opacity(gridModel.isHidden ? 0 : 1)
             .animation(.easeOut)
     }

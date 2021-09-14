@@ -198,10 +198,12 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
         if let imageThumbnailModel = imageThumbnailModel {
             ImageThumbnailView(model: imageThumbnailModel)
         } else {
-            Symbol(decorative: .bookmarkOnBookmark)
-                .foregroundColor(Color.white)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.spaceIconBackground)
+            GeometryReader { geom in
+                Symbol(decorative: .bookmarkOnBookmark, size: geom.size.width / 3)
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.spaceIconBackground)
+            }
         }
     }
 

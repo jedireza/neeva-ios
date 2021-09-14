@@ -47,7 +47,7 @@ struct SwitcherToolbarView: View {
             if !top { divider }
 
             HStack(spacing: 0) {
-                if FeatureFlag[.nativeSpaces], top {
+                if top {
                     TabToolbarButtons.NeevaMenu(iconWidth: 24) {
                         presentingMenu = true
                     }

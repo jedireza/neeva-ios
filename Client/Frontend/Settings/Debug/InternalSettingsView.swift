@@ -8,6 +8,7 @@ struct InternalSettingsView: View {
     @Default(.searchInputPromptDismissed) var searchInputPromptDismissed
     @Default(.introSeen) var introSeen
     @Default(.seenSpacesIntro) var seenSpacesIntro
+    @Default(.seenSpacesShareIntro) var seenSpacesShareIntro
     @Default(.lastVersionNumber) var lastVersionNumber
     @Default(.didShowDefaultBrowserOnboarding) var didShowDefaultBrowserOnboarding
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
@@ -29,6 +30,7 @@ struct InternalSettingsView: View {
                 Toggle("searchInputPromptDismissed", isOn: $searchInputPromptDismissed)
                 Toggle("introSeen", isOn: $introSeen)
                 Toggle("spacesIntroSeen", isOn: $seenSpacesIntro)
+                Toggle("spacesShareIntroSeen", isOn: $seenSpacesShareIntro)
                 OptionalStringField("lastVersionNumber", text: $lastVersionNumber)
                 Toggle("didShowDefaultBrowserOnboarding", isOn: $didShowDefaultBrowserOnboarding)
                 Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)

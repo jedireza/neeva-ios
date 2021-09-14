@@ -101,7 +101,7 @@ struct CardsContainer: View {
             guard case .spaces = value, !seenSpacesIntro else {
                 return
             }
-            SceneDelegate.getBVC(with: tabModel.manager.scene).showAsModalOverlaySheet(
+            SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
                 style: .grouped,
                 content: {
                     SpacesIntroOverlayContent()

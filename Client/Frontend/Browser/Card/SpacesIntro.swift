@@ -5,19 +5,64 @@ import Shared
 import SwiftUI
 
 struct SpacesIntroOverlayContent: View {
-    @Environment(\.hideOverlay) private var hideOverlay
-    
+    @Environment(\.hideOverlay) private var hideOverlaySheet
+    let learnMoreURL = URL(
+        string: "https://help.neeva.com/hc/en-us/articles/1500005917202-What-are-Spaces")!
+    @Environment(\.onOpenURL) private var onOpenURL
     var body: some View {
-        SpacesIntroView(dismiss: hideOverlay)
-            .overlayIsFixedHeight(isFixedHeight: true)
+        SpacesIntroView(
+            dismiss: hideOverlaySheet,
+            imageName: "spaces-intro",
+            imageAccessibilityLabel:
+                "Stay organized by adding images, websites, documents to a Space today",
+            headlineText: "Kill the clutter",
+            detailText:
+                "Save and share instantly. Stay organized by adding images, websites, documents to a Space today",
+            firstButtonText: "Continue",
+            secondButtonText: "Learn More About Spaces",
+            firstButtonPressed: hideOverlaySheet,
+            secondButtonPressed: {
+                onOpenURL(learnMoreURL)
+            }
+        )
+        .overlayIsFixedHeight(isFixedHeight: true)
+    }
+}
+
+struct SpacesShareIntroOverlayContent: View {
+    @Environment(\.hideOverlay) private var hideOverlaySheet
+    let onShare: () -> Void
+    var body: some View {
+        SpacesIntroView(
+            dismiss: hideOverlaySheet,
+            imageName: "spaces-share-intro",
+            imageAccessibilityLabel:
+                "Stay organized by adding images, websites, documents to a Space today",
+            headlineText: "Share Space to the web",
+            detailText:
+                "Your Space will be public as anyone with the link can view your Space. Ready to share?",
+            firstButtonText: "Yes! Share my Space publicly",
+            secondButtonText: "Not now",
+            firstButtonPressed: {
+                onShare()
+                hideOverlaySheet()
+            },
+            secondButtonPressed: hideOverlaySheet
+        )
+        .overlayIsFixedHeight(isFixedHeight: true)
     }
 }
 
 struct SpacesIntroView: View {
-    let learnMoreURL = URL(
-        string: "https://help.neeva.com/hc/en-us/articles/1500005917202-What-are-Spaces")!
     let dismiss: () -> Void
-    @Environment(\.onOpenURL) private var onOpenURL
+    let imageName: String
+    let imageAccessibilityLabel: String
+    let headlineText: String
+    let detailText: String
+    let firstButtonText: String
+    let secondButtonText: String
+    let firstButtonPressed: () -> Void
+    let secondButtonPressed: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -32,27 +77,22 @@ struct SpacesIntroView: View {
                         .padding(.trailing, 4.5)
                 }
             }
-            Image("spaces-intro", bundle: .main)
+            Image(imageName, bundle: .main)
                 .resizable()
                 .frame(width: 214, height: 200)
                 .padding(32)
-                .accessibilityLabel(
-                    "Stay organized by adding images, websites, documents to a Space today")
-            Text("Kill the clutter").withFont(.headingXLarge).padding(8)
-            Text(
-                "Save and share instantly. Stay organized by adding images, websites, documents to a Space today"
-            )
-            .withFont(.bodyLarge)
-            .lineLimit(3)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 40)
-            .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel(imageAccessibilityLabel)
+            Text(headlineText).withFont(.headingXLarge).padding(8)
+            Text(detailText)
+                .withFont(.bodyLarge)
+                .lineLimit(3)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+                .fixedSize(horizontal: false, vertical: true)
             Button(
-                action: {
-                    dismiss()
-                },
+                action: firstButtonPressed,
                 label: {
-                    Text("Continue")
+                    Text(firstButtonText)
                         .withFont(.labelLarge)
                         .foregroundColor(.brand.white)
                         .padding(13)
@@ -63,11 +103,9 @@ struct SpacesIntroView: View {
             .padding(.top, 36)
             .padding(.horizontal, 16)
             Button(
-                action: {
-                    onOpenURL(learnMoreURL)
-                },
+                action: secondButtonPressed,
                 label: {
-                    Text("Learn More About Spaces")
+                    Text(secondButtonText)
                         .withFont(.labelLarge)
                         .foregroundColor(.ui.adaptive.blue)
                         .padding(13)
@@ -146,7 +184,8 @@ struct EmptySpaceView: View {
 
 struct SpacesIntroView_Previews: PreviewProvider {
     static var previews: some View {
-        SpacesIntroView(dismiss: {})
+        SpacesIntroOverlayContent().environment(\.hideOverlay, {})
+        SpacesShareIntroOverlayContent(onShare: {}).environment(\.hideOverlay, {})
         EmptySpaceView()
     }
 }

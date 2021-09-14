@@ -682,14 +682,7 @@ class BrowserViewController: UIViewController {
         topBar.view.setNeedsUpdateConstraints()
 
         cardGridViewController.view.snp.remakeConstraints { make in
-            make.leading.trailing.bottom.equalToSuperview()
-            if shouldShowFooterForTraitCollection(traitCollection)
-                && !FeatureFlag[.nativeSpaces]
-            {
-                make.top.equalTo(topBar.view.snp.bottom)
-            } else {
-                make.top.equalToSuperview()
-            }
+            make.leading.trailing.top.bottom.equalToSuperview()
         }
     }
 

@@ -26,7 +26,6 @@ where
     @Environment(\.columns) var gridColumns
     @State private var editMode = EditMode.inactive
     @State private var shareMenuPresented = false
-    @State private var presentShareOnDismiss = false
     @State private var newTitle: String = ""
 
     @ObservedObject var primitive: Details
@@ -47,14 +46,25 @@ where
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            topBar
-            if primitive.allDetails.isEmpty {
-                EmptySpaceView()
-            } else if gridModel.showingDetailsAsList {
-                spaceList
-            } else {
-                spaceGrid
+        ZStack {
+            VStack(spacing: 0) {
+                topBar
+                if primitive.allDetails.isEmpty {
+                    EmptySpaceView()
+                } else if gridModel.showingDetailsAsList {
+                    spaceList
+                } else {
+                    spaceGrid
+                }
+            }
+            if let space = space, shareMenuPresented {
+                ShareSpaceView(
+                    space: space,
+                    isPresented: $shareMenuPresented
+                )
+                .environmentObject(spacesModel)
+                .transition(.flipFromRight)
+                .animation(.easeInOut)
             }
         }
     }
@@ -89,25 +99,7 @@ where
             Button(
                 action: {
                     if case .owner = space.userACL {
-                        SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
-                            style: OverlayStyle(showTitle: false),
-                            content: {
-                                ShareSpaceOverlayContent(
-                                    space: space, presentShareOnDismiss: $presentShareOnDismiss
-                                )
-                                .environmentObject(spacesModel)
-                            }
-                        ) {
-                            guard presentShareOnDismiss else {
-                                return
-                            }
-                            shareURL(space.url)
-                            ClientLogger.shared.logCounter(
-                                .OwnerSharedSpace,
-                                attributes: getLogCounterAttributesForSpaces(
-                                    details: primitive as! SpaceCardDetails))
-                            presentShareOnDismiss = false
-                        }
+                        shareMenuPresented = true
                     } else {
                         shareURL(space.url)
                         ClientLogger.shared.logCounter(
@@ -270,7 +262,7 @@ where
             menuButton
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
-            .background(Color.background.edgesIgnoringSafeArea(.horizontal))
+            .background(Color.DefaultBackground.edgesIgnoringSafeArea(.horizontal))
     }
 
     var spaceList: some View {
@@ -297,7 +289,7 @@ where
                                 }
 
                                 SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                    .showAsModalOverlaySheet(
+                                    .showModal(
                                         style: .withTitle
                                     ) {
                                         AddToNativeSpaceOverlayContent(
@@ -404,7 +396,6 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
     }
 
     @State private var isPressed: Bool = false
-    @State private var isExpanded: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -445,8 +436,7 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                             if let snippet = details.description {
                                 Text(snippet)
                                     .withFont(.bodySmall)
-                                    .lineLimit(isExpanded ? .none : 2)
-                                    .fixedSize(horizontal: false, vertical: isExpanded)
+                                    .lineLimit(2)
                                     .foregroundColor(Color.secondaryLabel)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
@@ -456,22 +446,6 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
                 .padding()
                 .background(Color.DefaultBackground)
-                .overlay(
-                    Button(
-                        action: { isExpanded.toggle() },
-                        label: {
-                            Symbol(decorative: isExpanded ? .chevronUp : .chevronDown)
-                                .foregroundColor(.tertiaryLabel)
-                                .tapTargetFrame()
-                                .background(
-                                    RadialGradient(
-                                        gradient: Gradient(colors: [
-                                            Color.background, Color.background.opacity(0),
-                                        ]), center: .center, startRadius: 1, endRadius: 30)
-                                )
-                                .opacity(details.description?.isEmpty == false ? 1 : 0)
-                        }
-                    ).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing))
         }.scaleEffect(isPressed ? 0.95 : 1)
             .contextMenu(
                 ContextMenu(menuItems: {

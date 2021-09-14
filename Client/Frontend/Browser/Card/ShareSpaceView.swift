@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import SDWebImageSwiftUI
 import Shared
 import SwiftUI
@@ -23,95 +24,26 @@ extension SpaceACLLevel {
     }
 }
 
-struct ShareSpaceOverlayContent: View {
-    let space: Space
-    @Binding var presentShareOnDismiss: Bool
-    @Environment(\.hideOverlay) private var hideOverlay
-
-    var body: some View {
-        ShareSpaceView(
-            space: space,
-            presentShareOnDismiss: $presentShareOnDismiss,
-            dismiss: hideOverlay
-        ).overlayIsFixedHeight(isFixedHeight: true)
-    }
-}
-
 struct ShareSpaceView: View {
     typealias ACL = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     let space: Space
-    @Binding var presentShareOnDismiss: Bool
-    let dismiss: () -> Void
+    @Binding var isPresented: Bool
 
+    @Default(.seenSpacesShareIntro) var seenSpacesShareIntro: Bool
+    @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @State var suggestedContacts: [ContactsProvider.Profile] = []
     @State var selectedProfiles: [ContactsProvider.Profile] = []
     @State var isPublic: Bool
+    @State var soloACLSharePresented: Bool = false
     @State var emailText: String = ""
     @State var noteText: String = "Check out my new Neeva Space!"
     @State var selectedACL = SpaceACLLevel.view
 
-    init(space: Space, presentShareOnDismiss: Binding<Bool>, dismiss: @escaping () -> Void) {
+    init(space: Space, isPresented: Binding<Bool>) {
         self.space = space
         self.isPublic = space.isPublic
-        self._presentShareOnDismiss = presentShareOnDismiss
-        self.dismiss = dismiss
-    }
-
-    var header: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Share \"\(space.displayTitle)\"")
-                .withFont(.headingMedium)
-                .lineLimit(1)
-                .foregroundColor(Color.label)
-            Text("Invite others to collaborate.")
-                .withFont(.labelMedium)
-                .lineLimit(1)
-                .foregroundColor(Color.secondaryLabel)
-        }.padding(ShareSpaceViewUX.Padding)
-    }
-
-    var shareButtonUI: some View {
-        VStack(spacing: 0) {
-            TextField("Add a note!", text: $noteText)
-                .withFont(unkerned: .bodyLarge)
-                .lineLimit(3)
-                .foregroundColor(Color.label)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 16)
-                .frame(height: 112, alignment: .topLeading)
-                .background(Color.DefaultBackground)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.secondaryLabel, lineWidth: 1)
-                )
-                .padding(.bottom, 16)
-            Button(
-                action: {
-                    if !selectedProfiles.isEmpty {
-                        spaceModel.addSoloACLs(
-                            space: space, emails: selectedProfiles.map { $0.email },
-                            acl: selectedACL, note: noteText)
-                    } else if emailText.contains("@") {
-                        spaceModel.addSoloACLs(
-                            space: space, emails: [emailText],
-                            acl: selectedACL, note: noteText)
-                    }
-
-                    dismiss()
-                },
-                label: {
-                    Text("Share")
-                        .withFont(.labelLarge)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(Capsule())
-                }
-            )
-            .buttonStyle(NeevaButtonStyle(.primary))
-            .padding(.horizontal, 16)
-            .padding(.bottom, 16)
-        }
+        self._isPresented = isPresented
     }
 
     var selectedProfilesUI: some View {
@@ -214,55 +146,175 @@ struct ShareSpaceView: View {
                 }
             }
         }.padding(.vertical, ShareSpaceViewUX.Padding)
+            .padding(.horizontal, 16)
+            .background(Color.DefaultBackground)
     }
 
-    var sharePubliclyToggle: some View {
+    var soloShareButtonUI: some View {
+        Group {
+            TextField("Add a note!", text: $noteText)
+                .withFont(unkerned: .bodyLarge)
+                .lineLimit(3)
+                .foregroundColor(Color.label)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 16)
+                .frame(height: 112, alignment: .topLeading)
+                .background(Color.DefaultBackground)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.tertiaryLabel, lineWidth: 1)
+                )
+                .padding(.bottom, 16)
+            Button(
+                action: {
+                    var sharedUsers = 0
+                    if !selectedProfiles.isEmpty {
+                        sharedUsers = selectedProfiles.count
+                        spaceModel.addSoloACLs(
+                            space: space, emails: selectedProfiles.map { $0.email },
+                            acl: selectedACL, note: noteText)
+                    } else if emailText.contains("@") {
+                        sharedUsers = 1
+                        spaceModel.addSoloACLs(
+                            space: space, emails: [emailText],
+                            acl: selectedACL, note: noteText)
+                    }
+
+                    if sharedUsers > 0,
+                        let toastManager = SceneDelegate.getCurrentSceneDelegate(
+                            with: tabModel.manager.scene)?.toastViewManager
+                    {
+                        toastManager.makeToast(
+                            text:
+                                "Success! Space shared with \(sharedUsers) \(sharedUsers == 1 ? "person" : "people")"
+                        )
+                        .enqueue(manager: toastManager)
+                    }
+
+                    isPresented = false
+                },
+                label: {
+                    Text("Invite")
+                        .withFont(.labelLarge)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(Capsule())
+                }
+            )
+            .buttonStyle(NeevaButtonStyle(.primary))
+            .padding(.bottom, 16)
+        }
+    }
+
+    var soloACLShareView: some View {
         VStack(spacing: 0) {
-            Toggle(isOn: $isPublic) {
-                VStack(alignment: .leading) {
-                    Text("Get Link & Share Publicly")
-                        .withFont(.headingSmall)
-                        .lineLimit(1)
-                        .foregroundColor(Color.label)
-                    Text("Anyone with the link can view.")
-                        .withFont(.bodyMedium)
-                        .lineLimit(1)
-                        .foregroundColor(Color.secondaryLabel)
+            Button(
+                action: { soloACLSharePresented.toggle() },
+                label: {
+                    HStack(spacing: 0) {
+                        Text("Invite someone")
+                            .withFont(.headingMedium)
+                            .foregroundColor(.label)
+                        Spacer()
+                        Symbol(decorative: soloACLSharePresented ? .chevronUp : .chevronDown)
+                            .foregroundColor(.label)
+                    }.padding(.horizontal, 16)
+                        .padding(.vertical, 19)
+                }
+            ).buttonStyle(TableCellButtonStyle())
+            if soloACLSharePresented {
+                emailEntry.padding(.horizontal, 16)
+                if suggestedContacts.isEmpty {
+                    soloShareButtonUI.padding(.horizontal, 16)
+                } else {
+                    suggestedContactsCell.padding(.horizontal, 16)
                 }
             }
-            if isPublic {
-                Button(
-                    action: {
-                        presentShareOnDismiss = true
-                        dismiss()
-                    },
-                    label: {
-                        Text("Share Link")
-                            .withFont(.labelLarge)
-                            .frame(maxWidth: .infinity)
-                            .clipShape(Capsule())
+        }.background(Color.DefaultBackground)
+    }
+
+    var publicACLShareView: some View {
+        VStack(spacing: 0) {
+            Toggle(
+                isOn: $isPublic,
+                label: {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Enable shareable link")
+                            .withFont(.headingMedium)
+                            .foregroundColor(.label)
+                        Text("Anyone with the link can view")
+                            .withFont(.bodyMedium)
+                            .foregroundColor(.secondaryLabel)
                     }
-                )
-                .buttonStyle(NeevaButtonStyle(.primary))
-                .padding(.horizontal, 16)
-                .padding(.vertical, 20)
+                }
+            ).padding(.horizontal, 16)
+                .padding(.vertical, 12)
+            ShareToSocialView(url: space.url) { onShared in
+                guard !isPublic else {
+                    isPresented = false
+                    onShared()
+                    return
+                }
+                if seenSpacesShareIntro {
+                    self.isPublic = true
+                    isPresented = false
+                    onShared()
+                } else {
+                    SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
+                        style: .grouped,
+                        content: {
+                            SpacesShareIntroOverlayContent(onShare: {
+                                seenSpacesShareIntro = true
+                                self.isPublic = true
+                                onShared()
+                            })
+                        })
+                }
             }
-        }.padding(ShareSpaceViewUX.Padding)
+        }.background(Color.DefaultBackground)
+    }
+
+    var header: some View {
+        HStack(spacing: 0) {
+            Text("Done").withFont(.headingMedium).hidden()
+            Spacer()
+            Text("Share Space")
+                .withFont(.headingMedium)
+                .foregroundColor(.label)
+            Spacer()
+            Button(
+                action: { isPresented = false },
+                label: {
+                    Text("Done")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.ui.adaptive.blue)
+                })
+        }.padding(.horizontal, 7)
+            .padding(.vertical, 15)
+            .background(Color.DefaultBackground)
     }
 
     var body: some View {
-        GroupedStack {
+        VStack(alignment: .leading, spacing: 2) {
             header
-            emailEntry
-            if !suggestedContacts.isEmpty {
-                suggestedContactsCell
-            } else if !selectedProfiles.isEmpty || !emailText.isEmpty {
-                shareButtonUI
-            } else {
-                currentACLList
-                sharePubliclyToggle
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 2) {
+                    soloACLShareView
+                    publicACLShareView
+                    Text("Who has access")
+                        .withFont(.headingSmall)
+                        .foregroundColor(.label)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
+                    currentACLList
+                }
             }
+            Spacer()
         }
+        .background(Color.TrayBackground)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea(.all, edges: .bottom)
         .onChange(
             of: emailText,
             perform: { value in
@@ -270,11 +322,11 @@ struct ShareSpaceView: View {
                     suggestedContacts = []
                     return
                 }
-
                 if emailText.last == " " && emailText.contains("@") {
                     let email = String(emailText.dropLast())
                     selectedProfiles.append(
-                        ContactsProvider.Profile(displayName: email, email: email, pictureUrl: ""))
+                        ContactsProvider.Profile(
+                            displayName: email, email: email, pictureUrl: ""))
                     emailText = ""
                     return
                 }
@@ -291,86 +343,6 @@ struct ShareSpaceView: View {
         )
         .onChange(of: isPublic) { value in
             spaceModel.changePublicACL(space: space, add: value)
-        }
-    }
-}
-
-struct ACLView: View {
-    @Binding var selectedACL: SpaceACLLevel
-
-    var body: some View {
-        Menu(
-            content: {
-                Button {
-                    selectedACL = .edit
-                } label: {
-                    Text(SpaceACLLevel.edit.editText)
-                        .withFont(.labelMedium)
-                        .lineLimit(1)
-                        .foregroundColor(Color.secondaryLabel)
-                }
-                Button {
-                    selectedACL = .comment
-                } label: {
-                    Text(SpaceACLLevel.comment.editText)
-                        .withFont(.labelMedium)
-                        .lineLimit(1)
-                        .foregroundColor(Color.secondaryLabel)
-                }
-                Button {
-                    selectedACL = .view
-                } label: {
-                    Text(SpaceACLLevel.view.editText)
-                        .withFont(.labelMedium)
-                        .lineLimit(1)
-                        .foregroundColor(Color.secondaryLabel)
-                }
-            },
-            label: {
-                HStack {
-                    Text(selectedACL.editText)
-                        .withFont(.labelMedium)
-                        .lineLimit(1)
-                        .foregroundColor(Color.ui.adaptive.blue)
-                    Symbol(decorative: .chevronDown, style: .labelMedium)
-                        .foregroundColor(Color.ui.adaptive.blue)
-                }
-            })
-    }
-}
-
-struct ProfileView: View {
-    let pictureURL: String
-    let displayName: String
-    let email: String
-
-    var body: some View {
-        Group {
-            if let pictureUrl = URL(string: pictureURL) {
-                WebImage(url: pictureUrl).resizable()
-            } else {
-                let name = (displayName).prefix(2).uppercased()
-                Color.brand.blue
-                    .overlay(
-                        Text(name)
-                            .accessibilityHidden(true)
-                            .font(.system(size: 10))
-                            .foregroundColor(.white)
-                    )
-            }
-        }
-        .clipShape(Circle())
-        .aspectRatio(contentMode: .fill)
-        .frame(width: 20, height: 20)
-        VStack(alignment: .leading, spacing: 0) {
-            Text(displayName)
-                .withFont(.bodyMedium)
-                .lineLimit(1)
-                .foregroundColor(Color.label)
-            Text(email)
-                .withFont(.bodySmall)
-                .lineLimit(1)
-                .foregroundColor(Color.secondaryLabel)
         }
     }
 }

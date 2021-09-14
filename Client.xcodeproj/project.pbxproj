@@ -152,6 +152,8 @@
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
+		4A9FCD4626F1074600725E17 /* SocialShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4526F1074600725E17 /* SocialShare.swift */; };
+		4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4726F107BF00725E17 /* ProfileView.swift */; };
 		4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
 		4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */; };
 		4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */; };
@@ -1115,6 +1117,8 @@
 		4A88F9722662AEAB007C203D /* CardStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStrip.swift; sourceTree = "<group>"; };
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		4A9FCD4526F1074600725E17 /* SocialShare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialShare.swift; sourceTree = "<group>"; };
+		4A9FCD4726F107BF00725E17 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
 		4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserPrimitive.swift; sourceTree = "<group>"; };
 		4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSpaceOverlayContent.swift; sourceTree = "<group>"; };
@@ -1176,10 +1180,9 @@
 		66AC64B226E8324500D7BA83 /* SystemsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemsHelper.swift; sourceTree = "<group>"; };
 		66AF61B926D87E9900FB68DF /* ZeroQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryTests.swift; sourceTree = "<group>"; };
 		66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+SKStoreProductViewControllerDelegate.swift"; sourceTree = "<group>"; };
-		66B7A0EA26EAFCAB00AB751A /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
-		66B7A0E626EAE10B00AB751A /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
 		66B7A0E626EAE10B00AB751A /* PopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverView.swift; sourceTree = "<group>"; };
 		66B7A0E826EAF5B000AB751A /* OverlayGenerics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayGenerics.swift; sourceTree = "<group>"; };
+		66B7A0EA26EAFCAB00AB751A /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		66B9570D26AF827E004C6117 /* AppClipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipHelper.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
 		66BEFDC826A7678200AA32EF /* GroupedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCell.swift; sourceTree = "<group>"; };
@@ -2174,6 +2177,7 @@
 		4A1D054E26696B6D00D63333 /* Card */ = {
 			isa = PBXGroup;
 			children = (
+				8A422E9A26E19783005CC814 /* AddToNativeSpaceView.swift */,
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
@@ -2189,10 +2193,11 @@
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
+				4A9FCD4726F107BF00725E17 /* ProfileView.swift */,
 				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
+				4A9FCD4526F1074600725E17 /* SocialShare.swift */,
 				4AB678B726EAA8160078F61B /* SpacesIntro.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
-				8A422E9A26E19783005CC814 /* AddToNativeSpaceView.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -2438,7 +2443,6 @@
 			children = (
 				BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */,
 				BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */,
-				C832BF8026E1566E00B9A1F8 /* CheatsheetOverlaySheetContent.swift */,
 				BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */,
 				C832BF8026E1566E00B9A1F8 /* CheatsheetOverlayContent.swift */,
 			);
@@ -4713,6 +4717,7 @@
 				66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */,
 				4A15C8B526E1815A006CD097 /* ShareSpaceView.swift in Sources */,
 				661F4FB5269CAAE00078238B /* DownloadOverlayView.swift in Sources */,
+				4A9FCD4626F1074600725E17 /* SocialShare.swift in Sources */,
 				BC423EA626CE391D007E2C01 /* CompactNeevaMenuView.swift in Sources */,
 				C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */,
 				D01017F5219CB6BD009CBB5A /* DownloadContentScript.swift in Sources */,
@@ -4866,6 +4871,8 @@
 				4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */,
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
 				4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */,
+				4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */,
+				4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */,
 				C9FD1B2226C312CB00926A70 /* BrowserViewController+NeevaMenu.swift in Sources */,
 				66F0E62026EC22C3008A4327 /* OverlaySheetModel.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,

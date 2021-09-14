@@ -22,17 +22,14 @@ struct CardTransitionAnimator: View {
     }
 
     private var transitionTopPadding: CGFloat {
-        topToolbar || FeatureFlag[.nativeSpaces]
-            ? gridModel.pickerHeight + safeAreaInsets.top : 0
+        gridModel.pickerHeight + safeAreaInsets.top
     }
 
     var body: some View {
         let maxWidth = containerSize.width + safeAreaInsets.leading + safeAreaInsets.trailing
         let maxHeight =
             containerSize.height + safeAreaInsets.bottom - transitionBottomPadding
-            - transitionTopPadding
-            + (FeatureFlag[.nativeSpaces]
-                ? safeAreaInsets.top + CardUX.HeaderSize : CardUX.HeaderSize)
+            - transitionTopPadding + safeAreaInsets.top + CardUX.HeaderSize
         Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden)
             .runAfter(
                 toggling: gridModel.isHidden,
