@@ -43,6 +43,19 @@ struct SuggestionsList: View {
                 NavSuggestionsList()
 
                 if let findInPageSuggestion = suggestionModel.findInPageSuggestion {
+                    if FeatureFlag[.suggestionLayoutWithHeader] {
+                        Text("Find on this page")
+                            .withFont(.bodyMedium)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(
+                                EdgeInsets(
+                                    top: 2,
+                                    leading: 13,
+                                    bottom: 2,
+                                    trailing: 0)
+                            )
+                            .background(Color.secondaryBackground)
+                    }
                     SearchSuggestionView(findInPageSuggestion)
                 }
             }

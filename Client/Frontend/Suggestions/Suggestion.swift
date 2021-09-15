@@ -157,20 +157,49 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
             if !rowQuerySuggestions.isEmpty {
                 topSuggestions = [rowQuerySuggestions.removeFirst()].map(Suggestion.query)
             }
-        } else {
+        } else if !FeatureFlag[.suggestionLayoutV2] {
             topSuggestions = [navSuggestions.removeFirst()].map(Suggestion.url)
         }
+
+        var neevaSuggestions = [Suggestion]()
+        if FeatureFlag[.suggestionLayoutV2] {
+            let navSuggestionMap = navSuggestions.reduce(into: [Int: SuggestionsQuery.Data.Suggest.UrlSuggestion]()) {
+                $0[$1.sourceQueryIndex] = $1
+            }
+            
+            for (i, suggestion) in chipQuerySuggestions.prefix(3).enumerated() {
+                neevaSuggestions.append(Suggestion.query(suggestion))
+                if let urlSuggestion = navSuggestionMap[i] {
+                    neevaSuggestions.append(Suggestion.url(urlSuggestion))
+                }
+            }
+            neevaSuggestions.append(contentsOf: rowQuerySuggestions.map(Suggestion.query))
+        }
+
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
-        return (
-            topSuggestions, chipQuerySuggestions.map(Suggestion.query),
-            rowQuerySuggestions.map(Suggestion.query)
-                + bangSuggestions.compactMap(Suggestion.init(bang:))
-                + lensSuggestions.compactMap(Suggestion.init(lens:)),
-            NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
-            navSuggestions.map(Suggestion.url),
-            data.suggest?.activeLensBangInfo
-        )
+
+        if FeatureFlag[.suggestionLayoutV2] {
+            return (
+                topSuggestions, [],
+                neevaSuggestions
+                    + bangSuggestions.compactMap(Suggestion.init(bang:))
+                    + lensSuggestions.compactMap(Suggestion.init(lens:)),
+                NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
+                [],
+                data.suggest?.activeLensBangInfo
+            )
+        } else {
+            return (
+                topSuggestions, chipQuerySuggestions.map(Suggestion.query),
+                rowQuerySuggestions.map(Suggestion.query)
+                    + bangSuggestions.compactMap(Suggestion.init(bang:))
+                    + lensSuggestions.compactMap(Suggestion.init(lens:)),
+                NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
+                navSuggestions.map(Suggestion.url),
+                data.suggest?.activeLensBangInfo
+            )
+        }
     }
 
     @discardableResult public static func getSuggestions(
