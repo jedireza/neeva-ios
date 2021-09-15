@@ -69,6 +69,7 @@ private struct CustomRadius: ViewModifier {
 struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
     @Environment(\.cardSize) private var size
+    @Environment(\.aspectRatio) private var aspectRatio
 
     var numItems: Int {
         model.allDetails.count
@@ -94,18 +95,18 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     func itemFor(_ index: Int) -> some View {
         Group {
             if index >= numItems {
-                Color.DefaultBackground.frame(width: itemSize, height: itemSize)
+                Color.DefaultBackground.frame(width: itemSize, height: itemSize * aspectRatio)
                     .modifier(CustomRadius(index: index))
             } else {
                 let item = model.allDetails[index]
-                item.thumbnail.frame(width: itemSize, height: itemSize)
+                item.thumbnail.frame(width: itemSize, height: itemSize * aspectRatio)
                     .modifier(CustomRadius(index: index))
             }
         }
     }
 
     var body: some View {
-        LazyVGrid(columns: columns, alignment: .center, spacing: ThumbnailGroupViewUX.Spacing) {
+        LazyVGrid(columns: columns, alignment: .center, spacing: ThumbnailGroupViewUX.Spacing * aspectRatio) {
             ForEach(0...2, id: \.self) { index in
                 itemFor(index)
             }
@@ -115,7 +116,7 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
                 Text("+\(numItems - 3)")
                     .foregroundColor(Color.secondaryLabel)
                     .withFont(.labelLarge)
-                    .frame(width: itemSize, height: itemSize)
+                    .frame(width: itemSize, height: itemSize * aspectRatio)
                     .background(Color.DefaultBackground)
                     .modifier(CustomRadius(index: 3))
             }

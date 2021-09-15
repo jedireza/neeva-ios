@@ -65,7 +65,9 @@ struct CardsContainer: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     ScrollViewReader { value in
                         LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                            TabCardsView().environment(\.selectionCompletion) {
+                            TabCardsView()
+                                .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                                .environment(\.selectionCompletion) {
                                 withAnimation {
                                     value.scrollTo(tabModel.selectedTabID)
                                 }

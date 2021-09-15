@@ -43,7 +43,7 @@ struct CardTransitionAnimator: View {
             .frame(
                 width: gridModel.isHidden ? maxWidth : cardSize,
                 height: gridModel.isHidden
-                    ? maxHeight : cardSize + CardUX.HeaderSize
+                    ? maxHeight : cardSize * CardUX.DefaultTabCardRatio + CardUX.HeaderSize
             )
             .offset(
                 x: gridModel.isHidden ? 0 : offset.x + safeAreaInsets.leading,

@@ -358,6 +358,10 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     }
     @Published var allDetails: [TabCardDetails] = []
 
+    var thumbnailDrawsHeader: Bool {
+        false
+    }
+
     var accessibilityLabel: String {
         "\(title), Tab Group"
     }

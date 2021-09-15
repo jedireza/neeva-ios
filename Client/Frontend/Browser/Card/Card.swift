@@ -9,10 +9,12 @@ enum CardUX {
     static let DefaultCardSize: CGFloat = 160
     static let ShadowRadius: CGFloat = 2
     static let CornerRadius: CGFloat = 12
+    static let FaviconCornerRadius: CGFloat = 4
     static let ButtonSize: CGFloat = 28
     static let FaviconSize: CGFloat = 18
     static let HeaderSize: CGFloat = ButtonSize + 1
     static let CardHeight: CGFloat = 174
+    static let DefaultTabCardRatio: CGFloat = 200/164
 }
 
 private struct BorderTreatment: ViewModifier {
@@ -107,6 +109,15 @@ extension EnvironmentValues {
         get { self[CardSizeKey] }
         set { self[CardSizeKey] = newValue }
     }
+    
+    private struct AspectRatioKey: EnvironmentKey {
+        static var defaultValue: CGFloat = 1
+    }
+    
+    public var aspectRatio: CGFloat {
+        get { self[AspectRatioKey] }
+        set { self[AspectRatioKey] = newValue }
+    }
 
     private struct SelectionCompletionKey: EnvironmentKey {
         static var defaultValue: () -> Void = {}
@@ -122,10 +133,11 @@ struct FittedCard<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
 
     @Environment(\.cardSize) private var cardSize
+    @Environment(\.aspectRatio) private var aspectRatio
 
     var body: some View {
         Card(details: details)
-            .frame(width: cardSize, height: cardSize + CardUX.HeaderSize)
+            .frame(width: cardSize, height: cardSize * aspectRatio + CardUX.HeaderSize)
     }
 }
 
@@ -141,28 +153,6 @@ struct Card<Details>: View where Details: CardDetails {
     var body: some View {
         GeometryReader { geom in
             VStack(alignment: .center, spacing: 0) {
-                if !details.thumbnailDrawsHeader {
-                    HStack(spacing: 0) {
-                        if let favicon = details.favicon {
-                            favicon
-                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                                .cornerRadius(CardUX.CornerRadius)
-                                .padding(5)
-                        }
-                        Text(details.title).withFont(.labelMedium)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
-                        if details.closeButtonImage != nil {
-                            Color.clear
-                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                                .padding(5)
-                        }
-                    }
-                    .frame(height: CardUX.ButtonSize)
-                    .background(Color.DefaultBackground)
-
-                    Color.ui.adaptive.separator.frame(height: 1)
-                }
                 Button(action: {
                     details.onSelect()
                     selectionCompletion()
@@ -177,19 +167,35 @@ struct Card<Details>: View where Details: CardDetails {
                             alignment: .top
                         )
                         .clipped()
-                }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+                }
+                .buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+                .cornerRadius(CardUX.CornerRadius)
+                .modifier(
+                    BorderTreatment(
+                        isSelected: showsSelection && details.isSelected,
+                        thumbnailDrawsHeader: details.thumbnailDrawsHeader)
+                )
+                if !details.thumbnailDrawsHeader {
+                    HStack(spacing: 0) {
+                        if let favicon = details.favicon {
+                            favicon
+                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                                .cornerRadius(CardUX.FaviconCornerRadius)
+                                .padding(5)
+                        }
+                        Text(details.title).withFont(.labelMedium)
+                            .frame(alignment: .center)
+                            .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
+                    }
+                    .frame(width: max(0, geom.size.width), height: CardUX.ButtonSize)
+                    .background(Color.clear)
+                }
             }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(details.accessibilityLabel)
         .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
         .accessibilityAddTraits(.isButton)
-        .cornerRadius(CardUX.CornerRadius)
-        .modifier(
-            BorderTreatment(
-                isSelected: showsSelection && details.isSelected,
-                thumbnailDrawsHeader: details.thumbnailDrawsHeader)
-        )
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in
             view
@@ -199,6 +205,8 @@ struct Card<Details>: View where Details: CardDetails {
                             .foregroundColor(.secondaryLabel)
                             .padding(4)
                             .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                            .background(Color(UIColor.systemGray6))
+                            .clipShape(Circle())
                             .padding(5)
                             .accessibilityLabel("Close \(details.title)")
                     },

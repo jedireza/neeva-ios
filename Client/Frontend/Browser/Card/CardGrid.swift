@@ -79,7 +79,7 @@ struct CardGrid: View {
                 offset: CGPoint(
                     x: CardGridUX.GridSpacing
                         + (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
-                    y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize) * row
+                    y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize * CardUX.DefaultTabCardRatio) * row
                 ),
                 containerSize: geom.size,
                 safeAreaInsets: geom.safeAreaInsets,
