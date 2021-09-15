@@ -1583,8 +1583,8 @@ extension BrowserViewController {
                 case .signin:
                     self.openURLInNewTab(NeevaConstants.appSigninURL)
                 case .signupWithApple(_, let url):
-                    if let url = url, let tab = self.tabManager.selectedTab {
-                        tab.loadRequest(URLRequest(url: url))
+                    if let url = url {
+                        self.openURLInNewTab(url)
                     }
                 case .signupWithOther:
                     self.openURLInNewTab(NeevaConstants.appSignupURL)
