@@ -6,11 +6,86 @@ import SwiftUI
 
 private enum SuggestedSiteUX {
     static let FaviconSize: CGFloat = 28
+    static let HomeIconSize: CGFloat = 20
     static let IconSize: CGFloat = 40
     static let PinIconSize: CGFloat = 12
     static let IconCornerRadius: CGFloat = 4
     static let BlockSize: CGFloat = 64
     static let BlockSpacing: CGFloat = 24
+}
+
+struct SuggestedNavigationView<Content: View>: View {
+    let url: URL
+    let isPinnedSite: Bool!
+    let title: () -> String
+    let icon: () -> Content
+
+    @Environment(\.onOpenURL) private var openURL
+
+    var hint: String {
+        let pinned = isPinnedSite ? "Pinned " : ""
+        return pinned + "Suggested Site"
+    }
+
+    var body: some View {
+        Button(action: { openURL(url) }) {
+            VStack(spacing: 2) {
+                icon()
+                    .frame(
+                        width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize,
+                        alignment: .center
+                    )
+                    .background(Color(light: .ui.gray97, dark: .systemFill))
+                    .cornerRadius(SuggestedSiteUX.IconCornerRadius)
+                HStack {
+                    if isPinnedSite {
+                        Image("pin_small").renderingMode(.template).foregroundColor(Color.ui.gray60)
+                            .frame(
+                                width: SuggestedSiteUX.PinIconSize,
+                                height: SuggestedSiteUX.PinIconSize, alignment: .center)
+                    }
+                    Text(title())
+                        .withFont(.bodyMedium)
+                        .lineLimit(1)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4)
+                        )
+                        .padding(.top, 4)
+                        .foregroundColor(.secondaryLabel)
+                }
+                .contentShape(Rectangle())
+            }
+            .frame(width: SuggestedSiteUX.BlockSize, height: SuggestedSiteUX.BlockSize)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(title())
+            .accessibilityHint(hint)
+        }
+        .onDrag { NSItemProvider(url: url) }
+    }
+}
+
+struct SuggestedHomeView: View {
+    let title = "Home"
+
+    var body: some View {
+        SuggestedNavigationView(
+            url: NeevaConstants.appHomeURL, isPinnedSite: false,
+            title: {
+                title
+            },
+            icon: {
+                Symbol(.house, size: SuggestedSiteUX.HomeIconSize, label: "Home")
+                    .accentColor(.ui.adaptive.blue)
+            }
+        )
+        .contextMenu {
+            ZeroQueryCommonContextMenuActions(
+                siteURL: NeevaConstants.appHomeURL,
+                title: title,
+                description: "Neeva Home",
+                showOpenInIncognito: false)
+        }
+    }
 }
 
 struct SuggestedSiteView: View {
@@ -30,66 +105,35 @@ struct SuggestedSiteView: View {
         }
     }
 
-    var hint: String {
-        let pinned = isPinnedSite ? "Pinned " : ""
-        return pinned + "Suggested Site"
-    }
-
     var body: some View {
-        Button(action: { openURL(site.url) }) {
-            VStack(spacing: 2) {
+        SuggestedNavigationView(
+            url: site.url, isPinnedSite: isPinnedSite, title: { title },
+            icon: {
                 FaviconView(
                     url: site.url, icon: site.icon, size: SuggestedSiteUX.FaviconSize,
                     bordered: false
                 )
-                .frame(
-                    width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize,
-                    alignment: .center
-                )
-                .background(Color(light: .ui.gray97, dark: .systemFill))
-                .cornerRadius(SuggestedSiteUX.IconCornerRadius)
-                HStack {
-                    if isPinnedSite {
-                        Image("pin_small").renderingMode(.template).foregroundColor(Color.ui.gray60)
-                            .frame(
-                                width: SuggestedSiteUX.PinIconSize,
-                                height: SuggestedSiteUX.PinIconSize, alignment: .center)
-                    }
-                    Text(title)
-                        .withFont(.bodyMedium)
-                        .lineLimit(1)
-                        .background(
-                            RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4)
-                        )
-                        .padding(.top, 4)
-                        .foregroundColor(.secondaryLabel)
-                }
-                .contentShape(Rectangle())
             }
-            .frame(width: SuggestedSiteUX.BlockSize, height: SuggestedSiteUX.BlockSize)
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel(title)
-            .accessibilityHint(hint)
-            .contextMenu {
-                ZeroQueryCommonContextMenuActions(
-                    siteURL: site.url.absoluteURL,
-                    title: title,
-                    description: site.metadata?.description)
-                // TODO: make this red
-                Button(action: { isDeleting = true }) {
-                    Label("Remove", systemSymbol: .trash)
-                }.foregroundColor(.red)
-                if FeatureFlag[.pinToTopSites] {
-                    Text("Pin/unpin not yet implemented")
-                }
-            }
-            .actionSheet(isPresented: $isDeleting) {
-                ActionSheet(
-                    title: Text("Permanently remove \(title) from Suggested Sites?"),
-                    buttons: [
-                        .destructive(Text("Remove")) { zeroQueryHideTopSite(site) },
-                        .cancel(),
-                    ])
+        )
+        .actionSheet(isPresented: $isDeleting) {
+            ActionSheet(
+                title: Text("Permanently remove \(title) from Suggested Sites?"),
+                buttons: [
+                    .destructive(Text("Remove")) { zeroQueryHideTopSite(site) },
+                    .cancel(),
+                ])
+        }
+        .contextMenu {
+            ZeroQueryCommonContextMenuActions(
+                siteURL: site.url.absoluteURL,
+                title: title,
+                description: site.metadata?.description)
+            // TODO: make this red
+            Button(action: { isDeleting = true }) {
+                Label("Remove", systemSymbol: .trash)
+            }.foregroundColor(.red)
+            if FeatureFlag[.pinToTopSites] {
+                Text("Pin/unpin not yet implemented")
             }
         }
     }
@@ -126,11 +170,13 @@ struct SuggestedSitesView: View {
         if isExpanded {
             LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing)
             {
+                if FeatureFlag[.homeAsSuggestedSite] {
+                    SuggestedHomeView()
+                }
                 ForEach(viewModel.sites, id: \.self) { suggestedSite in
                     SuggestedSiteView(
                         site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
                     )
-                    .onDrag { NSItemProvider(url: suggestedSite.url) }
                 }
             }
             .padding(.vertical, 10)
@@ -138,14 +184,14 @@ struct SuggestedSitesView: View {
         } else {
             FadingHorizontalScrollView { size in
                 HStack(spacing: 0) {
+                    if FeatureFlag[.homeAsSuggestedSite] {
+                        SuggestedHomeView()
+                    }
                     ForEach(Array(viewModel.sites.enumerated()), id: \.0) { i, suggestedSite in
-                        if i > 0 {
-                            Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
-                        }
+                        Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
                         SuggestedSiteView(
                             site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
                         )
-                        .onDrag { NSItemProvider(url: suggestedSite.url) }
                     }
                 }
                 .frame(height: SuggestedSiteUX.BlockSize)

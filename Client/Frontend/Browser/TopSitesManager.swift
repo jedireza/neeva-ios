@@ -41,7 +41,7 @@ struct TopSitesHandler {
                 }
             }
 
-            //Prevent duplication with neeva home, searches and spaces
+            // Prevent duplication with neeva home, searches and spaces
             mergedSites = mergedSites.filter { !$0.url.isNeevaURL() }
 
             let allSites: [Site]
