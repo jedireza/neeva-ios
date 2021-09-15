@@ -30,7 +30,7 @@ struct CardTransitionAnimator: View {
         let maxHeight =
             containerSize.height + safeAreaInsets.bottom - transitionBottomPadding
             - transitionTopPadding + safeAreaInsets.top + CardUX.HeaderSize
-        Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden)
+        Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden, animateTitle: true)
             .runAfter(
                 toggling: gridModel.isHidden,
                 fromTrueToFalse: {
@@ -47,7 +47,7 @@ struct CardTransitionAnimator: View {
             )
             .offset(
                 x: gridModel.isHidden ? 0 : offset.x + safeAreaInsets.leading,
-                y: gridModel.isHidden ? -CardUX.HeaderSize : offset.y + gridModel.scrollOffset
+                y: gridModel.isHidden ? 0 : offset.y + gridModel.scrollOffset
             )
             .animation(.interpolatingSpring(stiffness: 425, damping: 30))
             .onAppear {

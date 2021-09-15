@@ -146,8 +146,10 @@ struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
+    var animateTitle = false
 
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
+    @EnvironmentObject var gridModel: GridModel
     @State private var isPressed = false
 
     var body: some View {
@@ -188,7 +190,7 @@ struct Card<Details>: View where Details: CardDetails {
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }
                     .frame(width: max(0, geom.size.width), height: CardUX.ButtonSize)
-                    .background(Color.clear)
+                    .background(Color.clear).opacity(animateTitle && gridModel.isHidden ? 0 : 1)
                 }
             }
         }
