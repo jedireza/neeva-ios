@@ -83,6 +83,9 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.buttons["Sign in or Join Neeva"])
         app.buttons["Sign in or Join Neeva"].tap()
 
+        waitForExistence(app.buttons["Sign In"])
+        app.buttons["Sign In"].tap()
+        
         waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
 
         doSignIn()
@@ -94,6 +97,9 @@ class NeevaSignInTests: BaseTestCase {
 
         waitForExistence(app.cells["Sign In or Join Neeva"])
         app.cells["Sign In or Join Neeva"].tap()
+
+        waitForExistence(app.buttons["Sign In"])
+        app.buttons["Sign In"].tap()
 
         waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
 

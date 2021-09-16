@@ -95,12 +95,18 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                             bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
                         }.environment(\.setSearchInput) { suggestion in
                             suggestionModel.queryModel.value = suggestion
-                        }.environment(\.logAuth) { isSignin in
+                        }.environment(\.onSigninOrJoinNeeva) {
                             ClientLogger.shared.logCounter(
-                                isSignin
-                                    ? .SuggestionErrorLoginViewSignin
-                                    : .SuggestionErrorLoginViewSignUp,
+                                .SuggestionErrorSigninOrJoinNeeva,
                                 attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                            let bvc = zeroQueryModel.bvc
+                            bvc.chromeModel.setEditingLocation(to: false)
+                            bvc.presentIntroViewController(
+                                true,
+                                onDismiss: {
+                                    bvc.hideCardGrid(withAnimation: true)
+                                }
+                            )
                         }
                 case .blank:
                     ZeroQueryContent(model: zeroQueryModel)

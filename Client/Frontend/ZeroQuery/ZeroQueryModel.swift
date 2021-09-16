@@ -50,6 +50,7 @@ class ZeroQueryModel: ObservableObject {
         self.delegate?.zeroQueryPanel(
             didSelectURL: NeevaConstants.appSigninURL,
             visitType: .bookmark)
+        self.bvc.presentIntroViewController(true)
     }
 
     func handleReferralPromo() {

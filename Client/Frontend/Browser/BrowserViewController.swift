@@ -1555,9 +1555,9 @@ extension BrowserViewController: UIAdaptivePresentationControllerDelegate {
 }
 
 extension BrowserViewController {
-    func presentIntroViewController(_ alwaysShow: Bool = false) {
+    func presentIntroViewController(_ alwaysShow: Bool = false, onDismiss: (() -> Void)? = nil) {
         if alwaysShow || !Defaults[.introSeen] {
-            showProperIntroVC()
+            showProperIntroVC(onDismiss: onDismiss)
         }
     }
 
@@ -1572,7 +1572,7 @@ extension BrowserViewController {
         present(onboardingVC, animated: true, completion: nil)
     }
 
-    private func showProperIntroVC() {
+    private func showProperIntroVC(onDismiss: (() -> Void)? = nil) {
         introViewController = IntroViewController()
 
         introViewController!.didFinishClosure = { action in
@@ -1589,7 +1589,11 @@ extension BrowserViewController {
                 case .signupWithOther:
                     self.openURLInNewTab(NeevaConstants.appSignupURL)
                 case .skipToBrowser:
+                    if let onDismiss = onDismiss {
+                        onDismiss()
+                    }
                     openURLInNewTab(URL(string: "https://neeva.com"))
+                    break
                 }
 
                 self.introViewController = nil
@@ -1895,7 +1899,7 @@ extension BrowserViewController {
         self.showAsModalOverlaySheet(style: .withTitle) {
             AddToSpaceOverlaySheetContent(
                 request: request,
-                importData: importData)
+                bvc: self, importData: importData)
         } onDismiss: {
             if request.state != .initial {
                 ToastDefaults().showToastForSpace(bvc: self, request: request)

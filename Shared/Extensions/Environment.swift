@@ -23,13 +23,13 @@ extension EnvironmentValues {
         set { self[OnOpenURLForSpaceKey] = newValue }
     }
 
-    private struct LogAuth: EnvironmentKey {
-        static var defaultValue: ((Bool) -> Void)? = nil
+    private struct onSigninOrJoinNeevaKey: EnvironmentKey {
+        static var defaultValue: (() -> Void)? = nil
     }
-    public var logAuth: (Bool) -> Void {
+    public var onSigninOrJoinNeeva: () -> Void {
         get {
-            self[LogAuth] ?? { _ in fatalError(".environment(\\.logSignIn) must be specified") }
+            self[onSigninOrJoinNeevaKey] ?? { fatalError(".environment(\\.logSignIn) must be specified") }
         }
-        set { self[LogAuth] = newValue }
+        set { self[onSigninOrJoinNeevaKey] = newValue }
     }
 }

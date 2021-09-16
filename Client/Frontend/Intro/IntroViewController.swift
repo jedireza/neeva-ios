@@ -16,10 +16,7 @@ enum FirstRunButtonActions {
     case skipToBrowser
 }
 
-class IntroViewController: UIViewController,
-    ASAuthorizationControllerDelegate,
-    ASAuthorizationControllerPresentationContextProviding
-{
+class IntroViewController: UIViewController {
 
     private lazy var welcomeCard = UIView()
     private var marketingEmailOptOut: Bool = true
@@ -58,29 +55,60 @@ class IntroViewController: UIViewController,
         DispatchQueue.main.async {
             switch option {
             case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut, _):
-                ClientLogger.shared.logCounter(
-                    .FirstRunSignupWithApple,
-                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                Defaults[.firstRunPath] = "FirstRunSignupWithApple"
+                if Defaults[.introSeen] {
+                    // beyond first run screen
+                    ClientLogger.shared.logCounter(
+                        .AuthSignUpWithApple,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                } else {
+                    // first run screen
+                    ClientLogger.shared.logCounter(
+                        .FirstRunSignupWithApple,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                    Defaults[.firstRunPath] = "FirstRunSignupWithApple"
+                }
                 self.marketingEmailOptOut = marketingEmailOptOut ?? false
                 self.doSignupWithApple()
             case FirstRunButtonActions.signin:
-                ClientLogger.shared.logCounter(
-                    .FirstRunSignin,
-                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                Defaults[.firstRunPath] = "FirstRunSignin"
+                if Defaults[.introSeen] {
+                    // beyond first run screen
+                    ClientLogger.shared.logCounter(
+                        .AuthSignin,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                } else {
+                    // first run screen
+                    ClientLogger.shared.logCounter(
+                        .FirstRunSignin,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                    Defaults[.firstRunPath] = "FirstRunSignin"
+                }
                 self.didFinishClosure?(.signin)
             case .signupWithOther:
-                ClientLogger.shared.logCounter(
-                    .FirstRunOtherSignUpOptions,
-                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                Defaults[.firstRunPath] = "FirstRunOtherSignUpOptions"
+                if Defaults[.introSeen] {
+                    // beyond first run screen
+                    ClientLogger.shared.logCounter(
+                        .AuthOtherSignUpOptions,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                } else {
+                    // first run screen
+                    ClientLogger.shared.logCounter(
+                        .FirstRunOtherSignUpOptions,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                    Defaults[.firstRunPath] = "FirstRunOtherSignUpOptions"
+                }
                 self.didFinishClosure?(.signupWithOther)
             case FirstRunButtonActions.skipToBrowser:
-                ClientLogger.shared.logCounter(
-                    .FirstRunSkipToBrowser,
-                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                Defaults[.firstRunPath] = "FirstRunSkipToBrowser"
+                if Defaults[.introSeen] {
+                    // beyond first run screen
+                    ClientLogger.shared.logCounter(
+                        .AuthClose,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                } else {
+                    ClientLogger.shared.logCounter(
+                        .FirstRunSkipToBrowser,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                    Defaults[.firstRunPath] = "FirstRunSkipToBrowser"
+                }
                 self.didFinishClosure?(.skipToBrowser)
             }
         }
@@ -107,11 +135,9 @@ class IntroViewController: UIViewController,
         authorizationController.presentationContextProvider = self
         authorizationController.performRequests()
     }
+}
 
-    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return self.view.window!
-    }
-
+extension IntroViewController: ASAuthorizationControllerDelegate {
     func authorizationController(
         controller: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
@@ -141,6 +167,12 @@ class IntroViewController: UIViewController,
         didCompleteWithError error: Error
     ) {
         Logger.browser.error("Sign up with Apple failed: \(error)")
+    }
+}
+
+extension IntroViewController: ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
     }
 }
 

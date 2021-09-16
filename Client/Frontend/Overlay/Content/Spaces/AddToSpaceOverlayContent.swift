@@ -10,6 +10,7 @@ struct AddToSpaceOverlayContent: View {
 
     @ObservedObject var request: AddToSpaceRequest
 
+    let bvc: BrowserViewController
     let importData: SpaceImportHandler?
 
     var body: some View {
@@ -20,12 +21,19 @@ struct AddToSpaceOverlayContent: View {
         )
         .overlayTitle(title: request.mode.title)
         .overlayIsFixedHeight(isFixedHeight: request.mode == .saveToNewSpace)
-        .environment(\.logAuth) { isSignin in
+        .environment(\.onSigninOrJoinNeeva) {
             ClientLogger.shared.logCounter(
-                isSignin
-                    ? .AddToSpaceErrorLoginViewSignin
-                    : .AddToSpaceErrorLoginViewSignUp,
+                .AddToSpaceErrorSigninOrJoinNeeva,
                 attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+            hideOverlay()
+            bvc.presentIntroViewController(
+                true,
+                onDismiss: {
+                    DispatchQueue.main.async {
+                        bvc.hideCardGrid(withAnimation: true)
+                    }
+                }
+            )
         }
     }
 }

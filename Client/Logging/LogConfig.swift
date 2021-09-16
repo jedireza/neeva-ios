@@ -58,10 +58,13 @@ public struct LogConfig {
         case PromoSignin  // Sign in from promo card
         case SettingSignin  // Sign in from setting
         case SuggestionErrorLoginViewImpression  // Error login view triggered by suggestion
-        case SuggestionErrorLoginViewSignin  // Click Sign in on suggestion error login page
-        case SuggestionErrorLoginViewSignUp  // Click Sign up on suggestion error login page
-        case AddToSpaceErrorLoginViewSignin  // Click Sign in on add to space error login page
-        case AddToSpaceErrorLoginViewSignUp  // Click Sign up on add to space error login page
+        case SuggestionErrorSigninOrJoinNeeva  // Click Sign in or Join Neeva on suggestion error login page
+        case AddToSpaceErrorSigninOrJoinNeeva  // Click Sign in or Join Neeva on space error login page
+        case AuthImpression  // Open auth panel
+        case AuthClose  // Close auth panel
+        case AuthSignUpWithApple  // Click sign up with Apple on auth panel
+        case AuthOtherSignUpOptions  // Click other sign up options on auth panel
+        case AuthSignin  // Click sign in on auth panel
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -191,11 +194,14 @@ public struct LogConfig {
         case .PromoSignin: return .FirstRun
         case .SettingSignin: return .FirstRun
         case .SuggestionErrorLoginViewImpression: return .FirstRun
-        case .SuggestionErrorLoginViewSignin: return .FirstRun
-        case .SuggestionErrorLoginViewSignUp: return .FirstRun
-        case .AddToSpaceErrorLoginViewSignin: return .FirstRun
-        case .AddToSpaceErrorLoginViewSignUp: return .FirstRun
-        
+        case .SuggestionErrorSigninOrJoinNeeva: return .FirstRun
+        case .AddToSpaceErrorSigninOrJoinNeeva: return .FirstRun
+        case .AuthImpression: return .FirstRun
+        case .AuthClose: return .FirstRun
+        case .AuthSignUpWithApple: return .FirstRun
+        case .AuthOtherSignUpOptions: return .FirstRun
+        case .AuthSignin: return .FirstRun
+
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
 
