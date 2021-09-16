@@ -24,6 +24,8 @@ public enum TourStep: String {
     case promptSettingsInNeevaMenu = "connect_personal_account"
     case openFeedbackPanelWithInputFieldHighlight = "open_feedback_panel_with_input_field_highlight"
     case earlyExit = "early_exit"
+    case skipTour = "skip_tour"
+    case completeTour = "complete_tour"
     case unknown = ""
 
     func getSubSteps() -> [TapTarget] {

@@ -8,7 +8,9 @@ class NotificationPermissionHelper {
 
     func didAlreadyRequestPermission(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            completion(settings.authorizationStatus != .notDetermined)
+            DispatchQueue.main.async {
+                completion(settings.authorizationStatus != .notDetermined)
+            }
         }
     }
 
@@ -20,17 +22,23 @@ class NotificationPermissionHelper {
         }
     }
 
-    func requestPermissionIfNeeded(openSettingsIfNeeded: Bool = false) {
+    func requestPermissionIfNeeded(completion: (() -> Void)? = nil,
+                                   openSettingsIfNeeded: Bool = false) {
         isAuthorized { [self] authorized in
-            guard !authorized else { return }
+            guard !authorized else {
+                completion?()
+                return
+            }
 
             didAlreadyRequestPermission { requested in
                 if !requested {
-                    requestPermissionFromSystem()
+                    ClientLogger.shared.logCounter(.ShowSystemNotificationPrompt)
+                    requestPermissionFromSystem(completion: completion)
                 } else if openSettingsIfNeeded {
                     /// If we can't show the iOS system notification because the user denied our first request,
                     /// this will take them to system settings to enable notifications there.
                     SystemsHelper.openSystemSettingsNeevaPage()
+                    completion?()
                 }
             }
         }
@@ -38,12 +46,21 @@ class NotificationPermissionHelper {
 
     /// Shows the iOS system popup to request notification permission.
     /// Will only show **once**, and if the user has not denied permission already.
-    func requestPermissionFromSystem() {
+    func requestPermissionFromSystem(completion: (() -> Void)? = nil) {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [
                 .alert, .sound, .badge, .providesAppNotificationSettings,
             ]) { granted, _ in
                 print("Notification permission granted: \(granted)")
+                DispatchQueue.main.async {
+                    ClientLogger.shared.logCounter(
+                        granted
+                            ? .AuthorizeSystemNotification
+                            : .DenySystemNotification
+                    )
+                }
+
+                completion?()
 
                 guard granted else { return }
                 self.getNotificationSettings()

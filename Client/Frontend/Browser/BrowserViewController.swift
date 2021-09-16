@@ -1353,7 +1353,10 @@ extension BrowserViewController: TabDelegate {
 
         tab.addContentScript(FocusHelper(tab: tab), name: FocusHelper.name())
 
-        let webuiMessageHelper = WebUIMessageHelper(tab: tab, webView: webView)
+        let webuiMessageHelper = WebUIMessageHelper(
+            tab: tab,
+            webView: webView,
+            tabManager: tabManager)
         tab.addContentScript(webuiMessageHelper, name: WebUIMessageHelper.name())
     }
 

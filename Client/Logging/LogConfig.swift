@@ -109,6 +109,13 @@ public struct LogConfig {
         case RatingsDismissedAppReview
         case RatingsSendFeedback
         case RatingsSendAppReview
+
+        case ShowNotificationPrompt
+        case NotificationPromptEnable
+        case NotificationPromptSkip
+        case ShowSystemNotificationPrompt
+        case AuthorizeSystemNotification
+        case DenySystemNotification
     }
 
     // Specify a comma separated string with these values to
@@ -125,12 +132,13 @@ public struct LogConfig {
         case PromoCard = "PromoCard"
         case Spaces = "Spaces"
         case RatingsCard = "RatingsCard"
+        case Notification = "Notification"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
 
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
-        if category == .FirstRun {
+        if category == .FirstRun || category == .Notification {
             return true
         }
 
@@ -239,6 +247,13 @@ public struct LogConfig {
         case .RatingsDismissedAppReview: return .RatingsCard
         case .RatingsSendFeedback: return .RatingsCard
         case .RatingsSendAppReview: return .RatingsCard
+
+        case .ShowNotificationPrompt: return .Notification
+        case .NotificationPromptEnable: return .Notification
+        case .NotificationPromptSkip: return .Notification
+        case .ShowSystemNotificationPrompt: return .Notification
+        case .AuthorizeSystemNotification: return .Notification
+        case .DenySystemNotification: return .Notification
         }
     }
 
@@ -292,5 +307,9 @@ public struct LogConfig {
         public static let isShared = "isShared"
         public static let isPublic = "isPublic"
         public static let numberOfSpaceEntities = "NumberOfSpaceEntities"
+    }
+
+    public struct NotificationAttribute {
+        public static let notificationPromptCallSite = "NotificationPromptCallSite"
     }
 }

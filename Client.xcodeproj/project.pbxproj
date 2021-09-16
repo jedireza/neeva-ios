@@ -224,6 +224,7 @@
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
 		675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EEDD226D9AF1700473332 /* LongPressButton.swift */; };
 		677858C726CB377800274BC3 /* APIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677858C626CB377700274BC3 /* APIExtension.swift */; };
+		67942DD826F14F2A0023F623 /* NotificationPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67942DD726F14F2A0023F623 /* NotificationPromptView.swift */; };
 		67AA22F226C476F300F33D09 /* BrowserViewController+OverflowMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */; };
 		67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */; };
 		744B0FFE1B4F172E00100422 /* ToolbarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744B0FFD1B4F172E00100422 /* ToolbarTests.swift */; };
@@ -1194,6 +1195,7 @@
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
 		675EEDD226D9AF1700473332 /* LongPressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressButton.swift; sourceTree = "<group>"; };
 		677858C626CB377700274BC3 /* APIExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIExtension.swift; sourceTree = "<group>"; };
+		67942DD726F14F2A0023F623 /* NotificationPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPromptView.swift; sourceTree = "<group>"; };
 		67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+OverflowMenu.swift"; sourceTree = "<group>"; };
 		67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuView.swift; sourceTree = "<group>"; };
 		744B0FFD1B4F172E00100422 /* ToolbarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarTests.swift; sourceTree = "<group>"; };
@@ -2341,6 +2343,38 @@
 			path = HTTPAuthPrompt;
 			sourceTree = "<group>";
 		};
+		66F0E61E26EC2290008A4327 /* Sheet */ = {
+			isa = PBXGroup;
+			children = (
+				66F0E61F26EC22C3008A4327 /* OverlaySheetModel.swift */,
+				C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */,
+			);
+			path = Sheet;
+			sourceTree = "<group>";
+		};
+		66F0E62126EC22CF008A4327 /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				BC07524126C20C42008B607A /* Cheatsheet */,
+				661F4FB3269CAA570078238B /* DownloadsMenu */,
+				6626BC9326B9B18400EE0760 /* FindInPage */,
+				66EE7D9026CD5EB5004BD435 /* HTTPAuthPrompt */,
+				7BC7B4571C903A6A0046E9D2 /* Menu */,
+				66BB89D726A64F83000C4BDF /* OpenInApp */,
+				C832BF5726DEE07B00B9A1F8 /* Spaces */,
+				C9299E392695EA2100758795 /* TextSize */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
+		67942DD626F14F140023F623 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				67942DD726F14F2A0023F623 /* NotificationPromptView.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
 		7B604FC11C496005006EEEC3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -3403,6 +3437,7 @@
 			isa = PBXGroup;
 			children = (
 				BC07524126C20C42008B607A /* Cheatsheet */,
+				67942DD626F14F140023F623 /* Notification */,
 				D3A994941A368691008AD1AC /* Browser */,
 				C9098F5C26AF485400D2B5F4 /* TabChrome */,
 				23ED80FD25C899D700D0E9D5 /* DefaultBrowserOnboarding */,
@@ -4841,6 +4876,7 @@
 				63306D3921103EAE00F25400 /* SavedTab.swift in Sources */,
 				C9BED4BD2667E453001D9C77 /* SuggestedSitesViews.swift in Sources */,
 				1DA3CE5F24EEE7C600422BB2 /* SiteArchiver.swift in Sources */,
+				67942DD826F14F2A0023F623 /* NotificationPromptView.swift in Sources */,
 				D34DC8531A16C40C00D49B7B /* Profile.swift in Sources */,
 				C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */,
 				E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */,
