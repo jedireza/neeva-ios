@@ -37,7 +37,7 @@ class TabCardModel: CardModel, TabEventHandler {
     init(manager: TabManager, groupManager: TabGroupManager) {
         self.manager = manager
         self.groupManager = groupManager
-        register(self, forTabEvents: .didClose, .didChangeURL, .didGainFocus)
+        register(self, forTabEvents: .didClose, .didChangeURL)
         onDataUpdated()
         self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
             self?.onDataUpdated()
@@ -46,14 +46,6 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 
     func tabDidClose(_ tab: Tab) {
-        onDataUpdated()
-    }
-
-    func tabDidGainFocus(_ tab: Tab) {
-        guard let url = tab.url, InternalURL(url)?.isZeroQueryURL ?? false else {
-            return
-        }
-
         onDataUpdated()
     }
 
@@ -136,15 +128,18 @@ class SpaceCardModel: CardModel {
             if detailedSpace != nil {
                 return
             }
+
             DispatchQueue.main.async {
                 allDetails = manager.getAll().map {
                     SpaceCardDetails(space: $0, manager: manager)
                 }
                 allDetails.forEach { details in
+                    let detailID = details.id
                     details.$isShowingDetails.sink { [weak self] showingDetails in
                         if showingDetails {
                             withAnimation {
-                                self?.detailedSpace = details
+                                self?.detailedSpace =
+                                    self?.allDetails.first(where: { $0.id == detailID })
                             }
                         }
                     }.store(in: &detailsSubscriptions)
