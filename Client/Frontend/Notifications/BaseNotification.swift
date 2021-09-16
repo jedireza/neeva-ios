@@ -6,7 +6,7 @@ struct BaseNotification: Codable, Identifiable {
     var id = UUID()
 
     let title: String
-    let subtitle: String?
+    var subtitle: String? = nil
     let body: String?
 
     var dateReceived: Date
@@ -14,5 +14,9 @@ struct BaseNotification: Codable, Identifiable {
 
     var isUnread: Bool {
         dateRead == nil
+    }
+
+    mutating func notificationRead() {
+        dateRead = Date()
     }
 }
