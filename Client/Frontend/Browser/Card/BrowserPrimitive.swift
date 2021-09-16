@@ -297,11 +297,11 @@ extension TabGroup: BrowserPrimitive, Closeable {
     }
 
     var displayTitle: String {
-        children.first!.displayTitle
+        "\(children.count) Tabs"
     }
 
     var displayFavicon: Favicon? {
-        children.first!.displayFavicon
+        nil
     }
 
     var image: UIImage? {

@@ -23,6 +23,7 @@ protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
     var title: String { get }
     var description: String? { get }
     var accessibilityLabel: String { get }
+    var defaultIcon: String? { get }
     var favicon: FaviconViewType { get }
     var isSelected: Bool { get }
     var thumbnailDrawsHeader: Bool { get }
@@ -44,6 +45,10 @@ extension CardDetails {
 
     var thumbnailDrawsHeader: Bool {
         true
+    }
+
+    var defaultIcon: String? {
+        nil
     }
 }
 
@@ -105,6 +110,8 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
                     .transition(.fade(duration: 0.5))
                     .background(Color.white)
                     .scaledToFit()
+            } else if let icon = defaultIcon {
+                Image(systemName: icon)
             } else if let url = item.primitiveUrl {
                 FaviconView(url: url, size: SuggestionViewUX.FaviconSize, bordered: false)
             }
@@ -364,6 +371,10 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
 
     var accessibilityLabel: String {
         "\(title), Tab Group"
+    }
+
+    var defaultIcon: String? {
+        "square.grid.2x2.fill"
     }
 
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
