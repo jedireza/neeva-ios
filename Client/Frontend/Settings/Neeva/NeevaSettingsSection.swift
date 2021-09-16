@@ -9,6 +9,7 @@ struct NeevaSettingsSection: View {
 
     @ObservedObject var userInfo: NeevaUserInfo
     @Environment(\.openInNewTab) var openURL
+    @Environment(\.settingsPresentIntroViewController) var presentIntroViewController
     @State var showingAccountDetails = false
 
     // Used by FeatureFlag[.inlineAccountSettings] to render inline settings
@@ -102,7 +103,7 @@ struct NeevaSettingsSection: View {
             Button("Sign In or Join Neeva") {
                 ClientLogger.shared.logCounter(
                     .SettingSignin, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                openURL(NeevaConstants.appSigninURL, false)
+                presentIntroViewController()
             }.frame(height: 60 - 12)
         }
     }

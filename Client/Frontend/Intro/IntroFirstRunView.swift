@@ -98,6 +98,7 @@ struct IntroFirstRunView: View {
                     + Text("Sign In").foregroundColor(Color.ui.gray20).fontWeight(.medium))
                     .font(.system(size: 14))
                     .multilineTextAlignment(.center)
+                    .accessibilityLabel("Sign In")
             }
             .padding(.bottom, 30)
         }
@@ -110,12 +111,20 @@ struct IntroFirstRunView: View {
     }
 
     func logImpression() {
-        if !Defaults[.firstRunImpressionLogged] {
+        if Defaults[.introSeen] {
+            // open by clicking sign in beyond first run
             ClientLogger.shared.logCounter(
-                .FirstRunImpression, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-            Defaults[.firstRunImpressionLogged] = true
+                .AuthImpression, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        } else {
+            // at first run screen
+            if !Defaults[.firstRunImpressionLogged] {
+                ClientLogger.shared.logCounter(
+                    .FirstRunImpression,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                Defaults[.firstRunImpressionLogged] = true
+            }
+            Defaults[.firstRunSeenAndNotSignedIn] = true
         }
-        Defaults[.firstRunSeenAndNotSignedIn] = true
     }
 }
 

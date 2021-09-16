@@ -125,7 +125,7 @@ private struct GenericErrorView: View {
 /// Prompts the user to log into Neeva
 private struct LoginView: View {
     @Environment(\.onOpenURL) var onOpenURL
-    @Environment(\.logAuth) var logAuth
+    @Environment(\.onSigninOrJoinNeeva) var onSigninOrJoinNeeva
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
@@ -161,7 +161,7 @@ private struct LoginView: View {
                 } else {
                     Spacer().repeated(2)
                 }
-                Button(action: tapSignIn) {
+                Button(action: onSigninOrJoinNeeva) {
                     HStack {
                         Image("neeva-logo", bundle: .main)
                             .renderingMode(.template)
@@ -170,7 +170,7 @@ private struct LoginView: View {
                             .frame(height: 19)
                             .padding(.trailing, 3)
                         Spacer()
-                        Text("Sign In with Neeva")
+                        Text("Sign in or Join Neeva")
                             .fontWeight(.medium)
                         Spacer()
                     }
@@ -178,11 +178,6 @@ private struct LoginView: View {
                 }
                 .buttonStyle(NeevaButtonStyle(.primary))
                 .padding(.bottom, 25)
-                Button(action: tapSignUp) {
-                    Text("New to Neeva? Join now")
-                        .font(.custom("Roobert", size: 18))
-                        .underline()
-                }.accentColor(.ui.gray20)
             }
             .multilineTextAlignment(.center)
             .padding(.horizontal, 32)
@@ -191,16 +186,6 @@ private struct LoginView: View {
         }
         .preference(key: ErrorViewBackgroundPreferenceKey.self, value: Color.brand.offwhite)
         .colorScheme(.light)
-    }
-
-    func tapSignIn() {
-        logAuth(true)
-        onOpenURL(NeevaConstants.appSigninURL)
-    }
-
-    func tapSignUp() {
-        logAuth(false)
-        onOpenURL(NeevaConstants.appSignupURL)
     }
 }
 
