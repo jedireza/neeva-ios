@@ -8,6 +8,7 @@ struct SuggestedSpacesView: View {
     @ObservedObject var userInfo = NeevaUserInfo.shared
 
     @Environment(\.onOpenURL) var openURL
+    @State var shareTargetView: UIView!
 
     var body: some View {
         VStack {
@@ -30,7 +31,12 @@ struct SuggestedSpacesView: View {
                                 .foregroundColor(.primary)
                         }
                         .buttonStyle(TableCellButtonStyle())
-                        .contextMenu { ZeroQueryCommonContextMenuActions(siteURL: space.url, title: nil, description: nil) }
+                        .uiViewRef($shareTargetView)
+                        .contextMenu {
+                            ZeroQueryCommonContextMenuActions(
+                                siteURL: space.url, title: nil, description: nil,
+                                shareTarget: shareTargetView)
+                        }
                     }
                 }.opacity(
                     {

@@ -15,12 +15,14 @@ extension EnvironmentValues {
         set { self[OpenInNewTabKey] = newValue }
     }
 
+    // UIView here is used as a target view to anchor the share pop over on iPad.
     private struct ShareURLKey: EnvironmentKey {
-        static var defaultValue: ((URL) -> Void)? = nil
+        static var defaultValue: ((URL, UIView) -> Void)? = nil
     }
-    public var shareURL: (URL) -> Void {
+    public var shareURL: (URL, UIView) -> Void {
         get {
-            self[ShareURLKey] ?? { _ in fatalError(".environment(\\.shareURL) must be specified") }
+            self[ShareURLKey] ?? { _, _ in fatalError(".environment(\\.shareURL) must be specified")
+            }
         }
         set { self[ShareURLKey] = newValue }
     }

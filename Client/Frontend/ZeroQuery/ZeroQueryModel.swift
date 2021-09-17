@@ -34,11 +34,14 @@ class ZeroQueryModel: ObservableObject {
 
     let bvc: BrowserViewController
     let profile: Profile
-    let shareURLHandler: (URL) -> Void
+    let shareURLHandler: (URL, UIView) -> Void
     var delegate: ZeroQueryPanelDelegate?
     var isLazyTab = false
 
-    init(bvc: BrowserViewController, profile: Profile, shareURLHandler: @escaping (URL) -> Void) {
+    init(
+        bvc: BrowserViewController, profile: Profile,
+        shareURLHandler: @escaping (URL, UIView) -> Void
+    ) {
         self.bvc = bvc
         self.profile = profile
         self.shareURLHandler = shareURLHandler
@@ -124,7 +127,7 @@ class ZeroQueryModel: ObservableObject {
             && (!Defaults[.ratingsCardHidden]
                 || (UserFlagStore.shared.state == .ready
                     && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)))
-        
+
         if showRatingsCard {
             ClientLogger.shared.logCounter(.RatingsRateExperience)
         }

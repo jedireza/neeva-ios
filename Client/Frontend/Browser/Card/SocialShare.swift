@@ -30,10 +30,12 @@ struct ShareToSocialView: View {
     @Environment(\.shareURL) var shareURL
     @EnvironmentObject var tabModel: TabCardModel
     let url: URL
+    let shareTargetView: UIView
     let ensurePublicACL: (@escaping () -> Void) -> Void
 
-    init(url: URL, ensurePublicACL: @escaping (@escaping () -> Void) -> Void) {
+    init(url: URL, shareTarget: UIView, ensurePublicACL: @escaping (@escaping () -> Void) -> Void) {
         self.url = url
+        self.shareTargetView = shareTarget
         self.ensurePublicACL = ensurePublicACL
     }
 
@@ -121,7 +123,7 @@ struct ShareToSocialView: View {
                 imageName: "square.and.arrow.up", isSystemImage: true,
                 label: noAppsAvailable ? "Share" : "More",
                 onClick: {
-                    ensurePublicACL({ shareURL(url) })
+                    ensurePublicACL({ shareURL(url, shareTargetView) })
                 })
             if noAppsAvailable {
                 Spacer()
@@ -166,11 +168,5 @@ struct SocialShareButton: View {
                 .foregroundColor(.label)
                 .padding(.top, 4)
         }
-    }
-}
-
-struct SocialShare_Previews: PreviewProvider {
-    static var previews: some View {
-        ShareToSocialView(url: URL.aboutBlank, ensurePublicACL: { _ in })
     }
 }

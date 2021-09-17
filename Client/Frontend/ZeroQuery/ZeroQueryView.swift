@@ -225,7 +225,7 @@ struct ZeroQueryView: View {
             .environmentObject(
                 ZeroQueryModel(
                     bvc: SceneDelegate.getBVC(for: nil),
-                    profile: BrowserProfile(localName: "profile"), shareURLHandler: { _ in })
+                    profile: BrowserProfile(localName: "profile"), shareURLHandler: { _, _ in })
             )
             .environmentObject(SuggestedSitesViewModel.preview)
             .environmentObject(

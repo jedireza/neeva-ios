@@ -9,12 +9,19 @@ public struct ZeroQueryCommonContextMenuActions: View {
     private let title: String?
     private let description: String?
     private let showOpenInIncognito: Bool
+    private let shareTargetView: UIView?
 
-    init(siteURL: URL, title: String?, description: String?, showOpenInIncognito: Bool = true) {
+    @State var shareTargetFallback: UIView!
+
+    init(
+        siteURL: URL, title: String?, description: String?, showOpenInIncognito: Bool = true,
+        shareTarget: UIView? = nil
+    ) {
         self.siteURL = siteURL
         self.title = title
         self.description = description
         self.showOpenInIncognito = showOpenInIncognito
+        self.shareTargetView = shareTarget
     }
 
     @Environment(\.openInNewTab) private var openInNewTab
@@ -37,9 +44,9 @@ public struct ZeroQueryCommonContextMenuActions: View {
         Button(action: { saveToSpace(siteURL, title, description) }) {
             Label("Save to Spaces", systemSymbol: .bookmark)
         }
-        Button(action: { shareURL(siteURL) }) {
+        Button(action: { shareURL(siteURL, shareTargetView ?? shareTargetFallback) }) {
             Label("Share", systemSymbol: .squareAndArrowUp)
-        }
+        }.uiViewRef($shareTargetFallback)
 
     }
 }

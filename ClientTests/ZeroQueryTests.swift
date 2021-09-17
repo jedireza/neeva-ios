@@ -30,7 +30,9 @@ class ZeroQueryTests: XCTestCase {
         let bvc = SceneDelegate.getBVC(for: nil)
         self.profile = MockProfile()
         self.suggestionsModel = SuggestionModel(bvc: bvc, profile: profile, queryModel: sQM)
-        self.zQM = ZeroQueryModel(bvc: SceneDelegate.getBVC(for: nil), profile: self.profile, shareURLHandler: { _ in })
+        self.zQM = ZeroQueryModel(
+            bvc: SceneDelegate.getBVC(for: nil), profile: self.profile, shareURLHandler: { _, _ in }
+        )
         self.tabManager = TabManager(profile: profile, imageStore: nil)
         self.tabContentHost = TabContentHost(bvc: bvc)
     }

@@ -41,10 +41,16 @@ class BrowserViewController: UIViewController {
         let model = ZeroQueryModel(
             bvc: self,
             profile: profile,
-            shareURLHandler: { url in
+            shareURLHandler: { url, view in
                 let helper = ShareExtensionHelper(url: url, tab: nil)
                 let controller = helper.createActivityViewController({ (_, _) in })
-                controller.modalPresentationStyle = .formSheet
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    controller.modalPresentationStyle = .formSheet
+                } else {
+                    controller.popoverPresentationController?.sourceView = view
+                    controller.popoverPresentationController?.permittedArrowDirections = .up
+                }
+
                 self.present(controller, animated: true, completion: nil)
             })
         model.delegate = self

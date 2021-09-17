@@ -25,6 +25,7 @@ struct SuggestedSearchesView: View {
                     }
                     .frame(height: 37)
                     .padding(.horizontal, ZeroQueryUX.Padding)
+
                 }
                 .onDrag { NSItemProvider(url: site.url) }
                 .buttonStyle(TableCellButtonStyle())
@@ -40,7 +41,10 @@ struct SuggestedSearchesView: View {
                     }.padding(.trailing, ZeroQueryUX.Padding),
                     alignment: .trailing
                 )
-                .contextMenu { ZeroQueryCommonContextMenuActions(siteURL: site.url, title: nil, description: nil) }
+                .contextMenu {
+                    ZeroQueryCommonContextMenuActions(
+                        siteURL: site.url, title: nil, description: nil)
+                }
             }
         }
         .accentColor(Color(light: .ui.gray70, dark: .secondaryLabel))

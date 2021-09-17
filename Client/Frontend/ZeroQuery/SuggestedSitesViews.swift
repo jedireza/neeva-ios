@@ -66,6 +66,7 @@ struct SuggestedNavigationView<Content: View>: View {
 
 struct SuggestedHomeView: View {
     let title = "Home"
+    @State private var shareTargetView: UIView!
 
     var body: some View {
         SuggestedNavigationView(
@@ -78,12 +79,14 @@ struct SuggestedHomeView: View {
                     .accentColor(.ui.adaptive.blue)
             }
         )
+        .uiViewRef($shareTargetView)
         .contextMenu {
             ZeroQueryCommonContextMenuActions(
                 siteURL: NeevaConstants.appHomeURL,
                 title: title,
                 description: "Neeva Home",
-                showOpenInIncognito: false)
+                showOpenInIncognito: false,
+                shareTarget: shareTargetView)
         }
     }
 }
@@ -96,6 +99,7 @@ struct SuggestedSiteView: View {
     @Environment(\.zeroQueryHideTopSite) private var zeroQueryHideTopSite
 
     @State private var isDeleting = false
+    @State private var shareTargetView: UIView!
 
     var title: String {
         if let provider = site.metadata?.providerName {
@@ -115,6 +119,7 @@ struct SuggestedSiteView: View {
                 )
             }
         )
+        .uiViewRef($shareTargetView)
         .actionSheet(isPresented: $isDeleting) {
             ActionSheet(
                 title: Text("Permanently remove \(title) from Suggested Sites?"),
@@ -127,7 +132,8 @@ struct SuggestedSiteView: View {
             ZeroQueryCommonContextMenuActions(
                 siteURL: site.url.absoluteURL,
                 title: title,
-                description: site.metadata?.description)
+                description: site.metadata?.description,
+                shareTarget: shareTargetView)
             // TODO: make this red
             Button(action: { isDeleting = true }) {
                 Label("Remove", systemSymbol: .trash)

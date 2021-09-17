@@ -27,6 +27,7 @@ extension SpaceACLLevel {
 struct ShareSpaceView: View {
     typealias ACL = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     let space: Space
+    let shareTargetView: UIView
     @Binding var isPresented: Bool
 
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro: Bool
@@ -40,8 +41,9 @@ struct ShareSpaceView: View {
     @State var noteText: String = "Check out my new Neeva Space!"
     @State var selectedACL = SpaceACLLevel.view
 
-    init(space: Space, isPresented: Binding<Bool>) {
+    init(space: Space, shareTarget: UIView, isPresented: Binding<Bool>) {
         self.space = space
+        self.shareTargetView = shareTarget
         self.isPublic = space.isPublic
         self._isPresented = isPresented
     }
@@ -249,7 +251,7 @@ struct ShareSpaceView: View {
                 }
             ).padding(.horizontal, 16)
                 .padding(.vertical, 12)
-            ShareToSocialView(url: space.url) { onShared in
+            ShareToSocialView(url: space.url, shareTarget: shareTargetView) { onShared in
                 guard !isPublic else {
                     isPresented = false
                     onShared()

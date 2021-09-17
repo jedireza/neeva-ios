@@ -27,6 +27,7 @@ where
     @State private var editMode = EditMode.inactive
     @State private var shareMenuPresented = false
     @State private var newTitle: String = ""
+    @State private var shareTargetView: UIView!
 
     @ObservedObject var primitive: Details
 
@@ -60,6 +61,7 @@ where
             if let space = space, shareMenuPresented {
                 ShareSpaceView(
                     space: space,
+                    shareTarget: shareTargetView,
                     isPresented: $shareMenuPresented
                 )
                 .environmentObject(spacesModel)
@@ -101,7 +103,7 @@ where
                     if case .owner = space.userACL {
                         shareMenuPresented = true
                     } else {
-                        shareURL(space.url)
+                        shareURL(space.url, shareTargetView)
                         ClientLogger.shared.logCounter(
                             .FollowerSharedSpace,
                             attributes: getLogCounterAttributesForSpaces(
@@ -118,7 +120,7 @@ where
                     .foregroundColor(Color.label)
                     .tapTargetFrame()
                 }
-            )
+            ).uiViewRef($shareTargetView)
         }
     }
 
