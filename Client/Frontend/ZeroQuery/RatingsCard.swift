@@ -58,7 +58,9 @@ struct RatingsCard: View {
             onClose()
             ClientLogger.shared.logCounter(.RatingsSendFeedback)
         case .appStoreReview:
-            SKStoreReviewController.requestReview(in: scene as! UIWindowScene)
+            // Not using SKStoreReviewController due to its flakiness and feedbacks we've received from users
+            let writeReviewURL = URL(string: "https://apps.apple.com/us/app/neeva-browser-search-engine/id1543288638?action=write-review")!
+            UIApplication.shared.open(writeReviewURL, options: [:], completionHandler: nil)
             onClose()
             ClientLogger.shared.logCounter(.RatingsSendAppReview)
         }
