@@ -813,7 +813,7 @@ class BrowserViewController: UIViewController {
         style: OverlayStyle, content: @escaping () -> Content,
         onDismiss: (() -> Void)? = nil
     ) {
-        if UIDevice.current.userInterfaceIdiom != .pad {
+        if !chromeModel.inlineToolbar {
             showAsModalOverlaySheet(style: style, content: content, onDismiss: onDismiss)
         } else {
             showAsModalOverlayPopover(style: style, content: content, onDismiss: onDismiss)
