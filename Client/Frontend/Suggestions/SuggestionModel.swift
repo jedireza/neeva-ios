@@ -447,6 +447,12 @@ class SuggestionModel: ObservableObject {
         case .findInPage(let query):
             interaction = .FindOnPageSuggestion
             bvc.updateFindInPageVisibility(visible: true, query: query)
+        case .editCurrentQuery(let query, let url):
+            hideZeroQuery = false
+
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            bvc.searchQueryModel.value = query
+            bvc.searchQueryModel.queryItems = components?.queryItems
         }
 
         if let interaction = interaction {

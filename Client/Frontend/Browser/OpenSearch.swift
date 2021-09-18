@@ -127,4 +127,16 @@ class OpenSearchEngine {
 
         return nil
     }
+
+    func searchURLFrom(searchQuery: String, queryItems: [URLQueryItem]) -> URL {
+        let url = URL(string: "https://\(NeevaConstants.appHost)/search")!
+        var queryItems = queryItems
+
+        if let queryIndex = queryItems.firstIndex(where: { $0.name == "q" }) {
+            // First item is always the search query
+            queryItems[queryIndex].value = searchQuery
+        }
+
+        return url.withQueryParams(queryItems)
+    }
 }

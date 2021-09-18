@@ -44,6 +44,22 @@ class ZeroQueryModel: ObservableObject {
     @Published var showRatingsCard: Bool = false
     @Published var openedFrom: ZeroQueryOpenedLocation?
 
+    var tabURL: URL? {
+        if case .openTab(let tab) = openedFrom, let url = tab?.url {
+            return url
+        }
+
+        return nil
+    }
+
+    var searchQuery: String? {
+        if let url = tabURL, url.isNeevaURL() {
+            return neevaSearchEngine.queryForSearchURL(url)
+        }
+
+        return nil
+    }
+
     let bvc: BrowserViewController
     let profile: Profile
     let shareURLHandler: (URL, UIView) -> Void

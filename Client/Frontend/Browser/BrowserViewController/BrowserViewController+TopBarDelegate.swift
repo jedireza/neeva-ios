@@ -66,6 +66,16 @@ extension BrowserViewController: TopBarDelegate {
             return
         }
 
+        if let queryItems = searchQueryModel.queryItems {
+            // User is editing the current query, should preserve the parameters from their original query
+            let url = neevaSearchEngine.searchURLFrom(searchQuery: text, queryItems: queryItems)
+            finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: currentTab)
+
+            searchQueryModel.queryItems = nil
+
+            return
+        }
+
         // We couldn't build a URL, so check for a matching search keyword.
         let trimmedText = text.trimmingCharacters(in: .whitespaces)
         guard trimmedText.firstIndex(of: " ") != nil else {

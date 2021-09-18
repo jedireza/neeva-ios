@@ -58,6 +58,8 @@ public struct SearchSuggestionView: View {
             TabSuggestionView(suggestion: tab)
         case .findInPage(let query):
             FindInPageSuggestionView(query: query)
+        case .editCurrentQuery(let query):
+            EditCurrentQuerySuggestionView(suggestion: query)
         }
     }
 }
@@ -546,6 +548,42 @@ private struct EditCurrentURLSuggestionView: View {
         .environmentObject(model)
         .contextMenu { menuItems }
         .accessibility(label: Text("Edit Current URL"))
+    }
+}
+
+private struct EditCurrentQuerySuggestionView: View {
+    let suggestion: (String, URL)
+
+    @EnvironmentObject public var model: SuggestionModel
+
+    var favicon: some View {
+        Image("neevaMenuIcon")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: SuggestionViewUX.FaviconSize, height: SuggestionViewUX.FaviconSize)
+    }
+
+    var label: some View {
+        Text(suggestion.0)
+            .withFont(.bodySmall).lineLimit(1)
+    }
+
+    var secondaryLabel: some View {
+        Text("Edit current search")
+            .withFont(.bodyMedium).foregroundColor(.secondaryLabel).lineLimit(1)
+    }
+
+    var body: some View {
+        SuggestionView(
+            action: nil,
+            icon: favicon,
+            label: label,
+            secondaryLabel: secondaryLabel,
+            detail: Symbol(decorative: .arrowUpLeft),
+            suggestion: Suggestion.editCurrentQuery(suggestion.0, suggestion.1)
+        )
+        .environmentObject(model)
+        .accessibility(label: Text("Edit current search"))
     }
 }
 

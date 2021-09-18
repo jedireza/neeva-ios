@@ -146,7 +146,14 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if let openTab = viewModel.openedFrom?.openedTab, let url = openTab.url,
+                    if NeevaFeatureFlags[.clientHideSearchBox], let searchQuery = viewModel.searchQuery, let url = viewModel.tabURL {
+                        SearchSuggestionView(
+                            Suggestion.editCurrentQuery(searchQuery, url)
+                        )
+                        .environmentObject(viewModel.bvc.suggestionModel)
+
+                        SuggestionsDivider(height: 8)
+                    } else if let openTab = viewModel.openedFrom?.openedTab, let url = openTab.url,
                         !(InternalURL(url)?.isZeroQueryURL ?? false)
                     {
                         SearchSuggestionView(

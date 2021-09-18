@@ -13,6 +13,7 @@ public enum Suggestion {
     case navigation(NavSuggestion)
     case tabSuggestion(TabCardDetails)
     case editCurrentURL(TabCardDetails)
+    case editCurrentQuery(String, URL)
     case findInPage(String)
 
     public struct Bang {
@@ -73,6 +74,8 @@ extension Suggestion: Identifiable, Equatable {
             return "tab-\(tab.id)"
         case .findInPage(let query):
             return "findInPage-\(query)"
+        case .editCurrentQuery(let query, _):
+            return "editCurrentQuery-\(query)"
         }
     }
 
