@@ -12,8 +12,6 @@ public class Haptics {
     }
 
     public static func custom(style: UIImpactFeedbackGenerator.FeedbackStyle) {
-        guard FeatureFlag[.haptics] else { return }
-
         let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()
     }
