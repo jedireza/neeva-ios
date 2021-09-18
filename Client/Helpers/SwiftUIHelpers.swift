@@ -12,18 +12,23 @@ public struct VerticalScrollViewIfNeeded<EmbeddedView>: View where EmbeddedView:
     @State var viewHeight: CGFloat = 0
     @Environment(\.inPopover) var inPopover
 
+    var content: some View {
+        embeddedView()
+            .padding(.bottom, inPopover ? 12 : 0)
+            .background(
+                GeometryReader { contentGeom in
+                    Color.clear
+                        .allowsHitTesting(false)
+                        .useEffect(deps: contentGeom.size.height) {
+                            viewHeight = $0
+                        }
+                }
+            )
+    }
+
     public var body: some View {
         GeometryReader { parentGeom in
-            let content = embeddedView()
-                .background(
-                    GeometryReader { contentGeom in
-                        Color.clear
-                            .allowsHitTesting(false)
-                            .useEffect(deps: contentGeom.size.height) {
-                                viewHeight = $0
-                            }
-                    })
-            if parentGeom.size.height < viewHeight {
+            if viewHeight > parentGeom.size.height {
                 ScrollView {
                     content
                 }.padding(.vertical, inPopover ? 6.5 : 0)
