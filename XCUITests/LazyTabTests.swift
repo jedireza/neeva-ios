@@ -94,7 +94,7 @@ class LazyTabTests: BaseTestCase {
 
         // confirms that the tab tray is open and that the non-incognito tab is shown
         XCTAssertEqual(
-            getTabs().firstMatch.label, "Home, Tab",
+            getTabs().firstMatch.label, ", Tab",
             "Expected label of remaining tab is not correct")
     }
 

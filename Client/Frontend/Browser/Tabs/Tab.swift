@@ -416,21 +416,6 @@ class Tab: NSObject, ObservableObject {
             return title
         }
 
-        // When picking a display title. Tabs with sessionData are pending a restore so show their old title.
-        // To prevent flickering of the display title. If a tab is restoring make sure to use its lastTitle.
-        if let url = self.url, InternalURL(url)?.isZeroQueryURL ?? false, sessionData == nil,
-            !restoring
-        {
-            return Strings.AppMenuOpenHomePageTitleString
-        }
-
-        //lets double check the sessionData in case this is a non-restored new tab
-        if let firstURL = sessionData?.urls.first, sessionData?.urls.count == 1,
-            InternalURL(firstURL)?.isZeroQueryURL ?? false
-        {
-            return Strings.AppMenuOpenHomePageTitleString
-        }
-
         if let url = self.url, !InternalURL.isValid(url: url),
             let shownUrl = url.displayURL?.absoluteString
         {

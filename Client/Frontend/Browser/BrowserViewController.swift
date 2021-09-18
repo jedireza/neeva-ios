@@ -740,11 +740,6 @@ class BrowserViewController: UIViewController {
     }
 
     public func hideZeroQuery() {
-        guard !(InternalURL(tabManager.selectedTab?.url)?.isZeroQueryURL ?? false) else {
-            print("Tried to hide zero query on a zero query tab")
-            return
-        }
-
         chromeModel.setEditingLocation(to: false)
         zeroQueryModel.reset(bvc: self)
 
@@ -761,22 +756,17 @@ class BrowserViewController: UIViewController {
     }
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
-        let isZeroQueryURL = url.flatMap { InternalURL($0)?.isZeroQueryURL } ?? false
         if !chromeModel.isEditingLocation {
             guard let url = url else {
                 hideZeroQuery()
                 return
             }
 
-            if isZeroQueryURL {
-                showZeroQuery()
-            } else if !url.absoluteString.hasPrefix(
+            if !url.absoluteString.hasPrefix(
                 "\(InternalURL.baseUrl)/\(SessionRestoreHandler.path)")
             {
                 hideZeroQuery()
             }
-        } else if isZeroQueryURL {
-            showZeroQuery()
         }
     }
 

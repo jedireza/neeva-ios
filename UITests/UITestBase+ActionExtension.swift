@@ -5,8 +5,12 @@ import Foundation
 extension UITestBase {
     // MARK: - Tab & URL
     func closeAllTabs() {
-        tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
-        tester().waitForAnimationsToFinish()
+        if tester().viewExistsWithLabel("Done") {
+            tester().longPressView(withAccessibilityLabel: "Done", duration: 1)
+        } else {
+            tester().waitForView(withAccessibilityLabel: "Show Tabs")
+            tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
+        }
 
         if tester().viewExistsWithLabel("Close All Tabs") {
             tester().tapView(withAccessibilityLabel: "Close All Tabs")
@@ -26,7 +30,6 @@ extension UITestBase {
     func openNewTab(to url: String = "example.com ") {
         tester().waitForView(withAccessibilityLabel: "Show Tabs")
         tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
-        tester().waitForAnimationsToFinish()
 
         if tester().viewExistsWithLabel("New Tab") {
             tester().tapView(withAccessibilityLabel: "New Tab")

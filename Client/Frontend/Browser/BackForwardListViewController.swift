@@ -123,12 +123,11 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
         //error url's are OK as they are used to populate history on session restore.
         listData = items.filter {
             guard let internalUrl = InternalURL($0.url) else { return true }
-            if internalUrl.isZeroQueryURL {
-                return true
-            }
+
             if let url = internalUrl.originalURLFromErrorPage, InternalURL.isValid(url: url) {
                 return false
             }
+
             return true
         }
     }
@@ -264,13 +263,6 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
         cell.isCurrentTab = listData[indexPath.item] == self.currentItem
         cell.connectingBackwards = indexPath.item != listData.count - 1
         cell.connectingForwards = indexPath.item != 0
-
-        let isZeroQueryURL = InternalURL(item.url)?.isZeroQueryURL ?? false
-        guard !isZeroQueryURL else {
-            cell.site = Site(url: item.url, title: Strings.ZeroQueryPage)
-            return cell
-        }
-
         cell.site = sites[url] ?? Site(url: url, title: item.title ?? "")
         cell.setNeedsDisplay()
 

@@ -168,7 +168,7 @@ class BaseTestCase: XCTestCase {
         if app.buttons["Add Tab"].exists {
             app.buttons["Add Tab"].tap()
         } else {
-            waitForExistence(app.buttons["Show Tabs"])
+            waitForExistence(app.buttons["Show Tabs"], timeout: 30)
             app.buttons["Show Tabs"].press(forDuration: 1)
 
             if app.buttons["New Tab"].exists {

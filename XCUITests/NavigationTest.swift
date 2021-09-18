@@ -205,7 +205,7 @@ class NavigationTest: BaseTestCase {
     }
 
     func testShareLinkPrivateMode() {
-        waitForExistence(app.buttons["Show Tabs"])
+        waitForExistence(app.buttons["Show Tabs"], timeout: 30)
         toggleIncognito()
 
         longPressLinkOptions(optionSelected: "Share Link")
@@ -250,7 +250,7 @@ class NavigationTest: BaseTestCase {
     // Smoketest
     func testSSL() {
         openURL("https://expired.badssl.com/")
-        waitForExistence(app.buttons["Advanced"], timeout: 10)
+        waitForExistence(app.buttons["Advanced"], timeout: 30)
         app.buttons["Advanced"].tap()
 
         waitForExistence(app.buttons["Visit site anyway"])

@@ -194,25 +194,6 @@ class NSURLExtensionsTests: XCTestCase {
         }
     }
 
-    func testisZeroQueryURL() {
-        let goodurls = [
-            "\(InternalURL.baseUrl)/sessionrestore?url=\(InternalURL.baseUrl)/about/home",
-            "\(InternalURL.baseUrl)/about/home",
-        ]
-        let badurls = [
-            "http://google.com",
-            "http://localhost:\(AppInfo.webserverPort)/sessionrestore.html",
-            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com",
-            "http://localhost:\(AppInfo.webserverPort)/errors/error.html?url=http%3A//mozilla.com/about/home/",
-        ]
-
-        checkUrls(
-            goodurls: goodurls, badurls: badurls,
-            checker: { url in
-                return url.isZeroQueryURL
-            })
-    }
-
     func testisAboutURL() {
         let goodurls = [
             "\(InternalURL.baseUrl)/about/home",

@@ -39,8 +39,6 @@ struct LocationLabelAndIcon: View {
             .secondaryLabel)
         if forcePlaceholder {
             placeholder
-        } else if let url = url, let internalURL = InternalURL(url), internalURL.isZeroQueryURL {
-            placeholder
         } else if let query = neevaSearchEngine.queryForLocationBar(from: url) {
             Label {
                 Text(query).withFont(.bodyLarge)

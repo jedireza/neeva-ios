@@ -135,7 +135,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                 icon.foregroundColor(.tertiaryLabel)
                     .frame(
                         width: SuggestionViewUX.IconSize,
-                        height: SuggestionViewUX.IconSize)
+                        height: SuggestionViewUX.IconSize
+                    )
                     .unredacted()
                 VStack(alignment: .leading, spacing: 0) {
                     label
@@ -488,8 +489,8 @@ private struct EditCurrentURLSuggestionView: View {
 
     var url: URL? {
         let url = suggestion.url
-        return InternalURL.isValid(url: url) ?
-                InternalURL(url)?.originalURLFromErrorPage : suggestion.url
+        return InternalURL.isValid(url: url)
+            ? InternalURL(url)?.originalURLFromErrorPage : suggestion.url
     }
 
     @EnvironmentObject public var model: SuggestionModel
@@ -509,8 +510,11 @@ private struct EditCurrentURLSuggestionView: View {
             Button {
                 UIPasteboard.general.string = suggestion.url?.absoluteString
 
-                if let toastManager = SceneDelegate.getCurrentSceneDelegate(with: suggestion.manager.scene)?.toastViewManager {
-                    toastManager.makeToast(text: "URL copied to clipboard").enqueue(manager: toastManager)
+                if let toastManager = SceneDelegate.getCurrentSceneDelegate(
+                    with: suggestion.manager.scene)?.toastViewManager
+                {
+                    toastManager.makeToast(text: "URL copied to clipboard").enqueue(
+                        manager: toastManager)
                 }
             } label: {
                 Label("Copy Address", systemSymbol: .link)
@@ -526,9 +530,13 @@ private struct EditCurrentURLSuggestionView: View {
                 else { return }
 
                 if url.isFileURL {
-                    bvc.share(fileURL: url, buttonView: UIHostingController(rootView: self).view, presentableVC: bvc)
+                    bvc.share(
+                        fileURL: url, buttonView: UIHostingController(rootView: self).view,
+                        presentableVC: bvc)
                 } else {
-                    bvc.share(tab: tab, from: UIHostingController(rootView: self).view, presentableVC: bvc)
+                    bvc.share(
+                        tab: tab, from: UIHostingController(rootView: self).view, presentableVC: bvc
+                    )
                 }
             } label: {
                 Label("Share", systemSymbol: .squareAndArrowUp)
@@ -547,7 +555,7 @@ private struct EditCurrentURLSuggestionView: View {
         )
         .environmentObject(model)
         .contextMenu { menuItems }
-        .accessibility(label: Text("Edit Current URL"))
+        .accessibility(label: Text("Edit Current Address"))
     }
 }
 
@@ -693,7 +701,8 @@ struct SuggestionView_Previews: PreviewProvider {
                 QuerySuggestionView(suggestion: historyQuery)
             }.environmentObject(
                 SuggestionModel(
-                    bvc: bvc, previewLensBang: .init(
+                    bvc: bvc,
+                    previewLensBang: .init(
                         domain: nil, shortcut: "w", description: "Wikipedia", type: .bang)))
 
             Section(header: Text("Query — Lens active").textCase(nil)) {
@@ -701,7 +710,8 @@ struct SuggestionView_Previews: PreviewProvider {
                 QuerySuggestionView(suggestion: historyQuery)
             }.environmentObject(
                 SuggestionModel(
-                    bvc: bvc, previewLensBang: .init(
+                    bvc: bvc,
+                    previewLensBang: .init(
                         domain: nil, shortcut: "w", description: "Wikipedia", type: .lens)))
 
             Section(header: Text("URL, Bang, and Lens").textCase(nil)) {

@@ -6,7 +6,7 @@ extension BaseTestCase {
     /// Launches from anywhere the URL bar is visible
     func goToAddressBar() {
         waitForExistence(app.buttons["Address Bar"], timeout: 30)
-        
+
         if app.buttons["Cancel"].exists {
             app.textFields["address"].tap()
         } else {
@@ -39,7 +39,7 @@ extension BaseTestCase {
         waitForExistence(app.buttons["Show Tabs"], timeout: 30)
         app.buttons["Show Tabs"].tap()
 
-        waitForExistence(app.buttons["Done"], timeout: 3)
+        waitForExistence(app.buttons["Done"], timeout: 30)
     }
 
     /// Launches from tab page, then opens settings

@@ -31,31 +31,23 @@ class ScreenshotHelper {
             return
         }
 
-        if InternalURL(url)?.isZeroQueryURL ?? false {
-            if let webviewContainer = controller?.tabContentHost {
-                let screenshot = webviewContainer.view.screenshot(
-                    quality: UIConstants.ActiveScreenshotQuality)
-                tab.setScreenshot(screenshot)
-            }
-        } else {
-            let configuration = WKSnapshotConfiguration()
-            // This is for a bug in certain iOS 13 versions, snapshots cannot be taken correctly without this boolean being set
-            configuration.afterScreenUpdates = false
-            webView.takeSnapshot(with: configuration) { [weak tab] image, error in
-                if let image = image {
-                    tab?.setScreenshot(image)
-                    if FeatureFlag[.cardStrip] {
-                        self.controller?.tabContentHost.tabCardModel.onDataUpdated()
-                    }
-                } else if let error = error {
-                    Sentry.shared.send(
-                        message: "Tab snapshot error", tag: .tabManager, severity: .debug,
-                        description: error.localizedDescription)
-                } else {
-                    Sentry.shared.send(
-                        message: "Tab snapshot error", tag: .tabManager, severity: .debug,
-                        description: "No error description")
+        let configuration = WKSnapshotConfiguration()
+        // This is for a bug in certain iOS 13 versions, snapshots cannot be taken correctly without this boolean being set
+        configuration.afterScreenUpdates = false
+        webView.takeSnapshot(with: configuration) { [weak tab] image, error in
+            if let image = image {
+                tab?.setScreenshot(image)
+                if FeatureFlag[.cardStrip] {
+                    self.controller?.tabContentHost.tabCardModel.onDataUpdated()
                 }
+            } else if let error = error {
+                Sentry.shared.send(
+                    message: "Tab snapshot error", tag: .tabManager, severity: .debug,
+                    description: error.localizedDescription)
+            } else {
+                Sentry.shared.send(
+                    message: "Tab snapshot error", tag: .tabManager, severity: .debug,
+                    description: "No error description")
             }
         }
     }

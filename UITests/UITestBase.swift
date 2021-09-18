@@ -31,7 +31,7 @@ class UITestBase: KIFTestCase {
     ])
 
     func resetToHome() {
-        if tester().viewExistsWithLabel("Cancel") {
+        if (try? tester().tryFindingTappableView(withAccessibilityLabel: "Cancel")) != nil {
             tester().tapView(withAccessibilityLabel: "Cancel")
         }
 

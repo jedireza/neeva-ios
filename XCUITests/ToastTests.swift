@@ -30,7 +30,7 @@ class ToastTests: BaseTestCase {
         goToTabTray()
 
         // close tab
-        app.buttons["Close Home"].tap()
+        app.buttons["Close "].tap()
     }
 
     func testClosedTabToastDoesNotAppear() {

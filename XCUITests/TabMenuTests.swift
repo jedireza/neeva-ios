@@ -64,7 +64,7 @@ class TabMenuTests: BaseTestCase {
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
-            getTabs().firstMatch.label, "Home, Tab",
+            getTabs().firstMatch.label, ", Tab",
             "Expected label of remaining tab is not correct")
     }
 

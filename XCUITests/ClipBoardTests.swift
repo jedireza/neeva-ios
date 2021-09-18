@@ -17,8 +17,8 @@ class ClipBoardTests: BaseTestCase {
     func copyUrl() {
         app.buttons["Address Bar"].tap()
 
-        waitForExistence(app.buttons["Edit Current URL"])
-        app.buttons["Edit Current URL"].press(forDuration: 1)
+        waitForExistence(app.buttons["Edit Current Address"])
+        app.buttons["Edit Current Address"].press(forDuration: 1)
 
         waitForExistence(app.buttons["Copy Address"])
         app.buttons["Copy Address"].tap()
@@ -40,8 +40,8 @@ class ClipBoardTests: BaseTestCase {
         copyUrl()
         checkCopiedUrl()
 
-        waitForExistence(app.buttons["Edit Current URL"])
-        app.buttons["Edit Current URL"].tap()
+        waitForExistence(app.buttons["Edit Current Address"])
+        app.buttons["Edit Current Address"].tap()
         app.textFields["address"].typeText("\n")
 
         waitForExistence(app.buttons["Address Bar"])
