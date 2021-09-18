@@ -134,6 +134,7 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                     .frame(
                         width: SuggestionViewUX.IconSize,
                         height: SuggestionViewUX.IconSize)
+                    .unredacted()
                 VStack(alignment: .leading, spacing: 0) {
                     label
                     secondaryLabel

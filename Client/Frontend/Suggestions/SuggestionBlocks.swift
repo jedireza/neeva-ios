@@ -4,7 +4,7 @@ import Shared
 import Storage
 import SwiftUI
 
-private enum SuggestionBlockUX {
+enum SuggestionBlockUX {
     static let TopSpacing: CGFloat = 2
     static let SeparatorSpacing: CGFloat = 8
     static let ChipBlockSpacing: CGFloat = 10
@@ -119,7 +119,6 @@ struct QuerySuggestionsList: View {
                     )
                     .background(Color.secondaryBackground)
             }
-            
             if FeatureFlag[.suggestionLayoutV2] {
                 ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
                     index, suggestion in
@@ -138,7 +137,7 @@ struct QuerySuggestionsList: View {
 
                 ForEach(suggestionModel.rowQuerySuggestions) { suggestion in
                     SearchSuggestionView(suggestion)
-                }.padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
+                }
             }
         }
     }
@@ -199,8 +198,19 @@ struct PlaceholderSuggestions: View {
             .redacted(reason: .placeholder)
             .disabled(true).padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
         SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-        SuggestionChipView(suggestions: placeholderSuggestions)
-            .modifier(
-                ChipPlaceholderModifier())
+        if FeatureFlag[.enableChipQuery] {
+            SuggestionChipView(suggestions: placeholderSuggestions)
+                .modifier(
+                    ChipPlaceholderModifier())
+        } else {
+            ForEach(0..<3) { _ in
+                QuerySuggestionView(
+                    suggestion:
+                        Suggestion.placeholderQuery("PlaceholderLongTitleOneWord")
+                )
+                .redacted(reason: .placeholder)
+                .disabled(true)
+            }
+        }
     }
 }

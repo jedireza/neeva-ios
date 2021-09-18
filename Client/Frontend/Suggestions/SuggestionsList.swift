@@ -49,13 +49,14 @@ struct SuggestionsList: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(
                                 EdgeInsets(
-                                    top: 2,
-                                    leading: 13,
-                                    bottom: 2,
+                                    top: SuggestionBlockUX.HeaderTopPadding,
+                                    leading: SuggestionBlockUX.HeaderLeadPadding,
+                                    bottom: SuggestionBlockUX.HeaderTopPadding,
                                     trailing: 0)
                             )
                             .background(Color.secondaryBackground)
                     }
+                    SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
                     SearchSuggestionView(findInPageSuggestion)
                 }
             }

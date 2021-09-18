@@ -132,7 +132,7 @@ class SuggestionViewsTests: XCTestCase {
         // 1 history suggestion and 5 query suggestions
         XCTAssertEqual(3, list.count)
         XCTAssertEqual(1, list.findAll(NavSuggestionView.self).count)
-        XCTAssertEqual(5, list.findAll(QuerySuggestionView.self).count)
+        XCTAssertEqual(3, list.findAll(QuerySuggestionView.self).count)
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {

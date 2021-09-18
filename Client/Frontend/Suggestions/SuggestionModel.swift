@@ -179,18 +179,21 @@ class SuggestionModel: ObservableObject {
                         self.rowQuerySuggestions = []
                     }
                 } else {
-                    self.chipQuerySuggestions = [
-                        .query(
-                            .init(
-                                type: .standard,
-                                suggestedQuery: searchQuery,
-                                boldSpan: [
-                                    .init(startInclusive: 0, endExclusive: searchQuery.count)
-                                ],
-                                source: .unknown
-                            )
+                    let emptyQuerySuggestion: Suggestion = .query(
+                        .init(
+                            type: .standard,
+                            suggestedQuery: searchQuery,
+                            boldSpan: [
+                                .init(startInclusive: 0, endExclusive: searchQuery.count)
+                            ],
+                            source: .unknown
                         )
-                    ]
+                    )
+                    if FeatureFlag[.enableChipQuery] {
+                        self.chipQuerySuggestions = [emptyQuerySuggestion]
+                    } else {
+                        self.rowQuerySuggestions = [emptyQuerySuggestion]
+                    }
                 }
             }
         }
@@ -633,11 +636,6 @@ extension SuggestionModel {
                                     "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
                                 value: SuggestionLoggingType.chipSuggestion.rawValue)
                         )
-                        snapshotLogAttributes.append(
-                            ClientLogCounterAttribute(
-                                key: LogConfig.SuggestionAttribute.numberOfChipSuggestions,
-                                value: String(chipQuerySuggestions.count))
-                        )
                         suggestionIdx += 1
                     }
                     isChipQuery = true
@@ -743,6 +741,11 @@ extension SuggestionModel {
             ClientLogCounterAttribute(
                 key: LogConfig.SuggestionAttribute.numberOfStockAnnotations,
                 value: String(numberOfStockAnnotations))
+        )
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfChipSuggestions,
+                value: String(chipQuerySuggestions.count))
         )
 
         // we only log the first 6 positions which should cover what's appear on most screens without scrolling

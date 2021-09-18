@@ -24,6 +24,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case suggestionLayoutV2 = "Suggestion Layout V2"
     case suggestionLayoutWithHeader = "Suggestion Layout with header"
     case homeAsSuggestedSite = "Home as Suggested Site"
+    case enableChipQuery = "Enable Chip Query in Suggestion List"
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {
