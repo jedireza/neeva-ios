@@ -185,18 +185,20 @@ class TabManager: NSObject, ObservableObject {
         assert(Thread.isMainThread)
 
         for tab in tabs {
-            if let webViewUrl = tab.webView?.url,
-                url.isEqual(webViewUrl)
-            {
+            if let webViewUrl = tab.webView?.url, url.isEqual(webViewUrl) {
                 return tab
             }
 
             // Also look for tabs that haven't been restored yet.
-            if let sessionData = tab.sessionData,
-                0..<sessionData.urls.count ~= sessionData.currentPage,
-                sessionData.urls[sessionData.currentPage] == url
-            {
-                return tab
+            if let sessionUrl = tab.sessionData?.currentUrl {
+                if sessionUrl == url {
+                    return tab
+                }
+                if let internalUrl = InternalURL(sessionUrl), internalUrl.isSessionRestore,
+                    internalUrl.extractedUrlParam == url
+                {
+                    return tab
+                }
             }
         }
 

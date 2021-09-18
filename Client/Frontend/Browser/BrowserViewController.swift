@@ -869,7 +869,7 @@ class BrowserViewController: UIViewController {
         if !tabContentHost.promoteToRealTabIfNecessary(
             url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
         {
-            if FeatureFlag[.createOrSwitchToTab] {
+            if zeroQueryModel.targetTab == .existingOrNewTab {
                 hideZeroQuery()
                 tabManager.createOrSwitchToTab(for: url)
             } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {

@@ -185,6 +185,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         case .hideSuggestions:
             if case .suggestions = model.currentContentUI {
                 model.currentContentUI = .zeroQuery
+                zeroQueryModel.targetTab = .defaultValue
             }
         case .hideZeroQuery:
             model.currentContentUI = model.webContainerType

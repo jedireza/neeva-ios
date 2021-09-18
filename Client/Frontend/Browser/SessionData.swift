@@ -58,6 +58,11 @@ class SessionData: NSObject, NSCoding {
         ]
     }
 
+    var currentUrl: URL? {
+        let index = urls.count - 1 + currentPage
+        return 0..<urls.count ~= index ? urls[index] : nil
+    }
+
     /// Creates a new SessionData object representing a serialized tab.
     ///
     /// - Parameters:

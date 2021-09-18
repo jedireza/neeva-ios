@@ -26,6 +26,18 @@ enum ZeroQueryOpenedLocation: Equatable {
     }
 }
 
+enum ZeroQueryTarget {
+    /// Navigate the current tab.
+    case currentTab
+
+    /// Navigate to an existing tab matching the URL or create a new tab.
+    case existingOrNewTab
+
+    static var defaultValue: ZeroQueryTarget {
+        FeatureFlag[.createOrSwitchToTab] ? .existingOrNewTab : .currentTab
+    }
+}
+
 class ZeroQueryModel: ObservableObject {
     @Published var isPrivate = false
     @Published var promoCard: PromoCardType?
@@ -37,6 +49,7 @@ class ZeroQueryModel: ObservableObject {
     let shareURLHandler: (URL, UIView) -> Void
     var delegate: ZeroQueryPanelDelegate?
     var isLazyTab = false
+    var targetTab: ZeroQueryTarget = .defaultValue
 
     init(
         bvc: BrowserViewController, profile: Profile,
@@ -168,5 +181,6 @@ class ZeroQueryModel: ObservableObject {
 
         isLazyTab = false
         openedFrom = nil
+        targetTab = .defaultValue
     }
 }

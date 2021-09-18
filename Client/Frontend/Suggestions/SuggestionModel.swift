@@ -394,13 +394,20 @@ class SuggestionModel: ObservableObject {
         return nil
     }
 
+    private func finishEditingAndSubmit(url: URL) {
+        bvc.finishEditingAndSubmit(
+            url,
+            visitType: VisitType.typed,
+            forTab: bvc.tabManager.selectedTab)
+    }
+
     // MARK: - Suggestion Handling
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
         let suggestionLocationAttributes =
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
         var hideZeroQuery = true
 
-        var interaction : LogConfig.Interaction?
+        var interaction: LogConfig.Interaction?
 
         switch suggestion {
         case .query(let suggestion):
@@ -411,38 +418,28 @@ class SuggestionModel: ObservableObject {
         case .url(let suggestion):
             interaction =
                 suggestion.title?.isEmpty ?? false ? .PersonalSuggestion : .MemorizedSuggestion
-            bvc.finishEditingAndSubmit(
-                URL(string: suggestion.suggestedUrl)!,
-                visitType: VisitType.typed,
-                forTab: bvc.tabManager.selectedTab)
+            finishEditingAndSubmit(url: URL(string: suggestion.suggestedUrl)!)
         case .lens(let suggestion):
             interaction = .LensSuggestion
-            bvc.finishEditingAndSubmit(
-                URL(string: suggestion.shortcut)!,
-                visitType: VisitType.typed,
-                forTab: bvc.tabManager.selectedTab)
+            finishEditingAndSubmit(url: URL(string: suggestion.shortcut)!)
         case .bang(let suggestion):
             interaction = .BangSuggestion
-            bvc.finishEditingAndSubmit(
-                URL(string: suggestion.shortcut)!,
-                visitType: VisitType.typed,
-                forTab: bvc.tabManager.selectedTab)
+            finishEditingAndSubmit(url: URL(string: suggestion.shortcut)!)
         case .navigation(let nav):
             interaction =
                 nav.isMemorizedNav
                 ? LogConfig.Interaction.MemorizedSuggestion
                 : LogConfig.Interaction.HistorySuggestion
-            bvc.finishEditingAndSubmit(
-                nav.url,
-                visitType: VisitType.typed,
-                forTab: bvc.tabManager.selectedTab)
+            finishEditingAndSubmit(url: nav.url)
         case .editCurrentURL(let tab):
             hideZeroQuery = false
 
             let tabURL = tab.url
-            let url = InternalURL.isValid(url: tabURL) ?
-                    InternalURL(tabURL)?.originalURLFromErrorPage : tabURL
+            let url =
+                InternalURL.isValid(url: tabURL)
+                ? InternalURL(tabURL)?.originalURLFromErrorPage : tabURL
             bvc.searchQueryModel.value = url?.absoluteString ?? ""
+            bvc.zeroQueryModel.targetTab = .currentTab
         case .tabSuggestion(let selectedTab):
             if let tab = selectedTab.manager.get(for: selectedTab.id) {
                 selectedTab.manager.select(tab)
