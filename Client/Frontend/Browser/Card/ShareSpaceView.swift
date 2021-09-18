@@ -263,7 +263,7 @@ struct ShareSpaceView: View {
                     onShared()
                 } else {
                     SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
-                        style: .grouped,
+                        style: .spaces,
                         content: {
                             SpacesShareIntroOverlayContent(onShare: {
                                 seenSpacesShareIntro = true

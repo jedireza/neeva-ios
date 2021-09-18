@@ -2204,7 +2204,6 @@
 				4A9FCD4726F107BF00725E17 /* ProfileView.swift */,
 				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
 				4A9FCD4526F1074600725E17 /* SocialShare.swift */,
-				4AB678B726EAA8160078F61B /* SpacesIntro.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
 			);
 			path = Card;
@@ -2492,6 +2491,7 @@
 		C832BF5726DEE07B00B9A1F8 /* Spaces */ = {
 			isa = PBXGroup;
 			children = (
+				4AB678B726EAA8160078F61B /* SpacesIntro.swift */,
 				C832BF5826DEE0BB00B9A1F8 /* AddToSpaceOverlayContent.swift */,
 				4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */,
 			);

@@ -1,17 +1,18 @@
 {
   "images" : [
     {
-      "filename" : "illustration.pdf",
-      "idiom" : "universal",
-      "scale" : "1x"
+      "filename" : "SpaceesIntroLight.pdf",
+      "idiom" : "universal"
     },
     {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "SpacesIntroDark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -15,6 +15,9 @@ public struct OverlayStyle {
     static let grouped = OverlayStyle(
         showTitle: false, backgroundColor: .systemGroupedBackground)
 
+    static let spaces = OverlayStyle(
+        showTitle: false, backgroundColor: .DefaultBackground)
+
     /// Use for sheets with a title (e.g., like the AddToSpaces sheet).
     static let withTitle = OverlayStyle(showTitle: true)
 }
