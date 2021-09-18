@@ -27,6 +27,8 @@ struct TabToolbarButton<Content: View>: View {
             label.tapTargetFrame()
             Spacer(minLength: 0)
         }
+        .contentShape(Circle())
+        .hoverEffect(.highlight)
         .accentColor(isEnabled ? .label : .quaternaryLabel)
     }
 }
