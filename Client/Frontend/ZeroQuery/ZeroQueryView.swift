@@ -123,7 +123,6 @@ struct ZeroQueryView: View {
 
     func ratingsCard(_ viewWidth: CGFloat) -> some View {
         RatingsCard(
-            scene: SceneDelegate.getCurrentScene(for: viewModel.bvc.view),
             onClose: {
                 viewModel.showRatingsCard = false
                 Defaults[.ratingsCardHidden] = true

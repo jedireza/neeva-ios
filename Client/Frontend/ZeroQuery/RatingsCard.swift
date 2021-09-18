@@ -13,7 +13,6 @@ enum RatingsCardState {
 struct RatingsCard: View {
     @State var state = RatingsCardState.rateExperience
 
-    let scene: UIScene
     let onClose: () -> Void
     let onFeedback: () -> Void
     var viewWidth: CGFloat
@@ -113,13 +112,11 @@ struct RatingsCard: View {
             Text("We hear you. Send feedback to help us make Neeva better for you!")
                 .withFont(.bodyLarge)
                 .multilineTextAlignment(isHorizontal ? .leading : .center)
-                .frame(width: isHorizontal ? 210 : 311)
         case .appStoreReview:
             Text("😍").font(.system(size: 32))
             Text("Spread the cheer on the App Store? Your review will help Neeva grow.")
                 .withFont(.bodyLarge)
                 .multilineTextAlignment(isHorizontal ? .leading : .center)
-                .frame(width: isHorizontal ? 210 : 311)
         }
     }
 
@@ -184,7 +181,7 @@ struct RatingsCard: View {
     var body: some View {
         Group {
             if isHorizontal {
-                HStack {
+                HStack(spacing: 16) {
                     label
                     Spacer()
                     buttons
@@ -210,23 +207,25 @@ struct RatingsCard: View {
 
 struct RatingsCard_Previews: PreviewProvider {
     static var previews: some View {
-        GeometryReader { geom in
-            RatingsCard(
-                state: RatingsCardState.rateExperience,
-                scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
-                viewWidth: geom.size.width)
-        }
-        GeometryReader { geom in
-            RatingsCard(
-                state: RatingsCardState.sendFeedback,
-                scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
-                viewWidth: geom.size.width)
-        }
-        GeometryReader { geom in
-            RatingsCard(
-                state: RatingsCardState.appStoreReview,
-                scene: SceneDelegate.getCurrentScene(for: nil), onClose: {}, onFeedback: {},
-                viewWidth: geom.size.width)
+        VStack(spacing: 0) {
+            GeometryReader { geom in
+                RatingsCard(
+                    state: RatingsCardState.rateExperience,
+                    onClose: {}, onFeedback: {},
+                    viewWidth: geom.size.width)
+            }
+            GeometryReader { geom in
+                RatingsCard(
+                    state: RatingsCardState.sendFeedback,
+                    onClose: {}, onFeedback: {},
+                    viewWidth: geom.size.width)
+            }
+            GeometryReader { geom in
+                RatingsCard(
+                    state: RatingsCardState.appStoreReview,
+                    onClose: {}, onFeedback: {},
+                    viewWidth: geom.size.width)
+            }
         }
     }
 }
