@@ -57,7 +57,7 @@ where
                 } else {
                     spaceGrid
                 }
-            }
+            }.accessibilityHidden(shareMenuPresented)
             if let space = space, shareMenuPresented {
                 ShareSpaceView(
                     space: space,
@@ -470,7 +470,7 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                             Label("Add to another Space", systemSymbol: .docOnDoc)
                         })
                 }))
-
+        .accessibilityLabel(details.title).accessibilityHint("Space Item")
     }
 }
 

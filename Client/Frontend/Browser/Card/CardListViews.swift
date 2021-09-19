@@ -21,7 +21,7 @@ struct SpaceCardsView: View {
         ForEach(spacesModel.allDetails, id: \.id) { details in
             FittedCard(details: details)
                 .id(details.id)
-        }
+        }.accessibilityHidden(spacesModel.detailedSpace != nil)
     }
 }
 
