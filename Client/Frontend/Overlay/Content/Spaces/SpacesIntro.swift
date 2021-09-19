@@ -184,7 +184,10 @@ struct EmptySpaceView: View {
 
 struct SpacesIntroView_Previews: PreviewProvider {
     static var previews: some View {
-        SpacesIntroOverlayContent().environment(\.hideOverlay, {})
+        Group {
+            SpacesIntroOverlayContent().preferredColorScheme(.dark).environment(\.hideOverlay, {})
+            SpacesIntroOverlayContent().environment(\.hideOverlay, {})
+        }
         SpacesShareIntroOverlayContent(onShare: {}).environment(\.hideOverlay, {})
         EmptySpaceView()
     }
