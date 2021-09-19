@@ -184,7 +184,7 @@ class TabManager: NSObject, ObservableObject {
     func getTabFor(_ url: URL) -> Tab? {
         assert(Thread.isMainThread)
 
-        for tab in tabs {
+        for tab in tabs.filter({ $0.isIncognito == self.isIncognito }) {
             if let webViewUrl = tab.webView?.url, url.isEqual(webViewUrl) {
                 return tab
             }
@@ -381,7 +381,8 @@ class TabManager: NSObject, ObservableObject {
             select(existingTab)
             tab = existingTab
         } else {
-            let newTab = addTab(URLRequest(url: url), flushToDisk: true, zombie: false)
+            let newTab = addTab(
+                URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
             select(newTab)
             tab = newTab
         }
