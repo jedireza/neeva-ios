@@ -453,6 +453,7 @@ class SuggestionModel: ObservableObject {
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
             bvc.searchQueryModel.value = query
             bvc.searchQueryModel.queryItems = components?.queryItems
+            bvc.zeroQueryModel.targetTab = .currentTab
         }
 
         if let interaction = interaction {
