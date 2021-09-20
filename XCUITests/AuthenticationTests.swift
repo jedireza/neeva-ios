@@ -15,7 +15,9 @@ class AuthenticationTests: BaseTestCase {
         waitForExistence(app.staticTexts["Unauthorized access"])
     }
 
-    func testCorrectCredentials() {
+    func testCorrectCredentials() throws {
+        try skipTest(issue: 1755, "this test is flaky")
+
         openURL(url, waitForPageLoad: false)
 
         enterCredentials(username: "guest", password: "guest")
