@@ -149,7 +149,7 @@ public struct OverflowMenuView: View {
                 }
                 .accentColor(.label)
             }
-        }
+        }.padding(.bottom, -12)
     }
 }
 

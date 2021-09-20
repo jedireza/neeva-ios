@@ -124,6 +124,7 @@ struct NeevaMenuView: View {
             }
         }
         .padding(self.noTopPadding ? [.leading, .trailing] : [.leading, .trailing, .top], 16)
+        .padding(.bottom, 12)
         .background(Color.groupedBackground)
         .onAppear(perform: viewDidAppear)
         .onDisappear(perform: viewDidDisappear)

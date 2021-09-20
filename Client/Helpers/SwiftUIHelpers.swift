@@ -14,7 +14,6 @@ public struct VerticalScrollViewIfNeeded<EmbeddedView>: View where EmbeddedView:
 
     var content: some View {
         embeddedView()
-            .padding(.bottom, inPopover ? 12 : 0)
             .background(
                 GeometryReader { contentGeom in
                     Color.clear
