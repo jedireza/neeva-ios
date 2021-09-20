@@ -159,7 +159,9 @@ class DomainAutocompleteTest: BaseTestCase {
         XCTAssertEqual(value3 as? String, "ancestry.com", "Wrong autocompletion")
     }
     // Test mixed case autocompletion.
-    func testMixedCaseAutocompletion() {
+    func testMixedCaseAutocompletion() throws {
+        try skipTest(issue: 1757, "this test is flaky")
+
         app.buttons["Address Bar"].tap()
         waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("MoZ")
