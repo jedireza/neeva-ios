@@ -68,7 +68,7 @@ open class DefaultSuggestedSites {
                 title: .DefaultSuggestedWikipedia
             ),
             SuggestedSiteData(
-                url: "https://mobile.twitter.com/",
+                url: "https://mobile.twitter.com/home",
                 bgColor: "0x55acee",
                 imageUrl: "asset://suggestedsites_twitter",
                 faviconUrl: "asset://defaultFavicon",
