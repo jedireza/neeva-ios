@@ -34,7 +34,9 @@ class ClipBoardTests: BaseTestCase {
     }
 
     // This test is disabled in release, but can still run on master
-    func testClipboard() {
+    func testClipboard() throws {
+        try skipTest(issue: 1749, "this test is flaky")
+
         openURL()
         checkUrl()
         copyUrl()

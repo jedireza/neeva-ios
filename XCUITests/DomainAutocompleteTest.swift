@@ -46,7 +46,9 @@ class DomainAutocompleteTest: BaseTestCase {
         XCTAssertEqual(value2 as? String, website["value"]!, "Wrong autocompletion")
     }
     // Test that deleting characters works correctly with autocomplete
-    func testAutocompleteDeletingChars() {
+    func testAutocompleteDeletingChars() throws {
+        try skipTest(issue: 1748, "this test is flaky")
+
         app.buttons["Address Bar"].tap()
         waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("wik")
