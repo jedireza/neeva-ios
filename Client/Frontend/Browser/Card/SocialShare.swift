@@ -54,16 +54,12 @@ struct ShareToSocialView: View {
                     label: "Twitter",
                     onClick: {
                         ensurePublicACL({
-                            guard
-                                let vc = SLComposeViewController(
-                                    forServiceType: Social.twitter.serviceType)
-                            else {
-                                return
-                            }
-                            vc.setInitialText("Checkout this Neeva Space!")
-                            vc.add(url)
-                            SceneDelegate.getBVC(with: tabModel.manager.scene).present(
-                                vc, animated: true)
+                            UIApplication.shared.open(
+                                URL(
+                                    string:
+                                        "http://twitter.com/share?text=Check+out+this+@Neeva+Space!&url=\(url.absoluteString)"
+                                )!,
+                                options: [:], completionHandler: nil)
                         })
                     })
                 Spacer()
@@ -96,7 +92,7 @@ struct ShareToSocialView: View {
                             else {
                                 return
                             }
-                            vc.setInitialText("Checkout this Neeva Space!")
+                            vc.setInitialText("Check out this Neeva Space!")
                             vc.add(url)
                             SceneDelegate.getBVC(with: tabModel.manager.scene).present(
                                 vc, animated: true)
