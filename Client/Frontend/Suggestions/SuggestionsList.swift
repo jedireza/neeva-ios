@@ -44,19 +44,10 @@ struct SuggestionsList: View {
 
                 if let findInPageSuggestion = suggestionModel.findInPageSuggestion {
                     if FeatureFlag[.suggestionLayoutWithHeader] {
-                        Text("Find on this page")
-                            .withFont(.bodyMedium)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(
-                                EdgeInsets(
-                                    top: SuggestionBlockUX.HeaderTopPadding,
-                                    leading: SuggestionBlockUX.HeaderLeadPadding,
-                                    bottom: SuggestionBlockUX.HeaderTopPadding,
-                                    trailing: 0)
-                            )
-                            .background(Color.secondaryBackground)
+                        SuggestionsHeader(header: "Find on this page")
+                    } else {
+                        SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
                     }
-                    SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
                     SearchSuggestionView(findInPageSuggestion)
                 }
             }
@@ -82,7 +73,10 @@ struct SuggestionsList_Previews: PreviewProvider {
             SuggestionsList()
         }
         .environmentObject(
-            SuggestionModel(bvc: SceneDelegate.getBVC(for: nil), previewSites: history, chipQuerySuggestions: suggestions)
+            SuggestionModel(
+                bvc: SceneDelegate.getBVC(for: nil),
+                previewSites: history,
+                chipQuerySuggestions: suggestions)
         )
         .previewLayout(.fixed(width: 375, height: 250))
     }

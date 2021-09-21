@@ -14,7 +14,8 @@ enum SuggestionBlockUX {
     static let ChipBlockHeight: CGFloat = 108
 
     static let HeaderLeadPadding: CGFloat = 13
-    static let HeaderTopPadding: CGFloat = 2
+    static let HeaderTopPadding: CGFloat = 6
+    static let HeaderBottomPadding: CGFloat = 3
 }
 
 struct SuggestionsDivider: View {
@@ -22,6 +23,24 @@ struct SuggestionsDivider: View {
 
     var body: some View {
         Color.secondaryBackground.frame(height: height)
+    }
+}
+
+struct SuggestionsHeader: View {
+    let header: String
+
+    var body: some View {
+        Text(header)
+            .withFont(.bodyMedium)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(
+                EdgeInsets(
+                    top: SuggestionBlockUX.HeaderTopPadding,
+                    leading: SuggestionBlockUX.HeaderLeadPadding,
+                    bottom: SuggestionBlockUX.HeaderBottomPadding,
+                    trailing: 0)
+            )
+            .background(Color.secondaryBackground)
     }
 }
 
@@ -107,23 +126,15 @@ struct QuerySuggestionsList: View {
         if !(suggestionModel.chipQuerySuggestions + suggestionModel.rowQuerySuggestions).isEmpty {
 
             if FeatureFlag[.suggestionLayoutWithHeader] {
-                Text("Neeva Suggestions")
-                    .withFont(.bodyMedium)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(
-                        EdgeInsets(
-                            top: SuggestionBlockUX.HeaderTopPadding,
-                            leading: SuggestionBlockUX.HeaderLeadPadding,
-                            bottom: SuggestionBlockUX.HeaderTopPadding,
-                            trailing: 0)
-                    )
-                    .background(Color.secondaryBackground)
+                SuggestionsHeader(header: "Neeva Suggestions")
             }
             if FeatureFlag[.suggestionLayoutV2] {
                 ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
                     index, suggestion in
                     SearchSuggestionView(suggestion)
-                    if case Suggestion.url(_) = suggestion {
+                    if case Suggestion.url(_) = suggestion,
+                       index != suggestionModel.rowQuerySuggestions.count - 1
+                    {
                         SuggestionsDivider(height: 8)
                     }
                 }
@@ -160,20 +171,10 @@ struct NavSuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if FeatureFlag[.suggestionLayoutWithHeader]
-            && suggestionModel.navCombinedSuggestions.count > 0
-        {
-            Text("History")
-                .withFont(.bodyMedium)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(
-                    EdgeInsets(
-                        top: SuggestionBlockUX.HeaderTopPadding,
-                        leading: SuggestionBlockUX.HeaderLeadPadding,
-                        bottom: SuggestionBlockUX.HeaderTopPadding,
-                        trailing: 0)
-                )
-                .background(Color.secondaryBackground)
+        if FeatureFlag[.suggestionLayoutWithHeader] {
+            if suggestionModel.navCombinedSuggestions.count > 0 {
+                SuggestionsHeader(header: "History")
+            }
         } else {
             SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
         }
@@ -193,23 +194,38 @@ struct PlaceholderSuggestions: View {
     ]
 
     var body: some View {
-        SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
-        NavSuggestionView(suggestion: SuggestionsList.placeholderNavSuggestion)
-            .redacted(reason: .placeholder)
-            .disabled(true).padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
-        SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-        if FeatureFlag[.enableChipQuery] {
-            SuggestionChipView(suggestions: placeholderSuggestions)
-                .modifier(
-                    ChipPlaceholderModifier())
-        } else {
-            ForEach(0..<3) { _ in
+        if FeatureFlag[.suggestionLayoutV2] {
+            SuggestionsHeader(header: "Neeva Suggestions")
+            ForEach(0..<4) { i in
+                if i > 0 && i % 2 == 0 {
+                    SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
+                }
                 QuerySuggestionView(
                     suggestion:
                         Suggestion.placeholderQuery("PlaceholderLongTitleOneWord")
                 )
                 .redacted(reason: .placeholder)
                 .disabled(true)
+            }
+        } else {
+            SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
+            NavSuggestionView(suggestion: SuggestionsList.placeholderNavSuggestion)
+                .redacted(reason: .placeholder)
+                .disabled(true).padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
+            SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
+            if FeatureFlag[.enableChipQuery] {
+                SuggestionChipView(suggestions: placeholderSuggestions)
+                    .modifier(
+                        ChipPlaceholderModifier())
+            } else {
+                ForEach(0..<3) { _ in
+                    QuerySuggestionView(
+                        suggestion:
+                            Suggestion.placeholderQuery("PlaceholderLongTitleOneWord")
+                    )
+                    .redacted(reason: .placeholder)
+                    .disabled(true)
+                }
             }
         }
     }
