@@ -23,7 +23,9 @@ class TestFavicons: ProfileTest {
         self.waitForExpectations(timeout: 100, handler: nil)
     }
 
-    func testFaviconFetcherParse() {
+    func testFaviconFetcherParse() throws {
+        try skipTest(issue: 1759, "this test is flaky")
+
         let expectation = self.expectation(description: "Wait for Favicons to be fetched")
 
         let profile = MockProfile()
