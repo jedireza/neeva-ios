@@ -84,31 +84,7 @@ class ToastDefaults: NSObject {
         }
 
         let spaceName = request.targetSpaceName ?? "## Unknown ##"
-        var completedText: String!
-        var deleted = false
-        var toastText: String {
-            switch request.state {
-            case .initial:
-                assert(false)  // Should not be reached
-                return ""
-            case .creatingSpace, .savingToSpace:
-                completedText = "Saved to \"\(spaceName)\""
-                return "Saving..."
-            case .savedToSpace:
-                completedText = "Saved to \"\(spaceName)\""
-                return "Saved to \"\(spaceName)\""
-            case .deletingFromSpace:
-                completedText = "Deleted from \"\(spaceName)\""
-                deleted = true
-                return "Deleting..."
-            case .deletedFromSpace:
-                deleted = true
-                completedText = "Deleted from \"\(spaceName)\""
-                return "Deleted from \"\(spaceName)\""
-            default:
-                return "An error occured"
-            }
-        }
+        let (toastText, completedText, deleted) = request.textInfo
 
         let buttonAction = {
             SpaceStore.shared.refresh()

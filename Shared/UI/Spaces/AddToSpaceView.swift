@@ -42,6 +42,30 @@ public class AddToSpaceRequest: ObservableObject {
     @Published public var targetSpaceID: String?
     @Published public var error: Error?
 
+    public var textInfo: (String, String, Bool) {
+        switch self.state {
+        case .initial:
+            assert(false)  // Should not be reached
+            return ("", "", false)
+        case .creatingSpace, .savingToSpace:
+            return ("Saving...", "Saved to \"\(self.targetSpaceName!)\"", false)
+        case .savedToSpace:
+            return (
+                "Saved to \"\(self.targetSpaceName!)\"", "Saved to \"\(self.targetSpaceName!)\"",
+                false
+            )
+        case .deletingFromSpace:
+            return ("Deleting...", "Deleted from \"\(self.targetSpaceName!)\"", true)
+        case .deletedFromSpace:
+            return (
+                "Deleted from \"\(self.targetSpaceName!)\"",
+                "Deleted from \"\(self.targetSpaceName!)\"", true
+            )
+        default:
+            return ("An error occured", "An error occured", false)
+        }
+    }
+
     /// - Parameters:
     ///   - title: The title of the newly created entity
     ///   - description: The description/snippet of the newly created entity
@@ -202,10 +226,10 @@ public struct AddToSpaceView: View {
                     Button {
                         if SpaceStore.shared.urlInSpace(request.url, spaceId: space.id) {
                             request.deleteFromExistingSpace(id: space.id.value, name: space.name)
+                            onDismiss()
                         } else {
                             request.addToExistingSpace(id: space.id.value, name: space.name)
                         }
-                        onDismiss()
                     } label: {
                         SpaceListItem(space, currentURL: request.url)
                     }

@@ -1927,7 +1927,10 @@ extension BrowserViewController {
                 request: request,
                 bvc: self, importData: importData)
         } onDismiss: {
-            if request.state != .initial {
+            if request.state != .initial
+                && request.state != .savingToSpace
+                && request.state != .savedToSpace
+            {
                 ToastDefaults().showToastForSpace(bvc: self, request: request)
             }
         }

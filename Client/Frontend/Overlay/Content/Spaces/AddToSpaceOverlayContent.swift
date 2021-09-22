@@ -14,11 +14,17 @@ struct AddToSpaceOverlayContent: View {
     let importData: SpaceImportHandler?
 
     var body: some View {
-        AddToSpaceView(
-            request: request,
-            onDismiss: hideOverlay,
-            importData: importData
-        )
+        Group {
+            if request.state == .savedToSpace || request.state == .savingToSpace {
+                ShareAddedSpaceView(request: request, bvc: bvc)
+            } else {
+                AddToSpaceView(
+                    request: request,
+                    onDismiss: hideOverlay,
+                    importData: importData
+                )
+            }
+        }
         .overlayTitle(title: request.mode.title)
         .overlayIsFixedHeight(isFixedHeight: request.mode == .saveToNewSpace)
         .environment(\.onSigninOrJoinNeeva) {

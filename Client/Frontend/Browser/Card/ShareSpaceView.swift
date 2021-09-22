@@ -28,6 +28,7 @@ struct ShareSpaceView: View {
     typealias ACL = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     let space: Space
     let shareTargetView: UIView
+    let compact: Bool
     @Binding var isPresented: Bool
 
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro: Bool
@@ -41,11 +42,12 @@ struct ShareSpaceView: View {
     @State var noteText: String = "Check out my new Neeva Space!"
     @State var selectedACL = SpaceACLLevel.view
 
-    init(space: Space, shareTarget: UIView, isPresented: Binding<Bool>) {
+    init(space: Space, shareTarget: UIView, isPresented: Binding<Bool>, compact: Bool = false) {
         self.space = space
         self.shareTargetView = shareTarget
         self.isPublic = space.isPublic
         self._isPresented = isPresented
+        self.compact = compact
     }
 
     var selectedProfilesUI: some View {
@@ -237,40 +239,44 @@ struct ShareSpaceView: View {
 
     var publicACLShareView: some View {
         VStack(spacing: 0) {
-            Toggle(
-                isOn: $isPublic,
-                label: {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("Enable shareable link")
-                            .withFont(.headingMedium)
-                            .foregroundColor(.label)
-                        Text("Anyone with the link can view")
-                            .withFont(.bodyMedium)
-                            .foregroundColor(.secondaryLabel)
+            if space.ACL == .owner {
+                Toggle(
+                    isOn: $isPublic,
+                    label: {
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("Enable shareable link")
+                                .withFont(.headingMedium)
+                                .foregroundColor(.label)
+                            Text("Anyone with the link can view")
+                                .withFont(.bodyMedium)
+                                .foregroundColor(.secondaryLabel)
+                        }
                     }
-                }
-            ).padding(.horizontal, 16)
-                .padding(.vertical, 12)
-            ShareToSocialView(url: space.url, shareTarget: shareTargetView) { onShared in
-                guard !isPublic else {
-                    isPresented = false
-                    onShared()
-                    return
-                }
-                if seenSpacesShareIntro {
-                    self.isPublic = true
-                    isPresented = false
-                    onShared()
-                } else {
-                    SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
-                        style: .spaces,
-                        content: {
-                            SpacesShareIntroOverlayContent(onShare: {
-                                seenSpacesShareIntro = true
-                                self.isPublic = true
-                                onShared()
+                ).padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+            }
+            if space.ACL == .owner || isPublic {
+                ShareToSocialView(url: space.url, shareTarget: shareTargetView) { onShared in
+                    guard !isPublic else {
+                        isPresented = false
+                        onShared()
+                        return
+                    }
+                    if seenSpacesShareIntro {
+                        self.isPublic = true
+                        isPresented = false
+                        onShared()
+                    } else {
+                        SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
+                            style: .spaces,
+                            content: {
+                                SpacesShareIntroOverlayContent(onShare: {
+                                    seenSpacesShareIntro = true
+                                    self.isPublic = true
+                                    onShared()
+                                })
                             })
-                        })
+                    }
                 }
             }
         }.background(Color.DefaultBackground)
@@ -298,18 +304,24 @@ struct ShareSpaceView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            header
+            if !compact {
+                header
+            }
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 2) {
-                    soloACLShareView
+                    if space.ACL == .owner {
+                        soloACLShareView
+                    }
                     publicACLShareView
-                    Text("Who has access")
-                        .withFont(.headingSmall)
-                        .foregroundColor(.label)
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
-                        .padding(.bottom, 8)
-                    currentACLList
+                    if !compact {
+                        Text("Who has access")
+                            .withFont(.headingSmall)
+                            .foregroundColor(.label)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
+                        currentACLList
+                    }
                 }
             }
             Spacer()
