@@ -358,7 +358,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     typealias Item = TabGroup
     typealias Manager = TabGroupManager
 
-    var manager: TabGroupManager
+    @Published var manager: TabGroupManager
+    @Published var isShowingDetails = false
     var id: String
     var isSelected: Bool {
         manager.tabManager.selectedTab?.rootUUID == id
@@ -389,5 +390,7 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         return ThumbnailGroupView(model: self)
     }
 
-    func onSelect() {}
+    func onSelect() {
+        isShowingDetails = true
+    }
 }

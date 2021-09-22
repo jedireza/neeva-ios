@@ -155,6 +155,14 @@ struct CardGrid: View {
                         )
                         .transition(.flipFromRight)
                 }
+                if let tabGroupDetails = tabGroupModel.detailedTabGroup {
+                    DetailView(primitive: tabGroupDetails)
+                        .frame(width: geom.size.width, height: geom.size.height)
+                        .background(
+                            Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
+                        )
+                        .transition(.flipFromRight)                        
+                }
             }
             .useEffect(
                 deps: geom.size.width, gridModel.isHidden, topToolbar, perform: updateCardSize

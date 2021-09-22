@@ -324,20 +324,51 @@ class TabGroupCardModel: CardModel {
     var onViewUpdate: () -> Void = {}
     var manager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
+    private var detailsSubscriptions: Set<AnyCancellable> = Set()
+    private var stateNeedsRefresh = false
 
     var allDetails: [TabGroupCardDetails] = [] {
         didSet {
             allDetailsWithExclusionList = allDetails
         }
     }
-    var allDetailsWithExclusionList: [TabGroupCardDetails] = []
+    @Published var allDetailsWithExclusionList: [TabGroupCardDetails] = []
+    @Published var detailedTabGroup: TabGroupCardDetails? {
+        willSet {
+            guard let tabgroup = detailedTabGroup, newValue == nil else {
+                return
+            }
+            tabgroup.isShowingDetails = false
+        }
+    }
 
     init(manager: TabGroupManager) {
         self.manager = manager
         onDataUpdated()
-        self.anyCancellable = self.manager.objectWillChange.sink { [weak self] (_) in
-            self?.onDataUpdated()
-            self?.objectWillChange.send()
+        self.anyCancellable = self.manager.objectWillChange.sink { [unowned self] (_) in
+            if detailedTabGroup != nil {
+                return
+            }
+            DispatchQueue.main.async {
+                allDetails = manager.getAll().map {
+                    TabGroupCardDetails(tabGroup: $0, tabGroupManager: manager)
+                }
+                allDetails.forEach { details in
+                    let detailID = details.id
+                    details.$isShowingDetails.sink { [weak self] showingDetails in
+                        if showingDetails {
+                            withAnimation {
+                                self?.detailedTabGroup =
+                                    self?.allDetails.first(where: { $0.id == detailID })
+                            }
+                        }
+                    }.store(in: &detailsSubscriptions)
+                }
+            }
+            
+            onViewUpdate()
+            detailedTabGroup = allDetails.first { $0.isShowingDetails }
+            objectWillChange.send()
         }
     }
 

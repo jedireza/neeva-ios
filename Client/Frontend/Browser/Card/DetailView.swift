@@ -20,8 +20,10 @@ where
 {
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
     @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
+    @Environment(\.onOpenURL) var onOpenURL
     @Environment(\.shareURL) var shareURL
     @Environment(\.columns) var gridColumns
     @State private var editMode = EditMode.inactive
@@ -46,13 +48,19 @@ where
         primitive.ACL >= .edit
     }
 
+    var showingAsList: Bool {
+        spacesModel.detailedSpace != nil ? true : false
+    }
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
                 topBar
-                if primitive.allDetails.isEmpty {
+                if tabGroupCardModel.detailedTabGroup != nil {
+                    tabGroupGrid
+                } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {
                     EmptySpaceView()
-                } else if gridModel.showingDetailsAsList {
+                } else if showingAsList {
                     spaceList
                 } else {
                     spaceGrid
@@ -125,7 +133,7 @@ where
     }
 
     @ViewBuilder var editButton: some View {
-        if gridModel.showingDetailsAsList && canEdit {
+        if showingAsList && canEdit {
             Button(
                 action: {
                     switch editMode {
@@ -222,8 +230,14 @@ where
         HStack {
             Button(
                 action: {
-                    withAnimation {
-                        spacesModel.detailedSpace = nil
+                    if space != nil {
+                        withAnimation {
+                            spacesModel.detailedSpace = nil
+                        }
+                    } else {
+                        withAnimation {
+                            tabGroupCardModel.detailedTabGroup = nil
+                        }
                     }
                 },
                 label: {
@@ -260,8 +274,10 @@ where
                     .foregroundColor(.secondaryLabel)
             }
             Spacer()
-            shareButton
-            menuButton
+            if space != nil {
+                shareButton
+                menuButton
+            }
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.DefaultBackground.edgesIgnoringSafeArea(.horizontal))
@@ -360,6 +376,27 @@ where
                 Spacer()
             }
             .padding(.vertical, DetailsViewUX.Padding)
+        }
+    }
+
+    var tabGroupGrid: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVGrid(
+                columns: gridColumns,
+                spacing: CardGridUX.GridSpacing
+            ) {
+                ForEach(primitive.allDetails, id: \.id) { details in
+                        FittedCard(details: details)
+                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                            .environment(\.selectionCompletion) {
+                            gridModel.hideWithNoAnimation()
+                            tabGroupCardModel.detailedTabGroup = nil
+                    }
+                }
+                Spacer()
+            }
+            .padding(.vertical, CardGridUX.GridSpacing)
+            .background(Color.clear)
         }
     }
 

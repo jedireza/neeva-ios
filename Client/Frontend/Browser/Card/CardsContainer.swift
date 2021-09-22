@@ -24,6 +24,7 @@ struct CardsContainer: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro: Bool
 
     @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
 
@@ -68,12 +69,14 @@ struct CardsContainer: View {
                             TabCardsView()
                                 .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                                 .environment(\.selectionCompletion) {
-                                withAnimation {
-                                    value.scrollTo(tabModel.selectedTabID)
+                                    guard tabGroupModel.detailedTabGroup == nil else {
+                                        return
+                                    }
+                                    withAnimation {
+                                        value.scrollTo(tabModel.selectedTabID)
+                                    }
+                                    gridModel.hideWithAnimation()
                                 }
-
-                                gridModel.hideWithAnimation()
-                            }
                         }.background(
                             GeometryReader { proxy in
                                 Color.clear.preference(

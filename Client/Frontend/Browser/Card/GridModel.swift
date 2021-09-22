@@ -15,7 +15,6 @@ class GridModel: ObservableObject {
             }
         }
     }
-    @Published var showingDetailsAsList = true
 
     private var updateVisibility: ((Bool) -> Void)!
     var scrollOffset: CGFloat = CGFloat.zero
