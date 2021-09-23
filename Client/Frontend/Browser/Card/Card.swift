@@ -146,7 +146,7 @@ struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
-    var animateTitle = false
+    var animate = false
 
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @EnvironmentObject var gridModel: GridModel
@@ -171,7 +171,7 @@ struct Card<Details>: View where Details: CardDetails {
                         .clipped()
                 }
                 .buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
-                .cornerRadius(CardUX.CornerRadius)
+                .cornerRadius(animate && gridModel.isHidden ? 0 : CardUX.CornerRadius)
                 .modifier(
                     BorderTreatment(
                         isSelected: showsSelection && details.isSelected,
@@ -190,7 +190,7 @@ struct Card<Details>: View where Details: CardDetails {
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }
                     .frame(width: max(0, geom.size.width), height: CardUX.ButtonSize)
-                    .background(Color.clear).opacity(animateTitle && gridModel.isHidden ? 0 : 1)
+                    .background(Color.clear).opacity(animate && gridModel.isHidden ? 0 : 1)
                 }
             }
         }
@@ -211,6 +211,7 @@ struct Card<Details>: View where Details: CardDetails {
                             .clipShape(Circle())
                             .padding(5)
                             .accessibilityLabel("Close \(details.title)")
+                            .opacity(animate && gridModel.isHidden ? 0 : 1)
                     },
                     alignment: .topTrailing
                 )

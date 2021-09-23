@@ -30,7 +30,7 @@ struct CardTransitionAnimator: View {
         let maxHeight =
             containerSize.height + safeAreaInsets.bottom - transitionBottomPadding
             - transitionTopPadding + safeAreaInsets.top + CardUX.HeaderSize
-        Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden, animateTitle: true)
+        Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden, animate: true)
             .runAfter(
                 toggling: gridModel.isHidden,
                 fromTrueToFalse: {
