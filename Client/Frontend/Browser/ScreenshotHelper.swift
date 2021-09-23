@@ -24,7 +24,7 @@ class ScreenshotHelper {
     /// If taking a screenshot of the zero query page, uses our custom screenshot `UIView` extension function
     /// If taking a screenshot of a website, uses apple's `takeSnapshot` function
     func takeScreenshot(_ tab: Tab) {
-        guard let webView = tab.webView, let url = tab.url else {
+        guard let webView = tab.webView else {
             Sentry.shared.send(
                 message: "Tab Snapshot Error", tag: .tabManager, severity: .debug,
                 description: "Tab webView or url is nil")

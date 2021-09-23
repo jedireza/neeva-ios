@@ -6,7 +6,9 @@ import XCTest
 
 let website_2 = [
     "url": "www.example.com", "label": "Example", "value": "example", "link": "More information...",
-    "moreLinkLongPressUrl": "http://www.iana.org/domains/example", "moreLinkLongPressInfo": "iana",
+    "moreLinkLongPressUrl": "http://www.iana.org/domains/example",
+    "moreLinkLongPressUrlPrivate": "https://www.iana.org/domains/example",
+    "moreLinkLongPressInfo": "iana",
 ]
 let urlAddons = "addons.mozilla.org"
 let urlGoogle = "www.google.com"
@@ -99,24 +101,15 @@ class NavigationTest: BaseTestCase {
 
     func testCopyLink() {
         longPressLinkOptions(optionSelected: "Copy Link")
-        // navigator.goto(NewTabScreen)
-        app.buttons["Address Bar"].press(forDuration: 1)
-
-        app.menuItems["Paste & Go"].tap()
-        waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: website_2["moreLinkLongPressInfo"]!)
+        XCTAssertEqual(UIPasteboard.general.url?.absoluteString, website_2["moreLinkLongPressUrl"]!)
     }
 
     func testCopyLinkPrivateMode() {
         toggleIncognito()
 
         longPressLinkOptions(optionSelected: "Copy Link")
-        // navigator.goto(NewTabScreen)
-        app.buttons["Address Bar"].press(forDuration: 1)
-
-        app.menuItems["Paste & Go"].tap()
-        waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: website_2["moreLinkLongPressInfo"]!)
+        XCTAssertEqual(
+            UIPasteboard.general.url?.absoluteString, website_2["moreLinkLongPressUrlPrivate"]!)
     }
 
     func testLongPressOnAddressBar() {
@@ -169,9 +162,18 @@ class NavigationTest: BaseTestCase {
     }
 
     private func longPressLinkOptions(optionSelected: String) {
-        openURL(path(forTestPage: "test-example.html"))
-        waitUntilPageLoad()
+        if !app.webViews.links[website_2["link"]!].exists {
+            openURL(path(forTestPage: "test-example.html"))
+            waitUntilPageLoad()
+        }
+
         app.webViews.links[website_2["link"]!].press(forDuration: 2)
+
+        waitForExistence(app.buttons[optionSelected])
+        if !app.buttons[optionSelected].isHittable {
+            app.swipeUp()
+        }
+
         app.buttons[optionSelected].tap()
     }
 

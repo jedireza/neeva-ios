@@ -195,7 +195,7 @@ class TabManagerStore {
         log.info("Getting startup tabs for scene: \(scene.session.persistentIdentifier)")
 
         let path = tabSavePath(withId: scene.session.persistentIdentifier)
-        log.info("Restoring tabs from \(path)")
+        log.info("Restoring tabs from \(path ?? "")")
 
         let savedTabsWithNewPath = SiteArchiver.tabsToRestore(tabsStateArchivePath: path)
         let fallbackTabs = SiteArchiver.tabsToRestore(

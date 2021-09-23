@@ -15,7 +15,7 @@ public class GraphQLAPI {
     /// The `ApolloClient` does the actual work of performing GraphQL requests.
     public private(set) lazy var apollo: ApolloClient = {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
-        let provider = LegacyInterceptorProvider(store: store)
+        let provider = DefaultInterceptorProvider(store: store)
         let transport = NeevaNetworkTransport(
             interceptorProvider: provider,
             endpointURL: NeevaConstants.appURL / "graphql"

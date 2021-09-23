@@ -249,7 +249,6 @@
 		7B604F991C494F74006EEEC3 /* KIF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604F981C494F74006EEEC3 /* KIF.framework */; };
 		7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FA11C495268006EEEC3 /* SnapKit.framework */; };
 		7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */; };
-		7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8A47F51D01D3B400C07734 /* PassKit.framework */; };
 		7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BF91B1E43472E00CB24F4 /* JSONExtensions.swift */; };
 		7BA4A9471C4CED900091D032 /* GCDWebServers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BA4A9451C4CED780091D032 /* GCDWebServers.framework */; };
 		7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BA4A9491C4CEFC70091D032 /* OnePasswordExtension.framework */; };
@@ -1772,7 +1771,6 @@
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
-				7B8A47F61D01D3B400C07734 /* PassKit.framework in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
 				3B4988CE1E42B01800A12FDA /* SwiftyJSON.framework in Frameworks */,
 				7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */,
@@ -3902,7 +3900,7 @@
 				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = Neeva;
 				TargetAttributes = {
 					047F9B2624E1FE1C00CD7DF7 = {
@@ -4906,7 +4904,6 @@
 				4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */,
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
 				4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */,
-				4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */,
 				4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */,
 				C9FD1B2226C312CB00926A70 /* BrowserViewController+NeevaMenu.swift in Sources */,
 				66F0E62026EC22C3008A4327 /* OverlaySheetModel.swift in Sources */,
@@ -5773,6 +5770,7 @@
 		F0FF957425E03EFF00008BD2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Neeva.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -6040,6 +6038,7 @@
 		F0FF95C325E03F8F00008BD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/NeevaDev.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Extensions/ShareTo/Info.plist;
@@ -6351,7 +6350,7 @@
 			repositoryURL = "https://github.com/apollographql/apollo-ios";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.42.0;
+				minimumVersion = 0.49.0;
 			};
 		};
 		C9D4564926558EE90047267A /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {

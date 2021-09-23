@@ -10,8 +10,8 @@ extension EnvironmentValues {
 
     /// Provide this environment key to open URLs in an app other than Safari.
     public var onOpenURL: (URL) -> Void {
-        get { self[OnOpenURLKey] ?? { openURL($0) } }
-        set { self[OnOpenURLKey] = newValue }
+        get { self[OnOpenURLKey.self] ?? { openURL($0) } }
+        set { self[OnOpenURLKey.self] = newValue }
     }
 
     private struct OnOpenURLForSpaceKey: EnvironmentKey {
@@ -19,8 +19,8 @@ extension EnvironmentValues {
     }
 
     public var onOpenURLForSpace: (URL, String) -> Void {
-        get { self[OnOpenURLForSpaceKey] ?? { url, _ in openURL(url) } }
-        set { self[OnOpenURLForSpaceKey] = newValue }
+        get { self[OnOpenURLForSpaceKey.self] ?? { url, _ in openURL(url) } }
+        set { self[OnOpenURLForSpaceKey.self] = newValue }
     }
 
     private struct onSigninOrJoinNeevaKey: EnvironmentKey {
@@ -28,8 +28,10 @@ extension EnvironmentValues {
     }
     public var onSigninOrJoinNeeva: () -> Void {
         get {
-            self[onSigninOrJoinNeevaKey] ?? { fatalError(".environment(\\.logSignIn) must be specified") }
+            self[onSigninOrJoinNeevaKey.self] ?? {
+                fatalError(".environment(\\.logSignIn) must be specified")
+            }
         }
-        set { self[onSigninOrJoinNeevaKey] = newValue }
+        set { self[onSigninOrJoinNeevaKey.self] = newValue }
     }
 }

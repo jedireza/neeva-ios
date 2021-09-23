@@ -10,8 +10,8 @@ extension EnvironmentValues {
         }
     }
     public var settingsPresentIntroViewController: () -> Void {
-        get { self[PresentIntroKey] }
-        set { self[PresentIntroKey] = newValue }
+        get { self[PresentIntroKey.self] }
+        set { self[PresentIntroKey.self] = newValue }
     }
 }
 

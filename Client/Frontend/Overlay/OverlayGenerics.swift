@@ -8,8 +8,8 @@ extension EnvironmentValues {
     }
 
     public var hideOverlay: () -> Void {
-        get { self[HideOverlayKey] }
-        set { self[HideOverlayKey] = newValue }
+        get { self[HideOverlayKey.self] }
+        set { self[HideOverlayKey.self] = newValue }
     }
 }
 
@@ -22,9 +22,11 @@ struct OverlayRootView: View {
 
     var body: some View {
         if isPopover {
-            PopoverRootView(style: style, content: content, onDismiss: onDismiss, onOpenURL: onOpenURL)
+            PopoverRootView(
+                style: style, content: content, onDismiss: onDismiss, onOpenURL: onOpenURL)
         } else {
-            OverlaySheetRootView(style: style, content: content, onDismiss: onDismiss, onOpenURL: onOpenURL)
+            OverlaySheetRootView(
+                style: style, content: content, onDismiss: onDismiss, onOpenURL: onOpenURL)
         }
     }
 }

@@ -17,11 +17,11 @@ extension EnvironmentValues {
 
     public var zeroQueryHideTopSite: (Site) -> Void {
         get {
-            self[HideTopSiteKey] ?? { _ in
+            self[HideTopSiteKey.self] ?? { _ in
                 fatalError(".environment(\\.zeroQueryHideTopSite) must be specified")
             }
         }
-        set { self[HideTopSiteKey] = newValue }
+        set { self[HideTopSiteKey.self] = newValue }
     }
 }
 

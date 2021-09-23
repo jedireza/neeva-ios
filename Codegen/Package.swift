@@ -12,7 +12,7 @@ let package = Package(
         .package(
             name: "Apollo",
             url: "https://github.com/apollographql/apollo-ios",
-            .upToNextMinor(from: "0.42.0"))
+            .upToNextMinor(from: "0.49.0"))
     ],
     targets: [
         .target(

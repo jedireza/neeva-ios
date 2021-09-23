@@ -14,7 +14,7 @@ enum CardUX {
     static let FaviconSize: CGFloat = 18
     static let HeaderSize: CGFloat = ButtonSize + 1
     static let CardHeight: CGFloat = 174
-    static let DefaultTabCardRatio: CGFloat = 200/164
+    static let DefaultTabCardRatio: CGFloat = 200 / 164
 }
 
 private struct BorderTreatment: ViewModifier {
@@ -106,25 +106,25 @@ extension EnvironmentValues {
     }
 
     public var cardSize: CGFloat {
-        get { self[CardSizeKey] }
-        set { self[CardSizeKey] = newValue }
+        get { self[CardSizeKey.self] }
+        set { self[CardSizeKey.self] = newValue }
     }
-    
+
     private struct AspectRatioKey: EnvironmentKey {
         static var defaultValue: CGFloat = 1
     }
-    
+
     public var aspectRatio: CGFloat {
-        get { self[AspectRatioKey] }
-        set { self[AspectRatioKey] = newValue }
+        get { self[AspectRatioKey.self] }
+        set { self[AspectRatioKey.self] = newValue }
     }
 
     private struct SelectionCompletionKey: EnvironmentKey {
         static var defaultValue: () -> Void = {}
     }
     public var selectionCompletion: () -> Void {
-        get { self[SelectionCompletionKey] }
-        set { self[SelectionCompletionKey] = newValue }
+        get { self[SelectionCompletionKey.self] }
+        set { self[SelectionCompletionKey.self] = newValue }
     }
 }
 

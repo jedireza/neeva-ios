@@ -144,8 +144,10 @@ class BaseTestCase: XCTestCase {
         if app.buttons["Cancel"].exists {
             app.textFields["address"].press(forDuration: 2)
         } else {
-            waitForExistence(app.buttons["Address Bar"], timeout: 30)
-            app.buttons["Address Bar"].press(forDuration: 2)
+            app.buttons["Address Bar"].tap(force: true)
+
+            waitForExistence(app.textFields["address"], timeout: 30)
+            app.textFields["address"].press(forDuration: 2)
         }
 
         waitForExistence(app.menuItems["Paste & Go"], timeout: 30)

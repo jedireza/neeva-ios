@@ -58,8 +58,8 @@ public struct SearchSuggestionView: View {
             TabSuggestionView(suggestion: tab)
         case .findInPage(let query):
             FindInPageSuggestionView(query: query)
-        case .editCurrentQuery(let query):
-            EditCurrentQuerySuggestionView(suggestion: query)
+        case .editCurrentQuery(let query, let url):
+            EditCurrentQuerySuggestionView(suggestion: (query, url))
         }
     }
 }

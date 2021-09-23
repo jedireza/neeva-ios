@@ -17,7 +17,9 @@ class HistoryTests: UITestBase {
         // Load a page
         let url = "\(webRoot!)/numberedPage.html?page=\(pageNo)"
         openURL(url)
+
         tester().waitForWebViewElementWithAccessibilityLabel("Page \(pageNo)")
+
         return url
     }
 
@@ -35,12 +37,6 @@ class HistoryTests: UITestBase {
 
         // Check that both appear in the history home panel
         goToHistory()
-
-        // Wait until the dialog shows up
-        tester().waitForAnimationsToFinish()
-        tester().waitForView(withAccessibilityLabel: "Page 2")
-
-        tester().waitForView(withAccessibilityLabel: "Page 1")
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=2")
         tester().waitForView(withAccessibilityLabel: "\(webRoot!)/numberedPage.html?page=1")
 
@@ -88,7 +84,7 @@ class HistoryTests: UITestBase {
             addHistoryEntry(
                 "Page \(pageNo)", url: URL(string: "\(webRoot!)/numberedPage.html?page=\(pageNo)")!)
         }
-        
+
         tester().wait(forTimeInterval: 2)
 
         let oldestUrl = "\(webRoot!)/numberedPage.html?page=\(101)"

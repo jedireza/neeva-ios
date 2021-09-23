@@ -18,6 +18,7 @@ extension UITestBase {
             tester().waitForView(withAccessibilityLabel: "Confirm Close All Tabs")
             tester().tapView(withAccessibilityLabel: "Confirm Close All Tabs")
         } else {
+            tester().waitForView(withAccessibilityIdentifier: "Close Tab Action")
             tester().tapView(withAccessibilityIdentifier: "Close Tab Action")
         }
 
@@ -29,7 +30,7 @@ extension UITestBase {
 
     func openNewTab(to url: String = "example.com ") {
         tester().waitForView(withAccessibilityLabel: "Show Tabs")
-        tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
+        tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 2)
 
         if tester().viewExistsWithLabel("New Tab") {
             tester().tapView(withAccessibilityLabel: "New Tab")

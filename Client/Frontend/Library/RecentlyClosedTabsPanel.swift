@@ -127,13 +127,16 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
                 ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
                 : Strings.ContextMenuButtonToastNewTabOpenedLabelText
 
-            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view).toastViewManager {
-                let toastView = toastManager.makeToast(
+            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view)
+                .toastViewManager
+            {
+                toastManager.makeToast(
                     text: toastLabelText,
                     buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
                     buttonAction: {
                         self.tabManager?.selectTab(tab)
-                    }).enqueue(manager: toastManager)
+                    }
+                ).enqueue(manager: toastManager)
             }
         }
     }

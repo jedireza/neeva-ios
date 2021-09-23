@@ -135,6 +135,8 @@ class LazyTabTests: BaseTestCase {
 
         // confirms that non-incognito tab is shown
         XCTAssert(!app.buttons["Cancel"].exists)
+
+        waitForExistence(app.buttons["Example Domain, Tab"])
         XCTAssertEqual(
             getTabs().firstMatch.label, "Example Domain, Tab",
             "Expected label of remaining tab is not correct")

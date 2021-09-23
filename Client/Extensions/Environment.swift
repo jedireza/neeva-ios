@@ -8,11 +8,11 @@ extension EnvironmentValues {
     }
     public var openInNewTab: (URL, _ isPrivate: Bool) -> Void {
         get {
-            self[OpenInNewTabKey] ?? { _, _ in
+            self[OpenInNewTabKey.self] ?? { _, _ in
                 fatalError(".environment(\\.openInNewTab) must be specified")
             }
         }
-        set { self[OpenInNewTabKey] = newValue }
+        set { self[OpenInNewTabKey.self] = newValue }
     }
 
     // UIView here is used as a target view to anchor the share pop over on iPad.
@@ -21,10 +21,11 @@ extension EnvironmentValues {
     }
     public var shareURL: (URL, UIView) -> Void {
         get {
-            self[ShareURLKey] ?? { _, _ in fatalError(".environment(\\.shareURL) must be specified")
+            self[ShareURLKey.self] ?? { _, _ in
+                fatalError(".environment(\\.shareURL) must be specified")
             }
         }
-        set { self[ShareURLKey] = newValue }
+        set { self[ShareURLKey.self] = newValue }
     }
 
     private struct SetSearchInputKey: EnvironmentKey {
@@ -32,19 +33,19 @@ extension EnvironmentValues {
     }
     public var setSearchInput: (String) -> Void {
         get {
-            self[SetSearchInputKey] ?? { _ in
+            self[SetSearchInputKey.self] ?? { _ in
                 fatalError(".environment(\\.setSearchInput) must be specified")
             }
         }
-        set { self[SetSearchInputKey] = newValue }
+        set { self[SetSearchInputKey.self] = newValue }
     }
 
     private struct IsIncognitoKey: EnvironmentKey {
         static var defaultValue = false
     }
     public var isIncognito: Bool {
-        get { self[IsIncognitoKey] }
-        set { self[IsIncognitoKey] = newValue }
+        get { self[IsIncognitoKey.self] }
+        set { self[IsIncognitoKey.self] = newValue }
     }
 
     private struct SuggestionConfigKey: EnvironmentKey {
@@ -52,8 +53,8 @@ extension EnvironmentValues {
     }
     /// Determines whether to display suggestions as rows or chips
     public var suggestionConfig: SuggestionConfig {
-        get { self[SuggestionConfigKey] }
-        set { self[SuggestionConfigKey] = newValue }
+        get { self[SuggestionConfigKey.self] }
+        set { self[SuggestionConfigKey.self] = newValue }
     }
 
     private struct SaveToSpaceKey: EnvironmentKey {
@@ -61,10 +62,10 @@ extension EnvironmentValues {
     }
     public var saveToSpace: (URL, _ description: String?, _ title: String?) -> Void {
         get {
-            self[SaveToSpaceKey] ?? { _, _, _ in
+            self[SaveToSpaceKey.self] ?? { _, _, _ in
                 fatalError(".environment(\\.saveToSpace) must be specified")
             }
         }
-        set { self[SaveToSpaceKey] = newValue }
+        set { self[SaveToSpaceKey.self] = newValue }
     }
 }

@@ -183,7 +183,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             UIMenuController.shared.hideMenu(from: self)
             wrapper?.pasteAction.handler()
         }
-        @objc func pasteAndGo(_: Any?) {
+        override func pasteAndGo(_: Any?) {
             UIMenuController.shared.hideMenu(from: self)
             wrapper?.pasteAndGoAction.handler()
         }

@@ -16,8 +16,8 @@ extension EnvironmentValues {
     }
 
     public var columns: [GridItem] {
-        get { self[ColumnsKey] }
-        set { self[ColumnsKey] = newValue }
+        get { self[ColumnsKey.self] }
+        set { self[ColumnsKey.self] = newValue }
     }
 }
 struct CardsContainer: View {
@@ -75,6 +75,7 @@ struct CardsContainer: View {
                                     withAnimation {
                                         value.scrollTo(tabModel.selectedTabID)
                                     }
+
                                     gridModel.hideWithAnimation()
                                 }
                         }.background(
