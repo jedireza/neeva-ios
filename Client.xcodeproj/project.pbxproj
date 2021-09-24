@@ -302,12 +302,7 @@
 		C4EFEECF1CEBB6F2009762A4 /* BackForwardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */; };
 		C80E03E626B8459600A7800A /* LoggingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80E03E526B8459600A7800A /* LoggingSettingsView.swift */; };
 		C80E03E826B88FF000A7800A /* OptionalLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80E03E726B88FF000A7800A /* OptionalLogger.swift */; };
-		C82719E026FE4D1B00EC9EF9 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C82719DF26FE4D1B00EC9EF9 /* Defaults */; };
-		C82719E226FE4DBC00EC9EF9 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C82719E126FE4DBC00EC9EF9 /* Defaults */; };
-		C82719E426FE4E6600EC9EF9 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C82719E326FE4E6600EC9EF9 /* Defaults */; };
-		C82719E626FE4F1900EC9EF9 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C82719E526FE4F1900EC9EF9 /* Defaults */; };
-		C82719E826FE529800EC9EF9 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C82719E726FE529800EC9EF9 /* Defaults */; };
-		C82719EA26FE52B700EC9EF9 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C82719E926FE52B700EC9EF9 /* Defaults */; };
+		C82719ED26FE734500EC9EF9 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = C82719EC26FE734500EC9EF9 /* Defaults */; };
 		C82CDD47233E8996002E2743 /* Tab+ChangeUserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82CDD45233E8996002E2743 /* Tab+ChangeUserAgent.swift */; };
 		C832BF5926DEE0BB00B9A1F8 /* AddToSpaceOverlayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF5826DEE0BB00B9A1F8 /* AddToSpaceOverlayContent.swift */; };
 		C832BF5B26E0A7A400B9A1F8 /* OpenInAppOverlayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF5A26E0A7A400B9A1F8 /* OpenInAppOverlayContent.swift */; };
@@ -1740,7 +1735,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C82719E426FE4E6600EC9EF9 /* Defaults in Frameworks */,
 				C8CC4F8725253E79003FDE1F /* WidgetKit.framework in Frameworks */,
 				43118CDD251A9CA700F24376 /* Shared.framework in Frameworks */,
 				047F9B2924E1FE1C00CD7DF7 /* SwiftUI.framework in Frameworks */,
@@ -1751,7 +1745,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C82719E226FE4DBC00EC9EF9 /* Defaults in Frameworks */,
+				C82719ED26FE734500EC9EF9 /* Defaults in Frameworks */,
 				C9C18E53265597C0004710CD /* SFSafeSymbols in Frameworks */,
 				C9C18E5F265599C4004710CD /* Introspect in Frameworks */,
 				C9C18E2326559322004710CD /* KeychainAccess in Frameworks */,
@@ -1774,7 +1768,6 @@
 				3BA9A0231D2C208C00BD418C /* Fuzi.framework in Frameworks */,
 				7BA4A9471C4CED900091D032 /* GCDWebServers.framework in Frameworks */,
 				0B8E0FF41A932BD500161DC3 /* ImageIO.framework in Frameworks */,
-				C82719E026FE4D1B00EC9EF9 /* Defaults in Frameworks */,
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
@@ -1856,7 +1849,6 @@
 				7B604F991C494F74006EEEC3 /* KIF.framework in Frameworks */,
 				D36998891AD70A0A00650C6C /* IOKit.framework in Frameworks */,
 				D39FA16C1A83E17800EE869C /* CoreGraphics.framework in Frameworks */,
-				C82719E826FE529800EC9EF9 /* Defaults in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1871,7 +1863,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C82719EA26FE52B700EC9EF9 /* Defaults in Frameworks */,
 				E6231C081B90A71E005ABB0D /* libz.tbd in Frameworks */,
 				4A3D2998268993FE0082F293 /* ViewInspector in Frameworks */,
 			);
@@ -1881,7 +1872,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C82719E626FE4F1900EC9EF9 /* Defaults in Frameworks */,
 				F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */,
 				C877039625222FDC006E38EB /* Shared.framework in Frameworks */,
 				C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
@@ -3616,9 +3606,6 @@
 				43118CDF251A9CAD00F24376 /* PBXTargetDependency */,
 			);
 			name = WidgetKitExtension;
-			packageProductDependencies = (
-				C82719E326FE4E6600EC9EF9 /* Defaults */,
-			);
 			productName = WidgetKitExtension;
 			productReference = 047F9B2724E1FE1C00CD7DF7 /* WidgetKitExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -3642,7 +3629,7 @@
 				C9C18E44265595EC004710CD /* Apollo */,
 				C9C18E52265597C0004710CD /* SFSafeSymbols */,
 				C9C18E5E265599C4004710CD /* Introspect */,
-				C82719E126FE4DBC00EC9EF9 /* Defaults */,
+				C82719EC26FE734500EC9EF9 /* Defaults */,
 			);
 			productName = Shared;
 			productReference = 288A2D861AB8B3260023ABC3 /* Shared.framework */;
@@ -3813,9 +3800,6 @@
 				D39FA1661A83E0EC00EE869C /* PBXTargetDependency */,
 			);
 			name = UITests;
-			packageProductDependencies = (
-				C82719E726FE529800EC9EF9 /* Defaults */,
-			);
 			productName = UITests;
 			productReference = D39FA15F1A83E0EC00EE869C /* UITests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -3866,7 +3850,6 @@
 			);
 			name = Client;
 			packageProductDependencies = (
-				C82719DF26FE4D1B00EC9EF9 /* Defaults */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -3890,7 +3873,6 @@
 			name = ClientTests;
 			packageProductDependencies = (
 				4A3D2997268993FE0082F293 /* ViewInspector */,
-				C82719E926FE52B700EC9EF9 /* Defaults */,
 			);
 			productName = ClientTests;
 			productReference = F84B21D31A090F8100AAB793 /* ClientTests.xctest */;
@@ -3912,7 +3894,6 @@
 			);
 			name = ShareTo;
 			packageProductDependencies = (
-				C82719E526FE4F1900EC9EF9 /* Defaults */,
 			);
 			productName = ShareToFirefox;
 			productReference = F84B22491A0920C600AAB793 /* ShareTo.appex */;
@@ -4043,7 +4024,7 @@
 				C9D4565526558F360047267A /* XCRemoteSwiftPackageReference "Reachability" */,
 				C9D4565826558F400047267A /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */,
-				C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */,
+				C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -6372,7 +6353,7 @@
 				minimumVersion = 0.8.1;
 			};
 		};
-		C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */ = {
+		C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/neevaco/sindresorhus-Defaults";
 			requirement = {
@@ -6436,34 +6417,9 @@
 			package = 4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */;
 			productName = ViewInspector;
 		};
-		C82719DF26FE4D1B00EC9EF9 /* Defaults */ = {
+		C82719EC26FE734500EC9EF9 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */;
-			productName = Defaults;
-		};
-		C82719E126FE4DBC00EC9EF9 /* Defaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */;
-			productName = Defaults;
-		};
-		C82719E326FE4E6600EC9EF9 /* Defaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */;
-			productName = Defaults;
-		};
-		C82719E526FE4F1900EC9EF9 /* Defaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */;
-			productName = Defaults;
-		};
-		C82719E726FE529800EC9EF9 /* Defaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */;
-			productName = Defaults;
-		};
-		C82719E926FE52B700EC9EF9 /* Defaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C82719DE26FE4D1B00EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */;
+			package = C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */;
 			productName = Defaults;
 		};
 		C9C18E2226559322004710CD /* KeychainAccess */ = {
