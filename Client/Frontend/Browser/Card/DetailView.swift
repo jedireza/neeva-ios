@@ -324,7 +324,9 @@ where
                                 bottom: 0,
                                 trailing: editMode == .active ? DetailsViewUX.EditingRowInset : 0)
                         )
+                        .modifier(ListSeparatorModifier())
                         .listRowBackground(Color.TrayBackground)
+
                     } else {
                         Section(
                             header: Text(entity.displayTitle)
@@ -339,11 +341,14 @@ where
                         .listRowInsets(
                             EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
                         )
+                        .modifier(ListSeparatorModifier())
                     }
                 }
             }.onDelete(perform: canEdit ? onDelete : nil)
                 .onMove(perform: canEdit ? onMove : nil)
+
         }
+        .modifier(ListStyleModifier())
         .environment(\.editMode, canEdit ? $editMode : nil)
         .background(Color.groupedBackground)
     }
@@ -506,8 +511,35 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                         label: {
                             Label("Add to another Space", systemSymbol: .docOnDoc)
                         })
-                }))
-        .accessibilityLabel(details.title).accessibilityHint("Space Item")
+                })
+            )
+        .accessibilityLabel(details.title)
+        .accessibilityHint("Space Item")
+    }
+}
+
+struct ListSeparatorModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .listSectionSeparator(Visibility.hidden)
+                .listRowSeparator(Visibility.hidden)
+                .listSectionSeparatorTint(Color.TrayBackground)
+        } else {
+            content
+        }
+    }
+}
+
+struct ListStyleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .listStyle(.plain)
+                .background(Color.TrayBackground)
+        } else {
+            content
+        }
     }
 }
 
