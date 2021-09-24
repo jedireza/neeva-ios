@@ -66,10 +66,12 @@ class OpenSearchEngine {
 
     /// check that the URL host contains the name of the search engine somewhere inside it
     fileprivate func isSearchURLForEngine(_ url: URL?) -> Bool {
-        guard let urlHost = url?.shortDisplayString,
+        guard  url?.path == NeevaConstants.appSearchURL.path,
+            let urlHost = url?.shortDisplayString,
             let queryEndIndex = searchTemplate.range(of: "?")?.lowerBound,
             let templateURL = URL(string: String(searchTemplate[..<queryEndIndex]))
         else { return false }
+
         return urlHost == templateURL.shortDisplayString
     }
 
