@@ -56,5 +56,4 @@ npm run build
 # swift-format
 git submodule update --init --recursive
 cd swift-format
-git checkout swift-5.5-branch
 swift build -c release
