@@ -39,15 +39,19 @@ struct ShareSpaceView: View {
     @State var isPublic: Bool
     @State var soloACLSharePresented: Bool = false
     @State var emailText: String = ""
-    @State var noteText: String = "Check out my new Neeva Space!"
+    @State var noteText: String
     @State var selectedACL = SpaceACLLevel.view
 
-    init(space: Space, shareTarget: UIView, isPresented: Binding<Bool>, compact: Bool = false) {
+    init(
+        space: Space, shareTarget: UIView, isPresented: Binding<Bool>, compact: Bool = false,
+        noteText: String
+    ) {
         self.space = space
         self.shareTargetView = shareTarget
         self.isPublic = space.isPublic
         self._isPresented = isPresented
         self.compact = compact
+        self.noteText = noteText
     }
 
     var selectedProfilesUI: some View {
@@ -256,7 +260,8 @@ struct ShareSpaceView: View {
                     .padding(.vertical, 12)
             }
             if space.ACL == .owner || isPublic {
-                ShareToSocialView(url: space.url, shareTarget: shareTargetView) { onShared in
+                ShareToSocialView(url: space.url, noteText: noteText, shareTarget: shareTargetView)
+                { onShared in
                     guard !isPublic else {
                         isPresented = false
                         onShared()

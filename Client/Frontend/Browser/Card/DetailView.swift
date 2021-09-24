@@ -70,7 +70,8 @@ where
                 ShareSpaceView(
                     space: space,
                     shareTarget: shareTargetView,
-                    isPresented: $shareMenuPresented
+                    isPresented: $shareMenuPresented,
+                    noteText: "Check out my Neeva Space!"
                 )
                 .environmentObject(spacesModel)
                 .transition(.flipFromRight)
@@ -391,12 +392,12 @@ where
                 spacing: CardGridUX.GridSpacing
             ) {
                 ForEach(primitive.allDetails, id: \.id) { details in
-                        FittedCard(details: details)
-                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                            .environment(\.selectionCompletion) {
+                    FittedCard(details: details)
+                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                        .environment(\.selectionCompletion) {
                             gridModel.hideWithNoAnimation()
                             tabGroupCardModel.detailedTabGroup = nil
-                    }
+                        }
                 }
                 Spacer()
             }
@@ -513,8 +514,8 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                         })
                 })
             )
-        .accessibilityLabel(details.title)
-        .accessibilityHint("Space Item")
+            .accessibilityLabel(details.title)
+            .accessibilityHint("Space Item")
     }
 }
 

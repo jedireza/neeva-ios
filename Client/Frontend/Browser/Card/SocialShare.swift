@@ -30,11 +30,16 @@ struct ShareToSocialView: View {
     @Environment(\.shareURL) var shareURL
     @EnvironmentObject var tabModel: TabCardModel
     let url: URL
+    let noteText: String
     let shareTargetView: UIView
     let ensurePublicACL: (@escaping () -> Void) -> Void
 
-    init(url: URL, shareTarget: UIView, ensurePublicACL: @escaping (@escaping () -> Void) -> Void) {
+    init(
+        url: URL, noteText: String, shareTarget: UIView,
+        ensurePublicACL: @escaping (@escaping () -> Void) -> Void
+    ) {
         self.url = url
+        self.noteText = noteText
         self.shareTargetView = shareTarget
         self.ensurePublicACL = ensurePublicACL
     }
@@ -57,7 +62,7 @@ struct ShareToSocialView: View {
                             UIApplication.shared.open(
                                 URL(
                                     string:
-                                        "http://twitter.com/share?text=Check+out+this+@Neeva+Space!&url=\(url.absoluteString)"
+                                        "http://twitter.com/share?text=\(noteText.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&url=\(url.absoluteString)"
                                 )!,
                                 options: [:], completionHandler: nil)
                         })
@@ -92,7 +97,7 @@ struct ShareToSocialView: View {
                             else {
                                 return
                             }
-                            vc.setInitialText("Check out this Neeva Space!")
+                            vc.setInitialText(noteText)
                             vc.add(url)
                             SceneDelegate.getBVC(with: tabModel.manager.scene).present(
                                 vc, animated: true)

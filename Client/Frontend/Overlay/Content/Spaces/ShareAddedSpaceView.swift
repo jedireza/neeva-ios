@@ -61,7 +61,9 @@ struct ShareAddedSpaceView: View {
                 }
                 ShareSpaceView(
                     space: space, shareTarget: bvc.topBar.view, isPresented: $presentingShareUI,
-                    compact: true
+                    compact: true,
+                    noteText:
+                        "Just added \"\(request.title)\" to my \"\(request.targetSpaceName!)\" Space."
                 )
             }
         }
