@@ -354,6 +354,8 @@ class TabGroupCardModel: CardModel {
                 allDetails = manager.getAll().map {
                     TabGroupCardDetails(tabGroup: $0, tabGroupManager: manager)
                 }
+                representativeTabs = manager.getAll()
+                    .reduce(into: [Tab]()) { $0.append($1.children.first!) }
                 allDetails.forEach { details in
                     let detailID = details.id
                     details.$isShowingDetails.sink { [weak self] showingDetails in
@@ -366,7 +368,6 @@ class TabGroupCardModel: CardModel {
                     }.store(in: &detailsSubscriptions)
                 }
             }
-            onDataUpdated()
             onViewUpdate()
             detailedTabGroup = allDetails.first { $0.isShowingDetails }
             objectWillChange.send()
