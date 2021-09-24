@@ -341,6 +341,7 @@ class TabGroupCardModel: CardModel {
             tabgroup.isShowingDetails = false
         }
     }
+    @Published var representativeTabs: [Tab] = []
 
     init(manager: TabGroupManager) {
         self.manager = manager
@@ -365,7 +366,7 @@ class TabGroupCardModel: CardModel {
                     }.store(in: &detailsSubscriptions)
                 }
             }
-            
+            onDataUpdated()
             onViewUpdate()
             detailedTabGroup = allDetails.first { $0.isShowingDetails }
             objectWillChange.send()
@@ -374,6 +375,8 @@ class TabGroupCardModel: CardModel {
 
     func onDataUpdated() {
         onViewUpdate()
+        representativeTabs = manager.getAll()
+            .reduce(into: [Tab]()) { $0.append($1.children.first!) }
         allDetails = manager.getAll()
             .map {
                 TabGroupCardDetails(
