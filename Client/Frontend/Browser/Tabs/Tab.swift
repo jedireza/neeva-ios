@@ -86,7 +86,8 @@ class Tab: NSObject, ObservableObject {
     var webViewSubscriptions: Set<AnyCancellable> = []
     private var subscriptions: Set<AnyCancellable> = []
 
-    @Published var favicons: [Favicon] = []
+    @Published var favicon: Favicon?
+
     var lastExecutedTime: Timestamp?
     var sessionData: SessionData?
     fileprivate var lastRequest: URLRequest?
@@ -176,17 +177,6 @@ class Tab: NSObject, ObservableObject {
         super.init()
 
         debugTabCount += 1
-
-        $favicons
-            // grab the display favicon whenever the set of favicons change
-            .map { [unowned self] _ in displayFavicon?.url }
-            .removeDuplicates()
-            // filter out nil URLs and URLs with invalid baseDomains,
-            // and grab the baseDomain as a cache key
-            .compactMap { url in url?.baseDomain.map { domain in (url, domain) } }
-            // tell the favicon fetcher to cache the appropriate favicon
-            .sink(receiveValue: FaviconFetcher.downloadFaviconAndCache(imageURL:imageKey:))
-            .store(in: &subscriptions)
     }
 
     class func toRemoteTab(_ tab: Tab) -> RemoteTab? {
@@ -426,8 +416,6 @@ class Tab: NSObject, ObservableObject {
 
         return lastTitle
     }
-
-    var displayFavicon: Favicon? { favicons.max { $0.width! < $1.width! } }
 
     func goBack() {
         _ = webView?.goBack()

@@ -104,16 +104,14 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
 
     @ViewBuilder var favicon: some View {
         if let item = manager.get(for: id) {
-            if let favIcon = item.displayFavicon {
-                WebImage(url: favIcon.url)
-                    .resizable()
-                    .transition(.fade(duration: 0.5))
+            if let favicon = item.displayFavicon {
+                FaviconView(forFavicon: favicon)
                     .background(Color.white)
-                    .scaledToFit()
             } else if let icon = defaultIcon {
                 Image(systemName: icon)
             } else if let url = item.primitiveUrl {
-                FaviconView(url: url, size: SuggestionViewUX.FaviconSize, bordered: false)
+                FaviconView(forSiteUrl: url)
+                    .background(Color.white)
             }
         }
     }

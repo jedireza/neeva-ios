@@ -39,6 +39,7 @@ class WeakTabManagerDelegate {
 
 extension TabManager: TabEventHandler {
     func tab(_ tab: Tab, didLoadFavicon favicon: Favicon?, with: Data?) {
+        // Write the tabs out again to make sure we preserve the favicon update.
         store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
     }
 

@@ -21,52 +21,35 @@ extension UIColor {
 extension UIImageView {
 
     public func setImageAndBackground(
-        forIcon icon: Favicon?, website: URL?,
-        defaultBackground: UIColor = .init(light: .white, dark: .clear),
-        completion: @escaping () -> Void
+        forIcon icon: Favicon?, website: URL?, completion: @escaping () -> Void
     ) {
-        func finish(bgColor: UIColor?) {
-            if let bgColor = bgColor {
-                // If the background color is clear, we may decide to set our own background based on the theme.
-                let color = bgColor.components.alpha < 0.01 ? defaultBackground : bgColor
-                self.backgroundColor = color
+        var site: Site?
+        if let website = website {
+            site = Site(url: website)
+            site?.icon = icon
+        }
+        setFavicon(forSite: site, completion: completion)
+    }
+
+    public func setFavicon(forSite site: Site?, completion: @escaping () -> Void) {
+        let defaultBackground = UIColor(light: .white, dark: .clear)
+
+        let defaults: (image: UIImage, color: UIColor)
+        if let site = site {
+            defaults = FaviconResolver(site: site).fallbackContent
+        } else {
+            defaults = (FaviconFetcher.defaultFavicon, defaultBackground)
+        }
+
+        // If the background color is clear, we may decide to set our own background based on the theme.
+        self.backgroundColor =
+            defaults.color.components.alpha < 0.01 ? defaultBackground : defaults.color
+
+        sd_setImage(with: site?.icon?.url, placeholderImage: defaults.image) { (img, err, _, _) in
+            if err == nil {
+                self.backgroundColor = nil  // The icon specifies its own background color.
             }
             completion()
-        }
-
-        backgroundColor = nil
-        sd_setImage(with: nil)  // cancels any pending SDWebImage operations.
-
-        if let url = website, let bundledIcon = FaviconFetcher.getBundledIcon(forUrl: url) {
-            self.image = UIImage(contentsOfFile: bundledIcon.filePath)
-            finish(bgColor: bundledIcon.bgcolor)
-        } else if let image = FaviconFetcher.getFaviconFromDiskCache(
-            imageKey: website?.baseDomain ?? "")
-        {
-            self.image = image
-            finish(bgColor: .systemBackground)
-        } else {
-            let defaults = fallbackFavicon(forUrl: website)
-            self.sd_setImage(with: icon?.url, placeholderImage: defaults.image, options: []) {
-                (img, err, _, _) in
-                guard err == nil else {
-                    finish(bgColor: defaults.color)
-                    return
-                }
-                finish(bgColor: nil)
-            }
-        }
-    }
-
-    public func setFavicon(forSite site: Site, completion: @escaping () -> Void) {
-        setImageAndBackground(forIcon: site.icon, website: site.tileURL, completion: completion)
-    }
-
-    private func fallbackFavicon(forUrl url: URL?) -> (image: UIImage, color: UIColor) {
-        if let url = url {
-            return FaviconFetcher.letter(forUrl: url)
-        } else {
-            return (FaviconFetcher.defaultFavicon, .clear)
         }
     }
 }

@@ -113,10 +113,7 @@ struct SuggestedSiteView: View {
         SuggestedNavigationView(
             url: site.url, isPinnedSite: isPinnedSite, title: { title },
             icon: {
-                FaviconView(
-                    url: site.url, icon: site.icon, size: SuggestedSiteUX.FaviconSize,
-                    bordered: false
-                )
+                FaviconView(forSite: site)
             }
         )
         .uiViewRef($shareTargetView)

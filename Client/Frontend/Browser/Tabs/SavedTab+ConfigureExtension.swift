@@ -45,7 +45,7 @@ extension SavedTab {
         if let faviconURL = faviconURL {
             let icon = Favicon(url: faviconURL, date: Date())
             icon.width = 1
-            tab.favicons.append(icon)
+            tab.favicon = icon
         }
 
         if let screenshotUUID = screenshotUUID,

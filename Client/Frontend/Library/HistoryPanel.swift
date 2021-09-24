@@ -236,9 +236,13 @@ class HistoryPanel: SiteTableViewController {
 
     func pinToTopSites(_ site: Site) {
         profile.history.addPinnedTopSite(site).uponQueue(.main) { result in
-            if result.isSuccess, let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view).toastViewManager  {
+            if result.isSuccess,
+                let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view)
+                    .toastViewManager
+            {
                 toastManager.makeToast(
-                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage).enqueue(manager: toastManager)
+                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage
+                ).enqueue(manager: toastManager)
             }
         }
     }
@@ -362,7 +366,7 @@ class HistoryPanel: SiteTableViewController {
             cell.imageView?.layer.borderColor = HistoryPanelUX.IconBorderColor.cgColor
             cell.imageView?.layer.borderWidth = HistoryPanelUX.IconBorderWidth
             cell.imageView?.contentMode = .center
-            cell.imageView?.setImageAndBackground(forIcon: site.icon, website: site.tileURL) {
+            cell.imageView?.setFavicon(forSite: site) {
                 [weak cell] in
                 cell?.imageView?.image = cell?.imageView?.image?.createScaled(
                     CGSize(width: HistoryPanelUX.IconSize, height: HistoryPanelUX.IconSize))
@@ -494,7 +498,9 @@ class HistoryPanel: SiteTableViewController {
                 self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
             }
         ) { tab, isPrivate in
-            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view).toastViewManager {
+            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view)
+                .toastViewManager
+            {
                 let toastLabelText: String =
                     isPrivate
                     ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
@@ -505,7 +511,8 @@ class HistoryPanel: SiteTableViewController {
                     buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
                     buttonAction: {
                         self.tabManager.selectTab(tab)
-                    }).enqueue(manager: toastManager)
+                    }
+                ).enqueue(manager: toastManager)
             }
         }
     }

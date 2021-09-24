@@ -38,7 +38,7 @@ class FaviconHandler {
         }
 
         let onSuccess: (Favicon, Data?) -> Void = { [weak tab] (favicon, data) -> Void in
-            tab?.favicons.append(favicon)
+            tab?.favicon = favicon
 
             guard !(tab?.isIncognito ?? true) else {
                 deferred.fill(Maybe(success: (favicon, data)))
@@ -60,6 +60,8 @@ class FaviconHandler {
             let favicon = Favicon(url: url, date: Date())
 
             guard let img = img else {
+                // The download failed, but we still want to remember this as the icon URL for the
+                // site. We'll try loading it again later.
                 favicon.width = 0
                 favicon.height = 0
 
@@ -102,7 +104,7 @@ class FaviconHandler {
 
 extension FaviconHandler: TabEventHandler {
     func tab(_ tab: Tab, didLoadPageMetadata metadata: PageMetadata) {
-        tab.favicons.removeAll(keepingCapacity: false)
+        tab.favicon = nil
         guard let faviconURL = metadata.faviconURL else {
             return
         }
@@ -113,6 +115,6 @@ extension FaviconHandler: TabEventHandler {
         }
     }
     func tabMetadataNotAvailable(_ tab: Tab) {
-        tab.favicons.removeAll(keepingCapacity: false)
+        tab.favicon = nil
     }
 }

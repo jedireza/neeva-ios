@@ -271,7 +271,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
     }
 
-    private func updateTopSitesWidget() {
+    func updateTopSitesWidget() {
         TopSitesHandler.writeWidgetKitTopSites(profile: profile)
     }
 

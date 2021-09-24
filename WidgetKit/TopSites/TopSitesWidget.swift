@@ -30,6 +30,8 @@ struct TopSitesView: View {
             destination: linkToContainingApp(
                 "?url=\(url)", query: "widget-medium-topsites-open-url")
         ) {
+            // TODO(darin): Consider switching to fetching favicons by URL here w/ WebImage.
+            // Then we can do away with FaviconFetcher's disk cache.
             if entry.favicons[site.imageKey] != nil {
                 (entry.favicons[site.imageKey])!.resizable().frame(width: 60, height: 60).mask(
                     maskShape)

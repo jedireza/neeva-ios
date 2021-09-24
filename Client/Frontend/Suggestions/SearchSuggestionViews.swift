@@ -12,7 +12,7 @@ enum SuggestionViewUX {
     static let ChipPadding: CGFloat = 8
     static let ChipInnerPadding: CGFloat = 10
     static let RowHeight: CGFloat = 58
-    static let FaviconSize: CGFloat = 12
+    static let FaviconSize: CGFloat = 18
     static let IconSize: CGFloat = 20
     static let positiveStockColor = Color(hex: 0x028961)
     static let negativeStockColor = Color(hex: 0xD12E19)
@@ -354,19 +354,10 @@ struct URLSuggestionView: View {
         } else if let subtitle = suggestion.subtitle, !subtitle.isEmpty,
             let url = URL(string: suggestion.suggestedUrl)
         {
-            FaviconView(
-                url: url,
-                size: SuggestionViewUX.FaviconSize,
-                bordered: false
-            )
-            .frame(
-                width: SuggestionViewUX.IconSize,
-                height: SuggestionViewUX.IconSize
-            )
-            .cornerRadius(SuggestionViewUX.CornerRadius)
-            .overlay(
-                RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
-                    .stroke(Color.quaternarySystemFill, lineWidth: 1))
+            FaviconView(forSiteUrl: url)
+                .frame(width: SuggestionViewUX.FaviconSize, height: SuggestionViewUX.FaviconSize)
+                .roundedOuterBorder(
+                    cornerRadius: SuggestionViewUX.CornerRadius, color: .quaternarySystemFill)
         } else {
             Symbol(decorative: .questionmarkDiamondFill)
                 .foregroundColor(.red)
@@ -495,6 +486,14 @@ private struct EditCurrentURLSuggestionView: View {
 
     @EnvironmentObject public var model: SuggestionModel
 
+    var icon: some View {
+        suggestion.favicon
+            .frame(width: SuggestionViewUX.FaviconSize,
+                   height: SuggestionViewUX.FaviconSize)
+            .roundedOuterBorder(
+                cornerRadius: SuggestionViewUX.CornerRadius, color: .quaternarySystemFill)
+    }
+
     var label: some View {
         Text(url?.absoluteString ?? "")
             .withFont(.bodySmall).lineLimit(1)
@@ -547,7 +546,7 @@ private struct EditCurrentURLSuggestionView: View {
     var body: some View {
         SuggestionView(
             action: nil,
-            icon: suggestion.favicon.cornerRadius(4),
+            icon: icon,
             label: label,
             secondaryLabel: secondaryLabel,
             detail: Symbol(decorative: .arrowUpLeft),
@@ -568,7 +567,7 @@ private struct EditCurrentQuerySuggestionView: View {
         Image("neevaMenuIcon")
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: SuggestionViewUX.FaviconSize, height: SuggestionViewUX.FaviconSize)
+            .frame(width: SuggestionViewUX.IconSize, height: SuggestionViewUX.IconSize)
     }
 
     var label: some View {

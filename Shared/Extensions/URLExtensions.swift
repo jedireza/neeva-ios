@@ -279,6 +279,13 @@ extension URL {
         return publicSuffixFromHost(host, withAdditionalParts: 1)
     }
 
+    public var baseDomainURL: URL? {
+        guard let scheme = scheme, let baseDomain = baseDomain else {
+            return nil
+        }
+        return URL(string: scheme + "://" + baseDomain + "/")
+    }
+
     /// Returns just the domain, but with the same scheme, and a trailing '/'.
     /// Any failure? Return this URL.
     /// ## Example

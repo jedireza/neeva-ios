@@ -80,6 +80,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         checkForSignInTokenOnDevice()
+
+        getAppDelegate().updateTopSitesWidget()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -99,6 +101,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if Self.activeSceneCount == 0 {
             getAppDelegate().shutdownProfile()
         }
+
+        getAppDelegate().updateTopSitesWidget()
     }
 
     // MARK: - URL managment

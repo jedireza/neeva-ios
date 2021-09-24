@@ -36,7 +36,7 @@ open class Site {
     open var icon: Favicon?
     open var latestVisit: Visit?
 
-    public init(url: URL, title: String, id: Int? = nil) {
+    public init(url: URL, title: String = "", id: Int? = nil) {
         self.url = url
         self.title = title
         self.id = id

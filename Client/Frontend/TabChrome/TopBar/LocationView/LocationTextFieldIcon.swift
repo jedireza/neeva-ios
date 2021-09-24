@@ -6,7 +6,6 @@ import SwiftUI
 
 private enum LocationTextFieldIconUX {
     static let size: CGFloat = 16
-    static let faviconSize: CGFloat = 14
 }
 
 /// The icon displayed next to the location text field
@@ -24,22 +23,16 @@ struct LocationTextFieldIcon: View {
                 Image(systemSymbol: type.defaultSymbol)
             } else if let completion = completion,
                 let url = completion.contains("://")
-                    ? URL(string: completion) : URL(string: "https://\(completion)")
+                    ? URL(string: completion) : URL(string: "https://\(completion)/")
             {
-                FaviconView(
-                    url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false,
-                    defaultBackground: .clear
-                )
-                .cornerRadius(4)
+                FaviconView(forSiteUrl: url)
+                    .cornerRadius(4)
             } else if searchQuery.value.looksLikeAURL,
                 let url = searchQuery.value.contains("://")
-                    ? URL(string: searchQuery.value) : URL(string: "https://\(searchQuery.value)")
+                    ? URL(string: searchQuery.value) : URL(string: "https://\(searchQuery.value)/")
             {
-                FaviconView(
-                    url: url, size: LocationTextFieldIconUX.faviconSize, bordered: false,
-                    defaultBackground: .clear
-                )
-                .cornerRadius(4)
+                FaviconView(forSiteUrl: url)
+                    .cornerRadius(4)
             } else {
                 Image("neevaMenuIcon")
                     .resizable()

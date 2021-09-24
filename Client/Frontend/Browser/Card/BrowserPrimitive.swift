@@ -97,6 +97,10 @@ extension Tab: Closeable, Selectable, BrowserPrimitive {
         url
     }
 
+    var displayFavicon: Favicon? {
+        favicon
+    }
+
     var image: UIImage? {
         screenshot
     }

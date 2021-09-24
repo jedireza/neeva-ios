@@ -12,19 +12,10 @@ struct NavSuggestionView: View {
 
     @ViewBuilder
     var icon: some View {
-        FaviconView(
-            url: suggestion.url,
-            size: SuggestionViewUX.FaviconSize,
-            bordered: false
-        )
-        .frame(
-            width: SuggestionViewUX.IconSize,
-            height: SuggestionViewUX.IconSize
-        )
-        .cornerRadius(SuggestionViewUX.CornerRadius)
-        .overlay(
-            RoundedRectangle(cornerRadius: SuggestionViewUX.CornerRadius)
-                .stroke(Color.quaternarySystemFill, lineWidth: 1))
+        FaviconView(forSiteUrl: suggestion.url)
+            .frame(width: SuggestionViewUX.FaviconSize, height: SuggestionViewUX.FaviconSize)
+            .roundedOuterBorder(
+                cornerRadius: SuggestionViewUX.CornerRadius, color: .quaternarySystemFill)
     }
 
     @ViewBuilder

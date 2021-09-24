@@ -32,12 +32,9 @@ struct CarouselProgressView: View {
                 let size: CGFloat =
                     i == model.index
                     ? CarouselProgressUX.SelectedSize : CarouselProgressUX.RegularSize
-                FaviconView(
-                    url: url,
-                    size: size, bordered: false
-                )
-                .frame(width: size, height: size).clipShape(Circle())
-                .shadow(radius: 2).animation(model.index == -1 ? nil : .spring())
+                FaviconView(forSiteUrl: url)
+                    .frame(width: size, height: size).clipShape(Circle())
+                    .shadow(radius: 2).animation(model.index == -1 ? nil : .spring())
             }
         }.padding(CarouselProgressUX.Padding)
             .frame(minHeight: CarouselProgressUX.MinHeight)
