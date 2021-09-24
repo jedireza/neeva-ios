@@ -78,8 +78,12 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
             }
         })
         gridModel.buildCloseAllTabsMenu = {
-            let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
-            return tabMenu.createCloseAllTabsMenu(fromTabTray: true)
+            if self.gridModel.switcherState == .tabs {
+                let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
+                return tabMenu.createCloseAllTabsMenu(fromTabTray: true)
+            } else {
+                return UIMenu(sections: [[]])
+            }
         }
         gridModel.buildRecentlyClosedTabsMenu = {
             let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
