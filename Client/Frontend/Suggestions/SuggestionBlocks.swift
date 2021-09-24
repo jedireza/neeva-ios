@@ -125,10 +125,10 @@ struct QuerySuggestionsList: View {
     var body: some View {
         if !(suggestionModel.chipQuerySuggestions + suggestionModel.rowQuerySuggestions).isEmpty {
 
-            if FeatureFlag[.suggestionLayoutWithHeader] {
-                SuggestionsHeader(header: "Neeva Suggestions")
+            if !FeatureFlag[.enableOldSuggestUI] {
+                SuggestionsHeader(header: "Neeva Search")
             }
-            if FeatureFlag[.suggestionLayoutV2] {
+            if !FeatureFlag[.enableOldSuggestUI] {
                 ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
                     index, suggestion in
                     SearchSuggestionView(suggestion)
@@ -171,7 +171,7 @@ struct NavSuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if FeatureFlag[.suggestionLayoutWithHeader] {
+        if !FeatureFlag[.enableOldSuggestUI] {
             if suggestionModel.navCombinedSuggestions.count > 0 {
                 SuggestionsHeader(header: "History")
             }
@@ -194,8 +194,8 @@ struct PlaceholderSuggestions: View {
     ]
 
     var body: some View {
-        if FeatureFlag[.suggestionLayoutV2] {
-            SuggestionsHeader(header: "Neeva Suggestions")
+        if !FeatureFlag[.enableOldSuggestUI] {
+            SuggestionsHeader(header: "Neeva Search")
             ForEach(0..<4) { i in
                 if i > 0 && i % 2 == 0 {
                     SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
@@ -213,7 +213,7 @@ struct PlaceholderSuggestions: View {
                 .redacted(reason: .placeholder)
                 .disabled(true).padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
             SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-            if FeatureFlag[.enableChipQuery] {
+            if FeatureFlag[.enableOldSuggestUI] {
                 SuggestionChipView(suggestions: placeholderSuggestions)
                     .modifier(
                         ChipPlaceholderModifier())

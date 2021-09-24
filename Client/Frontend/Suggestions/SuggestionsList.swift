@@ -43,7 +43,7 @@ struct SuggestionsList: View {
                 NavSuggestionsList()
 
                 if let findInPageSuggestion = suggestionModel.findInPageSuggestion {
-                    if FeatureFlag[.suggestionLayoutWithHeader] {
+                    if !FeatureFlag[.enableOldSuggestUI] {
                         SuggestionsHeader(header: "Find on this page")
                     } else {
                         SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)

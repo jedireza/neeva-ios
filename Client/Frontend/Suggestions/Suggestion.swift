@@ -136,7 +136,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
     {
         let querySuggestions = data.suggest?.querySuggestion ?? []
         // Split queries into standard queries that doesnt have annotations and everything else.
-        var standardQuerySuggestions =
+        let standardQuerySuggestions =
             querySuggestions.filter {
                 $0.type == .standard
                     && $0.annotation?.description == nil
@@ -163,40 +163,38 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
             if !rowQuerySuggestions.isEmpty {
                 topSuggestions = [rowQuerySuggestions.removeFirst()].map(Suggestion.query)
             }
-        } else if !FeatureFlag[.suggestionLayoutV2] {
+        } else if FeatureFlag[.enableOldSuggestUI] {
             topSuggestions = [navSuggestions.removeFirst()].map(Suggestion.url)
         }
 
         var neevaSuggestions = [Suggestion]()
-        if FeatureFlag[.suggestionLayoutV2] {
+        if !FeatureFlag[.enableOldSuggestUI] {
             let navSuggestionMap = navSuggestions.reduce(
-                into: [Int: SuggestionsQuery.Data.Suggest.UrlSuggestion]()
+                into: [String: SuggestionsQuery.Data.Suggest.UrlSuggestion]()
             ) {
-                $0[$1.sourceQueryIndex] = $1
+                if let sourceQueryIndex = $1.sourceQueryIndex,
+                    sourceQueryIndex < querySuggestions.count
+                {
+                    $0[querySuggestions[sourceQueryIndex].suggestedQuery] = $1
+                }
             }
 
-            for (i, suggestion)
+            for suggestion
                 in standardQuerySuggestions
                 .prefix(SuggestionsController.querySuggestionsCap)
-                .enumerated()
             {
                 neevaSuggestions.append(Suggestion.query(suggestion))
-                if let urlSuggestion = navSuggestionMap[i] {
+                if let urlSuggestion = navSuggestionMap[suggestion.suggestedQuery] {
                     neevaSuggestions.append(Suggestion.url(urlSuggestion))
                 }
             }
             neevaSuggestions.append(contentsOf: rowQuerySuggestions.map(Suggestion.query))
-        } else if !FeatureFlag[.enableChipQuery] {
-            rowQuerySuggestions =
-                standardQuerySuggestions.prefix(SuggestionsController.querySuggestionsCap)
-                + rowQuerySuggestions
-            standardQuerySuggestions = []
         }
 
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
 
-        if FeatureFlag[.suggestionLayoutV2] {
+        if !FeatureFlag[.enableOldSuggestUI] {
             return (
                 topSuggestions, [],
                 neevaSuggestions

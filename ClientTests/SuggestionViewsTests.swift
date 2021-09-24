@@ -99,9 +99,6 @@ class SuggestionViewsTests: XCTestCase {
         let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
         let label = try labels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("PlaceholderLongTitleOneWord", label)
-
-        let secondaryLabel = try labels[1].string(locale: Locale(identifier: "en"))
-        XCTAssertEqual("neeva.com", secondaryLabel)
     }
 
     func testSuggestionsList() throws {
@@ -128,11 +125,9 @@ class SuggestionViewsTests: XCTestCase {
         let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
         XCTAssertNotNil(list)
 
-        // We should be showing a placeholder with 1 actual suggestion, and 6 placeholders:
-        // 1 history suggestion and 5 query suggestions
+        // We should be showing a placeholder with 4 row suggestions placeholders
         XCTAssertEqual(3, list.count)
-        XCTAssertEqual(1, list.findAll(NavSuggestionView.self).count)
-        XCTAssertEqual(3, list.findAll(QuerySuggestionView.self).count)
+        XCTAssertEqual(4, list.findAll(QuerySuggestionView.self).count)
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {

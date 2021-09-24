@@ -189,7 +189,7 @@ class SuggestionModel: ObservableObject {
                             source: .unknown
                         )
                     )
-                    if FeatureFlag[.enableChipQuery] {
+                    if FeatureFlag[.enableOldSuggestUI] {
                         self.chipQuerySuggestions = [emptyQuerySuggestion]
                     } else {
                         self.rowQuerySuggestions = [emptyQuerySuggestion]
