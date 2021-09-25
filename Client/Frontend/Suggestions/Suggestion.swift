@@ -170,12 +170,17 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         var neevaSuggestions = [Suggestion]()
         if !FeatureFlag[.enableOldSuggestUI] {
             let navSuggestionMap = navSuggestions.reduce(
-                into: [String: SuggestionsQuery.Data.Suggest.UrlSuggestion]()
+                into: [String: [SuggestionsQuery.Data.Suggest.UrlSuggestion]]()
             ) {
                 if let sourceQueryIndex = $1.sourceQueryIndex,
                     sourceQueryIndex < querySuggestions.count
                 {
-                    $0[querySuggestions[sourceQueryIndex].suggestedQuery] = $1
+                    let suggestedQuery = querySuggestions[sourceQueryIndex].suggestedQuery
+                    if let _ = $0[suggestedQuery] {
+                        $0[suggestedQuery]?.append($1)
+                    } else {
+                        $0[suggestedQuery] = [$1]
+                    }
                 }
             }
 
@@ -184,8 +189,8 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                 .prefix(SuggestionsController.querySuggestionsCap)
             {
                 neevaSuggestions.append(Suggestion.query(suggestion))
-                if let urlSuggestion = navSuggestionMap[suggestion.suggestedQuery] {
-                    neevaSuggestions.append(Suggestion.url(urlSuggestion))
+                if let urlSuggestions = navSuggestionMap[suggestion.suggestedQuery] {
+                    neevaSuggestions.append(contentsOf: urlSuggestions.map(Suggestion.url))
                 }
             }
             neevaSuggestions.append(contentsOf: rowQuerySuggestions.map(Suggestion.query))

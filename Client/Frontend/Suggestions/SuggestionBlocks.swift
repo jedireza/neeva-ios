@@ -132,10 +132,17 @@ struct QuerySuggestionsList: View {
                 ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
                     index, suggestion in
                     SearchSuggestionView(suggestion)
-                    if case Suggestion.url(_) = suggestion,
-                       index != suggestionModel.rowQuerySuggestions.count - 1
+
+                    if case Suggestion.url = suggestion,
+                        index != suggestionModel.rowQuerySuggestions.count - 1
                     {
-                        SuggestionsDivider(height: 8)
+                        // insert separator only if two rows later is another query suggestion
+                        if index + 1 < suggestionModel.rowQuerySuggestions.count,
+                            case Suggestion.query =
+                                suggestionModel.rowQuerySuggestions[index + 1]
+                        {
+                            SuggestionsDivider(height: 8)
+                        }
                     }
                 }
             } else {
