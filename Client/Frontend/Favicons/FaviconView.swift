@@ -33,7 +33,7 @@ struct FaviconView: View {
                     .resizable()
                     .background(Color(bgcolor))
             }
-            .transition(.fade(duration: 0.5))
+            .transition(.opacity)
             .scaledToFit()
     }
 }

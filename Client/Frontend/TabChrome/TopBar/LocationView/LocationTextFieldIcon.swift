@@ -41,7 +41,6 @@ struct LocationTextFieldIcon: View {
         }
         .frame(width: LocationTextFieldIconUX.size, height: LocationTextFieldIconUX.size)
         .frame(width: TabLocationViewUX.height)
-        .transition(.identity)
     }
 }
 
