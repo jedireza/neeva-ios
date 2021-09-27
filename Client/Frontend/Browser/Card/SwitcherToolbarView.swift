@@ -129,7 +129,11 @@ struct SwitcherToolbarView: View {
                 .frame(
                     height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)
 
-            if top { divider }
+            if top {
+                divider
+            } else {
+                Spacer()
+            }
         }
         .background(Color.DefaultBackground.ignoresSafeArea())
         .opacity(gridModel.isHidden ? 0 : 1)

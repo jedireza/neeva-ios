@@ -122,10 +122,11 @@ struct CardGrid: View {
 
     @ViewBuilder var grid: some View {
         VStack(spacing: 0) {
-            topBar
+            topBar 
             cardContainer
             if !topToolbar {
                 SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
+                    .frame(height: UIConstants.ToolbarHeight)
             }
         }
     }

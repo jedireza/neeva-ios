@@ -125,7 +125,7 @@ class TabScrollingController: NSObject, ObservableObject {
             animated,
             duration: actualDuration,
             headerOffset: -topScrollHeight,
-            footerOffset: bottomScrollHeight,
+            footerOffset: bottomScrollHeight,  // makes sure toolbar is hidden all the way
             alpha: 0,
             completion: completion)
     }
@@ -273,17 +273,19 @@ extension TabScrollingController {
             self.header?.superview?.layoutIfNeeded()
         }
 
-        if animated {
-            withAnimation(.easeInOut(duration: duration)) {
+        DispatchQueue.main.async { [self] in
+            if animated {
+                withAnimation(.easeInOut(duration: duration)) {
+                    chromeModel.controlOpacity = Double(alpha)
+                }
+                UIView.animate(
+                    withDuration: duration, delay: 0, options: .allowUserInteraction,
+                    animations: animation, completion: completion)
+            } else {
                 chromeModel.controlOpacity = Double(alpha)
+                animation()
+                completion?(true)
             }
-            UIView.animate(
-                withDuration: duration, delay: 0, options: .allowUserInteraction,
-                animations: animation, completion: completion)
-        } else {
-            chromeModel.controlOpacity = Double(alpha)
-            animation()
-            completion?(true)
         }
     }
 

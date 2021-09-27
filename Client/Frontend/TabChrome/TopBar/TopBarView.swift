@@ -93,7 +93,7 @@ struct TopBarView: View {
             }
         )
         .animation(.default, value: chrome.estimatedProgress)
-        .background(Color.chrome.ignoresSafeArea())
+        .background(Color.DefaultBackground.ignoresSafeArea())
         .accentColor(.label)
     }
 }

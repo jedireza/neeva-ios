@@ -55,9 +55,9 @@ commands:
           command: xcodebuild build-for-testing -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
   build-codegen:
     steps:
-      - run:
-          name: Build Codegen
-          command: xcodebuild build -scheme Codegen -workspace Neeva.xcworkspace -destination 'platform=macOS'
+       - run:
+           name: Build Codegen
+           command: xcodebuild build -scheme Codegen -workspace Neeva.xcworkspace -destination 'platform=macOS'
   build-swift-format:
     steps:
       - restore_cache:

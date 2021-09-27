@@ -72,6 +72,7 @@ struct CardsContainer: View {
                                     guard tabGroupModel.detailedTabGroup == nil else {
                                         return
                                     }
+
                                     withAnimation {
                                         value.scrollTo(tabModel.selectedTabID)
                                     }

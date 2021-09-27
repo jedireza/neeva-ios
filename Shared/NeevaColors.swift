@@ -234,6 +234,4 @@ extension Color {
     public static let selectedCell = Color(UIColor.SelectedCell)
 
     public static let spaceIconBackground = Color.brand.variant.polar
-    public static let chrome = Color(
-        UIColor(light: .systemBackground, dark: .tertiarySystemBackground))
 }

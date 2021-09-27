@@ -84,6 +84,18 @@ struct TopBarContent: View {
 }
 
 class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
+    var chromeModel: TabChromeModel
+
+    private var height: NSLayoutConstraint!
+    private var inlineToolbarHeight: CGFloat {
+        return SceneDelegate.getKeyWindow(for: view).safeAreaInsets.top
+            + UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+    }
+    private var portaitHeight: CGFloat {
+        return SceneDelegate.getKeyWindow(for: view).safeAreaInsets.top
+            + UIConstants.PortraitToolbarHeight
+    }
+
     init(
         isIncognito: Bool,
         locationViewModel: LocationViewModel,
@@ -96,6 +108,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         newTab: @escaping () -> Void,
         onCancel: @escaping () -> Void
     ) {
+        self.chromeModel = chromeModel
         super.init(isIncognito: isIncognito)
 
         setRootView {
@@ -110,9 +123,32 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
                 onCancel: onCancel
             )
         }
+
+        DispatchQueue.main.async { [self] in
+            // Prevents the top bar from shrinking in portait mode and from being to tall in landscape
+            self.height = self.view.heightAnchor.constraint(
+                equalToConstant: chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight)
+            self.height.isActive = true
+        }
+
         self.view.backgroundColor = .clear
         self.view.translatesAutoresizingMaskIntoConstraints = false
         self.view.setContentHuggingPriority(.required, for: .vertical)
+    }
+
+    override func viewWillTransition(
+        to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator
+    ) {
+        coordinator.animate(
+            alongsideTransition: {
+                [unowned self] (UIViewControllerTransitionCoordinatorContext) -> Void in
+                height.constant = chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight
+            },
+            completion: { (UIViewControllerTransitionCoordinatorContext) -> Void in
+                print("rotation completed")
+            })
+
+        super.viewWillTransition(to: size, with: coordinator)
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

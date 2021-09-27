@@ -108,6 +108,7 @@ class NavigationTest: BaseTestCase {
         toggleIncognito()
 
         longPressLinkOptions(optionSelected: "Copy Link")
+
         XCTAssertEqual(
             UIPasteboard.general.url?.absoluteString, website_2["moreLinkLongPressUrlPrivate"]!)
     }
@@ -168,8 +169,8 @@ class NavigationTest: BaseTestCase {
         }
 
         app.webViews.links[website_2["link"]!].press(forDuration: 2)
-
         waitForExistence(app.buttons[optionSelected])
+
         if !app.buttons[optionSelected].isHittable {
             app.swipeUp()
         }

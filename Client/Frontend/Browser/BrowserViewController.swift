@@ -375,6 +375,9 @@ class BrowserViewController: UIViewController {
             name: UIApplication.didEnterBackgroundNotification, object: nil)
         KeyboardHelper.defaultHelper.addDelegate(self)
 
+        // In case if the background is accidentally shown
+        view.backgroundColor = .DefaultBackground
+
         webViewContainerBackdrop = UIView()
         webViewContainerBackdrop.backgroundColor = UIColor.Photon.Ink90
         webViewContainerBackdrop.alpha = 0
@@ -450,6 +453,7 @@ class BrowserViewController: UIViewController {
     fileprivate func setupConstraints() {
         topBar.view.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
+
             if !UIConstants.enableBottomURLBar {
                 let headerTopConstraint = make.top.equalToSuperview().constraint
                 scrollController.$headerTopOffset

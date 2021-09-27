@@ -16,6 +16,7 @@ struct TabToolbarView: View {
             Color.ui.adaptive.separator
                 .frame(height: 0.5)
                 .ignoresSafeArea()
+
             HStack(spacing: 0) {
                 TabToolbarButtons.BackButton(
                     weight: .medium,
@@ -36,14 +37,18 @@ struct TabToolbarView: View {
                 TabToolbarButtons.ShowTabs(
                     weight: .medium,
                     action: { performAction(.showTabs) },
-                    buildMenu: buildTabsMenu)
+                    buildMenu: buildTabsMenu
+                ).frame(height: 44)
             }
             .padding(.top, 2)
             .opacity(chromeModel.controlOpacity)
-            .background(Color.chrome.ignoresSafeArea())
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("TabToolbar")
-        }.accentColor(.label)
+
+            Spacer()
+        }
+        .background(Color.DefaultBackground.ignoresSafeArea())
+        .accentColor(.label)
     }
 }
 

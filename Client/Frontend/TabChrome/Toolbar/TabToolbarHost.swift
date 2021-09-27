@@ -48,6 +48,17 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarContent> {
             view, name: UIApplication.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.removeObserver(
             view, name: UIApplication.keyboardDidHideNotification, object: nil)
+
+        DispatchQueue.main.async { [self] in
+            self.view.heightAnchor.constraint(
+                equalToConstant: SceneDelegate.getKeyWindow(for: view).safeAreaInsets.bottom
+                    + UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+            ).isActive = true
+        }
+
+        self.view.backgroundColor = .clear
+        self.view.translatesAutoresizingMaskIntoConstraints = false
+        self.view.setContentHuggingPriority(.required, for: .vertical)
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

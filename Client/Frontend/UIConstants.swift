@@ -27,10 +27,11 @@ public struct UIConstants {
     static let TextFieldHeight: CGFloat = 42
 
     // Landscape and tablet mode:
-    static let TopToolbarHeightWithToolbarButtonsShowing: CGFloat = TextFieldHeight + (9 * 2)
+    static let TopToolbarHeightWithToolbarButtonsShowing: CGFloat = TextFieldHeight + 13
 
     // Bottom bar when in portrait mode on a phone:
-    static var ToolbarHeight: CGFloat = 46
+    static var ToolbarHeight: CGFloat = 55
+    static let PortraitToolbarHeight: CGFloat = 50
     static var BottomToolbarHeight: CGFloat {
         return ToolbarHeight + safeArea.bottom
     }
