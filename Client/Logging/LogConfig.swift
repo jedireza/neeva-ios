@@ -65,6 +65,14 @@ public struct LogConfig {
         case AuthSignUpWithApple  // Click sign up with Apple on auth panel
         case AuthOtherSignUpOptions  // Click other sign up options on auth panel
         case AuthSignin  // Click sign in on auth panel
+        case OptionSignupWithApple  // Click Sign up with Apple under other options
+        case OptionSignupWithGoogle  // Click Sign up with Google under other options
+        case OptionSignupWithMicrosoft  // Click Sign up with Microsoft under other options
+        case AuthOptionSignupWithApple  // Click Sign up with Apple on auth panel under other options
+        case AuthOptionSignupWithGoogle  // Click Sign up with Google on auth panel under other options
+        case AuthOptionSignupWithMicrosoft  // Click Sign up with Microsoft on auth panel under other options
+        case OptionClosePanel // Click close on the first run under other options
+        case AuthOptionClosePanel // Click close on the auth panel under other options
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -209,6 +217,14 @@ public struct LogConfig {
         case .AuthSignUpWithApple: return .FirstRun
         case .AuthOtherSignUpOptions: return .FirstRun
         case .AuthSignin: return .FirstRun
+        case .OptionSignupWithApple: return .FirstRun
+        case .OptionSignupWithGoogle: return .FirstRun
+        case .OptionSignupWithMicrosoft: return .FirstRun
+        case .AuthOptionSignupWithApple: return .FirstRun
+        case .AuthOptionSignupWithGoogle: return .FirstRun
+        case .AuthOptionSignupWithMicrosoft: return .FirstRun
+        case .OptionClosePanel: return .FirstRun
+        case .AuthOptionClosePanel: return .FirstRun
 
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
@@ -280,6 +296,8 @@ public struct LogConfig {
         public static let FirstRunSearchPathQuery = "FirstRunSearchPathQuery"
         /// First run path, option user clicked on first run screen
         public static let FirstRunPath = "FirstRunPath"
+        /// First session uuid when user open the app
+        public static let FirstSessionUUID = "FirstSessionUUID"
     }
 
     public struct SuggestionAttribute {

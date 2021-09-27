@@ -91,6 +91,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         if Defaults[.sessionUUID].isEmpty {
             Defaults[.sessionUUID] = UUID().uuidString
             Defaults[.sessionUUIDExpirationTime] = Date()
+
+            if Defaults[.firstSessionUUID].isEmpty {
+                Defaults[.firstSessionUUID] = Defaults[.sessionUUID]
+            }
         }
 
         // Need to get "settings.sendUsageData" this way so that Sentry can be initialized

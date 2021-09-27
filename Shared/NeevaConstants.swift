@@ -168,6 +168,40 @@ public struct NeevaConstants {
         ]
         return authURL.withQueryParams(queryItems)
     }
+
+    // Construct url for okta signup
+    public static func oktaSignupURL(email: String, marketingEmailOptOut: Bool) -> URL {
+        let emailAllowedCharacter = CharacterSet(
+            charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
+        let encodedEmail = email.addingPercentEncoding(withAllowedCharacters: emailAllowedCharacter)
+        var oktaURL = appSignupURL.absoluteString
+
+        if let encodedEmail = encodedEmail {
+            oktaURL =
+                appSignupURL.absoluteString
+                + "?emp="
+                + String(marketingEmailOptOut ? "oo" : "oi")
+                + "&e=" + encodedEmail
+                + "&q=i"
+
+        }
+        return URL(string: oktaURL)!
+    }
+
+    public enum OAuthProvider: String {
+        case google = "google"
+        case microsoft = "microsoft"
+    }
+
+    // Construct signup OAuth string
+    public static func signupOAuthString(provider: OAuthProvider, mktEmailOptOut: Bool) -> String {
+        return "https://\(appHost)/login?provider=neeva.co/auth/oauth2/authenticators/\(provider.rawValue)&finalPath=%2F&signup=true&ignoreCountryCode=true&mktEmailOptOut=\(String(mktEmailOptOut))&loginCallbackType=ios"
+    }
+
+    // Neeva OAuth callback scheme
+    public static func neevaOAuthCallbackScheme() -> String? {
+        return "neeva://login/cb".addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+    }
 }
 
 private class BundleHookClass {}

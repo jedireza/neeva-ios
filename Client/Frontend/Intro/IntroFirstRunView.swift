@@ -4,21 +4,21 @@ import Defaults
 import Shared
 import SwiftUI
 
-struct IntroFirstRunView: View {
+struct FirstRunHomePage: View {
     var buttonAction: (FirstRunButtonActions) -> Void
-    let smallSizeScreen: CGFloat = 375.0
+    @Binding var marketingEmailOptOut: Bool
+    @Binding var onOtherOptionsPage: Bool
 
-    @State var marketingEmailOptOut = false
+    let smallSizeScreen: CGFloat = 375.0
 
     var body: some View {
         VStack {
-            HStack {
-                Spacer()
-                Button(action: { buttonAction(.skipToBrowser) }) {
-                    Symbol(decorative: .xmark, size: 20, weight: .semibold)
-                        .foregroundColor(Color.ui.gray60)
+            FirstRunCloseButton(
+                action: {
+                    buttonAction(.skipToBrowser)
+                    logFirstRunSkipToBrowser()
                 }
-            }
+            )
             Spacer()
             VStack(alignment: .leading) {
                 Image("neeva-letter-only")
@@ -40,25 +40,15 @@ struct IntroFirstRunView: View {
             .accessibilityAddTraits(.isHeader)
 
             VStack {
-                Button(action: { buttonAction(.signupWithApple(marketingEmailOptOut, nil)) }) {
-                    HStack {
-                        Image("apple")
-                            .renderingMode(.template)
-                            .padding(.leading, 28)
-                        Spacer()
-                        Text("Sign up with Apple")
-                        Spacer()
-                        Spacer()
+                SignUpWithAppleButton(
+                    action: {
+                        logFirstRunSignUpWithAppleClick()
+                        buttonAction(.signupWithApple(marketingEmailOptOut, nil))
                     }
-                    .foregroundColor(.brand.white)
-                    .padding(EdgeInsets(top: 23, leading: 0, bottom: 23, trailing: 0))
-                }
-                .background(Color.black)
-                .clipShape(RoundedRectangle(cornerRadius: 100))
-                .shadow(color: Color.ui.gray70, radius: 1, x: 0, y: 1)
+                )
                 .padding(.top, 40)
 
-                Button(action: { buttonAction(.signupWithOther) }) {
+                Button(action: { onOtherOptionsPage = true }) {
                     HStack {
                         Spacer()
                         Text("Other sign up options")
@@ -92,15 +82,7 @@ struct IntroFirstRunView: View {
 
             Spacer()
 
-            Button(action: { buttonAction(.signin) }) {
-                (Text("Already have an account? ")
-                    .foregroundColor(Color.ui.gray50)
-                    + Text("Sign In").foregroundColor(Color.ui.gray20).fontWeight(.medium))
-                    .font(.system(size: 14))
-                    .multilineTextAlignment(.center)
-                    .accessibilityLabel("Sign In")
-            }
-            .padding(.bottom, 30)
+            SignInButton(action: { buttonAction(.signin) })
         }
         .padding(35)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -124,6 +106,53 @@ struct IntroFirstRunView: View {
                 Defaults[.firstRunImpressionLogged] = true
             }
             Defaults[.firstRunSeenAndNotSignedIn] = true
+        }
+    }
+
+    func logFirstRunSignUpWithAppleClick() {
+        if Defaults[.introSeen] {
+            // beyond first run screen
+            ClientLogger.shared.logCounter(
+                .AuthSignUpWithApple,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        } else {
+            // first run screen
+            ClientLogger.shared.logCounter(
+                .FirstRunSignupWithApple,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        }
+    }
+
+    func logFirstRunSkipToBrowser() {
+        if Defaults[.introSeen] {
+            // beyond first run screen
+            ClientLogger.shared.logCounter(
+                .AuthClose,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        } else {
+            ClientLogger.shared.logCounter(
+                .FirstRunSkipToBrowser,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        }
+    }
+}
+
+struct IntroFirstRunView: View {
+    var buttonAction: (FirstRunButtonActions) -> Void
+
+    @State var marketingEmailOptOut = false
+    @State var onOtherOptionsPage = false
+
+    var body: some View {
+        if onOtherOptionsPage {
+            OtherOptionsPage(
+                buttonAction: buttonAction,
+                marketingEmailOptOut: $marketingEmailOptOut)
+        } else {
+            FirstRunHomePage(
+                buttonAction: buttonAction,
+                marketingEmailOptOut: $marketingEmailOptOut,
+                onOtherOptionsPage: $onOtherOptionsPage)
         }
     }
 }

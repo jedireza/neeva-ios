@@ -14,6 +14,8 @@ enum FirstRunButtonActions {
     case signupWithApple(Bool?, URL?)
     case signupWithOther
     case skipToBrowser
+    case oktaSignup(String, Bool)
+    case oauthWithProvider(NeevaConstants.OAuthProvider, Bool, String)
 }
 
 class IntroViewController: UIViewController {
@@ -55,16 +57,7 @@ class IntroViewController: UIViewController {
         DispatchQueue.main.async {
             switch option {
             case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut, _):
-                if Defaults[.introSeen] {
-                    // beyond first run screen
-                    ClientLogger.shared.logCounter(
-                        .AuthSignUpWithApple,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                } else {
-                    // first run screen
-                    ClientLogger.shared.logCounter(
-                        .FirstRunSignupWithApple,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                if !Defaults[.introSeen] {
                     Defaults[.firstRunPath] = "FirstRunSignupWithApple"
                 }
                 self.marketingEmailOptOut = marketingEmailOptOut ?? false
@@ -98,18 +91,15 @@ class IntroViewController: UIViewController {
                 }
                 self.didFinishClosure?(.signupWithOther)
             case FirstRunButtonActions.skipToBrowser:
-                if Defaults[.introSeen] {
-                    // beyond first run screen
-                    ClientLogger.shared.logCounter(
-                        .AuthClose,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                } else {
-                    ClientLogger.shared.logCounter(
-                        .FirstRunSkipToBrowser,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                if !Defaults[.introSeen] {
                     Defaults[.firstRunPath] = "FirstRunSkipToBrowser"
                 }
                 self.didFinishClosure?(.skipToBrowser)
+            case FirstRunButtonActions.oktaSignup(let email, let marketingEmailOptOut):
+                self.didFinishClosure?(.oktaSignup(email, marketingEmailOptOut))
+            case FirstRunButtonActions.oauthWithProvider(let provider, let marketingEmailOptOut, _):
+                self.marketingEmailOptOut = marketingEmailOptOut
+                self.oauthWithProvider(provider: provider)
             }
         }
     }
@@ -134,6 +124,83 @@ class IntroViewController: UIViewController {
         authorizationController.delegate = self
         authorizationController.presentationContextProvider = self
         authorizationController.performRequests()
+    }
+
+    private func oauthWithProvider(provider: NeevaConstants.OAuthProvider) {
+        guard
+            let authURL = URL(
+                string: NeevaConstants.signupOAuthString(
+                    provider: provider,
+                    mktEmailOptOut: self.marketingEmailOptOut))
+        else { return }
+
+        let session = ASWebAuthenticationSession(
+            url: authURL,
+            callbackURLScheme: NeevaConstants.neevaOAuthCallbackScheme()
+        ) { [self] callbackURL, error in
+
+            if error != nil {
+                Logger.browser.error(
+                    "ASWebAuthenticationSession OAuth failed: \(String(describing: error))")
+            }
+
+            guard error == nil, let callbackURL = callbackURL else { return }
+            let queryItems = URLComponents(string: callbackURL.absoluteString)?.queryItems
+            let token = queryItems?.filter({ $0.name == "sessionKey" }).first?.value
+            let serverErrorCode = queryItems?.filter({ $0.name == "retry" }).first?.value
+
+            if let errorCode = serverErrorCode {
+                var errorMessage = "Some unknown error occurred"
+
+                switch errorCode {
+                case "NL003":
+                    errorMessage = "There is already an account for this email address. Please sign in with Google instead."
+                    break
+                case "NL004":
+                    errorMessage = "There is already an account for this email address. Please sign in with Apple instead."
+                    break
+                case "NL005":
+                    errorMessage = "There is already an account for this email address. Please sign in with Microsoft instead."
+                    break
+                case "NL013":
+                    errorMessage = "There is already an account for this email address. Please sign in with your email address instead."
+                    break
+                case "NL002":
+                    errorMessage = "There is already an account for this email address."
+                    break
+                default:
+                    break
+                }
+                showErrorAlert(errMsg: errorMessage)
+            } else if let cookie = token {
+                self.didFinishClosure?(.oauthWithProvider(provider, self.marketingEmailOptOut, cookie))
+            }
+        }
+
+        session.presentationContextProvider = self
+        session.start()
+    }
+
+    private func showErrorAlert(errMsg: String) {
+        let alert = UIAlertController(title: "Error", message: errMsg, preferredStyle: .alert)
+        alert.addAction(
+            UIAlertAction(
+                title: NSLocalizedString("OK", comment: "Default action"),
+                style: .default,
+                handler: { _ in
+                    Logger.browser.error(
+                        "Showed error alert message: \(String(describing: errMsg))")
+                }
+            )
+        )
+        self.present(alert, animated: true, completion: nil)
+
+    }
+}
+
+extension IntroViewController: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return self.view.window!
     }
 }
 

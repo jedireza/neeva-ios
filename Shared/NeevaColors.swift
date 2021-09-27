@@ -116,6 +116,8 @@ extension UIColor {
             named: "UI/Gray 70", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         public static let gray80 = UIColor(
             named: "UI/Gray 80", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let gray91 = UIColor(
+            named: "UI/Gray 91", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         public static let gray96 = UIColor(
             named: "UI/Gray 96", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         public static let gray97 = UIColor(
@@ -213,6 +215,7 @@ extension Color {
         public static let gray60 = Color(UIColor.ui.gray60)
         public static let gray70 = Color(UIColor.ui.gray70)
         public static let gray80 = Color(UIColor.ui.gray80)
+        public static let gray91 = Color(UIColor.ui.gray91)
         public static let gray96 = Color(UIColor.ui.gray96)
         public static let gray97 = Color(UIColor.ui.gray97)
         public static let gray98 = Color(UIColor.ui.gray98)

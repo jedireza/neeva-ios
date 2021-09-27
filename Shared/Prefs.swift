@@ -29,6 +29,8 @@ extension Defaults.Keys {
         "firstRunImpressionLogged")
     public static let sessionUUID = Defaults.Key<String>(
         "sessionUUID", default: "")
+    public static let firstSessionUUID = Defaults.Key<String>(
+        "firstSessionUUID", default: "")
     public static let sessionUUIDExpirationTime = Defaults.Key<Date>(
         "sessionUUIDExpirationTime", default: Date(timeIntervalSince1970: 0))
 

@@ -120,7 +120,7 @@ class ZeroQueryModel: ObservableObject {
         } else if !NeevaUserInfo.shared.hasLoginCookie() {
             promoCard = .neevaSignIn {
                 ClientLogger.shared.logCounter(
-                    .PromoSignin, attributes: EnvironmentHelper.shared.getAttributes())
+                    .PromoSignin, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                 self.signIn()
             }
         } else if !Defaults[.didDismissDefaultBrowserCard] {

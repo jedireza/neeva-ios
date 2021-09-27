@@ -1624,8 +1624,18 @@ extension BrowserViewController {
                     }
                     openURLInNewTab(URL(string: "https://neeva.com"))
                     break
-                }
+                case .oktaSignup(let email, let marketingEmailOptOut):
+                    self.openURLInNewTab(
+                        NeevaConstants.oktaSignupURL(
+                            email: email,
+                            marketingEmailOptOut: marketingEmailOptOut))
+                case .oauthWithProvider(_, _, let token):
+                    let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
+                    httpCookieStore.setCookie(NeevaConstants.loginCookie(for: token))
+                    NeevaUserInfo.shared.setLoginCookie(token)
 
+                    openURLInNewTab(NeevaConstants.appHomeURL)
+                }
                 self.introViewController = nil
             }
         }

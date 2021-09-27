@@ -949,7 +949,6 @@ extension BrowserViewController: WKNavigationDelegate {
             url.origin == NeevaConstants.appURL.origin
         {
             let userInfo = NeevaUserInfo.shared
-
             if url.path == NeevaConstants.appSigninURL.path {
                 if userInfo.hasLoginCookie() {
                     userInfo.deleteLoginCookie()
@@ -959,8 +958,13 @@ extension BrowserViewController: WKNavigationDelegate {
                 // Log .LoginAfterFirstRun when user signed in for the first time
                 // after seeing first run screen
                 if Defaults[.firstRunSeenAndNotSignedIn] && userInfo.hasLoginCookie() {
+                    var attributes = EnvironmentHelper.shared.getFirstRunAttributes()
+                    attributes.append(
+                        ClientLogCounterAttribute(
+                            key: LogConfig.Attribute.FirstSessionUUID,
+                            value: Defaults[.firstSessionUUID]))
                     ClientLogger.shared.logCounter(
-                        .LoginAfterFirstRun, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                        .LoginAfterFirstRun, attributes: attributes)
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
