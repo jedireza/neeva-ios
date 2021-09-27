@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>destination</key>
+	<string>export</string>
+	<key>manageAppVersionAndBuildNumber</key>
+	<false/>
+	<key>method</key>
+	<string>app-store</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>co.neeva.app.ios.browser</key>
+		<string>Neeva Browser</string>
+		<key>co.neeva.app.ios.browser.ClientIntent</key>
+		<string>Neeva Browser ClientIntent</string>
+		<key>co.neeva.app.ios.browser.Clip</key>
+		<string>Neeva Browser Clip</string>
+		<key>co.neeva.app.ios.browser.ShareTo</key>
+		<string>Neeva Browser ShareTo</string>
+		<key>co.neeva.app.ios.browser.WidgetKit</key>
+		<string>Neeva Browser WidgetKit</string>
+	</dict>
+	<key>signingCertificate</key>
+	<string>Apple Distribution</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>stripSwiftSymbols</key>
+	<true/>
+	<key>teamID</key>
+	<string>A9735M6NPH</string>
+	<key>uploadBitcode</key>
+	<true/>
+	<key>uploadSymbols</key>
+	<true/>
+</dict>
+</plist>
