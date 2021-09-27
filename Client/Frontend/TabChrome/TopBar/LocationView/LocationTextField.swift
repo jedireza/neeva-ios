@@ -190,7 +190,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 selectedTextRange = textRange(from: cursorPosition, to: cursorPosition)
             }
         case UIKeyCommand.inputEscape:
-            isActive = false
+            suggestionModel.bvc.closeLazyTab()
         case copyShortcutKey:
             if let text = text, let completion = suggestionModel.completion {
                 UIPasteboard.general.string = text + completion
