@@ -347,12 +347,15 @@ class TabGroupCardModel: CardModel {
         self.manager = manager
         onDataUpdated()
         self.anyCancellable = self.manager.objectWillChange.sink { [unowned self] (_) in
-            if detailedTabGroup != nil {
-                return
-            }
             DispatchQueue.main.async {
                 allDetails = manager.getAll().map {
                     TabGroupCardDetails(tabGroup: $0, tabGroupManager: manager)
+                }
+                if detailedTabGroup != nil {
+                    detailedTabGroup = allDetails.first {
+                        $0.id == detailedTabGroup?.id
+                    }
+                    detailedTabGroup?.isShowingDetails = true
                 }
                 representativeTabs = manager.getAll()
                     .reduce(into: [Tab]()) { $0.append($1.children.first!) }
@@ -368,9 +371,6 @@ class TabGroupCardModel: CardModel {
                     }.store(in: &detailsSubscriptions)
                 }
             }
-            onViewUpdate()
-            detailedTabGroup = allDetails.first { $0.isShowingDetails }
-            objectWillChange.send()
         }
     }
 
