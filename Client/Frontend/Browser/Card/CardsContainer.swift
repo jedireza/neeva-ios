@@ -73,10 +73,6 @@ struct CardsContainer: View {
                                         return
                                     }
 
-                                    withAnimation {
-                                        value.scrollTo(tabModel.selectedTabID)
-                                    }
-
                                     gridModel.hideWithAnimation()
                                 }
                         }.background(
@@ -87,12 +83,12 @@ struct CardsContainer: View {
                             }
                         )
                         .padding(.vertical, CardGridUX.GridSpacing)
-
                         .useEffect(
-                            deps: tabModel.selectedTabID, gridModel.isHidden
-                        ) { _, _ in
-                            value.scrollTo(tabModel.selectedTabID)
-                            DispatchQueue.main.async {
+                            deps: tabModel.selectedTabID
+                        ) { _ in
+                            // TODO Find a better signal to not necessitate the async post here.
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                value.scrollTo(tabModel.selectedTabID)
                                 spacesModel.manager.refresh()
                             }
                         }

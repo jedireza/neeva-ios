@@ -29,58 +29,13 @@ struct CardGrid: View {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
     }
 
-    var indexInsideTabGroupModel: Int? {
-        guard FeatureFlag[.groupsInSwitcher] else {
-            return nil
-        }
-
-        let selectedTab = tabModel.manager.selectedTab!
-        return tabGroupModel.allDetails
-            .firstIndex(where: { $0.id == selectedTab.rootUUID })
-    }
-
-    var indexInsideTabModel: Int? {
-        if FeatureFlag[.groupsInSwitcher] {
-            return tabModel.allDetailsWithExclusionList.firstIndex(where: \.isSelected)
-        } else {
-            return tabModel.allDetails.firstIndex(where: \.isSelected)
-        }
-    }
-
-    var indexInGrid: Int {
-        indexInsideTabGroupModel
-            ?? (FeatureFlag[.groupsInSwitcher] ? tabGroupModel.allDetails.count : 0)
-            + indexInsideTabModel!
-    }
-
-    var selectedCardDetails: TabCardDetails? {
-        if FeatureFlag[.groupsInSwitcher] {
-            return tabModel.allDetailsWithExclusionList.first(where: \.isSelected)
-                ?? tabGroupModel.allDetails
-                .compactMap { $0.allDetails.first(where: \.isSelected) }
-                .first
-        } else {
-            return tabModel.allDetails.first(where: \.isSelected)
-        }
-    }
-
-    var row: CGFloat {
-        floor(CGFloat(indexInGrid) / columnCount)
-    }
-
     @ViewBuilder var transitionAnimator: some View {
         if gridModel.animationThumbnailState != .hidden || gridModel.isHidden,
-            let selectedCardDetails = selectedCardDetails,
             let geom = geom
         {
             CardTransitionAnimator(
-                selectedCardDetails: selectedCardDetails,
                 cardSize: cardSize,
-                offset: CGPoint(
-                    x: CardGridUX.GridSpacing
-                        + (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
-                    y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize * CardUX.DefaultTabCardRatio) * row
-                ),
+                columnCount: columnCount,
                 containerSize: geom.size,
                 safeAreaInsets: geom.safeAreaInsets,
                 topToolbar: topToolbar
@@ -162,7 +117,7 @@ struct CardGrid: View {
                         .background(
                             Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
                         )
-                        .transition(.flipFromRight)                        
+                        .transition(.flipFromRight)
                 }
             }
             .useEffect(
