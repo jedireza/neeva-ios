@@ -25,7 +25,9 @@ class ToolbarTests: BaseTestCase {
     }
 
     /// Tests landscape page navigation enablement with the URL bar with tab switching.
-    func testLandscapeNavigationWithTabSwitch() {
+    func testLandscapeNavigationWithTabSwitch() throws {
+        try skipTest(issue: 1823, "this test if flaky")
+
         XCTAssert(app.buttons["Address Bar"].exists)
 
         // Check that the back and forward buttons are disabled
