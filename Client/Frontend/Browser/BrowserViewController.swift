@@ -962,6 +962,7 @@ class BrowserViewController: UIViewController {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }
 
+        scrollController.showToolbars(animated: true, completion: nil)
         showZeroQuery(openedFrom: openedFrom, isLazyTab: true)
     }
 
