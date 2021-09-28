@@ -17,8 +17,7 @@ struct LocationTextField: UIViewRepresentable {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     func makeUIView(context: Context) -> AutocompleteTextField {
-        let tf = AutocompleteTextField(
-            text: $text, isActive: $editing, onSubmit: onSubmit, suggestionModel: suggestionModel)
+        let tf = AutocompleteTextField(onSubmit: onSubmit, suggestionModel: suggestionModel)
 
         tf.font = UIFont.systemFont(ofSize: 16)
         tf.backgroundColor = .clear
@@ -63,8 +62,6 @@ struct LocationTextField: UIViewRepresentable {
 class AutocompleteTextField: UITextField, UITextFieldDelegate {
     var onSubmit: (String) -> Void
 
-    @Binding private var binding: String
-    @Binding private var isActive: Bool
     private var suggestionModel: SuggestionModel
 
     private let copyShortcutKey = "c"
@@ -95,12 +92,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         set { super.accessibilityHint = newValue }
     }
 
-    init(
-        text: Binding<String>, isActive: Binding<Bool>, onSubmit: @escaping (String) -> Void,
-        suggestionModel: SuggestionModel
-    ) {
-        self._binding = text
-        self._isActive = isActive
+    init(onSubmit: @escaping (String) -> Void, suggestionModel: SuggestionModel) {
         self.onSubmit = onSubmit
         self.suggestionModel = suggestionModel
         super.init(frame: .zero)
@@ -109,7 +101,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         self.addAction(
             UIAction { [weak self] _ in
                 guard let self = self, let text = self.text else { return }
-                self.binding = text
+                self.suggestionModel.queryModel.value = text
             }, for: .editingChanged)
 
         subscription = suggestionModel.$completion
@@ -121,10 +113,12 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                     tintColor = defaultTint
                 }
             }
-        tintColor = text.wrappedValue.isEmpty ? defaultTint : defaultTint.withAlphaComponent(0)
-        self.text = text.wrappedValue
+        tintColor =
+            suggestionModel.queryModel.value.isEmpty
+            ? defaultTint : defaultTint.withAlphaComponent(0)
+        self.text = suggestionModel.queryModel.value
     }
-    
+
     func textFieldDidBeginEditing(_ textField: UITextField) {
         selectedTextRange = textRange(from: beginningOfDocument, to: endOfDocument)
     }
@@ -207,7 +201,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         tintColor = defaultTint
         // Clear the current completion, then set the text.
         guard let completion = suggestionModel.completion else { return false }
-        binding += completion
+        suggestionModel.queryModel.value += completion
         // Move the cursor to the end of the completion.
         selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
         return true
