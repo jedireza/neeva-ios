@@ -13,9 +13,7 @@ struct LocationEditView: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            if let query = suggestionModel.queryModel.value,
-                let completion = suggestionModel.completion
-            {
+            if let query = searchQuery.value, let completion = suggestionModel.completion {
                 HStack(spacing: 0) {
                     Text(query)
                         .foregroundColor(.clear)
@@ -29,7 +27,11 @@ struct LocationEditView: View {
                 .font(.system(size: 16))
             }
 
-            LocationTextField(text: $searchQuery.value, editing: $isEditing, onSubmit: onSubmit)
+            // As of iOS 15, placing LocationTextField in an overlay is needed to
+            // avoid issue #1814.
+            Color.clear.overlay(
+                LocationTextField(text: $searchQuery.value, editing: $isEditing, onSubmit: onSubmit)
+            )
         }
         .padding(.trailing, 6)
     }
