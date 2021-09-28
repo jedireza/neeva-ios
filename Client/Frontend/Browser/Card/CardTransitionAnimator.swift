@@ -36,16 +36,6 @@ struct CardTransitionAnimator: View {
         gridModel.pickerHeight + safeAreaInsets.top
     }
 
-    var indexInsideTabGroupModel: Int? {
-        guard FeatureFlag[.groupsInSwitcher] else {
-            return nil
-        }
-
-        let selectedTab = tabModel.manager.selectedTab!
-        return tabGroupModel.allDetails
-            .firstIndex(where: { $0.id == selectedTab.rootUUID })
-    }
-
     var indexInsideTabModel: Int? {
         if FeatureFlag[.groupsInSwitcher] {
             return tabModel.allDetailsWithExclusionList.firstIndex(where: \.isSelected)
@@ -54,10 +44,21 @@ struct CardTransitionAnimator: View {
         }
     }
 
+    var indexInsideCombinedList: Int? {
+        let combinedList = tabModel.allDetails.filter { tabCard in
+            (tabGroupModel.representativeTabs.contains(
+                tabCard.manager.get(for: tabCard.id)!)
+                || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
+        }
+        let selectedTab = tabModel.manager.selectedTab!
+        return combinedList.firstIndex {
+            $0.isSelected
+                || $0.manager.get(for: $0.id)?.rootUUID == tabModel.manager.selectedTab!.rootUUID
+        }
+    }
+
     var indexInGrid: Int {
-        indexInsideTabGroupModel
-            ?? (FeatureFlag[.groupsInSwitcher] ? tabGroupModel.allDetails.count : 0)
-            + indexInsideTabModel!
+        return FeatureFlag[.groupsInSwitcher] ? indexInsideCombinedList! : indexInsideTabModel!
     }
 
     var selectedCardDetails: TabCardDetails? {
