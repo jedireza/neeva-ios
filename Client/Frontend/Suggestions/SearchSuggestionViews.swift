@@ -56,8 +56,8 @@ public struct SearchSuggestionView: View {
             EditCurrentURLSuggestionView(suggestion: tab)
         case .tabSuggestion(let tab):
             TabSuggestionView(suggestion: tab)
-        case .findInPage(let query):
-            FindInPageSuggestionView(query: query)
+        case .findInPage(let model):
+            FindInPageSuggestionView(findInPageModel: model)
         case .editCurrentQuery(let query, let url):
             EditCurrentQuerySuggestionView(suggestion: (query, url))
         }
@@ -596,32 +596,42 @@ private struct EditCurrentQuerySuggestionView: View {
 }
 
 private struct FindInPageSuggestionView: View {
-    let query: String
+    let findInPageModel: FindInPageModel
 
     @State var focused: Bool = false
     @EnvironmentObject public var model: SuggestionModel
 
     var label: some View {
-        Text("Find on Page")
+        Text("Find on this page")
             .withFont(.bodyLarge)
             .lineLimit(1)
     }
 
     var secondaryLabel: some View {
-        Text(query)
+        Text("\"\(findInPageModel.searchValue)\"")
             .withFont(.bodySmall)
             .foregroundColor(.secondaryLabel)
             .lineLimit(1)
     }
 
+    var resultsLabel: some View {
+        Text("\(findInPageModel.numberOfResults) matches")
+            .withFont(.bodySmall)
+            .foregroundColor(.secondaryLabel)
+            .lineLimit(1)
+            .onAppear {
+                findInPageModel.searchValue = findInPageModel.searchValue
+            }
+    }
+
     var body: some View {
         SuggestionView(
             action: nil,
-            icon: Symbol(decorative: .textMagnifyingglass),
+            icon: Symbol(decorative: .docTextMagnifyingglass),
             label: label,
             secondaryLabel: secondaryLabel,
-            detail: EmptyView(),
-            suggestion: Suggestion.findInPage(query)
+            detail: resultsLabel,
+            suggestion: Suggestion.findInPage(findInPageModel)
         )
         .environmentObject(model)
     }

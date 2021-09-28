@@ -52,6 +52,6 @@ struct FindInPageView: View {
 struct FindInPageView_Previews: PreviewProvider {
     static var previews: some View {
         FindInPageView(onDismiss: {})
-            .environmentObject(FindInPageModel(tab: nil))
+            .environmentObject(FindInPageModel(tabManager: SceneDelegate.getTabManager(for: nil)))
     }
 }

@@ -386,12 +386,12 @@ where
                 spacing: CardGridUX.GridSpacing
             ) {
                 ForEach(primitive.allDetails, id: \.id) { details in
-                        FittedCard(details: details)
-                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                            .environment(\.selectionCompletion) {
+                    FittedCard(details: details)
+                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                        .environment(\.selectionCompletion) {
                             gridModel.hideWithNoAnimation()
                             tabGroupCardModel.detailedTabGroup = nil
-                    }
+                        }
                 }
                 Spacer()
             }
@@ -506,8 +506,9 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                         label: {
                             Label("Add to another Space", systemSymbol: .docOnDoc)
                         })
-                }))
-        .accessibilityLabel(details.title).accessibilityHint("Space Item")
+                })
+            )
+            .accessibilityLabel(details.title).accessibilityHint("Space Item")
     }
 }
 

@@ -124,7 +124,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         tintColor = text.wrappedValue.isEmpty ? defaultTint : defaultTint.withAlphaComponent(0)
         self.text = text.wrappedValue
     }
-    
+
     func textFieldDidBeginEditing(_ textField: UITextField) {
         selectedTextRange = textRange(from: beginningOfDocument, to: endOfDocument)
     }

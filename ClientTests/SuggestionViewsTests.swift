@@ -70,8 +70,9 @@ class SuggestionViewsTests: XCTestCase {
             bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
             topSuggestions: [SuggestionModelTests.sampleNavURL])
-        let suggestionView = SearchSuggestionView(SuggestionModelTests.sampleNavURL).environmentObject(
-            model)
+        let suggestionView = SearchSuggestionView(SuggestionModelTests.sampleNavURL)
+            .environmentObject(
+                model)
         let nav = try suggestionView.inspect().find(URLSuggestionView.self).actualView()
         XCTAssertNotNil(nav)
         let navSuggestion = URLSuggestionView(
@@ -160,9 +161,11 @@ class SuggestionViewsTests: XCTestCase {
         let duplicateSite2 = Site(url: "https://neeva.com/dup?q=abc", title: "Neeva")
         let siteB = Site(url: "https://neeva.com/signin", title: "Neeva")
 
-        let suggestionModel = SuggestionModel(bvc: SceneDelegate.getBVC(for: nil), previewSites: [
-            SuggestionModelTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB,
-        ])
+        let suggestionModel = SuggestionModel(
+            bvc: SceneDelegate.getBVC(for: nil),
+            previewSites: [
+                SuggestionModelTests.sampleSite, site, duplicateSite1, duplicateSite2, siteB,
+            ])
         suggestionModel.navSuggestions = [SuggestionModelTests.sampleNavURL, suggestion]
 
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)

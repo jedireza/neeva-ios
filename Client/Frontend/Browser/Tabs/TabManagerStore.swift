@@ -9,7 +9,7 @@ import XCGLogger
 
 private let log = Logger.storage
 
-class TabManagerStore {
+public class TabManagerStore {
     static let shared = TabManagerStore(
         imageStore: DiskImageStore(
             files: getAppDelegate().profile.files, namespace: "TabManagerScreenshots",

@@ -365,7 +365,7 @@ class TabGroupCardModel: CardModel {
                     }.store(in: &detailsSubscriptions)
                 }
             }
-            
+
             onViewUpdate()
             detailedTabGroup = allDetails.first { $0.isShowingDetails }
             objectWillChange.send()

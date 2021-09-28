@@ -98,7 +98,7 @@ public struct LogConfig {
         case OwnerSharedSpace
         case FollowerSharedSpace
         case RecommendedSpaceVisited
-        
+
         // ratings card
         case RatingsRateExperience
         case RatingsPromptFeedback
@@ -237,7 +237,7 @@ public struct LogConfig {
         case .RecommendedSpaceVisited: return .Spaces
         case .OwnerSharedSpace: return .Spaces
         case .FollowerSharedSpace: return .Spaces
-            
+
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard
         case .RatingsPromptAppStore: return .RatingsCard

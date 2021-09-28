@@ -133,7 +133,7 @@ struct QuerySuggestionsList: View {
                     index, suggestion in
                     SearchSuggestionView(suggestion)
                     if case Suggestion.url(_) = suggestion,
-                       index != suggestionModel.rowQuerySuggestions.count - 1
+                        index != suggestionModel.rowQuerySuggestions.count - 1
                     {
                         SuggestionsDivider(height: 8)
                     }

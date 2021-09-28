@@ -38,7 +38,7 @@ protocol TabDelegate {
     @objc optional func tab(_ tab: Tab, didCreateWebView webView: WKWebView)
 }
 
-class Tab: NSObject, ObservableObject {
+public class Tab: NSObject, ObservableObject {
     let isIncognito: Bool
 
     // PageMetadata is derived from the page content itself, and as such lags behind the

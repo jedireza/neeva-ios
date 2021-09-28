@@ -48,7 +48,7 @@ extension TabManager: TabEventHandler {
 }
 
 // TabManager must extend NSObjectProtocol in order to implement WKNavigationDelegate
-class TabManager: NSObject, ObservableObject {
+public class TabManager: NSObject, ObservableObject {
     fileprivate var delegates = [WeakTabManagerDelegate]()
     fileprivate let tabEventHandlers: [TabEventHandler]
     public let store: TabManagerStore
@@ -787,14 +787,16 @@ extension TabManager {
 extension TabManager: WKNavigationDelegate {
 
     // Note the main frame JSContext (i.e. document, window) is not available yet.
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    public func webView(
+        _ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!
+    ) {
         // Save stats for the page we are leaving.
         if let tab = self[webView], let blocker = tab.contentBlocker, let url = tab.url {
             blocker.pageStatsCache[url] = blocker.stats
         }
     }
 
-    func webView(
+    public func webView(
         _ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse,
         decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
     ) {
@@ -809,7 +811,7 @@ extension TabManager: WKNavigationDelegate {
 
     // The main frame JSContext is available, and DOM parsing has begun.
     // Do not excute JS at this point that requires running prior to DOM parsing.
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = self[webView] else { return }
 
         if let url = webView.url, let blocker = tab.contentBlocker {
@@ -825,7 +827,7 @@ extension TabManager: WKNavigationDelegate {
         }
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         // tab restore uses internal pages, so don't call storeChanges unnecessarily on startup
         if let url = webView.url {
             if let internalUrl = InternalURL(url), internalUrl.isSessionRestore {
@@ -838,7 +840,7 @@ extension TabManager: WKNavigationDelegate {
 
     /// Called when the WKWebView's content process has gone away. If this happens for the currently selected tab
     /// then we immediately reload it.
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         if let tab = selectedTab, tab.webView == webView {
             tab.consecutiveCrashes += 1
 

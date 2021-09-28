@@ -127,9 +127,16 @@ class SuggestionModel: ObservableObject {
             return
         }
 
-        let searchQuery = searchQuery
+        bvc.findInPageViewController.model.searchValue = searchQuery
 
-        suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { result in
+        // Delay gives time to search the page.
+        // The model that is passed is not updated by the @Published varible, this is a fix for that.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { [self] in
+            findInPageSuggestion = .findInPage(bvc.findInPageViewController.model)
+        }
+
+        let searchQuery = searchQuery
+        suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { [self] result in
             self.suggestionQuery = nil
             switch result {
             case .failure(let error):
@@ -151,7 +158,7 @@ class SuggestionModel: ObservableObject {
                 self.rowQuerySuggestions = rowQuerySuggestions
                 self.urlSuggestions = urlSuggestions
                 self.navSuggestions = navSuggestions
-                self.findInPageSuggestion = .findInPage(searchQuery)
+
                 self.activeLensBang = lensOrBang
             }
             if self.suggestions.isEmpty {
@@ -406,6 +413,7 @@ class SuggestionModel: ObservableObject {
         let suggestionLocationAttributes =
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
         var hideZeroQuery = true
+        var hideFindInPage = true
 
         var interaction: LogConfig.Interaction?
 
@@ -444,9 +452,11 @@ class SuggestionModel: ObservableObject {
             if let tab = selectedTab.manager.get(for: selectedTab.id) {
                 selectedTab.manager.select(tab)
             }
-        case .findInPage(let query):
+        case .findInPage(let model):
             interaction = .FindOnPageSuggestion
-            bvc.updateFindInPageVisibility(visible: true, query: query)
+            hideFindInPage = false
+
+            self.bvc.updateFindInPageVisibility(visible: true, query: model.searchValue)
         case .editCurrentQuery(let query, let url):
             hideZeroQuery = false
 
@@ -466,6 +476,10 @@ class SuggestionModel: ObservableObject {
 
         if hideZeroQuery {
             bvc.hideZeroQuery()
+        }
+
+        if hideFindInPage {
+            bvc.updateFindInPageVisibility(visible: false)
         }
     }
 

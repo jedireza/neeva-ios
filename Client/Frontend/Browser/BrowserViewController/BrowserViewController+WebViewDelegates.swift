@@ -960,7 +960,8 @@ extension BrowserViewController: WKNavigationDelegate {
                 // after seeing first run screen
                 if Defaults[.firstRunSeenAndNotSignedIn] && userInfo.hasLoginCookie() {
                     ClientLogger.shared.logCounter(
-                        .LoginAfterFirstRun, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                        .LoginAfterFirstRun,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 

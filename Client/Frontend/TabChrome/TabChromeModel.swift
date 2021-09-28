@@ -57,7 +57,14 @@ class TabChromeModel: ObservableObject {
     }
     @Published var estimatedProgress: Double?
 
-    @Published private(set) var isEditingLocation = false
+    @Published private(set) var isEditingLocation = false {
+        didSet {
+            if isEditingLocation {
+                SceneDelegate.getBVC(with: topBarDelegate?.tabManager.scene)
+                    .updateFindInPageVisibility(visible: false)
+            }
+        }
+    }
 
     @Published var showNeevaMenuTourPrompt = false
 

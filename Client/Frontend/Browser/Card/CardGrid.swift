@@ -79,7 +79,8 @@ struct CardGrid: View {
                 offset: CGPoint(
                     x: CardGridUX.GridSpacing
                         + (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
-                    y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize * CardUX.DefaultTabCardRatio) * row
+                    y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize
+                        * CardUX.DefaultTabCardRatio) * row
                 ),
                 containerSize: geom.size,
                 safeAreaInsets: geom.safeAreaInsets,
@@ -161,7 +162,7 @@ struct CardGrid: View {
                         .background(
                             Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
                         )
-                        .transition(.flipFromRight)                        
+                        .transition(.flipFromRight)
                 }
             }
             .useEffect(

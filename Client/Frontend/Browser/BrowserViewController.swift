@@ -114,7 +114,13 @@ class BrowserViewController: UIViewController {
         return TabContentHost(bvc: self)
     }()
 
-    var findInPageViewController: FindInPageViewController?
+    lazy var findInPageViewController: FindInPageViewController = {
+        return FindInPageViewController(
+            model: FindInPageModel(tabManager: tabManager),
+            onDismiss: {
+                self.updateFindInPageVisibility(visible: false, tab: self.tabManager.selectedTab)
+            })
+    }()
     var overlayWindowManager: WindowManager?
 
     private(set) var topBar: TopBarHost!
