@@ -12,12 +12,11 @@ extension BrowserViewController: ReaderModeDelegate {
         // If this reader mode availability state change is for the tab that we currently show, then update
         // the button. Otherwise do nothing and the button will be updated when the tab is made active.
         if tabManager.selectedTab === tab {
-            locationModel.readerMode = state
+            readerModeModel.state = state
         }
     }
 
     func readerMode(_ readerMode: ReaderMode, didDisplayReaderizedContentForTab tab: Tab) {
-        self.showReaderModeBar(animated: true)
         tab.showContent(true)
     }
 
@@ -26,14 +25,8 @@ extension BrowserViewController: ReaderModeDelegate {
         forTab tab: Tab
     ) {
     }
-}
 
-extension BrowserViewController: ReaderModeStyleViewControllerDelegate {
-    func readerModeStyleViewController(
-        _ readerModeStyleViewController: ReaderModeStyleViewController,
-        didConfigureStyle style: ReaderModeStyle,
-        isUsingUserDefinedColor: Bool
-    ) {
+    func readerMode(didConfigureStyle style: ReaderModeStyle, isUsingUserDefinedColor: Bool) {
         var newStyle = style
         if !isUsingUserDefinedColor {
             newStyle.ensurePreferredColorThemeIfNeeded()
@@ -58,32 +51,10 @@ extension BrowserViewController: ReaderModeStyleViewControllerDelegate {
 }
 
 extension BrowserViewController {
-    func showReaderModeBar(animated: Bool) {
-        if self.readerModeBar == nil {
-            let readerModeBar = ReaderModeBarView(frame: CGRect.zero)
-            readerModeBar.delegate = self
-            view.insertSubview(readerModeBar, belowSubview: topBar.view)
-            self.readerModeBar = readerModeBar
-            scrollController.readerModeBar = self.readerModeBar
-        }
-
-        self.updateViewConstraints()
-    }
-
-    func hideReaderModeBar(animated: Bool) {
-        if let readerModeBar = self.readerModeBar {
-            readerModeBar.removeFromSuperview()
-            self.readerModeBar = nil
-            self.updateViewConstraints()
-            scrollController.readerModeBar = self.readerModeBar
-        }
-    }
-
     /// There are two ways we can enable reader mode. In the simplest case we open a URL to our internal reader mode
     /// and be done with it. In the more complicated case, reader mode was already open for this page and we simply
     /// navigated away from it. So we look to the left and right in the BackForwardList to see if a readerized version
     /// of the current page is there. And if so, we go there.
-
     func enableReaderMode() {
         guard let tab = tabManager.selectedTab, let webView = tab.webView else { return }
 
@@ -125,7 +96,6 @@ extension BrowserViewController {
     /// means that there is nothing in the BackForwardList except the internal url for the reader mode page. In that
     /// case we simply open a new page with the original url. In the more complicated page, the non-readerized version
     /// of the page is either to the left or right in the BackForwardList. If that is the case, we navigate there.
-
     func disableReaderMode() {
         if let tab = tabManager.selectedTab,
             let webView = tab.webView
@@ -149,63 +119,7 @@ extension BrowserViewController {
         }
     }
 
-    @objc func dynamicFontChanged(_ notification: Notification) {
-        guard notification.name == .DynamicFontChanged else { return }
-
-        var readerModeStyle = Defaults[.readerModeStyle]
-        readerModeStyle.fontSize = ReaderModeFontSize.defaultSize
-        self.readerModeStyleViewController(
-            ReaderModeStyleViewController(),
-            didConfigureStyle: readerModeStyle,
-            isUsingUserDefinedColor: false)
-    }
-
     func appyThemeForPreferences(contentScript: TabContentScript) {
-        ReaderModeStyleViewController().applyTheme(contentScript: contentScript)
-    }
-}
-
-extension BrowserViewController: ReaderModeBarViewDelegate {
-    func readerModeBar(
-        _ readerModeBar: ReaderModeBarView, didSelectButton buttonType: ReaderModeBarButtonType
-    ) {
-        presentedViewController?.dismiss(animated: true, completion: nil)
-
-        switch buttonType {
-        case .settings:
-            if let readerMode = tabManager.selectedTab?.getContentScript(name: "ReaderMode")
-                as? ReaderMode, readerMode.state == ReaderModeState.active
-            {
-                let readerModeStyle = Defaults[.readerModeStyle]
-
-                let readerModeStyleViewController = ReaderModeStyleViewController()
-                readerModeStyleViewController.delegate = self
-                readerModeStyleViewController.readerModeStyle = readerModeStyle
-                readerModeStyleViewController.modalPresentationStyle = .popover
-
-                let setupPopover = { [unowned self] in
-                    if let popoverPresentationController = readerModeStyleViewController
-                        .popoverPresentationController
-                    {
-                        popoverPresentationController.backgroundColor = UIColor.Photon.White100
-                        popoverPresentationController.delegate = self
-                        popoverPresentationController.sourceView = readerModeBar
-                        popoverPresentationController.sourceRect = CGRect(
-                            x: readerModeBar.frame.width / 2, y: UIConstants.ToolbarHeight,
-                            width: 1, height: 1)
-                        popoverPresentationController.permittedArrowDirections = .up
-                    }
-                }
-
-                setupPopover()
-
-                if readerModeStyleViewController.popoverPresentationController != nil {
-                    displayedPopoverController = readerModeStyleViewController
-                    updateDisplayedPopoverProperties = setupPopover
-                }
-
-                self.present(readerModeStyleViewController, animated: true, completion: nil)
-            }
-        }
+        readerModeModel.applyTheme(contentScript: contentScript)
     }
 }

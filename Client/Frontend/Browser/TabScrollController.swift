@@ -61,7 +61,6 @@ class TabScrollingController: NSObject, ObservableObject {
     weak var header: UIView?
     weak var footer: UIView?
     weak var safeAreaView: UIView?
-    weak var readerModeBar: ReaderModeBarView?
 
     fileprivate var isZoomedOut = false
     fileprivate var lastZoomedScale: CGFloat = 0
@@ -87,8 +86,7 @@ class TabScrollingController: NSObject, ObservableObject {
         }
     }
     fileprivate var topScrollHeight: CGFloat {
-        guard let readerModeHeight = readerModeBar?.frame.height else { return headerHeight }
-        return headerHeight + readerModeHeight
+        return headerHeight
     }
     fileprivate var bottomScrollHeight: CGFloat { footer?.frame.height ?? 0 }
 
@@ -234,7 +232,6 @@ extension TabScrollingController {
 
         let alpha = 1 - abs(headerTopOffset / topScrollHeight)
         chromeModel.controlOpacity = Double(alpha)
-        readerModeBar?.updateAlphaForSubviews(alpha)
     }
 
     fileprivate func isHeaderDisplayedForGivenOffset(_ offset: CGFloat) -> Bool {
@@ -269,7 +266,6 @@ extension TabScrollingController {
             }
             self.headerTopOffset = headerOffset
             self.footerBottomOffset = footerOffset
-            self.readerModeBar?.updateAlphaForSubviews(alpha)
             self.header?.superview?.layoutIfNeeded()
         }
 

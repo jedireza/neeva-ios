@@ -187,7 +187,8 @@ class DomainAutocompleteTest: BaseTestCase {
 
     // This test is disabled for general schema due to bug 1494269
     func testDeletingCharsUpdateTheResults() throws {
-        try skipTest(issue: 1234, "Disabled as our suggest drop-down depends on being logged in to Neeva")
+        try skipTest(
+            issue: 1234, "Disabled as our suggest drop-down depends on being logged in to Neeva")
 
         let url1 = ["url": "git.es", "label": "git.es - Dominio premium en venta"]
         let url2 = [

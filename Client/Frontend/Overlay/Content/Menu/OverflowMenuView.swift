@@ -107,6 +107,7 @@ public struct OverflowMenuView: View {
 
                     Color.groupedBackground.frame(height: 1)
 
+                    /* TODO: Renable reading mode in the Overflow Menu
                     if locationModel.readerMode != .unavailable && FeatureFlag[.readingMode] {
                         NeevaMenuRowButtonView(
                             label: locationModel.readerMode == .available
@@ -122,7 +123,7 @@ public struct OverflowMenuView: View {
                         )
 
                         Color.groupedBackground.frame(height: 1)
-                    }
+                    } */
 
                     let hasHomeButton = UIConstants.safeArea.bottom == 0
                     NeevaMenuRowButtonView(

@@ -119,6 +119,10 @@ extension ReadabilityOperation: ReaderModeDelegate {
         result = ReadabilityOperationResult.success(readabilityResult)
         semaphore.signal()
     }
+
+    func readerMode(didConfigureStyle style: ReaderModeStyle, isUsingUserDefinedColor: Bool) {
+
+    }
 }
 
 class ReadabilityService {

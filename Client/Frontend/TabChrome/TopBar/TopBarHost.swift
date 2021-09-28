@@ -28,6 +28,7 @@ struct TopBarContent: View {
     let gridModel: GridModel
     let trackingStatsViewModel: TrackingStatsViewModel
     let chromeModel: TabChromeModel
+    let readerModeModel: ReaderModeModel
 
     let newTab: () -> Void
     let onCancel: () -> Void
@@ -80,6 +81,7 @@ struct TopBarContent: View {
         .environmentObject(gridModel)
         .environmentObject(trackingStatsViewModel)
         .environmentObject(chromeModel)
+        .environmentObject(readerModeModel)
     }
 }
 
@@ -104,6 +106,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         gridModel: GridModel,
         trackingStatsViewModel: TrackingStatsViewModel,
         chromeModel: TabChromeModel,
+        readerModeModel: ReaderModeModel,
         delegate: TopBarDelegate,
         newTab: @escaping () -> Void,
         onCancel: @escaping () -> Void
@@ -119,6 +122,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
                 gridModel: gridModel,
                 trackingStatsViewModel: trackingStatsViewModel,
                 chromeModel: chromeModel,
+                readerModeModel: readerModeModel,
                 newTab: newTab,
                 onCancel: onCancel
             )

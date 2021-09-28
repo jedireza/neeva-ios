@@ -17,38 +17,7 @@ struct TextSizeView: View {
 
             GroupedStack {
                 // all the content in here is decorative since the accessibility element is explicitly provided below.
-                GroupedCell {
-                    HStack {
-                        OverlayStepperButton(
-                            action: model.zoomOut,
-                            symbol: Symbol(decorative: .minus, style: .bodyLarge),
-                            foregroundColor: model.canZoomOut ? .label : .tertiaryLabel
-                        )
-                        .disabled(!model.canZoomOut)
-
-                        Spacer()
-
-                        Symbol(decorative: .textformatSize, style: .headingLarge)
-
-                        Spacer()
-
-                        OverlayStepperButton(
-                            action: model.zoomIn,
-                            symbol: Symbol(decorative: .plus, style: .bodyLarge),
-                            foregroundColor: model.canZoomIn ? .label : .tertiaryLabel
-                        )
-                        .disabled(!model.canZoomIn)
-                    }.padding(.horizontal, -GroupedCellUX.padding)
-                }
-                .buttonStyle(TableCellButtonStyle())
-                .accessibilityElement(children: .ignore)
-                .modifier(
-                    OverlayStepperAccessibilityModifier(
-                        accessibilityLabel: "Page Zoom",
-                        accessibilityValue: model.label,
-                        increment: model.zoomIn,
-                        decrement: model.zoomOut))
-
+                TextSizeStepper(model: model)
                 GroupedCellButton("Reset") { model.pageZoom = 1 }
                     .accentColor(.red)
                 GroupedCellButton("Done", style: .labelLarge, action: onDismiss)

@@ -28,6 +28,7 @@ struct TabLocationView: View {
 
     @EnvironmentObject private var model: LocationViewModel
     @EnvironmentObject private var chromeModel: TabChromeModel
+    @EnvironmentObject private var readerModeModel: ReaderModeModel
     @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
     @State private var isPressed = false
@@ -35,6 +36,7 @@ struct TabLocationView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     @State var token = 0
+    @State var showReaderModeSettings: Bool = false
 
     private var copyAction: Action {
         Action("Copy", icon: .docOnDoc) {
@@ -69,7 +71,7 @@ struct TabLocationView: View {
                 Capsule().fill(backgroundColor)
 
                 TabLocationAligner(transitionToEditing: chromeModel.isEditingLocation) {
-                    LocationLabel(url: model.url, isSecure: model.isSecure)
+                    LocationLabel(url: model.url, isSecure: readerModeModel.state == .active ? readerModeModel.isOriginalTabSecure: model.isSecure)
                         .accessibilityAction(copyAction)
                         .accessibilityAction(pasteAction)
                         .accessibilityAction(pasteAndGoAction)
@@ -106,9 +108,44 @@ struct TabLocationView: View {
                 } trailing: {
                     if gridModel.isHidden {
                         Group {
-                            if model.readerMode != .active, let url = model.url,
-                                !InternalURL.isValid(url: url)
-                            {
+                            if let url = model.url, !InternalURL.isValid(url: url) {
+                                if readerModeModel.state != .unavailable
+                                    && FeatureFlag[.readingMode]
+                                {
+                                    LongPressButton {
+                                        if readerModeModel.state != .active {
+                                            readerModeModel.enableReadingMode()
+                                        } else {
+                                            showReaderModeSettings = true
+                                        }
+                                    } label: {
+                                        Symbol(.docPlaintext, label: "Reader Mode")
+                                            .padding()
+                                    }
+                                    .foregroundColor(
+                                        readerModeModel.state == .active ? .blue : .label
+                                    )
+                                    .frame(
+                                        width: TabLocationViewUX.height,
+                                        height: TabLocationViewUX.height
+                                    )
+                                    .presentAsPopover(
+                                        isPresented: $showReaderModeSettings,
+                                        dismissOnTransition: true
+                                    ) {
+                                        ReaderModePopover(disableReadingMode: {
+                                            readerModeModel.disableReadingMode()
+                                            showReaderModeSettings = false
+                                        })
+                                        .environmentObject(readerModeModel)
+                                        .environmentObject(
+                                            TextSizeModel(
+                                                webView: (readerModeModel.tabManager
+                                                    .selectedTab?
+                                                    .webView)!))
+                                    }
+                                }
+
                                 LocationViewReloadButton(
                                     buildMenu: buildReloadMenu, state: chromeModel.reloadButton,
                                     onTap: onReload)

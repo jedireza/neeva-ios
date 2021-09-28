@@ -5,6 +5,7 @@
 import Defaults
 import Foundation
 import Shared
+import SwiftUI
 import SwiftyJSON
 import WebKit
 
@@ -35,6 +36,17 @@ enum ReaderModeTheme: String, Codable {
     case light = "light"
     case dark = "dark"
     case sepia = "sepia"
+
+    var color: Color {
+        switch self {
+        case .light:
+            return .white
+        case .dark:
+            return Color(red: 42 / 255, green: 41 / 255, blue: 46 / 255, opacity: 1)
+        case .sepia:
+            return Color(red: 238 / 255, green: 228 / 255, blue: 219 / 255, opacity: 1)
+        }
+    }
 
     static func preferredTheme(for theme: ReaderModeTheme? = nil) -> ReaderModeTheme {
         // If there is no reader theme provided than we default to light theme
@@ -242,6 +254,9 @@ protocol ReaderModeDelegate {
     func readerMode(
         _ readerMode: ReaderMode, didParseReadabilityResult readabilityResult: ReadabilityResult,
         forTab tab: Tab)
+    func readerMode(
+        didConfigureStyle style: ReaderModeStyle,
+        isUsingUserDefinedColor: Bool)
 }
 
 let ReaderModeNamespace = "window.__firefox__.reader"

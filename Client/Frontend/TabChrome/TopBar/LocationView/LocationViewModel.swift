@@ -7,10 +7,8 @@ import SwiftUI
 /// One instance per window. Contains information about the current tab.
 class LocationViewModel: ObservableObject {
     @Published var url: URL?
-    @Published var readerMode = ReaderModeState.unavailable
-
     @Published private var hasOnlySecureContentListener: AnyCancellable?
-    /// `true` iff all assets on the page are secure (i.e. there is no mixed content)
+    /// `true` if all assets on the page are secure (i.e. there is no mixed content)
     @Published private var hasOnlySecureContent = false
     var isSecure: Bool? { hasOnlySecureContentListener == nil ? nil : hasOnlySecureContent }
 

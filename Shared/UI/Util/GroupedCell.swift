@@ -39,18 +39,22 @@ public struct GroupedStack<Content: View>: View {
 public struct GroupedCell<Content: View>: View {
     let alignment: GroupedCellAlignment
     let content: () -> Content
+    let roundedCorners: UIRectCorner
 
     public init(
-        alignment: GroupedCellAlignment = .center, @ViewBuilder content: @escaping () -> Content
+        alignment: GroupedCellAlignment = .center, @ViewBuilder content: @escaping () -> Content,
+        roundedCorners: UIRectCorner = .allCorners
     ) {
         self.alignment = alignment
         self.content = content
+        self.roundedCorners = roundedCorners
     }
 
     public var body: some View {
-        GroupedCell<ContentContainer>.Decoration {
-            ContentContainer(alignment: alignment, content: content)
-        }
+        GroupedCell<ContentContainer>.Decoration(
+            content: {
+                ContentContainer(alignment: alignment, content: content)
+            }, roundedCorners: roundedCorners)
     }
 }
 
@@ -102,14 +106,20 @@ extension GroupedCell {
     /// Adds the standard background and rounded corners to the content.
     public struct Decoration: View {
         let content: () -> Content
-        public init(@ViewBuilder content: @escaping () -> Content) {
+        var roundedCorners: UIRectCorner
+
+        public init(
+            @ViewBuilder content: @escaping () -> Content,
+            roundedCorners: UIRectCorner = .allCorners
+        ) {
             self.content = content
+            self.roundedCorners = roundedCorners
         }
 
         public var body: some View {
             content()
                 .background(Color.secondaryGroupedBackground)
-                .cornerRadius(GroupedCellUX.cornerRadius)
+                .cornerRadius(GroupedCellUX.cornerRadius, corners: roundedCorners)
         }
     }
 

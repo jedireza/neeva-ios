@@ -32,6 +32,17 @@ class BrowserViewController: UIViewController {
     private(set) var introViewController: IntroViewController?
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
+    lazy var readerModeModel: ReaderModeModel = {
+        let model = ReaderModeModel(setReadingMode: { [self] enabled in
+            if enabled {
+                enableReaderMode()
+            } else {
+                disableReaderMode()
+            }
+        }, tabManager: tabManager)
+        model.delegate = self
+        return model
+    }()
     private(set) lazy var suggestionModel: SuggestionModel = { [unowned self] in
         return SuggestionModel(bvc: self, profile: self.profile, queryModel: self.searchQueryModel)
     }()
@@ -120,7 +131,6 @@ class BrowserViewController: UIViewController {
     private(set) var topBar: TopBarHost!
 
     private var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
-    var readerModeBar: ReaderModeBarView?
     private(set) var readerModeCache: ReaderModeCache
     private(set) var toolbar: TabToolbarHost?
     private(set) var screenshotHelper: ScreenshotHelper!
@@ -401,6 +411,7 @@ class BrowserViewController: UIViewController {
             gridModel: gridModel,
             trackingStatsViewModel: TrackingStatsViewModel(tabManager: tabManager),
             chromeModel: chromeModel,
+            readerModeModel: readerModeModel,
             delegate: self,
             newTab: { self.openURLInNewTab(nil) },
             onCancel: { [unowned self] in
@@ -421,7 +432,6 @@ class BrowserViewController: UIViewController {
         clipboardBarDisplayHandler = ClipboardBarDisplayHandler(tabManager: tabManager)
         clipboardBarDisplayHandler?.bvc = self
 
-        scrollController.readerModeBar = readerModeBar
         scrollController.header = topBar.view
         scrollController.safeAreaView = view
         scrollController.footer = footer
@@ -650,27 +660,13 @@ class BrowserViewController: UIViewController {
             make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
         }
 
-        readerModeBar?.snp.remakeConstraints { make in
+        tabContentHost.view.snp.remakeConstraints { make in
+            make.left.right.equalTo(self.view)
+
             if UIConstants.enableBottomURLBar {
                 make.top.equalTo(self.view.safeArea.top)
             } else {
                 make.top.equalTo(self.topBar.view.snp.bottom)
-            }
-            make.height.equalTo(UIConstants.ToolbarHeight)
-            make.leading.trailing.equalTo(self.view)
-        }
-
-        tabContentHost.view.snp.remakeConstraints { make in
-            make.left.right.equalTo(self.view)
-
-            if let readerModeBarBottom = readerModeBar?.snp.bottom {
-                make.top.equalTo(readerModeBarBottom)
-            } else {
-                if UIConstants.enableBottomURLBar {
-                    make.top.equalTo(self.view.safeArea.top)
-                } else {
-                    make.top.equalTo(self.topBar.view.snp.bottom)
-                }
             }
 
             if UIConstants.enableBottomURLBar {
@@ -749,13 +745,6 @@ class BrowserViewController: UIViewController {
 
         DispatchQueue.main.async {
             self.tabContentHost.updateContent(.hideZeroQuery)
-
-            // Refresh the reading view toolbar since the article record may have changed
-            if let readerMode = self.tabManager.selectedTab?.getContentScript(
-                name: ReaderMode.name()) as? ReaderMode, readerMode.state == .active
-            {
-                self.showReaderModeBar(animated: false)
-            }
         }
     }
 
@@ -892,17 +881,6 @@ class BrowserViewController: UIViewController {
         scrollController.showToolbars(animated: false)
 
         if let url = tab.url {
-            if url.isReaderModeURL {
-                showReaderModeBar(animated: false)
-                NotificationCenter.default.addObserver(
-                    self, selector: #selector(dynamicFontChanged), name: .DynamicFontChanged,
-                    object: nil)
-            } else {
-                hideReaderModeBar(animated: false)
-                NotificationCenter.default.removeObserver(
-                    self, name: .DynamicFontChanged, object: nil)
-            }
-
             updateInZeroQuery(url as URL)
         }
     }
@@ -1294,6 +1272,7 @@ extension BrowserViewController: TabDelegate {
                 if tab === tabManager.selectedTab && !tab.restoring {
                     updateUIForReaderHomeStateForTab(tab)
                 }
+
                 // Catch history pushState navigation, but ONLY for same origin navigation,
                 // for reasons above about URL spoofing risk.
                 navigateInTab(tab: tab, webViewStatus: .url)
@@ -1521,14 +1500,9 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         if let readerMode = selected?.getContentScript(name: ReaderMode.name()) as? ReaderMode {
-            locationModel.readerMode = readerMode.state
-            if readerMode.state == .active {
-                showReaderModeBar(animated: false)
-            } else {
-                hideReaderModeBar(animated: false)
-            }
+            readerModeModel.state = readerMode.state
         } else {
-            locationModel.readerMode = .unavailable
+            readerModeModel.state = .unavailable
         }
 
         if updateZeroQuery {
