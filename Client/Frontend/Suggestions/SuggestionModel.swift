@@ -124,14 +124,12 @@ class SuggestionModel: ObservableObject {
             findInPageSuggestion = nil
             activeLensBang = nil
             error = nil
+            bvc.findInPageViewController.model.numberOfResultsUpdate = nil
             return
         }
 
         bvc.findInPageViewController.model.searchValue = searchQuery
-
-        // Delay gives time to search the page.
-        // The model that is passed is not updated by the @Published varible, this is a fix for that.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { [self] in
+        bvc.findInPageViewController.model.numberOfResultsUpdate = { [self] in
             findInPageSuggestion = .findInPage(bvc.findInPageViewController.model)
         }
 
@@ -455,8 +453,6 @@ class SuggestionModel: ObservableObject {
         case .findInPage(let model):
             interaction = .FindOnPageSuggestion
             hideFindInPage = false
-
-            self.bvc.updateFindInPageVisibility(visible: true, query: model.searchValue)
         case .editCurrentQuery(let query, let url):
             hideZeroQuery = false
 
@@ -480,6 +476,8 @@ class SuggestionModel: ObservableObject {
 
         if hideFindInPage {
             bvc.updateFindInPageVisibility(visible: false)
+        } else {
+            self.bvc.updateFindInPageVisibility(visible: true)
         }
     }
 
