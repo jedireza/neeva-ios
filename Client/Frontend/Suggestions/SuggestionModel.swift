@@ -37,6 +37,8 @@ class SuggestionModel: ObservableObject {
     @Published var activeLensBang: ActiveLensBangInfo?
     @Published var error: Error?
     @Published var keyboardFocusedSuggestion: Suggestion?
+    @Published var memorizedSuggestionMap = [String: String]()
+    @Published var querySuggestionIndexMap = [String: Int]()
     private var keyboardFocusedSuggestionIndex = -1
 
     private var isIncognito: Bool {
@@ -124,6 +126,8 @@ class SuggestionModel: ObservableObject {
             findInPageSuggestion = nil
             activeLensBang = nil
             error = nil
+            memorizedSuggestionMap = [String: String]()
+            querySuggestionIndexMap = [String: Int]()
             return
         }
 
@@ -143,7 +147,8 @@ class SuggestionModel: ObservableObject {
             case .success(
                 let (
                     topSuggestions, chipQuerySuggestions,
-                    rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang
+                    rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang,
+                    memorizedSuggestionMap, querySuggestionIndexMap
                 )):
                 self.error = nil
                 self.topSuggestions = topSuggestions
@@ -153,6 +158,8 @@ class SuggestionModel: ObservableObject {
                 self.navSuggestions = navSuggestions
                 self.findInPageSuggestion = .findInPage(searchQuery)
                 self.activeLensBang = lensOrBang
+                self.memorizedSuggestionMap = memorizedSuggestionMap
+                self.querySuggestionIndexMap = querySuggestionIndexMap
             }
             if self.suggestions.isEmpty {
                 if let lensOrBang = self.activeLensBang,
@@ -407,6 +414,8 @@ class SuggestionModel: ObservableObject {
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
         var hideZeroQuery = true
 
+        var queryAttributes = [ClientLogCounterAttribute]()
+
         var interaction: LogConfig.Interaction?
 
         switch suggestion {
@@ -415,9 +424,28 @@ class SuggestionModel: ObservableObject {
                 activeLensBang != nil
                 ? .BangSuggestion : .QuerySuggestion
             bvc.urlBar(didSubmitText: suggestion.suggestedQuery)
+
+            if let index = querySuggestionIndexMap[suggestion.suggestedQuery] {
+                queryAttributes = buildQueryAttributes(
+                    typedQuery: bvc.searchQueryModel.value,
+                    suggestedQuery: suggestion.suggestedQuery,
+                    index: index,
+                    suggestedUrl: nil
+                )
+            }
         case .url(let suggestion):
             interaction =
                 suggestion.title?.isEmpty ?? false ? .PersonalSuggestion : .MemorizedSuggestion
+            if let suggestedQuery = memorizedSuggestionMap[suggestion.suggestedUrl] {
+                if let index = querySuggestionIndexMap[suggestedQuery] {
+                    queryAttributes = buildQueryAttributes(
+                        typedQuery: bvc.searchQueryModel.value,
+                        suggestedQuery: suggestedQuery,
+                        index: index,
+                        suggestedUrl: suggestion.suggestedUrl
+                    )
+                }
+            }
             finishEditingAndSubmit(url: URL(string: suggestion.suggestedUrl)!)
         case .lens(let suggestion):
             interaction = .LensSuggestion
@@ -461,7 +489,8 @@ class SuggestionModel: ObservableObject {
                 interaction,
                 attributes: EnvironmentHelper.shared.getAttributes()
                     + suggestionLocationAttributes
-                    + suggestionSnapshotAttributes())
+                    + suggestionSnapshotAttributes()
+                    + queryAttributes)
         }
 
         if hideZeroQuery {
@@ -754,5 +783,39 @@ extension SuggestionModel {
 
         // we only log the first 6 positions which should cover what's appear on most screens without scrolling
         return snapshotLogAttributes + Array(implLogAttributes.prefix(6))
+    }
+
+    func buildQueryAttributes(
+        typedQuery: String,
+        suggestedQuery: String,
+        index: Int,
+        suggestedUrl: String?
+    ) -> [ClientLogCounterAttribute] {
+        var queryAttributes =
+            [
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.queryInputForSelectedSuggestion,
+                    value: typedQuery
+                ),
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.querySuggestionPosition,
+                    value: String(index)
+                ),
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.selectedQuerySuggestion,
+                    value: suggestedQuery
+                ),
+            ]
+
+        if let suggestedUrl = suggestedUrl {
+            queryAttributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.selectedMemorizedURLSuggestion,
+                    value: suggestedUrl
+                )
+            )
+        }
+
+        return queryAttributes
     }
 }

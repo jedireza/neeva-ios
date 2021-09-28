@@ -86,7 +86,7 @@ extension Suggestion: Identifiable, Equatable {
 
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
 public typealias SuggestionsQueryResult = (
-    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?
+    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?, [String: String], [String: Int]
 )
 extension ActiveLensBangInfo: Equatable {
     static let previewBang = ActiveLensBangInfo(
@@ -168,6 +168,10 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         }
 
         var neevaSuggestions = [Suggestion]()
+
+        var memorizedSuggestionMap = [String: String]()
+        var querySuggestionIndexMap = [String: Int]()
+
         if !FeatureFlag[.enableOldSuggestUI] {
             let navSuggestionMap = navSuggestions.reduce(
                 into: [String: [SuggestionsQuery.Data.Suggest.UrlSuggestion]]()
@@ -184,14 +188,19 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                 }
             }
 
-            for suggestion
+            for (index, suggestion)
                 in standardQuerySuggestions
-                .prefix(SuggestionsController.querySuggestionsCap)
+                    .prefix(SuggestionsController.querySuggestionsCap)
+                    .enumerated()
             {
                 neevaSuggestions.append(Suggestion.query(suggestion))
                 if let urlSuggestions = navSuggestionMap[suggestion.suggestedQuery] {
                     neevaSuggestions.append(contentsOf: urlSuggestions.map(Suggestion.url))
+                    urlSuggestions.forEach{ urlSuggestion in
+                        memorizedSuggestionMap[urlSuggestion.suggestedUrl] = suggestion.suggestedQuery
+                    }
                 }
+                querySuggestionIndexMap[suggestion.suggestedQuery] = index
             }
             neevaSuggestions.append(contentsOf: rowQuerySuggestions.map(Suggestion.query))
         }
@@ -207,7 +216,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                     + lensSuggestions.compactMap(Suggestion.init(lens:)),
                 NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
                 [],
-                data.suggest?.activeLensBangInfo
+                data.suggest?.activeLensBangInfo,
+                memorizedSuggestionMap,
+                querySuggestionIndexMap
             )
         } else {
             return (
@@ -217,7 +228,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                     + lensSuggestions.compactMap(Suggestion.init(lens:)),
                 NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
                 navSuggestions.map(Suggestion.url),
-                data.suggest?.activeLensBangInfo
+                data.suggest?.activeLensBangInfo,
+                memorizedSuggestionMap,
+                querySuggestionIndexMap
             )
         }
     }
