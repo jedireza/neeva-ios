@@ -7,7 +7,7 @@ get_latest_commit() {
 
 # Gets the name of the latest tag.
 get_latest_tag() {
-    git tag --list 'Build-*' | tail -n 1
+    git tag --list 'Build-*' | sort -V | tail -n 1
 }
 
 git_user_name() {
