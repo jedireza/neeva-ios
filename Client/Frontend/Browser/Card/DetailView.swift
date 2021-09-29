@@ -74,7 +74,11 @@ where
                     noteText: "Check out my Neeva Space!"
                 )
                 .environmentObject(spacesModel)
-                .transition(.flipFromRight)
+                .environment(\.onOpenURL) { url in
+                    gridModel.hideWithNoAnimation()
+                    spacesModel.detailedSpace = nil
+                    onOpenURL(url)
+                }.transition(.flipFromRight)
                 .animation(.easeInOut)
             }
         }

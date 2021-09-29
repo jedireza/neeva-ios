@@ -22,12 +22,11 @@ private enum Social: String {
             return UIApplication.shared.canOpenURL(URL(string: "fb://")!)
         }
     }
-
-    static let allTypes: [Social] = [.twitter, .linkedin, .facebook]
 }
 
 struct ShareToSocialView: View {
     @Environment(\.shareURL) var shareURL
+    @Environment(\.onOpenURL) var openURL
     @EnvironmentObject var tabModel: TabCardModel
     let url: URL
     let noteText: String
@@ -44,47 +43,46 @@ struct ShareToSocialView: View {
         self.ensurePublicACL = ensurePublicACL
     }
 
-    private var noAppsAvailable: Bool {
-        Social.allTypes.allSatisfy({ !$0.isAvailable })
-    }
-
     var body: some View {
         HStack(spacing: 0) {
-            if noAppsAvailable {
-                Spacer()
-            }
-            if Social.twitter.isAvailable {
-                SocialShareButton(
-                    imageName: "twitter-share", isSystemImage: false,
-                    label: "Twitter",
-                    onClick: {
-                        ensurePublicACL({
-                            UIApplication.shared.open(
-                                URL(
-                                    string:
-                                        "http://twitter.com/share?text=\(noteText.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&url=\(url.absoluteString)"
-                                )!,
-                                options: [:], completionHandler: nil)
-                        })
+            SocialShareButton(
+                imageName: "twitter-share", isSystemImage: false,
+                label: "Twitter",
+                onClick: {
+                    ensurePublicACL({
+                        let url = URL(
+                            string:
+                                "http://twitter.com/share?text=\(noteText.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&url=\(url.absoluteString)"
+                        )!
+                        if Social.twitter.isAvailable {
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        } else {
+                            openURL(url)
+                        }
                     })
-                Spacer()
-            }
-            if Social.linkedin.isAvailable {
-                SocialShareButton(
-                    imageName: "linkedin-share", isSystemImage: false,
-                    label: "Linkedin",
-                    onClick: {
-                        ensurePublicACL({
+                })
+            Spacer()
+            SocialShareButton(
+                imageName: "linkedin-share", isSystemImage: false,
+                label: "Linkedin",
+                onClick: {
+                    ensurePublicACL({
+                        if Social.linkedin.isAvailable {
                             UIApplication.shared.open(
                                 URL(
                                     string:
                                         "linkedin://shareArticle?mini=true&url=\(url.absoluteString)"
-                                )!,
-                                options: [:], completionHandler: nil)
-                        })
+                                )!, options: [:], completionHandler: nil)
+                        } else {
+                            openURL(
+                                URL(
+                                    string:
+                                        "https://linkedin.com/shareArticle?mini=true&url=\(url.absoluteString)"
+                                )!)
+                        }
                     })
-                Spacer()
-            }
+                })
+            Spacer()
             if Social.facebook.isAvailable {
                 SocialShareButton(
                     imageName: "facebook-share", isSystemImage: false,
@@ -122,13 +120,10 @@ struct ShareToSocialView: View {
             Spacer()
             SocialShareButton(
                 imageName: "square.and.arrow.up", isSystemImage: true,
-                label: noAppsAvailable ? "Share" : "More",
+                label: "More",
                 onClick: {
                     ensurePublicACL({ shareURL(url, shareTargetView) })
                 })
-            if noAppsAvailable {
-                Spacer()
-            }
         }.padding(.horizontal, 16)
             .padding(.top, 8)
             .padding(.bottom, 16)

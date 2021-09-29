@@ -1,11 +1,14 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import Shared
 import SwiftUI
 
 struct ShareAddedSpaceView: View {
     @Environment(\.hideOverlay) private var hideOverlay
 
+    @State var subscription: AnyCancellable? = nil
+    @State var refreshing = false
     @State var presentingShareUI: Bool = true
     @ObservedObject var request: AddToSpaceRequest
     let bvc: BrowserViewController
@@ -34,18 +37,21 @@ struct ShareAddedSpaceView: View {
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
+            .animation(nil)
             if request.state == .savedToSpace {
                 HStack {
                     Spacer()
                     Button(
                         action: {
-                            bvc.cardGridViewController.gridModel.showSpaces()
+                            bvc.cardGridViewController.rootView.openSpace(
+                                spaceID: request.targetSpaceID!)
                             hideOverlay()
                         },
                         label: {
                             Text("Open Space")
-                                .foregroundColor(.ui.adaptive.blue)
+                                .foregroundColor(refreshing ? .tertiaryLabel : .ui.adaptive.blue)
                                 .withFont(.bodyLarge)
+                                .disabled(refreshing)
                         })
                 }
                 .padding(.horizontal, 16)
@@ -66,9 +72,12 @@ struct ShareAddedSpaceView: View {
                         noteText:
                             "Just added \"\(request.title)\" to my \"\(request.targetSpaceName!)\" Space."
                     )
+                } else {
+                    Spacer().frame(height: 210)
                 }
             }
         }
+        .animation(.easeInOut)
         .environment(
             \.shareURL,
             { [unowned bvc] url, view in
@@ -87,6 +96,20 @@ struct ShareAddedSpaceView: View {
         .environmentObject(bvc.cardGridViewController.rootView.tabCardModel)
         .onChange(of: presentingShareUI) { _ in
             hideOverlay()
+        }.onChange(of: request.state) { state in
+            if case .savedToSpace = state {
+                SpaceStore.shared.refresh()
+                refreshing = true
+                subscription = SpaceStore.shared.$state.sink { state in
+                    if case .ready = state {
+                        refreshing = false
+                        subscription?.cancel()
+                    } else if case .failed = state {
+                        refreshing = false
+                        subscription?.cancel()
+                    }
+                }
+            }
         }
     }
 }

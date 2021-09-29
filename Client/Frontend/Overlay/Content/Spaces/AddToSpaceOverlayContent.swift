@@ -26,7 +26,10 @@ struct AddToSpaceOverlayContent: View {
             }
         }
         .overlayTitle(title: request.mode.title)
-        .overlayIsFixedHeight(isFixedHeight: request.mode == .saveToNewSpace)
+        .overlayIsFixedHeight(
+            isFixedHeight: request.mode == .saveToNewSpace
+                && (request.state == .creatingSpace || request.state == .initial)
+        )
         .environment(\.onSigninOrJoinNeeva) {
             ClientLogger.shared.logCounter(
                 .AddToSpaceErrorSigninOrJoinNeeva,
