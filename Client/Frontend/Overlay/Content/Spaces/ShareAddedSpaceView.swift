@@ -10,10 +10,10 @@ struct ShareAddedSpaceView: View {
     @ObservedObject var request: AddToSpaceRequest
     let bvc: BrowserViewController
 
-    private var space: Space {
+    private var space: Space? {
         SpaceStore.shared.allSpaces.first(where: {
             $0.id.id == request.targetSpaceID
-        })!
+        })
     }
 
     var body: some View {
@@ -50,7 +50,7 @@ struct ShareAddedSpaceView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 13)
-                if space.ACL == .owner || space.isPublic {
+                if let space = space, space.ACL == .owner || space.isPublic {
                     Color.TrayBackground.frame(height: 2)
                     Text("Share Space")
                         .withFont(.headingSmall)
@@ -59,12 +59,14 @@ struct ShareAddedSpaceView: View {
                         .padding(.top, 12)
                         .background(Color.DefaultBackground)
                 }
-                ShareSpaceView(
-                    space: space, shareTarget: bvc.topBar.view, isPresented: $presentingShareUI,
-                    compact: true,
-                    noteText:
-                        "Just added \"\(request.title)\" to my \"\(request.targetSpaceName!)\" Space."
-                )
+                if let space = space {
+                    ShareSpaceView(
+                        space: space, shareTarget: bvc.topBar.view, isPresented: $presentingShareUI,
+                        compact: true,
+                        noteText:
+                            "Just added \"\(request.title)\" to my \"\(request.targetSpaceName!)\" Space."
+                    )
+                }
             }
         }
         .environment(

@@ -244,7 +244,6 @@ public struct AddToSpaceView: View {
             if request.mode == .saveToNewSpace {
                 CreateSpaceView {
                     request.addToNewSpace(spaceName: $0)
-                    onDismiss()
                 }
             } else {
                 GeometryReader { geom in
