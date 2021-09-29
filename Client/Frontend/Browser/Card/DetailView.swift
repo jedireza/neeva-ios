@@ -399,7 +399,7 @@ where
                     FittedCard(details: details)
                         .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                         .environment(\.selectionCompletion) {
-                            gridModel.hideWithNoAnimation()
+                            gridModel.hideWithAnimation()
                             tabGroupCardModel.detailedTabGroup = nil
                         }
                 }

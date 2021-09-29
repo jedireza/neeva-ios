@@ -57,8 +57,18 @@ struct CardTransitionAnimator: View {
         }
     }
 
+    var indexWithinTabGroup: Int? {
+        let selectedTab = tabModel.manager.selectedTab!
+        let tabGroupDetail = tabGroupModel.allDetails.first { $0.id == selectedTab.rootUUID }
+        return tabGroupDetail?.allDetails.firstIndex { $0.manager.get(for: $0.id)! == selectedTab }
+
+    }
+
     var indexInGrid: Int {
-        return FeatureFlag[.groupsInSwitcher] ? indexInsideCombinedList! : indexInsideTabModel!
+        let selectedTab = tabModel.manager.selectedTab!
+        return FeatureFlag[.groupsInSwitcher]
+            ? (tabGroupModel.representativeTabs.contains { $0.rootUUID == selectedTab.rootUUID }
+                ? indexWithinTabGroup! : indexInsideCombinedList!) : indexInsideTabModel!
     }
 
     var selectedCardDetails: TabCardDetails? {
