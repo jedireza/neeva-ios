@@ -376,22 +376,26 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    @discardableResult func createOrSwitchToTab(for url: URL) -> Tab {
-        var tab: Tab
+    func createOrSwitchToTab(for url: URL) {
         if let existingTab = getTabFor(url) {
             select(existingTab)
-            tab = existingTab
         } else {
             let newTab = addTab(
                 URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
             select(newTab)
-            tab = newTab
         }
-        return tab
     }
 
     func createOrSwitchToTabForSpace(for url: URL, spaceID: String) {
-        createOrSwitchToTab(for: url).parentSpaceID = spaceID
+        if let existingTab = getTabFor(url) {
+            existingTab.parentSpaceID = spaceID
+            select(existingTab)
+        } else {
+            let newTab = addTab(
+                URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
+            newTab.parentSpaceID = spaceID
+            select(newTab)
+        }
     }
 
     func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil) {

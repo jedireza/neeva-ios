@@ -9,6 +9,7 @@ enum OverlaySheetPosition: LocalizedStringKey {
 }
 
 class OverlaySheetModel: ObservableObject {
+    @Published var peekHeight: CGFloat = 0
     @Published var deltaHeight: CGFloat = 0
     @Published var position: OverlaySheetPosition = .dismissed
     @Published var backdropOpacity: Double = 0.0
@@ -16,7 +17,7 @@ class OverlaySheetModel: ObservableObject {
     func show() {
         withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
             self.position = .middle
-            self.backdropOpacity = OverlaySheetUX.backdropMaxOpacity
+            self.backdropOpacity = peekHeight > 0 ? 0 : OverlaySheetUX.backdropMaxOpacity
         }
     }
 

@@ -9,6 +9,32 @@ public struct SpaceID: Hashable, Identifiable {
     public var id: String { value }
 }
 
+public struct SpaceCommentData {
+    public typealias Profile = GetSpacesDataQuery.Data.GetSpace.Space.Space.Comment.Profile
+    public let id: String
+    public let profile: Profile
+    public let createdTs: String
+    public let comment: String
+
+    public init(id: String, profile: Profile, createdTs: String, comment: String) {
+        self.id = id
+        self.profile = profile
+        self.createdTs = createdTs
+        self.comment = comment
+    }
+
+    public var formattedRelativeTime: String {
+        let originalDateFormatter = DateFormatter()
+        originalDateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        originalDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        let convertedDate = originalDateFormatter.date(from: createdTs)
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        let relativeDate = formatter.localizedString(for: convertedDate!, relativeTo: Date())
+        return relativeDate
+    }
+}
+
 public struct SpaceEntityData {
     public let id: String
     public let url: URL?
@@ -61,6 +87,7 @@ public class Space: Hashable, Identifiable {
 
     public var contentURLs: Set<URL>?
     public var contentData: [SpaceEntityData]?
+    public var comments: [SpaceCommentData]?
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -182,7 +209,8 @@ public class SpaceStore: ObservableObject {
                             space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
                                 $0.append($1.url!)
                             }),
-                        data: space.entities)
+                        data: space.entities,
+                        comments: space.comments)
                 }
                 self.state = .ready
             case .failure(let error):
@@ -245,12 +273,14 @@ public class SpaceStore: ObservableObject {
                 if let oldSpace = oldSpaceMap[spaceId],
                     let contentURLs = oldSpace.contentURLs,
                     let contentData = oldSpace.contentData,
+                    let comments = oldSpace.comments,
                     space.lastModifiedTs == oldSpace.lastModifiedTs
                 {
                     self.onUpdateSpaceURLs(
                         space: newSpace,
                         urls: contentURLs,
-                        data: contentData)
+                        data: contentData,
+                        comments: comments)
                 } else {
                     spacesToFetch.append(newSpace)
                 }
@@ -277,7 +307,8 @@ public class SpaceStore: ObservableObject {
                                 space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
                                     $0.append($1.url!)
                                 }),
-                            data: space.entities)
+                            data: space.entities,
+                            comments: space.comments)
                     }
                     self.state = .ready
                 case .failure(let error):
@@ -289,9 +320,12 @@ public class SpaceStore: ObservableObject {
         }
     }
 
-    private func onUpdateSpaceURLs(space: Space, urls: Set<URL>, data: [SpaceEntityData]) {
+    private func onUpdateSpaceURLs(
+        space: Space, urls: Set<URL>, data: [SpaceEntityData], comments: [SpaceCommentData]
+    ) {
         space.contentURLs = urls
         space.contentData = data
+        space.comments = comments
         for url in urls {
             var spaces = urlToSpacesMap[url] ?? []
             spaces.append(space)

@@ -58,6 +58,14 @@ public class UpdateSpaceRequest: SpaceRequest<UpdateSpaceMutation> {
     }
 }
 
+public class AddSpaceCommentRequest: SpaceRequest<AddSpaceCommentMutation> {
+    public init(spaceID: String, comment: String) {
+        super.init(
+            mutation: AddSpaceCommentMutation(
+                input: AddSpaceCommentInput(spaceId: spaceID, comment: comment)))
+    }
+}
+
 public class AddPublicACLRequest: SpaceRequest<AddSpacePublicAclMutation> {
     public init(spaceID: String) {
         super.init(mutation: AddSpacePublicAclMutation(input: AddSpacePublicACLInput(id: spaceID)))

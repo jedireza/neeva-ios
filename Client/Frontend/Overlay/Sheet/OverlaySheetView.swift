@@ -57,7 +57,10 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 defaultSize = 0
             case .middle:
                 if isPortraitMode(outerGeometry) {
-                    defaultSize = outerGeometry.size.height / 2
+                    defaultSize =
+                        model.peekHeight == 0
+                        ? outerGeometry.size.height / 2
+                        : outerGeometry.size.height - model.peekHeight
                 } else {
                     defaultSize = 0  // Landscape mode does not support half-height
                 }
@@ -249,6 +252,8 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 && self.model.deltaHeight < 4 * OverlaySheetUX.slideThreshold
             {
                 newPosition = .middle
+            } else if model.peekHeight > 0 {
+                newPosition = .middle
             } else {
                 self.model.hide()
                 return
@@ -277,7 +282,7 @@ private struct DismissalObserverModifier: AnimatableModifier {
                 // the overlay sheet, which could cause issues for SwiftUI processing.
                 // See issue #401.
                 let onDismiss = self.onDismiss
-                
+
                 DispatchQueue.main.async {
                     onDismiss()
                 }

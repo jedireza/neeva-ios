@@ -41,6 +41,15 @@ query GetSpacesData($ids: [String!]) {
       }
       space {
         name
+        comments {
+          id
+          profile {
+            displayName
+            pictureURL
+          }
+          createdTs
+          comment
+        }
         entities {
           metadata {
             docID
@@ -99,6 +108,10 @@ mutation AddSpacePublicACL($input: AddSpacePublicACLInput!) {
 
 mutation DeleteSpacePublicACL($input: DeleteSpacePublicACLInput!) {
   deleteSpacePublicACL(input: $input)
+}
+
+mutation AddSpaceComment($input: AddSpaceCommentInput!) {
+    addSpaceComment(input: $input)
 }
 
 mutation AddSpaceSoloACLs($input: AddSpaceSoloACLsInput!) {

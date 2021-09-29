@@ -65,6 +65,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         let suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
         let suggestedSearchesModel: SuggestedSearchesModel =
             SuggestedSearchesModel(suggestedQueries: [])
+        let spaceContentSheetModel: SpaceContentSheetModel?
 
         var body: some View {
             ZStack {
@@ -82,6 +83,11 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                                 }
                             }
                         }
+                        if FeatureFlag[.spaceComments] {
+                            SpaceContentSheet(
+                                model: spaceContentSheetModel!,
+                                scrollingController: bvc.scrollController)
+                        }
                     }
                 case .zeroQuery:
                     ZeroQueryContent(model: zeroQueryModel)
@@ -92,7 +98,8 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                         .environment(\.onOpenURL) { url in
                             let bvc = zeroQueryModel.bvc
                             guard let tab = bvc.tabManager.selectedTab else { return }
-                            bvc.finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: tab)
+                            bvc.finishEditingAndSubmit(
+                                url, visitType: VisitType.typed, forTab: tab)
                         }.environment(\.setSearchInput) { suggestion in
                             suggestionModel.queryModel.value = suggestion
                         }.environment(\.onSigninOrJoinNeeva) {
@@ -135,14 +142,18 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         self.model = model
         self.zeroQueryModel = bvc.zeroQueryModel
 
-        let tabCardModel = TabCardModel(manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
+        let tabCardModel = TabCardModel(
+            manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
         self.tabCardModel = tabCardModel
 
         super.init(isIncognito: tabManager.isIncognito) {
-            Content(model: model,
-                    bvc: bvc,
-                    zeroQueryModel: zeroQueryModel,
-                    suggestionModel: suggestionModel)
+            Content(
+                model: model,
+                bvc: bvc,
+                zeroQueryModel: zeroQueryModel,
+                suggestionModel: suggestionModel,
+                spaceContentSheetModel: FeatureFlag[.spaceComments]
+                    ? SpaceContentSheetModel(tabManager: bvc.tabManager) : nil)
         }
 
         suggestionModel.getKeyboardHeight = {

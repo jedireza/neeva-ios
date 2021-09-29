@@ -3775,6 +3775,35 @@ public struct DeleteSpacePublicACLInput: GraphQLMapConvertible {
   }
 }
 
+public struct AddSpaceCommentInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - spaceId
+  ///   - comment
+  public init(spaceId: Swift.Optional<String?> = nil, comment: Swift.Optional<String?> = nil) {
+    graphQLMap = ["spaceID": spaceId, "comment": comment]
+  }
+
+  public var spaceId: Swift.Optional<String?> {
+    get {
+      return graphQLMap["spaceID"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "spaceID")
+    }
+  }
+
+  public var comment: Swift.Optional<String?> {
+    get {
+      return graphQLMap["comment"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "comment")
+    }
+  }
+}
+
 public struct AddSpaceSoloACLsInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
@@ -7552,6 +7581,17 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           space {
             __typename
             name
+            comments {
+              __typename
+              id
+              profile {
+                __typename
+                displayName
+                pictureURL
+              }
+              createdTs
+              comment
+            }
             entities {
               __typename
               metadata {
@@ -7574,7 +7614,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "214f2a588b1997b4636d5087f2fbabd4fb1e12647e8878a121bbfeefaa65495c"
+  public let operationIdentifier: String? = "b42aa6e0152b6dd244ad9ce64f551ad5910a238f2cc7d286d167c3475c9e1839"
 
   public var ids: [String]?
 
@@ -7749,6 +7789,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("name", type: .scalar(String.self)),
+              GraphQLField("comments", type: .list(.nonNull(.object(Comment.selections)))),
               GraphQLField("entities", type: .list(.nonNull(.object(Entity.selections)))),
             ]
           }
@@ -7759,8 +7800,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(name: String? = nil, entities: [Entity]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
+          public init(name: String? = nil, comments: [Comment]? = nil, entities: [Entity]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "comments": comments.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
           }
 
           public var __typename: String {
@@ -7781,12 +7822,139 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             }
           }
 
+          public var comments: [Comment]? {
+            get {
+              return (resultMap["comments"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Comment] in value.map { (value: ResultMap) -> Comment in Comment(unsafeResultMap: value) } }
+            }
+            set {
+              resultMap.updateValue(newValue.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, forKey: "comments")
+            }
+          }
+
           public var entities: [Entity]? {
             get {
               return (resultMap["entities"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Entity] in value.map { (value: ResultMap) -> Entity in Entity(unsafeResultMap: value) } }
             }
             set {
               resultMap.updateValue(newValue.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }, forKey: "entities")
+            }
+          }
+
+          public struct Comment: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SpaceCommentData"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("id", type: .scalar(String.self)),
+                GraphQLField("profile", type: .object(Profile.selections)),
+                GraphQLField("createdTs", type: .scalar(String.self)),
+                GraphQLField("comment", type: .scalar(String.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(id: String? = nil, profile: Profile? = nil, createdTs: String? = nil, comment: String? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SpaceCommentData", "id": id, "profile": profile.flatMap { (value: Profile) -> ResultMap in value.resultMap }, "createdTs": createdTs, "comment": comment])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            public var id: String? {
+              get {
+                return resultMap["id"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "id")
+              }
+            }
+
+            public var profile: Profile? {
+              get {
+                return (resultMap["profile"] as? ResultMap).flatMap { Profile(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "profile")
+              }
+            }
+
+            public var createdTs: String? {
+              get {
+                return resultMap["createdTs"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "createdTs")
+              }
+            }
+
+            public var comment: String? {
+              get {
+                return resultMap["comment"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "comment")
+              }
+            }
+
+            public struct Profile: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["Profile"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("displayName", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("pictureURL", type: .nonNull(.scalar(String.self))),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(displayName: String, pictureUrl: String) {
+                self.init(unsafeResultMap: ["__typename": "Profile", "displayName": displayName, "pictureURL": pictureUrl])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var displayName: String {
+                get {
+                  return resultMap["displayName"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "displayName")
+                }
+              }
+
+              public var pictureUrl: String {
+                get {
+                  return resultMap["pictureURL"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "pictureURL")
+                }
+              }
             }
           }
 
@@ -8543,6 +8711,60 @@ public final class DeleteSpacePublicAclMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "deleteSpacePublicACL")
+      }
+    }
+  }
+}
+
+public final class AddSpaceCommentMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation AddSpaceComment($input: AddSpaceCommentInput!) {
+      addSpaceComment(input: $input)
+    }
+    """
+
+  public let operationName: String = "AddSpaceComment"
+
+  public let operationIdentifier: String? = "c8ad8fcefd2bd190eb66b9f6cd6cf824a90ce3e48f44005163e8bb9fb6117a48"
+
+  public var input: AddSpaceCommentInput
+
+  public init(input: AddSpaceCommentInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("addSpaceComment", arguments: ["input": GraphQLVariable("input")], type: .scalar(String.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(addSpaceComment: String? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "addSpaceComment": addSpaceComment])
+    }
+
+    /// API to add a comment to a space.
+    public var addSpaceComment: String? {
+      get {
+        return resultMap["addSpaceComment"] as? String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "addSpaceComment")
       }
     }
   }

@@ -37,6 +37,7 @@ class SpacesDataQueryController: QueryController<
         var id: String
         var name: String
         var entities: [SpaceEntityData]
+        var comments: [SpaceCommentData]
     }
 
     private var spaceIds: [String]
@@ -67,7 +68,26 @@ class SpacesDataQueryController: QueryController<
                                     thumbnail: entity.spaceEntity?.thumbnail))
                         }
                     }
-                    result.append(Space(id: id, name: name, entities: spaceEntities))
+                    var spaceComments: [SpaceCommentData] = []
+                    if let comments = space.space?.comments {
+                        for comment in comments {
+                            if let id = comment.id, let profile = comment.profile,
+                                let createdTs = comment.createdTs, let comment = comment.comment
+                            {
+                                spaceComments.append(
+                                    SpaceCommentData(
+                                        id: id,
+                                        profile: profile,
+                                        createdTs: createdTs,
+                                        comment: comment
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    result.append(
+                        Space(
+                            id: id, name: name, entities: spaceEntities, comments: spaceComments))
                 }
             }
         }
