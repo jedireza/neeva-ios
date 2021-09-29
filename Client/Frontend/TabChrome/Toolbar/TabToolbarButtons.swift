@@ -52,6 +52,46 @@ enum TabToolbarButtons {
         }
     }
 
+    struct ForwardButton: View {
+        let weight: Font.Weight
+        let onForward: () -> Void
+        let onLongPress: () -> Void
+
+        @EnvironmentObject private var model: TabChromeModel
+
+        var body: some View {
+            Group {
+                TabToolbarButton(
+                    label: Symbol(
+                        .arrowForward, size: 20, weight: weight,
+                        label: .TabToolbarForwardAccessibilityLabel),
+                    action: onForward,
+                    longPressAction: onLongPress
+                )
+                .disabled(!model.canGoForward)
+            }
+        }
+    }
+
+    struct ReloadStopButton: View {
+        let weight: Font.Weight
+        let onTap: () -> Void
+
+        @EnvironmentObject private var model: TabChromeModel
+
+        var body: some View {
+            Group {
+                TabToolbarButton(
+                    label: Symbol(
+                        model.reloadButton == .reload ? .arrowClockwise : .xmark, size: 20,
+                        weight: weight,
+                        label: model.reloadButton == .reload ? "Reload" : "Stop"),
+                    action: onTap
+                )
+            }
+        }
+    }
+
     struct OverflowMenu: View {
         let weight: Font.Weight
         let action: () -> Void
@@ -62,7 +102,8 @@ enum TabToolbarButtons {
         var body: some View {
             TabToolbarButton(
                 label: Symbol(
-                    .squareAndArrowUp, size: 20, weight: weight,
+                    FeatureFlag[.overflowMenuUpdate] ? .ellipsisCircle : .squareAndArrowUp,
+                    size: 20, weight: weight,
                     label: .TabToolbarMoreAccessibilityLabel),
                 action: action,
                 longPressAction: onLongPress

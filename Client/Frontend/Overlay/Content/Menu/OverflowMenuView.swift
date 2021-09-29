@@ -58,35 +58,63 @@ public struct OverflowMenuView: View {
 
     public var body: some View {
         GroupedStack {
-            HStack(spacing: OverflowMenuUX.innerSectionPadding) {
-                OverflowMenuButtonView(
-                    label: .TabToolbarForwardAccessibilityLabel,
-                    symbol: .arrowForward,
-                    longPressAction: {
-                        menuAction(.longPressForward)
-                    },
-                    action: {
-                        menuAction(.forward)
-                    }
-                )
-                .accessibilityIdentifier("OverflowMenu.Forward")
-                .disabled(!chromeModel.canGoForward)
+            if !chromeModel.inlineToolbar || !FeatureFlag[.overflowMenuUpdate] {
+                HStack(spacing: OverflowMenuUX.innerSectionPadding) {
+                    OverflowMenuButtonView(
+                        label: .TabToolbarForwardAccessibilityLabel,
+                        symbol: .arrowForward,
+                        longPressAction: {
+                            menuAction(.longPressForward)
+                        },
+                        action: {
+                            menuAction(.forward)
+                        }
+                    )
+                    .accessibilityIdentifier("OverflowMenu.Forward")
+                    .disabled(!chromeModel.canGoForward)
 
-                OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                    menuAction(.newTab)
+                    if FeatureFlag[.overflowMenuUpdate] {
+                        OverflowMenuButtonView(
+                            label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
+                            symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
+                        ) {
+                            menuAction(.reloadStop)
+                        }
+                        .accessibilityIdentifier("OverflowMenu.Reload")
+
+                        OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                            menuAction(.newTab)
+                        }
+                        .accessibilityIdentifier("OverflowMenu.NewTab")
+                    } else {
+                        OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                            menuAction(.newTab)
+                        }
+                        .accessibilityIdentifier("OverflowMenu.NewTab")
+
+                        OverflowMenuButtonView(
+                            label: "Share",
+                            symbol: .squareAndArrowUp
+                        ) {
+                            menuAction(.share)
+                        }
+                        .accessibilityIdentifier("OverflowMenu.Share")
+                    }
                 }
-                .accessibilityIdentifier("OverflowMenu.NewTab")
-                OverflowMenuButtonView(
-                    label: "Share",
-                    symbol: .squareAndArrowUp
-                ) {
-                    menuAction(.share)
-                }
-                .accessibilityIdentifier("OverflowMenu.Share")
             }
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
+                    if chromeModel.inlineToolbar && FeatureFlag[.overflowMenuUpdate] {
+                        NeevaMenuRowButtonView(
+                            label: "New Tab",
+                            symbol: .plus
+                        ) {
+                            menuAction(.newTab)
+                        }
+                        .accessibilityIdentifier("OverflowMenu.NewTab")
+                    }
+
                     NeevaMenuRowButtonView(
                         label: "Find on Page",
                         symbol: .docTextMagnifyingglass

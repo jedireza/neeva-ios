@@ -8,6 +8,8 @@ import SwiftUI
 
 enum ToolbarAction {
     case back
+    case forward
+    case reloadStop
     case overflow
     case longPressBackForward
     case addToSpace
@@ -25,7 +27,18 @@ extension BrowserViewController: ToolbarDelegate {
                     return
                 }
                 self.tabManager.selectedTab?.goBack()
+            case .forward:
+                if self.simulateBackViewController?.goForward() ?? false {
+                    return
+                }
 
+                self.tabManager.selectedTab?.goForward()
+            case .reloadStop:
+                if self.chromeModel.reloadButton == .reload {
+                    self.tabManager.selectedTab?.reload()
+                } else {
+                    self.tabManager.selectedTab?.stop()
+                }
             case .overflow:
                 self.showModal(style: .grouped) {
                     OverflowMenuOverlayContent(

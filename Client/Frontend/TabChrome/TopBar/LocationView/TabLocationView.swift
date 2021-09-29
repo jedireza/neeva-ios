@@ -71,10 +71,14 @@ struct TabLocationView: View {
                 Capsule().fill(backgroundColor)
 
                 TabLocationAligner(transitionToEditing: chromeModel.isEditingLocation) {
-                    LocationLabel(url: model.url, isSecure: readerModeModel.state == .active ? readerModeModel.isOriginalTabSecure: model.isSecure)
-                        .accessibilityAction(copyAction)
-                        .accessibilityAction(pasteAction)
-                        .accessibilityAction(pasteAndGoAction)
+                    LocationLabel(
+                        url: model.url,
+                        isSecure: readerModeModel.state == .active
+                            ? readerModeModel.isOriginalTabSecure : model.isSecure
+                    )
+                    .accessibilityAction(copyAction)
+                    .accessibilityAction(pasteAction)
+                    .accessibilityAction(pasteAndGoAction)
                 } labelOverlay: { padding in
                     if !chromeModel.isEditingLocation {
                         LocationViewTouchHandler(
@@ -146,9 +150,13 @@ struct TabLocationView: View {
                                     }
                                 }
 
-                                LocationViewReloadButton(
-                                    buildMenu: buildReloadMenu, state: chromeModel.reloadButton,
-                                    onTap: onReload)
+                                if FeatureFlag[.overflowMenuUpdate] {
+                                    LocationViewShareButton(url: model.url, onTap: onShare)
+                                } else {
+                                    LocationViewReloadButton(
+                                        buildMenu: buildReloadMenu, state: chromeModel.reloadButton,
+                                        onTap: onReload)
+                                }
                             }
                         }.transition(.opacity)
                     }
