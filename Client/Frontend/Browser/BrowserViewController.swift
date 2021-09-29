@@ -33,13 +33,14 @@ class BrowserViewController: UIViewController {
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
     lazy var readerModeModel: ReaderModeModel = {
-        let model = ReaderModeModel(setReadingMode: { [self] enabled in
-            if enabled {
-                enableReaderMode()
-            } else {
-                disableReaderMode()
-            }
-        }, tabManager: tabManager)
+        let model = ReaderModeModel(
+            setReadingMode: { [self] enabled in
+                if enabled {
+                    enableReaderMode()
+                } else {
+                    disableReaderMode()
+                }
+            }, tabManager: tabManager)
         model.delegate = self
         return model
     }()
@@ -1157,7 +1158,15 @@ class BrowserViewController: UIViewController {
         cardGridViewController.gridModel.pickerHeight =
             topBar.view.frame.height - view.safeAreaInsets.top
 
-        cardGridViewController.gridModel.show()
+        // TODO: move this to gridModel in the future
+        let tabGroupCardModel = cardGridViewController.rootView.tabGroupCardModel
+        if let detail = tabGroupCardModel.allDetails.first(where: {
+            $0.id == tabManager.selectedTab?.rootUUID
+        }) {
+            cardGridViewController.rootView.openTabGroup(detail: detail)
+        } else {
+            cardGridViewController.gridModel.show()
+        }
 
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
@@ -1605,7 +1614,8 @@ extension BrowserViewController {
                             email: email,
                             marketingEmailOptOut: marketingEmailOptOut))
                 case .oauthWithProvider(_, _, let token):
-                    let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
+                    let httpCookieStore = self.tabManager.configuration.websiteDataStore
+                        .httpCookieStore
                     httpCookieStore.setCookie(NeevaConstants.loginCookie(for: token))
                     NeevaUserInfo.shared.setLoginCookie(token)
 
