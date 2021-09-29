@@ -44,13 +44,17 @@ struct CardTransitionAnimator: View {
         }
     }
 
+    var isSelectedTabInGroup: Bool {
+        let selectedTab = tabModel.manager.selectedTab!
+        return tabGroupModel.representativeTabs.contains { $0.rootUUID == selectedTab.rootUUID }
+    }
+
     var indexInsideCombinedList: Int? {
         let combinedList = tabModel.allDetails.filter { tabCard in
             (tabGroupModel.representativeTabs.contains(
                 tabCard.manager.get(for: tabCard.id)!)
                 || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
         }
-        let selectedTab = tabModel.manager.selectedTab!
         return combinedList.firstIndex {
             $0.isSelected
                 || $0.manager.get(for: $0.id)?.rootUUID == tabModel.manager.selectedTab!.rootUUID
@@ -61,13 +65,11 @@ struct CardTransitionAnimator: View {
         let selectedTab = tabModel.manager.selectedTab!
         let tabGroupDetail = tabGroupModel.allDetails.first { $0.id == selectedTab.rootUUID }
         return tabGroupDetail?.allDetails.firstIndex { $0.manager.get(for: $0.id)! == selectedTab }
-
     }
 
     var indexInGrid: Int {
-        let selectedTab = tabModel.manager.selectedTab!
         return FeatureFlag[.groupsInSwitcher]
-            ? (tabGroupModel.representativeTabs.contains { $0.rootUUID == selectedTab.rootUUID }
+            ? (isSelectedTabInGroup
                 ? indexWithinTabGroup! : indexInsideCombinedList!) : indexInsideTabModel!
     }
 
