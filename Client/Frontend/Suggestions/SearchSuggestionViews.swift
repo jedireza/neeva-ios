@@ -616,7 +616,7 @@ private struct FindInPageSuggestionView: View {
     var body: some View {
         SuggestionView(
             action: nil,
-            icon: Symbol(decorative: .textMagnifyingglass),
+            icon: Symbol(decorative: .docTextMagnifyingglass),
             label: label,
             secondaryLabel: secondaryLabel,
             detail: EmptyView(),
