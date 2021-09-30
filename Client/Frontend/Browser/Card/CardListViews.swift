@@ -3,7 +3,7 @@
 import Shared
 import SwiftUI
 
-private struct HideSelectedForTransition<Details: CardDetails>: ViewModifier {
+struct HideSelectedForTransition<Details: CardDetails>: ViewModifier {
     let details: Details
 
     @EnvironmentObject private var gridModel: GridModel

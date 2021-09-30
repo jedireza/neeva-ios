@@ -102,6 +102,7 @@ struct CardTransitionAnimator: View {
                     },
                     fromFalseToTrue: {
                         gridModel.hideWithNoAnimation()
+                        tabGroupModel.detailedTabGroup = nil
                     }
                 )
                 .frame(
@@ -111,7 +112,11 @@ struct CardTransitionAnimator: View {
                 )
                 .offset(
                     x: gridModel.isHidden ? 0 : offset.x + safeAreaInsets.leading,
-                    y: gridModel.isHidden ? 0 : offset.y + gridModel.scrollOffset
+                    y: gridModel.isHidden
+                        ? 0
+                        : offset.y
+                            + (isSelectedTabInGroup
+                                ? CardGridUX.GridSpacing : gridModel.scrollOffset)
                 )
                 .animation(.interpolatingSpring(stiffness: 425, damping: 30))
                 .useEffect(deps: gridModel.animationThumbnailState) { _ in

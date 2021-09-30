@@ -77,7 +77,7 @@ struct CardGrid: View {
 
     @ViewBuilder var grid: some View {
         VStack(spacing: 0) {
-            topBar 
+            topBar
             cardContainer
             if !topToolbar {
                 SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
@@ -118,6 +118,20 @@ struct CardGrid: View {
                             Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
                         )
                         .transition(.flipFromRight)
+                        .opacity(gridModel.isHidden ? 0 : 1)
+                        .animation(
+                            gridModel.animationThumbnailState == .visibleForTrayShow
+                                ? nil : .easeInOut
+                        )
+                        .environment(\.cardSize, cardSize)
+                        .environment(
+                            \.columns,
+                            Array(
+                                repeating:
+                                    GridItem(
+                                        .fixed(cardSize),
+                                        spacing: CardGridUX.GridSpacing),
+                                count: columnCount))
                 }
             }
             .useEffect(

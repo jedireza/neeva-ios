@@ -397,16 +397,15 @@ where
             ) {
                 ForEach(primitive.allDetails, id: \.id) { details in
                     FittedCard(details: details)
+                        .modifier(HideSelectedForTransition(details: details))
                         .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                         .environment(\.selectionCompletion) {
                             gridModel.hideWithAnimation()
-                            tabGroupCardModel.detailedTabGroup = nil
                         }
                 }
                 Spacer()
             }
             .padding(.vertical, CardGridUX.GridSpacing)
-            .background(Color.clear)
         }
     }
 
