@@ -127,6 +127,14 @@ extension BrowserViewController {
                 input: "\r", modifierFlags: [],
                 action: #selector(moveURLCompletionKeyCommand(sender:))),
         ]
+
+        if #available(iOS 15.0, *) {
+            for command in searchLocationCommands {
+                // Fixes a bug where Up/Down key commands weren't called
+                command.wantsPriorityOverSystemBehavior = true
+            }
+        }
+
         let overidesTextEditing = [
             UIKeyCommand(
                 input: UIKeyCommand.inputRightArrow, modifierFlags: [.command, .shift],

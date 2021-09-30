@@ -128,13 +128,22 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     override var keyCommands: [UIKeyCommand]? {
-        return [
+        let arrowCommands = [
             UIKeyCommand(
                 input: UIKeyCommand.inputLeftArrow, modifierFlags: [],
                 action: #selector(self.handleKeyCommand(sender:))),
             UIKeyCommand(
                 input: UIKeyCommand.inputRightArrow, modifierFlags: [],
-                action: #selector(self.handleKeyCommand(sender:))),
+                action: #selector(self.handleKeyCommand(sender:)))
+        ]
+
+        if #available(iOS 15.0, *) {
+            for command in arrowCommands {
+                command.wantsPriorityOverSystemBehavior = true
+            }
+        }
+
+        return [
             UIKeyCommand(
                 input: UIKeyCommand.inputEscape, modifierFlags: [],
                 action: #selector(self.handleKeyCommand(sender:))),
