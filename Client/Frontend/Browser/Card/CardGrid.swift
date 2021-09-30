@@ -103,6 +103,7 @@ struct CardGrid: View {
         GeometryReader { geom in
             ZStack {
                 grid
+
                 if let spaceDetails = spaceModel.detailedSpace {
                     DetailView(primitive: spaceDetails)
                         .frame(width: geom.size.width, height: geom.size.height)
@@ -111,6 +112,7 @@ struct CardGrid: View {
                         )
                         .transition(.flipFromRight)
                 }
+
                 if let tabGroupDetails = tabGroupModel.detailedTabGroup {
                     DetailView(primitive: tabGroupDetails)
                         .frame(width: geom.size.width, height: geom.size.height)
@@ -124,6 +126,9 @@ struct CardGrid: View {
                 deps: geom.size.width, gridModel.isHidden, topToolbar, perform: updateCardSize
             )
             .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                self.geom = (geom.size, geom.safeAreaInsets)
+            }
         }
         .overlay(transitionAnimator, alignment: .top)
         .ignoresSafeArea(.keyboard)
