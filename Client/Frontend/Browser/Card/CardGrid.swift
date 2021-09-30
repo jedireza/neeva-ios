@@ -29,6 +29,15 @@ struct CardGrid: View {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
     }
 
+    var columns: [GridItem] {
+        return Array(
+            repeating:
+                GridItem(
+                    .fixed(cardSize),
+                    spacing: CardGridUX.GridSpacing),
+            count: columnCount)
+    }
+
     @ViewBuilder var transitionAnimator: some View {
         if gridModel.animationThumbnailState != .hidden || gridModel.isHidden,
             let geom = geom
@@ -54,12 +63,7 @@ struct CardGrid: View {
     @ViewBuilder var cardContainer: some View {
         VStack(spacing: 0) {
             CardsContainer(
-                columns: Array(
-                    repeating:
-                        GridItem(
-                            .fixed(cardSize),
-                            spacing: CardGridUX.GridSpacing),
-                    count: columnCount)
+                columns: columns
             )
             .environment(\.cardSize, cardSize)
             Spacer(minLength: 0)
@@ -124,14 +128,7 @@ struct CardGrid: View {
                                 ? nil : .easeInOut
                         )
                         .environment(\.cardSize, cardSize)
-                        .environment(
-                            \.columns,
-                            Array(
-                                repeating:
-                                    GridItem(
-                                        .fixed(cardSize),
-                                        spacing: CardGridUX.GridSpacing),
-                                count: columnCount))
+                        .environment(\.columns, columns)
                 }
             }
             .useEffect(
