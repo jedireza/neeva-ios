@@ -70,11 +70,15 @@ struct QueryButton: View {
 class CheatsheetMenuViewModel: ObservableObject {
     @Published var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
     @Published var searchRichResults: [SearchController.RichResult]?
+    @Published var currentPageURL: URL?
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(tabManager: TabManager) {
         self.cheatsheetInfo = tabManager.selectedTab?.cheatsheetData
         self.searchRichResults = tabManager.selectedTab?.searchRichResults
+        self.currentPageURL = tabManager.selectedTab?.webView?.url
+
         tabManager.selectedTabPublisher
             .compactMap { $0?.cheatsheetData }
             .assign(to: \.cheatsheetInfo, on: self)
@@ -83,6 +87,11 @@ class CheatsheetMenuViewModel: ObservableObject {
         tabManager.selectedTabPublisher
             .compactMap { $0?.searchRichResults }
             .assign(to: \.searchRichResults, on: self)
+            .store(in: &subscriptions)
+
+        tabManager.selectedTabPublisher
+            .compactMap { $0?.webView?.url }
+            .assign(to: \.currentPageURL, on: self)
             .store(in: &subscriptions)
     }
 }
@@ -100,6 +109,7 @@ public struct CheatsheetMenuView: View {
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
                     CompactNeevaMenuView(menuAction: menuAction)
+                    recipeView
                     richResult()
                     priceHistorySection
                     reviewURLSection
@@ -108,6 +118,47 @@ public struct CheatsheetMenuView: View {
             }
             .frame(minHeight: 200)
         }
+    }
+
+    @ViewBuilder
+    var recipeView: some View {
+        if let recipe = model.cheatsheetInfo?.recipe {
+            if let ingredients = recipe.ingredients, let instructions = recipe.instructions {
+                if ingredients.count > 0 && instructions.count > 0 {
+                    RecipeView(
+                        title: recipe.title,
+                        imageURL: recipe.imageURL,
+                        totalTime: recipe.totalTime,
+                        prepTime: recipe.prepTime,
+                        ingredients: ingredients,
+                        instructions: instructions,
+                        yield: recipe.yield,
+                        recipeRating: RecipeRating(
+                            maxStars: recipe.recipeRating?.maxStars ?? 0,
+                            recipeStars: recipe.recipeRating?.recipeStars ?? 0,
+                            numReviews: recipe.recipeRating?.numReviews ?? 0),
+                        reviews: constructReviewList(recipe: recipe)
+                    )
+                }
+            }
+        }
+    }
+
+    func constructReviewList(recipe: CheatsheetQueryController.Recipe) -> [Review] {
+        var reviews: [Review] = []
+        if let reviewList = recipe.reviews {
+            reviews = reviewList.map { item in
+                Review(
+                    body: item.body,
+                    reviewerName: item.reviewerName,
+                    rating: Rating(
+                        maxStars: item.rating.maxStars,
+                        actualStarts: item.rating.actualStarts
+                    )
+                )
+            }
+        }
+        return reviews
     }
 
     func richResult() -> AnyView {
@@ -142,7 +193,7 @@ public struct CheatsheetMenuView: View {
         if model.cheatsheetInfo?.memorizedQuery?.count ?? 0 > 0 {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Keep Looking").withFont(.headingMedium)
-                ForEach(model.cheatsheetInfo?.memorizedQuery ?? [], id: \.self) { query in
+                ForEach(model.cheatsheetInfo?.memorizedQuery?.prefix(5) ?? [], id: \.self) { query in
                     QueryButton(query: query)
                 }
             }

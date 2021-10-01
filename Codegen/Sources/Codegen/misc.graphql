@@ -41,6 +41,32 @@ query CheatsheetInfo($input: String!) {
       }
     }
     MemorizedQuery
+    Recipe {
+      title
+      imageURL
+      totalTime
+      prepTime
+      yield
+      ingredients {
+        text
+      }
+      instructions {
+        text
+      }
+      recipeRating {
+        maxStars
+        recipeStars
+        numReviews
+      }
+      reviews {
+        reviewerName
+        body
+        rating {
+          maxStars
+          actualStars
+        }
+      }
+    }
   }
 }
 

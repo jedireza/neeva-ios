@@ -6,7 +6,7 @@ import Apollo
 import Foundation
 
 /// Input type for client logs.
-///
+/// 
 /// Client logs are generic, and cover every type of log that the client
 /// may want to pass, including counters, pingbacks, trace information, errors,
 /// etc. Log messages from the client are batched, and each batch contains
@@ -17,7 +17,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
   /// - Parameters:
   ///   - base: Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   ///   - web: 0.2.105
@@ -31,7 +31,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
 
   /// Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   /// - web: 0.2.105
@@ -639,7 +639,7 @@ public enum ClientLogTrackingLogType: RawRepresentable, Equatable, Hashable, Cas
 }
 
 /// Input type for logInteraction mutation.
-///
+/// 
 /// Though this is not officially deprecated (and still works), new interactions
 /// should be added to the interactionV3Event instead.
 public struct InteractionEventInput: GraphQLMapConvertible {
@@ -1454,10 +1454,10 @@ public enum ResultActionType: RawRepresentable, Equatable, Hashable, CaseIterabl
 
 /// This enum needs to be keep in sync with
 /// fedsearch/request/interaction_logger_request.go
-///
+/// 
 /// and need to add to fedsearch/mixer/packer.go
 /// to start collecting the data.
-///
+/// 
 /// Keep this enum in sync with InteractionType in file
 /// neeva/logs/avro_schemas/interaction/interaction_log_v2_entry.avsc
 public enum InteractionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
@@ -2126,11 +2126,11 @@ public struct ResultGroupAttributes: GraphQLMapConvertible {
 }
 
 /// Input type for v3 ClientLog.interactionV3Event mutation.
-///
+/// 
 /// This is the preferred mechanism for logging an interaction that happens in a
 /// search results page (SRP) context. The concepts and design behind how
 /// interactions are recorded in the design doc:
-///
+/// 
 /// https://paper.dropbox.com/doc/Logging-V3-Page-structure--A7Q0Gpx7oVh1vflhuaIBsHQfAg-4RsxGgmgnFiaM5Rg72YjO
 public struct InteractionV3EventInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
@@ -2184,12 +2184,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
   /// the category for LoggingContext.
   ///   - element: What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   ///   - elementAction: Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public init(actionType: Swift.Optional<InteractionV3Type?> = nil, category: Swift.Optional<InteractionV3Category?> = nil, element: Swift.Optional<String?> = nil, elementAction: Swift.Optional<String?> = nil) {
@@ -2219,7 +2219,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   public var element: Swift.Optional<String?> {
@@ -2233,7 +2233,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public var elementAction: Swift.Optional<String?> {
@@ -2247,12 +2247,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 }
 
 /// The collection of action types for the v3 interactions table.
-///
+/// 
 /// Be VERY CAREFUL about extending the action types here. In general, we want
 /// to have a very limited number of action types. If you need more information
 /// about the context of an action, consider using Element, ElementAction, or
 /// the Attributes table.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/interaction_type.go.
 public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2328,7 +2328,7 @@ public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterab
 /// InteractionV3Category specifies the type of the item in the log tree hierarchy.
 /// The log tree can have have N number of entries, but these are the ones
 /// that have IDs associated.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/category.go
 public enum InteractionV3Category: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2396,12 +2396,12 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   /// This is a event of graphqql request fied to render the measured view
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - rttMs: RTT of the recent connection
   ///   - userActionTimeMs: Use action time in ms since start of the document
   /// This is valid only when inAppTransition is true
-  ///   - queryRequestTimeMs: Query start time, since start of the document
+  ///   - queryRequestTimeMs: Query start time, since start of the document 
   ///   - queryResponseTimeMs: Query response received, since start of the document
   ///   - resultRenderTimeMs: Result is rendered on the browser, since start of the document
   ///   - criticalPathResourcePerfEntries: Detailed critical path resources of critical path resources as JSON
@@ -2435,7 +2435,7 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   }
 
   /// Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2694,7 +2694,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - events: The events in the trace. A trace is an ordered collection of perf events
   /// that are all related in some way. A single action (such as loading the app)
@@ -2761,7 +2761,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
 
   /// Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2805,11 +2805,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   /// not the absolute timestamp, which can be computed by adding the trace
   /// timestamp to the elapsedMs.
   ///   - elapsedMs: DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public init(type: Swift.Optional<String?> = nil, elapsedTotalMs: Swift.Optional<Double?> = nil, elapsedMs: Swift.Optional<Double?> = nil) {
     graphQLMap = ["type": type, "elapsedTotalMs": elapsedTotalMs, "elapsedMs": elapsedMs]
@@ -2838,11 +2838,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   }
 
   /// DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public var elapsedMs: Swift.Optional<Double?> {
     get {
@@ -2926,8 +2926,9 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
   ///   - inviteToken
   ///   - screenshot
   ///   - userProvidedEmail
-  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil, userProvidedEmail: Swift.Optional<String?> = nil) {
-    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot, "userProvidedEmail": userProvidedEmail]
+  ///   - errorCode
+  public init(feedback: Swift.Optional<String?> = nil, shareResults: Swift.Optional<Bool?> = nil, requestId: Swift.Optional<String?> = nil, geoLocationStatus: Swift.Optional<String?> = nil, source: Swift.Optional<FeedbackSource?> = nil, inviteToken: Swift.Optional<String?> = nil, screenshot: Swift.Optional<String?> = nil, userProvidedEmail: Swift.Optional<String?> = nil, errorCode: Swift.Optional<String?> = nil) {
+    graphQLMap = ["feedback": feedback, "shareResults": shareResults, "requestID": requestId, "geoLocationStatus": geoLocationStatus, "source": source, "inviteToken": inviteToken, "screenshot": screenshot, "userProvidedEmail": userProvidedEmail, "errorCode": errorCode]
   }
 
   public var feedback: Swift.Optional<String?> {
@@ -2999,6 +3000,15 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "userProvidedEmail")
+    }
+  }
+
+  public var errorCode: Swift.Optional<String?> {
+    get {
+      return graphQLMap["errorCode"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "errorCode")
     }
   }
 }
@@ -4436,13 +4446,45 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
           }
         }
         MemorizedQuery
+        Recipe {
+          __typename
+          title
+          imageURL
+          totalTime
+          prepTime
+          yield
+          ingredients {
+            __typename
+            text
+          }
+          instructions {
+            __typename
+            text
+          }
+          recipeRating {
+            __typename
+            maxStars
+            recipeStars
+            numReviews
+          }
+          reviews {
+            __typename
+            reviewerName
+            body
+            rating {
+              __typename
+              maxStars
+              actualStars
+            }
+          }
+        }
       }
     }
     """
 
   public let operationName: String = "CheatsheetInfo"
 
-  public let operationIdentifier: String? = "aaa4d265cbbd2d139fc5a0cea8f7359b5096d90e65cad869b1bb833fa66d0038"
+  public let operationIdentifier: String? = "d79f3e4b4174f7ac902fa916c46e0e7b89a7102db846a12bee6f0704e43c8891"
 
   public var input: String
 
@@ -4492,6 +4534,7 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
           GraphQLField("ReviewURL", type: .list(.nonNull(.scalar(String.self)))),
           GraphQLField("PriceHistory", type: .object(PriceHistory.selections)),
           GraphQLField("MemorizedQuery", type: .list(.nonNull(.scalar(String.self)))),
+          GraphQLField("Recipe", type: .object(Recipe.selections)),
         ]
       }
 
@@ -4501,8 +4544,8 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(reviewUrl: [String]? = nil, priceHistory: PriceHistory? = nil, memorizedQuery: [String]? = nil) {
-        self.init(unsafeResultMap: ["__typename": "CheatsheetAnnotationData", "ReviewURL": reviewUrl, "PriceHistory": priceHistory.flatMap { (value: PriceHistory) -> ResultMap in value.resultMap }, "MemorizedQuery": memorizedQuery])
+      public init(reviewUrl: [String]? = nil, priceHistory: PriceHistory? = nil, memorizedQuery: [String]? = nil, recipe: Recipe? = nil) {
+        self.init(unsafeResultMap: ["__typename": "CheatsheetAnnotationData", "ReviewURL": reviewUrl, "PriceHistory": priceHistory.flatMap { (value: PriceHistory) -> ResultMap in value.resultMap }, "MemorizedQuery": memorizedQuery, "Recipe": recipe.flatMap { (value: Recipe) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -4538,6 +4581,15 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue, forKey: "MemorizedQuery")
+        }
+      }
+
+      public var recipe: Recipe? {
+        get {
+          return (resultMap["Recipe"] as? ResultMap).flatMap { Recipe(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "Recipe")
         }
       }
 
@@ -4811,6 +4863,370 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "PriceUSD")
+            }
+          }
+        }
+      }
+
+      public struct Recipe: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["Recipe"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("title", type: .scalar(String.self)),
+            GraphQLField("imageURL", type: .scalar(String.self)),
+            GraphQLField("totalTime", type: .scalar(String.self)),
+            GraphQLField("prepTime", type: .scalar(String.self)),
+            GraphQLField("yield", type: .scalar(String.self)),
+            GraphQLField("ingredients", type: .list(.nonNull(.object(Ingredient.selections)))),
+            GraphQLField("instructions", type: .list(.nonNull(.object(Instruction.selections)))),
+            GraphQLField("recipeRating", type: .object(RecipeRating.selections)),
+            GraphQLField("reviews", type: .list(.nonNull(.object(Review.selections)))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(title: String? = nil, imageUrl: String? = nil, totalTime: String? = nil, prepTime: String? = nil, yield: String? = nil, ingredients: [Ingredient]? = nil, instructions: [Instruction]? = nil, recipeRating: RecipeRating? = nil, reviews: [Review]? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Recipe", "title": title, "imageURL": imageUrl, "totalTime": totalTime, "prepTime": prepTime, "yield": yield, "ingredients": ingredients.flatMap { (value: [Ingredient]) -> [ResultMap] in value.map { (value: Ingredient) -> ResultMap in value.resultMap } }, "instructions": instructions.flatMap { (value: [Instruction]) -> [ResultMap] in value.map { (value: Instruction) -> ResultMap in value.resultMap } }, "recipeRating": recipeRating.flatMap { (value: RecipeRating) -> ResultMap in value.resultMap }, "reviews": reviews.flatMap { (value: [Review]) -> [ResultMap] in value.map { (value: Review) -> ResultMap in value.resultMap } }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var title: String? {
+          get {
+            return resultMap["title"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "title")
+          }
+        }
+
+        public var imageUrl: String? {
+          get {
+            return resultMap["imageURL"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "imageURL")
+          }
+        }
+
+        public var totalTime: String? {
+          get {
+            return resultMap["totalTime"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "totalTime")
+          }
+        }
+
+        public var prepTime: String? {
+          get {
+            return resultMap["prepTime"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "prepTime")
+          }
+        }
+
+        public var yield: String? {
+          get {
+            return resultMap["yield"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "yield")
+          }
+        }
+
+        public var ingredients: [Ingredient]? {
+          get {
+            return (resultMap["ingredients"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Ingredient] in value.map { (value: ResultMap) -> Ingredient in Ingredient(unsafeResultMap: value) } }
+          }
+          set {
+            resultMap.updateValue(newValue.flatMap { (value: [Ingredient]) -> [ResultMap] in value.map { (value: Ingredient) -> ResultMap in value.resultMap } }, forKey: "ingredients")
+          }
+        }
+
+        public var instructions: [Instruction]? {
+          get {
+            return (resultMap["instructions"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Instruction] in value.map { (value: ResultMap) -> Instruction in Instruction(unsafeResultMap: value) } }
+          }
+          set {
+            resultMap.updateValue(newValue.flatMap { (value: [Instruction]) -> [ResultMap] in value.map { (value: Instruction) -> ResultMap in value.resultMap } }, forKey: "instructions")
+          }
+        }
+
+        public var recipeRating: RecipeRating? {
+          get {
+            return (resultMap["recipeRating"] as? ResultMap).flatMap { RecipeRating(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "recipeRating")
+          }
+        }
+
+        public var reviews: [Review]? {
+          get {
+            return (resultMap["reviews"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Review] in value.map { (value: ResultMap) -> Review in Review(unsafeResultMap: value) } }
+          }
+          set {
+            resultMap.updateValue(newValue.flatMap { (value: [Review]) -> [ResultMap] in value.map { (value: Review) -> ResultMap in value.resultMap } }, forKey: "reviews")
+          }
+        }
+
+        public struct Ingredient: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["RecipeIngredient"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("text", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(text: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "RecipeIngredient", "text": text])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var text: String? {
+            get {
+              return resultMap["text"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "text")
+            }
+          }
+        }
+
+        public struct Instruction: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["RecipeInstruction"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("text", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(text: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "RecipeInstruction", "text": text])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var text: String? {
+            get {
+              return resultMap["text"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "text")
+            }
+          }
+        }
+
+        public struct RecipeRating: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["RecipeRating"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("maxStars", type: .scalar(Double.self)),
+              GraphQLField("recipeStars", type: .scalar(Double.self)),
+              GraphQLField("numReviews", type: .scalar(Int.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(maxStars: Double? = nil, recipeStars: Double? = nil, numReviews: Int? = nil) {
+            self.init(unsafeResultMap: ["__typename": "RecipeRating", "maxStars": maxStars, "recipeStars": recipeStars, "numReviews": numReviews])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var maxStars: Double? {
+            get {
+              return resultMap["maxStars"] as? Double
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "maxStars")
+            }
+          }
+
+          public var recipeStars: Double? {
+            get {
+              return resultMap["recipeStars"] as? Double
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "recipeStars")
+            }
+          }
+
+          public var numReviews: Int? {
+            get {
+              return resultMap["numReviews"] as? Int
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "numReviews")
+            }
+          }
+        }
+
+        public struct Review: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["RHSWebDisplayBlockReview"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("reviewerName", type: .scalar(String.self)),
+              GraphQLField("body", type: .scalar(String.self)),
+              GraphQLField("rating", type: .object(Rating.selections)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(reviewerName: String? = nil, body: String? = nil, rating: Rating? = nil) {
+            self.init(unsafeResultMap: ["__typename": "RHSWebDisplayBlockReview", "reviewerName": reviewerName, "body": body, "rating": rating.flatMap { (value: Rating) -> ResultMap in value.resultMap }])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var reviewerName: String? {
+            get {
+              return resultMap["reviewerName"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "reviewerName")
+            }
+          }
+
+          public var body: String? {
+            get {
+              return resultMap["body"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "body")
+            }
+          }
+
+          public var rating: Rating? {
+            get {
+              return (resultMap["rating"] as? ResultMap).flatMap { Rating(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "rating")
+            }
+          }
+
+          public struct Rating: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["RHSWebDisplayRating"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("maxStars", type: .scalar(Double.self)),
+                GraphQLField("actualStars", type: .scalar(Double.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(maxStars: Double? = nil, actualStars: Double? = nil) {
+              self.init(unsafeResultMap: ["__typename": "RHSWebDisplayRating", "maxStars": maxStars, "actualStars": actualStars])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            public var maxStars: Double? {
+              get {
+                return resultMap["maxStars"] as? Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "maxStars")
+              }
+            }
+
+            public var actualStars: Double? {
+              get {
+                return resultMap["actualStars"] as? Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "actualStars")
+              }
             }
           }
         }
@@ -5573,7 +5989,7 @@ public final class SearchQuery: GraphQLQuery {
           }
 
           public struct TypeSpecific: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["AgendaView", "BillsView", "Computation", "Contact", "Currency", "Dictionary", "Doc", "DocView", "Email", "EmailActivity", "Entity", "Event", "EventView", "ExternalSearchProvider", "Flight", "FeedDocsView", "FeedGHView", "Image", "IpAddress", "Issue", "Journey", "KnowledgeGraphAnswer", "Message", "MovieList", "MovieShowtimes", "NeevaDefinition", "News", "NewsItem", "NewsletterView", "NoAdsBanner", "PackageTracking", "PersonView", "Place", "PlaceList", "PriceFollow", "ProductCategoryOverview", "ProductQNA", "ProductReviews", "ProductClusters", "ProductBrowse", "ProgrammingDoc", "Promo", "ReceiptView", "RecipeResult", "RecipeBlock", "Redirect", "RelatedSearches", "RelatedQnA", "RichEntity", "ShippingView", "Social", "SpaceView", "SpaceBlock", "SportsCard", "Stock", "TechDoc", "TechQNA", "TimeCalculation", "Timezone", "TimezoneDifference", "Translation", "TravelView", "Tweet", "Vanity", "Video", "Weather", "Web"]
+            public static let possibleTypes: [String] = ["AgendaView", "BillsView", "Computation", "Contact", "Currency", "Dictionary", "Doc", "DocView", "Email", "EmailActivity", "Entity", "Event", "EventView", "ExternalSearchProvider", "Flight", "FeedDocsView", "FeedGHView", "Image", "IpAddress", "Issue", "Journey", "KnowledgeGraphAnswer", "Lyrics", "Message", "MovieList", "MovieShowtimes", "NeevaDefinition", "News", "NewsItem", "NewsletterView", "NoAdsBanner", "PackageTracking", "PersonView", "Place", "PlaceList", "PriceFollow", "ProductCategoryOverview", "ProductQNA", "ProductReviews", "ProductClusters", "ProductBrowse", "ProgrammingDoc", "Promo", "ReceiptView", "RecipeResult", "RecipeBlock", "Redirect", "RelatedSearches", "RelatedQnA", "RichEntity", "ShippingView", "Social", "SpaceView", "SpaceBlock", "SportsCard", "Stock", "TechDoc", "TechQNA", "TimeCalculation", "Timezone", "TimezoneDifference", "Translation", "TravelView", "Tweet", "Vanity", "Video", "Weather", "Web"]
 
             public static var selections: [GraphQLSelection] {
               return [
@@ -5678,6 +6094,10 @@ public final class SearchQuery: GraphQLQuery {
 
             public static func makeKnowledgeGraphAnswer() -> TypeSpecific {
               return TypeSpecific(unsafeResultMap: ["__typename": "KnowledgeGraphAnswer"])
+            }
+
+            public static func makeLyrics() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Lyrics"])
             }
 
             public static func makeMessage() -> TypeSpecific {

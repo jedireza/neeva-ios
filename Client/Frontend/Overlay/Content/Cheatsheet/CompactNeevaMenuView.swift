@@ -4,8 +4,8 @@ import Shared
 import SwiftUI
 
 private enum CompactNeevaMenuUX {
-    static let innerSectionPadding: CGFloat = 8
-    static let buttonWidth: CGFloat = 115
+    static let innerSectionPadding: CGFloat = 4
+    static let buttonWidth: CGFloat = 120
     static let containerPadding: CGFloat = 16
 }
 
@@ -22,41 +22,41 @@ struct CompactNeevaMenuView: View {
     // carousel with fixed height (compact), which avoid duplicating
     // code with NeevaMenuView
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal, showsIndicators: true) {
             HStack(spacing: CompactNeevaMenuUX.innerSectionPadding) {
-                NeevaMenuButtonView(label: "Home", nicon: .house) {
+                CompactNeevaMenuButtonView(label: "Home", nicon: .house) {
                     self.menuAction(.home)
                 }
                 .accessibilityIdentifier("NeevaMenu.Home")
                 .disabled(isIncognito)
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
-                NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
+                CompactNeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
                     self.menuAction(.spaces)
                 }
                 .accessibilityIdentifier("NeevaMenu.Spaces")
                 .disabled(isIncognito)
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
-                NeevaMenuButtonView(label: "Settings", nicon: .gear) {
+                CompactNeevaMenuButtonView(label: "Settings", nicon: .gear) {
                     self.menuAction(.settings)
                 }
                 .accessibilityIdentifier("NeevaMenu.Settings")
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
-                NeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft) {
+                CompactNeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft) {
                     self.menuAction(.feedback)
                 }
                 .accessibilityIdentifier("NeevaMenu.Feedback")
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
-                NeevaMenuButtonView(label: "History", symbol: .clock) {
+                CompactNeevaMenuButtonView(label: "History", symbol: .clock) {
                     self.menuAction(.feedback)
                 }
                 .accessibilityIdentifier("NeevaMenu.History")
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
-                NeevaMenuButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
+                CompactNeevaMenuButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
                     self.menuAction(.feedback)
                 }
                 .accessibilityIdentifier("NeevaMenu.Downloads")

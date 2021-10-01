@@ -271,6 +271,9 @@ class Tab: NSObject, ObservableObject {
     // fetch cheatsheet info for current url
     func fetchCheatsheetInfo() {
         guard let url = self.url else { return }
+        self.searchRichResults = nil
+        self.cheatsheetData = nil
+
         if url.host == NeevaConstants.appHost || url.scheme != "https" {
             return
         }

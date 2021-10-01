@@ -3,6 +3,40 @@
 import Apollo
 import Foundation
 
+public struct Rating {
+    public var maxStars: Double
+    public var actualStarts: Double
+
+    public init(maxStars: Double, actualStarts: Double) {
+        self.maxStars = maxStars
+        self.actualStarts = actualStarts
+    }
+}
+
+public struct Review {
+    public var body: String
+    public var reviewerName: String
+    public var rating: Rating
+
+    public init(body: String, reviewerName: String, rating: Rating) {
+        self.body = body
+        self.reviewerName = reviewerName
+        self.rating = rating
+    }
+}
+
+public struct RecipeRating {
+    public var maxStars: Double
+    public var recipeStars: Double
+    public var numReviews: Int?
+
+    public init(maxStars: Double, recipeStars: Double, numReviews: Int?) {
+        self.maxStars = maxStars
+        self.recipeStars = recipeStars
+        self.numReviews = numReviews
+    }
+}
+
 public class CheatsheetQueryController:
     QueryController<CheatsheetInfoQuery, [CheatsheetQueryController.CheatsheetInfo]>
 {
@@ -19,10 +53,23 @@ public class CheatsheetQueryController:
         public var Price: String
     }
 
+    public struct Recipe {
+        public var title: String
+        public var imageURL: String
+        public var totalTime: String?
+        public var prepTime: String?
+        public var yield: String?
+        public var ingredients: [String]?
+        public var instructions: [String]?
+        public var recipeRating: RecipeRating?
+        public var reviews: [Review]?
+    }
+
     public struct CheatsheetInfo {
         public var reviewURL: [String]?
         public var priceHistory: PriceHistory?
         public var memorizedQuery: [String]?
+        public var recipe: Recipe?
     }
 
     private var url: URL
@@ -64,6 +111,51 @@ public class CheatsheetQueryController:
 
             result.priceHistory = PriceHistory(
                 InStock: inStock, Max: max, Min: min, Current: current, Average: average)
+        }
+
+        if let recipe = data.getCheatsheetInfo?.recipe {
+            let title = recipe.title ?? ""
+            let imageURL = recipe.imageUrl ?? ""
+
+            var ingredients: [String] = []
+            if let ingredientList = recipe.ingredients {
+                for item in ingredientList {
+                    if let text = item.text {
+                        ingredients.append(text)
+                    }
+                }
+            }
+
+            var instrutions: [String] = []
+            if let instructionList = recipe.instructions {
+                for item in instructionList {
+                    if let text = item.text {
+                        instrutions.append(text)
+                    }
+                }
+            }
+
+            var reviews: [Review] = []
+            if let reviewList = recipe.reviews {
+                for r in reviewList {
+                    let maxStars = r.rating?.maxStars ?? 0
+                    let actualStars = r.rating?.actualStars ?? 0
+                    let rating = Rating(maxStars: maxStars, actualStarts: actualStars)
+                    reviews.append(
+                        Review(
+                            body: r.body ?? "",
+                            reviewerName: r.reviewerName ?? "",
+                            rating: rating
+                        )
+                    )
+                }
+            }
+
+            let maxStars = recipe.recipeRating?.maxStars ?? 0
+            let recipeStars = recipe.recipeRating?.recipeStars ?? 0
+            let numReviews = recipe.recipeRating?.numReviews ?? 0
+
+            result.recipe = Recipe(title: title, imageURL: imageURL, totalTime: recipe.totalTime, prepTime: recipe.prepTime, yield: recipe.yield, ingredients: ingredients, instructions: instrutions, recipeRating: RecipeRating(maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews), reviews: reviews)
         }
 
         return [result]
