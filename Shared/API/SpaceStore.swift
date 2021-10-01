@@ -85,6 +85,10 @@ public class Space: Hashable, Identifiable {
         NeevaConstants.appSpacesURL / id.value
     }
 
+    public var urlWithAddedItem: URL {
+        url.withQueryParam("hid", value: contentData?.first?.id ?? "")
+    }
+
     public var contentURLs: Set<URL>?
     public var contentData: [SpaceEntityData]?
     public var comments: [SpaceCommentData]?

@@ -28,7 +28,7 @@ struct ShareSpaceView: View {
     typealias ACL = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     let space: Space
     let shareTargetView: UIView
-    let compact: Bool
+    let fromAddToSpace: Bool
     @Binding var isPresented: Bool
 
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro: Bool
@@ -50,7 +50,7 @@ struct ShareSpaceView: View {
         self.shareTargetView = shareTarget
         self.isPublic = space.isPublic
         self._isPresented = isPresented
-        self.compact = compact
+        self.fromAddToSpace = compact
         self.noteText = noteText
     }
 
@@ -260,8 +260,10 @@ struct ShareSpaceView: View {
                     .padding(.vertical, 12)
             }
             if space.ACL == .owner || isPublic {
-                ShareToSocialView(url: space.url, noteText: noteText, shareTarget: shareTargetView)
-                { onShared in
+                ShareToSocialView(
+                    url: fromAddToSpace ? space.urlWithAddedItem : space.url, noteText: noteText,
+                    shareTarget: shareTargetView
+                ) { onShared in
                     guard !isPublic else {
                         isPresented = false
                         onShared()
@@ -309,7 +311,7 @@ struct ShareSpaceView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            if !compact {
+            if !fromAddToSpace {
                 header
             }
             ScrollView(.vertical, showsIndicators: false) {
@@ -318,7 +320,7 @@ struct ShareSpaceView: View {
                         soloACLShareView
                     }
                     publicACLShareView
-                    if !compact {
+                    if !fromAddToSpace {
                         Text("Who has access")
                             .withFont(.headingSmall)
                             .foregroundColor(.label)

@@ -63,6 +63,7 @@ struct ShareAddedSpaceView: View {
                         .foregroundColor(.secondaryLabel)
                         .padding(.horizontal, 16)
                         .padding(.top, 12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.DefaultBackground)
                 }
                 if let space = space {

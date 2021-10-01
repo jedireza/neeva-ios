@@ -1403,6 +1403,11 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 
     func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType) {
+        if url.absoluteString.starts(with: NeevaConstants.appSpacesURL.absoluteString) {
+            tabContentHost.updateContent(.hideZeroQuery)
+            cardGridViewController.rootView.openSpace(spaceID: url.lastPathComponent)
+            return
+        }
         finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
     }
 
