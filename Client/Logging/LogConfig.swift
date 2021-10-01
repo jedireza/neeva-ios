@@ -12,6 +12,7 @@ public struct LogConfig {
         // bottom nav
         case ShowTabTray  // Click tab button to see all available tabs
         case HideTabTray  // Click done button to hide the tab tray
+        case SelectTab  // Click on any tabs inside the tab tray
         case ClickNewTabButton  // Click the plus new tab button
         case ClickShareButton  // Click the share button
         case TurnOnIncognitoMode  // Click turn on incognito mode button
@@ -71,8 +72,8 @@ public struct LogConfig {
         case AuthOptionSignupWithApple  // Click Sign up with Apple on auth panel under other options
         case AuthOptionSignupWithGoogle  // Click Sign up with Google on auth panel under other options
         case AuthOptionSignupWithMicrosoft  // Click Sign up with Microsoft on auth panel under other options
-        case OptionClosePanel // Click close on the first run under other options
-        case AuthOptionClosePanel // Click close on the auth panel under other options
+        case OptionClosePanel  // Click close on the first run under other options
+        case AuthOptionClosePanel  // Click close on the auth panel under other options
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -105,8 +106,9 @@ public struct LogConfig {
         case SpacesDetailShareButtonClicked
         case OwnerSharedSpace
         case FollowerSharedSpace
+        case SocialShare
         case RecommendedSpaceVisited
-        
+
         // ratings card
         case RatingsRateExperience
         case RatingsPromptFeedback
@@ -170,6 +172,7 @@ public struct LogConfig {
         case .TapReload: return .UI
         case .ShowTabTray: return .UI
         case .HideTabTray: return .UI
+        case .SelectTab: return .UI
         case .ClickNewTabButton: return .UI
         case .ClickShareButton: return .UI
         case .TurnOnIncognitoMode: return .UI
@@ -253,7 +256,8 @@ public struct LogConfig {
         case .RecommendedSpaceVisited: return .Spaces
         case .OwnerSharedSpace: return .Spaces
         case .FollowerSharedSpace: return .Spaces
-            
+        case .SocialShare: return .Spaces
+
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard
         case .RatingsPromptAppStore: return .RatingsCard
@@ -330,6 +334,11 @@ public struct LogConfig {
         public static let isShared = "isShared"
         public static let isPublic = "isPublic"
         public static let numberOfSpaceEntities = "NumberOfSpaceEntities"
+        public static let socialShareApp = "ShareAppName"
+    }
+
+    public struct TabsAttribute {
+        public static let selectedTabIndex = "SelectedTabIndex"
     }
 
     public struct NotificationAttribute {

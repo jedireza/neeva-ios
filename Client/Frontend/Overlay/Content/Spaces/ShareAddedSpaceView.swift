@@ -98,6 +98,11 @@ struct ShareAddedSpaceView: View {
             hideOverlay()
         }.onChange(of: request.state) { state in
             if case .savedToSpace = state {
+                ClientLogger.shared.logCounter(
+                    .SaveToSpace,
+                    attributes: getLogCounterAttributesForSpaces(
+                        details: space == nil
+                            ? nil : SpaceCardDetails(space: space!, manager: SpaceStore.shared)))
                 SpaceStore.shared.refresh()
                 refreshing = true
                 subscription = SpaceStore.shared.$state.sink { state in

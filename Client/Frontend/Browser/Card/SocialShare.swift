@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Shared
 import Social
 import SwiftUI
 
@@ -54,6 +55,12 @@ struct ShareToSocialView: View {
                             string:
                                 "http://twitter.com/share?text=\(noteText.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)&url=\(url.absoluteString)"
                         )!
+                        ClientLogger.shared.logCounter(
+                            .SocialShare,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.SpacesAttribute.socialShareApp, value: "Twitter")
+                            ])
                         if Social.twitter.isAvailable {
                             UIApplication.shared.open(url, options: [:], completionHandler: nil)
                         } else {
@@ -67,6 +74,13 @@ struct ShareToSocialView: View {
                 label: "Linkedin",
                 onClick: {
                     ensurePublicACL({
+                        ClientLogger.shared.logCounter(
+                            .SocialShare,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.SpacesAttribute.socialShareApp, value: "LinkedIn"
+                                )
+                            ])
                         if Social.linkedin.isAvailable {
                             UIApplication.shared.open(
                                 URL(
@@ -95,6 +109,13 @@ struct ShareToSocialView: View {
                             else {
                                 return
                             }
+                            ClientLogger.shared.logCounter(
+                                .SocialShare,
+                                attributes: [
+                                    ClientLogCounterAttribute(
+                                        key: LogConfig.SpacesAttribute.socialShareApp,
+                                        value: "Facebook")
+                                ])
                             vc.setInitialText(noteText)
                             vc.add(url)
                             SceneDelegate.getBVC(with: tabModel.manager.scene).present(
@@ -122,7 +143,15 @@ struct ShareToSocialView: View {
                 imageName: "square.and.arrow.up", isSystemImage: true,
                 label: "More",
                 onClick: {
-                    ensurePublicACL({ shareURL(url, shareTargetView) })
+                    ensurePublicACL({
+                        ClientLogger.shared.logCounter(
+                            .SocialShare,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.SpacesAttribute.socialShareApp, value: "Other")
+                            ])
+                        shareURL(url, shareTargetView)
+                    })
                 })
         }.padding(.horizontal, 16)
             .padding(.top, 8)

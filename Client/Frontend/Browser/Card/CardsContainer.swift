@@ -72,7 +72,12 @@ struct CardsContainer: View {
                                     guard tabGroupModel.detailedTabGroup == nil else {
                                         return
                                     }
-
+                                    ClientLogger.shared.logCounter(
+                                        .SelectTab,
+                                        attributes: getLogCounterAttributesForTabs(
+                                            selectedTabIndex: tabModel.allDetails.index(where: {
+                                                $0.id == tabModel.selectedTabID
+                                            })))
                                     gridModel.hideWithAnimation()
                                 }
                         }.background(
@@ -115,6 +120,15 @@ struct CardsContainer: View {
             seenSpacesIntro = true
         }
     }
+}
+
+func getLogCounterAttributesForTabs(selectedTabIndex: Int?) -> [ClientLogCounterAttribute] {
+    var attributes = EnvironmentHelper.shared.getAttributes()
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.TabsAttribute.selectedTabIndex,
+            value: String(selectedTabIndex ?? 0)))
+    return attributes
 }
 
 struct RecommendedSpacesView: View {

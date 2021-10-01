@@ -62,20 +62,20 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 }
 
-func getLogCounterAttributesForSpaces(details: SpaceCardDetails) -> [ClientLogCounterAttribute] {
+func getLogCounterAttributesForSpaces(details: SpaceCardDetails?) -> [ClientLogCounterAttribute] {
     var attributes = EnvironmentHelper.shared.getAttributes()
     attributes.append(
         ClientLogCounterAttribute(
             key: LogConfig.SpacesAttribute.isPublic,
-            value: String(details.isSharedPublic)))
+            value: String(details?.isSharedPublic ?? false)))
     attributes.append(
         ClientLogCounterAttribute(
             key: LogConfig.SpacesAttribute.isShared,
-            value: String(details.isSharedWithGroup)))
+            value: String(details?.isSharedWithGroup ?? false)))
     attributes.append(
         ClientLogCounterAttribute(
             key: LogConfig.SpacesAttribute.numberOfSpaceEntities,
-            value: String(details.allDetails.count)
+            value: String(details?.allDetails.count ?? 1)
         )
     )
     return attributes
