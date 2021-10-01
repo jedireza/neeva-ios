@@ -30,6 +30,7 @@ struct SuggestionsList: View {
                     }
                 } else {
                     TabSuggestionsList()
+                    AutocompleteSuggestionView()
 
                     if suggestionModel.shouldShowPlaceholderSuggestions {
                         PlaceholderSuggestions()

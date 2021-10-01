@@ -28,6 +28,7 @@ class SuggestionModel: ObservableObject {
     // MARK: Neeva Suggestions
     // Displayed in linear order
     @Published var tabSuggestions: [Suggestion] = []
+    @Published var autocompleteSuggestion: Suggestion?
     @Published var topSuggestions: [Suggestion] = []
     @Published var chipQuerySuggestions: [Suggestion] = []
     @Published var rowQuerySuggestions: [Suggestion] = []
@@ -59,6 +60,15 @@ class SuggestionModel: ObservableObject {
         if !chipQuerySuggestions.isEmpty {
             chipQueryRange = top.count...top.count + chipQuerySuggestions.count - 1
         }
+        rowQuerySuggestions = rowQuerySuggestions.filter { suggestion in
+            if case let .navigation(autocompleteNavSuggestion) = autocompleteSuggestion,
+                case let .url(urlSuggestion) = suggestion
+            {
+                return URL(string: urlSuggestion.suggestedUrl)?.normalizedHostAndPathForDisplay
+                    != autocompleteNavSuggestion.url.normalizedHostAndPathForDisplay
+            }
+            return true
+        }
         let mid = chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
         return top + mid + navCombinedSuggestions
     }
@@ -82,11 +92,6 @@ class SuggestionModel: ObservableObject {
     private weak var currentDeferredHistoryQuery: CancellableDeferred<Maybe<Cursor<Site?>>>?
     private var searchTextSubscription: AnyCancellable?
 
-    fileprivate lazy var topDomains: [String] = {
-        let filePath = Bundle.main.path(forResource: "topdomains", ofType: "txt")
-        return try! String(contentsOfFile: filePath!).components(separatedBy: "\n")
-    }()
-
     // MARK: - Nav Suggestions
     static let numOfDisplayNavSuggestions = 5
 
@@ -104,9 +109,12 @@ class SuggestionModel: ObservableObject {
             }
         }
 
-        let navSuggestions = Array(
+        var navSuggestions = Array(
             (recentSites + convertedNavSuggestions + sites).removeDuplicates().prefix(
                 SuggestionModel.numOfDisplayNavSuggestions))
+        if case let .navigation(autocompleteNavSuggestion) = self.autocompleteSuggestion {
+            navSuggestions = navSuggestions.filter { $0 != autocompleteNavSuggestion }
+        }
         return navSuggestions.compactMap { Suggestion.navigation($0) }
     }
 
@@ -211,6 +219,8 @@ class SuggestionModel: ObservableObject {
             [unowned self] oldQuery, query in
             currentDeferredHistoryQuery?.cancel()
 
+            autocompleteSuggestion = nil
+
             if query.isEmpty {
                 sites = []
                 completion = nil
@@ -274,14 +284,7 @@ class SuggestionModel: ObservableObject {
 
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
-                    if setCompletion(to: completionForURL(site.url, from: query), from: query) {
-                        return
-                    }
-                }
-
-                // If there are no search history matches, try matching one of the Alexa top domains.
-                for domain in self.topDomains {
-                    if setCompletion(to: completionForDomain(domain, from: query), from: query) {
+                    if setCompletion(to: completionForURL(site.url, from: query, site: site), from: query) {
                         return
                     }
                 }
@@ -316,7 +319,7 @@ class SuggestionModel: ObservableObject {
         return false
     }
 
-    fileprivate func completionForURL(_ url: URL, from query: String) -> String? {
+    fileprivate func completionForURL(_ url: URL, from query: String, site: Site) -> String? {
         let url = url.absoluteString as NSString
         // Extract the pre-path substring from the URL. This should be more efficient than parsing via
         // NSURL since we need to only look at the beginning of the string.
@@ -343,10 +346,12 @@ class SuggestionModel: ObservableObject {
         // For example, for http://en.m.wikipedia.org, domainWithDotPrefix will be ".en.m.wikipedia.org".
         // This allows us to use the "." as a separator, so we can match "en", "m", "wikipedia", and "org",
         let domain = (url as NSString).substring(with: match.range(at: 1))
-        return completionForDomain(domain, from: query)
+        return completionForDomain(domain, from: query, site: site)
     }
 
-    fileprivate func completionForDomain(_ domain: String, from query: String) -> String? {
+    fileprivate func completionForDomain(_ domain: String,
+                                         from query: String,
+                                         site: Site? = nil) -> String? {
         let domainWithDotPrefix: String = ".\(domain)"
         if let range = domainWithDotPrefix.range(
             of: ".\(query)", options: .caseInsensitive, range: nil, locale: nil)
@@ -356,6 +361,11 @@ class SuggestionModel: ObservableObject {
             // We don't actually want to match the top-level domain ("com", "org", etc.) by itself, so
             // so make sure the result includes at least one ".".
             if matchedDomain.contains(".") {
+                autocompleteSuggestion = Suggestion.navigation(
+                    NavSuggestion(
+                        url: URL(string: "https://\(matchedDomain)")!,
+                        title: site?.title)
+                )
                 return matchedDomain
             }
         }

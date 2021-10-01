@@ -24,7 +24,7 @@ public struct NavSuggestion {
         isMemorizedNav = false
     }
 
-    init(url: URL, title: String, isMemorizedNav: Bool = false) {
+    init(url: URL, title: String?, isMemorizedNav: Bool = false) {
         self.url = url
         self.title = title
         subtitle = nil

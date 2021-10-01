@@ -27,10 +27,10 @@ struct NavSuggestionView: View {
 
     @ViewBuilder
     var secondaryLabel: some View {
-        if suggestion.title != nil {
-            Text(suggestion.url.normalizedHostAndPathForDisplay)
-                .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
-        }
+        Text(suggestion.url.normalizedHostAndPathForDisplay)
+            .withFont(suggestion.title != nil ? .bodySmall : .bodyLarge)
+            .foregroundColor(suggestion.title != nil ? .secondaryLabel : .label)
+            .lineLimit(1)
     }
 
     var body: some View {

@@ -119,6 +119,17 @@ struct TopSuggestionsList: View {
     }
 }
 
+struct AutocompleteSuggestionView: View {
+    @EnvironmentObject private var suggestionModel: SuggestionModel
+
+    var body: some View {
+        if let autocompleteSuggestion = suggestionModel.autocompleteSuggestion {
+            SearchSuggestionView(autocompleteSuggestion)
+                .padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
+        }
+    }
+}
+
 struct QuerySuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
