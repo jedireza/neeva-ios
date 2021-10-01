@@ -8,10 +8,11 @@ import SwiftUI
 enum CardUX {
     static let DefaultCardSize: CGFloat = 160
     static let ShadowRadius: CGFloat = 2
-    static let CornerRadius: CGFloat = 12
+    static let CornerRadius: CGFloat = 16
     static let FaviconCornerRadius: CGFloat = 4
     static let ButtonSize: CGFloat = 28
     static let FaviconSize: CGFloat = 18
+    static let CloseButtonSize: CGFloat = 24
     static let HeaderSize: CGFloat = ButtonSize + 1
     static let CardHeight: CGFloat = 174
     static let DefaultTabCardRatio: CGFloat = 200 / 164
@@ -205,11 +206,11 @@ struct Card<Details>: View where Details: CardDetails {
                     Button(action: details.onClose) {
                         Image(uiImage: buttonImage).resizable().renderingMode(.template)
                             .foregroundColor(.secondaryLabel)
-                            .padding(4)
-                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                            .padding(6)
+                            .frame(width: CardUX.CloseButtonSize, height: CardUX.CloseButtonSize)
                             .background(Color(UIColor.systemGray6))
                             .clipShape(Circle())
-                            .padding(5)
+                            .padding(6)
                             .accessibilityLabel("Close \(details.title)")
                             .opacity(animate && gridModel.isHidden ? 0 : 1)
                     },
