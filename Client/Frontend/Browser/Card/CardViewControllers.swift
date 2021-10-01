@@ -41,8 +41,8 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         }
 
         func openTabGroup(detail: TabGroupCardDetails) {
-            gridModel.showWithNoAnimation()
             tabGroupCardModel.detailedTabGroup = detail
+            gridModel.show()
         }
     }
 

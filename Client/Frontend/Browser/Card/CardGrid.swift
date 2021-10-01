@@ -29,6 +29,15 @@ struct CardGrid: View {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
     }
 
+    var columns: [GridItem] {
+        return Array(
+            repeating:
+                GridItem(
+                    .fixed(cardSize),
+                    spacing: CardGridUX.GridSpacing),
+            count: columnCount)
+    }
+
     @ViewBuilder var transitionAnimator: some View {
         if gridModel.animationThumbnailState != .hidden || gridModel.isHidden,
             let geom = geom
@@ -54,12 +63,7 @@ struct CardGrid: View {
     @ViewBuilder var cardContainer: some View {
         VStack(spacing: 0) {
             CardsContainer(
-                columns: Array(
-                    repeating:
-                        GridItem(
-                            .fixed(cardSize),
-                            spacing: CardGridUX.GridSpacing),
-                    count: columnCount)
+                columns: columns
             )
             .environment(\.cardSize, cardSize)
             Spacer(minLength: 0)
@@ -77,7 +81,7 @@ struct CardGrid: View {
 
     @ViewBuilder var grid: some View {
         VStack(spacing: 0) {
-            topBar 
+            topBar
             cardContainer
             if !topToolbar {
                 SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
@@ -120,6 +124,13 @@ struct CardGrid: View {
                             Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
                         )
                         .transition(.flipFromRight)
+                        .opacity(gridModel.isHidden ? 0 : 1)
+                        .animation(
+                            gridModel.animationThumbnailState == .visibleForTrayShow
+                                ? nil : .easeInOut
+                        )
+                        .environment(\.cardSize, cardSize)
+                        .environment(\.columns, columns)
                 }
             }
             .useEffect(

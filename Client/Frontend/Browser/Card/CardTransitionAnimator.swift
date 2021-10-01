@@ -44,21 +44,33 @@ struct CardTransitionAnimator: View {
         }
     }
 
+    var isSelectedTabInGroup: Bool {
+        let selectedTab = tabModel.manager.selectedTab!
+        return tabGroupModel.representativeTabs.contains { $0.rootUUID == selectedTab.rootUUID }
+    }
+
     var indexInsideCombinedList: Int? {
         let combinedList = tabModel.allDetails.filter { tabCard in
             (tabGroupModel.representativeTabs.contains(
                 tabCard.manager.get(for: tabCard.id)!)
                 || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
         }
-        let selectedTab = tabModel.manager.selectedTab!
         return combinedList.firstIndex {
             $0.isSelected
                 || $0.manager.get(for: $0.id)?.rootUUID == tabModel.manager.selectedTab!.rootUUID
         }
     }
 
+    var indexWithinTabGroup: Int? {
+        let selectedTab = tabModel.manager.selectedTab!
+        let tabGroupDetail = tabGroupModel.allDetails.first { $0.id == selectedTab.rootUUID }
+        return tabGroupDetail?.allDetails.firstIndex { $0.manager.get(for: $0.id)! == selectedTab }
+    }
+
     var indexInGrid: Int {
-        return FeatureFlag[.groupsInSwitcher] ? indexInsideCombinedList! : indexInsideTabModel!
+        return FeatureFlag[.groupsInSwitcher]
+            ? (isSelectedTabInGroup
+                ? indexWithinTabGroup! : indexInsideCombinedList!) : indexInsideTabModel!
     }
 
     var selectedCardDetails: TabCardDetails? {
@@ -90,6 +102,7 @@ struct CardTransitionAnimator: View {
                     },
                     fromFalseToTrue: {
                         gridModel.hideWithNoAnimation()
+                        tabGroupModel.detailedTabGroup = nil
                     }
                 )
                 .frame(
@@ -99,7 +112,11 @@ struct CardTransitionAnimator: View {
                 )
                 .offset(
                     x: gridModel.isHidden ? 0 : offset.x + safeAreaInsets.leading,
-                    y: gridModel.isHidden ? 0 : offset.y + gridModel.scrollOffset
+                    y: gridModel.isHidden
+                        ? 0
+                        : offset.y
+                            + (isSelectedTabInGroup
+                                ? CardGridUX.GridSpacing : gridModel.scrollOffset)
                 )
                 .animation(.interpolatingSpring(stiffness: 425, damping: 30))
                 .useEffect(deps: gridModel.animationThumbnailState) { _ in
