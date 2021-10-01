@@ -30,20 +30,24 @@ class DomainAutocompleteTest: BaseTestCase {
     }
 
     func testAutocomplete() {
+        openURL(websiteExample["url"]!)
+        waitUntilPageLoad()
+
         app.buttons["Address Bar"].tap()
         waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("w")
 
-        waitForValueContains(app.textFields["address"], value: website["value"]!)
+        waitForValueContains(app.textFields["address"], value: websiteExample["value"]!)
         let value = app.textFields["address"].value
-        XCTAssertEqual(value as? String, website["value"]!, "Wrong autocompletion")
+        XCTAssertEqual(value as? String, websiteExample["value"]!, "Wrong autocompletion")
 
         // Enter the complete website and check that there is not more text added, just what user typed
-        app.buttons["Clear text"].tap()
-        app.textFields["address"].typeText(website["value"]!)
-        waitForValueContains(app.textFields["address"], value: website["value"]!)
+        app.textFields["address"].typeText("\u{0008}")
+        app.textFields["address"].typeText("\u{0008}")
+        app.textFields["address"].typeText(websiteExample["value"]!)
+        waitForValueContains(app.textFields["address"], value: websiteExample["value"]!)
         let value2 = app.textFields["address"].value
-        XCTAssertEqual(value2 as? String, website["value"]!, "Wrong autocompletion")
+        XCTAssertEqual(value2 as? String, websiteExample["value"]!, "Wrong autocompletion")
     }
     // Test that deleting characters works correctly with autocomplete
     func testAutocompleteDeletingChars() throws {
@@ -136,27 +140,6 @@ class DomainAutocompleteTest: BaseTestCase {
         app.textFields["address"].typeText("login")
         let value7 = app.textFields["address"].value
         XCTAssertEqual(value7 as? String, "login", "Wrong autocompletion")
-    }
-    // Test default domains.
-    func testDefaultDomains() {
-        app.buttons["Address Bar"].tap()
-        waitForExistence(app.buttons["Cancel"])
-        app.textFields["address"].typeText("a")
-        waitForValueContains(app.textFields["address"], value: ".com")
-        let value = app.textFields["address"].value
-        XCTAssertEqual(value as? String, "amazon.com", "Wrong autocompletion")
-
-        app.buttons["Clear text"].tap()
-        app.textFields["address"].typeText("an")
-        waitForValueContains(app.textFields["address"], value: ".com")
-        let value2 = app.textFields["address"].value
-        XCTAssertEqual(value2 as? String, "answers.com", "Wrong autocompletion")
-
-        app.buttons["Clear text"].tap()
-        app.textFields["address"].typeText("anc")
-        waitForValueContains(app.textFields["address"], value: ".com")
-        let value3 = app.textFields["address"].value
-        XCTAssertEqual(value3 as? String, "ancestry.com", "Wrong autocompletion")
     }
     // Test mixed case autocompletion.
     func testMixedCaseAutocompletion() throws {
