@@ -4,8 +4,8 @@ import Apollo
 import Foundation
 
 public struct Rating {
-    public var maxStars: Double
-    public var actualStarts: Double
+    public let maxStars: Double
+    public let actualStarts: Double
 
     public init(maxStars: Double, actualStarts: Double) {
         self.maxStars = maxStars
@@ -14,9 +14,9 @@ public struct Rating {
 }
 
 public struct Review {
-    public var body: String
-    public var reviewerName: String
-    public var rating: Rating
+    public let body: String
+    public let reviewerName: String
+    public let rating: Rating
 
     public init(body: String, reviewerName: String, rating: Rating) {
         self.body = body
@@ -26,9 +26,9 @@ public struct Review {
 }
 
 public struct RecipeRating {
-    public var maxStars: Double
-    public var recipeStars: Double
-    public var numReviews: Int?
+    public let maxStars: Double
+    public let recipeStars: Double
+    public let numReviews: Int?
 
     public init(maxStars: Double, recipeStars: Double, numReviews: Int?) {
         self.maxStars = maxStars

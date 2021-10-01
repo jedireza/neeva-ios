@@ -60,14 +60,14 @@ struct RecipeView: View {
                                 Text(", \(prepTime) (Prep Time)")
                             }
                         }
-                        .font(.system(size: 14))
+                        .withFont(unkerned: .bodyMedium)
                     }
                 }
                 if let yield = yield {
                     HStack(alignment: .center) {
                         Image(systemSymbol: .person2)
                         Text("Makes \(yield)")
-                            .font(.system(size: 14))
+                            .withFont(.bodyMedium)
                     }
                 }
                 Divider()
@@ -76,7 +76,7 @@ struct RecipeView: View {
                         .withFont(.headingMedium)
                     ForEach(ingredients, id: \.self) {
                         Text($0)
-                            .font(.system(size: 14))
+                            .withFont(.bodyMedium)
                     }
                 }
                 Divider()

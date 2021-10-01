@@ -145,20 +145,17 @@ public struct CheatsheetMenuView: View {
     }
 
     func constructReviewList(recipe: CheatsheetQueryController.Recipe) -> [Review] {
-        var reviews: [Review] = []
-        if let reviewList = recipe.reviews {
-            reviews = reviewList.map { item in
-                Review(
-                    body: item.body,
-                    reviewerName: item.reviewerName,
-                    rating: Rating(
-                        maxStars: item.rating.maxStars,
-                        actualStarts: item.rating.actualStarts
-                    )
+        guard let reviewList = recipe.reviews else { return [] }
+        return reviewList.map { item in
+            Review(
+                body: item.body,
+                reviewerName: item.reviewerName,
+                rating: Rating(
+                    maxStars: item.rating.maxStars,
+                    actualStarts: item.rating.actualStarts
                 )
-            }
+            )
         }
-        return reviews
     }
 
     func richResult() -> AnyView {
