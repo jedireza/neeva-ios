@@ -64,6 +64,7 @@ public class NeevaFeatureFlags {
         case neevaMenuLogging = 50910
         case cheatsheetQuery = 49270
         case personalSuggestion = 53771
+        case recipeCheatsheet = 55525
 
         public var name: String {
             switch self {
@@ -83,6 +84,7 @@ public class NeevaFeatureFlags {
             case .neevaMenuLogging: return "ios.log_neeva_menu"
             case .cheatsheetQuery: return "ios.cheatsheet_query"
             case .personalSuggestion: return "ios.personal_suggestion"
+            case .recipeCheatsheet: return "ios.recipe_cheatsheet"
             }
         }
     }
