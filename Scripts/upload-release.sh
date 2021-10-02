@@ -18,4 +18,4 @@ xcodebuild -exportArchive -archivePath $1 -exportPath /tmp -exportOptionsPlist S
 echo "Uploading build $APP_VERSION to Testflight? Press ENTER to continue. Ctrl+C to cancel."
 read
 
-xcrun altool --upload-app -f /tmp/Client.ipa --type ios --username $APP_STORE_USER --password $APP_STORE_TOKEN
+xcrun altool --upload-app -f /tmp/Client.ipa --type ios --username $APP_STORE_USERNAME --password $APP_STORE_TOKEN
