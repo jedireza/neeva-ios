@@ -154,9 +154,9 @@ class SpaceCardModel: CardModel {
 
     func onDataUpdated() {}
 
-    func add(spaceID: String, url: String, title: String) {
+    func add(spaceID: String, url: String, title: String, description: String? = nil) {
         DispatchQueue.main.async {
-            let request = AddToSpaceWithURLRequest(spaceID: spaceID, url: url, title: title)
+            let request = AddToSpaceWithURLRequest(spaceID: spaceID, url: url, title: title, description: description)
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
             }.cancel()
@@ -192,7 +192,7 @@ class SpaceCardModel: CardModel {
                 entities.forEach { entity in
                     self.add(
                         spaceID: spaceID, url: entity.data.url?.absoluteString ?? "",
-                        title: entity.title)
+                        title: entity.title, description: entity.description)
                 }
             } retryDeletion: { [unowned self] in
                 delete(space: spaceID, entities: entities, from: scene, undoDeletion: undoDeletion)
