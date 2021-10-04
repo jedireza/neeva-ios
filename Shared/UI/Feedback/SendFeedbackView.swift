@@ -48,7 +48,6 @@ public struct SendFeedbackView: View {
     @State var screenshotSheet = ModalState()
     @State var editedScreenshot: UIImage
     @State var shareQuery = true
-    @State var focusedTextField = false
 
     public var body: some View {
         NavigationView {
@@ -77,14 +76,7 @@ public struct SendFeedbackView: View {
                         MultilineTextField(
                             "Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!",
                             text: $feedbackText,
-                            customize: { tf in
-                                if !focusedTextField {
-                                    // Disabled for now due to issue #1400. This prevents interaction
-                                    // with the web page after submitting feedback.
-                                    //tf.becomeFirstResponder()
-                                    focusedTextField = true
-                                }
-                            }
+                            focusTextField: true
                         ).padding(.vertical, 7)
                     }
                     .overlay(
@@ -216,14 +208,12 @@ public struct SendFeedbackView: View {
                     MultilineTextField(
                         "Enter a URL to submit with the feedback",
                         text: $urlString,
+                        focusTextField: true,
                         onCommit: { isActive = false },
                         customize: { tf in
                             tf.keyboardType = .URL
                             tf.autocapitalizationType = .none
                             tf.autocorrectionType = .no
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                tf.becomeFirstResponder()
-                            }
                         }
                     )
                     .padding(.horizontal, -10)
@@ -244,8 +234,6 @@ public struct SendFeedbackView: View {
     private func viewDidDisappear() {
         TourManager.shared.notifyCurrentViewClose()
     }
-
-   
 
     private var shouldHighlightTextInput: Bool {
         return TourManager.shared.isCurrentStep(with: .promptFeedbackInNeevaMenu)

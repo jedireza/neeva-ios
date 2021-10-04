@@ -24,6 +24,8 @@ struct MultilineTextField: View {
         )
     }
 
+    let focusTextField: Bool
+
     @State private var dynamicHeight: CGFloat = 80
     @State private var showingPlaceholder = false
     @Environment(\.isEnabled) private var isEnabled
@@ -34,10 +36,11 @@ struct MultilineTextField: View {
     ///   - onCommit: if non-nil, the user will not be able to manually enter multiple lines (although text can still wrap)
     ///     and pressing the return key will cause `onCommit` to be called.
     init(
-        _ placeholder: String = "", text: Binding<String>, onCommit: (() -> Void)? = nil,
+        _ placeholder: String = "", text: Binding<String>, focusTextField: Bool, onCommit: (() -> Void)? = nil,
         customize: @escaping (UITextView) -> Void = { _ in }
     ) {
         self.placeholder = placeholder
+        self.focusTextField = focusTextField
         self.onCommit = onCommit
         self.customize = customize
         self._text = text
@@ -47,7 +50,7 @@ struct MultilineTextField: View {
     var body: some View {
         UITextViewWrapper(
             text: self.internalText, calculatedHeight: $dynamicHeight, isEnabled: isEnabled,
-            onDone: onCommit, customize: customize
+            onDone: onCommit, customize: customize, focusTextField: focusTextField
         )
         .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
         .background(placeholderView, alignment: .topLeading)
@@ -75,10 +78,15 @@ private struct UITextViewWrapper: UIViewRepresentable {
     let isEnabled: Bool
     let onDone: (() -> Void)?
     let customize: (UITextView) -> Void
+    let focusTextField: Bool
 
     func makeUIView(context: UIViewRepresentableContext<UITextViewWrapper>) -> UITextView {
         let textField = UITextView()
         textField.delegate = context.coordinator
+
+        if focusTextField {
+            textField.becomeFirstResponder()
+        }
 
         textField.isEditable = true
         // TODO(jed): set font to .bodyLarge
