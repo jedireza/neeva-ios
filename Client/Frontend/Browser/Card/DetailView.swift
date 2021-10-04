@@ -32,6 +32,7 @@ where
     @State private var shareTargetView: UIView!
 
     @ObservedObject var primitive: Details
+    var dismissWithAnimation: () -> Void
 
     var space: Space? {
         primitive.manager.get(for: primitive.id) as? Space
@@ -234,17 +235,7 @@ where
     var topBar: some View {
         HStack {
             Button(
-                action: {
-                    if space != nil {
-                        withAnimation {
-                            spacesModel.detailedSpace = nil
-                        }
-                    } else {
-                        withAnimation {
-                            tabGroupCardModel.detailedTabGroup = nil
-                        }
-                    }
-                },
+                action: dismissWithAnimation,
                 label: {
                     Symbol(decorative: .arrowLeft)
                         .foregroundColor(Color.label)
@@ -563,6 +554,7 @@ struct DetailView_Previews: PreviewProvider {
         DetailView(
             primitive: SpaceCardDetails(
                 space: .stackOverflow,
-                manager: SpaceStore.shared))
+                manager: SpaceStore.shared)
+        ) {}
     }
 }

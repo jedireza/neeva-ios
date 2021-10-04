@@ -25,6 +25,8 @@ struct CardGrid: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
+    @State var detailDragOffset: CGFloat = 0
+
     var topToolbar: Bool {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
     }
@@ -107,21 +109,41 @@ struct CardGrid: View {
         GeometryReader { geom in
             ZStack {
                 grid
+                    .offset(
+                        x: (spaceModel.detailedSpace == nil
+                            && tabGroupModel.detailedTabGroup == nil)
+                            ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
+                    )
+                    .background(Color.TrayBackground)
 
-                if let spaceDetails = spaceModel.detailedSpace {
-                    DetailView(primitive: spaceDetails)
+                Group {
+                    if let spaceDetails = spaceModel.detailedSpace {
+                        DetailView(primitive: spaceDetails) {
+                            withAnimation(.easeInOut(duration: 0.4)) {
+                                detailDragOffset = geom.size.width
+                            }
+                        }
                         .frame(width: geom.size.width, height: geom.size.height)
                         .background(
-                            Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
+                            Color.groupedBackground.edgesIgnoringSafeArea([
+                                .bottom, .horizontal,
+                            ])
                         )
                         .transition(.flipFromRight)
-                }
 
-                if let tabGroupDetails = tabGroupModel.detailedTabGroup {
-                    DetailView(primitive: tabGroupDetails)
+                    }
+
+                    if let tabGroupDetails = tabGroupModel.detailedTabGroup {
+                        DetailView(primitive: tabGroupDetails) {
+                            withAnimation(.easeInOut(duration: 0.4)) {
+                                detailDragOffset = geom.size.width
+                            }
+                        }
                         .frame(width: geom.size.width, height: geom.size.height)
                         .background(
-                            Color.groupedBackground.edgesIgnoringSafeArea([.bottom, .horizontal])
+                            Color.groupedBackground.edgesIgnoringSafeArea([
+                                .bottom, .horizontal,
+                            ])
                         )
                         .transition(.flipFromRight)
                         .opacity(gridModel.isHidden ? 0 : 1)
@@ -131,13 +153,19 @@ struct CardGrid: View {
                         )
                         .environment(\.cardSize, cardSize)
                         .environment(\.columns, columns)
-                }
+                    }
+                }.modifier(
+                    DraggableDetail(
+                        detailDragOffset: $detailDragOffset,
+                        width: geom.size.width))
             }
             .useEffect(
                 deps: geom.size.width, gridModel.isHidden, topToolbar, perform: updateCardSize
             )
             .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
-            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+            .onReceive(
+                NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+            ) { _ in
                 self.geom = (geom.size, geom.safeAreaInsets)
             }
         }
@@ -146,6 +174,50 @@ struct CardGrid: View {
         .accessibilityAction(.escape) {
             gridModel.hideWithAnimation()
         }
+    }
+}
+
+private struct DraggableDetail: ViewModifier {
+    static let Threshold: CGFloat = 100
+    static let DraggableWidth: CGFloat = 50
+    @Binding var detailDragOffset: CGFloat
+    let width: CGFloat
+    @EnvironmentObject var spaceModel: SpaceCardModel
+    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+
+    func body(content: Content) -> some View {
+        content
+            .offset(x: detailDragOffset, y: 0)
+            .runAfter(
+                toggling: detailDragOffset == width, fromTrueToFalse: {},
+                fromFalseToTrue: {
+                    spaceModel.detailedSpace = nil
+                    tabGroupModel.detailedTabGroup = nil
+                    detailDragOffset = 0
+                }
+            )
+            .simultaneousGesture(
+                DragGesture(minimumDistance: DraggableDetail.DraggableWidth)
+                    .onChanged { value in
+                        if detailDragOffset != 0
+                            || (value.startLocation.x < DraggableDetail.DraggableWidth
+                                && value.translation.width > 0
+                                && abs(value.translation.width)
+                                    > abs(value.translation.height))
+                        {
+                            detailDragOffset = value.translation.width
+                        }
+                    }
+                    .onEnded { value in
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            if abs(detailDragOffset) > DraggableDetail.Threshold {
+                                detailDragOffset = width
+                            } else {
+                                detailDragOffset = 0
+                            }
+                        }
+                    }
+            )
     }
 }
 
