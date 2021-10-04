@@ -99,11 +99,11 @@ public class DeleteSpaceItemsRequest: SpaceRequest<BatchDeleteSpaceResultMutatio
 }
 
 public class UpdateSpaceEntityRequest: SpaceRequest<UpdateSpaceEntityDisplayDataMutation> {
-    public init(spaceID: String, entityID: String, title: String) {
+    public init(spaceID: String, entityID: String, title: String, snippet: String) {
         super.init(
             mutation: UpdateSpaceEntityDisplayDataMutation(
                 input: UpdateSpaceEntityDisplayDataInput(
-                    spaceId: spaceID, resultId: entityID, title: title)))
+                    spaceId: spaceID, resultId: entityID, title: title, snippet: snippet)))
     }
 }
 

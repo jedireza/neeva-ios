@@ -163,10 +163,10 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    func updateSpaceEntity(spaceID: String, entityID: String, title: String) {
+    func updateSpaceEntity(spaceID: String, entityID: String, title: String, snippet: String) {
         DispatchQueue.main.async {
             let request = UpdateSpaceEntityRequest(
-                spaceID: spaceID, entityID: entityID, title: title)
+                spaceID: spaceID, entityID: entityID, title: title, snippet: snippet)
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
             }.cancel()
