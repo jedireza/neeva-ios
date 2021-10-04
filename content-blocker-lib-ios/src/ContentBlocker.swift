@@ -7,67 +7,19 @@ import Shared
 import Foundation
 import Defaults
 
-enum BlocklistCategory: CaseIterable {
-    case advertising
-    case analytics
-    case social
-    case cryptomining
-    case fingerprinting
-    case neeva
-
-    static func fromFile(_ file: BlocklistFileName) -> BlocklistCategory {
-        switch file {
-        case .advertisingURLs, .advertisingCookies:
-            return .advertising
-        case .analyticsURLs, .analyticsCookies:
-            return .analytics
-        case .socialURLs, .socialCookies:
-            return .social
-        case .cryptomining:
-            return .cryptomining
-        case .fingerprinting:
-            return .fingerprinting
-        }
-
-    }
-}
-
 enum BlocklistFileName: String, CaseIterable {
-    case advertisingURLs = "disconnect-block-advertising"
-    case analyticsURLs = "disconnect-block-analytics"
-    case socialURLs = "disconnect-block-social"
-
-    case cryptomining = "disconnect-block-cryptomining"
-    case fingerprinting = "disconnect-block-fingerprinting"
-
-    case advertisingCookies = "disconnect-block-cookies-advertising"
-    case analyticsCookies = "disconnect-block-cookies-analytics"
-    //case contentCookies = "disconnect-block-cookies-content"
-    case socialCookies = "disconnect-block-cookies-social"
+    case neeva = "contentBlockerList"
 
     var filename: String { return self.rawValue }
 
-    static var basic: [BlocklistFileName] { return [.advertisingCookies, .analyticsCookies, .socialCookies, .cryptomining, .fingerprinting] }
-    static var strict: [BlocklistFileName] { return [.advertisingURLs, .analyticsURLs, .socialURLs, cryptomining, fingerprinting] }
-    static var neevaStrength: [BlocklistFileName] { return [.advertisingURLs] }
+    static var neevaStrength: [BlocklistFileName] { return [.neeva] }
 
     static func listsForMode(strength: BlockingStrength) -> [BlocklistFileName] {
         switch strength {
-        case .basic:
-            return BlocklistFileName.basic
-        case .strict:
-            return BlocklistFileName.strict
         case .neeva:
             return BlocklistFileName.neevaStrength
         }
     }
-}
-
-enum BlockerStatus: String {
-    case disabled
-    case noBlockedURLs // When TP is enabled but nothing is being blocked
-    case safelisted
-    case blocking
 }
 
 class ContentBlocker {
@@ -146,11 +98,26 @@ class ContentBlocker {
 extension ContentBlocker {
     private func loadJsonFromBundle(forResource file: String, completion: @escaping (_ jsonString: String) -> Void) {
         DispatchQueue.global().async {
-            guard let path = Bundle.main.path(forResource: file, ofType: "json"),
-                let source = try? String(contentsOfFile: path, encoding: .utf8) else {
-                    assert(false)
-                    return
+            if file == BlocklistFileName.neeva.filename {
+                if !TrackingPreventionUtils.contentBlockerExists() {
+                    TrackingPreventionUtils.generateContentBlocker()
+                }
+                guard let source =
+                        try? String(contentsOf: TrackingPreventionUtils.contentBlockerListUrl) else {
+                        assert(false)
+                        return
+                }
+                DispatchQueue.main.async {
+                    completion(source)
+                }
+                return
             }
+
+            guard let path = Bundle.main.path(forResource: file, ofType: "json"),
+                  let source = try? String(contentsOfFile: path, encoding: .utf8) else {
+                      assert(false)
+                      return
+                  }
 
             DispatchQueue.main.async {
                 completion(source)

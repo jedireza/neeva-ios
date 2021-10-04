@@ -47,10 +47,10 @@ class TrackingUITests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        domainsGoogle.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
-        domainsAmazon.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
-        domainsOutbrain.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
-        domainsUnknownSource.forEach { stats = stats.create(matchingBlocklist: .neeva, host: $0) }
+        domainsGoogle.forEach { stats = stats.create(host: $0) }
+        domainsAmazon.forEach { stats = stats.create(host: $0) }
+        domainsOutbrain.forEach { stats = stats.create(host: $0) }
+        domainsUnknownSource.forEach { stats = stats.create(host: $0) }
 
         expectedEntities =
             Array.init(repeating: TrackingEntity.Google, count: domainsGoogle.count)
@@ -86,11 +86,9 @@ class TrackingUITests: XCTestCase {
 
     func testTrackingStatsViewModelTwoEntities() throws {
         var tempStats = TPPageStats()
-        domainsGoogle.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
-        domainsAmazon.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
-        domainsUnknownSource.forEach {
-            tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)
-        }
+        domainsGoogle.forEach { tempStats = tempStats.create(host: $0) }
+        domainsAmazon.forEach { tempStats = tempStats.create(host: $0) }
+        domainsUnknownSource.forEach { tempStats = tempStats.create(host: $0) }
 
         let tempData = TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)
         model = TrackingStatsViewModel(testingData: tempData)
@@ -139,11 +137,9 @@ class TrackingUITests: XCTestCase {
 
     func testTrackingHallOfShameTwoEntities() throws {
         var tempStats = TPPageStats()
-        domainsGoogle.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
-        domainsAmazon.forEach { tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0) }
-        domainsUnknownSource.forEach {
-            tempStats = tempStats.create(matchingBlocklist: .neeva, host: $0)
-        }
+        domainsGoogle.forEach { tempStats = tempStats.create(host: $0) }
+        domainsAmazon.forEach { tempStats = tempStats.create(host: $0) }
+        domainsUnknownSource.forEach { tempStats = tempStats.create(host: $0) }
         let ui = TrackingMenuView().environmentObject(
             TrackingStatsViewModel(
                 testingData:

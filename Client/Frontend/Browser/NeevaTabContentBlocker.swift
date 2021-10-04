@@ -12,26 +12,13 @@ extension Defaults.Keys {
 }
 
 enum BlockingStrength: String, Codable {
-    case basic
-    case strict
     case neeva
-
-    static let allOptions: [BlockingStrength] = [.basic, .strict]
 }
 
 /// Neeva-specific implementation of tab content blocking.
 class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
     class func name() -> String {
         return "TrackingProtectionStats"
-    }
-
-    var isUserEnabled: Bool? {
-        didSet {
-            guard let tab = tab as? Tab else { return }
-            setupForTab()
-            TabEvent.post(.didChangeContentBlocking, for: tab)
-            tab.reload()
-        }
     }
 
     // A cache of page stats used to support showing stats for pages loaded
@@ -41,7 +28,7 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
     var pageStatsCache: [URL: TPPageStats] = [:]
 
     override var isEnabled: Bool {
-        isUserEnabled ?? Defaults[.contentBlockingEnabled]
+        Defaults[.contentBlockingEnabled]
     }
 
     override init(tab: ContentBlockerTab) {
@@ -51,7 +38,7 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(strength: .basic)
+        let rules = BlocklistFileName.listsForMode(strength: .neeva)
         ContentBlocker.shared.setupTrackingProtection(
             forTab: tab, isEnabled: isEnabled, rules: rules)
     }
@@ -61,11 +48,6 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
         if let tab = tab as? Tab {
             TabEvent.post(.didChangeContentBlocking, for: tab)
         }
-    }
-
-    override func currentlyEnabledLists() -> [BlocklistFileName] {
-
-        return BlocklistFileName.listsForMode(strength: .basic)
     }
 
     override func notifyContentBlockingChanged() {

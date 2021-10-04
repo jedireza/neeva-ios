@@ -23,10 +23,6 @@ class TabContentBlocker: ObservableObject {
 
     @objc func notifiedTabSetupRequired() {}
 
-    func currentlyEnabledLists() -> [BlocklistFileName] {
-        return []
-    }
-
     func notifyContentBlockingChanged() {}
 
     @Published var stats: TPPageStats = TPPageStats()

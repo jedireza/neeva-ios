@@ -12,6 +12,7 @@ struct TrackingPreventionConfig {
 
     private static func allowTrackersFor(_ domain: String) {
         Defaults[.unblockedDomains].insert(domain)
+        TrackingPreventionUtils.generateContentBlocker()
     }
 
     private static func disallowTrackersFor(_ domain: String) {
@@ -20,6 +21,7 @@ struct TrackingPreventionConfig {
         }
 
         Defaults[.unblockedDomains].remove(domain)
+        TrackingPreventionUtils.generateContentBlocker()
     }
 
     static func trackersAllowedFor(_ domain: String) -> Bool {

@@ -24,11 +24,7 @@ enum TrackingEntity: String {
     case VerizonMedia = "VerizonMedia"
 
     static func getTrackingDataForCurrentTab(stats: TPPageStats?) -> TrackingData {
-        let domainsCollapsedAcrossCategories =
-            stats?
-            .domains.reduce(into: []) { array, element in
-                array.append(contentsOf: element.value)
-            } ?? [String]()
+        let domainsCollapsedAcrossCategories = stats?.domains ?? [String]()
         let numTrackers = domainsCollapsedAcrossCategories.count
         let numDomains =
             domainsCollapsedAcrossCategories
@@ -37,8 +33,9 @@ enum TrackingEntity: String {
             }.count
         let trackingEntities = domainsCollapsedAcrossCategories.map { (domain) -> TrackingEntity? in
             for element in trackingEntityMap {
-                let url = URL(string: "https://" + domain)!
-                let baseDomain = url.baseDomain!
+                guard let baseDomain = URL(string: "https://" + domain)?.baseDomain else {
+                    return nil
+                }
                 if element.value.contains(baseDomain) {
                     return element.key
                 }

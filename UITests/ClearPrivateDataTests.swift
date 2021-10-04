@@ -185,7 +185,8 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         return cookie
     }
 
-    func testClearsTrackingProtectionSafelist() {
+    func testClearsTrackingProtectionSafelist() throws {
+        try skipTest(issue: 1885, "Advanced tracking prevention menu not enabled yet")
         let wait = expectation(description: "wait for file write")
         TrackingPreventionConfig.updateAllowList(
             with: (URL(string: "http://www.mozilla.com")?.host)!, allowed: true

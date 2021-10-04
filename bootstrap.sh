@@ -51,8 +51,6 @@ fi
 npm install
 npm run build
 
-(cd content-blocker-lib-ios/ContentBlockerGen && swift run)
-
 # swift-format
 git submodule update --init --recursive
 cd swift-format

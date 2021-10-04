@@ -56,7 +56,7 @@ class TrackingProtectionTests: UITestBase, TabEventHandler {
     func tabDidChangeContentBlocking(_ tab: Tab) {
         stats = tab.contentBlocker!.stats
 
-        if stats.total == 0 {
+        if stats.domains.count == 0 {
             statsZero?.fulfill()
             statsZero = nil
         } else {
