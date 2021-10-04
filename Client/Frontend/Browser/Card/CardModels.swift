@@ -173,12 +173,30 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    func delete(space spaceID: String, entities: [String]) {
+    func delete(
+        space spaceID: String, entities: [SpaceEntityThumbnail], from scene: UIScene,
+        undoDeletion: @escaping () -> Void
+    ) {
         DispatchQueue.main.async {
-            let request = DeleteSpaceItemsRequest(spaceID: spaceID, ids: entities)
+            let request = DeleteSpaceItemsRequest(spaceID: spaceID, ids: entities.map { $0.id })
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
             }.cancel()
+
+            ToastDefaults().showToastForRemoveFromSpace(
+                bvc: SceneDelegate.getBVC(with: scene), request: request
+            ) {
+                undoDeletion()
+
+                // Undo deletion of Space item
+                entities.forEach { entity in
+                    self.add(
+                        spaceID: spaceID, url: entity.data.url?.absoluteString ?? "",
+                        title: entity.title)
+                }
+            } retryDeletion: { [unowned self] in
+                delete(space: spaceID, entities: entities, from: scene, undoDeletion: undoDeletion)
+            }
         }
     }
 

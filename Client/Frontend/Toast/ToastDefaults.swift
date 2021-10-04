@@ -44,8 +44,7 @@ class ToastDefaults: NSObject {
     }
 
     func showToastForDownload(download: Download, toastViewManager: ToastViewManager) {
-        toastProgressViewModel = ToastProgressViewModel()
-        toastProgressViewModel?.status = .inProgress
+        resetProgress()
 
         download.delegate = self
 
@@ -68,7 +67,7 @@ class ToastDefaults: NSObject {
         toastViewManager.enqueue(toast: toastView, at: .first)
     }
 
-    func showToastForSpace(bvc: BrowserViewController, request: AddToSpaceRequest) {
+    func showToastForAddToSpaceUI(bvc: BrowserViewController, request: AddToSpaceRequest) {
         toastProgressViewModel = ToastProgressViewModel()
         toastProgressViewModel?.status = .inProgress
 
@@ -78,7 +77,6 @@ class ToastDefaults: NSObject {
             if updatedState == .failed {
                 self.toastProgressViewModel?.status = .failed
             } else {
-                // set to success because that is the only case possible in this case
                 self.toastProgressViewModel?.status = .success
             }
         }
@@ -100,7 +98,7 @@ class ToastDefaults: NSObject {
                     id: request.targetSpaceID ?? "", name: request.targetSpaceName ?? "")
             }
 
-            self.showToastForSpace(bvc: bvc, request: request)
+            self.showToastForAddToSpaceUI(bvc: bvc, request: request)
         }
 
         let normalContent = ToastStateContent(
@@ -129,9 +127,49 @@ class ToastDefaults: NSObject {
         toastViewManager.enqueue(toast: toastView)
     }
 
+    func showToastForRemoveFromSpace(
+        bvc: BrowserViewController, request: DeleteSpaceItemsRequest,
+        undoDeletion: @escaping () -> Void, retryDeletion: @escaping () -> Void
+    ) {
+        resetProgress()
+
+        requestListener = request.$state.sink { [weak self] updatedState in
+            guard let self = self else { return }
+
+            if updatedState == .failure {
+                self.toastProgressViewModel?.status = .failed
+            } else {
+                self.toastProgressViewModel?.status = .success
+            }
+        }
+
+        let normalContent = ToastStateContent(text: "Removing item from Space")
+        let completedContent = ToastStateContent(
+            text: "Item removed from Space", buttonText: "undo", buttonAction: undoDeletion)
+        let failedContent = ToastStateContent(
+            text: "Failed to remove item from Space",
+            buttonText: "try again",
+            buttonAction: retryDeletion)
+        let toastContent = ToastViewContent(
+            normalContent: normalContent, completedContent: completedContent,
+            failedContent: failedContent)
+
+        guard
+            let toastViewManager = SceneDelegate.getCurrentSceneDelegate(for: bvc.view)
+                .toastViewManager
+        else {
+            return
+        }
+
+        let toastView = toastViewManager.makeToast(
+            content: toastContent, toastProgressViewModel: toastProgressViewModel,
+            autoDismiss: false)
+        toast = toastView
+        toastViewManager.enqueue(toast: toastView)
+    }
+
     func showToastForFeedback(request: FeedbackRequest, toastViewManager: ToastViewManager) {
-        toastProgressViewModel = ToastProgressViewModel()
-        toastProgressViewModel?.status = .inProgress
+        resetProgress()
 
         requestListener = request.$state.sink { [weak self] updatedState in
             guard let self = self else { return }
@@ -166,6 +204,11 @@ class ToastDefaults: NSObject {
             toastProgressViewModel: toastProgressViewModel, autoDismiss: false)
         toast = toastView
         toastViewManager.enqueue(toast: toastView)
+    }
+
+    private func resetProgress() {
+        toastProgressViewModel = ToastProgressViewModel()
+        toastProgressViewModel?.status = .inProgress
     }
 }
 

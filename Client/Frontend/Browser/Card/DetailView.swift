@@ -410,11 +410,22 @@ where
     }
 
     private func onDelete(offsets: IndexSet) {
-        let deletedEntities: [String] = offsets.map { index in
-            primitive.allDetails[index].id
+        let entitiesToBeDeleted = offsets.map { index in
+            primitive.allDetails[index]
         }
+
+        let deletedEntities: [SpaceEntityThumbnail] = entitiesToBeDeleted.compactMap { entity in
+            entity as? SpaceEntityThumbnail
+        }
+
         primitive.allDetails.remove(atOffsets: offsets)
-        spacesModel.delete(space: primitive.id, entities: deletedEntities)
+        spacesModel.delete(
+            space: primitive.id, entities: deletedEntities, from: tabModel.manager.scene
+        ) {
+            for index in 0..<entitiesToBeDeleted.count {
+                primitive.allDetails.insert(entitiesToBeDeleted[index], at: 0)
+            }
+        }
     }
 
     private func onMove(source: IndexSet, destination: Int) {

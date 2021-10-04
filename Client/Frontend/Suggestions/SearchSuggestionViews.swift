@@ -488,8 +488,10 @@ private struct EditCurrentURLSuggestionView: View {
 
     var icon: some View {
         suggestion.favicon
-            .frame(width: SuggestionViewUX.FaviconSize,
-                   height: SuggestionViewUX.FaviconSize)
+            .frame(
+                width: SuggestionViewUX.FaviconSize,
+                height: SuggestionViewUX.FaviconSize
+            )
             .roundedOuterBorder(
                 cornerRadius: SuggestionViewUX.CornerRadius, color: .quaternarySystemFill)
     }

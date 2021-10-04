@@ -1935,7 +1935,7 @@ extension BrowserViewController {
                 && request.state != .savingToSpace
                 && request.state != .savedToSpace
             {
-                ToastDefaults().showToastForSpace(bvc: self, request: request)
+                ToastDefaults().showToastForAddToSpaceUI(bvc: self, request: request)
             }
         }
     }
