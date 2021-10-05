@@ -30,6 +30,7 @@ where
     @State private var shareMenuPresented = false
     @State private var newTitle: String = ""
     @State private var shareTargetView: UIView!
+    @State private var showConfirmDeleteAlert = false
 
     @ObservedObject var primitive: Details
     var dismissWithAnimation: () -> Void
@@ -173,17 +174,7 @@ where
 
     @ViewBuilder var deleteButton: some View {
         Button {
-            if let space = space {
-                guard
-                    let index = spacesModel.allDetails.firstIndex(where: {
-                        primitive.id == $0.id
-                    })
-                else {
-                    return
-                }
-                spacesModel.allDetails.remove(at: index)
-                spacesModel.removeSpace(spaceID: space.id.id, isOwner: space.ACL == .owner)
-            }
+            showConfirmDeleteAlert = true
         } label: {
             Label(
                 title: {
@@ -229,7 +220,30 @@ where
                 Symbol(decorative: .ellipsis, style: .labelMedium)
                     .foregroundColor(Color.label)
                     .tapTargetFrame()
-            })
+            }
+        ).actionSheet(isPresented: $showConfirmDeleteAlert) {
+            ActionSheet(
+                title: Text("Are you sure you want to delete this space?"),
+                buttons: [
+                    .destructive(
+                        Text("Delete Space"),
+                        action: {
+                            if let space = space {
+                                guard
+                                    let index = spacesModel.allDetails.firstIndex(where: {
+                                        primitive.id == $0.id
+                                    })
+                                else {
+                                    return
+                                }
+
+                                spacesModel.allDetails.remove(at: index)
+                                spacesModel.removeSpace(
+                                    spaceID: space.id.id, isOwner: space.ACL == .owner)
+                            }
+                        })
+                ])
+        }
     }
 
     var topBar: some View {
