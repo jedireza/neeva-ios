@@ -69,6 +69,15 @@ class SuggestionModel: ObservableObject {
             }
             return true
         }
+
+        hasMemorizedResult =
+            rowQuerySuggestions.filter { suggestion in
+                if case let .url(urlSuggestion) = suggestion {
+                    return !(urlSuggestion.subtitle?.isEmpty ?? true)
+                }
+                return false
+            }.count > 0
+
         let mid = chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
         return top + mid + navCombinedSuggestions
     }
@@ -117,6 +126,8 @@ class SuggestionModel: ObservableObject {
         }
         return navSuggestions.compactMap { Suggestion.navigation($0) }
     }
+
+    var hasMemorizedResult = false
 
     // MARK: - Loading Suggestions
     func reload() {

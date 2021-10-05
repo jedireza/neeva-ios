@@ -141,6 +141,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                 $0.type == .standard
                     && $0.annotation?.description == nil
                     && $0.annotation?.stockInfo == nil
+                    && (AnnotationType(annotation: $0.annotation) != .contact
+                        || (AnnotationType(annotation: $0.annotation) == .contact
+                            && NeevaFeatureFlags[.personalSuggestion]))
             }
         var rowQuerySuggestions =
             querySuggestions.filter {
@@ -190,8 +193,8 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
 
             for (index, suggestion)
                 in standardQuerySuggestions
-                    .prefix(SuggestionsController.querySuggestionsCap)
-                    .enumerated()
+                .prefix(SuggestionsController.querySuggestionsCap)
+                .enumerated()
             {
                 neevaSuggestions.append(Suggestion.query(suggestion))
                 if let urlSuggestions = navSuggestionMap[suggestion.suggestedQuery] {

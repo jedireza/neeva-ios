@@ -17,7 +17,8 @@ enum AnnotationType: String {
     case wikipedia = "Wikipedia"
     /// `AnnotationTypeStock` indicated the type is a stock annotation
     case stock = "Stock"
-
+    /// `AnnotationTypeContact` indicated the type is a contact annotation
+    case contact = "Contact"
 }
 
 extension AnnotationType {

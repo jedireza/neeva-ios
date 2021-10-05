@@ -144,13 +144,15 @@ struct QuerySuggestionsList: View {
                     index, suggestion in
                     SearchSuggestionView(suggestion)
 
-                    if case Suggestion.url = suggestion,
-                        index != suggestionModel.rowQuerySuggestions.count - 1
+                    if index != suggestionModel.rowQuerySuggestions.count - 1,
+                        suggestionModel.hasMemorizedResult
                     {
                         // insert separator only if two rows later is another query suggestion
+                        // and there is at least one memorized result
                         if index + 1 < suggestionModel.rowQuerySuggestions.count,
-                            case Suggestion.query =
-                                suggestionModel.rowQuerySuggestions[index + 1]
+                            case let .query(querySuggestion) =
+                                suggestionModel.rowQuerySuggestions[index + 1],
+                            querySuggestion.type == .standard
                         {
                             SuggestionsDivider(height: 8)
                         }
