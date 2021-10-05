@@ -264,6 +264,7 @@
 		8A2401CB26BB4D75006ABF7D /* RatingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2401CA26BB4D75006ABF7D /* RatingsCard.swift */; };
 		8A422E9B26E19783005CC814 /* AddToNativeSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A422E9A26E19783005CC814 /* AddToNativeSpaceView.swift */; };
 		8AA97E4026AF36F300ACCCCF /* ZeroQueryCommonContextMenuActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA97E3F26AF36F300ACCCCF /* ZeroQueryCommonContextMenuActions.swift */; };
+		8AD26205270BC0B6001973ED /* GridScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD26204270BC0B6001973ED /* GridScrollView.swift */; };
 		A83E5AB71C1D993D0026D912 /* UIPasteboardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */; };
 		A83E5B1A1C1DA8BF0026D912 /* image.gif in Resources */ = {isa = PBXBuildFile; fileRef = A83E5B181C1DA8BF0026D912 /* image.gif */; };
 		A83E5B1B1C1DA8BF0026D912 /* image.png in Resources */ = {isa = PBXBuildFile; fileRef = A83E5B191C1DA8BF0026D912 /* image.png */; };
@@ -1248,6 +1249,7 @@
 		8A2401CA26BB4D75006ABF7D /* RatingsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingsCard.swift; sourceTree = "<group>"; };
 		8A422E9A26E19783005CC814 /* AddToNativeSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToNativeSpaceView.swift; sourceTree = "<group>"; };
 		8AA97E3F26AF36F300ACCCCF /* ZeroQueryCommonContextMenuActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryCommonContextMenuActions.swift; sourceTree = "<group>"; };
+		8AD26204270BC0B6001973ED /* GridScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridScrollView.swift; sourceTree = "<group>"; };
 		92A04326AC52760101BC729B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ClearPrivateDataConfirm.strings; sourceTree = "<group>"; };
 		93C1476ABDF7668536BA0661 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
 		A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPasteboardExtensions.swift; sourceTree = "<group>"; };
@@ -2203,6 +2205,7 @@
 				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
 				4A9FCD4526F1074600725E17 /* SocialShare.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
+				8AD26204270BC0B6001973ED /* GridScrollView.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -4789,6 +4792,7 @@
 				BCC39A1F26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift in Sources */,
 				66430430267C19D200674549 /* ToastDefaults.swift in Sources */,
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
+				8AD26205270BC0B6001973ED /* GridScrollView.swift in Sources */,
 				4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */,
 				C9C18DDF26558FF3004710CD /* MutationController.swift in Sources */,
 				C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */,
