@@ -144,6 +144,7 @@ class BaseTestCase: XCTestCase {
         if app.buttons["Cancel"].exists {
             app.textFields["address"].press(forDuration: 2)
         } else {
+            waitForExistence(app.buttons["Address Bar"], timeout: 30)
             app.buttons["Address Bar"].tap(force: true)
 
             waitForExistence(app.textFields["address"], timeout: 30)
@@ -173,10 +174,11 @@ class BaseTestCase: XCTestCase {
             waitForExistence(app.buttons["Show Tabs"], timeout: 30)
             app.buttons["Show Tabs"].press(forDuration: 1)
 
-            if app.buttons["New Tab"].exists {
-                app.buttons["New Tab"].tap()
-            } else {
+            if app.buttons["New Incognito Tab"].exists {
                 app.buttons["New Incognito Tab"].tap()
+            } else {
+                waitForExistence(app.buttons["New Tab"], timeout: 30)
+                app.buttons["New Tab"].tap()
             }
 
         }

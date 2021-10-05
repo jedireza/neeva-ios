@@ -75,6 +75,7 @@ struct TopBarOverflowMenuButton: View {
     let changedUserAgent: Bool?
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
     let onLongPress: (UIView) -> Void
+    var inTopBar: Bool = false
 
     @Environment(\.isIncognito) private var isIncognito
 
@@ -87,7 +88,7 @@ struct TopBarOverflowMenuButton: View {
 
     var body: some View {
         TabToolbarButtons.OverflowMenu(
-            weight: .medium,
+            weight: inTopBar ? .regular : .medium,
             action: {
                 presenting = true
             },

@@ -58,7 +58,7 @@ public struct OverflowMenuView: View {
 
     public var body: some View {
         GroupedStack {
-            if !chromeModel.inlineToolbar || !FeatureFlag[.overflowMenuUpdate] {
+            if !chromeModel.inlineToolbar {
                 HStack(spacing: OverflowMenuUX.innerSectionPadding) {
                     OverflowMenuButtonView(
                         label: .TabToolbarForwardAccessibilityLabel,
@@ -73,39 +73,24 @@ public struct OverflowMenuView: View {
                     .accessibilityIdentifier("OverflowMenu.Forward")
                     .disabled(!chromeModel.canGoForward)
 
-                    if FeatureFlag[.overflowMenuUpdate] {
-                        OverflowMenuButtonView(
-                            label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
-                            symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
-                        ) {
-                            menuAction(.reloadStop)
-                        }
-                        .accessibilityIdentifier("OverflowMenu.Reload")
-
-                        OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                            menuAction(.newTab)
-                        }
-                        .accessibilityIdentifier("OverflowMenu.NewTab")
-                    } else {
-                        OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                            menuAction(.newTab)
-                        }
-                        .accessibilityIdentifier("OverflowMenu.NewTab")
-
-                        OverflowMenuButtonView(
-                            label: "Share",
-                            symbol: .squareAndArrowUp
-                        ) {
-                            menuAction(.share)
-                        }
-                        .accessibilityIdentifier("OverflowMenu.Share")
+                    OverflowMenuButtonView(
+                        label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
+                        symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
+                    ) {
+                        menuAction(.reloadStop)
                     }
+                    .accessibilityIdentifier("OverflowMenu.Reload")
+
+                    OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                        menuAction(.newTab)
+                    }
+                    .accessibilityIdentifier("OverflowMenu.NewTab")
                 }
             }
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
-                    if chromeModel.inlineToolbar && FeatureFlag[.overflowMenuUpdate] {
+                    if chromeModel.inlineToolbar {
                         NeevaMenuRowButtonView(
                             label: "New Tab",
                             symbol: .plus
@@ -113,6 +98,8 @@ public struct OverflowMenuView: View {
                             menuAction(.newTab)
                         }
                         .accessibilityIdentifier("OverflowMenu.NewTab")
+
+                        Color.groupedBackground.frame(height: 1)
                     }
 
                     NeevaMenuRowButtonView(

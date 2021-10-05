@@ -118,13 +118,13 @@ class ToolbarTests: BaseTestCase {
             waitForExistence(app.otherElements.matching(identifier: "TabToolbar").firstMatch)
         }
 
-        let reloadButton = app.buttons["Reload"]
+        let shareButton = app.buttons["Share"]
         let statusbarElement: XCUIElement = {
             return XCUIApplication(bundleIdentifier: "com.apple.springboard").statusBars.firstMatch
         }()
 
         app.swipeUp()
-        waitFor(reloadButton, with: "isHittable == false")
+        waitFor(shareButton, with: "isHittable == false")
 
         if iPad() {
             // test doesn't work on iPad so trying next best thing
@@ -133,7 +133,7 @@ class ToolbarTests: BaseTestCase {
             statusbarElement.tap(force: true)
         }
 
-        waitForExistence(reloadButton)
-        XCTAssertTrue(reloadButton.isHittable)
+        waitForExistence(shareButton)
+        XCTAssertTrue(shareButton.isHittable)
     }
 }

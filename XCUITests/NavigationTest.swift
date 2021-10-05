@@ -62,10 +62,7 @@ class NavigationTest: BaseTestCase {
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
 
-        // Go forward to next visited web site
-        goToOverflowMenuButton(label: "Forward") { element in
-            element.tap()
-        }
+        goForward()
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
     }
@@ -318,14 +315,11 @@ class NavigationTest: BaseTestCase {
         app.webViews.links["nineteen for me"].tap()
         waitUntilPageLoad()
 
-        goToOverflowMenuButton(label: "Share", shouldDismissOverlay: false) { element in
-            element.tap(force: true)
-            waitForExistence(
-                app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"],
-                timeout: 10)
-        }
+        goToShareSheet()
+        waitForExistence(
+            app.navigationBars["UIActivityContentView"].otherElements["f1040, PDF Document"],
+            timeout: 10)
 
-        print(app.buttons.debugDescription)
         // Copy the text to dismiss the overlay sheet
         app.buttons["Copy"].tap()
 
@@ -335,10 +329,8 @@ class NavigationTest: BaseTestCase {
 
         // Now confirm that we get a ShareMenu for the current page and not
         // the PDF again.
-        goToOverflowMenuButton(label: "Share", shouldDismissOverlay: false) { element in
-            element.tap(force: true)
-            waitForExistence(
-                app.navigationBars["UIActivityContentView"].otherElements["localhost"], timeout: 10)
-        }
+        goToShareSheet()
+        waitForExistence(
+            app.navigationBars["UIActivityContentView"].otherElements["localhost"], timeout: 10)
     }
 }

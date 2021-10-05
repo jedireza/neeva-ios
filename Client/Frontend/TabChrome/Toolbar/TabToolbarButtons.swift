@@ -102,7 +102,7 @@ enum TabToolbarButtons {
         var body: some View {
             TabToolbarButton(
                 label: Symbol(
-                    FeatureFlag[.overflowMenuUpdate] ? .ellipsisCircle : .squareAndArrowUp,
+                    .ellipsisCircle,
                     size: 20, weight: weight,
                     label: .TabToolbarMoreAccessibilityLabel),
                 action: action,

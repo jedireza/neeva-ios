@@ -31,9 +31,11 @@ class HistoryTests: BaseTestCase {
         waitForExistence(app.cells["Clear Browsing Data"])
         app.cells["Clear Browsing Data"].tap()
         app.cells["Clear Selected Data on This Device"].tap()
-        app.buttons["Clear Data"].tap()
 
+        waitForExistence(app.buttons["Clear Data"])
+        app.buttons["Clear Data"].tap()
         waitForNoExistence(app.buttons["Clear Data"])
+
         app.buttons["Settings"].tap()
         app.buttons["Done"].tap()
     }

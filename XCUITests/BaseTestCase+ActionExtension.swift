@@ -23,16 +23,29 @@ extension BaseTestCase {
         }
     }
 
-    /// Launches from tab page, holds reload button
-    func requestDesktopSite() {
-        app.buttons["Reload"].press(forDuration: 1)
-        app.buttons["Request Desktop Site"].tap()
+    /// Reloads the page from the Overflow Menu
+    func reloadPage() {
+        if !iPad() {
+            goToOverflowMenuButton(label: "Reload") { button in
+                button.tap()
+            }
+        } else {
+            app.buttons["Reload"].tap()
+        }
     }
 
-    /// Launches from tab page, holds reload button
+    /// Launches from tab page, switches to desktop site from Overflow Menu
+    func requestDesktopSite() {
+        goToOverflowMenuButton(label: "Request Desktop Site") { button in
+            button.tap()
+        }
+    }
+
+    /// Launches from tab page, switches to mobile site from Overflow Menu
     func requestMobileSite() {
-        app.buttons["Reload"].press(forDuration: 1)
-        app.buttons["Request Mobile Site"].tap()
+        goToOverflowMenuButton(label: "Request Mobile Site") { button in
+            button.tap()
+        }
     }
 
     /// Launches from tab page, ends on tab page
@@ -61,5 +74,16 @@ extension BaseTestCase {
 
         waitForExistence(app.buttons["Edit Current Address"])
         app.buttons["Edit Current Address"].tap()
+    }
+
+    /// Go forward to next visited web site
+    func goForward() {
+        if !iPad() {
+            goToOverflowMenuButton(label: "Forward") { element in
+                element.tap()
+            }
+        } else {
+            app.buttons["Forward"].tap()
+        }
     }
 }

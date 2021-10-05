@@ -103,7 +103,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
 
         toggleIncognito(urlToOpen: path(forTestPage: "test-user-agent.html"))
         // Workaround to be sure the snackbar dissapers
-        app.buttons["Reload"].tap()
+        reloadPage()
         requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
@@ -128,7 +128,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
 
         waitUntilPageLoad()
         // Workaround
-        app.buttons["Reload"].tap()
+        reloadPage()
         requestDesktopSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
@@ -139,28 +139,5 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         waitUntilPageLoad()
 
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-    }
-
-    func testLongPressReload() throws {
-        try skipIfNeeded()
-        openURL(path(forTestPage: "test-user-agent.html"))
-        waitUntilPageLoad()
-        XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
-
-        requestDesktopSite()
-        waitUntilPageLoad()
-        XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
-
-        // Covering scenario that when reloading the page should preserve Desktop site
-        app.buttons["Reload"].tap()
-        XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
-
-        closeAllTabs()
-
-        // Covering scenario that when closing a tab and re-opening should preserve Desktop mode
-        newTab()
-        openURL(path(forTestPage: "test-user-agent.html"))
-        waitUntilPageLoad()
-        XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
     }
 }

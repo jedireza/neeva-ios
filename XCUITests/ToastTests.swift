@@ -29,8 +29,10 @@ class ToastTests: BaseTestCase {
         // test the recently closed tab page
         goToTabTray()
 
+        print(app.debugDescription)
+
         // close tab
-        app.buttons["Close "].tap()
+        app.buttons["Close "].firstMatch.tap()
     }
 
     func testClosedTabToastDoesNotAppear() {

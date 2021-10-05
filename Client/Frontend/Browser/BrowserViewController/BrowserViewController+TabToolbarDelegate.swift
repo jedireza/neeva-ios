@@ -45,7 +45,7 @@ extension BrowserViewController: ToolbarDelegate {
                         menuAction: { action in
                             self.perform(overflowMenuAction: action, targetButtonView: nil)
                         },
-                        changedUserAgent: self.tabManager.selectedTab?.changedUserAgent,
+                        changedUserAgent: self.tabManager.selectedTab?.showRequestDesktop,
                         chromeModel: self.chromeModel,
                         locationModel: self.locationModel
                     )
@@ -83,7 +83,7 @@ extension BrowserViewController: ToolbarDelegate {
             case .showTabs:
                 self.showTabTray()
             case .longPressOverflow:
-                self.showShareSheet(buttonView: self.topBar.view)
+                break
             }
         }
     }

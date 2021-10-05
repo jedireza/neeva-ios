@@ -86,12 +86,15 @@ extension BaseTestCase {
         app.buttons["More"].tap(force: true)
         waitForExistence(app.buttons[label], timeout: 30)
         action(app.buttons[label])
+        
         if shouldDismissOverlay {
-            if iPad() {
-                tapCoordinate(at: 1, and: 100)
-            } else {
-                tapCoordinate(at: 5, and: 50)
-            }
+            tapCoordinate(at: 5, and: 100)
         }
+    }
+
+    /// Launches share sheet from URL bar
+    func goToShareSheet() {
+        waitForExistence(app.buttons["Share"])
+        app.buttons["Share"].tap()
     }
 }

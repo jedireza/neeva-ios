@@ -133,13 +133,22 @@ class Tab: NSObject, ObservableObject {
     /// The last title shown by this tab. Used by the tab tray to show titles for zombie tabs.
     var lastTitle: String?
 
+    var changedUserAgentHasChanged = false
+
     /// Whether or not the desktop site was requested with the last request, reload or navigation.
     var changedUserAgent: Bool = false {
         didSet {
             if changedUserAgent != oldValue {
+                changedUserAgentHasChanged = true
                 TabEvent.post(.didToggleDesktopMode, for: self)
             }
         }
+    }
+
+    var showRequestDesktop: Bool {
+       changedUserAgentHasChanged
+            ? changedUserAgent
+            : UIDevice.current.userInterfaceIdiom == .pad
     }
 
     var readerModeAvailableOrActive: Bool {

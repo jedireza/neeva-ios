@@ -32,30 +32,24 @@ struct TopBarView: View {
                         onLongPress: { performTabToolbarAction(.longPressBackForward) }
                     ).tapTargetFrame()
 
-                    if FeatureFlag[.overflowMenuUpdate] {
-                        TabToolbarButtons.ForwardButton(
-                            weight: .regular,
-                            onForward: { performTabToolbarAction(.forward) },
-                            onLongPress: { performTabToolbarAction(.longPressBackForward) }
-                        ).tapTargetFrame()
+                    TabToolbarButtons.ForwardButton(
+                        weight: .regular,
+                        onForward: { performTabToolbarAction(.forward) },
+                        onLongPress: { performTabToolbarAction(.longPressBackForward) }
+                    ).tapTargetFrame()
 
-                        TabToolbarButtons.ReloadStopButton(
-                            weight: .regular,
-                            onTap: { performTabToolbarAction(.reloadStop) }
-                        ).tapTargetFrame()
-                    }
+                    TabToolbarButtons.ReloadStopButton(
+                        weight: .regular,
+                        onTap: { performTabToolbarAction(.reloadStop) }
+                    ).tapTargetFrame()
 
                     TopBarOverflowMenuButton(
                         changedUserAgent:
-                            chrome.topBarDelegate?.tabManager.selectedTab?.changedUserAgent,
+                            chrome.topBarDelegate?.tabManager.selectedTab?.showRequestDesktop,
                         onOverflowMenuAction: onOverflowMenuAction,
-                        onLongPress: onLongPressOverflowButton
+                        onLongPress: onLongPressOverflowButton,
+                        inTopBar: true
                     )
-
-                    if !FeatureFlag[.overflowMenuUpdate] {
-                        TopBarNeevaMenuButton(
-                            onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
-                    }
                 }
                 TabLocationView(
                     onReload: onReload, onSubmit: onSubmit, onShare: onShare,
@@ -67,10 +61,8 @@ struct TopBarView: View {
                 .padding(.bottom, (chrome.inlineToolbar ? 8 : 10) - 1)
                 .layoutPriority(1)
                 if chrome.inlineToolbar {
-                    if FeatureFlag[.overflowMenuUpdate] {
-                        TopBarNeevaMenuButton(
-                            onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
-                    }
+                    TopBarNeevaMenuButton(
+                        onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
 
                     TabToolbarButtons.AddToSpace(
                         weight: .regular, action: { performTabToolbarAction(.addToSpace) }

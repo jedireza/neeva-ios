@@ -16,7 +16,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case inlineAccountSettings = "Inline Account Settings"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
     case notifications = "Notifications"
-    case overflowMenuUpdate = "Updated Overflow Menu"
     case pinToTopSites = "Pin to Top Sites"
     case readingMode = "Enable Reading Mode"
     case recommendedSpaces = "Recommended Spaces"

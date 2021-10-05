@@ -150,13 +150,7 @@ struct TabLocationView: View {
                                     }
                                 }
 
-                                if FeatureFlag[.overflowMenuUpdate] {
-                                    LocationViewShareButton(url: model.url, onTap: onShare)
-                                } else {
-                                    LocationViewReloadButton(
-                                        buildMenu: buildReloadMenu, state: chromeModel.reloadButton,
-                                        onTap: onReload)
-                                }
+                                LocationViewShareButton(url: model.url, onTap: onShare)
                             }
                         }.transition(.opacity)
                     }

@@ -69,9 +69,7 @@ class NeevaSignInTests: BaseTestCase {
         waitForExistence(app.navigationBars.buttons["Done"])
         app.navigationBars.buttons["Done"].tap()
 
-        // Reload to ensure we are bounced to the marketing site.
-        waitForExistence(app.buttons["Reload"])
-        app.buttons["Reload"].tap()
+        reloadPage()
 
         waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
         waitForExistence(app.buttons["Sign in"])
@@ -85,7 +83,7 @@ class NeevaSignInTests: BaseTestCase {
 
         waitForExistence(app.buttons["Sign In"])
         app.buttons["Sign In"].tap()
-        
+
         waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
 
         doSignIn()
