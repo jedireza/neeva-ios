@@ -435,9 +435,11 @@ class SuggestionModel: ObservableObject {
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
         var hideZeroQuery = true
 
-        var queryAttributes = [ClientLogCounterAttribute]()
-
         var interaction: LogConfig.Interaction?
+
+        var querySuggestionIndex : Int?
+        var suggestedUrl : String?
+        var suggestedQuery : String?
 
         switch suggestion {
         case .query(let suggestion):
@@ -447,24 +449,17 @@ class SuggestionModel: ObservableObject {
             bvc.urlBar(didSubmitText: suggestion.suggestedQuery)
 
             if let index = querySuggestionIndexMap[suggestion.suggestedQuery] {
-                queryAttributes = buildQueryAttributes(
-                    typedQuery: bvc.searchQueryModel.value,
-                    suggestedQuery: suggestion.suggestedQuery,
-                    index: index,
-                    suggestedUrl: nil
-                )
+                querySuggestionIndex = index
+                suggestedQuery = suggestion.suggestedQuery
             }
         case .url(let suggestion):
             interaction =
                 suggestion.title?.isEmpty ?? false ? .PersonalSuggestion : .MemorizedSuggestion
-            if let suggestedQuery = memorizedSuggestionMap[suggestion.suggestedUrl] {
+            suggestedQuery = memorizedSuggestionMap[suggestion.suggestedUrl]
+            if let suggestedQuery = suggestedQuery {
                 if let index = querySuggestionIndexMap[suggestedQuery] {
-                    queryAttributes = buildQueryAttributes(
-                        typedQuery: bvc.searchQueryModel.value,
-                        suggestedQuery: suggestedQuery,
-                        index: index,
-                        suggestedUrl: suggestion.suggestedUrl
-                    )
+                    querySuggestionIndex = index
+                    suggestedUrl = suggestion.suggestedUrl
                 }
             }
             finishEditingAndSubmit(url: URL(string: suggestion.suggestedUrl)!)
@@ -506,6 +501,13 @@ class SuggestionModel: ObservableObject {
         }
 
         if let interaction = interaction {
+            let queryAttributes = buildQueryAttributes(
+                typedQuery: bvc.searchQueryModel.value,
+                suggestedQuery: suggestedQuery,
+                index: querySuggestionIndex,
+                suggestedUrl: suggestedUrl
+            )
+
             ClientLogger.shared.logCounter(
                 interaction,
                 attributes: EnvironmentHelper.shared.getAttributes()
@@ -808,8 +810,8 @@ extension SuggestionModel {
 
     func buildQueryAttributes(
         typedQuery: String,
-        suggestedQuery: String,
-        index: Int,
+        suggestedQuery: String?,
+        index: Int?,
         suggestedUrl: String?
     ) -> [ClientLogCounterAttribute] {
         var queryAttributes =
@@ -818,21 +820,31 @@ extension SuggestionModel {
                     key: LogConfig.SuggestionAttribute.queryInputForSelectedSuggestion,
                     value: typedQuery
                 ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SuggestionAttribute.querySuggestionPosition,
-                    value: String(index)
-                ),
+            ]
+
+        if let suggestedQuery = suggestedQuery {
+            queryAttributes.append(
                 ClientLogCounterAttribute(
                     key: LogConfig.SuggestionAttribute.selectedQuerySuggestion,
                     value: suggestedQuery
-                ),
-            ]
+                )
+            )
+        }
 
         if let suggestedUrl = suggestedUrl {
             queryAttributes.append(
                 ClientLogCounterAttribute(
                     key: LogConfig.SuggestionAttribute.selectedMemorizedURLSuggestion,
                     value: suggestedUrl
+                )
+            )
+        }
+
+        if let index = index {
+            queryAttributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.querySuggestionPosition,
+                    value: String(index)
                 )
             )
         }

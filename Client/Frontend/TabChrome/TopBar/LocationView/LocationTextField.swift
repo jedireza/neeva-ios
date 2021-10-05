@@ -222,9 +222,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let isNoSuggestionQuery = URIFixup.getURL(textField.text ?? "") == nil
         let interaction: LogConfig.Interaction =
             suggestionModel.completion == nil
-            ? (URIFixup.getURL(textField.text ?? "") == nil
+            ? (isNoSuggestionQuery
                 ? .NoSuggestionQuery
                 : .NoSuggestionURL)
             : .AutocompleteSuggestion
@@ -235,11 +236,23 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                     value: String(textField.text?.count ?? 0)
                 )
             ]
+
+        var queryAttributes = [ClientLogCounterAttribute]()
+        if isNoSuggestionQuery {
+            queryAttributes = suggestionModel.buildQueryAttributes(
+                typedQuery: textField.text ?? "",
+                suggestedQuery: nil,
+                index: nil,
+                suggestedUrl: nil
+            )
+        }
+
         ClientLogger.shared.logCounter(
             interaction,
             attributes: EnvironmentHelper.shared.getAttributes()
                 + additionalClientAttribute
-                + suggestionModel.suggestionSnapshotAttributes())
+                + suggestionModel.suggestionSnapshotAttributes()
+                + queryAttributes)
         if let text = accessibilityValue {
             if !text.trimmingCharacters(in: .whitespaces).isEmpty {
                 onSubmit(text)
