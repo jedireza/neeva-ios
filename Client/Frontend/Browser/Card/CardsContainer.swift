@@ -64,47 +64,34 @@ struct CardsContainer: View {
                     }
                 }.offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
                     .animation(.easeInOut)
-                ScrollView(.vertical, showsIndicators: false) {
-                    ScrollViewReader { value in
-                        LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                            TabCardsView()
-                                .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                                .environment(\.selectionCompletion) {
-                                    guard tabGroupModel.detailedTabGroup == nil else {
-                                        return
-                                    }
-                                    ClientLogger.shared.logCounter(
-                                        .SelectTab,
-                                        attributes: getLogCounterAttributesForTabs(
-                                            selectedTabIndex: tabModel.allDetails.index(where: {
-                                                $0.id == tabModel.selectedTabID
-                                            })))
-                                    gridModel.hideWithAnimation()
-                                }
-                        }.background(
-                            GeometryReader { proxy in
-                                Color.clear.preference(
-                                    key: ScrollViewOffsetPreferenceKey.self,
-                                    value: proxy.frame(in: .named("scroll")).minY)
+                GridScrollView(onScrollOffsetChanged: { gridModel.scrollOffset = $0 }) {
+                    scrollProxy in
+                    TabCardsView()
+                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                        .environment(\.selectionCompletion) {
+                            guard tabGroupModel.detailedTabGroup == nil else {
+                                return
                             }
-                        )
-                        .padding(.vertical, CardGridUX.GridSpacing)
+                            ClientLogger.shared.logCounter(
+                                .SelectTab,
+                                attributes: getLogCounterAttributesForTabs(
+                                    selectedTabIndex: tabModel.allDetails.index(where: {
+                                        $0.id == tabModel.selectedTabID
+                                    })))
+                            gridModel.hideWithAnimation()
+                        }
                         .useEffect(
                             deps: tabModel.selectedTabID
                         ) { _ in
                             // TODO Find a better signal to not necessitate the async post here.
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                value.scrollTo(tabModel.selectedTabID)
+                                scrollProxy.scrollTo(tabModel.selectedTabID)
                                 spacesModel.manager.refresh()
                             }
                         }
-                    }
-                }.offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
+                }.environment(\.columns, columns)
+                    .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
                     .animation(.easeInOut)
-                    .coordinateSpace(name: "scroll")
-                    .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { scrollOffset in
-                        gridModel.scrollOffset = scrollOffset
-                    }
             }
         }.onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro else {

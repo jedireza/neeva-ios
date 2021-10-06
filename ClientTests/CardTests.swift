@@ -16,6 +16,7 @@ extension FittedCard: Inspectable {}
 extension Card: Inspectable {}
 extension ThumbnailGroupView: Inspectable {}
 extension DetailView: Inspectable {}
+extension GridScrollView: Inspectable {}
 
 private func assertCast<T>(_ value: Any, to _: T.Type) -> T {
     XCTAssertTrue(value is T)
