@@ -4,19 +4,23 @@ import Shared
 import SwiftUI
 
 struct SuggestedSpacesView: View {
-    @ObservedObject var spaceStore = SpaceStore.shared
+    @ObservedObject var spaceStore =
+        NeevaUserInfo.shared.isUserLoggedIn
+        ? SpaceStore.shared : SpaceStore.suggested
     @ObservedObject var userInfo = NeevaUserInfo.shared
 
     @Environment(\.onOpenURL) var openURL
     @State var shareTargetView: UIView!
 
+    var itemsToShow: Int {
+        userInfo.isUserLoggedIn ? 3 : 6
+    }
+
     var body: some View {
         VStack {
-            if !userInfo.isUserLoggedIn {
-                ZeroQueryPlaceholder(label: "Your spaces go here")
-            } else if case .refreshing = spaceStore.state, spaceStore.allSpaces.isEmpty {
+            if case .refreshing = spaceStore.state, spaceStore.allSpaces.isEmpty {
                 VStack(spacing: ZeroQueryUX.Padding) {
-                    ForEach(0..<3) { _ in
+                    ForEach(0..<itemsToShow) { _ in
                         LoadingSpaceListItem()
                     }
                 }
@@ -25,8 +29,13 @@ struct SuggestedSpacesView: View {
             } else {
                 VStack(spacing: 0) {
                     // show the 3 most recently updated spaces
-                    ForEach(spaceStore.allSpaces.prefix(3)) { space in
-                        Button(action: { openURL(space.url) }) {
+                    ForEach(spaceStore.allSpaces.prefix(itemsToShow)) { space in
+                        Button(action: {
+                            ClientLogger.shared.logCounter(
+                                .RecommendedSpaceVisited,
+                                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                            openURL(space.url)
+                        }) {
                             SuggestedSpaceView(space: space)
                                 .foregroundColor(.primary)
                         }

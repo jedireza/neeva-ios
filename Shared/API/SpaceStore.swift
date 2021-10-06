@@ -107,26 +107,25 @@ public class Space: Hashable, Identifiable {
 public class SpaceStore: ObservableObject {
     public static var shared = SpaceStore()
     public static var suggested = SpaceStore(
-        suggestedIDs: FeatureFlag[.recommendedSpaces]
-            ? [
-                // From neeva.com/community
-                "AvTLrA0-XxVpTsesZx_gRcDBxl4SE9tY6pgF9eNh",
-                "XYJHMw5ptIlAot-1yln1MdLgSOoRsGzn1-b2C3GE",
-                "F5saVvevP299zjEbkh3ZsmzL8SsMERGPtHU7JWkI",
-                "Ok-XsoNeDNzu0uV6ziFFJ-XxH0oGAquIyxPhaweF",
-                "WiF8e6LomHAnUNTudwzpCZ0i3dHsTtiaP14F6FcA",
-                "v8JNVLpV2V_tRshYe87ZXoF2NfkVaMyDKaQImveS",
-                "bG6jT2pnzrmdINzh9vY77wacBjawGfnUlc_V6D1P",
-                "VSg5lqugMVgpyXiCDoQsuEBXbqrwYydDJkOMVSy9",
-                "MwC3dgk3bbVSmB_AGPL0RHMkt-_Ejn5yjOV3sLTF",
-                "Zt0o4Sj_7va3Uakw2V-n6MZ5YY6sVdLSRNcQkNSq",
-                "wb6aqCBubAs9GHAZuq6ycBdzK38DdxpU5PAP9wWC",
-                "brt5oi5afuen3lbh1ij0",
-                "qyAaEMBS-1AZE_3RI-jnlAao6OvbbtT4e294zDM5",
-                "zxrsTxErt66ZvoTG5FBEKG8yHiqiCpfpA4XWybrn",
-                "P18WZHuqEJDnf7llLgmyOIhiLpwF-gLl3OlhT6sh",
-                "brogg3ipmtasecqj230g",
-            ] : [])
+        suggestedIDs: [
+            // From neeva.com/community
+            "AvTLrA0-XxVpTsesZx_gRcDBxl4SE9tY6pgF9eNh",
+            "XYJHMw5ptIlAot-1yln1MdLgSOoRsGzn1-b2C3GE",
+            "F5saVvevP299zjEbkh3ZsmzL8SsMERGPtHU7JWkI",
+            "Ok-XsoNeDNzu0uV6ziFFJ-XxH0oGAquIyxPhaweF",
+            "WiF8e6LomHAnUNTudwzpCZ0i3dHsTtiaP14F6FcA",
+            "v8JNVLpV2V_tRshYe87ZXoF2NfkVaMyDKaQImveS",
+            "bG6jT2pnzrmdINzh9vY77wacBjawGfnUlc_V6D1P",
+            "VSg5lqugMVgpyXiCDoQsuEBXbqrwYydDJkOMVSy9",
+            "MwC3dgk3bbVSmB_AGPL0RHMkt-_Ejn5yjOV3sLTF",
+            "Zt0o4Sj_7va3Uakw2V-n6MZ5YY6sVdLSRNcQkNSq",
+            "wb6aqCBubAs9GHAZuq6ycBdzK38DdxpU5PAP9wWC",
+            "brt5oi5afuen3lbh1ij0",
+            "qyAaEMBS-1AZE_3RI-jnlAao6OvbbtT4e294zDM5",
+            "zxrsTxErt66ZvoTG5FBEKG8yHiqiCpfpA4XWybrn",
+            "P18WZHuqEJDnf7llLgmyOIhiLpwF-gLl3OlhT6sh",
+            "brogg3ipmtasecqj230g",
+        ])
 
     private var suggestedSpaceIDs: [String]? = nil
 

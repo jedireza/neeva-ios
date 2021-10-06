@@ -179,6 +179,18 @@ struct ZeroQueryView: View {
                             ratingsCard(geom.size.width)
                         }
 
+                        if !NeevaUserInfo.shared.isUserLoggedIn {
+                            ZeroQueryHeader(
+                                title: "Spaces from Neeva community",
+                                action: { expandSpaces.toggle() },
+                                label: "\(expandSpaces ? "hides" : "shows") this section",
+                                icon: expandSpaces ? .chevronUp : .chevronDown
+                            )
+                            if expandSpaces {
+                                SuggestedSpacesView()
+                            }
+                        }
+
                         ZeroQueryHeader(
                             title: "Suggested sites",
                             action: { expandSuggestedSites.advance() },
@@ -203,14 +215,16 @@ struct ZeroQueryView: View {
                             SuggestedSearchesView()
                         }
 
-                        ZeroQueryHeader(
-                            title: "Spaces",
-                            action: { expandSpaces.toggle() },
-                            label: "\(expandSpaces ? "hides" : "shows") this section",
-                            icon: expandSpaces ? .chevronUp : .chevronDown
-                        )
-                        if expandSpaces {
-                            SuggestedSpacesView()
+                        if NeevaUserInfo.shared.isUserLoggedIn {
+                            ZeroQueryHeader(
+                                title: "Spaces",
+                                action: { expandSpaces.toggle() },
+                                label: "\(expandSpaces ? "hides" : "shows") this section",
+                                icon: expandSpaces ? .chevronUp : .chevronDown
+                            )
+                            if expandSpaces {
+                                SuggestedSpacesView()
+                            }
                         }
                     }
 

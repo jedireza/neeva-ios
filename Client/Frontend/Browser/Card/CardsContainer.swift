@@ -38,7 +38,8 @@ struct CardsContainer: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     ScrollViewReader { spaceScrollValue in
                         VStack(alignment: .leading) {
-                            if !recommendedSpacesModel.allDetails.isEmpty,
+                            if FeatureFlag[.recommendedSpaces]
+                                && !recommendedSpacesModel.allDetails.isEmpty,
                                 case .spaces = gridModel.switcherState
                             {
                                 RecommendedSpacesView(

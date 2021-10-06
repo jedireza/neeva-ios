@@ -74,6 +74,7 @@ public struct LogConfig {
         case AuthOptionSignupWithMicrosoft  // Click Sign up with Microsoft on auth panel under other options
         case OptionClosePanel  // Click close on the first run under other options
         case AuthOptionClosePanel  // Click close on the auth panel under other options
+        case RecommendedSpaceVisited // Clicked a public space in zero query
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -107,7 +108,6 @@ public struct LogConfig {
         case OwnerSharedSpace
         case FollowerSharedSpace
         case SocialShare
-        case RecommendedSpaceVisited
 
         // ratings card
         case RatingsRateExperience
@@ -228,6 +228,7 @@ public struct LogConfig {
         case .AuthOptionSignupWithMicrosoft: return .FirstRun
         case .OptionClosePanel: return .FirstRun
         case .AuthOptionClosePanel: return .FirstRun
+        case .RecommendedSpaceVisited: return .FirstRun
 
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
@@ -253,7 +254,6 @@ public struct LogConfig {
         case .SpacesDetailEntityClicked: return .Spaces
         case .SpacesDetailEditButtonClicked: return .Spaces
         case .SpacesDetailShareButtonClicked: return .Spaces
-        case .RecommendedSpaceVisited: return .Spaces
         case .OwnerSharedSpace: return .Spaces
         case .FollowerSharedSpace: return .Spaces
         case .SocialShare: return .Spaces
