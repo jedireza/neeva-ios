@@ -114,7 +114,9 @@ struct CardGrid: View {
                             && tabGroupModel.detailedTabGroup == nil)
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
-                    .background(Color.TrayBackground)
+                    .background(
+                        gridModel.animationThumbnailState == .hidden
+                            ? Color.TrayBackground : Color.clear)
 
                 Group {
                     if let spaceDetails = spaceModel.detailedSpace {
