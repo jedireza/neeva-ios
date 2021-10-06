@@ -480,8 +480,10 @@ class SuggestionModel: ObservableObject {
 
             let tabURL = tab.url
             let url =
-                InternalURL.isValid(url: tabURL)
-                ? InternalURL(tabURL)?.originalURLFromErrorPage : tabURL
+                tabURL?.decodeReaderModeURL != nil
+                ? tabURL?.decodeReaderModeURL
+                : InternalURL.isValid(url: tabURL)
+                    ? InternalURL(tabURL)?.originalURLFromErrorPage : tabURL
             bvc.searchQueryModel.value = url?.absoluteString ?? ""
             bvc.zeroQueryModel.targetTab = .currentTab
         case .tabSuggestion(let selectedTab):

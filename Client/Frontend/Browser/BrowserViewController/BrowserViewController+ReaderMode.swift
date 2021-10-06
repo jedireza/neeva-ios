@@ -41,8 +41,7 @@ extension BrowserViewController: ReaderModeDelegate {
                     if readerMode.state == ReaderModeState.active {
                         readerMode.style = ReaderModeStyle(
                             theme: newStyle.theme,
-                            fontType: ReaderModeFontType(type: newStyle.fontType.rawValue),
-                            fontSize: newStyle.fontSize)
+                            fontType: ReaderModeFontType(type: newStyle.fontType.rawValue))
                     }
                 }
             }

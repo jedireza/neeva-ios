@@ -253,17 +253,19 @@ public struct SendFeedbackView: View {
 
         let shareResults = NeevaFeatureFlags[.feedbackQuery] ? shareQuery && query != nil : false
 
-        onFeedbackSend(FeedbackRequest(feedback: SendFeedbackMutation(
-            input: .init(
-                feedback: feedbackText,
-                shareResults: shareResults,
-                requestId: (requestId?.isEmpty ?? true) ? nil : requestId,
-                geoLocationStatus: geoLocationStatus,
-                source: .app,
-                screenshot: shareScreenshot && NeevaFeatureFlags[.feedbackScreenshot]
-                    ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
-            )
-        )))
+        onFeedbackSend(
+            FeedbackRequest(
+                feedback: SendFeedbackMutation(
+                    input: .init(
+                        feedback: feedbackText,
+                        shareResults: shareResults,
+                        requestId: (requestId?.isEmpty ?? true) ? nil : requestId,
+                        geoLocationStatus: geoLocationStatus,
+                        source: .app,
+                        screenshot: shareScreenshot && NeevaFeatureFlags[.feedbackScreenshot]
+                            ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
+                    )
+                )))
 
         if let onDismiss = onDismiss {
             onDismiss()
@@ -300,7 +302,8 @@ struct SendFeedbackView_Previews: PreviewProvider {
         // iPhone 12 screen size
         SendFeedbackView(
             screenshot: UIImage(color: .systemRed, width: 390, height: 844)!,
-            url: nil, requestId: "swiftui-preview", query: "Best Air Purifier", onFeedbackSend: { _ in })
+            url: nil, requestId: "swiftui-preview", query: "Best Air Purifier",
+            onFeedbackSend: { _ in })
         // iPhone 8 screen size
         SendFeedbackView(
             screenshot: UIImage(color: .systemRed, width: 375, height: 667)!,

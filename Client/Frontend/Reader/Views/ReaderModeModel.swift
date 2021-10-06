@@ -7,7 +7,7 @@ import Shared
 class ReaderModeModel: ObservableObject {
     @Published var state: ReaderModeState = .unavailable
     @Published var style: ReaderModeStyle = ReaderModeStyle(
-        theme: .light, fontType: .sansSerif, fontSize: .defaultSize)
+        theme: .light, fontType: .sansSerif)
 
     let setReadingMode: (Bool) -> Void
     let tabManager: TabManager
@@ -39,7 +39,7 @@ class ReaderModeModel: ObservableObject {
     func applyTheme(contentScript: TabContentScript) {
         guard let readerMode = contentScript as? ReaderMode else { return }
 
-        var style = Defaults[.readerModeStyle]
+        var style = Defaults[.readerModeStyle] ?? readerMode.defaultTheme
         style.ensurePreferredColorThemeIfNeeded()
         readerMode.style = style
     }

@@ -480,6 +480,11 @@ private struct EditCurrentURLSuggestionView: View {
 
     var url: URL? {
         let url = suggestion.url
+
+        if let originalURL = url?.decodeReaderModeURL {
+            return originalURL
+        }
+
         return InternalURL.isValid(url: url)
             ? InternalURL(url)?.originalURLFromErrorPage : suggestion.url
     }

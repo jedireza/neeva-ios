@@ -10,10 +10,9 @@ import SwiftyJSON
 import WebKit
 
 extension Defaults.Keys {
-    static let readerModeStyle = Defaults.Key<ReaderModeStyle>(
+    static let readerModeStyle = Defaults.Key<ReaderModeStyle?>(
         "profile.readermode.style",
-        default: ReaderModeStyle(
-            theme: .light, fontType: .sansSerif, fontSize: ReaderModeFontSize.defaultSize))
+        default: nil)
 }
 
 enum ReaderModeMessageType: String {
@@ -102,76 +101,14 @@ enum ReaderModeFontType: String, Codable {
     }
 }
 
-enum ReaderModeFontSize: Int, Codable {
-    case size1 = 1
-    case size2 = 2
-    case size3 = 3
-    case size4 = 4
-    case size5 = 5
-    case size6 = 6
-    case size7 = 7
-    case size8 = 8
-    case size9 = 9
-    case size10 = 10
-    case size11 = 11
-    case size12 = 12
-    case size13 = 13
-
-    func isSmallest() -> Bool {
-        return self == ReaderModeFontSize.size1
-    }
-
-    func smaller() -> ReaderModeFontSize {
-        if isSmallest() {
-            return self
-        } else {
-            return ReaderModeFontSize(rawValue: self.rawValue - 1)!
-        }
-    }
-
-    func isLargest() -> Bool {
-        return self == ReaderModeFontSize.size13
-    }
-
-    static var defaultSize: ReaderModeFontSize {
-        switch UIApplication.shared.preferredContentSizeCategory {
-        case .extraSmall:
-            return .size1
-        case .small:
-            return .size2
-        case .medium:
-            return .size3
-        case .large:
-            return .size5
-        case .extraLarge:
-            return .size7
-        case .extraExtraLarge:
-            return .size9
-        case .extraExtraExtraLarge:
-            return .size12
-        default:
-            return .size5
-        }
-    }
-
-    func bigger() -> ReaderModeFontSize {
-        if isLargest() {
-            return self
-        } else {
-            return ReaderModeFontSize(rawValue: self.rawValue + 1)!
-        }
-    }
-}
-
 struct ReaderModeStyle: Codable {
     var theme: ReaderModeTheme
     var fontType: ReaderModeFontType
-    var fontSize: ReaderModeFontSize
 
     /// Encode the style to a JSON dictionary that can be passed to ReaderMode.js
     func encode() -> String {
         return JSON([
-            "theme": theme.rawValue, "fontType": fontType.rawValue, "fontSize": fontSize.rawValue,
+            "theme": theme.rawValue, "fontType": fontType.rawValue,
         ]).stringify() ?? ""
     }
 
@@ -275,6 +212,10 @@ class ReaderMode: TabContentScript {
         self.tab = tab
     }
 
+    required init() {
+        self.tab = nil
+    }
+
     func scriptMessageHandlerName() -> String? {
         return "readerModeMessageHandler"
     }
@@ -329,7 +270,22 @@ class ReaderMode: TabContentScript {
         }
     }
 
-    var style: ReaderModeStyle = Defaults.Keys.readerModeStyle.defaultValue {
+    var defaultTheme: ReaderModeStyle {
+        if let defaultValue = Defaults.Keys.readerModeStyle.defaultValue {
+            return defaultValue
+        } else if UITraitCollection.current.userInterfaceStyle == .dark {
+            return ReaderModeStyle(
+                theme: .dark, fontType: .sansSerif)
+        }
+
+        return ReaderModeStyle(
+            theme: .light, fontType: .sansSerif)
+    }
+
+    lazy var style: ReaderModeStyle = {
+        defaultTheme
+    }()
+    {
         didSet {
             if state == ReaderModeState.active {
                 tab?.webView?.evaluateJavascriptInDefaultContentWorld(

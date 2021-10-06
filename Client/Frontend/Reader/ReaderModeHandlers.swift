@@ -41,7 +41,8 @@ struct ReaderModeHandlers {
                         // We have this page in our cache, so we can display it. Just grab the correct style from the
                         // profile and then generate HTML from the Readability results.
                         if let html = ReaderModeUtils.generateReaderContent(
-                            readabilityResult, initialStyle: Defaults[.readerModeStyle]),
+                            readabilityResult,
+                            initialStyle: Defaults[.readerModeStyle] ?? ReaderMode().defaultTheme),
                             let response = GCDWebServerDataResponse(html: html)
                         {
                             // Apply a Content Security Policy that disallows everything except images from anywhere and fonts and css from our internal server

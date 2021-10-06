@@ -35,10 +35,12 @@ class BrowserViewController: UIViewController {
     lazy var readerModeModel: ReaderModeModel = {
         let model = ReaderModeModel(
             setReadingMode: { [self] enabled in
-                if enabled {
-                    enableReaderMode()
-                } else {
-                    disableReaderMode()
+                DispatchQueue.main.async {
+                    if enabled {
+                        enableReaderMode()
+                    } else {
+                        disableReaderMode()
+                    }
                 }
             }, tabManager: tabManager)
         model.delegate = self

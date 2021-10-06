@@ -8,7 +8,6 @@ public enum OverflowMenuAction {
     case newTab
     case findOnPage
     case textSize
-    case readingMode
     case desktopSite
     case share
     case downloadPage
@@ -39,21 +38,6 @@ extension BrowserViewController {
                 UserActivityHandler.presentTextSizeView(
                     webView: webView,
                     overlayParent: self)
-            }
-        case .readingMode:
-            if let tab = tabManager.selectedTab,
-               let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode,
-               readerMode.state != .unavailable,
-               FeatureFlag[.readingMode]
-            {
-                switch (readerMode.state) {
-                case .available:
-                    enableReaderMode()
-                case .active:
-                    disableReaderMode()
-                case .unavailable:
-                    break
-                }
             }
         case .desktopSite:
             if let tab = tabManager.selectedTab,

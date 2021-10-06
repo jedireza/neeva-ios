@@ -47,7 +47,10 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         goToClearData()
 
         // Ensure the toggles match our settings.
-        [(Clearable.cache, "0"), (Clearable.cookies, "0"), (Clearable.downloads, "0"), (Clearable.history, "1")].forEach { clearable, switchValue in
+        [
+            (Clearable.cache, "0"), (Clearable.cookies, "0"), (Clearable.downloads, "0"),
+            (Clearable.history, "1"),
+        ].forEach { clearable, switchValue in
             XCTAssertNotNil(
                 tester()
                     .waitForView(

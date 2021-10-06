@@ -64,7 +64,6 @@ extension BrowserViewController {
             TourManager.shared.userReachedStep(tapTarget: .feedbackMenu)
 
             showFeedbackPanel(bvc: self, screenshot: self.feedbackImage)
-
         case .referralPromo:
             // log click referral promo from neeva menu
             var attributes = EnvironmentHelper.shared.getAttributes()

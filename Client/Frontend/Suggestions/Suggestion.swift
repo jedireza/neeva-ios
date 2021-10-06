@@ -86,7 +86,8 @@ extension Suggestion: Identifiable, Equatable {
 
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
 public typealias SuggestionsQueryResult = (
-    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?, [String: String], [String: Int]
+    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?,
+    [String: String], [String: Int]
 )
 extension ActiveLensBangInfo: Equatable {
     static let previewBang = ActiveLensBangInfo(
@@ -199,8 +200,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                 neevaSuggestions.append(Suggestion.query(suggestion))
                 if let urlSuggestions = navSuggestionMap[suggestion.suggestedQuery] {
                     neevaSuggestions.append(contentsOf: urlSuggestions.map(Suggestion.url))
-                    urlSuggestions.forEach{ urlSuggestion in
-                        memorizedSuggestionMap[urlSuggestion.suggestedUrl] = suggestion.suggestedQuery
+                    urlSuggestions.forEach { urlSuggestion in
+                        memorizedSuggestionMap[urlSuggestion.suggestedUrl] =
+                            suggestion.suggestedQuery
                     }
                 }
                 querySuggestionIndexMap[suggestion.suggestedQuery] = index

@@ -126,6 +126,12 @@ struct TabLocationView: View {
                                         Symbol(.docPlaintext, label: "Reader Mode")
                                             .padding()
                                     }
+                                    .accessibilityLabel(
+                                        Text(
+                                            readerModeModel.state == .available
+                                                ? "Open Reading Mode"
+                                                : "Reading Mode Settings")
+                                    )
                                     .foregroundColor(
                                         readerModeModel.state == .active ? .blue : .label
                                     )

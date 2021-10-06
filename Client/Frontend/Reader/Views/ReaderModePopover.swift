@@ -23,7 +23,9 @@ struct ReaderModePopover: View {
                                 theme: .light,
                                 onSelect: { theme in
                                     model.changeTheme(to: theme)
-                                })
+                                }
+                            )
+                            .accessibilityLabel(Text("Light Theme"))
 
                             Spacer()
 
@@ -31,7 +33,9 @@ struct ReaderModePopover: View {
                                 theme: .sepia,
                                 onSelect: { theme in
                                     model.changeTheme(to: theme)
-                                })
+                                }
+                            )
+                            .accessibilityLabel(Text("Sepia Theme"))
 
                             Spacer()
 
@@ -39,9 +43,11 @@ struct ReaderModePopover: View {
                                 theme: .dark,
                                 onSelect: { theme in
                                     model.changeTheme(to: theme)
-                                })
+                                }
+                            )
+                            .accessibilityLabel(Text("Dark Theme"))
                         }
-                    }
+                    }.accessibilityLabel(Text("Reading Mode Theme"))
 
                     Color.groupedBackground.frame(height: 1)
 
@@ -75,9 +81,8 @@ struct ReaderModePopover: View {
                     .modifier(
                         OverlayStepperAccessibilityModifier(
                             accessibilityLabel: "Screen Brightness",
-                            accessibilityValue: textSizeModel.label,
-                            increment: textSizeModel.zoomIn,
-                            decrement: textSizeModel.zoomOut))
+                            increment: model.brightnessModel.increase,
+                            decrement: model.brightnessModel.decrease))
                 }
             }
 
@@ -95,7 +100,9 @@ struct ReaderModePopover: View {
                         .padding(.horizontal)
 
                     Symbol(decorative: .docPlaintext, style: .headingLarge)
-                }.foregroundColor(.label)
+                }
+                .foregroundColor(.label)
+                .accessibilityLabel(Text("Close Reading Mode"))
             }
         }
         .padding()
@@ -116,6 +123,8 @@ struct ReaderModePopover: View {
 struct ReaderModePopover_Previews: PreviewProvider {
     static var previews: some View {
         ReaderModePopover(disableReadingMode: {})
-            .environmentObject(ReaderModeModel(setReadingMode: {_ in}, tabManager: SceneDelegate.getTabManager(for: nil)))
+            .environmentObject(
+                ReaderModeModel(
+                    setReadingMode: { _ in }, tabManager: SceneDelegate.getTabManager(for: nil)))
     }
 }
