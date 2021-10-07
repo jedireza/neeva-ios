@@ -59,30 +59,14 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
     let stringFlags: [NeevaFeatureFlags.StringFlag] = []
 
     var data: [[String: Any]] = []
-    for boolFlag in boolFlags {
-        data.append([
-            "ID": boolFlag.rawValue,
-            "Value": NeevaFeatureFlags[boolFlag],
-        ])
-    }
-    for intFlag in intFlags {
-        data.append([
-            "ID": intFlag.rawValue,
-            "IntValue": NeevaFeatureFlags[intFlag],
-        ])
-    }
-    for floatFlag in floatFlags {
-        data.append([
-            "ID": floatFlag.rawValue,
-            "FloatValue": NeevaFeatureFlags[floatFlag],
-        ])
-    }
-    for stringFlag in stringFlags {
-        data.append([
-            "ID": stringFlag.rawValue,
-            "StringValue": NeevaFeatureFlags[stringFlag],
-        ])
-    }
+    data.append(
+        contentsOf: boolFlags.map { ["ID": $0.rawValue, "Value": NeevaFeatureFlags[$0]] })
+    data.append(
+        contentsOf: intFlags.map { ["ID": $0.rawValue, "IntValue": NeevaFeatureFlags[$0]] })
+    data.append(
+        contentsOf: floatFlags.map { ["ID": $0.rawValue, "FloatValue": NeevaFeatureFlags[$0]] })
+    data.append(
+        contentsOf: stringFlags.map { ["ID": $0.rawValue, "StringValue": NeevaFeatureFlags[$0]] })
 
     var json: JSON = []
     json.arrayObject = data
