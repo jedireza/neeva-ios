@@ -87,6 +87,50 @@ class NotificationManager: ObservableObject {
         }
     }
 
+    func createLocalNotification(
+        identifier: String,
+        timeInterval: TimeInterval,
+        title: String?,
+        subtitle: String?,
+        body: String?,
+        completionHandler: @escaping (Error?) -> Void
+    ) {
+        let content = UNMutableNotificationContent()
+        if let title = title {
+            content.title = title
+        }
+        if let subtitle = subtitle {
+            content.subtitle = subtitle
+        }
+        if let body = body {
+            content.body = body
+        }
+
+        // Create the trigger as a repeating event.
+        let trigger = UNTimeIntervalNotificationTrigger(
+            timeInterval: timeInterval,
+            repeats: false)
+
+        // Create the request
+        let request = UNNotificationRequest(
+            identifier: identifier,
+            content: content,
+            trigger: trigger
+        )
+
+        // Schedule the request with the system.
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.add(request) { (error) in
+            completionHandler(error)
+        }
+    }
+
+    func cancelLocalNotification(identifier: String) {
+        UNUserNotificationCenter
+            .current()
+            .removePendingNotificationRequests(withIdentifiers: [identifier])
+    }
+
     // MARK: - Init
     init() {
         notifications = retrieveNotificationsFromDevice()
