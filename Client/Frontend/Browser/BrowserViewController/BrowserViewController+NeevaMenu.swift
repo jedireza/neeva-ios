@@ -26,7 +26,12 @@ extension BrowserViewController {
             // if user started a tour, trigger navigation on webui side
             // to prevent page refresh, which will lost the states
             if TourManager.shared.userReachedStep(step: .promptSpaceInNeevaMenu) != .stopAction {
-                switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
+                if TourManager.shared.hasActiveStep() {
+                    switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
+                } else {
+                    SpaceStore.shared.refresh()
+                    cardGridViewController.gridModel.showSpaces()
+                }
             }
 
         case .settings:
