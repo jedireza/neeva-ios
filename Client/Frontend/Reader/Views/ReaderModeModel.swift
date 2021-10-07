@@ -5,7 +5,7 @@ import Foundation
 import Shared
 
 class ReaderModeModel: ObservableObject {
-    @Published var state: ReaderModeState = .unavailable
+    @Published private(set) var state: ReaderModeState = .unavailable
     @Published var style: ReaderModeStyle = ReaderModeStyle(
         theme: .light, fontType: .sansSerif)
 
@@ -42,6 +42,14 @@ class ReaderModeModel: ObservableObject {
         var style = Defaults[.readerModeStyle] ?? readerMode.defaultTheme
         style.ensurePreferredColorThemeIfNeeded()
         readerMode.style = style
+    }
+
+    func setReadingModeState(state: ReaderModeState) {
+        if state == .available, let currentURL = tabManager.selectedTab?.url, ReaderModeBlocklist.isSiteBlocked(url: currentURL) {
+            self.state = .unavailable
+        } else {
+            self.state = state
+        }
     }
 
     init(setReadingMode: @escaping (Bool) -> Void, tabManager: TabManager) {

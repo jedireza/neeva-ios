@@ -1519,9 +1519,9 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         if let readerMode = selected?.getContentScript(name: ReaderMode.name()) as? ReaderMode {
-            readerModeModel.state = readerMode.state
+            readerModeModel.setReadingModeState(state: readerMode.state)
         } else {
-            readerModeModel.state = .unavailable
+            readerModeModel.setReadingModeState(state: .unavailable)
         }
 
         if updateZeroQuery {
