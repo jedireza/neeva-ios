@@ -295,7 +295,9 @@ class SuggestionModel: ObservableObject {
 
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
-                    if setCompletion(to: completionForURL(site.url, from: query, site: site), from: query) {
+                    if setCompletion(
+                        to: completionForURL(site.url, from: query, site: site), from: query)
+                    {
                         return
                     }
                 }
@@ -360,9 +362,11 @@ class SuggestionModel: ObservableObject {
         return completionForDomain(domain, from: query, site: site)
     }
 
-    fileprivate func completionForDomain(_ domain: String,
-                                         from query: String,
-                                         site: Site? = nil) -> String? {
+    fileprivate func completionForDomain(
+        _ domain: String,
+        from query: String,
+        site: Site? = nil
+    ) -> String? {
         let domainWithDotPrefix: String = ".\(domain)"
         if let range = domainWithDotPrefix.range(
             of: ".\(query)", options: .caseInsensitive, range: nil, locale: nil)
@@ -437,9 +441,9 @@ class SuggestionModel: ObservableObject {
 
         var interaction: LogConfig.Interaction?
 
-        var querySuggestionIndex : Int?
-        var suggestedUrl : String?
-        var suggestedQuery : String?
+        var querySuggestionIndex: Int?
+        var suggestedUrl: String?
+        var suggestedQuery: String?
 
         switch suggestion {
         case .query(let suggestion):
@@ -821,7 +825,7 @@ extension SuggestionModel {
                 ClientLogCounterAttribute(
                     key: LogConfig.SuggestionAttribute.queryInputForSelectedSuggestion,
                     value: typedQuery
-                ),
+                )
             ]
 
         if let suggestedQuery = suggestedQuery {

@@ -34,6 +34,7 @@ where
 
     @ObservedObject var primitive: Details
     var dismissWithAnimation: () -> Void
+    @State var selectedTabIDs: [String] = []
 
     var space: Space? {
         primitive.manager.get(for: primitive.id) as? Space
@@ -60,6 +61,27 @@ where
                 topBar
                 if tabGroupCardModel.detailedTabGroup != nil {
                     tabGroupGrid
+                    if editMode == .active {
+                        Button(
+                            action: {
+                                selectedTabIDs.forEach {
+                                    tabModel.manager.get(for: $0)?.rootUUID =
+                                        UUID().uuidString
+                                }
+                                tabModel.manager.objectWillChange.send()
+                                editMode = .inactive
+                            },
+                            label: {
+                                Text("Remove from group")
+                                    .withFont(.labelLarge)
+                                    .frame(maxWidth: .infinity)
+                                    .clipShape(Capsule())
+                            }
+                        )
+                        .environment(\.isEnabled, selectedTabIDs.count > 0)
+                        .buttonStyle(NeevaButtonStyle(.primary))
+                        .padding(16)
+                    }
                 } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {
                     EmptySpaceView()
                 } else if showingAsList {
@@ -256,19 +278,21 @@ where
                         .tapTargetFrame()
                 })
             if case .active = editMode {
-                VStack(spacing: 2) {
-                    TextField(
-                        "Enter a name for your Space", text: $newTitle,
-                        onCommit: {
-                            if let space = space, newTitle != primitive.title {
-                                spacesModel.updateSpaceName(space: space, newTitle: newTitle)
+                if space != nil {
+                    VStack(spacing: 2) {
+                        TextField(
+                            "Enter a name for your Space", text: $newTitle,
+                            onCommit: {
+                                if let space = space, newTitle != primitive.title {
+                                    spacesModel.updateSpaceName(space: space, newTitle: newTitle)
+                                }
                             }
-                        }
-                    )
-                    .lineLimit(1)
-                    .foregroundColor(Color.label)
-                    Color.ui.adaptive.separator
-                        .frame(height: 1)
+                        )
+                        .lineLimit(1)
+                        .foregroundColor(Color.label)
+                        Color.ui.adaptive.separator
+                            .frame(height: 1)
+                    }
                 }
             } else {
                 Text(primitive.title)
@@ -287,6 +311,29 @@ where
             if space != nil {
                 shareButton
                 menuButton
+            } else {
+                Button(
+                    action: {
+                        switch editMode {
+                        case .inactive:
+                            editMode = .active
+                        case .active:
+                            editMode = .inactive
+                        default: break
+                        }
+                    }) {
+                        if case .inactive = editMode {
+                            Text("Edit")
+                                .withFont(.headingMedium)
+                                .foregroundColor(.label)
+                                .padding(.horizontal, 15)
+                        } else if case .active = editMode {
+                            Text("Cancel")
+                                .withFont(.headingMedium)
+                                .foregroundColor(.label)
+                                .padding(.horizontal, 15)
+                        }
+                    }
             }
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
@@ -401,12 +448,40 @@ where
                 spacing: CardGridUX.GridSpacing
             ) {
                 ForEach(primitive.allDetails, id: \.id) { details in
-                    FittedCard(details: details)
-                        .modifier(HideSelectedForTransition(details: details))
-                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                        .environment(\.selectionCompletion) {
-                            gridModel.hideWithAnimation()
+                    ZStack(alignment: .topTrailing) {
+                        FittedCard(details: details)
+                            .modifier(HideSelectedForTransition(details: details))
+                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                            .environment(\.selectionCompletion) {
+                                gridModel.hideWithAnimation()
+                            }
+                        if editMode == .active {
+                            Button(action: {
+                                if let index = selectedTabIDs.firstIndex { $0 == details.id } {
+                                    selectedTabIDs.remove(at: index)
+                                } else {
+                                    selectedTabIDs.append(details.id)
+                                }
+                            }) {
+                                Image(
+                                    systemSymbol:
+                                        selectedTabIDs.contains(details.id)
+                                        ? .checkmarkCircleFill : .circle
+                                ).resizable().renderingMode(.template)
+                                    .foregroundColor(
+                                        selectedTabIDs.contains(details.id)
+                                            ? .ui.adaptive.blue : .tertiaryLabel
+                                    )
+                                    .padding(2)
+                                    .frame(width: 24, height: 24)
+                                    .background(Color(UIColor.systemGray6))
+                                    .clipShape(Circle())
+                                    .padding(6)
+                            }
                         }
+
+                    }
+
                 }
                 Spacer()
             }
