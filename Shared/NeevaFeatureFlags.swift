@@ -90,11 +90,12 @@ public class NeevaFeatureFlags {
     }
 
     public enum IntFlag: Int, CaseIterable {
-        // swift-format-ignore: NoLeadingUnderscores
-        case _unused = 0
+        case localNotificationTriggerInterval = 55924
 
         public var name: String {
-            return ""
+            switch self {
+            case .localNotificationTriggerInterval: return "ios.local_notification_trigger_interval"
+            }
         }
     }
 
@@ -109,11 +110,13 @@ public class NeevaFeatureFlags {
 
     public enum StringFlag: Int, CaseIterable {
         case loggingCategories = 51172
+        case localNotificationContent = 55923
 
         public var name: String {
             switch self {
             /// bitmask to control which logging categories to be enabled (see InteractionCategory in LogConfig.swift)
             case .loggingCategories: return "ios.logging_categories"
+            case .localNotificationContent: return "ios.local_notification_content"
             }
         }
     }
