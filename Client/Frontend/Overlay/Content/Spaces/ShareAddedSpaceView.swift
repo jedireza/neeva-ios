@@ -39,8 +39,32 @@ struct ShareAddedSpaceView: View {
             .padding(.top, 16)
             .animation(nil)
             if request.state == .savedToSpace {
-                HStack {
+                HStack(spacing: 24) {
                     Spacer()
+                    Button(
+                        action: {
+                            bvc.cardGridViewController.rootView.openSpace(
+                                spaceID: request.targetSpaceID!)
+                            hideOverlay()
+                            let entity: SpaceEntityData? = space?.contentData?.first
+                            if let id = entity?.id, let space = space {
+                                bvc
+                                    .showModal(
+                                        style: .withTitle
+                                    ) {
+                                        AddToNativeSpaceOverlayContent(
+                                            space: space, entityID: id
+                                        ).environmentObject(
+                                            bvc.cardGridViewController.rootView.spaceCardModel)
+                                    }
+                            }
+                        },
+                        label: {
+                            Text("Edit Item")
+                                .foregroundColor(refreshing ? .tertiaryLabel : .ui.adaptive.blue)
+                                .withFont(.labelLarge)
+                                .disabled(refreshing)
+                        })
                     Button(
                         action: {
                             bvc.cardGridViewController.rootView.openSpace(
@@ -50,7 +74,7 @@ struct ShareAddedSpaceView: View {
                         label: {
                             Text("Open Space")
                                 .foregroundColor(refreshing ? .tertiaryLabel : .ui.adaptive.blue)
-                                .withFont(.bodyLarge)
+                                .withFont(.labelLarge)
                                 .disabled(refreshing)
                         })
                 }

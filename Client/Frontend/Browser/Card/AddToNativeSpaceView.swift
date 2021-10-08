@@ -18,7 +18,7 @@ struct AddToNativeSpaceOverlayContent: View {
     var body: some View {
         AddToNativeSpaceView(space: space, entityID: entityID, dismiss: hideOverlay)
             .overlayIsFixedHeight(isFixedHeight: true)
-            .overlayTitle(title: entityID == nil ? "Add item" : "Update item")
+            .overlayTitle(title: entityID == nil ? "Add item" : "Edit item")
     }
 }
 
@@ -65,12 +65,20 @@ struct AddToNativeSpaceView: View {
                 .withFont(.headingXSmall)
                 .foregroundColor(.secondaryLabel)
             if #available(iOS 15.0, *) {
-                TextField(bodytext, text: inputText)
-                    .withFont(unkerned: .bodyLarge)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .focused($isFocused, equals: title)
-                    .accentColor(textEditAccentColor(type: title))
+                if case .descriptionField = title {
+                    TextEditor(text: inputText)
+                        .withFont(unkerned: .bodyLarge)
+                        .frame(minHeight: 80)
+                        .focused($isFocused, equals: title)
+                        .accentColor(textEditAccentColor(type: title))
+                } else {
+                    TextField(bodytext, text: inputText)
+                        .withFont(unkerned: .bodyLarge)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .focused($isFocused, equals: title)
+                        .accentColor(textEditAccentColor(type: title))
+                }
             } else {
                 TextField(bodytext, text: inputText)
                     .withFont(unkerned: .bodyLarge)
@@ -85,18 +93,20 @@ struct AddToNativeSpaceView: View {
 
     var body: some View {
         GroupedStack {
+            inputField(
+                title: .titleField, bodytext: "Please provide a title", inputText: $titleText)
             if entityID != nil {
                 inputField(
                     title: .descriptionField,
                     bodytext: "Please provide a description",
                     inputText: $descriptionText)
             }
-            inputField(
-                title: .titleField, bodytext: "Please provide a title", inputText: $titleText)
-            inputField(
-                title: .urlField, bodytext: "Add a URL to your new item (optional)",
-                inputText: $urlText
-            )
+            if entityID == nil {
+                inputField(
+                    title: .urlField, bodytext: "Add a URL to your new item (optional)",
+                    inputText: $urlText
+                )
+            }
             Button(
                 action: {
                     if let entityID = entityID {
@@ -132,7 +142,7 @@ struct AddToNativeSpaceView: View {
                     dismiss()
                 },
                 label: {
-                    Text(entityID == nil ? "Save" : "Update")
+                    Text("Save")
                         .withFont(.labelLarge)
                         .frame(maxWidth: .infinity)
                         .clipShape(Capsule())
