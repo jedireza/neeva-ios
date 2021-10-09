@@ -63,7 +63,7 @@ struct CardsContainer: View {
                             }
                     }
                 }.offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
-                    .animation(.easeInOut)
+                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
                 GridScrollView(onScrollOffsetChanged: { gridModel.scrollOffset = $0 }) {
                     scrollProxy in
                     TabCardsView()
@@ -91,7 +91,7 @@ struct CardsContainer: View {
                         }
                 }.environment(\.columns, columns)
                     .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
-                    .animation(.easeInOut)
+                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
             }
         }.onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro else {

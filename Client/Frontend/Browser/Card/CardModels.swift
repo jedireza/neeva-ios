@@ -114,6 +114,7 @@ class SpaceCardModel: CardModel {
     }
 
     var onViewUpdate: () -> Void = {}
+    var thumbnailURLCandidates = [URL: [URL]]()
     private var anyCancellable: AnyCancellable? = nil
     private var recommendationSubscription: AnyCancellable? = nil
     private var editingSubscription: AnyCancellable? = nil
@@ -156,17 +157,21 @@ class SpaceCardModel: CardModel {
 
     func add(spaceID: String, url: String, title: String, description: String? = nil) {
         DispatchQueue.main.async {
-            let request = AddToSpaceWithURLRequest(spaceID: spaceID, url: url, title: title, description: description)
+            let request = AddToSpaceWithURLRequest(
+                spaceID: spaceID, url: url, title: title, description: description)
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
             }.cancel()
         }
     }
 
-    func updateSpaceEntity(spaceID: String, entityID: String, title: String, snippet: String) {
+    func updateSpaceEntity(
+        spaceID: String, entityID: String, title: String, snippet: String, thumbnail: String? = nil
+    ) {
         DispatchQueue.main.async {
             let request = UpdateSpaceEntityRequest(
-                spaceID: spaceID, entityID: entityID, title: title, snippet: snippet)
+                spaceID: spaceID, entityID: entityID, title: title, snippet: snippet,
+                thumbnail: thumbnail)
             request.$state.sink { state in
                 self.stateNeedsRefresh = true
             }.cancel()

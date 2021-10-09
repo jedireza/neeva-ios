@@ -44,7 +44,7 @@ struct ShareAddedSpaceView: View {
                     Button(
                         action: {
                             bvc.cardGridViewController.rootView.openSpace(
-                                spaceID: request.targetSpaceID!)
+                                spaceID: request.targetSpaceID!, animate: false)
                             hideOverlay()
                             let entity: SpaceEntityData? = space?.contentData?.first
                             if let id = entity?.id, let space = space {

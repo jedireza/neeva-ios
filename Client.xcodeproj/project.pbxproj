@@ -151,6 +151,7 @@
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
 		4A9F653F2702D2CE00B7C06E /* SpaceContentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */; };
 		4A9F65412703CA2B00B7C06E /* SpaceContentSheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F65402703CA2B00B7C06E /* SpaceContentSheetModel.swift */; };
+		4A9F65432710A49000B7C06E /* CustomThumbnails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F65422710A49000B7C06E /* CustomThumbnails.swift */; };
 		4A9FCD4626F1074600725E17 /* SocialShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4526F1074600725E17 /* SocialShare.swift */; };
 		4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4726F107BF00725E17 /* ProfileView.swift */; };
 		4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
@@ -1122,6 +1123,7 @@
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceContentSheet.swift; sourceTree = "<group>"; };
 		4A9F65402703CA2B00B7C06E /* SpaceContentSheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceContentSheetModel.swift; sourceTree = "<group>"; };
+		4A9F65422710A49000B7C06E /* CustomThumbnails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThumbnails.swift; sourceTree = "<group>"; };
 		4A9FCD4526F1074600725E17 /* SocialShare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialShare.swift; sourceTree = "<group>"; };
 		4A9FCD4726F107BF00725E17 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
@@ -2188,6 +2190,7 @@
 			isa = PBXGroup;
 			children = (
 				8A422E9A26E19783005CC814 /* AddToNativeSpaceView.swift */,
+				4A9F65422710A49000B7C06E /* CustomThumbnails.swift */,
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
@@ -4803,6 +4806,7 @@
 				F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */,
 				6650586026E68F2F00C9CD51 /* NotificationManager.swift in Sources */,
 				7BEFC6801BFF68C30059C952 /* QuickActions.swift in Sources */,
+				4A9F65432710A49000B7C06E /* CustomThumbnails.swift in Sources */,
 				C9E5F2BA2673F83800025A7F /* DispatchQueueExtensions.swift in Sources */,
 				8A422E9B26E19783005CC814 /* AddToNativeSpaceView.swift in Sources */,
 				C9157BB926BDDA4E009678D9 /* ViewRef.swift in Sources */,

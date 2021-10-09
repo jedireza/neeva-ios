@@ -32,11 +32,12 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environment(\.shareURL, shareURL)
         }
 
-        func openSpace(spaceID: String) {
+        func openSpace(spaceID: String, animate: Bool = true) {
             let detail = spaceCardModel.allDetails.first(where: { $0.id == spaceID })
             withAnimation(nil) {
                 gridModel.showSpaces()
             }
+            gridModel.animateDetailTransitions = animate
             detail?.isShowingDetails = true
         }
 

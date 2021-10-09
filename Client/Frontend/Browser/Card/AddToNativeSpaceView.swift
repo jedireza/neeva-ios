@@ -26,6 +26,7 @@ struct AddToNativeSpaceView: View {
     let space: Space
     let entityID: String?
     let dismiss: () -> Void
+    let thumbnailModel = CustomThumbnailModel()
 
     @EnvironmentObject var spaceModel: SpaceCardModel
     @State var descriptionText: String
@@ -100,6 +101,12 @@ struct AddToNativeSpaceView: View {
                     title: .descriptionField,
                     bodytext: "Please provide a description",
                     inputText: $descriptionText)
+                if let url = URL(string: urlText),
+                    let thumbnails = spaceModel.thumbnailURLCandidates[url],
+                    thumbnailModel.showing
+                {
+                    CustomThumbnailPicker(thumbnails: thumbnails, model: thumbnailModel)
+                }
             }
             if entityID == nil {
                 inputField(
@@ -117,14 +124,16 @@ struct AddToNativeSpaceView: View {
                             url: oldData.url,
                             title: titleText,
                             snippet: descriptionText,
-                            thumbnail: oldData.thumbnail)
-
+                            thumbnail: thumbnailModel.selectedData ?? oldData.thumbnail)
                         spaceModel.detailedSpace?.space?.contentData?.replaceSubrange(
                             index..<(index + 1), with: [newData])
                         spaceModel.detailedSpace?.updateDetails()
                         spaceModel.updateSpaceEntity(
                             spaceID: space.id.id, entityID: entityID,
-                            title: titleText, snippet: descriptionText)
+                            title: titleText, snippet: descriptionText,
+                            thumbnail: thumbnailModel.selectedData)
+                        thumbnailModel.selectedData = nil
+                        thumbnailModel.thumbnailData = [URL: String]()
                     } else {
                         // construct a local spaceEntityData
                         let data = SpaceEntityData(
@@ -150,6 +159,10 @@ struct AddToNativeSpaceView: View {
             )
             .buttonStyle(NeevaButtonStyle(.primary))
             .padding(.vertical, 16)
+        }.onAppear {
+            thumbnailModel.showing = true
+        }.onDisappear {
+            thumbnailModel.showing = false
         }
     }
 

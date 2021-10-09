@@ -99,11 +99,14 @@ public class DeleteSpaceItemsRequest: SpaceRequest<BatchDeleteSpaceResultMutatio
 }
 
 public class UpdateSpaceEntityRequest: SpaceRequest<UpdateSpaceEntityDisplayDataMutation> {
-    public init(spaceID: String, entityID: String, title: String, snippet: String) {
+    public init(
+        spaceID: String, entityID: String, title: String, snippet: String, thumbnail: String?
+    ) {
         super.init(
             mutation: UpdateSpaceEntityDisplayDataMutation(
                 input: UpdateSpaceEntityDisplayDataInput(
-                    spaceId: spaceID, resultId: entityID, title: title, snippet: snippet)))
+                    spaceId: spaceID, resultId: entityID, title: title, snippet: snippet,
+                    thumbnail: thumbnail)))
     }
 }
 
@@ -121,7 +124,8 @@ public class AddToSpaceWithURLRequest: SpaceRequest<AddToSpaceMutation> {
     public init(spaceID: String, url: String, title: String, description: String?) {
         super.init(
             mutation: AddToSpaceMutation(
-                input: AddSpaceResultByURLInput(spaceId: spaceID, url: url, title: title,
-                                                data: description, mediaType: "text/plain")))
+                input: AddSpaceResultByURLInput(
+                    spaceId: spaceID, url: url, title: title,
+                    data: description, mediaType: "text/plain")))
     }
 }

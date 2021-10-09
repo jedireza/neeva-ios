@@ -131,7 +131,7 @@ struct CardGrid: View {
                                 .bottom, .horizontal,
                             ])
                         )
-                        .transition(.flipFromRight)
+                        .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
 
                     }
 

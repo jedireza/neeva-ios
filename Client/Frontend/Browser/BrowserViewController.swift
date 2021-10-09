@@ -1162,9 +1162,11 @@ class BrowserViewController: UIViewController {
 
         // TODO: move this to gridModel in the future
         let tabGroupCardModel = cardGridViewController.rootView.tabGroupCardModel
-        if FeatureFlag[.groupsInSwitcher], let detail = tabGroupCardModel.allDetails.first(where: {
-            $0.id == tabManager.selectedTab?.rootUUID
-        }) {
+        if FeatureFlag[.groupsInSwitcher],
+            let detail = tabGroupCardModel.allDetails.first(where: {
+                $0.id == tabManager.selectedTab?.rootUUID
+            })
+        {
             cardGridViewController.rootView.openTabGroup(detail: detail)
         } else {
             cardGridViewController.gridModel.show()
@@ -1379,7 +1381,9 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didSelectAddToSpaceForSelection selection: String) {
-        showAddToSpacesSheet(url: tab.url!, title: tab.displayTitle, description: selection)
+        showAddToSpacesSheet(
+            url: tab.url!,
+            title: tab.displayTitle, description: selection, webView: tab.webView!)
     }
 
     func tab(_ tab: Tab, didSelectFindInPageForSelection selection: String) {
@@ -1910,15 +1914,41 @@ extension BrowserViewController: JSPromptAlertControllerDelegate {
 
 extension BrowserViewController {
     func showAddToSpacesSheet(
-        url: URL, title: String?,
+        url: URL, title: String?, description: String? = nil,
         webView: WKWebView,
         importData: SpaceImportHandler? = nil
     ) {
-        webView.evaluateJavaScript("document.querySelector('meta[name=\"description\"]').content") {
+        // TODO: Inject this as a ContentScript to avoid the delay here.
+        webView.evaluateJavaScript(SpaceImportHandler.descriptionImageScript) {
             [unowned self]
             (result, error) in
+
+            let output = result as? [[String]]
+
+            // Look at mediaURL from page metadata and large images within the page and dedupe
+            // across URLs
+            var set = Set<String>()
+            var thumbnailUrls = [URL]()
+            if let mediaURL =
+                URL(string: tabManager.getTabForURL(url)?.pageMetadata?.mediaURL ?? "")
+            {
+                thumbnailUrls.append(mediaURL)
+                set.insert(mediaURL.absoluteString)
+            }
+
+            if let imageUrls = output?.last?
+                .filter({ set.update(with: $0) == nil })
+                .compactMap({ $0.asURL })
+            {
+                thumbnailUrls.append(contentsOf: imageUrls)
+            }
+
+            cardGridViewController.rootView
+                .spaceCardModel.thumbnailURLCandidates[url] = thumbnailUrls
+
             showAddToSpacesSheet(
-                url: url, title: title, description: result as? String, importData: importData)
+                url: url, title: title,
+                description: description ?? output?.first?.first, importData: importData)
         }
     }
 

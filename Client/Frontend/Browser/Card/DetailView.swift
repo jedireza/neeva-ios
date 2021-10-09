@@ -105,6 +105,8 @@ where
                 }.transition(.flipFromRight)
                 .animation(.easeInOut)
             }
+        }.onDisappear {
+            gridModel.animateDetailTransitions = true
         }
     }
 

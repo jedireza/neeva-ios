@@ -20,6 +20,7 @@ class GridModel: ObservableObject {
     var scrollOffset: CGFloat = CGFloat.zero
     var buildCloseAllTabsMenu: (() -> UIMenu)!
     var buildRecentlyClosedTabsMenu: (() -> UIMenu)!
+    var animateDetailTransitions = true
 
     func show() {
         animationThumbnailState = .visibleForTrayShow
@@ -49,6 +50,7 @@ class GridModel: ObservableObject {
         updateVisibility(true)
         isHidden = true
         switcherState = .tabs
+        animateDetailTransitions = true
     }
 
     func setVisibilityCallback(updateVisibility: @escaping (Bool) -> Void) {

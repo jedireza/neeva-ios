@@ -17,18 +17,33 @@ public enum SpaceImportDomain: String {
     public var script: String {
         switch self {
         case .linkinbio:
-            return "Array.prototype.map.call(document.querySelectorAll('a.o--card'), function links(element) {var image=element.querySelector('img'); return [image ? image['alt'].substring(0, image['alt'].indexOf('.')+1) : '', element['href']]})"
+            return
+                "Array.prototype.map.call(document.querySelectorAll('a.o--card'), function links(element) {var image=element.querySelector('img'); return [image ? image['alt'].substring(0, image['alt'].indexOf('.')+1) : '', element['href']]})"
         case .linktree:
-            return "Array.prototype.map.call(document.querySelectorAll('a[data-testid=LinkButton]'), element => [element.querySelector('p').innerHTML, element['href']])"
+            return
+                "Array.prototype.map.call(document.querySelectorAll('a[data-testid=LinkButton]'), element => [element.querySelector('p').innerHTML, element['href']])"
         case .likeshop:
-            return "Array.prototype.map.call(document.querySelectorAll('a.media-link'), element => [element.querySelector('img') ? element.querySelector('img')['alt'] : '', element['href']])"
+            return
+                "Array.prototype.map.call(document.querySelectorAll('a.media-link'), element => [element.querySelector('img') ? element.querySelector('img')['alt'] : '', element['href']])"
         case .lnkbio:
-            return "Array.prototype.map.call(document.querySelectorAll('a[class*=pb-linktitle]'), element => [element.innerHTML, unescape(element['href'].substring(21))])"
+            return
+                "Array.prototype.map.call(document.querySelectorAll('a[class*=pb-linktitle]'), element => [element.innerHTML, unescape(element['href'].substring(21))])"
         }
     }
 }
 
 public class SpaceImportHandler {
+    public static let descriptionImageScript = """
+                [[document.querySelector('meta[name=\"description\"]') ?
+                    document.querySelector('meta[name=\"description\"]').content : ''],
+                Array.prototype.map.call(document.querySelectorAll('div img'),
+                    function links(element) {return [element['width']
+                    ? element['width'] : element['style']['width'], element['src']]})
+                .filter(pair => pair[0] != '')
+                .sort((a, b) => b[0] - a[0])
+                .map(pair => pair[1])
+                .slice(0,10)]
+        """
     let title: String
     var data: [SpaceLinkData]
     private var completion: (() -> Void)? = nil
