@@ -120,14 +120,16 @@ struct AddToNativeSpaceView: View {
                         let oldData = (space.contentData?.first(where: { $0.id == entityID }))!
                         let index = (space.contentData?.firstIndex(where: { $0.id == entityID }))!
                         let newData = SpaceEntityData(
-                            id: space.id.id,
+                            id: oldData.id,
                             url: oldData.url,
                             title: titleText,
                             snippet: descriptionText,
                             thumbnail: thumbnailModel.selectedData ?? oldData.thumbnail)
                         spaceModel.detailedSpace?.space?.contentData?.replaceSubrange(
                             index..<(index + 1), with: [newData])
-                        spaceModel.detailedSpace?.updateDetails()
+                        spaceModel.detailedSpace?.allDetails.replaceSubrange(
+                            index..<(index + 1),
+                            with: [SpaceEntityThumbnail(data: newData, spaceID: space.id.id)])
                         spaceModel.updateSpaceEntity(
                             spaceID: space.id.id, entityID: entityID,
                             title: titleText, snippet: descriptionText,
