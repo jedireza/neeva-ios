@@ -7,4 +7,3 @@ github "jrendel/SwiftKeychainWrapper"       ~> 3.2.0
 github "DaveWoodCom/XCGLogger"              ~> 7.0
 github "cezheng/Fuzi"                       ~> 3.0
 github "SwiftyJSON/SwiftyJSON"              ~> 5.0
-github "mozilla-services/shavar-prod-lists" "85.0"

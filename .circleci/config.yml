@@ -41,15 +41,9 @@ commands:
       - run:
           name: Generate user scripts
           command: npm install && npm run build
-  generate-content-blocker:
-    steps:
-      - run:
-          name: Generate content blocker
-          command: (cd content-blocker-lib-ios/ContentBlockerGen && swift run)
   build-client:
     steps:
       - generate-user-scripts
-      - generate-content-blocker
       - run:
           name: Build Client
           command: xcodebuild build-for-testing -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
