@@ -455,6 +455,11 @@ class SuggestionModel: ObservableObject {
             if let index = querySuggestionIndexMap[suggestion.suggestedQuery] {
                 querySuggestionIndex = index
                 suggestedQuery = suggestion.suggestedQuery
+                if let memorizedUrl = memorizedSuggestionMap.first(where: { k, v in
+                    v == suggestedQuery
+                }) {
+                    suggestedUrl = memorizedUrl.key
+                }
             }
         case .url(let suggestion):
             interaction =
