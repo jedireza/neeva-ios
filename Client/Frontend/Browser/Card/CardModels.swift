@@ -94,6 +94,7 @@ class SpaceCardModel: CardModel {
             guard let space = detailedSpace, newValue == nil else {
                 return
             }
+
             space.isShowingDetails = false
         }
 

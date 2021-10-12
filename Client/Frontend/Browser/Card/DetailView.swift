@@ -247,10 +247,11 @@ where
             }
         ).actionSheet(isPresented: $showConfirmDeleteAlert) {
             ActionSheet(
-                title: Text("Are you sure you want to delete this space?"),
+                title: Text("Are you sure you want to" +
+                            (space?.ACL == .owner ? "delete" : "unfollow") + "this space?"),
                 buttons: [
                     .destructive(
-                        Text("Delete Space"),
+                        Text(space?.ACL == .owner ? "Delete Space" : "Unfollow Space"),
                         action: {
                             if let space = space {
                                 guard

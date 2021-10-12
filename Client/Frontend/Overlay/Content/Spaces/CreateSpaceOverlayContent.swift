@@ -6,7 +6,7 @@ import SwiftUI
 
 struct CreateSpaceOverlayContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
-    @EnvironmentObject private var gridModel: GridModel
+    @EnvironmentObject var spaceModel: SpaceCardModel
     @State private var subscription: AnyCancellable? = nil
 
     var body: some View {
@@ -17,8 +17,16 @@ struct CreateSpaceOverlayContent: View {
                     switch state {
                     case .success:
                         SpaceStore.shared.refresh()
-                        gridModel.showSpaces()
-                        subscription?.cancel()
+                        subscription = SpaceStore.shared.$state.sink { state in
+                            if case .ready = state, spaceModel.allDetails.first?.title == spaceName
+                            {
+                                DispatchQueue.main.async {
+                                    spaceModel.allDetails.first?.isShowingDetails = true
+                                    subscription?.cancel()
+                                }
+
+                            }
+                        }
                     case .failure:
                         subscription?.cancel()
                     case .initial:
@@ -26,7 +34,6 @@ struct CreateSpaceOverlayContent: View {
                     }
                 }
             }
-            
             hideOverlay()
         }.overlayIsFixedHeight(isFixedHeight: true)
     }

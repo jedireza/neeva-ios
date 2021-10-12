@@ -81,7 +81,7 @@ class BrowserViewController: UIViewController {
                 createNewSpace: {
                     self.showModal(style: .grouped) {
                         CreateSpaceOverlayContent()
-                            .environmentObject(self.cardGridViewController.gridModel)
+                            .environmentObject(self.cardGridViewController.rootView.spaceCardModel)
                     }
                 },
                 onNeevaMenuAction: self.perform(neevaMenuAction:)))
