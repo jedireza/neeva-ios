@@ -95,8 +95,6 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
             let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
             return tabMenu.createRecentlyClosedTabsMenu()
         }
-
-        SpaceStore.suggested.refresh()
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import Shared
 import SwiftUI
 import UIKit
@@ -8,7 +9,7 @@ class ToastDefaults: NSObject {
     var toast: ToastView?
     var toastProgressViewModel: ToastProgressViewModel?
 
-    private var requestListener: Any?
+    private var requestListener: AnyCancellable?
 
     func showToastForClosedTabs(_ savedTabs: [SavedTab], tabManager: TabManager) {
         guard savedTabs.count > 0 else {
@@ -78,6 +79,13 @@ class ToastDefaults: NSObject {
                 self.toastProgressViewModel?.status = .failed
             } else {
                 self.toastProgressViewModel?.status = .success
+                if let spaceID = request.targetSpaceID {
+                    SpaceStore.shared.refreshSpace(spaceID: spaceID)
+                }
+                self.requestListener = SpaceStore.shared.$state.sink { state in
+                    bvc.chromeModel.urlInSpace = false
+                    self.requestListener?.cancel()
+                }
             }
         }
 
@@ -85,7 +93,6 @@ class ToastDefaults: NSObject {
         let (toastText, completedText, deleted) = request.textInfo
 
         let buttonAction = {
-            SpaceStore.shared.refresh()
             bvc.cardGridViewController.gridModel.showSpaces()
         }
 

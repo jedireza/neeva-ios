@@ -57,7 +57,9 @@ class SpaceContentSheetModel: ObservableObject {
             self.selectedTab = tab
 
             if !self.addedComments.isEmpty {
-                SpaceStore.shared.refresh()
+                if let spaceID = self.currentSpaceEntityDetail?.spaceID {
+                    SpaceStore.shared.refreshSpace(spaceID: spaceID)
+                }
                 self.addedComments = []
             }
 

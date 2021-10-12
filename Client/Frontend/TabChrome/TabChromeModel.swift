@@ -6,6 +6,7 @@ import SwiftUI
 class TabChromeModel: ObservableObject {
     @Published var canGoBack: Bool
     @Published var canGoForward: Bool
+    @Published var urlInSpace: Bool = false
 
     /// True when the toolbar is inline with the location view
     /// (when in landscape or on iPad)
@@ -14,6 +15,7 @@ class TabChromeModel: ObservableObject {
 
     @Published var isPage: Bool
 
+    var appActiveRefreshSubscription: AnyCancellable? = nil
     private var subscriptions: Set<AnyCancellable> = []
     weak var topBarDelegate: TopBarDelegate? {
         didSet {

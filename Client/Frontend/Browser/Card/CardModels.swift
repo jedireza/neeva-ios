@@ -107,9 +107,9 @@ class SpaceCardModel: CardModel {
                 return
             }
 
-            if stateNeedsRefresh {
-                manager.refresh()
-                stateNeedsRefresh = false
+            if let id = spaceNeedsRefresh {
+                manager.refreshSpace(spaceID: id)
+                spaceNeedsRefresh = nil
             }
         }
     }
@@ -120,11 +120,10 @@ class SpaceCardModel: CardModel {
     private var recommendationSubscription: AnyCancellable? = nil
     private var editingSubscription: AnyCancellable? = nil
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
-    private var stateNeedsRefresh = false
+    private var spaceNeedsRefresh: String? = nil
 
     init(manager: SpaceStore = SpaceStore.shared) {
         self.manager = manager
-        self.manager.refresh()
 
         self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
             if detailedSpace != nil {
@@ -161,7 +160,7 @@ class SpaceCardModel: CardModel {
             let request = AddToSpaceWithURLRequest(
                 spaceID: spaceID, url: url, title: title, description: description)
             request.$state.sink { state in
-                self.stateNeedsRefresh = true
+                self.spaceNeedsRefresh = spaceID
             }.cancel()
         }
     }
@@ -174,7 +173,7 @@ class SpaceCardModel: CardModel {
                 spaceID: spaceID, entityID: entityID, title: title, snippet: snippet,
                 thumbnail: thumbnail)
             request.$state.sink { state in
-                self.stateNeedsRefresh = true
+                self.spaceNeedsRefresh = spaceID
             }.cancel()
         }
     }
@@ -186,7 +185,7 @@ class SpaceCardModel: CardModel {
         DispatchQueue.main.async {
             let request = DeleteSpaceItemsRequest(spaceID: spaceID, ids: entities.map { $0.id })
             request.$state.sink { state in
-                self.stateNeedsRefresh = true
+                self.spaceNeedsRefresh = spaceID
             }.cancel()
 
             ToastDefaults().showToastForRemoveFromSpace(
@@ -210,7 +209,7 @@ class SpaceCardModel: CardModel {
         DispatchQueue.main.async {
             let request = ReorderSpaceRequest(spaceID: spaceID, ids: entities)
             request.$state.sink { state in
-                self.stateNeedsRefresh = true
+                self.spaceNeedsRefresh = spaceID
             }.cancel()
         }
     }
@@ -220,14 +219,14 @@ class SpaceCardModel: CardModel {
             if add {
                 let request = AddPublicACLRequest(spaceID: space.id.id)
                 request.$state.sink { state in
-                    self.stateNeedsRefresh = true
+                    self.spaceNeedsRefresh = space.id.id
                     space.isPublic = true
                     self.objectWillChange.send()
                 }.cancel()
             } else {
                 let request = DeletePublicACLRequest(spaceID: space.id.id)
                 request.$state.sink { state in
-                    self.stateNeedsRefresh = true
+                    self.spaceNeedsRefresh = space.id.id
                     space.isPublic = false
                     self.objectWillChange.send()
                 }.cancel()
@@ -240,7 +239,7 @@ class SpaceCardModel: CardModel {
             let request = AddSoloACLsRequest(
                 spaceID: space.id.id, emails: emails, acl: acl, note: note)
             request.$state.sink { state in
-                self.stateNeedsRefresh = true
+                self.spaceNeedsRefresh = space.id.id
                 space.isShared = true
                 self.objectWillChange.send()
             }.cancel()
@@ -251,7 +250,7 @@ class SpaceCardModel: CardModel {
         DispatchQueue.main.async {
             let request = UpdateSpaceRequest(spaceID: space.id.id, name: newTitle)
             request.$state.sink { state in
-                self.stateNeedsRefresh = true
+                self.spaceNeedsRefresh = space.id.id
                 space.name = newTitle
                 self.objectWillChange.send()
             }.cancel()
@@ -266,7 +265,7 @@ class SpaceCardModel: CardModel {
                 switch state {
                 case .success:
                     self.editingSubscription?.cancel()
-                    self.stateNeedsRefresh = true
+                    self.spaceNeedsRefresh = spaceID
                     self.detailedSpace = nil
                 case .failure:
                     self.editingSubscription?.cancel()
@@ -280,7 +279,7 @@ class SpaceCardModel: CardModel {
                 switch state {
                 case .success:
                     self.editingSubscription?.cancel()
-                    self.stateNeedsRefresh = true
+                    self.spaceNeedsRefresh = spaceID
                     self.detailedSpace = nil
                 case .failure:
                     self.editingSubscription?.cancel()
@@ -292,18 +291,19 @@ class SpaceCardModel: CardModel {
     }
 
     func recommendedSpaceSelected(details: SpaceCardDetails) {
+        let spaceID = details.id
         let space = SpaceStore.suggested.allSpaces.first(where: {
-            details.id == $0.id.id
+            $0.id.id == spaceID
         })
         SpaceStore.onRecommendedSpaceSelected(space: space!)
         SpaceStore.shared.objectWillChange.send()
         recommendationSubscription = objectWillChange.sink {
             let newDetails = self.allDetails.first(where: {
-                $0.id == details.id
+                $0.id == spaceID
             })
             DispatchQueue.main.async {
                 newDetails?.isShowingDetails = true
-                self.stateNeedsRefresh = true
+                self.spaceNeedsRefresh = spaceID
                 self.recommendationSubscription?.cancel()
             }
         }

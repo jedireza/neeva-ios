@@ -6,6 +6,7 @@ import SwiftUI
 
 struct ShareAddedSpaceView: View {
     @Environment(\.hideOverlay) private var hideOverlay
+    @EnvironmentObject private var chromeModel: TabChromeModel
 
     @State var subscription: AnyCancellable? = nil
     @State var refreshing = false
@@ -128,11 +129,16 @@ struct ShareAddedSpaceView: View {
                     attributes: getLogCounterAttributesForSpaces(
                         details: space == nil
                             ? nil : SpaceCardDetails(space: space!, manager: SpaceStore.shared)))
-                SpaceStore.shared.refresh()
+                if let space = space {
+                    SpaceStore.shared.refreshSpace(spaceID: space.id.id)
+                } else {
+                    SpaceStore.shared.refresh()
+                }
                 refreshing = true
                 subscription = SpaceStore.shared.$state.sink { state in
                     if case .ready = state {
                         refreshing = false
+                        chromeModel.urlInSpace = SpaceStore.shared.urlInASpace(request.url)
                         subscription?.cancel()
                     } else if case .failed = state {
                         refreshing = false
