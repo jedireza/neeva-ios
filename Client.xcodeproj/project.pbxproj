@@ -297,7 +297,10 @@
 		BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */; };
 		BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8ABEA126D88F2500E4A415 /* SearchController.swift */; };
 		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
+		BC93328C2714790C00B9BE1C /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */; };
+		BC9332902715386A00B9BE1C /* RecipeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328F2715386A00B9BE1C /* RecipeBanner.swift */; };
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
+		BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */; };
 		BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		BCC138902656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		BCC138922656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
@@ -1288,7 +1291,10 @@
 		BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClusterView.swift; sourceTree = "<group>"; };
 		BC8ABEA126D88F2500E4A415 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
+		BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
+		BC93328F2715386A00B9BE1C /* RecipeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBanner.swift; sourceTree = "<group>"; };
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
+		BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetStripView.swift; sourceTree = "<group>"; };
 		BCC1388E2656CBDB0018D87D /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
 		BCC1389F2656CBE70018D87D /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
 		BCC138B02656CBF20018D87D /* nicons-600.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-600.ttf"; sourceTree = "<group>"; };
@@ -2494,6 +2500,9 @@
 				C832BF8026E1566E00B9A1F8 /* CheatsheetOverlayContent.swift */,
 				BCC7CA472703E938004714C0 /* CompactNeevaMenuButtonView.swift */,
 				BCC7CA49270401AC004714C0 /* RecipeView.swift */,
+				BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */,
+				BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */,
+				BC93328F2715386A00B9BE1C /* RecipeBanner.swift */,
 			);
 			path = Cheatsheet;
 			sourceTree = "<group>";
@@ -4903,6 +4912,7 @@
 				435222C125882E3800FCA5B6 /* WidgetKitTopSiteModel.swift in Sources */,
 				4A88F97526630EFC007C203D /* CardDetails.swift in Sources */,
 				C9F49CBD266FDA9500F3408A /* SearchBar.swift in Sources */,
+				BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */,
 				435D7CC5246209AA0043ACB9 /* IntroViewController.swift in Sources */,
 				C9655DEF26A09A8600925912 /* CardListViews.swift in Sources */,
 				A83E5AB71C1D993D0026D912 /* UIPasteboardExtensions.swift in Sources */,
@@ -4916,6 +4926,7 @@
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				C9F49CB7266E5E1800F3408A /* SuggestedSpaceViews.swift in Sources */,
 				666CFD8A26C735DC009ED9CF /* EmptyCardGrid.swift in Sources */,
+				BC9332902715386A00B9BE1C /* RecipeBanner.swift in Sources */,
 				E65075611E37F77D006961AC /* MenuHelper.swift in Sources */,
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
@@ -5027,6 +5038,7 @@
 				C9299E382694DF5800758795 /* BrowserViewController+TopBarDelegate.swift in Sources */,
 				C8F457AA1F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift in Sources */,
 				8A2401CB26BB4D75006ABF7D /* RatingsCard.swift in Sources */,
+				BC93328C2714790C00B9BE1C /* RecipeViewModel.swift in Sources */,
 				4A88F97726630F39007C203D /* Card.swift in Sources */,
 				E40FAB0C1A7ABB77009CB80D /* WebServer.swift in Sources */,
 				59A68D66379CFA85C4EAF00B /* TwoLineCell.swift in Sources */,

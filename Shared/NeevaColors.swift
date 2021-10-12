@@ -124,6 +124,8 @@ extension UIColor {
             named: "UI/Gray 97", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
         public static let gray98 = UIColor(
             named: "UI/Gray 98", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+        public static let quarternary = UIColor(
+            named: "UI/Quarternary", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 
         public enum adaptive {
             public static let blue = UIColor(
@@ -219,6 +221,7 @@ extension Color {
         public static let gray96 = Color(UIColor.ui.gray96)
         public static let gray97 = Color(UIColor.ui.gray97)
         public static let gray98 = Color(UIColor.ui.gray98)
+        public static let quarternary = Color(UIColor.ui.quarternary)
 
         public enum adaptive {
             public static let blue = Color(UIColor.ui.adaptive.blue)

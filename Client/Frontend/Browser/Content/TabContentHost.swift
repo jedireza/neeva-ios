@@ -35,6 +35,9 @@ class TabContentHostModel: ObservableObject {
     }
     /// Current content UI that is showing
     @Published var currentContentUI: ContentUIType
+
+    @Published var recipeModel: RecipeViewModel
+
     var subscription: AnyCancellable? = nil
 
     init(tabManager: TabManager) {
@@ -42,6 +45,7 @@ class TabContentHostModel: ObservableObject {
         let type = webView.map(ContentUIType.webPage) ?? .blank
         self.webContainerType = type
         self.currentContentUI = type
+        self.recipeModel = RecipeViewModel(tabManager: tabManager)
         self.subscription = tabManager.selectedTabPublisher.sink { [unowned self] tab in
             guard let webView = tab?.webView else {
                 webContainerType = .blank
@@ -87,6 +91,19 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                             SpaceContentSheet(
                                 model: spaceContentSheetModel!,
                                 scrollingController: bvc.scrollController)
+                        }
+                        if NeevaFeatureFlags[.recipeCheatsheet] {
+                            GeometryReader { geo in
+                                VStack {
+                                    Spacer()
+                                    RecipeCheatsheetStripView(
+                                        tabManager: bvc.tabManager,
+                                        recipeModel: model.recipeModel,
+                                        scrollingController: bvc.scrollController,
+                                        height: geo.size.height
+                                    )
+                                }
+                            }
                         }
                     }
                 case .zeroQuery:
@@ -152,8 +169,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 bvc: bvc,
                 zeroQueryModel: zeroQueryModel,
                 suggestionModel: suggestionModel,
-                spaceContentSheetModel: FeatureFlag[.spaceComments]
-                    ? SpaceContentSheetModel(tabManager: bvc.tabManager) : nil)
+                spaceContentSheetModel: FeatureFlag[.spaceComments] ? SpaceContentSheetModel(tabManager: bvc.tabManager) : nil)
         }
 
         suggestionModel.getKeyboardHeight = {

@@ -67,7 +67,7 @@ struct QueryButton: View {
     }
 }
 
-class CheatsheetMenuViewModel: ObservableObject {
+public class CheatsheetMenuViewModel: ObservableObject {
     @Published var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
     @Published var searchRichResults: [SearchController.RichResult]?
     @Published var currentPageURL: URL?
@@ -110,6 +110,7 @@ public struct CheatsheetMenuView: View {
                 VStack(alignment: .leading) {
                     CompactNeevaMenuView(menuAction: menuAction)
                     recipeView
+                        .padding()
                     richResult()
                     priceHistorySection
                     reviewURLSection
@@ -137,14 +138,16 @@ public struct CheatsheetMenuView: View {
                             maxStars: recipe.recipeRating?.maxStars ?? 0,
                             recipeStars: recipe.recipeRating?.recipeStars ?? 0,
                             numReviews: recipe.recipeRating?.numReviews ?? 0),
-                        reviews: constructReviewList(recipe: recipe)
+                        reviews: constructReviewList(recipe: recipe),
+                        faviconURL: nil,
+                        currentURL: nil
                     )
                 }
             }
         }
     }
 
-    func constructReviewList(recipe: CheatsheetQueryController.Recipe) -> [Review] {
+    func constructReviewList(recipe: Recipe) -> [Review] {
         guard let reviewList = recipe.reviews else { return [] }
         return reviewList.map { item in
             Review(

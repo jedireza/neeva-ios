@@ -888,6 +888,10 @@ extension BrowserViewController: WKNavigationDelegate {
                 // fetch cheatsheet info
                 tab.fetchCheatsheetInfo()
             }
+
+            if NeevaFeatureFlags[.recipeCheatsheet] {
+                self.tabContentHost.model.recipeModel.updateContentWithURL(url: url.absoluteString)
+            }
         }
 
         // The document has changed. This metadata is now invalid.

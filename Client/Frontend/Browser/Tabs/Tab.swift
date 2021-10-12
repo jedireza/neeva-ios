@@ -291,7 +291,6 @@ class Tab: NSObject, ObservableObject {
             switch result {
             case .success(let cheatsheetInfo):
                 self.cheatsheetData = cheatsheetInfo[0]
-
                 // when cheatsheet data fetched successfully
                 // fetch other rich result
                 if let queries = cheatsheetInfo[0].memorizedQuery {

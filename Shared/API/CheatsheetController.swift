@@ -37,6 +37,30 @@ public struct RecipeRating {
     }
 }
 
+public struct Recipe {
+    public var title: String
+    public var imageURL: String
+    public var totalTime: String?
+    public var prepTime: String?
+    public var yield: String?
+    public var ingredients: [String]?
+    public var instructions: [String]?
+    public var recipeRating: RecipeRating?
+    public var reviews: [Review]?
+
+    public init(title: String, imageURL: String, totalTime: String?, prepTime: String?, yield: String? , ingredients: [String]?, instructions: [String]?, recipeRating: RecipeRating?, reviews: [Review]?) {
+        self.title = title
+        self.imageURL = imageURL
+        self.totalTime = totalTime
+        self.prepTime = prepTime
+        self.yield = yield
+        self.ingredients = ingredients
+        self.instructions = instructions
+        self.recipeRating = recipeRating
+        self.reviews = reviews
+    }
+}
+
 public class CheatsheetQueryController:
     QueryController<CheatsheetInfoQuery, [CheatsheetQueryController.CheatsheetInfo]>
 {
@@ -51,18 +75,6 @@ public class CheatsheetQueryController:
     public struct PriceDate {
         public var Date: String
         public var Price: String
-    }
-
-    public struct Recipe {
-        public var title: String
-        public var imageURL: String
-        public var totalTime: String?
-        public var prepTime: String?
-        public var yield: String?
-        public var ingredients: [String]?
-        public var instructions: [String]?
-        public var recipeRating: RecipeRating?
-        public var reviews: [Review]?
     }
 
     public struct CheatsheetInfo {
