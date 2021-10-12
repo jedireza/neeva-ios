@@ -372,7 +372,7 @@
 		C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */; };
 		C8F457AA1F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */; };
 		C8FB0C782321523D00031088 /* PageActionMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FB0C772321523D00031088 /* PageActionMenu.swift */; };
-		C9086050266693340049C072 /* CapsuleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908604F266693340049C072 /* CapsuleTextField.swift */; };
+		C9086050266693340049C072 /* SingleLineTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908604F266693340049C072 /* SingleLineTextField.swift */; };
 		C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90860512666BEE30049C072 /* SpacerExtensions.swift */; };
 		C9098F5B26AF452C00D2B5F4 /* TopBarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9098F5A26AF452C00D2B5F4 /* TopBarButtons.swift */; };
 		C9098F5E26AF48BC00D2B5F4 /* TabChromeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9098F5D26AF48BC00D2B5F4 /* TabChromeModel.swift */; };
@@ -1333,7 +1333,7 @@
 		C8F457A71F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+WebViewDelegates.swift"; sourceTree = "<group>"; };
 		C8F457A91F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+KeyCommands.swift"; sourceTree = "<group>"; };
 		C8FB0C772321523D00031088 /* PageActionMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageActionMenu.swift; sourceTree = "<group>"; };
-		C908604F266693340049C072 /* CapsuleTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleTextField.swift; sourceTree = "<group>"; };
+		C908604F266693340049C072 /* SingleLineTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLineTextField.swift; sourceTree = "<group>"; };
 		C90860512666BEE30049C072 /* SpacerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerExtensions.swift; sourceTree = "<group>"; };
 		C9098F5A26AF452C00D2B5F4 /* TopBarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarButtons.swift; sourceTree = "<group>"; };
 		C9098F5D26AF48BC00D2B5F4 /* TabChromeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabChromeModel.swift; sourceTree = "<group>"; };
@@ -2686,7 +2686,7 @@
 			children = (
 				66BEFDC826A7678200AA32EF /* GroupedCell.swift */,
 				C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */,
-				C908604F266693340049C072 /* CapsuleTextField.swift */,
+				C908604F266693340049C072 /* SingleLineTextField.swift */,
 				C9C18DD926558FF3004710CD /* ActivityIndicator.swift */,
 				C9C18DD226558FF2004710CD /* DecorativeSection.swift */,
 				C9C18DD626558FF3004710CD /* ModalPresentationController.swift */,
@@ -4501,7 +4501,7 @@
 				C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */,
 				C9C18E4E26559766004710CD /* AddToSpaceView.swift in Sources */,
 				C9C18E5426559827004710CD /* Space.swift in Sources */,
-				C9086050266693340049C072 /* CapsuleTextField.swift in Sources */,
+				C9086050266693340049C072 /* SingleLineTextField.swift in Sources */,
 				E65075BF1E37F7AB006961AC /* UserAgent.swift in Sources */,
 				C9C18E5D265598EA004710CD /* AbstractController.swift in Sources */,
 				C9C18E3E26559504004710CD /* ErrorView.swift in Sources */,

@@ -25,8 +25,9 @@ struct SpacesSearchHeaderView: View {
 
     var body: some View {
         HStack(spacing: 24) {
-            CapsuleTextField(icon: Symbol(decorative: .magnifyingglass, style: .labelLarge),
-                              placeholder: "Search Spaces", text: $searchText)
+            SingleLineTextField(
+                icon: Symbol(decorative: .magnifyingglass, style: .labelLarge),
+                placeholder: "Search Spaces", text: $searchText)
             Button {
                 self.createAction()
             } label: {
@@ -65,6 +66,7 @@ struct SpacesSearchHeaderView: View {
 struct SpacesSearchHeaderView_Previews: PreviewProvider {
     static var previews: some View {
         SpacesSearchHeaderView(searchText: .constant(""), createAction: {}, onDismiss: {})
-        SpacesSearchHeaderView(searchText: .constant("Hello, world"), createAction: {}, onDismiss: {})
+        SpacesSearchHeaderView(
+            searchText: .constant("Hello, world"), createAction: {}, onDismiss: {})
     }
 }

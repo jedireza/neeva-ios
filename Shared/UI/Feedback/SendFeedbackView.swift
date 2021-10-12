@@ -41,6 +41,7 @@ public struct SendFeedbackView: View {
     @Environment(\.onOpenURL) var onOpenURL
 
     @State var url: URL?
+    @State var email = ""
     @State var feedbackText = ""
     @State var shareURL = true
     @State var isEditingURL = false
@@ -72,11 +73,28 @@ public struct SendFeedbackView: View {
                         Spacer()
                     }
 
+                    if !NeevaUserInfo.shared.isUserLoggedIn {
+                        GroupedCell {
+                            SingleLineTextField(
+                                useCapsuleBackground: false,
+                                "Please share your email so we can assist you.",
+                                text: $email,
+                                focusTextField: true
+                            ).padding(.vertical, 7)
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.brand.blue, lineWidth: 4)
+                                .padding(.horizontal, -10)
+                                .opacity(shouldHighlightTextInput ? 1 : 0)
+                        )
+                    }
+
                     GroupedCell {
                         MultilineTextField(
                             "Please share your questions, issues, or feature requests. Your feedback helps us improve Neeva!",
                             text: $feedbackText,
-                            focusTextField: true
+                            focusTextField: false
                         ).padding(.vertical, 7)
                     }
                     .overlay(
@@ -111,7 +129,8 @@ public struct SendFeedbackView: View {
                             }
                         }
 
-                        if let query = query, requestId != nil, NeevaFeatureFlags[.feedbackQuery] {
+                        if let query = query, requestId != nil,
+                            NeevaFeatureFlags[.feedbackQuery] {
                             GroupedCell {
                                 Toggle(isOn: $shareQuery) {
                                     VStack(alignment: .leading, spacing: 0) {
@@ -182,7 +201,7 @@ public struct SendFeedbackView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Send", action: sendFeedbackHandler)
-                        .disabled(feedbackText.isEmpty)
+                        .disabled(feedbackText.isEmpty || (!NeevaUserInfo.shared.isUserLoggedIn && email.isEmpty))
                 }
             }
         }
@@ -261,9 +280,10 @@ public struct SendFeedbackView: View {
                         shareResults: shareResults,
                         requestId: (requestId?.isEmpty ?? true) ? nil : requestId,
                         geoLocationStatus: geoLocationStatus,
-                        source: .app,
+                        source: NeevaUserInfo.shared.isUserLoggedIn ? .iosApp : .iosAppLoggedOut,
                         screenshot: shareScreenshot && NeevaFeatureFlags[.feedbackScreenshot]
-                            ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil
+                            ? editedScreenshot.reduceAndConvertToBase64(maxSize: 800) : nil,
+                        userProvidedEmail: email.isEmpty ? nil : email
                     )
                 )))
 

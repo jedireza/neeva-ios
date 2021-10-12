@@ -3017,22 +3017,28 @@ public struct SendFeedbackV2Input: GraphQLMapConvertible {
 public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case app
+  case standalonePage
   case extensionUninstall
   case appRegistration
   case appOnboarding
   case appLogin
   case appAccountDeletion
+  case iosApp
+  case iosAppLoggedOut
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
   public init?(rawValue: RawValue) {
     switch rawValue {
       case "App": self = .app
+      case "StandalonePage": self = .standalonePage
       case "ExtensionUninstall": self = .extensionUninstall
       case "AppRegistration": self = .appRegistration
       case "AppOnboarding": self = .appOnboarding
       case "AppLogin": self = .appLogin
       case "AppAccountDeletion": self = .appAccountDeletion
+      case "IOSApp": self = .iosApp
+      case "IOSAppLoggedOut": self = .iosAppLoggedOut
       default: self = .__unknown(rawValue)
     }
   }
@@ -3040,11 +3046,14 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   public var rawValue: RawValue {
     switch self {
       case .app: return "App"
+      case .standalonePage: return "StandalonePage"
       case .extensionUninstall: return "ExtensionUninstall"
       case .appRegistration: return "AppRegistration"
       case .appOnboarding: return "AppOnboarding"
       case .appLogin: return "AppLogin"
       case .appAccountDeletion: return "AppAccountDeletion"
+      case .iosApp: return "IOSApp"
+      case .iosAppLoggedOut: return "IOSAppLoggedOut"
       case .__unknown(let value): return value
     }
   }
@@ -3052,11 +3061,14 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   public static func == (lhs: FeedbackSource, rhs: FeedbackSource) -> Bool {
     switch (lhs, rhs) {
       case (.app, .app): return true
+      case (.standalonePage, .standalonePage): return true
       case (.extensionUninstall, .extensionUninstall): return true
       case (.appRegistration, .appRegistration): return true
       case (.appOnboarding, .appOnboarding): return true
       case (.appLogin, .appLogin): return true
       case (.appAccountDeletion, .appAccountDeletion): return true
+      case (.iosApp, .iosApp): return true
+      case (.iosAppLoggedOut, .iosAppLoggedOut): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -3065,11 +3077,14 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   public static var allCases: [FeedbackSource] {
     return [
       .app,
+      .standalonePage,
       .extensionUninstall,
       .appRegistration,
       .appOnboarding,
       .appLogin,
       .appAccountDeletion,
+      .iosApp,
+      .iosAppLoggedOut,
     ]
   }
 }

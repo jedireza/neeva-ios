@@ -4,9 +4,10 @@ import SwiftUI
 
 /// A custom `TextField` that matches our style — a rounded, gray background with slightly darker placeholder text than normal. We also add a clear button.
 /// TODO: make this into a `TextFieldStyle` when that becomes possible
-public struct CapsuleTextField<Icon: View>: View {
+public struct SingleLineTextField<Icon: View>: View {
     private let onEditingChanged: ((Bool) -> Void)?
 
+    let useCapsuleBackground: Bool
     let icon: Icon?
     let placeholder: String
     @Binding var text: String
@@ -70,6 +71,15 @@ public struct CapsuleTextField<Icon: View>: View {
         }
     }
 
+    @ViewBuilder
+    var background: some View {
+        if useCapsuleBackground {
+            Capsule()
+        } else {
+            EmptyView()
+        }
+    }
+
     public var body: some View {
         HStack(spacing: 8) {
             if let icon = icon {
@@ -79,17 +89,25 @@ public struct CapsuleTextField<Icon: View>: View {
             ZStack(alignment: .leading) {
                 if text.isEmpty {
                     if !errorMessage.isEmpty {
-                        Text(errorMessage).withFont(.bodyMedium).foregroundColor(.red)
+                        Text(errorMessage)
+                            .withFont(useCapsuleBackground ? .bodyMedium : .bodyLarge)
+                            .foregroundColor(.red)
                             .accessibilityHidden(true)
                     } else {
-                        Text(placeholder).withFont(.bodyMedium).foregroundColor(.secondaryLabel)
+                        Text(placeholder)
+                            .withFont(useCapsuleBackground ? .bodyMedium : .bodyLarge)
+                            .foregroundColor(
+                                useCapsuleBackground
+                                    ? .secondaryLabel : Color(UIColor.placeholderText)
+                            )
+                            .padding(.leading, useCapsuleBackground ? 0 : 4)
                             .accessibilityHidden(true)
                     }
                 }
 
                 textField
                     .accessibilityLabel(placeholder)
-                    .withFont(unkerned: .bodyMedium)
+                    .withFont(unkerned: useCapsuleBackground ? .bodyMedium : .bodyLarge)
                     .introspectTextField { textField in
                         if focusTextField && !focusedTextField {
                             focusedTextField = true
@@ -124,13 +142,16 @@ public struct CapsuleTextField<Icon: View>: View {
             }
         }
         .font(.system(size: 14))
-        .padding(10)
-        .padding(.leading, 7)
-        .background(Capsule().fill(Color.tertiarySystemFill))
+        .padding(useCapsuleBackground ? 10 : 0)
+        .padding(.leading, useCapsuleBackground ? 7 : 0)
+        .frame(minHeight: 44)
+        .background(background.foregroundColor(Color.tertiarySystemFill))
     }
 
     public init(
-        icon: Icon, placeholder: String,
+        useCapsuleBackground: Bool = true,
+        icon: Icon,
+        placeholder: String,
         text: Binding<String>,
         errorMessage: Binding<String> = .constant(""),
         alwaysShowClearButton: Bool = true,
@@ -139,6 +160,7 @@ public struct CapsuleTextField<Icon: View>: View {
         secureText: Bool = false,
         onEditingChanged: ((Bool) -> Void)? = nil
     ) {
+        self.useCapsuleBackground = useCapsuleBackground
         self.icon = icon
         self.placeholder = placeholder
         self._text = text
@@ -153,8 +175,9 @@ public struct CapsuleTextField<Icon: View>: View {
     }
 }
 
-extension CapsuleTextField where Icon == Never {
+extension SingleLineTextField where Icon == Never {
     init(
+        useCapsuleBackground: Bool = true,
         _ placeholder: String,
         text: Binding<String>,
         errorMessage: Binding<String> = .constant(""),
@@ -164,6 +187,7 @@ extension CapsuleTextField where Icon == Never {
         secureText: Bool = false,
         onEditingChanged: ((Bool) -> Void)? = nil
     ) {
+        self.useCapsuleBackground = useCapsuleBackground
         self.icon = nil
         self.placeholder = placeholder
         self._text = text
@@ -181,13 +205,13 @@ extension CapsuleTextField where Icon == Never {
 struct PlaceholderField_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            CapsuleTextField("Placeholder", text: .constant(""))
-            CapsuleTextField("Placeholder", text: .constant("Hello, world!"))
-            CapsuleTextField("Placeholder", text: .constant("Hello, world!"), detailText: "Text")
-            CapsuleTextField(
+            SingleLineTextField("Placeholder", text: .constant(""))
+            SingleLineTextField("Placeholder", text: .constant("Hello, world!"))
+            SingleLineTextField("Placeholder", text: .constant("Hello, world!"), detailText: "Text")
+            SingleLineTextField(
                 icon: Symbol(decorative: .starFill), placeholder: "Placeholder", text: .constant("")
             )
-            CapsuleTextField(
+            SingleLineTextField(
                 icon: Symbol(decorative: .starFill), placeholder: "Placeholder",
                 text: .constant("Hello, world!"))
         }.padding().previewLayout(.sizeThatFits)

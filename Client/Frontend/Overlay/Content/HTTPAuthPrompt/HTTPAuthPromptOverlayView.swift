@@ -26,14 +26,14 @@ struct HTTPAuthPromptOverlayView: View {
                     .foregroundColor(.secondaryLabel)
             }.padding(.bottom, 14)
 
-            CapsuleTextField(
+            SingleLineTextField(
                 icon: Symbol(decorative: .personFill, style: .labelLarge), placeholder: "Username",
                 text: $username
             )
             .accessibilityIdentifier("Auth_Username_Field")
             .accessibility(label: Text("Username"))
 
-            CapsuleTextField(
+            SingleLineTextField(
                 icon: Symbol(decorative: .lockFill, style: .labelLarge), placeholder: "Password",
                 text: $password, alwaysShowClearButton: false, secureText: true
             )

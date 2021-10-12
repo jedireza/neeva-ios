@@ -25,7 +25,7 @@ public struct CreateSpaceView: View {
 
     public var body: some View {
         VStack(spacing: 20) {
-            CapsuleTextField("Space name", text: $spaceName)
+            SingleLineTextField("Space name", text: $spaceName)
 
             Button(action: {
                 self.onDismiss(self.spaceName)

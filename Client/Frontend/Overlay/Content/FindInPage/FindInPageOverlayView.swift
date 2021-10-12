@@ -11,7 +11,7 @@ struct FindInPageView: View {
 
     public var body: some View {
         HStack {
-            CapsuleTextField(
+            SingleLineTextField(
                 icon: Symbol(decorative: .magnifyingglass, style: .labelLarge),
                 placeholder: "Search Page",
                 text: $model.searchValue,
