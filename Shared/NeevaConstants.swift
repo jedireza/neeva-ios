@@ -45,6 +45,10 @@ public struct NeevaConstants {
     public static var appFAQURL: URL { buildAppURL("faq") }
     public static var appWelcomeToursURL: URL { buildAppURL("#modal-hello") }
 
+    public static var createOktaAccountURL: URL { buildAppURL("login/create") }
+    public static var oktaLoginBaseURL: URL { buildAppURL("login") }
+    public static var verificationRequiredURL: URL { buildAppURL("p/signup/verification-required") }
+
     public static let appMarketingURL: URL = "https://neeva.com/"
     public static let appHelpCenterURL: URL = "https://help.neeva.com/"
     public static let appPrivacyURL = appMarketingURL / "privacy"
@@ -169,14 +173,18 @@ public struct NeevaConstants {
         return authURL.withQueryParams(queryItems)
     }
 
-    // Construct url for okta signup
-    public static func oktaSignupURL(email: String, marketingEmailOptOut: Bool) -> URL {
+    public static func encodeEmail(email: String) -> String? {
         let emailAllowedCharacter = CharacterSet(
             charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
         let encodedEmail = email.addingPercentEncoding(withAllowedCharacters: emailAllowedCharacter)
+        return encodedEmail
+    }
+
+    // Construct url for okta signup
+    public static func oktaSignupURL(email: String, marketingEmailOptOut: Bool) -> URL {
         var oktaURL = appSignupURL.absoluteString
 
-        if let encodedEmail = encodedEmail {
+        if let encodedEmail = encodeEmail(email: email) {
             oktaURL =
                 appSignupURL.absoluteString
                 + "?emp="
@@ -186,6 +194,19 @@ public struct NeevaConstants {
 
         }
         return URL(string: oktaURL)!
+    }
+
+    // Construct url for okta signin
+    public static func oktaSigninURL(email: String) -> URL {
+        var oktaLoginURL = oktaLoginBaseURL.absoluteString
+
+        if let encodedEmail = encodeEmail(email: email) {
+            oktaLoginURL =
+                oktaLoginBaseURL.absoluteString
+                + "?provider=neeva.co/auth/oauth2/authenticators/okta&loginHint="
+                + encodedEmail
+        }
+        return URL(string: oktaLoginURL)!
     }
 
     public enum OAuthProvider: String {

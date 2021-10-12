@@ -3,7 +3,7 @@
 import Shared
 import SwiftUI
 
-struct AuthButton: View {
+public struct AuthButton: View {
     var action: () -> Void
     var icon: String
     var label: String
@@ -11,7 +11,7 @@ struct AuthButton: View {
     var backgroundColor: Color
     var tintIcon: Bool = false
 
-    var body: some View {
+    public var body: some View {
         Button(action: action) {
             HStack {
                 Image(icon)
@@ -32,41 +32,44 @@ struct AuthButton: View {
     }
 }
 
-struct SignUpWithAppleButton: View {
+public struct SignUpWithAppleButton: View {
     var action: () -> Void
+    @Binding public var onSignInMode: Bool
 
-    var body: some View {
+    public var body: some View {
         AuthButton(
             action: action,
             icon: "apple",
-            label: "Sign up with Apple",
+            label: "Sign \(onSignInMode ? "in" : "up") with Apple",
             textColor: .brand.white,
             backgroundColor: Color.black,
             tintIcon: true)
     }
 }
 
-struct SignUpWithGoogleButton: View {
+public struct SignUpWithGoogleButton: View {
     var action: () -> Void
+    @Binding public var onSignInMode: Bool
 
-    var body: some View {
+    public var body: some View {
         AuthButton(
             action: action,
             icon: "google_icon",
-            label: "Sign up with Google",
+            label: "Sign \(onSignInMode ? "in" : "up") with Google",
             textColor: Color.ui.gray20,
             backgroundColor: .brand.white)
     }
 }
 
-struct SignUpWithMicrosoftButton: View {
+public struct SignUpWithMicrosoftButton: View {
     var action: () -> Void
+    @Binding public var onSignInMode: Bool
 
-    var body: some View {
+    public var body: some View {
         AuthButton(
             action: action,
             icon: "microsoft",
-            label: "Sign up with Microsoft",
+            label: "Sign \(onSignInMode ? "in" : "up") with Microsoft",
             textColor: Color.ui.gray20,
             backgroundColor: .brand.white)
     }
@@ -84,7 +87,23 @@ struct SignInButton: View {
                 .multilineTextAlignment(.center)
                 .accessibilityLabel("Sign In")
         }
-        .padding(.bottom, 30)
+        .padding(.bottom, 10)
+    }
+}
+
+struct SignUpButton: View {
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            (Text("Don't have an account? ")
+                .foregroundColor(Color.ui.gray50)
+                + Text("Sign Up").foregroundColor(Color.ui.gray20).fontWeight(.medium))
+                .font(.system(size: 14))
+                .multilineTextAlignment(.center)
+                .accessibilityLabel("Sign Up")
+        }
+        .padding(.bottom, 10)
     }
 }
 
@@ -104,6 +123,6 @@ struct FirstRunCloseButton: View {
 
 struct AuthButton_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpWithAppleButton(action: {})
+        SignUpWithAppleButton(action: {}, onSignInMode: .constant(false))
     }
 }

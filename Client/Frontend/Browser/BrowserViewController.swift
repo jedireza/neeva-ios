@@ -1600,6 +1600,13 @@ extension BrowserViewController {
     }
 
     private func showProperIntroVC(onDismiss: (() -> Void)? = nil) {
+        func setToken(token: String) {
+            let httpCookieStore = self.tabManager.configuration.websiteDataStore
+                .httpCookieStore
+            httpCookieStore.setCookie(NeevaConstants.loginCookie(for: token))
+            NeevaUserInfo.shared.setLoginCookie(token)
+        }
+
         introViewController = IntroViewController()
 
         introViewController!.didFinishClosure = { action in
@@ -1621,18 +1628,18 @@ extension BrowserViewController {
                     }
                     openURLInNewTab(URL(string: "https://neeva.com"))
                     break
-                case .oktaSignup(let email, let marketingEmailOptOut):
+                case .oktaSignin(let email):
                     self.openURLInNewTab(
-                        NeevaConstants.oktaSignupURL(
-                            email: email,
-                            marketingEmailOptOut: marketingEmailOptOut))
+                        NeevaConstants.oktaSigninURL(email: email))
+                    break
+                case .oktaSignup(_, _, _, _):
+                    break
                 case .oauthWithProvider(_, _, let token):
-                    let httpCookieStore = self.tabManager.configuration.websiteDataStore
-                        .httpCookieStore
-                    httpCookieStore.setCookie(NeevaConstants.loginCookie(for: token))
-                    NeevaUserInfo.shared.setLoginCookie(token)
-
+                    setToken(token: token)
                     openURLInNewTab(NeevaConstants.appHomeURL)
+                case .oktaAccountCreated(let token):
+                    setToken(token: token)
+                    openURLInNewTab(NeevaConstants.verificationRequiredURL)
                 }
                 self.introViewController = nil
             }

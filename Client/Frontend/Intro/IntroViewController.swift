@@ -14,8 +14,10 @@ enum FirstRunButtonActions {
     case signupWithApple(Bool?, URL?)
     case signupWithOther
     case skipToBrowser
-    case oktaSignup(String, Bool)
+    case oktaSignup(String, String, String, Bool)  //email, first name, password, marketing option
+    case oktaSignin(String)  // email
     case oauthWithProvider(NeevaConstants.OAuthProvider, Bool, String)
+    case oktaAccountCreated(String)  // token
 }
 
 class IntroViewController: UIViewController {
@@ -63,43 +65,36 @@ class IntroViewController: UIViewController {
                 self.marketingEmailOptOut = marketingEmailOptOut ?? false
                 self.doSignupWithApple()
             case FirstRunButtonActions.signin:
-                if Defaults[.introSeen] {
-                    // beyond first run screen
-                    ClientLogger.shared.logCounter(
-                        .AuthSignin,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                } else {
-                    // first run screen
-                    ClientLogger.shared.logCounter(
-                        .FirstRunSignin,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                    Defaults[.firstRunPath] = "FirstRunSignin"
-                }
-                self.didFinishClosure?(.signin)
+                break
             case .signupWithOther:
-                if Defaults[.introSeen] {
-                    // beyond first run screen
-                    ClientLogger.shared.logCounter(
-                        .AuthOtherSignUpOptions,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                } else {
-                    // first run screen
-                    ClientLogger.shared.logCounter(
-                        .FirstRunOtherSignUpOptions,
-                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                    Defaults[.firstRunPath] = "FirstRunOtherSignUpOptions"
-                }
-                self.didFinishClosure?(.signupWithOther)
+                break
             case FirstRunButtonActions.skipToBrowser:
                 if !Defaults[.introSeen] {
                     Defaults[.firstRunPath] = "FirstRunSkipToBrowser"
                 }
                 self.didFinishClosure?(.skipToBrowser)
-            case FirstRunButtonActions.oktaSignup(let email, let marketingEmailOptOut):
-                self.didFinishClosure?(.oktaSignup(email, marketingEmailOptOut))
+            case FirstRunButtonActions.oktaSignup(
+                let email,
+                let firstname,
+                let password,
+                let marketingEmailOptOut
+            ):
+                self.createOktaAccount(
+                    email: email,
+                    firstname: firstname,
+                    password: password,
+                    marketingEmailOptOut: marketingEmailOptOut
+                )
+                break
+            case FirstRunButtonActions.oktaSignin(let email):
+                self.didFinishClosure?(.oktaSignin(email))
+                break
             case FirstRunButtonActions.oauthWithProvider(let provider, let marketingEmailOptOut, _):
                 self.marketingEmailOptOut = marketingEmailOptOut
                 self.oauthWithProvider(provider: provider)
+                break
+            case FirstRunButtonActions.oktaAccountCreated(_):
+                break
             }
         }
     }
@@ -181,7 +176,7 @@ class IntroViewController: UIViewController {
         session.start()
     }
 
-    private func showErrorAlert(errMsg: String) {
+    func showErrorAlert(errMsg: String) {
         let alert = UIAlertController(title: "Error", message: errMsg, preferredStyle: .alert)
         alert.addAction(
             UIAlertAction(
@@ -194,7 +189,6 @@ class IntroViewController: UIViewController {
             )
         )
         self.present(alert, animated: true, completion: nil)
-
     }
 }
 

@@ -8,6 +8,7 @@ struct FirstRunHomePage: View {
     var buttonAction: (FirstRunButtonActions) -> Void
     @Binding var marketingEmailOptOut: Bool
     @Binding var onOtherOptionsPage: Bool
+    @Binding var onSignInMode: Bool
 
     let smallSizeScreen: CGFloat = 375.0
 
@@ -44,11 +45,15 @@ struct FirstRunHomePage: View {
                     action: {
                         logFirstRunSignUpWithAppleClick()
                         buttonAction(.signupWithApple(marketingEmailOptOut, nil))
-                    }
+                    },
+                    onSignInMode: $onSignInMode
                 )
                 .padding(.top, 40)
 
-                Button(action: { onOtherOptionsPage = true }) {
+                Button(action: {
+                    logFirstRunOtherSignupOption()
+                    onOtherOptionsPage = true
+                }) {
                     HStack {
                         Spacer()
                         Text("Other sign up options")
@@ -82,7 +87,12 @@ struct FirstRunHomePage: View {
 
             Spacer()
 
-            SignInButton(action: { buttonAction(.signin) })
+            SignInButton(action: {
+                logFirstRunSignin()
+                onOtherOptionsPage = true
+                onSignInMode = true
+            })
+            .padding(.bottom, 20)
         }
         .padding(35)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -110,6 +120,10 @@ struct FirstRunHomePage: View {
     }
 
     func logFirstRunSignUpWithAppleClick() {
+        if onSignInMode {
+            return
+        }
+
         if Defaults[.introSeen] {
             // beyond first run screen
             ClientLogger.shared.logCounter(
@@ -124,6 +138,10 @@ struct FirstRunHomePage: View {
     }
 
     func logFirstRunSkipToBrowser() {
+        if onSignInMode {
+            return
+        }
+
         if Defaults[.introSeen] {
             // beyond first run screen
             ClientLogger.shared.logCounter(
@@ -135,6 +153,40 @@ struct FirstRunHomePage: View {
                 attributes: EnvironmentHelper.shared.getFirstRunAttributes())
         }
     }
+
+    func logFirstRunOtherSignupOption() {
+        if onSignInMode {
+            return
+        }
+
+        if Defaults[.introSeen] {
+            // beyond first run screen
+            ClientLogger.shared.logCounter(
+                .AuthOtherSignUpOptions,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        } else {
+            // first run screen
+            ClientLogger.shared.logCounter(
+                .FirstRunOtherSignUpOptions,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+            Defaults[.firstRunPath] = "FirstRunOtherSignUpOptions"
+        }
+    }
+
+    func logFirstRunSignin() {
+        if Defaults[.introSeen] {
+            // beyond first run screen
+            ClientLogger.shared.logCounter(
+                .AuthSignin,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        } else {
+            // first run screen
+            ClientLogger.shared.logCounter(
+                .FirstRunSignin,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+            Defaults[.firstRunPath] = "FirstRunSignin"
+        }
+    }
 }
 
 struct IntroFirstRunView: View {
@@ -142,17 +194,21 @@ struct IntroFirstRunView: View {
 
     @State var marketingEmailOptOut = false
     @State var onOtherOptionsPage = false
+    @State var onSignInMode = false
 
     var body: some View {
         if onOtherOptionsPage {
             OtherOptionsPage(
                 buttonAction: buttonAction,
-                marketingEmailOptOut: $marketingEmailOptOut)
+                marketingEmailOptOut: $marketingEmailOptOut,
+                onSignInMode: $onSignInMode
+            )
         } else {
             FirstRunHomePage(
                 buttonAction: buttonAction,
                 marketingEmailOptOut: $marketingEmailOptOut,
-                onOtherOptionsPage: $onOtherOptionsPage)
+                onOtherOptionsPage: $onOtherOptionsPage,
+                onSignInMode: $onSignInMode)
         }
     }
 }
