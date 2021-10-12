@@ -28,8 +28,6 @@ struct CardsContainer: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
 
-    @StateObject private var recommendedSpacesModel = SpaceCardModel(manager: SpaceStore.suggested)
-
     let columns: [GridItem]
 
     var body: some View {
@@ -38,15 +36,6 @@ struct CardsContainer: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     ScrollViewReader { spaceScrollValue in
                         VStack(alignment: .leading) {
-                            if FeatureFlag[.recommendedSpaces]
-                                && !recommendedSpacesModel.allDetails.isEmpty,
-                                case .spaces = gridModel.switcherState
-                            {
-                                RecommendedSpacesView(
-                                    recommendedSpacesModel: recommendedSpacesModel
-                                ).id(
-                                    RecommendedSpacesView.ID)
-                            }
                             LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
                                 SpaceCardsView()
                                     .environment(\.columns, columns)
@@ -56,9 +45,7 @@ struct CardsContainer: View {
                                 deps: gridModel.isHidden
                             ) { _ in
                                 spaceScrollValue.scrollTo(
-                                    recommendedSpacesModel.allDetails.isEmpty
-                                        ? spacesModel.allDetails.first?.id ?? ""
-                                        : RecommendedSpacesView.ID
+                                    spacesModel.allDetails.first?.id ?? ""
                                 )
                             }
                     }
@@ -121,7 +108,7 @@ func getLogCounterAttributesForTabs(selectedTabIndex: Int?) -> [ClientLogCounter
 
 struct RecommendedSpacesView: View {
     static let ID = "Recommended"
-    @ObservedObject var recommendedSpacesModel: SpaceCardModel
+    @StateObject private var recommendedSpacesModel = SpaceCardModel(manager: SpaceStore.suggested)
     @EnvironmentObject var spaceModel: SpaceCardModel
 
     @State private var subscription: AnyCancellable? = nil
