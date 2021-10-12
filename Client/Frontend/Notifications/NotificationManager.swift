@@ -15,12 +15,16 @@ class NotificationManager: ObservableObject {
         }
     }
 
+    var upcomingNotifications: [BaseNotification] {
+        notifications.filter { $0.dateReceived > Date() }
+    }
+
     var readNotifications: [BaseNotification] {
         notifications.filter { !$0.isUnread }
     }
 
     var unreadNotifications: [BaseNotification] {
-        notifications.filter { $0.isUnread }
+        notifications.filter { $0.isUnread && $0.dateReceived <= Date() }
     }
 
     var shouldShowBadge: Bool {
@@ -87,18 +91,18 @@ class NotificationManager: ObservableObject {
         }
     }
 
+    // MARK: - Notification Creation
     func createLocalNotification(
         identifier: String,
+        type: NotificationType? = nil,
         timeInterval: TimeInterval,
-        title: String?,
-        subtitle: String?,
+        title: String,
+        subtitle: String? = nil,
         body: String?,
-        completionHandler: @escaping (Error?) -> Void
+        completionHandler: @escaping (Result<BaseNotification, Error>) -> Void
     ) {
         let content = UNMutableNotificationContent()
-        if let title = title {
-            content.title = title
-        }
+        content.title = title
         if let subtitle = subtitle {
             content.subtitle = subtitle
         }
@@ -121,7 +125,15 @@ class NotificationManager: ObservableObject {
         // Schedule the request with the system.
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.add(request) { (error) in
-            completionHandler(error)
+            if let error = error {
+                completionHandler(.failure(error))
+            } else {
+                let baseNotification = BaseNotification(
+                    id: identifier, type: type, title: title, subtitle: subtitle, body: body,
+                    dateReceived: Date(timeIntervalSinceNow: timeInterval))
+                self.notifications.append(baseNotification)
+                completionHandler(.success(baseNotification))
+            }
         }
     }
 
@@ -129,6 +141,26 @@ class NotificationManager: ObservableObject {
         UNUserNotificationCenter
             .current()
             .removePendingNotificationRequests(withIdentifiers: [identifier])
+
+        if let index = notifications.firstIndex(where: { $0.id == identifier }) {
+            notifications.remove(at: index)
+        }
+    }
+
+    func rescheduleNotification(identifier: String) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { pendingNotifications in
+            for notification in pendingNotifications where notification.identifier == identifier {
+                self.cancelLocalNotification(identifier: identifier)
+
+                if let trigger = notification.trigger as? UNTimeIntervalNotificationTrigger {
+                    self.createLocalNotification(
+                        identifier: notification.identifier, timeInterval: trigger.timeInterval,
+                        title: notification.content.title, subtitle: notification.content.subtitle,
+                        body: notification.content.body
+                    ) { _ in }
+                }
+            }
+        }
     }
 
     // MARK: - Init

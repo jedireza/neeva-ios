@@ -86,6 +86,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         checkUserActivenessLastWeek()
+
+        NotificationPermissionHelper.shared.isAuthorized { authorized in
+            if FeatureFlag[.notifications] && authorized {
+                LocalNotitifications.rescheduleNotificationIfNeeded(
+                    for: .neevaPromo,
+                    completion: { rescheduled in
+                        if !rescheduled {
+                            LocalNotitifications.createNeevaPromoCallback()
+                        }
+                    })
+            }
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

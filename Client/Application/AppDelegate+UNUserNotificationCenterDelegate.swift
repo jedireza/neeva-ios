@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Defaults
+import Shared
 import UserNotifications
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
@@ -40,6 +41,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         _ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        // User interacted with Notification
+        let bvc = SceneDelegate.getBVC(for: nil)
+
+        switch NotificationType(rawValue: response.notification.request.identifier) {
+        case .neevaPromo:
+            if !NeevaUserInfo.shared.isUserLoggedIn {
+                bvc.presentIntroViewController(true)
+            } else {
+                bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
+            }
+        case .none:
+            break
+        }
+
+        completionHandler()
     }
 }

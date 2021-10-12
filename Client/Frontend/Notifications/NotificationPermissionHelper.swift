@@ -22,8 +22,10 @@ class NotificationPermissionHelper {
         }
     }
 
-    func requestPermissionIfNeeded(completion: (() -> Void)? = nil,
-                                   openSettingsIfNeeded: Bool = false) {
+    func requestPermissionIfNeeded(
+        completion: (() -> Void)? = nil,
+        openSettingsIfNeeded: Bool = false
+    ) {
         isAuthorized { [self] authorized in
             guard !authorized else {
                 completion?()
@@ -64,6 +66,7 @@ class NotificationPermissionHelper {
 
                 guard granted else { return }
                 self.getNotificationSettings()
+                LocalNotitifications.createNeevaPromoCallback()
             }
     }
 

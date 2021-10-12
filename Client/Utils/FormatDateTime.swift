@@ -16,9 +16,9 @@ public enum DateTimeVisualSpec {
 //       They’re good enough for formatting dates to display to the user, but
 //       do not take into account things like leap seconds or DST.
 extension TimeInterval {
-    fileprivate static func minutes(_ n: Double) -> Self { n * 60 }
-    fileprivate static func hours(_ n: Double) -> Self { .minutes(n * 60) }
-    fileprivate static func days(_ n: Double) -> Self { .hours(n * 24) }
+    public static func minutes(_ n: Double) -> Self { n * 60 }
+    public static func hours(_ n: Double) -> Self { .minutes(n * 60) }
+    public static func days(_ n: Double) -> Self { .hours(n * 24) }
 
     fileprivate var seconds: Int { Int(self) }
     fileprivate var minutes: Int { seconds / 60 }
@@ -60,7 +60,9 @@ extension Date {
             Calendar.current.dateComponents([.minute], from: self)
         let nowComponent = Calendar.current.dateComponents([.minute], from: Date())
 
-        return Calendar.current.dateComponents([.minute], from: selfComponent, to: nowComponent).minute ?? 0
+        return
+            Calendar.current.dateComponents([.minute], from: selfComponent, to: nowComponent).minute
+            ?? 0
     }
 }
 private func isSameDay(_ date1: Date, _ date2: Date) -> Bool {

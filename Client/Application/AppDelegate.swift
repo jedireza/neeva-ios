@@ -71,6 +71,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             NotificationPermissionHelper.shared.requestPermissionIfNeeded()
         }
 
+        UNUserNotificationCenter.current().delegate = self
+
         return startApplication(application, withLaunchOptions: launchOptions)
     }
 
