@@ -87,6 +87,12 @@ query GetContactSuggestions(
     }
 }
 
+query EmailLookup($input: PublicEmailLookupInput!) {
+  publicEmailLookup(input: $input) {
+    authProvider
+  }
+}
+
 mutation SendFeedback($input: SendFeedbackV2Input!) {
   sendFeedbackV2(input: $input)
 }

@@ -165,9 +165,10 @@ public struct ClientLog: GraphQLMapConvertible {
   ///   - interactionV3Event
   ///   - searchPerfEvent
   ///   - suggestPerfEvent
+  ///   - appleMapkitResourcePerfEvent
   ///   - perfTrace
-  public init(counter: Swift.Optional<ClientLogCounter?> = nil, graphql: Swift.Optional<ClientLogGraphql?> = nil, tracking: Swift.Optional<ClientLogTracking?> = nil, interactionEvent: Swift.Optional<InteractionEventInput?> = nil, interactionV3Event: Swift.Optional<InteractionV3EventInput?> = nil, searchPerfEvent: Swift.Optional<SearchPerfEventInput?> = nil, suggestPerfEvent: Swift.Optional<SuggestPerfEventInput?> = nil, perfTrace: Swift.Optional<PerfTraceInput?> = nil) {
-    graphQLMap = ["counter": counter, "graphql": graphql, "tracking": tracking, "interactionEvent": interactionEvent, "interactionV3Event": interactionV3Event, "searchPerfEvent": searchPerfEvent, "suggestPerfEvent": suggestPerfEvent, "perfTrace": perfTrace]
+  public init(counter: Swift.Optional<ClientLogCounter?> = nil, graphql: Swift.Optional<ClientLogGraphql?> = nil, tracking: Swift.Optional<ClientLogTracking?> = nil, interactionEvent: Swift.Optional<InteractionEventInput?> = nil, interactionV3Event: Swift.Optional<InteractionV3EventInput?> = nil, searchPerfEvent: Swift.Optional<SearchPerfEventInput?> = nil, suggestPerfEvent: Swift.Optional<SuggestPerfEventInput?> = nil, appleMapkitResourcePerfEvent: Swift.Optional<AppleMapkitResourcePerfEventInput?> = nil, perfTrace: Swift.Optional<PerfTraceInput?> = nil) {
+    graphQLMap = ["counter": counter, "graphql": graphql, "tracking": tracking, "interactionEvent": interactionEvent, "interactionV3Event": interactionV3Event, "searchPerfEvent": searchPerfEvent, "suggestPerfEvent": suggestPerfEvent, "appleMapkitResourcePerfEvent": appleMapkitResourcePerfEvent, "perfTrace": perfTrace]
   }
 
   public var counter: Swift.Optional<ClientLogCounter?> {
@@ -236,6 +237,15 @@ public struct ClientLog: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "suggestPerfEvent")
+    }
+  }
+
+  public var appleMapkitResourcePerfEvent: Swift.Optional<AppleMapkitResourcePerfEventInput?> {
+    get {
+      return graphQLMap["appleMapkitResourcePerfEvent"] as? Swift.Optional<AppleMapkitResourcePerfEventInput?> ?? Swift.Optional<AppleMapkitResourcePerfEventInput?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "appleMapkitResourcePerfEvent")
     }
   }
 
@@ -2679,6 +2689,94 @@ public struct SuggestPerfEventInput: GraphQLMapConvertible {
   }
 }
 
+/// Apple mapkit resource latency logs,
+/// all times are origin of the page (instance at which page was initiated)
+public struct AppleMapkitResourcePerfEventInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - requestUrl: url of request
+  ///   - durationTimeMs: Apple Mapkit resource request to response duration
+  ///   - fetchStartTimeMs: Apple Mapkit resource fetch start
+  ///   - requestStartTimeMs: Apple Mapkit resource request start
+  ///   - responseStartTimeMs: Apple Mapkit resource response start receiving
+  ///   - responseEndTimeMs: Apple Mapkit resource response received, last byte
+  ///   - numberOfTilesLoaded: Apple Mapkit number of resources loaded
+  public init(requestUrl: Swift.Optional<String?> = nil, durationTimeMs: Swift.Optional<Double?> = nil, fetchStartTimeMs: Swift.Optional<Double?> = nil, requestStartTimeMs: Swift.Optional<Double?> = nil, responseStartTimeMs: Swift.Optional<Double?> = nil, responseEndTimeMs: Swift.Optional<Double?> = nil, numberOfTilesLoaded: Swift.Optional<Int?> = nil) {
+    graphQLMap = ["requestURL": requestUrl, "durationTimeMs": durationTimeMs, "fetchStartTimeMs": fetchStartTimeMs, "requestStartTimeMs": requestStartTimeMs, "responseStartTimeMs": responseStartTimeMs, "responseEndTimeMs": responseEndTimeMs, "numberOfTilesLoaded": numberOfTilesLoaded]
+  }
+
+  /// url of request
+  public var requestUrl: Swift.Optional<String?> {
+    get {
+      return graphQLMap["requestURL"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "requestURL")
+    }
+  }
+
+  /// Apple Mapkit resource request to response duration
+  public var durationTimeMs: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["durationTimeMs"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "durationTimeMs")
+    }
+  }
+
+  /// Apple Mapkit resource fetch start
+  public var fetchStartTimeMs: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["fetchStartTimeMs"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "fetchStartTimeMs")
+    }
+  }
+
+  /// Apple Mapkit resource request start
+  public var requestStartTimeMs: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["requestStartTimeMs"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "requestStartTimeMs")
+    }
+  }
+
+  /// Apple Mapkit resource response start receiving
+  public var responseStartTimeMs: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["responseStartTimeMs"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "responseStartTimeMs")
+    }
+  }
+
+  /// Apple Mapkit resource response received, last byte
+  public var responseEndTimeMs: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["responseEndTimeMs"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "responseEndTimeMs")
+    }
+  }
+
+  /// Apple Mapkit number of resources loaded
+  public var numberOfTilesLoaded: Swift.Optional<Int?> {
+    get {
+      return graphQLMap["numberOfTilesLoaded"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "numberOfTilesLoaded")
+    }
+  }
+}
+
 public struct PerfTraceInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
@@ -2910,6 +3008,25 @@ public enum PerfTraceStatus: RawRepresentable, Equatable, Hashable, CaseIterable
       .failed,
       .canceled,
     ]
+  }
+}
+
+public struct PublicEmailLookupInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - email
+  public init(email: Swift.Optional<String?> = nil) {
+    graphQLMap = ["email": email]
+  }
+
+  public var email: Swift.Optional<String?> {
+    get {
+      return graphQLMap["email"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "email")
+    }
   }
 }
 
@@ -5463,6 +5580,101 @@ public final class GetContactSuggestionsQuery: GraphQLQuery {
               resultMap.updateValue(newValue, forKey: "pictureURL")
             }
           }
+        }
+      }
+    }
+  }
+}
+
+public final class EmailLookupQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query EmailLookup($input: PublicEmailLookupInput!) {
+      publicEmailLookup(input: $input) {
+        __typename
+        authProvider
+      }
+    }
+    """
+
+  public let operationName: String = "EmailLookup"
+
+  public let operationIdentifier: String? = "9cf649cadb09403ec1a58d08a6f0e3a0f432bca6f1525af473df7672b38f6aa2"
+
+  public var input: PublicEmailLookupInput
+
+  public init(input: PublicEmailLookupInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("publicEmailLookup", arguments: ["input": GraphQLVariable("input")], type: .object(PublicEmailLookup.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(publicEmailLookup: PublicEmailLookup? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "publicEmailLookup": publicEmailLookup.flatMap { (value: PublicEmailLookup) -> ResultMap in value.resultMap }])
+    }
+
+    public var publicEmailLookup: PublicEmailLookup? {
+      get {
+        return (resultMap["publicEmailLookup"] as? ResultMap).flatMap { PublicEmailLookup(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "publicEmailLookup")
+      }
+    }
+
+    public struct PublicEmailLookup: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["PublicEmailLookupResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("authProvider", type: .scalar(String.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(authProvider: String? = nil) {
+        self.init(unsafeResultMap: ["__typename": "PublicEmailLookupResponse", "authProvider": authProvider])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var authProvider: String? {
+        get {
+          return resultMap["authProvider"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "authProvider")
         }
       }
     }
