@@ -160,6 +160,8 @@ public class SpaceStore: ObservableObject {
 
     private var urlToSpacesMap: [URL: [Space]] = [:]
 
+    private var queuedRefresh = false
+
     /// Use to query the set of spaces containing the given URL.
     func urlToSpaces(_ url: URL) -> [Space] {
         return urlToSpacesMap[url] ?? []
@@ -168,6 +170,10 @@ public class SpaceStore: ObservableObject {
     /// Use to query if `url` is part of the space specified by `spaceId`
     func urlInSpace(_ url: URL, spaceId: SpaceID) -> Bool {
         return urlToSpaces(url).contains { $0.id == spaceId }
+    }
+
+    public func urlInASpace(_ url: URL) -> Bool {
+        return !urlToSpaces(url).isEmpty
     }
 
     /// Call to refresh the SpaceStore's copy of spaces data. Ignored if already refreshing.
@@ -189,6 +195,19 @@ public class SpaceStore: ObservableObject {
                 self.state = .failed(error)
             }
         }
+    }
+
+    public func refreshSpace(spaceID: String) {
+        guard let space = allSpaces.first(where: { $0.id.id == spaceID }) else {
+            return
+        }
+        if case .refreshing = state {
+            queuedRefresh = true
+            return
+        }
+        if disableRefresh { return }
+        state = .refreshing
+        fetch(spaces: [space])
     }
 
     private func fetchSuggestedSpaces() {
@@ -294,32 +313,40 @@ public class SpaceStore: ObservableObject {
         self.allSpaces = allSpaces
 
         if spacesToFetch.count > 0 {
-            SpacesDataQueryController.getSpacesData(spaceIds: spacesToFetch.map(\.id.value)) {
-                result in
-                switch result {
-                case .success(let spaces):
-                    for space in spaces {
-                        /// Note, we could update the `lastModifiedTs` field here but that's
-                        /// likely an unnecessary optimization. The window between now and
-                        /// when ListSpaces returned is short, and the downside of having a
-                        /// stale `lastModifiedTs` stored in our cache is minor.
-
-                        self.onUpdateSpaceURLs(
-                            space: spacesToFetch.first { $0.id.value == space.id }!,
-                            urls: Set(
-                                space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
-                                    $0.append($1.url!)
-                                }),
-                            data: space.entities,
-                            comments: space.comments)
-                    }
-                    self.state = .ready
-                case .failure(let error):
-                    self.state = .failed(error)
-                }
-            }
+            fetch(spaces: spacesToFetch)
         } else {
             self.state = .ready
+        }
+    }
+
+    private func fetch(spaces spacesToFetch: [Space]) {
+        SpacesDataQueryController.getSpacesData(spaceIds: spacesToFetch.map(\.id.value)) {
+            result in
+            switch result {
+            case .success(let spaces):
+                for space in spaces {
+                    /// Note, we could update the `lastModifiedTs` field here but that's
+                    /// likely an unnecessary optimization. The window between now and
+                    /// when ListSpaces returned is short, and the downside of having a
+                    /// stale `lastModifiedTs` stored in our cache is minor.
+
+                    self.onUpdateSpaceURLs(
+                        space: spacesToFetch.first { $0.id.value == space.id }!,
+                        urls: Set(
+                            space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
+                                $0.append($1.url!)
+                            }),
+                        data: space.entities,
+                        comments: space.comments)
+                }
+                self.state = .ready
+                if self.queuedRefresh {
+                    self.refresh()
+                    self.queuedRefresh = false
+                }
+            case .failure(let error):
+                self.state = .failed(error)
+            }
         }
     }
 

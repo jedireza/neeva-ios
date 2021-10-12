@@ -139,7 +139,9 @@ enum TabToolbarButtons {
 
         var body: some View {
             TabToolbarButton(
-                label: Symbol(.bookmark, size: 20, weight: weight, label: "Add To Space"),
+                label: Symbol(
+                    model.urlInSpace ? .bookmarkFill : .bookmark,
+                    size: 20, weight: weight, label: "Add To Space"),
                 action: action
             )
             .disabled(isIncognito || !model.isPage)

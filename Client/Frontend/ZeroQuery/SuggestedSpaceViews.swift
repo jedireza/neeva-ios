@@ -58,9 +58,6 @@ struct SuggestedSpacesView: View {
             }
         }
         .padding(.vertical, ZeroQueryUX.Padding / 2)
-        .onAppear {
-            spaceStore.refresh()
-        }
     }
 }
 

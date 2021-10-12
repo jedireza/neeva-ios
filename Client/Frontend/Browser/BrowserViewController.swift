@@ -373,6 +373,20 @@ class BrowserViewController: UIViewController {
 
         // Re-show toolbar which might have been hidden during scrolling (prior to app moving into the background)
         scrollController.showToolbars(animated: false)
+
+        if NeevaUserInfo.shared.isUserLoggedIn {
+            DispatchQueue.main.async {
+                SpaceStore.shared.refresh()
+
+                self.chromeModel.appActiveRefreshSubscription = SpaceStore.shared.$state.sink {
+                    state in
+                    if case .ready = state, let url = self.tabManager.selectedTab?.url {
+                        self.chromeModel.urlInSpace = SpaceStore.shared.urlInASpace(url)
+                        self.chromeModel.appActiveRefreshSubscription?.cancel()
+                    }
+                }
+            }
+        }
     }
 
     override func viewDidLoad() {
@@ -865,6 +879,7 @@ class BrowserViewController: UIViewController {
 
         locationModel.url = url
         chromeModel.setEditingLocation(to: false)
+        chromeModel.urlInSpace = SpaceStore.shared.urlInASpace(url)
     }
 
     override func accessibilityPerformEscape() -> Bool {
@@ -893,6 +908,7 @@ class BrowserViewController: UIViewController {
     fileprivate func updateURLBarDisplayURL(_ tab: Tab) {
         locationModel.url = tab.url?.displayURL
         chromeModel.isPage = tab.url?.displayURL?.isWebPage() ?? false
+        chromeModel.urlInSpace = tab.url == nil ? false : SpaceStore.shared.urlInASpace(tab.url!)
     }
 
     // MARK: Opening New Tabs
@@ -1520,6 +1536,7 @@ extension BrowserViewController: TabManagerDelegate {
             } else {
                 chromeModel.estimatedProgress = nil
             }
+            chromeModel.urlInSpace = SpaceStore.shared.urlInASpace(url)
         }
 
         if let readerMode = selected?.getContentScript(name: ReaderMode.name()) as? ReaderMode {
@@ -1970,7 +1987,9 @@ extension BrowserViewController {
         self.showModal(style: .withTitle) {
             AddToSpaceOverlayContent(
                 request: request,
-                bvc: self, importData: importData)
+                bvc: self, importData: importData
+            )
+            .environmentObject(self.chromeModel)
         } onDismiss: {
             if request.state != .initial
                 && request.state != .savingToSpace
