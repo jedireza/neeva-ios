@@ -16,7 +16,7 @@ enum FirstRunButtonActions {
     case skipToBrowser
     case oktaSignup(String, String, String, Bool)  //email, first name, password, marketing option
     case oktaSignin(String)  // email
-    case oauthWithProvider(NeevaConstants.OAuthProvider, Bool, String)
+    case oauthWithProvider(NeevaConstants.OAuthProvider, Bool, String, String)
     case oktaAccountCreated(String)  // token
 }
 
@@ -89,9 +89,9 @@ class IntroViewController: UIViewController {
             case FirstRunButtonActions.oktaSignin(let email):
                 self.didFinishClosure?(.oktaSignin(email))
                 break
-            case FirstRunButtonActions.oauthWithProvider(let provider, let marketingEmailOptOut, _):
+            case FirstRunButtonActions.oauthWithProvider(let provider, let marketingEmailOptOut, _, let email):
                 self.marketingEmailOptOut = marketingEmailOptOut
-                self.oauthWithProvider(provider: provider)
+                self.oauthWithProvider(provider: provider, email: email)
                 break
             case FirstRunButtonActions.oktaAccountCreated(_):
                 break
@@ -121,12 +121,17 @@ class IntroViewController: UIViewController {
         authorizationController.performRequests()
     }
 
-    private func oauthWithProvider(provider: NeevaConstants.OAuthProvider) {
+    private func oauthWithProvider(provider: NeevaConstants.OAuthProvider, email: String) {
         guard
-            let authURL = URL(
+            let authURL = provider == .okta ? URL(
                 string: NeevaConstants.signupOAuthString(
                     provider: provider,
-                    mktEmailOptOut: self.marketingEmailOptOut))
+                    mktEmailOptOut: self.marketingEmailOptOut,
+                    email: email))
+                : URL(
+                    string: NeevaConstants.signupOAuthString(
+                        provider: provider,
+                        mktEmailOptOut: self.marketingEmailOptOut))
         else { return }
 
         let session = ASWebAuthenticationSession(
@@ -168,7 +173,7 @@ class IntroViewController: UIViewController {
                 }
                 showErrorAlert(errMsg: errorMessage)
             } else if let cookie = token {
-                self.didFinishClosure?(.oauthWithProvider(provider, self.marketingEmailOptOut, cookie))
+                self.didFinishClosure?(.oauthWithProvider(provider, self.marketingEmailOptOut, cookie, email))
             }
         }
 
