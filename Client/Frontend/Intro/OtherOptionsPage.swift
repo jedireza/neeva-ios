@@ -98,12 +98,7 @@ public struct EmailForm: View {
                     }
                 }
 
-                Button(action: {
-                    // only process when email and password is not empty
-                    if !email.isEmpty && !password.isEmpty {
-                        action()
-                    }
-                }) {
+                Button(action: action) {
                     HStack(alignment: .center) {
                         Spacer()
                         Image("neevaMenuIcon")
@@ -122,6 +117,7 @@ public struct EmailForm: View {
                 .shadow(color: Color.ui.gray70, radius: 1, x: 0, y: 1)
                 .padding(.top, 20)
                 .font(.roobert(.semibold, size: 18))
+                .disabled(email.isEmpty || password.isEmpty)
             } else {
                 Button(action: action) {
                     HStack(alignment: .center) {
@@ -138,6 +134,7 @@ public struct EmailForm: View {
                 .shadow(color: Color.ui.gray70, radius: 1, x: 0, y: 1)
                 .padding(.top, 20)
                 .font(.roobert(.semibold, size: 18))
+                .disabled(email.isEmpty)
             }
         }
     }
@@ -232,7 +229,7 @@ struct OtherOptionsPage: View {
                     action: {
                         buttonAction(
                             onSignInMode
-                                ? .oktaSignin(email)
+                                ? .oauthWithProvider(.okta, marketingEmailOptOut, "", email)
                                 : .oktaSignup(email, firstname, password, marketingEmailOptOut)
                         )
                     },
@@ -253,7 +250,7 @@ struct OtherOptionsPage: View {
                     SignUpWithGoogleButton(
                         action: {
                             logOtherOptionsSignUpWithGoogleClick()
-                            buttonAction(.oauthWithProvider(.google, marketingEmailOptOut, ""))
+                            buttonAction(.oauthWithProvider(.google, marketingEmailOptOut, "", ""))
                         },
                         onSignInMode: $onSignInMode
                     ).padding(.top, 10)
@@ -261,7 +258,7 @@ struct OtherOptionsPage: View {
                     SignUpWithMicrosoftButton(
                         action: {
                             logOtherOptionsSignupWithMicrosoftClick()
-                            buttonAction(.oauthWithProvider(.microsoft, marketingEmailOptOut, ""))
+                            buttonAction(.oauthWithProvider(.microsoft, marketingEmailOptOut, "", ""))
                         },
                         onSignInMode: $onSignInMode
                     ).padding(.top, 10)
