@@ -264,8 +264,8 @@ class SpaceCardModel: CardModel {
                 switch state {
                 case .success:
                     self.editingSubscription?.cancel()
-                    self.spaceNeedsRefresh = spaceID
                     self.detailedSpace = nil
+                    self.manager.refresh()
                 case .failure:
                     self.editingSubscription?.cancel()
                 case .initial:
