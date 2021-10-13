@@ -43,6 +43,7 @@ query CheatsheetInfo($input: String!) {
     MemorizedQuery
     Recipe {
       title
+      preference
       imageURL
       totalTime
       prepTime
@@ -103,4 +104,8 @@ mutation StartIncognito($redirect: String!) {
 
 mutation UpdateUserFlag($input: FlagInput!) {
   updateFlag(input: $input)
+}
+
+mutation SetProviderPreference($input: PreferredProviderInput!) {
+  setProviderPreference(input: $input)
 }

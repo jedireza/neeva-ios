@@ -6,7 +6,7 @@ import Apollo
 import Foundation
 
 /// Input type for client logs.
-///
+/// 
 /// Client logs are generic, and cover every type of log that the client
 /// may want to pass, including counters, pingbacks, trace information, errors,
 /// etc. Log messages from the client are batched, and each batch contains
@@ -17,7 +17,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
   /// - Parameters:
   ///   - base: Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   ///   - web: 0.2.105
@@ -31,7 +31,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
 
   /// Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   /// - web: 0.2.105
@@ -649,7 +649,7 @@ public enum ClientLogTrackingLogType: RawRepresentable, Equatable, Hashable, Cas
 }
 
 /// Input type for logInteraction mutation.
-///
+/// 
 /// Though this is not officially deprecated (and still works), new interactions
 /// should be added to the interactionV3Event instead.
 public struct InteractionEventInput: GraphQLMapConvertible {
@@ -1464,10 +1464,10 @@ public enum ResultActionType: RawRepresentable, Equatable, Hashable, CaseIterabl
 
 /// This enum needs to be keep in sync with
 /// fedsearch/request/interaction_logger_request.go
-///
+/// 
 /// and need to add to fedsearch/mixer/packer.go
 /// to start collecting the data.
-///
+/// 
 /// Keep this enum in sync with InteractionType in file
 /// neeva/logs/avro_schemas/interaction/interaction_log_v2_entry.avsc
 public enum InteractionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
@@ -2136,11 +2136,11 @@ public struct ResultGroupAttributes: GraphQLMapConvertible {
 }
 
 /// Input type for v3 ClientLog.interactionV3Event mutation.
-///
+/// 
 /// This is the preferred mechanism for logging an interaction that happens in a
 /// search results page (SRP) context. The concepts and design behind how
 /// interactions are recorded in the design doc:
-///
+/// 
 /// https://paper.dropbox.com/doc/Logging-V3-Page-structure--A7Q0Gpx7oVh1vflhuaIBsHQfAg-4RsxGgmgnFiaM5Rg72YjO
 public struct InteractionV3EventInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
@@ -2194,12 +2194,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
   /// the category for LoggingContext.
   ///   - element: What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   ///   - elementAction: Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public init(actionType: Swift.Optional<InteractionV3Type?> = nil, category: Swift.Optional<InteractionV3Category?> = nil, element: Swift.Optional<String?> = nil, elementAction: Swift.Optional<String?> = nil) {
@@ -2229,7 +2229,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   public var element: Swift.Optional<String?> {
@@ -2243,7 +2243,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public var elementAction: Swift.Optional<String?> {
@@ -2257,12 +2257,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 }
 
 /// The collection of action types for the v3 interactions table.
-///
+/// 
 /// Be VERY CAREFUL about extending the action types here. In general, we want
 /// to have a very limited number of action types. If you need more information
 /// about the context of an action, consider using Element, ElementAction, or
 /// the Attributes table.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/interaction_type.go.
 public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2338,7 +2338,7 @@ public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterab
 /// InteractionV3Category specifies the type of the item in the log tree hierarchy.
 /// The log tree can have have N number of entries, but these are the ones
 /// that have IDs associated.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/category.go
 public enum InteractionV3Category: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2406,12 +2406,12 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   /// This is a event of graphqql request fied to render the measured view
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - rttMs: RTT of the recent connection
   ///   - userActionTimeMs: Use action time in ms since start of the document
   /// This is valid only when inAppTransition is true
-  ///   - queryRequestTimeMs: Query start time, since start of the document
+  ///   - queryRequestTimeMs: Query start time, since start of the document 
   ///   - queryResponseTimeMs: Query response received, since start of the document
   ///   - resultRenderTimeMs: Result is rendered on the browser, since start of the document
   ///   - criticalPathResourcePerfEntries: Detailed critical path resources of critical path resources as JSON
@@ -2445,7 +2445,7 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   }
 
   /// Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2792,7 +2792,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - events: The events in the trace. A trace is an ordered collection of perf events
   /// that are all related in some way. A single action (such as loading the app)
@@ -2859,7 +2859,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
 
   /// Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2903,11 +2903,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   /// not the absolute timestamp, which can be computed by adding the trace
   /// timestamp to the elapsedMs.
   ///   - elapsedMs: DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public init(type: Swift.Optional<String?> = nil, elapsedTotalMs: Swift.Optional<Double?> = nil, elapsedMs: Swift.Optional<Double?> = nil) {
     graphQLMap = ["type": type, "elapsedTotalMs": elapsedTotalMs, "elapsedMs": elapsedMs]
@@ -2936,11 +2936,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   }
 
   /// DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public var elapsedMs: Swift.Optional<Double?> {
     get {
@@ -3007,6 +3007,56 @@ public enum PerfTraceStatus: RawRepresentable, Equatable, Hashable, CaseIterable
       .complete,
       .failed,
       .canceled,
+    ]
+  }
+}
+
+public enum UserPreference: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case notSupported
+  case noPreference
+  case prioritized
+  case deprioritized
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "NotSupported": self = .notSupported
+      case "NoPreference": self = .noPreference
+      case "Prioritized": self = .prioritized
+      case "Deprioritized": self = .deprioritized
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .notSupported: return "NotSupported"
+      case .noPreference: return "NoPreference"
+      case .prioritized: return "Prioritized"
+      case .deprioritized: return "Deprioritized"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: UserPreference, rhs: UserPreference) -> Bool {
+    switch (lhs, rhs) {
+      case (.notSupported, .notSupported): return true
+      case (.noPreference, .noPreference): return true
+      case (.prioritized, .prioritized): return true
+      case (.deprioritized, .deprioritized): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [UserPreference] {
+    return [
+      .notSupported,
+      .noPreference,
+      .prioritized,
+      .deprioritized,
     ]
   }
 }
@@ -3233,6 +3283,96 @@ public struct FlagInput: GraphQLMapConvertible {
     set {
       graphQLMap.updateValue(newValue, forKey: "flagValue")
     }
+  }
+}
+
+/// Input type for preferred provider mutations.
+/// 
+/// We support three mutations:
+/// - set
+/// - add
+/// - delete
+public struct PreferredProviderInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - domain
+  ///   - preference
+  ///   - providerCategory
+  public init(domain: Swift.Optional<String?> = nil, preference: Swift.Optional<UserPreference?> = nil, providerCategory: Swift.Optional<ProviderCategory?> = nil) {
+    graphQLMap = ["domain": domain, "preference": preference, "providerCategory": providerCategory]
+  }
+
+  public var domain: Swift.Optional<String?> {
+    get {
+      return graphQLMap["domain"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "domain")
+    }
+  }
+
+  public var preference: Swift.Optional<UserPreference?> {
+    get {
+      return graphQLMap["preference"] as? Swift.Optional<UserPreference?> ?? Swift.Optional<UserPreference?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "preference")
+    }
+  }
+
+  public var providerCategory: Swift.Optional<ProviderCategory?> {
+    get {
+      return graphQLMap["providerCategory"] as? Swift.Optional<ProviderCategory?> ?? Swift.Optional<ProviderCategory?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "providerCategory")
+    }
+  }
+}
+
+public enum ProviderCategory: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case unknown
+  case news
+  case recipes
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "Unknown": self = .unknown
+      case "News": self = .news
+      case "Recipes": self = .recipes
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .unknown: return "Unknown"
+      case .news: return "News"
+      case .recipes: return "Recipes"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: ProviderCategory, rhs: ProviderCategory) -> Bool {
+    switch (lhs, rhs) {
+      case (.unknown, .unknown): return true
+      case (.news, .news): return true
+      case (.recipes, .recipes): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [ProviderCategory] {
+    return [
+      .unknown,
+      .news,
+      .recipes,
+    ]
   }
 }
 
@@ -4581,6 +4721,7 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
         Recipe {
           __typename
           title
+          preference
           imageURL
           totalTime
           prepTime
@@ -4616,7 +4757,7 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
 
   public let operationName: String = "CheatsheetInfo"
 
-  public let operationIdentifier: String? = "d79f3e4b4174f7ac902fa916c46e0e7b89a7102db846a12bee6f0704e43c8891"
+  public let operationIdentifier: String? = "de04f6a5f3780f8256c08ab333608050744f2aa80f4cec1af52659f4bb19fc35"
 
   public var input: String
 
@@ -5007,6 +5148,7 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("title", type: .scalar(String.self)),
+            GraphQLField("preference", type: .scalar(UserPreference.self)),
             GraphQLField("imageURL", type: .scalar(String.self)),
             GraphQLField("totalTime", type: .scalar(String.self)),
             GraphQLField("prepTime", type: .scalar(String.self)),
@@ -5024,8 +5166,8 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(title: String? = nil, imageUrl: String? = nil, totalTime: String? = nil, prepTime: String? = nil, yield: String? = nil, ingredients: [Ingredient]? = nil, instructions: [Instruction]? = nil, recipeRating: RecipeRating? = nil, reviews: [Review]? = nil) {
-          self.init(unsafeResultMap: ["__typename": "Recipe", "title": title, "imageURL": imageUrl, "totalTime": totalTime, "prepTime": prepTime, "yield": yield, "ingredients": ingredients.flatMap { (value: [Ingredient]) -> [ResultMap] in value.map { (value: Ingredient) -> ResultMap in value.resultMap } }, "instructions": instructions.flatMap { (value: [Instruction]) -> [ResultMap] in value.map { (value: Instruction) -> ResultMap in value.resultMap } }, "recipeRating": recipeRating.flatMap { (value: RecipeRating) -> ResultMap in value.resultMap }, "reviews": reviews.flatMap { (value: [Review]) -> [ResultMap] in value.map { (value: Review) -> ResultMap in value.resultMap } }])
+        public init(title: String? = nil, preference: UserPreference? = nil, imageUrl: String? = nil, totalTime: String? = nil, prepTime: String? = nil, yield: String? = nil, ingredients: [Ingredient]? = nil, instructions: [Instruction]? = nil, recipeRating: RecipeRating? = nil, reviews: [Review]? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Recipe", "title": title, "preference": preference, "imageURL": imageUrl, "totalTime": totalTime, "prepTime": prepTime, "yield": yield, "ingredients": ingredients.flatMap { (value: [Ingredient]) -> [ResultMap] in value.map { (value: Ingredient) -> ResultMap in value.resultMap } }, "instructions": instructions.flatMap { (value: [Instruction]) -> [ResultMap] in value.map { (value: Instruction) -> ResultMap in value.resultMap } }, "recipeRating": recipeRating.flatMap { (value: RecipeRating) -> ResultMap in value.resultMap }, "reviews": reviews.flatMap { (value: [Review]) -> [ResultMap] in value.map { (value: Review) -> ResultMap in value.resultMap } }])
         }
 
         public var __typename: String {
@@ -5043,6 +5185,15 @@ public final class CheatsheetInfoQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "title")
+          }
+        }
+
+        public var preference: UserPreference? {
+          get {
+            return resultMap["preference"] as? UserPreference
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "preference")
           }
         }
 
@@ -5838,6 +5989,60 @@ public final class UpdateUserFlagMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "updateFlag")
+      }
+    }
+  }
+}
+
+public final class SetProviderPreferenceMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation SetProviderPreference($input: PreferredProviderInput!) {
+      setProviderPreference(input: $input)
+    }
+    """
+
+  public let operationName: String = "SetProviderPreference"
+
+  public let operationIdentifier: String? = "685e0633b7ac8c511f953817f425bc973d653d08e20737f34db31236af7ebc4a"
+
+  public var input: PreferredProviderInput
+
+  public init(input: PreferredProviderInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("setProviderPreference", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(setProviderPreference: Bool) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "setProviderPreference": setProviderPreference])
+    }
+
+    /// Set a single provider preference.
+    public var setProviderPreference: Bool {
+      get {
+        return resultMap["setProviderPreference"]! as! Bool
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "setProviderPreference")
       }
     }
   }
