@@ -7,7 +7,9 @@ import GCDWebServers
 import Shared
 import Storage
 import WebKit
+import XCGLogger
 
+private let logger = Logger.browser
 private let MozErrorDownloadsNotEnabled = 100
 private let MessageOpenInSafari = "openInSafari"
 private let MessageCertVisitOnce = "certVisitOnce"
@@ -255,6 +257,8 @@ class ErrorPageHelper {
     }
 
     func loadPage(_ error: NSError, forUrl url: URL, inWebView webView: WKWebView) {
+        logger.error("Show error page with error: \(error), for URL: \(url), callstack: \(Thread.callStackSymbols)")
+
         guard
             var components = URLComponents(
                 string: "\(InternalURL.baseUrl)/\(ErrorPageHandler.path)"),
@@ -276,6 +280,8 @@ class ErrorPageHelper {
             // 'timestamp' is used for the js reload logic
             URLQueryItem(name: "timestamp", value: "\(Int(Date().timeIntervalSince1970 * 1000))"),
         ]
+
+        logger.info("Error page query items: \(queryItems)")
 
         // If this is an invalid certificate, show a certificate error allowing the
         // user to go back or continue. The certificate itself is encoded and added as

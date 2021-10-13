@@ -4,7 +4,7 @@ import Foundation
 import Shared
 import SwiftUI
 
-let logger = Logger.browser
+private let logger = Logger.browser
 
 class NotificationManager: ObservableObject {
     static let shared = NotificationManager()
