@@ -36,19 +36,40 @@ public struct SpaceCommentData {
 }
 
 public struct SpaceEntityData {
+    typealias EntityRecipe = GetSpacesDataQuery.Data.GetSpace.Space.Space.Entity.Annotation.Web
+        .Recipe
+
     public let id: String
     public let url: URL?
     public let title: String?
     public let snippet: String?
     public let thumbnail: String?
+    public let recipe: Recipe?
 
-    public init(id: String, url: URL?, title: String?, snippet: String?, thumbnail: String?) {
+    public init(
+        id: String, url: URL?, title: String?, snippet: String?, thumbnail: String?, recipe: Recipe?
+    ) {
         self.id = id
         self.url = url
         self.title = title
         self.snippet = snippet
         self.thumbnail = thumbnail
+        self.recipe = recipe
     }
+
+    static func recipe(from entity: EntityRecipe?) -> Recipe? {
+        guard let entity = entity, let title = entity.title, let imageURL = entity.imageUrl else {
+            return nil
+        }
+
+        return Recipe(
+            title: title, imageURL: imageURL, totalTime: entity.totalTime, prepTime: nil,
+            yield: nil, ingredients: nil, instructions: nil,
+            recipeRating: RecipeRating(
+                maxStars: 0, recipeStars: entity.recipeRating?.recipeStars ?? 0,
+                numReviews: entity.recipeRating?.numReviews ?? 0), reviews: nil)
+    }
+
 }
 
 public class Space: Hashable, Identifiable {

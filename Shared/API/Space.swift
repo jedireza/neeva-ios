@@ -65,7 +65,9 @@ class SpacesDataQueryController: QueryController<
                                     url: URL(string: entity.spaceEntity?.url ?? ""),
                                     title: entity.spaceEntity?.title,
                                     snippet: entity.spaceEntity?.snippet,
-                                    thumbnail: entity.spaceEntity?.thumbnail))
+                                    thumbnail: entity.spaceEntity?.thumbnail,
+                                    recipe: SpaceEntityData.recipe(
+                                        from: entity.annotations?.web?.recipes?.first)))
                         }
                     }
                     var spaceComments: [SpaceCommentData] = []

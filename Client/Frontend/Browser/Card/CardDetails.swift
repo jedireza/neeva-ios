@@ -200,7 +200,11 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     }
 
     @ViewBuilder var thumbnail: some View {
-        if let imageThumbnailModel = imageThumbnailModel {
+        if let recipe = data.recipe, let imageURL = URL(string: recipe.imageURL) {
+            WebImage(url: imageURL)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } else if let imageThumbnailModel = imageThumbnailModel {
             ImageThumbnailView(model: imageThumbnailModel)
         } else {
             GeometryReader { geom in

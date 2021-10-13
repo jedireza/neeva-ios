@@ -133,15 +133,18 @@ class CardTests: XCTestCase {
         SpaceStore.shared.getAll().first!.contentData = [
             SpaceEntityData(
                 id: "id1", url: .aboutBlank, title: nil, snippet: nil,
-                thumbnail: SpaceThumbnails.githubThumbnail),
+                thumbnail: SpaceThumbnails.githubThumbnail,
+                recipe: nil),
             SpaceEntityData(
                 id: "id2", url: .aboutBlank, title: nil, snippet: nil,
-                thumbnail: SpaceThumbnails.stackOverflowThumbnail),
+                thumbnail: SpaceThumbnails.stackOverflowThumbnail,
+                recipe: nil),
         ]
         SpaceStore.shared.getAll().last!.contentData = [
             SpaceEntityData(
                 id: "id3", url: .aboutBlank, title: nil, snippet: nil,
-                thumbnail: SpaceThumbnails.githubThumbnail)
+                thumbnail: SpaceThumbnails.githubThumbnail,
+                recipe: nil),
         ]
         let firstCard = SpaceCardDetails(
             space: SpaceStore.shared.getAll().first!,

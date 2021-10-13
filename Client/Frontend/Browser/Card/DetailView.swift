@@ -247,8 +247,9 @@ where
             }
         ).actionSheet(isPresented: $showConfirmDeleteAlert) {
             ActionSheet(
-                title: Text("Are you sure you want to" +
-                            (space?.ACL == .owner ? "delete" : "unfollow") + "this space?"),
+                title: Text(
+                    "Are you sure you want to" + (space?.ACL == .owner ? "delete" : "unfollow")
+                        + "this space?"),
                 buttons: [
                     .destructive(
                         Text(space?.ACL == .owner ? "Delete Space" : "Unfollow Space"),
@@ -537,6 +538,13 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
             || hostAndPath.hasSuffix(".png")
     }
 
+    var recipe: Recipe? {
+        guard let spaceEntity = details as? SpaceEntityThumbnail else {
+            return nil
+        }
+        return spaceEntity.manager.get(for: spaceEntity.id)?.recipe
+    }
+
     @State private var isPressed: Bool = false
 
     var body: some View {
@@ -563,6 +571,9 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
+                } else if let recipe = recipe {
+                    RecipeBanner(recipe: recipe)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     HStack(spacing: DetailsViewUX.ItemPadding) {
                         details.thumbnail.frame(

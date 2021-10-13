@@ -60,6 +60,19 @@ query GetSpacesData($ids: [String!]) {
             snippet
             thumbnail
           }
+          annotations {
+            web {
+              recipes {
+                title
+                imageURL
+                totalTime
+                recipeRating {
+                  recipeStars
+                  numReviews
+                }
+              }
+            }
+          }
         }
       }
     }

@@ -124,7 +124,8 @@ struct AddToNativeSpaceView: View {
                             url: oldData.url,
                             title: titleText,
                             snippet: descriptionText,
-                            thumbnail: thumbnailModel.selectedData ?? oldData.thumbnail)
+                            thumbnail: thumbnailModel.selectedData ?? oldData.thumbnail,
+                            recipe: oldData.recipe)
                         spaceModel.detailedSpace?.space?.contentData?.replaceSubrange(
                             index..<(index + 1), with: [newData])
                         spaceModel.detailedSpace?.allDetails.replaceSubrange(
@@ -143,7 +144,8 @@ struct AddToNativeSpaceView: View {
                             url: URL(string: urlText),
                             title: titleText,
                             snippet: nil,
-                            thumbnail: nil)
+                            thumbnail: nil,
+                            recipe: nil)
 
                         // modify target spaceCardDetail's Data and signal changes
                         spaceModel.detailedSpace?.space?.contentData?.insert(data, at: 0)
