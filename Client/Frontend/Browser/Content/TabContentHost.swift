@@ -52,6 +52,12 @@ class TabContentHostModel: ObservableObject {
                 return
             }
             webContainerType = .webPage(webView)
+
+            if NeevaFeatureFlags[.recipeCheatsheet] {
+                if let url = webView.url?.absoluteString {
+                    self.recipeModel.updateContentWithURL(url: url)
+                }
+            }
         }
     }
 }
