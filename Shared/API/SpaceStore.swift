@@ -182,6 +182,7 @@ public class SpaceStore: ObservableObject {
     private var urlToSpacesMap: [URL: [Space]] = [:]
 
     private var queuedRefresh = false
+    public private(set) var updatedSpacesFromLastRefresh = [Space]()
 
     /// Use to query the set of spaces containing the given URL.
     func urlToSpaces(_ url: URL) -> [Space] {
@@ -219,7 +220,9 @@ public class SpaceStore: ObservableObject {
     }
 
     public func refreshSpace(spaceID: String) {
-        guard let space = allSpaces.first(where: { $0.id.id == spaceID }) else {
+        guard let space = allSpaces.first(where: { $0.id.id == spaceID }),
+            let index = allSpaces.firstIndex(where: { $0.id.id == spaceID })
+        else {
             return
         }
         if case .refreshing = state {
@@ -229,6 +232,9 @@ public class SpaceStore: ObservableObject {
         if disableRefresh { return }
         state = .refreshing
         fetch(spaces: [space])
+
+        let indexSet: IndexSet = [index]
+        allSpaces.move(fromOffsets: indexSet, toOffset: 0)
     }
 
     private func fetchSuggestedSpaces() {
@@ -336,6 +342,7 @@ public class SpaceStore: ObservableObject {
         if spacesToFetch.count > 0 {
             fetch(spaces: spacesToFetch)
         } else {
+            self.updatedSpacesFromLastRefresh = []
             self.state = .ready
         }
     }
@@ -360,6 +367,7 @@ public class SpaceStore: ObservableObject {
                         data: space.entities,
                         comments: space.comments)
                 }
+                self.updatedSpacesFromLastRefresh = spacesToFetch
                 self.state = .ready
                 if self.queuedRefresh {
                     self.refresh()

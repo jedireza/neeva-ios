@@ -125,8 +125,25 @@ class SpaceCardModel: CardModel {
     init(manager: SpaceStore = SpaceStore.shared) {
         self.manager = manager
 
-        self.anyCancellable = manager.objectWillChange.sink { [unowned self] (_) in
-            if detailedSpace != nil {
+        self.anyCancellable = manager.$state.sink { [unowned self] state in
+            guard detailedSpace == nil, case .ready = state,
+                manager.updatedSpacesFromLastRefresh.count > 0
+            else {
+                return
+            }
+
+            if manager.updatedSpacesFromLastRefresh.count == 1,
+                let id = manager.updatedSpacesFromLastRefresh.first?.id.id,
+                let indexInStore = manager.allSpaces.firstIndex(where: { $0.id.id == id }),
+                let indexInDetails = allDetails.firstIndex(where: { $0.id == id })
+            {
+                // If only one space is updated and it exists inside the current details, then just
+                // update its contents and move it to the right place, instead of resetting all.
+                allDetails.first(where: { $0.id == id })?.updateDetails()
+                if indexInStore != indexInDetails {
+                    let indices: IndexSet = [indexInDetails]
+                    allDetails.move(fromOffsets: indices, toOffset: indexInStore)
+                }
                 return
             }
 
@@ -153,7 +170,22 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    func onDataUpdated() {}
+    func onDataUpdated() {
+        allDetails = manager.getAll().map {
+            SpaceCardDetails(space: $0, manager: manager)
+        }
+        allDetails.forEach { details in
+            let detailID = details.id
+            details.$isShowingDetails.sink { [weak self] showingDetails in
+                if showingDetails {
+                    withAnimation {
+                        self?.detailedSpace =
+                            self?.allDetails.first(where: { $0.id == detailID })
+                    }
+                }
+            }.store(in: &detailsSubscriptions)
+        }
+    }
 
     func add(spaceID: String, url: String, title: String, description: String? = nil) {
         DispatchQueue.main.async {
