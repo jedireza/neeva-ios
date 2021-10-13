@@ -840,6 +840,7 @@ class BrowserViewController: UIViewController {
                 }
                 self.openURLInNewTabPreservingIncognitoState(url)
             })
+
         showOverlaySheetViewController(controller!)
     }
 
