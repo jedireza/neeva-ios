@@ -14,8 +14,10 @@ struct AddToSpaceOverlayContent: View {
     let importData: SpaceImportHandler?
 
     var body: some View {
-        Group {
+        VStack {
             if request.state == .savedToSpace || request.state == .savingToSpace {
+                Spacer()
+
                 ShareAddedSpaceView(request: request, bvc: bvc)
             } else {
                 AddToSpaceView(
