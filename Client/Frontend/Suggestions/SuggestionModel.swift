@@ -379,7 +379,10 @@ class SuggestionModel: ObservableObject {
                 autocompleteSuggestion = Suggestion.navigation(
                     NavSuggestion(
                         url: URL(string: "https://\(matchedDomain)")!,
-                        title: site?.title)
+                        title: site?.title,
+                        isMemorizedNav: false,
+                        isAutocomplete: true
+                    )
                 )
                 return matchedDomain
             }
@@ -435,7 +438,7 @@ class SuggestionModel: ObservableObject {
 
     // MARK: - Suggestion Handling
     public func handleSuggestionSelected(_ suggestion: Suggestion) {
-        let suggestionLocationAttributes =
+        var suggestionLocationAttributes =
             findSuggestionLocationInfo(suggestion)?.loggingAttributes() ?? []
         var hideZeroQuery = true
 
@@ -482,7 +485,17 @@ class SuggestionModel: ObservableObject {
             interaction =
                 nav.isMemorizedNav
                 ? LogConfig.Interaction.MemorizedSuggestion
-                : LogConfig.Interaction.HistorySuggestion
+                : (nav.isAutocomplete
+                    ? LogConfig.Interaction.AutocompleteSuggestion
+                    : LogConfig.Interaction.HistorySuggestion)
+            if nav.isAutocomplete {
+                suggestionLocationAttributes.append(
+                    ClientLogCounterAttribute(
+                        key: LogConfig.SuggestionAttribute.autocompleteSelectedFromRow,
+                        value: String(nav.isAutocomplete)
+                    )
+                )
+            }
             finishEditingAndSubmit(url: nav.url)
         case .editCurrentURL(let tab):
             hideZeroQuery = false
