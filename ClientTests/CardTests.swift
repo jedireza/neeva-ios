@@ -156,7 +156,7 @@ class CardTests: XCTestCase {
         // The model should not update until the SpaceStore refreshes
         XCTAssertEqual(spaceCardModel.allDetails.count, 0)
         // Send a dummy event to simulate a store refresh
-        SpaceStore.shared.objectWillChange.send()
+        spaceCardModel.onDataUpdated()
         waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })
 
         let lastCard = spaceCardModel.allDetails.last!
@@ -202,7 +202,7 @@ class CardTests: XCTestCase {
 
         let model = GridModel()
         model.switcherState = .spaces
-        SpaceStore.shared.objectWillChange.send()
+        spaceCardModel.onDataUpdated()
         waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })
 
         let cardContainer = CardsContainer(
