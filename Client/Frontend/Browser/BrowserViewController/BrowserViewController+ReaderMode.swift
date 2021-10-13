@@ -4,6 +4,9 @@
 
 import Defaults
 import Shared
+import XCGLogger
+
+ private let log = Logger.browser
 
 extension BrowserViewController: ReaderModeDelegate {
     func readerMode(
@@ -63,7 +66,9 @@ extension BrowserViewController {
         if !WebServer.sharedInstance.server.isRunning {
             do {
                 try WebServer.sharedInstance.start()
+                log.info("Started GCDWebServers server (READING MODE)")
             } catch {
+                log.error("Unable to start GCDWebServers server (READING MODE): \(error)")
                 print("Error starting GCDWebServers server")
             }
         }
@@ -85,7 +90,12 @@ extension BrowserViewController {
                     try? self.readerModeCache.put(currentURL, readabilityResult)
                     if let nav = webView.load(PrivilegedRequest(url: readerModeURL) as URLRequest) {
                         self.ignoreNavigationInTab(tab, navigation: nav)
+                        log.info("Reading mode nav (READING MODE): \(nav)")
                     }
+                }
+
+                if let error = error {
+                    log.error("Failed to render reading mode (READING MODE): \(error)")
                 }
             }
         }

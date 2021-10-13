@@ -762,6 +762,8 @@ extension BrowserViewController: WKNavigationDelegate {
         _ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: Error
     ) {
+        log.error("Failed to navigate webview: \(navigation.debugDescription), with error: \(error)")
+
         if let tab = tabManager[webView] {
             tab.provisionalTemporaryDocument = nil
         }
