@@ -11,7 +11,7 @@ protocol TopBarDelegate: ToolbarDelegate {
     func urlBarDidEnterOverlayMode()
     func urlBarDidLeaveOverlayMode()
     func urlBarDidLongPressOverflow(targetButtonView: UIView)
-    func urlBar(didSubmitText text: String)
+    func urlBar(didSubmitText text: String, isSearchQuerySuggestion: Bool)
 
     func perform(neevaMenuAction: NeevaMenuAction)
     func updateFeedbackImage()
@@ -47,7 +47,10 @@ struct TopBarContent: View {
                     chromeModel.topBarDelegate?.urlBarDidPressStop()
                 }
             },
-            onSubmit: { chromeModel.topBarDelegate?.urlBar(didSubmitText: $0) },
+            onSubmit: {
+                chromeModel.topBarDelegate?.urlBar(
+                    didSubmitText: $0, isSearchQuerySuggestion: false)
+            },
             onShare: { shareView in
                 // also update in LegacyTabToolbarHelper
                 ClientLogger.shared.logCounter(

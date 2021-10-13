@@ -173,6 +173,28 @@ class SuggestionModel: ObservableObject {
                 self.topSuggestions = topSuggestions
                 self.chipQuerySuggestions = chipQuerySuggestions
                 self.rowQuerySuggestions = rowQuerySuggestions
+
+                // Add a search query suggestion for the URL if it doesn't exist
+                if URIFixup.getURL(searchQuery) != nil,
+                    !(rowQuerySuggestions.compactMap {
+                        switch $0 {
+                        case .query(let query):
+                            return query.suggestedQuery
+                        default:
+                            return nil
+                        }
+                    }).contains(searchQuery)
+                {
+                    self.rowQuerySuggestions.insert(
+                        Suggestion.query(
+                            SuggestionsQuery.Data.Suggest.QuerySuggestion(
+                                type: .standard,
+                                suggestedQuery: searchQuery,
+                                boldSpan: [],
+                                source: .elastic
+                            )), at: 0)
+                }
+
                 self.urlSuggestions = urlSuggestions
                 self.navSuggestions = navSuggestions
                 self.findInPageSuggestion = .findInPage(searchQuery)
@@ -453,7 +475,7 @@ class SuggestionModel: ObservableObject {
             interaction =
                 activeLensBang != nil
                 ? .BangSuggestion : .QuerySuggestion
-            bvc.urlBar(didSubmitText: suggestion.suggestedQuery)
+            bvc.urlBar(didSubmitText: suggestion.suggestedQuery, isSearchQuerySuggestion: true)
 
             if let index = querySuggestionIndexMap[suggestion.suggestedQuery] {
                 querySuggestionIndex = index

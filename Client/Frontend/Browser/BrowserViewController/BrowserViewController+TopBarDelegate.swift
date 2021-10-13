@@ -40,7 +40,7 @@ extension BrowserViewController: TopBarDelegate {
         }
 
         Haptics.longPress()
-        
+
         return UIMenu(
             children: [
                 UIAction(title: toggleActionTitle, image: UIImage(systemSymbol: iconName)) { _ in
@@ -57,10 +57,10 @@ extension BrowserViewController: TopBarDelegate {
         )
     }
 
-    func urlBar(didSubmitText text: String) {
+    func urlBar(didSubmitText text: String, isSearchQuerySuggestion: Bool = false) {
         let currentTab = tabManager.selectedTab
 
-        if let fixupURL = URIFixup.getURL(text) {
+        if let fixupURL = URIFixup.getURL(text), !isSearchQuerySuggestion {
             // The user entered a URL, so use it.
             finishEditingAndSubmit(fixupURL, visitType: VisitType.typed, forTab: currentTab)
             return
