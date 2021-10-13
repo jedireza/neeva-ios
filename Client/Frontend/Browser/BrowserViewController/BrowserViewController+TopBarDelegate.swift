@@ -87,7 +87,8 @@ extension BrowserViewController: TopBarDelegate {
     }
 
     func urlBarDidLongPressOverflow(targetButtonView: UIView) {
-        showShareSheet(buttonView: targetButtonView)
+        // No action should be taken.
+        // Leaving this function unless we want to add anything in the future.
     }
 
     fileprivate func submitSearchText(_ text: String, forTab tab: Tab?) {
