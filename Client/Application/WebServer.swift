@@ -40,6 +40,7 @@ class WebServer {
                 GCDWebServerOption_AuthenticationAccounts: [sessionToken: ""],
             ])
         }
+
         return server.isRunning
     }
 

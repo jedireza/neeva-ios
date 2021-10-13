@@ -257,8 +257,6 @@ class ErrorPageHelper {
     }
 
     func loadPage(_ error: NSError, forUrl url: URL, inWebView webView: WKWebView) {
-        logger.error("Show error page with error: \(error), for URL: \(url), callstack: \(Thread.callStackSymbols)")
-
         guard
             var components = URLComponents(
                 string: "\(InternalURL.baseUrl)/\(ErrorPageHandler.path)"),
@@ -305,10 +303,12 @@ class ErrorPageHelper {
             if let internalUrl = InternalURL(webViewUrl), internalUrl.isSessionRestore,
                 let page = InternalURL.authorize(url: urlWithQuery)
             {
+                logger.info("Navigating to error page URL: \(page)")
                 // A session restore page is already on the history stack, so don't load another page on the history stack.
                 webView.replaceLocation(with: page)
             } else {
                 // A new page needs to be added to the history stack (i.e. the simple case of trying to navigate to an url for the first time and it fails, without pushing a page on the history stack, the webview will just show the current page).
+                logger.info("Navigating to error page URL with query: \(urlWithQuery)")
                 webView.load(PrivilegedRequest(url: urlWithQuery) as URLRequest)
             }
         }

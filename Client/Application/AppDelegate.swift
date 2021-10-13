@@ -272,7 +272,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // so this is better anyway.
         do {
             try server.start()
+            log.error("WebServer started")
         } catch let err as NSError {
+            log.error("Failed to start WebServer: \(err)")
             print("Error: Unable to start WebServer \(err)")
         }
     }
