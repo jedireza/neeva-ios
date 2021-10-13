@@ -478,6 +478,17 @@ private struct TabSuggestionView: View {
 private struct EditCurrentURLSuggestionView: View {
     let suggestion: TabCardDetails
 
+   func copy() {
+        UIPasteboard.general.string = suggestion.url?.absoluteString
+
+        if let toastManager = SceneDelegate.getCurrentSceneDelegate(
+            with: suggestion.manager.scene)?.toastViewManager
+        {
+            toastManager.makeToast(text: "URL copied to clipboard").enqueue(
+                manager: toastManager)
+        }
+    }
+
     var url: URL? {
         let url = suggestion.url
 
@@ -511,17 +522,18 @@ private struct EditCurrentURLSuggestionView: View {
             .withFont(.bodyMedium).foregroundColor(.secondaryLabel).lineLimit(1)
     }
 
+    var copyBotton: some View {
+        Button {
+            copy()
+        } label: {
+            Symbol(decorative: .docOnDoc)
+        }
+    }
+
     var menuItems: some View {
         Group {
             Button {
-                UIPasteboard.general.string = suggestion.url?.absoluteString
-
-                if let toastManager = SceneDelegate.getCurrentSceneDelegate(
-                    with: suggestion.manager.scene)?.toastViewManager
-                {
-                    toastManager.makeToast(text: "URL copied to clipboard").enqueue(
-                        manager: toastManager)
-                }
+                copy()
             } label: {
                 Label("Copy Address", systemSymbol: .link)
             }
@@ -556,7 +568,7 @@ private struct EditCurrentURLSuggestionView: View {
             icon: icon,
             label: label,
             secondaryLabel: secondaryLabel,
-            detail: Symbol(decorative: .arrowUpLeft),
+            detail: copyBotton,
             suggestion: Suggestion.editCurrentURL(suggestion)
         )
         .environmentObject(model)
