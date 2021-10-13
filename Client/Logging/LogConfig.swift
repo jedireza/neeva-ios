@@ -328,6 +328,8 @@ public struct LogConfig {
         public static let querySuggestionPosition = "QuerySuggestionPosition"
         public static let selectedMemorizedURLSuggestion = "selectedMemorizedURLSuggestion"
         public static let selectedQuerySuggestion = "SelectedQuerySuggestion"
+        // autocomplete
+        public static let autocompleteSelectedFromRow = "AutocompleteSelectedFromRow"
     }
 
     public struct SpacesAttribute {
