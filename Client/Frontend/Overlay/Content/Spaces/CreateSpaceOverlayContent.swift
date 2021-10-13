@@ -24,7 +24,6 @@ struct CreateSpaceOverlayContent: View {
                                     spaceModel.allDetails.first?.isShowingDetails = true
                                     subscription?.cancel()
                                 }
-
                             }
                         }
                     case .failure:
