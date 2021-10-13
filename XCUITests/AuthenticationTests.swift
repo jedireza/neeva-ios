@@ -5,7 +5,9 @@ import XCTest
 class AuthenticationTests: BaseTestCase {
     let url = "https://jigsaw.w3.org/HTTP/Basic"
 
-    func testIncorrectCredentials() {
+    func testIncorrectCredentials() throws {
+        try skipTest(issue: 1958, "this test is flaky")
+
         openURL(url, waitForPageLoad: false)
 
         // Make sure that 3 invalid credentials result in authentication failure.

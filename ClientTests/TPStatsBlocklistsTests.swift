@@ -64,15 +64,12 @@ class TPStatsBlocklistsTests: XCTestCase {
         }
         XCTAssertEqual(blocklist("https://www.facebook.com", "https://atlassolutions.com"), false)
         XCTAssertEqual(blocklist("https://www.neeva.com"), false)
-        XCTAssertEqual(blocklist("https://2leep.com/track"), true)
-        XCTAssertEqual(blocklist("https://sub.2leep.com/ad"), true)
-        XCTAssertEqual(blocklist("https://admeld.com"), true)
-        XCTAssertEqual(blocklist("https://admeld.com/popup"), true)
-        XCTAssertEqual(blocklist("https://sub.admeld.com"), true)
-        XCTAssertEqual(blocklist("https://subadmeld.com"), false)
+        XCTAssertEqual(blocklist("https://cadreon.com/track"), true)
+        XCTAssertEqual(blocklist("https://cadreon.com.au"), false)
+        XCTAssertEqual(blocklist("https://datafeedfile.com/popup"), true)
+        XCTAssertEqual(blocklist("https://datafront.co/track"), true)
+        XCTAssertEqual(blocklist("https://data.front.com/track"), false)
         XCTAssertEqual(blocklist("https://aol.com.aolanswers.com", "https://foo.com", ["ers.com"]), false)
         XCTAssertEqual(blocklist("https://sub.xiti.com/track"), true)
-        XCTAssertEqual(blocklist("https://atlassolutions.com"), true)
-        XCTAssertEqual(blocklist("https://atlassolutions.com", "https://foo.com", ["*solutions.com"]), true)
     }
 }

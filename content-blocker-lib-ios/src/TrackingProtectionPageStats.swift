@@ -84,15 +84,140 @@ func wildcardContentBlockerDomainToRegex(domain: String) -> String? {
 
 class TPStatsBlocklists {
 
-    func load() {
-        TrackingPreventionUtils.generateRules()
+    class Rule {
+        let regex: String
+        let loadType: LoadType
+        let resourceType: ResourceType
+        let domainExceptions: [String]?
+        let list: BlocklistCategory
+
+        init(regex: String, loadType: LoadType, resourceType: ResourceType, domainExceptions: [String]?, list: BlocklistCategory) {
+            self.regex = regex
+            self.loadType = loadType
+            self.resourceType = resourceType
+            self.domainExceptions = domainExceptions
+            self.list = list
+        }
     }
 
-    func urlIsInList(_ url: URL, mainDocumentURL: URL, safelistedDomains: [String]) -> Bool {
-        if (ContentBlocker.shared.setupCompleted && TrackingPreventionUtils.domainSet.contains(url.baseDomain ?? "")) {
-            return true
+    private var blockRules = [String: [Rule]]()
+
+    enum LoadType {
+        case all
+        case thirdParty
+    }
+
+    enum ResourceType {
+        case all
+        case font
+    }
+
+    func load() {
+        if FeatureFlag[.enableNeevaDomainList] {
+            TrackingPreventionUtils.generateRules()
+            return
         }
 
-        return false
+        // All rules have this prefix on the domain to match.
+        let standardPrefix = "^https?://([^/]+\\.)?"
+
+        // Use the strict list of files, as it is the complete list of rules,
+        // keeping in mind the stats can't distinguish block vs cookie-block,
+        // only that an url did or didn't match.
+        for blockListFile in [
+            BlocklistFileName.easyPrivacy,
+            ] {
+            let list: [[String: AnyObject]]
+            do {
+                guard let path = Bundle.main.path(forResource: blockListFile.filename, ofType: "json") else {
+                    assertionFailure("Blocklists: bad file path.")
+                    return
+                }
+
+                let json = try Data(contentsOf: URL(fileURLWithPath: path))
+                guard let data = try JSONSerialization.jsonObject(with: json, options: []) as? [[String: AnyObject]] else {
+                    assertionFailure("Blocklists: bad JSON cast.")
+                    return
+                }
+                list = data
+            } catch {
+                assertionFailure("Blocklists: \(error.localizedDescription)")
+                return
+            }
+
+            for rule in list {
+                guard let trigger = rule["trigger"] as? [String: AnyObject],
+                    let filter = trigger["url-filter"] as? String else {
+                        assertionFailure("Blocklists error: Rule has unexpected format.")
+                        continue
+                }
+
+                guard let loc = filter.range(of: standardPrefix) else {
+                    continue
+                }
+                var baseDomain = String(filter[loc.upperBound...]).replacingOccurrences(of: "\\.", with: ".")
+                baseDomain = baseDomain.components(separatedBy: "[")[0]
+                baseDomain = baseDomain.components(separatedBy: "/")[0]
+                assert(!baseDomain.isEmpty)
+
+                let domainExceptionsRegex = (trigger["unless-domain"] as? [String])?.compactMap { domain in
+                    return wildcardContentBlockerDomainToRegex(domain: domain)
+                }
+
+                // Only "third-party" is supported; other types are not used in our block lists.
+                let loadTypes = trigger["load-type"] as? [String] ?? []
+                let loadType = loadTypes.contains("third-party") ? LoadType.thirdParty : .all
+
+                // Only "font" is supported; other types are not used in our block lists.
+                let resourceTypes = trigger["resource-type"] as? [String] ?? []
+                let resourceType = resourceTypes.contains("font") ? ResourceType.font : .all
+
+                let category = BlocklistCategory.fromFile(blockListFile)
+                let rule = Rule(regex: filter, loadType: loadType, resourceType: resourceType, domainExceptions: domainExceptionsRegex, list: category)
+                blockRules[baseDomain] = (blockRules[baseDomain] ?? []) + [rule]
+            }
+        }
     }
+
+     func urlIsInList(_ url: URL, mainDocumentURL: URL, safelistedDomains: [String]) -> Bool {
+         if FeatureFlag[.enableNeevaDomainList] {
+             if (ContentBlocker.shared.setupCompleted && TrackingPreventionUtils.domainSet.contains(url.baseDomain ?? "")) {
+                 return true
+             }
+
+             return false
+         }
+
+         let resourceString = url.absoluteString
+
+         guard let firstPartyDomain = mainDocumentURL.baseDomain, let baseDomain = url.baseDomain, let rules = blockRules[baseDomain] else {
+             return false
+         }
+
+         domainSearch: for rule in rules {
+             // First, test the top-level filters to see if this URL might be blocked.
+             if resourceString.range(of: rule.regex, options: .regularExpression) != nil {
+                 // Check the domain exceptions. If a domain exception matches, this filter does not apply.
+                 for domainRegex in (rule.domainExceptions ?? []) {
+                     if firstPartyDomain.range(of: domainRegex, options: .regularExpression) != nil {
+                         continue domainSearch
+                     }
+                 }
+
+                 // Check the safelist.
+                 if let baseDomain = url.baseDomain, !safelistedDomains.isEmpty {
+                     for ignoreDomain in safelistedDomains {
+                         if baseDomain.range(of: ignoreDomain, options: .regularExpression) != nil {
+                             return false
+                         }
+                     }
+                 }
+
+                 return true
+             }
+             return false
+         }
+
+         return false
+     }
 }
