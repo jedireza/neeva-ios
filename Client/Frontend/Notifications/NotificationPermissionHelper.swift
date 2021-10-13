@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Foundation
+import Shared
 import UserNotifications
 
 class NotificationPermissionHelper {
@@ -66,7 +67,10 @@ class NotificationPermissionHelper {
 
                 guard granted else { return }
                 self.getNotificationSettings()
-                LocalNotitifications.createNeevaPromoCallback()
+
+                if FeatureFlag[.notifications] {
+                    LocalNotitifications.createNeevaPromoCallback()
+                }
             }
     }
 
