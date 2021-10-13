@@ -114,11 +114,13 @@ where
         if let space = space, canEdit {
             Button(
                 action: {
-                    SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
-                        style: .withTitle
-                    ) {
-                        AddToNativeSpaceOverlayContent(space: space)
-                            .environmentObject(spacesModel)
+                    DispatchQueue.main.async {
+                        SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
+                            style: .withTitle
+                        ) {
+                            AddToNativeSpaceOverlayContent(space: space)
+                                .environmentObject(spacesModel)
+                        }
                     }
                 },
                 label: {

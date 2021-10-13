@@ -22,6 +22,77 @@ struct AddToNativeSpaceOverlayContent: View {
     }
 }
 
+private enum FieldType: String, Hashable {
+    case urlField = "URL"
+    case titleField = "TITLE"
+    case descriptionField = "DESCRIPTION"
+}
+
+@available(iOS 15.0, *)
+private struct iOS15InputField: View {
+    @FocusState private var isFocused: FieldType?
+
+    let title: FieldType
+    let bodyText: String
+    @Binding var inputText: String
+
+    private func textEditAccentColor(type: FieldType) -> Color {
+        if type == isFocused {
+            return .ui.adaptive.blue
+        } else {
+            return .quaternaryLabel
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(title.rawValue)
+                .withFont(.headingXSmall)
+                .foregroundColor(.secondaryLabel)
+
+            if case .descriptionField = title {
+                TextEditor(text: $inputText)
+                    .withFont(unkerned: .bodyLarge)
+                    .frame(minHeight: 80)
+                    .focused($isFocused, equals: title)
+                    .accentColor(textEditAccentColor(type: title))
+            } else {
+                TextField(bodyText, text: $inputText)
+                    .withFont(unkerned: .bodyLarge)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .focused($isFocused, equals: title)
+                    .accentColor(textEditAccentColor(type: title))
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .roundedOuterBorder(cornerRadius: 12, color: textEditAccentColor(type: title), lineWidth: 1)
+    }
+}
+
+private struct LegacyInputField: View {
+    let title: FieldType
+    let bodyText: String
+    @Binding var inputText: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(title.rawValue)
+                .withFont(.headingXSmall)
+                .foregroundColor(.secondaryLabel)
+
+            TextField(bodyText, text: $inputText)
+                .withFont(unkerned: .bodyLarge)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .roundedOuterBorder(cornerRadius: 12, color: .quaternaryLabel, lineWidth: 1)
+    }
+}
+
 struct AddToNativeSpaceView: View {
     let space: Space
     let entityID: String?
@@ -33,21 +104,6 @@ struct AddToNativeSpaceView: View {
     @State var titleText: String
     @State var urlText: String
 
-    @available(iOS 15.0, *)
-    @FocusState private var isFocused: FieldType?
-
-    private func textEditAccentColor(type: FieldType) -> Color {
-        if #available(iOS 15.0, *) {
-            if type == isFocused {
-                return .ui.adaptive.blue
-            } else {
-                return .quaternaryLabel
-            }
-        } else {
-            return .quaternaryLabel
-        }
-    }
-
     init(space: Space, entityID: String? = nil, dismiss: @escaping () -> Void) {
         self.space = space
         self.entityID = entityID
@@ -58,48 +114,26 @@ struct AddToNativeSpaceView: View {
         self.descriptionText = data?.snippet ?? ""
     }
 
-    private func inputField(title: FieldType, bodytext: String, inputText: Binding<String>)
+    private func inputField(title: FieldType, bodyText: String, inputText: Binding<String>)
         -> some View
     {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(title.rawValue)
-                .withFont(.headingXSmall)
-                .foregroundColor(.secondaryLabel)
+        Group {
             if #available(iOS 15.0, *) {
-                if case .descriptionField = title {
-                    TextEditor(text: inputText)
-                        .withFont(unkerned: .bodyLarge)
-                        .frame(minHeight: 80)
-                        .focused($isFocused, equals: title)
-                        .accentColor(textEditAccentColor(type: title))
-                } else {
-                    TextField(bodytext, text: inputText)
-                        .withFont(unkerned: .bodyLarge)
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
-                        .focused($isFocused, equals: title)
-                        .accentColor(textEditAccentColor(type: title))
-                }
+                iOS15InputField(title: title, bodyText: bodyText, inputText: inputText)
             } else {
-                TextField(bodytext, text: inputText)
-                    .withFont(unkerned: .bodyLarge)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
+                LegacyInputField(title: title, bodyText: bodyText, inputText: inputText)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .roundedOuterBorder(cornerRadius: 12, color: textEditAccentColor(type: title), lineWidth: 1)
     }
 
     var body: some View {
         GroupedStack {
             inputField(
-                title: .titleField, bodytext: "Please provide a title", inputText: $titleText)
+                title: .titleField, bodyText: "Please provide a title", inputText: $titleText)
             if entityID != nil {
                 inputField(
                     title: .descriptionField,
-                    bodytext: "Please provide a description",
+                    bodyText: "Please provide a description",
                     inputText: $descriptionText)
                 if let url = URL(string: urlText),
                     let thumbnails = spaceModel.thumbnailURLCandidates[url],
@@ -110,7 +144,7 @@ struct AddToNativeSpaceView: View {
             }
             if entityID == nil {
                 inputField(
-                    title: .urlField, bodytext: "Add a URL to your new item (optional)",
+                    title: .urlField, bodyText: "Add a URL to your new item (optional)",
                     inputText: $urlText
                 )
             }
@@ -168,11 +202,5 @@ struct AddToNativeSpaceView: View {
         }.onDisappear {
             thumbnailModel.showing = false
         }
-    }
-
-    private enum FieldType: String, Hashable {
-        case urlField = "URL"
-        case titleField = "TITLE"
-        case descriptionField = "DESCRIPTION"
     }
 }
