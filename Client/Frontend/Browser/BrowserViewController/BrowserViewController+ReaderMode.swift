@@ -71,6 +71,8 @@ extension BrowserViewController {
                 log.error("Unable to start GCDWebServers server (READING MODE): \(error)")
                 print("Error starting GCDWebServers server")
             }
+        } else {
+            log.info("GCDWebServers server already running (READING MODE)")
         }
 
         guard let currentURL = webView.backForwardList.currentItem?.url,
@@ -90,7 +92,7 @@ extension BrowserViewController {
                     try? self.readerModeCache.put(currentURL, readabilityResult)
                     if let nav = webView.load(PrivilegedRequest(url: readerModeURL) as URLRequest) {
                         self.ignoreNavigationInTab(tab, navigation: nav)
-                        log.info("Reading mode nav (READING MODE): \(nav)")
+                        log.info("Navigating to reading mode (READING MODE)")
                     }
                 }
 

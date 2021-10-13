@@ -5,6 +5,10 @@
 import Defaults
 import Foundation
 import GCDWebServers
+import Shared
+import XCGLogger
+
+private let log = Logger.browser
 
 struct ReaderModeHandlers {
     static let ReaderModeStyleHash = "sha256-L2W8+0446ay9/L1oMrgucknQXag570zwgQrHwE68qbQ="
@@ -12,6 +16,8 @@ struct ReaderModeHandlers {
     static var readerModeCache: ReaderModeCache = DiskReaderModeCache.sharedInstance
 
     static func register(_ webServer: WebServer, profile: Profile) {
+        log.info("Registering reader mode server (READING MODE)")
+
         // Register our fonts and css, which we want to expose to web content that we present in the WebView
         webServer.registerMainBundleResourcesOfType("ttf", module: "reader-mode/fonts")
         webServer.registerMainBundleResource("Reader.css", module: "reader-mode/styles")
