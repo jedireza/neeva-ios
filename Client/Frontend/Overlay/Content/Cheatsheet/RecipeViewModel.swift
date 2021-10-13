@@ -24,18 +24,6 @@ class RecipeViewModel: ObservableObject {
     }
 
     public func updateContentWithURL(url: String) {
-        // reset before getting new data
-        self.recipe = Recipe(
-            title: "",
-            imageURL: "",
-            totalTime: nil,
-            prepTime: nil,
-            yield: nil,
-            ingredients: nil,
-            instructions: nil,
-            recipeRating: nil,
-            reviews: nil
-        )
         setupRecipeData(url: url)
     }
 
@@ -47,7 +35,19 @@ class RecipeViewModel: ObservableObject {
                 if data.recipe != nil {
                     self.recipe = data.recipe!
                 }
+                break
             case .failure(_):
+                self.recipe = Recipe(
+                    title: "",
+                    imageURL: "",
+                    totalTime: nil,
+                    prepTime: nil,
+                    yield: nil,
+                    ingredients: nil,
+                    instructions: nil,
+                    recipeRating: nil,
+                    reviews: nil
+                )
                 break
             }
 

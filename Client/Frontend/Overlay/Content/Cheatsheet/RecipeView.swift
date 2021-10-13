@@ -79,13 +79,15 @@ struct RecipeView: View {
                     }
                 }
                 if let yield = yield {
-                    HStack(alignment: .center) {
-                        Image(systemSymbol: .person2)
-                            .renderingMode(.template)
-                            .foregroundColor(Color.secondaryLabel)
-                            .font(.system(size: 14))
-                        Text("Makes \(yield)")
-                            .withFont(.bodyMedium)
+                    ScrollView(.horizontal) {
+                        HStack(alignment: .center) {
+                            Image(systemSymbol: .person2)
+                                .renderingMode(.template)
+                                .foregroundColor(Color.secondaryLabel)
+                                .font(.system(size: 14))
+                            Text(constructYieldString(input: yield))
+                                .withFont(.bodyMedium)
+                        }
                     }
                 }
             }
@@ -101,7 +103,7 @@ struct RecipeView: View {
                         : ingredients[..<3],
                     id: \.self
                 ) {
-                    Text($0)
+                    Text(cleanupText(input: $0))
                         .withFont(.bodyMedium)
                 }
             }
@@ -114,7 +116,7 @@ struct RecipeView: View {
                     ForEach(instructions.indices) { i in
                         HStack(alignment: .top) {
                             Text("\(i+1). ")
-                            Text("\(instructions[i])")
+                            Text("\(cleanupText(input: instructions[i]))")
                         }
                         .withFont(unkerned: .bodyMedium)
                     }
@@ -129,14 +131,14 @@ struct RecipeView: View {
         HStack(alignment: .center) {
             if let recipeRating = recipeRating {
                 if recipeRating.recipeStars > 0 {
-                    ForEach((1...Int(floor(recipeRating.recipeStars))), id: \.self) { _ in
+                    ForEach((1...Int(floor(normalizeRating(stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars)))), id: \.self) { _ in
                         Image(systemSymbol: .starFill)
                             .renderingMode(.template)
                             .foregroundColor(Color.brand.orange)
                             .font(.system(size: 12))
                             .padding(.trailing, -4)
                     }
-                    if round(recipeRating.recipeStars) > floor(recipeRating.recipeStars) {
+                    if round(normalizeRating(stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars)) > floor(normalizeRating(stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars)) {
                         Image(systemSymbol: .starLeadinghalfFill)
                             .renderingMode(.template)
                             .foregroundColor(Color.brand.orange)
@@ -179,5 +181,29 @@ struct RecipeView: View {
         }
         .frame(maxWidth: .infinity, minHeight: 48)
         .padding(.top, expanded ? 10 : -40)
+    }
+
+    func normalizeRating(stars: Double, maxStars: Double) -> Double {
+        let standardStars = 5.0
+
+        if maxStars <= standardStars {
+            return stars
+        }
+
+        return stars / maxStars * standardStars
+    }
+
+    func cleanupText(input: String) -> String {
+        return
+            input
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    func constructYieldString(input: String) -> String {
+        let prefix = input.lowercased().hasPrefix("make") ? "" : "Makes "
+        return "\(prefix)\(cleanupText(input: input))"
     }
 }
