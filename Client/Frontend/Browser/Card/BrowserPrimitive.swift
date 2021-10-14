@@ -301,7 +301,7 @@ extension TabGroup: BrowserPrimitive, Closeable {
     }
 
     var displayTitle: String {
-        "\(children.count) Tabs"
+        children.first?.displayTitle ?? "\(children.count) Tabs"
     }
 
     var displayFavicon: Favicon? {
