@@ -32,6 +32,7 @@ struct TabLocationView: View {
     @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
     @State private var isPressed = false
+
     @Environment(\.isIncognito) private var isIncognito
     @Environment(\.colorScheme) private var colorScheme
 

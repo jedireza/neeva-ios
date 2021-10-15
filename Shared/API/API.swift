@@ -3287,7 +3287,7 @@ public struct FlagInput: GraphQLMapConvertible {
 }
 
 /// Input type for preferred provider mutations.
-/// 
+///
 /// We support three mutations:
 /// - set
 /// - add

@@ -144,7 +144,7 @@ class CardTests: XCTestCase {
             SpaceEntityData(
                 id: "id3", url: .aboutBlank, title: nil, snippet: nil,
                 thumbnail: SpaceThumbnails.githubThumbnail,
-                recipe: nil),
+                recipe: nil)
         ]
         let firstCard = SpaceCardDetails(
             space: SpaceStore.shared.getAll().first!,

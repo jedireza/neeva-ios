@@ -4,8 +4,8 @@
 import Foundation
 import Shared
 
-protocol PrivateModeUI {
-    func applyUIMode(isPrivate: Bool)
+protocol IncognitoModeUI {
+    func applyUIMode(isIncognito: Bool)
 }
 
 extension UIColor {

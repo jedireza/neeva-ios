@@ -6,7 +6,7 @@ import SwiftUI
 /// for `EnvironmentValues.isIncognito` to the view it hosts.
 class IncognitoAwareHostingController<Content: View>: UIHostingController<
     IncognitoAwareHostingController._Applicator<Content>
->, PrivateModeUI
+>, IncognitoModeUI
 {
     /// Initializes this hosting controller.
     ///
@@ -31,8 +31,8 @@ class IncognitoAwareHostingController<Content: View>: UIHostingController<
         rootView = _Applicator(content: newContent, isIncognito: rootView.isIncognito)
     }
 
-    func applyUIMode(isPrivate: Bool) {
-        rootView = _Applicator(content: rootView.content, isIncognito: isPrivate)
+    func applyUIMode(isIncognito: Bool) {
+        rootView = _Applicator(content: rootView.content, isIncognito: isIncognito)
     }
 
     // can’t be fileprivate because the type of the generic on UIHostingController

@@ -6,7 +6,7 @@ import Defaults
 import Shared
 import XCGLogger
 
- private let log = Logger.browser
+private let log = Logger.browser
 
 extension BrowserViewController: ReaderModeDelegate {
     func readerMode(

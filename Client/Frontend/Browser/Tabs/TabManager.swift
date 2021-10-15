@@ -161,7 +161,11 @@ class TabManager: NSObject, ObservableObject {
     }
 
     var selectedTab: Tab?
-    @Published private(set) var isIncognito: Bool = false
+    @Published private(set) var isIncognito: Bool = false {
+        didSet {
+            SceneDelegate.getBVC(with: scene).applyUIMode(isIncognito: isIncognito)
+        }
+    }
 
     subscript(index: Int) -> Tab? {
         assert(Thread.isMainThread)
@@ -478,7 +482,7 @@ class TabManager: NSObject, ObservableObject {
         if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
             selectTab(mostRecentTab)
         } else if isIncognito {  // no empty tab tray in incognito
-            bvc.openLazyTab(openedFrom: .tabTray)
+            bvc.openLazyTab(openedFrom: fromTabTray ? .tabTray : .openTab(selectedTab))
         } else {
             let placeholderTab = Tab(bvc: bvc, configuration: configuration, isPrivate: isIncognito)
 
