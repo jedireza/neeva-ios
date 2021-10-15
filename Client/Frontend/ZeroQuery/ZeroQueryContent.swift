@@ -30,10 +30,6 @@ struct ZeroQueryContent: View {
     @EnvironmentObject var suggestedSitesViewModel: SuggestedSitesViewModel
     @EnvironmentObject var suggestedSearchesModel: SuggestedSearchesModel
 
-    var numSuggestedSites: Int {
-        return FeatureFlag[.homeAsSuggestedSite] ? 7 : 8
-    }
-
     var body: some View {
         ZeroQueryView()
             .background(Color(UIColor.HomePanel.topSitesBackground))
@@ -58,10 +54,6 @@ struct ZeroQueryContent: View {
             }
             .onAppear {
                 self.model.updateState()
-                TopSitesHandler.getTopSites(profile: model.profile).uponQueue(.main) { result in
-                    self.suggestedSitesViewModel.sites =
-                        Array(result.prefix(self.numSuggestedSites))
-                }
                 self.suggestedSearchesModel.reload(from: self.model.profile)
             }
     }

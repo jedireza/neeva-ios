@@ -166,6 +166,7 @@ struct SuggestedSitesView: View {
     }
 
     var body: some View {
+        let showHome = FeatureFlag[.homeAsSuggestedSite]
         let columns = Array(
             repeating: GridItem(
                 .fixed(SuggestedSiteUX.BlockSize), spacing: SuggestedSiteUX.BlockSpacing),
@@ -173,7 +174,7 @@ struct SuggestedSitesView: View {
         if isExpanded {
             LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing)
             {
-                if FeatureFlag[.homeAsSuggestedSite] {
+                if showHome {
                     SuggestedHomeView()
                 }
                 ForEach(viewModel.sites, id: \.self) { suggestedSite in
@@ -185,13 +186,15 @@ struct SuggestedSitesView: View {
             .padding(.vertical, 10)
             .padding(.horizontal, ZeroQueryUX.Padding - 2)
         } else {
-            FadingHorizontalScrollView { size in
+            FadingHorizontalScrollView { _ in
                 HStack(spacing: 0) {
-                    if FeatureFlag[.homeAsSuggestedSite] {
+                    if showHome {
                         SuggestedHomeView()
                     }
                     ForEach(Array(viewModel.sites.enumerated()), id: \.0) { i, suggestedSite in
-                        Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
+                        if showHome || i > 0 {
+                            Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
+                        }
                         SuggestedSiteView(
                             site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
                         )
