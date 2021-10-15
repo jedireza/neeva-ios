@@ -43,6 +43,8 @@ public class NeevaFeatureFlags {
     var floatFlags: [Int: Double] = [:]
     var stringFlags: [Int: String] = [:]
 
+    @Published public var flagsUpdated: Bool = false
+
     // The feature flags we know about. Defined in //neeva/serving/featureflags/flags/.
     // Echo the names as they are defined server-side. Use string names for the flags
     // that mirror the values defined in //neeva/serving/featureflags/data/.
@@ -157,6 +159,8 @@ public class NeevaFeatureFlags {
         Defaults[Self.intFlagsKey] = intFlags
         Defaults[Self.floatFlagsKey] = floatFlags
         Defaults[Self.stringFlagsKey] = stringFlags
+
+        shared.flagsUpdated = true
     }
 
     // Get or set feature flags. Setter overrides the server-provided default
@@ -202,6 +206,31 @@ public class NeevaFeatureFlags {
         set(newValue) {
             Defaults[Self.stringFlagOverridesKey][flag.rawValue] = newValue
         }
+    }
+
+    // latestValue functions return the latest value fetched from server.
+    // Use this for more time sensitive use cases that require more up to
+    // date feature flag instead of waiting for next app restart which
+    // may not happen frequently when user often background the app
+    
+    public static func latestValue(_ flag: BoolFlag) -> Bool {
+        return Defaults[Self.boolFlagOverridesKey][flag.rawValue]
+            ?? Defaults[Self.boolFlagsKey][flag.rawValue] ?? false
+    }
+
+    public static func latestValue(_ flag: IntFlag) -> Int {
+        return Defaults[Self.intFlagOverridesKey][flag.rawValue]
+            ?? Defaults[Self.intFlagsKey][flag.rawValue] ?? 0
+    }
+
+    public static func latestValue(_ flag: FloatFlag) -> Double {
+        return Defaults[Self.floatFlagOverridesKey][flag.rawValue]
+        ?? Defaults[Self.floatFlagsKey][flag.rawValue] ?? 0.0
+    }
+
+    public static func latestValue(_ flag: StringFlag) -> String {
+        return Defaults[Self.stringFlagOverridesKey][flag.rawValue]
+            ?? Defaults[Self.stringFlagsKey][flag.rawValue] ?? ""
     }
 
     /// Reset overrides to the default, server-provided values.

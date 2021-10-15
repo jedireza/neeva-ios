@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import Defaults
 import SDWebImage
 import Shared
@@ -87,17 +88,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         checkUserActivenessLastWeek()
 
-        NotificationPermissionHelper.shared.isAuthorized { authorized in
-            if FeatureFlag[.notifications] && authorized {
-                LocalNotitifications.rescheduleNotificationIfNeeded(
-                    for: .neevaPromo,
-                    completion: { rescheduled in
-                        if !rescheduled {
-                            LocalNotitifications.createNeevaPromoCallback()
-                        }
-                    })
-            }
-        }
+        LocalNotitifications.scheduleNeevaPromoCallbackIfAuthorized(
+            callSite: LocalNotitifications.ScheduleCallSite.enterForeground
+        )
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

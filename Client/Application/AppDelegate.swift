@@ -70,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         if FeatureFlag[.notifications] {
             NotificationPermissionHelper.shared.requestPermissionIfNeeded()
         }
+        NotificationManager.shared.setupFeatureFlagUpdateHandler()
 
         UNUserNotificationCenter.current().delegate = self
 

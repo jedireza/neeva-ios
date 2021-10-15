@@ -64,13 +64,34 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     ) {
         let bvc = SceneDelegate.getBVC(for: nil)
 
-        switch NotificationType(rawValue: response.notification.request.identifier) {
+        let request = response.notification.request
+
+        switch NotificationType(rawValue: request.identifier) {
         case .neevaPromo:
+            var tapAction: LocalNotitifications.LocalNotificationTapAction
             if !NeevaUserInfo.shared.isUserLoggedIn {
                 bvc.presentIntroViewController(true)
+                tapAction = LocalNotitifications.LocalNotificationTapAction.openIntroView
             } else {
                 bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
+                tapAction = LocalNotitifications.LocalNotificationTapAction.openWelcomeTour
             }
+            var attributes = [
+                ClientLogCounterAttribute(
+                    key: LogConfig.NotificationAttribute.localNotificationTapAction,
+                    value: tapAction.rawValue)
+            ]
+            if let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String {
+                attributes.append(
+                    ClientLogCounterAttribute(
+                        key: LogConfig.NotificationAttribute.localNotificationPromoId,
+                        value: promoId)
+                )
+            }
+            ClientLogger.shared.logCounter(
+                .OpenLocalNotification,
+                attributes: attributes
+            )
         case .none:
             break
         }

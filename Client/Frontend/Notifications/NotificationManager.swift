@@ -1,5 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
+import Defaults
 import Foundation
 import Shared
 import SwiftUI
@@ -7,6 +9,7 @@ import SwiftUI
 private let logger = Logger.browser
 
 class NotificationManager: ObservableObject {
+    static let promoIdKey = "PromoId"
     static let shared = NotificationManager()
 
     @Published var notifications = [BaseNotification]() {
@@ -94,6 +97,7 @@ class NotificationManager: ObservableObject {
     // MARK: - Notification Creation
     func createLocalNotification(
         identifier: String,
+        promoId: String,
         type: NotificationType? = nil,
         timeInterval: TimeInterval,
         title: String,
@@ -109,6 +113,7 @@ class NotificationManager: ObservableObject {
         if let body = body {
             content.body = body
         }
+        content.userInfo[NotificationManager.promoIdKey] = promoId
 
         // Create the trigger as a repeating event.
         let trigger = UNTimeIntervalNotificationTrigger(
@@ -128,10 +133,13 @@ class NotificationManager: ObservableObject {
             if let error = error {
                 completionHandler(.failure(error))
             } else {
-                let baseNotification = BaseNotification(
-                    id: identifier, type: type, title: title, subtitle: subtitle, body: body,
+                let baseNotification = NeevaPromoNotification(
+                    id: identifier, promoId: promoId,
+                    type: type, title: title,
+                    subtitle: subtitle, body: body,
                     dateReceived: Date(timeIntervalSinceNow: timeInterval))
                 self.notifications.append(baseNotification)
+                Defaults[.lastScheduledNeevaPromoID] = promoId
                 completionHandler(.success(baseNotification))
             }
         }
@@ -154,13 +162,36 @@ class NotificationManager: ObservableObject {
 
                 if let trigger = notification.trigger as? UNTimeIntervalNotificationTrigger {
                     self.createLocalNotification(
-                        identifier: notification.identifier, timeInterval: trigger.timeInterval,
+                        identifier: notification.identifier,
+                        promoId:
+                            notification.content.userInfo[NotificationManager.promoIdKey] as? String
+                            ?? "",
+                        timeInterval: trigger.timeInterval,
                         title: notification.content.title, subtitle: notification.content.subtitle,
                         body: notification.content.body
                     ) { _ in }
                 }
             }
         }
+    }
+
+    private var subscriptions: Set<AnyCancellable> = []
+
+    func setupFeatureFlagUpdateHandler() {
+        NeevaFeatureFlags.shared.$flagsUpdated.sink { flagsUpdated in
+            if flagsUpdated {
+                let notificationContent = NeevaFeatureFlags.latestValue(.localNotificationContent)
+                let neevaPromo =
+                    LocalNotitifications.parseNotificationPromoContent(content: notificationContent)
+                if let neevaPromo = neevaPromo,
+                    neevaPromo.promoId != Defaults[.lastScheduledNeevaPromoID]
+                {
+                    LocalNotitifications.scheduleNeevaPromoCallbackIfAuthorized(
+                        callSite: LocalNotitifications.ScheduleCallSite.featureFlagUpdate
+                    )
+                }
+            }
+        }.store(in: &subscriptions)
     }
 
     // MARK: - Init

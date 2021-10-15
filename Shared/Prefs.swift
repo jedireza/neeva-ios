@@ -99,6 +99,12 @@ extension Defaults.Keys {
         "spacesIntroSeen", default: false)
     public static let seenSpacesShareIntro = Defaults.Key<Bool>(
         "spacesShareIntroSeen", default: false)
+
+    // notification
+    public static let lastScheduledNeevaPromoID = Defaults.Key<String?>(
+        "lastScheduledNeevaPromoID", default: nil)
+    public static let lastNeevaPromoScheduledTimeInterval = Defaults.Key<Int?>(
+        "lastNeevaPromoScheduledTimeInterval")
 }
 
 extension Defaults {

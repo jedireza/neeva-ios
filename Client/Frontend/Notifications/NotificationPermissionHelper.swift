@@ -67,10 +67,9 @@ class NotificationPermissionHelper {
 
                 guard granted else { return }
                 self.getNotificationSettings()
-
-                if FeatureFlag[.notifications] {
-                    LocalNotitifications.createNeevaPromoCallback()
-                }
+                LocalNotitifications.scheduleNeevaPromoCallback(
+                    callSite: LocalNotitifications.ScheduleCallSite.authorizeNotification
+                )
             }
     }
 

@@ -120,12 +120,15 @@ public struct LogConfig {
         case RatingsSendFeedback
         case RatingsSendAppReview
 
+        // notification
         case ShowNotificationPrompt
         case NotificationPromptEnable
         case NotificationPromptSkip
         case ShowSystemNotificationPrompt
         case AuthorizeSystemNotification
         case DenySystemNotification
+        case ScheduleLocalNotification
+        case OpenLocalNotification
     }
 
     // Specify a comma separated string with these values to
@@ -274,6 +277,8 @@ public struct LogConfig {
         case .ShowSystemNotificationPrompt: return .Notification
         case .AuthorizeSystemNotification: return .Notification
         case .DenySystemNotification: return .Notification
+        case .ScheduleLocalNotification: return .Notification
+        case .OpenLocalNotification: return .Notification
         }
     }
 
@@ -345,5 +350,9 @@ public struct LogConfig {
 
     public struct NotificationAttribute {
         public static let notificationPromptCallSite = "NotificationPromptCallSite"
+
+        public static let localNotificationTapAction = "LocalNotificationTapAction"
+        public static let localNotificationScheduleCallSite = "localNotificationScheduledCallSite"
+        public static let localNotificationPromoId = "localNotificationPromoId"
     }
 }

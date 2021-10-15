@@ -23,6 +23,8 @@ struct InternalSettingsView: View {
     @Default(.widgetKitSimpleTopTab) var widgetKitSimpleTopTab
     @Default(.applicationCleanlyBackgrounded) var applicationCleanlyBackgrounded
     @Default(.ratingsCardHidden) var ratingsCardHidden
+    @Default(.lastScheduledNeevaPromoID) var lastScheduledNeevaPromoID
+    @Default(.lastNeevaPromoScheduledTimeInterval) var lastNeevaPromoScheduledTimeInterval
 
     var body: some View {
         List {
@@ -82,6 +84,11 @@ struct InternalSettingsView: View {
 
             Section(header: Text("Performance")) {
                 Toggle("applicationCleanlyBackgrounded", isOn: $applicationCleanlyBackgrounded)
+            }
+
+            Section(header: Text("Notification")) {
+                OptionalStringField("lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
+                OptionalNumberField("lastNeevaPromoScheduledTimeInterval", number: $lastNeevaPromoScheduledTimeInterval)
             }
         }
         .font(.system(.footnote, design: .monospaced))

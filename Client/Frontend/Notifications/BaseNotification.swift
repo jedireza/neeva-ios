@@ -39,3 +39,29 @@ class BaseNotification: Codable, Identifiable {
         self.dateRead = dateRead
     }
 }
+
+class NeevaPromoNotification: BaseNotification {
+    let promoId: String
+
+    init(
+        id: String = UUID().uuidString, promoId: String,
+        type: NotificationType? = nil, title: String,
+        subtitle: String? = nil, body: String? = nil,
+        dateReceived: Date, dateRead: Date? = nil
+    ) {
+        self.promoId = promoId
+        super.init(
+            id: id,
+            type: type,
+            title: title,
+            subtitle: subtitle,
+            body: body,
+            dateReceived: dateReceived,
+            dateRead: dateRead
+        )
+    }
+
+    required init(from decoder: Decoder) throws {
+        fatalError("init(from:) has not been implemented")
+    }
+}
