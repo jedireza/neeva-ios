@@ -3,6 +3,9 @@
 import Defaults
 import Shared
 import UserNotifications
+import XCGLogger
+
+private let log = Logger.browser
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     // MARK: - Registering
@@ -13,7 +16,25 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
         Defaults[.notificationToken] = token
-        print("Notification device token: \(token)")
+        #if DEBUG
+            let environment = "sandbox"
+        #else
+            let environment = "production"
+        #endif
+        AddDeviceTokenIosMutation(
+            input: DeviceTokenInput(
+                deviceToken: token,
+                deviceId: UIDevice.current.identifierForVendor?.uuidString ?? "",
+                environment: environment)
+        ).perform { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                log.error("Failed to add device token \(error)")
+                break
+            }
+        }
     }
 
     func application(

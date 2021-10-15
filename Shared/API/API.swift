@@ -6,7 +6,7 @@ import Apollo
 import Foundation
 
 /// Input type for client logs.
-///
+/// 
 /// Client logs are generic, and cover every type of log that the client
 /// may want to pass, including counters, pingbacks, trace information, errors,
 /// etc. Log messages from the client are batched, and each batch contains
@@ -17,7 +17,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
   /// - Parameters:
   ///   - base: Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   ///   - web: 0.2.105
@@ -31,7 +31,7 @@ public struct ClientLogInput: GraphQLMapConvertible {
 
   /// Base information to send along with a log batch. This information is
   /// invariant across each log message within a batch.
-  ///
+  /// 
   /// DEPRECATED:
   /// Removed from client code 2020-07-31
   /// - web: 0.2.105
@@ -649,7 +649,7 @@ public enum ClientLogTrackingLogType: RawRepresentable, Equatable, Hashable, Cas
 }
 
 /// Input type for logInteraction mutation.
-///
+/// 
 /// Though this is not officially deprecated (and still works), new interactions
 /// should be added to the interactionV3Event instead.
 public struct InteractionEventInput: GraphQLMapConvertible {
@@ -1464,10 +1464,10 @@ public enum ResultActionType: RawRepresentable, Equatable, Hashable, CaseIterabl
 
 /// This enum needs to be keep in sync with
 /// fedsearch/request/interaction_logger_request.go
-///
+/// 
 /// and need to add to fedsearch/mixer/packer.go
 /// to start collecting the data.
-///
+/// 
 /// Keep this enum in sync with InteractionType in file
 /// neeva/logs/avro_schemas/interaction/interaction_log_v2_entry.avsc
 public enum InteractionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
@@ -2136,11 +2136,11 @@ public struct ResultGroupAttributes: GraphQLMapConvertible {
 }
 
 /// Input type for v3 ClientLog.interactionV3Event mutation.
-///
+/// 
 /// This is the preferred mechanism for logging an interaction that happens in a
 /// search results page (SRP) context. The concepts and design behind how
 /// interactions are recorded in the design doc:
-///
+/// 
 /// https://paper.dropbox.com/doc/Logging-V3-Page-structure--A7Q0Gpx7oVh1vflhuaIBsHQfAg-4RsxGgmgnFiaM5Rg72YjO
 public struct InteractionV3EventInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
@@ -2194,12 +2194,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
   /// the category for LoggingContext.
   ///   - element: What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   ///   - elementAction: Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public init(actionType: Swift.Optional<InteractionV3Type?> = nil, category: Swift.Optional<InteractionV3Category?> = nil, element: Swift.Optional<String?> = nil, elementAction: Swift.Optional<String?> = nil) {
@@ -2229,7 +2229,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// What element within the group/result/etc. that the action took place. For
   /// example, this may be an ExpertReview or Retailer within a shopping result.
-  ///
+  /// 
   /// This is a relatively free-form field. Please add the things that make the most
   /// sense for _your particular_ use case.
   public var element: Swift.Optional<String?> {
@@ -2243,7 +2243,7 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 
   /// Optional. The action taken on the Element. If the Element is Carousel, then
   /// the ElementAction may be 'ScrollLeft' or 'ScrollRight'
-  ///
+  /// 
   /// Only used in cases when you have multiple actions that can happen on the
   /// same Element.
   public var elementAction: Swift.Optional<String?> {
@@ -2257,12 +2257,12 @@ public struct InteractionV3ActionInput: GraphQLMapConvertible {
 }
 
 /// The collection of action types for the v3 interactions table.
-///
+/// 
 /// Be VERY CAREFUL about extending the action types here. In general, we want
 /// to have a very limited number of action types. If you need more information
 /// about the context of an action, consider using Element, ElementAction, or
 /// the Attributes table.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/interaction_type.go.
 public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2338,7 +2338,7 @@ public enum InteractionV3Type: RawRepresentable, Equatable, Hashable, CaseIterab
 /// InteractionV3Category specifies the type of the item in the log tree hierarchy.
 /// The log tree can have have N number of entries, but these are the ones
 /// that have IDs associated.
-///
+/// 
 /// PLEASE KEEP IN SYNC with //schemas/constants/category.go
 public enum InteractionV3Category: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -2406,12 +2406,12 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   /// This is a event of graphqql request fied to render the measured view
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - rttMs: RTT of the recent connection
   ///   - userActionTimeMs: Use action time in ms since start of the document
   /// This is valid only when inAppTransition is true
-  ///   - queryRequestTimeMs: Query start time, since start of the document
+  ///   - queryRequestTimeMs: Query start time, since start of the document 
   ///   - queryResponseTimeMs: Query response received, since start of the document
   ///   - resultRenderTimeMs: Result is rendered on the browser, since start of the document
   ///   - criticalPathResourcePerfEntries: Detailed critical path resources of critical path resources as JSON
@@ -2445,7 +2445,7 @@ public struct SearchPerfEventInput: GraphQLMapConvertible {
   }
 
   /// Type of network predicted by browser based (supported in chrome)
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2792,7 +2792,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
   ///   - appState: State of the app at the time of the event
   ///   - effectiveNetworkType: Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   ///   - events: The events in the trace. A trace is an ordered collection of perf events
   /// that are all related in some way. A single action (such as loading the app)
@@ -2859,7 +2859,7 @@ public struct PerfTraceInput: GraphQLMapConvertible {
 
   /// Type of network predicted by browser based (supported in chrome and in
   /// React Native).
-  ///
+  /// 
   /// Doc: https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
   public var effectiveNetworkType: Swift.Optional<String?> {
     get {
@@ -2903,11 +2903,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   /// not the absolute timestamp, which can be computed by adding the trace
   /// timestamp to the elapsedMs.
   ///   - elapsedMs: DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public init(type: Swift.Optional<String?> = nil, elapsedTotalMs: Swift.Optional<Double?> = nil, elapsedMs: Swift.Optional<Double?> = nil) {
     graphQLMap = ["type": type, "elapsedTotalMs": elapsedTotalMs, "elapsedMs": elapsedMs]
@@ -2936,11 +2936,11 @@ public struct PerfEvent: GraphQLMapConvertible {
   }
 
   /// DEPRECATED 2020-04-24
-  ///
+  /// 
   /// Versions:
   /// - iOS: 0.3.6
   /// - web: never used
-  ///
+  /// 
   /// Not using on the BE since it can be derived from elapsedTotalMs.
   public var elapsedMs: Swift.Optional<Double?> {
     get {
@@ -3373,6 +3373,64 @@ public enum ProviderCategory: RawRepresentable, Equatable, Hashable, CaseIterabl
       .news,
       .recipes,
     ]
+  }
+}
+
+public struct DeviceTokenInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - deviceToken
+  ///   - deviceId
+  ///   - environment
+  public init(deviceToken: Swift.Optional<String?> = nil, deviceId: Swift.Optional<String?> = nil, environment: Swift.Optional<String?> = nil) {
+    graphQLMap = ["deviceToken": deviceToken, "deviceID": deviceId, "environment": environment]
+  }
+
+  public var deviceToken: Swift.Optional<String?> {
+    get {
+      return graphQLMap["deviceToken"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "deviceToken")
+    }
+  }
+
+  public var deviceId: Swift.Optional<String?> {
+    get {
+      return graphQLMap["deviceID"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "deviceID")
+    }
+  }
+
+  public var environment: Swift.Optional<String?> {
+    get {
+      return graphQLMap["environment"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "environment")
+    }
+  }
+}
+
+public struct DeleteDeviceTokenInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - deviceId
+  public init(deviceId: Swift.Optional<String?> = nil) {
+    graphQLMap = ["deviceID": deviceId]
+  }
+
+  public var deviceId: Swift.Optional<String?> {
+    get {
+      return graphQLMap["deviceID"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "deviceID")
+    }
   }
 }
 
@@ -6043,6 +6101,196 @@ public final class SetProviderPreferenceMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "setProviderPreference")
+      }
+    }
+  }
+}
+
+public final class AddDeviceTokenIosMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation addDeviceTokenIOS($input: DeviceTokenInput!) {
+      addDeviceTokenIOS(input: $input) {
+        __typename
+        success
+      }
+    }
+    """
+
+  public let operationName: String = "addDeviceTokenIOS"
+
+  public let operationIdentifier: String? = "eec975bc778bc9d2c7e481fdb0d940f49acb05f994708f0d43155bb3ad67f556"
+
+  public var input: DeviceTokenInput
+
+  public init(input: DeviceTokenInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("addDeviceTokenIOS", arguments: ["input": GraphQLVariable("input")], type: .object(AddDeviceTokenIo.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(addDeviceTokenIos: AddDeviceTokenIo? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "addDeviceTokenIOS": addDeviceTokenIos.flatMap { (value: AddDeviceTokenIo) -> ResultMap in value.resultMap }])
+    }
+
+    public var addDeviceTokenIos: AddDeviceTokenIo? {
+      get {
+        return (resultMap["addDeviceTokenIOS"] as? ResultMap).flatMap { AddDeviceTokenIo(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "addDeviceTokenIOS")
+      }
+    }
+
+    public struct AddDeviceTokenIo: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["AddDeviceTokenResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("success", type: .scalar(Bool.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(success: Bool? = nil) {
+        self.init(unsafeResultMap: ["__typename": "AddDeviceTokenResponse", "success": success])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var success: Bool? {
+        get {
+          return resultMap["success"] as? Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "success")
+        }
+      }
+    }
+  }
+}
+
+public final class DeleteDeviceTokenIosMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation deleteDeviceTokenIOS($input: DeleteDeviceTokenInput!) {
+      deleteDeviceTokenIOS(input: $input) {
+        __typename
+        success
+      }
+    }
+    """
+
+  public let operationName: String = "deleteDeviceTokenIOS"
+
+  public let operationIdentifier: String? = "4c2a5f4acbfb7bf0a21310331f2f98d66ad01cf80a2ca7ae067ff01ae370aa91"
+
+  public var input: DeleteDeviceTokenInput
+
+  public init(input: DeleteDeviceTokenInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("deleteDeviceTokenIOS", arguments: ["input": GraphQLVariable("input")], type: .object(DeleteDeviceTokenIo.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(deleteDeviceTokenIos: DeleteDeviceTokenIo? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "deleteDeviceTokenIOS": deleteDeviceTokenIos.flatMap { (value: DeleteDeviceTokenIo) -> ResultMap in value.resultMap }])
+    }
+
+    public var deleteDeviceTokenIos: DeleteDeviceTokenIo? {
+      get {
+        return (resultMap["deleteDeviceTokenIOS"] as? ResultMap).flatMap { DeleteDeviceTokenIo(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "deleteDeviceTokenIOS")
+      }
+    }
+
+    public struct DeleteDeviceTokenIo: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["DeleteDeviceTokenResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("success", type: .scalar(Bool.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(success: Bool? = nil) {
+        self.init(unsafeResultMap: ["__typename": "DeleteDeviceTokenResponse", "success": success])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var success: Bool? {
+        get {
+          return resultMap["success"] as? Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "success")
+        }
       }
     }
   }

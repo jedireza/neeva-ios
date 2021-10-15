@@ -109,3 +109,15 @@ mutation UpdateUserFlag($input: FlagInput!) {
 mutation SetProviderPreference($input: PreferredProviderInput!) {
   setProviderPreference(input: $input)
 }
+
+mutation addDeviceTokenIOS($input:DeviceTokenInput!) {
+  addDeviceTokenIOS(input: $input) {
+    success
+  }
+}
+
+mutation deleteDeviceTokenIOS($input:DeleteDeviceTokenInput!) {
+  deleteDeviceTokenIOS(input: $input) {
+    success
+  }
+}
