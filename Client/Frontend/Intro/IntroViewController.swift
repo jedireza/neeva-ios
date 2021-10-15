@@ -154,16 +154,20 @@ class IntroViewController: UIViewController {
 
                 switch errorCode {
                 case "NL003":
-                    errorMessage = "There is already an account for this email address. Please sign in with Google instead."
+                    errorMessage =
+                        "There is already an account for this email address. Please sign in with Google instead."
                     break
                 case "NL004":
-                    errorMessage = "There is already an account for this email address. Please sign in with Apple instead."
+                    errorMessage =
+                        "There is already an account for this email address. Please sign in with Apple instead."
                     break
                 case "NL005":
-                    errorMessage = "There is already an account for this email address. Please sign in with Microsoft instead."
+                    errorMessage =
+                        "There is already an account for this email address. Please sign in with Microsoft instead."
                     break
                 case "NL013":
-                    errorMessage = "There is already an account for this email address. Please sign in with your email address instead."
+                    errorMessage =
+                        "There is already an account for this email address. Please sign in with your email address instead."
                     break
                 case "NL002":
                     errorMessage = "There is already an account for this email address."

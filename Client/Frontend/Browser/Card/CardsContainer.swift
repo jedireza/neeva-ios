@@ -50,8 +50,11 @@ struct CardsContainer: View {
                             }
                     }
                 }.offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
-                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
-                GridScrollView(onScrollOffsetChanged: { gridModel.scrollOffset = $0 }) {
+                        .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                GridScrollView(
+                    onScrollOffsetChanged: { gridModel.scrollOffset = $0 },
+                    preferenceKey: ScrollViewOffsetPreferenceKey.self
+                ) {
                     scrollProxy in
                     TabCardsView()
                         .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)

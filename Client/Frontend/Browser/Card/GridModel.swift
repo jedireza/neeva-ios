@@ -18,6 +18,7 @@ class GridModel: ObservableObject {
 
     private var updateVisibility: ((Bool) -> Void)!
     var scrollOffset: CGFloat = CGFloat.zero
+    var detailScrollOffset: CGFloat = CGFloat.zero
     var buildCloseAllTabsMenu: (() -> UIMenu)!
     var buildRecentlyClosedTabsMenu: (() -> UIMenu)!
     var animateDetailTransitions = true

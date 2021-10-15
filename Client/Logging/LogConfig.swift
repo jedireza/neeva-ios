@@ -74,7 +74,7 @@ public struct LogConfig {
         case AuthOptionSignupWithMicrosoft  // Click Sign up with Microsoft on auth panel under other options
         case OptionClosePanel  // Click close on the first run under other options
         case AuthOptionClosePanel  // Click close on the auth panel under other options
-        case RecommendedSpaceVisited // Clicked a public space in zero query
+        case RecommendedSpaceVisited  // Clicked a public space in zero query
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo

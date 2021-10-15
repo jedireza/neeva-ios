@@ -448,51 +448,50 @@ where
     }
 
     var tabGroupGrid: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            LazyVGrid(
-                columns: gridColumns,
-                spacing: CardGridUX.GridSpacing
-            ) {
-                ForEach(primitive.allDetails, id: \.id) { details in
-                    ZStack(alignment: .topTrailing) {
-                        FittedCard(details: details)
-                            .modifier(HideSelectedForTransition(details: details))
-                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                            .environment(\.selectionCompletion) {
-                                gridModel.hideWithAnimation()
-                            }
-                        if editMode == .active {
-                            Button(action: {
-                                if let index = selectedTabIDs.firstIndex { $0 == details.id } {
-                                    selectedTabIDs.remove(at: index)
-                                } else {
-                                    selectedTabIDs.append(details.id)
-                                }
-                            }) {
-                                Image(
-                                    systemSymbol:
-                                        selectedTabIDs.contains(details.id)
-                                        ? .checkmarkCircleFill : .circle
-                                ).resizable().renderingMode(.template)
-                                    .foregroundColor(
-                                        selectedTabIDs.contains(details.id)
-                                            ? .ui.adaptive.blue : .tertiaryLabel
-                                    )
-                                    .padding(2)
-                                    .frame(width: 24, height: 24)
-                                    .background(Color(UIColor.systemGray6))
-                                    .clipShape(Circle())
-                                    .padding(6)
-                            }
+        GridScrollView(
+            onScrollOffsetChanged: {
+                gridModel.detailScrollOffset = $0
+            },
+            preferenceKey: DetailScrollViewOffsetPreferenceKey.self
+        ) {
+            scrollProxy in
+            ForEach(primitive.allDetails, id: \.id) { details in
+                ZStack(alignment: .topTrailing) {
+                    FittedCard(details: details)
+                        .modifier(HideSelectedForTransition(details: details))
+                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                        .environment(\.selectionCompletion) {
+                            gridModel.hideWithAnimation()
                         }
-
+                    if editMode == .active {
+                        Button(action: {
+                            if let index = selectedTabIDs.firstIndex { $0 == details.id } {
+                                selectedTabIDs.remove(at: index)
+                            } else {
+                                selectedTabIDs.append(details.id)
+                            }
+                        }) {
+                            Image(
+                                systemSymbol:
+                                    selectedTabIDs.contains(details.id)
+                                    ? .checkmarkCircleFill : .circle
+                            ).resizable().renderingMode(.template)
+                                .foregroundColor(
+                                    selectedTabIDs.contains(details.id)
+                                        ? .ui.adaptive.blue : .tertiaryLabel
+                                )
+                                .padding(2)
+                                .frame(width: 24, height: 24)
+                                .background(Color(UIColor.systemGray6))
+                                .clipShape(Circle())
+                                .padding(6)
+                        }
                     }
 
                 }
-                Spacer()
+
             }
-            .padding(.vertical, CardGridUX.GridSpacing)
-        }
+        }.environment(\.columns, gridColumns)
     }
 
     private func onDelete(offsets: IndexSet) {
@@ -671,4 +670,13 @@ struct DetailView_Previews: PreviewProvider {
                 manager: SpaceStore.shared)
         ) {}
     }
+}
+
+struct DetailScrollViewOffsetPreferenceKey: PreferenceKey {
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
+    }
+
+    typealias Value = CGFloat
+    static var defaultValue = CGFloat.zero
 }

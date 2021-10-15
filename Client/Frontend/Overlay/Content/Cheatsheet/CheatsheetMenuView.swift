@@ -193,7 +193,8 @@ public struct CheatsheetMenuView: View {
         if model.cheatsheetInfo?.memorizedQuery?.count ?? 0 > 0 {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Keep Looking").withFont(.headingMedium)
-                ForEach(model.cheatsheetInfo?.memorizedQuery?.prefix(5) ?? [], id: \.self) { query in
+                ForEach(model.cheatsheetInfo?.memorizedQuery?.prefix(5) ?? [], id: \.self) {
+                    query in
                     QueryButton(query: query)
                 }
             }

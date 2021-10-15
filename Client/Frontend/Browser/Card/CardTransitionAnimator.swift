@@ -116,7 +116,7 @@ struct CardTransitionAnimator: View {
                         ? 0
                         : offset.y
                             + (isSelectedTabInGroup
-                                ? CardGridUX.GridSpacing : gridModel.scrollOffset)
+                                ? gridModel.detailScrollOffset : gridModel.scrollOffset)
                 )
                 .animation(.interpolatingSpring(stiffness: 425, damping: 30))
                 .useEffect(deps: gridModel.animationThumbnailState) { _ in
@@ -135,9 +135,3 @@ struct CardTransitionAnimator: View {
         }
     }
 }
-
-//struct CardTransitionAnimator_Previews: PreviewProvider {
-//    static var previews: some View {
-//        CardTransitionAnimator()
-//    }
-//}

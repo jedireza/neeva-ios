@@ -167,7 +167,13 @@ public class CheatsheetQueryController:
             let recipeStars = recipe.recipeRating?.recipeStars ?? 0
             let numReviews = recipe.recipeRating?.numReviews ?? 0
 
-            result.recipe = Recipe(title: title, imageURL: imageURL, totalTime: recipe.totalTime, prepTime: recipe.prepTime, yield: recipe.yield, ingredients: ingredients, instructions: instrutions, recipeRating: RecipeRating(maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews), reviews: reviews)
+            result.recipe = Recipe(
+                title: title, imageURL: imageURL, totalTime: recipe.totalTime,
+                prepTime: recipe.prepTime, yield: recipe.yield, ingredients: ingredients,
+                instructions: instrutions,
+                recipeRating: RecipeRating(
+                    maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews),
+                reviews: reviews)
         }
 
         return [result]
