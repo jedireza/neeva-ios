@@ -47,7 +47,10 @@ struct CustomThumbnailPicker: View {
                                             // user initiated priority.
                                             guard
                                                 let data = image.jpegData(
-                                                    compressionQuality: 0.7)
+                                                    compressionQuality: 0.7
+                                                        - min(
+                                                            0.4,
+                                                            0.2 * floor(image.size.width / 1000)))
                                             else {
                                                 return
                                             }

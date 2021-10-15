@@ -9,6 +9,7 @@ public class AddToSpaceRequest: ObservableObject {
     public let title: String
     public let description: String?  // meta description
     public let url: URL
+    public let updater: SocialInfoUpdater?
 
     public enum Mode {
         case saveToExistingSpace
@@ -70,10 +71,11 @@ public class AddToSpaceRequest: ObservableObject {
     ///   - title: The title of the newly created entity
     ///   - description: The description/snippet of the newly created entity
     ///   - url: The URL of the newly created entity
-    public init(title: String, description: String?, url: URL) {
+    public init(title: String, description: String?, url: URL, updater: SocialInfoUpdater? = nil) {
         self.title = title
         self.description = description
         self.url = url
+        self.updater = updater
         SpaceStore.shared.refresh()
     }
 

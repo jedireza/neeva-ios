@@ -1960,29 +1960,42 @@ extension BrowserViewController {
                 set.insert(mediaURL.absoluteString)
             }
 
-            if let imageUrls = output?.last?
+            if let imageUrls = output?[1]
                 .filter({ set.update(with: $0) == nil })
                 .compactMap({ $0.asURL })
             {
                 thumbnailUrls.append(contentsOf: imageUrls)
             }
 
-            cardGridViewController.rootView
-                .spaceCardModel.thumbnailURLCandidates[url] = thumbnailUrls
+            var updater: SocialInfoUpdater? = nil
+            weak var model = cardGridViewController.rootView.spaceCardModel
+
+            updater = SocialInfoUpdater.from(url: url, ogInfo: output?.last, title: title ?? "") {
+                range, data, id in
+                if let details = model?.detailedSpace {
+                    details.allDetails.replaceSubrange(
+                        range, with: [SpaceEntityThumbnail(data: data, spaceID: id.id)])
+                }
+            }
+
+            model?.thumbnailURLCandidates[url] = thumbnailUrls
 
             showAddToSpacesSheet(
-                url: url, title: title,
-                description: description ?? output?.first?.first, importData: importData)
+                url: url, title: updater?.title ?? title,
+                description: description ?? updater?.description ?? output?.first?.first,
+                importData: importData, updater: updater)
         }
     }
 
     func showAddToSpacesSheet(
         url: URL, title: String?,
         description: String?,
-        importData: SpaceImportHandler? = nil
+        importData: SpaceImportHandler? = nil,
+        updater: SocialInfoUpdater? = nil
     ) {
         let title = (title ?? "").isEmpty ? url.absoluteString : title!
-        let request = AddToSpaceRequest(title: title, description: description, url: url)
+        let request = AddToSpaceRequest(
+            title: title, description: description, url: url, updater: updater)
 
         self.showModal(style: .withTitle) {
             AddToSpaceOverlayContent(

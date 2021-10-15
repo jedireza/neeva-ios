@@ -583,11 +583,20 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                         )
                         .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
                         VStack(spacing: DetailsViewUX.Padding) {
-                            Text(details.title)
-                                .withFont(.bodyMedium)
-                                .lineLimit(2)
-                                .foregroundColor(Color.label)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            HStack(spacing: 6) {
+                                if let url = details.manager.get(for: details.id)?.primitiveUrl,
+                                    let type = SocialInfoType(rawValue: url.baseDomain ?? "")
+                                {
+                                    FaviconView(forSiteUrl: url)
+                                        .frame(width: 12, height: 12)
+                                        .cornerRadius(4)
+                                }
+                                Text(details.title)
+                                    .withFont(.bodyMedium)
+                                    .lineLimit(2)
+                                    .foregroundColor(Color.label)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                             if let snippet = details.description {
                                 Text(snippet)
                                     .withFont(.bodySmall)

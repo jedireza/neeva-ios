@@ -1,7 +1,9 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
+import Combine
 import Foundation
+import SDWebImageSwiftUI
 
 struct SpaceLinkData {
     let title: String
@@ -42,7 +44,13 @@ public class SpaceImportHandler {
                 .filter(pair => pair[0] != '')
                 .sort((a, b) => b[0] - a[0])
                 .map(pair => pair[1])
-                .slice(0,10)]
+                .slice(0,10),
+                [document.querySelector('meta[property=\"og:title\"]') ?
+                    document.querySelector('meta[property=\"og:title\"]')["content"] : "",
+                document.querySelector('meta[property=\"og:description\"]') ?
+                    document.querySelector('meta[property=\"og:description\"]')["content"] : "",
+                document.querySelector('meta[property=\"og:image\"]') ?
+                    document.querySelector('meta[property=\"og:image\"]')["content"] : ""]]
         """
     let title: String
     var data: [SpaceLinkData]
@@ -55,7 +63,7 @@ public class SpaceImportHandler {
         return NeevaConstants.appSpacesURL / id
     }
 
-    private var cancellable: Cancellable? = nil
+    private var cancellable: Apollo.Cancellable? = nil
     private var spaceID: String? = nil
 
     public init(title: String, data: [[String]]) {
