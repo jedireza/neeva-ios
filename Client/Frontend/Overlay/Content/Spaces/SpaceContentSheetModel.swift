@@ -6,6 +6,7 @@ import SwiftUI
 
 class SpaceContentSheetModel: ObservableObject {
     @Published var selectedTab: Tab?
+    @Published var currentSpaceDetail: SpaceCardDetails?
     @Published var currentSpaceEntityDetail: SpaceEntityThumbnail?
     @Published var comments: [SpaceCommentData]
     @Published var addedComments: [SpaceCommentData] = []
@@ -37,22 +38,35 @@ class SpaceContentSheetModel: ObservableObject {
         }
     }
     private var subscriptions = Set<AnyCancellable>()
+    private var urlSubscription: AnyCancellable? = nil
+    private var spaceModel: SpaceCardModel
 
-    init(tabManager: TabManager) {
+    init(tabManager: TabManager, spaceModel: SpaceCardModel) {
         self.selectedTab = tabManager.selectedTab
+        self.spaceModel = spaceModel
 
-        if let spaceID = tabManager.selectedTab?.parentSpaceID {
+        if let spaceID = tabManager.selectedTab?.parentSpaceID, !spaceID.isEmpty,
+            let space = SpaceStore.shared.allSpaces.first(where: { $0.id.id == spaceID })
+        {
+            self.currentSpaceDetail = self.spaceModel.allDetails.first(where: {
+                $0.id == tabManager.selectedTab?.parentSpaceID
+            })
             self.currentSpaceEntityDetail = SpaceEntityThumbnail(
-                data: (SpaceStore.shared.allSpaces.first(where: { $0.id.id == spaceID })!
-                    .contentData?.first(where: { $0.url == tabManager.selectedTab?.url }))!,
+                data: (space.contentData?.first(where: { $0.url == tabManager.selectedTab?.url }))!,
                 spaceID: spaceID)
             self.comments =
                 SpaceStore.shared.allSpaces.first(where: { $0.id.id == spaceID })?.comments ?? []
             self.addedComments = []
         } else {
+            self.currentSpaceDetail = nil
             self.currentSpaceEntityDetail = nil
             self.comments = []
         }
+
+        self.urlSubscription = tabManager.selectedTab?.$url.sink { [weak self] _ in
+            self?.update()
+        }
+
         tabManager.selectedTabPublisher.compactMap { $0 }.sink { tab in
             self.selectedTab = tab
 
@@ -63,19 +77,36 @@ class SpaceContentSheetModel: ObservableObject {
                 self.addedComments = []
             }
 
-            if let spaceID = tab.parentSpaceID,
-                let data =
-                    SpaceStore.shared.allSpaces.first(where: { $0.id.id == spaceID })!
-                    .contentData?.first(where: { $0.url == self.selectedTab?.url })
-            {
-                self.currentSpaceEntityDetail = SpaceEntityThumbnail(data: data, spaceID: spaceID)
-                self.comments =
-                    SpaceStore.shared.allSpaces.first(where: { $0.id.id == spaceID })?.comments
-                    ?? []
-            } else {
-                self.currentSpaceEntityDetail = nil
-                self.comments = []
+            self.update()
+
+            self.urlSubscription = tab.$url.sink { _ in
+                self.update()
             }
         }.store(in: &subscriptions)
+    }
+
+    func update() {
+        var currentURL = self.selectedTab?.url
+        if let internalURL = InternalURL(currentURL), internalURL.isSessionRestore {
+            currentURL = URL(string: currentURL?.getQuery()["url"] ?? "")
+        }
+
+        if let spaceID = self.selectedTab?.parentSpaceID, !spaceID.isEmpty,
+            let space = SpaceStore.shared.allSpaces.first(where: { $0.id.id == spaceID }),
+            let url = currentURL,
+            let data = space.contentData?.first(where: { $0.url == url })
+        {
+            self.currentSpaceDetail = self.spaceModel.allDetails.first(where: {
+                $0.id == spaceID
+            })
+            self.currentSpaceEntityDetail = SpaceEntityThumbnail(data: data, spaceID: spaceID)
+            self.comments =
+                SpaceStore.shared.allSpaces.first(where: { $0.id.id == spaceID })?.comments
+                ?? []
+        } else {
+            self.currentSpaceDetail = nil
+            self.currentSpaceEntityDetail = nil
+            self.comments = []
+        }
     }
 }

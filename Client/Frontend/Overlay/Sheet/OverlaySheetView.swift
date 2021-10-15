@@ -26,7 +26,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @StateObject var model: OverlaySheetModel
 
     @State private var keyboardHeight: CGFloat = 0
-    @State private var topBarHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
     @State private var title: String = ""
     @State private var isFixedHeight: Bool = false
@@ -46,7 +45,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         if isFixedHeight {
             switch self.model.position {
             case .top, .middle:
-                size = outerGeometry.size.height - contentHeight - topBarHeight
+                size = outerGeometry.size.height - contentHeight - model.topBarHeight
             case .dismissed:
                 size = outerGeometry.size.height
             }
@@ -155,7 +154,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 VStack(spacing: 0) {
                     self.topBar
                         .modifier(ViewHeightKey())
-                        .onPreferenceChange(ViewHeightKey.self) { self.topBarHeight = $0 }
+                        .onPreferenceChange(ViewHeightKey.self) { self.model.topBarHeight = $0 }
                     self.content()
                         .modifier(ViewHeightKey())
                         .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }

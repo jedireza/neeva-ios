@@ -96,7 +96,10 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                         if FeatureFlag[.spaceComments] {
                             SpaceContentSheet(
                                 model: spaceContentSheetModel!,
-                                scrollingController: bvc.scrollController)
+                                scrollingController: bvc.scrollController
+                            )
+                            .environment(
+                                \.onOpenURLForSpace, bvc.tabManager.createOrSwitchToTabForSpace)
                         }
                         if NeevaFeatureFlags[.recipeCheatsheet] {
                             GeometryReader { geo in
@@ -175,7 +178,10 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 bvc: bvc,
                 zeroQueryModel: zeroQueryModel,
                 suggestionModel: suggestionModel,
-                spaceContentSheetModel: FeatureFlag[.spaceComments] ? SpaceContentSheetModel(tabManager: bvc.tabManager) : nil)
+                spaceContentSheetModel: FeatureFlag[.spaceComments]
+                    ? SpaceContentSheetModel(
+                        tabManager: bvc.tabManager,
+                        spaceModel: bvc.cardGridViewController.rootView.spaceCardModel) : nil)
         }
 
         suggestionModel.getKeyboardHeight = {

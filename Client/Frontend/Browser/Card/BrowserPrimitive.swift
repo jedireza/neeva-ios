@@ -301,7 +301,12 @@ extension TabGroup: BrowserPrimitive, Closeable {
     }
 
     var displayTitle: String {
-        children.first?.displayTitle ?? "\(children.count) Tabs"
+        if let spaceID = children.first?.parentSpaceID, spaceID == children.first?.rootUUID,
+            let spaceTitle = SpaceStore.shared.get(for: spaceID)?.displayTitle
+        {
+            return spaceTitle
+        }
+        return children.first?.displayTitle ?? "\(children.count) Tabs"
     }
 
     var displayFavicon: Favicon? {

@@ -387,13 +387,19 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func createOrSwitchToTabForSpace(for url: URL, spaceID: String) {
+        if let tab = selectedTab {
+            ScreenshotHelper(controller: SceneDelegate.getBVC(with: scene)).takeScreenshot(tab)
+        }
+
         if let existingTab = getTabFor(url) {
             existingTab.parentSpaceID = spaceID
+            existingTab.rootUUID = spaceID
             select(existingTab)
         } else {
             let newTab = addTab(
                 URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
             newTab.parentSpaceID = spaceID
+            newTab.rootUUID = spaceID
             select(newTab)
         }
     }

@@ -6,8 +6,7 @@ import Shared
 import SwiftUI
 
 enum SpaceContentSheetUX {
-    static let PeekHeight: CGFloat = 120
-    static let SpaceInfoThumbnailSize: CGFloat = 36
+    static let SpaceInfoThumbnailSize: CGFloat = 48
 }
 
 struct SpaceContentSheet: View {
@@ -39,7 +38,8 @@ struct SpaceContentSheet: View {
                 .animation(.easeInOut)
                 .onAppear {
                     DispatchQueue.main.async {
-                        overlayModel.peekHeight = SpaceContentSheetUX.PeekHeight
+                        overlayModel.peekHeight =
+                            SpaceContentSheetUX.SpaceInfoThumbnailSize + overlayModel.topBarHeight
                         overlayModel.show()
                     }
                 }
@@ -53,8 +53,9 @@ struct SpacePageContent: View {
 
     var body: some View {
         VStack {
-            SpacePageSummary(details: model.currentSpaceEntityDetail)
-                .frame(height: SpaceContentSheetUX.PeekHeight)
+            SpacePageSummary(
+                details: model.currentSpaceEntityDetail,
+                spaceDetails: model.currentSpaceDetail)
             Color.ui.adaptive.separator.frame(height: 1)
             HStack {
                 Text("Comments")
@@ -96,28 +97,51 @@ struct SpacePageContent: View {
 }
 
 struct SpacePageSummary: View {
+    @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
     let details: SpaceEntityThumbnail?
+    let spaceDetails: SpaceCardDetails?
 
     var body: some View {
         if let details = details {
             VStack(spacing: 7) {
-                HStack(spacing: 12) {
-                    Text(details.title)
-                        .withFont(.headingMedium)
-                        .lineLimit(2)
-                        .foregroundColor(.label)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                if let spaceDetails = spaceDetails {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(alignment: .center) {
+                            ForEach(spaceDetails.allDetails, id: \.id) { entity in
+                                if let url = entity.manager.get(for: entity.id)?
+                                    .primitiveUrl
+                                {
+                                    Button(
+                                        action: { onOpenURLForSpace(url, spaceDetails.id) },
+                                        label: {
+                                            entity.thumbnail.frame(
+                                                width: SpaceContentSheetUX.SpaceInfoThumbnailSize
+                                                    * (entity.id == details.id ? 1 : 0.8),
+                                                height: SpaceContentSheetUX.SpaceInfoThumbnailSize
+                                                    * (entity.id == details.id ? 1 : 0.8)
+                                            ).cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                                        })
+                                }
+                            }
+                        }
+                    }
+                } else {
                     details.thumbnail.frame(
                         width: SpaceContentSheetUX.SpaceInfoThumbnailSize,
                         height: SpaceContentSheetUX.SpaceInfoThumbnailSize
-                    )
-                    .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                    ).cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+
                 }
+                Text(details.title)
+                    .withFont(.headingMedium)
+                    .lineLimit(1)
+                    .foregroundColor(.label)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 if let snippet = details.description {
                     Text(snippet)
                         .withFont(.bodySmall)
-                        .lineLimit(3)
                         .foregroundColor(.label)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }.padding(.bottom, 20)

@@ -377,7 +377,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     }
 
     var defaultIcon: String? {
-        "square.grid.2x2.fill"
+        id == manager.get(for: id)?.children.first?.parentSpaceID
+            ? "bookmark.fill" : "square.grid.2x2.fill"
     }
 
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {

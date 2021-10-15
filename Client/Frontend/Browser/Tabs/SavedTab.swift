@@ -18,6 +18,7 @@ class SavedTab: NSObject, NSCoding {
     var rootUUID: String?
     var parentUUID: String?
     var tabIndex: Int?
+    var parentSpaceID: String?
 
     var jsonDictionary: [String: AnyObject] {
         let title: String = self.title ?? "null"
@@ -35,6 +36,7 @@ class SavedTab: NSObject, NSCoding {
             "rootUUID": self.UUID as AnyObject,
             "parentUUID": self.UUID as AnyObject,
             "tabIndex": self.tabIndex as AnyObject,
+            "parentSpaceID": self.parentSpaceID as AnyObject,
         ]
 
         if let sessionDataInfo = self.sessionData?.jsonDictionary {
@@ -47,7 +49,7 @@ class SavedTab: NSObject, NSCoding {
     init(
         screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: URL?,
         url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String,
-        tabIndex: Int?
+        tabIndex: Int?, parentSpaceID: String
     ) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
@@ -60,6 +62,7 @@ class SavedTab: NSObject, NSCoding {
         self.rootUUID = rootUUID
         self.parentUUID = parentUUID
         self.tabIndex = tabIndex
+        self.parentSpaceID = parentSpaceID
 
         super.init()
     }
@@ -76,6 +79,7 @@ class SavedTab: NSObject, NSCoding {
         self.rootUUID = coder.decodeObject(forKey: "rootUUID") as? String
         self.parentUUID = coder.decodeObject(forKey: "parentUUID") as? String
         self.tabIndex = coder.decodeObject(forKey: "tabIndex") as? Int
+        self.parentSpaceID = coder.decodeObject(forKey: "parentSpaceID") as? String
     }
 
     func encode(with coder: NSCoder) {
@@ -90,5 +94,6 @@ class SavedTab: NSObject, NSCoding {
         coder.encode(rootUUID, forKey: "rootUUID")
         coder.encode(parentUUID, forKey: "parentUUID")
         coder.encode(tabIndex, forKey: "tabIndex")
+        coder.encode(parentSpaceID, forKey: "parentSpaceID")
     }
 }
