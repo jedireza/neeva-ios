@@ -298,8 +298,8 @@
 		BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */; };
 		BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */; };
 		BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8ABEA126D88F2500E4A415 /* SearchController.swift */; };
-		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
 		BC93328C2714790C00B9BE1C /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */; };
+		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
 		BC9332902715386A00B9BE1C /* RecipeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328F2715386A00B9BE1C /* RecipeBanner.swift */; };
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
 		BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */; };
@@ -830,6 +830,34 @@
 			remoteGlobalIDString = 669ACD52269CED060038C89C;
 			remoteInfo = AppClip;
 		};
+		66554941271A928C001D0902 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66554935271A928C001D0902 /* Neeva for Safari.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6638CC0F271A43FE00242C38;
+			remoteInfo = "Neeva for Safari";
+		};
+		66554943271A928C001D0902 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66554935271A928C001D0902 /* Neeva for Safari.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6638CC2C271A43FF00242C38;
+			remoteInfo = "Neeva for SafariTests";
+		};
+		66554945271A928C001D0902 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66554935271A928C001D0902 /* Neeva for Safari.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6638CC36271A43FF00242C38;
+			remoteInfo = "Neeva for SafariUITests";
+		};
+		66554947271A928C001D0902 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66554935271A928C001D0902 /* Neeva for Safari.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6638CC42271A43FF00242C38;
+			remoteInfo = "Neeva for Safari Extension";
+		};
 		669ACD60269CED070038C89C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F84B21B61A090F8100AAB793 /* Project object */;
@@ -1173,6 +1201,7 @@
 		664825EF268FD106000E7F6A /* XCUIElementExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCUIElementExtension.swift; sourceTree = "<group>"; };
 		6650585B26E68D0900C9CD51 /* BaseNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNotification.swift; sourceTree = "<group>"; };
 		6650585F26E68F2F00C9CD51 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		66554935271A928C001D0902 /* Neeva for Safari.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "Neeva for Safari.xcodeproj"; sourceTree = "<group>"; };
 		665879CD26C3408700B53EB7 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		665CA48526F04FA4006E2F4D /* NotificationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationBadge.swift; sourceTree = "<group>"; };
 		665CA48726F054CC006E2F4D /* NotificationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRow.swift; sourceTree = "<group>"; };
@@ -1294,8 +1323,8 @@
 		BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTourPromptViewController.swift; sourceTree = "<group>"; };
 		BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClusterView.swift; sourceTree = "<group>"; };
 		BC8ABEA126D88F2500E4A415 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
-		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
 		BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
+		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
 		BC93328F2715386A00B9BE1C /* RecipeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBanner.swift; sourceTree = "<group>"; };
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
 		BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetStripView.swift; sourceTree = "<group>"; };
@@ -2287,6 +2316,26 @@
 				665CA48426F04F97006E2F4D /* UI */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		66554912271A928B001D0902 /* Neeva for Safari */ = {
+			isa = PBXGroup;
+			children = (
+				66554935271A928C001D0902 /* Neeva for Safari.xcodeproj */,
+			);
+			name = "Neeva for Safari";
+			path = "../Desktop/Neeva for Safari";
+			sourceTree = "<group>";
+		};
+		66554936271A928C001D0902 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				66554942271A928C001D0902 /* Neeva for Safari.app */,
+				66554944271A928C001D0902 /* Neeva for SafariTests.xctest */,
+				66554946271A928C001D0902 /* Neeva for SafariUITests.xctest */,
+				66554948271A928C001D0902 /* Neeva for Safari Extension.appex */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		665CA48426F04F97006E2F4D /* UI */ = {
@@ -3380,6 +3429,7 @@
 				047F9B2A24E1FE1C00CD7DF7 /* WidgetKit */,
 				D39FA1601A83E0EC00EE869C /* UITests */,
 				3BFE4B081D342FB900DDF53F /* XCUITests */,
+				66554912271A928B001D0902 /* Neeva for Safari */,
 				C9FD1B1E26C1AC8700926A70 /* Recovered References */,
 			);
 			sourceTree = "<group>";
@@ -4063,6 +4113,12 @@
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 66554936271A928C001D0902 /* Products */;
+					ProjectRef = 66554935271A928C001D0902 /* Neeva for Safari.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				F84B21BD1A090F8100AAB793 /* Client */,
@@ -4084,6 +4140,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		66554942271A928C001D0902 /* Neeva for Safari.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "Neeva for Safari.app";
+			remoteRef = 66554941271A928C001D0902 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66554944271A928C001D0902 /* Neeva for SafariTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Neeva for SafariTests.xctest";
+			remoteRef = 66554943271A928C001D0902 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66554946271A928C001D0902 /* Neeva for SafariUITests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Neeva for SafariUITests.xctest";
+			remoteRef = 66554945271A928C001D0902 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		66554948271A928C001D0902 /* Neeva for Safari Extension.appex */ = {
+			isa = PBXReferenceProxy;
+			fileType = "wrapper.app-extension";
+			path = "Neeva for Safari Extension.appex";
+			remoteRef = 66554947271A928C001D0902 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		047F9B2524E1FE1C00CD7DF7 /* Resources */ = {
