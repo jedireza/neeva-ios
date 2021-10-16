@@ -9,6 +9,7 @@ where Preference.Value == CGFloat {
     let onScrollOffsetChanged: (CGFloat) -> Void
     let preferenceKey: Preference.Type
     let content: (ScrollViewProxy) -> Content
+    @State var orientation = UIDevice.current.orientation
     @State var token = 0
 
     var body: some View {
@@ -35,9 +36,13 @@ where Preference.Value == CGFloat {
         .onReceive(
             NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
         ) { _ in
+            let newOrientation = UIDevice.current.orientation
             // Re-create the ScrollView since scrollOffset calculation is not reliable after device rotation.
             // This appears to be a bug in UIKit as even UIScrollView.contentOffset shows the same bug.
-            token += 1
+            if orientation.isLandscape != newOrientation.isLandscape {
+                token += 1
+            }
+            orientation = newOrientation
         }
     }
 }
