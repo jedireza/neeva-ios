@@ -115,7 +115,7 @@ struct CardTransitionAnimator: View {
                     y: gridModel.isHidden
                         ? 0
                         : offset.y
-                            + (isSelectedTabInGroup
+                            + (FeatureFlag[.groupsInSwitcher] && isSelectedTabInGroup
                                 ? gridModel.detailScrollOffset : gridModel.scrollOffset)
                 )
                 .animation(.interpolatingSpring(stiffness: 425, damping: 30))
