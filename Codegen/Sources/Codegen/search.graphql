@@ -91,6 +91,51 @@ query Search($query: String!) {
               }
             }
           }
+          ... on RecipeBlock {
+            recipeBlock {
+              recipes {
+                title
+                url
+                imageURL
+                preference
+                totalTime
+                prepTime
+                yield
+                ingredients {
+                  text
+                }
+                instructions {
+                  text
+                }
+                recipeRating {
+                  maxStars
+                  recipeStars
+                  numReviews
+                }
+                reviews {
+                  reviewerName
+                  body
+                  rating {
+                    maxStars
+                    actualStars
+                  }
+                }
+              }
+            }
+          }
+          ... on RelatedSearches {
+            relatedSearches {
+              entries {
+                searchText
+                displayText {
+                  segments {
+                    isHighlighted
+                    text
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
