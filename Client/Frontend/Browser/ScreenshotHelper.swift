@@ -35,7 +35,11 @@ class ScreenshotHelper {
         // This is for a bug in certain iOS 13 versions, snapshots cannot be taken correctly without this boolean being set
         configuration.afterScreenUpdates = false
         webView.takeSnapshot(with: configuration) { [weak tab] image, error in
-            if let image = image {
+            // Unfortunately WebKit can sometimes report success but provide only
+            // an empty image. This seems to happen when the WebView is added and
+            // removed quickly from the scene. Just ignore these cases and let the
+            // tab continue using whatever screenshot it used to have.
+            if let image = image, image.size.width != .zero && image.size.height != .zero {
                 tab?.setScreenshot(image)
                 if FeatureFlag[.cardStrip] {
                     self.controller?.tabContentHost.tabCardModel.onDataUpdated()
