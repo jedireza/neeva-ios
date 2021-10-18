@@ -24,7 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 
     var applicationCleanlyBackgrounded = true
-    var shutdownWebServer: DispatchSourceTimer?
     weak var application: UIApplication?
     var launchOptions: [AnyHashable: Any]?
     var receivedURLs = [URL]()
@@ -149,57 +148,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         return shouldPerformAdditionalDelegateHandling
     }
 
-    // We sync in the foreground only, to avoid the possibility of runaway resource usage.
-    // Eventually we'll sync in response to notifications.
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        shutdownWebServer?.cancel()
-        shutdownWebServer = nil
-
-        // Resume file downloads.
-        SceneDelegate.getAllSceneDelegates().forEach { $0.downloadQueue.resumeAll() }
-
-        // handle quick actions is available
-        let quickActions = QuickActions.sharedInstance
-        if let shortcut = quickActions.launchedShortcutItem {
-            // dispatch asynchronously so that BVC is all set up for handling new tabs
-            // when we try and open them
-            quickActions.handleShortCutItem(
-                shortcut, withBrowserViewController: SceneDelegate.getBVC(for: nil))
-            quickActions.launchedShortcutItem = nil
-        }
-
-        // Delay these operations until after UIKit/UIApp init is complete
-        // - loadQueuedTabs accesses the DB and shows up as a hot path in profiling
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            // We could load these here, but then we have to futz with the tab counter
-            // and making NSURLRequests.
-            SceneDelegate.getBVC(for: nil).loadQueuedTabs(receivedURLs: self.receivedURLs)
-            self.receivedURLs.removeAll()
-            application.applicationIconBadgeNumber = 0
-        }
-
-        updateTopSitesWidget()
-    }
-
-    func applicationWillResignActive(_ application: UIApplication) {
-        updateTopSitesWidget()
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Pause file downloads.
-        SceneDelegate.getAllSceneDelegates().forEach { $0.downloadQueue.pauseAll() }
-
-        let singleShotTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
-        // 2 seconds is ample for a localhost request to be completed by GCDWebServer. <500ms is expected on newer devices.
-        singleShotTimer.schedule(deadline: .now() + 2.0, repeating: .never)
-        singleShotTimer.setEventHandler {
-            WebServer.sharedInstance.server.stop()
-            self.shutdownWebServer = nil
-        }
-        singleShotTimer.resume()
-        shutdownWebServer = singleShotTimer
-    }
-
     func applicationWillTerminate(_ application: UIApplication) {
         // We have only five seconds here, so let's hope this doesn't take too long?.
 
@@ -212,6 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         for tabManager in TabManager.all.makeIterator() {
             tabManager.preserveTabs()
         }
+
         shutdownProfile()
     }
 
@@ -254,7 +203,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         FaviconFetcher.userAgent = UserAgent.desktopUserAgent()
     }
 
-    fileprivate func setUpWebServer(_ profile: Profile) {
+    func setUpWebServer(_ profile: Profile) {
         let server = WebServer.sharedInstance
         guard !server.server.isRunning else { return }
 

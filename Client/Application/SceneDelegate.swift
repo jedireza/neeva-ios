@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     public var toastViewManager: ToastViewManager!
     private var tabManager: TabManager!
 
-    private var browserViewController: BrowserViewController!
+    private var bvc: BrowserViewController!
     private var geigerCounter: KMCGeigerCounter?
 
     private static var activeSceneCount: Int = 0
@@ -55,15 +55,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let profile = getAppDelegate().profile
 
         self.tabManager = TabManager(profile: profile, scene: scene)
-        self.browserViewController = BrowserViewController(profile: profile, tabManager: tabManager)
+        self.bvc = BrowserViewController(profile: profile, tabManager: tabManager)
 
-        browserViewController.edgesForExtendedLayout = []
-        browserViewController.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
-        browserViewController.restorationClass = AppDelegate.self
+        bvc.edgesForExtendedLayout = []
+        bvc.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
+        bvc.restorationClass = AppDelegate.self
 
-        window!.rootViewController = browserViewController
+        window!.rootViewController = bvc
 
-        browserViewController.tabManager.selectedTab?.reload()
+        bvc.tabManager.selectedTab?.reload()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -91,6 +91,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         LocalNotitifications.scheduleNeevaPromoCallbackIfAuthorized(
             callSite: LocalNotitifications.ScheduleCallSite.enterForeground
         )
+
+        bvc.downloadQueue.resumeAll()
+        
+        // If server is already running this won't do anything.
+        // This will restart the server if it was stopped in `sceneDidEnterBackground`.
+        getAppDelegate().setUpWebServer(getAppDelegate().profile)
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -104,17 +110,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         Self.activeSceneCount -= 1
         if Self.activeSceneCount == 0 {
+            WebServer.sharedInstance.server.stop()
             getAppDelegate().shutdownProfile()
         }
 
         getAppDelegate().updateTopSitesWidget()
+        bvc.downloadQueue.pauseAll()
     }
 
     // MARK: - URL managment
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         // almost always one URL
         guard let url = URLContexts.first?.url,
-            let routerpath = NavigationPath(bvc: browserViewController, url: url)
+            let routerpath = NavigationPath(bvc: bvc, url: url)
         else {
             log.info("Failed to unwrap url for context: \(URLContexts.first?.url)")
             return
@@ -129,7 +137,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.main.async {
             if !self.checkForSignInToken(in: url) {
                 log.info("Passing URL to router path: \(routerpath)")
-                NavigationPath.handle(nav: routerpath, with: self.browserViewController)
+                NavigationPath.handle(nav: routerpath, with: self.bvc)
             }
         }
     }
@@ -142,7 +150,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func continueSiriIntent(continue userActivity: NSUserActivity) -> Bool {
         if let intent = userActivity.interaction?.intent as? OpenURLIntent {
-            self.browserViewController.openURLInNewTab(intent.url)
+            self.bvc.openURLInNewTab(intent.url)
             return true
         }
 
@@ -150,7 +158,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let query = intent.text,
             let url = neevaSearchEngine.searchURLForQuery(query)
         {
-            self.browserViewController.openURLInNewTab(url)
+            self.bvc.openURLInNewTab(url)
             return true
         }
 
@@ -168,7 +176,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         log.info("Universal URL passed: \(incomingURL)")
 
         if !self.checkForSignInToken(in: incomingURL) {
-            self.browserViewController.openURLInNewTab(incomingURL)
+            self.bvc.openURLInNewTab(incomingURL)
         }
 
         return true
@@ -228,9 +236,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return nil
     }
 
-    static func getAllSceneDelegates() -> [BrowserViewController] {
+    static func getAllSceneDelegates() -> [SceneDelegate] {
         return UIApplication.shared.connectedScenes.compactMap {
-            (($0 as? UIWindowScene)?.delegate as? SceneDelegate)?.browserViewController
+            (($0 as? UIWindowScene)?.delegate as? SceneDelegate)
         }
     }
 
@@ -255,15 +263,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     static func getBVC(for view: UIView?) -> BrowserViewController {
-        return getCurrentSceneDelegate(for: view).browserViewController
+        return getCurrentSceneDelegate(for: view).bvc
     }
 
     static func getBVC(with scene: UIScene?) -> BrowserViewController {
         if let sceneDelegate = scene?.delegate as? SceneDelegate {
-            return sceneDelegate.browserViewController
+            return sceneDelegate.bvc
         }
 
         fatalError("Scene Delegate doesn't exist for scene or is nil")
+    }
+
+    static func getAllBVCs() -> [BrowserViewController] {
+        return getAllSceneDelegates().map { $0.bvc }
     }
 
     static func getTabManager(for view: UIView?) -> TabManager {
@@ -325,12 +337,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 string: "https://\(NeevaConstants.appHost)/login/qr/finish?q=\(signInToken)")!
 
             log.info("Navigating to sign in URL: \(signInURL)")
-            browserViewController.switchToTabForURLOrOpen(signInURL)
+            bvc.switchToTabForURLOrOpen(signInURL)
 
             // view alpha is set to 0 in viewWillAppear creating a blank screen
-            browserViewController.view.alpha = 1
+            bvc.view.alpha = 1
 
-            if let introVC = browserViewController.introViewController {
+            if let introVC = bvc.introViewController {
                 introVC.dismiss(animated: true, completion: nil)
                 log.info("Dismissed introVC")
             }
