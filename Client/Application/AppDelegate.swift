@@ -70,7 +70,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         if FeatureFlag[.notifications] {
             NotificationPermissionHelper.shared.requestPermissionIfNeeded()
         }
-        NotificationManager.shared.setupFeatureFlagUpdateHandler()
+
+        // This code path is for users who have authorized notification prompt but
+        // haven't registered the token with the server.
+        // TODO: we should remove this code path in a few releases when most users registered the token
+        if let notificationToken = Defaults[.notificationToken],
+           !Defaults[.didRegisterNotificationTokenOnServer] {
+            NotificationPermissionHelper.shared.registerDeviceTokenWithServer(deviceToken: notificationToken)
+            Defaults[.didRegisterNotificationTokenOnServer] = true
+        }
 
         UNUserNotificationCenter.current().delegate = self
 

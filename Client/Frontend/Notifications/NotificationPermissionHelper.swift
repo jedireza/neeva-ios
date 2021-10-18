@@ -3,6 +3,9 @@
 import Foundation
 import Shared
 import UserNotifications
+import XCGLogger
+
+private let log = Logger.browser
 
 class NotificationPermissionHelper {
     static let shared = NotificationPermissionHelper()
@@ -66,14 +69,14 @@ class NotificationPermissionHelper {
                 completion?()
 
                 guard granted else { return }
-                self.getNotificationSettings()
+                self.registerAuthorizedNotification()
                 LocalNotitifications.scheduleNeevaPromoCallback(
                     callSite: LocalNotitifications.ScheduleCallSite.authorizeNotification
                 )
             }
     }
 
-    func getNotificationSettings() {
+    func registerAuthorizedNotification() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             print("Notification settings: \(settings)")
             guard settings.authorizationStatus == .authorized else { return }
@@ -86,5 +89,27 @@ class NotificationPermissionHelper {
 
     func unregisterRemoteNotifications() {
         UIApplication.shared.unregisterForRemoteNotifications()
+    }
+
+    func registerDeviceTokenWithServer(deviceToken: String) {
+        #if DEBUG
+            let environment = "sandbox"
+        #else
+            let environment = "prod"
+        #endif
+        AddDeviceTokenIosMutation(
+            input: DeviceTokenInput(
+                deviceToken: deviceToken,
+                deviceId: UIDevice.current.identifierForVendor?.uuidString ?? "",
+                environment: environment)
+        ).perform { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                log.error("Failed to add device token \(error)")
+                break
+            }
+        }
     }
 }

@@ -105,6 +105,8 @@ extension Defaults.Keys {
         "lastScheduledNeevaPromoID", default: nil)
     public static let lastNeevaPromoScheduledTimeInterval = Defaults.Key<Int?>(
         "lastNeevaPromoScheduledTimeInterval")
+    public static let didRegisterNotificationTokenOnServer = Defaults.Key<Bool>(
+        "didRegisterNotificationTokenOnServer", default: false)
 }
 
 extension Defaults {

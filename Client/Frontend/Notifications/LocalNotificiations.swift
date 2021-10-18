@@ -47,10 +47,12 @@ class LocalNotitifications {
                                 value: promoId)
                         )
                     }
-                    ClientLogger.shared.logCounter(
-                        .ScheduleLocalNotification,
-                        attributes: attributes
-                    )
+                    DispatchQueue.main.async {
+                        ClientLogger.shared.logCounter(
+                            .ScheduleLocalNotification,
+                            attributes: attributes
+                        )
+                    }
                 }
             })
     }
