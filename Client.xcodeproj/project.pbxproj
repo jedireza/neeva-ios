@@ -298,8 +298,9 @@
 		BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */; };
 		BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */; };
 		BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8ABEA126D88F2500E4A415 /* SearchController.swift */; };
-		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
+		BC8EE06B271CEA6A00D6BE2A /* DomainAllowList.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8EE06A271CEA6A00D6BE2A /* DomainAllowList.swift */; };
 		BC93328C2714790C00B9BE1C /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */; };
+		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
 		BC9332902715386A00B9BE1C /* RecipeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328F2715386A00B9BE1C /* RecipeBanner.swift */; };
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
 		BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */; };
@@ -1294,8 +1295,9 @@
 		BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTourPromptViewController.swift; sourceTree = "<group>"; };
 		BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClusterView.swift; sourceTree = "<group>"; };
 		BC8ABEA126D88F2500E4A415 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
-		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
+		BC8EE06A271CEA6A00D6BE2A /* DomainAllowList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainAllowList.swift; sourceTree = "<group>"; };
 		BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
+		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
 		BC93328F2715386A00B9BE1C /* RecipeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBanner.swift; sourceTree = "<group>"; };
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
 		BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetStripView.swift; sourceTree = "<group>"; };
@@ -2507,6 +2509,7 @@
 				BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */,
 				BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */,
 				BC93328F2715386A00B9BE1C /* RecipeBanner.swift */,
+				BC8EE06A271CEA6A00D6BE2A /* DomainAllowList.swift */,
 			);
 			path = Cheatsheet;
 			sourceTree = "<group>";
@@ -4838,6 +4841,7 @@
 				C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */,
 				C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */,
 				C9B2D28226612EF7005EF5AD /* NeevaAccountRow.swift in Sources */,
+				BC8EE06B271CEA6A00D6BE2A /* DomainAllowList.swift in Sources */,
 				D0C95E36200FDC5500E4E51C /* MetadataParserHelper.swift in Sources */,
 				C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */,
 				C9655DF326A09B4300925912 /* CardTransitionAnimator.swift in Sources */,
