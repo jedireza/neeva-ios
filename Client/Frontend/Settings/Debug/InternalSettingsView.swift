@@ -25,6 +25,7 @@ struct InternalSettingsView: View {
     @Default(.ratingsCardHidden) var ratingsCardHidden
     @Default(.lastScheduledNeevaPromoID) var lastScheduledNeevaPromoID
     @Default(.lastNeevaPromoScheduledTimeInterval) var lastNeevaPromoScheduledTimeInterval
+    @Default(.didRegisterNotificationTokenOnServer) var didRegisterNotificationTokenOnServer
 
     var body: some View {
         List {
@@ -89,6 +90,7 @@ struct InternalSettingsView: View {
             Section(header: Text("Notification")) {
                 OptionalStringField("lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
                 OptionalNumberField("lastNeevaPromoScheduledTimeInterval", number: $lastNeevaPromoScheduledTimeInterval)
+                Toggle("didRegisterNotificationTokenOnServer", isOn: $didRegisterNotificationTokenOnServer)
             }
         }
         .font(.system(.footnote, design: .monospaced))
