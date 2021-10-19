@@ -15,6 +15,8 @@ enum ToolbarAction {
     case addToSpace
     case showTabs
     case longPressOverflow
+    case showPreference
+    case share
 }
 
 extension BrowserViewController: ToolbarDelegate {
@@ -84,6 +86,25 @@ extension BrowserViewController: ToolbarDelegate {
                 self.showTabTray()
             case .longPressOverflow:
                 break
+            case .showPreference:
+                // Set up preferred provider list
+                let providerList = ProviderList.shared
+                if !providerList.isLoading {
+                    providerList.fetchProviderList()
+                }
+
+                guard let toastViewManager = self.getSceneDelegate()?.toastViewManager else {
+                    return
+                }
+                self.showModal(style: .spaces) {
+                    SetPreferredProviderContent(
+                        chromeModel: self.chromeModel,
+                        toastViewManager: toastViewManager
+                    )
+                }
+                break
+            case .share:
+                self.showShareSheet(buttonView: self.topBar.view)
             }
         }
     }

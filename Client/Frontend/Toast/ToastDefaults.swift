@@ -213,6 +213,45 @@ class ToastDefaults: NSObject {
         toastViewManager.enqueue(toast: toastView)
     }
 
+    func showToastForSetPreferredProvider(request: PreferredProviderRequest, toastViewManager: ToastViewManager) {
+        resetProgress()
+
+        requestListener = request.$state.sink { [weak self] updatedState in
+            guard let self = self else { return }
+
+            switch updatedState {
+            case .inProgress:
+                self.toastProgressViewModel?.status = .inProgress
+            case .success:
+                self.toastProgressViewModel?.status = .success
+            case .failed:
+                self.toastProgressViewModel?.status = .failed
+            }
+        }
+
+        let failedAction = {
+            request.setPreferredProvider()
+            self.showToastForSetPreferredProvider(request: request, toastViewManager: toastViewManager)
+        }
+
+        let normalContent = ToastStateContent(text: "Saving preference")
+        let completedContent = ToastStateContent(text: "Preference saved!", buttonText: "Got it")
+
+        let failedContent = ToastStateContent(
+            text: "Failed to save preference",
+            buttonText: "try again",
+            buttonAction: failedAction)
+        let toastContent = ToastViewContent(
+            normalContent: normalContent, completedContent: completedContent,
+            failedContent: failedContent)
+
+        let toastView = toastViewManager.makeToast(
+            content: toastContent,
+            toastProgressViewModel: toastProgressViewModel, autoDismiss: false)
+        toast = toastView
+        toastViewManager.enqueue(toast: toastView)
+    }
+
     private func resetProgress() {
         toastProgressViewModel = ToastProgressViewModel()
         toastProgressViewModel?.status = .inProgress

@@ -298,6 +298,9 @@
 		BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */; };
 		BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8ABEA126D88F2500E4A415 /* SearchController.swift */; };
 		BC8EE06B271CEA6A00D6BE2A /* DomainAllowList.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8EE06A271CEA6A00D6BE2A /* DomainAllowList.swift */; };
+		BC8EE029271A046C00D6BE2A /* SetPreferredProviderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8EE028271A046C00D6BE2A /* SetPreferredProviderView.swift */; };
+		BC8EE02C271A3CBB00D6BE2A /* PreferredProviderRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8EE02B271A3CBB00D6BE2A /* PreferredProviderRequest.swift */; };
+		BC8EE030271AA2B200D6BE2A /* ProviderList.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8EE02F271AA2B200D6BE2A /* ProviderList.swift */; };
 		BC93328C2714790C00B9BE1C /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */; };
 		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
 		BC9332902715386A00B9BE1C /* RecipeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328F2715386A00B9BE1C /* RecipeBanner.swift */; };
@@ -1294,6 +1297,9 @@
 		BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClusterView.swift; sourceTree = "<group>"; };
 		BC8ABEA126D88F2500E4A415 /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		BC8EE06A271CEA6A00D6BE2A /* DomainAllowList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainAllowList.swift; sourceTree = "<group>"; };
+		BC8EE028271A046C00D6BE2A /* SetPreferredProviderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPreferredProviderView.swift; sourceTree = "<group>"; };
+		BC8EE02B271A3CBB00D6BE2A /* PreferredProviderRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferredProviderRequest.swift; sourceTree = "<group>"; };
+		BC8EE02F271AA2B200D6BE2A /* ProviderList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderList.swift; sourceTree = "<group>"; };
 		BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
 		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
 		BC93328F2715386A00B9BE1C /* RecipeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBanner.swift; sourceTree = "<group>"; };
@@ -2507,6 +2513,7 @@
 				BC93328B2714790C00B9BE1C /* RecipeViewModel.swift */,
 				BC93328F2715386A00B9BE1C /* RecipeBanner.swift */,
 				BC8EE06A271CEA6A00D6BE2A /* DomainAllowList.swift */,
+				BC8EE028271A046C00D6BE2A /* SetPreferredProviderView.swift */,
 			);
 			path = Cheatsheet;
 			sourceTree = "<group>";
@@ -2522,6 +2529,14 @@
 				BC5C442226600F23007E2F61 /* WithPopover.swift */,
 			);
 			path = Prompt;
+			sourceTree = "<group>";
+		};
+		BC8EE02A271A3C8D00D6BE2A /* PreferredProvider */ = {
+			isa = PBXGroup;
+			children = (
+				BC8EE02B271A3CBB00D6BE2A /* PreferredProviderRequest.swift */,
+			);
+			path = PreferredProvider;
 			sourceTree = "<group>";
 		};
 		C832BF5726DEE07B00B9A1F8 /* Spaces */ = {
@@ -2780,6 +2795,7 @@
 				4A15C8B626E183F5006CD097 /* ContactsProvider.swift */,
 				C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */,
 				BC8ABEA126D88F2500E4A415 /* SearchController.swift */,
+				BC8EE02F271AA2B200D6BE2A /* ProviderList.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -2787,6 +2803,7 @@
 		C9C18E2426559457004710CD /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				BC8EE02A271A3C8D00D6BE2A /* PreferredProvider */,
 				66B379D926DDACDC00087B04 /* Feedback */,
 				C996466726569AF0005FFE83 /* Util */,
 				C996466626569AC9005FFE83 /* Spaces */,
@@ -4456,6 +4473,7 @@
 				E65075B21E37F7AB006961AC /* Functions.swift in Sources */,
 				E65075BA1E37F7AB006961AC /* Prefs.swift in Sources */,
 				C9C18E4726559616004710CD /* MultilineTextField.swift in Sources */,
+				BC8EE02C271A3CBB00D6BE2A /* PreferredProviderRequest.swift in Sources */,
 				C9C18E5C265598EA004710CD /* QueryController.swift in Sources */,
 				C9C18E5726559874004710CD /* NeevaColors.swift in Sources */,
 				C9C18E58265598A0004710CD /* SpaceListItem.swift in Sources */,
@@ -4492,6 +4510,7 @@
 				E65075B11E37F7AB006961AC /* FSUtils.m in Sources */,
 				CE7F11941F3CEEC800ABFC0B /* RemoteDevices.swift in Sources */,
 				C9C18E3F26559504004710CD /* API.swift in Sources */,
+				BC8EE030271AA2B200D6BE2A /* ProviderList.swift in Sources */,
 				BC07524626C324A3008B607A /* CheatsheetController.swift in Sources */,
 				D3A14C221CB3145E00253BC6 /* Strings.swift in Sources */,
 				C9F49CC6266FFB8200F3408A /* Environment.swift in Sources */,
@@ -5004,6 +5023,7 @@
 				E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */,
 				C9299E36268F9CF300758795 /* CloseButton.swift in Sources */,
 				C832BF5F26E0A9E400B9A1F8 /* HTTPAuthPromptOverlayContent.swift in Sources */,
+				BC8EE029271A046C00D6BE2A /* SetPreferredProviderView.swift in Sources */,
 				D3C744CD1A687D6C004CE85D /* URIFixup.swift in Sources */,
 				E4A961181AC041C40069AD6F /* ReadabilityService.swift in Sources */,
 				D3BE7B261B054D4400641031 /* main.swift in Sources */,

@@ -47,8 +47,9 @@ public struct Recipe {
     public var instructions: [String]?
     public var recipeRating: RecipeRating?
     public var reviews: [Review]?
+    public var preference: UserPreference?
 
-    public init(title: String, imageURL: String, totalTime: String?, prepTime: String?, yield: String? , ingredients: [String]?, instructions: [String]?, recipeRating: RecipeRating?, reviews: [Review]?) {
+    public init(title: String, imageURL: String, totalTime: String?, prepTime: String?, yield: String? , ingredients: [String]?, instructions: [String]?, recipeRating: RecipeRating?, reviews: [Review]?, preference: UserPreference) {
         self.title = title
         self.imageURL = imageURL
         self.totalTime = totalTime
@@ -58,6 +59,7 @@ public struct Recipe {
         self.instructions = instructions
         self.recipeRating = recipeRating
         self.reviews = reviews
+        self.preference = preference
     }
 }
 
@@ -166,14 +168,9 @@ public class CheatsheetQueryController:
             let maxStars = recipe.recipeRating?.maxStars ?? 0
             let recipeStars = recipe.recipeRating?.recipeStars ?? 0
             let numReviews = recipe.recipeRating?.numReviews ?? 0
+            let preference = recipe.preference ?? .noPreference
 
-            result.recipe = Recipe(
-                title: title, imageURL: imageURL, totalTime: recipe.totalTime,
-                prepTime: recipe.prepTime, yield: recipe.yield, ingredients: ingredients,
-                instructions: instrutions,
-                recipeRating: RecipeRating(
-                    maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews),
-                reviews: reviews)
+            result.recipe = Recipe(title: title, imageURL: imageURL, totalTime: recipe.totalTime, prepTime: recipe.prepTime, yield: recipe.yield, ingredients: ingredients, instructions: instrutions, recipeRating: RecipeRating(maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews), reviews: reviews, preference: preference)
         }
 
         return [result]

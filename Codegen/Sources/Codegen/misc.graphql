@@ -94,6 +94,16 @@ query EmailLookup($input: PublicEmailLookupInput!) {
   }
 }
 
+query GetAllProviders($input: AllProvidersQueryInput!) {
+  getAllProviders(input: $input) {
+    providers {
+      name
+      domain
+      preference
+    }
+  }
+}
+
 mutation SendFeedback($input: SendFeedbackV2Input!) {
   sendFeedbackV2(input: $input)
 }

@@ -17,38 +17,63 @@ struct TabToolbarView: View {
                 .frame(height: 0.5)
                 .ignoresSafeArea()
 
-            HStack(spacing: 0) {
-                TabToolbarButtons.BackButton(
-                    weight: .medium,
-                    onBack: { performAction(.back) },
-                    onLongPress: { performAction(.longPressBackForward) }
-                )
-                TabToolbarButtons.OverflowMenu(
-                    weight: .medium,
-                    action: {
-                        performAction(.overflow)
-                    },
-                    onLongPress: {
-                        performAction(.longPressOverflow)
-                    })
-                TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
-                TabToolbarButtons.AddToSpace(
-                    weight: .medium, action: { performAction(.addToSpace) })
-                TabToolbarButtons.ShowTabs(
-                    weight: .medium,
-                    action: { performAction(.showTabs) },
-                    buildMenu: buildTabsMenu
-                ).frame(height: 44)
+            if chromeModel.toolBarContentView == .recipeContent {
+                cheatsheetToolbar
+            } else {
+                normalTabToolbar
             }
-            .padding(.top, 2)
-            .opacity(chromeModel.controlOpacity)
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("TabToolbar")
 
             Spacer()
         }
         .background(Color.DefaultBackground.ignoresSafeArea())
         .accentColor(.label)
+    }
+
+    @ViewBuilder
+    var normalTabToolbar: some View {
+        HStack(spacing: 0) {
+            TabToolbarButtons.BackButton(
+                weight: .medium,
+                onBack: { performAction(.back) },
+                onLongPress: { performAction(.longPressBackForward) }
+            )
+            TabToolbarButtons.OverflowMenu(
+                weight: .medium,
+                action: {
+                    performAction(.overflow)
+                },
+                onLongPress: {
+                    performAction(.longPressOverflow)
+                })
+            TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
+            TabToolbarButtons.AddToSpace(
+                weight: .medium, action: { performAction(.addToSpace) })
+            TabToolbarButtons.ShowTabs(
+                weight: .medium,
+                action: { performAction(.showTabs) },
+                buildMenu: buildTabsMenu
+            ).frame(height: 44)
+        }
+        .padding(.top, 2)
+        .opacity(chromeModel.controlOpacity)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("TabToolbar")
+    }
+
+    @ViewBuilder
+    var cheatsheetToolbar: some View {
+        HStack(spacing: 0) {
+            TabToolbarButtons.ShareButton(
+                weight: .medium, action: { performAction(.share) })
+            TabToolbarButtons.ShowPreferenceButton(
+                weight: .medium, action: { performAction(.showPreference) })
+            TabToolbarButtons.AddToSpace(
+                weight: .medium, action: { performAction(.addToSpace) })
+        }
+        .padding(.top, 2)
+        .opacity(chromeModel.controlOpacity)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("CheatsheetToolBar")
     }
 }
 

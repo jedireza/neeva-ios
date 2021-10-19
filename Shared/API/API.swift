@@ -3080,6 +3080,70 @@ public struct PublicEmailLookupInput: GraphQLMapConvertible {
   }
 }
 
+public struct AllProvidersQueryInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - providerCategory
+  public init(providerCategory: Swift.Optional<ProviderCategory?> = nil) {
+    graphQLMap = ["providerCategory": providerCategory]
+  }
+
+  public var providerCategory: Swift.Optional<ProviderCategory?> {
+    get {
+      return graphQLMap["providerCategory"] as? Swift.Optional<ProviderCategory?> ?? Swift.Optional<ProviderCategory?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "providerCategory")
+    }
+  }
+}
+
+public enum ProviderCategory: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case unknown
+  case news
+  case recipes
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "Unknown": self = .unknown
+      case "News": self = .news
+      case "Recipes": self = .recipes
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .unknown: return "Unknown"
+      case .news: return "News"
+      case .recipes: return "Recipes"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: ProviderCategory, rhs: ProviderCategory) -> Bool {
+    switch (lhs, rhs) {
+      case (.unknown, .unknown): return true
+      case (.news, .news): return true
+      case (.recipes, .recipes): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [ProviderCategory] {
+    return [
+      .unknown,
+      .news,
+      .recipes,
+    ]
+  }
+}
+
 /// Data sent back from client representing user feedback response (V2)
 public struct SendFeedbackV2Input: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
@@ -3328,51 +3392,6 @@ public struct PreferredProviderInput: GraphQLMapConvertible {
     set {
       graphQLMap.updateValue(newValue, forKey: "providerCategory")
     }
-  }
-}
-
-public enum ProviderCategory: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
-  public typealias RawValue = String
-  case unknown
-  case news
-  case recipes
-  /// Auto generated constant for unknown enum values
-  case __unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-      case "Unknown": self = .unknown
-      case "News": self = .news
-      case "Recipes": self = .recipes
-      default: self = .__unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-      case .unknown: return "Unknown"
-      case .news: return "News"
-      case .recipes: return "Recipes"
-      case .__unknown(let value): return value
-    }
-  }
-
-  public static func == (lhs: ProviderCategory, rhs: ProviderCategory) -> Bool {
-    switch (lhs, rhs) {
-      case (.unknown, .unknown): return true
-      case (.news, .news): return true
-      case (.recipes, .recipes): return true
-      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
-      default: return false
-    }
-  }
-
-  public static var allCases: [ProviderCategory] {
-    return [
-      .unknown,
-      .news,
-      .recipes,
-    ]
   }
 }
 
@@ -5884,6 +5903,166 @@ public final class EmailLookupQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue, forKey: "authProvider")
+        }
+      }
+    }
+  }
+}
+
+public final class GetAllProvidersQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query GetAllProviders($input: AllProvidersQueryInput!) {
+      getAllProviders(input: $input) {
+        __typename
+        providers {
+          __typename
+          name
+          domain
+          preference
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "GetAllProviders"
+
+  public let operationIdentifier: String? = "1cbdb60b7dcca2119004f293d43ad672ad87a5203626dac1ec236e99012c4158"
+
+  public var input: AllProvidersQueryInput
+
+  public init(input: AllProvidersQueryInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("getAllProviders", arguments: ["input": GraphQLVariable("input")], type: .object(GetAllProvider.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(getAllProviders: GetAllProvider? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "getAllProviders": getAllProviders.flatMap { (value: GetAllProvider) -> ResultMap in value.resultMap }])
+    }
+
+    /// Get the prioritized, deprioritized, and allowed providers
+    public var getAllProviders: GetAllProvider? {
+      get {
+        return (resultMap["getAllProviders"] as? ResultMap).flatMap { GetAllProvider(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "getAllProviders")
+      }
+    }
+
+    public struct GetAllProvider: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["AllProviders"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("providers", type: .list(.nonNull(.object(Provider.selections)))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(providers: [Provider]? = nil) {
+        self.init(unsafeResultMap: ["__typename": "AllProviders", "providers": providers.flatMap { (value: [Provider]) -> [ResultMap] in value.map { (value: Provider) -> ResultMap in value.resultMap } }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var providers: [Provider]? {
+        get {
+          return (resultMap["providers"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Provider] in value.map { (value: ResultMap) -> Provider in Provider(unsafeResultMap: value) } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [Provider]) -> [ResultMap] in value.map { (value: Provider) -> ResultMap in value.resultMap } }, forKey: "providers")
+        }
+      }
+
+      public struct Provider: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["PreferredProvider"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("name", type: .scalar(String.self)),
+            GraphQLField("domain", type: .scalar(String.self)),
+            GraphQLField("preference", type: .scalar(UserPreference.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(name: String? = nil, domain: String? = nil, preference: UserPreference? = nil) {
+          self.init(unsafeResultMap: ["__typename": "PreferredProvider", "name": name, "domain": domain, "preference": preference])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var name: String? {
+          get {
+            return resultMap["name"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "name")
+          }
+        }
+
+        public var domain: String? {
+          get {
+            return resultMap["domain"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "domain")
+          }
+        }
+
+        public var preference: UserPreference? {
+          get {
+            return resultMap["preference"] as? UserPreference
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "preference")
+          }
         }
       }
     }
