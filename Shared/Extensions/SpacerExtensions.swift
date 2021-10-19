@@ -6,7 +6,7 @@ import SwiftUI
 // so instead we just repeat the spacer multiple times. Hacky, but functional!
 extension Spacer {
     public func repeated(_ times: Int) -> some View {
-        ForEach(0..<times) { _ in
+        ForEach(0..<times, id: \.self) { _ in
             self
         }
     }

@@ -124,7 +124,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let url = URLContexts.first?.url,
             let routerpath = NavigationPath(bvc: bvc, url: url)
         else {
-            log.info("Failed to unwrap url for context: \(URLContexts.first?.url)")
+            log.info(
+                "Failed to unwrap url for context: \(URLContexts.first?.url.absoluteString ?? "")")
             return
         }
 

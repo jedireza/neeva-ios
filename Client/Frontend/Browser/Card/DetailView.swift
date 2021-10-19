@@ -154,7 +154,7 @@ where
                         ClientLogger.shared.logCounter(
                             .FollowerSharedSpace,
                             attributes: getLogCounterAttributesForSpaces(
-                                details: primitive as! SpaceCardDetails))
+                                details: primitive as? SpaceCardDetails))
                     }
                     ClientLogger.shared.logCounter(
                         .SpacesDetailShareButtonClicked,

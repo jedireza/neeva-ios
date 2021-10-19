@@ -51,6 +51,7 @@ struct CardsContainer: View {
                     }
                 }.offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
                     .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+
                 ScrollView(.vertical, showsIndicators: false) {
                     ScrollViewReader { scrollProxy in
                         LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {

@@ -31,8 +31,10 @@ class SpaceContentSheetModel: ObservableObject {
                                 ?? ""),
                         createdTs: convertedDate, comment: commentAdded)
                 )
-                AddSpaceCommentRequest(
+
+                _ = AddSpaceCommentRequest(
                     spaceID: (selectedTab?.parentSpaceID)!, comment: commentAdded)
+
                 commentAdded = ""
             }
         }
