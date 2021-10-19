@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import SDWebImageSwiftUI
 import Shared
 import SwiftUI
@@ -18,6 +19,7 @@ where
     Details.Thumbnail: CardDetails, Details: CardDetails,
     Details.Thumbnail: AccessingManagerProvider
 {
+    @Default(.tabGroupNames) var tabGroupDict: [String: String]
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
@@ -38,6 +40,10 @@ where
 
     var space: Space? {
         primitive.manager.get(for: primitive.id) as? Space
+    }
+
+    var tabGroupDetail: TabGroupCardDetails? {
+        primitive as? TabGroupCardDetails
     }
 
     let listColumns = Array(
@@ -284,21 +290,26 @@ where
                         .tapTargetFrame()
                 })
             if case .active = editMode {
-                if space != nil {
-                    VStack(spacing: 2) {
-                        TextField(
-                            "Enter a name for your Space", text: $newTitle,
-                            onCommit: {
-                                if let space = space, newTitle != primitive.title {
+                VStack(spacing: 2) {
+                    TextField(
+                        space != nil
+                            ? "Enter a name for your Space" : "Enter a name for your tab group",
+                        text: $newTitle,
+                        onCommit: {
+                            if newTitle != primitive.title {
+                                if let space = space {
                                     spacesModel.updateSpaceName(space: space, newTitle: newTitle)
+                                } else {
+                                    tabGroupDict[tabGroupDetail!.id] = newTitle
+                                    tabGroupCardModel.manager.updateTabGroups()
                                 }
                             }
-                        )
-                        .lineLimit(1)
-                        .foregroundColor(Color.label)
-                        Color.ui.adaptive.separator
-                            .frame(height: 1)
-                    }
+                        }
+                    )
+                    .lineLimit(1)
+                    .foregroundColor(Color.label)
+                    Color.ui.adaptive.separator
+                        .frame(height: 1)
                 }
             } else {
                 Text(primitive.title)
@@ -318,32 +329,41 @@ where
                 shareButton
                 menuButton
             } else {
-                Button(
-                    action: {
-                        switch editMode {
-                        case .inactive:
-                            editMode = .active
-                        case .active:
-                            editMode = .inactive
-                        default: break
-                        }
-                    }) {
-                        if case .inactive = editMode {
-                            Text("Edit")
-                                .withFont(.headingMedium)
-                                .foregroundColor(.label)
-                                .padding(.horizontal, 15)
-                        } else if case .active = editMode {
-                            Text("Cancel")
-                                .withFont(.headingMedium)
-                                .foregroundColor(.label)
-                                .padding(.horizontal, 15)
-                        }
-                    }
+                tabGroupEditButton
             }
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.DefaultBackground.edgesIgnoringSafeArea(.horizontal))
+    }
+
+    var tabGroupEditButton: some View {
+        Button(
+            action: {
+                switch editMode {
+                case .inactive:
+                    newTitle = primitive.title
+                    editMode = .active
+                case .active:
+                    editMode = .inactive
+                    if newTitle != primitive.title {
+                        tabGroupDict[tabGroupDetail!.id] = newTitle
+                        tabGroupCardModel.manager.updateTabGroups()
+                    }
+                default: break
+                }
+            }) {
+                if case .inactive = editMode {
+                    Text("Edit")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.label)
+                        .padding(.horizontal, 15)
+                } else if case .active = editMode {
+                    Text("Done")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.label)
+                        .padding(.horizontal, 15)
+                }
+            }
     }
 
     var spaceList: some View {

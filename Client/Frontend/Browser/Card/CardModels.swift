@@ -438,7 +438,8 @@ class TabGroupCardModel: CardModel {
             .map {
                 TabGroupCardDetails(
                     tabGroup: $0,
-                    tabGroupManager: manager)
+                    tabGroupManager: manager
+                )
             }
         objectWillChange.send()
     }

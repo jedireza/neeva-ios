@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Defaults
 import Foundation
 import SDWebImageSwiftUI
 import Shared
@@ -329,6 +330,7 @@ extension TabGroup: BrowserPrimitive, Closeable {
 class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     typealias Item = TabGroup
     let tabManager: TabManager
+    @Default(.tabGroupNames) var tabGroupDict: [String: String]
     @Published var tabGroups: [String: TabGroup] = [:]
     var anyCancellable: AnyCancellable? = nil
 
@@ -347,6 +349,15 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
             }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) { dict, element in
                 dict[element.key] = TabGroup(children: element.value, id: element.key)
             }
+        if tabGroups.count > 0 {
+            var temp = [String: String]()
+            tabGroups.filter {
+                group in tabGroupDict[group.key] != nil
+            }.forEach { group in
+                temp[group.key] = tabGroupDict[group.key]
+            }
+            tabGroupDict = temp
+        }
         objectWillChange.send()
     }
 

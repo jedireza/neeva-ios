@@ -107,6 +107,10 @@ extension Defaults.Keys {
         "lastNeevaPromoScheduledTimeInterval")
     public static let didRegisterNotificationTokenOnServer = Defaults.Key<Bool>(
         "didRegisterNotificationTokenOnServer", default: false)
+
+    // tab groups
+    public static let tabGroupNames = Defaults.Key<[String: String]>(
+        "tabGroupNames", default: [String: String]())
 }
 
 extension Defaults {

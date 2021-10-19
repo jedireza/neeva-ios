@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Defaults
 import Foundation
 import SDWebImageSwiftUI
 import Shared
@@ -365,6 +366,9 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     var id: String
     var isSelected: Bool {
         manager.tabManager.selectedTab?.rootUUID == id
+    }
+    var title: String {
+        Defaults[.tabGroupNames][id] ?? manager.get(for: id)?.displayTitle ?? ""
     }
     @Published var allDetails: [TabCardDetails] = []
 
