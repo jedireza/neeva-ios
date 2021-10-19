@@ -14,7 +14,8 @@ class RecipeViewModel: ObservableObject {
             ingredients: nil,
             instructions: nil,
             recipeRating: nil,
-            reviews: nil
+            reviews: nil,
+            preference: .noPreference
         )
 
     init(tabManager: TabManager) {
@@ -46,7 +47,8 @@ class RecipeViewModel: ObservableObject {
                     ingredients: nil,
                     instructions: nil,
                     recipeRating: nil,
-                    reviews: nil
+                    reviews: nil,
+                    preference: .noPreference
                 )
                 break
             }

@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import SDWebImageSwiftUI
 import SFSafeSymbols
 import Shared
 import SwiftUI
@@ -158,6 +159,57 @@ enum TabToolbarButtons {
                 $0.setImage(Symbol.uiImage(.squareOnSquare, size: 20, weight: weight), for: .normal)
                 $0.setDynamicMenu(buildMenu)
                 $0.accessibilityLabel = "Show Tabs"
+            }
+        }
+    }
+
+    struct ShareButton: View {
+        let weight: Font.Weight
+        let action: () -> Void
+
+        var body: some View {
+            TabToolbarButton(
+                label: Symbol(
+                    .squareAndArrowUp,
+                    size: 20, weight: weight,
+                    label: "share"),
+                action: action
+            )
+        }
+    }
+
+    struct ShowPreferenceButton: View {
+        let weight: Font.Weight
+        let action: () -> Void
+
+        @EnvironmentObject private var model: TabChromeModel
+
+        var body: some View {
+            if let faviconURL = model.currentCheatsheetFaviconURL {
+                TabToolbarButton(
+                    label: WebImage(url: faviconURL)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 24, height: 24)
+                        .clipShape(Circle())
+                        .cornerRadius(6),
+                    action: action
+                )
+            } else if let currentURLInitial = model.currentCheatsheetURL?.baseDomain?.asURL?.absoluteString.first?.description {
+                TabToolbarButton(
+                    label: Circle()
+                        .fill(Color.gray)
+                        .overlay(Text(currentURLInitial).foregroundColor(Color.brand.white).padding(.bottom, 2))
+                        .frame(width: 24, height: 24),
+                    action: action
+                )
+            } else {
+                TabToolbarButton(
+                    label: Circle()
+                        .fill(Color.gray)
+                        .frame(width: 24, height: 24),
+                    action: action
+                )
             }
         }
     }

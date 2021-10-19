@@ -6,23 +6,26 @@ import SwiftUI
 
 struct RecipeCheatsheetStripView: View {
     let tabManager: TabManager
-    @ObservedObject var scrollingController: TabScrollingController
-    @ObservedObject var recipeModel: RecipeViewModel
     let overlayModel: OverlaySheetModel = OverlaySheetModel()
     var height: CGFloat
+    @ObservedObject var scrollingController: TabScrollingController
+    @ObservedObject var recipeModel: RecipeViewModel
     @State private var presentSheet: Bool = false
+    let chromeModel: TabChromeModel
 
     init(
         tabManager: TabManager,
         recipeModel: RecipeViewModel,
         scrollingController: TabScrollingController,
-        height: CGFloat
+        height: CGFloat,
+        chromeModel: TabChromeModel
     ) {
         self.tabManager = tabManager
         self.recipeModel = recipeModel
         self.scrollingController = scrollingController
         self.recipeModel = recipeModel
         self.height = height
+        self.chromeModel = chromeModel
     }
 
     var body: some View {
@@ -63,7 +66,10 @@ struct RecipeCheatsheetStripView: View {
                 OverlaySheetView(
                     model: overlayModel,
                     style: .spaces,
-                    onDismiss: { presentSheet = false }
+                    onDismiss: {
+                        presentSheet = false
+                        self.chromeModel.toolBarContentView = .regularContent
+                    }
                 ) {
                     ScrollView(.vertical, showsIndicators: false) {
                         RecipeView(
@@ -91,7 +97,9 @@ struct RecipeCheatsheetStripView: View {
     }
 
     func showOverlaySheet() {
+        self.chromeModel.currentCheatsheetFaviconURL = self.tabManager.selectedTab?.favicon?.url
         presentSheet = true
+        self.chromeModel.toolBarContentView = .recipeContent
         overlayModel.show()
     }
 

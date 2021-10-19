@@ -891,8 +891,10 @@ extension BrowserViewController: WKNavigationDelegate {
                 tab.fetchCheatsheetInfo()
             }
 
-            if NeevaFeatureFlags[.recipeCheatsheet] {
+            if NeevaFeatureFlags[.recipeCheatsheet] && !self.tabManager.isIncognito {
                 self.tabContentHost.model.recipeModel.updateContentWithURL(url: url.absoluteString)
+                self.chromeModel.currentCheatsheetFaviconURL = tabManager.selectedTab?.favicon?.url
+                self.chromeModel.currentCheatsheetURL = tabManager.selectedTab?.url
             }
         }
 

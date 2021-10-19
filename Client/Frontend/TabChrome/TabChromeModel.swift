@@ -3,6 +3,11 @@
 import Combine
 import SwiftUI
 
+enum ToolbarContentView {
+    case regularContent
+    case recipeContent
+}
+
 class TabChromeModel: ObservableObject {
     @Published var canGoBack: Bool
     @Published var canGoForward: Bool
@@ -63,6 +68,12 @@ class TabChromeModel: ObservableObject {
 
     @Published var showNeevaMenuTourPrompt = false
 
+    @Published var toolBarContentView: ToolbarContentView = .regularContent
+
+    @Published var currentCheatsheetURL: URL? = nil
+
+    @Published var currentCheatsheetFaviconURL: URL? = nil
+
     init(
         canGoBack: Bool = false, canGoForward: Bool = false, isPage: Bool = false,
         inlineToolbar: Bool = false, estimatedProgress: Double? = nil
@@ -80,6 +91,9 @@ class TabChromeModel: ObservableObject {
     }
 
     func setEditingLocation(to value: Bool) {
+        if value {
+            toolBarContentView = .regularContent
+        }
         withAnimation(TabLocationViewUX.animation.delay(0.08)) {
             isEditingLocation = value
         }

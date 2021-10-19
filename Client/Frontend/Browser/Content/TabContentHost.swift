@@ -40,7 +40,8 @@ class TabContentHostModel: ObservableObject {
 
     var subscription: AnyCancellable? = nil
 
-    init(tabManager: TabManager) {
+    init(bvc: BrowserViewController) {
+        let tabManager = bvc.tabManager
         let webView = tabManager.selectedTab?.webView
         let type = webView.map(ContentUIType.webPage) ?? .blank
         self.webContainerType = type
@@ -53,9 +54,11 @@ class TabContentHostModel: ObservableObject {
             }
             webContainerType = .webPage(webView)
 
-            if NeevaFeatureFlags[.recipeCheatsheet] {
+            if NeevaFeatureFlags[.recipeCheatsheet] && !tabManager.isIncognito {
                 if let url = webView.url?.absoluteString {
                     self.recipeModel.updateContentWithURL(url: url)
+                    bvc.chromeModel.currentCheatsheetFaviconURL = tabManager.selectedTab?.favicon?.url
+                    bvc.chromeModel.currentCheatsheetURL = tabManager.selectedTab?.url
                 }
             }
         }
@@ -101,7 +104,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                             .environment(
                                 \.onOpenURLForSpace, bvc.tabManager.createOrSwitchToTabForSpace)
                         }
-                        if NeevaFeatureFlags[.recipeCheatsheet] {
+                        if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.tabManager.isIncognito {
                             GeometryReader { geo in
                                 VStack {
                                     Spacer()
@@ -109,7 +112,8 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                                         tabManager: bvc.tabManager,
                                         recipeModel: model.recipeModel,
                                         scrollingController: bvc.scrollController,
-                                        height: geo.size.height
+                                        height: geo.size.height,
+                                        chromeModel: bvc.chromeModel
                                     )
                                 }
                             }
@@ -162,7 +166,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
 
     init(bvc: BrowserViewController) {
         let tabManager = bvc.tabManager
-        let model = TabContentHostModel(tabManager: tabManager)
+        let model = TabContentHostModel(bvc: bvc)
         let zeroQueryModel = bvc.zeroQueryModel
         let suggestionModel = bvc.suggestionModel
 
