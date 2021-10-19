@@ -125,6 +125,17 @@ class SpaceCardModel: CardModel {
     init(manager: SpaceStore = SpaceStore.shared) {
         self.manager = manager
 
+        NeevaUserInfo.shared.$isUserLoggedIn.sink { isLoggedIn in
+            DispatchQueue.main.async {
+                // Refresh to get spaces for logged in users and to clear cache for logged out users
+                SpaceStore.shared.refresh()
+            }
+
+            if !isLoggedIn {
+                self.allDetails = []
+            }
+        }.store(in: &detailsSubscriptions)
+
         self.anyCancellable = manager.$state.sink { [unowned self] state in
             guard detailedSpace == nil, case .ready = state,
                 manager.updatedSpacesFromLastRefresh.count > 0
