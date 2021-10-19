@@ -98,6 +98,7 @@ public struct LogConfig {
 
         // performance
         case AppCrashWithPageLoad  // App Crash # With Page load #
+        case LowMemoryWarning      // memory warning with memory footprint
 
         // spaces
         case SpacesUIVisited
@@ -251,6 +252,7 @@ public struct LogConfig {
         case .CloseReferralPromo: return .ReferralPromo
 
         case .AppCrashWithPageLoad: return .Performance
+        case .LowMemoryWarning: return .Performance
 
         case .SpacesUIVisited: return .Spaces
         case .SpacesDetailUIVisited: return .Spaces
@@ -354,5 +356,9 @@ public struct LogConfig {
         public static let localNotificationTapAction = "LocalNotificationTapAction"
         public static let localNotificationScheduleCallSite = "localNotificationScheduledCallSite"
         public static let localNotificationPromoId = "localNotificationPromoId"
+    }
+
+    public struct PerformanceAttribute {
+        public static let memoryUsage = "MemoryUsage"
     }
 }

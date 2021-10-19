@@ -262,6 +262,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     }
 }
 
+extension AppDelegate {
+    // https://gist.github.com/uc-compass-bot/21a50972615f49fd581d928317e4e1a9#file-lowmemorywarningtracking-swift
+    func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
+        var attributes = [
+            ClientLogCounterAttribute(
+                key: LogConfig.Attribute.DeviceName,
+                value: NeevaConstants.deviceNameValue
+            )
+        ]
+
+        if let footprint = memoryFootprint {
+            attributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.PerformanceAttribute.memoryUsage,
+                    value: "\(footprint / 1024 / 1024) MB"
+                )
+            )
+        }
+
+        ClientLogger.shared.logCounter(.LowMemoryWarning, attributes: attributes)
+    }
+
+    private var memoryFootprint: mach_vm_size_t? {
+        guard let memory_offset = MemoryLayout.offset(of: \task_vm_info_data_t.min_address) else {
+            return nil
+        }
+        let TASK_VM_INFO_COUNT = mach_msg_type_number_t(
+            MemoryLayout<task_vm_info_data_t>.size / MemoryLayout<integer_t>.size
+        )
+        let TASK_VM_INFO_REV1_COUNT = mach_msg_type_number_t(
+            memory_offset / MemoryLayout<integer_t>.size
+        )
+        var info = task_vm_info_data_t()
+        var count = TASK_VM_INFO_COUNT
+        let kr = withUnsafeMutablePointer(to: &info) { infoPtr in
+            infoPtr.withMemoryRebound(to: integer_t.self, capacity: Int(count)) { intPtr in
+                task_info(mach_task_self_, task_flavor_t(TASK_VM_INFO), intPtr, &count)
+            }
+        }
+        guard kr == KERN_SUCCESS, count >= TASK_VM_INFO_REV1_COUNT else {
+            return nil
+        }
+        return info.phys_footprint
+    }
+}
+
 func getAppDelegate() -> AppDelegate {
     return (UIApplication.shared.delegate as? AppDelegate)!
 }

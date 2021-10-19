@@ -35,6 +35,11 @@ public class PerformanceLogger {
 
         attributes.append(
             ClientLogCounterAttribute(
+                key: LogConfig.Attribute.DeviceName, value: NeevaConstants.deviceNameValue
+            ))
+
+        attributes.append(
+            ClientLogCounterAttribute(
                 key: PerformanceLoggerAttribute.pageLoaded.rawValue,
                 value: String(pageLoadedCount)))
         ClientLogger.shared.logCounter(.AppCrashWithPageLoad, attributes: attributes)
