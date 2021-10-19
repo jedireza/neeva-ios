@@ -14,6 +14,11 @@ done
 ./bootstrap.sh
 
 if $UPLOAD_BUILD; then
+  if [ -z ${APP_STORE_USERNAME} ] || [ -z ${APP_STORE_TOKEN} ]; then
+    echo "APP_STORE_USERNAME or APP_STORE_TOKEN not defined for upload. Abort"
+    exit 1
+  fi
+
   ARCHIVE_PATH=~/Library/Developer/Xcode/Archives
   NEEVA_ARCHIVE_PATH=$ARCHIVE_PATH/Neeva
 
