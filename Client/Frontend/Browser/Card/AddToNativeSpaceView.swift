@@ -53,13 +53,14 @@ private struct iOS15InputField: View {
             if case .descriptionField = title {
                 TextEditor(text: $inputText)
                     .withFont(unkerned: .bodyLarge)
-                    .frame(minHeight: 80)
+                    .frame(maxWidth: .infinity, minHeight: 80)
+                    .fixedSize(horizontal: false, vertical: true)
                     .focused($isFocused, equals: title)
                     .accentColor(textEditAccentColor(type: title))
             } else {
                 TextField(bodyText, text: $inputText)
                     .withFont(unkerned: .bodyLarge)
-                    .autocapitalization(.none)
+                    .autocapitalization(title == .titleField ? .words : .none)
                     .disableAutocorrection(true)
                     .focused($isFocused, equals: title)
                     .accentColor(textEditAccentColor(type: title))
@@ -82,10 +83,17 @@ private struct LegacyInputField: View {
                 .withFont(.headingXSmall)
                 .foregroundColor(.secondaryLabel)
 
-            TextField(bodyText, text: $inputText)
-                .withFont(unkerned: .bodyLarge)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
+            if case .descriptionField = title {
+                TextEditor(text: $inputText)
+                    .withFont(unkerned: .bodyLarge)
+                    .frame(maxWidth: .infinity, minHeight: 80)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                TextField(bodyText, text: $inputText)
+                    .withFont(unkerned: .bodyLarge)
+                    .autocapitalization(title == .titleField ? .words : .none)
+                    .disableAutocorrection(title != .titleField)
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
