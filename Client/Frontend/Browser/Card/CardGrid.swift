@@ -46,7 +46,6 @@ struct CardGrid: View {
         {
             CardTransitionAnimator(
                 cardSize: cardSize,
-                columnCount: columnCount,
                 containerSize: geom.size,
                 safeAreaInsets: geom.safeAreaInsets,
                 topToolbar: topToolbar
@@ -171,7 +170,9 @@ struct CardGrid: View {
                 self.geom = (geom.size, geom.safeAreaInsets)
             }
         }
-        .overlay(transitionAnimator, alignment: .top)
+        .overlay(
+            transitionAnimator.coordinateSpace(name: gridModel.coordinateSpaceName), alignment: .top
+        )
         .ignoresSafeArea(.keyboard)
         .accessibilityAction(.escape) {
             gridModel.hideWithAnimation()
@@ -240,13 +241,4 @@ struct GridPicker: View {
             .opacity(gridModel.isHidden ? 0 : 1)
             .animation(.easeOut)
     }
-}
-
-struct ScrollViewOffsetPreferenceKey: PreferenceKey {
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value += nextValue()
-    }
-
-    typealias Value = CGFloat
-    static var defaultValue = CGFloat.zero
 }

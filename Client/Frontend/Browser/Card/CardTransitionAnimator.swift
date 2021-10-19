@@ -6,23 +6,12 @@ import SwiftUI
 /// Custom animator that transitions between the tab switcher and a tab
 struct CardTransitionAnimator: View {
     let cardSize: CGFloat
-    let columnCount: Int
-    /// The location of the card in the tab switcher, relative to the container of the scroll view
-    var offset: CGPoint {
-        let point =
-            CGPoint(
-                x: CardGridUX.GridSpacing
-                    + (CardGridUX.GridSpacing + cardSize) * (indexInGrid % columnCount),
-                y: (CardUX.HeaderSize + CardGridUX.GridSpacing + cardSize
-                    * CardUX.DefaultTabCardRatio) * row
-            )
-        return point
-    }
     /// The size of the area where tab content is displayed when outside the tab switcher
     let containerSize: CGSize
     let safeAreaInsets: EdgeInsets
     /// Whether the toolbar is displayed at the top of the tab switcher
     let topToolbar: Bool
+    let animation: Animation = .interpolatingSpring(stiffness: 425, damping: 30)
 
     @EnvironmentObject private var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
@@ -36,43 +25,6 @@ struct CardTransitionAnimator: View {
         gridModel.pickerHeight + safeAreaInsets.top
     }
 
-    var indexInsideTabModel: Int? {
-        if FeatureFlag[.groupsInSwitcher] {
-            return tabModel.allDetailsWithExclusionList.firstIndex(where: \.isSelected)
-        } else {
-            return tabModel.allDetails.firstIndex(where: \.isSelected)
-        }
-    }
-
-    var isSelectedTabInGroup: Bool {
-        let selectedTab = tabModel.manager.selectedTab!
-        return tabGroupModel.representativeTabs.contains { $0.rootUUID == selectedTab.rootUUID }
-    }
-
-    var indexInsideCombinedList: Int? {
-        let combinedList = tabModel.allDetails.filter { tabCard in
-            (tabGroupModel.representativeTabs.contains(
-                tabCard.manager.get(for: tabCard.id)!)
-                || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
-        }
-        return combinedList.firstIndex {
-            $0.isSelected
-                || $0.manager.get(for: $0.id)?.rootUUID == tabModel.manager.selectedTab!.rootUUID
-        }
-    }
-
-    var indexWithinTabGroup: Int? {
-        let selectedTab = tabModel.manager.selectedTab!
-        let tabGroupDetail = tabGroupModel.allDetails.first { $0.id == selectedTab.rootUUID }
-        return tabGroupDetail?.allDetails.firstIndex { $0.manager.get(for: $0.id)! == selectedTab }
-    }
-
-    var indexInGrid: Int {
-        return FeatureFlag[.groupsInSwitcher]
-            ? (isSelectedTabInGroup
-                ? indexWithinTabGroup! : indexInsideCombinedList!) : indexInsideTabModel!
-    }
-
     var selectedCardDetails: TabCardDetails? {
         if FeatureFlag[.groupsInSwitcher] {
             return tabModel.allDetailsWithExclusionList.first(where: \.isSelected)
@@ -84,17 +36,28 @@ struct CardTransitionAnimator: View {
         }
     }
 
-    var row: CGFloat {
-        floor(CGFloat(indexInGrid) / columnCount)
+    var maxWidth: CGFloat {
+        containerSize.width + safeAreaInsets.leading + safeAreaInsets.trailing
+    }
+
+    var maxHeight: CGFloat {
+        containerSize.height + safeAreaInsets.bottom - transitionBottomPadding
+            - transitionTopPadding + safeAreaInsets.top + CardUX.HeaderSize
+    }
+
+    var frame: CGRect {
+        gridModel.isHidden
+            ? CGRect(width: maxWidth, height: maxHeight)
+            : gridModel.selectedCardFrame.offsetBy(dx: 0, dy: -transitionTopPadding)
     }
 
     var body: some View {
-        let maxWidth = containerSize.width + safeAreaInsets.leading + safeAreaInsets.trailing
-        let maxHeight =
-            containerSize.height + safeAreaInsets.bottom - transitionBottomPadding
-            - transitionTopPadding + safeAreaInsets.top + CardUX.HeaderSize
-        if let selectedCardDetails = selectedCardDetails {
-            Card(details: selectedCardDetails, showsSelection: !gridModel.isHidden, animate: true)
+        Group {
+            if let selectedCardDetails = selectedCardDetails {
+                Card(
+                    details: selectedCardDetails, showsSelection: !gridModel.isHidden, animate: true,
+                    reportFrame: false
+                )
                 .runAfter(
                     toggling: gridModel.isHidden,
                     fromTrueToFalse: {
@@ -105,33 +68,31 @@ struct CardTransitionAnimator: View {
                         tabGroupModel.detailedTabGroup = nil
                     }
                 )
-                .frame(
-                    width: gridModel.isHidden ? maxWidth : cardSize,
-                    height: gridModel.isHidden
-                        ? maxHeight : cardSize * CardUX.DefaultTabCardRatio + CardUX.HeaderSize
-                )
-                .offset(
-                    x: gridModel.isHidden ? 0 : offset.x + safeAreaInsets.leading,
-                    y: gridModel.isHidden
-                        ? 0
-                        : offset.y
-                            + (FeatureFlag[.groupsInSwitcher] && isSelectedTabInGroup
-                                ? gridModel.detailScrollOffset : gridModel.scrollOffset)
-                )
-                .animation(.interpolatingSpring(stiffness: 425, damping: 30))
-                .useEffect(deps: gridModel.animationThumbnailState) { _ in
-                    if !gridModel.isHidden
-                        && gridModel.animationThumbnailState == .visibleForTrayHidden
-                    {
-                        gridModel.isHidden.toggle()
-                    }
-                }
+                .frame(width: frame.width, height: frame.height)
+                .offset(x: frame.origin.x, y: frame.origin.y)
                 .frame(width: maxWidth, height: maxHeight, alignment: .topLeading)
                 .allowsHitTesting(false)
                 .clipped()
                 .padding(.top, transitionTopPadding)
                 .padding(.bottom, transitionBottomPadding)
                 .ignoresSafeArea()
+            } else {
+                Color.clear
+            }
+        }
+        .useEffect(deps: gridModel.animationThumbnailState) { _ in
+            switch gridModel.animationThumbnailState {
+            case .visibleForTrayShow:
+                withAnimation(animation) {
+                    gridModel.isHidden = false
+                }
+            case .visibleForTrayHidden:
+                withAnimation(animation) {
+                    gridModel.isHidden = true
+                }
+            case .hidden:
+                break
+            }
         }
     }
 }

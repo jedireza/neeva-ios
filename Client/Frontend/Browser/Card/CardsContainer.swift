@@ -50,26 +50,26 @@ struct CardsContainer: View {
                             }
                     }
                 }.offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
-                        .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
-                GridScrollView(
-                    onScrollOffsetChanged: { gridModel.scrollOffset = $0 },
-                    preferenceKey: ScrollViewOffsetPreferenceKey.self
-                ) {
-                    scrollProxy in
-                    TabCardsView()
-                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                        .environment(\.selectionCompletion) {
-                            guard tabGroupModel.detailedTabGroup == nil else {
-                                return
-                            }
-                            ClientLogger.shared.logCounter(
-                                .SelectTab,
-                                attributes: getLogCounterAttributesForTabs(
-                                    selectedTabIndex: tabModel.allDetails.index(where: {
-                                        $0.id == tabModel.selectedTabID
-                                    })))
-                            gridModel.hideWithAnimation()
+                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                ScrollView(.vertical, showsIndicators: false) {
+                    ScrollViewReader { scrollProxy in
+                        LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
+                            TabCardsView()
+                                .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                                .environment(\.selectionCompletion) {
+                                    guard tabGroupModel.detailedTabGroup == nil else {
+                                        return
+                                    }
+                                    ClientLogger.shared.logCounter(
+                                        .SelectTab,
+                                        attributes: getLogCounterAttributesForTabs(
+                                            selectedTabIndex: tabModel.allDetails.index(where: {
+                                                $0.id == tabModel.selectedTabID
+                                            })))
+                                    gridModel.hideWithAnimation()
+                                }
                         }
+                        .padding(.vertical, CardGridUX.GridSpacing)
                         .useEffect(
                             deps: tabModel.selectedTabID
                         ) { _ in
@@ -79,6 +79,7 @@ struct CardsContainer: View {
                                 spacesModel.manager.refresh()
                             }
                         }
+                    }
                 }.environment(\.columns, columns)
                     .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
                     .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
