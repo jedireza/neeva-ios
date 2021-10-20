@@ -24,11 +24,35 @@ class RecipeViewModel: ObservableObject {
         }
     }
 
-    public func updateContentWithURL(url: String) {
-        setupRecipeData(url: url)
+    public func updateContentWithURL(url: URL) {
+        if let host = url.host, let baseDomain = url.baseDomain {
+            if DomainAllowList.recipeDomains[host] ?? false
+                || DomainAllowList.recipeDomains[baseDomain] ?? false
+            {
+                setupRecipeData(url: url.absoluteString)
+            } else {
+                self.reset()
+            }
+        }
+    }
+
+    private func reset() {
+        self.recipe = Recipe(
+            title: "",
+            imageURL: "",
+            totalTime: nil,
+            prepTime: nil,
+            yield: nil,
+            ingredients: nil,
+            instructions: nil,
+            recipeRating: nil,
+            reviews: nil,
+            preference: .noPreference
+        )
     }
 
     private func setupRecipeData(url: String) {
+        GraphQLAPI.shared.isAnonymous = true
         CheatsheetQueryController.getCheatsheetInfo(url: url) { result in
             switch result {
             case .success(let cheatsheetInfo):
@@ -38,21 +62,11 @@ class RecipeViewModel: ObservableObject {
                 }
                 break
             case .failure(_):
-                self.recipe = Recipe(
-                    title: "",
-                    imageURL: "",
-                    totalTime: nil,
-                    prepTime: nil,
-                    yield: nil,
-                    ingredients: nil,
-                    instructions: nil,
-                    recipeRating: nil,
-                    reviews: nil,
-                    preference: .noPreference
-                )
+                self.reset()
                 break
             }
 
         }
+        GraphQLAPI.shared.isAnonymous = false
     }
 }

@@ -55,7 +55,7 @@ class TabContentHostModel: ObservableObject {
             webContainerType = .webPage(webView)
 
             if NeevaFeatureFlags[.recipeCheatsheet] && !tabManager.isIncognito {
-                if let url = webView.url?.absoluteString {
+                if let url = webView.url {
                     self.recipeModel.updateContentWithURL(url: url)
                     bvc.chromeModel.currentCheatsheetFaviconURL = tabManager.selectedTab?.favicon?.url
                     bvc.chromeModel.currentCheatsheetURL = tabManager.selectedTab?.url
