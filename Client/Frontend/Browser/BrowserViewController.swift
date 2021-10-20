@@ -1177,17 +1177,7 @@ class BrowserViewController: UIViewController {
         cardGridViewController.gridModel.pickerHeight =
             topBar.view.frame.height - view.safeAreaInsets.top
 
-        // TODO: move this to gridModel in the future
-        let tabGroupCardModel = cardGridViewController.rootView.tabGroupCardModel
-        if FeatureFlag[.groupsInSwitcher],
-            let detail = tabGroupCardModel.allDetails.first(where: {
-                $0.id == tabManager.selectedTab?.rootUUID
-            })
-        {
-            cardGridViewController.rootView.openTabGroup(detail: detail)
-        } else {
-            cardGridViewController.gridModel.show()
-        }
+        cardGridViewController.gridModel.show()
 
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
