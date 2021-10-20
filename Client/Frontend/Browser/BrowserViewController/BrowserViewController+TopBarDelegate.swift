@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import SFSafeSymbols
 import Shared
 import Storage
@@ -58,6 +59,10 @@ extension BrowserViewController: TopBarDelegate {
     }
 
     func urlBar(didSubmitText text: String, isSearchQuerySuggestion: Bool = false) {
+        // When user enter text in the url bar, assume user figured out
+        // how to search from url bar, so auto dismiss the search input tour prompt
+        Defaults[.searchInputPromptDismissed] = true
+
         let currentTab = tabManager.selectedTab
 
         if let fixupURL = URIFixup.getURL(text), !isSearchQuerySuggestion {
