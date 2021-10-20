@@ -212,8 +212,6 @@ public class SpaceStore: ObservableObject {
             case .success(let spaces):
                 self.onUpdateSpaces(spaces)
             case .failure(let error):
-                self.allSpaces = []
-                self.urlToSpacesMap = [:]
                 self.state = .failed(error)
             }
         }
