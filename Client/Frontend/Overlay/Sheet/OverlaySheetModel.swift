@@ -15,9 +15,9 @@ public class OverlaySheetModel: ObservableObject {
     @Published var position: OverlaySheetPosition = .dismissed
     @Published var backdropOpacity: Double = 0.0
 
-    func show() {
+    func show(defaultPosition: OverlaySheetPosition = .middle) {
         withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
-            self.position = .middle
+            self.position = defaultPosition
             self.backdropOpacity = peekHeight > 0 ? 0 : OverlaySheetUX.backdropMaxOpacity
         }
     }

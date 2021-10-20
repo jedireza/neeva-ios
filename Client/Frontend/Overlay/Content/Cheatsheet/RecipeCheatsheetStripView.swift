@@ -100,7 +100,7 @@ struct RecipeCheatsheetStripView: View {
         self.chromeModel.currentCheatsheetFaviconURL = self.tabManager.selectedTab?.favicon?.url
         presentSheet = true
         self.chromeModel.toolBarContentView = .recipeContent
-        overlayModel.show()
+        overlayModel.show(defaultPosition: .top)
     }
 
     func constructReviewList(recipe: Recipe) -> [Review] {
