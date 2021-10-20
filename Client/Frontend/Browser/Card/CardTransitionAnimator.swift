@@ -17,6 +17,11 @@ struct CardTransitionAnimator: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
 
+    var isSelectedTabInGroup: Bool {
+        let selectedTab = tabModel.manager.selectedTab!
+        return tabGroupModel.representativeTabs.contains { $0.rootUUID == selectedTab.rootUUID }
+    }
+
     private var transitionBottomPadding: CGFloat {
         return topToolbar ? 0 : UIConstants.ToolbarHeight + safeAreaInsets.bottom
     }
@@ -48,7 +53,9 @@ struct CardTransitionAnimator: View {
     var frame: CGRect {
         gridModel.isHidden
             ? CGRect(width: maxWidth, height: maxHeight)
-            : gridModel.selectedCardFrame.offsetBy(dx: 0, dy: -transitionTopPadding)
+            : ((isSelectedTabInGroup && gridModel.animationThumbnailState == .visibleForTrayShow)
+                ? gridModel.selectedTabGroupFrame.offsetBy(dx: 0, dy: -transitionTopPadding)
+                : gridModel.selectedCardFrame.offsetBy(dx: 0, dy: -transitionTopPadding))
     }
 
     var body: some View {

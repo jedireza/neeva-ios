@@ -22,6 +22,7 @@ class GridModel: ObservableObject {
     var animateDetailTransitions = true
     let coordinateSpaceName: String = UUID().uuidString
     @Published var selectedCardFrame: CGRect = .zero
+    @Published var selectedTabGroupFrame: CGRect = .zero
 
     func show() {
         animationThumbnailState = .visibleForTrayShow

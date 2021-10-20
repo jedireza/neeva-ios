@@ -106,7 +106,10 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     }
 
     var body: some View {
-        LazyVGrid(columns: columns, alignment: .center, spacing: ThumbnailGroupViewUX.Spacing * aspectRatio) {
+        LazyVGrid(
+            columns: columns, alignment: .center,
+            spacing: ThumbnailGroupViewUX.Spacing * aspectRatio
+        ) {
             ForEach(0...2, id: \.self) { index in
                 itemFor(index)
             }
