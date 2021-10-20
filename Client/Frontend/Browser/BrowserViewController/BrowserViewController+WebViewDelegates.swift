@@ -960,16 +960,17 @@ extension BrowserViewController: WKNavigationDelegate {
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
-                // Mark user has signed in at least once
-                if userInfo.hasLoginCookie() {
-                    Defaults[.signedInOnce] = true
-                }
-
                 userInfo.updateLoginCookieFromWebKitCookieStore {
                     // Delay showing the prompt in case there is a redirect.
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         if let url = tab.url, url == NeevaConstants.appHomeURL {
-                            self.showSearchBarTourPromptIfNeeded(for: url)
+                            // delaying showing tour prompt until user visited home page
+                            // with login cookie at least once
+                            if Defaults[.signedInOnce] {
+                                self.showSearchBarTourPromptIfNeeded(for: url)
+                            }
+                            // Mark user has signed in at least once
+                            Defaults[.signedInOnce] = true
                         }
                     }
                 }
