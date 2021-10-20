@@ -8,7 +8,7 @@ enum OverlaySheetPosition: LocalizedStringKey {
     case dismissed = ""
 }
 
-class OverlaySheetModel: ObservableObject {
+public class OverlaySheetModel: ObservableObject {
     @Published var topBarHeight: CGFloat = 0
     @Published var peekHeight: CGFloat = 0
     @Published var deltaHeight: CGFloat = 0

@@ -11,6 +11,15 @@ extension EnvironmentValues {
         get { self[HideOverlayKey.self] }
         set { self[HideOverlayKey.self] = newValue }
     }
+
+    private struct OverlayModelKey: EnvironmentKey {
+        static let defaultValue = OverlaySheetModel()
+    }
+
+    public var overlayModel: OverlaySheetModel {
+        get { self[OverlayModelKey.self] }
+        set { self[OverlayModelKey.self] = newValue }
+    }
 }
 
 struct OverlayRootView: View {
@@ -60,6 +69,7 @@ private struct OverlaySheetRootView: View {
             content()
                 .environment(\.onOpenURL, self.onOpenURL)
                 .environment(\.hideOverlay, { self.overlayModel.hide() })
+                .environment(\.overlayModel, overlayModel)
         }
     }
 

@@ -7,6 +7,7 @@ import SwiftUI
 /// present the `AddToSpaceView` UI.
 struct AddToSpaceOverlayContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
+    @Environment(\.overlayModel) private var overlayModel
 
     @ObservedObject var request: AddToSpaceRequest
 
@@ -19,6 +20,11 @@ struct AddToSpaceOverlayContent: View {
                 Spacer()
 
                 ShareAddedSpaceView(request: request, bvc: bvc)
+                    .onAppear {
+                        withAnimation {
+                            overlayModel.position = .middle
+                        }
+                    }
             } else {
                 AddToSpaceView(
                     request: request,
