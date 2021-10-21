@@ -65,8 +65,11 @@ where
         ZStack {
             VStack(spacing: 0) {
                 topBar
+                Color.TrayBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
+
                 if tabGroupCardModel.detailedTabGroup != nil {
                     tabGroupGrid
+
                     if editMode == .active {
                         Button(
                             action: {
@@ -96,6 +99,7 @@ where
                     spaceGrid
                 }
             }.accessibilityHidden(shareMenuPresented)
+
             if let space = space, shareMenuPresented {
                 ShareSpaceView(
                     space: space,
@@ -178,9 +182,15 @@ where
                     switch editMode {
                     case .inactive:
                         newTitle = primitive.title
-                        editMode = .active
+
+                        withAnimation {
+                            editMode = .active
+                        }
                     case .active:
-                        editMode = .inactive
+                        withAnimation {
+                            editMode = .inactive
+                        }
+
                         if let space = space, newTitle != primitive.title {
                             spacesModel.updateSpaceName(space: space, newTitle: newTitle)
                         }
@@ -367,73 +377,79 @@ where
     }
 
     var spaceList: some View {
-        List {
-            ForEach(primitive.allDetails, id: \.id) { details in
-                if let entity = details.manager.get(for: details.id) {
-                    if let url = entity.primitiveUrl {
-                        SingleDetailView(
-                            details: details,
-                            onSelected: {
-                                onOpenURLForSpace(url, primitive.id)
-                                gridModel.hideWithNoAnimation()
-                                spacesModel.detailedSpace = nil
-                            },
-                            addToAnotherSpace: { url, title, description in
-                                spacesModel.detailedSpace = nil
-                                SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                    .showAddToSpacesSheet(
-                                        url: url, title: title, description: description)
-                            },
-                            editSpaceItem: {
-                                guard let space = space else {
-                                    return
-                                }
-
-                                SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                    .showModal(
-                                        style: .withTitle
-                                    ) {
-                                        AddToNativeSpaceOverlayContent(
-                                            space: space, entityID: details.id
-                                        )
-                                        .environmentObject(spacesModel)
+        NavigationView {
+            List {
+                ForEach(primitive.allDetails, id: \.id) { details in
+                    if let entity = details.manager.get(for: details.id) {
+                        if let url = entity.primitiveUrl {
+                            SingleDetailView(
+                                details: details,
+                                onSelected: {
+                                    onOpenURLForSpace(url, primitive.id)
+                                    gridModel.hideWithNoAnimation()
+                                    spacesModel.detailedSpace = nil
+                                },
+                                addToAnotherSpace: { url, title, description in
+                                    spacesModel.detailedSpace = nil
+                                    SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                        .showAddToSpacesSheet(
+                                            url: url, title: title, description: description)
+                                },
+                                editSpaceItem: {
+                                    guard let space = space else {
+                                        return
                                     }
-                            }
-                        )
-                        .listRowInsets(
-                            EdgeInsets.init(
-                                top: 0,
-                                leading: editMode == .active ? DetailsViewUX.EditingRowInset : 0,
-                                bottom: 0,
-                                trailing: editMode == .active ? DetailsViewUX.EditingRowInset : 0)
-                        )
-                        .modifier(ListSeparatorModifier())
-                        .listRowBackground(Color.TrayBackground)
 
-                    } else {
-                        Section(
-                            header: Text(entity.displayTitle)
-                                .withFont(.headingSmall)
-                                .textCase(.none)
-                                .padding(.horizontal)
-                                .padding(.top, 14)
-                                .padding(.bottom, 10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.TrayBackground)
-                        ) {}
-                        .listRowInsets(
-                            EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                        )
-                        .modifier(ListSeparatorModifier())
+                                    SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                        .showModal(
+                                            style: .withTitle
+                                        ) {
+                                            AddToNativeSpaceOverlayContent(
+                                                space: space, entityID: details.id
+                                            )
+                                            .environmentObject(spacesModel)
+                                        }
+                                },
+                                index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0
+                            )
+                            .listRowInsets(
+                                EdgeInsets.init(
+                                    top: 0,
+                                    leading: 0,
+                                    bottom: 0,
+                                    trailing: 0)
+                            )
+                            .modifier(ListSeparatorModifier())
+                            .listRowBackground(Color.DefaultBackground)
+                            .onDrag {
+                                NSItemProvider(id: details.id)
+                            }
+                        } else {
+                            Section(
+                                header: Text(entity.displayTitle)
+                                    .withFont(.headingSmall)
+                                    .textCase(.none)
+                                    .padding(.horizontal)
+                                    .padding(.top, 14)
+                                    .padding(.bottom, 10)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.TrayBackground)
+                            ) {}
+                            .listRowInsets(
+                                EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                            )
+                            .modifier(ListSeparatorModifier())
+                        }
                     }
                 }
-            }.onDelete(perform: canEdit ? onDelete : nil)
+                .onDelete(perform: canEdit ? onDelete : nil)
                 .onMove(perform: canEdit ? onMove : nil)
-
+            }
+            .background(Color.groupedBackground)
+            .modifier(ListStyleModifier())
+            .navigationBarHidden(true)
+            .edgesIgnoringSafeArea([.top, .bottom])
         }
-        .modifier(ListStyleModifier())
-        .environment(\.editMode, canEdit ? $editMode : nil)
-        .background(Color.groupedBackground)
     }
 
     var spaceGrid: some View {
@@ -541,6 +557,7 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
     let onSelected: () -> Void
     let addToAnotherSpace: (URL, String?, String?) -> Void
     let editSpaceItem: () -> Void
+    let index: Int
 
     var hostAndPath: String? {
         details.manager.get(for: details.id)?.primitiveUrl?.normalizedHostAndPath
@@ -567,7 +584,11 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
 
     var body: some View {
         VStack(spacing: 0) {
-            Color.TrayBackground.frame(height: 2)
+            if index > 0 {
+                Color.TrayBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
+                Spacer(minLength: 0)
+            }
+
             Button {
                 onSelected()
                 ClientLogger.shared.logCounter(
@@ -597,11 +618,12 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
                         details.thumbnail.frame(
                             width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
                         )
+
                         .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
                         VStack(spacing: DetailsViewUX.Padding) {
                             HStack(spacing: 6) {
                                 if let url = details.manager.get(for: details.id)?.primitiveUrl,
-                                    let type = SocialInfoType(rawValue: url.baseDomain ?? "")
+                                    SocialInfoType(rawValue: url.baseDomain ?? "") != nil
                                 {
                                     FaviconView(forSiteUrl: url)
                                         .frame(width: 12, height: 12)
@@ -626,6 +648,8 @@ struct SingleDetailView<Details: CardDetails>: View where Details: AccessingMana
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
                 .padding()
                 .background(Color.DefaultBackground)
+
+            Spacer(minLength: 0)
         }.scaleEffect(isPressed ? 0.95 : 1)
             .contextMenu(
                 ContextMenu(menuItems: {
