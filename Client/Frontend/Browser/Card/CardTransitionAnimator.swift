@@ -53,7 +53,8 @@ struct CardTransitionAnimator: View {
     var frame: CGRect {
         gridModel.isHidden
             ? CGRect(width: maxWidth, height: maxHeight)
-            : ((isSelectedTabInGroup && gridModel.animationThumbnailState == .visibleForTrayShow)
+            : ((FeatureFlag[.groupsInSwitcher] && isSelectedTabInGroup
+                && gridModel.animationThumbnailState == .visibleForTrayShow)
                 ? gridModel.selectedTabGroupFrame.offsetBy(dx: 0, dy: -transitionTopPadding)
                 : gridModel.selectedCardFrame.offsetBy(dx: 0, dy: -transitionTopPadding))
     }
@@ -62,7 +63,8 @@ struct CardTransitionAnimator: View {
         Group {
             if let selectedCardDetails = selectedCardDetails {
                 Card(
-                    details: selectedCardDetails, showsSelection: !gridModel.isHidden, animate: true,
+                    details: selectedCardDetails, showsSelection: !gridModel.isHidden,
+                    animate: true,
                     reportFrame: false
                 )
                 .runAfter(
