@@ -762,7 +762,8 @@ extension BrowserViewController: WKNavigationDelegate {
         _ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: Error
     ) {
-        log.error("Failed to navigate webview: \(navigation.debugDescription), with error: \(error)")
+        log.error(
+            "Failed to navigate webview: \(navigation.debugDescription), with error: \(error)")
 
         if let tab = tabManager[webView] {
             tab.provisionalTemporaryDocument = nil
@@ -971,6 +972,19 @@ extension BrowserViewController: WKNavigationDelegate {
                             }
                             // Mark user has signed in at least once
                             Defaults[.signedInOnce] = true
+                        }
+
+                        if NeevaUserInfo.shared.isUserLoggedIn
+                            && url.absoluteString.starts(
+                                with: NeevaConstants.appSpacesURL.absoluteString)
+                            && url != NeevaConstants.appSpacesURL
+                            && !SpaceStore.shared.allSpaces.contains(where: {
+                                $0.id.id == url.lastPathComponent
+                            })
+                        {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                SpaceStore.shared.refresh()
+                            }
                         }
                     }
                 }
