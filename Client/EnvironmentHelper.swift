@@ -88,24 +88,13 @@ public class EnvironmentHelper {
 
         let attributes = [
             isPrivateMode, normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
-            deviceScreensSize, isUserSignedIn,
+            deviceScreensSize, isUserSignedIn, getSessionUUID()
         ]
 
         return attributes
     }
 
     public func getFirstRunAttributes() -> [ClientLogCounterAttribute] {
-
-        // Rotate session UUID every 30 mins
-        if Defaults[.sessionUUIDExpirationTime].minutesFromNow() > 30 {
-            Defaults[.sessionUUID] = UUID().uuidString
-            Defaults[.sessionUUIDExpirationTime] = Date()
-        }
-
-        // session UUID that will rotate every 30 mins
-        let sessionUUID = ClientLogCounterAttribute(
-            key: LogConfig.Attribute.SessionUUID, value: Defaults[.sessionUUID])
-
         // is user signed in
         let isUserSignedIn = ClientLogCounterAttribute(
             key: LogConfig.Attribute.isUserSignedIn,
@@ -123,6 +112,18 @@ public class EnvironmentHelper {
         let firstRunPath = ClientLogCounterAttribute(
             key: LogConfig.Attribute.FirstRunPath, value: Defaults[.firstRunPath])
 
-        return [sessionUUID, isUserSignedIn, deviceTheme, deviceName, firstRunPath]
+        return [getSessionUUID(), isUserSignedIn, deviceTheme, deviceName, firstRunPath]
+    }
+
+    private func getSessionUUID() -> ClientLogCounterAttribute {
+        // Rotate session UUID every 30 mins
+        if Defaults[.sessionUUIDExpirationTime].minutesFromNow() > 30 {
+            Defaults[.sessionUUID] = UUID().uuidString
+            Defaults[.sessionUUIDExpirationTime] = Date()
+        }
+
+        // session UUID that will rotate every 30 mins
+        return ClientLogCounterAttribute(
+            key: LogConfig.Attribute.SessionUUID, value: Defaults[.sessionUUID])
     }
 }

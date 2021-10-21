@@ -53,6 +53,7 @@ struct RecipeCheatsheetStripView: View {
                         / scrollingController.headerHeight
                 )
                 .animation(.easeInOut)
+                .onAppear(perform: logBannerImpression)
             }
         }
     }
@@ -86,7 +87,8 @@ struct RecipeCheatsheetStripView: View {
                                 numReviews: recipeModel.recipe.recipeRating?.numReviews ?? 0),
                             reviews: constructReviewList(recipe: recipeModel.recipe),
                             faviconURL: self.tabManager.selectedTab?.favicon?.url,
-                            currentURL: self.tabManager.selectedTab?.url
+                            currentURL: self.tabManager.selectedTab?.url,
+                            tabUUID: self.tabManager.selectedTab?.tabUUID
                         )
                     }
                     .padding()
@@ -97,6 +99,10 @@ struct RecipeCheatsheetStripView: View {
     }
 
     func showOverlaySheet() {
+        if let tabUUID = tabManager.selectedTab?.tabUUID, let url = tabManager.selectedTab?.url?.absoluteString {
+            RecipeCheatsheetLogManager.shared.logInteraction(logType: .clickRecipeBanner, tabUUIDAndURL: tabUUID + url)
+        }
+
         self.chromeModel.currentCheatsheetFaviconURL = self.tabManager.selectedTab?.favicon?.url
         presentSheet = true
         self.chromeModel.toolBarContentView = .recipeContent
@@ -114,6 +120,12 @@ struct RecipeCheatsheetStripView: View {
                     actualStarts: item.rating.actualStarts
                 )
             )
+        }
+    }
+
+    func logBannerImpression() {
+        if let tabUUID = tabManager.selectedTab?.tabUUID, let url = tabManager.selectedTab?.url?.absoluteString {
+            RecipeCheatsheetLogManager.shared.logInteraction(logType: .impression, tabUUIDAndURL: tabUUID + url)
         }
     }
 }

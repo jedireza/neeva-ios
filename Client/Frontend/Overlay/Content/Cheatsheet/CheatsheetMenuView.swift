@@ -140,7 +140,8 @@ public struct CheatsheetMenuView: View {
                             numReviews: recipe.recipeRating?.numReviews ?? 0),
                         reviews: constructReviewList(recipe: recipe),
                         faviconURL: nil,
-                        currentURL: nil
+                        currentURL: nil,
+                        tabUUID: nil
                     )
                 }
             }

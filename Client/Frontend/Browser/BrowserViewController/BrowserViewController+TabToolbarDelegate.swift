@@ -87,6 +87,9 @@ extension BrowserViewController: ToolbarDelegate {
             case .longPressOverflow:
                 break
             case .showPreference:
+                if let tabUUID = self.tabManager.selectedTab?.tabUUID, let url = self.tabManager.selectedTab?.url?.absoluteString {
+                    RecipeCheatsheetLogManager.shared.logInteraction(logType: .clickPreferredProvider, tabUUIDAndURL: tabUUID + url)
+                }
                 // Set up preferred provider list
                 let providerList = ProviderList.shared
                 if !providerList.isLoading {
@@ -99,7 +102,8 @@ extension BrowserViewController: ToolbarDelegate {
                 self.showModal(style: .spaces) {
                     SetPreferredProviderContent(
                         chromeModel: self.chromeModel,
-                        toastViewManager: toastViewManager
+                        toastViewManager: toastViewManager,
+                        tabUUID: self.tabManager.selectedTab?.tabUUID
                     )
                 }
                 break

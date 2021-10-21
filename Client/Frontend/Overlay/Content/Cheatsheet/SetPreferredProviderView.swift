@@ -7,13 +7,15 @@ import SwiftUI
 struct SetPreferredProviderContent: View {
     let chromeModel: TabChromeModel
     let toastViewManager: ToastViewManager
+    let tabUUID: String?
 
     var body: some View {
         SetPreferredProviderView(
             chromeModel: chromeModel,
             toastViewManager: toastViewManager,
             performAction: { action in chromeModel.toolbarDelegate?.performTabToolbarAction(action)
-            }
+            },
+            tabUUID: tabUUID
         )
         .overlayIsFixedHeight(isFixedHeight: true)
         .padding(.top, -8)
@@ -24,6 +26,7 @@ struct SetPreferredProviderView: View {
     let chromeModel: TabChromeModel
     let toastViewManager: ToastViewManager
     let performAction: (ToolbarAction) -> Void
+    let tabUUID: String?
 
     var selectedPreference: UserPreference {
         return ProviderList.shared.getPreferenceByDomain(domain: chromeModel.currentCheatsheetURL?.baseDomain?.asURL?.absoluteString ?? "")
@@ -38,11 +41,13 @@ struct SetPreferredProviderView: View {
     init(
         chromeModel: TabChromeModel,
         toastViewManager: ToastViewManager,
-        performAction: @escaping (ToolbarAction) -> Void
+        performAction: @escaping (ToolbarAction) -> Void,
+        tabUUID: String?
     ) {
         self.chromeModel = chromeModel
         self.toastViewManager = toastViewManager
         self.performAction = performAction
+        self.tabUUID = tabUUID
     }
 
     var body: some View {
@@ -50,19 +55,22 @@ struct SetPreferredProviderView: View {
             PreferenceRowView(
                 rowOption: .preferMore,
                 toastViewManager: toastViewManager,
-                isActive: selectedPreference == .prioritized
+                isActive: selectedPreference == .prioritized,
+                tabUUID: self.tabUUID
             )
             .environmentObject(chromeModel)
             PreferenceRowView(
                 rowOption: .noPreference,
                 toastViewManager: toastViewManager,
-                isActive: selectedPreference == .noPreference
+                isActive: selectedPreference == .noPreference,
+                tabUUID: self.tabUUID
             )
             .environmentObject(chromeModel)
             PreferenceRowView(
                 rowOption: .preferLess,
                 toastViewManager: toastViewManager,
-                isActive: selectedPreference == .deprioritized
+                isActive: selectedPreference == .deprioritized,
+                tabUUID: self.tabUUID
             )
             .environmentObject(chromeModel)
             Color.ui.adaptive.separator
@@ -159,6 +167,7 @@ struct PreferenceRowView: View {
     let rowOption: PreferenceState
     let toastViewManager: ToastViewManager
     var isActive: Bool
+    let tabUUID: String?
 
     @EnvironmentObject private var chromeModel: TabChromeModel
     @Environment(\.hideOverlay) private var hideOverlay
@@ -193,6 +202,10 @@ struct PreferenceRowView: View {
     }
 
     func submitPreference() {
+        if let tabUUID = self.tabUUID, let url = chromeModel.currentCheatsheetURL?.absoluteString {
+            RecipeCheatsheetLogManager.shared.logInteraction(logType: .updatePreferredProvider, tabUUIDAndURL: tabUUID + url)
+        }
+        
         hideOverlay()
         if let url = chromeModel.currentCheatsheetURL?.absoluteString {
             let preferenceRequest = PreferredProviderRequest(

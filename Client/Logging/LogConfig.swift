@@ -130,6 +130,13 @@ public struct LogConfig {
         case DenySystemNotification
         case ScheduleLocalNotification
         case OpenLocalNotification
+
+        // recipe cheatsheet
+        case RecipeCheatsheetImpression
+        case RecipeCheatsheetClickBanner
+        case RecipeCheatsheetShowMoreRecipe
+        case RecipeCheatsheetClickPreferredProvider
+        case RecipeCheatsheetUpdatePreferredProvider
     }
 
     // Specify a comma separated string with these values to
@@ -147,6 +154,7 @@ public struct LogConfig {
         case Spaces = "Spaces"
         case RatingsCard = "RatingsCard"
         case Notification = "Notification"
+        case RecipeCheatsheet = "RecipeCheatsheet"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
@@ -281,6 +289,12 @@ public struct LogConfig {
         case .DenySystemNotification: return .Notification
         case .ScheduleLocalNotification: return .Notification
         case .OpenLocalNotification: return .Notification
+
+        case .RecipeCheatsheetImpression: return .RecipeCheatsheet
+        case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
+        case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
+        case .RecipeCheatsheetClickPreferredProvider: return .RecipeCheatsheet
+        case .RecipeCheatsheetUpdatePreferredProvider: return .RecipeCheatsheet
         }
     }
 

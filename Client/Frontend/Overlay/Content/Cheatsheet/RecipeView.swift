@@ -18,6 +18,7 @@ struct RecipeView: View {
     let reviews: [Review]?
     let faviconURL: URL?
     let currentURL: URL?
+    let tabUUID: String?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -166,7 +167,7 @@ struct RecipeView: View {
                     .blur(radius: 20, opaque: false)
                     .frame(height: 90)
             }
-            Button(action: { expanded.toggle() }) {
+            Button(action: toggleShowMoreRecipeButton) {
                 HStack(alignment: .center) {
                     Text("\(expanded ? "Hide" : "See") Full Recipe")
                     Image(systemSymbol: expanded ? .chevronUp : .chevronDown)
@@ -181,6 +182,15 @@ struct RecipeView: View {
         }
         .frame(maxWidth: .infinity, minHeight: 48)
         .padding(.top, expanded ? 10 : -40)
+    }
+
+    func toggleShowMoreRecipeButton() {
+        if !expanded {
+            if let tabUUID = tabUUID, let url = currentURL?.absoluteString {
+                RecipeCheatsheetLogManager.shared.logInteraction(logType: .clickShowMoreRecipe, tabUUIDAndURL: tabUUID + url)
+            }
+        }
+        expanded.toggle()
     }
 
     func normalizeRating(stars: Double, maxStars: Double) -> Double {
