@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import Defaults
 import Foundation
 import Shared
@@ -19,6 +20,9 @@ enum NavigationPath {
     case widgetUrl(webURL: URL?, uuid: String)
     case text(String)
     case closePrivateTabs
+    case space(String)
+
+    private static var subscription : AnyCancellable? = nil
 
     init?(bvc: BrowserViewController, url: URL) {
         let urlString = url.absoluteString
@@ -42,7 +46,8 @@ enum NavigationPath {
         if urlString.starts(with: "\(scheme)://open-url") {
             self = .openUrlFromComponents(bvc: bvc, components: components)
         } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(
-                    bvc: bvc, urlString: urlString, scheme: scheme, components: components)
+                    bvc: bvc, urlString: urlString,
+                    scheme: scheme, components: components)
         {
             self = widgetKitNavPath
         } else if urlString.starts(with: "\(scheme)://open-text") {
@@ -53,6 +58,9 @@ enum NavigationPath {
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .url(
                 webURL: NavigationPath.maybeRewriteURL(url, components), isPrivate: isPrivate)
+        } else if urlString.starts(with: "\(scheme)://space"),
+                  let spaceId = components.valueForQuery("id") {
+            self = .space(spaceId)
         } else {
             return nil
         }
@@ -68,6 +76,8 @@ enum NavigationPath {
             NavigationPath.handleClosePrivateTabs(with: bvc)
         case .widgetUrl(let webURL, let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
+        case .space(let spaceId):
+            NavigationPath.handleSpace(spaceId: spaceId, with: bvc)
         }
     }
 
@@ -157,6 +167,23 @@ enum NavigationPath {
     private static func handleText(text: String, with bvc: BrowserViewController) {
         bvc.openBlankNewTab(focusLocationField: false)
         bvc.urlBar(didSubmitText: text)
+    }
+
+    private static func handleSpace(spaceId: String, with bvc: BrowserViewController) {
+        // navigate to SpaceId
+        SpaceStore.openSpace(spaceId: spaceId) {
+            let spaceCardModel = bvc.cardGridViewController.rootView.spaceCardModel
+            if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
+                bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId)
+            } else {
+                subscription = spaceCardModel.objectWillChange.sink {
+                    if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
+                        bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId)
+                        subscription?.cancel()
+                    }
+                }
+            }
+        }
     }
 
     public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {

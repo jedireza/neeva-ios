@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
+import Combine
 import Foundation
 
 public struct SpaceID: Hashable, Identifiable {
@@ -148,6 +149,8 @@ public class SpaceStore: ObservableObject {
             "brogg3ipmtasecqj230g",
         ])
 
+    private static var subscription: AnyCancellable? = nil
+
     private var suggestedSpaceIDs: [String]? = nil
 
     public init(suggestedIDs: [String]? = nil) {
@@ -273,6 +276,25 @@ public class SpaceStore: ObservableObject {
             switch result {
             case .success:
                 Logger.browser.info("Space followed")
+            case .failure(let error):
+                Logger.browser.error(error.localizedDescription)
+            }
+        }
+    }
+
+    public static func openSpace(spaceId: String, completion: @escaping () -> Void) {
+        SpacesDataQueryController.getSpacesData(spaceIds: [spaceId]) { result in
+            switch result {
+            case .success:
+                Logger.browser.info("Space followed")
+                shared.refresh()
+                subscription = SpaceStore.shared.$state.sink {
+                    state in
+                    if case .ready = state {
+                        completion()
+                        subscription?.cancel()
+                    }
+                }
             case .failure(let error):
                 Logger.browser.error(error.localizedDescription)
             }
