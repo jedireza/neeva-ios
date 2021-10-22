@@ -100,7 +100,8 @@ struct SwitcherToolbarView: View {
                     $0.tintColor = UIColor.label
                     $0.accessibilityIdentifier = "TabTrayController.addTabButton"
                     $0.setDynamicMenu(gridModel.buildRecentlyClosedTabsMenu)
-                    $0.isEnabled = gridModel.switcherState == .tabs || NeevaUserInfo.shared.isUserLoggedIn
+                    $0.isEnabled =
+                        gridModel.switcherState == .tabs || NeevaUserInfo.shared.isUserLoggedIn
                 }
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
@@ -138,5 +139,6 @@ struct SwitcherToolbarView: View {
         .background(Color.DefaultBackground.ignoresSafeArea())
         .opacity(gridModel.isHidden ? 0 : 1)
         .animation(.easeOut)
+        .modifier(SwipeToSwitchToSpacesGesture(model: gridModel))
     }
 }
