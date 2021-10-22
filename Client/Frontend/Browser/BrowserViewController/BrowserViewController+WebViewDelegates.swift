@@ -962,6 +962,8 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
 
                 userInfo.updateLoginCookieFromWebKitCookieStore {
+                    // We have a fresh login cookie.
+
                     // Delay showing the prompt in case there is a redirect.
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         if let url = tab.url, url == NeevaConstants.appHomeURL {
@@ -973,18 +975,16 @@ extension BrowserViewController: WKNavigationDelegate {
                             // Mark user has signed in at least once
                             Defaults[.signedInOnce] = true
                         }
+                    }
 
-                        if NeevaUserInfo.shared.isUserLoggedIn
-                            && url.absoluteString.starts(
-                                with: NeevaConstants.appSpacesURL.absoluteString)
-                            && url != NeevaConstants.appSpacesURL
-                            && !SpaceStore.shared.allSpaces.contains(where: {
-                                $0.id.id == url.lastPathComponent
-                            })
-                        {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                SpaceStore.shared.refresh()
-                            }
+                    if url.absoluteString.starts(with: NeevaConstants.appSpacesURL.absoluteString)
+                        && url != NeevaConstants.appSpacesURL
+                        && !SpaceStore.shared.allSpaces.contains(where: {
+                            $0.id.id == url.lastPathComponent
+                        })
+                    {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            SpaceStore.shared.refresh()
                         }
                     }
                 }
