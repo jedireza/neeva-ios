@@ -29,7 +29,6 @@ extension BrowserViewController {
                 if TourManager.shared.hasActiveStep() {
                     switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
                 } else {
-                    SpaceStore.shared.refresh()
                     cardGridViewController.gridModel.showSpaces()
                 }
             }

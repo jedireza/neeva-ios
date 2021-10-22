@@ -72,12 +72,13 @@ struct CardsContainer: View {
                         }
                         .padding(.vertical, CardGridUX.GridSpacing)
                         .useEffect(
-                            deps: tabModel.selectedTabID
-                        ) { _ in
-                            // TODO Find a better signal to not necessitate the async post here.
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            deps: tabModel.selectedTabID, gridModel.animationThumbnailState
+                        ) { (_, _) in
+                            // Call scrollTo when the CardTransitionAnimator finishes or the selected
+                            // tab changes, but only if the card grid is hidden. This way the user
+                            // does not see the scrolling happen.
+                            if gridModel.animationThumbnailState == .hidden && gridModel.isHidden {
                                 scrollProxy.scrollTo(tabModel.selectedTabID)
-                                spacesModel.manager.refresh()
                             }
                         }
                     }

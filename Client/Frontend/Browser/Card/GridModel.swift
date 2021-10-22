@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Foundation
+import Shared
 
 class GridModel: ObservableObject {
     @Published var isHidden = true
@@ -27,12 +28,14 @@ class GridModel: ObservableObject {
     func show() {
         animationThumbnailState = .visibleForTrayShow
         updateVisibility(false)
+        updateSpaces()
     }
 
     func showWithNoAnimation() {
         animationThumbnailState = .hidden
         isHidden = false
         updateVisibility(false)
+        updateSpaces()
     }
 
     func showSpaces() {
@@ -40,6 +43,7 @@ class GridModel: ObservableObject {
         switcherState = .spaces
         isHidden = false
         updateVisibility(false)
+        updateSpaces()
     }
 
     func hideWithAnimation() {
@@ -47,7 +51,7 @@ class GridModel: ObservableObject {
     }
 
     func hideWithNoAnimation() {
-        animationThumbnailState = .visibleForTrayHidden
+        animationThumbnailState = .hidden
         updateVisibility(true)
         isHidden = true
         switcherState = .tabs
@@ -56,6 +60,13 @@ class GridModel: ObservableObject {
 
     func setVisibilityCallback(updateVisibility: @escaping (Bool) -> Void) {
         self.updateVisibility = updateVisibility
+    }
+
+    private func updateSpaces() {
+        // In preparation for the CardGrid being shown soon, refresh spaces.
+        DispatchQueue.main.async {
+            SpaceStore.shared.refresh()
+        }
     }
 }
 
