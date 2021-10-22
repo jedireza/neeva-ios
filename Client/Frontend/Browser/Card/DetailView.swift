@@ -381,9 +381,10 @@ where
             List {
                 ForEach(primitive.allDetails, id: \.id) { details in
                     if let entity = details.manager.get(for: details.id) {
-                        if let url = entity.primitiveUrl {
-                            SingleDetailView(
-                                details: details,
+                        if let url = entity.primitiveUrl,
+                           let spaceEntityDetails = details as? SpaceEntityThumbnail {
+                            SpaceEntityDetailView(
+                                details: spaceEntityDetails,
                                 onSelected: {
                                     onOpenURLForSpace(url, primitive.id)
                                     gridModel.hideWithNoAnimation()
@@ -549,132 +550,6 @@ where
     private func onMove(source: IndexSet, destination: Int) {
         primitive.allDetails.move(fromOffsets: source, toOffset: destination)
         spacesModel.reorder(space: primitive.id, entities: primitive.allDetails.map { $0.id })
-    }
-}
-
-struct SingleDetailView<Details: CardDetails>: View where Details: AccessingManagerProvider {
-    let details: Details
-    let onSelected: () -> Void
-    let addToAnotherSpace: (URL, String?, String?) -> Void
-    let editSpaceItem: () -> Void
-    let index: Int
-
-    var hostAndPath: String? {
-        details.manager.get(for: details.id)?.primitiveUrl?.normalizedHostAndPath
-    }
-
-    var isImage: Bool {
-        guard let hostAndPath = hostAndPath else {
-            return false
-        }
-
-        return hostAndPath.hasSuffix(".jpeg")
-            || hostAndPath.hasSuffix(".jpg")
-            || hostAndPath.hasSuffix(".png")
-    }
-
-    var recipe: Recipe? {
-        guard let spaceEntity = details as? SpaceEntityThumbnail else {
-            return nil
-        }
-        return spaceEntity.manager.get(for: spaceEntity.id)?.recipe
-    }
-
-    @State private var isPressed: Bool = false
-
-    var body: some View {
-        VStack(spacing: 0) {
-            if index > 0 {
-                Color.TrayBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
-                Spacer(minLength: 0)
-            }
-
-            Button {
-                onSelected()
-                ClientLogger.shared.logCounter(
-                    .SpacesDetailEntityClicked,
-                    attributes: EnvironmentHelper.shared.getAttributes())
-            } label: {
-                if isImage, let url = details.manager.get(for: details.id)?.primitiveUrl {
-                    VStack(spacing: 0) {
-                        WebImage(url: url).resizable()
-                            .transition(.fade(duration: 0.5))
-                            .background(Color.white)
-                            .scaledToFit().frame(maxHeight: 120)
-                            .padding(16)
-                        if !details.title.isEmpty {
-                            Text(details.title)
-                                .withFont(.bodyMedium)
-                                .lineLimit(1)
-                                .foregroundColor(Color.label)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                    }
-                } else if let recipe = recipe {
-                    RecipeBanner(recipe: recipe)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else {
-                    HStack(spacing: DetailsViewUX.ItemPadding) {
-                        details.thumbnail.frame(
-                            width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
-                        )
-
-                        .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
-                        VStack(spacing: DetailsViewUX.Padding) {
-                            HStack(spacing: 6) {
-                                if let url = details.manager.get(for: details.id)?.primitiveUrl,
-                                    SocialInfoType(rawValue: url.baseDomain ?? "") != nil
-                                {
-                                    FaviconView(forSiteUrl: url)
-                                        .frame(width: 12, height: 12)
-                                        .cornerRadius(4)
-                                }
-                                Text(details.title)
-                                    .withFont(.bodyMedium)
-                                    .lineLimit(2)
-                                    .foregroundColor(Color.label)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            if let snippet = details.description {
-                                Text(snippet)
-                                    .withFont(.bodySmall)
-                                    .lineLimit(2)
-                                    .foregroundColor(Color.secondaryLabel)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                        }
-                    }
-                }
-            }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
-                .padding()
-                .background(Color.DefaultBackground)
-
-            Spacer(minLength: 0)
-        }.scaleEffect(isPressed ? 0.95 : 1)
-            .contextMenu(
-                ContextMenu(menuItems: {
-                    if details.ACL >= .edit {
-                        Button(
-                            action: {
-                                editSpaceItem()
-                            },
-                            label: {
-                                Label("Edit item", systemSymbol: .squareAndPencil)
-                            })
-                    }
-                    Button(
-                        action: {
-                            addToAnotherSpace(
-                                (details.manager.get(for: details.id)?.primitiveUrl)!,
-                                details.title, details.description)
-                        },
-                        label: {
-                            Label("Add to another Space", systemSymbol: .docOnDoc)
-                        })
-                })
-            )
-            .accessibilityLabel(details.title)
-            .accessibilityHint("Space Item")
     }
 }
 

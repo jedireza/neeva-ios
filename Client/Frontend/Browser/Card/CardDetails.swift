@@ -191,6 +191,18 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
 
     private var imageThumbnailModel: ImageThumbnailModel?
 
+    var isImage: Bool {
+
+        guard let pathExtension = data.url?.pathExtension else {
+            return false
+        }
+
+        return pathExtension == "jpeg"
+            || pathExtension == "jpg"
+            || pathExtension == "png"
+            || pathExtension == "gif"
+    }
+
     init(data: SpaceEntityData, spaceID: String) {
         self.spaceID = spaceID
         self.data = data
@@ -202,6 +214,10 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
 
     @ViewBuilder var thumbnail: some View {
         if let recipe = data.recipe, let imageURL = URL(string: recipe.imageURL) {
+            WebImage(url: imageURL)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } else if isImage, let imageURL = data.url {
             WebImage(url: imageURL)
                 .resizable()
                 .aspectRatio(contentMode: .fill)

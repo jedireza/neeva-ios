@@ -72,7 +72,11 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @Environment(\.aspectRatio) private var aspectRatio
 
     var numItems: Int {
-        model.allDetails.count
+        if let eligibleSpaceEntities = eligibleSpaceEntities {
+            return eligibleSpaceEntities.count
+        } else {
+            return model.allDetails.count
+        }
     }
 
     var contentSize: CGFloat {
@@ -92,10 +96,18 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
             count: 2)
     }
 
+    var eligibleSpaceEntities: [SpaceEntityThumbnail]? {
+        return (model.allDetails as? [SpaceEntityThumbnail])?.filter { $0.data.url != nil }
+    }
+
     func itemFor(_ index: Int) -> some View {
         Group {
             if index >= numItems {
                 Color.DefaultBackground.frame(width: itemSize, height: itemSize * aspectRatio)
+                    .modifier(CustomRadius(index: index))
+            } else if let eligibleSpaceEntities = eligibleSpaceEntities {
+                let item = eligibleSpaceEntities[index]
+                item.thumbnail.frame(width: itemSize, height: itemSize * aspectRatio)
                     .modifier(CustomRadius(index: index))
             } else {
                 let item = model.allDetails[index]
