@@ -31,34 +31,25 @@ struct TabCardsView: View {
 
     var body: some View {
         Group {
-            if FeatureFlag[.groupsInSwitcher] {
-                ForEach(
-                    tabModel.allDetails.filter { tabCard in
-                        (tabGroupModel.representativeTabs.contains(
-                            tabCard.manager.get(for: tabCard.id)!)
-                            || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
-                    }, id: \.id
-                ) { details in
-                    if let rootID = details.manager.get(for: details.id)?.rootUUID,
-                        tabGroupModel.allDetails.contains { $0.id == rootID }
-                    {
-                        FittedCard(details: (tabGroupModel.allDetails.first { $0.id == rootID })!)
-                            .modifier(HideSelectedForTransition(details: details))
-                            .id(details.id)
-                    } else {
-                        FittedCard(details: details)
-                            .modifier(HideSelectedForTransition(details: details))
-                            .id(details.id)
-                    }
-                }
-            } else {
-                ForEach(tabModel.allDetails, id: \.id) { details in
+            ForEach(
+                tabModel.allDetails.filter { tabCard in
+                    (tabGroupModel.representativeTabs.contains(
+                        tabCard.manager.get(for: tabCard.id)!)
+                        || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
+                }, id: \.id
+            ) { details in
+                if let rootID = details.manager.get(for: details.id)?.rootUUID,
+                    tabGroupModel.allDetails.contains { $0.id == rootID }
+                {
+                    FittedCard(details: (tabGroupModel.allDetails.first { $0.id == rootID })!)
+                        .modifier(HideSelectedForTransition(details: details))
+                        .id(details.id)
+                } else {
                     FittedCard(details: details)
                         .modifier(HideSelectedForTransition(details: details))
                         .id(details.id)
                 }
             }
-
         }
     }
 }

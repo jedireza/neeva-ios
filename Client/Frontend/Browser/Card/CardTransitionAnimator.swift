@@ -31,14 +31,10 @@ struct CardTransitionAnimator: View {
     }
 
     var selectedCardDetails: TabCardDetails? {
-        if FeatureFlag[.groupsInSwitcher] {
-            return tabModel.allDetailsWithExclusionList.first(where: \.isSelected)
-                ?? tabGroupModel.allDetails
-                .compactMap { $0.allDetails.first(where: \.isSelected) }
-                .first
-        } else {
-            return tabModel.allDetails.first(where: \.isSelected)
-        }
+        return tabModel.allDetailsWithExclusionList.first(where: \.isSelected)
+            ?? tabGroupModel.allDetails
+            .compactMap { $0.allDetails.first(where: \.isSelected) }
+            .first
     }
 
     var maxWidth: CGFloat {
@@ -53,8 +49,7 @@ struct CardTransitionAnimator: View {
     var frame: CGRect {
         gridModel.isHidden
             ? CGRect(width: maxWidth, height: maxHeight)
-            : ((FeatureFlag[.groupsInSwitcher] && isSelectedTabInGroup
-                && gridModel.animationThumbnailState == .visibleForTrayShow)
+            : ((isSelectedTabInGroup && gridModel.animationThumbnailState == .visibleForTrayShow)
                 ? gridModel.selectedTabGroupFrame.offsetBy(dx: 0, dy: -transitionTopPadding)
                 : gridModel.selectedCardFrame.offsetBy(dx: 0, dy: -transitionTopPadding))
     }
