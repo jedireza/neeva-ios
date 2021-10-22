@@ -45,10 +45,6 @@ class NeevaSignInTests: BaseTestCase {
         waitUntilPageLoad(withUrlContaining: "mock-neeva-home")
 
         waitForExistence(app.staticTexts["login cookie: good-token"])
-
-        // Expect first run dialog.
-        waitForExistence(app.buttons["Got it!"])
-        app.buttons["Got it!"].tap()
     }
 
     fileprivate func doSignOut() {
