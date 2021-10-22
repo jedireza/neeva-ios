@@ -78,7 +78,12 @@ struct CardsContainer: View {
                             // tab changes, but only if the card grid is hidden. This way the user
                             // does not see the scrolling happen.
                             if gridModel.animationThumbnailState == .hidden && gridModel.isHidden {
-                                scrollProxy.scrollTo(tabModel.selectedTabID)
+                                // In case the newly selected card is also a newly added card, give
+                                // the card grid time to update and generate that card before we try
+                                // to scroll to it.
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    scrollProxy.scrollTo(tabModel.selectedTabID)
+                                }
                             }
                         }
                     }
